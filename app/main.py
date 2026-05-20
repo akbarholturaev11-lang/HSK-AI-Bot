@@ -119,6 +119,11 @@ async def hsk1_miniapp():
     return FileResponse("app/static/hsk1.html")
 
 
+@app.get("/hsk2.html")
+async def hsk2_miniapp():
+    return FileResponse("app/static/hsk2.html")
+
+
 @app.get("/api/miniapp/lesson")
 async def miniapp_lesson(lesson: int, lang: str = "uz"):
     resolved_lang = normalize_miniapp_lang(lang)

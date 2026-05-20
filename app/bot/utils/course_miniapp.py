@@ -8,6 +8,7 @@ from app.config import settings
 
 MINIAPP_SUPPORTED_LEVELS = {
     "hsk1": (1, 15),
+    "hsk2": (1, 15),
     "hsk3": (1, 20),
 }
 
@@ -42,7 +43,10 @@ def is_course_miniapp_supported(lesson) -> bool:
 def _miniapp_base_url_for_level(level: str) -> str:
     base_url = (settings.MINI_APP_BASE_URL or "").strip() or "https://YOURDOMAIN.com/hsk3.html"
     normalized_level = (level or "").strip().lower()
-    target_file = "hsk1.html" if normalized_level == "hsk1" else "hsk3.html"
+    target_file = {
+        "hsk1": "hsk1.html",
+        "hsk2": "hsk2.html",
+    }.get(normalized_level, "hsk3.html")
 
     parts = urlsplit(base_url)
     if parts.path.endswith(".html"):
