@@ -21,7 +21,6 @@ from app.services.ad_campaign_service import AdCampaignService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
-from app.repositories.user_repo import UserRepository
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
     course_miniapp_understood_keyboard,
@@ -116,19 +115,10 @@ async def hsk3_miniapp():
 
 
 @app.get("/api/miniapp/lesson")
-async def miniapp_lesson(request: Request, lesson: int, lang: str = "uz"):
-    telegram_id = extract_verified_webapp_user_id(
-        request.headers.get("X-Telegram-Init-Data", ""),
-        settings.BOT_TOKEN,
-    )
+async def miniapp_lesson(lesson: int, lang: str = "uz"):
     resolved_lang = normalize_miniapp_lang(lang)
 
     async with async_session_maker() as session:
-        if telegram_id:
-            user = await UserRepository(session).get_by_telegram_id(telegram_id)
-            if user and user.language:
-                resolved_lang = normalize_miniapp_lang(user.language)
-
         payload = await CourseMiniAppLessonService(session).get_payload(lesson, resolved_lang)
         if not payload:
             return {"ok": False, "error": "lesson_not_found"}

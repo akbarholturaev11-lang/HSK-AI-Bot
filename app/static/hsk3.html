@@ -572,7 +572,7 @@ function normalizeLang(value){
   if(v==='tg'||v==='tg-cyrl')return 'tj';
   return ['uz','ru','tj'].includes(v)?v:'uz';
 }
-let uiLang=normalizeLang(params.get("lang")||tg?.initDataUnsafe?.user?.language_code||'uz');
+let uiLang=normalizeLang(params.get("lang")||'uz');
 const initialLesson=(Number.isInteger(lesson)&&lesson>=1&&lesson<=20)?lesson:null;
 const miniMode=(mode==='quiz'||mode==='homework')&&!!initialLesson;
 let S={done:[],starred:[],qScore:{c:0,t:0},qFilter:initialLesson||'all',quizScores:{}};
@@ -585,11 +585,15 @@ const UI={
     restart:'Qayta ishlash ↺',next:'Keyingisi →',back:'Botga qaytish',
     result:'{percent}% natija',score:'To‘g‘ri: {correct} · Xato: {wrong}',
     noWrong:'Xato javob yo‘q. Juda yaxshi ✅',correctAnswer:'To‘g‘ri javob',
+    lessonLabel:'Dars',correctPrefix:'✓ To‘g‘ri! ',wrongPrefix:'✗ Noto‘g‘ri. ',
     homeworkTitle:'Dars {lesson} · Uyga vazifa ✍️',homeworkSub:'Mini App · faqat botdan ochilgan vazifa',
     note:'Botdagi dars asosiy qoladi. Bu sahifa faqat <b>Dars {lesson}</b> uyga vazifasini topshirish uchun.',
     vocabTitle:'1) Yangi so‘zlar',vocabHelp:'Shu darsdagi yangi so‘zlardan foydalanib 3 ta xitoycha gap yozing.',
     grammarTitle:'2) Grammatika',grammarHelp:'Darsdagi grammar strukturadan 2 ta xitoycha gap tuzing.',
     translationTitle:'3) Tarjima mashqi',translationHelp:'Quyidagi 2 ta gapni xitoychaga tarjima qiling.',
+    vocabPlaceholder:'Masalan:\n1. 我今天...\n2. 他觉得...\n3. 这个词...',
+    grammarPlaceholder:'1. ...\n2. ...',
+    translationPlaceholder:'1. ...\n2. ...',
     submit:'Vazifani yuborish',return:'Botga qaytish',
     fillAll:'Hamma bo‘limlarni to‘ldiring. Bo‘sh vazifa botga foydali result bermaydi.',
     sent:'Vazifa yuborildi. Endi botga qaytib natijani ko‘rishingiz mumkin.'
@@ -599,11 +603,15 @@ const UI={
     restart:'Пройти заново ↺',next:'Далее →',back:'Вернуться в бот',
     result:'{percent}% результат',score:'Правильно: {correct} · Ошибки: {wrong}',
     noWrong:'Ошибок нет. Отлично ✅',correctAnswer:'Правильный ответ',
+    lessonLabel:'Урок',correctPrefix:'✓ Правильно! ',wrongPrefix:'✗ Неправильно. ',
     homeworkTitle:'Урок {lesson} · Домашнее задание ✍️',homeworkSub:'Mini App · задание открыто из бота',
     note:'Основной урок остаётся в боте. Эта страница только для отправки домашнего задания по <b>уроку {lesson}</b>.',
     vocabTitle:'1) Новые слова',vocabHelp:'Напишите 3 предложения на китайском, используя новые слова урока.',
     grammarTitle:'2) Грамматика',grammarHelp:'Составьте 2 предложения на китайском с грамматикой урока.',
     translationTitle:'3) Перевод',translationHelp:'Переведите эти 2 предложения на китайский.',
+    vocabPlaceholder:'Например:\n1. 我今天...\n2. 他觉得...\n3. 这个词...',
+    grammarPlaceholder:'1. ...\n2. ...',
+    translationPlaceholder:'1. ...\n2. ...',
     submit:'Отправить задание',return:'Вернуться в бот',
     fillAll:'Заполните все разделы. Пустое задание не даст боту полезный результат.',
     sent:'Задание отправлено. Вернитесь в бот, чтобы увидеть результат.'
@@ -613,11 +621,15 @@ const UI={
     restart:'Аз нав гузаштан ↺',next:'Баъдӣ →',back:'Бозгашт ба бот',
     result:'{percent}% натиҷа',score:'Дуруст: {correct} · Хато: {wrong}',
     noWrong:'Ҷавоби хато нест. Олиҷаноб ✅',correctAnswer:'Ҷавоби дуруст',
+    lessonLabel:'Дарс',correctPrefix:'✓ Дуруст! ',wrongPrefix:'✗ Нодуруст. ',
     homeworkTitle:'Дарс {lesson} · Вазифаи хонагӣ ✍️',homeworkSub:'Mini App · вазифа аз бот кушода шудааст',
     note:'Дарси асосӣ дар бот мемонад. Ин саҳифа танҳо барои фиристодани вазифаи хонагии <b>дарси {lesson}</b> аст.',
     vocabTitle:'1) Калимаҳои нав',vocabHelp:'Бо калимаҳои нави ҳамин дарс 3 ҷумлаи чинӣ нависед.',
     grammarTitle:'2) Грамматика',grammarHelp:'Бо сохтори грамматикии дарс 2 ҷумлаи чинӣ созед.',
     translationTitle:'3) Тарҷума',translationHelp:'Ин 2 ҷумларо ба чинӣ тарҷума кунед.',
+    vocabPlaceholder:'Масалан:\n1. 我今天...\n2. 他觉得...\n3. 这个词...',
+    grammarPlaceholder:'1. ...\n2. ...',
+    translationPlaceholder:'1. ...\n2. ...',
     submit:'Фиристодани вазифа',return:'Бозгашт ба бот',
     fillAll:'Ҳама қисмҳоро пур кунед. Вазифаи холӣ ба бот натиҷаи фоиданок намедиҳад.',
     sent:'Вазифа фиристода шуд. Акнун ба бот баргардед ва натиҷаро бинед.'
@@ -971,7 +983,7 @@ function renderQ(){
   const q=qList[qIdx];
   if(!q){showResult();return;}
   document.getElementById('q-counter').textContent=(qIdx+1)+'/'+qList.length;
-  document.getElementById('q-cat').textContent=(q.lesson?`Dars ${q.lesson} · `:'')+(q.cat||'Vocabulary');
+  document.getElementById('q-cat').textContent=(q.lesson?`${tt('lessonLabel')} ${q.lesson} · `:'')+(q.cat||'Vocabulary');
   document.getElementById('q-text').textContent=q.q;
   document.getElementById('q-hint').textContent='💡 '+(q.hint||'');
   const opts=q.opts||q.o||[];
@@ -1005,7 +1017,7 @@ function ansQ(i){
   S.qScore.t++;
   qList[qIdx].correct=ok;
   const fb=document.getElementById('q-fb');
-  fb.textContent=(ok?'✓ To\'g\'ri! ':'✗ Noto\'g\'ri. ')+(q.expl||q.e||'');
+  fb.textContent=(ok?tt('correctPrefix'):tt('wrongPrefix'))+(q.expl||q.e||'');
   fb.className='quiz-fb show '+(ok?'ok':'no');
   document.getElementById('q-next').style.display='flex';
   save();
@@ -1072,32 +1084,86 @@ function nextLessonQuiz(){
 }
 
 // ===== HOMEWORK MINI APP JS =====
-const TRANSLATION_BANK={
-  1:["Men dam olish kuni uy vazifasini qilaman.","Xaritani olib kelishni unutmang."],
-  2:["U ofisga qaytib keldi.","Bu savol men uchun qiyin emas."],
-  3:["Stol ustida ko'p ichimlik turibdi.","Sen choy ichasanmi yoki suv?"],
-  4:["U kulib javob berdi.","Bu talaba ham aqlli, ham mehnatsevar."],
-  5:["Ob-havo tobora sovuqlashyapti.","Men so'nggi payt shamollab qoldim."],
-  6:["Men ko'zoynagimni topa olmayapman.","U juda tez gapiradi, men aniq eshitmayapman."],
-  7:["Men xitoy tilini uch yil o'rgandim.","Men Xitoy madaniyatiga qiziqaman."],
-  8:["Sen qayerga borsang, men ham o'sha yerga boraman.","Men darhol hojatxonaga boraman."],
-  9:["U xitoy tilida xitoyliklar kabi yaxshi gapiradi.","Qanchalik ko'p o'rgansam, shunchalik qiziq bo'ladi."],
-  10:["Matematika tarixdan ancha qiyin.","Mening uyim metroga yaqin."],
-  11:["Konditsionerni o'chirishni unutmang.","Men kutubxonadan lug'at oldim."],
-  12:["Muhim narsalarni stol ustiga qo'ying.","Haydovchi chamadonni mashinaga qo'ydi."],
-  13:["Men piyoda qaytib keldim.","U ovqatlanib turib telefon ko'ryapti."],
-  14:["Mevalarni olib keling.","Avval xonani tozalang, keyin dush oling."],
-  15:["Xitoy tilidan tashqari, men ingliz tilini ham o'rganyapman.","Bugungi bayram juda qiziqarli."],
-  16:["Agar ertaga yomg'ir yog'sa, men bormayman.","Men ishdan keyin uxlashni xohlaydigan darajada charchadim."],
-  17:["Men bir kun ta'til so'ramoqchiman.","Vaziyatga ko'ra qaror qilamiz."],
-  18:["Faqat sen rozi bo'lsang, men boraman.","Bu maqola Xitoy madaniyati haqida."],
-  19:["Men uni darhol tanib oldim.","Bu narsa meni juda xafa qildi."],
-  20:["Mening kameram olib ketildi.","Faqat ko'p mashq qilsang, natijang yaxshilanadi."]
+const TRANSLATION_BANK_I18N={
+  uz:{
+    fallback:["Bugun men yangi so'zlarni o'rgandim.","Bu grammatika men uchun muhim."],
+    1:["Men dam olish kuni uy vazifasini qilaman.","Xaritani olib kelishni unutmang."],
+    2:["U ofisga qaytib keldi.","Bu savol men uchun qiyin emas."],
+    3:["Stol ustida ko'p ichimlik turibdi.","Sen choy ichasanmi yoki suv?"],
+    4:["U kulib javob berdi.","Bu talaba ham aqlli, ham mehnatsevar."],
+    5:["Ob-havo tobora sovuqlashyapti.","Men so'nggi payt shamollab qoldim."],
+    6:["Men ko'zoynagimni topa olmayapman.","U juda tez gapiradi, men aniq eshitmayapman."],
+    7:["Men xitoy tilini uch yil o'rgandim.","Men Xitoy madaniyatiga qiziqaman."],
+    8:["Sen qayerga borsang, men ham o'sha yerga boraman.","Men darhol hojatxonaga boraman."],
+    9:["U xitoy tilida xitoyliklar kabi yaxshi gapiradi.","Qanchalik ko'p o'rgansam, shunchalik qiziq bo'ladi."],
+    10:["Matematika tarixdan ancha qiyin.","Mening uyim metroga yaqin."],
+    11:["Konditsionerni o'chirishni unutmang.","Men kutubxonadan lug'at oldim."],
+    12:["Muhim narsalarni stol ustiga qo'ying.","Haydovchi chamadonni mashinaga qo'ydi."],
+    13:["Men piyoda qaytib keldim.","U ovqatlanib turib telefon ko'ryapti."],
+    14:["Mevalarni olib keling.","Avval xonani tozalang, keyin dush oling."],
+    15:["Xitoy tilidan tashqari, men ingliz tilini ham o'rganyapman.","Bugungi bayram juda qiziqarli."],
+    16:["Agar ertaga yomg'ir yog'sa, men bormayman.","Men ishdan keyin uxlashni xohlaydigan darajada charchadim."],
+    17:["Men bir kun ta'til so'ramoqchiman.","Vaziyatga ko'ra qaror qilamiz."],
+    18:["Faqat sen rozi bo'lsang, men boraman.","Bu maqola Xitoy madaniyati haqida."],
+    19:["Men uni darhol tanib oldim.","Bu narsa meni juda xafa qildi."],
+    20:["Mening kameram olib ketildi.","Faqat ko'p mashq qilsang, natijang yaxshilanadi."]
+  },
+  ru:{
+    fallback:["Сегодня я выучил новые слова.","Эта грамматика важна для меня."],
+    1:["На выходных я буду делать домашнее задание.","Не забудьте принести карту."],
+    2:["Он вернулся в офис.","Этот вопрос для меня не трудный."],
+    3:["На столе стоит много напитков.","Ты будешь пить чай или воду?"],
+    4:["Он ответил с улыбкой.","Этот ученик и умный, и трудолюбивый."],
+    5:["Погода становится всё холоднее.","В последнее время я простудился."],
+    6:["Я не могу найти свои очки.","Он говорит очень быстро, я не могу ясно расслышать."],
+    7:["Я изучал китайский язык три года.","Я интересуюсь китайской культурой."],
+    8:["Куда пойдёшь ты, туда пойду и я.","Я сразу пойду в туалет."],
+    9:["Она говорит по-китайски так же хорошо, как китайцы.","Чем больше я учусь, тем интереснее становится."],
+    10:["Математика намного труднее истории.","Мой дом находится близко к метро."],
+    11:["Не забудьте выключить кондиционер.","Я взял словарь в библиотеке."],
+    12:["Положите важные вещи на стол.","Водитель положил чемодан в машину."],
+    13:["Я вернулся пешком.","Он ест и одновременно смотрит в телефон."],
+    14:["Принесите фрукты сюда.","Сначала уберите комнату, потом примите душ."],
+    15:["Кроме китайского, я также изучаю английский.","Сегодняшний праздник очень интересный."],
+    16:["Если завтра пойдёт дождь, я не пойду.","Я так устал, что после работы хочу спать."],
+    17:["Я хочу попросить один день отпуска.","Мы примем решение в зависимости от ситуации."],
+    18:["Если только ты согласишься, я пойду.","Эта статья о китайской культуре."],
+    19:["Я сразу узнал его.","Это очень расстроило меня."],
+    20:["Мою камеру унесли.","Только если много практиковаться, результат улучшится."]
+  },
+  tj:{
+    fallback:["Ман имрӯз калимаҳои навро омӯхтам.","Ин грамматика барои ман муҳим аст."],
+    1:["Ман рӯзи истироҳат вазифаи хонагиро иҷро мекунам.","Харитаро оварданро фаромӯш накунед."],
+    2:["Ӯ ба офис баргашт.","Ин савол барои ман душвор нест."],
+    3:["Дар рӯи миз нӯшокиҳои зиёд истодаанд.","Ту чой менӯшӣ ё об?"],
+    4:["Ӯ бо табассум ҷавоб дод.","Ин донишҷӯ ҳам доно ва ҳам меҳнатдӯст аст."],
+    5:["Ҳаво торафт сард шуда истодааст.","Ман вақтҳои охир шамол хӯрдам."],
+    6:["Ман айнакамро ёфта наметавонам.","Ӯ хеле тез гап мезанад, ман равшан шунида наметавонам."],
+    7:["Ман се сол забони чиниро омӯхтам.","Ман ба фарҳанги Чин шавқ дорам."],
+    8:["Ту ба куҷо равӣ, ман ҳам ба ҳамон ҷо меравам.","Ман фавран ба ҳоҷатхона меравам."],
+    9:["Ӯ ба чинӣ мисли чиниҳо хуб гап мезанад.","Ҳар қадар бештар омӯзам, ҳамон қадар ҷолибтар мешавад."],
+    10:["Математика аз таърих хеле душвортар аст.","Хонаи ман ба метро наздик аст."],
+    11:["Хомӯш кардани кондитсионерро фаромӯш накунед.","Ман аз китобхона луғат гирифтам."],
+    12:["Чизҳои муҳимро ба рӯи миз гузоред.","Ронанда ҷомадонро ба мошин гузошт."],
+    13:["Ман пиёда баргаштам.","Ӯ ҳангоми хӯрок хӯрдан телефон тамошо мекунад."],
+    14:["Меваҳоро ин ҷо биёред.","Аввал ҳуҷраро тоза кунед, баъд душ гиред."],
+    15:["Ғайр аз забони чинӣ, ман англисиро ҳам меомӯзам.","Иди имрӯза хеле ҷолиб аст."],
+    16:["Агар пагоҳ борон борад, ман намеравам.","Ман чунон хастаам, ки баъд аз кор хоб рафтан мехоҳам."],
+    17:["Ман мехоҳам як рӯз рухсатӣ пурсам.","Мо вобаста ба вазъият қарор мекунем."],
+    18:["Танҳо агар ту розӣ шавӣ, ман меравам.","Ин мақола дар бораи фарҳанги Чин аст."],
+    19:["Ман ӯро фавран шинохтам.","Ин чиз маро хеле ғамгин кард."],
+    20:["Камераи маро бурданд.","Танҳо агар бисёр машқ кунӣ, натиҷаат беҳтар мешавад."]
+  }
 };
 function getLessonGrammar(lessonId){
   if(miniLessonData?.grammar?.length)return miniLessonData.grammar;
   const title=`Dars ${lessonId}`;
   return GRAMMAR.filter(g=>String(g.l).includes(title));
+}
+function getTranslationTasks(lessonId){
+  const bank=TRANSLATION_BANK_I18N[uiLang]||TRANSLATION_BANK_I18N.uz;
+  const tasks=bank[lessonId]||bank.fallback||TRANSLATION_BANK_I18N.uz.fallback;
+  return tasks.map(x=>String(x||'').trim()).filter(Boolean);
 }
 function renderHomework(){
   const lessonId=initialLesson;
@@ -1115,13 +1181,14 @@ function renderHomework(){
   if(cards[2]){cards[2].querySelector('.hw-title').textContent=tt('translationTitle');cards[2].querySelector('.hw-help').textContent=tt('translationHelp');}
   document.getElementById('hw-submit-btn').textContent=tt('submit');
   document.getElementById('hw-return-btn').textContent=tt('return');
+  document.getElementById('hw-vocab-answer').placeholder=tt('vocabPlaceholder');
+  document.getElementById('hw-grammar-answer').placeholder=tt('grammarPlaceholder');
+  document.getElementById('hw-translation-answer').placeholder=tt('translationPlaceholder');
   document.getElementById('hw-vocab-task').innerHTML=words.map(w=>`<span style="display:inline-block;margin:2px 6px 2px 0;padding:3px 8px;border:1px solid var(--border);border-radius:20px;color:var(--accent);background:var(--accent-dim);">${w.h} · ${w.p}</span>`).join('');
   document.getElementById('hw-grammar-task').innerHTML=grams.length
     ? grams.map(g=>`<div style="margin-bottom:8px;"><b>${g.title||g.t}</b><br><span style="color:var(--accent);font-family:var(--mono);">${g.formula||g.f||''}</span></div>`).join('')
     : (les?.g||[]).map(g=>`<div style="margin-bottom:6px;">• ${g}</div>`).join('');
-  const tasks=miniLessonData?.homework?.length
-    ? miniLessonData.homework.map(x=>[x.instruction,x.words?.length?`📌 ${x.words.join(' · ')}`:'',x.topic?`🎯 ${x.topic}`:''].filter(Boolean).join('<br>'))
-    : (TRANSLATION_BANK[lessonId]||["Bugun men yangi so'zlarni o'rgandim.","Bu grammatika men uchun muhim."]);
+  const tasks=getTranslationTasks(lessonId);
   document.getElementById('hw-translation-task').innerHTML=tasks.map((x,i)=>`<div>${i+1}. ${x}</div>`).join('');
 }
 function submitHomework(){
