@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="tj">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>HSK 1 · Mini App</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#0c0e14;--bg2:#141820;--bg3:#1c2030;--bg4:#242840;
+  --border:#252a3a;--border2:#333a52;
+  --text:#e8eaf0;--text2:#8b91aa;--text3:#4a5070;
+  --accent:#4f7fff;--accent-dim:rgba(79,127,255,.12);
+  --green:#2bcf72;--green-dim:rgba(43,207,114,.12);
+  --amber:#f5a623;--amber-dim:rgba(245,166,35,.12);
+  --red:#e84545;--red-dim:rgba(232,69,69,.12);
+  --purple:#9b6dff;--purple-dim:rgba(155,109,255,.12);
+  --r:10px;--r2:16px;
+  --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overscroll-behavior:none;}
+body{overflow:hidden;}
+button,input,textarea{font:inherit;}
+button:disabled{cursor:default;}
+
+.page{
+  position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  display:none;background:var(--bg);
+}
+.page.active{display:block;}
+.shell{width:100%;max-width:680px;margin:0 auto;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));}
+.page-header{
+  padding:calc(22px + env(safe-area-inset-top,0px)) 16px 16px;
+  background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);
+  position:sticky;top:0;z-index:10;
+}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
+.page-title{font-size:25px;font-weight:700;letter-spacing:0;line-height:1.2;}
+.page-sub{font-size:13px;color:var(--text3);margin-top:3px;line-height:1.4;}
+.lesson-pill{
+  font-family:var(--mono);font-size:10px;white-space:nowrap;
+  color:var(--accent);background:var(--accent-dim);
+  border:1px solid rgba(79,127,255,.25);border-radius:20px;padding:4px 10px;
+}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;}
+.mini-note{
+  margin:0 16px 12px;padding:12px 14px;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--bg2);
+  color:var(--text2);font-size:12px;line-height:1.45;
+}
+
+.quiz-wrap{padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px));}
+.start-card{text-align:center;}
+.start-kicker{
+  color:var(--purple);background:var(--purple-dim);border:1px solid rgba(155,109,255,.24);
+  display:inline-flex;border-radius:20px;padding:4px 10px;font-family:var(--mono);font-size:10px;margin-bottom:14px;
+}
+.start-title{font-size:24px;font-weight:700;margin-bottom:6px;}
+.start-sub{font-size:13px;color:var(--text3);line-height:1.45;margin-bottom:16px;}
+.word-preview{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:18px;}
+.word-chip{
+  border:1px solid var(--border);background:var(--bg);border-radius:20px;
+  color:var(--text2);font-size:12px;padding:5px 9px;
+}
+.quiz-main{display:none;}
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;}
+.quiz-counter{font-family:var(--mono);font-size:12px;color:var(--text3);}
+.quiz-cat{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:20px;color:var(--purple);background:var(--purple-dim);white-space:nowrap;}
+.quiz-dots{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;}
+.qdot{width:8px;height:8px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);}
+.qdot.c{background:var(--green);border-color:var(--green);}
+.qdot.w{background:var(--red);border-color:var(--red);}
+.qdot.cur{border-color:var(--accent);}
+.quiz-q{font-size:18px;font-weight:500;line-height:1.5;margin-bottom:6px;}
+.quiz-hint{font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:20px;line-height:1.45;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.qopt{
+  width:100%;padding:13px 16px;border-radius:var(--r);border:1px solid var(--border);
+  background:var(--bg2);color:var(--text2);font-size:13px;text-align:left;
+  cursor:pointer;transition:all .15s;line-height:1.45;
+}
+.qopt:active{transform:scale(.99);}
+.qopt.c{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.qopt.w{background:var(--red-dim);border-color:var(--red);color:#f07070;}
+.quiz-fb{margin-top:14px;padding:12px 16px;border-radius:var(--r);font-size:13px;line-height:1.5;display:none;}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{background:var(--green-dim);border:1px solid rgba(43,207,114,.3);color:var(--green);}
+.quiz-fb.no{background:var(--red-dim);border:1px solid rgba(232,69,69,.3);color:#f07070;}
+.quiz-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.quiz-score-box{display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px;text-align:center;}
+.quiz-score-num{font-family:var(--mono);font-size:44px;font-weight:700;}
+.quiz-score-pct{font-size:13px;color:var(--text3);margin-top:4px;}
+.result-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;text-align:left;}
+.result-item{padding:10px 12px;border-radius:var(--r);background:var(--red-dim);border:1px solid rgba(232,69,69,.25);font-size:12px;line-height:1.45;color:#f0a0a0;}
+.result-item.ok{background:var(--green-dim);border-color:rgba(43,207,114,.25);color:var(--green);}
+.result-item b{color:var(--text);font-weight:600;}
+
+.homework-wrap{padding:16px 16px calc(26px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;}
+.hw-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;}
+.hw-title{font-size:14px;font-weight:650;margin-bottom:6px;}
+.hw-help{font-size:12px;color:var(--text3);line-height:1.45;margin-bottom:10px;}
+.hw-task{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:10px;}
+.hw-textarea{
+  width:100%;min-height:116px;resize:vertical;border-radius:var(--r);
+  border:1px solid var(--border);background:var(--bg);color:var(--text);
+  padding:12px;font-size:14px;line-height:1.5;outline:none;
+}
+.hw-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+.hw-status{display:none;padding:12px 14px;border-radius:var(--r);font-size:13px;line-height:1.45;}
+.hw-status.show{display:block;}
+.hw-status.ok{background:var(--green-dim);border:1px solid rgba(43,207,114,.3);color:var(--green);}
+.hw-status.no{background:var(--amber-dim);border:1px solid rgba(245,166,35,.3);color:var(--amber);}
+.inline-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.inline-tag{
+  display:inline-flex;align-items:center;gap:5px;margin:2px 0;padding:4px 8px;
+  border:1px solid var(--border);border-radius:20px;color:var(--accent);
+  background:var(--accent-dim);font-size:12px;
+}
+.grammar-line{margin-bottom:8px;}
+.grammar-line b{font-weight:650;color:var(--text);}
+.grammar-formula{font-family:var(--mono);color:var(--accent);font-size:12px;}
+
+.btn{
+  padding:11px 18px;border-radius:var(--r);border:1px solid var(--border);
+  background:transparent;color:var(--text2);font-size:13px;cursor:pointer;
+  transition:all .15s;display:flex;align-items:center;gap:6px;justify-content:center;
+}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-full{width:100%;}
+.btn-grow{flex:1 1 160px;}
+
+.error-wrap{
+  min-height:100%;display:flex;align-items:center;justify-content:center;
+  padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px));
+}
+.error-card{width:100%;max-width:440px;text-align:center;}
+.error-code{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;border-radius:50%;margin-bottom:12px;
+  color:var(--red);background:var(--red-dim);border:1px solid rgba(232,69,69,.3);
+  font-family:var(--mono);font-weight:700;
+}
+.error-title{font-size:20px;font-weight:700;margin-bottom:8px;}
+.error-text{font-size:13px;color:var(--text3);line-height:1.45;}
+
+@media(min-width:600px){
+  .page-title{font-size:28px;}
+  .quiz-actions{flex-wrap:nowrap;}
+}
+</style>
+</head>
+<body>
+<section id="quiz-page" class="page">
+  <div class="shell">
+    <div class="page-header">
+      <div class="topline">
+        <div>
+          <div class="page-title" id="quiz-title"></div>
+          <div class="page-sub" id="quiz-sub"></div>
+        </div>
+        <div class="lesson-pill" id="quiz-pill"></div>
+      </div>
+    </div>
+
+    <main class="quiz-wrap">
+      <div id="quiz-start" class="card start-card">
+        <div class="start-kicker" id="start-kicker"></div>
+        <div class="start-title" id="start-title"></div>
+        <div class="start-sub" id="start-sub"></div>
+        <div class="word-preview" id="word-preview"></div>
+        <button class="btn btn-primary btn-full" id="quiz-start-btn"></button>
+      </div>
+
+      <div id="quiz-main" class="quiz-main">
+        <div class="quiz-header">
+          <span class="quiz-counter" id="q-counter"></span>
+          <span class="quiz-cat" id="q-cat"></span>
+        </div>
+        <div class="quiz-dots" id="q-dots"></div>
+        <div class="quiz-q" id="q-text"></div>
+        <div class="quiz-hint" id="q-hint"></div>
+        <div class="quiz-opts" id="q-opts"></div>
+        <div class="quiz-fb" id="q-fb"></div>
+        <div class="quiz-actions">
+          <button class="btn btn-primary btn-grow" id="q-next"></button>
+        </div>
+      </div>
+
+      <div id="quiz-score-box" class="quiz-score-box">
+        <div class="quiz-score-num" id="q-score-num"></div>
+        <div class="quiz-score-pct" id="q-score-pct"></div>
+        <div class="quiz-score-pct" id="q-score-detail"></div>
+        <div id="wrong-items-box" class="result-list"></div>
+        <div class="quiz-actions">
+          <button class="btn btn-primary btn-grow" id="q-retry"></button>
+          <button class="btn btn-grow" id="q-return"></button>
+        </div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<section id="homework-page" class="page">
+  <div class="shell">
+    <div class="page-header">
+      <div class="topline">
+        <div>
+          <div class="page-title" id="hw-page-title"></div>
+          <div class="page-sub" id="hw-page-sub"></div>
+        </div>
+        <div class="lesson-pill" id="hw-pill"></div>
+      </div>
+    </div>
+
+    <main class="homework-wrap">
+      <div class="mini-note" id="hw-lesson-note"></div>
+
+      <div class="hw-card">
+        <div class="hw-title" id="hw-vocab-title"></div>
+        <div class="hw-help" id="hw-vocab-help"></div>
+        <div class="hw-task" id="hw-vocab-task"></div>
+        <textarea class="hw-textarea" id="hw-vocab-answer" autocomplete="off"></textarea>
+      </div>
+
+      <div class="hw-card">
+        <div class="hw-title" id="hw-grammar-title"></div>
+        <div class="hw-help" id="hw-grammar-help"></div>
+        <div class="hw-task" id="hw-grammar-task"></div>
+        <textarea class="hw-textarea" id="hw-grammar-answer" autocomplete="off"></textarea>
+      </div>
+
+      <div class="hw-card">
+        <div class="hw-title" id="hw-translation-title"></div>
+        <div class="hw-help" id="hw-translation-help"></div>
+        <div class="hw-task" id="hw-translation-task"></div>
+        <textarea class="hw-textarea" id="hw-translation-answer" autocomplete="off"></textarea>
+      </div>
+
+      <div id="hw-status" class="hw-status"></div>
+      <button class="btn btn-primary btn-full" id="hw-submit-btn"></button>
+      <button class="btn btn-full" id="hw-return-btn" style="display:none;"></button>
+    </main>
+  </div>
+</section>
+
+<section id="error-page" class="page">
+  <div class="error-wrap">
+    <div class="card error-card">
+      <div class="error-code">!</div>
+      <div class="error-title" id="error-title"></div>
+      <div class="error-text" id="error-text"></div>
+      <div class="quiz-actions">
+        <button class="btn btn-primary btn-full" id="error-return"></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+}
+
+const UI = {
+  tj: {
+    startQuiz: "Оғози quiz",
+    question: "Савол",
+    nextQuestion: "Саволи навбатӣ",
+    result: "Натиҷа",
+    correct: "Дуруст",
+    wrong: "Хато",
+    retry: "Аз нав кор кардан",
+    returnToBot: "Бозгашт ба бот",
+    homework: "Вазифаи хонагӣ",
+    writeAnswer: "Ҷавоби худро нависед",
+    send: "Фиристодан",
+    submitHomework: "Фиристодани вазифаи хонагӣ",
+    submitted: "Вазифа супорида шуд",
+    lessonNotFound: "Дарс ёфт нашуд ё пайванд нодуруст аст.",
+    lessonNotFoundTitle: "Дарс ёфт нашуд",
+    internetError: "Хатои интернет / баъдтар дубора фиристода мешавад",
+    quizSub: "{topic}",
+    homeworkSub: "{topic}",
+    quizKicker: "HSK 1 · {count} савол",
+    startSub: "Саволҳо аз калимаҳо ва грамматикаи ҳамин дарс сохта шудаанд.",
+    lesson: "Дарс",
+    scoreLine: "{score} / {total}",
+    percentLine: "{percent}% натиҷа",
+    resultDetail: "Дуруст: {correct} · Хато: {wrong}",
+    correctAnswer: "Ҷавоби дуруст",
+    yourAnswer: "Ҷавоби шумо",
+    noWrong: "Ҷавоби хато нест. Олиҷаноб.",
+    answerPrompt: "Ҷавобро интихоб кунед",
+    explanationPrefixCorrect: "Дуруст. ",
+    explanationPrefixWrong: "Нодуруст. ",
+    vocabTaskTitle: "1) Калимаҳои нав",
+    vocabTaskHelp: "Бо калимаҳои нави ҳамин дарс 3 ҷумлаи чинӣ нависед.",
+    grammarTaskTitle: "2) Грамматика",
+    grammarTaskHelp: "Бо сохтори грамматикии дарс 2 ҷумлаи чинӣ созед.",
+    translationTaskTitle: "3) Машқи тарҷума",
+    translationTaskHelp: "Ин 2 ҷумларо ба чинӣ тарҷума кунед.",
+    fillAll: "Ҳама қисмҳоро пур кунед.",
+    savedLocally: "Ҷавоб нигоҳ дошта шуд. Вақте интернет кор кунад, дубора фиристода мешавад.",
+    note: "{lessonTitle} · {topic}",
+    meaningQuestion: "«{hanzi}» чӣ маъно дорад?",
+    meaningToHanziQuestion: "«{meaning}» кадом калима аст?",
+    pinyinQuestion: "«{pinyin}» кадом калима аст?",
+    hanziToPinyinQuestion: "Пинини «{hanzi}» кадом аст?",
+    gapQuestion: "Ҷумларо пур кунед: {prompt}",
+    vocabExplanation: "{hanzi} = {meaning}. Pinyin: {pinyin}.",
+    grammarExplanation: "Қолаб: {formula}. Мисол: {example}",
+    vocabPlaceholder: "1. ...\n2. ...\n3. ...",
+    grammarPlaceholder: "1. ...\n2. ...",
+    translationPlaceholder: "1. ...\n2. ..."
+  },
+  ru: {
+    startQuiz: "Начать quiz",
+    question: "Вопрос",
+    nextQuestion: "Следующий вопрос",
+    result: "Результат",
+    correct: "Правильно",
+    wrong: "Ошибка",
+    retry: "Пройти заново",
+    returnToBot: "Вернуться в бот",
+    homework: "Домашнее задание",
+    writeAnswer: "Напишите ваш ответ",
+    send: "Отправить",
+    submitHomework: "Отправить домашнее задание",
+    submitted: "Задание отправлено",
+    lessonNotFound: "Урок не найден или ссылка неверная.",
+    lessonNotFoundTitle: "Урок не найден",
+    internetError: "Ошибка интернета / будет отправлено позже",
+    quizSub: "{topic}",
+    homeworkSub: "{topic}",
+    quizKicker: "HSK 1 · {count} вопросов",
+    startSub: "Вопросы собраны из слов и грамматики этого урока.",
+    lesson: "Урок",
+    scoreLine: "{score} / {total}",
+    percentLine: "{percent}% результат",
+    resultDetail: "Правильно: {correct} · Ошибки: {wrong}",
+    correctAnswer: "Правильный ответ",
+    yourAnswer: "Ваш ответ",
+    noWrong: "Ошибок нет. Отлично.",
+    answerPrompt: "Выберите ответ",
+    explanationPrefixCorrect: "Правильно. ",
+    explanationPrefixWrong: "Неправильно. ",
+    vocabTaskTitle: "1) Новые слова",
+    vocabTaskHelp: "Напишите 3 предложения на китайском, используя новые слова урока.",
+    grammarTaskTitle: "2) Грамматика",
+    grammarTaskHelp: "Составьте 2 предложения на китайском по грамматике урока.",
+    translationTaskTitle: "3) Перевод",
+    translationTaskHelp: "Переведите эти 2 предложения на китайский.",
+    fillAll: "Заполните все разделы.",
+    savedLocally: "Ответ сохранен. Когда интернет заработает, он будет отправлен повторно.",
+    note: "{lessonTitle} · {topic}",
+    meaningQuestion: "Что означает «{hanzi}»?",
+    meaningToHanziQuestion: "Какое слово означает «{meaning}»?",
+    pinyinQuestion: "Какое слово читается «{pinyin}»?",
+    hanziToPinyinQuestion: "Какой pinyin у «{hanzi}»?",
+    gapQuestion: "Заполните предложение: {prompt}",
+    vocabExplanation: "{hanzi} = {meaning}. Pinyin: {pinyin}.",
+    grammarExplanation: "Модель: {formula}. Пример: {example}",
+    vocabPlaceholder: "1. ...\n2. ...\n3. ...",
+    grammarPlaceholder: "1. ...\n2. ...",
+    translationPlaceholder: "1. ...\n2. ..."
+  },
+  uz: {
+    startQuiz: "Quiz boshlash",
+    question: "Savol",
+    nextQuestion: "Keyingi savol",
+    result: "Natija",
+    correct: "To‘g‘ri",
+    wrong: "Xato",
+    retry: "Qayta ishlash",
+    returnToBot: "Botga qaytish",
+    homework: "Uyga vazifa",
+    writeAnswer: "Javobingizni yozing",
+    send: "Yuborish",
+    submitHomework: "Uyga vazifani yuborish",
+    submitted: "Vazifa topshirildi",
+    lessonNotFound: "Dars topilmadi yoki noto‘g‘ri link.",
+    lessonNotFoundTitle: "Dars topilmadi",
+    internetError: "Internet xatosi / keyinroq qayta yuboriladi",
+    quizSub: "{topic}",
+    homeworkSub: "{topic}",
+    quizKicker: "HSK 1 · {count} savol",
+    startSub: "Savollar shu dars so‘zlari va grammatikasidan tuzilgan.",
+    lesson: "Dars",
+    scoreLine: "{score} / {total}",
+    percentLine: "{percent}% natija",
+    resultDetail: "To‘g‘ri: {correct} · Xato: {wrong}",
+    correctAnswer: "To‘g‘ri javob",
+    yourAnswer: "Javobingiz",
+    noWrong: "Xato javob yo‘q. Juda yaxshi.",
+    answerPrompt: "Javobni tanlang",
+    explanationPrefixCorrect: "To‘g‘ri. ",
+    explanationPrefixWrong: "Noto‘g‘ri. ",
+    vocabTaskTitle: "1) Yangi so‘zlar",
+    vocabTaskHelp: "Shu darsdagi yangi so‘zlardan foydalanib 3 ta xitoycha gap yozing.",
+    grammarTaskTitle: "2) Grammatika",
+    grammarTaskHelp: "Darsdagi grammar strukturadan 2 ta xitoycha gap tuzing.",
+    translationTaskTitle: "3) Tarjima mashqi",
+    translationTaskHelp: "Quyidagi 2 ta gapni xitoychaga tarjima qiling.",
+    fillAll: "Hamma bo‘limlarni to‘ldiring.",
+    savedLocally: "Javob saqlandi. Internet ishlaganda qayta yuboriladi.",
+    note: "{lessonTitle} · {topic}",
+    meaningQuestion: "«{hanzi}» nimani anglatadi?",
+    meaningToHanziQuestion: "«{meaning}» qaysi so‘z?",
+    pinyinQuestion: "«{pinyin}» qaysi so‘z?",
+    hanziToPinyinQuestion: "«{hanzi}» pinyin qaysi?",
+    gapQuestion: "Gapni to‘ldiring: {prompt}",
+    vocabExplanation: "{hanzi} = {meaning}. Pinyin: {pinyin}.",
+    grammarExplanation: "Formula: {formula}. Misol: {example}",
+    vocabPlaceholder: "1. ...\n2. ...\n3. ...",
+    grammarPlaceholder: "1. ...\n2. ...",
+    translationPlaceholder: "1. ...\n2. ..."
+  }
+};
+
+const LESSONS = [
+  {
+    id: 1,
+    title: { tj: "Дарси 1", ru: "Урок 1", uz: "Dars 1" },
+    topic: { tj: "Саломлашӣ", ru: "Приветствие", uz: "Salomlashish" },
+    words: [
+      { h: "你好", p: "nǐ hǎo", m: { tj: "салом", ru: "привет", uz: "salom" } },
+      { h: "您好", p: "nín hǎo", m: { tj: "саломи эҳтиромӣ", ru: "здравствуйте", uz: "assalomu alaykum" } },
+      { h: "你", p: "nǐ", m: { tj: "ту", ru: "ты", uz: "sen" } },
+      { h: "好", p: "hǎo", m: { tj: "хуб", ru: "хорошо", uz: "yaxshi" } },
+      { h: "谢谢", p: "xièxie", m: { tj: "раҳмат", ru: "спасибо", uz: "rahmat" } },
+      { h: "不客气", p: "bú kèqi", m: { tj: "марҳамат", ru: "не за что", uz: "arzimaydi" } },
+      { h: "再见", p: "zàijiàn", m: { tj: "хайр", ru: "до свидания", uz: "xayr" } },
+      { h: "对不起", p: "duìbuqǐ", m: { tj: "бубахшед", ru: "извините", uz: "kechirasiz" } },
+      { h: "没关系", p: "méi guānxi", m: { tj: "ҳеҷ гап не", ru: "ничего страшного", uz: "hechqisi yo'q" } },
+      { h: "一", p: "yī", m: { tj: "як", ru: "один", uz: "bir" } }
+    ],
+    grammar: [
+      {
+        title: "你好 / 您好",
+        formula: "Pronoun + 好",
+        example: "你好！",
+        pinyin: "nǐ hǎo!",
+        translation: { tj: "Салом!", ru: "Привет!", uz: "Salom!" },
+        quiz: { prompt: "___！", answer: "你好", options: ["你好", "不", "吗", "的"] }
+      },
+      {
+        title: "谢谢 / 不客气",
+        formula: "谢谢。/ 不客气。",
+        example: "谢谢你！",
+        pinyin: "xièxie nǐ!",
+        translation: { tj: "Ба ту раҳмат!", ru: "Спасибо тебе!", uz: "Senga rahmat!" }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Салом, ман донишҷӯ ҳастам.", "Ба шумо раҳмат."],
+        ru: ["Привет, я студент.", "Спасибо вам."],
+        uz: ["Salom, men o'quvchiman.", "Sizga rahmat."]
+      }
+    }
+  },
+  {
+    id: 2,
+    title: { tj: "Дарси 2", ru: "Урок 2", uz: "Dars 2" },
+    topic: { tj: "Миллат ва саволи 吗", ru: "Национальность и вопрос 吗", uz: "Millat va 吗 savoli" },
+    words: [
+      { h: "是", p: "shì", m: { tj: "ҳаст", ru: "быть, являться", uz: "bo'lmoq" } },
+      { h: "不", p: "bù", m: { tj: "не", ru: "не", uz: "emas" } },
+      { h: "吗", p: "ma", m: { tj: "ҳиссачаи савол", ru: "вопросительная частица", uz: "savol yuklamasi" } },
+      { h: "哪", p: "nǎ", m: { tj: "кадом", ru: "какой", uz: "qaysi" } },
+      { h: "国", p: "guó", m: { tj: "давлат", ru: "страна", uz: "davlat" } },
+      { h: "人", p: "rén", m: { tj: "одам", ru: "человек", uz: "odam" } },
+      { h: "中国", p: "Zhōngguó", m: { tj: "Чин", ru: "Китай", uz: "Xitoy" } },
+      { h: "美国", p: "Měiguó", m: { tj: "Амрико", ru: "США", uz: "Amerika" } },
+      { h: "英国", p: "Yīngguó", m: { tj: "Англия", ru: "Англия", uz: "Angliya" } },
+      { h: "也", p: "yě", m: { tj: "ҳам", ru: "тоже", uz: "ham" } }
+    ],
+    grammar: [
+      {
+        title: "A 是 B",
+        formula: "A 是 B",
+        example: "我是学生。",
+        pinyin: "wǒ shì xuésheng.",
+        translation: { tj: "Ман донишҷӯ ҳастам.", ru: "Я студент.", uz: "Men o'quvchiman." },
+        quiz: { prompt: "我___中国人。", answer: "是", options: ["是", "不", "吗", "也"] }
+      },
+      {
+        title: "吗 question",
+        formula: "Statement + 吗?",
+        example: "你是中国人吗？",
+        pinyin: "nǐ shì Zhōngguó rén ma?",
+        translation: { tj: "Ту чинӣ ҳастӣ?", ru: "Ты китаец?", uz: "Sen xitoylikmisan?" }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ман чинӣ нестам.", "Ту аз кадом давлат ҳастӣ?"],
+        ru: ["Я не китаец.", "Из какой ты страны?"],
+        uz: ["Men xitoylik emasman.", "Sen qaysi davlatdansan?"]
+      }
+    }
+  },
+  {
+    id: 3,
+    title: { tj: "Дарси 3", ru: "Урок 3", uz: "Dars 3" },
+    topic: { tj: "Ном ва шиносоӣ", ru: "Имя и знакомство", uz: "Ism va tanishuv" },
+    words: [
+      { h: "我", p: "wǒ", m: { tj: "ман", ru: "я", uz: "men" } },
+      { h: "他", p: "tā", m: { tj: "ӯ", ru: "он", uz: "u (erkak)" } },
+      { h: "她", p: "tā", m: { tj: "ӯ", ru: "она", uz: "u (ayol)" } },
+      { h: "叫", p: "jiào", m: { tj: "ном доштан", ru: "зваться", uz: "atalmoq" } },
+      { h: "什么", p: "shénme", m: { tj: "чӣ", ru: "что", uz: "nima" } },
+      { h: "名字", p: "míngzi", m: { tj: "ном", ru: "имя", uz: "ism" } },
+      { h: "谁", p: "shéi", m: { tj: "кӣ", ru: "кто", uz: "kim" } },
+      { h: "老师", p: "lǎoshī", m: { tj: "омӯзгор", ru: "учитель", uz: "o'qituvchi" } },
+      { h: "学生", p: "xuésheng", m: { tj: "донишҷӯ", ru: "студент", uz: "o'quvchi" } },
+      { h: "朋友", p: "péngyou", m: { tj: "дӯст", ru: "друг", uz: "do'st" } }
+    ],
+    grammar: [
+      {
+        title: "叫",
+        formula: "Subject + 叫 + Name",
+        example: "我叫王明。",
+        pinyin: "wǒ jiào Wáng Míng.",
+        translation: { tj: "Номи ман Ван Мин аст.", ru: "Меня зовут Ван Мин.", uz: "Mening ismim Vang Ming." },
+        quiz: { prompt: "我___李月。", answer: "叫", options: ["叫", "是", "吗", "不"] }
+      },
+      {
+        title: "什么",
+        formula: "Subject + 叫什么名字?",
+        example: "你叫什么名字？",
+        pinyin: "nǐ jiào shénme míngzi?",
+        translation: { tj: "Номи ту чист?", ru: "Как тебя зовут?", uz: "Isming nima?" }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Номи ман Алишер аст.", "Ӯ омӯзгори ман аст."],
+        ru: ["Меня зовут Алишер.", "Он мой учитель."],
+        uz: ["Mening ismim Alisher.", "U mening o'qituvchim."]
+      }
+    }
+  },
+  {
+    id: 4,
+    title: { tj: "Дарси 4", ru: "Урок 4", uz: "Dars 4" },
+    topic: { tj: "Оила ва 的", ru: "Семья и 的", uz: "Oila va 的" },
+    words: [
+      { h: "的", p: "de", m: { tj: "нишонаи соҳибӣ", ru: "частица принадлежности", uz: "egalik yuklamasi" } },
+      { h: "汉语", p: "Hànyǔ", m: { tj: "забони чинӣ", ru: "китайский язык", uz: "xitoy tili" } },
+      { h: "爸爸", p: "bàba", m: { tj: "падар", ru: "папа", uz: "ota" } },
+      { h: "妈妈", p: "māma", m: { tj: "модар", ru: "мама", uz: "ona" } },
+      { h: "医生", p: "yīshēng", m: { tj: "духтур", ru: "врач", uz: "shifokor" } },
+      { h: "同学", p: "tóngxué", m: { tj: "ҳамсинф", ru: "одноклассник", uz: "sinfdosh" } },
+      { h: "先生", p: "xiānsheng", m: { tj: "ҷаноб", ru: "господин", uz: "janob" } },
+      { h: "小姐", p: "xiǎojiě", m: { tj: "хонум", ru: "мисс", uz: "xonim" } },
+      { h: "这", p: "zhè", m: { tj: "ин", ru: "это", uz: "bu" } },
+      { h: "那", p: "nà", m: { tj: "он", ru: "то", uz: "ana u" } }
+    ],
+    grammar: [
+      {
+        title: "的",
+        formula: "A 的 B",
+        example: "她是我的汉语老师。",
+        pinyin: "tā shì wǒ de Hànyǔ lǎoshī.",
+        translation: { tj: "Ӯ омӯзгори забони чинии ман аст.", ru: "Она мой учитель китайского.", uz: "U mening xitoy tili o'qituvchim." },
+        quiz: { prompt: "她是我的汉语___。", answer: "老师", options: ["老师", "学生", "医生", "朋友"] }
+      },
+      {
+        title: "这 / 那",
+        formula: "这/那 + 是 + Noun",
+        example: "这是我爸爸。",
+        pinyin: "zhè shì wǒ bàba.",
+        translation: { tj: "Ин падарам аст.", ru: "Это мой папа.", uz: "Bu mening otam." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ин модари ман аст.", "Ӯ духтур аст."],
+        ru: ["Это моя мама.", "Он врач."],
+        uz: ["Bu mening onam.", "U shifokor."]
+      }
+    }
+  },
+  {
+    id: 5,
+    title: { tj: "Дарси 5", ru: "Урок 5", uz: "Dars 5" },
+    topic: { tj: "Синну сол", ru: "Возраст", uz: "Yosh" },
+    words: [
+      { h: "女儿", p: "nǚ'ér", m: { tj: "духтар", ru: "дочь", uz: "qiz farzand" } },
+      { h: "儿子", p: "érzi", m: { tj: "писар", ru: "сын", uz: "o'g'il" } },
+      { h: "今年", p: "jīnnián", m: { tj: "имсол", ru: "в этом году", uz: "bu yil" } },
+      { h: "几", p: "jǐ", m: { tj: "чанд", ru: "сколько", uz: "nechta" } },
+      { h: "岁", p: "suì", m: { tj: "сол", ru: "лет", uz: "yosh" } },
+      { h: "多大", p: "duō dà", m: { tj: "чандсола", ru: "сколько лет", uz: "necha yosh" } },
+      { h: "二十", p: "èrshí", m: { tj: "бист", ru: "двадцать", uz: "yigirma" } },
+      { h: "七", p: "qī", m: { tj: "ҳафт", ru: "семь", uz: "yetti" } },
+      { h: "八", p: "bā", m: { tj: "ҳашт", ru: "восемь", uz: "sakkiz" } },
+      { h: "有", p: "yǒu", m: { tj: "доштан", ru: "иметь", uz: "bor" } }
+    ],
+    grammar: [
+      {
+        title: "Age",
+        formula: "Subject + 今年 + Number + 岁",
+        example: "她女儿今年二十岁。",
+        pinyin: "tā nǚ'ér jīnnián èrshí suì.",
+        translation: { tj: "Духтари ӯ имсол бистсола аст.", ru: "Ее дочери в этом году двадцать лет.", uz: "Uning qizi bu yil yigirma yoshda." },
+        quiz: { prompt: "她今年二十___。", answer: "岁", options: ["岁", "几", "有", "吗"] }
+      },
+      {
+        title: "有",
+        formula: "Subject + 有 + Object",
+        example: "我有一个儿子。",
+        pinyin: "wǒ yǒu yí ge érzi.",
+        translation: { tj: "Ман як писар дорам.", ru: "У меня есть сын.", uz: "Mening bitta o'g'lim bor." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ӯ имсол чандсола аст?", "Ман як духтар дорам."],
+        ru: ["Сколько ей лет в этом году?", "У меня есть дочь."],
+        uz: ["U bu yil necha yoshda?", "Mening bitta qizim bor."]
+      }
+    }
+  },
+  {
+    id: 6,
+    title: { tj: "Дарси 6", ru: "Урок 6", uz: "Dars 6" },
+    topic: { tj: "Қобилият бо 会", ru: "Умение с 会", uz: "会 bilan qobiliyat" },
+    words: [
+      { h: "会", p: "huì", m: { tj: "тавонистан", ru: "уметь", uz: "qila olmoq" } },
+      { h: "说", p: "shuō", m: { tj: "гуфтан", ru: "говорить", uz: "gapirmoq" } },
+      { h: "写", p: "xiě", m: { tj: "навиштан", ru: "писать", uz: "yozmoq" } },
+      { h: "汉字", p: "Hànzì", m: { tj: "иероглиф", ru: "иероглифы", uz: "xitoy yozuvi" } },
+      { h: "读", p: "dú", m: { tj: "хондан", ru: "читать", uz: "o'qimoq" } },
+      { h: "看", p: "kàn", m: { tj: "дидан", ru: "смотреть", uz: "ko'rmoq" } },
+      { h: "听", p: "tīng", m: { tj: "шунидан", ru: "слушать", uz: "tinglamoq" } },
+      { h: "中文", p: "Zhōngwén", m: { tj: "забони чинӣ", ru: "китайский язык", uz: "xitoy tili" } },
+      { h: "学习", p: "xuéxí", m: { tj: "омӯхтан", ru: "учиться", uz: "o'rganmoq" } },
+      { h: "一点儿", p: "yìdiǎnr", m: { tj: "каме", ru: "немного", uz: "ozgina" } }
+    ],
+    grammar: [
+      {
+        title: "会",
+        formula: "Subject + 会 + Verb",
+        example: "我会说汉语。",
+        pinyin: "wǒ huì shuō Hànyǔ.",
+        translation: { tj: "Ман чинӣ гап зада метавонам.", ru: "Я умею говорить по-китайски.", uz: "Men xitoycha gapira olaman." },
+        quiz: { prompt: "我会___汉语。", answer: "说", options: ["说", "写", "看", "听"] }
+      },
+      {
+        title: "一点儿",
+        formula: "Verb + 一点儿 + Object",
+        example: "我会说一点儿中文。",
+        pinyin: "wǒ huì shuō yìdiǎnr Zhōngwén.",
+        translation: { tj: "Ман каме чинӣ гап зада метавонам.", ru: "Я немного говорю по-китайски.", uz: "Men ozgina xitoycha gapira olaman." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ман каме чинӣ хонда метавонам.", "Ӯ иероглиф навишта метавонад."],
+        ru: ["Я немного умею читать по-китайски.", "Он умеет писать иероглифы."],
+        uz: ["Men ozgina xitoycha o'qiy olaman.", "U xitoy yozuvini yoza oladi."]
+      }
+    }
+  },
+  {
+    id: 7,
+    title: { tj: "Дарси 7", ru: "Урок 7", uz: "Dars 7" },
+    topic: { tj: "Сана ва рӯзҳо", ru: "Дата и дни", uz: "Sana va kunlar" },
+    words: [
+      { h: "今天", p: "jīntiān", m: { tj: "имрӯз", ru: "сегодня", uz: "bugun" } },
+      { h: "明天", p: "míngtiān", m: { tj: "пагоҳ", ru: "завтра", uz: "ertaga" } },
+      { h: "昨天", p: "zuótiān", m: { tj: "дирӯз", ru: "вчера", uz: "kecha" } },
+      { h: "号", p: "hào", m: { tj: "рақами рӯз", ru: "число месяца", uz: "sana raqami" } },
+      { h: "月", p: "yuè", m: { tj: "моҳ", ru: "месяц", uz: "oy" } },
+      { h: "日", p: "rì", m: { tj: "рӯз", ru: "день", uz: "kun" } },
+      { h: "星期", p: "xīngqī", m: { tj: "ҳафта", ru: "неделя", uz: "hafta" } },
+      { h: "生日", p: "shēngrì", m: { tj: "зодрӯз", ru: "день рождения", uz: "tug'ilgan kun" } },
+      { h: "现在", p: "xiànzài", m: { tj: "ҳозир", ru: "сейчас", uz: "hozir" } },
+      { h: "年", p: "nián", m: { tj: "сол", ru: "год", uz: "yil" } }
+    ],
+    grammar: [
+      {
+        title: "Date",
+        formula: "Year + 年 + Month + 月 + Day + 号/日",
+        example: "今天是几月几号？",
+        pinyin: "jīntiān shì jǐ yuè jǐ hào?",
+        translation: { tj: "Имрӯз чандуми кадом моҳ аст?", ru: "Какое сегодня число?", uz: "Bugun oyning nechanchi sanasi?" },
+        quiz: { prompt: "今天___几号？", answer: "是", options: ["是", "有", "叫", "在"] }
+      },
+      {
+        title: "星期",
+        formula: "星期 + Number",
+        example: "明天星期六。",
+        pinyin: "míngtiān xīngqīliù.",
+        translation: { tj: "Пагоҳ шанбе аст.", ru: "Завтра суббота.", uz: "Ertaga shanba." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Имрӯз чандум аст?", "Пагоҳ зодрӯзи ман аст."],
+        ru: ["Какое сегодня число?", "Завтра мой день рождения."],
+        uz: ["Bugun nechanchi sana?", "Ertaga mening tug'ilgan kunim."]
+      }
+    }
+  },
+  {
+    id: 8,
+    title: { tj: "Дарси 8", ru: "Урок 8", uz: "Dars 8" },
+    topic: { tj: "Хӯрок ва хоҳиш", ru: "Еда и желание", uz: "Ovqat va xohish" },
+    words: [
+      { h: "想", p: "xiǎng", m: { tj: "хостан", ru: "хотеть", uz: "xohlamoq" } },
+      { h: "喝", p: "hē", m: { tj: "нӯшидан", ru: "пить", uz: "ichmoq" } },
+      { h: "茶", p: "chá", m: { tj: "чой", ru: "чай", uz: "choy" } },
+      { h: "水", p: "shuǐ", m: { tj: "об", ru: "вода", uz: "suv" } },
+      { h: "咖啡", p: "kāfēi", m: { tj: "қаҳва", ru: "кофе", uz: "qahva" } },
+      { h: "吃", p: "chī", m: { tj: "хӯрдан", ru: "есть", uz: "yemoq" } },
+      { h: "米饭", p: "mǐfàn", m: { tj: "биринҷ", ru: "рис", uz: "guruch" } },
+      { h: "菜", p: "cài", m: { tj: "таом", ru: "блюдо", uz: "taom" } },
+      { h: "水果", p: "shuǐguǒ", m: { tj: "мева", ru: "фрукты", uz: "meva" } },
+      { h: "苹果", p: "píngguǒ", m: { tj: "себ", ru: "яблоко", uz: "olma" } }
+    ],
+    grammar: [
+      {
+        title: "想",
+        formula: "Subject + 想 + Verb/Object",
+        example: "我想喝茶。",
+        pinyin: "wǒ xiǎng hē chá.",
+        translation: { tj: "Ман чой нӯшидан мехоҳам.", ru: "Я хочу пить чай.", uz: "Men choy ichmoqchiman." },
+        quiz: { prompt: "我想___茶。", answer: "喝", options: ["喝", "吃", "看", "写"] }
+      },
+      {
+        title: "请",
+        formula: "请 + Verb",
+        example: "请喝水。",
+        pinyin: "qǐng hē shuǐ.",
+        translation: { tj: "Лутфан об нӯшед.", ru: "Пожалуйста, выпейте воды.", uz: "Iltimos, suv iching." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ман қаҳва нӯшидан мехоҳам.", "Ӯ себ хӯрдан мехоҳад."],
+        ru: ["Я хочу пить кофе.", "Он хочет съесть яблоко."],
+        uz: ["Men qahva ichmoqchiman.", "U olma yemoqchi."]
+      }
+    }
+  },
+  {
+    id: 9,
+    title: { tj: "Дарси 9", ru: "Урок 9", uz: "Dars 9" },
+    topic: { tj: "Ҷой ва кор", ru: "Место и работа", uz: "Joy va ish" },
+    words: [
+      { h: "在", p: "zài", m: { tj: "дар", ru: "находиться в", uz: "da, joylashmoq" } },
+      { h: "哪儿", p: "nǎr", m: { tj: "куҷо", ru: "где", uz: "qayer" } },
+      { h: "工作", p: "gōngzuò", m: { tj: "кор кардан", ru: "работать", uz: "ishlamoq" } },
+      { h: "学校", p: "xuéxiào", m: { tj: "мактаб", ru: "школа", uz: "maktab" } },
+      { h: "商店", p: "shāngdiàn", m: { tj: "дӯкон", ru: "магазин", uz: "do'kon" } },
+      { h: "医院", p: "yīyuàn", m: { tj: "беморхона", ru: "больница", uz: "shifoxona" } },
+      { h: "饭店", p: "fàndiàn", m: { tj: "меҳмонхона", ru: "ресторан", uz: "restoran" } },
+      { h: "家", p: "jiā", m: { tj: "хона", ru: "дом", uz: "uy" } },
+      { h: "住", p: "zhù", m: { tj: "зиндагӣ кардан", ru: "жить", uz: "yashamoq" } },
+      { h: "去", p: "qù", m: { tj: "рафтан", ru: "идти", uz: "bormoq" } }
+    ],
+    grammar: [
+      {
+        title: "在 + Place + Verb",
+        formula: "Subject + 在 + Place + Verb",
+        example: "你儿子在哪儿工作？",
+        pinyin: "nǐ érzi zài nǎr gōngzuò?",
+        translation: { tj: "Писари ту дар куҷо кор мекунад?", ru: "Где работает твой сын?", uz: "O'g'ling qayerda ishlaydi?" },
+        quiz: { prompt: "你儿子在___工作？", answer: "哪儿", options: ["哪儿", "谁", "什么", "几"] }
+      },
+      {
+        title: "住在",
+        formula: "Subject + 住在 + Place",
+        example: "我住在北京。",
+        pinyin: "wǒ zhù zài Běijīng.",
+        translation: { tj: "Ман дар Пекин зиндагӣ мекунам.", ru: "Я живу в Пекине.", uz: "Men Pekinda yashayman." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ӯ дар беморхона кор мекунад.", "Ман дар хона зиндагӣ мекунам."],
+        ru: ["Он работает в больнице.", "Я живу дома."],
+        uz: ["U shifoxonada ishlaydi.", "Men uyda yashayman."]
+      }
+    }
+  },
+  {
+    id: 10,
+    title: { tj: "Дарси 10", ru: "Урок 10", uz: "Dars 10" },
+    topic: { tj: "Ҷойгиршавӣ ва 能", ru: "Место и 能", uz: "Joylashuv va 能" },
+    words: [
+      { h: "能", p: "néng", m: { tj: "тавонистан", ru: "мочь", uz: "qila olmoq" } },
+      { h: "坐", p: "zuò", m: { tj: "нишастан", ru: "сидеть", uz: "o'tirmoq" } },
+      { h: "这儿", p: "zhèr", m: { tj: "ин ҷо", ru: "здесь", uz: "bu yer" } },
+      { h: "那儿", p: "nàr", m: { tj: "он ҷо", ru: "там", uz: "u yer" } },
+      { h: "里", p: "lǐ", m: { tj: "дарун", ru: "внутри", uz: "ichida" } },
+      { h: "桌子", p: "zhuōzi", m: { tj: "миз", ru: "стол", uz: "stol" } },
+      { h: "椅子", p: "yǐzi", m: { tj: "курсӣ", ru: "стул", uz: "stul" } },
+      { h: "前面", p: "qiánmiàn", m: { tj: "пеш", ru: "перед", uz: "oldida" } },
+      { h: "后面", p: "hòumiàn", m: { tj: "қафо", ru: "сзади", uz: "orqasida" } },
+      { h: "上", p: "shàng", m: { tj: "боло", ru: "наверху", uz: "ustida" } }
+    ],
+    grammar: [
+      {
+        title: "能",
+        formula: "Subject + 能 + Verb + 吗?",
+        example: "我能坐这儿吗？",
+        pinyin: "wǒ néng zuò zhèr ma?",
+        translation: { tj: "Ман метавонам ин ҷо нишинам?", ru: "Можно мне сесть здесь?", uz: "Men bu yerga o'tirsam bo'ladimi?" },
+        quiz: { prompt: "我能坐___吗？", answer: "这儿", options: ["这儿", "哪儿", "谁", "什么"] }
+      },
+      {
+        title: "Place words",
+        formula: "Noun + 上/里/前面/后面",
+        example: "书在桌子上。",
+        pinyin: "shū zài zhuōzi shàng.",
+        translation: { tj: "Китоб рӯи миз аст.", ru: "Книга на столе.", uz: "Kitob stol ustida." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ман метавонам ин ҷо нишинам?", "Китоб дар рӯи миз аст."],
+        ru: ["Можно мне сесть здесь?", "Книга лежит на столе."],
+        uz: ["Men bu yerga o'tirsam bo'ladimi?", "Kitob stol ustida."]
+      }
+    }
+  },
+  {
+    id: 11,
+    title: { tj: "Дарси 11", ru: "Урок 11", uz: "Dars 11" },
+    topic: { tj: "Вақт", ru: "Время", uz: "Vaqt" },
+    words: [
+      { h: "点", p: "diǎn", m: { tj: "соат", ru: "час", uz: "soat" } },
+      { h: "分", p: "fēn", m: { tj: "дақиқа", ru: "минута", uz: "daqiqa" } },
+      { h: "半", p: "bàn", m: { tj: "ним", ru: "половина", uz: "yarim" } },
+      { h: "上午", p: "shàngwǔ", m: { tj: "пешин", ru: "утро", uz: "ertalab" } },
+      { h: "中午", p: "zhōngwǔ", m: { tj: "нисфирӯзӣ", ru: "полдень", uz: "tush" } },
+      { h: "下午", p: "xiàwǔ", m: { tj: "баъд аз пешин", ru: "день", uz: "tushdan keyin" } },
+      { h: "晚上", p: "wǎnshang", m: { tj: "шом", ru: "вечер", uz: "kechqurun" } },
+      { h: "起床", p: "qǐchuáng", m: { tj: "бедор шудан", ru: "вставать", uz: "uyg'onmoq" } },
+      { h: "睡觉", p: "shuìjiào", m: { tj: "хобидан", ru: "спать", uz: "uxlamoq" } },
+      { h: "回", p: "huí", m: { tj: "баргаштан", ru: "возвращаться", uz: "qaytmoq" } }
+    ],
+    grammar: [
+      {
+        title: "Time",
+        formula: "Number + 点 + Number + 分",
+        example: "现在几点？",
+        pinyin: "xiànzài jǐ diǎn?",
+        translation: { tj: "Ҳозир соат чанд?", ru: "Сколько сейчас времени?", uz: "Hozir soat necha?" },
+        quiz: { prompt: "现在三点___。", answer: "半", options: ["半", "岁", "号", "月"] }
+      },
+      {
+        title: "Time before verb",
+        formula: "Subject + Time + Verb",
+        example: "我晚上睡觉。",
+        pinyin: "wǒ wǎnshang shuìjiào.",
+        translation: { tj: "Ман шом мехобам.", ru: "Я сплю вечером.", uz: "Men kechqurun uxlayman." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ҳозир соат сею ним аст.", "Ман соати ҳафт бедор мешавам."],
+        ru: ["Сейчас половина четвертого.", "Я встаю в семь часов."],
+        uz: ["Hozir soat uch yarim.", "Men soat yettida uyg'onaman."]
+      }
+    }
+  },
+  {
+    id: 12,
+    title: { tj: "Дарси 12", ru: "Урок 12", uz: "Dars 12" },
+    topic: { tj: "Обу ҳаво", ru: "Погода", uz: "Ob-havo" },
+    words: [
+      { h: "天气", p: "tiānqì", m: { tj: "обу ҳаво", ru: "погода", uz: "ob-havo" } },
+      { h: "怎么样", p: "zěnmeyàng", m: { tj: "чӣ хел", ru: "как", uz: "qanday" } },
+      { h: "下雨", p: "xià yǔ", m: { tj: "борон боридан", ru: "идет дождь", uz: "yomg'ir yog'moq" } },
+      { h: "下雪", p: "xià xuě", m: { tj: "барф боридан", ru: "идет снег", uz: "qor yog'moq" } },
+      { h: "热", p: "rè", m: { tj: "гарм", ru: "жарко", uz: "issiq" } },
+      { h: "冷", p: "lěng", m: { tj: "хунук", ru: "холодно", uz: "sovuq" } },
+      { h: "太", p: "tài", m: { tj: "хеле", ru: "слишком", uz: "juda" } },
+      { h: "了", p: "le", m: { tj: "нишонаи тағйир", ru: "частица изменения", uz: "o'zgarish yuklamasi" } },
+      { h: "北京", p: "Běijīng", m: { tj: "Пекин", ru: "Пекин", uz: "Pekin" } },
+      { h: "漂亮", p: "piàoliang", m: { tj: "зебо", ru: "красивый", uz: "chiroyli" } }
+    ],
+    grammar: [
+      {
+        title: "怎么样",
+        formula: "Noun + 怎么样?",
+        example: "明天天气怎么样？",
+        pinyin: "míngtiān tiānqì zěnmeyàng?",
+        translation: { tj: "Пагоҳ ҳаво чӣ хел мешавад?", ru: "Какая завтра будет погода?", uz: "Ertaga ob-havo qanday bo'ladi?" },
+        quiz: { prompt: "明天天气___？", answer: "怎么样", options: ["怎么样", "什么", "哪儿", "几"] }
+      },
+      {
+        title: "太...了",
+        formula: "太 + Adj + 了",
+        example: "今天太热了。",
+        pinyin: "jīntiān tài rè le.",
+        translation: { tj: "Имрӯз хеле гарм аст.", ru: "Сегодня слишком жарко.", uz: "Bugun juda issiq." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Имрӯз ҳаво хеле хунук аст.", "Пагоҳ борон меборад."],
+        ru: ["Сегодня очень холодно.", "Завтра будет дождь."],
+        uz: ["Bugun havo juda sovuq.", "Ertaga yomg'ir yog'adi."]
+      }
+    }
+  },
+  {
+    id: 13,
+    title: { tj: "Дарси 13", ru: "Урок 13", uz: "Dars 13" },
+    topic: { tj: "Амали давомдор", ru: "Продолженное действие", uz: "Davomli harakat" },
+    words: [
+      { h: "在", p: "zài", m: { tj: "ҳоло ... истодааст", ru: "показатель действия", uz: "harakat davomida" } },
+      { h: "呢", p: "ne", m: { tj: "ҳиссача", ru: "частица", uz: "yuklama" } },
+      { h: "学", p: "xué", m: { tj: "омӯхтан", ru: "учиться", uz: "o'rganmoq" } },
+      { h: "做", p: "zuò", m: { tj: "кардан", ru: "делать", uz: "qilmoq" } },
+      { h: "中国菜", p: "Zhōngguó cài", m: { tj: "таоми чинӣ", ru: "китайская еда", uz: "xitoy taomi" } },
+      { h: "电影", p: "diànyǐng", m: { tj: "филм", ru: "фильм", uz: "film" } },
+      { h: "电视", p: "diànshì", m: { tj: "телевизор", ru: "телевизор", uz: "televizor" } },
+      { h: "书", p: "shū", m: { tj: "китоб", ru: "книга", uz: "kitob" } },
+      { h: "电脑", p: "diànnǎo", m: { tj: "компютер", ru: "компьютер", uz: "kompyuter" } },
+      { h: "电话", p: "diànhuà", m: { tj: "телефон", ru: "телефон", uz: "telefon" } }
+    ],
+    grammar: [
+      {
+        title: "在...呢",
+        formula: "Subject + 在 + Verb + Object + 呢",
+        example: "他在学做中国菜呢。",
+        pinyin: "tā zài xué zuò Zhōngguó cài ne.",
+        translation: { tj: "Ӯ ҳоло пухтани таоми чиниро меомӯзад.", ru: "Он сейчас учится готовить китайскую еду.", uz: "U hozir xitoy taomini pishirishni o'rganyapti." },
+        quiz: { prompt: "他在学___中国菜呢。", answer: "做", options: ["做", "喝", "坐", "写"] }
+      },
+      {
+        title: "Verb object",
+        formula: "看电影 / 看书 / 打电话",
+        example: "我在看书呢。",
+        pinyin: "wǒ zài kàn shū ne.",
+        translation: { tj: "Ман ҳоло китоб мехонам.", ru: "Я сейчас читаю книгу.", uz: "Men hozir kitob o'qiyapman." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ман ҳоло китоб мехонам.", "Ӯ пухтани таоми чиниро меомӯзад."],
+        ru: ["Я сейчас читаю книгу.", "Он учится готовить китайскую еду."],
+        uz: ["Men hozir kitob o'qiyapman.", "U xitoy taomini pishirishni o'rganyapti."]
+      }
+    }
+  },
+  {
+    id: 14,
+    title: { tj: "Дарси 14", ru: "Урок 14", uz: "Dars 14" },
+    topic: { tj: "Харид", ru: "Покупки", uz: "Xarid" },
+    words: [
+      { h: "买", p: "mǎi", m: { tj: "харидан", ru: "покупать", uz: "sotib olmoq" } },
+      { h: "不少", p: "bù shǎo", m: { tj: "кам не, бисёр", ru: "немало", uz: "anchagina" } },
+      { h: "衣服", p: "yīfu", m: { tj: "либос", ru: "одежда", uz: "kiyim" } },
+      { h: "钱", p: "qián", m: { tj: "пул", ru: "деньги", uz: "pul" } },
+      { h: "块", p: "kuài", m: { tj: "юан", ru: "юань", uz: "yuan" } },
+      { h: "多少", p: "duōshao", m: { tj: "чанд, чӣ қадар", ru: "сколько", uz: "qancha" } },
+      { h: "东西", p: "dōngxi", m: { tj: "чиз", ru: "вещи", uz: "narsa" } },
+      { h: "个", p: "gè", m: { tj: "ҳисобкалима", ru: "счетное слово", uz: "sanoq so'z" } },
+      { h: "大", p: "dà", m: { tj: "калон", ru: "большой", uz: "katta" } },
+      { h: "小", p: "xiǎo", m: { tj: "хурд", ru: "маленький", uz: "kichik" } }
+    ],
+    grammar: [
+      {
+        title: "了",
+        formula: "Subject + Verb + 了 + Object",
+        example: "她买了不少衣服。",
+        pinyin: "tā mǎi le bù shǎo yīfu.",
+        translation: { tj: "Ӯ бисёр либос харид.", ru: "Она купила немало одежды.", uz: "U anchagina kiyim sotib oldi." },
+        quiz: { prompt: "她买了不少___。", answer: "衣服", options: ["衣服", "茶", "水", "书"] }
+      },
+      {
+        title: "多少",
+        formula: "Noun + 多少钱?",
+        example: "这个多少钱？",
+        pinyin: "zhège duōshao qián?",
+        translation: { tj: "Ин чанд пул аст?", ru: "Сколько это стоит?", uz: "Bu qancha turadi?" }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ин либос чанд пул аст?", "Ман бисёр чиз харидам."],
+        ru: ["Сколько стоит эта одежда?", "Я купил много вещей."],
+        uz: ["Bu kiyim qancha turadi?", "Men ko'p narsa sotib oldim."]
+      }
+    }
+  },
+  {
+    id: 15,
+    title: { tj: "Дарси 15", ru: "Урок 15", uz: "Dars 15" },
+    topic: { tj: "Сафар ва нақлиёт", ru: "Поездка и транспорт", uz: "Safar va transport" },
+    words: [
+      { h: "飞机", p: "fēijī", m: { tj: "ҳавопаймо", ru: "самолет", uz: "samolyot" } },
+      { h: "出租车", p: "chūzūchē", m: { tj: "таксӣ", ru: "такси", uz: "taksi" } },
+      { h: "火车", p: "huǒchē", m: { tj: "қатор", ru: "поезд", uz: "poyezd" } },
+      { h: "车", p: "chē", m: { tj: "мошин", ru: "машина", uz: "mashina" } },
+      { h: "开", p: "kāi", m: { tj: "рондан, кушодан", ru: "вести, открывать", uz: "haydamoq, ochmoq" } },
+      { h: "来", p: "lái", m: { tj: "омадан", ru: "приходить", uz: "kelmoq" } },
+      { h: "走", p: "zǒu", m: { tj: "рафтан, пиёда рафтан", ru: "идти", uz: "yurmoq" } },
+      { h: "到", p: "dào", m: { tj: "расидан", ru: "прибывать", uz: "yetib bormoq" } },
+      { h: "从", p: "cóng", m: { tj: "аз", ru: "из, от", uz: "dan" } },
+      { h: "机场", p: "jīchǎng", m: { tj: "фурудгоҳ", ru: "аэропорт", uz: "aeroport" } }
+    ],
+    grammar: [
+      {
+        title: "是...的",
+        formula: "Subject + 是 + Method/Time/Place + Verb + 的",
+        example: "我是坐飞机来的。",
+        pinyin: "wǒ shì zuò fēijī lái de.",
+        translation: { tj: "Ман бо ҳавопаймо омадам.", ru: "Я приехал на самолете.", uz: "Men samolyotda keldim." },
+        quiz: { prompt: "我是坐飞机___。", answer: "来的", options: ["来的", "不的", "吗的", "有的"] }
+      },
+      {
+        title: "从...到...",
+        formula: "从 + Place A + 到 + Place B",
+        example: "我从机场到学校。",
+        pinyin: "wǒ cóng jīchǎng dào xuéxiào.",
+        translation: { tj: "Ман аз фурудгоҳ ба мактаб меравам.", ru: "Я еду из аэропорта в школу.", uz: "Men aeroportdan maktabga boraman." }
+      }
+    ],
+    homework: {
+      translations: {
+        tj: ["Ман бо таксӣ ба мактаб омадам.", "Ӯ аз фурудгоҳ ба хона меравад."],
+        ru: ["Я приехал в школу на такси.", "Он едет из аэропорта домой."],
+        uz: ["Men maktabga taksida keldim.", "U aeroportdan uyga boradi."]
+      }
+    }
+  }
+];
+
+const params = new URLSearchParams(window.location.search);
+const rawLang = (params.get("lang") || "tj").toLowerCase();
+const lang = ["tj", "ru", "uz"].includes(rawLang) ? rawLang : "tj";
+const rawLesson = params.get("lesson");
+const lessonId = rawLesson && /^\d+$/.test(rawLesson) ? Number(rawLesson) : NaN;
+const mode = (params.get("mode") || "").toLowerCase();
+const lesson = LESSONS.find(item => item.id === lessonId);
+const isValid = !!lesson && lessonId >= 1 && lessonId <= 15 && ["quiz", "homework"].includes(mode);
+
+let quizQuestions = [];
+let quizIndex = 0;
+let quizScore = 0;
+let answered = false;
+let wrongItems = [];
+
+function t(key, vars = {}) {
+  let text = (UI[lang] && UI[lang][key]) || UI.tj[key] || key;
+  Object.keys(vars).forEach(name => {
+    text = text.replaceAll(`{${name}}`, vars[name]);
+  });
+  return text;
+}
+
+function text(value) {
+  if (!value) return "";
+  return value[lang] || value.tj || value.uz || value.ru || "";
+}
+
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+  document.getElementById(id)?.classList.add("active");
+}
+
+function allWords() {
+  return LESSONS.flatMap(item => item.words);
+}
+
+function uniqueBy(list, getter) {
+  const seen = new Set();
+  return list.filter(item => {
+    const value = getter(item);
+    if (!value || seen.has(value)) return false;
+    seen.add(value);
+    return true;
+  });
+}
+
+function seededIndex(seed, max) {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i += 1) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  return max ? hash % max : 0;
+}
+
+function shuffle(list, seed) {
+  const arr = [...list];
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = seededIndex(`${seed}-${i}`, i + 1);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function optionSet(correct, pool, seed) {
+  const values = uniqueBy([correct, ...shuffle(pool, seed)], item => item).slice(0, 4);
+  while (values.length < 4) values.push(`${correct} ${values.length}`);
+  return shuffle(values, `${seed}-opts`);
+}
+
+function wordPool(exceptWord, field) {
+  return allWords()
+    .filter(word => word.h !== exceptWord.h)
+    .map(word => field === "meaning" ? text(word.m) : word[field])
+    .filter(Boolean);
+}
+
+function makeWordQuestion(word, type, index) {
+  const meaning = text(word.m);
+  const seed = `${lesson.id}-${word.h}-${type}-${index}`;
+  let question = "";
+  let category = "Vocabulary";
+  let answer = "";
+  let options = [];
+
+  if (type === "hanzi_to_meaning") {
+    answer = meaning;
+    question = t("meaningQuestion", { hanzi: word.h });
+    options = optionSet(answer, wordPool(word, "meaning"), seed);
+  }
+  if (type === "meaning_to_hanzi") {
+    answer = word.h;
+    question = t("meaningToHanziQuestion", { meaning });
+    options = optionSet(answer, wordPool(word, "h"), seed);
+  }
+  if (type === "pinyin_to_hanzi") {
+    answer = word.h;
+    question = t("pinyinQuestion", { pinyin: word.p });
+    options = optionSet(answer, wordPool(word, "h"), seed);
+  }
+  if (type === "hanzi_to_pinyin") {
+    answer = word.p;
+    question = t("hanziToPinyinQuestion", { hanzi: word.h });
+    options = optionSet(answer, wordPool(word, "p"), seed);
+  }
+
+  return {
+    type,
+    category,
+    question,
+    hint: t("answerPrompt"),
+    options,
+    answer,
+    explanation: t("vocabExplanation", { hanzi: word.h, meaning, pinyin: word.p })
+  };
+}
+
+function makeGrammarQuestions() {
+  return lesson.grammar
+    .filter(item => item.quiz)
+    .map((item, index) => ({
+      type: "gap_fill",
+      category: "Grammar",
+      question: t("gapQuestion", { prompt: item.quiz.prompt }),
+      hint: item.formula,
+      options: shuffle(item.quiz.options, `${lesson.id}-grammar-${index}`),
+      answer: item.quiz.answer,
+      explanation: t("grammarExplanation", { formula: item.formula, example: item.example })
+    }));
+}
+
+function buildQuiz() {
+  const types = ["hanzi_to_meaning", "meaning_to_hanzi", "pinyin_to_hanzi", "hanzi_to_pinyin"];
+  const generated = [];
+  lesson.words.forEach((word, wordIndex) => {
+    types.forEach(type => generated.push(makeWordQuestion(word, type, wordIndex)));
+  });
+  generated.push(...makeGrammarQuestions());
+
+  const ordered = shuffle(generated, `hsk1-${lesson.id}-${lang}`).slice(0, 10);
+  let fallbackIndex = 0;
+  while (ordered.length < 10 && lesson.words.length) {
+    ordered.push(makeWordQuestion(lesson.words[fallbackIndex % lesson.words.length], types[fallbackIndex % types.length], fallbackIndex));
+    fallbackIndex += 1;
+  }
+  return ordered.slice(0, 10);
+}
+
+function renderHeader() {
+  const title = text(lesson.title);
+  const topic = text(lesson.topic);
+  const pill = `HSK 1 · ${t("lesson")} ${lesson.id}`;
+
+  if (mode === "quiz") {
+    document.getElementById("quiz-title").textContent = `${title} · Quiz`;
+    document.getElementById("quiz-sub").textContent = t("quizSub", { topic });
+    document.getElementById("quiz-pill").textContent = pill;
+  }
+  if (mode === "homework") {
+    document.getElementById("hw-page-title").textContent = `${title} · ${t("homework")}`;
+    document.getElementById("hw-page-sub").textContent = t("homeworkSub", { topic });
+    document.getElementById("hw-pill").textContent = pill;
+  }
+}
+
+function renderQuizStart() {
+  quizQuestions = buildQuiz();
+  document.getElementById("start-kicker").textContent = t("quizKicker", { count: quizQuestions.length });
+  document.getElementById("start-title").textContent = t("startQuiz");
+  document.getElementById("start-sub").textContent = t("startSub");
+  document.getElementById("quiz-start-btn").textContent = t("startQuiz");
+  document.getElementById("quiz-start-btn").onclick = startQuiz;
+  document.getElementById("word-preview").innerHTML = lesson.words.slice(0, 6).map(word => (
+    `<span class="word-chip">${word.h} · ${word.p}</span>`
+  )).join("");
+}
+
+function startQuiz() {
+  quizQuestions = buildQuiz();
+  quizIndex = 0;
+  quizScore = 0;
+  wrongItems = [];
+  answered = false;
+  document.getElementById("quiz-start").style.display = "none";
+  document.getElementById("quiz-score-box").style.display = "none";
+  document.getElementById("quiz-main").style.display = "block";
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const item = quizQuestions[quizIndex];
+  if (!item) {
+    showResult();
+    return;
+  }
+
+  document.getElementById("q-counter").textContent = `${t("question")} ${quizIndex + 1}/${quizQuestions.length}`;
+  document.getElementById("q-cat").textContent = item.category;
+  document.getElementById("q-text").textContent = item.question;
+  document.getElementById("q-hint").textContent = item.hint || "";
+  document.getElementById("q-next").textContent = t("nextQuestion");
+  document.getElementById("q-next").style.display = "none";
+  document.getElementById("q-next").onclick = nextQuestion;
+  document.getElementById("q-fb").className = "quiz-fb";
+  document.getElementById("q-fb").textContent = "";
+
+  document.getElementById("q-dots").innerHTML = quizQuestions.map((question, index) => {
+    let klass = "qdot";
+    if (index < quizIndex) klass += question.correct ? " c" : " w";
+    if (index === quizIndex) klass += " cur";
+    return `<div class="${klass}"></div>`;
+  }).join("");
+
+  document.getElementById("q-opts").innerHTML = item.options.map(option => (
+    `<button class="qopt" type="button" data-value="${escapeAttr(option)}">${escapeHTML(option)}</button>`
+  )).join("");
+  document.querySelectorAll(".qopt").forEach(button => {
+    button.addEventListener("click", () => answerQuestion(button.dataset.value));
+  });
+  answered = false;
+}
+
+function answerQuestion(value) {
+  if (answered) return;
+  answered = true;
+  const item = quizQuestions[quizIndex];
+  const ok = value === item.answer;
+  item.correct = ok;
+  item.selected = value;
+  if (ok) quizScore += 1;
+
+  document.querySelectorAll(".qopt").forEach(button => {
+    button.disabled = true;
+    if (button.dataset.value === item.answer) button.classList.add("c");
+    if (button.dataset.value === value && !ok) button.classList.add("w");
+  });
+
+  if (!ok) {
+    wrongItems.push({
+      lesson_id: lesson.id,
+      type: item.type,
+      question: item.question,
+      selected_answer: value,
+      correct_answer: item.answer,
+      explanation: item.explanation
+    });
+  }
+
+  const fb = document.getElementById("q-fb");
+  fb.className = `quiz-fb show ${ok ? "ok" : "no"}`;
+  fb.textContent = `${ok ? t("explanationPrefixCorrect") : t("explanationPrefixWrong")}${item.explanation}`;
+  document.getElementById("q-next").style.display = "flex";
+}
+
+function nextQuestion() {
+  quizIndex += 1;
+  if (quizIndex >= quizQuestions.length) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  const total = quizQuestions.length;
+  const percent = total ? Math.round((quizScore / total) * 100) : 0;
+  document.getElementById("quiz-main").style.display = "none";
+  document.getElementById("quiz-score-box").style.display = "block";
+  document.getElementById("q-score-num").textContent = t("scoreLine", { score: quizScore, total });
+  document.getElementById("q-score-pct").textContent = t("percentLine", { percent });
+  document.getElementById("q-score-detail").textContent = t("resultDetail", { correct: quizScore, wrong: total - quizScore });
+  document.getElementById("q-retry").textContent = t("retry");
+  document.getElementById("q-return").textContent = t("returnToBot");
+  document.getElementById("q-retry").onclick = startQuiz;
+  document.getElementById("q-return").onclick = returnToBot;
+  document.getElementById("wrong-items-box").innerHTML = wrongItems.length ? wrongItems.map((item, index) => (
+    `<div class="result-item">
+      <b>${index + 1}. ${escapeHTML(item.question)}</b><br>
+      ${t("yourAnswer")}: ${escapeHTML(item.selected_answer)}<br>
+      ${t("correctAnswer")}: ${escapeHTML(item.correct_answer)}
+    </div>`
+  )).join("") : `<div class="result-item ok">${t("noWrong")}</div>`;
+
+  reportEvent("quiz_completed", {
+    lesson_id: lesson.id,
+    score: quizScore,
+    total,
+    percent,
+    wrong_items: wrongItems
+  });
+}
+
+function renderHomework() {
+  const lessonTitle = text(lesson.title);
+  const topic = text(lesson.topic);
+  document.getElementById("hw-lesson-note").textContent = t("note", { lessonTitle, topic });
+  document.getElementById("hw-vocab-title").textContent = t("vocabTaskTitle");
+  document.getElementById("hw-vocab-help").textContent = t("vocabTaskHelp");
+  document.getElementById("hw-grammar-title").textContent = t("grammarTaskTitle");
+  document.getElementById("hw-grammar-help").textContent = t("grammarTaskHelp");
+  document.getElementById("hw-translation-title").textContent = t("translationTaskTitle");
+  document.getElementById("hw-translation-help").textContent = t("translationTaskHelp");
+  document.getElementById("hw-vocab-answer").placeholder = t("writeAnswer") + "\n" + t("vocabPlaceholder");
+  document.getElementById("hw-grammar-answer").placeholder = t("writeAnswer") + "\n" + t("grammarPlaceholder");
+  document.getElementById("hw-translation-answer").placeholder = t("writeAnswer") + "\n" + t("translationPlaceholder");
+  document.getElementById("hw-submit-btn").textContent = t("submitHomework");
+  document.getElementById("hw-return-btn").textContent = t("returnToBot");
+  document.getElementById("hw-submit-btn").onclick = submitHomework;
+  document.getElementById("hw-return-btn").onclick = returnToBot;
+
+  document.getElementById("hw-vocab-task").innerHTML = `<div class="inline-tags">${lesson.words.slice(0, 8).map(word => (
+    `<span class="inline-tag">${word.h} · ${word.p}</span>`
+  )).join("")}</div>`;
+  document.getElementById("hw-grammar-task").innerHTML = lesson.grammar.map(item => (
+    `<div class="grammar-line"><b>${escapeHTML(item.title)}</b><br><span class="grammar-formula">${escapeHTML(item.formula)}</span><br>${escapeHTML(item.example)} · ${escapeHTML(item.pinyin)}</div>`
+  )).join("");
+  document.getElementById("hw-translation-task").innerHTML = lesson.homework.translations[lang].map((line, index) => (
+    `<div>${index + 1}. ${escapeHTML(line)}</div>`
+  )).join("");
+}
+
+async function submitHomework() {
+  const vocabAnswer = document.getElementById("hw-vocab-answer").value.trim();
+  const grammarAnswer = document.getElementById("hw-grammar-answer").value.trim();
+  const translationAnswer = document.getElementById("hw-translation-answer").value.trim();
+  const status = document.getElementById("hw-status");
+
+  if (!vocabAnswer || !grammarAnswer || !translationAnswer) {
+    status.className = "hw-status show no";
+    status.textContent = t("fillAll");
+    return;
+  }
+
+  const answers = [
+    {
+      type: "vocab_sentences",
+      prompt: t("vocabTaskHelp"),
+      answer: vocabAnswer
+    },
+    {
+      type: "grammar_sentences",
+      prompt: t("grammarTaskHelp"),
+      answer: grammarAnswer
+    },
+    {
+      type: "translation_exercises",
+      prompt: lesson.homework.translations[lang],
+      answer: translationAnswer
+    }
+  ];
+
+  const delivered = await reportEvent("homework_submitted", {
+    lesson_id: lesson.id,
+    answers
+  });
+
+  status.className = `hw-status show ${delivered ? "ok" : "no"}`;
+  status.textContent = delivered ? t("submitted") : `${t("submitted")}. ${t("internetError")}`;
+  document.getElementById("hw-submit-btn").style.display = "none";
+  document.getElementById("hw-return-btn").style.display = "flex";
+}
+
+async function reportEvent(eventName, payload = {}) {
+  const tg = window.Telegram?.WebApp;
+  const eventPayload = {
+    level: "hsk1",
+    event: eventName,
+    ...payload,
+    created_at: new Date().toISOString()
+  };
+
+  try {
+    const res = await fetch("/api/miniapp/event", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Telegram-Init-Data": tg?.initData || ""
+      },
+      body: JSON.stringify(eventPayload)
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return true;
+  } catch (e) {
+    const pending = safeJSON("hsk1_pending_events", []);
+    pending.push(eventPayload);
+    localStorage.setItem("hsk1_pending_events", JSON.stringify(pending));
+    return false;
+  }
+}
+
+async function flushPendingEvents() {
+  const pending = safeJSON("hsk1_pending_events", []);
+  if (!pending.length) return;
+  const remaining = [];
+  for (const item of pending) {
+    try {
+      const res = await fetch("/api/miniapp/event", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Telegram-Init-Data": tg?.initData || ""
+        },
+        body: JSON.stringify(item)
+      });
+      if (!res.ok) remaining.push(item);
+    } catch (e) {
+      remaining.push(item);
+    }
+  }
+  localStorage.setItem("hsk1_pending_events", JSON.stringify(remaining));
+}
+
+function returnToBot() {
+  reportEvent("bot_return_clicked", {
+    lesson_id: lesson?.id || lessonId || null,
+    mode
+  }).finally(() => {
+    if (window.Telegram?.WebApp) {
+      Telegram.WebApp.close();
+    }
+  });
+}
+
+function renderError() {
+  document.documentElement.lang = lang;
+  document.getElementById("error-title").textContent = t("lessonNotFoundTitle");
+  document.getElementById("error-text").textContent = t("lessonNotFound");
+  document.getElementById("error-return").textContent = t("returnToBot");
+  document.getElementById("error-return").onclick = returnToBot;
+  showPage("error-page");
+}
+
+function safeJSON(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function escapeHTML(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttr(value) {
+  return escapeHTML(value).replaceAll("`", "&#096;");
+}
+
+function init() {
+  document.documentElement.lang = lang;
+  flushPendingEvents();
+  if (!isValid) {
+    renderError();
+    return;
+  }
+  renderHeader();
+  if (mode === "quiz") {
+    renderQuizStart();
+    showPage("quiz-page");
+  }
+  if (mode === "homework") {
+    renderHomework();
+    showPage("homework-page");
+  }
+}
+
+init();
+</script>
+</body>
+</html>

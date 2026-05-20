@@ -30,6 +30,25 @@ class CourseMiniAppResultService:
         except (TypeError, ValueError):
             return default
 
+    @staticmethod
+    def _normalize_homework_answers(value: Any) -> dict:
+        if isinstance(value, dict):
+            return value
+
+        if not isinstance(value, list):
+            return {}
+
+        normalized = {}
+        for index, item in enumerate(value, start=1):
+            if isinstance(item, dict):
+                key = str(item.get("type") or item.get("id") or f"answer_{index}").strip()
+                normalized[key or f"answer_{index}"] = item
+                continue
+            if item is not None:
+                normalized[f"answer_{index}"] = str(item)
+
+        return normalized
+
     async def _resolve_context(self, telegram_id: int, mini_lesson_id: int):
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
@@ -110,7 +129,7 @@ class CourseMiniAppResultService:
         if error_key:
             return {"error_key": error_key}
 
-        answers = payload.get("answers") if isinstance(payload.get("answers"), dict) else {}
+        answers = self._normalize_homework_answers(payload.get("answers"))
         raw_score = payload.get("homework_score", payload.get("score"))
         homework_score = self._to_int(raw_score) if raw_score is not None else None
         feedback = normalize_result_items(payload.get("feedback"))

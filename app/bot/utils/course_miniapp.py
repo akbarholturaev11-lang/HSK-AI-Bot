@@ -1,14 +1,15 @@
 import json
 from html import escape
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from app.bot.utils.i18n import t
 from app.config import settings
 
 
-MINIAPP_SUPPORTED_LEVEL = "hsk3"
-MINIAPP_MIN_LESSON = 1
-MINIAPP_MAX_LESSON = 20
+MINIAPP_SUPPORTED_LEVELS = {
+    "hsk1": (1, 15),
+    "hsk3": (1, 20),
+}
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:
@@ -30,14 +31,30 @@ def is_course_miniapp_supported(lesson) -> bool:
 
     level = (getattr(lesson, "level", "") or "").strip().lower()
     lesson_id = course_miniapp_lesson_id(lesson)
-    return (
-        level == MINIAPP_SUPPORTED_LEVEL
-        and MINIAPP_MIN_LESSON <= lesson_id <= MINIAPP_MAX_LESSON
-    )
+    lesson_range = MINIAPP_SUPPORTED_LEVELS.get(level)
+    if not lesson_range:
+        return False
+
+    min_lesson, max_lesson = lesson_range
+    return min_lesson <= lesson_id <= max_lesson
+
+
+def _miniapp_base_url_for_level(level: str) -> str:
+    base_url = (settings.MINI_APP_BASE_URL or "").strip() or "https://YOURDOMAIN.com/hsk3.html"
+    normalized_level = (level or "").strip().lower()
+    target_file = "hsk1.html" if normalized_level == "hsk1" else "hsk3.html"
+
+    parts = urlsplit(base_url)
+    if parts.path.endswith(".html"):
+        path = parts.path.rsplit("/", 1)[0] + f"/{target_file}"
+        return urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
+
+    return base_url.rstrip("/") + f"/{target_file}"
 
 
 def course_miniapp_url(lesson, mode: str, lang: str | None = None) -> str:
-    base_url = (settings.MINI_APP_BASE_URL or "").strip() or "https://YOURDOMAIN.com/hsk3.html"
+    level = (getattr(lesson, "level", "") or "").strip().lower()
+    base_url = _miniapp_base_url_for_level(level)
     separator = "&" if "?" in base_url else "?"
     query = urlencode(
         {
