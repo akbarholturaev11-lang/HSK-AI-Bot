@@ -1,5 +1,6 @@
 import json
 
+from app.bot.utils.i18n import t
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
