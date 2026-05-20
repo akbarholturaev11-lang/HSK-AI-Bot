@@ -567,11 +567,17 @@ try{tg?.ready();tg?.expand();}catch(e){}
 const params=new URLSearchParams(window.location.search);
 const lesson=Number(params.get("lesson"));
 const mode=params.get("mode");
-const uiLang=['uz','ru','tj'].includes(params.get("lang"))?params.get("lang"):'uz';
+function normalizeLang(value){
+  const v=(value||'').toLowerCase();
+  if(v==='tg'||v==='tg-cyrl')return 'tj';
+  return ['uz','ru','tj'].includes(v)?v:'uz';
+}
+let uiLang=normalizeLang(params.get("lang")||tg?.initDataUnsafe?.user?.language_code||'uz');
 const initialLesson=(Number.isInteger(lesson)&&lesson>=1&&lesson<=20)?lesson:null;
 const miniMode=(mode==='quiz'||mode==='homework')&&!!initialLesson;
 let S={done:[],starred:[],qScore:{c:0,t:0},qFilter:initialLesson||'all',quizScores:{}};
 let qIdx=0,qAnswered=false,qList=[],lesFilter='all',gramFilter='all',fcFilter=initialLesson||0,fcFlipped=[],qReported=false;
+let miniLessonData=null;
 
 const UI={
   uz:{
@@ -621,6 +627,20 @@ function tt(key,vars={}){
   let text=(UI[uiLang]||UI.uz)[key]||UI.uz[key]||key;
   Object.keys(vars).forEach(k=>{text=text.replaceAll('{'+k+'}',vars[k]);});
   return text;
+}
+
+async function loadMiniLessonData(){
+  if(!miniMode)return;
+  try{
+    const res=await fetch(`/api/miniapp/lesson?lesson=${initialLesson}&lang=${uiLang}`,{
+      headers:{"X-Telegram-Init-Data":tg?.initData||""}
+    });
+    const data=await res.json();
+    if(data?.ok&&data.lesson){
+      miniLessonData=data.lesson;
+      uiLang=normalizeLang(data.lesson.lang||uiLang);
+    }
+  }catch(e){}
 }
 
 function safeJSON(key,fallback){try{const v=localStorage.getItem(key);return v?JSON.parse(v):fallback;}catch(e){return fallback;}}
@@ -930,6 +950,7 @@ function seededShuffle(list,seed){
   return arr;
 }
 function getQuizPool(){
+  if(miniMode&&mode==='quiz'&&miniLessonData?.quiz_questions?.length)return [...miniLessonData.quiz_questions];
   if(miniMode&&mode==='quiz'&&initialLesson)return [...(LESSON_QUIZZES[initialLesson]||[])];
   if(typeof S.qFilter==='number')return [...(LESSON_QUIZZES[S.qFilter]||[])];
   return Object.values(LESSON_QUIZZES).flat();
@@ -1074,13 +1095,16 @@ const TRANSLATION_BANK={
   20:["Mening kameram olib ketildi.","Faqat ko'p mashq qilsang, natijang yaxshilanadi."]
 };
 function getLessonGrammar(lessonId){
+  if(miniLessonData?.grammar?.length)return miniLessonData.grammar;
   const title=`Dars ${lessonId}`;
   return GRAMMAR.filter(g=>String(g.l).includes(title));
 }
 function renderHomework(){
   const lessonId=initialLesson;
   const les=LESSONS.find(x=>x.n===lessonId);
-  const words=VOCAB.filter(v=>v.l===lessonId).slice(0,8);
+  const words=miniLessonData?.vocabulary?.length
+    ? miniLessonData.vocabulary.slice(0,8).map(w=>({h:w.zh,p:w.pinyin,m:w.meaning}))
+    : VOCAB.filter(v=>v.l===lessonId).slice(0,8);
   const grams=getLessonGrammar(lessonId);
   document.getElementById('hw-page-title').textContent=tt('homeworkTitle',{lesson:lessonId});
   document.getElementById('hw-page-sub').textContent=tt('homeworkSub');
@@ -1093,10 +1117,12 @@ function renderHomework(){
   document.getElementById('hw-return-btn').textContent=tt('return');
   document.getElementById('hw-vocab-task').innerHTML=words.map(w=>`<span style="display:inline-block;margin:2px 6px 2px 0;padding:3px 8px;border:1px solid var(--border);border-radius:20px;color:var(--accent);background:var(--accent-dim);">${w.h} · ${w.p}</span>`).join('');
   document.getElementById('hw-grammar-task').innerHTML=grams.length
-    ? grams.map(g=>`<div style="margin-bottom:8px;"><b>${g.t}</b><br><span style="color:var(--accent);font-family:var(--mono);">${g.f}</span></div>`).join('')
+    ? grams.map(g=>`<div style="margin-bottom:8px;"><b>${g.title||g.t}</b><br><span style="color:var(--accent);font-family:var(--mono);">${g.formula||g.f||''}</span></div>`).join('')
     : (les?.g||[]).map(g=>`<div style="margin-bottom:6px;">• ${g}</div>`).join('');
-  const tr=TRANSLATION_BANK[lessonId]||["Bugun men yangi so'zlarni o'rgandim.","Bu grammatika men uchun muhim."];
-  document.getElementById('hw-translation-task').innerHTML=tr.map((x,i)=>`<div>${i+1}. ${x}</div>`).join('');
+  const tasks=miniLessonData?.homework?.length
+    ? miniLessonData.homework.map(x=>[x.instruction,x.words?.length?`📌 ${x.words.join(' · ')}`:'',x.topic?`🎯 ${x.topic}`:''].filter(Boolean).join('<br>'))
+    : (TRANSLATION_BANK[lessonId]||["Bugun men yangi so'zlarni o'rgandim.","Bu grammatika men uchun muhim."]);
+  document.getElementById('hw-translation-task').innerHTML=tasks.map((x,i)=>`<div>${i+1}. ${x}</div>`).join('');
 }
 function submitHomework(){
   const answers={
@@ -1128,34 +1154,37 @@ function submitHomework(){
 }
 
 // ===== INIT =====
-if(miniMode){
-  document.body.classList.add('mini-mode');
-  S.qFilter=initialLesson;
-  save();
-  if(mode==='quiz'){
-    showOnlyPage('quiz');
+(async function init(){
+  if(miniMode){
+    document.body.classList.add('mini-mode');
+    S.qFilter=initialLesson;
+    save();
+    await loadMiniLessonData();
+    if(mode==='quiz'){
+      showOnlyPage('quiz');
+      buildQuizFilters();
+      document.querySelector('#p-quiz .page-title').textContent=tt('quizTitle',{lesson:initialLesson});
+      document.querySelector('#p-quiz .page-sub').textContent=tt('quizSub');
+      document.querySelector('#quiz-score-box .btn-primary').textContent=tt('restart');
+      startQuiz();
+    }else if(mode==='homework'){
+      showOnlyPage('homework');
+      renderHomework();
+    }
+  }else{
+    buildFCFilters();
     buildQuizFilters();
-    document.querySelector('#p-quiz .page-title').textContent=tt('quizTitle',{lesson:initialLesson});
-    document.querySelector('#p-quiz .page-sub').textContent=tt('quizSub');
-    document.querySelector('#quiz-score-box .btn-primary').textContent=tt('restart');
+    renderLessons();
+    renderGram();
+    updateStats();
+    if(initialLesson){
+      const fcBtns=document.querySelectorAll('#fc-filters .ftab');
+      fcBtns.forEach(b=>b.classList.remove('active'));
+      if(fcBtns[initialLesson+1])fcBtns[initialLesson+1].classList.add('active');
+    }
     startQuiz();
-  }else if(mode==='homework'){
-    showOnlyPage('homework');
-    renderHomework();
   }
-}else{
-  buildFCFilters();
-  buildQuizFilters();
-  renderLessons();
-  renderGram();
-  updateStats();
-  if(initialLesson){
-    const fcBtns=document.querySelectorAll('#fc-filters .ftab');
-    fcBtns.forEach(b=>b.classList.remove('active'));
-    if(fcBtns[initialLesson+1])fcBtns[initialLesson+1].classList.add('active');
-  }
-  startQuiz();
-}
+})();
 </script>
 </body>
 </html>

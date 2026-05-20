@@ -19,7 +19,9 @@ from app.services.course_reminder_service import CourseReminderService
 from app.services.bot_feedback_service import BotFeedbackService
 from app.services.ad_campaign_service import AdCampaignService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
+from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
+from app.repositories.user_repo import UserRepository
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
     course_miniapp_understood_keyboard,
@@ -27,6 +29,7 @@ from app.bot.keyboards.course_miniapp import (
 from app.bot.utils.course_miniapp import (
     format_miniapp_homework_result,
     format_miniapp_quiz_result,
+    normalize_miniapp_lang,
 )
 
 logger = logging.getLogger(__name__)
@@ -110,6 +113,26 @@ async def health():
 @app.get("/hsk3.html")
 async def hsk3_miniapp():
     return FileResponse("app/static/hsk3.html")
+
+
+@app.get("/api/miniapp/lesson")
+async def miniapp_lesson(request: Request, lesson: int, lang: str = "uz"):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    resolved_lang = normalize_miniapp_lang(lang)
+
+    async with async_session_maker() as session:
+        if telegram_id:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if user and user.language:
+                resolved_lang = normalize_miniapp_lang(user.language)
+
+        payload = await CourseMiniAppLessonService(session).get_payload(lesson, resolved_lang)
+        if not payload:
+            return {"ok": False, "error": "lesson_not_found"}
+        return {"ok": True, "lesson": payload}
 
 
 @app.post("/api/miniapp/event")

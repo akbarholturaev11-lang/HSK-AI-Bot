@@ -11,6 +11,15 @@ MINIAPP_MIN_LESSON = 1
 MINIAPP_MAX_LESSON = 20
 
 
+def normalize_miniapp_lang(lang: str | None) -> str:
+    normalized = (lang or "").strip().lower()
+    if normalized in {"tg", "tg-cyrl"}:
+        return "tj"
+    if normalized in {"uz", "ru", "tj"}:
+        return normalized
+    return "uz"
+
+
 def course_miniapp_lesson_id(lesson) -> int:
     return int(getattr(lesson, "lesson_order", None) or getattr(lesson, "id", 0) or 0)
 
@@ -34,7 +43,7 @@ def course_miniapp_url(lesson, mode: str, lang: str | None = None) -> str:
         {
             "lesson": course_miniapp_lesson_id(lesson),
             "mode": mode,
-            "lang": lang or "uz",
+            "lang": normalize_miniapp_lang(lang),
         }
     )
     return f"{base_url}{separator}{query}"
