@@ -1,0 +1,16 @@
+.venv
+__pycache__
+.env
+*.pyc
+.env
+venv_311/
+
+.env
+.env.*
+!.env.example
+graphify-out/
+memory/
+.git_broken_backup/
+.DS_Store
+.claude/
+.DS_Store
