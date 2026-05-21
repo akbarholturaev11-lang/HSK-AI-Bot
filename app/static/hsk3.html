@@ -567,6 +567,7 @@ try{tg?.ready();tg?.expand();}catch(e){}
 const params=new URLSearchParams(window.location.search);
 const lesson=Number(params.get("lesson"));
 const mode=params.get("mode");
+const block=Number(params.get("block"));
 function normalizeLang(value){
   const v=(value||'').toLowerCase();
   if(v==='tg'||v==='tg-cyrl')return 'tj';
@@ -574,6 +575,7 @@ function normalizeLang(value){
 }
 let uiLang=normalizeLang(params.get("lang")||'uz');
 const initialLesson=(Number.isInteger(lesson)&&lesson>=1&&lesson<=20)?lesson:null;
+const initialBlock=(Number.isInteger(block)&&block>=1)?block:null;
 const miniMode=(mode==='quiz'||mode==='homework')&&!!initialLesson;
 let S={done:[],starred:[],qScore:{c:0,t:0},qFilter:initialLesson||'all',quizScores:{}};
 let qIdx=0,qAnswered=false,qList=[],lesFilter='all',gramFilter='all',fcFilter=initialLesson||0,fcFlipped=[],qReported=false;
@@ -641,10 +643,18 @@ function tt(key,vars={}){
   return text;
 }
 
+function miniLessonLabel(){
+  const part=miniLessonData?.block_no||initialBlock||null;
+  if(!part)return String(initialLesson||'');
+  const labels={uz:'qism',ru:'часть',tj:'қисм'};
+  return `${initialLesson} · ${(labels[uiLang]||labels.uz)} ${part}`;
+}
+
 async function loadMiniLessonData(){
   if(!miniMode)return;
   try{
-    const res=await fetch(`/api/miniapp/lesson?lesson=${initialLesson}&lang=${uiLang}`,{
+    const blockParam=initialBlock?`&block=${initialBlock}`:'';
+    const res=await fetch(`/api/miniapp/lesson?level=hsk3&lesson=${initialLesson}&lang=${uiLang}${blockParam}`,{
       headers:{"X-Telegram-Init-Data":tg?.initData||""}
     });
     const data=await res.json();
@@ -728,6 +738,7 @@ function reportAppError(error,extra={}){
   const details=serializeError(error);
   return reportEvent("app_error",{
     lesson_id:initialLesson||null,
+    block_no:initialBlock||miniLessonData?.block_no||null,
     mode,
     source:extra.source||"miniapp_error",
     error_name:details.name,
@@ -782,7 +793,7 @@ function showOnlyPage(id){
 }
 
 function returnToBot(){
-  reportEvent("bot_return_clicked",{lesson_id:initialLesson,mode});
+  reportEvent("bot_return_clicked",{lesson_id:initialLesson,block_no:initialBlock||miniLessonData?.block_no||null,mode});
   try{window.Telegram?.WebApp?.close();}catch(e){}
 }
 
@@ -1100,8 +1111,10 @@ function nextQ(){
 function showResult(){
   const {c,t}=S.qScore,pct=t?Math.round(c/t*100):0,wrong=t-c;
   const activeLesson=(miniMode&&initialLesson)?initialLesson:(typeof S.qFilter==='number'?S.qFilter:null);
+  const activeBlock=miniLessonData?.block_no||initialBlock||null;
   const wrong_items=qList.filter(x=>x.correct===false).map(x=>({
     lesson_id:x.lesson||activeLesson,
+    block_no:x.block_no||activeBlock,
     type:x.type||x.cat||'quiz',
     question:x.q,
     selected_answer:x.selected_answer||'',
@@ -1138,6 +1151,7 @@ function showResult(){
       qReported=true;
       reportEvent("quiz_completed",{
         lesson_id:activeLesson,
+        block_no:activeBlock,
         score:c,
         total:t,
         percent:pct,
@@ -1244,9 +1258,9 @@ function renderHomework(){
     ? miniLessonData.vocabulary.slice(0,8).map(w=>({h:w.zh,p:w.pinyin,m:w.meaning}))
     : VOCAB.filter(v=>v.l===lessonId).slice(0,8);
   const grams=getLessonGrammar(lessonId);
-  document.getElementById('hw-page-title').textContent=tt('homeworkTitle',{lesson:lessonId});
+  document.getElementById('hw-page-title').textContent=tt('homeworkTitle',{lesson:miniLessonLabel()});
   document.getElementById('hw-page-sub').textContent=tt('homeworkSub');
-  document.getElementById('hw-lesson-note').innerHTML=tt('note',{lesson:lessonId});
+  document.getElementById('hw-lesson-note').innerHTML=tt('note',{lesson:miniLessonLabel()});
   const cards=document.querySelectorAll('#p-homework .hw-card');
   if(cards[0]){cards[0].querySelector('.hw-title').textContent=tt('vocabTitle');cards[0].querySelector('.hw-help').textContent=tt('vocabHelp');}
   if(cards[1]){cards[1].querySelector('.hw-title').textContent=tt('grammarTitle');cards[1].querySelector('.hw-help').textContent=tt('grammarHelp');}
@@ -1277,6 +1291,7 @@ function submitHomework(){
   }
   reportEvent("homework_submitted",{
     lesson_id:initialLesson,
+    block_no:miniLessonData?.block_no||initialBlock||null,
     answers,
     submitted_at:new Date().toISOString()
   });
@@ -1303,7 +1318,7 @@ function submitHomework(){
     if(mode==='quiz'){
       showOnlyPage('quiz');
       buildQuizFilters();
-      document.querySelector('#p-quiz .page-title').textContent=tt('quizTitle',{lesson:initialLesson});
+      document.querySelector('#p-quiz .page-title').textContent=tt('quizTitle',{lesson:miniLessonLabel()});
       document.querySelector('#p-quiz .page-sub').textContent=tt('quizSub');
       document.querySelector('#quiz-score-box .btn-primary').textContent=tt('restart');
       startQuiz();

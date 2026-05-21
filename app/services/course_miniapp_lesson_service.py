@@ -77,13 +77,33 @@ class CourseMiniAppLessonService:
             return str(data.get("zh") or data.get(lang) or data.get("uz") or raw)
         return raw or ""
 
-    def _vocabulary(self, lesson: CourseLesson, lang: str) -> list[dict]:
+    def _dialogue_blocks(self, lesson: CourseLesson) -> list[dict]:
+        blocks = self._parse(lesson.dialogue_json, [])
+        if not isinstance(blocks, list):
+            return []
+        return [block for block in blocks if isinstance(block, dict) and block.get("block_no")]
+
+    def _block_by_no(self, lesson: CourseLesson, block_no: int | None) -> dict | None:
+        if not block_no:
+            return None
+        for block in self._dialogue_blocks(lesson):
+            if int(block.get("block_no") or 0) == int(block_no):
+                return block
+        return None
+
+    def _vocabulary(self, lesson: CourseLesson, lang: str, block: dict | None = None) -> list[dict]:
         vocab = self._parse(lesson.vocabulary_json, [])
         if not isinstance(vocab, list):
             return []
+        wanted = None
+        if block and isinstance(block.get("word_nos"), list):
+            wanted = {int(no) for no in block["word_nos"] if str(no).isdigit()}
         items = []
-        for item in vocab:
+        for index, item in enumerate(vocab, 1):
             if not isinstance(item, dict):
+                continue
+            item_no = int(item.get("no") or index)
+            if wanted is not None and item_no not in wanted:
                 continue
             meaning = (
                 item.get(lang)
@@ -104,13 +124,19 @@ class CourseMiniAppLessonService:
             )
         return items
 
-    def _grammar(self, lesson: CourseLesson, lang: str) -> list[dict]:
+    def _grammar(self, lesson: CourseLesson, lang: str, block: dict | None = None) -> list[dict]:
         grammar = self._parse(lesson.grammar_json, [])
         if not isinstance(grammar, list):
             return []
+        wanted = None
+        if block and isinstance(block.get("grammar_nos"), list):
+            wanted = {int(no) for no in block["grammar_nos"] if str(no).isdigit()}
         items = []
-        for item in grammar:
+        for index, item in enumerate(grammar, 1):
             if not isinstance(item, dict):
+                continue
+            item_no = int(item.get("no") or index)
+            if wanted is not None and item_no not in wanted:
                 continue
             examples = []
             for example in item.get("examples", []) if isinstance(item.get("examples"), list) else []:
@@ -125,6 +151,7 @@ class CourseMiniAppLessonService:
                 )
             items.append(
                 {
+                    "no": item_no,
                     "title": self._localized(item, lang, "title", default=item.get("title_zh") or ""),
                     "title_zh": item.get("title_zh") or "",
                     "rule": self._localized(item, lang, "rule"),
@@ -178,7 +205,7 @@ class CourseMiniAppLessonService:
             value = (value * 31 + index) % 1_000_003
         return items, items.index(answer) if answer in items else 0
 
-    def _quiz_questions(self, vocab: list[dict], lesson_order: int, lang: str) -> list[dict]:
+    def _quiz_questions(self, vocab: list[dict], lesson_order: int, lang: str, block_no: int | None = None) -> list[dict]:
         text = _QUIZ_TEXT[lang]
         questions = []
         meanings = [item["meaning"] for item in vocab]
@@ -224,6 +251,7 @@ class CourseMiniAppLessonService:
                 questions.append(
                     {
                         "lesson": lesson_order,
+                        "block_no": block_no,
                         "type": question_type,
                         "q": question,
                         "hint": hint,
@@ -235,11 +263,14 @@ class CourseMiniAppLessonService:
                 )
         return questions
 
-    async def get_payload(self, lesson_order: int, lang: str) -> dict | None:
+    async def get_payload(self, lesson_order: int, lang: str, level: str = "hsk3", block_no: int | None = None) -> dict | None:
         lang = normalize_miniapp_lang(lang)
+        level = (level or "hsk3").strip().lower()
+        if level not in {"hsk1", "hsk2", "hsk3"}:
+            level = "hsk3"
         result = await self.session.execute(
             select(CourseLesson)
-            .where(CourseLesson.level == "hsk3")
+            .where(CourseLesson.level == level)
             .where(CourseLesson.lesson_order == lesson_order)
             .where(CourseLesson.is_active.is_(True))
             .limit(1)
@@ -248,16 +279,19 @@ class CourseMiniAppLessonService:
         if not lesson:
             return None
 
-        vocab = self._vocabulary(lesson, lang)
-        grammar = self._grammar(lesson, lang)
+        block = self._block_by_no(lesson, block_no)
+        vocab = self._vocabulary(lesson, lang, block)
+        grammar = self._grammar(lesson, lang, block)
         homework = self._homework(lesson, lang)
         return {
             "lesson_id": lesson.lesson_order,
             "lesson_code": lesson.lesson_code,
+            "level": level,
+            "block_no": int(block.get("block_no")) if block else None,
             "lang": lang,
             "title": self._title(lesson.title, lang),
             "vocabulary": vocab,
             "grammar": grammar,
             "homework": homework,
-            "quiz_questions": self._quiz_questions(vocab, lesson.lesson_order, lang),
+            "quiz_questions": self._quiz_questions(vocab, lesson.lesson_order, lang, int(block.get("block_no")) if block else None),
         }

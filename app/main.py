@@ -127,11 +127,11 @@ async def hsk2_miniapp():
 
 
 @app.get("/api/miniapp/lesson")
-async def miniapp_lesson(lesson: int, lang: str = "uz"):
+async def miniapp_lesson(lesson: int, lang: str = "uz", level: str = "hsk3", block: int | None = None):
     resolved_lang = normalize_miniapp_lang(lang)
 
     async with async_session_maker() as session:
-        payload = await CourseMiniAppLessonService(session).get_payload(lesson, resolved_lang)
+        payload = await CourseMiniAppLessonService(session).get_payload(lesson, resolved_lang, level=level, block_no=block)
         if not payload:
             return {"ok": False, "error": "lesson_not_found"}
         return {"ok": True, "lesson": payload}
