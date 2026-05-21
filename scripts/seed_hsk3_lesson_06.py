@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk3_pdf_materials import apply_hsk3_pdf_materials
 
 
 LESSON = {
@@ -259,6 +260,8 @@ LESSON = {
     "review_json": "[]",
     "is_active": True,
 }
+
+apply_hsk3_pdf_materials(LESSON)
 
 
 async def upsert_lesson():
