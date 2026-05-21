@@ -4,9 +4,11 @@ from aiogram import Bot
 
 from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
+from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.ai_service import AIService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.app_error_context_service import AppErrorContextService
+from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.referral_service import ReferralService
 from app.services.access_service import AccessService
 
@@ -20,6 +22,7 @@ class QAService:
         self.session = session
         self.user_repo = UserRepository(session)
         self.message_repo = MessageRepository(session)
+        self.progress_repo = CourseProgressRepository(session)
         self.ai_service = AIService()
         self.referral_service = ReferralService(session)
         self.access_service = AccessService(session)
@@ -95,6 +98,21 @@ class QAService:
                     "content": f"[Context for this conversation: {app_error_context}]",
                 },
             )
+
+        progress = await self.progress_repo.get_by_user_id(user.id)
+        if progress and progress.current_lesson_id:
+            miniapp_context = await CourseMiniAppResultService(self.session).build_ai_context(
+                user_id=user.id,
+                lesson_id=progress.current_lesson_id,
+            )
+            if miniapp_context:
+                history.insert(
+                    0,
+                    {
+                        "role": "user",
+                        "content": f"[Context for this conversation: {miniapp_context}]",
+                    },
+                )
 
         await self.message_repo.create(
             user_id=user.id,
