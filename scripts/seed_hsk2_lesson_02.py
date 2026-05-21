@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk2_block_metadata import apply_hsk2_block_metadata
 
 
 LESSON = {
@@ -202,6 +203,8 @@ LESSON = {
     "review_json": "[]",
     "is_active": True,
 }
+
+apply_hsk2_block_metadata(LESSON)
 
 
 async def upsert_lesson():
