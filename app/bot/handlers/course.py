@@ -5,7 +5,15 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 import json
 
 from app.repositories.user_repo import UserRepository
-from app.services.course_engine_service import CourseEngineService
+from app.services.course_engine_service import (
+    CourseEngineService,
+    get_block_no_from_step,
+    get_step_order,
+    is_block_grammar_step,
+    is_block_lesson,
+    is_block_quiz_step,
+    is_block_vocab_step,
+)
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course import (
@@ -478,24 +486,19 @@ async def run_course_entry_flow(
 
     step = progress.current_step
 
-    # V1 → V2 migratsiya: eski "vocab"/"dialogue" stepida qolgan foydalanuvchilarni
-    # V2 ekvivalentiga ko'chiramiz (V2 darslar uchun)
+    # V1 → V2/block migratsiya: eski "vocab"/"dialogue" stepida qolgan foydalanuvchilarni
+    # yangi oqimdagi mos stepga ko'chiramiz.
     from app.services.course_engine_service import is_v2_lesson
     if is_v2_lesson(lesson):
-        if step == "vocab":
-            step = "vocab_1"
-            await engine.progress_repo.set_current_lesson_and_step(
-                progress=progress, lesson_id=lesson.id, step=step, waiting_for="none"
-            )
-            await session.commit()
-        elif step == "dialogue":
-            step = "dialogue_1"
+        remapped_step = _v2_remap(step, lesson)
+        if remapped_step != step:
+            step = remapped_step
             await engine.progress_repo.set_current_lesson_and_step(
                 progress=progress, lesson_id=lesson.id, step=step, waiting_for="none"
             )
             await session.commit()
 
-    if step == "exercise" and getattr(progress, "waiting_for", "none") not in {"exercise_answer", "quiz_result"}:
+    if (step == "exercise" or is_block_quiz_step(step)) and getattr(progress, "waiting_for", "none") not in {"exercise_answer", "quiz_result"}:
         await engine.progress_repo.set_waiting_for(
             progress,
             "quiz_result" if is_course_miniapp_supported(lesson) else "exercise_answer",
@@ -1012,6 +1015,15 @@ def _keyboard_for_step(lang: str, step: str, lesson=None):
     # V2 intro — "Davom etamiz" (vocab_1 ga o'tadi)
     if step == "intro" and v2:
         return course_next_step_keyboard(lang)
+    if is_block_vocab_step(step):
+        return course_vocab_v2_keyboard(lang)
+    if is_block_grammar_step(step):
+        return course_next_step_keyboard(lang)
+    if is_block_quiz_step(step):
+        block_no = get_block_no_from_step(step)
+        if lesson is not None and is_course_miniapp_supported(lesson):
+            return course_quiz_miniapp_keyboard(lang, lesson, block_no=block_no)
+        return course_next_step_keyboard(lang)
     # V2 vocab steps — audio + next
     if step in ("vocab_1", "vocab_2"):
         return course_vocab_v2_keyboard(lang)
@@ -1052,12 +1064,28 @@ def _v2_remap(step: str, lesson) -> str:
     from app.services.course_engine_service import is_v2_lesson as _is_v2
     if not _is_v2(lesson):
         return step
+    if is_block_lesson(lesson):
+        if step in {"vocab", "vocab_1", "vocab_2"}:
+            order = get_step_order(lesson)
+            return order[1] if len(order) > 1 else "intro"
+        if step == "dialogue":
+            return "dialogue_1"
+        return step
     mapping = {"vocab": "vocab_1", "dialogue": "dialogue_1"}
     return mapping.get(step, step)
 
 
 async def _send_step(respond, user, lesson, step: str, lang: str, session):
     """Step kontentini format qilib yuboradi (V1 va V2 uchun)."""
+    if is_block_quiz_step(step) and is_course_miniapp_supported(lesson):
+        block_no = get_block_no_from_step(step)
+        await respond(
+            format_miniapp_quiz_intro(lang, lesson, block_no=block_no),
+            reply_markup=course_quiz_miniapp_keyboard(lang, lesson, block_no=block_no),
+            parse_mode="HTML",
+        )
+        return
+
     if step == "exercise" and is_course_miniapp_supported(lesson):
         await respond(
             format_miniapp_quiz_intro(lang, lesson),
@@ -1097,7 +1125,7 @@ async def _go_to_step(callback, session, step: str):
     # V2 dars uchun V1 step nomlarini V2 ga remap qilamiz
     step = _v2_remap(step, lesson)
 
-    if step == "exercise" and is_course_miniapp_supported(lesson):
+    if (step == "exercise" or is_block_quiz_step(step)) and is_course_miniapp_supported(lesson):
         waiting_for_val = "quiz_result"
     else:
         waiting_for_val = "exercise_answer" if step == "exercise" else "none"
@@ -1154,8 +1182,8 @@ async def course_go_next_step(callback: CallbackQuery, session):
 
     step = progress.current_step
 
-    # Exercise stepiga o'tganda waiting_for ni yangilaymiz
-    if step == "exercise":
+    # Exercise/block quiz stepiga o'tganda waiting_for ni yangilaymiz
+    if step == "exercise" or is_block_quiz_step(step):
         await engine.progress_repo.set_waiting_for(
             progress,
             "quiz_result" if is_course_miniapp_supported(lesson) else "exercise_answer",

@@ -56,22 +56,31 @@ def _miniapp_base_url_for_level(level: str) -> str:
     return base_url.rstrip("/") + f"/{target_file}"
 
 
-def course_miniapp_url(lesson, mode: str, lang: str | None = None) -> str:
+def course_miniapp_url(lesson, mode: str, lang: str | None = None, block_no: int | None = None) -> str:
     level = (getattr(lesson, "level", "") or "").strip().lower()
     base_url = _miniapp_base_url_for_level(level)
     separator = "&" if "?" in base_url else "?"
-    query = urlencode(
-        {
-            "lesson": course_miniapp_lesson_id(lesson),
-            "mode": mode,
-            "lang": normalize_miniapp_lang(lang),
-        }
-    )
+    params = {
+        "lesson": course_miniapp_lesson_id(lesson),
+        "mode": mode,
+        "lang": normalize_miniapp_lang(lang),
+    }
+    if block_no:
+        params["block"] = int(block_no)
+    query = urlencode(params)
     return f"{base_url}{separator}{query}"
 
 
-def format_miniapp_quiz_intro(lang: str, lesson) -> str:
-    return t("course_miniapp_quiz_intro", lang, lesson_id=course_miniapp_lesson_id(lesson))
+def format_miniapp_quiz_intro(lang: str, lesson, block_no: int | None = None) -> str:
+    text = t("course_miniapp_quiz_intro", lang, lesson_id=course_miniapp_lesson_id(lesson))
+    if not block_no:
+        return text
+    labels = {
+        "uz": f"\n\nQism {block_no} bo'yicha qisqa test.",
+        "ru": f"\n\nКороткий тест по части {block_no}.",
+        "tj": f"\n\nТести кӯтоҳ аз рӯи қисми {block_no}.",
+    }
+    return text + labels.get(lang, labels["ru"])
 
 
 def format_miniapp_homework_intro(lang: str, lesson) -> str:
@@ -125,6 +134,7 @@ def _append_items(lines: list[str], title: str, items: list[str], limit: int = 1
 
 def format_miniapp_quiz_result(lang: str, result: dict) -> str:
     lesson_id = int(result.get("lesson_id") or 0)
+    block_no = int(result.get("block_no") or 0)
     score = int(result.get("score") or 0)
     total = int(result.get("total") or 0)
     percent = int(result.get("percent") or 0)
@@ -136,8 +146,23 @@ def format_miniapp_quiz_result(lang: str, result: dict) -> str:
         t("course_miniapp_lesson_line", lang, lesson_id=lesson_id),
         t("course_miniapp_score_line", lang, score=score, total=total, percent=percent),
     ]
+    if block_no:
+        labels = {
+            "uz": f"📍 Qism: {block_no}",
+            "ru": f"📍 Часть: {block_no}",
+            "tj": f"📍 Қисм: {block_no}",
+        }
+        lines.insert(3, labels.get(lang, labels["ru"]))
     _append_items(lines, t("course_miniapp_wrong_items", lang), wrong_items)
-    lines.extend(["", t("course_miniapp_understood_question", lang)])
+    if block_no:
+        next_text = {
+            "uz": "Keyingi qismga o'tamiz.",
+            "ru": "Переходим к следующей части.",
+            "tj": "Ба қисми навбатӣ мегузарем.",
+        }
+        lines.extend(["", next_text.get(lang, next_text["ru"])])
+    else:
+        lines.extend(["", t("course_miniapp_understood_question", lang)])
     return "\n".join(lines)
 
 

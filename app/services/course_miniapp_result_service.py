@@ -11,6 +11,7 @@ from app.repositories.course_attempt_repo import CourseAttemptRepository
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
+from app.services.course_engine_service import CourseEngineService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.course_tutor_service import CourseTutorService
 
@@ -72,6 +73,7 @@ class CourseMiniAppResultService:
 
     async def save_quiz_result(self, telegram_id: int, payload: dict) -> dict:
         mini_lesson_id = self._to_int(payload.get("lesson_id"))
+        block_no = self._to_int(payload.get("block_no") or payload.get("block"))
         user, progress, lesson, error_key = await self._resolve_context(telegram_id, mini_lesson_id)
         if error_key:
             return {"error_key": error_key}
@@ -86,7 +88,7 @@ class CourseMiniAppResultService:
             user_id=user.id,
             lesson_id=lesson.id,
             attempt_type="quiz",
-            step_name="miniapp_quiz",
+            step_name=f"block_quiz_{block_no}" if block_no else "miniapp_quiz",
             score=percent,
             passed=passed,
             answers_json=json.dumps(
@@ -96,6 +98,7 @@ class CourseMiniAppResultService:
                     "score": score,
                     "total": total,
                     "percent": percent,
+                    "block_no": block_no or None,
                     "wrong_items": wrong_items,
                     "source": "miniapp",
                 },
@@ -104,12 +107,25 @@ class CourseMiniAppResultService:
             ai_feedback=None,
         )
 
-        await self.progress_repo.set_current_lesson_and_step(
-            progress=progress,
-            lesson_id=lesson.id,
-            step="satisfaction_check",
-            waiting_for="satisfaction_answer",
-        )
+        if block_no:
+            next_step = CourseEngineService(self.session).get_next_step_name(
+                f"block_quiz_{block_no}",
+                lesson,
+            )
+            await self.progress_repo.set_current_lesson_and_step(
+                progress=progress,
+                lesson_id=lesson.id,
+                step=next_step,
+                waiting_for="none",
+            )
+        else:
+            next_step = "satisfaction_check"
+            await self.progress_repo.set_current_lesson_and_step(
+                progress=progress,
+                lesson_id=lesson.id,
+                step=next_step,
+                waiting_for="satisfaction_answer",
+            )
         await self.session.commit()
 
         return {
@@ -117,6 +133,8 @@ class CourseMiniAppResultService:
             "user": user,
             "lesson": lesson,
             "lesson_id": course_miniapp_lesson_id(lesson),
+            "block_no": block_no or None,
+            "next_step": next_step,
             "score": score,
             "total": total,
             "percent": percent,

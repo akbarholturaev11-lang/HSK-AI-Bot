@@ -4,13 +4,13 @@ from app.bot.utils.course_miniapp import course_miniapp_url
 from app.bot.utils.i18n import t
 
 
-def course_quiz_miniapp_keyboard(lang: str, lesson) -> InlineKeyboardMarkup:
+def course_quiz_miniapp_keyboard(lang: str, lesson, block_no: int | None = None) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
                     text=t("course_miniapp_quiz_button", lang),
-                    web_app=WebAppInfo(url=course_miniapp_url(lesson, "quiz", lang)),
+                    web_app=WebAppInfo(url=course_miniapp_url(lesson, "quiz", lang, block_no=block_no)),
                 )
             ],
         ]
@@ -42,6 +42,19 @@ def course_miniapp_understood_keyboard(lang: str) -> InlineKeyboardMarkup:
                     text=t("course_miniapp_no_button", lang),
                     callback_data="course:satisfied_no",
                 ),
+            ],
+        ]
+    )
+
+
+def course_miniapp_continue_keyboard(lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=t("course_next_step", lang),
+                    callback_data="course:repeat_step",
+                )
             ],
         ]
     )

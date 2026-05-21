@@ -1043,6 +1043,177 @@ const LESSONS = [
   }
 ];
 
+function word(no, h, p, uz, ru, tj) {
+  return { no, h, p, m: { uz, ru, tj } };
+}
+
+function grammar(no, title, formula, example, pinyin, uz, ru, tj, quiz = null) {
+  return {
+    no,
+    title,
+    formula,
+    example,
+    pinyin,
+    translation: { uz, ru, tj },
+    quiz
+  };
+}
+
+function block(no, wordNos, grammarNos, translations = null) {
+  return {
+    no,
+    wordNos,
+    grammarNos,
+    homework: translations ? { translations } : null
+  };
+}
+
+const BOOK_LESSON_FIXES = [
+  {
+    id: 1,
+    title: { tj: "你好", ru: "你好", uz: "你好" },
+    topic: { tj: "Саломлашӣ", ru: "Приветствие", uz: "Salomlashish" },
+    words: [
+      word(1, "你", "nǐ", "sen", "ты", "ту"),
+      word(2, "好", "hǎo", "yaxshi", "хорошо", "хуб"),
+      word(3, "您", "nín", "siz (hurmat)", "вы (вежливо)", "шумо (эҳтиромӣ)"),
+      word(4, "你们", "nǐmen", "sizlar", "вы (мн.)", "шумоён"),
+      word(5, "对不起", "duìbuqǐ", "kechirasiz", "извините", "бубахшед"),
+      word(6, "没关系", "méi guānxi", "hechqisi yo'q", "ничего страшного", "ҳеҷ гап не")
+    ],
+    grammar: [
+      grammar(1, "四声", "Chinese syllable + tone", "你好！", "Nǐ hǎo!", "Salom!", "Привет!", "Салом!", { prompt: "你___！", answer: "好", options: ["好", "不", "吗", "的"] }),
+      grammar(2, "变调 (3+3)", "3-ton + 3-ton → 2+3 talaffuz", "你好！", "Nǐ hǎo!", "你好 talaffuzda nǐ hǎo emas, yumshoqroq aytiladi.", "В 你好 первый третий тон звучит ближе ко второму.", "Дар 你好 садои сеюми аввал нармтар мешавад."),
+      grammar(3, "您 / 你们 + 好", "Pronoun + 好", "你们好！", "Nǐmen hǎo!", "Hammangizga salom!", "Здравствуйте все!", "Ба ҳамаи шумо салом!"),
+      grammar(4, "对不起 → 没关系", "Apology → response", "对不起！没关系！", "Duìbuqǐ! Méi guānxi!", "Kechirasiz! Hechqisi yo'q!", "Извините! Ничего страшного!", "Бубахшед! Ҳеҷ гап не!")
+    ],
+    homework: { translations: { tj: ["Салом!", "Бубахшед!"], ru: ["Привет!", "Извините!"], uz: ["Salom!", "Kechirasiz!"] } },
+    blocks: [
+      block(1, [1, 2], [1, 2]),
+      block(2, [3, 4], [3]),
+      block(3, [5, 6], [4])
+    ]
+  },
+  {
+    id: 2,
+    title: { tj: "谢谢你", ru: "谢谢你", uz: "谢谢你" },
+    topic: { tj: "Ташаккур ва хайрбод", ru: "Благодарность и прощание", uz: "Rahmat va xayrlashuv" },
+    words: [
+      word(1, "谢谢", "xièxie", "rahmat", "спасибо", "раҳмат"),
+      word(2, "不", "bù", "yo'q, emas", "не, нет", "не, нест"),
+      word(3, "不客气", "bú kèqi", "arzimaydi", "не за что", "хоҳиш мекунам"),
+      word(4, "再见", "zàijiàn", "xayr", "до свидания", "хайр")
+    ],
+    grammar: [
+      grammar(1, "不", "不 + Verb/Adj", "不谢！", "Bú xiè!", "Arzimaydi!", "Не за что!", "Хоҳиш мекунам!", { prompt: "___谢！", answer: "不", options: ["不", "吗", "的", "谁"] }),
+      grammar(2, "不 tone change", "bù + 4-ton → bú + 4-ton", "不客气！", "Bú kèqi!", "不 keyingi 4-ton oldidan bú bo'ladi.", "不 перед 4-м тоном читается bú.", "不 пеш аз садои 4 ҳамчун bú хонда мешавад."),
+      grammar(3, "再 + 见", "again + see → goodbye", "再见！", "Zàijiàn!", "Yana ko'rishamiz, xayr.", "До новой встречи, до свидания.", "То боздид, хайр.")
+    ],
+    homework: { translations: { tj: ["Раҳмат!", "Хайр!"], ru: ["Спасибо!", "До свидания!"], uz: ["Rahmat!", "Xayr!"] } },
+    blocks: [
+      block(1, [1, 2], [1, 2]),
+      block(2, [3], [2]),
+      block(3, [4], [3])
+    ]
+  },
+  {
+    id: 3,
+    title: { tj: "你叫什么名字", ru: "你叫什么名字", uz: "你叫什么名字" },
+    topic: { tj: "Ном, касб ва миллат", ru: "Имя, профессия и национальность", uz: "Ism, kasb va millat" },
+    words: [
+      word(1, "叫", "jiào", "atalmoq", "зваться", "ном доштан"),
+      word(2, "什么", "shénme", "nima", "что", "чӣ"),
+      word(3, "名字", "míngzi", "ism", "имя", "ном"),
+      word(4, "我", "wǒ", "men", "я", "ман"),
+      word(5, "是", "shì", "bo'lmoq", "быть", "будан"),
+      word(6, "老师", "lǎoshī", "o'qituvchi", "учитель", "муаллим"),
+      word(7, "吗", "ma", "savol yuklamasi", "вопросительная частица", "ҳарфи саволӣ"),
+      word(8, "学生", "xuésheng", "o'quvchi", "студент", "донишҷӯ"),
+      word(9, "人", "rén", "odam, kishi", "человек", "одам"),
+      word(10, "李月", "Lǐ Yuè", "Li Yue", "Ли Юэ", "Ли Юэ"),
+      word(11, "中国", "Zhōngguó", "Xitoy", "Китай", "Чин"),
+      word(12, "美国", "Měiguó", "Amerika, AQSH", "Америка, США", "Амрико, ИМА")
+    ],
+    grammar: [
+      grammar(1, "叫", "Subject + 叫 + Name", "我叫李月。", "Wǒ jiào Lǐ Yuè.", "Mening ismim Li Yue.", "Меня зовут Ли Юэ.", "Номи ман Ли Юэ аст.", { prompt: "我___李月。", answer: "叫", options: ["叫", "是", "吗", "不"] }),
+      grammar(2, "是", "A 是 B", "我是学生。", "Wǒ shì xuésheng.", "Men talabaman.", "Я студент.", "Ман донишҷӯ ҳастам.", { prompt: "我___学生。", answer: "是", options: ["是", "吗", "的", "谁"] }),
+      grammar(3, "吗", "Statement + 吗?", "你是老师吗？", "Nǐ shì lǎoshī ma?", "Siz o'qituvchimisiz?", "Вы учитель?", "Оё шумо муаллим ҳастед?", { prompt: "你是老师___？", answer: "吗", options: ["吗", "的", "呢", "不"] }),
+      grammar(4, "什么", "Subject + 叫什么名字?", "你叫什么名字？", "Nǐ jiào shénme míngzi?", "Ismingiz nima?", "Как вас зовут?", "Номи шумо чист?"),
+      grammar(5, "国家 + 人", "中国 + 人 = 中国人", "我是美国人。", "Wǒ shì Měiguó rén.", "Men amerikalikman.", "Я американец.", "Ман амрикоӣ ҳастам.")
+    ],
+    homework: { translations: { tj: ["Номи ман Алишер аст.", "Ман донишҷӯ ҳастам."], ru: ["Меня зовут Алишер.", "Я студент."], uz: ["Mening ismim Alisher.", "Men talabaman."] } },
+    blocks: [
+      block(1, [1, 2, 3, 4, 10], [1, 4]),
+      block(2, [5, 6, 7, 8], [2, 3]),
+      block(3, [9, 11, 12], [2, 3, 5])
+    ]
+  },
+  {
+    id: 4,
+    title: { tj: "她是我的汉语老师", ru: "她是我的汉语老师", uz: "她是我的汉语老师" },
+    topic: { tj: "Ӯ кист?", ru: "Кто она?", uz: "U kim?" },
+    words: [
+      word(1, "她", "tā", "u (ayol)", "она", "вай (зан)"),
+      word(2, "谁", "shéi", "kim", "кто", "кӣ"),
+      word(3, "的", "de", "ning", "частица принадлежности", "ҳарфи моликият"),
+      word(4, "汉语", "Hànyǔ", "xitoy tili", "китайский язык", "забони чинӣ"),
+      word(5, "哪", "nǎ", "qaysi", "какой", "кадом"),
+      word(6, "国", "guó", "davlat", "страна", "кишвар"),
+      word(7, "呢", "ne", "-chi?", "а ...?", "чӣ?"),
+      word(8, "他", "tā", "u (erkak)", "он", "вай (мард)"),
+      word(9, "同学", "tóngxué", "sinfdosh", "одноклассник", "ҳамсинф"),
+      word(10, "朋友", "péngyou", "do'st", "друг", "дӯст")
+    ],
+    grammar: [
+      grammar(1, "的", "A 的 B", "我的汉语老师", "wǒ de Hànyǔ lǎoshī", "mening xitoy tili o'qituvchim", "мой учитель китайского", "муаллими забони чинии ман", { prompt: "我___汉语老师", answer: "的", options: ["的", "吗", "呢", "不"] }),
+      grammar(2, "谁", "谁 = kim?", "她是谁？", "Tā shì shéi?", "U kim?", "Кто она?", "Вай кӣ аст?"),
+      grammar(3, "哪国人", "哪 + 国 + 人", "你是哪国人？", "Nǐ shì nǎ guó rén?", "Siz qaysi mamlakatdansiz?", "Вы из какой страны?", "Шумо аз кадом кишвар ҳастед?"),
+      grammar(4, "呢", "Topic + 呢?", "你呢？", "Nǐ ne?", "Siz-chi?", "А вы?", "Шумо чӣ?"),
+      grammar(5, "他 / 她", "Same sound, different gender", "他是谁？她是谁？", "Tā shì shéi?", "U kim? (erkak/ayol)", "Кто он/она?", "Вай кӣ аст?")
+    ],
+    homework: { translations: { tj: ["Ӯ муаллими забони чинии ман аст.", "Ӯ дӯсти ман аст."], ru: ["Она мой учитель китайского.", "Он мой друг."], uz: ["U mening xitoy tili o'qituvchim.", "U mening do'stim."] } },
+    blocks: [
+      block(1, [1, 2, 3, 4], [1, 2]),
+      block(2, [5, 6, 7], [3, 4]),
+      block(3, [8, 9, 10], [1, 4, 5])
+    ]
+  },
+  {
+    id: 5,
+    title: { tj: "她女儿今年二十岁", ru: "她女儿今年二十岁", uz: "她女儿今年二十岁" },
+    topic: { tj: "Оила ва синну сол", ru: "Семья и возраст", uz: "Oila va yosh" },
+    words: [
+      word(1, "家", "jiā", "oila, uy", "семья, дом", "оила, хона"),
+      word(2, "有", "yǒu", "bor, ega bo'lmoq", "иметь, есть", "доштан"),
+      word(3, "口", "kǒu", "oila a'zolari uchun hisob so'zi", "счётное слово для семьи", "калимаи шуморавӣ барои оила"),
+      word(4, "女儿", "nǚ'ér", "qiz farzand", "дочь", "духтар"),
+      word(5, "几", "jǐ", "nechta", "сколько", "чанд"),
+      word(6, "岁", "suì", "yosh", "лет", "сол"),
+      word(7, "了", "le", "holat o'zgarishi", "изменение состояния", "тағйири ҳолат"),
+      word(8, "今年", "jīnnián", "bu yil", "в этом году", "имсол"),
+      word(9, "多", "duō", "ko'p, qancha", "много, насколько", "зиёд"),
+      word(10, "大", "dà", "katta", "большой", "калон")
+    ],
+    grammar: [
+      grammar(1, "有 + 几口人", "Subject + 有 + 几 + 口 + 人", "你家有几口人？", "Nǐ jiā yǒu jǐ kǒu rén?", "Oilada necha kishi bor?", "Сколько человек в семье?", "Дар оила чанд нафар аст?", { prompt: "你家___几口人？", answer: "有", options: ["有", "是", "吗", "的"] }),
+      grammar(2, "几岁了", "Subject + 几 + 岁 + 了?", "你女儿几岁了？", "Nǐ nǚ'ér jǐ suì le?", "Qizingiz necha yoshda?", "Сколько лет вашей дочери?", "Духтаратон чандсола аст?", { prompt: "你女儿几___了？", answer: "岁", options: ["岁", "口", "国", "人"] }),
+      grammar(3, "多大了", "Subject + 多 + 大 + 了?", "李老师多大了？", "Lǐ lǎoshī duō dà le?", "Muallima Li necha yoshda?", "Сколько лет учителю Ли?", "Муаллима Ли чандсола аст?"),
+      grammar(4, "今年 + age + 岁", "Subject + 今年 + number + 岁", "她女儿今年二十岁。", "Tā nǚ'ér jīnnián èrshí suì.", "Uning qizi bu yil yigirma yoshda.", "Её дочери в этом году двадцать.", "Духтараш имсол бист сол дорад.")
+    ],
+    homework: { translations: { tj: ["Дар оилаи шумо чанд нафар аст?", "Ӯ имсол бистсола аст."], ru: ["Сколько человек в вашей семье?", "Ей в этом году двадцать лет."], uz: ["Oilangizda necha kishi bor?", "U bu yil yigirma yoshda."] } },
+    blocks: [
+      block(1, [1, 2, 3], [1]),
+      block(2, [4, 5, 6, 7, 8], [2, 4]),
+      block(3, [9, 10], [3, 4])
+    ]
+  }
+];
+
+BOOK_LESSON_FIXES.forEach(fix => {
+  const index = LESSONS.findIndex(item => item.id === fix.id);
+  if (index >= 0) LESSONS[index] = { ...LESSONS[index], ...fix };
+});
+
 const params = new URLSearchParams(window.location.search);
 const rawLang = (params.get("lang") || "tj").toLowerCase();
 const lang = ["tj", "ru", "uz"].includes(rawLang) ? rawLang : "tj";
@@ -1050,7 +1221,10 @@ const rawLesson = params.get("lesson");
 const lessonId = rawLesson && /^\d+$/.test(rawLesson) ? Number(rawLesson) : NaN;
 const mode = (params.get("mode") || "").toLowerCase();
 const lesson = LESSONS.find(item => item.id === lessonId);
-const isValid = !!lesson && lessonId >= 1 && lessonId <= 15 && ["quiz", "homework"].includes(mode);
+const rawBlock = params.get("block");
+const blockNo = rawBlock && /^\d+$/.test(rawBlock) ? Number(rawBlock) : null;
+const activeBlock = lesson?.blocks?.find(item => item.no === blockNo) || null;
+const isValid = !!lesson && lessonId >= 1 && lessonId <= 15 && ["quiz", "homework"].includes(mode) && (!blockNo || !!activeBlock);
 
 let quizQuestions = [];
 let quizIndex = 0;
@@ -1071,13 +1245,39 @@ function text(value) {
   return value[lang] || value.tj || value.uz || value.ru || "";
 }
 
+function blockLabel() {
+  if (!activeBlock) return "";
+  const labels = { uz: "Qism", ru: "Часть", tj: "Қисм" };
+  return `${labels[lang] || labels.ru} ${activeBlock.no}`;
+}
+
+function activeWords() {
+  if (!lesson) return [];
+  if (!activeBlock?.wordNos?.length) return lesson.words || [];
+  const wanted = new Set(activeBlock.wordNos);
+  return (lesson.words || []).filter((word, index) => wanted.has(word.no || index + 1));
+}
+
+function activeGrammar() {
+  if (!lesson) return [];
+  if (!activeBlock?.grammarNos?.length) return lesson.grammar || [];
+  const wanted = new Set(activeBlock.grammarNos);
+  return (lesson.grammar || []).filter((item, index) => wanted.has(item.no || index + 1));
+}
+
+function activeTranslations() {
+  const blockTranslations = activeBlock?.homework?.translations?.[lang];
+  if (blockTranslations?.length) return blockTranslations;
+  return lesson?.homework?.translations?.[lang] || [];
+}
+
 function showPage(id) {
   document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
   document.getElementById(id)?.classList.add("active");
 }
 
 function allWords() {
-  return LESSONS.flatMap(item => item.words);
+  return LESSONS.flatMap(item => item.words || []);
 }
 
 function uniqueBy(list, getter) {
@@ -1159,7 +1359,7 @@ function makeWordQuestion(word, type, index) {
 }
 
 function makeGrammarQuestions() {
-  return lesson.grammar
+  return activeGrammar()
     .filter(item => item.quiz)
     .map((item, index) => ({
       type: "gap_fill",
@@ -1175,32 +1375,37 @@ function makeGrammarQuestions() {
 function buildQuiz() {
   const types = ["hanzi_to_meaning", "meaning_to_hanzi", "pinyin_to_hanzi", "hanzi_to_pinyin"];
   const generated = [];
-  lesson.words.forEach((word, wordIndex) => {
+  const words = activeWords();
+  const grammarQuestions = makeGrammarQuestions();
+  words.forEach((word, wordIndex) => {
     types.forEach(type => generated.push(makeWordQuestion(word, type, wordIndex)));
   });
-  generated.push(...makeGrammarQuestions());
+  generated.push(...grammarQuestions);
 
-  const ordered = shuffle(generated, `hsk1-${lesson.id}-${lang}`).slice(0, 10);
+  const targetCount = activeBlock ? Math.min(6, Math.max(4, words.length * 2 + grammarQuestions.length)) : 10;
+  const ordered = shuffle(generated, `hsk1-${lesson.id}-${activeBlock?.no || "all"}-${lang}`).slice(0, targetCount);
   let fallbackIndex = 0;
-  while (ordered.length < 10 && lesson.words.length) {
-    ordered.push(makeWordQuestion(lesson.words[fallbackIndex % lesson.words.length], types[fallbackIndex % types.length], fallbackIndex));
+  while (ordered.length < targetCount && words.length) {
+    ordered.push(makeWordQuestion(words[fallbackIndex % words.length], types[fallbackIndex % types.length], fallbackIndex));
     fallbackIndex += 1;
   }
-  return ordered.slice(0, 10);
+  return ordered.slice(0, targetCount);
 }
 
 function renderHeader() {
   const title = text(lesson.title);
   const topic = text(lesson.topic);
-  const pill = `HSK 1 · ${t("lesson")} ${lesson.id}`;
+  const part = blockLabel();
+  const titleText = part ? `${title} · ${part}` : title;
+  const pill = part ? `HSK 1 · ${t("lesson")} ${lesson.id} · ${part}` : `HSK 1 · ${t("lesson")} ${lesson.id}`;
 
   if (mode === "quiz") {
-    document.getElementById("quiz-title").textContent = `${title} · Quiz`;
+    document.getElementById("quiz-title").textContent = `${titleText} · Quiz`;
     document.getElementById("quiz-sub").textContent = t("quizSub", { topic });
     document.getElementById("quiz-pill").textContent = pill;
   }
   if (mode === "homework") {
-    document.getElementById("hw-page-title").textContent = `${title} · ${t("homework")}`;
+    document.getElementById("hw-page-title").textContent = `${titleText} · ${t("homework")}`;
     document.getElementById("hw-page-sub").textContent = t("homeworkSub", { topic });
     document.getElementById("hw-pill").textContent = pill;
   }
@@ -1213,7 +1418,7 @@ function renderQuizStart() {
   document.getElementById("start-sub").textContent = t("startSub");
   document.getElementById("quiz-start-btn").textContent = t("startQuiz");
   document.getElementById("quiz-start-btn").onclick = startQuiz;
-  document.getElementById("word-preview").innerHTML = lesson.words.slice(0, 6).map(word => (
+  document.getElementById("word-preview").innerHTML = activeWords().slice(0, 6).map(word => (
     `<span class="word-chip">${word.h} · ${word.p}</span>`
   )).join("");
 }
@@ -1281,6 +1486,7 @@ function answerQuestion(value) {
   if (!ok) {
     wrongItems.push({
       lesson_id: lesson.id,
+      block_no: activeBlock?.no || null,
       type: item.type,
       question: item.question,
       selected_answer: value,
@@ -1323,6 +1529,7 @@ function showResult() {
 
   reportEvent("quiz_completed", {
     lesson_id: lesson.id,
+    block_no: activeBlock?.no || null,
     score: quizScore,
     total,
     percent,
@@ -1348,13 +1555,17 @@ function renderHomework() {
   document.getElementById("hw-submit-btn").onclick = submitHomework;
   document.getElementById("hw-return-btn").onclick = returnToBot;
 
-  document.getElementById("hw-vocab-task").innerHTML = `<div class="inline-tags">${lesson.words.slice(0, 8).map(word => (
+  const words = activeWords();
+  const grammarItems = activeGrammar();
+  const translations = activeTranslations();
+
+  document.getElementById("hw-vocab-task").innerHTML = `<div class="inline-tags">${words.slice(0, 8).map(word => (
     `<span class="inline-tag">${word.h} · ${word.p}</span>`
   )).join("")}</div>`;
-  document.getElementById("hw-grammar-task").innerHTML = lesson.grammar.map(item => (
+  document.getElementById("hw-grammar-task").innerHTML = grammarItems.map(item => (
     `<div class="grammar-line"><b>${escapeHTML(item.title)}</b><br><span class="grammar-formula">${escapeHTML(item.formula)}</span><br>${escapeHTML(item.example)} · ${escapeHTML(item.pinyin)}</div>`
   )).join("");
-  document.getElementById("hw-translation-task").innerHTML = lesson.homework.translations[lang].map((line, index) => (
+  document.getElementById("hw-translation-task").innerHTML = translations.map((line, index) => (
     `<div>${index + 1}. ${escapeHTML(line)}</div>`
   )).join("");
 }
@@ -1384,13 +1595,14 @@ async function submitHomework() {
     },
     {
       type: "translation_exercises",
-      prompt: lesson.homework.translations[lang],
+      prompt: activeTranslations(),
       answer: translationAnswer
     }
   ];
 
   const delivered = await reportEvent("homework_submitted", {
     lesson_id: lesson.id,
+    block_no: activeBlock?.no || null,
     answers
   });
 
@@ -1453,6 +1665,7 @@ async function flushPendingEvents() {
 function returnToBot() {
   reportEvent("bot_return_clicked", {
     lesson_id: lesson?.id || lessonId || null,
+    block_no: activeBlock?.no || null,
     mode
   }).finally(() => {
     if (window.Telegram?.WebApp) {

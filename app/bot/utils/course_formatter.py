@@ -36,6 +36,67 @@ def _lesson_word(lang: str) -> str:
     return {"uz": "Dars", "ru": "Урок", "tj": "Дарс"}.get(lang, "Урок")
 
 
+def _lesson_blocks(lesson) -> list[dict]:
+    dialogues = _parse(getattr(lesson, "dialogue_json", None), [])
+    if not isinstance(dialogues, list):
+        return []
+    return [
+        block
+        for block in dialogues
+        if isinstance(block, dict) and block.get("block_no")
+    ]
+
+
+def _block_by_no(lesson, n: int) -> dict:
+    for block in _lesson_blocks(lesson):
+        if int(block.get("block_no") or 0) == n:
+            return block
+    return {}
+
+
+def _block_words(lesson, block: dict) -> list[dict]:
+    vocab = _parse(getattr(lesson, "vocabulary_json", None), [])
+    if not isinstance(vocab, list):
+        return []
+
+    word_nos = block.get("word_nos") or []
+    if not isinstance(word_nos, list) or not word_nos:
+        return []
+
+    wanted = {int(no) for no in word_nos if str(no).isdigit()}
+    return [
+        word
+        for word in vocab
+        if isinstance(word, dict) and int(word.get("no") or 0) in wanted
+    ]
+
+
+def _block_grammar_items(lesson, block: dict) -> list[dict]:
+    grammar = _parse(getattr(lesson, "grammar_json", None), [])
+    if not isinstance(grammar, list):
+        return []
+
+    grammar_nos = block.get("grammar_nos") or []
+    if not isinstance(grammar_nos, list) or not grammar_nos:
+        return []
+
+    wanted = {int(no) for no in grammar_nos if str(no).isdigit()}
+    return [
+        item
+        for item in grammar
+        if isinstance(item, dict) and int(item.get("no") or 0) in wanted
+    ]
+
+
+def _block_label(lang: str, n: int, total: int) -> str:
+    labels = {
+        "uz": "Qism",
+        "ru": "Часть",
+        "tj": "Қисм",
+    }
+    return f"{labels.get(lang, labels['ru'])} {n}/{max(total, n)}"
+
+
 # ─── Emoji raqamlar ────────────────────────────────────────────────────────
 _NUMS = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
@@ -337,6 +398,190 @@ def format_vocab_2(lesson, lang: str) -> str:
     return "\n".join(lines)
 
 
+def format_block_vocab(lesson, lang: str, n: int) -> str:
+    """Dialogga bog'langan kichik qism so'zlari."""
+    block = _block_by_no(lesson, n)
+    words = _block_words(lesson, block)
+    if not block or not words:
+        return ""
+
+    title = _parse_title(lesson.title or "")
+    total = len(_lesson_blocks(lesson))
+    section = block.get("section_label", "") or f"课文 {n}"
+    scene = block.get(f"scene_{lang}") or block.get("scene_label_zh") or ""
+    header = " · ".join(filter(None, [section, scene]))
+
+    hdr = {
+        "uz": "📖 Shu dialogdagi yangi so'zlar",
+        "tj": "📖 Калимаҳои нави ҳамин муколама",
+        "ru": "📖 Новые слова этого диалога",
+    }
+    hint_tpl = {
+        "uz": "Avval <b>{}</b> ta so'zni yengil olamiz, keyin dialogga o'tamiz.",
+        "tj": "Аввал <b>{}</b> калимаро сабук мегирем, баъд ба муколама мегузарем.",
+        "ru": "Сначала спокойно берём <b>{}</b> слова, затем переходим к диалогу.",
+    }
+
+    lines = [
+        f"<b>【{_lesson_word(lang)} {lesson.lesson_order} · {_block_label(lang, n, total)}】 {title}</b>",
+        hdr.get(lang, hdr["ru"]),
+        "",
+    ]
+    if header:
+        lines.append(f"📍 <b>{header}</b>")
+        lines.append("")
+    lines.extend([hint_tpl.get(lang, hint_tpl["ru"]).format(len(words)), ""])
+
+    for i, word in enumerate(words):
+        _format_word_block(word, i, lang, lines)
+    lines.append("─────────────")
+    return "\n".join(lines)
+
+
+def format_block_quiz(lesson, lang: str, n: int) -> str:
+    block = _block_by_no(lesson, n)
+    title = _parse_title(lesson.title or "")
+    total = len(_lesson_blocks(lesson))
+    questions = block.get("mini_quiz") or []
+
+    hdr = {
+        "uz": "📝 Kichik test",
+        "tj": "📝 Тести хурд",
+        "ru": "📝 Мини-тест",
+    }
+    intro = {
+        "uz": "Keyingi qismga o'tishdan oldin shu dialogni tez tekshiramiz.",
+        "tj": "Пеш аз қисми навбатӣ ҳамин муколамаро зуд месанҷем.",
+        "ru": "Перед следующей частью быстро проверим этот диалог.",
+    }
+    answer_hint = {
+        "uz": "Mini App ochilmasa, javoblarni shu yerga yozishingiz mumkin.",
+        "tj": "Агар Mini App кушода нашавад, ҷавобҳоро ҳамин ҷо нависед.",
+        "ru": "Если Mini App не откроется, можно написать ответы здесь.",
+    }
+
+    lines = [
+        f"<b>【{_lesson_word(lang)} {lesson.lesson_order} · {_block_label(lang, n, total)}】 {title}</b>",
+        hdr.get(lang, hdr["ru"]),
+        "",
+        intro.get(lang, intro["ru"]),
+        "",
+    ]
+
+    if isinstance(questions, list) and questions:
+        for index, item in enumerate(questions, 1):
+            if not isinstance(item, dict):
+                continue
+            prompt = (
+                item.get(f"prompt_{lang}")
+                or _uz_fallback(lang, item.get("prompt_uz"))
+                or item.get("prompt")
+                or item.get("question")
+                or ""
+            )
+            if prompt:
+                lines.append(f"{index}. {prompt}")
+        lines.append("")
+
+    lines.append(answer_hint.get(lang, answer_hint["ru"]))
+    return "\n".join(lines).rstrip()
+
+
+def format_block_grammar(lesson, lang: str, n: int) -> str:
+    block = _block_by_no(lesson, n)
+    if not block:
+        return ""
+
+    title = _parse_title(lesson.title or "")
+    total = len(_lesson_blocks(lesson))
+    section = block.get("section_label", "") or f"课文 {n}"
+    scene = block.get(f"scene_{lang}") or block.get("scene_label_zh") or ""
+    header = " · ".join(filter(None, [section, scene]))
+    grammar_notes = block.get("grammar_notes") or []
+    grammar_items = _block_grammar_items(lesson, block)
+
+    if not grammar_notes and not grammar_items:
+        return ""
+
+    hdr = {
+        "uz": "📐 Shu dialog grammatikasi",
+        "tj": "📐 Грамматикаи ҳамин муколама",
+        "ru": "📐 Грамматика этого диалога",
+    }
+
+    lines = [
+        f"<b>【{_lesson_word(lang)} {lesson.lesson_order} · {_block_label(lang, n, total)}】 {title}</b>",
+        hdr.get(lang, hdr["ru"]),
+        "",
+    ]
+    if header:
+        lines.append(f"📍 <b>{header}</b>")
+        lines.append("")
+
+    for note in grammar_notes:
+        if not isinstance(note, dict):
+            continue
+        pattern = note.get("pattern", "")
+        explanation = (
+            note.get(f"explanation_{lang}")
+            or _uz_fallback(lang, note.get("explanation_uz"))
+            or note.get("explanation", "")
+        )
+        ex_zh = note.get("example_zh", "")
+        ex_pin = note.get("example_pinyin", "")
+        ex_tr = (
+            note.get(f"example_{lang}")
+            or _uz_fallback(lang, note.get("example_uz"))
+            or note.get("example_translation", "")
+        )
+        lines.append("━━━━━━━━━━━━━━")
+        if pattern:
+            lines.append(f"📌 <code>{pattern}</code>")
+        if explanation:
+            lines.append(f"   {explanation}")
+        if ex_zh:
+            lines.append("")
+            lines.append(f"   💬 <b>{ex_zh}</b>")
+            if ex_pin:
+                lines.append(f"      <i>{ex_pin}</i>")
+            if ex_tr:
+                lines.append(f"      {ex_tr}")
+        lines.append("")
+
+    for index, item in enumerate(grammar_items, 1):
+        g_title = item.get(f"title_{lang}") or _uz_fallback(lang, item.get("title_uz")) or item.get("title_zh") or ""
+        rule = (
+            item.get(f"rule_{lang}")
+            or _uz_fallback(lang, item.get("rule_uz"))
+            or item.get("explanation")
+            or item.get("rule")
+            or ""
+        )
+
+        lines.append("━━━━━━━━━━━━━━")
+        lines.append(f"<b>📌 {index}. {g_title}</b>")
+        lines.append("")
+        if rule:
+            for rule_line in rule.split("\n"):
+                lines.append(f"   {rule_line}")
+        examples = item.get("examples", [])
+        if examples:
+            eg_label = {"uz": "💬 Misollar:", "tj": "💬 Мисолҳо:", "ru": "💬 Примеры:"}
+            lines.append("")
+            lines.append(f"   {eg_label.get(lang, eg_label['ru'])}")
+            for ex in examples[:3]:
+                if not isinstance(ex, dict):
+                    continue
+                zh = ex.get("zh", "")
+                pinyin = ex.get("pinyin", "")
+                meaning = ex.get(lang) or _uz_fallback(lang, ex.get("uz")) or ex.get("meaning") or ""
+                lines.append(f"   • <b>{zh}</b> <i>({pinyin})</i> — {meaning}")
+        lines.append("")
+
+    lines.append("━━━━━━━━━━━━━━")
+    return "\n".join(lines).rstrip()
+
+
 def format_dialogue_n(lesson, lang: str, n: int) -> str:
     """V2: n-chi dialog bloki (1-indexed), grammar_notes inline qo'yilgan."""
     dialogues = _parse(lesson.dialogue_json, [])
@@ -361,8 +606,11 @@ def format_dialogue_n(lesson, lang: str, n: int) -> str:
         "ru": "🎭 Диалог",
     }
 
+    total = len(_lesson_blocks(lesson))
+    part = f" · {_block_label(lang, n, total)}" if total else ""
+
     lines = [
-        f"<b>【{_lesson_word(lang)} {lesson.lesson_order}】 {title}</b>",
+        f"<b>【{_lesson_word(lang)} {lesson.lesson_order}{part}】 {title}</b>",
         f"{dlg_hdr.get(lang, dlg_hdr['ru'])} {n}",
         "",
     ]
@@ -394,7 +642,10 @@ def format_dialogue_n(lesson, lang: str, n: int) -> str:
     lines.append("━━━━━━━━━━━━━━")
 
     # ─── Inline grammatika eslatmalari ────────────────────────────
-    grammar_notes = block.get("grammar_notes", [])
+    show_inline_grammar = not (
+        block.get("word_nos") or block.get("grammar_nos") or block.get("mini_quiz")
+    )
+    grammar_notes = block.get("grammar_notes", []) if show_inline_grammar else []
     if grammar_notes:
         gram_hdr = {
             "uz": "📐 Grammatika eslatmasi",
@@ -591,6 +842,12 @@ def format_step(lesson, lang: str, step: str) -> str | None:
         return format_vocab_1(lesson, lang)
     if step == "vocab_2":
         return format_vocab_2(lesson, lang)
+    if step.startswith("block_vocab_"):
+        try:
+            n = int(step.split("_", 2)[2])
+        except (ValueError, IndexError):
+            n = 1
+        return format_block_vocab(lesson, lang, n)
     if step == "dialogue":
         return format_dialogue(lesson, lang)
     if step.startswith("dialogue_"):
@@ -601,8 +858,20 @@ def format_step(lesson, lang: str, step: str) -> str | None:
         return format_dialogue_n(lesson, lang, n)
     if step == "grammar":
         return format_grammar_v2(lesson, lang)
+    if step.startswith("block_grammar_"):
+        try:
+            n = int(step.split("_", 2)[2])
+        except (ValueError, IndexError):
+            n = 1
+        return format_block_grammar(lesson, lang, n)
     if step == "exercise":
         return format_exercise(lesson, lang)
+    if step.startswith("block_quiz_"):
+        try:
+            n = int(step.split("_", 2)[2])
+        except (ValueError, IndexError):
+            n = 1
+        return format_block_quiz(lesson, lang, n)
     if step == "satisfaction_check":
         return format_satisfaction_check(lesson, lang)
     if step == "review":

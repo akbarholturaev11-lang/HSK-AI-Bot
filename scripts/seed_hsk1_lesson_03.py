@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk1_block_metadata import apply_hsk1_block_metadata
 
 
 LESSON = {
@@ -18,9 +19,9 @@ LESSON = {
         "tj": "Омӯзед, ки чӣ тавр исм, миллат ва касби худро ба забони чинӣ гӯед",
     }, ensure_ascii=False),
     "intro_text": json.dumps({
-        "uz": "Uchinchi darsda siz xitoycha ismingizni, millatingizni va kasbingizni aytishni o'rganasiz. 9 ta yangi so'z, 3 ta dialog va 是-gaplar grammatikasi.",
-        "ru": "На третьем уроке вы научитесь называть своё имя, национальность и профессию по-китайски. 9 новых слов, 3 диалога и грамматика предложений с 是.",
-        "tj": "Дар дарси сеюм шумо исм, миллат ва касби худро ба забони чинӣ гуфтанро меомӯзед. 9 калимаи нав, 3 муколама ва грамматикаи ҷумлаҳои 是.",
+        "uz": "Uchinchi darsda siz xitoycha ismingizni, millatingizni va kasbingizni aytishni o'rganasiz. 12 ta yangi so'z, 3 ta dialog va 是-gaplar grammatikasi.",
+        "ru": "На третьем уроке вы научитесь называть своё имя, национальность и профессию по-китайски. 12 новых слов, 3 диалога и грамматика предложений с 是.",
+        "tj": "Дар дарси сеюм шумо исм, миллат ва касби худро ба забони чинӣ гуфтанро меомӯзед. 12 калимаи нав, 3 муколама ва грамматикаи ҷумлаҳои 是.",
     }, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "叫",   "pinyin": "jiào",     "pos": "v.",
@@ -59,6 +60,18 @@ LESSON = {
          "uz": "inson, odam",
          "ru": "человек, люди",
          "tj": "одам, инсон"},
+        {"no": 10, "zh": "李月", "pinyin": "Lǐ Yuè",   "pos": "pn.",
+         "uz": "Li Yue (ism)",
+         "ru": "Ли Юэ (имя)",
+         "tj": "Ли Юэ (ном)"},
+        {"no": 11, "zh": "中国", "pinyin": "Zhōngguó", "pos": "pn.",
+         "uz": "Xitoy",
+         "ru": "Китай",
+         "tj": "Чин"},
+        {"no": 12, "zh": "美国", "pinyin": "Měiguó",   "pos": "pn.",
+         "uz": "Amerika, AQSH",
+         "ru": "Америка, США",
+         "tj": "Амрико, ИМА"},
     ], ensure_ascii=False),
 
     "dialogue_json": json.dumps([
@@ -308,6 +321,9 @@ LESSON = {
 
     "is_active": True,
 }
+
+
+apply_hsk1_block_metadata(LESSON)
 
 
 async def seed():

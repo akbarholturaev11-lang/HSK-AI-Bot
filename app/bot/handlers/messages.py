@@ -41,6 +41,7 @@ from app.bot.keyboards.course import course_intro_keyboard
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
     course_homework_miniapp_keyboard,
+    course_miniapp_continue_keyboard,
     course_miniapp_understood_keyboard,
     course_quiz_miniapp_keyboard,
 )
@@ -60,7 +61,7 @@ from app.repositories.user_repo import UserRepository
 from app.services.access_service import AccessService
 from app.services.ai_service import AIService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
-from app.services.course_engine_service import CourseEngineService
+from app.services.course_engine_service import CourseEngineService, get_block_no_from_step, is_block_quiz_step
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_tutor_service import CourseTutorService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
@@ -183,7 +184,12 @@ def _is_i18n_access_key(value: str) -> bool:
 
 def _is_course_tutor_step(step: str) -> bool:
     step = (step or "").strip()
-    return step in _COURSE_TUTOR_STEPS or step.startswith("dialogue_")
+    return (
+        step in _COURSE_TUTOR_STEPS
+        or step.startswith("dialogue_")
+        or step.startswith("block_vocab_")
+        or step.startswith("block_grammar_")
+    )
 
 
 async def _ensure_ai_available(access_service: AccessService, telegram_id: int, respond, lang: str) -> bool:
@@ -728,9 +734,13 @@ async def _send_miniapp_result_message(message: Message, session, payload: dict)
 
         user = result["user"]
         lang = user.language if user and user.language else "ru"
+        if result.get("block_no"):
+            reply_markup = course_miniapp_continue_keyboard(lang)
+        else:
+            reply_markup = course_miniapp_understood_keyboard(lang)
         await message.answer(
             format_miniapp_quiz_result(lang, result),
-            reply_markup=course_miniapp_understood_keyboard(lang),
+            reply_markup=reply_markup,
             parse_mode="HTML",
         )
         return True
@@ -1051,9 +1061,10 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             return
 
         if progress.waiting_for == "quiz_result":
+            block_no = get_block_no_from_step(progress.current_step) if is_block_quiz_step(progress.current_step) else None
             await message.answer(
                 t("course_miniapp_wait_quiz", user_lang),
-                reply_markup=course_quiz_miniapp_keyboard(user_lang, lesson),
+                reply_markup=course_quiz_miniapp_keyboard(user_lang, lesson, block_no=block_no),
                 parse_mode="HTML",
             )
             return

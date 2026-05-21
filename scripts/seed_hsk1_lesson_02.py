@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk1_block_metadata import apply_hsk1_block_metadata
 
 
 LESSON = {
@@ -226,6 +227,9 @@ LESSON = {
 
     "is_active": True,
 }
+
+
+apply_hsk1_block_metadata(LESSON)
 
 
 async def seed():

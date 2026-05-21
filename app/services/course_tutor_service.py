@@ -66,6 +66,43 @@ class CourseTutorService:
     def _safe(self, value: Any) -> str:
         return str(value).strip() if value else ""
 
+    def _block_by_no(self, lesson, n: int) -> dict:
+        dialogues = self._parse(getattr(lesson, "dialogue_json", None), [])
+        if not isinstance(dialogues, list):
+            return {}
+        for block in dialogues:
+            if isinstance(block, dict) and int(block.get("block_no") or 0) == n:
+                return block
+        return {}
+
+    def _block_words(self, lesson, block: dict) -> list[dict]:
+        vocab = self._parse(getattr(lesson, "vocabulary_json", None), [])
+        if not isinstance(vocab, list):
+            return []
+        word_nos = block.get("word_nos") or []
+        if not isinstance(word_nos, list):
+            return []
+        wanted = {int(no) for no in word_nos if str(no).isdigit()}
+        return [
+            word
+            for word in vocab
+            if isinstance(word, dict) and int(word.get("no") or 0) in wanted
+        ]
+
+    def _block_grammar(self, lesson, block: dict) -> list[dict]:
+        grammar = self._parse(getattr(lesson, "grammar_json", None), [])
+        if not isinstance(grammar, list):
+            return []
+        grammar_nos = block.get("grammar_nos") or []
+        if not isinstance(grammar_nos, list):
+            return []
+        wanted = {int(no) for no in grammar_nos if str(no).isdigit()}
+        return [
+            item
+            for item in grammar
+            if isinstance(item, dict) and int(item.get("no") or 0) in wanted
+        ]
+
     # ─── STEP PROMPTS ───────────────────────────────────────────
 
     def _prompt_intro(self, lesson, user_language, user_level) -> tuple:
@@ -396,9 +433,71 @@ QOIDALAR:
 {_EXPLANATION_RULE}"""
         return prompt, data
 
+    def _prompt_block_vocab(self, lesson, user_language, user_level, n: int = 1) -> tuple:
+        block = self._block_by_no(lesson, n)
+        vocab_page = self._block_words(lesson, block)
+        title = self._safe(getattr(lesson, "title", ""))
+        data = {
+            "lesson_title": title,
+            "block_number": n,
+            "dialogue_block": block,
+            "vocabulary": vocab_page,
+        }
+        prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisan. Faqat shu dialogdagi yangi so'zlarni tushuntir.
+
+SO'ZLAR:
+{json.dumps(data, ensure_ascii=False, indent=2)}
+
+QOIDALAR:
+- Faqat {user_language} tilida javob ber, {user_level} darajasi
+- Xitoy belgilari uchun <b>...</b>, pinyin uchun <code>...</code>
+- Faqat shu qism so'zlaridan foydalan
+{_VOCAB_BLOCK_RULE}
+{_EXPLANATION_RULE}"""
+        return prompt, data
+
+    def _prompt_block_grammar(self, lesson, user_language, user_level, n: int = 1) -> tuple:
+        block = self._block_by_no(lesson, n)
+        title = self._safe(getattr(lesson, "title", ""))
+        data = {
+            "lesson_title": title,
+            "block_number": n,
+            "dialogue_block": block,
+            "grammar_notes": block.get("grammar_notes") or [],
+            "grammar_points": self._block_grammar(lesson, block),
+            "block_vocabulary": self._block_words(lesson, block),
+        }
+        prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisan. Shu dialogdan keyingi grammatikani qisqa va aniq tushuntir.
+
+GRAMMATIKA MA'LUMOTI:
+{json.dumps(data, ensure_ascii=False, indent=2)}
+
+QOIDALAR:
+- Faqat {user_language} tilida javob ber, {user_level} darajasi
+- Xitoy: <b>...</b>, pinyin: <code>...</code>
+- Har bir qoida: naqsh → oddiy izoh → shu dialogdan 1 misol
+- Darsdan tashqariga chiqma
+- Jami 10 qatordan oshmasin
+{_EXPLANATION_RULE}"""
+        return prompt, data
+
     # ─── STEP ROUTER ────────────────────────────────────────────
 
     def _build_prompt_for_step(self, lesson, step: str, user_language: str, user_level: str) -> tuple:
+        if step.startswith("block_vocab_"):
+            try:
+                n = int(step.split("_", 2)[2])
+            except (ValueError, IndexError):
+                n = 1
+            return self._prompt_block_vocab(lesson, user_language, user_level, n)
+
+        if step.startswith("block_grammar_"):
+            try:
+                n = int(step.split("_", 2)[2])
+            except (ValueError, IndexError):
+                n = 1
+            return self._prompt_block_grammar(lesson, user_language, user_level, n)
+
         # V2 dialogue_N steps
         if step.startswith("dialogue_"):
             try:
@@ -451,7 +550,11 @@ QOIDALAR:
         )
         response = self.last_ai_result.content
 
-        if step in _CONVERSATIONAL_STEPS:
+        if (
+            step in _CONVERSATIONAL_STEPS
+            or step.startswith("block_vocab_")
+            or step.startswith("block_grammar_")
+        ):
             hint = _PRESS_BUTTON_HINT.get(user_language, _PRESS_BUTTON_HINT["ru"])
             response = response.rstrip() + hint
 

@@ -23,6 +23,7 @@ from app.services.course_miniapp_lesson_service import CourseMiniAppLessonServic
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
+    course_miniapp_continue_keyboard,
     course_miniapp_understood_keyboard,
 )
 from app.bot.utils.course_miniapp import (
@@ -160,10 +161,14 @@ async def miniapp_event(request: Request):
 
             user = result["user"]
             lang = user.language if user and user.language else "ru"
+            if result.get("block_no"):
+                reply_markup = course_miniapp_continue_keyboard(lang)
+            else:
+                reply_markup = course_miniapp_understood_keyboard(lang)
             await bot.send_message(
                 chat_id=telegram_id,
                 text=format_miniapp_quiz_result(lang, result),
-                reply_markup=course_miniapp_understood_keyboard(lang),
+                reply_markup=reply_markup,
                 parse_mode="HTML",
             )
             return {"ok": True}

@@ -40,6 +40,8 @@ COURSE_STEP_ORDER_V2_BASE = [
 # Backward compat alias
 COURSE_STEP_ORDER = COURSE_STEP_ORDER_V1
 
+BLOCK_STEP_PREFIXES = ("block_vocab_", "block_grammar_", "block_quiz_")
+
 
 def _parse_json(value, default):
     if value is None or value == "":
@@ -106,10 +108,77 @@ def is_v2_lesson(lesson) -> bool:
     return any(isinstance(d, dict) and d.get("block_no") for d in dialogues)
 
 
+def get_lesson_blocks(lesson) -> list[dict]:
+    dialogues = _parse_json(getattr(lesson, "dialogue_json", None), [])
+    if not isinstance(dialogues, list):
+        return []
+    return [
+        block
+        for block in dialogues
+        if isinstance(block, dict) and block.get("block_no")
+    ]
+
+
+def is_block_lesson(lesson) -> bool:
+    """Dars dialog bo'yicha kichik qismlarga bo'linganmi."""
+    return any(
+        block.get("word_nos")
+        or block.get("mini_quiz")
+        or block.get("mini_homework")
+        for block in get_lesson_blocks(lesson)
+    )
+
+
+def get_block_no_from_step(step: str) -> Optional[int]:
+    step = (step or "").strip()
+    for prefix in (*BLOCK_STEP_PREFIXES, "dialogue_"):
+        if step.startswith(prefix):
+            try:
+                return int(step.removeprefix(prefix))
+            except (TypeError, ValueError):
+                return None
+    return None
+
+
+def is_block_quiz_step(step: str) -> bool:
+    return (step or "").startswith("block_quiz_")
+
+
+def is_block_vocab_step(step: str) -> bool:
+    return (step or "").startswith("block_vocab_")
+
+
+def is_block_grammar_step(step: str) -> bool:
+    return (step or "").startswith("block_grammar_")
+
+
+def get_block_by_no(lesson, block_no: int) -> Optional[dict]:
+    for block in get_lesson_blocks(lesson):
+        if int(block.get("block_no") or 0) == block_no:
+            return block
+    return None
+
+
 def get_step_order(lesson) -> list:
     """Darsga mos step tartibini qaytaradi."""
     if not is_v2_lesson(lesson):
         return COURSE_STEP_ORDER_V1
+
+    if is_block_lesson(lesson):
+        steps = ["intro"]
+        for block in get_lesson_blocks(lesson):
+            block_no = int(block.get("block_no") or 0)
+            if block_no <= 0:
+                continue
+            if block.get("word_nos"):
+                steps.append(f"block_vocab_{block_no}")
+            steps.append(f"dialogue_{block_no}")
+            if block.get("grammar_notes") or block.get("grammar_nos"):
+                steps.append(f"block_grammar_{block_no}")
+            if block.get("mini_quiz") is not False:
+                steps.append(f"block_quiz_{block_no}")
+        steps += ["satisfaction_check", "homework", "completed"]
+        return steps
 
     vocab = _parse_json(getattr(lesson, "vocabulary_json", None), [])
     dialogues = _parse_json(getattr(lesson, "dialogue_json", None), [])
