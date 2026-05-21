@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk1_block_metadata import apply_hsk1_block_metadata
 
 
 LESSON = {
@@ -18,9 +19,9 @@ LESSON = {
         "tj": "Баёни ҷойгиршавӣ, ҷумлаҳои 有, феъли модалии 能 ва пайвандаки 和",
     }, ensure_ascii=False),
     "intro_text": json.dumps({
-        "uz": "O'ninchi darsda siz narsalar qayerda ekanligini aytishni, 有 bilan mavjudlikni ifodalashni, 能 modal fe'lini va 和 bog'lovchisini o'rganasiz. 12 ta yangi so'z, 3 ta dialog.",
-        "ru": "В десятом уроке вы научитесь говорить, где находятся вещи, выражать существование с 有, использовать модальный глагол 能 и союз 和. 12 новых слов, 3 диалога.",
-        "tj": "Дар дарси даҳум шумо ёд мегиред, ки чизҳо дар куҷоянд, бо 有 мавҷудиятро баён кунед, феъли модалии 能 ва пайвандаки 和 -ро истифода баред. 12 калимаи нав, 3 муколама.",
+        "uz": "O'ninchi darsda siz narsalar qayerda ekanligini aytishni, 有 bilan mavjudlikni ifodalashni, 能 modal fe'lini va 和 bog'lovchisini o'rganasiz. 14 ta yangi so'z, 3 ta dialog.",
+        "ru": "В десятом уроке вы научитесь говорить, где находятся вещи, выражать существование с 有, использовать модальный глагол 能 и союз 和. 14 новых слов, 3 диалога.",
+        "tj": "Дар дарси даҳум шумо ёд мегиред, ки чизҳо дар куҷоянд, бо 有 мавҷудиятро баён кунед, феъли модалии 能 ва пайвандаки 和 -ро истифода баред. 14 калимаи нав, 3 муколама.",
     }, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "桌子", "pinyin": "zhuōzi",   "pos": "n.",
@@ -71,6 +72,14 @@ LESSON = {
          "uz": "o'tirmoq",
          "ru": "сидеть, садиться",
          "tj": "нишастан"},
+        {"no": 13, "zh": "王方", "pinyin": "Wáng Fāng","pos": "pn.",
+         "uz": "Wang Fang (ism)",
+         "ru": "Ван Фан (имя)",
+         "tj": "Ван Фан (ном)"},
+        {"no": 14, "zh": "谢朋", "pinyin": "Xiè Péng", "pos": "pn.",
+         "uz": "Xie Peng (ism)",
+         "ru": "Се Пэн (имя)",
+         "tj": "Ше Пен (ном)"},
     ], ensure_ascii=False),
 
     "dialogue_json": json.dumps([
@@ -327,6 +336,9 @@ LESSON = {
 
     "is_active": True,
 }
+
+
+apply_hsk1_block_metadata(LESSON)
 
 
 async def seed():

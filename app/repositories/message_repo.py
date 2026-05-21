@@ -98,3 +98,20 @@ class MessageRepository:
             .limit(1)
         )
         return result.scalar_one_or_none()
+
+    async def get_recent_by_content_type(
+        self,
+        user_id: int,
+        content_type: str,
+        limit: int = 3,
+    ) -> List[Message]:
+        result = await self.session.execute(
+            select(Message)
+            .where(Message.user_id == user_id)
+            .where(Message.content_type == content_type)
+            .order_by(Message.created_at.desc())
+            .limit(limit)
+        )
+        messages = list(result.scalars().all())
+        messages.reverse()
+        return messages

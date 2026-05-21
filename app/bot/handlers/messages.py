@@ -61,6 +61,7 @@ from app.repositories.user_repo import UserRepository
 from app.services.access_service import AccessService
 from app.services.ai_service import AIService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
+from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_engine_service import CourseEngineService, get_block_no_from_step, is_block_quiz_step
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_tutor_service import CourseTutorService
@@ -245,9 +246,13 @@ async def _answer_course_tutor_question(
             user_id=user.id,
             lesson_id=lesson.id,
         )
+        app_error_context = await AppErrorContextService(session).build_ai_context(
+            user_id=user.id,
+        )
         contextual_message = text
-        if miniapp_context:
-            contextual_message = f"{miniapp_context}\n\nFOYDALANUVCHI XABARI:\n{text}"
+        context_parts = [part for part in (miniapp_context, app_error_context) if part]
+        if context_parts:
+            contextual_message = "\n\n".join(context_parts) + f"\n\nFOYDALANUVCHI XABARI:\n{text}"
         reply = await tutor.generate_step_response(
             user_language=user.language,
             user_level=user.level,

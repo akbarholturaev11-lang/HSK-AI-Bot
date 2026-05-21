@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk1_block_metadata import apply_hsk1_block_metadata
 
 
 LESSON = {
@@ -18,9 +19,9 @@ LESSON = {
         "tj": "Гуфтан ва пурсидани вақт, зарфҳои вақт, калимаи 前",
     }, ensure_ascii=False),
     "intro_text": json.dumps({
-        "uz": "O'n birinchi darsda siz vaqtni aytishni, vaqt ravishlarini va 前 so'zi bilan vaqtni ifodalashni o'rganasiz. 11 ta yangi so'z, 3 ta dialog.",
-        "ru": "В одиннадцатом уроке вы научитесь говорить о времени, использовать временные наречия и выражать время с помощью слова 前. 11 новых слов, 3 диалога.",
-        "tj": "Дар дарси ёздаҳум шумо ёд мегиред, ки вақтро чӣ тавр гӯед, зарфҳои вақтро истифода баред ва вақтро бо калимаи 前 баён кунед. 11 калимаи нав, 3 муколама.",
+        "uz": "O'n birinchi darsda siz vaqtni aytishni, vaqt ravishlarini va 前 so'zi bilan vaqtni ifodalashni o'rganasiz. 12 ta yangi so'z, 3 ta dialog.",
+        "ru": "В одиннадцатом уроке вы научитесь говорить о времени, использовать временные наречия и выражать время с помощью слова 前. 12 новых слов, 3 диалога.",
+        "tj": "Дар дарси ёздаҳум шумо ёд мегиред, ки вақтро чӣ тавр гӯед, зарфҳои вақтро истифода баред ва вақтро бо калимаи 前 баён кунед. 12 калимаи нав, 3 муколама.",
     }, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "现在", "pinyin": "xiànzài",  "pos": "n.",
@@ -67,6 +68,10 @@ LESSON = {
          "uz": "oldin, avval",
          "ru": "до, перед",
          "tj": "пеш аз, қабл аз"},
+        {"no": 12, "zh": "北京", "pinyin": "Běijīng",  "pos": "pn.",
+         "uz": "Pekin",
+         "ru": "Пекин",
+         "tj": "Пекин"},
     ], ensure_ascii=False),
 
     "dialogue_json": json.dumps([
@@ -380,6 +385,9 @@ LESSON = {
 
     "is_active": True,
 }
+
+
+apply_hsk1_block_metadata(LESSON)
 
 
 async def seed():

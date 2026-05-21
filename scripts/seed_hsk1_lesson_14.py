@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk1_block_metadata import apply_hsk1_block_metadata
 
 
 LESSON = {
@@ -18,9 +19,9 @@ LESSON = {
         "tj": "Зарраи 了 барои амалҳои анҷомшуда, 后 ҳамчун нишонаи вақт ва зарфи 都",
     }, ensure_ascii=False),
     "intro_text": json.dumps({
-        "uz": "O'n to'rtinchi darsda siz 了 bilan tugallangan harakatlarni, 后 bilan kelajak vaqtni ifodalashni va 都 ravishini o'rganasiz. 16 ta yangi so'z, 3 ta dialog.",
-        "ru": "В четырнадцатом уроке вы научитесь выражать завершённые действия с 了, будущее время с 后 и использовать наречие 都. 16 новых слов, 3 диалога.",
-        "tj": "Дар дарси чордаҳум шумо ёд мегиред, ки амалҳои анҷомшударо бо 了 баён кунед, оянда бо 后 ва зарфи 都 -ро истифода баред. 16 калимаи нав, 3 муколама.",
+        "uz": "O'n to'rtinchi darsda siz 了 bilan tugallangan harakatlarni, 后 bilan kelajak vaqtni ifodalashni va 都 ravishini o'rganasiz. 17 ta yangi so'z, 3 ta dialog.",
+        "ru": "В четырнадцатом уроке вы научитесь выражать завершённые действия с 了, будущее время с 后 и использовать наречие 都. 17 новых слов, 3 диалога.",
+        "tj": "Дар дарси чордаҳум шумо ёд мегиред, ки амалҳои анҷомшударо бо 了 баён кунед, оянда бо 后 ва зарфи 都 -ро истифода баред. 17 калимаи нав, 3 муколама.",
     }, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "东西",  "pinyin": "dōngxi",    "pos": "n.",
@@ -87,6 +88,10 @@ LESSON = {
          "uz": "hammasi, barchasi",
          "ru": "все, всё, оба",
          "tj": "ҳама, тамом"},
+        {"no": 17, "zh": "张",    "pinyin": "Zhāng",     "pos": "pn.",
+         "uz": "Zhang (familiya)",
+         "ru": "Чжан (фамилия)",
+         "tj": "Чжан (насаб)"},
     ], ensure_ascii=False),
 
     "dialogue_json": json.dumps([
@@ -385,6 +390,9 @@ LESSON = {
 
     "is_active": True,
 }
+
+
+apply_hsk1_block_metadata(LESSON)
 
 
 async def seed():

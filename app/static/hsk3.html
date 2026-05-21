@@ -687,6 +687,7 @@ async function reportEvent(eventName,payload={}){
         "X-Telegram-Init-Data":tg?.initData||""
       },
       body:JSON.stringify({
+        level:"hsk3",
         event:eventName,
         ...payload,
         created_at:new Date().toISOString()
@@ -694,17 +695,84 @@ async function reportEvent(eventName,payload={}){
     });
     if(!res.ok)throw new Error("Mini App backend error: "+res.status);
   }catch(e){
+    if(eventName!=="app_error"){
+      reportAppError(e,{source:"report_event_failed",failed_event:eventName});
+    }
     if((eventName==="quiz_completed"||eventName==="homework_submitted")&&tg?.sendData){
       try{tg.sendData(JSON.stringify({event:eventName,...payload,created_at:new Date().toISOString()}));}catch(_e){}
     }
-    const pending=JSON.parse(localStorage.getItem("hsk3_pending_events")||"[]");
+    const pending=safeJSON("hsk3_pending_events",[]);
     pending.push({
+      level:"hsk3",
       event:eventName,
       ...payload,
       created_at:new Date().toISOString()
     });
     localStorage.setItem("hsk3_pending_events",JSON.stringify(pending));
   }
+}
+
+function serializeError(error){
+  if(error instanceof Error){
+    return {name:error.name||"Error",message:error.message||"",stack:error.stack||""};
+  }
+  if(typeof error==="object"&&error!==null){
+    let message="";
+    try{message=error.message||JSON.stringify(error);}catch(e){message=String(error);}
+    return {name:error.name||"Error",message,stack:error.stack||""};
+  }
+  return {name:"Error",message:String(error||"Unknown error"),stack:""};
+}
+
+function reportAppError(error,extra={}){
+  const details=serializeError(error);
+  return reportEvent("app_error",{
+    lesson_id:initialLesson||null,
+    mode,
+    source:extra.source||"miniapp_error",
+    error_name:details.name,
+    error_message:details.message,
+    stack:details.stack,
+    url:window.location.href,
+    user_agent:navigator.userAgent,
+    extra
+  });
+}
+
+window.addEventListener("error",event=>{
+  reportAppError(event.error||event.message,{
+    source:"window_error",
+    filename:event.filename,
+    lineno:event.lineno,
+    colno:event.colno
+  });
+});
+
+window.addEventListener("unhandledrejection",event=>{
+  reportAppError(event.reason,{source:"unhandledrejection"});
+});
+
+async function flushPendingEvents(){
+  const pending=safeJSON("hsk3_pending_events",[]);
+  if(!pending.length)return;
+  const tg=window.Telegram?.WebApp;
+  const remaining=[];
+  for(const item of pending){
+    try{
+      const res=await fetch(MINI_EVENT_ENDPOINT,{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "X-Telegram-Init-Data":tg?.initData||""
+        },
+        body:JSON.stringify(item)
+      });
+      if(!res.ok)remaining.push(item);
+    }catch(e){
+      remaining.push(item);
+    }
+  }
+  localStorage.setItem("hsk3_pending_events",JSON.stringify(remaining));
 }
 
 function showOnlyPage(id){
@@ -1016,6 +1084,8 @@ function ansQ(i){
   if(ok)S.qScore.c++;
   S.qScore.t++;
   qList[qIdx].correct=ok;
+  qList[qIdx].selected_index=i;
+  qList[qIdx].selected_answer=(q.opts||q.o||[])[i]||'';
   const fb=document.getElementById('q-fb');
   fb.textContent=(ok?tt('correctPrefix'):tt('wrongPrefix'))+(q.expl||q.e||'');
   fb.className='quiz-fb show '+(ok?'ok':'no');
@@ -1034,6 +1104,8 @@ function showResult(){
     lesson_id:x.lesson||activeLesson,
     type:x.type||x.cat||'quiz',
     question:x.q,
+    selected_answer:x.selected_answer||'',
+    selected_index:typeof x.selected_index==='number'?x.selected_index:null,
     correct_answer:(x.opts||x.o||[])[('ans' in x)?x.ans:x.a]||'',
     explanation:x.expl||x.e||''
   }));
@@ -1059,7 +1131,7 @@ function showResult(){
     list.id='wrong-items-box';
     list.className='result-list';
     list.innerHTML=wrong_items.length
-      ? wrong_items.map((w,i)=>`<div class="result-item"><b>${i+1}. ${w.question}</b><br>${tt('correctAnswer')}: ${w.correct_answer}</div>`).join('')
+      ? wrong_items.map((w,i)=>`<div class="result-item"><b>${i+1}. ${w.question}</b><br>${tt('yourAnswer')}: ${w.selected_answer}<br>${tt('correctAnswer')}: ${w.correct_answer}</div>`).join('')
       : `<div class="result-item" style="background:var(--green-dim);border-color:rgba(43,207,114,.25);color:var(--green);">${tt('noWrong')}</div>`;
     box.appendChild(list);
     if(!qReported){
@@ -1222,6 +1294,7 @@ function submitHomework(){
 
 // ===== INIT =====
 (async function init(){
+  await flushPendingEvents();
   if(miniMode){
     document.body.classList.add('mini-mode');
     S.qFilter=initialLesson;

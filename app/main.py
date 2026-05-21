@@ -18,6 +18,7 @@ from app.services.expiry_reminder_service import ExpiryReminderService
 from app.services.course_reminder_service import CourseReminderService
 from app.services.bot_feedback_service import BotFeedbackService
 from app.services.ad_campaign_service import AdCampaignService
+from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
@@ -152,6 +153,13 @@ async def miniapp_event(request: Request):
         return {"ok": True}
 
     async with async_session_maker() as session:
+        if event == "app_error":
+            saved = await AppErrorContextService(session).record_miniapp_error(
+                telegram_id=telegram_id,
+                payload=payload,
+            )
+            return {"ok": bool(saved)}
+
         service = CourseMiniAppResultService(session)
 
         if event == "quiz_completed":

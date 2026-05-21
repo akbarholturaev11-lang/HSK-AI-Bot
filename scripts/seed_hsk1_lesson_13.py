@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk1_block_metadata import apply_hsk1_block_metadata
 
 
 LESSON = {
@@ -18,9 +19,9 @@ LESSON = {
         "tj": "Баёни амалҳои ҷорӣ (在...呢), рақамҳои телефон ва зарраи 吧",
     }, ensure_ascii=False),
     "intro_text": json.dumps({
-        "uz": "O'n uchinchi darsda siz hozir sodir bo'layotgan harakatlarni qanday ifodalashni, 在...呢 tuzilmasini va 吧 yuklamasini o'rganasiz. 10 ta yangi so'z, 3 ta dialog.",
-        "ru": "В тринадцатом уроке вы научитесь выражать действия, происходящие прямо сейчас, использовать конструкцию 在...呢 и частицу 吧. 10 новых слов, 3 диалога.",
-        "tj": "Дар дарси сездаҳум шумо ёд мегиред, ки амалҳои ҳоло ҷоришударо чӣ тавр баён кунед, сохтори 在...呢 ва зарраи 吧 -ро истифода баред. 10 калимаи нав, 3 муколама.",
+        "uz": "O'n uchinchi darsda siz hozir sodir bo'layotgan harakatlarni qanday ifodalashni, 在...呢 tuzilmasini va 吧 yuklamasini o'rganasiz. 11 ta yangi so'z, 3 ta dialog.",
+        "ru": "В тринадцатом уроке вы научитесь выражать действия, происходящие прямо сейчас, использовать конструкцию 在...呢 и частицу 吧. 11 новых слов, 3 диалога.",
+        "tj": "Дар дарси сездаҳум шумо ёд мегиред, ки амалҳои ҳоло ҷоришударо чӣ тавр баён кунед, сохтори 在...呢 ва зарраи 吧 -ро истифода баред. 11 калимаи нав, 3 муколама.",
     }, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "喂",    "pinyin": "wèi",       "pos": "int.",
@@ -63,6 +64,10 @@ LESSON = {
          "uz": "yumshatuvchi yukla (taklif yoki maslahat uchun)",
          "ru": "смягчающая частица (для предложений или советов)",
          "tj": "зарраи мулоим (барои пешниҳод ё маслиҳат)"},
+        {"no": 11, "zh": "大卫",  "pinyin": "Dàwèi",     "pos": "pn.",
+         "uz": "David (ism)",
+         "ru": "Дэвид (имя)",
+         "tj": "Дэвид (ном)"},
     ], ensure_ascii=False),
 
     "dialogue_json": json.dumps([
@@ -127,10 +132,10 @@ LESSON = {
                  "uz": "82304155, bu O'qituvchi Li ning telefon raqamimi?",
                  "ru": "82304155 — это телефон учителя Ли?",
                  "tj": "82304155, ин рақами телефони устод Лӣ аст?"},
-                {"speaker": "B", "zh": "不是。她的电话是82304156。",         "pinyin": "Bú shì. Tā de diànhuà shì bā èr sān líng sì yāo wǔ liù.",
-                 "uz": "Yo'q. Uning telefon raqami 82304156.",
-                 "ru": "Нет. Её номер 82304156.",
-                 "tj": "Не. Рақами телефони ӯ 82304156 аст."},
+                {"speaker": "B", "zh": "不是，她的电话是82304156。",         "pinyin": "Bú shì, tā de diànhuà shì bā èr sān líng sì yāo wǔ liù.",
+                 "uz": "Yo'q, uning telefon raqami 82304156.",
+                 "ru": "Нет, её номер 82304156.",
+                 "tj": "Не, рақами телефони ӯ 82304156 аст."},
                 {"speaker": "A", "zh": "好，我现在给她打电话。",             "pinyin": "Hǎo, wǒ xiànzài gěi tā dǎ diànhuà.",
                  "uz": "Yaxshi, men hozir unga qo'ng'iroq qilaman.",
                  "ru": "Хорошо, я сейчас ей позвоню.",
@@ -343,6 +348,9 @@ LESSON = {
 
     "is_active": True,
 }
+
+
+apply_hsk1_block_metadata(LESSON)
 
 
 async def seed():

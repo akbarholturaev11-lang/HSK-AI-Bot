@@ -3587,12 +3587,72 @@ async function reportEvent(eventName, payload = {}) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return true;
   } catch (e) {
+    if (eventName !== "app_error") {
+      reportAppError(e, { source: "report_event_failed", failed_event: eventName });
+    }
     const pending = safeJSON("hsk2_pending_events", []);
     pending.push(eventPayload);
     localStorage.setItem("hsk2_pending_events", JSON.stringify(pending));
     return false;
   }
 }
+
+function serializeError(error) {
+  if (error instanceof Error) {
+    return {
+      name: error.name || "Error",
+      message: error.message || "",
+      stack: error.stack || ""
+    };
+  }
+  if (typeof error === "object" && error !== null) {
+    let message = "";
+    try {
+      message = error.message || JSON.stringify(error);
+    } catch (e) {
+      message = String(error);
+    }
+    return {
+      name: error.name || "Error",
+      message,
+      stack: error.stack || ""
+    };
+  }
+  return {
+    name: "Error",
+    message: String(error || "Unknown error"),
+    stack: ""
+  };
+}
+
+function reportAppError(error, extra = {}) {
+  const details = serializeError(error);
+  return reportEvent("app_error", {
+    lesson_id: lesson?.id || lessonId || null,
+    block_no: null,
+    mode,
+    source: extra.source || "miniapp_error",
+    error_name: details.name,
+    error_message: details.message,
+    stack: details.stack,
+    url: window.location.href,
+    user_agent: navigator.userAgent,
+    extra
+  });
+}
+
+window.addEventListener("error", event => {
+  reportAppError(event.error || event.message, {
+    source: "window_error",
+    filename: event.filename,
+    lineno: event.lineno,
+    colno: event.colno
+  });
+});
+
+window.addEventListener("unhandledrejection", event => {
+  reportAppError(event.reason, { source: "unhandledrejection" });
+});
 
 async function flushPendingEvents() {
   const pending = safeJSON("hsk2_pending_events", []);
@@ -3633,6 +3693,11 @@ function renderError() {
   document.getElementById("error-text").textContent = t("lessonNotFound");
   document.getElementById("error-return").textContent = t("returnToBot");
   document.getElementById("error-return").onclick = returnToBot;
+  reportAppError("lesson_not_found_or_invalid_mode", {
+    source: "render_error",
+    raw_lesson: rawLesson,
+    mode
+  });
   showPage("error-page");
 }
 

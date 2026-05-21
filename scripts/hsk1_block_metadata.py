@@ -136,6 +136,56 @@ _BLOCK_CONFIG = {
         2: {"word_nos": [4, 5, 6, 7, 8], "grammar_nos": [1, 3]},
         3: {"word_nos": [9, 10], "grammar_nos": [2, 3, 4]},
     },
+    6: {
+        1: {"word_nos": [1, 2, 3], "grammar_nos": [1]},
+        2: {"word_nos": [4, 5, 6, 7], "grammar_nos": [2]},
+        3: {"word_nos": [8, 9, 10, 11, 12], "grammar_nos": [1, 3]},
+    },
+    7: {
+        1: {"word_nos": [1, 2, 3, 4, 5, 6], "grammar_nos": [1, 2]},
+        2: {"word_nos": [7, 8], "grammar_nos": [1]},
+        3: {"word_nos": [9, 10, 11, 12], "grammar_nos": [3]},
+    },
+    8: {
+        1: {"word_nos": [1, 2, 3, 4, 5], "grammar_nos": [1]},
+        2: {"word_nos": [6, 7, 8, 9, 10], "grammar_nos": [1, 3]},
+        3: {"word_nos": [11, 12, 13, 14, 15], "grammar_nos": [2, 4]},
+    },
+    9: {
+        1: {"word_nos": [1, 2, 3, 4, 5, 6, 7], "grammar_nos": [1, 2]},
+        2: {"word_nos": [8, 9, 10, 11, 12, 13], "grammar_nos": [1, 3]},
+        3: {"word_nos": [14], "grammar_nos": [2, 4]},
+    },
+    10: {
+        1: {"word_nos": [1, 2, 3, 4, 5, 6], "grammar_nos": [1, 2]},
+        2: {"word_nos": [7, 8, 13, 14], "grammar_nos": [2]},
+        3: {"word_nos": [9, 10, 11, 12], "grammar_nos": [1, 3, 4]},
+    },
+    11: {
+        1: {"word_nos": [1, 2, 3, 4, 5], "grammar_nos": [1, 2]},
+        2: {"word_nos": [6, 7, 8, 9], "grammar_nos": [2]},
+        3: {"word_nos": [10, 11, 12], "grammar_nos": [3]},
+    },
+    12: {
+        1: {"word_nos": [1, 2, 3, 4, 5], "grammar_nos": [1, 2, 3]},
+        2: {"word_nos": [6, 7, 8], "grammar_nos": [4]},
+        3: {"word_nos": [9, 10, 11, 12, 13], "grammar_nos": [1, 2, 3]},
+    },
+    13: {
+        1: {"word_nos": [1, 2, 3, 11], "grammar_nos": [1, 2]},
+        2: {"word_nos": [4, 5, 6, 7], "grammar_nos": [2, 3]},
+        3: {"word_nos": [8, 9, 10], "grammar_nos": [3, 4]},
+    },
+    14: {
+        1: {"word_nos": [1, 2, 3], "grammar_nos": [1]},
+        2: {"word_nos": [4, 5, 6, 7, 8, 9, 10, 17], "grammar_nos": [1, 2]},
+        3: {"word_nos": [11, 12, 13, 14, 15, 16], "grammar_nos": [1, 3, 4]},
+    },
+    15: {
+        1: {"word_nos": [1, 2, 3], "grammar_nos": [1, 2]},
+        2: {"word_nos": [4, 5, 6], "grammar_nos": [1]},
+        3: {"word_nos": [7, 8, 9], "grammar_nos": [1]},
+    },
 }
 
 

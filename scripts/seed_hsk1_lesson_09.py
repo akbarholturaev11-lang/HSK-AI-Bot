@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.session import async_session_maker as SessionLocal
 from app.db.models.course_lessons import CourseLesson
+from scripts.hsk1_block_metadata import apply_hsk1_block_metadata
 
 
 LESSON = {
@@ -35,10 +36,10 @@ LESSON = {
          "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
          "ru": "находиться / в, на (показатель места)",
          "tj": "будан / дар (нишондиҳандаи ҷой)"},
-        {"no": 4,  "zh": "哪儿", "pinyin": "nǎr",      "pos": "pron.",
-         "uz": "qayerda",
-         "ru": "где",
-         "tj": "куҷо"},
+        {"no": 4,  "zh": "那儿", "pinyin": "nàr",      "pos": "pron.",
+         "uz": "u yerda, ana o'sha yerda",
+         "ru": "там, вон там",
+         "tj": "он ҷо, дар он ҷо"},
         {"no": 5,  "zh": "狗",   "pinyin": "gǒu",      "pos": "n.",
          "uz": "it",
          "ru": "собака",
@@ -51,34 +52,34 @@ LESSON = {
          "uz": "pastda, ostida",
          "ru": "внизу, под",
          "tj": "дар поён, зери"},
-        {"no": 8,  "zh": "工作", "pinyin": "gōngzuò",  "pos": "v./n.",
+        {"no": 8,  "zh": "在",   "pinyin": "zài",      "pos": "prep.",
+         "uz": "-da, -da (joy ko'rsatgich)",
+         "ru": "в, на (показатель места)",
+         "tj": "дар (нишондиҳандаи ҷой)"},
+        {"no": 9,  "zh": "哪儿", "pinyin": "nǎr",      "pos": "pron.",
+         "uz": "qayerda",
+         "ru": "где",
+         "tj": "куҷо"},
+        {"no": 10, "zh": "工作", "pinyin": "gōngzuò",  "pos": "v./n.",
          "uz": "ishlash / ish, mehnat",
          "ru": "работать / работа",
          "tj": "кор кардан / кор"},
-        {"no": 9,  "zh": "儿子", "pinyin": "érzi",     "pos": "n.",
+        {"no": 11, "zh": "儿子", "pinyin": "érzi",     "pos": "n.",
          "uz": "o'g'il",
          "ru": "сын",
          "tj": "писар"},
-        {"no": 10, "zh": "医院", "pinyin": "yīyuàn",   "pos": "n.",
+        {"no": 12, "zh": "医院", "pinyin": "yīyuàn",   "pos": "n.",
          "uz": "kasalxona",
          "ru": "больница",
          "tj": "беморхона"},
-        {"no": 11, "zh": "医生", "pinyin": "yīshēng",  "pos": "n.",
+        {"no": 13, "zh": "医生", "pinyin": "yīshēng",  "pos": "n.",
          "uz": "shifokor",
          "ru": "врач",
          "tj": "духтур"},
-        {"no": 12, "zh": "爸爸", "pinyin": "bàba",     "pos": "n.",
+        {"no": 14, "zh": "爸爸", "pinyin": "bàba",     "pos": "n.",
          "uz": "ota, dada",
          "ru": "папа, отец",
          "tj": "бобо, падар"},
-        {"no": 13, "zh": "家",   "pinyin": "jiā",      "pos": "n.",
-         "uz": "uy, oila",
-         "ru": "дом, семья",
-         "tj": "хона, оила"},
-        {"no": 14, "zh": "那儿", "pinyin": "nàr",      "pos": "pron.",
-         "uz": "u yerda, ana o'sha yerda",
-         "ru": "там, вон там",
-         "tj": "он ҷо, дар он ҷо"},
     ], ensure_ascii=False),
 
     "dialogue_json": json.dumps([
@@ -352,6 +353,9 @@ LESSON = {
 
     "is_active": True,
 }
+
+
+apply_hsk1_block_metadata(LESSON)
 
 
 async def seed():

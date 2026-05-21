@@ -1,5 +1,4 @@
 import json
-from html import escape
 from typing import Any
 
 from app.bot.utils.course_miniapp import (
@@ -243,12 +242,15 @@ class CourseMiniAppResultService:
             lines = [
                 "MINI APP QUIZ KONTEXTI:",
                 f"- lesson_id: {quiz.get('lesson_id')}",
+                f"- block_no: {quiz.get('block_no')}",
                 f"- score: {quiz.get('score')}/{quiz.get('total')} ({quiz.get('percent')}%)",
             ]
             if wrong_items:
                 lines.append("- wrong_items:")
                 for item in wrong_items[:10]:
-                    lines.append(f"  - {escape(str(item))}")
+                    lines.append(
+                        f"  - {json.dumps(item, ensure_ascii=False)[:1000]}"
+                    )
             else:
                 lines.append("- wrong_items: none")
             blocks.append("\n".join(lines))
@@ -265,7 +267,7 @@ class CourseMiniAppResultService:
             if feedback:
                 lines.append("- feedback:")
                 for item in feedback[:10]:
-                    lines.append(f"  - {escape(str(item))}")
+                    lines.append(f"  - {json.dumps(item, ensure_ascii=False)[:1000]}")
             blocks.append("\n".join(lines))
 
         if not blocks:

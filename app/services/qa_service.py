@@ -6,6 +6,7 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
 from app.services.ai_service import AIService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
+from app.services.app_error_context_service import AppErrorContextService
 from app.services.referral_service import ReferralService
 from app.services.access_service import AccessService
 
@@ -80,6 +81,18 @@ class QAService:
                 {
                     "role": "user",
                     "content": f"[Context for this conversation: {onboarding_challenge.content}]",
+                },
+            )
+
+        app_error_context = await AppErrorContextService(self.session).build_ai_context(
+            user_id=user.id,
+        )
+        if app_error_context:
+            history.insert(
+                0,
+                {
+                    "role": "user",
+                    "content": f"[Context for this conversation: {app_error_context}]",
                 },
             )
 
