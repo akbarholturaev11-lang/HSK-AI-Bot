@@ -1,6 +1,8 @@
 import json
 import re
 
+from scripts.block_context_grammar import normalize_block_grammar
+
 
 _CJK_RE = re.compile(r"[\u4e00-\u9fff]+")
 _GRAMMAR_LABELS = {
@@ -358,10 +360,21 @@ def apply_hsk2_block_metadata(lesson: dict) -> dict:
             "grammar_nos": grammar_map.get(block_no, []),
         }
         block.update(cfg)
-        block_words = [_word_by_no(vocab, no) for no in cfg["word_nos"]]
+        block.pop("mini_quiz", None)
+        block.pop("mini_homework", None)
+
+    normalize_block_grammar(dialogues)
+
+    for block in dialogues:
+        if not isinstance(block, dict):
+            continue
+        block_no = int(block.get("block_no") or 0)
+        if not block_no:
+            continue
+        block_words = [_word_by_no(vocab, no) for no in block.get("word_nos", [])]
         block_words = [word for word in block_words if word]
-        block.setdefault("mini_quiz", _mini_quiz(lesson_order, block_no, vocab, grammar, cfg))
-        block.setdefault("mini_homework", _mini_homework(block_no, block_words))
+        block["mini_quiz"] = _mini_quiz(lesson_order, block_no, vocab, grammar, block)
+        block["mini_homework"] = _mini_homework(block_no, block_words)
 
     lesson["dialogue_json"] = json.dumps(dialogues, ensure_ascii=False)
     return lesson

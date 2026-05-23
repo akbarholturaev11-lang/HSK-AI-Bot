@@ -132,6 +132,45 @@ class CourseMiniAppLessonService:
         if block and isinstance(block.get("grammar_nos"), list):
             wanted = {int(no) for no in block["grammar_nos"] if str(no).isdigit()}
         items = []
+        if block and isinstance(block.get("grammar_notes"), list):
+            for note in block["grammar_notes"]:
+                if not isinstance(note, dict):
+                    continue
+                pattern = note.get("pattern") or ""
+                explanation = (
+                    note.get(f"explanation_{lang}")
+                    or note.get("explanation_uz")
+                    or note.get("explanation_ru")
+                    or note.get("explanation_tj")
+                    or ""
+                )
+                examples = []
+                if note.get("example_zh"):
+                    examples.append(
+                        {
+                            "zh": note.get("example_zh") or "",
+                            "pinyin": note.get("example_pinyin") or "",
+                            "translation": (
+                                note.get(f"example_{lang}")
+                                or note.get("example_uz")
+                                or note.get("example_ru")
+                                or note.get("example_tj")
+                                or ""
+                            ),
+                        }
+                    )
+                items.append(
+                    {
+                        "no": len(items) + 1,
+                        "title": pattern,
+                        "title_zh": pattern,
+                        "rule": explanation,
+                        "formula": pattern,
+                        "examples": examples,
+                    }
+                )
+            if items:
+                return items
         for index, item in enumerate(grammar, 1):
             if not isinstance(item, dict):
                 continue

@@ -90,6 +90,8 @@ class CourseTutorService:
         ]
 
     def _block_grammar(self, lesson, block: dict) -> list[dict]:
+        if block.get("grammar_notes"):
+            return []
         grammar = self._parse(getattr(lesson, "grammar_json", None), [])
         if not isinstance(grammar, list):
             return []

@@ -498,7 +498,7 @@ def format_block_grammar(lesson, lang: str, n: int) -> str:
     scene = block.get(f"scene_{lang}") or block.get("scene_label_zh") or ""
     header = " · ".join(filter(None, [section, scene]))
     grammar_notes = block.get("grammar_notes") or []
-    grammar_items = _block_grammar_items(lesson, block)
+    grammar_items = [] if grammar_notes else _block_grammar_items(lesson, block)
 
     if not grammar_notes and not grammar_items:
         return ""
