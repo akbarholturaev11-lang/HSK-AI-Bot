@@ -103,6 +103,33 @@ class CourseTutorService:
             if isinstance(item, dict) and int(item.get("no") or 0) in wanted
         ]
 
+    def _lesson_blocks_payload(self, lesson) -> list[dict]:
+        dialogues = self._parse(getattr(lesson, "dialogue_json", None), [])
+        if not isinstance(dialogues, list):
+            return []
+
+        payload = []
+        for block in dialogues:
+            if not isinstance(block, dict) or not block.get("block_no"):
+                continue
+            payload.append(
+                {
+                    "block_no": block.get("block_no"),
+                    "section_label": block.get("section_label"),
+                    "scene_uz": block.get("scene_uz"),
+                    "scene_ru": block.get("scene_ru"),
+                    "scene_tj": block.get("scene_tj"),
+                    "word_nos": block.get("word_nos") or [],
+                    "vocabulary": self._block_words(lesson, block),
+                    "grammar_nos": block.get("grammar_nos") or [],
+                    "grammar_points": self._block_grammar(lesson, block),
+                    "dialogue": block.get("dialogue") or [],
+                    "mini_quiz": block.get("mini_quiz") or [],
+                    "mini_homework": block.get("mini_homework") or {},
+                }
+            )
+        return payload
+
     # ─── STEP PROMPTS ───────────────────────────────────────────
 
     def _prompt_intro(self, lesson, user_language, user_level) -> tuple:
@@ -307,14 +334,13 @@ QOIDALAR:
     def _prompt_review(self, lesson, user_language, user_level) -> tuple:
         vocab = self._parse(getattr(lesson, "vocabulary_json", None), [])
         grammar = self._parse(getattr(lesson, "grammar_json", None), [])
-        dialogue = self._parse(getattr(lesson, "dialogue_json", None), [])
         title = self._safe(getattr(lesson, "title", ""))
 
         data = {
             "lesson_title": title,
-            "vocabulary": vocab[:12],
+            "vocabulary": vocab,
             "grammar_points": grammar,
-            "dialogue_preview": dialogue[:2],
+            "lesson_blocks": self._lesson_blocks_payload(lesson),
         }
 
         prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisан. Talaba darsni tushunmagan joyini qayta tushuntir.
@@ -327,6 +353,8 @@ QOIDALAR:
 - Agar FOYDALANUVCHI XABARI ichida MINI APP QUIZ/HOMEWORK KONTEXTI bo'lsa, avval o'sha xatolar va javoblarga tayan
 - Quiz wrong_items bo'lsa: har bir xatoni qisqa sabab + to'g'ri javob + 1 sodda misol bilan tushuntir
 - Homework answers/feedback bo'lsa: talabaning javobidagi xatoni aniq tuzat
+- Lesson_blocks yangi format: har bir block ichida dialogue, vocabulary, grammar_points, mini_quiz, mini_homework bor
+- Javobda aynan xato qilingan block/dialog/vocabulary/grammar bilan bog'lab tushuntir
 - Xitoy: <b>...</b>, pinyin: <code>...</code>
 - Yangi test, mashq yoki homework berma
 - Maksimal 10 qator
@@ -340,6 +368,7 @@ QOIDALAR:
         vocab = self._parse(getattr(lesson, "vocabulary_json", None), [])
         grammar = self._parse(getattr(lesson, "grammar_json", None), [])
         title = self._safe(getattr(lesson, "title", ""))
+        lesson_blocks = self._lesson_blocks_payload(lesson)
 
         if not homework:
             homework = {
@@ -351,8 +380,9 @@ QOIDALAR:
         data = {
             "lesson_title": title,
             "homework": homework,
-            "allowed_vocabulary": vocab[:8],
-            "allowed_grammar": grammar[:3],
+            "lesson_blocks": lesson_blocks,
+            "allowed_vocabulary": vocab,
+            "allowed_grammar": grammar,
         }
 
         prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisан. Uy vazifasini baholash.
@@ -370,6 +400,7 @@ ASOSIY VAZIFA — FOYDALANUVCHI JAVOBINI TEKSHIR:
 QOIDALAR:
 - Faqat {user_language} tilida javob ber, {user_level} darajasi
 - Xitoy: <b>...</b>, pinyin: <code>...</code>
+- Yangi block formatdagi mini_homework mavjud bo'lsa, aynan shu topshiriqlarga tayan
 - Maksimal 8 qator"""
 
         return prompt, data
@@ -413,22 +444,30 @@ QOIDALAR:
         return prompt, data
 
     def _prompt_dialogue_n(self, lesson, user_language, user_level, n: int = 1) -> tuple:
-        """V2: n-chi dialog bloki (grammar_notes inline)."""
+        """V2/block: n-chi dialog bloki va unga tegishli yangi so'z/grammatika."""
         import json as _json
-        dialogues = self._parse(getattr(lesson, "dialogue_json", None), [])
-        block = dialogues[n - 1] if isinstance(dialogues, list) and len(dialogues) >= n else {}
+        block = self._block_by_no(lesson, n)
         title = self._safe(getattr(lesson, "title", ""))
-        data = {"lesson_title": title, "dialogue_block": block, "block_number": n}
+        data = {
+            "lesson_title": title,
+            "block_number": n,
+            "dialogue_block": block,
+            "block_vocabulary": self._block_words(lesson, block),
+            "grammar_points": self._block_grammar(lesson, block),
+            "mini_quiz": block.get("mini_quiz") or [],
+            "mini_homework": block.get("mini_homework") or {},
+        }
         prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisан. Bu dialogni va unga bog'liq grammatikani qisqa tushuntir.
 
-DIALOG MA'LUMOTI:
+DIALOG MA'LUMOTI (YANGI BLOCK FORMAT):
 {_json.dumps(data, ensure_ascii=False, indent=2)}
 
 QOIDALAR:
 - Faqat {user_language} tilida javob ber, {user_level} darajasi
 - Xitoy: <b>...</b>, pinyin: <code>...</code>
 - Har bir qator: <b>Xitoycha</b> [<code>pinyin</code>] — tarjima
-- Dialogdan 1-2 ta foydali ibora va grammar_notes ni qisqa tushuntir
+- Faqat dialogue_block, block_vocabulary va grammar_points dan foydalan
+- Dialogdan 1-2 ta foydali ibora va grammar_points ni qisqa tushuntir
 - Jami 12 qatordan oshmasin
 {_EXPLANATION_RULE}"""
         return prompt, data
@@ -565,6 +604,7 @@ QOIDALAR:
         grammar = self._parse(getattr(lesson, "grammar_json", None), [])
         homework = self._parse(getattr(lesson, "homework_json", None), [])
         title = self._safe(getattr(lesson, "title", ""))
+        lesson_blocks = self._lesson_blocks_payload(lesson)
 
         if not homework:
             homework = {
@@ -575,8 +615,9 @@ QOIDALAR:
         payload = {
             "lesson_title": title,
             "homework": homework,
-            "allowed_vocabulary": vocab[:8],
-            "allowed_grammar": grammar[:3],
+            "lesson_blocks": lesson_blocks,
+            "allowed_vocabulary": vocab,
+            "allowed_grammar": grammar,
             "student_submission": submission_text,
         }
 
@@ -587,6 +628,8 @@ DATA:
 
 RULES:
 - Evaluate ONLY against the homework and lesson content above
+- If lesson_blocks contain mini_homework, use those block-level tasks as the primary homework context
+- If student_submission is JSON from Mini App, inspect the answer fields and compare them with lesson_blocks, block_vocabulary, and grammar_points
 - Give score 0-100
 - decided passed = true if score >= 60
 - feedback_text must be in {user_language}, short and clear

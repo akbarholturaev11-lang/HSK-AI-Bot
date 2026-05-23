@@ -235,46 +235,36 @@ class CourseMiniAppResultService:
 
         quiz = self._load_attempt_payload(quiz_attempt)
         homework = self._load_attempt_payload(homework_attempt)
-        blocks = []
+        context_payload = {}
 
         if quiz.get("source") == "miniapp":
             wrong_items = normalize_result_items(quiz.get("wrong_items"))
-            lines = [
-                "MINI APP QUIZ KONTEXTI:",
-                f"- lesson_id: {quiz.get('lesson_id')}",
-                f"- block_no: {quiz.get('block_no')}",
-                f"- score: {quiz.get('score')}/{quiz.get('total')} ({quiz.get('percent')}%)",
-            ]
-            if wrong_items:
-                lines.append("- wrong_items:")
-                for item in wrong_items[:10]:
-                    lines.append(
-                        f"  - {json.dumps(item, ensure_ascii=False)[:1000]}"
-                    )
-            else:
-                lines.append("- wrong_items: none")
-            blocks.append("\n".join(lines))
+            context_payload["miniapp_quiz_result"] = {
+                "lesson_id": quiz.get("lesson_id"),
+                "block_no": quiz.get("block_no"),
+                "score": quiz.get("score"),
+                "total": quiz.get("total"),
+                "percent": quiz.get("percent"),
+                "wrong_items": wrong_items[:10],
+            }
 
         if homework.get("source") == "miniapp":
             feedback = normalize_result_items(homework.get("feedback"))
-            lines = [
-                "MINI APP HOMEWORK KONTEXTI:",
-                f"- lesson_id: {homework.get('lesson_id')}",
-                f"- status: {homework.get('status')}",
-                f"- homework_score: {homework.get('homework_score')}",
-                f"- answers: {json.dumps(homework.get('answers') or {}, ensure_ascii=False)[:1200]}",
-            ]
-            if feedback:
-                lines.append("- feedback:")
-                for item in feedback[:10]:
-                    lines.append(f"  - {json.dumps(item, ensure_ascii=False)[:1000]}")
-            blocks.append("\n".join(lines))
+            context_payload["miniapp_homework_result"] = {
+                "lesson_id": homework.get("lesson_id"),
+                "status": homework.get("status"),
+                "homework_score": homework.get("homework_score"),
+                "answers": homework.get("answers") or {},
+                "feedback": feedback[:10],
+            }
 
-        if not blocks:
+        if not context_payload:
             return ""
 
         return (
-            "\n\n".join(blocks)
+            "MINI APP RESULT CONTEXT (JSON):\n"
+            + json.dumps(context_payload, ensure_ascii=False, indent=2)[:4000]
             + "\n\nAI UCHUN QOIDA: foydalanuvchiga yordam berganda shu Mini App natijalarini "
-            "kontekst sifatida ishlat. Ayniqsa wrong_items, homework answers va feedback bo'yicha tushuntir."
+            "yangi course block materiali bilan birga ishlat. Ayniqsa wrong_items, homework answers "
+            "va feedback bo'yicha aynan qaysi savolda/xatoda muammo bo'lganini tushuntir."
         )

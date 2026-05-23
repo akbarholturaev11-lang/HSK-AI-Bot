@@ -1088,6 +1088,355 @@ _LESSON_12_DIALOGUES = [
 ]
 
 
+_LESSON_13_VOCABULARY = [
+    {"no": 1, "zh": "终于", "pinyin": "zhōngyú", "pos": "adv.", "uz": "nihoyat, oxiri", "ru": "наконец", "tj": "ниҳоят"},
+    {"no": 2, "zh": "爷爷", "pinyin": "yéye", "pos": "n.", "uz": "bobo", "ru": "дедушка", "tj": "бобо"},
+    {"no": 3, "zh": "礼物", "pinyin": "lǐwù", "pos": "n.", "uz": "sovg'a", "ru": "подарок", "tj": "туҳфа"},
+    {"no": 4, "zh": "奶奶", "pinyin": "nǎinai", "pos": "n.", "uz": "buvi", "ru": "бабушка", "tj": "биби"},
+    {"no": 5, "zh": "遇到", "pinyin": "yùdào", "pos": "v.", "uz": "duch kelmoq, uchratmoq", "ru": "встретить, столкнуться", "tj": "дучор шудан, вохӯрдан"},
+    {"no": 6, "zh": "一边", "pinyin": "yìbiān", "pos": "adv.", "uz": "bir vaqtda, bir tarafdan", "ru": "одновременно", "tj": "ҳамзамон"},
+    {"no": 7, "zh": "过去", "pinyin": "guòqù", "pos": "n.", "uz": "o'tmish", "ru": "прошлое", "tj": "гузашта"},
+    {"no": 8, "zh": "一般", "pinyin": "yìbān", "pos": "adj./adv.", "uz": "odatda; umumiy", "ru": "обычно; общий", "tj": "одатан; умумӣ"},
+    {"no": 9, "zh": "愿意", "pinyin": "yuànyì", "pos": "v.", "uz": "xohlamoq, rozi bo'lmoq", "ru": "хотеть, быть готовым", "tj": "хостан, розӣ будан"},
+    {"no": 10, "zh": "起来", "pinyin": "qǐlái", "pos": "v.", "uz": "turmoq, yuqoriga harakatlanmoq", "ru": "подниматься, вставать", "tj": "бархостан, боло шудан"},
+    {"no": 11, "zh": "应该", "pinyin": "yīnggāi", "pos": "v.", "uz": "kerak, lozim", "ru": "следует, должен", "tj": "бояд"},
+    {"no": 12, "zh": "生活", "pinyin": "shēnghuó", "pos": "n.", "uz": "hayot", "ru": "жизнь", "tj": "зиндагӣ"},
+    {"no": 13, "zh": "校长", "pinyin": "xiàozhǎng", "pos": "n.", "uz": "maktab direktori", "ru": "директор школы", "tj": "директори мактаб"},
+    {"no": 14, "zh": "坏", "pinyin": "huài", "pos": "adj.", "uz": "buzuq, yomon", "ru": "испорченный, плохой", "tj": "вайрон, бад"},
+    {"no": 15, "zh": "经常", "pinyin": "jīngcháng", "pos": "adv.", "uz": "tez-tez, ko'pincha", "ru": "часто", "tj": "зуд-зуд"},
+]
+
+
+_LESSON_13_DIALOGUES = [
+    {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_uz": "Uyda",
+        "scene_ru": "Дома",
+        "scene_tj": "Дар хона",
+        "word_nos": [1, 2, 3, 4],
+        "grammar_nos": [1, 3],
+        "dialogue": [
+            {"speaker": "小丽", "zh": "你终于回来了！从哪儿买回来这么多东西啊？", "pinyin": "Nǐ zhōngyú huílai le! Cóng nǎr mǎi huílai zhème duō dōngxi a?", "uz": "Nihoyat qaytding! Shuncha narsani qayerdan sotib olib kelding?", "ru": "Наконец-то ты вернулся! Откуда ты купил столько вещей?", "tj": "Ниҳоят баргаштӣ! Ин қадар чизро аз куҷо харида овардӣ?"},
+            {"speaker": "小刚", "zh": "都是从那边的商店买回来的。", "pinyin": "Dōu shì cóng nàbiān de shāngdiàn mǎi huílai de.", "uz": "Hammasini u yerdagi do'kondan sotib olib keldim.", "ru": "Всё купил в магазине там.", "tj": "Ҳамаро аз мағозаи он тараф харида овардам."},
+            {"speaker": "小丽", "zh": "怎么还买红酒回来了？谁喝啊？", "pinyin": "Zěnme hái mǎi hóngjiǔ huílai le? Shéi hē a?", "uz": "Nega vino ham sotib olib kelding? Kim ichadi?", "ru": "Зачем ещё купил вино? Кто будет пить?", "tj": "Чаро боз шароб харида овардӣ? Кӣ менӯшад?"},
+            {"speaker": "小刚", "zh": "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。", "pinyin": "Zhè shì gěi yéye de lǐwù, míngtiān wǒmen yìqǐ sòng guòqu, kànkan yéye nǎinai.", "uz": "Bu bobomga sovg'a, ertaga birga olib borib, bobo-buvimni ko'ramiz.", "ru": "Это подарок дедушке, завтра вместе отвезём и навестим бабушку с дедушкой.", "tj": "Ин туҳфа барои бобо, пагоҳ якҷоя мебарем ва бобову бибиро мебинем."},
+            {"speaker": "小丽", "zh": "那我的礼物呢？快拿出来让我看看。", "pinyin": "Nà wǒ de lǐwù ne? Kuài ná chūlai ràng wǒ kànkan.", "uz": "Unda mening sovg'am-chi? Tez olib chiq, ko'ray.", "ru": "А мой подарок? Доставай скорее, дай посмотреть.", "tj": "Пас туҳфаи ман чӣ? Зуд барор, бинам."},
+            {"speaker": "小刚", "zh": "我不是已经回来了吗？", "pinyin": "Wǒ bú shì yǐjīng huílai le ma?", "uz": "Men allaqachon qaytib keldim-ku?", "ru": "Разве я уже не вернулся?", "tj": "Магар ман аллакай барнагаштам?"},
+        ],
+    },
+    {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_uz": "Uyda",
+        "scene_ru": "Дома",
+        "scene_tj": "Дар хона",
+        "word_nos": [5, 6, 7],
+        "grammar_nos": [1, 2, 3],
+        "dialogue": [
+            {"speaker": "小丽", "zh": "我今天看见你和一个女的进了咖啡店，她是谁啊？", "pinyin": "Wǒ jīntiān kànjiàn nǐ hé yí ge nǚ de jìn le kāfēidiàn, tā shì shéi a?", "uz": "Bugun seni bir ayol bilan qahvaxonaga kirganingni ko'rdim, u kim?", "ru": "Сегодня я видела, как ты вошёл в кафе с какой-то женщиной. Кто она?", "tj": "Имрӯз дидам, ки бо як зан ба қаҳвахона даромадӣ, ӯ кист?"},
+            {"speaker": "小刚", "zh": "她是我今天在路上遇到的一个老同学。", "pinyin": "Tā shì wǒ jīntiān zài lùshang yùdào de yí ge lǎo tóngxué.", "uz": "U bugun yo'lda uchratgan eski sinfdoshim.", "ru": "Это моя старая одноклассница, которую я встретил сегодня по дороге.", "tj": "Ӯ ҳамсинфи пешинаам аст, ки имрӯз дар роҳ вохӯрдам."},
+            {"speaker": "小丽", "zh": "你们就一起去喝咖啡了？", "pinyin": "Nǐmen jiù yìqǐ qù hē kāfēi le?", "uz": "Shunda birga qahva ichgani bordinglarmi?", "ru": "И вы сразу пошли вместе пить кофе?", "tj": "Пас якҷоя қаҳва нӯшидан рафтед?"},
+            {"speaker": "小刚", "zh": "是啊，一边喝咖啡一边说了些过去的事。", "pinyin": "Shì a, yìbiān hē kāfēi yìbiān shuō le xiē guòqù de shì.", "uz": "Ha, qahva ichib o'tmishdagi ba'zi gaplarni gaplashdik.", "ru": "Да, пили кофе и говорили о прошлом.", "tj": "Ҳа, қаҳва нӯшида аз баъзе корҳои гузашта гап задем."},
+            {"speaker": "小丽", "zh": "你回来得这么晚，是说了很多过去的事吗？", "pinyin": "Nǐ huílai de zhème wǎn, shì shuō le hěn duō guòqù de shì ma?", "uz": "Bunchalik kech qaytganing, o'tmishdagi ko'p narsalarni gaplashganingdanmi?", "ru": "Ты так поздно вернулся потому, что долго говорили о прошлом?", "tj": "Ин қадар дер баргаштанат аз он буд, ки бисёр чизҳои гузаштаро гуфтед?"},
+            {"speaker": "小刚", "zh": "不是。没有公共汽车了，我是走回来的。", "pinyin": "Bú shì. Méiyǒu gōnggòng qìchē le, wǒ shì zǒu huílai de.", "uz": "Yo'q. Avtobus yo'q edi, men piyoda qaytib keldim.", "ru": "Нет. Автобусов уже не было, я вернулся пешком.", "tj": "Не. Автобус набуд, ман пиёда баргаштам."},
+        ],
+    },
+    {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_uz": "Telefonda",
+        "scene_ru": "По телефону",
+        "scene_tj": "Дар телефон",
+        "word_nos": [8, 9, 10, 11, 12],
+        "grammar_nos": [2],
+        "dialogue": [
+            {"speaker": "同事", "zh": "小丽，周末你一般跟小刚出去看电影吗？", "pinyin": "Xiǎolì, zhōumò nǐ yìbān gēn Xiǎogāng chūqu kàn diànyǐng ma?", "uz": "Xiaoli, dam olish kunlari odatda Xiaogang bilan kinoga chiqasanmi?", "ru": "Сяоли, по выходным ты обычно ходишь с Сяоганом в кино?", "tj": "Сяоли, охири ҳафта одатан бо Сяоганг кино дидан меравӣ?"},
+            {"speaker": "小丽", "zh": "我很少去电影院看电影，我更愿意在家看电视。", "pinyin": "Wǒ hěn shǎo qù diànyǐngyuàn kàn diànyǐng, wǒ gèng yuànyì zài jiā kàn diànshì.", "uz": "Men kinoteatrga juda kam boraman, uyda televizor ko'rishni ko'proq xohlayman.", "ru": "Я редко хожу в кинотеатр, больше предпочитаю смотреть телевизор дома.", "tj": "Ман ба кинотеатр кам меравам, бештар дар хона телевизор диданро мехоҳам."},
+            {"speaker": "同事", "zh": "看电视有什么意思啊？", "pinyin": "Kàn diànshì yǒu shénme yìsi a?", "uz": "Televizor ko'rishning nimasi qiziq?", "ru": "Что интересного в телевизоре?", "tj": "Телевизор дидан чӣ ҷолиб дорад?"},
+            {"speaker": "小丽", "zh": "可以一边吃一边看，坐久了还可以站起来休息一会儿。", "pinyin": "Kěyǐ yìbiān chī yìbiān kàn, zuò jiǔ le hái kěyǐ zhàn qǐlai xiūxi yíhuìr.", "uz": "Yeb turib ko'rsa bo'ladi, uzoq o'tirsang turib biroz dam olsa bo'ladi.", "ru": "Можно есть и смотреть одновременно, а если долго сидишь, можно встать и отдохнуть.", "tj": "Метавонӣ ҳамзамон хӯрӣ ва бинӣ, дер нишинӣ, бархеста каме истироҳат мекунӣ."},
+            {"speaker": "同事", "zh": "你应该多出去走走，这样你们的生活会更有意思。", "pinyin": "Nǐ yīnggāi duō chūqu zǒuzou, zhèyàng nǐmen de shēnghuó huì gèng yǒu yìsi.", "uz": "Ko'proq tashqariga chiqib sayr qilishing kerak, shunda hayotingiz qiziqroq bo'ladi.", "ru": "Тебе надо чаще выходить гулять, так ваша жизнь будет интереснее.", "tj": "Бояд бештар берун баромада сайр кунӣ, ҳамин тавр зиндагиятон ҷолибтар мешавад."},
+            {"speaker": "小丽", "zh": "有他在，我的生活已经很有意思了。", "pinyin": "Yǒu tā zài, wǒ de shēnghuó yǐjīng hěn yǒu yìsi le.", "uz": "U bor ekan, hayotim allaqachon juda qiziq.", "ru": "Когда он рядом, моя жизнь уже очень интересная.", "tj": "Ӯ бошад, зиндагиям аллакай хеле ҷолиб аст."},
+        ],
+    },
+    {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_uz": "Eri haqida matn",
+        "scene_ru": "Текст о муже",
+        "scene_tj": "Матн дар бораи шавҳар",
+        "word_nos": [13, 14, 15],
+        "grammar_nos": [2],
+        "dialogue": [
+            {"speaker": "旁白", "zh": "刚结婚的时候，我丈夫是中学老师，他喜欢每天早上起床后，一边吃早饭一边看报纸。十年过去了，现在他已经是校长了，因为太忙，每天早上我起床后都看不到他，晚上很晚他才回到家。我真怕他累坏了。希望他能少一些会议，多一些休息，可以经常和我还有孩子在一起。", "pinyin": "Gāng jiéhūn de shíhou, wǒ zhàngfu shì zhōngxué lǎoshī, tā xǐhuan měi tiān zǎoshang qǐ chuáng hòu, yìbiān chī zǎofàn yìbiān kàn bàozhǐ. Shí nián guòqù le, xiànzài tā yǐjīng shì xiàozhǎng le, yīnwèi tài máng, měi tiān zǎoshang wǒ qǐ chuáng hòu dōu kàn bu dào tā, wǎnshang hěn wǎn tā cái huí dào jiā. Wǒ zhēn pà tā lèi huài le. Xīwàng tā néng shǎo yìxiē huìyì, duō yìxiē xiūxi, kěyǐ jīngcháng hé wǒ hái yǒu háizi zài yìqǐ.", "uz": "Yangi turmush qurganimizda erim o'rta maktab o'qituvchisi edi. U har kuni ertalab turgach nonushta qilib gazeta o'qishni yaxshi ko'rardi. O'n yil o'tdi, hozir u allaqachon maktab direktori. Juda bandligi sababli men har kuni ertalab turganimda uni ko'rmayman, kechqurun juda kech uyga qaytadi. Uning charchab qolishidan juda qo'rqaman. U kamroq majlis qilib, ko'proq dam olsa, men va bolam bilan tez-tez birga bo'lsa, deb umid qilaman.", "ru": "Когда мы только поженились, мой муж был учителем средней школы. Каждое утро после подъёма он любил завтракать и читать газету. Прошло десять лет, теперь он уже директор школы. Из-за занятости утром после подъёма я его не вижу, вечером он возвращается очень поздно. Я правда боюсь, что он переутомится. Надеюсь, у него будет меньше совещаний, больше отдыха, и он сможет чаще быть со мной и ребёнком.", "tj": "Вақте нав оиладор шудем, шавҳарам муаллими мактаби миёна буд. Ӯ ҳар саҳар баъди хестан ҳамзамон наҳорӣ мехӯрд ва рӯзнома мехонд. Даҳ сол гузашт, ҳоло ӯ аллакай директори мактаб аст. Азбаски хеле банд аст, ҳар саҳар баъди хестанам ӯро намебинам, шаб хеле дер ба хона меояд. Ман воқеан метарсам, ки ӯ аз хастагӣ хароб шавад. Умед дорам, ки маҷлисҳояш камтар, истироҳаташ бештар шавад ва зуд-зуд бо ману фарзанд бошад."},
+        ],
+    },
+]
+
+
+_LESSON_14_VOCABULARY = [
+    {"no": 1, "zh": "打扫", "pinyin": "dǎsǎo", "pos": "v.", "uz": "tozalamoq, supurmoq", "ru": "убирать, подметать", "tj": "тоза кардан, рӯфтан"},
+    {"no": 2, "zh": "干净", "pinyin": "gānjìng", "pos": "adj.", "uz": "toza", "ru": "чистый", "tj": "тоза"},
+    {"no": 3, "zh": "然后", "pinyin": "ránhòu", "pos": "conj.", "uz": "keyin, undan so'ng", "ru": "потом, затем", "tj": "баъд, сипас"},
+    {"no": 4, "zh": "冰箱", "pinyin": "bīngxiāng", "pos": "n.", "uz": "muzlatkich", "ru": "холодильник", "tj": "яхдон"},
+    {"no": 5, "zh": "洗澡", "pinyin": "xǐ zǎo", "pos": "v.", "uz": "cho'milmoq, dush qabul qilmoq", "ru": "принимать ванну/душ", "tj": "оббозӣ кардан, душ гирифтан"},
+    {"no": 6, "zh": "节目", "pinyin": "jiémù", "pos": "n.", "uz": "dastur, ko'rsatuv", "ru": "программа, передача", "tj": "барнома"},
+    {"no": 7, "zh": "月亮", "pinyin": "yuèliang", "pos": "n.", "uz": "oy", "ru": "луна", "tj": "моҳ"},
+    {"no": 8, "zh": "像", "pinyin": "xiàng", "pos": "v.", "uz": "o'xshamoq", "ru": "быть похожим", "tj": "монанд будан"},
+    {"no": 9, "zh": "盘子", "pinyin": "pánzi", "pos": "n.", "uz": "tarelka, lagan", "ru": "тарелка", "tj": "табақ"},
+    {"no": 10, "zh": "刮风", "pinyin": "guā fēng", "pos": "v.", "uz": "shamol esmoq", "ru": "быть ветреным", "tj": "шамол вазидан"},
+    {"no": 11, "zh": "叔叔", "pinyin": "shūshu", "pos": "n.", "uz": "amaki", "ru": "дядя", "tj": "амак"},
+    {"no": 12, "zh": "阿姨", "pinyin": "āyí", "pos": "n.", "uz": "xola, amma", "ru": "тётя", "tj": "хола, амма"},
+    {"no": 13, "zh": "故事", "pinyin": "gùshi", "pos": "n.", "uz": "hikoya", "ru": "история, рассказ", "tj": "ҳикоя"},
+    {"no": 14, "zh": "声音", "pinyin": "shēngyīn", "pos": "n.", "uz": "ovoz, tovush", "ru": "звук, голос", "tj": "овоз, садо"},
+    {"no": 15, "zh": "菜单", "pinyin": "càidān", "pos": "n.", "uz": "menyu", "ru": "меню", "tj": "меню"},
+    {"no": 16, "zh": "简单", "pinyin": "jiǎndān", "pos": "adj.", "uz": "oson, oddiy", "ru": "простой", "tj": "содда"},
+    {"no": 17, "zh": "香蕉", "pinyin": "xiāngjiāo", "pos": "n.", "uz": "banan", "ru": "банан", "tj": "банан"},
+]
+
+
+_LESSON_14_DIALOGUES = [
+    {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_uz": "Uyda",
+        "scene_ru": "Дома",
+        "scene_tj": "Дар хона",
+        "word_nos": [1, 2, 3, 4],
+        "grammar_nos": [1, 2],
+        "dialogue": [
+            {"speaker": "周太太", "zh": "客人就要来了，你怎么还不打扫房间啊？", "pinyin": "Kèrén jiù yào lái le, nǐ zěnme hái bù dǎsǎo fángjiān a?", "uz": "Mehmonlar hozir keladi, nega hali xonani tozalamayapsiz?", "ru": "Гости вот-вот придут, почему ты ещё не убираешь комнату?", "tj": "Меҳмонон ҳозир меоянд, чаро ҳоло ҳам хонаро тоза намекунӣ?"},
+            {"speaker": "周明", "zh": "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。", "pinyin": "Bié zháojí, wǒ ràng háizimen dǎsǎo ne, kèrén lái de shíhou, tāmen huì bǎ fángjiān dǎsǎo gānjìng.", "uz": "Shoshilmang, bolalarga tozalatayapman, mehmonlar kelganda ular xonani tozalab qo'yishadi.", "ru": "Не волнуйся, я велел детям убирать, когда гости придут, они уберут комнату чисто.", "tj": "Шитоб накун, ба кӯдакон тоза кардан фармудам, вақте меҳмонон оянд, онҳо хонаро тоза мекунанд."},
+            {"speaker": "周太太", "zh": "那你也不能看电视啊。", "pinyin": "Nà nǐ yě bù néng kàn diànshì a.", "uz": "Unda siz ham televizor ko'rib o'tirmasligingiz kerak.", "ru": "Но и ты не должен смотреть телевизор.", "tj": "Пас ту ҳам набояд телевизор бинӣ."},
+            {"speaker": "周明", "zh": "你让我做什么？", "pinyin": "Nǐ ràng wǒ zuò shénme?", "uz": "Menga nima qilishni buyurasiz?", "ru": "Что ты хочешь, чтобы я сделал?", "tj": "Ба ман чӣ кор карданро мегӯӣ?"},
+            {"speaker": "周太太", "zh": "先把茶和杯子放好，然后把冰箱里的西瓜拿出来。", "pinyin": "Xiān bǎ chá hé bēizi fàng hǎo, ránhòu bǎ bīngxiāng li de xīguā ná chūlai.", "uz": "Avval choy va piyolalarni qo'yib chiqing, keyin muzlatkichdagi tarvuzni olib chiqing.", "ru": "Сначала расставь чай и чашки, затем достань арбуз из холодильника.", "tj": "Аввал чой ва пиёлаҳоро ҷо ба ҷо кун, баъд тарбузро аз яхдон барор."},
+            {"speaker": "周明", "zh": "太热了，我还是先把空调打开吧。", "pinyin": "Tài rè le, wǒ háishi xiān bǎ kōngtiáo dǎ kāi ba.", "uz": "Juda issiq, yaxshisi avval konditsionerni yoqay.", "ru": "Слишком жарко, я лучше сначала включу кондиционер.", "tj": "Хеле гарм аст, беҳтараш аввал кондитсионерро мекушоям."},
+        ],
+    },
+    {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_uz": "Telefonda",
+        "scene_ru": "По телефону",
+        "scene_tj": "Дар телефон",
+        "word_nos": [5, 6],
+        "grammar_nos": [1, 2],
+        "dialogue": [
+            {"speaker": "同事", "zh": "你在忙什么呢？刚才打你的手机你也不接。", "pinyin": "Nǐ zài máng shénme ne? Gāngcái dǎ nǐ de shǒujī nǐ yě bù jiē.", "uz": "Nima bilan bandsan? Hozirgina telefoningga qo'ng'iroq qildim, olmading.", "ru": "Чем ты занят? Я только что звонил тебе на мобильный, ты не ответил.", "tj": "Бо чӣ бандӣ? Ҳозир ба телефони дастият занг задам, нагирифтӣ."},
+            {"speaker": "小刚", "zh": "对不起，我刚洗了个澡，没听见。有什么事吗？", "pinyin": "Duìbuqǐ, wǒ gāng xǐ le ge zǎo, méi tīngjiàn. Yǒu shénme shì ma?", "uz": "Kechirasiz, hozirgina cho'milgan edim, eshitmadim. Nima ish bor edi?", "ru": "Извини, я только что принимал душ и не услышал. Что случилось?", "tj": "Бубахшед, ҳозир оббозӣ карда будам, нашунидам. Чӣ кор буд?"},
+            {"speaker": "同事", "zh": "我想问问你公司里的一些事情。", "pinyin": "Wǒ xiǎng wènwen nǐ gōngsī li de yìxiē shìqing.", "uz": "Kompaniyangizdagi ba'zi narsalarni so'ramoqchi edim.", "ru": "Я хотел спросить кое-что о твоей компании.", "tj": "Мехостам баъзе чизҳоро дар бораи ширкатат пурсам."},
+            {"speaker": "小刚", "zh": "你先等一下，我去把电视关了。", "pinyin": "Nǐ xiān děng yíxià, wǒ qù bǎ diànshì guān le.", "uz": "Avval bir oz kut, televizorni o'chirib kelay.", "ru": "Подожди немного, я пойду выключу телевизор.", "tj": "Каме интизор шав, телевизорро хомӯш карда меоям."},
+            {"speaker": "同事", "zh": "没关系，你先把电视节目看完吧，然后再给我回电话。", "pinyin": "Méi guānxi, nǐ xiān bǎ diànshì jiémù kàn wán ba, ránhòu zài gěi wǒ huí diànhuà.", "uz": "Hechqisi yo'q, avval televizor dasturini ko'rib tugat, keyin menga qayta qo'ng'iroq qil.", "ru": "Ничего, сначала досмотри телепередачу, потом перезвони мне.", "tj": "Ҳеҷ гап не, аввал барномаи телевизорро тамом кун, баъд ба ман занг зан."},
+        ],
+    },
+    {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_uz": "Xiaomingning uyida",
+        "scene_ru": "У Сяомина дома",
+        "scene_tj": "Дар хонаи Сяоминг",
+        "word_nos": [7, 8, 9, 10, 11, 12, 13, 14],
+        "grammar_nos": [1, 2, 3],
+        "dialogue": [
+            {"speaker": "同学", "zh": "今晚的月亮真漂亮，像白色的盘子一样。", "pinyin": "Jīn wǎn de yuèliang zhēn piàoliang, xiàng báisè de pánzi yíyàng.", "uz": "Bugungi oyning ko'rinishi juda chiroyli, oq tarelkaga o'xshaydi.", "ru": "Сегодняшняя луна очень красивая, как белая тарелка.", "tj": "Моҳи имшаб хеле зебо аст, мисли табақи сафед."},
+            {"speaker": "小明", "zh": "是啊，外边也不刮风，我们坐在外边一边看月亮一边吃东西，怎么样？", "pinyin": "Shì a, wàibian yě bù guā fēng, wǒmen zuò zài wàibian yìbiān kàn yuèliang yìbiān chī dōngxi, zěnmeyàng?", "uz": "Ha, tashqarida shamol ham yo'q, tashqarida o'tirib oyga qarab ovqat yeymiz, qalay?", "ru": "Да, на улице и ветра нет. Посидим снаружи, будем смотреть на луну и есть, как тебе?", "tj": "Ҳа, берун шамол ҳам нест, берун нишаста ҳам моҳро бинему ҳам чизе бихӯрем, чӣ хел?"},
+            {"speaker": "同学", "zh": "好啊，我先把桌椅搬出去，然后你把水果拿过来，我们听叔叔阿姨讲讲他们年轻时候的故事。", "pinyin": "Hǎo a, wǒ xiān bǎ zhuōyǐ bān chūqu, ránhòu nǐ bǎ shuǐguǒ ná guòlai, wǒmen tīng shūshu āyí jiǎngjiang tāmen niánqīng shíhou de gùshi.", "uz": "Yaxshi, men avval stol-stullarni tashqariga olib chiqaman, keyin sen mevalarni olib kel, amaki va xoladan yoshlikdagi hikoyalarini eshitamiz.", "ru": "Хорошо, я сначала вынесу стол и стулья, потом ты принеси фрукты, послушаем истории дяди и тёти о молодости.", "tj": "Хуб, ман аввал мизу курсиҳоро берун мебарам, баъд ту меваҳоро биёр, ҳикояҳои амаку холаро аз ҷавониашон мешунавем."},
+            {"speaker": "小明", "zh": "太好了！记得给大山打个电话，让他马上过来。", "pinyin": "Tài hǎo le! Jìde gěi Dàshān dǎ ge diànhuà, ràng tā mǎshàng guòlai.", "uz": "Juda yaxshi! Dashanga telefon qilishni unutma, darhol kelsin.", "ru": "Отлично! Не забудь позвонить Дашаню, пусть сразу приходит.", "tj": "Хеле хуб! Ба Дашан занг заданро фаромӯш накун, бигзор фавран ояд."},
+            {"speaker": "同学", "zh": "不用打了，你听外边的声音，一定是大山。", "pinyin": "Búyòng dǎ le, nǐ tīng wàibian de shēngyīn, yídìng shì Dàshān.", "uz": "Telefon qilish shart emas, tashqaridagi ovozni eshit, albatta Dashan.", "ru": "Не надо звонить, послушай звук снаружи, это наверняка Дашань.", "tj": "Занг задан лозим нест, овози берунро гӯш кун, албатта Дашан аст."},
+        ],
+    },
+    {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_uz": "Mevali guruch haqida matn",
+        "scene_ru": "Текст о рисе с фруктами",
+        "scene_tj": "Матн дар бораи биринҷи мевадор",
+        "word_nos": [15, 16, 17],
+        "grammar_nos": [1, 2],
+        "dialogue": [
+            {"speaker": "旁白", "zh": "你吃过水果饭吗？你在饭馆的菜单上见过水果饭吗？你想学着做水果饭吗？其实做水果饭很简单，先把米饭做好，然后再把一块块新鲜的水果放进去，水果饭就做好了。你可以做苹果饭、香蕉饭，要是你愿意，还可以做西瓜饭。多吃新鲜水果对身体好。", "pinyin": "Nǐ chī guo shuǐguǒ fàn ma? Nǐ zài fànguǎn de càidān shang jiàn guo shuǐguǒ fàn ma? Nǐ xiǎng xuézhe zuò shuǐguǒ fàn ma? Qíshí zuò shuǐguǒ fàn hěn jiǎndān, xiān bǎ mǐfàn zuò hǎo, ránhòu zài bǎ yí kuài kuài xīnxiān de shuǐguǒ fàng jìnqu, shuǐguǒ fàn jiù zuò hǎo le. Nǐ kěyǐ zuò píngguǒ fàn, xiāngjiāo fàn, yàoshi nǐ yuànyì, hái kěyǐ zuò xīguā fàn. Duō chī xīnxiān shuǐguǒ duì shēntǐ hǎo.", "uz": "Mevali guruch yeb ko'rganmisiz? Restoran menyusida mevali guruchni ko'rganmisiz? Mevali guruch tayyorlashni o'rganmoqchimisiz? Aslida mevali guruch tayyorlash juda oson: avval guruchni pishiring, keyin bo'lak-bo'lak yangi mevalarni ichiga soling, mevali guruch tayyor bo'ladi. Olmali guruch, bananli guruch qilishingiz mumkin, xohlasangiz tarvuzli guruch ham qilsa bo'ladi. Yangi mevalarni ko'p yeyish sog'liq uchun foydali.", "ru": "Вы ели фруктовый рис? Видели фруктовый рис в меню ресторана? Хотите научиться его готовить? На самом деле готовить фруктовый рис очень просто: сначала приготовьте рис, затем положите внутрь кусочки свежих фруктов, и фруктовый рис готов. Можно сделать рис с яблоком, с бананом, а если хотите, ещё и с арбузом. Есть больше свежих фруктов полезно для здоровья.", "tj": "Биринҷи мевадор хӯрдаед? Дар менюи тарабхона биринҷи мевадорро дидаед? Мехоҳед тайёр карданашро ёд гиред? Дар асл тайёр кардани он хеле содда аст: аввал биринҷро пазед, баъд пора-пора меваи тару тозаро дар он гузоред, биринҷи мевадор тайёр мешавад. Метавонед биринҷи себдор, банандор кунед, агар хоҳед, тарбуздор ҳам мешавад. Бисёр хӯрдани меваи тару тоза барои саломатӣ хуб аст."},
+        ],
+    },
+]
+
+
+_LESSON_15_VOCABULARY = [
+    {"no": 1, "zh": "留学", "pinyin": "liú xué", "pos": "v.", "uz": "chet elda o'qimoq", "ru": "учиться за границей", "tj": "дар хориҷ таҳсил кардан"},
+    {"no": 2, "zh": "水平", "pinyin": "shuǐpíng", "pos": "n.", "uz": "daraja, saviya", "ru": "уровень, стандарт", "tj": "сатҳ, дараҷа"},
+    {"no": 3, "zh": "提高", "pinyin": "tí gāo", "pos": "v.", "uz": "oshirmoq, yaxshilamoq", "ru": "повышать, улучшать", "tj": "баланд кардан, беҳтар кардан"},
+    {"no": 4, "zh": "练习", "pinyin": "liànxí", "pos": "n.", "uz": "mashq", "ru": "упражнение", "tj": "машқ"},
+    {"no": 5, "zh": "完成", "pinyin": "wán chéng", "pos": "v.", "uz": "tugatmoq, yakunlamoq", "ru": "закончить, завершить", "tj": "тамом кардан"},
+    {"no": 6, "zh": "句子", "pinyin": "jùzi", "pos": "n.", "uz": "gap, jumla", "ru": "предложение", "tj": "ҷумла"},
+    {"no": 7, "zh": "其他", "pinyin": "qítā", "pos": "pron.", "uz": "boshqalar, qolganlari", "ru": "остальное, другие", "tj": "дигарон, боқимонда"},
+    {"no": 8, "zh": "发", "pinyin": "fā", "pos": "v.", "uz": "yubormoq", "ru": "отправлять", "tj": "фиристодан"},
+    {"no": 9, "zh": "要求", "pinyin": "yāoqiú", "pos": "n.", "uz": "talab", "ru": "требование", "tj": "талаб"},
+    {"no": 10, "zh": "注意", "pinyin": "zhù yì", "pos": "v.", "uz": "e'tibor bermoq", "ru": "обращать внимание", "tj": "диққат додан"},
+    {"no": 11, "zh": "上网", "pinyin": "shàng wǎng", "pos": "v.", "uz": "internetga kirmoq", "ru": "выходить в интернет", "tj": "ба интернет даромадан"},
+    {"no": 12, "zh": "除了", "pinyin": "chúle", "pos": "prep.", "uz": "dan tashqari", "ru": "кроме", "tj": "ба ғайр аз"},
+    {"no": 13, "zh": "新闻", "pinyin": "xīnwén", "pos": "n.", "uz": "yangiliklar", "ru": "новости", "tj": "хабарҳо"},
+    {"no": 14, "zh": "花", "pinyin": "huā", "pos": "v.", "uz": "sarflamoq", "ru": "тратить", "tj": "сарф кардан"},
+    {"no": 15, "zh": "极（了）", "pinyin": "jí (le)", "pos": "adv.", "uz": "juda, nihoyatda", "ru": "крайне, чрезвычайно", "tj": "ниҳоят"},
+    {"no": 16, "zh": "节日", "pinyin": "jiérì", "pos": "n.", "uz": "bayram", "ru": "праздник", "tj": "ид"},
+    {"no": 17, "zh": "举行", "pinyin": "jǔxíng", "pos": "v.", "uz": "o'tkazmoq", "ru": "проводить", "tj": "баргузор кардан"},
+    {"no": 18, "zh": "世界", "pinyin": "shìjiè", "pos": "n.", "uz": "dunyo", "ru": "мир", "tj": "ҷаҳон"},
+    {"no": 19, "zh": "街道", "pinyin": "jiēdào", "pos": "n.", "uz": "ko'cha", "ru": "улица", "tj": "кӯча"},
+    {"no": 20, "zh": "各", "pinyin": "gè", "pos": "pron.", "uz": "har bir", "ru": "каждый", "tj": "ҳар"},
+    {"no": 21, "zh": "文化", "pinyin": "wénhuà", "pos": "n.", "uz": "madaniyat", "ru": "культура", "tj": "фарҳанг"},
+    {"no": 22, "zh": "小云", "pinyin": "Xiǎoyún", "pos": "proper noun", "uz": "Xiaoyun (ism)", "ru": "Сяоюнь (имя)", "tj": "Сяоюн (ном)"},
+]
+
+
+_LESSON_15_DIALOGUES = [
+    {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_uz": "Ofisda",
+        "scene_ru": "В офисе",
+        "scene_tj": "Дар идора",
+        "word_nos": [1, 2, 3, 4, 5, 6, 7, 8],
+        "grammar_nos": [1],
+        "dialogue": [
+            {"speaker": "大山", "zh": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。", "pinyin": "Lǎoshī, wǒ lái Zhōngguó liú xué liǎng nián le, dànshì wǒ de Hànyǔ shuǐpíng tí gāo de yìdiǎnr yě bù kuài a.", "uz": "Ustoz, Xitoyga o'qishga kelganimga ikki yil bo'ldi, lekin xitoy tili darajam deyarli tez oshmayapti.", "ru": "Учитель, я приехал в Китай учиться уже два года назад, но мой уровень китайского совсем не быстро растёт.", "tj": "Устод, ду сол шуд, ки ба Чин барои таҳсил омадам, аммо сатҳи забони чиниям тамоман зуд баланд намешавад."},
+            {"speaker": "老师", "zh": "你每天认真学习，做练习、完成作业，一直不错啊。", "pinyin": "Nǐ měi tiān rènzhēn xuéxí, zuò liànxí, wán chéng zuòyè, yìzhí búcuò a.", "uz": "Sen har kuni jiddiy o'qiysan, mashq qilasan, uy vazifasini tugatasan, doim yaxshi-ku.", "ru": "Ты каждый день серьёзно учишься, делаешь упражнения, выполняешь домашнее задание, всё время неплохо.", "tj": "Ту ҳар рӯз ҷиддӣ мехонӣ, машқ мекунӣ, вазифаи хонагиро анҷом медиҳӣ, ҳамеша хуб аст."},
+            {"speaker": "大山", "zh": "这是我昨天的作业，您帮我看看对不对？", "pinyin": "Zhè shì wǒ zuótiān de zuòyè, nín bāng wǒ kànkan duì bu duì?", "uz": "Bu kechagi uy vazifam, to'g'ri yoki yo'qligini ko'rib bera olasizmi?", "ru": "Это моё вчерашнее домашнее задание, посмотрите, правильно ли?", "tj": "Ин вазифаи хонагии дирӯзаам аст, мебинед дуруст аст ё не?"},
+            {"speaker": "老师", "zh": "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。", "pinyin": "Xiě de búcuò, chúle zhè ge jùzi yìsi yǒuxiē bù qīngchu wài, qítā dōu méi shénme wèntí.", "uz": "Yaxshi yozilgan, faqat bu gapning ma'nosi biroz noaniq, qolganlarida muammo yo'q.", "ru": "Написано неплохо, кроме того, что смысл этого предложения немного неясен, с остальным проблем нет.", "tj": "Хуб навишта шудааст, ба ғайр аз он ки маънои ин ҷумла каме норавшан аст, боқимонда мушкил надорад."},
+            {"speaker": "大山", "zh": "谢谢老师！", "pinyin": "Xièxie lǎoshī!", "uz": "Rahmat, ustoz!", "ru": "Спасибо, учитель!", "tj": "Ташаккур, устод!"},
+            {"speaker": "老师", "zh": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。", "pinyin": "Yǐhòu yǒu shénme bù míngbai de dìfang, kěyǐ gěi wǒ dǎ diànhuà huòzhě fā diànzǐ yóujiàn.", "uz": "Keyin tushunmagan joying bo'lsa, menga qo'ng'iroq qilishing yoki email yuborishing mumkin.", "ru": "Если потом что-то будет непонятно, можешь позвонить мне или отправить электронное письмо.", "tj": "Баъд агар чизе нофаҳмо бошад, метавонӣ ба ман занг занӣ ё почтаи электронӣ фиристӣ."},
+        ],
+    },
+    {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_uz": "Sinfda",
+        "scene_ru": "В классе",
+        "scene_tj": "Дар синф",
+        "word_nos": [7, 9, 10, 22],
+        "grammar_nos": [1],
+        "dialogue": [
+            {"speaker": "学生", "zh": "老师，除了小云，其他人都来了。", "pinyin": "Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.", "uz": "Ustoz, Xiaoyundan tashqari hamma keldi.", "ru": "Учитель, кроме Сяоюнь, все пришли.", "tj": "Устод, ба ғайр аз Сяоюн ҳама омаданд."},
+            {"speaker": "老师", "zh": "比赛马上就要开始了，小云怎么还没来？", "pinyin": "Bǐsài mǎshàng jiù yào kāishǐ le, Xiǎoyún zěnme hái méi lái?", "uz": "Musobaqa hozir boshlanadi, Xiaoyun nega hali kelmadi?", "ru": "Соревнование вот-вот начнётся, почему Сяоюнь ещё не пришла?", "tj": "Мусобиқа ҳозир сар мешавад, чаро Сяоюн ҳоло наомад?"},
+            {"speaker": "学生", "zh": "刚才给她打电话了，她在路上呢。", "pinyin": "Gāngcái gěi tā dǎ diànhuà le, tā zài lùshang ne.", "uz": "Hozirgina unga qo'ng'iroq qildim, u yo'lda.", "ru": "Я только что звонил ей, она в пути.", "tj": "Ҳозир ба ӯ занг задам, дар роҳ аст."},
+            {"speaker": "老师", "zh": "不等她了，我先给大家讲讲这次比赛的要求和一些需要注意的地方。", "pinyin": "Bù děng tā le, wǒ xiān gěi dàjiā jiǎngjiang zhè cì bǐsài de yāoqiú hé yìxiē xūyào zhù yì de dìfang.", "uz": "Uni kutmaymiz, avval hammaga bu musobaqaning talablarini va e'tibor berish kerak bo'lgan joylarini tushuntirib beraman.", "ru": "Не будем ждать её, сначала я расскажу всем требования этого соревнования и моменты, на которые нужно обратить внимание.", "tj": "Ӯро интизор намешавем, аввал ба ҳама талабҳои ин мусобиқа ва ҷойҳои лозими диққатро мефаҳмонам."},
+            {"speaker": "学生", "zh": "老师，您放心，今天的比赛我们一定能拿第一。", "pinyin": "Lǎoshī, nín fàngxīn, jīntiān de bǐsài wǒmen yídìng néng ná dì yī.", "uz": "Ustoz, xavotir olmang, bugungi musobaqada albatta birinchi o'rinni olamiz.", "ru": "Учитель, не волнуйтесь, сегодня мы обязательно займём первое место.", "tj": "Устод, хотирҷамъ бошед, дар мусобиқаи имрӯз мо ҳатман ҷойи аввалро мегирем."},
+        ],
+    },
+    {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_uz": "Dam olish xonasida",
+        "scene_ru": "В комнате отдыха",
+        "scene_tj": "Дар утоқи истироҳат",
+        "word_nos": [11, 12, 13, 14, 15],
+        "grammar_nos": [1, 3],
+        "dialogue": [
+            {"speaker": "同事", "zh": "现在用电脑上网真方便啊！", "pinyin": "Xiànzài yòng diànnǎo shàng wǎng zhēn fāngbiàn a!", "uz": "Hozir kompyuterda internetga kirish juda qulay!", "ru": "Сейчас пользоваться интернетом на компьютере очень удобно!", "tj": "Ҳоло бо компютер ба интернет даромадан хеле қулай аст!"},
+            {"speaker": "小刚", "zh": "是啊，除了看新闻，人们还可以在网上听歌、看电影、买东西。", "pinyin": "Shì a, chúle kàn xīnwén, rénmen hái kěyǐ zài wǎngshang tīng gē, kàn diànyǐng, mǎi dōngxi.", "uz": "Ha, yangilik ko'rishdan tashqari, odamlar internetda qo'shiq tinglash, film ko'rish va narsa sotib olishlari ham mumkin.", "ru": "Да, кроме просмотра новостей, люди могут в интернете слушать песни, смотреть фильмы и покупать вещи.", "tj": "Ҳа, ба ғайр аз дидани хабарҳо, одамон дар интернет суруд мешунаванд, кино мебинанд ва чиз мехаранд."},
+            {"speaker": "同事", "zh": "对了，你从网上买的那件衣服呢？怎么没见你穿？", "pinyin": "Duì le, nǐ cóng wǎngshang mǎi de nà jiàn yīfu ne? Zěnme méi jiàn nǐ chuān?", "uz": "Aytgancha, internetdan olgan o'sha kiyiming-chi? Nega kiyganingni ko'rmadim?", "ru": "Кстати, где та одежда, которую ты купил в интернете? Почему я не видел, чтобы ты её носил?", "tj": "Дар омади гап, он либосе, ки аз интернет харидӣ, куҷост? Чаро туро дар он надидам?"},
+            {"speaker": "小刚", "zh": "那件衣服我穿着有点儿小，给我弟弟了。", "pinyin": "Nà jiàn yīfu wǒ chuānzhe yǒudiǎnr xiǎo, gěi wǒ dìdi le.", "uz": "U kiyim menga biroz kichik bo'ldi, ukamga berdim.", "ru": "Эта одежда на мне была немного мала, я отдал её младшему брату.", "tj": "Он либос ба ман каме хурд буд, ба додарам додам."},
+            {"speaker": "同事", "zh": "他满意吗？", "pinyin": "Tā mǎnyì ma?", "uz": "U rozi bo'ldimi?", "ru": "Он доволен?", "tj": "Ӯ қаноатманд аст?"},
+            {"speaker": "小刚", "zh": "不用花钱，还有新衣服穿，他满意极了。", "pinyin": "Búyòng huā qián, hái yǒu xīn yīfu chuān, tā mǎnyì jí le.", "uz": "Pul sarflamaydi, yangi kiyim ham kiyadi, u nihoyatda mamnun.", "ru": "Не нужно тратить деньги, и есть новая одежда, он очень доволен.", "tj": "Пул сарф намекунад, либоси нав ҳам мепӯшад, хеле қаноатманд аст."},
+        ],
+    },
+    {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_uz": "Pivo bayrami haqida matn",
+        "scene_ru": "Текст о пивном фестивале",
+        "scene_tj": "Матн дар бораи ҷашни пиво",
+        "word_nos": [16, 17, 18, 19, 20, 21],
+        "grammar_nos": [1, 2],
+        "dialogue": [
+            {"speaker": "旁白", "zh": "除了春节、中秋节以外，啤酒节也是这里很重要的一个节日。这个地方每年夏天都要举行一次啤酒节。在啤酒节上，你可以喝到世界上不同地方的啤酒。除了喝啤酒，你还可以在街道两边看到世界上不同地方的歌舞，你想不想了解世界各个地方的啤酒文化？来这里的啤酒节看看吧。", "pinyin": "Chúle Chūnjié, Zhōngqiū Jié yǐwài, píjiǔ jié yě shì zhèlǐ hěn zhòngyào de yí ge jiérì. Zhège dìfang měi nián xiàtiān dōu yào jǔxíng yí cì píjiǔ jié. Zài píjiǔ jié shang, nǐ kěyǐ hēdào shìjiè shang bùtóng dìfang de píjiǔ. Chúle hē píjiǔ, nǐ hái kěyǐ zài jiēdào liǎng biān kàndào shìjiè shang bùtóng dìfang de gēwǔ, nǐ xiǎng bu xiǎng liǎojiě shìjiè gè ge dìfang de píjiǔ wénhuà? Lái zhèlǐ de píjiǔ jié kànkan ba.", "uz": "Bahor bayrami va O'rta kuz bayramidan tashqari, pivo festivali ham bu yerda juda muhim bayram. Bu joyda har yili yozda bir marta pivo festivali o'tkaziladi. Pivo festivalida dunyoning turli joylaridagi pivolarni ichib ko'rishingiz mumkin. Pivo ichishdan tashqari, ko'chaning ikki tomonida dunyoning turli joylaridagi qo'shiq va raqslarni ham ko'rishingiz mumkin. Dunyoning turli joylaridagi pivo madaniyatini bilishni xohlaysizmi? Bu yerdagi pivo festivaliga kelib ko'ring.", "ru": "Кроме Праздника весны и Праздника середины осени, пивной фестиваль здесь тоже очень важный праздник. В этом месте каждое лето проводят пивной фестиваль. На фестивале можно попробовать пиво из разных мест мира. Кроме пива, по обе стороны улицы можно увидеть песни и танцы разных стран. Хотите узнать пивную культуру разных мест мира? Приезжайте посмотреть местный пивной фестиваль.", "tj": "Ба ғайр аз Иди баҳор ва Иди миёнаи тирамоҳ, ҷашни пиво ҳам дар ин ҷо иди хеле муҳим аст. Ин ҷо ҳар тобистон як бор ҷашни пиво баргузор мешавад. Дар ҷашни пиво метавонед пивои ҷойҳои гуногуни ҷаҳонро бинӯшед. Ба ғайр аз пиво нӯшидан, дар ду тарафи кӯча метавонед суруду рақси ҷойҳои гуногуни ҷаҳонро бинед. Мехоҳед фарҳанги пивои ҷойҳои гуногуни ҷаҳонро фаҳмед? Ба ҷашни пивои ин ҷо омада бинед."},
+        ],
+    },
+]
+
+
+_LESSON_16_VOCABULARY = [
+    {"no": 1, "zh": "城市", "pinyin": "chéngshì", "pos": "n.", "uz": "shahar", "ru": "город", "tj": "шаҳр"},
+    {"no": 2, "zh": "如果", "pinyin": "rúguǒ", "pos": "conj.", "uz": "agar", "ru": "если", "tj": "агар"},
+    {"no": 3, "zh": "认为", "pinyin": "rènwéi", "pos": "v.", "uz": "deb o'ylamoq, hisoblamoq", "ru": "считать, полагать", "tj": "фикр кардан, ҳисобидан"},
+    {"no": 4, "zh": "皮鞋", "pinyin": "píxié", "pos": "n.", "uz": "charm tufli", "ru": "кожаная обувь", "tj": "пойафзоли чармӣ"},
+    {"no": 5, "zh": "帽子", "pinyin": "màozi", "pos": "n.", "uz": "shlyapa, bosh kiyim", "ru": "шапка, шляпа", "tj": "кулоҳ"},
+    {"no": 6, "zh": "长", "pinyin": "zhǎng", "pos": "v.", "uz": "o'smoq, ulg'aymoq", "ru": "расти, развиваться", "tj": "калон шудан, рушд кардан"},
+    {"no": 7, "zh": "可爱", "pinyin": "kě'ài", "pos": "adj.", "uz": "yoqimli, shirin", "ru": "милый, очаровательный", "tj": "дилрабо, ширин"},
+    {"no": 8, "zh": "米", "pinyin": "mǐ", "pos": "n.", "uz": "metr", "ru": "метр", "tj": "метр"},
+    {"no": 9, "zh": "公斤", "pinyin": "gōngjīn", "pos": "n.", "uz": "kilogramm", "ru": "килограмм", "tj": "килограмм"},
+    {"no": 10, "zh": "鼻子", "pinyin": "bízi", "pos": "n.", "uz": "burun", "ru": "нос", "tj": "бинӣ"},
+    {"no": 11, "zh": "头发", "pinyin": "tóufa", "pos": "n.", "uz": "soch", "ru": "волосы", "tj": "мӯй"},
+    {"no": 12, "zh": "检查", "pinyin": "jiǎnchá", "pos": "v.", "uz": "tekshirmoq, ko'rikdan o'tkazmoq", "ru": "проверять, осматривать", "tj": "санҷидан, муоина кардан"},
+    {"no": 13, "zh": "刷牙", "pinyin": "shuā yá", "pos": "v.", "uz": "tish yuvmoq", "ru": "чистить зубы", "tj": "дандон шустан"},
+    {"no": 14, "zh": "关系", "pinyin": "guānxì", "pos": "n.", "uz": "munosabat, aloqa", "ru": "отношение, связь", "tj": "муносибат, робита"},
+    {"no": 15, "zh": "别人", "pinyin": "biérén", "pos": "n.", "uz": "boshqa odamlar", "ru": "другие люди", "tj": "дигарон"},
+    {"no": 16, "zh": "词语", "pinyin": "cíyǔ", "pos": "n.", "uz": "so'z, ibora", "ru": "слово, выражение", "tj": "калима, ибора"},
+]
+
+
+_LESSON_16_DIALOGUES = [
+    {
+        "block_no": 1,
+        "section_label": "课文 1",
+        "scene_uz": "Kompaniyada",
+        "scene_ru": "В компании",
+        "scene_tj": "Дар ширкат",
+        "word_nos": [1, 2, 3],
+        "grammar_nos": [1, 2],
+        "dialogue": [
+            {"speaker": "小丽", "zh": "我不喜欢一直住在同一个城市，想去其他城市看一看。", "pinyin": "Wǒ bù xǐhuan yìzhí zhù zài tóng yí ge chéngshì, xiǎng qù qítā chéngshì kàn yi kàn.", "uz": "Men doim bir shaharda yashashni yoqtirmayman, boshqa shaharlarga borib ko'rmoqchiman.", "ru": "Мне не нравится всё время жить в одном городе, хочу съездить посмотреть другие города.", "tj": "Ман ҳамеша дар як шаҳр зиндагӣ карданро дӯст намедорам, мехоҳам ба шаҳрҳои дигар рафта бинам."},
+            {"speaker": "周明", "zh": "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。", "pinyin": "Wǒ niánqīng de shíhou yě zhème xiǎng, dànshì nà shíhou méiyǒu qián, rúguǒ yǒu qián, jiù qù le.", "uz": "Men yoshligimda ham shunday o'ylardim, lekin o'shanda pul yo'q edi, agar pul bo'lganida, ketardim.", "ru": "Когда я был молодым, тоже так думал, но тогда не было денег. Если бы были деньги, я бы поехал.", "tj": "Ман дар ҷавонӣ ҳам ҳамин тавр фикр мекардам, аммо он вақт пул набуд, агар пул мебуд, мерафтам."},
+            {"speaker": "小丽", "zh": "那您现在为什么不去？", "pinyin": "Nà nín xiànzài wèi shénme bù qù?", "uz": "Unda hozir nega bormaysiz?", "ru": "Тогда почему вы сейчас не едете?", "tj": "Пас ҳоло чаро намеравед?"},
+            {"speaker": "周明", "zh": "现在钱不是问题了，主要是没有时间。", "pinyin": "Xiànzài qián bú shì wèntí le, zhǔyào shì méiyǒu shíjiān.", "uz": "Hozir pul muammo emas, asosiysi vaqt yo'q.", "ru": "Сейчас деньги уже не проблема, главное - нет времени.", "tj": "Ҳоло пул мушкил нест, асосан вақт нест."},
+            {"speaker": "小丽", "zh": "我认为现在您有时间也不会出去玩儿。", "pinyin": "Wǒ rènwéi xiànzài nín yǒu shíjiān yě bú huì chūqu wánr.", "uz": "Menimcha, hozir vaqtingiz bo'lsa ham sayrga chiqmasdingiz.", "ru": "Я думаю, что сейчас, даже если у вас будет время, вы не поедете отдыхать.", "tj": "Ба фикрам, ҳоло агар вақт ҳам дошта бошед, берун истироҳат кардан намеравед."},
+            {"speaker": "周明", "zh": "你说得对，我现在累得下了班就想睡觉。", "pinyin": "Nǐ shuō de duì, wǒ xiànzài lèi de xià le bān jiù xiǎng shuìjiào.", "uz": "To'g'ri aytding, men hozir shunchalik charchaganmanki, ishdan chiqqach faqat uxlashni xohlayman.", "ru": "Ты права, я сейчас так устаю, что после работы сразу хочу спать.", "tj": "Дуруст гуфтӣ, ман ҳоло чунон хастаам, ки баъди кор танҳо хоб кардан мехоҳам."},
+        ],
+    },
+    {
+        "block_no": 2,
+        "section_label": "课文 2",
+        "scene_uz": "Hamkasb uyida",
+        "scene_ru": "У коллеги дома",
+        "scene_tj": "Дар хонаи ҳамкор",
+        "word_nos": [4, 5, 6, 7, 8, 9, 10, 11],
+        "grammar_nos": [2, 3],
+        "dialogue": [
+            {"speaker": "同事", "zh": "谢谢你们来看我女儿。你送的小皮鞋和小帽子真漂亮！", "pinyin": "Xièxie nǐmen lái kàn wǒ nǚ'ér. Nǐ sòng de xiǎo píxié hé xiǎo màozi zhēn piàoliang!", "uz": "Qizimni ko'rgani kelganingiz uchun rahmat. Siz sovg'a qilgan kichik charm tufli va kichik shlyapa juda chiroyli!", "ru": "Спасибо, что пришли посмотреть мою дочь. Маленькие кожаные туфельки и шапочка, которые ты подарила, очень красивые!", "tj": "Ташаккур, ки духтарамро дидан омадед. Пойафзоли чармии хурд ва кулоҳи хурде, ки ту додӣ, хеле зебо аст!"},
+            {"speaker": "小丽", "zh": "别客气，你女儿长得白白的、胖胖的，真可爱！现在多高了？", "pinyin": "Bié kèqi, nǐ nǚ'ér zhǎng de báibái de, pàngpàng de, zhēn kě'ài! Xiànzài duō gāo le?", "uz": "Arzimaydi, qizingiz oppoq, dumaloqqina bo'lib o'syapti, juda yoqimli! Hozir bo'yi qancha?", "ru": "Не за что, ваша дочь такая беленькая и пухленькая, очень милая! Какого она сейчас роста?", "tj": "Марҳамат, духтаратон сафедча ва фарбеҳча калон мешавад, хеле дилрабо! Ҳоло қаддаш чанд аст?"},
+            {"speaker": "同事", "zh": "快1米了，25公斤。", "pinyin": "Kuài yì mǐ le, èrshíwǔ gōngjīn.", "uz": "Deyarli bir metr, 25 kilogramm.", "ru": "Почти один метр, 25 килограммов.", "tj": "Қариб як метр, 25 килограмм."},
+            {"speaker": "小丽", "zh": "你看她鼻子小小的，头发黑黑的，长得像谁？", "pinyin": "Nǐ kàn tā bízi xiǎoxiǎo de, tóufa hēihēi de, zhǎng de xiàng shéi?", "uz": "Qarang, burni kichkinagina, sochi qop-qora, kimga o'xshab o'syapti?", "ru": "Посмотри, у неё маленький носик, чёрные волосы, на кого она похожа?", "tj": "Бин, биниаш хурдча, мӯяш сиёҳча, ба кӣ монанд калон мешавад?"},
+            {"speaker": "同事", "zh": "像她爸爸，刚出生时她爸爸高兴得一个晚上都没睡着。", "pinyin": "Xiàng tā bàba, gāng chūshēng shí tā bàba gāoxìng de yí ge wǎnshang dōu méi shuì zháo.", "uz": "Dadasiga o'xshaydi, endi tug'ilganida dadasi xursandligidan butun kecha uxlay olmagan.", "ru": "На её папу. Когда она только родилась, её папа так радовался, что всю ночь не мог уснуть.", "tj": "Ба падараш монанд. Вақте нав таваллуд шуд, падараш аз хурсандӣ тамоми шаб хоб карда натавонист."},
+        ],
+    },
+    {
+        "block_no": 3,
+        "section_label": "课文 3",
+        "scene_uz": "Kompaniyada",
+        "scene_ru": "В компании",
+        "scene_tj": "Дар ширкат",
+        "word_nos": [12, 13],
+        "grammar_nos": [1],
+        "dialogue": [
+            {"speaker": "小刚", "zh": "我的牙还是很疼。", "pinyin": "Wǒ de yá háishi hěn téng.", "uz": "Tishim hali ham juda og'riyapti.", "ru": "У меня зуб всё ещё сильно болит.", "tj": "Дандонам ҳоло ҳам сахт дард мекунад."},
+            {"speaker": "同事", "zh": "如果不舒服，就去医院检查一下吧。", "pinyin": "Rúguǒ bù shūfu, jiù qù yīyuàn jiǎnchá yíxià ba.", "uz": "Agar noqulay bo'lsa, kasalxonaga borib tekshirtir.", "ru": "Если плохо себя чувствуешь, сходи в больницу провериться.", "tj": "Агар нороҳат бошӣ, ба беморхона рафта як бор муоина кун."},
+            {"speaker": "小刚", "zh": "检查好几次了，但是没什么用。", "pinyin": "Jiǎnchá hǎo jǐ cì le, dànshì méi shénme yòng.", "uz": "Bir necha marta tekshirtirdim, lekin foydasi bo'lmadi.", "ru": "Проверял уже несколько раз, но толку нет.", "tj": "Чанд бор муоина кардам, аммо фоида надошт."},
+            {"speaker": "同事", "zh": "大夫怎么说的？", "pinyin": "Dàifu zěnme shuō de?", "uz": "Shifokor nima dedi?", "ru": "Что сказал врач?", "tj": "Духтур чӣ гуфт?"},
+            {"speaker": "小刚", "zh": "每次医生都告诉我，回家好好儿刷牙。", "pinyin": "Měi cì yīshēng dōu gàosu wǒ, huí jiā hǎohāor shuā yá.", "uz": "Har safar shifokor uyga borib tishimni yaxshilab yuvishimni aytadi.", "ru": "Каждый раз врач говорит мне вернуться домой и хорошенько чистить зубы.", "tj": "Ҳар дафъа духтур мегӯяд, ки ба хона баргашта дандонҳоро хуб шуям."},
+        ],
+    },
+    {
+        "block_no": 4,
+        "section_label": "课文 4",
+        "scene_uz": "Insonlar munosabati haqida matn",
+        "scene_ru": "Текст об отношениях между людьми",
+        "scene_tj": "Матн дар бораи муносибати одамон",
+        "word_nos": [14, 15, 16],
+        "grammar_nos": [1, 2, 3],
+        "dialogue": [
+            {"speaker": "旁白", "zh": "很多人都觉得现在人和人的关系冷冷的，这可能是因为工作太忙，忙得没时间跟别人见面，累得不愿意和别人多说话。其实，我们应该多对别人笑笑，说话时如果能多用一些“您好”“谢谢”这样的词语，和别人的关系就会变得更好。", "pinyin": "Hěn duō rén dōu juéde xiànzài rén hé rén de guānxì lěnglěng de, zhè kěnéng shì yīnwèi gōngzuò tài máng, máng de méi shíjiān gēn biérén jiàn miàn, lèi de bù yuànyì hé biérén duō shuō huà. Qíshí, wǒmen yīnggāi duō duì biérén xiàoxiao, shuō huà shí rúguǒ néng duō yòng yìxiē 'nín hǎo' 'xièxie' zhèyàng de cíyǔ, hé biérén de guānxì jiù huì biàn de gèng hǎo.", "uz": "Ko'p odamlar hozir insonlar o'rtasidagi munosabatlar sovuqlashgan deb o'ylaydi. Buning sababi ish juda bandligi bo'lishi mumkin: bandlikdan boshqalar bilan uchrashishga vaqt yo'q, charchoqdan boshqalar bilan ko'p gaplashishni xohlamaydi. Aslida, biz boshqalarga ko'proq tabassum qilishimiz kerak. Gaplashayotganda “您好”, “谢谢” kabi so'zlarni ko'proq ishlatsak, boshqalar bilan munosabatimiz yanada yaxshilanadi.", "ru": "Многие считают, что сейчас отношения между людьми стали холодными. Возможно, это из-за того, что работа слишком занятая: из-за занятости нет времени встречаться с другими, из-за усталости не хочется много разговаривать. На самом деле нам следует чаще улыбаться другим. Если в разговоре чаще использовать такие выражения, как “您好” и “谢谢”, отношения с другими станут лучше.", "tj": "Бисёр одамон фикр мекунанд, ки ҳоло муносибати байни одамон сард шудааст. Ин шояд аз он бошад, ки кор хеле банд аст: аз бандӣ вақт барои вохӯрӣ бо дигарон нест, аз хастагӣ бо дигарон зиёд гап задан намехоҳанд. Дар асл, мо бояд ба дигарон бештар табассум кунем. Агар ҳангоми гап задан бештар калимаҳои монанди “您好” ва “谢谢”-ро истифода барем, муносибат бо дигарон беҳтар мешавад."},
+        ],
+    },
+]
+
+
 _PDF_MATERIALS = {
     1: (_LESSON_1_VOCABULARY, _LESSON_1_DIALOGUES),
     2: (_LESSON_2_VOCABULARY, _LESSON_2_DIALOGUES),
@@ -1101,6 +1450,10 @@ _PDF_MATERIALS = {
     10: (_LESSON_10_VOCABULARY, _LESSON_10_DIALOGUES),
     11: (_LESSON_11_VOCABULARY, _LESSON_11_DIALOGUES),
     12: (_LESSON_12_VOCABULARY, _LESSON_12_DIALOGUES),
+    13: (_LESSON_13_VOCABULARY, _LESSON_13_DIALOGUES),
+    14: (_LESSON_14_VOCABULARY, _LESSON_14_DIALOGUES),
+    15: (_LESSON_15_VOCABULARY, _LESSON_15_DIALOGUES),
+    16: (_LESSON_16_VOCABULARY, _LESSON_16_DIALOGUES),
 }
 
 
