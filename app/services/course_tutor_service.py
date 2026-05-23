@@ -90,20 +90,53 @@ class CourseTutorService:
         ]
 
     def _block_grammar(self, lesson, block: dict) -> list[dict]:
-        if block.get("grammar_notes"):
-            return []
         grammar = self._parse(getattr(lesson, "grammar_json", None), [])
-        if not isinstance(grammar, list):
-            return []
         grammar_nos = block.get("grammar_nos") or []
-        if not isinstance(grammar_nos, list):
+        if not isinstance(grammar, list) or not isinstance(grammar_nos, list):
+            grammar_items = []
+        else:
+            wanted = {int(no) for no in grammar_nos if str(no).isdigit()}
+            grammar_items = [
+                item
+                for item in grammar
+                if isinstance(item, dict) and int(item.get("no") or 0) in wanted
+            ]
+        if grammar_items:
+            return grammar_items
+
+        notes = block.get("grammar_notes") or []
+        if not isinstance(notes, list):
             return []
-        wanted = {int(no) for no in grammar_nos if str(no).isdigit()}
-        return [
-            item
-            for item in grammar
-            if isinstance(item, dict) and int(item.get("no") or 0) in wanted
-        ]
+
+        fallback_items = []
+        for index, note in enumerate(notes, 1):
+            if not isinstance(note, dict):
+                continue
+            example = {}
+            if note.get("example_zh"):
+                example = {
+                    "zh": note.get("example_zh") or "",
+                    "pinyin": note.get("example_pinyin") or "",
+                    "uz": note.get("example_uz") or "",
+                    "ru": note.get("example_ru") or "",
+                    "tj": note.get("example_tj") or "",
+                }
+            fallback_items.append(
+                {
+                    "no": index,
+                    "source": "context_fallback",
+                    "title_zh": note.get("pattern") or "",
+                    "title_uz": note.get("pattern_uz") or note.get("pattern") or "",
+                    "title_ru": note.get("pattern_ru") or note.get("pattern") or "",
+                    "title_tj": note.get("pattern_tj") or note.get("pattern") or "",
+                    "rule_uz": note.get("explanation_uz") or "",
+                    "rule_ru": note.get("explanation_ru") or "",
+                    "rule_tj": note.get("explanation_tj") or "",
+                    "formula": note.get("pattern") or "",
+                    "examples": [example] if example else [],
+                }
+            )
+        return fallback_items
 
     def _lesson_blocks_payload(self, lesson) -> list[dict]:
         dialogues = self._parse(getattr(lesson, "dialogue_json", None), [])

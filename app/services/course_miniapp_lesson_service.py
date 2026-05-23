@@ -126,75 +126,72 @@ class CourseMiniAppLessonService:
 
     def _grammar(self, lesson: CourseLesson, lang: str, block: dict | None = None) -> list[dict]:
         grammar = self._parse(lesson.grammar_json, [])
-        if not isinstance(grammar, list):
-            return []
         wanted = None
         if block and isinstance(block.get("grammar_nos"), list):
             wanted = {int(no) for no in block["grammar_nos"] if str(no).isdigit()}
         items = []
-        if block and isinstance(block.get("grammar_notes"), list):
-            for note in block["grammar_notes"]:
-                if not isinstance(note, dict):
+        if isinstance(grammar, list):
+            for index, item in enumerate(grammar, 1):
+                if not isinstance(item, dict):
                     continue
-                pattern = note.get("pattern") or ""
-                explanation = (
-                    note.get(f"explanation_{lang}")
-                    or note.get("explanation_uz")
-                    or note.get("explanation_ru")
-                    or note.get("explanation_tj")
-                    or ""
-                )
+                item_no = int(item.get("no") or index)
+                if wanted is not None and item_no not in wanted:
+                    continue
                 examples = []
-                if note.get("example_zh"):
+                for example in item.get("examples", []) if isinstance(item.get("examples"), list) else []:
+                    if not isinstance(example, dict):
+                        continue
                     examples.append(
                         {
-                            "zh": note.get("example_zh") or "",
-                            "pinyin": note.get("example_pinyin") or "",
-                            "translation": (
-                                note.get(f"example_{lang}")
-                                or note.get("example_uz")
-                                or note.get("example_ru")
-                                or note.get("example_tj")
-                                or ""
-                            ),
+                            "zh": example.get("zh") or "",
+                            "pinyin": example.get("pinyin") or "",
+                            "translation": example.get(lang) or example.get("uz") or example.get("ru") or example.get("tj") or "",
                         }
                     )
                 items.append(
                     {
-                        "no": len(items) + 1,
-                        "title": pattern,
-                        "title_zh": pattern,
-                        "rule": explanation,
-                        "formula": pattern,
+                        "no": item_no,
+                        "title": self._localized(item, lang, "title", default=item.get("title_zh") or ""),
+                        "title_zh": item.get("title_zh") or "",
+                        "rule": self._localized(item, lang, "rule"),
+                        "formula": item.get("formula") or item.get("pattern") or item.get("title_zh") or "",
                         "examples": examples,
                     }
                 )
-            if items:
-                return items
-        for index, item in enumerate(grammar, 1):
-            if not isinstance(item, dict):
+        if items:
+            return items
+
+        if not block or not isinstance(block.get("grammar_notes"), list):
+            return []
+
+        for note in block["grammar_notes"]:
+            if not isinstance(note, dict):
                 continue
-            item_no = int(item.get("no") or index)
-            if wanted is not None and item_no not in wanted:
-                continue
+            pattern = self._localized(note, lang, "pattern")
+            base_pattern = note.get("pattern") or pattern
+            explanation = self._localized(note, lang, "explanation")
             examples = []
-            for example in item.get("examples", []) if isinstance(item.get("examples"), list) else []:
-                if not isinstance(example, dict):
-                    continue
+            if note.get("example_zh"):
                 examples.append(
                     {
-                        "zh": example.get("zh") or "",
-                        "pinyin": example.get("pinyin") or "",
-                        "translation": example.get(lang) or example.get("uz") or example.get("ru") or example.get("tj") or "",
+                        "zh": note.get("example_zh") or "",
+                        "pinyin": note.get("example_pinyin") or "",
+                        "translation": (
+                            note.get(f"example_{lang}")
+                            or note.get("example_uz")
+                            or note.get("example_ru")
+                            or note.get("example_tj")
+                            or ""
+                        ),
                     }
                 )
             items.append(
                 {
-                    "no": item_no,
-                    "title": self._localized(item, lang, "title", default=item.get("title_zh") or ""),
-                    "title_zh": item.get("title_zh") or "",
-                    "rule": self._localized(item, lang, "rule"),
-                    "formula": item.get("formula") or item.get("pattern") or item.get("title_zh") or "",
+                    "no": len(items) + 1,
+                    "title": pattern,
+                    "title_zh": base_pattern,
+                    "rule": explanation,
+                    "formula": base_pattern,
                     "examples": examples,
                 }
             )

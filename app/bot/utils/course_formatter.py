@@ -498,7 +498,9 @@ def format_block_grammar(lesson, lang: str, n: int) -> str:
     scene = block.get(f"scene_{lang}") or block.get("scene_label_zh") or ""
     header = " · ".join(filter(None, [section, scene]))
     grammar_notes = block.get("grammar_notes") or []
-    grammar_items = [] if grammar_notes else _block_grammar_items(lesson, block)
+    grammar_items = _block_grammar_items(lesson, block)
+    if grammar_items:
+        grammar_notes = []
 
     if not grammar_notes and not grammar_items:
         return ""
@@ -521,7 +523,7 @@ def format_block_grammar(lesson, lang: str, n: int) -> str:
     for note in grammar_notes:
         if not isinstance(note, dict):
             continue
-        pattern = note.get("pattern", "")
+        pattern = note.get(f"pattern_{lang}") or note.get("pattern", "")
         explanation = (
             note.get(f"explanation_{lang}")
             or _uz_fallback(lang, note.get("explanation_uz"))
@@ -536,7 +538,7 @@ def format_block_grammar(lesson, lang: str, n: int) -> str:
         )
         lines.append("━━━━━━━━━━━━━━")
         if pattern:
-            lines.append(f"📌 <code>{pattern}</code>")
+            lines.append(f"📌 <b>{pattern}</b>")
         if explanation:
             lines.append(f"   {explanation}")
         if ex_zh:
@@ -658,7 +660,7 @@ def format_dialogue_n(lesson, lang: str, n: int) -> str:
         for note in grammar_notes:
             if not isinstance(note, dict):
                 continue
-            pattern = note.get("pattern", "")
+            pattern = note.get(f"pattern_{lang}") or note.get("pattern", "")
             explanation = (
                 note.get(f"explanation_{lang}")
                 or _uz_fallback(lang, note.get("explanation_uz"))
@@ -672,7 +674,7 @@ def format_dialogue_n(lesson, lang: str, n: int) -> str:
                 or note.get("example_translation", "")
             )
             if pattern:
-                lines.append(f"📌 <code>{pattern}</code>")
+                lines.append(f"📌 <b>{pattern}</b>")
             if explanation:
                 lines.append(f"   {explanation}")
             if ex_zh:

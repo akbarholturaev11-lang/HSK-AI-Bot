@@ -1,5 +1,7 @@
 import json
 
+from scripts.block_context_grammar import normalize_block_grammar
+
 
 _LESSON_1_VOCABULARY = [
     {"no": 1, "zh": "周末", "pinyin": "zhōumò", "pos": "n.", "uz": "hafta oxiri, dam olish kuni", "ru": "выходные, конец недели", "tj": "охири ҳафта, рӯзи истироҳат"},
@@ -2241,10 +2243,8 @@ def apply_hsk3_pdf_materials(lesson: dict) -> dict:
     vocab, source_dialogues = material
     grammar = json.loads(lesson.get("grammar_json") or "[]")
     dialogues = json.loads(json.dumps(source_dialogues, ensure_ascii=False))
-    _dedupe_grammar_nos(dialogues)
-    used_context_patterns = set()
+    normalize_block_grammar(dialogues)
     for block in dialogues:
-        _ensure_context_grammar_notes(block, used_context_patterns)
         block_no = int(block.get("block_no") or 0)
         words = [_word_by_no(vocab, no) for no in block.get("word_nos", [])]
         words = [word for word in words if word]
