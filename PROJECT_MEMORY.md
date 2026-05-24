@@ -207,12 +207,14 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
-### 2026-05-24 — Referral trial active access
+### 2026-05-25 — Referral trial active access
 
 Changed:
 - Users can unlock 3 days of non-paid `active` access after collecting 10 active referrals.
 - This reward is separate from the existing referral bonus and referral discount flows: +5 bonus questions and 3-referral discount counters still use their existing fields.
-- Referral active access does not set `payment_status=approved`, does not create an AI usage budget, and keeps daily limits for text/image/course AI usage.
+- Referral active access does not set `payment_status=approved`; it creates a fixed $2 AI usage budget for the trial active window.
+- In trial active, text/course AI use the AI budget, photo keeps its daily image limit, and voice is allowed only through active access plus the same AI budget.
+- Profile labels non-paid active as `Sinov active` and explicitly says it is not a paid subscription.
 - A new `users.referral_trial_count_started_at` marker resets this feature's referral count after each 3-day reward window.
 
 Why:
@@ -221,17 +223,20 @@ Why:
 Files touched:
 - `app/services/referral_service.py`
 - `app/services/access_service.py`
+- `app/services/ai_usage_budget_service.py`
 - `app/repositories/referral_repo.py`
 - `app/db/models/user.py`
 - `app/db/session.py`
 - `app/bot/handlers/messages.py`
 - `app/bot/handlers/referral.py`
+- `app/bot/handlers/commands.py`
+- `app/bot/handlers/menu.py`
 - `app/bot/keyboards/referral.py`
 - `app/bot/utils/i18n.py`
 - `alembic/versions/0028_referral_trial_activation.py`
 
 Risk:
-- Non-paid `active` users now remain daily-limited; paid users are still identified only by `payment_status=approved`.
+- Paid users are still identified only by `payment_status=approved`; do not treat `status=active` alone as paid subscription.
 
 Follow-up:
 - Run DB migration in deploy environments before relying on referral trial progress display.
@@ -415,6 +420,26 @@ Files touched:
 
 Risk:
 - Database must be reseeded for deployed environments; local DB was updated for HSK4-L04, HSK4-L05, and HSK4-L06 in this session.
+
+### 2026-05-25 — HSK4 上 lessons 7-10 PDF alignment
+
+Changed:
+- HSK4 上 lessons 7-10 now use canonical textbook dialogue/new-word data through `scripts/hsk4_upper_pdf_materials_7_10.py`.
+- Each lesson has 5 dialogue blocks, per-block vocabulary, one relevant grammar point, three-language translations, pinyin, mini quiz, and mini homework.
+- HSK4 static Mini App fallback data now covers lessons 1-10 with grammar-focused quiz questions and no fill-blank style quiz items.
+
+Why:
+- Lessons 7-10 still had stale seed JSON and Mini App coverage stopped at lesson 6.
+
+Files touched:
+- `scripts/hsk4_upper_pdf_materials.py`
+- `scripts/hsk4_upper_pdf_materials_7_10.py`
+- `scripts/seed_hsk4_lesson_07.py` to `scripts/seed_hsk4_lesson_10.py`
+- `scripts/verify_hsk4_upper_pdf_materials.py`
+- `app/static/hsk4.html`
+
+Risk:
+- Database must be reseeded for deployed environments; local DB was updated for HSK4-L07 through HSK4-L10 in this session.
 
 ---
 
