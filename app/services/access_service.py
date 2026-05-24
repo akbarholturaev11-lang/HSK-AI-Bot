@@ -37,15 +37,33 @@ class AccessService:
     def _is_paid_user(self, user) -> bool:
         return user.payment_status == "approved"
 
+    async def _can_use_daily_text_limit(self, user) -> Tuple[bool, str]:
+        now = datetime.now(timezone.utc)
+
+        if user.last_limit_reset_at is None or now - user.last_limit_reset_at >= timedelta(days=1):
+            user.questions_used = 0
+            user.bonus_questions_used = 0
+            user.last_limit_reset_at = now
+            await self.user_repo.session.commit()
+
+        if user.questions_used >= user.question_limit:
+            bonus_balance = self.user_repo.get_bonus_balance(user)
+            if bonus_balance <= 0:
+                return False, "access_daily_limit_reached"
+
+        return True, ""
+
     async def _can_use_daily_image_limit(self, user) -> Tuple[bool, str]:
         now = datetime.now(timezone.utc)
 
         if not user.last_limit_reset_at:
             user.last_limit_reset_at = now
             user.questions_used = 0
+            user.bonus_questions_used = 0
         elif now - user.last_limit_reset_at >= timedelta(days=1):
             user.last_limit_reset_at = now
             user.questions_used = 0
+            user.bonus_questions_used = 0
 
         today_image_count = await self.message_repo.count_user_messages_today(
             user_id=user.id,
@@ -95,6 +113,9 @@ class AccessService:
                 await self._downgrade_expired_user(user)
                 # falls through to trial logic below
             else:
+                if not self._is_paid_user(user):
+                    return await self._can_use_daily_text_limit(user)
+
                 budget_access = await AIUsageBudgetService(self.session).can_use_ai(telegram_id)
                 if not budget_access.allowed:
                     return False, budget_access.message_key
@@ -105,20 +126,7 @@ class AccessService:
             # falls through to trial logic below
 
         if user.status == "trial":
-            now = datetime.now(timezone.utc)
-
-            if user.last_limit_reset_at is None or now - user.last_limit_reset_at >= timedelta(days=1):
-                user.questions_used = 0
-                user.bonus_questions_used = 0
-                user.last_limit_reset_at = now
-                await self.user_repo.session.commit()
-
-            if user.questions_used >= user.question_limit:
-                bonus_balance = self.user_repo.get_bonus_balance(user)
-                if bonus_balance <= 0:
-                    return False, "access_daily_limit_reached"
-
-            return True, ""
+            return await self._can_use_daily_text_limit(user)
 
         return False, "access_start_first"
 
@@ -162,16 +170,20 @@ class AccessService:
         if not user:
             return
 
-        if user.status == "trial":
+        if user.status == "trial" or (
+            user.status == "active" and not self._is_paid_user(user)
+        ):
 
             now = datetime.now(timezone.utc)
 
             if not user.last_limit_reset_at:
                 user.last_limit_reset_at = now
                 user.questions_used = 0
+                user.bonus_questions_used = 0
             elif now - user.last_limit_reset_at >= timedelta(days=1):
                 user.last_limit_reset_at = now
                 user.questions_used = 0
+                user.bonus_questions_used = 0
 
             if user.questions_used >= user.question_limit:
                 bonus = self.user_repo.get_bonus_balance(user)

@@ -69,6 +69,11 @@ from app.services.course_progress_summary_service import CourseProgressSummarySe
 from app.services.image_input_service import ImageInputService
 from app.services.image_qa_service import ImageQAService
 from app.services.qa_service import QAService
+from app.services.referral_service import (
+    REFERRAL_TRIAL_ACCESS_DAYS,
+    REFERRAL_TRIAL_REQUIRED_ACTIVE,
+    ReferralService,
+)
 from app.bot.utils.i18n import t
 
 
@@ -197,6 +202,21 @@ async def _ensure_ai_available(access_service: AccessService, telegram_id: int, 
     can_use, message_key = await access_service.can_use_text_ai(telegram_id)
     if can_use:
         return True
+    if message_key == "access_daily_limit_reached":
+        user = await access_service.user_repo.get_by_telegram_id(telegram_id)
+        text = await _build_referral_limit_text(
+            access_service.session,
+            user,
+            lang,
+            "referral_daily_limit_offer",
+        )
+        await access_service.session.commit()
+        await respond(
+            text,
+            reply_markup=referral_daily_limit_keyboard(lang),
+            parse_mode="HTML",
+        )
+        return False
     await respond(t(message_key, lang), parse_mode="HTML")
     return False
 
@@ -215,6 +235,27 @@ async def _send_budget_notice(respond, record, lang: str) -> None:
     message_key = getattr(record, "message_key", "")
     if message_key:
         await respond(t(message_key, lang), parse_mode="HTML")
+
+
+async def _build_referral_limit_text(session, user, lang: str, key: str) -> str:
+    count = 0
+    if user:
+        count = await ReferralService(session).get_trial_activation_progress(user)
+    return t(
+        key,
+        lang,
+        count=count,
+        required=REFERRAL_TRIAL_REQUIRED_ACTIVE,
+        days=REFERRAL_TRIAL_ACCESS_DAYS,
+    )
+
+
+async def _consume_text_ai_usage(session, access_service: AccessService, bot, telegram_id: int) -> None:
+    await access_service.consume_one_question(telegram_id)
+    await ReferralService(session).activate_referral_if_eligible(
+        bot=bot,
+        invited_user_telegram_id=telegram_id,
+    )
 
 
 async def _answer_course_tutor_question(
@@ -266,6 +307,7 @@ async def _answer_course_tutor_question(
             ai_result=tutor.last_ai_result,
             source="course_tutor",
         )
+        await _consume_text_ai_usage(session, access_service, message.bot, message.from_user.id)
         await session.commit()
     finally:
         await effect.stop()
@@ -1053,6 +1095,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                     ai_result=tutor.last_ai_result,
                     source="course_miniapp_context_review" if miniapp_context else "course_review",
                 )
+                await _consume_text_ai_usage(session, access_service, message.bot, message.from_user.id)
                 await session.commit()
             finally:
                 await effect.stop()
@@ -1129,6 +1172,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 ai_result=result.get("ai_result") if isinstance(result, dict) else None,
                 source="course_homework",
             )
+            await _consume_text_ai_usage(session, access_service, message.bot, message.from_user.id)
             await session.commit()
 
             if isinstance(result, dict):
@@ -1228,16 +1272,20 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
     if not can_use:
         if message_key == "access_daily_limit_reached":
+            text = await _build_referral_limit_text(
+                session,
+                user,
+                user_lang,
+                "referral_daily_limit_offer",
+            )
             if user and not await user_repo.was_daily_limit_offer_sent_today(user):
                 await user_repo.mark_daily_limit_offer_sent(user)
-                await session.commit()
-                await message.answer(
-                    t("referral_daily_limit_offer", user_lang),
-                    reply_markup=referral_daily_limit_keyboard(user_lang),
-                )
-                return
-
-            await message.answer(t("access_daily_limit_reached", user_lang), parse_mode="HTML")
+            await session.commit()
+            await message.answer(
+                text,
+                reply_markup=referral_daily_limit_keyboard(user_lang),
+                parse_mode="HTML",
+            )
             return
 
         await message.answer(t(message_key, user_lang), parse_mode="HTML")
@@ -1317,9 +1365,17 @@ async def handle_image_message(message: Message, state: FSMContext, session):
     can_use, message_key = await access_service.can_use_image_ai(message.from_user.id)
     if not can_use:
         if message_key == "access_daily_image_limit_reached":
+            text = await _build_referral_limit_text(
+                session,
+                user,
+                user_lang,
+                "referral_image_limit_offer",
+            )
+            await session.commit()
             await message.answer(
-                t("access_daily_image_limit_reached", user_lang),
+                text,
                 reply_markup=photo_limit_subscription_keyboard(user_lang),
+                parse_mode="HTML",
             )
             return
 

@@ -207,6 +207,35 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-05-24 — Referral trial active access
+
+Changed:
+- Users can unlock 3 days of non-paid `active` access after collecting 10 active referrals.
+- This reward is separate from the existing referral bonus and referral discount flows: +5 bonus questions and 3-referral discount counters still use their existing fields.
+- Referral active access does not set `payment_status=approved`, does not create an AI usage budget, and keeps daily limits for text/image/course AI usage.
+- A new `users.referral_trial_count_started_at` marker resets this feature's referral count after each 3-day reward window.
+
+Why:
+- Trial users need a referral path to temporarily become `active` without replacing a real paid subscription.
+
+Files touched:
+- `app/services/referral_service.py`
+- `app/services/access_service.py`
+- `app/repositories/referral_repo.py`
+- `app/db/models/user.py`
+- `app/db/session.py`
+- `app/bot/handlers/messages.py`
+- `app/bot/handlers/referral.py`
+- `app/bot/keyboards/referral.py`
+- `app/bot/utils/i18n.py`
+- `alembic/versions/0028_referral_trial_activation.py`
+
+Risk:
+- Non-paid `active` users now remain daily-limited; paid users are still identified only by `payment_status=approved`.
+
+Follow-up:
+- Run DB migration in deploy environments before relying on referral trial progress display.
+
 ### 2026-05-24 — Dynamic course dialogue audio admin
 
 Changed:

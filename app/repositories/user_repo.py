@@ -90,6 +90,7 @@ class UserRepository:
             discount_referral_count=0,
             discount_eligible=False,
             discount_used=False,
+            referral_trial_count_started_at=now,
             created_at=now,
             last_active_at=now,
         )

@@ -394,8 +394,10 @@ HSK4_UPPER_PDF_MATERIALS = {
 
 
 from scripts.hsk4_upper_pdf_materials_4_6 import HSK4_UPPER_PDF_MATERIALS_4_6
+from scripts.hsk4_upper_pdf_materials_7_10 import HSK4_UPPER_PDF_MATERIALS_7_10
 
 HSK4_UPPER_PDF_MATERIALS.update(HSK4_UPPER_PDF_MATERIALS_4_6)
+HSK4_UPPER_PDF_MATERIALS.update(HSK4_UPPER_PDF_MATERIALS_7_10)
 
 
 def _word_by_no(vocab, no):
@@ -436,37 +438,42 @@ def _grammar_rule(item, lang):
 
 def _localize_materials(data):
     for word in data.get("vocabulary", []):
-        word.update(VOCAB_I18N.get(word.get("zh") or "", {}))
+        for key, value in VOCAB_I18N.get(word.get("zh") or "", {}).items():
+            if not word.get(key):
+                word[key] = value
 
     for item in data.get("grammar", []):
         loc = GRAMMAR_I18N.get(item.get("title_zh") or "", {})
         if loc:
-            item.update(
-                {
-                    "title_ru": loc["title_ru"],
-                    "title_tj": loc["title_tj"],
-                    "rule_ru": loc["rule_ru"],
-                    "rule_tj": loc["rule_tj"],
-                }
-            )
+            for field in ("title_ru", "title_tj", "rule_ru", "rule_tj"):
+                if not item.get(field):
+                    item[field] = loc[field]
             for example in item.get("examples") or []:
-                example["pinyin"] = loc["example_pinyin"]
-                example["ru"] = loc["example_ru"]
-                example["tj"] = loc["example_tj"]
+                if not example.get("pinyin"):
+                    example["pinyin"] = loc["example_pinyin"]
+                if not example.get("ru"):
+                    example["ru"] = loc["example_ru"]
+                if not example.get("tj"):
+                    example["tj"] = loc["example_tj"]
 
     for block in data.get("dialogues", []):
         scene_uz = block.get("scene_uz") or ""
         scene_loc = SCENE_I18N.get(scene_uz, {})
         if scene_loc:
-            block["scene_ru"] = scene_loc["ru"]
-            block["scene_tj"] = scene_loc["tj"]
+            if not block.get("scene_ru"):
+                block["scene_ru"] = scene_loc["ru"]
+            if not block.get("scene_tj"):
+                block["scene_tj"] = scene_loc["tj"]
 
         for line in block.get("dialogue") or []:
             loc = LINE_I18N.get(line.get("zh") or "", {})
             if loc:
-                line["pinyin"] = loc["pinyin"]
-                line["ru"] = loc["ru"]
-                line["tj"] = loc["tj"]
+                if not line.get("pinyin"):
+                    line["pinyin"] = loc["pinyin"]
+                if not line.get("ru"):
+                    line["ru"] = loc["ru"]
+                if not line.get("tj"):
+                    line["tj"] = loc["tj"]
 
     return data
 

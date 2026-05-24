@@ -46,35 +46,174 @@ def _fmt_date(dt) -> str:
 def _status_label(status: str, lang: str) -> str:
     if lang == "tj":
         return {
-            "trial": "Санҷишӣ",
+            "free": "Лимити ройгон",
+            "trial": "Лимити ройгон",
             "active": "Фаъол",
             "expired": "Ба анҷом расида",
             "blocked": "Баста",
-        }.get(status, status)
+        }.get(status, "Номаълум")
     if lang == "uz":
         return {
-            "trial": "Sinov",
+            "free": "Bepul limit",
+            "trial": "Bepul limit",
             "active": "Faol",
             "expired": "Tugagan",
             "blocked": "Bloklangan",
-        }.get(status, status)
+        }.get(status, "Noma'lum")
     return {
-        "trial": "Пробный",
+        "free": "Бесплатный лимит",
+        "trial": "Бесплатный лимит",
         "active": "Активный",
         "expired": "Закончен",
         "blocked": "Заблокирован",
-    }.get(status, status)
+    }.get(status, "Неизвестно")
 
 
+def _profile_status_label(user, lang: str) -> str:
+    status = str(getattr(user, "status", "") or "")
+    is_paid = getattr(user, "payment_status", "") == "approved"
 
-def _profile_text(user, lang: str) -> str:
+    if status == "active" and is_paid:
+        return {
+            "tj": "Обунаи фаъол",
+            "uz": "Faol obuna",
+            "ru": "Активная подписка",
+        }.get(lang, "Активная подписка")
+
+    if status == "active":
+        return {
+            "tj": "Дастрасии ройгон",
+            "uz": "Bepul kirish",
+            "ru": "Бесплатный доступ",
+        }.get(lang, "Бесплатный доступ")
+
+    return _status_label(status, lang)
+
+
+def _language_label(value: str, lang: str) -> str:
+    labels = {
+        "tj": {"tj": "Тоҷикӣ", "uz": "O'zbek", "ru": "Русский"},
+        "uz": {"tj": "Tojik", "uz": "O'zbek", "ru": "Rus"},
+        "ru": {"tj": "Таджикский", "uz": "Узбекский", "ru": "Русский"},
+    }
+    unknown = {"tj": "Номаълум", "uz": "Noma'lum", "ru": "Неизвестно"}
+    return labels.get(lang, labels["ru"]).get(value, unknown.get(lang, unknown["ru"]))
+
+
+def _level_label(value: str, lang: str) -> str:
+    if not value:
+        return "—"
+    if value.startswith("hsk"):
+        return value.upper()
+    beginner = {
+        "tj": "Оғозӣ",
+        "uz": "Boshlang'ich",
+        "ru": "Начальный",
+    }
+    return beginner.get(lang, beginner["ru"]) if value == "beginner" else value
+
+
+def _learning_mode_label(value: str, lang: str) -> str:
+    labels = {
+        "tj": {"qa": "Саволу ҷавоб", "course": "Курс"},
+        "uz": {"qa": "Savol-javob", "course": "Kurs"},
+        "ru": {"qa": "Вопрос-ответ", "course": "Курс"},
+    }
+    unknown = {"tj": "Номаълум", "uz": "Noma'lum", "ru": "Неизвестно"}
+    return labels.get(lang, labels["ru"]).get(value, unknown.get(lang, unknown["ru"]))
+
+
+def _free_access_label(lang: str, status_raw: str) -> str:
+    if status_raw == "active":
+        return {
+            "tj": "Дастрасии ройгон",
+            "uz": "Bepul kirish",
+            "ru": "Бесплатный доступ",
+        }.get(lang, "Бесплатный доступ")
+
+    return {
+        "tj": "Лимити ройгон",
+        "uz": "Bepul limit",
+        "ru": "Бесплатный лимит",
+    }.get(lang, "Бесплатный лимит")
+
+
+def _referral_status_label(status: str, lang: str) -> str:
+    if status == "active":
+        return {
+            "tj": "бонус дода шуд",
+            "uz": "bonus berilgan",
+            "ru": "бонус начислен",
+        }.get(lang, "бонус начислен")
+
+    return {
+        "tj": "2 хабар интизор",
+        "uz": "2 ta xabar kutilyapti",
+        "ru": "ждем 2 сообщения",
+    }.get(lang, "ждем 2 сообщения")
+
+
+def _profile_referrals_block(referral_rows, referral_total: int, lang: str) -> str:
     from html import escape
 
+    labels = {
+        "tj": {
+            "title": "👥 Даъватшудаҳо",
+            "empty": "Ҳоло касе даъват нашудааст.",
+            "total": "Ҳамагӣ",
+            "more": "Боз",
+            "people": "нафар",
+        },
+        "uz": {
+            "title": "👥 Chaqirganlaringiz",
+            "empty": "Hali hech kim chaqirilmagan.",
+            "total": "Jami",
+            "more": "Yana",
+            "people": "ta",
+        },
+        "ru": {
+            "title": "👥 Приглашенные",
+            "empty": "Пока никто не приглашен.",
+            "total": "Всего",
+            "more": "Еще",
+            "people": "чел.",
+        },
+    }
+    l = labels.get(lang, labels["ru"])
+
+    if referral_total <= 0:
+        return f"<b>{l['title']}</b>\n<blockquote>{l['empty']}</blockquote>"
+
+    lines = [f"{l['total']}: <b>{referral_total}</b> {l['people']}"]
+    for idx, (referral, invited_user) in enumerate(referral_rows, start=1):
+        if invited_user:
+            name = getattr(invited_user, "full_name", None) or getattr(invited_user, "username", None)
+            name = escape(str(name or invited_user.telegram_id))
+            username = getattr(invited_user, "username", None)
+            if username:
+                name = f"{name} (@{escape(str(username))})"
+        else:
+            name = f"ID {escape(str(referral.invited_user_telegram_id))}"
+
+        status = escape(_referral_status_label(referral.status, lang))
+        lines.append(f"{idx}. {name} - {status}")
+
+    hidden_count = referral_total - len(referral_rows)
+    if hidden_count > 0:
+        lines.append(f"{l['more']}: {hidden_count} {l['people']}")
+
+    return f"<b>{l['title']}</b>\n<blockquote>" + "\n".join(lines) + "</blockquote>"
+
+
+def _profile_text(user, lang: str, referral_rows=None, referral_total: int = 0) -> str:
+    from html import escape
+
+    referral_rows = referral_rows or []
     full_name = escape(str(getattr(user, "full_name", "—") or "—"))
-    language = escape(str(getattr(user, "language", "—") or "—"))
-    level = escape(str(getattr(user, "level", "—") or "—"))
+    language = escape(_language_label(str(getattr(user, "language", "") or ""), lang))
+    level = escape(_level_label(str(getattr(user, "level", "") or ""), lang))
     status_raw = str(getattr(user, "status", "—") or "—")
-    learning_mode = escape(str(getattr(user, "learning_mode", "—") or "—"))
+    learning_mode = escape(_learning_mode_label(str(getattr(user, "learning_mode", "") or ""), lang))
 
     started = (
         getattr(user, "start_date", None)
@@ -91,6 +230,7 @@ def _profile_text(user, lang: str) -> str:
     )
 
     plan_raw = getattr(user, "selected_plan_type", None)
+    is_paid = getattr(user, "payment_status", "") == "approved"
 
     duration_days = None
     try:
@@ -105,43 +245,45 @@ def _profile_text(user, lang: str) -> str:
         plan_key = str(plan_raw)
         if lang == "tj":
             plan_map = {
-                "trial_3_days": "trial 3-рӯза",
-                "free_trial": "trial 3-рӯза",
+                "trial_3_days": _free_access_label(lang, status_raw),
+                "free_trial": _free_access_label(lang, status_raw),
                 "10_days": "10 рӯз",
                 "1_month": "1 моҳ",
                 "monthly": "1 моҳ",
             }
         elif lang == "uz":
             plan_map = {
-                "trial_3_days": "3 kunlik trial",
-                "free_trial": "3 kunlik trial",
+                "trial_3_days": _free_access_label(lang, status_raw),
+                "free_trial": _free_access_label(lang, status_raw),
                 "10_days": "10 kun",
                 "1_month": "1 oy",
                 "monthly": "1 oy",
             }
         else:
             plan_map = {
-                "trial_3_days": "3 дня trial",
-                "free_trial": "3 дня trial",
+                "trial_3_days": _free_access_label(lang, status_raw),
+                "free_trial": _free_access_label(lang, status_raw),
                 "10_days": "10 дней",
                 "1_month": "1 месяц",
                 "monthly": "1 месяц",
             }
-        plan_label = plan_map.get(plan_key, plan_key)
+        plan_label = plan_map.get(plan_key, _free_access_label(lang, status_raw))
     else:
-        if status_raw == "trial":
-            plan_label = "trial 3-рӯза" if lang == "tj" else ("3 kunlik trial" if lang == "uz" else "3 дня trial")
-        elif status_raw == "active":
+        if status_raw in ("free", "trial"):
+            plan_label = _free_access_label(lang, status_raw)
+        elif status_raw == "active" and is_paid:
             if duration_days is not None and 9 <= duration_days <= 11:
                 plan_label = "10 рӯз" if lang == "tj" else ("10 kun" if lang == "uz" else "10 дней")
             elif duration_days is not None and 28 <= duration_days <= 31:
                 plan_label = "1 моҳ" if lang == "tj" else ("1 oy" if lang == "uz" else "1 месяц")
             else:
                 plan_label = "Обунаи фаъол" if lang == "tj" else ("Faol obuna" if lang == "uz" else "Активная подписка")
+        elif status_raw == "active":
+            plan_label = _free_access_label(lang, status_raw)
         else:
             plan_label = "—"
 
-    status = escape(status_raw)
+    status = escape(_profile_status_label(user, lang))
     plan = escape(str(plan_label))
 
     def fmt_date(value):
@@ -154,6 +296,7 @@ def _profile_text(user, lang: str) -> str:
 
     started_str = escape(fmt_date(started))
     ends_str = escape(fmt_date(ends))
+    referrals_block = _profile_referrals_block(referral_rows, referral_total, lang)
 
     if lang == "tj":
         text = (
@@ -164,12 +307,13 @@ def _profile_text(user, lang: str) -> str:
             f"📖 <b>Дараҷа:</b> {level}\n"
             f"🎯 <b>Режими ҷорӣ:</b> {learning_mode}\n"
             f"⭐ <b>Ҳолат:</b> {status}\n"
-            f"💳 <b>Тариф:</b> {plan}\n\n"
+            f"💳 <b>Нақша:</b> {plan}\n\n"
             f"🗓 <b>Оғоз:</b> {started_str}\n"
             f"⌛ <b>Анҷом:</b> {ends_str}"
             f"</blockquote>"
+            f"\n\n{referrals_block}"
         )
-        if getattr(user, "status", "") != "active":
+        if not is_paid:
             text += "\n\n🔓 <b>Агар обунаро фаъол кунед</b>, метавонед аз бот бе ягон лимит истифода баред."
         else:
             text += "\n\n✅ <b>Шумо обунаи фаъол доред.</b> Шумо метавонед аз ҳамаи функсияҳои бот истифода баред."
@@ -184,12 +328,13 @@ def _profile_text(user, lang: str) -> str:
             f"📖 <b>Daraja:</b> {level}\n"
             f"🎯 <b>Joriy rejim:</b> {learning_mode}\n"
             f"⭐ <b>Holat:</b> {status}\n"
-            f"💳 <b>Tarif:</b> {plan}\n\n"
+            f"💳 <b>Reja:</b> {plan}\n\n"
             f"🗓 <b>Boshlanish:</b> {started_str}\n"
             f"⌛ <b>Tugash:</b> {ends_str}"
             f"</blockquote>"
+            f"\n\n{referrals_block}"
         )
-        if getattr(user, "status", "") != "active":
+        if not is_paid:
             text += "\n\n🔓 <b>Obuna faollashtirsangiz</b>, botdan hech qanday limitsiz foydalanasiz."
         else:
             text += "\n\n✅ <b>Sizda faol obuna bor.</b> Botning barcha funksiyalaridan foydalanishingiz mumkin."
@@ -203,16 +348,27 @@ def _profile_text(user, lang: str) -> str:
         f"📖 <b>Уровень:</b> {level}\n"
         f"🎯 <b>Текущий режим:</b> {learning_mode}\n"
         f"⭐ <b>Статус:</b> {status}\n"
-        f"💳 <b>Тариф:</b> {plan}\n\n"
+        f"💳 <b>План:</b> {plan}\n\n"
         f"🗓 <b>Начало:</b> {started_str}\n"
         f"⌛ <b>Окончание:</b> {ends_str}"
         f"</blockquote>"
+        f"\n\n{referrals_block}"
     )
-    if getattr(user, "status", "") != "active":
+    if not is_paid:
         text += "\n\n🔓 <b>Если активируете подписку</b>, сможете пользоваться ботом без каких-либо лимитов."
     else:
         text += "\n\n✅ <b>У вас активная подписка.</b> Вы можете пользоваться всеми функциями бота."
     return text
+
+
+async def _profile_referral_data(session, user, limit: int = 10):
+    from app.repositories.referral_repo import ReferralRepository
+
+    referral_repo = ReferralRepository(session)
+    rows = await referral_repo.list_by_referrer_with_users(user.telegram_id, limit=limit)
+    total = await referral_repo.count_by_referrer(user.telegram_id)
+    return rows, total
+
 
 def profile_menu_keyboard(lang: str) -> InlineKeyboardMarkup:
     labels = {
@@ -266,7 +422,8 @@ async def profile_command(message: Message, state: FSMContext, session):
         return
 
     await _clear_voice_mode(user, session, state)
-    text = _profile_text(user, lang)
+    referral_rows, referral_total = await _profile_referral_data(session, user)
+    text = _profile_text(user, lang, referral_rows, referral_total)
     await message.answer(
         text,
         parse_mode="HTML",

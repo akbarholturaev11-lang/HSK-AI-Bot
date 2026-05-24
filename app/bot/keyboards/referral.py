@@ -27,6 +27,12 @@ def photo_limit_subscription_keyboard(lang: str) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
+                    text=t("referral_invite_button", lang),
+                    callback_data="referral:invite",
+                )
+            ],
+            [
+                InlineKeyboardButton(
                     text=t("menu_subscription", lang),
                     callback_data="subscription:open",
                 )

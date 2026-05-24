@@ -25,6 +25,7 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "pending_checkout_msg_id": "INTEGER",
         "voice_mode": "VARCHAR(20) DEFAULT 'none' NOT NULL",
         "username": "VARCHAR(64)",
+        "referral_trial_count_started_at": "TIMESTAMP WITH TIME ZONE",
     },
     "payments": {
         "checkout_msg_id": "INTEGER",

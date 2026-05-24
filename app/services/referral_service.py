@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from aiogram import Bot
@@ -8,6 +9,10 @@ from app.services.referral_notify_service import ReferralNotifyService
 from app.services.subscription_progress_service import SubscriptionProgressService
 
 
+REFERRAL_TRIAL_REQUIRED_ACTIVE = 10
+REFERRAL_TRIAL_ACCESS_DAYS = 3
+
+
 class ReferralService:
     def __init__(self, session):
         self.session = session
@@ -15,6 +20,79 @@ class ReferralService:
         self.referral_repo = ReferralRepository(session)
         self.referral_notify_service = ReferralNotifyService()
         self.subscription_progress_service = SubscriptionProgressService(session)
+
+    def _as_utc(self, dt: datetime) -> datetime:
+        if dt.tzinfo is None:
+            return dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+
+    async def _ensure_trial_counter_started_at(
+        self,
+        referrer,
+        fallback: Optional[datetime] = None,
+    ) -> datetime:
+        started_at = referrer.referral_trial_count_started_at
+        if started_at:
+            return started_at
+
+        started_at = fallback or datetime.now(timezone.utc)
+        referrer.referral_trial_count_started_at = started_at
+        await self.session.flush()
+        return started_at
+
+    async def get_trial_activation_progress(self, referrer) -> int:
+        if not referrer:
+            return 0
+
+        started_at = await self._ensure_trial_counter_started_at(referrer)
+        count = await self.referral_repo.count_active_since(
+            referrer_telegram_id=referrer.telegram_id,
+            started_at=started_at,
+        )
+        return min(count, REFERRAL_TRIAL_REQUIRED_ACTIVE)
+
+    async def _grant_trial_access_if_ready(
+        self,
+        referrer,
+        activated_at: Optional[datetime],
+    ) -> bool:
+        if not referrer:
+            return False
+
+        if referrer.payment_status == "approved":
+            return False
+
+        started_at = await self._ensure_trial_counter_started_at(
+            referrer,
+            fallback=activated_at,
+        )
+        active_count = await self.referral_repo.count_active_since(
+            referrer_telegram_id=referrer.telegram_id,
+            started_at=started_at,
+        )
+        if active_count < REFERRAL_TRIAL_REQUIRED_ACTIVE:
+            return False
+
+        now = datetime.now(timezone.utc)
+        reward_end = now + timedelta(days=REFERRAL_TRIAL_ACCESS_DAYS)
+        current_end = self._as_utc(referrer.end_date) if referrer.end_date else None
+        if referrer.status == "active" and current_end and current_end > reward_end:
+            reward_end = current_end
+
+        referrer.status = "active"
+        referrer.start_date = now
+        referrer.end_date = reward_end
+        referrer.questions_used = 0
+        referrer.bonus_questions_used = 0
+        referrer.last_limit_reset_at = now
+        referrer.daily_limit_offer_sent_at = None
+        referrer.expiry_reminder_sent_at = None
+        referrer.selected_plan_type = None
+        referrer.pending_checkout_msg_id = None
+        referrer.referral_trial_count_started_at = reward_end
+
+        await self.session.flush()
+        return True
 
     async def attach_referral_if_needed(
         self,
@@ -96,12 +174,24 @@ class ReferralService:
             await self.user_repo.increment_discount_referral_count(referrer, 1)
             referral.counts_for_discount = True
 
+        trial_access_unlocked = await self._grant_trial_access_if_ready(
+            referrer=referrer,
+            activated_at=referral.activated_at,
+        )
+
         await self.session.commit()
 
         if bonus_given_now and not referrer.discount_progress_message_id:
             await self.referral_notify_service.notify_bonus_received(
                 bot=bot,
                 referrer_user=referrer,
+            )
+
+        if trial_access_unlocked:
+            await self.referral_notify_service.notify_trial_access_unlocked(
+                bot=bot,
+                referrer_user=referrer,
+                days=REFERRAL_TRIAL_ACCESS_DAYS,
             )
 
         await self.subscription_progress_service.update_discount_progress_message(

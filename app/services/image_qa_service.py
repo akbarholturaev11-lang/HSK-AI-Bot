@@ -9,6 +9,7 @@ from app.services.access_service import AccessService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.image_analyzer_service import ImageAnalyzerService
 from app.services.image_explainer_service import ImageExplainerService
+from app.services.referral_service import ReferralService
 
 
 class ImageQAService:
@@ -19,6 +20,7 @@ class ImageQAService:
         self.access_service = AccessService(session)
         self.image_analyzer_service = ImageAnalyzerService()
         self.image_explainer_service = ImageExplainerService()
+        self.referral_service = ReferralService(session)
         self.last_budget_record = None
 
     async def _download_image_bytes(
@@ -111,5 +113,9 @@ class ImageQAService:
         )
 
         await self.access_service.consume_one_question(telegram_id)
+        await self.referral_service.activate_referral_if_eligible(
+            bot=bot,
+            invited_user_telegram_id=telegram_id,
+        )
         await self.session.commit()
         return assistant_reply

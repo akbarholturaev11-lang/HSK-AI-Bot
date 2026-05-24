@@ -49,6 +49,11 @@ class User(Base):
     discount_referral_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     discount_eligible: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     discount_used: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    referral_trial_count_started_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
       
     last_limit_reset_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
