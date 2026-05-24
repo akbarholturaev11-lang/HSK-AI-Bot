@@ -5,12 +5,14 @@ from aiogram import Bot
 
 from app.repositories.user_repo import UserRepository
 from app.repositories.referral_repo import ReferralRepository
+from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.referral_notify_service import ReferralNotifyService
 from app.services.subscription_progress_service import SubscriptionProgressService
 
 
 REFERRAL_TRIAL_REQUIRED_ACTIVE = 10
 REFERRAL_TRIAL_ACCESS_DAYS = 3
+REFERRAL_TRIAL_AI_BUDGET_USD = 2.0
 
 
 class ReferralService:
@@ -90,6 +92,16 @@ class ReferralService:
         referrer.selected_plan_type = None
         referrer.pending_checkout_msg_id = None
         referrer.referral_trial_count_started_at = reward_end
+
+        await AIUsageBudgetService(self.session).create_fixed_budget(
+            telegram_id=referrer.telegram_id,
+            plan_type="referral_trial_3_days",
+            amount=int(REFERRAL_TRIAL_AI_BUDGET_USD),
+            currency="usd",
+            total_budget_usd=REFERRAL_TRIAL_AI_BUDGET_USD,
+            starts_at=now,
+            ends_at=reward_end,
+        )
 
         await self.session.flush()
         return True

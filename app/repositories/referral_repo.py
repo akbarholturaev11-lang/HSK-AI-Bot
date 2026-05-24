@@ -5,7 +5,6 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.referral import Referral
-from app.db.models.user import User
 
 
 class ReferralRepository:
@@ -63,20 +62,6 @@ class ReferralRepository:
             .order_by(Referral.activated_at.asc())
         )
         return list(result.scalars().all())
-
-    async def list_by_referrer_with_users(
-        self,
-        referrer_telegram_id: int,
-        limit: int = 10,
-    ) -> list[tuple[Referral, User | None]]:
-        result = await self.session.execute(
-            select(Referral, User)
-            .outerjoin(User, User.telegram_id == Referral.invited_user_telegram_id)
-            .where(Referral.referrer_telegram_id == referrer_telegram_id)
-            .order_by(Referral.created_at.desc())
-            .limit(limit)
-        )
-        return [(referral, invited_user) for referral, invited_user in result.all()]
 
     async def count_by_referrer(self, referrer_telegram_id: int) -> int:
         result = await self.session.execute(

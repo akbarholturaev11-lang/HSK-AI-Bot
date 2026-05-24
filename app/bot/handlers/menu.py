@@ -5,6 +5,11 @@ from aiogram.types import Message
 from app.config import settings
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import CourseEngineService
+from app.services.referral_service import (
+    REFERRAL_TRIAL_ACCESS_DAYS,
+    REFERRAL_TRIAL_REQUIRED_ACTIVE,
+    ReferralService,
+)
 from app.bot.keyboards.subscription import payment_method_keyboard
 from app.bot.keyboards.course import reminder_time_keyboard
 from app.bot.utils.i18n import t
@@ -52,16 +57,16 @@ async def handle_subscription_button(message: Message, state: FSMContext, sessio
     "👤 Profil",
 ]))
 async def handle_profile_button(message: Message, state: FSMContext, session):
-    from app.bot.handlers.commands import _profile_referral_data, _profile_text, profile_menu_keyboard
+    from app.bot.handlers.commands import _profile_referral_count, _profile_text, profile_menu_keyboard
     user_repo = UserRepository(session)
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     if not user:
         return
     lang = user.language if user.language else "ru"
     await _clear_voice_mode(user, session, state)
-    referral_rows, referral_total = await _profile_referral_data(session, user)
+    referral_total = await _profile_referral_count(session, user)
     await message.answer(
-        _profile_text(user, lang, referral_rows, referral_total),
+        _profile_text(user, lang, referral_total),
         parse_mode="HTML",
         reply_markup=profile_menu_keyboard(lang),
     )
@@ -80,31 +85,18 @@ async def handle_invite_button(message: Message, state: FSMContext, session):
     lang = user.language if user.language else "ru"
     await _clear_voice_mode(user, session, state)
     await user_repo.ensure_referral_code(user)
+    trial_count = await ReferralService(session).get_trial_activation_progress(user)
     await session.commit()
 
     referral_link = f"https://t.me/{settings.BOT_USERNAME}?start={user.referral_code}"
-
-    if lang == "tj":
-        text = (
-            "<b>🎁 Даъватномаи шумо</b>\n\n"
-            f"<blockquote>🔗 {referral_link}</blockquote>\n\n"
-            "👥 Агар дӯсти шумо бо ин силка ворид шавад,\n"
-            "✨ шумо <b>+5 саволи бонусӣ</b> мегиред."
-        )
-    elif lang == "uz":
-        text = (
-            "<b>🎁 Taklif havolangiz</b>\n\n"
-            f"<blockquote>🔗 {referral_link}</blockquote>\n\n"
-            "👥 Do'stingiz shu havola orqali kirib, botga 2 ta xabar yuborsa,\n"
-            "✨ siz <b>+5 bonus savol</b> olasiz."
-        )
-    else:
-        text = (
-            "<b>🎁 Ваше приглашение</b>\n\n"
-            f"<blockquote>🔗 {referral_link}</blockquote>\n\n"
-            "👥 Если друг войдёт по этой ссылке и напишет боту 2 сообщения,\n"
-            "✨ вы получите <b>+5 бонусных вопросов</b>."
-        )
+    text = t(
+        "referral_invite_text",
+        lang,
+        link=referral_link,
+        count=trial_count,
+        required=REFERRAL_TRIAL_REQUIRED_ACTIVE,
+        days=REFERRAL_TRIAL_ACCESS_DAYS,
+    )
 
     await message.answer(text, parse_mode="HTML", disable_web_page_preview=True)
 

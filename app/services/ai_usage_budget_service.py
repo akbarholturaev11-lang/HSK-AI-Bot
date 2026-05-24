@@ -97,6 +97,45 @@ class AIUsageBudgetService:
         await self.session.flush()
         return budget
 
+    async def create_fixed_budget(
+        self,
+        *,
+        telegram_id: int,
+        plan_type: str,
+        amount: int,
+        currency: str,
+        total_budget_usd: float,
+        starts_at: datetime,
+        ends_at: datetime,
+    ) -> AIUsageBudget:
+        await self.expire_active_budgets(telegram_id)
+
+        now = datetime.now(timezone.utc)
+        segment_budget = total_budget_usd / SEGMENT_COUNT
+        budget = AIUsageBudget(
+            user_telegram_id=telegram_id,
+            payment_id=None,
+            plan_type=plan_type,
+            amount=amount,
+            currency=currency,
+            total_budget_usd=total_budget_usd,
+            segment_1_budget_usd=segment_budget,
+            segment_2_budget_usd=segment_budget,
+            segment_1_spent_usd=0.0,
+            segment_2_spent_usd=0.0,
+            current_window_spent_usd=0.0,
+            window_started_at=now,
+            cooldown_until=None,
+            starts_at=starts_at,
+            ends_at=ends_at,
+            status="active",
+            created_at=now,
+            updated_at=now,
+        )
+        self.session.add(budget)
+        await self.session.flush()
+        return budget
+
     async def expire_active_budgets(self, telegram_id: int) -> None:
         budgets = await self._list_active_budgets(telegram_id)
         now = datetime.now(timezone.utc)

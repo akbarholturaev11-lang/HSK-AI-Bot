@@ -97,6 +97,38 @@ def _block_label(lang: str, n: int, total: int) -> str:
     return f"{labels.get(lang, labels['ru'])} {n}/{max(total, n)}"
 
 
+_NARRATION_SPEAKERS = {"", "旁白", "narrator", "narration", "matn", "text", "文本"}
+
+
+def _is_narration_line(line: dict) -> bool:
+    speaker = str(line.get("speaker") or "").strip()
+    return speaker.lower() in _NARRATION_SPEAKERS or speaker in _NARRATION_SPEAKERS
+
+
+def _is_narration_block(block: dict) -> bool:
+    dialogue_lines = block.get("dialogue") or block.get("lines") or []
+    real_lines = [line for line in dialogue_lines if isinstance(line, dict)]
+    return bool(real_lines) and all(_is_narration_line(line) for line in real_lines)
+
+
+def _append_text_line(lines: list[str], line: dict, lang: str) -> None:
+    zh = line.get("zh", "")
+    pinyin = line.get("pinyin", "")
+    translation = (
+        _uz_fallback(lang, line.get("translation"))
+        or line.get(lang)
+        or _uz_fallback(lang, line.get("uz"))
+        or ""
+    )
+    if zh:
+        lines.append(f"<b>{zh}</b>")
+    if pinyin:
+        lines.append(f"<i>{pinyin}</i>")
+    if translation:
+        lines.append(translation)
+    lines.append("")
+
+
 # ─── Emoji raqamlar ────────────────────────────────────────────────────────
 _NUMS = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
@@ -179,6 +211,9 @@ def format_dialogue(lesson, lang: str, lesson_total_steps: int = 6) -> str:
         dialogue_lines = block.get("dialogue") or block.get("lines") or []
         for line in dialogue_lines:
             if not isinstance(line, dict):
+                continue
+            if _is_narration_line(line):
+                _append_text_line(lines, line, lang)
                 continue
             speaker = line.get("speaker", "")
             zh = line.get("zh", "")
@@ -607,13 +642,19 @@ def format_dialogue_n(lesson, lang: str, n: int) -> str:
         "tj": "🎭 Муколама",
         "ru": "🎭 Диалог",
     }
+    text_hdr = {
+        "uz": "📘 Matn",
+        "tj": "📘 Матн",
+        "ru": "📘 Текст",
+    }
+    is_text_block = _is_narration_block(block)
 
     total = len(_lesson_blocks(lesson))
     part = f" · {_block_label(lang, n, total)}" if total else ""
 
     lines = [
         f"<b>【{_lesson_word(lang)} {lesson.lesson_order}{part}】 {title}</b>",
-        f"{dlg_hdr.get(lang, dlg_hdr['ru'])} {n}",
+        f"{(text_hdr if is_text_block else dlg_hdr).get(lang, dlg_hdr['ru'])} {n}",
         "",
     ]
     if header:
@@ -625,6 +666,9 @@ def format_dialogue_n(lesson, lang: str, n: int) -> str:
     dialogue_lines = block.get("dialogue") or block.get("lines") or []
     for line in dialogue_lines:
         if not isinstance(line, dict):
+            continue
+        if _is_narration_line(line):
+            _append_text_line(lines, line, lang)
             continue
         speaker     = line.get("speaker", "")
         zh          = line.get("zh", "")

@@ -176,7 +176,7 @@ class _TextMessageProxy:
         return getattr(self._message, name)
 
 
-def _is_paid_voice_user(user) -> bool:
+def _can_use_voice(user) -> bool:
     return (
         user is not None
         and user.status == "active"
@@ -631,7 +631,7 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         await message.answer(t(message_key, user_lang), parse_mode="HTML")
         return
 
-    if not _is_paid_voice_user(user):
+    if not _can_use_voice(user):
         await session.commit()
         await message.answer(
             t("voice_subscription_required", user_lang),

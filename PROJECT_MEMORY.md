@@ -207,14 +207,30 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-05-25 — Course narrative text formatting
+
+Changed:
+- Course text blocks with narrator-style lines (`旁白` / no speaker) now render as text instead of dialogue: bold Chinese line, pinyin below, translation below.
+- Narrative blocks show `Matn/Текст/Матн` in the course message header instead of `Dialog`.
+
+Why:
+- Textbook passages without speakers were hard to read when formatted like dialogue lines.
+
+Files touched:
+- `app/bot/utils/course_formatter.py`
+
+Risk:
+- This is display-only; stored lesson JSON and progress logic are unchanged.
+
 ### 2026-05-25 — Referral trial active access
 
 Changed:
 - Users can unlock 3 days of non-paid `active` access after collecting 10 active referrals.
 - This reward is separate from the existing referral bonus and referral discount flows: +5 bonus questions and 3-referral discount counters still use their existing fields.
 - Referral active access does not set `payment_status=approved`; it creates a fixed $2 AI usage budget for the trial active window.
-- In trial active, text/course AI use the AI budget, photo keeps its daily image limit, and voice is allowed only through active access plus the same AI budget.
-- Profile labels non-paid active as `Sinov active` and explicitly says it is not a paid subscription.
+- In trial active, text/course AI use the AI budget and photo keeps its daily image limit.
+- Voice is restricted to real paid subscribers (`status=active` and `payment_status=approved`); non-paid active windows do not unlock voice.
+- Profile labels non-paid active as `Sinov muddati`, shows only referral count, and leaves the subscription line empty unless the user has a real paid subscription.
 - A new `users.referral_trial_count_started_at` marker resets this feature's referral count after each 3-day reward window.
 
 Why:

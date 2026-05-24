@@ -53,6 +53,12 @@ class AccessService:
 
         return True, ""
 
+    async def _can_use_ai_budget(self, telegram_id: int) -> Tuple[bool, str]:
+        budget_access = await AIUsageBudgetService(self.session).can_use_ai(telegram_id)
+        if not budget_access.allowed:
+            return False, budget_access.message_key
+        return True, ""
+
     async def _can_use_daily_image_limit(self, user) -> Tuple[bool, str]:
         now = datetime.now(timezone.utc)
 
@@ -114,12 +120,9 @@ class AccessService:
                 # falls through to trial logic below
             else:
                 if not self._is_paid_user(user):
-                    return await self._can_use_daily_text_limit(user)
+                    return await self._can_use_ai_budget(telegram_id)
 
-                budget_access = await AIUsageBudgetService(self.session).can_use_ai(telegram_id)
-                if not budget_access.allowed:
-                    return False, budget_access.message_key
-                return True, ""
+                return await self._can_use_ai_budget(telegram_id)
 
         if user.status == "expired":
             await self._downgrade_expired_user(user)
@@ -149,12 +152,12 @@ class AccessService:
                 # falls through to trial logic below
             else:
                 if not self._is_paid_user(user):
-                    return await self._can_use_daily_image_limit(user)
+                    can_use_image, message_key = await self._can_use_daily_image_limit(user)
+                    if not can_use_image:
+                        return False, message_key
+                    return await self._can_use_ai_budget(telegram_id)
 
-                budget_access = await AIUsageBudgetService(self.session).can_use_ai(telegram_id)
-                if not budget_access.allowed:
-                    return False, budget_access.message_key
-                return True, ""
+                return await self._can_use_ai_budget(telegram_id)
 
         if user.status == "expired":
             await self._downgrade_expired_user(user)
@@ -170,9 +173,7 @@ class AccessService:
         if not user:
             return
 
-        if user.status == "trial" or (
-            user.status == "active" and not self._is_paid_user(user)
-        ):
+        if user.status == "trial":
 
             now = datetime.now(timezone.utc)
 
