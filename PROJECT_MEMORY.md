@@ -207,6 +207,27 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-05-24 — HSK4 upper lesson localization quality
+
+Changed:
+- HSK4 上 lessons 1-3 now keep PDF-canonical Chinese dialogue/new-word material while adding Uzbek, Russian, and Tajik translations, dialogue pinyin, localized grammar explanations, and localized mini quiz/homework prompts.
+- The HSK4 static mini app fallback data now uses language-aware vocabulary, grammar, and quiz strings instead of Uzbek-only strings.
+
+Why:
+- Bot course messages and Mini App could show blank or Uzbek-only explanations for Russian/Tajik users because HSK4 seed payload only contained Uzbek fields and empty dialogue pinyin.
+
+Files touched:
+- `scripts/hsk4_upper_pdf_materials.py`
+- `scripts/hsk4_upper_i18n.py`
+- `scripts/verify_hsk4_upper_pdf_materials.py`
+- `app/static/hsk4.html`
+
+Risk:
+- Dialogue/new words remain source-locked to the textbook data in `scripts/hsk4_upper_pdf_materials.py`; only translations/explanations/pinyin are added in the i18n layer.
+
+Follow-up:
+- Use the same localization verifier before enabling HSK4 上 lessons 4-6 in Mini App support.
+
 ### 2026-05-24 — Course level completion upgrade flow
 
 Changed:

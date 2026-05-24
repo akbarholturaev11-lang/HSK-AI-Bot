@@ -1,4 +1,7 @@
+import copy
 import json
+
+from scripts.hsk4_upper_i18n import GRAMMAR_I18N, LINE_I18N, SCENE_I18N, VOCAB_I18N
 
 
 def _j(value):
@@ -33,9 +36,9 @@ HSK4_UPPER_PDF_MATERIALS = {
             "tj": "дар бораи муҳаббат ва муносибатҳо гуфтугӯ кардан; истифодаи 不仅, 从来, 刚, 即使 ва (在)...上",
         },
         "intro_text": {
-            "uz": "Bu dars PDFdagi 5 ta matn asosida sevgi, turmush va xarakter haqida gapirishga o'rgatadi. Har qismda o'sha matndagi yangi so'zlar va grammatika beriladi.",
-            "ru": "Урок основан на 5 текстах PDF о любви, браке и характере. В каждой части даны слова и грамматика именно этого текста.",
-            "tj": "Дарс бар асоси 5 матни PDF дар бораи муҳаббат, никоҳ ва характер аст. Дар ҳар қисм калимаҳо ва грамматикаи ҳамон матн дода мешавад.",
+            "uz": "Bu darsda sevgi, turmush qurish, romantika va xarakter haqida gapirishni o'rganasiz. Har qismda o'sha matndagi yangi so'zlar, pinyin, tarjima va kerakli grammatika beriladi.",
+            "ru": "В этом уроке вы научитесь говорить о любви, браке, романтике и характере. В каждой части будут слова, pinyin, перевод и нужная грамматика именно к этому тексту.",
+            "tj": "Дар ин дарс дар бораи муҳаббат, издивоҷ, романтика ва характер гуфтугӯ карданро меомӯзед. Дар ҳар қисм калимаҳо, pinyin, тарҷума ва грамматикаи лозими ҳамон матн дода мешавад.",
         },
         "vocabulary": [
             _word(1, "法律", "fǎlǜ", "n.", "qonun, huquq"),
@@ -156,9 +159,9 @@ HSK4_UPPER_PDF_MATERIALS = {
             "tj": "дар бораи дӯстӣ, иртибот ва дӯсти ҳақиқӣ гуфтугӯ кардан; истифодаи 正好, 差不多, 尽管, 却, 而",
         },
         "intro_text": {
-            "uz": "Bu dars PDFdagi 5 ta matn asosida do'st orttirish, sinfdoshlar bilan aloqa va haqiqiy do'stlik mavzusini beradi.",
-            "ru": "Урок основан на 5 текстах PDF о дружбе, связи с однокурсниками и настоящем друге.",
-            "tj": "Дарс бар асоси 5 матни PDF дар бораи дӯстӣ, иртибот бо ҳамсинфон ва дӯсти ҳақиқӣ аст.",
+            "uz": "Bu darsda yangi do'st orttirish, sinfdoshlar bilan aloqani saqlash va haqiqiy do'stlik haqida gapirishni o'rganasiz. Har qismda matnga mos so'zlar, tarjima va grammatika bor.",
+            "ru": "В этом уроке вы научитесь говорить о новых друзьях, связи с однокурсниками и настоящей дружбе. В каждой части есть слова, перевод и грамматика по своему тексту.",
+            "tj": "Дар ин дарс дар бораи пайдо кардани дӯсти нав, нигоҳ доштани робита бо ҳамсинфон ва дӯстии ҳақиқӣ гуфтугӯ карданро меомӯзед. Дар ҳар қисм калимаҳо, тарҷума ва грамматикаи мувофиқи матн ҳаст.",
         },
         "vocabulary": [
             _word(1, "适应", "shìyìng", "v.", "moslashmoq, ko'nikmoq"),
@@ -275,9 +278,9 @@ HSK4_UPPER_PDF_MATERIALS = {
             "tj": "дар бораи мусоҳиба, қабул ба кор ва таассуроти аввал гуфтугӯ кардан; истифодаи 挺, 本来, 另外, 首先, 不管",
         },
         "intro_text": {
-            "uz": "Bu dars PDFdagi 5 ta matn asosida ish intervyusi, rezyume, kasb va birinchi taassurot mavzularini o'rgatadi.",
-            "ru": "Урок основан на 5 текстах PDF о собеседовании, материалах кандидата, профессии и первом впечатлении.",
-            "tj": "Дарс бар асоси 5 матни PDF дар бораи мусоҳибаи кор, маводи номзад, касб ва таассуроти аввал аст.",
+            "uz": "Bu darsda ish intervyusi, ishga qabul, kasb va birinchi taassurot haqida gapirishni o'rganasiz. Har qismda shu matnga tegishli yangi so'zlar, pinyin, tarjima va grammatika beriladi.",
+            "ru": "В этом уроке вы научитесь говорить о собеседовании, найме, профессии и первом впечатлении. В каждой части будут слова, pinyin, перевод и грамматика именно к этому тексту.",
+            "tj": "Дар ин дарс дар бораи мусоҳибаи кор, қабул ба кор, касб ва таассуроти аввал гуфтугӯ карданро меомӯзед. Дар ҳар қисм калимаҳои нав, pinyin, тарҷума ва грамматикаи ҳамон матн дода мешавад.",
         },
         "vocabulary": [
             _word(1, "挺", "tǐng", "adv.", "ancha, juda"),
@@ -414,10 +417,61 @@ def _options(answer, pool):
     return options
 
 
+def _meaning(word, lang):
+    return word.get(lang) or word.get("uz") or word.get("meaning") or ""
+
+
+def _grammar_title(item, lang):
+    return item.get(f"title_{lang}") or item.get("title_uz") or item.get("title_zh") or ""
+
+
+def _grammar_rule(item, lang):
+    return item.get(f"rule_{lang}") or item.get("rule_uz") or item.get("rule") or ""
+
+
+def _localize_materials(data):
+    for word in data.get("vocabulary", []):
+        word.update(VOCAB_I18N.get(word.get("zh") or "", {}))
+
+    for item in data.get("grammar", []):
+        loc = GRAMMAR_I18N.get(item.get("title_zh") or "", {})
+        if loc:
+            item.update(
+                {
+                    "title_ru": loc["title_ru"],
+                    "title_tj": loc["title_tj"],
+                    "rule_ru": loc["rule_ru"],
+                    "rule_tj": loc["rule_tj"],
+                }
+            )
+            for example in item.get("examples") or []:
+                example["pinyin"] = loc["example_pinyin"]
+                example["ru"] = loc["example_ru"]
+                example["tj"] = loc["example_tj"]
+
+    for block in data.get("dialogues", []):
+        scene_uz = block.get("scene_uz") or ""
+        scene_loc = SCENE_I18N.get(scene_uz, {})
+        if scene_loc:
+            block["scene_ru"] = scene_loc["ru"]
+            block["scene_tj"] = scene_loc["tj"]
+
+        for line in block.get("dialogue") or []:
+            loc = LINE_I18N.get(line.get("zh") or "", {})
+            if loc:
+                line["pinyin"] = loc["pinyin"]
+                line["ru"] = loc["ru"]
+                line["tj"] = loc["tj"]
+
+    return data
+
+
 def _mini_quiz(lesson_order, block_no, vocab, grammar, block):
     words = [_word_by_no(vocab, no) for no in block.get("word_nos", [])]
     words = [word for word in words if word]
     meaning_pool = [word.get("uz") or "" for word in vocab]
+    meaning_pool_ru = [word.get("ru") or "" for word in vocab]
+    meaning_pool_tj = [word.get("tj") or "" for word in vocab]
     hanzi_pool = [word.get("zh") or "" for word in vocab]
     grammar_pool = [item.get("title_zh") or "" for item in grammar]
     quiz = []
@@ -429,8 +483,14 @@ def _mini_quiz(lesson_order, block_no, vocab, grammar, block):
             {
                 "type": "meaning",
                 "prompt_uz": f"“{word.get('zh')}” nimani anglatadi?",
+                "prompt_ru": f"Что означает “{word.get('zh')}”?",
+                "prompt_tj": f"“{word.get('zh')}” чӣ маъно дорад?",
                 "answer": answer,
                 "options": _options(answer, meaning_pool),
+                "answer_ru": word.get("ru") or "",
+                "options_ru": _options(word.get("ru") or "", meaning_pool_ru),
+                "answer_tj": word.get("tj") or "",
+                "options_tj": _options(word.get("tj") or "", meaning_pool_tj),
             }
         )
 
@@ -441,6 +501,8 @@ def _mini_quiz(lesson_order, block_no, vocab, grammar, block):
             {
                 "type": "hanzi",
                 "prompt_uz": f"“{word.get('uz')}” qaysi so'z?",
+                "prompt_ru": f"Какое слово означает “{word.get('ru')}”?",
+                "prompt_tj": f"Кадом калима маънои “{word.get('tj')}”-ро дорад?",
                 "answer": answer,
                 "options": _options(answer, hanzi_pool),
             }
@@ -455,6 +517,8 @@ def _mini_quiz(lesson_order, block_no, vocab, grammar, block):
             {
                 "type": "grammar",
                 "prompt_uz": f"“{example}” gapida qaysi grammatika ishlatilgan?",
+                "prompt_ru": f"Какая грамматика используется в этом предложении?\n“{example}”",
+                "prompt_tj": f"Дар ин ҷумла кадом грамматика истифода шудааст?\n“{example}”",
                 "answer": answer,
                 "options": _options(answer, grammar_pool),
             }
@@ -471,6 +535,8 @@ def _mini_homework(block_no, words):
     return {
         "block_no": block_no,
         "instruction_uz": "Shu qismdagi yangi so'zlardan 1-2 ta sodda gap yozing.",
+        "instruction_ru": "Напишите 1-2 простых предложения с новыми словами этой части.",
+        "instruction_tj": "Бо калимаҳои нави ҳамин қисм 1-2 ҷумлаи содда нависед.",
         "words": [word.get("zh") for word in words if word.get("zh")],
     }
 
@@ -479,7 +545,11 @@ def _exercise_payload(vocab, grammar):
     word_items = [
         {
             "prompt_uz": f"{word['zh']} ({word['pinyin']})",
+            "prompt_ru": f"{word['zh']} ({word['pinyin']})",
+            "prompt_tj": f"{word['zh']} ({word['pinyin']})",
             "answer": word["uz"],
+            "answer_ru": _meaning(word, "ru"),
+            "answer_tj": _meaning(word, "tj"),
             "pinyin": word["pinyin"],
         }
         for word in vocab[:5]
@@ -487,7 +557,11 @@ def _exercise_payload(vocab, grammar):
     grammar_items = [
         {
             "prompt_uz": (item.get("examples") or [{}])[0].get("zh") or item.get("title_zh"),
+            "prompt_ru": (item.get("examples") or [{}])[0].get("zh") or item.get("title_zh"),
+            "prompt_tj": (item.get("examples") or [{}])[0].get("zh") or item.get("title_zh"),
             "answer": item.get("title_zh"),
+            "answer_ru": _grammar_title(item, "ru"),
+            "answer_tj": _grammar_title(item, "tj"),
         }
         for item in grammar[:3]
     ]
@@ -495,13 +569,17 @@ def _exercise_payload(vocab, grammar):
         {
             "no": 1,
             "type": "word_meaning",
-            "instruction_uz": "Quyidagi PDF so'zlarining ma'nosini yozing:",
+            "instruction_uz": "Quyidagi yangi so'zlarning ma'nosini yozing:",
+            "instruction_ru": "Напишите значения следующих новых слов:",
+            "instruction_tj": "Маънои калимаҳои нави зеринро нависед:",
             "items": word_items,
         },
         {
             "no": 2,
             "type": "grammar_identify",
             "instruction_uz": "Gapda qaysi grammatika ishlatilganini yozing:",
+            "instruction_ru": "Напишите, какая грамматика используется в предложении:",
+            "instruction_tj": "Нависед, дар ҷумла кадом грамматика истифода шудааст:",
             "items": grammar_items,
         },
     ]
@@ -516,21 +594,27 @@ def _homework_payload(vocab, grammar):
     return [
         {
             "no": 1,
-            "instruction_uz": "PDFdagi yangi so'zlardan kamida 5 tasini ishlatib 5-6 gap yozing.",
+            "instruction_uz": "Bugungi yangi so'zlardan kamida 5 tasini ishlatib 5-6 gap yozing.",
+            "instruction_ru": "Напишите 5-6 предложений, используя минимум 5 новых слов сегодняшнего урока.",
+            "instruction_tj": "Бо истифода аз ҳадди ақал 5 калимаи нави дарси имрӯз 5-6 ҷумла нависед.",
             "words": [word["zh"] for word in vocab[:10]],
         },
         {
             "no": 2,
             "instruction_uz": "Bugungi grammatikalardan 2 tasini tanlab, har biriga bittadan gap tuzing.",
+            "instruction_ru": "Выберите 2 грамматики сегодняшнего урока и составьте по одному предложению к каждой.",
+            "instruction_tj": "Аз грамматикаҳои имрӯза 2-то интихоб карда, барои ҳар кадом як ҷумла созед.",
             "words": [item["title_zh"] for item in grammar],
         },
     ]
 
 
 def apply_hsk4_upper_pdf_materials(lesson):
-    data = HSK4_UPPER_PDF_MATERIALS.get(int(lesson.get("lesson_order") or 0))
+    raw_data = HSK4_UPPER_PDF_MATERIALS.get(int(lesson.get("lesson_order") or 0))
+    data = copy.deepcopy(raw_data) if raw_data else None
     if not data:
         return lesson
+    data = _localize_materials(data)
 
     vocab = data["vocabulary"]
     grammar = data["grammar"]
