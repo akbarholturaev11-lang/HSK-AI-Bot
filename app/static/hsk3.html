@@ -999,16 +999,15 @@ function makeQ(word,lesson,type){
     optsData=shuffleOpts([ansText,...pickDistractors(word,'p',lesson)],ansText,word.h+type);
     q=`“${word.h}” pinyin qaysi?`;
   }else{
-    ansText=word.h;
-    optsData=shuffleOpts([ansText,...pickDistractors(word,'h',lesson)],ansText,word.h+type);
-    q=`Gapni to'ldiring: 我今天学习了“____”这个词。`;
-    hint+=` · ma'nosi: ${cleanMeaning(word.m)}`;
+    ansText=cleanMeaning(word.m);
+    optsData=shuffleOpts([ansText,...pickDistractors(word,'m',lesson)],ansText,word.h+type);
+    q=`“${word.h}” nimani anglatadi?`;
   }
   return {lesson,type,q,hint,cat,opts:optsData.opts,ans:optsData.ans,expl:exampleFor(word)};
 }
 function buildLessonQuizzes(){
   const obj={};
-  const types=['hanzi_to_meaning','meaning_to_hanzi','pinyin_to_hanzi','hanzi_to_pinyin','gap_fill'];
+  const types=['hanzi_to_meaning','meaning_to_hanzi','pinyin_to_hanzi','hanzi_to_pinyin'];
   for(let lesson=1;lesson<=20;lesson++){
     const words=VOCAB.filter(v=>v.l===lesson);
     obj[lesson]=[];

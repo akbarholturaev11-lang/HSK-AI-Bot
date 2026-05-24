@@ -14,9 +14,14 @@ _QUIZ_TEXT = {
         "meaning_to_hanzi": "“{meaning}” qaysi so'z?",
         "pinyin_to_hanzi": "“{pinyin}” qaysi so'z?",
         "hanzi_to_pinyin": "“{zh}” pinyin qaysi?",
-        "gap_fill": "Gapni to'ldiring: 我今天学习了“____”这个词。",
         "meaning_hint": "ma'nosi: {meaning}",
         "correct": "To'g'ri javob: {zh} — {meaning}.",
+        "grammar_cat": "Grammatika",
+        "grammar_hint": "Dars {lesson} grammatikasi",
+        "grammar_example_to_pattern": "Quyidagi gapda qaysi grammatika ishlatilgan?\n{example}",
+        "grammar_pattern_to_example": "“{title}” grammatikasiga qaysi gap mos?",
+        "grammar_correct": "To'g'ri javob: {title}. {rule}",
+        "grammar_example_correct": "To'g'ri javob: {example}\nBu gapda {title} ishlatilgan.",
     },
     "ru": {
         "cat": "Слова",
@@ -25,9 +30,14 @@ _QUIZ_TEXT = {
         "meaning_to_hanzi": "Какое слово означает “{meaning}”?",
         "pinyin_to_hanzi": "Какое слово читается “{pinyin}”?",
         "hanzi_to_pinyin": "Какой pinyin у “{zh}”?",
-        "gap_fill": "Заполните пропуск: 我今天学习了“____”这个词。",
         "meaning_hint": "значение: {meaning}",
         "correct": "Правильный ответ: {zh} — {meaning}.",
+        "grammar_cat": "Грамматика",
+        "grammar_hint": "Грамматика урока {lesson}",
+        "grammar_example_to_pattern": "Какая грамматика используется в этом предложении?\n{example}",
+        "grammar_pattern_to_example": "Какое предложение подходит к грамматике “{title}”?",
+        "grammar_correct": "Правильный ответ: {title}. {rule}",
+        "grammar_example_correct": "Правильный ответ: {example}\nВ этом предложении используется {title}.",
     },
     "tj": {
         "cat": "Калимаҳо",
@@ -36,9 +46,14 @@ _QUIZ_TEXT = {
         "meaning_to_hanzi": "Кадом калима маънои “{meaning}”-ро дорад?",
         "pinyin_to_hanzi": "Кадом калима “{pinyin}” хонда мешавад?",
         "hanzi_to_pinyin": "Pinyin-и “{zh}” кадом аст?",
-        "gap_fill": "Ҷойи холиро пур кунед: 我今天学习了“____”这个词。",
         "meaning_hint": "маъно: {meaning}",
         "correct": "Ҷавоби дуруст: {zh} — {meaning}.",
+        "grammar_cat": "Грамматика",
+        "grammar_hint": "Грамматикаи дарси {lesson}",
+        "grammar_example_to_pattern": "Дар ин ҷумла кадом грамматика истифода шудааст?\n{example}",
+        "grammar_pattern_to_example": "Кадом ҷумла ба грамматикаи “{title}” мувофиқ аст?",
+        "grammar_correct": "Ҷавоби дуруст: {title}. {rule}",
+        "grammar_example_correct": "Ҷавоби дуруст: {example}\nДар ин ҷумла {title} истифода шудааст.",
     },
 }
 
@@ -241,13 +256,39 @@ class CourseMiniAppLessonService:
             value = (value * 31 + index) % 1_000_003
         return items, items.index(answer) if answer in items else 0
 
-    def _quiz_questions(self, vocab: list[dict], lesson_order: int, lang: str, block_no: int | None = None) -> list[dict]:
+    def _short_rule(self, value: str, limit: int = 130) -> str:
+        text = " ".join(str(value or "").split())
+        if len(text) <= limit:
+            return text
+        return f"{text[:limit].rstrip()}..."
+
+    def _option_values(self, answer: str, candidates: list[str], count: int = 3) -> list[str]:
+        seen = {answer}
+        result = [answer]
+        for value in candidates:
+            value = str(value or "").strip()
+            if not value or value in seen:
+                continue
+            seen.add(value)
+            result.append(value)
+            if len(result) >= count + 1:
+                break
+        return result
+
+    def _first_grammar_example(self, item: dict) -> dict:
+        examples = item.get("examples") if isinstance(item.get("examples"), list) else []
+        for example in examples:
+            if isinstance(example, dict) and example.get("zh"):
+                return example
+        return {}
+
+    def _word_quiz_questions(self, vocab: list[dict], lesson_order: int, lang: str, block_no: int | None = None) -> list[dict]:
         text = _QUIZ_TEXT[lang]
         questions = []
         meanings = [item["meaning"] for item in vocab]
         hanzis = [item["zh"] for item in vocab]
         pinyins = [item["pinyin"] for item in vocab]
-        types = ("hanzi_to_meaning", "meaning_to_hanzi", "pinyin_to_hanzi", "hanzi_to_pinyin", "gap_fill")
+        types = ("hanzi_to_meaning", "meaning_to_hanzi", "pinyin_to_hanzi", "hanzi_to_pinyin")
 
         for word in vocab:
             zh = word["zh"]
@@ -278,10 +319,7 @@ class CourseMiniAppLessonService:
                     question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
                     hint = text["hint"].format(lesson=lesson_order)
                 else:
-                    answer = zh
-                    options = [answer] + self._distractors(hanzis, answer)
-                    question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
-                    hint = f"{text['hint'].format(lesson=lesson_order)} · {text['meaning_hint'].format(meaning=meaning)}"
+                    continue
 
                 options, answer_index = self._shuffle_options(options, answer, f"{zh}:{question_type}:{lang}")
                 questions.append(
@@ -298,6 +336,115 @@ class CourseMiniAppLessonService:
                     }
                 )
         return questions
+
+    def _grammar_quiz_questions(
+        self,
+        grammar: list[dict],
+        grammar_pool: list[dict],
+        lesson_order: int,
+        lang: str,
+        block_no: int | None = None,
+    ) -> list[dict]:
+        text = _QUIZ_TEXT[lang]
+        questions = []
+
+        titles = [
+            item.get("title") or item.get("formula") or item.get("title_zh") or ""
+            for item in grammar_pool
+            if isinstance(item, dict)
+        ]
+        examples = [
+            self._first_grammar_example(item).get("zh") or ""
+            for item in grammar_pool
+            if isinstance(item, dict)
+        ]
+
+        for index, item in enumerate(grammar, 1):
+            if not isinstance(item, dict):
+                continue
+            title = str(item.get("title") or item.get("formula") or item.get("title_zh") or "").strip()
+            formula = str(item.get("formula") or item.get("title_zh") or title).strip()
+            rule = self._short_rule(item.get("rule") or "")
+            example = self._first_grammar_example(item)
+            example_zh = str(example.get("zh") or "").strip()
+            if not title or not example_zh:
+                continue
+
+            pattern_options = self._option_values(title, titles)
+            if len(pattern_options) >= 2:
+                options, answer_index = self._shuffle_options(
+                    pattern_options,
+                    title,
+                    f"grammar-pattern:{lesson_order}:{block_no}:{index}:{lang}",
+                )
+                questions.append(
+                    {
+                        "lesson": lesson_order,
+                        "block_no": block_no,
+                        "type": "grammar_example_to_pattern",
+                        "q": text["grammar_example_to_pattern"].format(example=example_zh),
+                        "hint": text["grammar_hint"].format(lesson=lesson_order),
+                        "cat": text["grammar_cat"],
+                        "opts": options,
+                        "ans": answer_index,
+                        "expl": text["grammar_correct"].format(title=title, rule=rule or formula),
+                    }
+                )
+
+            example_options = self._option_values(example_zh, examples)
+            if len(example_options) >= 2:
+                options, answer_index = self._shuffle_options(
+                    example_options,
+                    example_zh,
+                    f"grammar-example:{lesson_order}:{block_no}:{index}:{lang}",
+                )
+                questions.append(
+                    {
+                        "lesson": lesson_order,
+                        "block_no": block_no,
+                        "type": "grammar_pattern_to_example",
+                        "q": text["grammar_pattern_to_example"].format(title=title),
+                        "hint": text["grammar_hint"].format(lesson=lesson_order),
+                        "cat": text["grammar_cat"],
+                        "opts": options,
+                        "ans": answer_index,
+                        "expl": text["grammar_example_correct"].format(example=example_zh, title=title),
+                    }
+                )
+        return questions
+
+    def _quiz_questions(
+        self,
+        vocab: list[dict],
+        grammar: list[dict],
+        lesson_grammar: list[dict],
+        lesson_order: int,
+        lang: str,
+        block_no: int | None = None,
+    ) -> list[dict]:
+        word_questions = self._word_quiz_questions(vocab, lesson_order, lang, block_no)
+        grammar_pool = lesson_grammar or grammar
+        grammar_questions = self._grammar_quiz_questions(grammar, grammar_pool, lesson_order, lang, block_no)
+
+        target_count = 10
+        grammar_target = min(len(grammar_questions), 4)
+        questions = grammar_questions[:grammar_target]
+        questions.extend(word_questions[: max(0, target_count - len(questions))])
+
+        remaining = word_questions[max(0, target_count - grammar_target):] + grammar_questions[grammar_target:]
+        cursor = 0
+        while len(questions) < target_count and remaining:
+            questions.append(remaining[cursor % len(remaining)])
+            cursor += 1
+
+        if len(questions) < target_count:
+            filler = word_questions + grammar_questions
+            cursor = 0
+            while len(questions) < target_count and filler:
+                questions.append(dict(filler[cursor % len(filler)]))
+                cursor += 1
+
+        return questions[:target_count]
 
     async def get_payload(self, lesson_order: int, lang: str, level: str = "hsk3", block_no: int | None = None) -> dict | None:
         lang = normalize_miniapp_lang(lang)
@@ -318,6 +465,7 @@ class CourseMiniAppLessonService:
         block = self._block_by_no(lesson, block_no)
         vocab = self._vocabulary(lesson, lang, block)
         grammar = self._grammar(lesson, lang, block)
+        lesson_grammar = self._grammar(lesson, lang)
         homework = self._homework(lesson, lang)
         return {
             "lesson_id": lesson.lesson_order,
@@ -329,5 +477,12 @@ class CourseMiniAppLessonService:
             "vocabulary": vocab,
             "grammar": grammar,
             "homework": homework,
-            "quiz_questions": self._quiz_questions(vocab, lesson.lesson_order, lang, int(block.get("block_no")) if block else None),
+            "quiz_questions": self._quiz_questions(
+                vocab,
+                grammar,
+                lesson_grammar,
+                lesson.lesson_order,
+                lang,
+                int(block.get("block_no")) if block else None,
+            ),
         }
