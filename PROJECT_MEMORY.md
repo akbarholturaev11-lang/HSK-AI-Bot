@@ -367,6 +367,26 @@ Files touched:
 Risk:
 - Lessons 4+ are intentionally not enabled in HSK4 Mini App yet; continue in small batches to avoid content errors.
 
+### 2026-05-24 — HSK4 上 lessons 4-6 PDF alignment
+
+Changed:
+- HSK4 上 lessons 4-6 now use canonical textbook dialogue/new-word data through `scripts/hsk4_upper_pdf_materials_4_6.py`.
+- Each lesson has 5 dialogue blocks, 31 textbook vocabulary items, 5 grammar points, three-language translations, pinyin, per-block mini quiz/homework, and Mini App fallback data.
+- Seed files for lessons 4-6 are now thin wrappers so stale non-PDF fallback content cannot leak into runtime data.
+
+Why:
+- Lessons 4-6 previously still contained older non-canonical seed material and HSK4 Mini App fallback only covered lessons 1-3.
+
+Files touched:
+- `scripts/hsk4_upper_pdf_materials.py`
+- `scripts/hsk4_upper_pdf_materials_4_6.py`
+- `scripts/seed_hsk4_lesson_04.py` to `scripts/seed_hsk4_lesson_06.py`
+- `scripts/verify_hsk4_upper_pdf_materials.py`
+- `app/static/hsk4.html`
+
+Risk:
+- Database must be reseeded for deployed environments; local DB was updated for HSK4-L04, HSK4-L05, and HSK4-L06 in this session.
+
 ---
 
 ## 11. Known Problems

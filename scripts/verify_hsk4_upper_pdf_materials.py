@@ -28,6 +28,24 @@ EXPECTED = {
         "must_not_have": {"越"},
         "grammar": ["挺", "本来", "另外", "首先", "不管……都……"],
     },
+    4: {
+        "vocab_count": 31,
+        "must_have": {"按照", "工资", "不得不", "责任", "奖金", "调查", "甚至"},
+        "must_not_have": {"起初"},
+        "grammar": ["以为", "原来", "并", "按照", "甚至"],
+    },
+    5: {
+        "vocab_count": 31,
+        "must_have": {"制冷", "实际", "考虑", "标准", "购物", "受到", "寄"},
+        "must_not_have": {"冷冻", "的确", "实际上"},
+        "grammar": ["肯定", "再说", "实际", "对……来说", "尤其"],
+    },
+    6: {
+        "vocab_count": 31,
+        "must_have": {"售货员", "袜子", "打扰", "轻", "方面", "支持", "会员卡", "降低"},
+        "must_not_have": {"产品", "品牌", "进口", "国产", "消费", "经济"},
+        "grammar": ["竟然", "倍", "值得", "其中", "（在）……下"],
+    },
 }
 
 
@@ -104,7 +122,7 @@ def verify_lesson(lesson_no):
 def main():
     for lesson_no in EXPECTED:
         verify_lesson(lesson_no)
-    print("ok: HSK4 上 lessons 1-3 PDF materials verified")
+    print("ok: HSK4 上 lessons 1-6 PDF materials verified")
 
 
 if __name__ == "__main__":

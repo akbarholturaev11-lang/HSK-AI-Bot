@@ -393,6 +393,11 @@ HSK4_UPPER_PDF_MATERIALS = {
 }
 
 
+from scripts.hsk4_upper_pdf_materials_4_6 import HSK4_UPPER_PDF_MATERIALS_4_6
+
+HSK4_UPPER_PDF_MATERIALS.update(HSK4_UPPER_PDF_MATERIALS_4_6)
+
+
 def _word_by_no(vocab, no):
     for word in vocab:
         if int(word.get("no") or 0) == int(no):
