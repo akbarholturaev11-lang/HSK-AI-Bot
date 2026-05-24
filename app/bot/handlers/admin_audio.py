@@ -3,8 +3,8 @@
 Flow:
   /admin_audio
     → HSK level tanlash
-      → Darslar ro'yxati (✅ audio bor / ❌ yo'q)
-        → Dars tanlash → Audio turi tanlash (vocab / dialogue_1 / dialogue_2 …)
+      → Darslar ro'yxati (✅ to'liq / 🟡 qisman / ❌ yo'q)
+        → Dars tanlash → Audio turi tanlash (vocab / dialogue_N — real dialog soniga qarab)
           → "Faylni yuboring" → Fayl → Saqlandi ✅ → Keyingi tur yoki keyingi dars
 """
 
@@ -43,12 +43,66 @@ def _parse(value, default=None):
 
 
 def _audio_types_for_lesson(lesson) -> list[str]:
-    """Darsning barcha audio turlarini qaytaradi."""
+    """Darsning hozirgi materialiga mos audio turlarini qaytaradi."""
     types = ["vocab"]
     dialogues = _parse(lesson.dialogue_json, [])
-    for i in range(1, min(len(dialogues) + 1, 5)):
-        types.append(f"dialogue_{i}")
+    if not isinstance(dialogues, list):
+        return types
+    for index, block in enumerate(dialogues, 1):
+        if isinstance(block, dict):
+            lines = block.get("dialogue") or block.get("lines") or []
+            if not lines:
+                continue
+            try:
+                block_no = int(block.get("block_no") or index)
+            except (TypeError, ValueError):
+                block_no = index
+        else:
+            block_no = index
+        if block_no > 0:
+            types.append(f"dialogue_{block_no}")
     return types
+
+
+def _audio_type_label(audio_type: str) -> str:
+    if audio_type == "vocab":
+        return "so'zlar"
+    if audio_type.startswith("dialogue_"):
+        try:
+            n = int(audio_type.split("_", 1)[1])
+        except (TypeError, ValueError, IndexError):
+            return audio_type
+        return f"{n}-dialog"
+    return audio_type
+
+
+def _audio_status_for_lesson(lesson, uploaded_types: set[str] | list[str]) -> dict:
+    required = _audio_types_for_lesson(lesson)
+    required_set = set(required)
+    uploaded_set = set(uploaded_types)
+    missing = [audio_type for audio_type in required if audio_type not in uploaded_set]
+    uploaded_required = [audio_type for audio_type in required if audio_type in uploaded_set]
+    obsolete = sorted(uploaded_set - required_set)
+    if not uploaded_required:
+        state = "missing"
+    elif missing:
+        state = "partial"
+    else:
+        state = "complete"
+    return {
+        "state": state,
+        "required": required,
+        "missing": missing,
+        "uploaded_required": uploaded_required,
+        "obsolete": obsolete,
+    }
+
+
+def _group_audio_by_lesson(rows) -> dict[int, set[str]]:
+    grouped: dict[int, set[str]] = {}
+    for row in rows:
+        grouped.setdefault(int(row.lesson_order), set()).add(row.audio_type)
+    return grouped
 
 
 # ─── keyboards ───────────────────────────────────────────────────────────────
@@ -68,8 +122,8 @@ def _level_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
-def _lessons_keyboard(lessons, uploaded_set: set, page: int = 0) -> InlineKeyboardMarkup:
-    """Darslar ro'yxati. uploaded_set — kamida bitta audio yuklangan darslar lesson_order lari."""
+def _lessons_keyboard(lessons, status_by_order: dict[int, dict], page: int = 0) -> InlineKeyboardMarkup:
+    """Darslar ro'yxati. Status current dars audio turlariga qarab hisoblanadi."""
     page_size = 8
     start = page * page_size
     end = start + page_size
@@ -78,9 +132,13 @@ def _lessons_keyboard(lessons, uploaded_set: set, page: int = 0) -> InlineKeyboa
 
     buttons = []
     for lesson in page_lessons:
-        icon = "✅" if lesson.lesson_order in uploaded_set else "❌"
+        status = status_by_order.get(lesson.lesson_order, {})
+        state = status.get("state")
+        icon = "✅" if state == "complete" else "🟡" if state == "partial" else "❌"
+        uploaded_count = len(status.get("uploaded_required") or [])
+        required_count = len(status.get("required") or _audio_types_for_lesson(lesson))
         buttons.append([InlineKeyboardButton(
-            text=f"{icon} {lesson.lesson_order}. {lesson.title}",
+            text=f"{icon} {lesson.lesson_order}. {lesson.title} ({uploaded_count}/{required_count})",
             callback_data=f"adm_audio:lesson:{lesson.id}",
         )])
 
@@ -103,7 +161,7 @@ def _audio_types_keyboard(lesson, uploaded_types: set) -> InlineKeyboardMarkup:
     row = []
     for i, atype in enumerate(types):
         icon = "✅" if atype in uploaded_types else "❌"
-        label = "🔉 vocab" if atype == "vocab" else f"🔉 {atype}"
+        label = f"🔉 {_audio_type_label(atype)}"
         row.append(InlineKeyboardButton(
             text=f"{icon} {label}",
             callback_data=f"adm_audio:upload:{lesson.id}:{atype}",
@@ -123,7 +181,7 @@ def _after_upload_keyboard(lesson, next_type: str | None) -> InlineKeyboardMarku
     buttons = []
     if next_type:
         buttons.append([InlineKeyboardButton(
-            text=f"➡️ Keyingi: {next_type}",
+            text=f"➡️ Keyingi: {_audio_type_label(next_type)}",
             callback_data=f"adm_audio:upload:{lesson.id}:{next_type}",
         )])
     buttons.append([
@@ -191,10 +249,25 @@ async def audio_stats(callback: CallbackQuery, session):
         lessons = await lesson_repo.list_by_level(level)
         if not lessons:
             continue
-        uploaded = await audio_repo.count_uploaded_lessons(level)
+        audio_by_order = _group_audio_by_lesson(await audio_repo.list_for_level(level))
+        complete = 0
+        partial = 0
+        required_total = 0
+        uploaded_required_total = 0
+        for lesson in lessons:
+            status = _audio_status_for_lesson(lesson, audio_by_order.get(lesson.lesson_order, set()))
+            required_total += len(status["required"])
+            uploaded_required_total += len(status["uploaded_required"])
+            if status["state"] == "complete":
+                complete += 1
+            elif status["state"] == "partial":
+                partial += 1
         total = len(lessons)
-        bar = "▓" * uploaded + "░" * (total - uploaded)
-        lines.append(f"<b>{level.upper()}</b>: {uploaded}/{total}  {bar}")
+        bar = "▓" * complete + "▒" * partial + "░" * max(total - complete - partial, 0)
+        lines.append(
+            f"<b>{level.upper()}</b>: {complete}/{total} to'liq  {bar}\n"
+            f"  Audio: {uploaded_required_total}/{required_total}"
+        )
 
     await callback.answer()
     await callback.message.edit_text(
@@ -217,15 +290,24 @@ async def _show_lessons(callback: CallbackQuery, session, level: str, page: int 
         await callback.answer("Bu darajada dars yo'q", show_alert=True)
         return
 
-    uploaded_orders = await audio_repo.get_uploaded_lesson_orders(level)
+    audio_by_order = _group_audio_by_lesson(await audio_repo.list_for_level(level))
+    status_by_order = {
+        lesson.lesson_order: _audio_status_for_lesson(
+            lesson,
+            audio_by_order.get(lesson.lesson_order, set()),
+        )
+        for lesson in lessons
+    }
     total = len(lessons)
-    uploaded = len(uploaded_orders)
+    complete = sum(1 for status in status_by_order.values() if status["state"] == "complete")
+    partial = sum(1 for status in status_by_order.values() if status["state"] == "partial")
 
     await callback.message.edit_text(
         f"📚 <b>{level.upper()}</b> — {total} dars\n"
-        f"✅ Audio yuklangan: <b>{uploaded}</b> / {total}\n\n"
+        f"✅ To'liq audio: <b>{complete}</b> / {total}\n"
+        f"🟡 Boshlangan: <b>{partial}</b>\n\n"
         f"Darsni tanlang:",
-        reply_markup=_lessons_keyboard(lessons, uploaded_orders, page),
+        reply_markup=_lessons_keyboard(lessons, status_by_order, page),
         parse_mode="HTML",
     )
 
@@ -271,16 +353,24 @@ async def show_audio_types(callback: CallbackQuery, session):
 
     uploaded_rows = await audio_repo.list_for_lesson(lesson.level, lesson.lesson_order)
     uploaded_types = {r.audio_type for r in uploaded_rows}
-    all_types = _audio_types_for_lesson(lesson)
-    missing = [t for t in all_types if t not in uploaded_types]
+    status = _audio_status_for_lesson(lesson, uploaded_types)
+    missing = status["missing"]
 
-    status = "✅ Hammasi yuklangan!" if not missing else f"❌ Kerak: {', '.join(missing)}"
+    if not missing:
+        status_text = "✅ Hozirgi dialog formatiga mos barcha audio yuklangan!"
+    else:
+        status_text = f"❌ Kerak: {', '.join(_audio_type_label(item) for item in missing)}"
+    if status["obsolete"]:
+        status_text += (
+            "\n⚠️ Eski/ortiqcha audio turlar ishlatilmaydi: "
+            + ", ".join(status["obsolete"])
+        )
 
     await callback.answer()
     await callback.message.edit_text(
         f"🎵 <b>{lesson.level.upper()} · Dars {lesson.lesson_order}</b>\n"
         f"📖 {lesson.title}\n\n"
-        f"{status}\n\n"
+        f"{status_text}\n\n"
         f"Qaysi audio turini yuklaysiz?",
         reply_markup=_audio_types_keyboard(lesson, uploaded_types),
         parse_mode="HTML",
@@ -304,6 +394,9 @@ async def ask_for_audio_file(callback: CallbackQuery, session, state: FSMContext
     if not lesson:
         await callback.answer("Dars topilmadi", show_alert=True)
         return
+    if audio_type not in _audio_types_for_lesson(lesson):
+        await callback.answer("Bu darsda bunday audio turi yo'q", show_alert=True)
+        return
 
     await state.set_state(AdminAudioStates.waiting_for_audio)
     await state.update_data(
@@ -313,7 +406,7 @@ async def ask_for_audio_file(callback: CallbackQuery, session, state: FSMContext
         lesson_order=lesson.lesson_order,
     )
 
-    type_label = "so'zlar (vocab)" if audio_type == "vocab" else audio_type
+    type_label = _audio_type_label(audio_type)
     await callback.answer()
     await callback.message.edit_text(
         f"🎙 <b>{lesson.level.upper()} · Dars {lesson.lesson_order} · {audio_type}</b>\n"
@@ -369,11 +462,15 @@ async def receive_audio_file(message: Message, session, state: FSMContext):
     missing = [t for t in all_types if t not in uploaded_types]
     next_type = missing[0] if missing else None
 
-    remaining = f"\n⏳ Qolgan: {', '.join(missing)}" if missing else "\n🎉 Bu darsning barcha audiolari yuklandi!"
+    remaining = (
+        f"\n⏳ Qolgan: {', '.join(_audio_type_label(item) for item in missing)}"
+        if missing
+        else "\n🎉 Bu darsning barcha audiolari yuklandi!"
+    )
 
     await message.answer(
         f"✅ <b>Saqlandi!</b>\n"
-        f"📍 {level.upper()} · Dars {lesson_order} · <code>{audio_type}</code>"
+        f"📍 {level.upper()} · Dars {lesson_order} · <code>{audio_type}</code> ({_audio_type_label(audio_type)})"
         f"{remaining}",
         reply_markup=_after_upload_keyboard(lesson, next_type),
         parse_mode="HTML",

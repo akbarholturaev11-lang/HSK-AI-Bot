@@ -1517,10 +1517,6 @@ async def _send_audio_file(callback: CallbackQuery, session, audio_type: str):
     audio_repo = CourseAudioRepository(session)
     file_id = await audio_repo.get(level=level, lesson_order=order, audio_type=audio_type)
 
-    # Fallback: dialogue_2/3/4 topilmasa — dialogue_1 ni ishlatamiz
-    if not file_id and audio_type.startswith("dialogue_") and audio_type != "dialogue_1":
-        file_id = await audio_repo.get(level=level, lesson_order=order, audio_type="dialogue_1")
-
     await callback.answer()
     if file_id:
         await callback.message.answer_voice(file_id)

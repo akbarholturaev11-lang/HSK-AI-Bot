@@ -626,6 +626,7 @@ QOIDALAR:
 
         if (
             step in _CONVERSATIONAL_STEPS
+            or step.startswith("dialogue_")
             or step.startswith("block_vocab_")
             or step.startswith("block_grammar_")
         ):

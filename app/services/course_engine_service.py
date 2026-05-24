@@ -203,7 +203,7 @@ def get_step_order(lesson) -> list:
     if len(vocab) > 8:
         steps.append("vocab_2")
 
-    for i in range(1, min(len(dialogues) + 1, 5)):
+    for i in range(1, len(dialogues) + 1):
         steps.append(f"dialogue_{i}")
 
     # grammar_json bo'sh bo'lmasa — grammar stepini qo'shamiz

@@ -207,6 +207,29 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-05-24 — Dynamic course dialogue audio admin
+
+Changed:
+- Admin audio panel now builds required audio types from each lesson's current `dialogue_json` block count, so HSK4 lessons with 5 dialogues show `vocab` plus `dialogue_1` through `dialogue_5`.
+- Audio status now distinguishes complete, partial, and missing lessons, and ignores obsolete audio types that no longer match the current lesson format.
+- Course audio playback no longer falls back from `dialogue_2+` to `dialogue_1`; missing dialogue-specific audio now stays unavailable instead of playing the wrong old audio.
+
+Why:
+- After lessons were split into more dialogue blocks, the old admin/audio logic could hide later dialogues or reuse outdated audio under the wrong dialogue.
+
+Files touched:
+- `app/bot/handlers/admin_audio.py`
+- `app/bot/handlers/course.py`
+- `app/repositories/course_audio_repo.py`
+- `app/services/course_engine_service.py`
+- `app/services/course_tutor_service.py`
+
+Risk:
+- Existing lessons that only have `dialogue_1` uploaded will show missing audio for later dialogue blocks until admin uploads each specific dialogue audio.
+
+Follow-up:
+- If obsolete DB audio should be deleted automatically, add an explicit admin cleanup action instead of silently deleting rows.
+
 ### 2026-05-24 — HSK4 upper lesson localization quality
 
 Changed:

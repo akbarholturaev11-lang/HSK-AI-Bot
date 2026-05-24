@@ -45,6 +45,15 @@ class CourseAudioRepository:
         )
         return list(result.scalars().all())
 
+    async def list_for_level(self, level: str) -> list[CourseAudio]:
+        """Bir level uchun barcha audio yozuvlarini qaytaradi."""
+        result = await self.session.execute(
+            select(CourseAudio)
+            .where(CourseAudio.level == level)
+            .order_by(CourseAudio.lesson_order, CourseAudio.audio_type)
+        )
+        return list(result.scalars().all())
+
     async def get_uploaded_lesson_orders(self, level: str) -> set[int]:
         """Kamida bitta audio yuklangan darslarning lesson_order larini qaytaradi."""
         result = await self.session.execute(
