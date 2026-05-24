@@ -304,6 +304,25 @@ Risk:
 Follow-up:
 - 
 
+### 2026-05-24 — HSK4 上 first 3 lessons block format
+
+Changed:
+- HSK4 上 lessons 1-3 now use PDF-derived dialogue and vocabulary material through `scripts/hsk4_upper_pdf_materials.py`.
+- Each of those lessons has 5 dialogue blocks, per-block vocabulary, one relevant PDF grammar point, mini quiz, and mini homework.
+- HSK4 Mini App support is enabled only for lessons 1-3 for now via `hsk4.html`.
+
+Why:
+- HSK4 upper lessons had fewer dialogue blocks than the PDF and some lesson 2/3 grammar/vocabulary was from the wrong older seed format.
+
+Files touched:
+- `scripts/hsk4_upper_pdf_materials.py`
+- `scripts/seed_hsk4_lesson_01.py` to `scripts/seed_hsk4_lesson_03.py`
+- `app/bot/utils/course_miniapp.py`
+- `app/static/hsk4.html`
+
+Risk:
+- Lessons 4+ are intentionally not enabled in HSK4 Mini App yet; continue in small batches to avoid content errors.
+
 ---
 
 ## 11. Known Problems

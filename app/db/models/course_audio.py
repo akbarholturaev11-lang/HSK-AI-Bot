@@ -9,7 +9,7 @@ from app.db.base import Base
 class CourseAudio(Base):
     """Telegram file_id orqali saqlangan kurs audio fayllari.
 
-    audio_type qiymatlari: vocab | dialogue_1 | dialogue_2 | dialogue_3 | dialogue_4
+    audio_type qiymatlari: vocab | dialogue_1 | dialogue_2 | ...
     """
     __tablename__ = "course_audio"
 

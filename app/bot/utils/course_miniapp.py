@@ -10,6 +10,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk1": (1, 15),
     "hsk2": (1, 15),
     "hsk3": (1, 20),
+    "hsk4": (1, 3),
 }
 
 
@@ -46,6 +47,7 @@ def _miniapp_base_url_for_level(level: str) -> str:
     target_file = {
         "hsk1": "hsk1.html",
         "hsk2": "hsk2.html",
+        "hsk4": "hsk4.html",
     }.get(normalized_level, "hsk3.html")
 
     parts = urlsplit(base_url)

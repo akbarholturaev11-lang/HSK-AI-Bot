@@ -10,7 +10,7 @@ _CONVERSATIONAL_STEPS = {
     "intro", "vocab", "vocabulary", "dialogue", "grammar",
     # V2 steps:
     "vocab_1", "vocab_2",
-    "dialogue_1", "dialogue_2", "dialogue_3", "dialogue_4",
+    "dialogue_1", "dialogue_2", "dialogue_3", "dialogue_4", "dialogue_5",
 }
 
 _PRESS_BUTTON_HINT = {

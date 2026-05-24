@@ -30,6 +30,7 @@ COURSE_STEP_ORDER_V2_BASE = [
     "dialogue_2",       # bo'sh bo'lsa o'tkazib yuboriladi
     "dialogue_3",       # bo'sh bo'lsa o'tkazib yuboriladi
     "dialogue_4",       # bo'sh bo'lsa o'tkazib yuboriladi
+    "dialogue_5",       # bo'sh bo'lsa o'tkazib yuboriladi
     "grammar",          # bo'sh bo'lsa o'tkazib yuboriladi
     "exercise",
     "satisfaction_check",

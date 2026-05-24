@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>HSK 4 · O'quv Tizimi</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --bg:#0c0e14;--bg2:#141820;--bg3:#1c2030;--bg4:#242840;
+  --border:#252a3a;--border2:#333a52;
+  --text:#e8eaf0;--text2:#8b91aa;--text3:#4a5070;
+  --accent:#4f7fff;--accent-dim:rgba(79,127,255,.12);
+  --green:#2bcf72;--green-dim:rgba(43,207,114,.12);
+  --amber:#f5a623;--amber-dim:rgba(245,166,35,.12);
+  --red:#e84545;--red-dim:rgba(232,69,69,.12);
+  --purple:#9b6dff;--purple-dim:rgba(155,109,255,.12);
+  --r:10px;--r2:16px;--nav:60px;
+  --font:'SF Pro Display',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'SF Mono','Fira Code',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overscroll-behavior:none;}
+body{display:flex;flex-direction:column;overflow:hidden;}
+
+/* NAV */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  height:calc(var(--nav) + env(safe-area-inset-bottom, 0px));
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+  background:rgba(12,14,20,.95);border-top:1px solid var(--border);
+  display:grid;grid-template-columns:repeat(5,1fr);
+  backdrop-filter:blur(20px);z-index:100;
+}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;color:var(--text3);transition:color .15s;border:none;background:none;
+  padding:8px 0;
+}
+.nav-btn.active{color:var(--accent);}
+.nav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;}
+.nav-btn span{font-size:9px;letter-spacing:.5px;text-transform:uppercase;font-weight:500;}
+
+/* PAGES */
+.page{
+  position:fixed;inset:0;
+  bottom:calc(var(--nav) + env(safe-area-inset-bottom, 0px));
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;display:none;
+  background:var(--bg);
+}
+.page.active{display:block;}
+
+/* HEADER */
+.page-header{
+  padding:56px 16px 16px;
+  background:linear-gradient(180deg,var(--bg2) 0%,var(--bg) 100%);
+  position:sticky;top:0;z-index:10;
+}
+.page-title{font-size:26px;font-weight:700;letter-spacing:-.5px;}
+.page-sub{font-size:13px;color:var(--text3);margin-top:3px;}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;}
+.section{padding:0 16px 16px;}
+.section-label{font-size:10px;letter-spacing:2px;color:var(--text3);text-transform:uppercase;font-family:var(--mono);margin-bottom:10px;padding-top:8px;}
+
+/* KPI ROW */
+.kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:12px 16px;}
+.kpi{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;}
+.kpi-val{font-family:var(--mono);font-size:30px;font-weight:600;}
+.kpi-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+.kpi-bar{height:2px;background:var(--bg3);border-radius:2px;margin-top:10px;overflow:hidden;}
+.kpi-bar-fill{height:100%;border-radius:2px;transition:width .5s;}
+
+/* LESSON CARDS */
+.lesson-list{display:flex;flex-direction:column;gap:8px;padding:0 16px 80px;}
+.lcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;cursor:pointer;transition:border-color .15s,transform .1s;active:scale(.98);}
+.lcard:active{transform:scale(.99);}
+.lcard.done{border-color:rgba(43,207,114,.3);background:rgba(43,207,114,.03);}
+.lcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.lcard-num{font-family:var(--mono);font-size:10px;color:var(--text3);}
+.lcard-badge{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:20px;letter-spacing:.5px;}
+.badge-studied{color:var(--accent);background:var(--accent-dim);}
+.badge-new{color:var(--amber);background:var(--amber-dim);}
+.badge-done{color:var(--green);background:var(--green-dim);}
+.lcard-title{font-size:16px;font-weight:500;margin-bottom:4px;}
+.lcard-en{font-size:11px;color:var(--text3);margin-bottom:10px;}
+.lcard-gram{display:flex;flex-direction:column;gap:3px;}
+.gram-item{font-size:11px;color:var(--text2);display:flex;gap:6px;}
+.gram-dot{width:3px;height:3px;border-radius:50%;background:var(--text3);flex-shrink:0;margin-top:5px;}
+.check-circle{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s;}
+.lcard.done .check-circle{background:var(--green);border-color:var(--green);color:var(--bg);}
+
+/* FILTER TABS */
+.filter-tabs{display:flex;gap:6px;padding:8px 16px 12px;overflow-x:auto;scrollbar-width:none;}
+.filter-tabs::-webkit-scrollbar{display:none;}
+.ftab{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer;white-space:nowrap;font-family:var(--font);transition:all .15s;flex-shrink:0;}
+.ftab.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+
+/* FLASHCARDS */
+.fc-toolbar{display:flex;gap:8px;padding:8px 16px 4px;align-items:center;}
+.fc-search{flex:1;padding:9px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--text);font-size:13px;font-family:var(--font);outline:none;}
+.fc-search:focus{border-color:var(--accent);}
+.fc-search::placeholder{color:var(--text3);}
+.fc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:8px 16px 80px;}
+.fc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;}
+.fc:active{transform:scale(.97);}
+.fc.starred{border-color:var(--amber);}
+.fc-hanzi{font-size:26px;line-height:1.2;}
+.fc-pinyin{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:4px;}
+.fc-mean{font-size:12px;color:var(--text2);margin-top:6px;display:none;}
+.fc.flipped .fc-mean{display:block;}
+.fc-lesson{font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:6px;}
+.fc-star{position:absolute;top:8px;right:10px;font-size:14px;color:var(--text3);cursor:pointer;z-index:1;}
+.fc.starred .fc-star{color:var(--amber);}
+
+/* GRAMMAR */
+.gram-grid{display:flex;flex-direction:column;gap:8px;padding:0 16px 80px;}
+.gcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;}
+.gcard-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.gcard-lesson{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:10px;}
+.gcard-formula{font-family:var(--mono);font-size:12px;color:var(--accent);background:var(--accent-dim);padding:8px 12px;border-radius:var(--r);margin-bottom:10px;line-height:1.5;}
+.gcard-exs{display:flex;flex-direction:column;gap:8px;}
+.gex-zh{font-size:14px;color:var(--text);line-height:1.4;}
+.gex-uz{font-size:11px;color:var(--text3);margin-top:1px;}
+
+/* QUIZ */
+.quiz-wrap{padding:16px 16px 80px;}
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.quiz-counter{font-family:var(--mono);font-size:12px;color:var(--text3);}
+.quiz-cat{font-family:var(--mono);font-size:10px;padding:3px 10px;border-radius:20px;color:var(--purple);background:var(--purple-dim);}
+.quiz-dots{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;}
+.qdot{width:8px;height:8px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);}
+.qdot.c{background:var(--green);border-color:var(--green);}
+.qdot.w{background:var(--red);border-color:var(--red);}
+.qdot.cur{border-color:var(--accent);}
+.quiz-q{font-size:18px;font-weight:500;line-height:1.5;margin-bottom:6px;}
+.quiz-hint{font-size:12px;color:var(--text3);font-family:var(--mono);margin-bottom:20px;}
+.quiz-opts{display:flex;flex-direction:column;gap:8px;}
+.qopt{
+  padding:13px 16px;border-radius:var(--r);border:1px solid var(--border);
+  background:var(--bg2);color:var(--text2);font-size:13px;text-align:left;
+  cursor:pointer;font-family:var(--font);transition:all .15s;line-height:1.4;
+}
+.qopt:active{transform:scale(.99);}
+.qopt.c{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.qopt.w{background:var(--red-dim);border-color:var(--red);color:var(--red);}
+.quiz-fb{margin-top:14px;padding:12px 16px;border-radius:var(--r);font-size:13px;line-height:1.5;display:none;}
+.quiz-fb.show{display:block;}
+.quiz-fb.ok{background:var(--green-dim);border:1px solid rgba(43,207,114,.3);color:var(--green);}
+.quiz-fb.no{background:var(--red-dim);border:1px solid rgba(232,69,69,.3);color:#f07070;}
+.quiz-score-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:20px;text-align:center;margin-bottom:16px;}
+.quiz-score-num{font-family:var(--mono);font-size:44px;font-weight:700;}
+.quiz-score-pct{font-size:13px;color:var(--text3);margin-top:4px;}
+.quiz-actions{display:flex;gap:8px;margin-top:14px;}
+
+/* BUTTONS */
+.btn{padding:11px 18px;border-radius:var(--r);border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;font-family:var(--font);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;justify-content:center;}
+.btn:active{transform:scale(.98);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-full{width:100%;}
+.btn-sm{padding:8px 14px;font-size:12px;}
+
+/* PLAN */
+.plan-list{display:flex;flex-direction:column;gap:8px;padding:0 16px 80px;}
+.pcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;border-left:3px solid;}
+.pcard-days{font-family:var(--mono);font-size:10px;color:var(--text3);margin-bottom:4px;}
+.pcard-focus{font-size:14px;font-weight:500;margin-bottom:10px;}
+.pcard-tasks{display:flex;flex-direction:column;gap:5px;}
+.ptask{font-size:12px;color:var(--text2);padding-left:14px;position:relative;line-height:1.4;}
+.ptask::before{content:'›';position:absolute;left:0;color:var(--text3);}
+
+/* WEEK SECTION IN DASHBOARD */
+.wcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;margin-bottom:8px;}
+.wcard-head{font-size:13px;font-weight:500;margin-bottom:6px;}
+.wcard-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.wtag{font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:20px;border:1px solid;}
+.wtag-r{color:var(--accent);border-color:rgba(79,127,255,.3);background:var(--accent-dim);}
+.wtag-n{color:var(--amber);border-color:rgba(245,166,35,.3);background:var(--amber-dim);}
+.wtag-e{color:var(--red);border-color:rgba(232,69,69,.3);background:var(--red-dim);}
+.wcard-body{display:flex;flex-direction:column;gap:4px;}
+.wi{font-size:11px;color:var(--text2);padding-left:12px;position:relative;line-height:1.4;}
+.wi::before{content:'–';position:absolute;left:0;color:var(--text3);}
+
+/* QUIZ FILTER */
+.qfilter-row{display:flex;gap:6px;padding:0 16px 14px;overflow-x:auto;scrollbar-width:none;}
+.qfilter-row::-webkit-scrollbar{display:none;}
+
+/* PROGRESS BAR */
+.prog-row{padding:0 16px 4px;}
+.prog-bar{height:3px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.prog-fill{height:3px;background:var(--green);border-radius:3px;transition:width .5s;}
+.prog-text{font-size:11px;color:var(--text3);margin-top:4px;font-family:var(--mono);}
+
+
+/* TELEGRAM MINI APP MODES */
+body.mini-mode .nav-bar{display:none;}
+body.mini-mode .page{bottom:0;}
+body.mini-mode .page-header{padding-top:calc(22px + env(safe-area-inset-top, 0px));}
+body.mini-mode .qfilter-row{display:none;}
+body.mini-mode .quiz-wrap{padding-bottom:calc(22px + env(safe-area-inset-bottom, 0px));}
+.mini-note{margin:0 16px 12px;padding:12px 14px;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--text2);font-size:12px;line-height:1.45;}
+.result-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;text-align:left;}
+.result-item{padding:10px 12px;border-radius:var(--r);background:var(--red-dim);border:1px solid rgba(232,69,69,.25);font-size:12px;line-height:1.45;color:#f0a0a0;}
+.result-item b{color:var(--text);font-weight:600;}
+.homework-wrap{padding:16px 16px calc(26px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:12px;}
+.hw-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:14px 16px;}
+.hw-title{font-size:14px;font-weight:650;margin-bottom:6px;}
+.hw-help{font-size:12px;color:var(--text3);line-height:1.45;margin-bottom:10px;}
+.hw-task{font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:10px;}
+.hw-textarea{width:100%;min-height:116px;resize:vertical;border-radius:var(--r);border:1px solid var(--border);background:var(--bg);color:var(--text);padding:12px;font-family:var(--font);font-size:14px;line-height:1.5;outline:none;}
+.hw-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+.hw-status{display:none;padding:12px 14px;border-radius:var(--r);font-size:13px;line-height:1.45;}
+.hw-status.show{display:block;}
+.hw-status.ok{background:var(--green-dim);border:1px solid rgba(43,207,114,.3);color:var(--green);}
+.hw-status.no{background:var(--red-dim);border:1px solid rgba(232,69,69,.3);color:#f07070;}
+
+@media(min-width:600px){
+  .fc-grid{grid-template-columns:repeat(3,1fr);}
+  .kpi-row{grid-template-columns:repeat(4,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- PAGES -->
+<!-- 1. DASHBOARD -->
+<div id="p-dash" class="page active">
+  <div class="page-header">
+    <div class="page-title">HSK 4 📚</div>
+    <div class="page-sub">O'quv tizimi · HSK4 上 1-3 · PDF asosida</div>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-val" id="kpi-done">0</div><div class="kpi-lbl">Qaytarildi</div><div class="kpi-bar"><div class="kpi-bar-fill" id="kpi-done-bar" style="background:var(--green)"></div></div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-left">3</div><div class="kpi-lbl">Qoldi</div><div class="kpi-bar"><div class="kpi-bar-fill" id="kpi-left-bar" style="background:var(--amber);width:100%"></div></div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-score">—</div><div class="kpi-lbl">Quiz %</div><div class="kpi-bar"><div class="kpi-bar-fill" id="kpi-score-bar" style="background:var(--accent)"></div></div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-star">0</div><div class="kpi-lbl">Yulduz</div><div class="kpi-bar"><div class="kpi-bar-fill" id="kpi-star-bar" style="background:var(--amber)"></div></div></div>
+  </div>
+  <div class="prog-row"><div class="prog-bar"><div class="prog-fill" id="dash-prog"></div></div><div class="prog-text" id="dash-prog-text">0 / 3 dars</div></div>
+  <div class="section">
+    <div class="section-label">Bosqichli plan</div>
+    <div class="wcard" style="border-left:3px solid var(--accent)">
+      <div class="wcard-head">Dars 1 · 简单的爱情</div>
+      <div class="wcard-tags"><span class="wtag wtag-n">PDF</span></div>
+      <div class="wcard-body">
+        <div class="wi">5 ta matn: tanishish, turmush, romantika va xarakter</div>
+        <div class="wi">Grammar: 不仅, 从来, 刚, 即使, （在）…上</div>
+        <div class="wi">32 ta PDF yangi so'z</div>
+      </div>
+    </div>
+    <div class="wcard" style="border-left:3px solid var(--purple)">
+      <div class="wcard-head">Dars 2 · 真正的朋友</div>
+      <div class="wcard-tags"><span class="wtag wtag-n">PDF</span></div>
+      <div class="wcard-body">
+        <div class="wi">5 ta matn: yangi do'st, sinfdoshlar, haqiqiy do'stlik</div>
+        <div class="wi">Grammar: 正好, 差不多, 尽管, 却, 而</div>
+        <div class="wi">30 ta PDF yangi so'z</div>
+      </div>
+    </div>
+    <div class="wcard" style="border-left:3px solid var(--amber)">
+      <div class="wcard-head">Dars 3 · 经理对我印象不错</div>
+      <div class="wcard-tags"><span class="wtag wtag-n">PDF</span></div>
+      <div class="wcard-body">
+        <div class="wi">5 ta matn: intervyu, ishga qabul, birinchi taassurot</div>
+        <div class="wi">Grammar: 挺, 本来, 另外, 首先, 不管</div>
+        <div class="wi">31 ta PDF yangi so'z</div>
+      </div>
+    </div>
+  </div>
+  <div class="section" style="padding-bottom:20px;">
+    <div class="section-label">Tezkor amallar</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-primary btn-sm" onclick="mark116()">1–16 ni belgilash ✓</button>
+      <button class="btn btn-sm" onclick="if(confirm('Reset?')){resetAll();}">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. LESSONS -->
+<div id="p-lessons" class="page">
+  <div class="page-header"><div class="page-title">Darslar</div><div class="page-sub">Bosib ✓ belgilang</div></div>
+  <div class="filter-tabs">
+    <button class="ftab active" onclick="filterL('all',this)">Hammasi</button>
+    <button class="ftab" onclick="filterL('studied',this)">O'qilgan</button>
+    <button class="ftab" onclick="filterL('new',this)">Yangi</button>
+    <button class="ftab" onclick="filterL('done',this)">Qaytarildi</button>
+    <button class="ftab" onclick="filterL('todo',this)">Qolgan</button>
+  </div>
+  <div class="prog-row"><div class="prog-bar"><div class="prog-fill" id="les-prog"></div></div><div class="prog-text" id="les-prog-text">0/3</div></div>
+  <div class="lesson-list" id="lesson-list"></div>
+</div>
+
+<!-- 3. FLASHCARDS -->
+<div id="p-flash" class="page">
+  <div class="page-header"><div class="page-title">So'zlar</div><div class="page-sub">Bosib ma'noni ko'ring · ★ saqlang</div></div>
+  <div class="fc-toolbar">
+    <input class="fc-search" placeholder="Qidirish..." id="fc-search" oninput="renderFC()">
+    <button class="btn btn-sm" onclick="flipAllFC()">Ochish</button>
+  </div>
+  <div class="filter-tabs" id="fc-filters" style="padding-top:0;"></div>
+  <div class="fc-grid" id="fc-grid"></div>
+</div>
+
+<!-- 4. GRAMMAR -->
+<div id="p-gram" class="page">
+  <div class="page-header"><div class="page-title">Grammatika</div><div class="page-sub">Formula + misollar</div></div>
+  <div class="filter-tabs">
+    <button class="ftab active" onclick="filterG('all',this)">Hammasi</button>
+    <button class="ftab" onclick="filterG('str',this)">Struktura</button>
+    <button class="ftab" onclick="filterG('lex',this)">Leksika</button>
+  </div>
+  <div class="gram-grid" id="gram-grid"></div>
+</div>
+
+<!-- 5. QUIZ -->
+<div id="p-quiz" class="page">
+  <div class="page-header"><div class="page-title">Quiz</div><div class="page-sub">Dars bo'yicha yangi so'zlar sinovi</div></div>
+  <div class="qfilter-row" id="quiz-filters"></div>
+  <div class="quiz-wrap">
+    <div id="quiz-score-box" class="quiz-score-box" style="display:none;">
+      <div class="quiz-score-num" id="qsn">0/0</div>
+      <div class="quiz-score-pct" id="qsp"></div>
+      <div class="quiz-score-pct" id="qsd"></div>
+      <div class="quiz-actions" style="justify-content:center;">
+        <button class="btn btn-primary" onclick="startQuiz()">Qayta ishlash ↺</button>
+        <button class="btn" id="q-next-lesson" onclick="nextLessonQuiz()">Keyingi dars →</button>
+      </div>
+    </div>
+    <div id="quiz-main">
+      <div class="quiz-header">
+        <span class="quiz-counter" id="q-counter">1/15</span>
+        <span class="quiz-cat" id="q-cat">Grammatika</span>
+      </div>
+      <div class="quiz-dots" id="q-dots"></div>
+      <div class="quiz-q" id="q-text"></div>
+      <div class="quiz-hint" id="q-hint"></div>
+      <div class="quiz-opts" id="q-opts"></div>
+      <div class="quiz-fb" id="q-fb"></div>
+      <div class="quiz-actions">
+        <button class="btn btn-primary" id="q-next" style="display:none;" onclick="nextQ()">Keyingisi →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. HOMEWORK MINI APP -->
+<div id="p-homework" class="page">
+  <div class="page-header">
+    <div class="page-title" id="hw-page-title">Uyga vazifa ✍️</div>
+    <div class="page-sub" id="hw-page-sub">Mini App · faqat botdan ochilgan vazifa</div>
+  </div>
+  <div class="homework-wrap">
+    <div class="mini-note" id="hw-lesson-note"></div>
+
+    <div class="hw-card">
+      <div class="hw-title">1) Yangi so‘zlar</div>
+      <div class="hw-help">Shu darsdagi yangi so‘zlardan foydalanib 3 ta xitoycha gap yozing.</div>
+      <div class="hw-task" id="hw-vocab-task"></div>
+      <textarea class="hw-textarea" id="hw-vocab-answer" placeholder="Masalan:
+1. 我今天...
+2. 他觉得...
+3. 这个词..." autocomplete="off"></textarea>
+    </div>
+
+    <div class="hw-card">
+      <div class="hw-title">2) Grammatika</div>
+      <div class="hw-help">Darsdagi grammar strukturadan 2 ta xitoycha gap tuzing.</div>
+      <div class="hw-task" id="hw-grammar-task"></div>
+      <textarea class="hw-textarea" id="hw-grammar-answer" placeholder="1. ...
+2. ..." autocomplete="off"></textarea>
+    </div>
+
+    <div class="hw-card">
+      <div class="hw-title">3) Tarjima mashqi</div>
+      <div class="hw-help">Quyidagi 2 ta gapni xitoychaga tarjima qiling.</div>
+      <div class="hw-task" id="hw-translation-task"></div>
+      <textarea class="hw-textarea" id="hw-translation-answer" placeholder="1. ...
+2. ..." autocomplete="off"></textarea>
+    </div>
+
+    <div id="hw-status" class="hw-status"></div>
+    <button class="btn btn-primary btn-full" id="hw-submit-btn" onclick="submitHomework()">Vazifani yuborish</button>
+    <button class="btn btn-full" id="hw-return-btn" style="display:none;" onclick="returnToBot()">Botga qaytish</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="nav-bar">
+  <button class="nav-btn active" onclick="goto('dash',this)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+    <span>Plan</span>
+  </button>
+  <button class="nav-btn" onclick="goto('lessons',this)">
+    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span>Darslar</span>
+  </button>
+  <button class="nav-btn" onclick="goto('flash',this)">
+    <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+    <span>So'zlar</span>
+  </button>
+  <button class="nav-btn" onclick="goto('gram',this)">
+    <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    <span>Gram.</span>
+  </button>
+  <button class="nav-btn" onclick="goto('quiz',this)">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span>Quiz</span>
+  </button>
+</nav>
+
+<script>
+// ===== DATA =====
+// ===== DATA =====
+const LESSONS=[{"n":1,"t":"简单的爱情","e":"HSK4 上 PDF lesson","new":false,"g":["不仅……也/还/而且……","从来","刚","即使……也……","（在）……上"]},{"n":2,"t":"真正的朋友","e":"HSK4 上 PDF lesson","new":false,"g":["正好","差不多","尽管","却","而"]},{"n":3,"t":"经理对我印象不错","e":"HSK4 上 PDF lesson","new":true,"g":["挺","本来","另外","首先","不管……都……"]}];
+
+const VOCAB=[{"h":"法律","p":"fǎlǜ","m":"qonun, huquq","l":1},{"h":"俩","p":"liǎ","m":"ikkalasi, ikki kishi","l":1},{"h":"印象","p":"yìnxiàng","m":"taassurot","l":1},{"h":"深","p":"shēn","m":"chuqur","l":1},{"h":"熟悉","p":"shúxī","m":"tanish bo'lmoq, yaxshi bilmoq","l":1},{"h":"不仅","p":"bùjǐn","m":"nafaqat","l":1},{"h":"性格","p":"xìnggé","m":"xarakter, fe'l-atvor","l":1},{"h":"开玩笑","p":"kāi wánxiào","m":"hazil qilmoq","l":1},{"h":"从来","p":"cónglái","m":"doim; hech qachon (inkor bilan)","l":1},{"h":"最好","p":"zuìhǎo","m":"eng yaxshisi, yaxshisi","l":1},{"h":"共同","p":"gòngtóng","m":"umumiy, birgalikdagi","l":1},{"h":"适合","p":"shìhé","m":"mos kelmoq","l":1},{"h":"幸福","p":"xìngfú","m":"baxtli","l":1},{"h":"生活","p":"shēnghuó","m":"hayot; yashamoq","l":1},{"h":"刚","p":"gāng","m":"endi, hozirgina","l":1},{"h":"浪漫","p":"làngmàn","m":"romantik","l":1},{"h":"够","p":"gòu","m":"yetarli bo'lmoq","l":1},{"h":"缺点","p":"quēdiǎn","m":"kamchilik","l":1},{"h":"接受","p":"jiēshòu","m":"qabul qilmoq","l":1},{"h":"羡慕","p":"xiànmù","m":"havas qilmoq, qoyil qolmoq","l":1},{"h":"爱情","p":"àiqíng","m":"sevgi, muhabbat","l":1},{"h":"星星","p":"xīngxing","m":"yulduz","l":1},{"h":"即使","p":"jíshǐ","m":"hatto ... bo'lsa ham","l":1},{"h":"加班","p":"jiā bān","m":"qo'shimcha ishlamoq","l":1},{"h":"亮","p":"liàng","m":"yorishmoq, chiroq yonmoq","l":1},{"h":"感动","p":"gǎndòng","m":"ta'sirlantirmoq","l":1},{"h":"自然","p":"zìrán","m":"tabiiy ravishda","l":1},{"h":"原因","p":"yuányīn","m":"sabab","l":1},{"h":"互相","p":"hùxiāng","m":"o'zaro, bir-biriga","l":1},{"h":"吸引","p":"xīyǐn","m":"jalb qilmoq","l":1},{"h":"幽默","p":"yōumò","m":"hazilkash, yumorga boy","l":1},{"h":"脾气","p":"píqi","m":"fe'l, mijoz, xarakter","l":1},{"h":"适应","p":"shìyìng","m":"moslashmoq, ko'nikmoq","l":2},{"h":"交","p":"jiāo","m":"do'st orttirmoq","l":2},{"h":"平时","p":"píngshí","m":"odatdagi vaqt, odatda","l":2},{"h":"逛","p":"guàng","m":"aylanmoq, sayr qilmoq","l":2},{"h":"短信","p":"duǎnxìn","m":"SMS, qisqa xabar","l":2},{"h":"正好","p":"zhènghǎo","m":"aynan, juda mos paytda","l":2},{"h":"聚会","p":"jùhuì","m":"yig'ilmoq; uchrashuv","l":2},{"h":"联系","p":"liánxì","m":"aloqa qilmoq","l":2},{"h":"差不多","p":"chàbuduō","m":"deyarli, taxminan","l":2},{"h":"专门","p":"zhuānmén","m":"maxsus, ataylab","l":2},{"h":"毕业","p":"bìyè","m":"bitirmoq","l":2},{"h":"麻烦","p":"máfan","m":"bezovta qilmoq, ovora qilmoq","l":2},{"h":"好像","p":"hǎoxiàng","m":"go'yo, xuddi","l":2},{"h":"重新","p":"chóngxīn","m":"qaytadan","l":2},{"h":"尽管","p":"jǐnguǎn","m":"garchi, ... bo'lsa ham","l":2},{"h":"真正","p":"zhēnzhèng","m":"haqiqiy","l":2},{"h":"友谊","p":"yǒuyì","m":"do'stlik","l":2},{"h":"丰富","p":"fēngfù","m":"boyitmoq","l":2},{"h":"无聊","p":"wúliáo","m":"zerikarli","l":2},{"h":"讨厌","p":"tǎoyàn","m":"yoqtirmaslik","l":2},{"h":"却","p":"què","m":"lekin, ammo","l":2},{"h":"周围","p":"zhōuwéi","m":"atrof, atrofdagilar","l":2},{"h":"交流","p":"jiāoliú","m":"muloqot qilmoq, almashmoq","l":2},{"h":"理解","p":"lǐjiě","m":"tushunmoq","l":2},{"h":"镜子","p":"jìngzi","m":"ko'zgu","l":2},{"h":"而","p":"ér","m":"esa, ammo","l":2},{"h":"当","p":"dāng","m":"... paytda","l":2},{"h":"困难","p":"kùnnan","m":"qiyinchilik","l":2},{"h":"及时","p":"jíshí","m":"o'z vaqtida","l":2},{"h":"陪","p":"péi","m":"hamrohlik qilmoq","l":2},{"h":"挺","p":"tǐng","m":"ancha, juda","l":3},{"h":"紧张","p":"jǐnzhāng","m":"hayajonlangan, asabiy","l":3},{"h":"信心","p":"xìnxīn","m":"ishonch","l":3},{"h":"能力","p":"nénglì","m":"qobiliyat","l":3},{"h":"招聘","p":"zhāopìn","m":"ishga qabul qilmoq, xodim izlamoq","l":3},{"h":"提供","p":"tígōng","m":"taqdim qilmoq, bermoq","l":3},{"h":"负责","p":"fùzé","m":"mas'ul bo'lmoq","l":3},{"h":"本来","p":"běnlái","m":"aslida, boshida","l":3},{"h":"应聘","p":"yìngpìn","m":"ishga ariza bermoq","l":3},{"h":"材料","p":"cáiliào","m":"material, hujjat","l":3},{"h":"符合","p":"fúhé","m":"mos kelmoq","l":3},{"h":"通知","p":"tōngzhī","m":"xabar bermoq","l":3},{"h":"律师","p":"lǜshī","m":"advokat, yurist","l":3},{"h":"专业","p":"zhuānyè","m":"mutaxassislik, yo'nalish","l":3},{"h":"另外","p":"lìngwài","m":"bundan tashqari","l":3},{"h":"收入","p":"shōurù","m":"daromad","l":3},{"h":"咱们","p":"zánmen","m":"biz","l":3},{"h":"安排","p":"ānpái","m":"tartibga solmoq, rejalashtirmoq","l":3},{"h":"首先","p":"shǒuxiān","m":"avvalo, birinchi navbatda","l":3},{"h":"正式","p":"zhèngshì","m":"rasmiy","l":3},{"h":"留","p":"liú","m":"qoldirmoq","l":3},{"h":"其次","p":"qícì","m":"ikkinchidan, keyin","l":3},{"h":"诚实","p":"chéngshí","m":"halol, rostgo'y","l":3},{"h":"改变","p":"gǎibiàn","m":"o'zgartirmoq","l":3},{"h":"感觉","p":"gǎnjué","m":"his, taassurot","l":3},{"h":"判断","p":"pànduàn","m":"hukm qilmoq, baholamoq","l":3},{"h":"顾客","p":"gùkè","m":"mijoz","l":3},{"h":"准时","p":"zhǔnshí","m":"vaqtida, punktual","l":3},{"h":"不管","p":"bùguǎn","m":"nima bo'lishidan qat'i nazar","l":3},{"h":"与","p":"yǔ","m":"bilan","l":3},{"h":"约会","p":"yuēhuì","m":"uchrashuvga chiqmoq, uchrashmoq","l":3}];
+
+const GRAMMAR=[{"t":"不仅……也/还/而且……","cat":"str","l":"Dars 1","f":"Ikki ijobiy xususiyatni bog'lab, ikkinchi qismni kuchaytiradi.","ex":[{"z":"他不仅足球踢得好，性格也不错。","u":"U nafaqat futbolni yaxshi o'ynaydi, xarakteri ham yaxshi."}]},{"t":"从来","cat":"lex","l":"Dars 1","f":"Odatda inkor bilan kelib, 'hech qachon bunday bo'lmagan' ma'nosini beradi.","ex":[{"z":"我从来没这么快乐过。","u":"Men hech qachon bunchalik xursand bo'lmaganman."}]},{"t":"刚","cat":"lex","l":"Dars 1","f":"Harakat yaqinda yoki endi bo'lganini bildiradi.","ex":[{"z":"我和丈夫刚结婚的时候，每天都觉得很新鲜。","u":"Erim bilan endi turmush qurgan paytimda har kuni hamma narsa yangi tuyulardi."}]},{"t":"即使……也……","cat":"str","l":"Dars 1","f":"Shart kuchli bo'lsa ham natija o'zgarmasligini bildiradi.","ex":[{"z":"即使晚上加班到零点，到家时，自己家里也还亮着灯。","u":"Hatto kechasi yarimgacha ishlasa ham, uyga kelganda uyida chiroq yonib turadi."}]},{"t":"（在）……上","cat":"str","l":"Dars 1","f":"Mavzu yoki sohani ko'rsatadi: xarakter jihatidan, ish borasida kabi.","ex":[{"z":"更需要性格上互相吸引。","u":"Xarakter jihatidan bir-birini jalb qilish yanada kerak."}]},{"t":"正好","cat":"lex","l":"Dars 2","f":"Vaqt, holat yoki imkoniyat juda mos tushganini bildiradi.","ex":[{"z":"我们下午要去踢足球，正好一起去吧。","u":"Biz tushdan keyin futbol o'ynashga boramiz, aynan birga boraylik."}]},{"t":"差不多","cat":"lex","l":"Dars 2","f":"Raqam yoki holat to'liq aniq emas, taxminan shunga yaqinligini bildiradi.","ex":[{"z":"差不多一半儿吧。","u":"Taxminan yarmi bo'lsa kerak."}]},{"t":"尽管","cat":"str","l":"Dars 2","f":"Qarama-qarshi vaziyatni tan olib, asosiy natijani keyin beradi.","ex":[{"z":"尽管已经毕业这么多年，我们还是经常联系的。","u":"Garchi bitirganimizga shuncha yil bo'lgan bo'lsa ham, biz baribir tez-tez aloqada bo'lamiz."}]},{"t":"却","cat":"lex","l":"Dars 2","f":"Kutilgan natijaga teskari holatni ko'rsatadi.","ex":[{"z":"一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。","u":"Fe'li yomon odam odamlarni albatta bezdirmasligi mumkin, lekin u bilan do'stlashish qiyin."}]},{"t":"而","cat":"str","l":"Dars 2","f":"Ikki qarash yoki holatni taqqoslab bog'laydi.","ex":[{"z":"而我的理解是：当你遇到困难的时候，真正的朋友会站出来。","u":"Mening tushuncham esa shuki: qiyinchilikka duch kelganingda haqiqiy do'st oldinga chiqadi."}]},{"t":"挺","cat":"lex","l":"Dars 3","f":"Og'zaki tilda sifat yoki holat darajasini yumshoq kuchaytiradi.","ex":[{"z":"他们问的问题都挺容易的。","u":"Ular so'ragan savollar ancha oson edi."}]},{"t":"本来","cat":"lex","l":"Dars 3","f":"Dastlabki reja yoki oldingi holatni bildiradi; keyin ko'pincha o'zgarish keladi.","ex":[{"z":"本来是小李负责的，但是他突然生病住院了。","u":"Aslida Xiao Li mas'ul edi, lekin u to'satdan kasal bo'lib kasalxonaga yotdi."}]},{"t":"另外","cat":"lex","l":"Dars 3","f":"Oldingi fikrga qo'shimcha sabab yoki ma'lumot qo'shadi.","ex":[{"z":"另外，收入也不错。","u":"Bundan tashqari, daromadi ham yaxshi."}]},{"t":"首先","cat":"lex","l":"Dars 3","f":"Bir nechta maslahat yoki qadamning birinchisini ko'rsatadi.","ex":[{"z":"首先，要穿正式的衣服。","u":"Avvalo, rasmiy kiyim kiyish kerak."}]},{"t":"不管……都……","cat":"str","l":"Dars 3","f":"Shart qanday bo'lishidan qat'i nazar natija bir xil qolishini bildiradi.","ex":[{"z":"不管是上课、上班，还是与别人约会，准时都非常重要。","u":"Dars bo'ladimi, ish bo'ladimi yoki boshqalar bilan uchrashuv bo'ladimi, vaqtida borish juda muhim."}]}];
+
+const QUIZ=[{"lesson":1,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n他不仅足球踢得好，性格也不错。","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["不仅……也/还/而且……","从来","刚","即使……也……"],"ans":0,"expl":"To'g'ri javob: 不仅……也/还/而且……. Ikki ijobiy xususiyatni bog'lab, ikkinchi qismni kuchaytiradi."},{"lesson":1,"type":"grammar_pattern_to_example","q":"“不仅……也/还/而且……” grammatikasiga qaysi gap mos?","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["我从来没这么快乐过。","我和丈夫刚结婚的时候，每天都觉得很新鲜。","即使晚上加班到零点，到家时，自己家里也还亮着灯。","他不仅足球踢得好，性格也不错。"],"ans":3,"expl":"To'g'ri javob: 他不仅足球踢得好，性格也不错。\nBu gapda 不仅……也/还/而且…… ishlatilgan."},{"lesson":1,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n我从来没这么快乐过。","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["不仅……也/还/而且……","刚","即使……也……","从来"],"ans":3,"expl":"To'g'ri javob: 从来. Odatda inkor bilan kelib, 'hech qachon bunday bo'lmagan' ma'nosini beradi."},{"lesson":1,"type":"grammar_pattern_to_example","q":"“从来” grammatikasiga qaysi gap mos?","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["我和丈夫刚结婚的时候，每天都觉得很新鲜。","即使晚上加班到零点，到家时，自己家里也还亮着灯。","我从来没这么快乐过。","他不仅足球踢得好，性格也不错。"],"ans":2,"expl":"To'g'ri javob: 我从来没这么快乐过。\nBu gapda 从来 ishlatilgan."},{"lesson":1,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n我和丈夫刚结婚的时候，每天都觉得很新鲜。","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["从来","即使……也……","刚","不仅……也/还/而且……"],"ans":2,"expl":"To'g'ri javob: 刚. Harakat yaqinda yoki endi bo'lganini bildiradi."},{"lesson":1,"type":"grammar_pattern_to_example","q":"“刚” grammatikasiga qaysi gap mos?","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["即使晚上加班到零点，到家时，自己家里也还亮着灯。","我和丈夫刚结婚的时候，每天都觉得很新鲜。","他不仅足球踢得好，性格也不错。","我从来没这么快乐过。"],"ans":1,"expl":"To'g'ri javob: 我和丈夫刚结婚的时候，每天都觉得很新鲜。\nBu gapda 刚 ishlatilgan."},{"lesson":1,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n即使晚上加班到零点，到家时，自己家里也还亮着灯。","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["刚","即使……也……","不仅……也/还/而且……","从来"],"ans":1,"expl":"To'g'ri javob: 即使……也……. Shart kuchli bo'lsa ham natija o'zgarmasligini bildiradi."},{"lesson":1,"type":"grammar_pattern_to_example","q":"“即使……也……” grammatikasiga qaysi gap mos?","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["即使晚上加班到零点，到家时，自己家里也还亮着灯。","他不仅足球踢得好，性格也不错。","我从来没这么快乐过。","我和丈夫刚结婚的时候，每天都觉得很新鲜。"],"ans":0,"expl":"To'g'ri javob: 即使晚上加班到零点，到家时，自己家里也还亮着灯。\nBu gapda 即使……也…… ishlatilgan."},{"lesson":1,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n更需要性格上互相吸引。","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["（在）……上","不仅……也/还/而且……","从来","刚"],"ans":0,"expl":"To'g'ri javob: （在）……上. Mavzu yoki sohani ko'rsatadi: xarakter jihatidan, ish borasida kabi."},{"lesson":1,"type":"grammar_pattern_to_example","q":"“（在）……上” grammatikasiga qaysi gap mos?","hint":"Dars 1 grammatikasi","cat":"Grammatika","opts":["他不仅足球踢得好，性格也不错。","我从来没这么快乐过。","我和丈夫刚结婚的时候，每天都觉得很新鲜。","更需要性格上互相吸引。"],"ans":3,"expl":"To'g'ri javob: 更需要性格上互相吸引。\nBu gapda （在）……上 ishlatilgan."},{"lesson":2,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n我们下午要去踢足球，正好一起去吧。","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["正好","差不多","尽管","却"],"ans":0,"expl":"To'g'ri javob: 正好. Vaqt, holat yoki imkoniyat juda mos tushganini bildiradi."},{"lesson":2,"type":"grammar_pattern_to_example","q":"“正好” grammatikasiga qaysi gap mos?","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["差不多一半儿吧。","尽管已经毕业这么多年，我们还是经常联系的。","一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。","我们下午要去踢足球，正好一起去吧。"],"ans":3,"expl":"To'g'ri javob: 我们下午要去踢足球，正好一起去吧。\nBu gapda 正好 ishlatilgan."},{"lesson":2,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n差不多一半儿吧。","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["正好","尽管","却","差不多"],"ans":3,"expl":"To'g'ri javob: 差不多. Raqam yoki holat to'liq aniq emas, taxminan shunga yaqinligini bildiradi."},{"lesson":2,"type":"grammar_pattern_to_example","q":"“差不多” grammatikasiga qaysi gap mos?","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["尽管已经毕业这么多年，我们还是经常联系的。","一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。","差不多一半儿吧。","我们下午要去踢足球，正好一起去吧。"],"ans":2,"expl":"To'g'ri javob: 差不多一半儿吧。\nBu gapda 差不多 ishlatilgan."},{"lesson":2,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n尽管已经毕业这么多年，我们还是经常联系的。","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["差不多","却","尽管","正好"],"ans":2,"expl":"To'g'ri javob: 尽管. Qarama-qarshi vaziyatni tan olib, asosiy natijani keyin beradi."},{"lesson":2,"type":"grammar_pattern_to_example","q":"“尽管” grammatikasiga qaysi gap mos?","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。","尽管已经毕业这么多年，我们还是经常联系的。","我们下午要去踢足球，正好一起去吧。","差不多一半儿吧。"],"ans":1,"expl":"To'g'ri javob: 尽管已经毕业这么多年，我们还是经常联系的。\nBu gapda 尽管 ishlatilgan."},{"lesson":2,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["尽管","却","正好","差不多"],"ans":1,"expl":"To'g'ri javob: 却. Kutilgan natijaga teskari holatni ko'rsatadi."},{"lesson":2,"type":"grammar_pattern_to_example","q":"“却” grammatikasiga qaysi gap mos?","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。","我们下午要去踢足球，正好一起去吧。","差不多一半儿吧。","尽管已经毕业这么多年，我们还是经常联系的。"],"ans":0,"expl":"To'g'ri javob: 一个脾气不好的人虽然不一定让人讨厌，但是却很难跟人交朋友。\nBu gapda 却 ishlatilgan."},{"lesson":2,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n而我的理解是：当你遇到困难的时候，真正的朋友会站出来。","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["而","正好","差不多","尽管"],"ans":0,"expl":"To'g'ri javob: 而. Ikki qarash yoki holatni taqqoslab bog'laydi."},{"lesson":2,"type":"grammar_pattern_to_example","q":"“而” grammatikasiga qaysi gap mos?","hint":"Dars 2 grammatikasi","cat":"Grammatika","opts":["我们下午要去踢足球，正好一起去吧。","差不多一半儿吧。","尽管已经毕业这么多年，我们还是经常联系的。","而我的理解是：当你遇到困难的时候，真正的朋友会站出来。"],"ans":3,"expl":"To'g'ri javob: 而我的理解是：当你遇到困难的时候，真正的朋友会站出来。\nBu gapda 而 ishlatilgan."},{"lesson":3,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n他们问的问题都挺容易的。","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["挺","本来","另外","首先"],"ans":0,"expl":"To'g'ri javob: 挺. Og'zaki tilda sifat yoki holat darajasini yumshoq kuchaytiradi."},{"lesson":3,"type":"grammar_pattern_to_example","q":"“挺” grammatikasiga qaysi gap mos?","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["本来是小李负责的，但是他突然生病住院了。","另外，收入也不错。","首先，要穿正式的衣服。","他们问的问题都挺容易的。"],"ans":3,"expl":"To'g'ri javob: 他们问的问题都挺容易的。\nBu gapda 挺 ishlatilgan."},{"lesson":3,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n本来是小李负责的，但是他突然生病住院了。","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["挺","另外","首先","本来"],"ans":3,"expl":"To'g'ri javob: 本来. Dastlabki reja yoki oldingi holatni bildiradi; keyin ko'pincha o'zgarish keladi."},{"lesson":3,"type":"grammar_pattern_to_example","q":"“本来” grammatikasiga qaysi gap mos?","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["另外，收入也不错。","首先，要穿正式的衣服。","本来是小李负责的，但是他突然生病住院了。","他们问的问题都挺容易的。"],"ans":2,"expl":"To'g'ri javob: 本来是小李负责的，但是他突然生病住院了。\nBu gapda 本来 ishlatilgan."},{"lesson":3,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n另外，收入也不错。","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["本来","首先","另外","挺"],"ans":2,"expl":"To'g'ri javob: 另外. Oldingi fikrga qo'shimcha sabab yoki ma'lumot qo'shadi."},{"lesson":3,"type":"grammar_pattern_to_example","q":"“另外” grammatikasiga qaysi gap mos?","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["首先，要穿正式的衣服。","另外，收入也不错。","他们问的问题都挺容易的。","本来是小李负责的，但是他突然生病住院了。"],"ans":1,"expl":"To'g'ri javob: 另外，收入也不错。\nBu gapda 另外 ishlatilgan."},{"lesson":3,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n首先，要穿正式的衣服。","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["另外","首先","挺","本来"],"ans":1,"expl":"To'g'ri javob: 首先. Bir nechta maslahat yoki qadamning birinchisini ko'rsatadi."},{"lesson":3,"type":"grammar_pattern_to_example","q":"“首先” grammatikasiga qaysi gap mos?","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["首先，要穿正式的衣服。","他们问的问题都挺容易的。","本来是小李负责的，但是他突然生病住院了。","另外，收入也不错。"],"ans":0,"expl":"To'g'ri javob: 首先，要穿正式的衣服。\nBu gapda 首先 ishlatilgan."},{"lesson":3,"type":"grammar_example_to_pattern","q":"Quyidagi gapda qaysi grammatika ishlatilgan?\n不管是上课、上班，还是与别人约会，准时都非常重要。","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["不管……都……","挺","本来","另外"],"ans":0,"expl":"To'g'ri javob: 不管……都……. Shart qanday bo'lishidan qat'i nazar natija bir xil qolishini bildiradi."},{"lesson":3,"type":"grammar_pattern_to_example","q":"“不管……都……” grammatikasiga qaysi gap mos?","hint":"Dars 3 grammatikasi","cat":"Grammatika","opts":["他们问的问题都挺容易的。","本来是小李负责的，但是他突然生病住院了。","另外，收入也不错。","不管是上课、上班，还是与别人约会，准时都非常重要。"],"ans":3,"expl":"To'g'ri javob: 不管是上课、上班，还是与别人约会，准时都非常重要。\nBu gapda 不管……都…… ishlatilgan."}];
+
+// ===== STATE =====
+const LS_QUIZ='hsk4_lesson_quiz_scores';
+const LS_DONE='hsk4_completed_lessons';
+const LS_STAR='hsk4_starred_words';
+const tg=window.Telegram?.WebApp;
+try{tg?.ready();tg?.expand();}catch(e){}
+
+const params=new URLSearchParams(window.location.search);
+const lesson=Number(params.get("lesson"));
+const mode=params.get("mode");
+const block=Number(params.get("block"));
+function normalizeLang(value){
+  const v=(value||'').toLowerCase();
+  if(v==='tg'||v==='tg-cyrl')return 'tj';
+  return ['uz','ru','tj'].includes(v)?v:'uz';
+}
+let uiLang=normalizeLang(params.get("lang")||'uz');
+const maxLesson=LESSONS[LESSONS.length-1]?.n||3;
+const initialLesson=(Number.isInteger(lesson)&&LESSONS.some(item=>item.n===lesson))?lesson:null;
+const initialBlock=(Number.isInteger(block)&&block>=1)?block:null;
+const miniMode=(mode==='quiz'||mode==='homework')&&!!initialLesson;
+let S={done:[],starred:[],qScore:{c:0,t:0},qFilter:initialLesson||'all',quizScores:{}};
+let qIdx=0,qAnswered=false,qList=[],lesFilter='all',gramFilter='all',fcFilter=initialLesson||0,fcFlipped=[],qReported=false;
+let miniLessonData=null;
+
+const UI={
+  uz:{
+    quizTitle:'Dars {lesson} · Quiz 🧠',quizSub:'Mini App · faqat shu dars savollari',
+    restart:'Qayta ishlash ↺',next:'Keyingisi →',back:'Botga qaytish',
+    result:'{percent}% natija',score:'To‘g‘ri: {correct} · Xato: {wrong}',
+    noWrong:'Xato javob yo‘q. Juda yaxshi ✅',correctAnswer:'To‘g‘ri javob',
+    lessonLabel:'Dars',correctPrefix:'✓ To‘g‘ri! ',wrongPrefix:'✗ Noto‘g‘ri. ',
+    homeworkTitle:'Dars {lesson} · Uyga vazifa ✍️',homeworkSub:'Mini App · faqat botdan ochilgan vazifa',
+    note:'Botdagi dars asosiy qoladi. Bu sahifa faqat <b>Dars {lesson}</b> uyga vazifasini topshirish uchun.',
+    vocabTitle:'1) Yangi so‘zlar',vocabHelp:'Shu darsdagi yangi so‘zlardan foydalanib 3 ta xitoycha gap yozing.',
+    grammarTitle:'2) Grammatika',grammarHelp:'Darsdagi grammar strukturadan 2 ta xitoycha gap tuzing.',
+    translationTitle:'3) Tarjima mashqi',translationHelp:'Quyidagi 2 ta gapni xitoychaga tarjima qiling.',
+    vocabPlaceholder:'Masalan:\n1. 我今天...\n2. 他觉得...\n3. 这个词...',
+    grammarPlaceholder:'1. ...\n2. ...',
+    translationPlaceholder:'1. ...\n2. ...',
+    submit:'Vazifani yuborish',return:'Botga qaytish',
+    fillAll:'Hamma bo‘limlarni to‘ldiring. Bo‘sh vazifa botga foydali result bermaydi.',
+    sent:'Vazifa yuborildi. Endi botga qaytib natijani ko‘rishingiz mumkin.'
+  },
+  ru:{
+    quizTitle:'Урок {lesson} · Quiz 🧠',quizSub:'Mini App · вопросы только этого урока',
+    restart:'Пройти заново ↺',next:'Далее →',back:'Вернуться в бот',
+    result:'{percent}% результат',score:'Правильно: {correct} · Ошибки: {wrong}',
+    noWrong:'Ошибок нет. Отлично ✅',correctAnswer:'Правильный ответ',
+    lessonLabel:'Урок',correctPrefix:'✓ Правильно! ',wrongPrefix:'✗ Неправильно. ',
+    homeworkTitle:'Урок {lesson} · Домашнее задание ✍️',homeworkSub:'Mini App · задание открыто из бота',
+    note:'Основной урок остаётся в боте. Эта страница только для отправки домашнего задания по <b>уроку {lesson}</b>.',
+    vocabTitle:'1) Новые слова',vocabHelp:'Напишите 3 предложения на китайском, используя новые слова урока.',
+    grammarTitle:'2) Грамматика',grammarHelp:'Составьте 2 предложения на китайском с грамматикой урока.',
+    translationTitle:'3) Перевод',translationHelp:'Переведите эти 2 предложения на китайский.',
+    vocabPlaceholder:'Например:\n1. 我今天...\n2. 他觉得...\n3. 这个词...',
+    grammarPlaceholder:'1. ...\n2. ...',
+    translationPlaceholder:'1. ...\n2. ...',
+    submit:'Отправить задание',return:'Вернуться в бот',
+    fillAll:'Заполните все разделы. Пустое задание не даст боту полезный результат.',
+    sent:'Задание отправлено. Вернитесь в бот, чтобы увидеть результат.'
+  },
+  tj:{
+    quizTitle:'Дарс {lesson} · Quiz 🧠',quizSub:'Mini App · саволҳо танҳо аз ҳамин дарс',
+    restart:'Аз нав гузаштан ↺',next:'Баъдӣ →',back:'Бозгашт ба бот',
+    result:'{percent}% натиҷа',score:'Дуруст: {correct} · Хато: {wrong}',
+    noWrong:'Ҷавоби хато нест. Олиҷаноб ✅',correctAnswer:'Ҷавоби дуруст',
+    lessonLabel:'Дарс',correctPrefix:'✓ Дуруст! ',wrongPrefix:'✗ Нодуруст. ',
+    homeworkTitle:'Дарс {lesson} · Вазифаи хонагӣ ✍️',homeworkSub:'Mini App · вазифа аз бот кушода шудааст',
+    note:'Дарси асосӣ дар бот мемонад. Ин саҳифа танҳо барои фиристодани вазифаи хонагии <b>дарси {lesson}</b> аст.',
+    vocabTitle:'1) Калимаҳои нав',vocabHelp:'Бо калимаҳои нави ҳамин дарс 3 ҷумлаи чинӣ нависед.',
+    grammarTitle:'2) Грамматика',grammarHelp:'Бо сохтори грамматикии дарс 2 ҷумлаи чинӣ созед.',
+    translationTitle:'3) Тарҷума',translationHelp:'Ин 2 ҷумларо ба чинӣ тарҷума кунед.',
+    vocabPlaceholder:'Масалан:\n1. 我今天...\n2. 他觉得...\n3. 这个词...',
+    grammarPlaceholder:'1. ...\n2. ...',
+    translationPlaceholder:'1. ...\n2. ...',
+    submit:'Фиристодани вазифа',return:'Бозгашт ба бот',
+    fillAll:'Ҳама қисмҳоро пур кунед. Вазифаи холӣ ба бот натиҷаи фоиданок намедиҳад.',
+    sent:'Вазифа фиристода шуд. Акнун ба бот баргардед ва натиҷаро бинед.'
+  }
+};
+function tt(key,vars={}){
+  let text=(UI[uiLang]||UI.uz)[key]||UI.uz[key]||key;
+  Object.keys(vars).forEach(k=>{text=text.replaceAll('{'+k+'}',vars[k]);});
+  return text;
+}
+
+function miniLessonLabel(){
+  const part=miniLessonData?.block_no||initialBlock||null;
+  if(!part)return String(initialLesson||'');
+  const labels={uz:'qism',ru:'часть',tj:'қисм'};
+  return `${initialLesson} · ${(labels[uiLang]||labels.uz)} ${part}`;
+}
+
+async function loadMiniLessonData(){
+  if(!miniMode)return;
+  try{
+    const blockParam=initialBlock?`&block=${initialBlock}`:'';
+    const res=await fetch(`/api/miniapp/lesson?level=hsk4&lesson=${initialLesson}&lang=${uiLang}${blockParam}`,{
+      headers:{"X-Telegram-Init-Data":tg?.initData||""}
+    });
+    const data=await res.json();
+    if(data?.ok&&data.lesson){
+      miniLessonData=data.lesson;
+      uiLang=normalizeLang(data.lesson.lang||uiLang);
+    }
+  }catch(e){}
+}
+
+function safeJSON(key,fallback){try{const v=localStorage.getItem(key);return v?JSON.parse(v):fallback;}catch(e){return fallback;}}
+function load(){
+  const old=safeJSON('hsk4s',null);
+  S.done=safeJSON(LS_DONE,old?.done||[]);
+  S.starred=safeJSON(LS_STAR,old?.starred||[]);
+  S.quizScores=safeJSON(LS_QUIZ,{});
+  S.qScore=old?.qScore||{c:0,t:0};
+  if(initialLesson)S.qFilter=initialLesson;
+  else S.qFilter=old?.qFilter||'all';
+}
+function save(){
+  try{
+    localStorage.setItem(LS_DONE,JSON.stringify(S.done));
+    localStorage.setItem(LS_STAR,JSON.stringify(S.starred));
+    localStorage.setItem(LS_QUIZ,JSON.stringify(S.quizScores||{}));
+    localStorage.setItem('hsk4s',JSON.stringify(S)); // backward compatibility
+  }catch(e){}
+}
+load();
+
+const MINI_EVENT_ENDPOINT="/api/miniapp/event";
+
+async function reportEvent(eventName,payload={}){
+  const tg=window.Telegram?.WebApp;
+  try{
+    const res=await fetch(MINI_EVENT_ENDPOINT,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "X-Telegram-Init-Data":tg?.initData||""
+      },
+      body:JSON.stringify({
+        level:"hsk4",
+        event:eventName,
+        ...payload,
+        created_at:new Date().toISOString()
+      })
+    });
+    if(!res.ok)throw new Error("Mini App backend error: "+res.status);
+  }catch(e){
+    if(eventName!=="app_error"){
+      reportAppError(e,{source:"report_event_failed",failed_event:eventName});
+    }
+    if((eventName==="quiz_completed"||eventName==="homework_submitted")&&tg?.sendData){
+      try{tg.sendData(JSON.stringify({event:eventName,...payload,created_at:new Date().toISOString()}));}catch(_e){}
+    }
+    const pending=safeJSON("hsk4_pending_events",[]);
+    pending.push({
+      level:"hsk4",
+      event:eventName,
+      ...payload,
+      created_at:new Date().toISOString()
+    });
+    localStorage.setItem("hsk4_pending_events",JSON.stringify(pending));
+  }
+}
+
+function serializeError(error){
+  if(error instanceof Error){
+    return {name:error.name||"Error",message:error.message||"",stack:error.stack||""};
+  }
+  if(typeof error==="object"&&error!==null){
+    let message="";
+    try{message=error.message||JSON.stringify(error);}catch(e){message=String(error);}
+    return {name:error.name||"Error",message,stack:error.stack||""};
+  }
+  return {name:"Error",message:String(error||"Unknown error"),stack:""};
+}
+
+function reportAppError(error,extra={}){
+  const details=serializeError(error);
+  return reportEvent("app_error",{
+    lesson_id:initialLesson||null,
+    block_no:initialBlock||miniLessonData?.block_no||null,
+    mode,
+    source:extra.source||"miniapp_error",
+    error_name:details.name,
+    error_message:details.message,
+    stack:details.stack,
+    url:window.location.href,
+    user_agent:navigator.userAgent,
+    extra
+  });
+}
+
+window.addEventListener("error",event=>{
+  reportAppError(event.error||event.message,{
+    source:"window_error",
+    filename:event.filename,
+    lineno:event.lineno,
+    colno:event.colno
+  });
+});
+
+window.addEventListener("unhandledrejection",event=>{
+  reportAppError(event.reason,{source:"unhandledrejection"});
+});
+
+async function flushPendingEvents(){
+  const pending=safeJSON("hsk4_pending_events",[]);
+  if(!pending.length)return;
+  const tg=window.Telegram?.WebApp;
+  const remaining=[];
+  for(const item of pending){
+    try{
+      const res=await fetch(MINI_EVENT_ENDPOINT,{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "X-Telegram-Init-Data":tg?.initData||""
+        },
+        body:JSON.stringify(item)
+      });
+      if(!res.ok)remaining.push(item);
+    }catch(e){
+      remaining.push(item);
+    }
+  }
+  localStorage.setItem("hsk4_pending_events",JSON.stringify(remaining));
+}
+
+function showOnlyPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const page=document.getElementById('p-'+id);
+  if(page)page.classList.add('active');
+}
+
+function returnToBot(){
+  reportEvent("bot_return_clicked",{lesson_id:initialLesson,block_no:initialBlock||miniLessonData?.block_no||null,mode});
+  try{window.Telegram?.WebApp?.close();}catch(e){}
+}
+
+
+// ===== NAV =====
+function goto(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='lessons')renderLessons();
+  if(id==='flash')renderFC();
+  if(id==='gram')renderGram();
+  if(id==='quiz')startQuiz();
+  updateStats();
+}
+
+// ===== STATS =====
+function updateStats(){
+  const d=S.done.length,total=LESSONS.length,pct=Math.round(d/total*100);
+  document.getElementById('kpi-done').textContent=d;
+  document.getElementById('kpi-left').textContent=total-d;
+  document.getElementById('kpi-done-bar').style.width=pct+'%';
+  document.getElementById('kpi-left-bar').style.width=(100-pct)+'%';
+  document.getElementById('kpi-star').textContent=S.starred.length;
+  document.getElementById('kpi-star-bar').style.width=Math.min(S.starred.length/Math.max(VOCAB.length,1)*100,100)+'%';
+  const qs=Object.values(S.quizScores||{});
+  if(qs.length){
+    const sp=Math.round(qs.reduce((a,x)=>a+(x.pct||0),0)/qs.length);
+    document.getElementById('kpi-score').textContent=sp+'%';
+    document.getElementById('kpi-score-bar').style.width=sp+'%';
+  }else if(S.qScore.t>0){
+    const sp=Math.round(S.qScore.c/S.qScore.t*100);
+    document.getElementById('kpi-score').textContent=sp+'%';
+    document.getElementById('kpi-score-bar').style.width=sp+'%';
+  }
+  ['dash-prog','les-prog'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%';});
+  const pt=document.getElementById('les-prog-text');if(pt)pt.textContent=d+'/'+total+' dars qaytarildi';
+  const dt=document.getElementById('dash-prog-text');if(dt)dt.style.display='none';
+}
+
+// ===== LESSONS =====
+function filterL(f,btn){
+  lesFilter=f;
+  document.querySelectorAll('#p-lessons .ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLessons();
+}
+function renderLessons(){
+  let list=LESSONS;
+  if(lesFilter==='studied')list=LESSONS.filter(l=>!l.new);
+  if(lesFilter==='new')list=LESSONS.filter(l=>l.new);
+  if(lesFilter==='done')list=LESSONS.filter(l=>S.done.includes(l.n));
+  if(lesFilter==='todo')list=LESSONS.filter(l=>!S.done.includes(l.n));
+  const g=document.getElementById('lesson-list');
+  g.innerHTML=list.map(l=>`
+    <div class="lcard${S.done.includes(l.n)?' done':''}" onclick="toggleDone(${l.n})">
+      <div class="lcard-top">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="lcard-num">Dars ${l.n}</span>
+          <span class="lcard-badge ${l.new?'badge-new':'badge-studied'}">${l.new?'Yangi':'O\'qilgan'}</span>
+          ${S.done.includes(l.n)?'<span class="lcard-badge badge-done">✓</span>':''}
+        </div>
+        <div class="check-circle">${S.done.includes(l.n)?'✓':''}</div>
+      </div>
+      <div class="lcard-title">${l.t}</div>
+      <div class="lcard-en">${l.e}</div>
+      <div class="lcard-gram">${l.g.map(g=>`<div class="gram-item"><div class="gram-dot"></div>${g}</div>`).join('')}</div>
+    </div>
+  `).join('');
+}
+function toggleDone(n){
+  if(S.done.includes(n))S.done=S.done.filter(x=>x!==n);
+  else S.done.push(n);
+  save();updateStats();renderLessons();
+}
+function mark116(){
+  for(let i=1;i<=16;i++)if(!S.done.includes(i))S.done.push(i);
+  save();updateStats();renderLessons();
+}
+function resetAll(){
+  S={done:[],starred:[],qScore:{c:0,t:0},qFilter:'all',quizScores:{}};
+  save();updateStats();renderLessons();renderFC();
+}
+
+// ===== FLASHCARDS =====
+function buildFCFilters(){
+  const el=document.getElementById('fc-filters');
+  let html='<button class="ftab active" onclick="setFCF(0,this)">Hammasi</button>';
+  html+='<button class="ftab" onclick="setFCF(-1,this)">⭐ Yulduz</button>';
+  LESSONS.forEach(({n})=>{html+=`<button class="ftab" onclick="setFCF(${n},this)">Dars ${n}</button>`;});
+  el.innerHTML=html;
+}
+function setFCF(n,btn){
+  fcFilter=n;fcFlipped=[];
+  document.querySelectorAll('#fc-filters .ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFC();
+}
+function renderFC(){
+  const q=document.getElementById('fc-search').value.toLowerCase();
+  let list=VOCAB;
+  if(fcFilter>0)list=VOCAB.filter(v=>v.l===fcFilter);
+  else if(fcFilter===-1)list=VOCAB.filter(v=>S.starred.includes(v.h));
+  if(q)list=list.filter(v=>v.h.includes(q)||v.m.toLowerCase().includes(q)||v.p.toLowerCase().includes(q));
+  const g=document.getElementById('fc-grid');
+  g.innerHTML=list.map(v=>`
+    <div class="fc${S.starred.includes(v.h)?' starred':''}${fcFlipped.includes(v.h)?' flipped':''}" onclick="flipFC('${v.h}')">
+      <span class="fc-star" onclick="event.stopPropagation();toggleStar('${v.h}')">★</span>
+      <div class="fc-hanzi">${v.h}</div>
+      <div class="fc-pinyin">${v.p}</div>
+      <div class="fc-mean">${v.m}</div>
+      <div class="fc-lesson">Dars ${v.l}</div>
+    </div>
+  `).join('');
+}
+function flipFC(h){
+  if(fcFlipped.includes(h))fcFlipped=fcFlipped.filter(x=>x!==h);
+  else fcFlipped.push(h);
+  renderFC();
+}
+function flipAllFC(){
+  const q=document.getElementById('fc-search').value.toLowerCase();
+  let list=VOCAB;
+  if(fcFilter>0)list=VOCAB.filter(v=>v.l===fcFilter);
+  else if(fcFilter===-1)list=VOCAB.filter(v=>S.starred.includes(v.h));
+  if(q)list=list.filter(v=>v.h.includes(q)||v.m.toLowerCase().includes(q)||v.p.toLowerCase().includes(q));
+  const allFlipped=list.every(v=>fcFlipped.includes(v.h));
+  if(allFlipped)fcFlipped=fcFlipped.filter(h=>!list.find(v=>v.h===h));
+  else list.forEach(v=>{if(!fcFlipped.includes(v.h))fcFlipped.push(v.h);});
+  renderFC();
+}
+function toggleStar(h){
+  if(S.starred.includes(h))S.starred=S.starred.filter(x=>x!==h);
+  else S.starred.push(h);
+  save();updateStats();renderFC();
+}
+
+// ===== GRAMMAR =====
+function filterG(f,btn){
+  gramFilter=f;
+  document.querySelectorAll('#p-gram .ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGram();
+}
+function renderGram(){
+  let list=GRAMMAR;
+  if(gramFilter!=='all')list=GRAMMAR.filter(g=>g.cat===gramFilter);
+  const cats={ba:'var(--accent)',bei:'var(--red)',comp:'var(--purple)',cmp:'var(--green)',str:'var(--amber)',lex:'var(--text2)'};
+  document.getElementById('gram-grid').innerHTML=list.map(g=>`
+    <div class="gcard" style="border-left:3px solid ${cats[g.cat]||'var(--border)'}">
+      <div class="gcard-title">${g.t}</div>
+      <div class="gcard-lesson">${g.l}</div>
+      <div class="gcard-formula">${g.f}</div>
+      <div class="gcard-exs">${g.ex.map(e=>`<div><div class="gex-zh">${e.z}</div><div class="gex-uz">${e.u}</div></div>`).join('')}</div>
+    </div>
+  `).join('');
+}
+
+// ===== LESSON-BASED QUIZ GENERATOR =====
+function cleanMeaning(m){return (m||'').replace(/\s*\([^)]*\)/g,'').replace(/;\s*/g,'; ').trim();}
+function normalizeOpt(v,field){return field==='m'?cleanMeaning(v.m):v[field];}
+function pickDistractors(word,field,lesson,count=3){
+  const same=VOCAB.filter(v=>v.h!==word.h&&v.l===lesson);
+  const near=VOCAB.filter(v=>v.h!==word.h&&Math.abs(v.l-lesson)<=2&&v.l!==lesson);
+  const all=VOCAB.filter(v=>v.h!==word.h);
+  const seen=new Set([normalizeOpt(word,field)]), out=[];
+  [...same,...near,...all].forEach(v=>{
+    const val=normalizeOpt(v,field);
+    if(val&&!seen.has(val)&&out.length<count){seen.add(val);out.push(val);}
+  });
+  return out;
+}
+function seededIndex(seed,max){
+  let h=0;for(let i=0;i<seed.length;i++)h=(h*31+seed.charCodeAt(i))>>>0;
+  return max?h%max:0;
+}
+function shuffleOpts(opts,ansText,seed){
+  const arr=[...opts];
+  for(let i=arr.length-1;i>0;i--){const j=seededIndex(seed+i,i+1);[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return {opts:arr,ans:arr.indexOf(ansText)};
+}
+function exampleFor(word){
+  const h=word.h,p=word.p,m=cleanMeaning(word.m);
+  return `To'g'ri javob: ${h} — ${m}.\nPinyin: ${p}.`;
+}
+function makeQ(word,lesson,type){
+  let ansText,optsData,q,hint=`Dars ${lesson} yangi so'zi`,cat='Vocabulary';
+  if(type==='hanzi_to_meaning'){
+    ansText=cleanMeaning(word.m);
+    optsData=shuffleOpts([ansText,...pickDistractors(word,'m',lesson)],ansText,word.h+type);
+    q=`“${word.h}” nimani anglatadi?`;
+  }else if(type==='meaning_to_hanzi'){
+    ansText=word.h;
+    optsData=shuffleOpts([ansText,...pickDistractors(word,'h',lesson)],ansText,word.h+type);
+    q=`“${cleanMeaning(word.m)}” qaysi so'z?`;
+  }else if(type==='pinyin_to_hanzi'){
+    ansText=word.h;
+    optsData=shuffleOpts([ansText,...pickDistractors(word,'h',lesson)],ansText,word.p+type);
+    q=`“${word.p}” qaysi so'z?`;
+  }else if(type==='hanzi_to_pinyin'){
+    ansText=word.p;
+    optsData=shuffleOpts([ansText,...pickDistractors(word,'p',lesson)],ansText,word.h+type);
+    q=`“${word.h}” pinyin qaysi?`;
+  }else{
+    ansText=cleanMeaning(word.m);
+    optsData=shuffleOpts([ansText,...pickDistractors(word,'m',lesson)],ansText,word.h+type);
+    q=`“${word.h}” nimani anglatadi?`;
+  }
+  return {lesson,type,q,hint,cat,opts:optsData.opts,ans:optsData.ans,expl:exampleFor(word)};
+}
+function buildLessonQuizzes(){
+  const obj={};
+  const types=['hanzi_to_meaning','meaning_to_hanzi','pinyin_to_hanzi','hanzi_to_pinyin'];
+  LESSONS.forEach(({n:lesson})=>{
+    const words=VOCAB.filter(v=>v.l===lesson);
+    obj[lesson]=[];
+    words.forEach((w,idx)=>types.forEach(t=>obj[lesson].push(makeQ(w,lesson,t))));
+    // Safety: every lesson must have at least 10 items even if a future VOCAB lesson becomes small.
+    let i=0;
+    while(obj[lesson].length<10&&words.length){obj[lesson].push(makeQ(words[i%words.length],lesson,types[i%types.length]));i++;}
+  });
+  return obj;
+}
+const LESSON_QUIZZES=buildLessonQuizzes();
+const QUIZ_QUESTIONS=QUIZ; // original grammar quiz preserved for compatibility
+
+// ===== QUIZ =====
+function buildQuizFilters(){
+  const el=document.getElementById('quiz-filters');
+  let html=`<button class="ftab ${S.qFilter==='all'?'active':''}" onclick="setQF('all',this)">Barcha quizlar</button>`;
+  LESSONS.forEach(({n})=>{
+    const done=S.quizScores?.[n]?.completed?' ✓':'';
+    html+=`<button class="ftab ${S.qFilter===n?'active':''}" onclick="setQF(${n},this)">Dars ${n}${done}</button>`;
+  });
+  el.innerHTML=html;
+}
+function setQF(f,btn){
+  S.qFilter=f;save();buildQuizFilters();startQuiz();
+}
+function seededShuffle(list,seed){
+  const arr=[...list];
+  for(let i=arr.length-1;i>0;i--){const j=seededIndex(seed+i,i+1);[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr;
+}
+function getQuizPool(){
+  if(miniMode&&mode==='quiz'&&miniLessonData?.quiz_questions?.length)return [...miniLessonData.quiz_questions];
+  if(miniMode&&mode==='quiz'&&initialLesson)return [...(QUIZ_QUESTIONS.filter(q=>q.lesson===initialLesson)),...(LESSON_QUIZZES[initialLesson]||[])];
+  if(typeof S.qFilter==='number')return [...QUIZ_QUESTIONS.filter(q=>q.lesson===S.qFilter),...(LESSON_QUIZZES[S.qFilter]||[])];
+  return [...QUIZ_QUESTIONS,...Object.values(LESSON_QUIZZES).flat()];
+}
+function startQuiz(){
+  let pool=getQuizPool();
+  if(!pool.length)pool=[...QUIZ_QUESTIONS];
+  const sessionSize=(miniMode&&mode==='quiz')?10:((typeof S.qFilter==='number')?20:60);
+  qList=seededShuffle(pool,Date.now().toString()).slice(0,Math.max(10,sessionSize)).map(q=>({...q}));
+  qReported=false;
+  qIdx=0;qAnswered=false;
+  S.qScore={c:0,t:0};save();
+  document.getElementById('quiz-score-box').style.display='none';
+  document.getElementById('quiz-main').style.display='block';
+  renderQ();
+}
+function renderQ(){
+  const q=qList[qIdx];
+  if(!q){showResult();return;}
+  document.getElementById('q-counter').textContent=(qIdx+1)+'/'+qList.length;
+  document.getElementById('q-cat').textContent=(q.lesson?`${tt('lessonLabel')} ${q.lesson} · `:'')+(q.cat||'Vocabulary');
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-hint').textContent='💡 '+(q.hint||'');
+  const opts=q.opts||q.o||[];
+  document.getElementById('q-opts').innerHTML=opts.map((o,i)=>`<button class="qopt" onclick="ansQ(${i})">${o}</button>`).join('');
+  document.getElementById('q-fb').className='quiz-fb';
+  document.getElementById('q-fb').textContent='';
+  document.getElementById('q-next').style.display='none';
+  document.getElementById('q-next').textContent=tt('next');
+  qAnswered=false;
+  let dots='';
+  const maxDots=Math.min(qList.length,80);
+  for(let i=0;i<maxDots;i++){
+    let c='qdot';
+    if(i<S.qScore.t)c+=(qList[i]?.correct?' c':' w');
+    else if(i===qIdx)c+=' cur';
+    dots+=`<div class="${c}"></div>`;
+  }
+  document.getElementById('q-dots').innerHTML=dots;
+}
+function ansQ(i){
+  if(qAnswered)return;
+  qAnswered=true;
+  const q=qList[qIdx];
+  const ans=('ans' in q)?q.ans:q.a;
+  const opts=document.querySelectorAll('.qopt');
+  opts.forEach(o=>o.disabled=true);
+  const ok=i===ans;
+  opts[i]?.classList.add(ok?'c':'w');
+  if(!ok&&opts[ans])opts[ans].classList.add('c');
+  if(ok)S.qScore.c++;
+  S.qScore.t++;
+  qList[qIdx].correct=ok;
+  qList[qIdx].selected_index=i;
+  qList[qIdx].selected_answer=(q.opts||q.o||[])[i]||'';
+  const fb=document.getElementById('q-fb');
+  fb.textContent=(ok?tt('correctPrefix'):tt('wrongPrefix'))+(q.expl||q.e||'');
+  fb.className='quiz-fb show '+(ok?'ok':'no');
+  document.getElementById('q-next').style.display='flex';
+  save();
+}
+function nextQ(){
+  qIdx++;
+  if(qIdx>=qList.length){showResult();return;}
+  renderQ();
+}
+function showResult(){
+  const {c,t}=S.qScore,pct=t?Math.round(c/t*100):0,wrong=t-c;
+  const activeLesson=(miniMode&&initialLesson)?initialLesson:(typeof S.qFilter==='number'?S.qFilter:null);
+  const activeBlock=miniLessonData?.block_no||initialBlock||null;
+  const wrong_items=qList.filter(x=>x.correct===false).map(x=>({
+    lesson_id:x.lesson||activeLesson,
+    block_no:x.block_no||activeBlock,
+    type:x.type||x.cat||'quiz',
+    question:x.q,
+    selected_answer:x.selected_answer||'',
+    selected_index:typeof x.selected_index==='number'?x.selected_index:null,
+    correct_answer:(x.opts||x.o||[])[('ans' in x)?x.ans:x.a]||'',
+    explanation:x.expl||x.e||''
+  }));
+  if(typeof S.qFilter==='number'){
+    S.quizScores[S.qFilter]={correct:c,total:t,wrong,pct,completed:true,updatedAt:new Date().toISOString()};
+  }
+  save();
+  buildQuizFilters();
+  document.getElementById('quiz-main').style.display='none';
+  document.getElementById('quiz-score-box').style.display='block';
+  document.getElementById('qsn').textContent=c+'/'+t;
+  document.getElementById('qsp').textContent=tt('result',{percent:pct});
+  document.getElementById('qsd').textContent=tt('score',{correct:c,wrong});
+  const nextBtn=document.getElementById('q-next-lesson');
+  if(miniMode&&mode==='quiz'){
+    nextBtn.style.display='flex';
+    nextBtn.textContent=tt('back');
+    nextBtn.onclick=returnToBot;
+    const box=document.getElementById('quiz-score-box');
+    const old=document.getElementById('wrong-items-box');
+    if(old)old.remove();
+    const list=document.createElement('div');
+    list.id='wrong-items-box';
+    list.className='result-list';
+    list.innerHTML=wrong_items.length
+      ? wrong_items.map((w,i)=>`<div class="result-item"><b>${i+1}. ${w.question}</b><br>${tt('yourAnswer')}: ${w.selected_answer}<br>${tt('correctAnswer')}: ${w.correct_answer}</div>`).join('')
+      : `<div class="result-item" style="background:var(--green-dim);border-color:rgba(43,207,114,.25);color:var(--green);">${tt('noWrong')}</div>`;
+    box.appendChild(list);
+    if(!qReported){
+      qReported=true;
+      reportEvent("quiz_completed",{
+        lesson_id:activeLesson,
+        block_no:activeBlock,
+        score:c,
+        total:t,
+        percent:pct,
+        wrong_items
+      });
+    }
+  }else{
+    nextBtn.onclick=nextLessonQuiz;
+    nextBtn.textContent='Keyingi dars →';
+    nextBtn.style.display=(typeof S.qFilter==='number'&&S.qFilter<maxLesson)?'flex':'none';
+  }
+  updateStats();
+}
+function nextLessonQuiz(){
+  if(typeof S.qFilter==='number'&&S.qFilter<maxLesson){S.qFilter++;save();buildQuizFilters();startQuiz();}
+}
+
+// ===== HOMEWORK MINI APP JS =====
+const TRANSLATION_BANK_I18N={
+  uz:{
+    fallback:["Bugun men yangi so'zlarni o'rgandim.","Bu grammatika men uchun muhim."],
+    1:["Men dam olish kuni uy vazifasini qilaman.","Xaritani olib kelishni unutmang."],
+    2:["U ofisga qaytib keldi.","Bu savol men uchun qiyin emas."],
+    3:["Stol ustida ko'p ichimlik turibdi.","Sen choy ichasanmi yoki suv?"],
+    4:["U kulib javob berdi.","Bu talaba ham aqlli, ham mehnatsevar."],
+    5:["Ob-havo tobora sovuqlashyapti.","Men so'nggi payt shamollab qoldim."],
+    6:["Men ko'zoynagimni topa olmayapman.","U juda tez gapiradi, men aniq eshitmayapman."],
+    7:["Men xitoy tilini uch yil o'rgandim.","Men Xitoy madaniyatiga qiziqaman."],
+    8:["Sen qayerga borsang, men ham o'sha yerga boraman.","Men darhol hojatxonaga boraman."],
+    9:["U xitoy tilida xitoyliklar kabi yaxshi gapiradi.","Qanchalik ko'p o'rgansam, shunchalik qiziq bo'ladi."],
+    10:["Matematika tarixdan ancha qiyin.","Mening uyim metroga yaqin."],
+    11:["Konditsionerni o'chirishni unutmang.","Men kutubxonadan lug'at oldim."],
+    12:["Muhim narsalarni stol ustiga qo'ying.","Haydovchi chamadonni mashinaga qo'ydi."],
+    13:["Men piyoda qaytib keldim.","U ovqatlanib turib telefon ko'ryapti."],
+    14:["Mevalarni olib keling.","Avval xonani tozalang, keyin dush oling."],
+    15:["Xitoy tilidan tashqari, men ingliz tilini ham o'rganyapman.","Bugungi bayram juda qiziqarli."],
+    16:["Agar ertaga yomg'ir yog'sa, men bormayman.","Men ishdan keyin uxlashni xohlaydigan darajada charchadim."],
+    17:["Men bir kun ta'til so'ramoqchiman.","Vaziyatga ko'ra qaror qilamiz."],
+    18:["Faqat sen rozi bo'lsang, men boraman.","Bu maqola Xitoy madaniyati haqida."],
+    19:["Men uni darhol tanib oldim.","Bu narsa meni juda xafa qildi."],
+    20:["Mening kameram olib ketildi.","Faqat ko'p mashq qilsang, natijang yaxshilanadi."]
+  },
+  ru:{
+    fallback:["Сегодня я выучил новые слова.","Эта грамматика важна для меня."],
+    1:["На выходных я буду делать домашнее задание.","Не забудьте принести карту."],
+    2:["Он вернулся в офис.","Этот вопрос для меня не трудный."],
+    3:["На столе стоит много напитков.","Ты будешь пить чай или воду?"],
+    4:["Он ответил с улыбкой.","Этот ученик и умный, и трудолюбивый."],
+    5:["Погода становится всё холоднее.","В последнее время я простудился."],
+    6:["Я не могу найти свои очки.","Он говорит очень быстро, я не могу ясно расслышать."],
+    7:["Я изучал китайский язык три года.","Я интересуюсь китайской культурой."],
+    8:["Куда пойдёшь ты, туда пойду и я.","Я сразу пойду в туалет."],
+    9:["Она говорит по-китайски так же хорошо, как китайцы.","Чем больше я учусь, тем интереснее становится."],
+    10:["Математика намного труднее истории.","Мой дом находится близко к метро."],
+    11:["Не забудьте выключить кондиционер.","Я взял словарь в библиотеке."],
+    12:["Положите важные вещи на стол.","Водитель положил чемодан в машину."],
+    13:["Я вернулся пешком.","Он ест и одновременно смотрит в телефон."],
+    14:["Принесите фрукты сюда.","Сначала уберите комнату, потом примите душ."],
+    15:["Кроме китайского, я также изучаю английский.","Сегодняшний праздник очень интересный."],
+    16:["Если завтра пойдёт дождь, я не пойду.","Я так устал, что после работы хочу спать."],
+    17:["Я хочу попросить один день отпуска.","Мы примем решение в зависимости от ситуации."],
+    18:["Если только ты согласишься, я пойду.","Эта статья о китайской культуре."],
+    19:["Я сразу узнал его.","Это очень расстроило меня."],
+    20:["Мою камеру унесли.","Только если много практиковаться, результат улучшится."]
+  },
+  tj:{
+    fallback:["Ман имрӯз калимаҳои навро омӯхтам.","Ин грамматика барои ман муҳим аст."],
+    1:["Ман рӯзи истироҳат вазифаи хонагиро иҷро мекунам.","Харитаро оварданро фаромӯш накунед."],
+    2:["Ӯ ба офис баргашт.","Ин савол барои ман душвор нест."],
+    3:["Дар рӯи миз нӯшокиҳои зиёд истодаанд.","Ту чой менӯшӣ ё об?"],
+    4:["Ӯ бо табассум ҷавоб дод.","Ин донишҷӯ ҳам доно ва ҳам меҳнатдӯст аст."],
+    5:["Ҳаво торафт сард шуда истодааст.","Ман вақтҳои охир шамол хӯрдам."],
+    6:["Ман айнакамро ёфта наметавонам.","Ӯ хеле тез гап мезанад, ман равшан шунида наметавонам."],
+    7:["Ман се сол забони чиниро омӯхтам.","Ман ба фарҳанги Чин шавқ дорам."],
+    8:["Ту ба куҷо равӣ, ман ҳам ба ҳамон ҷо меравам.","Ман фавран ба ҳоҷатхона меравам."],
+    9:["Ӯ ба чинӣ мисли чиниҳо хуб гап мезанад.","Ҳар қадар бештар омӯзам, ҳамон қадар ҷолибтар мешавад."],
+    10:["Математика аз таърих хеле душвортар аст.","Хонаи ман ба метро наздик аст."],
+    11:["Хомӯш кардани кондитсионерро фаромӯш накунед.","Ман аз китобхона луғат гирифтам."],
+    12:["Чизҳои муҳимро ба рӯи миз гузоред.","Ронанда ҷомадонро ба мошин гузошт."],
+    13:["Ман пиёда баргаштам.","Ӯ ҳангоми хӯрок хӯрдан телефон тамошо мекунад."],
+    14:["Меваҳоро ин ҷо биёред.","Аввал ҳуҷраро тоза кунед, баъд душ гиред."],
+    15:["Ғайр аз забони чинӣ, ман англисиро ҳам меомӯзам.","Иди имрӯза хеле ҷолиб аст."],
+    16:["Агар пагоҳ борон борад, ман намеравам.","Ман чунон хастаам, ки баъд аз кор хоб рафтан мехоҳам."],
+    17:["Ман мехоҳам як рӯз рухсатӣ пурсам.","Мо вобаста ба вазъият қарор мекунем."],
+    18:["Танҳо агар ту розӣ шавӣ, ман меравам.","Ин мақола дар бораи фарҳанги Чин аст."],
+    19:["Ман ӯро фавран шинохтам.","Ин чиз маро хеле ғамгин кард."],
+    20:["Камераи маро бурданд.","Танҳо агар бисёр машқ кунӣ, натиҷаат беҳтар мешавад."]
+  }
+};
+function getLessonGrammar(lessonId){
+  if(miniLessonData?.grammar?.length)return miniLessonData.grammar;
+  const title=`Dars ${lessonId}`;
+  return GRAMMAR.filter(g=>String(g.l).includes(title));
+}
+function getTranslationTasks(lessonId){
+  const bank=TRANSLATION_BANK_I18N[uiLang]||TRANSLATION_BANK_I18N.uz;
+  const tasks=bank[lessonId]||bank.fallback||TRANSLATION_BANK_I18N.uz.fallback;
+  return tasks.map(x=>String(x||'').trim()).filter(Boolean);
+}
+function renderHomework(){
+  const lessonId=initialLesson;
+  const les=LESSONS.find(x=>x.n===lessonId);
+  const words=miniLessonData?.vocabulary?.length
+    ? miniLessonData.vocabulary.slice(0,8).map(w=>({h:w.zh,p:w.pinyin,m:w.meaning}))
+    : VOCAB.filter(v=>v.l===lessonId).slice(0,8);
+  const grams=getLessonGrammar(lessonId);
+  document.getElementById('hw-page-title').textContent=tt('homeworkTitle',{lesson:miniLessonLabel()});
+  document.getElementById('hw-page-sub').textContent=tt('homeworkSub');
+  document.getElementById('hw-lesson-note').innerHTML=tt('note',{lesson:miniLessonLabel()});
+  const cards=document.querySelectorAll('#p-homework .hw-card');
+  if(cards[0]){cards[0].querySelector('.hw-title').textContent=tt('vocabTitle');cards[0].querySelector('.hw-help').textContent=tt('vocabHelp');}
+  if(cards[1]){cards[1].querySelector('.hw-title').textContent=tt('grammarTitle');cards[1].querySelector('.hw-help').textContent=tt('grammarHelp');}
+  if(cards[2]){cards[2].querySelector('.hw-title').textContent=tt('translationTitle');cards[2].querySelector('.hw-help').textContent=tt('translationHelp');}
+  document.getElementById('hw-submit-btn').textContent=tt('submit');
+  document.getElementById('hw-return-btn').textContent=tt('return');
+  document.getElementById('hw-vocab-answer').placeholder=tt('vocabPlaceholder');
+  document.getElementById('hw-grammar-answer').placeholder=tt('grammarPlaceholder');
+  document.getElementById('hw-translation-answer').placeholder=tt('translationPlaceholder');
+  document.getElementById('hw-vocab-task').innerHTML=words.map(w=>`<span style="display:inline-block;margin:2px 6px 2px 0;padding:3px 8px;border:1px solid var(--border);border-radius:20px;color:var(--accent);background:var(--accent-dim);">${w.h} · ${w.p}</span>`).join('');
+  document.getElementById('hw-grammar-task').innerHTML=grams.length
+    ? grams.map(g=>`<div style="margin-bottom:8px;"><b>${g.title||g.t}</b><br><span style="color:var(--accent);font-family:var(--mono);">${g.formula||g.f||''}</span></div>`).join('')
+    : (les?.g||[]).map(g=>`<div style="margin-bottom:6px;">• ${g}</div>`).join('');
+  const tasks=getTranslationTasks(lessonId);
+  document.getElementById('hw-translation-task').innerHTML=tasks.map((x,i)=>`<div>${i+1}. ${x}</div>`).join('');
+}
+function submitHomework(){
+  const answers={
+    vocab_sentences:document.getElementById('hw-vocab-answer').value.trim(),
+    grammar_sentences:document.getElementById('hw-grammar-answer').value.trim(),
+    translations:document.getElementById('hw-translation-answer').value.trim()
+  };
+  const status=document.getElementById('hw-status');
+  if(!answers.vocab_sentences||!answers.grammar_sentences||!answers.translations){
+    status.className='hw-status show no';
+    status.textContent=tt('fillAll');
+    return;
+  }
+  reportEvent("homework_submitted",{
+    lesson_id:initialLesson,
+    block_no:miniLessonData?.block_no||initialBlock||null,
+    answers,
+    submitted_at:new Date().toISOString()
+  });
+  try{
+    const key='hsk4_homework_submissions';
+    const old=JSON.parse(localStorage.getItem(key)||'[]');
+    old.push({lesson_id:initialLesson,answers,submitted_at:new Date().toISOString()});
+    localStorage.setItem(key,JSON.stringify(old));
+  }catch(e){}
+  status.className='hw-status show ok';
+  status.textContent=tt('sent');
+  document.getElementById('hw-submit-btn').style.display='none';
+  document.getElementById('hw-return-btn').style.display='flex';
+}
+
+// ===== INIT =====
+(async function init(){
+  await flushPendingEvents();
+  if(miniMode){
+    document.body.classList.add('mini-mode');
+    S.qFilter=initialLesson;
+    save();
+    await loadMiniLessonData();
+    if(mode==='quiz'){
+      showOnlyPage('quiz');
+      buildQuizFilters();
+      document.querySelector('#p-quiz .page-title').textContent=tt('quizTitle',{lesson:miniLessonLabel()});
+      document.querySelector('#p-quiz .page-sub').textContent=tt('quizSub');
+      document.querySelector('#quiz-score-box .btn-primary').textContent=tt('restart');
+      startQuiz();
+    }else if(mode==='homework'){
+      showOnlyPage('homework');
+      renderHomework();
+    }
+  }else{
+    buildFCFilters();
+    buildQuizFilters();
+    renderLessons();
+    renderGram();
+    updateStats();
+    if(initialLesson){
+      const fcBtns=document.querySelectorAll('#fc-filters .ftab');
+      fcBtns.forEach(b=>b.classList.remove('active'));
+      if(fcBtns[initialLesson+1])fcBtns[initialLesson+1].classList.add('active');
+    }
+    startQuiz();
+  }
+})();
+</script>
+</body>
+</html>

@@ -1389,7 +1389,7 @@ async def admin_upload_audio_handler(message: Message, session):
 
     Caption (podpis) ga yozing:  hsk1 1 dialogue_1
     Format:  {level} {lesson_order} {audio_type}
-    audio_type:  vocab | dialogue_1 | dialogue_2 | dialogue_3 | dialogue_4
+    audio_type:  vocab | dialogue_1 | dialogue_2 | ...
 
     Misol caption:
       hsk1 1 vocab

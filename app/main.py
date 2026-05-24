@@ -116,6 +116,11 @@ async def hsk3_miniapp():
     return FileResponse("app/static/hsk3.html")
 
 
+@app.get("/hsk4.html")
+async def hsk4_miniapp():
+    return FileResponse("app/static/hsk4.html")
+
+
 @app.get("/hsk1.html")
 async def hsk1_miniapp():
     return FileResponse("app/static/hsk1.html")
