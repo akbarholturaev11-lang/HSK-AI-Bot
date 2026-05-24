@@ -7,6 +7,7 @@ import json
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import (
     CourseEngineService,
+    get_next_course_level,
     get_block_no_from_step,
     get_step_order,
     is_block_grammar_step,
@@ -30,6 +31,7 @@ from app.bot.keyboards.course_context import (
     course_review_offer_keyboard,
     course_satisfaction_keyboard,
     course_homework_keyboard as _ctx_homework_keyboard,
+    course_level_upgrade_keyboard,
     course_next_lesson_keyboard,
 )
 from app.bot.keyboards.course_miniapp import (
@@ -116,7 +118,58 @@ def _lesson_selection_markup(lessons: list, resolved_level: str, lang: str):
     return lesson_selection_keyboard(lessons, page=0, lang=lang)
 
 
-async def send_course_completion_prompt(*, respond, engine: CourseEngineService, lesson, lang: str) -> None:
+def _course_level_label(level: str | None) -> str:
+    normalized = (level or "").strip().lower()
+    if normalized.startswith("hsk") and len(normalized) > 3:
+        return f"HSK {normalized[3:]}"
+    if normalized == "beginner":
+        return "HSK 1"
+    return (level or "HSK").upper()
+
+
+def _course_days_since(created_at) -> int:
+    if not created_at:
+        return 1
+    created = created_at
+    if not created.tzinfo:
+        created = created.replace(tzinfo=timezone.utc)
+    return max(1, (datetime.now(timezone.utc) - created).days)
+
+
+async def _format_level_completion_text(
+    *,
+    session,
+    progress,
+    lesson,
+    lang: str,
+) -> str:
+    completed_order = max(
+        getattr(progress, "completed_lessons_count", 0) or 0,
+        getattr(lesson, "lesson_order", 0) or 0,
+    )
+    summary = await CourseProgressSummaryService(session).summarize_completed_range(
+        progress,
+        end_at=completed_order,
+    )
+    return t(
+        "course_level_completed_text",
+        lang,
+        level=_course_level_label(getattr(lesson, "level", None)),
+        lessons=summary["lessons"] or completed_order,
+        vocab=summary["vocab"],
+        dialogues=summary["dialogues"],
+        days=_course_days_since(getattr(progress, "created_at", None)),
+    )
+
+
+async def send_course_completion_prompt(
+    *,
+    respond,
+    engine: CourseEngineService,
+    lesson,
+    lang: str,
+    progress=None,
+) -> None:
     next_lesson = await engine.lesson_repo.get_next_lesson(
         level=lesson.level,
         lesson_order=lesson.lesson_order,
@@ -127,7 +180,43 @@ async def send_course_completion_prompt(*, respond, engine: CourseEngineService,
             reply_markup=course_next_lesson_keyboard(lang),
         )
     else:
-        await respond(t("course_completed_title", lang))
+        if progress is not None:
+            await respond(
+                await _format_level_completion_text(
+                    session=engine.session,
+                    progress=progress,
+                    lesson=lesson,
+                    lang=lang,
+                ),
+                parse_mode="HTML",
+            )
+        else:
+            await respond(t("course_completed_title", lang))
+
+        next_level = get_next_course_level(lesson.level)
+        next_level_first_lesson = (
+            await engine.lesson_repo.get_first_by_level(next_level)
+            if next_level
+            else None
+        )
+        if next_level and next_level_first_lesson:
+            await respond(
+                t(
+                    "course_next_level_offer",
+                    lang,
+                    next_level=_course_level_label(next_level),
+                ),
+                reply_markup=course_level_upgrade_keyboard(lang),
+                parse_mode="HTML",
+            )
+        else:
+            await respond(
+                t(
+                    "course_no_next_level_available" if next_level else "course_all_levels_completed",
+                    lang,
+                ),
+                parse_mode="HTML",
+            )
 
 
 def _format_homework_text(lang: str, homework_raw) -> str:
@@ -452,6 +541,7 @@ async def run_course_entry_flow(
                     engine=engine,
                     lesson=l2,
                     lang=lang,
+                    progress=p2,
                 )
         return
 
@@ -474,6 +564,7 @@ async def run_course_entry_flow(
                 engine=engine,
                 lesson=lesson,
                 lang=lang,
+                progress=progress,
             )
         else:
             await respond(t("course_completed_title", lang))
@@ -630,6 +721,7 @@ async def course_review_yes_handler(callback: CallbackQuery, session):
             engine=engine,
             lesson=lesson,
             lang=lang,
+            progress=progress,
         )
         return
 
@@ -690,7 +782,13 @@ async def course_review_no_handler(callback: CallbackQuery, session):
 
     if not next_lesson:
         await callback.answer()
-        await callback.message.answer(t("course_completed_title", lang))
+        await send_course_completion_prompt(
+            respond=callback.message.answer,
+            engine=engine,
+            lesson=lesson,
+            lang=lang,
+            progress=progress,
+        )
         return
 
     text = format_intro(next_lesson, lang)
@@ -996,7 +1094,13 @@ async def course_start_next_lesson_handler(callback: CallbackQuery, session):
 
     if not next_lesson:
         await callback.answer()
-        await callback.message.answer(t("course_completed_title", lang))
+        await send_course_completion_prompt(
+            respond=callback.message.answer,
+            engine=engine,
+            lesson=lesson,
+            lang=lang,
+            progress=progress,
+        )
         return
 
     await callback.answer()
@@ -1004,6 +1108,71 @@ async def course_start_next_lesson_handler(callback: CallbackQuery, session):
         session=session,
         telegram_id=callback.from_user.id,
         respond=callback.message.answer,
+    )
+
+
+@router.callback_query(F.data == "course:level_upgrade_yes")
+async def course_level_upgrade_yes_handler(callback: CallbackQuery, session):
+    if await _block_if_course_disabled(callback, session):
+        return
+
+    user_repo = UserRepository(session)
+    engine = CourseEngineService(session)
+
+    user = await user_repo.get_by_telegram_id(callback.from_user.id)
+    if not user:
+        await callback.answer()
+        await callback.message.answer(t("access_start_first", "ru"))
+        return
+
+    lang = user.language if user.language else "ru"
+
+    user, progress, _completed_lesson, next_lesson, error_key = await engine.advance_to_next_level(callback.from_user.id)
+    if error_key:
+        await callback.answer()
+        await callback.message.answer(t(error_key, lang))
+        return
+
+    await callback.answer()
+    await callback.message.answer(
+        t("course_level_upgraded", lang, level=_course_level_label(next_lesson.level)),
+        parse_mode="HTML",
+    )
+    await callback.message.answer(
+        format_intro(next_lesson, lang),
+        reply_markup=course_intro_keyboard(lang),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(F.data == "course:level_upgrade_no")
+async def course_level_upgrade_no_handler(callback: CallbackQuery, session):
+    if await _block_if_course_disabled(callback, session):
+        return
+
+    user_repo = UserRepository(session)
+    engine = CourseEngineService(session)
+
+    user = await user_repo.get_by_telegram_id(callback.from_user.id)
+    if not user:
+        await callback.answer()
+        await callback.message.answer(t("access_start_first", "ru"))
+        return
+
+    lang = user.language if user.language else "ru"
+
+    _, _progress, lesson, error_key = await engine.complete_current_lesson_once(callback.from_user.id)
+    if error_key:
+        await callback.answer()
+        await callback.message.answer(t(error_key, lang))
+        return
+
+    lessons = await engine.lesson_repo.list_by_level(lesson.level)
+    await callback.answer()
+    await callback.message.answer(
+        t("course_level_upgrade_declined", lang, level=_course_level_label(lesson.level)),
+        reply_markup=_lesson_selection_markup(lessons, lesson.level, lang),
+        parse_mode="HTML",
     )
 
 
@@ -1244,6 +1413,7 @@ async def _finish_study_time_flow(callback: CallbackQuery, session, saved_text: 
             engine=engine,
             lesson=lesson,
             lang=lang,
+            progress=progress,
         )
 
 

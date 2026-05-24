@@ -105,3 +105,20 @@ def course_next_lesson_keyboard(lang: str) -> InlineKeyboardMarkup:
             ],
         ]
     )
+
+
+def course_level_upgrade_keyboard(lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=t("course_next_level_yes", lang),
+                    callback_data="course:level_upgrade_yes",
+                ),
+                InlineKeyboardButton(
+                    text=t("course_next_level_no", lang),
+                    callback_data="course:level_upgrade_no",
+                ),
+            ],
+        ]
+    )

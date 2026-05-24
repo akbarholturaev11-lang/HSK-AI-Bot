@@ -40,7 +40,22 @@ COURSE_STEP_ORDER_V2_BASE = [
 # Backward compat alias
 COURSE_STEP_ORDER = COURSE_STEP_ORDER_V1
 
+COURSE_LEVEL_ORDER = ("hsk1", "hsk2", "hsk3", "hsk4")
+
 BLOCK_STEP_PREFIXES = ("block_vocab_", "block_grammar_", "block_quiz_")
+
+
+def get_next_course_level(level: str | None) -> str | None:
+    normalized = (level or "").strip().lower()
+    if normalized == "beginner":
+        normalized = "hsk1"
+    try:
+        idx = COURSE_LEVEL_ORDER.index(normalized)
+    except ValueError:
+        return None
+    if idx >= len(COURSE_LEVEL_ORDER) - 1:
+        return None
+    return COURSE_LEVEL_ORDER[idx + 1]
 
 
 def _parse_json(value, default):
@@ -221,6 +236,25 @@ class CourseEngineService:
             "hsk4": ("hsk4", "hsk3", "hsk2", "hsk1"),
         }
         return fallback_map.get(normalized, ("hsk1",))
+
+    def _is_lesson_already_counted(self, progress, lesson) -> bool:
+        completed_count = getattr(progress, "completed_lessons_count", 0) or 0
+        if getattr(progress, "last_completed_lesson_id", None) == getattr(lesson, "id", None):
+            return True
+        return completed_count >= (getattr(lesson, "lesson_order", 0) or 0)
+
+    async def _mark_current_lesson_completed_once(self, progress, lesson) -> None:
+        if self._is_lesson_already_counted(progress, lesson):
+            progress.current_step = "completed"
+            progress.waiting_for = "none"
+            progress.homework_status = "completed"
+            completed_count = getattr(progress, "completed_lessons_count", 0) or 0
+            if not getattr(progress, "last_completed_lesson_id", None) and completed_count == lesson.lesson_order:
+                progress.last_completed_lesson_id = lesson.id
+            await self.session.flush()
+            return
+
+        await self.progress_repo.mark_lesson_completed(progress)
 
     async def get_or_create_progress(self, telegram_id: int):
         user = await self.user_repo.get_by_telegram_id(telegram_id)
@@ -563,10 +597,11 @@ class CourseEngineService:
             level=lesson.level,
             lesson_order=lesson.lesson_order,
         )
+        await self._mark_current_lesson_completed_once(progress, lesson)
         if not next_lesson:
+            await self.session.commit()
             return user, progress, None, "course_no_next_lesson"
 
-        await self.progress_repo.mark_lesson_completed(progress)
         await self.progress_repo.set_current_lesson_and_step(
             progress=progress,
             lesson_id=next_lesson.id,
@@ -602,7 +637,7 @@ class CourseEngineService:
             lesson_order=current_order,
         )
 
-        await self.progress_repo.mark_lesson_completed(progress)
+        await self._mark_current_lesson_completed_once(progress, lesson)
 
         await self.progress_repo.set_current_lesson_and_step(
             progress=progress,
@@ -614,6 +649,46 @@ class CourseEngineService:
         if next_lesson:
             await self.progress_repo.set_homework_status(progress, "none")
 
+        await self.session.commit()
+
+        return user, progress, lesson, next_lesson, ""
+
+    async def complete_current_lesson_once(self, telegram_id: int):
+        user, progress, lesson, error_key = await self.get_current_lesson(telegram_id)
+        if error_key:
+            return None, None, None, error_key
+
+        await self._mark_current_lesson_completed_once(progress, lesson)
+        await self.session.commit()
+        return user, progress, lesson, ""
+
+    async def advance_to_next_level(self, telegram_id: int):
+        user, progress, lesson, error_key = await self.get_current_lesson(telegram_id)
+        if error_key:
+            return None, None, None, None, error_key
+
+        next_level = get_next_course_level(lesson.level)
+        if not next_level:
+            return user, progress, lesson, None, "course_no_next_level_available"
+
+        next_lesson = await self.lesson_repo.get_first_by_level(next_level)
+        if not next_lesson:
+            return user, progress, lesson, None, "course_no_lessons_available"
+
+        await self._mark_current_lesson_completed_once(progress, lesson)
+
+        user.level = next_level
+        progress.level = next_level
+        progress.completed_lessons_count = 0
+        progress.current_lesson_id = next_lesson.id
+        progress.current_step = "intro"
+        progress.waiting_for = "none"
+        progress.homework_status = "none"
+        progress.needs_review_prompt = False
+        progress.next_study_at = None
+        progress.weekly_progress_baseline_lessons_count = 0
+
+        await self.session.flush()
         await self.session.commit()
 
         return user, progress, lesson, next_lesson, ""

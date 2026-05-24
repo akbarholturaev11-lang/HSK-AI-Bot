@@ -12,6 +12,14 @@ from app.services.access_service import AccessService
 
 QA_MODEL = "gpt-4o-mini"
 QA_MAX_COMPLETION_TOKENS = 900
+ONBOARDING_OPTIONAL_CHALLENGE_RULE = (
+    "IMPORTANT: This onboarding challenge is optional. Do not require the user "
+    "to complete it. If the user's current message is not a clear attempt at "
+    "the challenge, ignore this context and answer normally. If it is a clear "
+    "attempt, evaluate it kindly; correct mistakes if needed. If it is correct, "
+    "praise briefly and offer one short next optional mini-challenge. Keep the "
+    "user engaged without pressure."
+)
 
 
 class QAService:
@@ -79,7 +87,11 @@ class QAService:
                 0,
                 {
                     "role": "user",
-                    "content": f"[Context for this conversation: {onboarding_challenge.content}]",
+                    "content": (
+                        "[Optional onboarding challenge context]\n"
+                        f"{ONBOARDING_OPTIONAL_CHALLENGE_RULE}\n\n"
+                        f"Challenge details: {onboarding_challenge.content}"
+                    ),
                 },
             )
 

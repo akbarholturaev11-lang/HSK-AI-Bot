@@ -449,7 +449,7 @@ class CourseMiniAppLessonService:
     async def get_payload(self, lesson_order: int, lang: str, level: str = "hsk3", block_no: int | None = None) -> dict | None:
         lang = normalize_miniapp_lang(lang)
         level = (level or "hsk3").strip().lower()
-        if level not in {"hsk1", "hsk2", "hsk3"}:
+        if level not in {"hsk1", "hsk2", "hsk3", "hsk4"}:
             level = "hsk3"
         result = await self.session.execute(
             select(CourseLesson)

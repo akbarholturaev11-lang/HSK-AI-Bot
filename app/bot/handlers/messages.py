@@ -1008,6 +1008,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 engine=engine,
                 lesson=lesson,
                 lang=user_lang,
+                progress=progress,
             )
             return
 
@@ -1144,7 +1145,16 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             if isinstance(result, dict) and result.get("passed"):
                 _, _, next_lesson, next_error = await engine.activate_next_lesson(message.from_user.id)
                 if next_error == "course_no_next_lesson":
-                    await message.answer(t("course_completed_title", user_lang))
+                    _, refreshed_progress, refreshed_lesson, refreshed_error = await engine.get_current_lesson(
+                        message.from_user.id
+                    )
+                    await send_course_completion_prompt(
+                        respond=message.answer,
+                        engine=engine,
+                        lesson=refreshed_lesson if not refreshed_error else lesson,
+                        lang=user_lang,
+                        progress=refreshed_progress if not refreshed_error else progress,
+                    )
                     return
                 if next_error:
                     await message.answer(t(next_error, user_lang))
@@ -1191,6 +1201,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                         engine=engine,
                         lesson=rl,
                         lang=user_lang,
+                        progress=rp,
                     )
             return
 

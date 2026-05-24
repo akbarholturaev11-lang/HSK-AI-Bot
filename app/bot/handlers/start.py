@@ -14,6 +14,20 @@ from app.bot.fsm.onboarding import OnboardingStates
 router = Router()
 
 
+_OPTIONAL_CHALLENGE_CONTEXT_RULE = (
+    "This mini-challenge is optional. If the user's next message is a clear "
+    "attempt, evaluate it kindly and correctly. If there are mistakes, explain "
+    "them briefly and show the correct version. If it is correct, praise briefly "
+    "and offer one short next optional mini-challenge. If the next message is "
+    "not a clear attempt, ignore the challenge and answer the user's actual "
+    "message normally. Never pressure the user to complete the challenge."
+)
+
+
+def _challenge_context(base: str) -> str:
+    return f"{base} {_OPTIONAL_CHALLENGE_CONTEXT_RULE}"
+
+
 @router.message(CommandStart())
 async def cmd_start(
     message: Message,
@@ -97,28 +111,34 @@ def _get_demo_lesson(level: str, lang: str) -> tuple:
                 "🎮 <b>Омода-ед? Бозӣ мекунем!</b>\n\n"
                 "Ман ба шумо 3 калима медиҳам:\n\n"
                 "✨ <b>你好</b> · <b>谢谢</b> · <b>再见</b>\n\n"
-                "Аз ин калимаҳо як ҷумла созед — хато ҳам бошад, бот тасҳеҳ мекунад 😄",
-                "The user just started learning Chinese (beginner level). "
-                "You gave them a challenge: make a sentence using 你好, 谢谢, 再见. "
-                "Their next message is their attempt. Encourage them, correct gently, explain the words."
+                "Агар хоҳед, аз ин калимаҳо як ҷумла созед. Нависед — бот месанҷад; нахоҳед, саволи худро диҳед 😄",
+                _challenge_context(
+                    "The user just started learning Chinese (beginner level). "
+                    "You offered an optional mini-challenge: make a sentence using 你好, 谢谢, 再见. "
+                    "Encourage them, correct gently, and explain the words when they attempt it."
+                )
             ),
             "uz": (
                 "🎮 <b>Tayyor bo'ldingizmi? O'yin boshlanadi!</b>\n\n"
                 "Sizga 3 ta so'z beraman:\n\n"
                 "✨ <b>你好</b> · <b>谢谢</b> · <b>再见</b>\n\n"
-                "Shu so'zlardan bitta gap tuzing — xato bo'lsa ham, bot tuzatadi 😄",
-                "The user just started learning Chinese (beginner level). "
-                "You gave them a challenge: make a sentence using 你好, 谢谢, 再见. "
-                "Their next message is their attempt. Encourage them, correct gently, explain the words."
+                "Xohlasangiz, shu so'zlardan bitta gap tuzing. Yozsangiz, bot tekshiradi; xohlamasangiz, oddiy savol bering 😄",
+                _challenge_context(
+                    "The user just started learning Chinese (beginner level). "
+                    "You offered an optional mini-challenge: make a sentence using 你好, 谢谢, 再见. "
+                    "Encourage them, correct gently, and explain the words when they attempt it."
+                )
             ),
             "ru": (
                 "🎮 <b>Готовы? Начинаем игру!</b>\n\n"
                 "Даю вам 3 слова:\n\n"
                 "✨ <b>你好</b> · <b>谢谢</b> · <b>再见</b>\n\n"
-                "Составьте из них предложение — ошибки не страшны, бот поправит 😄",
-                "The user just started learning Chinese (beginner level). "
-                "You gave them a challenge: make a sentence using 你好, 谢谢, 再见. "
-                "Their next message is their attempt. Encourage them, correct gently, explain the words."
+                "Если хотите, составьте из них одно предложение. Напишете — бот проверит; не хотите — задайте любой вопрос 😄",
+                _challenge_context(
+                    "The user just started learning Chinese (beginner level). "
+                    "You offered an optional mini-challenge: make a sentence using 你好, 谢谢, 再见. "
+                    "Encourage them, correct gently, and explain the words when they attempt it."
+                )
             ),
         },
         "hsk1": {
@@ -126,28 +146,34 @@ def _get_demo_lesson(level: str, lang: str) -> tuple:
                 "🎯 <b>HSK1 — Мушкилӣ дорад!</b>\n\n"
                 "Ин 3 рақамро хонед:\n\n"
                 "🔢 <b>三</b> · <b>十</b> · <b>百</b>\n\n"
-                "Ҷумлае бо рақамҳо бисозед — масалан синнатон ё шумораи чизе 🕵️",
-                "The user is HSK1 level. You gave them a challenge: "
-                "make a sentence using Chinese numbers 三(3), 十(10), 百(100). "
-                "Their next message is their attempt. Correct and encourage."
+                "Агар хоҳед, бо рақамҳо як ҷумла бисозед — масалан синнатон ё шумораи чизе. Нависед — месанҷам 🕵️",
+                _challenge_context(
+                    "The user is HSK1 level. You offered an optional mini-challenge: "
+                    "make a sentence using Chinese numbers 三(3), 十(10), 百(100). "
+                    "Correct and encourage when they attempt it."
+                )
             ),
             "uz": (
                 "🎯 <b>HSK1 — Qiyin emas!</b>\n\n"
                 "Bu 3 raqamni o'qing:\n\n"
                 "🔢 <b>三</b> · <b>十</b> · <b>百</b>\n\n"
-                "Raqamlar bilan gap tuzing — masalan yoshingiz yoki biror narsa soni 🕵️",
-                "The user is HSK1 level. You gave them a challenge: "
-                "make a sentence using Chinese numbers 三(3), 十(10), 百(100). "
-                "Their next message is their attempt. Correct and encourage."
+                "Xohlasangiz, raqamlar bilan gap tuzing — masalan yoshingiz yoki biror narsa soni. Yozsangiz, tekshiraman 🕵️",
+                _challenge_context(
+                    "The user is HSK1 level. You offered an optional mini-challenge: "
+                    "make a sentence using Chinese numbers 三(3), 十(10), 百(100). "
+                    "Correct and encourage when they attempt it."
+                )
             ),
             "ru": (
                 "🎯 <b>HSK1 — Это несложно!</b>\n\n"
                 "Прочитайте эти 3 числа:\n\n"
                 "🔢 <b>三</b> · <b>十</b> · <b>百</b>\n\n"
-                "Составьте предложение с числами — например ваш возраст или количество чего-то 🕵️",
-                "The user is HSK1 level. You gave them a challenge: "
-                "make a sentence using Chinese numbers 三(3), 十(10), 百(100). "
-                "Their next message is their attempt. Correct and encourage."
+                "Если хотите, составьте предложение с числами — например ваш возраст или количество чего-то. Напишете — проверю 🕵️",
+                _challenge_context(
+                    "The user is HSK1 level. You offered an optional mini-challenge: "
+                    "make a sentence using Chinese numbers 三(3), 十(10), 百(100). "
+                    "Correct and encourage when they attempt it."
+                )
             ),
         },
         "hsk2": {
@@ -155,31 +181,34 @@ def _get_demo_lesson(level: str, lang: str) -> tuple:
                 "🕵️ <b>HSK2 — Сир нигоҳ доред!</b>\n\n"
                 "Дар ин ҷумла як иборае пинҳон аст:\n\n"
                 "🇨🇳 <b>高兴 · 认识 · 你</b>\n\n"
-                "Ин калимаҳоро дар як ҷумла ҷамъ кунед — ибораи машҳур ҳосил мешавад 😏",
-                "The user is HSK2 level. You gave them a challenge: "
-                "combine 高兴(happy), 认识(meet/know), 你(you) into a sentence. "
-                "The hidden phrase is 很高兴认识你. Their next message is their attempt. "
-                "Reveal the famous phrase if they get close, explain it warmly."
+                "Агар хоҳед, онҳоро дар як ҷумла ҷамъ кунед — шояд ибораи машҳур пайдо шавад. Нависед — месанҷам 😏",
+                _challenge_context(
+                    "The user is HSK2 level. You offered an optional mini-challenge: "
+                    "combine 高兴(happy), 认识(meet/know), 你(you) into a sentence. "
+                    "The hidden phrase is 很高兴认识你. Reveal it if they get close, explain it warmly."
+                )
             ),
             "uz": (
                 "🕵️ <b>HSK2 — Sir saqlang!</b>\n\n"
                 "Bu so'zlarda mashhur ibora yashiringan:\n\n"
                 "🇨🇳 <b>高兴 · 认识 · 你</b>\n\n"
-                "Ulardan gap tuzing — nima hosil bo'lishini ko'ramiz 😏",
-                "The user is HSK2 level. You gave them a challenge: "
-                "combine 高兴(happy), 认识(meet/know), 你(you) into a sentence. "
-                "The hidden phrase is 很高兴认识你. Their next message is their attempt. "
-                "Reveal the famous phrase if they get close, explain it warmly."
+                "Xohlasangiz, ulardan gap tuzing — nima hosil bo'lishini ko'ramiz. Yozsangiz, tekshiraman 😏",
+                _challenge_context(
+                    "The user is HSK2 level. You offered an optional mini-challenge: "
+                    "combine 高兴(happy), 认识(meet/know), 你(you) into a sentence. "
+                    "The hidden phrase is 很高兴认识你. Reveal it if they get close, explain it warmly."
+                )
             ),
             "ru": (
                 "🕵️ <b>HSK2 — Держите в тайне!</b>\n\n"
                 "В этих словах спрятана знаменитая фраза:\n\n"
                 "🇨🇳 <b>高兴 · 认识 · 你</b>\n\n"
-                "Составьте из них предложение — посмотрим что получится 😏",
-                "The user is HSK2 level. You gave them a challenge: "
-                "combine 高兴(happy), 认识(meet/know), 你(you) into a sentence. "
-                "The hidden phrase is 很高兴认识你. Their next message is their attempt. "
-                "Reveal the famous phrase if they get close, explain it warmly."
+                "Если хотите, составьте из них предложение — посмотрим, что получится. Напишете — проверю 😏",
+                _challenge_context(
+                    "The user is HSK2 level. You offered an optional mini-challenge: "
+                    "combine 高兴(happy), 认识(meet/know), 你(you) into a sentence. "
+                    "The hidden phrase is 很高兴认识你. Reveal it if they get close, explain it warmly."
+                )
             ),
         },
         "hsk3": {
@@ -187,28 +216,34 @@ def _get_demo_lesson(level: str, lang: str) -> tuple:
                 "🔥 <b>HSK3 — Имтиҳони зудӣ!</b>\n\n"
                 "Ин ҷумларо тарҷума кунед:\n\n"
                 "🇨🇳 <b>你今天心情怎么样？</b>\n\n"
-                "Ҷавобро ба хитоӣ бинависед — ҳеҷ луғат истифода набаред 😤",
-                "The user is HSK3 level. You gave them a challenge: "
-                "translate 你今天心情怎么样 (How are you feeling today?) and answer in Chinese without a dictionary. "
-                "Their next message is their attempt. Evaluate their Chinese, correct errors, praise effort."
+                "Агар хоҳед, ҷавобро ба хитоӣ нависед. Нависед — ман месанҷам ва беҳтар мекунам 😤",
+                _challenge_context(
+                    "The user is HSK3 level. You offered an optional mini-challenge: "
+                    "translate 你今天心情怎么样 (How are you feeling today?) and answer in Chinese. "
+                    "Evaluate their Chinese, correct errors, and praise effort when they attempt it."
+                )
             ),
             "uz": (
                 "🔥 <b>HSK3 — Tezkor imtihon!</b>\n\n"
                 "Bu jumlani tarjima qiling:\n\n"
                 "🇨🇳 <b>你今天心情怎么样？</b>\n\n"
-                "Javobni xitoycha yozing — lug'atsiz 😤",
-                "The user is HSK3 level. You gave them a challenge: "
-                "translate 你今天心情怎么样 (How are you feeling today?) and answer in Chinese without a dictionary. "
-                "Their next message is their attempt. Evaluate their Chinese, correct errors, praise effort."
+                "Xohlasangiz, javobni xitoycha yozing. Yozsangiz, tekshiraman va yaxshilab beraman 😤",
+                _challenge_context(
+                    "The user is HSK3 level. You offered an optional mini-challenge: "
+                    "translate 你今天心情怎么样 (How are you feeling today?) and answer in Chinese. "
+                    "Evaluate their Chinese, correct errors, and praise effort when they attempt it."
+                )
             ),
             "ru": (
                 "🔥 <b>HSK3 — Быстрый тест!</b>\n\n"
                 "Переведите это предложение:\n\n"
                 "🇨🇳 <b>你今天心情怎么样？</b>\n\n"
-                "Ответьте по-китайски — без словаря 😤",
-                "The user is HSK3 level. You gave them a challenge: "
-                "translate 你今天心情怎么样 (How are you feeling today?) and answer in Chinese without a dictionary. "
-                "Their next message is their attempt. Evaluate their Chinese, correct errors, praise effort."
+                "Если хотите, ответьте по-китайски. Напишете — проверю и улучшу ответ 😤",
+                _challenge_context(
+                    "The user is HSK3 level. You offered an optional mini-challenge: "
+                    "translate 你今天心情怎么样 (How are you feeling today?) and answer in Chinese. "
+                    "Evaluate their Chinese, correct errors, and praise effort when they attempt it."
+                )
             ),
         },
         "hsk4": {
@@ -216,28 +251,34 @@ def _get_demo_lesson(level: str, lang: str) -> tuple:
                 "⚡ <b>HSK4 — Устодро санҷем!</b>\n\n"
                 "Ин ибораро дар як ҷумлаи мураккаб истифода баред:\n\n"
                 "🇨🇳 <b>虽然...但是...</b>\n\n"
-                "Ҳарчи мавзуъ — аз зиндагии худатон мисол оред 🎓",
-                "The user is HSK4 level. You gave them a challenge: "
-                "use the grammar pattern 虽然...但是... (although...but...) in a complex sentence about their life. "
-                "Their next message is their attempt. Analyze grammar deeply, suggest improvements."
+                "Агар хоҳед, онро дар як ҷумла аз ҳаёти худ истифода баред. Нависед — грамматикаро таҳлил мекунам 🎓",
+                _challenge_context(
+                    "The user is HSK4 level. You offered an optional mini-challenge: "
+                    "use the grammar pattern 虽然...但是... (although...but...) in a complex sentence about their life. "
+                    "Analyze grammar deeply and suggest improvements when they attempt it."
+                )
             ),
             "uz": (
                 "⚡ <b>HSK4 — Ustani sinaylik!</b>\n\n"
                 "Bu grammatik konstruktsiyani murakkab gapda ishlating:\n\n"
                 "🇨🇳 <b>虽然...但是...</b>\n\n"
-                "Mavzu istalgan — o'z hayotingizdan misol keltiring 🎓",
-                "The user is HSK4 level. You gave them a challenge: "
-                "use the grammar pattern 虽然...但是... (although...but...) in a complex sentence about their life. "
-                "Their next message is their attempt. Analyze grammar deeply, suggest improvements."
+                "Xohlasangiz, uni o'z hayotingizdan bitta gapda ishlating. Yozsangiz, grammatikasini tahlil qilaman 🎓",
+                _challenge_context(
+                    "The user is HSK4 level. You offered an optional mini-challenge: "
+                    "use the grammar pattern 虽然...但是... (although...but...) in a complex sentence about their life. "
+                    "Analyze grammar deeply and suggest improvements when they attempt it."
+                )
             ),
             "ru": (
                 "⚡ <b>HSK4 — Проверим мастера!</b>\n\n"
                 "Используйте эту конструкцию в сложном предложении:\n\n"
                 "🇨🇳 <b>虽然...但是...</b>\n\n"
-                "Тема любая — возьмите пример из своей жизни 🎓",
-                "The user is HSK4 level. You gave them a challenge: "
-                "use the grammar pattern 虽然...但是... (although...but...) in a complex sentence about their life. "
-                "Their next message is their attempt. Analyze grammar deeply, suggest improvements."
+                "Если хотите, используйте её в одном предложении из своей жизни. Напишете — разберу грамматику 🎓",
+                _challenge_context(
+                    "The user is HSK4 level. You offered an optional mini-challenge: "
+                    "use the grammar pattern 虽然...但是... (although...but...) in a complex sentence about their life. "
+                    "Analyze grammar deeply and suggest improvements when they attempt it."
+                )
             ),
         },
     }
