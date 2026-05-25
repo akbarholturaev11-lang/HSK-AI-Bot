@@ -107,7 +107,9 @@ class DiscountService:
 
         if not campaign or not campaign.is_active:
             return DiscountChoice()
-        if campaign.starts_at > now or campaign.ends_at <= now:
+        # Direct campaign buttons are sent by admin; once a user has that
+        # button, checkout must work even before the configured starts_at.
+        if campaign.ends_at <= now:
             return DiscountChoice()
         if not self._matches_campaign(campaign, user, plan_type, payment_method):
             return DiscountChoice()

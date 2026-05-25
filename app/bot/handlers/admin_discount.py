@@ -1,4 +1,3 @@
-import asyncio
 from datetime import datetime, timedelta, timezone
 from html import escape
 from typing import Optional
@@ -7,7 +6,7 @@ from zoneinfo import ZoneInfo
 from aiogram import F, Router
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
+from aiogram.types import CallbackQuery, Message
 
 from app.config import settings
 from app.bot.fsm.admin_discount import DiscountStates
@@ -15,6 +14,7 @@ from app.bot.keyboards.admin_discount import (
     discount_cancel_keyboard,
     discount_confirm_keyboard,
     discount_duration_keyboard,
+    discount_edit_back_keyboard,
     discount_language_keyboard,
     discount_list_keyboard,
     discount_notify_keyboard,
@@ -26,19 +26,17 @@ from app.bot.keyboards.admin_discount import (
     discount_status_keyboard,
     discount_usage_keyboard,
 )
-from app.bot.utils.discount_formatter import build_admin_discount_block, build_discount_plan_line
-from app.bot.utils.i18n import t
-from app.bot.keyboards.subscription import admin_discount_entry_keyboard
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.user_repo import UserRepository
+from app.services.discount_notification_service import DiscountNotificationService
 from app.services.discount_translation_service import DiscountTranslationService
-from app.services.subscription_price_service import SubscriptionPriceService
 
 router = Router()
 
 ADMIN_TZ = ZoneInfo("Asia/Shanghai")
 _PANEL_CHAT_ID = "discount_panel_chat_id"
 _PANEL_MSG_ID = "discount_panel_msg_id"
+_EDIT_MODE = "discount_edit_mode"
 
 _LABELS = {
     "status": {
@@ -57,10 +55,6 @@ _LABELS = {
 def _is_admin(user_id: int) -> bool:
     admin_ids = [int(x.strip()) for x in settings.ADMIN_IDS.split(",") if x.strip()]
     return user_id in admin_ids
-
-
-def _admin_ids() -> set[int]:
-    return {int(x.strip()) for x in settings.ADMIN_IDS.split(",") if x.strip()}
 
 
 def _none_if_all(value: Optional[str]) -> Optional[str]:
@@ -111,6 +105,10 @@ def _fmt_notify(data: dict) -> str:
     return "Faqat matn"
 
 
+def _cancel_keyboard_for(data: dict):
+    return discount_edit_back_keyboard() if data.get(_EDIT_MODE) else discount_cancel_keyboard()
+
+
 def _wizard_text(data: dict, prompt: str, error: Optional[str] = None) -> str:
     start_at = data.get("starts_at")
     duration_hours = data.get("duration_hours")
@@ -140,51 +138,6 @@ def _wizard_text(data: dict, prompt: str, error: Optional[str] = None) -> str:
     if error:
         lines.extend(["", f"⚠️ {escape(error)}"])
     return "\n".join(lines)
-
-
-def _discount_notify_keyboard(lang: str, campaign_id: Optional[int] = None) -> InlineKeyboardMarkup:
-    return admin_discount_entry_keyboard(lang, campaign_id=campaign_id)
-
-
-async def _plan_price(session, plan_type: str, payment_method: Optional[str]) -> tuple[int, str]:
-    price = await SubscriptionPriceService(session).get_price(payment_method, plan_type)
-    if price:
-        return price.amount, price.currency
-    if payment_method in ("alipay", "wechat"):
-        return (66 if plan_type == "1_month" else 29), "¥"
-    return (89 if plan_type == "1_month" else 29), "somoni"
-
-
-async def _discount_plan_lines(session, data: dict, lang: str, payment_method: Optional[str]) -> str:
-    plans = [data["plan_type"]] if data.get("plan_type") else ["10_days", "1_month"]
-    lines = []
-    for plan in plans:
-        base, currency = await _plan_price(session, plan, payment_method)
-        lines.append(
-            build_discount_plan_line(
-                lang=lang,
-                plan=plan,
-                base=base,
-                currency=currency,
-                percent=data["percent"],
-            )
-        )
-    return "\n".join(lines)
-
-
-async def _discount_notify_text(session, data: dict, lang: str, payment_method: Optional[str] = None) -> str:
-    starts_at = data["starts_at"]
-    ends_at = starts_at + timedelta(hours=data["duration_hours"])
-    return build_admin_discount_block(
-        lang=lang,
-        discount=data,
-        percent=data["percent"],
-        starts_at=starts_at,
-        ends_at=ends_at,
-        quota_total=data.get("quota_total"),
-        repeat_interval_days=data.get("repeat_interval_days"),
-        plan_lines=await _discount_plan_lines(session, data, lang, payment_method or data.get("payment_method")),
-    )
 
 
 async def _prepare_title_i18n(data: dict) -> dict:
@@ -263,63 +216,25 @@ async def _delete_admin_input(message: Message) -> None:
         pass
 
 
-async def _notify_discount_users(
-    callback: CallbackQuery,
-    session,
-    data: dict,
-    campaign_id: Optional[int] = None,
-) -> tuple[int, int, int]:
-    user_repo = UserRepository(session)
-    if data.get("target_telegram_id"):
-        user = await user_repo.get_by_telegram_id(int(data["target_telegram_id"]))
-        users = [user] if user else []
-    else:
-        users = await user_repo.get_filtered_users(
-            language=data.get("audience_language"),
-            status=data.get("audience_status"),
-            level=data.get("audience_level"),
-        )
+def _is_edit_mode(data: dict, mode: str) -> bool:
+    return data.get(_EDIT_MODE) == mode
 
-    sent_count = 0
-    failed_count = 0
-    admin_ids = _admin_ids()
 
-    for user in users:
-        if user.telegram_id in admin_ids:
-            continue
-        lang = user.language or "uz"
-        text = await _discount_notify_text(session, data, lang, user.payment_method)
-        try:
-            if data.get("notify_media_type") == "photo" and data.get("notify_media_file_id"):
-                await callback.bot.send_photo(
-                    chat_id=user.telegram_id,
-                    photo=data["notify_media_file_id"],
-                    caption=text,
-                    reply_markup=_discount_notify_keyboard(lang, campaign_id=campaign_id),
-                    parse_mode="HTML",
-                )
-            elif data.get("notify_media_type") == "video" and data.get("notify_media_file_id"):
-                await callback.bot.send_video(
-                    chat_id=user.telegram_id,
-                    video=data["notify_media_file_id"],
-                    caption=text,
-                    reply_markup=_discount_notify_keyboard(lang, campaign_id=campaign_id),
-                    parse_mode="HTML",
-                )
-            else:
-                await callback.bot.send_message(
-                    chat_id=user.telegram_id,
-                    text=text,
-                    reply_markup=_discount_notify_keyboard(lang, campaign_id=campaign_id),
-                    parse_mode="HTML",
-                    disable_web_page_preview=True,
-                )
-            sent_count += 1
-        except Exception:
-            failed_count += 1
-        await asyncio.sleep(0.05)
+async def _clear_edit_mode(state: FSMContext) -> dict:
+    await state.update_data(**{_EDIT_MODE: None})
+    return await state.get_data()
 
-    return len([user for user in users if user.telegram_id not in admin_ids]), sent_count, failed_count
+
+async def _return_to_preview_callback(callback: CallbackQuery, state: FSMContext) -> None:
+    data = await _clear_edit_mode(state)
+    await state.set_state(None)
+    await _edit_callback_panel(callback, state, _preview(data), discount_confirm_keyboard())
+
+
+async def _return_to_preview_message(message: Message, state: FSMContext) -> None:
+    data = await _clear_edit_mode(state)
+    await state.set_state(None)
+    await _edit_stored_panel(message, state, _preview(data), discount_confirm_keyboard())
 
 
 def _preview(data: dict) -> str:
@@ -419,7 +334,7 @@ async def discount_target_identifier(message: Message, state: FSMContext, sessio
             message,
             state,
             "❌ User topilmadi.\n\nTelegram ID yoki @username ni qayta yuboring.",
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(await state.get_data()),
         )
         return
 
@@ -434,8 +349,12 @@ async def discount_target_identifier(message: Message, state: FSMContext, sessio
         audience_language=None,
         audience_level=None,
     )
-    await state.set_state(DiscountStates.waiting_title)
     data = await state.get_data()
+    if _is_edit_mode(data, "target"):
+        await _return_to_preview_message(message, state)
+        return
+
+    await state.set_state(DiscountStates.waiting_title)
     await _edit_stored_panel(
         message,
         state,
@@ -456,13 +375,17 @@ async def discount_title(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Chegirma nomini yozing. Masalan: May 20%", "Nomi juda qisqa. Qayta yozing."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(title=title[:120])
-    await state.set_state(DiscountStates.waiting_percent)
     data = await state.get_data()
     await _delete_admin_input(message)
+    if _is_edit_mode(data, "title"):
+        await _return_to_preview_message(message, state)
+        return
+
+    await state.set_state(DiscountStates.waiting_percent)
     await _edit_stored_panel(
         message,
         state,
@@ -484,7 +407,7 @@ async def discount_percent(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Chegirma foizini yozing. Masalan: 20", "Foiz raqam bo'lishi kerak."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     if percent < 1 or percent > 90:
@@ -494,13 +417,17 @@ async def discount_percent(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Chegirma foizini yozing. Masalan: 20", "Foiz 1 dan 90 gacha bo'lsin."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(percent=percent)
-    await state.set_state(None)
     data = await state.get_data()
     await _delete_admin_input(message)
+    await state.set_state(None)
+    if _is_edit_mode(data, "percent"):
+        await _return_to_preview_message(message, state)
+        return
+
     await _edit_stored_panel(
         message,
         state,
@@ -523,11 +450,15 @@ async def discount_duration(callback: CallbackQuery, state: FSMContext):
             callback,
             state,
             _wizard_text(data, "Davomiylikni soatda yozing. Masalan: 48"),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(duration_hours=int(value))
     data = await state.get_data()
+    if _is_edit_mode(data, "duration"):
+        await _return_to_preview_callback(callback, state)
+        return
+
     if data.get("target_telegram_id"):
         await _edit_callback_panel(
             callback,
@@ -557,7 +488,7 @@ async def discount_custom_duration(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Davomiylikni soatda yozing. Masalan: 48", "Soat raqam bo'lishi kerak."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     if hours < 1 or hours > 24 * 365:
@@ -567,13 +498,17 @@ async def discount_custom_duration(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Davomiylikni soatda yozing. Masalan: 48", "Muddat 1 soatdan 365 kungacha bo'lsin."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(duration_hours=hours)
-    await state.set_state(None)
     data = await state.get_data()
     await _delete_admin_input(message)
+    await state.set_state(None)
+    if _is_edit_mode(data, "duration"):
+        await _return_to_preview_message(message, state)
+        return
+
     if data.get("target_telegram_id"):
         await _edit_stored_panel(
             message,
@@ -614,6 +549,10 @@ async def discount_language(callback: CallbackQuery, state: FSMContext):
     await state.update_data(audience_language=_none_if_all(callback.data.split(":")[2]))
     await callback.answer()
     data = await state.get_data()
+    if _is_edit_mode(data, "audience"):
+        await _return_to_preview_callback(callback, state)
+        return
+
     await _edit_callback_panel(
         callback,
         state,
@@ -646,6 +585,10 @@ async def discount_plan(callback: CallbackQuery, state: FSMContext):
     await state.update_data(plan_type=_none_if_all(callback.data.split(":")[2]))
     await callback.answer()
     data = await state.get_data()
+    if _is_edit_mode(data, "payment_plan"):
+        await _return_to_preview_callback(callback, state)
+        return
+
     await _edit_callback_panel(
         callback,
         state,
@@ -668,11 +611,15 @@ async def discount_start(callback: CallbackQuery, state: FSMContext):
             callback,
             state,
             _wizard_text(data, "Boshlanish vaqtini yozing: YYYY-MM-DD HH:MM. Vaqt zonasi: Asia/Shanghai"),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(starts_at=datetime.now(timezone.utc))
     data = await state.get_data()
+    if _is_edit_mode(data, "start"):
+        await _return_to_preview_callback(callback, state)
+        return
+
     await _edit_callback_panel(
         callback,
         state,
@@ -699,13 +646,17 @@ async def discount_start_at(message: Message, state: FSMContext):
                 "Boshlanish vaqtini yozing: YYYY-MM-DD HH:MM. Vaqt zonasi: Asia/Shanghai",
                 "Format noto'g'ri. Masalan: 2026-05-13 21:30",
             ),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(starts_at=local_dt.astimezone(timezone.utc))
-    await state.set_state(None)
     data = await state.get_data()
     await _delete_admin_input(message)
+    await state.set_state(None)
+    if _is_edit_mode(data, "start"):
+        await _return_to_preview_message(message, state)
+        return
+
     await _edit_stored_panel(
         message,
         state,
@@ -728,7 +679,7 @@ async def discount_usage(callback: CallbackQuery, state: FSMContext):
             callback,
             state,
             _wizard_text(data, "Necha kunda qayta olish mumkin? Masalan: 7"),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(repeat_interval_days=None)
@@ -738,7 +689,7 @@ async def discount_usage(callback: CallbackQuery, state: FSMContext):
         callback,
         state,
         _wizard_text(data, "Limit nechta user? 0 yozsangiz limitsiz. Masalan: 20"),
-        discount_cancel_keyboard(),
+        _cancel_keyboard_for(data),
     )
 
 
@@ -755,7 +706,7 @@ async def discount_repeat_days(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Necha kunda qayta olish mumkin? Masalan: 7", "Kun raqam bo'lishi kerak."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     if days < 1 or days > 365:
@@ -765,7 +716,7 @@ async def discount_repeat_days(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Necha kunda qayta olish mumkin? Masalan: 7", "Takror oralig'i 1-365 kun bo'lsin."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(repeat_interval_days=days)
@@ -776,7 +727,7 @@ async def discount_repeat_days(message: Message, state: FSMContext):
         message,
         state,
         _wizard_text(data, "Limit nechta user? 0 yozsangiz limitsiz. Masalan: 20"),
-        discount_cancel_keyboard(),
+        _cancel_keyboard_for(data),
     )
 
 
@@ -793,7 +744,7 @@ async def discount_quota(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Limit nechta user? 0 yozsangiz limitsiz. Masalan: 20", "Limit raqam bo'lishi kerak."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     if quota < 0:
@@ -803,13 +754,17 @@ async def discount_quota(message: Message, state: FSMContext):
             message,
             state,
             _wizard_text(data, "Limit nechta user? 0 yozsangiz limitsiz. Masalan: 20", "Limit manfiy bo'lmaydi."),
-            discount_cancel_keyboard(),
+            _cancel_keyboard_for(data),
         )
         return
     await state.update_data(quota_total=quota or None)
     data = await state.get_data()
     await state.set_state(None)
     await _delete_admin_input(message)
+    if _is_edit_mode(data, "usage_quota"):
+        await _return_to_preview_message(message, state)
+        return
+
     await _edit_stored_panel(
         message,
         state,
@@ -833,7 +788,7 @@ async def discount_notify_choice(callback: CallbackQuery, state: FSMContext):
             notify_media_type=None,
             notify_media_file_id=None,
         )
-        data = await state.get_data()
+        data = await _clear_edit_mode(state)
         await _edit_callback_panel(callback, state, _preview(data), discount_confirm_keyboard())
         return
 
@@ -854,7 +809,7 @@ async def discount_notify_choice(callback: CallbackQuery, state: FSMContext):
         notify_media_type=None,
         notify_media_file_id=None,
     )
-    data = await state.get_data()
+    data = await _clear_edit_mode(state)
     await _edit_callback_panel(callback, state, _preview(data), discount_confirm_keyboard())
 
 
@@ -869,7 +824,7 @@ async def discount_notify_media_skip(callback: CallbackQuery, state: FSMContext)
         notify_media_file_id=None,
     )
     await state.set_state(None)
-    data = await state.get_data()
+    data = await _clear_edit_mode(state)
     await callback.answer()
     await _edit_callback_panel(callback, state, _preview(data), discount_confirm_keyboard())
 
@@ -909,9 +864,139 @@ async def discount_notify_media(message: Message, state: FSMContext):
         notify_media_file_id=media_file_id,
     )
     await state.set_state(None)
-    data = await state.get_data()
+    data = await _clear_edit_mode(state)
     await _delete_admin_input(message)
     await _edit_stored_panel(message, state, _preview(data), discount_confirm_keyboard())
+
+
+@router.callback_query(F.data == "disc:review")
+async def discount_review(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    data = await state.get_data()
+    if any(key not in data for key in ("title", "percent", "duration_hours", "starts_at")):
+        await callback.answer("Tasdiqlash uchun ma'lumot yetishmayapti", show_alert=True)
+        return
+    await callback.answer()
+    await _return_to_preview_callback(callback, state)
+
+
+@router.callback_query(F.data.startswith("disc:edit:"))
+async def discount_edit_field(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    field = callback.data.split(":")[2]
+    data = await state.get_data()
+    if any(key not in data for key in ("title", "percent", "duration_hours", "starts_at")):
+        await callback.answer("Avval asosiy ma'lumotlarni to'ldiring", show_alert=True)
+        return
+
+    await callback.answer()
+
+    if field == "title":
+        await state.update_data(**{_EDIT_MODE: "title"})
+        await state.set_state(DiscountStates.waiting_title)
+        await _edit_callback_panel(
+            callback,
+            state,
+            _wizard_text(data, "Yangi nomni yozing."),
+            discount_edit_back_keyboard(),
+        )
+        return
+
+    if field == "percent":
+        await state.update_data(**{_EDIT_MODE: "percent"})
+        await state.set_state(DiscountStates.waiting_percent)
+        await _edit_callback_panel(
+            callback,
+            state,
+            _wizard_text(data, "Yangi foizni yozing. Masalan: 20"),
+            discount_edit_back_keyboard(),
+        )
+        return
+
+    if field == "duration":
+        await state.update_data(**{_EDIT_MODE: "duration"})
+        await state.set_state(None)
+        await _edit_callback_panel(
+            callback,
+            state,
+            _wizard_text(data, "Yangi davomiylikni tanlang."),
+            discount_duration_keyboard(),
+        )
+        return
+
+    if field == "audience":
+        if data.get("target_telegram_id"):
+            await state.update_data(**{_EDIT_MODE: "target"})
+            await state.set_state(DiscountStates.waiting_target_identifier)
+            await _edit_callback_panel(
+                callback,
+                state,
+                "🎯 <b>Bitta userga maxsus chegirma</b>\n\n"
+                "Yangi Telegram ID yoki username yuboring.",
+                discount_edit_back_keyboard(),
+            )
+            return
+
+        await state.update_data(**{_EDIT_MODE: "audience"})
+        await state.set_state(None)
+        await _edit_callback_panel(
+            callback,
+            state,
+            _wizard_text(data, "Yangi status segmentini tanlang."),
+            discount_status_keyboard(),
+        )
+        return
+
+    if field == "payment_plan":
+        await state.update_data(**{_EDIT_MODE: "payment_plan"})
+        await state.set_state(None)
+        await _edit_callback_panel(
+            callback,
+            state,
+            _wizard_text(data, "Yangi to'lov turini tanlang."),
+            discount_payment_method_keyboard(),
+        )
+        return
+
+    if field == "start":
+        await state.update_data(**{_EDIT_MODE: "start"})
+        await state.set_state(None)
+        await _edit_callback_panel(
+            callback,
+            state,
+            _wizard_text(data, "Yangi boshlanish vaqtini tanlang."),
+            discount_start_keyboard(),
+        )
+        return
+
+    if field == "usage_quota":
+        await state.update_data(**{_EDIT_MODE: "usage_quota"})
+        await state.set_state(None)
+        await _edit_callback_panel(
+            callback,
+            state,
+            _wizard_text(data, "Qayta foydalanish qoidasini tanlang."),
+            discount_usage_keyboard(),
+        )
+        return
+
+    if field == "notify":
+        await state.update_data(**{_EDIT_MODE: "notify"})
+        await state.set_state(None)
+        await _edit_callback_panel(
+            callback,
+            state,
+            _wizard_text(data, "Chegirma xabari userlarga yuborilsinmi?"),
+            discount_notify_keyboard(),
+        )
+        return
+
+    await callback.answer("Noma'lum maydon", show_alert=True)
 
 
 @router.callback_query(F.data == "disc:confirm")
@@ -927,6 +1012,10 @@ async def discount_confirm(callback: CallbackQuery, state: FSMContext, session):
 
     starts_at = data["starts_at"]
     ends_at = starts_at + timedelta(hours=data["duration_hours"])
+    now = datetime.now(timezone.utc)
+    if ends_at <= now:
+        await callback.answer("Bu chegirma muddati allaqachon tugagan. Boshlanish yoki muddatni o'zgartiring.", show_alert=True)
+        return
     title_i18n = await _prepare_title_i18n(data)
     data.update(title_i18n)
     await state.update_data(**title_i18n)
@@ -947,6 +1036,9 @@ async def discount_confirm(callback: CallbackQuery, state: FSMContext, session):
         plan_type=data.get("plan_type"),
         quota_total=data.get("quota_total"),
         repeat_interval_days=data.get("repeat_interval_days"),
+        notify_enabled=bool(data.get("notify_enabled")),
+        notify_media_type=data.get("notify_media_type"),
+        notify_media_file_id=data.get("notify_media_file_id"),
         created_by_telegram_id=callback.from_user.id,
     )
     campaign_id = campaign.id
@@ -954,23 +1046,25 @@ async def discount_confirm(callback: CallbackQuery, state: FSMContext, session):
     await callback.answer("Chegirma saqlandi", show_alert=True)
 
     notify_total = sent_count = failed_count = 0
-    if data.get("notify_enabled"):
+    should_send_now = data.get("notify_enabled") and starts_at <= now < ends_at
+    if should_send_now:
         await callback.message.edit_text(
             f"✅ Chegirma #{campaign_id} saqlandi.\n"
             f"⏳ Xabar userlarga yuborilmoqda...",
             reply_markup=None,
         )
-        notify_total, sent_count, failed_count = await _notify_discount_users(
-            callback,
-            session,
-            data,
-            campaign_id=campaign_id,
-        )
+        result = await DiscountNotificationService(session).send_campaign_notification(callback.bot, campaign)
+        await session.commit()
+        notify_total = result.total
+        sent_count = result.sent
+        failed_count = result.failed
 
     await state.clear()
     notify_line = "📣 Userlarga xabar: yuborilmadi"
-    if data.get("notify_enabled"):
+    if should_send_now:
         notify_line = f"📣 Userlarga xabar: {sent_count}/{notify_total} yuborildi, xato: {failed_count}"
+    elif data.get("notify_enabled"):
+        notify_line = f"📣 Userlarga xabar: {starts_at.astimezone(ADMIN_TZ):%Y-%m-%d %H:%M} da yuboriladi"
 
     await callback.message.edit_text(
         f"✅ Chegirma #{campaign_id} saqlandi.\n"
@@ -998,12 +1092,26 @@ async def discount_list(callback: CallbackQuery, session):
     lines = ["📋 <b>Oxirgi chegirmalar</b>\n"]
     now = datetime.now(timezone.utc)
     for item in campaigns:
-        status = "aktiv" if item.is_active and item.starts_at <= now < item.ends_at else "passiv"
+        if not item.is_active:
+            status = "o'chirilgan"
+        elif item.starts_at > now:
+            status = "rejalangan"
+        elif item.ends_at <= now:
+            status = "tugagan"
+        else:
+            status = "aktiv"
+        if not item.notify_enabled:
+            notify_status = "xabar: yo'q"
+        elif item.notification_sent_at:
+            notify_status = f"xabar: {item.notification_sent_count} yuborildi"
+        else:
+            notify_status = f"xabar: {_fmt_time(item.starts_at)} da"
         used = await repo.count_used(item.id)
         quota = item.quota_total or "∞"
         target = f" | target: <code>{item.target_telegram_id}</code>" if item.target_telegram_id else ""
         lines.append(
-            f"#{item.id} {escape(str(item.title))} — {item.percent}% | {status} | {used}/{quota}{target}"
+            f"#{item.id} {escape(str(item.title))} — {item.percent}% | {status} | "
+            f"{used}/{quota} | {notify_status}{target}"
         )
     await callback.answer()
     await callback.message.edit_text(
