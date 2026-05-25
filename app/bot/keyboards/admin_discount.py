@@ -19,6 +19,15 @@ def discount_cancel_keyboard() -> InlineKeyboardMarkup:
     )
 
 
+def discount_edit_back_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="⬅️ Tasdiqlashga qaytish", callback_data="disc:review")],
+            [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="disc:cancel")],
+        ]
+    )
+
+
 def discount_duration_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -145,7 +154,21 @@ def discount_confirm_keyboard() -> InlineKeyboardMarkup:
             [
                 InlineKeyboardButton(text="✅ Ishga tushirish", callback_data="disc:confirm"),
                 InlineKeyboardButton(text="❌ Bekor qilish", callback_data="disc:cancel"),
-            ]
+            ],
+            [
+                InlineKeyboardButton(text="✏️ Nomi", callback_data="disc:edit:title"),
+                InlineKeyboardButton(text="✏️ Foiz", callback_data="disc:edit:percent"),
+                InlineKeyboardButton(text="✏️ Muddat", callback_data="disc:edit:duration"),
+            ],
+            [
+                InlineKeyboardButton(text="✏️ Kimga", callback_data="disc:edit:audience"),
+                InlineKeyboardButton(text="✏️ To'lov/tarif", callback_data="disc:edit:payment_plan"),
+            ],
+            [
+                InlineKeyboardButton(text="✏️ Boshlanish", callback_data="disc:edit:start"),
+                InlineKeyboardButton(text="✏️ Limit/qoida", callback_data="disc:edit:usage_quota"),
+            ],
+            [InlineKeyboardButton(text="✏️ Xabar", callback_data="disc:edit:notify")],
         ]
     )
 
