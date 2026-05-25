@@ -5,6 +5,9 @@ EXPECTED = {
     11: {"vocab": 30, "blocks": 5},
     12: {"vocab": 32, "blocks": 5},
     13: {"vocab": 34, "blocks": 5},
+    14: {"vocab": 32, "blocks": 5},
+    15: {"vocab": 31, "blocks": 5},
+    16: {"vocab": 31, "blocks": 5},
 }
 
 
@@ -61,7 +64,7 @@ def main():
 
     if errors:
         raise SystemExit("\n".join(errors))
-    print("ok: HSK4 lower PDF lessons 11-13")
+    print("ok: HSK4 lower PDF lessons 11-16")
 
 
 if __name__ == "__main__":
