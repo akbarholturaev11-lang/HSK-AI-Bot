@@ -500,6 +500,20 @@ Files touched:
 Risk:
 - Database must be reseeded for deployed environments; local DB was updated for HSK4-L11 through HSK4-L13 in this session.
 
+### 2026-05-25 — HSK4 Mini App support range
+
+Changed:
+- HSK4 Mini App support range is now lessons 1-13.
+
+Why:
+- HSK4 上 lessons 4-10 had Mini App content and API payloads, but course buttons were blocked by the stale supported range `1-3`.
+
+Files touched:
+- `app/bot/utils/course_miniapp.py`
+
+Risk:
+- HSK4 lessons beyond 13 stay unsupported until their lesson data is converted.
+
 ---
 
 ## 11. Known Problems
