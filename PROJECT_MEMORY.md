@@ -480,6 +480,26 @@ Files touched:
 Risk:
 - Database must be reseeded for deployed environments; local DB was updated for HSK4-L07 through HSK4-L10 in this session.
 
+### 2026-05-25 — HSK4 下 lessons 11-13 PDF alignment
+
+Changed:
+- HSK4 下 lessons 11-13 now use canonical textbook dialogue/new-word data through `scripts/hsk4_lower_pdf_materials.py`.
+- Each lesson has 5 blocks, per-block vocabulary, relevant grammar, pinyin, three-language translations, mini quiz, and mini homework.
+- HSK4 static Mini App fallback now recognizes lessons 1-13 and includes grammar quiz items for lessons 11-13.
+
+Why:
+- HSK4 下 needed to start from the textbook format; older lower seed data had incomplete lesson blocks and stale lesson 11 content.
+
+Files touched:
+- `scripts/hsk4_lower_pdf_materials.py`
+- `scripts/hsk4_lower_seed_data.py`
+- `scripts/seed_hsk4_lesson_11.py`
+- `scripts/verify_hsk4_lower_pdf_materials.py`
+- `app/static/hsk4.html`
+
+Risk:
+- Database must be reseeded for deployed environments; local DB was updated for HSK4-L11 through HSK4-L13 in this session.
+
 ---
 
 ## 11. Known Problems

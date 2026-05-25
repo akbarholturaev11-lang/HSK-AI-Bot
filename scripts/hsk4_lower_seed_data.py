@@ -5,6 +5,10 @@ from sqlalchemy import select
 
 from app.db.models.course_lessons import CourseLesson
 from app.db.session import async_session_maker as SessionLocal
+from scripts.hsk4_lower_pdf_materials import (
+    HSK4_LOWER_PDF_MATERIALS,
+    apply_hsk4_lower_pdf_materials,
+)
 
 
 # HSK4 Standard Course 4 (B), lessons 12-20.
@@ -2352,9 +2356,28 @@ def _review_json(order: int) -> str:
 
 
 def build_lesson(order: int) -> dict:
+    if order in HSK4_LOWER_PDF_MATERIALS:
+        lesson = {
+            "level": "hsk4",
+            "lesson_order": order,
+            "lesson_code": f"HSK4-L{order:02d}",
+            "title": HSK4_LOWER_PDF_MATERIALS[order]["title"],
+            "goal": "{}",
+            "intro_text": "{}",
+            "vocabulary_json": "[]",
+            "dialogue_json": "[]",
+            "grammar_json": "[]",
+            "exercise_json": "[]",
+            "answers_json": "[]",
+            "homework_json": "[]",
+            "review_json": "[]",
+            "is_active": True,
+        }
+        return apply_hsk4_lower_pdf_materials(lesson)
+
     data = LESSON_DATA[order]
     title = data["title"]
-    return {
+    lesson = {
         "level": "hsk4",
         "lesson_order": order,
         "lesson_code": f"HSK4-L{order:02d}",
@@ -2370,6 +2393,7 @@ def build_lesson(order: int) -> dict:
         "review_json": _review_json(order),
         "is_active": True,
     }
+    return apply_hsk4_lower_pdf_materials(lesson)
 
 
 async def upsert_hsk4_lesson(order: int) -> None:
@@ -2399,5 +2423,5 @@ def run_upsert(order: int):
 
 
 if __name__ == "__main__":
-    for lesson_order in range(12, 21):
+    for lesson_order in range(11, 21):
         asyncio.run(upsert_hsk4_lesson(lesson_order))
