@@ -57,7 +57,12 @@ async def handle_subscription_button(message: Message, state: FSMContext, sessio
     "👤 Profil",
 ]))
 async def handle_profile_button(message: Message, state: FSMContext, session):
-    from app.bot.handlers.commands import _profile_referral_count, _profile_text, profile_menu_keyboard
+    from app.bot.handlers.commands import (
+        _profile_referral_count,
+        _profile_reminder_text,
+        _profile_text,
+        profile_menu_keyboard,
+    )
     user_repo = UserRepository(session)
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     if not user:
@@ -65,8 +70,9 @@ async def handle_profile_button(message: Message, state: FSMContext, session):
     lang = user.language if user.language else "ru"
     await _clear_voice_mode(user, session, state)
     referral_total = await _profile_referral_count(session, user)
+    reminder_text = await _profile_reminder_text(session, user, lang)
     await message.answer(
-        _profile_text(user, lang, referral_total),
+        _profile_text(user, lang, referral_total, reminder_text),
         parse_mode="HTML",
         reply_markup=profile_menu_keyboard(lang),
     )

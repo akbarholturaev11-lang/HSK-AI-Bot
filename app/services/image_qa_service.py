@@ -85,9 +85,9 @@ class ImageQAService:
         )
         self.last_budget_record = (
             explainer_record
-            if explainer_record.cooldown_started
+            if explainer_record.cooldown_started or explainer_record.budget_depleted
             else analyzer_record
-            if analyzer_record.cooldown_started
+            if analyzer_record.cooldown_started or analyzer_record.budget_depleted
             else explainer_record
         )
 
@@ -117,5 +117,6 @@ class ImageQAService:
             bot=bot,
             invited_user_telegram_id=telegram_id,
         )
+        await self.access_service.downgrade_non_paid_active_if_budget_depleted(telegram_id)
         await self.session.commit()
         return assistant_reply

@@ -146,7 +146,51 @@ def _referral_count_label(total: int, lang: str) -> str:
     return f"👥 <b>Chaqirganlar:</b> {total} ta"
 
 
-def _profile_text(user, lang: str, referral_total: int = 0) -> str:
+def _profile_reminder_line(progress, lang: str) -> str | None:
+    from html import escape
+
+    if (
+        not progress
+        or not getattr(progress, "reminder_enabled", False)
+        or not getattr(progress, "reminder_time", None)
+    ):
+        return None
+
+    reminder_time = getattr(progress, "reminder_time", None)
+    try:
+        time_text = reminder_time.strftime("%H:%M")
+    except Exception:
+        time_text = str(reminder_time)[:5]
+
+    try:
+        tz_offset = int(getattr(progress, "reminder_tz_offset", 5) or 5)
+    except Exception:
+        tz_offset = 5
+    tz_text = f"UTC+{tz_offset}" if tz_offset >= 0 else f"UTC{tz_offset}"
+
+    label = {
+        "tj": "Ёдраскунак",
+        "uz": "Eslatma",
+        "ru": "Напоминание",
+    }.get(lang, "Напоминание")
+    return f"⏰ <b>{label}:</b> {escape(time_text)} ({escape(tz_text)})"
+
+
+async def _profile_reminder_text(session, user, lang: str) -> str | None:
+    from app.repositories.course_progress_repo import CourseProgressRepository
+
+    if not user:
+        return None
+    progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+    return _profile_reminder_line(progress, lang)
+
+
+def _profile_text(
+    user,
+    lang: str,
+    referral_total: int = 0,
+    reminder_text: str | None = None,
+) -> str:
     from html import escape
 
     full_name = escape(str(getattr(user, "full_name", "—") or "—"))
@@ -226,6 +270,8 @@ def _profile_text(user, lang: str, referral_total: int = 0) -> str:
             f"⭐ <b>Ҳолат:</b> {status}",
             referral_count,
         ]
+        if reminder_text:
+            details.append(reminder_text)
         if is_paid and plan:
             details.append(f"💳 <b>Обуна:</b> {plan}")
             details.append(f"⌛ <b>Анҷом:</b> {ends_str}")
@@ -247,6 +293,8 @@ def _profile_text(user, lang: str, referral_total: int = 0) -> str:
             f"⭐ <b>Holat:</b> {status}",
             referral_count,
         ]
+        if reminder_text:
+            details.append(reminder_text)
         if is_paid and plan:
             details.append(f"💳 <b>Obuna:</b> {plan}")
             details.append(f"⌛ <b>Tugash:</b> {ends_str}")
@@ -267,6 +315,8 @@ def _profile_text(user, lang: str, referral_total: int = 0) -> str:
         f"⭐ <b>Статус:</b> {status}",
         referral_count,
     ]
+    if reminder_text:
+        details.append(reminder_text)
     if is_paid and plan:
         details.append(f"💳 <b>Подписка:</b> {plan}")
         details.append(f"⌛ <b>Окончание:</b> {ends_str}")
@@ -340,7 +390,8 @@ async def profile_command(message: Message, state: FSMContext, session):
 
     await _clear_voice_mode(user, session, state)
     referral_total = await _profile_referral_count(session, user)
-    text = _profile_text(user, lang, referral_total)
+    reminder_text = await _profile_reminder_text(session, user, lang)
+    text = _profile_text(user, lang, referral_total, reminder_text)
     await message.answer(
         text,
         parse_mode="HTML",

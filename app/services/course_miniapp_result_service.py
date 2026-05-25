@@ -12,6 +12,7 @@ from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import CourseEngineService
 from app.services.ai_usage_budget_service import AIUsageBudgetService
+from app.services.access_service import AccessService
 from app.services.course_tutor_service import CourseTutorService
 
 
@@ -169,6 +170,7 @@ class CourseMiniAppResultService:
                 result=tutor.last_ai_result,
                 source="course_miniapp_homework",
             )
+            await AccessService(self.session).downgrade_non_paid_active_if_budget_depleted(telegram_id)
 
         await self.attempt_repo.create(
             user_id=user.id,

@@ -230,10 +230,11 @@ async def _record_ai_usage(session, telegram_id: int, ai_result, source: str):
 
 
 async def _send_budget_notice(respond, record, lang: str) -> None:
-    if not record or not getattr(record, "cooldown_started", False):
+    if not record:
         return
     message_key = getattr(record, "message_key", "")
-    if message_key:
+    should_notify = getattr(record, "cooldown_started", False) or getattr(record, "budget_depleted", False)
+    if should_notify and message_key:
         await respond(t(message_key, lang), parse_mode="HTML")
 
 
@@ -256,6 +257,7 @@ async def _consume_text_ai_usage(session, access_service: AccessService, bot, te
         bot=bot,
         invited_user_telegram_id=telegram_id,
     )
+    await access_service.downgrade_non_paid_active_if_budget_depleted(telegram_id)
 
 
 async def _answer_course_tutor_question(

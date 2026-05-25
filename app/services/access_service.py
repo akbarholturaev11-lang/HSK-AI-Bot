@@ -7,7 +7,7 @@ from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
 from app.repositories.payment_repo import PaymentRepository
-from app.services.ai_usage_budget_service import AIUsageBudgetService
+from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
 
 class AccessService:
     def __init__(self, session):
@@ -37,12 +37,78 @@ class AccessService:
     def _is_paid_user(self, user) -> bool:
         return user.payment_status == "approved"
 
+    def _is_same_active_window(self, user, budget) -> bool:
+        if not getattr(user, "start_date", None) or not getattr(user, "end_date", None):
+            return False
+        if not getattr(budget, "starts_at", None) or not getattr(budget, "ends_at", None):
+            return False
+
+        user_start = self._as_utc(user.start_date)
+        user_end = self._as_utc(user.end_date)
+        budget_start = self._as_utc(budget.starts_at)
+        budget_end = self._as_utc(budget.ends_at)
+
+        return (
+            abs((user_start - budget_start).total_seconds()) <= 5
+            and abs((user_end - budget_end).total_seconds()) <= 5
+        )
+
+    async def _get_current_referral_trial_budget(self, budget_service: AIUsageBudgetService, user):
+        budget = await budget_service.get_latest_budget(
+            user.telegram_id,
+            plan_type=REFERRAL_TRIAL_PLAN_TYPE,
+        )
+        if budget and self._is_same_active_window(user, budget):
+            return budget
+        return None
+
+    async def downgrade_non_paid_active_if_budget_depleted(self, telegram_id: int) -> bool:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user or user.status != "active" or self._is_paid_user(user):
+            return False
+
+        budget_service = AIUsageBudgetService(self.session)
+        budget = await budget_service.get_active_budget(telegram_id)
+        if not budget:
+            budget = await self._get_current_referral_trial_budget(budget_service, user)
+        if not budget:
+            return False
+        if budget.status == "active" and not budget_service.is_total_budget_depleted(budget):
+            return False
+
+        if budget.status == "active":
+            await budget_service.expire_budget(budget)
+        await self._downgrade_expired_user(user)
+        return True
+
+    async def _can_use_non_paid_active_budget(self, user) -> Tuple[bool, str, bool, bool]:
+        budget_service = AIUsageBudgetService(self.session)
+        budget = await budget_service.get_active_budget(user.telegram_id)
+        if not budget:
+            budget = await self._get_current_referral_trial_budget(budget_service, user)
+            if not budget:
+                return False, "", False, False
+
+        if budget_service.is_total_budget_depleted(budget):
+            if budget.status == "active":
+                await budget_service.expire_budget(budget)
+            await self._downgrade_expired_user(user)
+            return False, "", True, True
+
+        budget_access = await budget_service.can_use_ai(user.telegram_id)
+        if not budget_access.allowed:
+            if budget_access.budget_depleted:
+                await self._downgrade_expired_user(user)
+                return False, "", True, True
+            return False, budget_access.message_key, False, True
+
+        return True, "", False, True
+
     async def _can_use_daily_text_limit(self, user) -> Tuple[bool, str]:
         now = datetime.now(timezone.utc)
 
         if user.last_limit_reset_at is None or now - user.last_limit_reset_at >= timedelta(days=1):
             user.questions_used = 0
-            user.bonus_questions_used = 0
             user.last_limit_reset_at = now
             await self.user_repo.session.commit()
 
@@ -65,11 +131,9 @@ class AccessService:
         if not user.last_limit_reset_at:
             user.last_limit_reset_at = now
             user.questions_used = 0
-            user.bonus_questions_used = 0
         elif now - user.last_limit_reset_at >= timedelta(days=1):
             user.last_limit_reset_at = now
             user.questions_used = 0
-            user.bonus_questions_used = 0
 
         today_image_count = await self.message_repo.count_user_messages_today(
             user_id=user.id,
@@ -120,9 +184,13 @@ class AccessService:
                 # falls through to trial logic below
             else:
                 if not self._is_paid_user(user):
+                    can_use, message_key, downgraded, uses_budget = await self._can_use_non_paid_active_budget(user)
+                    if uses_budget and not downgraded:
+                        return can_use, message_key
+                    if not uses_budget:
+                        return await self._can_use_daily_text_limit(user)
+                else:
                     return await self._can_use_ai_budget(telegram_id)
-
-                return await self._can_use_ai_budget(telegram_id)
 
         if user.status == "expired":
             await self._downgrade_expired_user(user)
@@ -152,12 +220,13 @@ class AccessService:
                 # falls through to trial logic below
             else:
                 if not self._is_paid_user(user):
-                    can_use_image, message_key = await self._can_use_daily_image_limit(user)
-                    if not can_use_image:
-                        return False, message_key
+                    can_use, message_key, downgraded, uses_budget = await self._can_use_non_paid_active_budget(user)
+                    if uses_budget and not downgraded:
+                        return can_use, message_key
+                    if not uses_budget:
+                        return await self._can_use_daily_image_limit(user)
+                else:
                     return await self._can_use_ai_budget(telegram_id)
-
-                return await self._can_use_ai_budget(telegram_id)
 
         if user.status == "expired":
             await self._downgrade_expired_user(user)
@@ -180,11 +249,9 @@ class AccessService:
             if not user.last_limit_reset_at:
                 user.last_limit_reset_at = now
                 user.questions_used = 0
-                user.bonus_questions_used = 0
             elif now - user.last_limit_reset_at >= timedelta(days=1):
                 user.last_limit_reset_at = now
                 user.questions_used = 0
-                user.bonus_questions_used = 0
 
             if user.questions_used >= user.question_limit:
                 bonus = self.user_repo.get_bonus_balance(user)
@@ -192,6 +259,6 @@ class AccessService:
                     await self.user_repo.consume_bonus_question(user)
                 else:
                     return
- 
+
         user.questions_used += 1
         await self.session.flush()

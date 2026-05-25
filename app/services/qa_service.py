@@ -131,6 +131,7 @@ class QAService:
             bot=bot,
             invited_user_telegram_id=telegram_id,
         )
+        await self.access_service.downgrade_non_paid_active_if_budget_depleted(telegram_id)
 
         await self.session.commit()
         return assistant_reply

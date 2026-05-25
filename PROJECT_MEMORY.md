@@ -228,7 +228,8 @@ Changed:
 - Users can unlock 3 days of non-paid `active` access after collecting 10 active referrals.
 - This reward is separate from the existing referral bonus and referral discount flows: +5 bonus questions and 3-referral discount counters still use their existing fields.
 - Referral active access does not set `payment_status=approved`; it creates a fixed $2 AI usage budget for the trial active window.
-- In trial active, text/course AI use the AI budget and photo keeps its daily image limit.
+- In trial active, text/course/photo use the fixed $2 AI budget; photo no longer has a separate daily image limit during this reward window.
+- If the fixed $2 AI budget is depleted before 3 days, the non-paid active user is downgraded back to `trial`; if 3 days expire first, the user is also downgraded even if budget remains.
 - Voice is restricted to real paid subscribers (`status=active` and `payment_status=approved`); non-paid active windows do not unlock voice.
 - Profile labels non-paid active as `Sinov muddati`, shows only referral count, and leaves the subscription line empty unless the user has a real paid subscription.
 - A new `users.referral_trial_count_started_at` marker resets this feature's referral count after each 3-day reward window.
@@ -240,6 +241,9 @@ Files touched:
 - `app/services/referral_service.py`
 - `app/services/access_service.py`
 - `app/services/ai_usage_budget_service.py`
+- `app/services/qa_service.py`
+- `app/services/image_qa_service.py`
+- `app/services/course_miniapp_result_service.py`
 - `app/repositories/referral_repo.py`
 - `app/db/models/user.py`
 - `app/db/session.py`
@@ -256,6 +260,25 @@ Risk:
 
 Follow-up:
 - Run DB migration in deploy environments before relying on referral trial progress display.
+
+### 2026-05-25 — Referral bonus usage is lifetime
+
+Changed:
+- Daily trial limit reset now resets only `questions_used`; it does not reset `bonus_questions_used`.
+- Referral trial active activation also keeps already-used referral bonus questions spent.
+
+Why:
+- Referral +5 questions are a one-time bonus, not a daily renewed allowance.
+
+Files touched:
+- `app/services/access_service.py`
+- `app/services/referral_service.py`
+
+Risk:
+- Users who already reused bonus questions before this fix are not retroactively corrected.
+
+Follow-up:
+- If historical correction is required, add a separate data audit instead of mixing it into runtime access logic.
 
 ### 2026-05-24 — Dynamic course dialogue audio admin
 

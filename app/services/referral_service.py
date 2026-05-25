@@ -5,7 +5,7 @@ from aiogram import Bot
 
 from app.repositories.user_repo import UserRepository
 from app.repositories.referral_repo import ReferralRepository
-from app.services.ai_usage_budget_service import AIUsageBudgetService
+from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
 from app.services.referral_notify_service import ReferralNotifyService
 from app.services.subscription_progress_service import SubscriptionProgressService
 
@@ -85,7 +85,6 @@ class ReferralService:
         referrer.start_date = now
         referrer.end_date = reward_end
         referrer.questions_used = 0
-        referrer.bonus_questions_used = 0
         referrer.last_limit_reset_at = now
         referrer.daily_limit_offer_sent_at = None
         referrer.expiry_reminder_sent_at = None
@@ -95,7 +94,7 @@ class ReferralService:
 
         await AIUsageBudgetService(self.session).create_fixed_budget(
             telegram_id=referrer.telegram_id,
-            plan_type="referral_trial_3_days",
+            plan_type=REFERRAL_TRIAL_PLAN_TYPE,
             amount=int(REFERRAL_TRIAL_AI_BUDGET_USD),
             currency="usd",
             total_budget_usd=REFERRAL_TRIAL_AI_BUDGET_USD,

@@ -16,6 +16,8 @@ PROFIT_MARGIN = 0.40
 RAILWAY_SHARE_USD = 1.0
 SEGMENT_COUNT = 2
 COOLDOWN_HOURS = 6
+REFERRAL_TRIAL_PLAN_TYPE = "referral_trial_3_days"
+BUDGET_EPSILON_USD = 0.000001
 
 MODEL_PRICING_USD_PER_1M = {
     "gpt-4o-mini": (0.15, 0.60),
@@ -29,6 +31,7 @@ class BudgetAccessResult:
     allowed: bool
     message_key: str = ""
     cooldown_hours: int = COOLDOWN_HOURS
+    budget_depleted: bool = False
 
 
 @dataclass(frozen=True)
@@ -37,6 +40,7 @@ class BudgetRecordResult:
     cooldown_started: bool = False
     message_key: str = ""
     cooldown_hours: int = COOLDOWN_HOURS
+    budget_depleted: bool = False
 
 
 class AIUsageBudgetService:
@@ -145,6 +149,23 @@ class AIUsageBudgetService:
         if budgets:
             await self.session.flush()
 
+    async def expire_budget(self, budget: AIUsageBudget) -> None:
+        budget.status = "expired"
+        budget.updated_at = datetime.now(timezone.utc)
+        await self.session.flush()
+
+    def is_fixed_trial_budget(self, budget: AIUsageBudget) -> bool:
+        return budget.plan_type == REFERRAL_TRIAL_PLAN_TYPE
+
+    def total_spent_usd(self, budget: AIUsageBudget) -> float:
+        return float(budget.segment_1_spent_usd or 0.0) + float(budget.segment_2_spent_usd or 0.0)
+
+    def remaining_total_budget_usd(self, budget: AIUsageBudget) -> float:
+        return max(float(budget.total_budget_usd or 0.0) - self.total_spent_usd(budget), 0.0)
+
+    def is_total_budget_depleted(self, budget: AIUsageBudget) -> bool:
+        return self.remaining_total_budget_usd(budget) <= BUDGET_EPSILON_USD
+
     async def _list_active_budgets(self, telegram_id: int) -> list[AIUsageBudget]:
         result = await self.session.execute(
             select(AIUsageBudget)
@@ -153,6 +174,18 @@ class AIUsageBudgetService:
             .order_by(AIUsageBudget.created_at.desc())
         )
         return list(result.scalars().all())
+
+    async def get_latest_budget(
+        self,
+        telegram_id: int,
+        plan_type: Optional[str] = None,
+    ) -> Optional[AIUsageBudget]:
+        query = select(AIUsageBudget).where(AIUsageBudget.user_telegram_id == telegram_id)
+        if plan_type:
+            query = query.where(AIUsageBudget.plan_type == plan_type)
+        query = query.order_by(AIUsageBudget.created_at.desc()).limit(1)
+        result = await self.session.execute(query)
+        return result.scalar_one_or_none()
 
     async def get_active_budget(self, telegram_id: int) -> Optional[AIUsageBudget]:
         now = datetime.now(timezone.utc)
@@ -238,6 +271,16 @@ class AIUsageBudgetService:
             return BudgetAccessResult(allowed=True)
 
         now = datetime.now(timezone.utc)
+        if self.is_fixed_trial_budget(budget):
+            if self.is_total_budget_depleted(budget):
+                await self.expire_budget(budget)
+                return BudgetAccessResult(
+                    allowed=False,
+                    message_key="ai_budget_depleted",
+                    budget_depleted=True,
+                )
+            return BudgetAccessResult(allowed=True)
+
         if budget.cooldown_until and self._as_utc(budget.cooldown_until) > now:
             return BudgetAccessResult(allowed=False, message_key="ai_budget_cooldown")
 
@@ -297,7 +340,6 @@ class AIUsageBudgetService:
 
         await self._refresh_window_if_needed(budget, now)
         segment, _, segment_end = self._segment_bounds(budget, now)
-        threshold = self._current_threshold_usd(budget, segment, segment_end, now)
 
         self._set_segment_spent(
             budget,
@@ -307,6 +349,16 @@ class AIUsageBudgetService:
         budget.current_window_spent_usd += cost_usd
         budget.updated_at = now
 
+        if self.is_fixed_trial_budget(budget):
+            budget_depleted = self.is_total_budget_depleted(budget)
+            await self.session.flush()
+            return BudgetRecordResult(
+                cost_usd=cost_usd,
+                budget_depleted=budget_depleted,
+                message_key="ai_budget_depleted_notice" if budget_depleted else "",
+            )
+
+        threshold = self._current_threshold_usd(budget, segment, segment_end, now)
         cooldown_started = threshold > 0 and budget.current_window_spent_usd >= threshold
         if cooldown_started:
             await self._start_cooldown(budget, now, flush=False)
