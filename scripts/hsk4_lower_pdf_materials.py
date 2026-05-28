@@ -9,6 +9,7 @@ from scripts.hsk4_upper_pdf_materials import (
     _word_by_no,
 )
 from scripts.hsk4_lower_pdf_materials_14_16 import HSK4_LOWER_PDF_MATERIALS_14_16
+from scripts.hsk4_lower_pdf_materials_17_20 import HSK4_LOWER_PDF_MATERIALS_17_20
 
 
 def _word(no, zh, pinyin, pos, uz, ru, tj):
@@ -462,14 +463,16 @@ _LESSON_13 = {
 }
 
 
-def _add_lesson_12_16():
+def _add_lesson_12_20():
     HSK4_LOWER_PDF_MATERIALS[12] = copy.deepcopy(_LESSON_12)
     HSK4_LOWER_PDF_MATERIALS[13] = copy.deepcopy(_LESSON_13)
     for lesson_order, data in HSK4_LOWER_PDF_MATERIALS_14_16.items():
         HSK4_LOWER_PDF_MATERIALS[lesson_order] = copy.deepcopy(data)
+    for lesson_order, data in HSK4_LOWER_PDF_MATERIALS_17_20.items():
+        HSK4_LOWER_PDF_MATERIALS[lesson_order] = copy.deepcopy(data)
 
 
-_add_lesson_12_16()
+_add_lesson_12_20()
 
 
 def apply_hsk4_lower_pdf_materials(lesson):

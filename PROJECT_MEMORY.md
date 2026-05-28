@@ -534,6 +534,26 @@ Files touched:
 Risk:
 - Runtime database must be reseeded or app restarted in deployed environments before Telegram course messages show HSK4-L14 through HSK4-L16.
 
+### 2026-05-28 — HSK4 下 lessons 17-20 PDF alignment
+
+Changed:
+- HSK4 下 lessons 17-20 now use canonical textbook dialogue/new-word data through `scripts/hsk4_lower_pdf_materials_17_20.py`.
+- Each lesson has 5 blocks, per-block vocabulary, relevant grammar, pinyin, three-language translations, mini quiz, and mini homework generated through the lower seed pipeline.
+- HSK4 static Mini App fallback and support range now cover lessons 1-20 with grammar-focused quiz items and no blank-fill quiz format.
+
+Why:
+- Lessons 17-20 complete HSK4 下 in the same PDF-based format as lessons 11-16.
+
+Files touched:
+- `scripts/hsk4_lower_pdf_materials.py`
+- `scripts/hsk4_lower_pdf_materials_17_20.py`
+- `scripts/verify_hsk4_lower_pdf_materials.py`
+- `app/bot/utils/course_miniapp.py`
+- `app/static/hsk4.html`
+
+Risk:
+- Runtime database must be reseeded or app restarted in deployed environments before Telegram course messages show HSK4-L17 through HSK4-L20.
+
 ---
 
 ## 11. Known Problems
