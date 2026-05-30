@@ -18,6 +18,7 @@ from app.services.expiry_reminder_service import ExpiryReminderService
 from app.services.course_reminder_service import CourseReminderService
 from app.services.bot_feedback_service import BotFeedbackService
 from app.services.ad_campaign_service import AdCampaignService
+from app.services.partner_service import PartnerService
 from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
@@ -68,6 +69,8 @@ async def _background_scheduler(bot: Bot) -> None:
                 await CourseReminderService(session).send_weekly_progress_reports(bot)
             async with async_session_maker() as session:
                 await BotFeedbackService(session).send_due_price_discount_offers(bot)
+            async with async_session_maker() as session:
+                await PartnerService(session).send_due_payout_reminders(bot)
             async with async_session_maker() as session:
                 await AdCampaignService(session).send_due_ads(bot)
             now = datetime.now(timezone.utc)

@@ -16,6 +16,7 @@ TEXTS = {
         "menu_profile": "👤 Профил",
         "menu_subscription": "💳 Обуна",
         "menu_invite": "👥 Дӯст даъват кардан",
+        "menu_partner": "🤝 Ҳамкорӣ",
         "menu_help": "❓ Ёрдам",
         "menu_course_mode": "📚 Режими курс",
 
@@ -165,6 +166,7 @@ TEXTS = {
         "menu_profile": "👤 Профиль",
         "menu_subscription": "💳 Подписка",
         "menu_invite": "👥 Пригласить друга",
+        "menu_partner": "🤝 Партнёрство",
         "menu_help": "❓ Помощь",
         "menu_course_mode": "📚 Режим курса",
 
@@ -310,6 +312,7 @@ TEXTS = {
         "menu_profile": "👤 Profil",
         "menu_subscription": "💳 Obuna",
         "menu_invite": "👥 Do'st chaqirish",
+        "menu_partner": "🤝 Hamkorlik",
         "menu_help": "❓ Yordam",
         "menu_course_mode": "📚 Kurs rejimi",
 
@@ -1151,6 +1154,192 @@ FEEDBACK_I18N = {
     },
 }
 
+PARTNER_I18N = {
+    "tj": {
+        "partner_not_partner_text": (
+            "<b>🤝 Ҳамкорӣ</b>\n\n"
+            "HSK AI-ро тавсия диҳед.\n"
+            "Агар корбари овардаи шумо обуна гирад, шумо комиссия мегиред.\n\n"
+            "🎁 Пас аз шарик шудан ба шумо $1 бонус дода мешавад.\n"
+            "💸 Ҳадди ақали гирифтани пул: $5\n\n"
+            "<i>Бонуси $1 баъд аз пардохти ҳақиқии аввалини referral кушода мешавад.</i>"
+        ),
+        "partner_apply_button": "✅ Шарик шудан",
+        "profile_to_course_button": "📚 Ба режими курс гузаштан",
+        "profile_to_qa_button": "🤖 Ба AI Савол / QA гузаштан",
+        "partner_back_button": "⬅️ Бозгашт",
+        "partner_pending_text": (
+            "<b>🤝 Ҳамкорӣ</b>\n\n"
+            "⏳ Дархости шумо баррасӣ мешавад.\n\n"
+            "Пас аз тасдиқ силкаи шарикӣ барои шумо кушода мешавад."
+        ),
+        "partner_blocked_text": "<b>🤝 Ҳамкорӣ</b>\n\n⛔ Дастрасии шарикии шумо баста шудааст.",
+        "partner_active_text": (
+            "<b>🤝 Кабинети шарик</b>\n\n"
+            "🔗 Силкаи шумо:\n<code>{link}</code>\n\n"
+            "💰 Баланс: <b>{balance}</b>\n"
+            "⏳ Дар раванд: <b>{in_progress}</b>\n"
+            "📤 Гирифташуда: <b>{withdrawn}</b>\n\n"
+            "👥 Овардаед: <b>{referrals}</b>\n"
+            "💳 Пардохт кардаанд: <b>{paid_referrals}</b>"
+        ),
+        "partner_get_link_button": "📋 Гирифтани силка",
+        "partner_payout_button": "💸 Гирифтани пул",
+        "partner_link_text": "<b>📋 Силкаи шарикии шумо</b>\n\n<code>{link}</code>",
+        "partner_application_channel_prompt": "<b>🤝 Дархости шарикӣ</b>\n\n1. Дар куҷо реклама мекунед?",
+        "partner_application_audience_prompt": "<b>🤝 Дархости шарикӣ</b>\n\n2. Шумораи тахминии аудитория?",
+        "partner_application_contact_prompt": "<b>🤝 Дархости шарикӣ</b>\n\n3. Username барои тамос?",
+        "partner_application_invalid": "Ҷавобро равшантар нависед.",
+        "partner_payout_unavailable_text": (
+            "<b>💸 Гирифтани пул</b>\n\n"
+            "Баланси шумо: <b>{balance}</b>\n"
+            "Ҳадди ақали гирифтани пул: <b>{minimum}</b>\n\n"
+            "Ҳоло гирифтани пул имкон надорад."
+        ),
+        "partner_payout_choose_method": "<b>💸 Гирифтани пул</b>\n\nБаланс: <b>{balance}</b>\n\nУсули пардохтро интихоб кунед:",
+        "partner_payout_bank_button": "Бонк корт",
+        "partner_payout_alipay_button": "Alipay",
+        "partner_payout_other_button": "Дигар",
+        "partner_payout_bank_name_prompt": "<b>💸 Гирифтани пул</b>\n\nНоми бонкро нависед.",
+        "partner_payout_account_prompt": "<b>💸 Гирифтани пул</b>\n\nРақами корт ё реквизитро нависед.",
+        "partner_payout_holder_prompt": "<b>💸 Гирифтани пул</b>\n\nНому насаби қабулкунандаро нависед.",
+        "partner_payout_note_prompt": "<b>💸 Гирифтани пул</b>\n\nШарҳи иловагӣ нависед. Агар набошад, «-» фиристед.",
+        "partner_payout_invalid": "Маълумотро дурусттар нависед.",
+        "partner_payout_created_text": "<b>✅ Дархости гирифтани пул фиристода шуд</b>\n\nМаблағ: <b>{amount}</b>\n\nИн маблағ то баррасӣ захира шуд.",
+        "partner_approved_notification": "<b>✅ Дархости шарикии шумо тасдиқ шуд</b>\n\nСилкаи шарикии шумо кушода шуд.",
+        "partner_blocked_notification": "<b>⛔ Дастрасии шарикии шумо баста шуд.</b>",
+        "partner_unblocked_notification": "<b>✅ Дастрасии шарикии шумо дубора кушода шуд.</b>",
+        "partner_commission_notification": "<b>💰 Комиссия илова шуд</b>\n\nКомиссия: <b>{commission}</b>\n{bonus_line}",
+        "partner_bonus_unlocked_line": "🎁 Бонуси locked $1 кушода шуд.",
+        "partner_payout_paid_notification": "<b>✅ Пардохти шарикӣ иҷро шуд</b>\n\nМаблағ: <b>{amount}</b>",
+        "partner_payout_deadline_notification": "⏰ Пардохти шарикии шумо дар давоми {days} рӯз мерасад.",
+        "partner_payout_rejected_notification": "❌ Дархости гирифтани {amount} рад карда шуд. Маблағ ба баланс баргашт.",
+        "partner_admin_message": "<b>✉️ Паём аз админ</b>\n\n<blockquote>{text}</blockquote>",
+    },
+    "ru": {
+        "partner_not_partner_text": (
+            "<b>🤝 Партнёрство</b>\n\n"
+            "Рекомендуйте HSK AI.\n"
+            "Если приглашённый вами пользователь оформит подписку, вы получите комиссию.\n\n"
+            "🎁 После подключения партнёрства вы получите бонус $1.\n"
+            "💸 Минимальная сумма вывода: $5\n\n"
+            "<i>Бонус $1 разблокируется после первой реальной оплаты referral-пользователя.</i>"
+        ),
+        "partner_apply_button": "✅ Стать партнёром",
+        "profile_to_course_button": "📚 Перейти в режим курса",
+        "profile_to_qa_button": "🤖 Перейти в AI Вопрос / QA",
+        "partner_back_button": "⬅️ Назад",
+        "partner_pending_text": (
+            "<b>🤝 Партнёрство</b>\n\n"
+            "⏳ Ваша заявка рассматривается.\n\n"
+            "После подтверждения вам откроется партнёрская ссылка."
+        ),
+        "partner_blocked_text": "<b>🤝 Партнёрство</b>\n\n⛔ Ваш партнёрский доступ заблокирован.",
+        "partner_active_text": (
+            "<b>🤝 Кабинет партнёра</b>\n\n"
+            "🔗 Ваша ссылка:\n<code>{link}</code>\n\n"
+            "💰 Баланс: <b>{balance}</b>\n"
+            "⏳ В процессе: <b>{in_progress}</b>\n"
+            "📤 Выведено: <b>{withdrawn}</b>\n\n"
+            "👥 Пришли: <b>{referrals}</b>\n"
+            "💳 Оплатили: <b>{paid_referrals}</b>"
+        ),
+        "partner_get_link_button": "📋 Получить ссылку",
+        "partner_payout_button": "💸 Вывести деньги",
+        "partner_link_text": "<b>📋 Ваша партнёрская ссылка</b>\n\n<code>{link}</code>",
+        "partner_application_channel_prompt": "<b>🤝 Заявка партнёра</b>\n\n1. Где вы будете рекламировать?",
+        "partner_application_audience_prompt": "<b>🤝 Заявка партнёра</b>\n\n2. Примерный размер аудитории?",
+        "partner_application_contact_prompt": "<b>🤝 Заявка партнёра</b>\n\n3. Username для связи?",
+        "partner_application_invalid": "Напишите ответ точнее.",
+        "partner_payout_unavailable_text": (
+            "<b>💸 Вывод средств</b>\n\n"
+            "Ваш баланс: <b>{balance}</b>\n"
+            "Минимальная сумма: <b>{minimum}</b>\n\n"
+            "Сейчас вывод недоступен."
+        ),
+        "partner_payout_choose_method": "<b>💸 Вывод средств</b>\n\nБаланс: <b>{balance}</b>\n\nВыберите способ выплаты:",
+        "partner_payout_bank_button": "Банковская карта",
+        "partner_payout_alipay_button": "Alipay",
+        "partner_payout_other_button": "Другое",
+        "partner_payout_bank_name_prompt": "<b>💸 Вывод средств</b>\n\nУкажите название банка.",
+        "partner_payout_account_prompt": "<b>💸 Вывод средств</b>\n\nУкажите номер карты или реквизиты.",
+        "partner_payout_holder_prompt": "<b>💸 Вывод средств</b>\n\nУкажите имя и фамилию получателя.",
+        "partner_payout_note_prompt": "<b>💸 Вывод средств</b>\n\nДобавьте комментарий. Если его нет, отправьте «-».",
+        "partner_payout_invalid": "Укажите данные точнее.",
+        "partner_payout_created_text": "<b>✅ Заявка на вывод отправлена</b>\n\nСумма: <b>{amount}</b>\n\nЭта сумма зарезервирована до рассмотрения.",
+        "partner_approved_notification": "<b>✅ Ваша партнёрская заявка одобрена</b>\n\nПартнёрская ссылка доступна.",
+        "partner_blocked_notification": "<b>⛔ Ваш партнёрский доступ заблокирован.</b>",
+        "partner_unblocked_notification": "<b>✅ Ваш партнёрский доступ снова открыт.</b>",
+        "partner_commission_notification": "<b>💰 Начислена комиссия</b>\n\nКомиссия: <b>{commission}</b>\n{bonus_line}",
+        "partner_bonus_unlocked_line": "🎁 Заблокированный бонус $1 разблокирован.",
+        "partner_payout_paid_notification": "<b>✅ Партнёрская выплата выполнена</b>\n\nСумма: <b>{amount}</b>",
+        "partner_payout_deadline_notification": "⏰ Ваша партнёрская выплата поступит в течение {days} дн.",
+        "partner_payout_rejected_notification": "❌ Запрос на вывод {amount} отклонён. Сумма возвращена на баланс.",
+        "partner_admin_message": "<b>✉️ Сообщение от администратора</b>\n\n<blockquote>{text}</blockquote>",
+    },
+    "uz": {
+        "partner_not_partner_text": (
+            "<b>🤝 Hamkorlik</b>\n\n"
+            "HSK AI'ni tavsiya qiling.\n"
+            "Siz olib kelgan user obuna olsa, siz komissiya olasiz.\n\n"
+            "🎁 Partner bo'lganingizda $1 bonus beriladi.\n"
+            "💸 Minimal yechish: $5\n\n"
+            "<i>$1 bonus 1 ta real paid referral bo'lgandan keyin ochiladi.</i>"
+        ),
+        "partner_apply_button": "✅ Partner bo'lish",
+        "profile_to_course_button": "📚 Kurs rejimiga o'tish",
+        "profile_to_qa_button": "🤖 AI Savol / QA rejimga o'tish",
+        "partner_back_button": "⬅️ Orqaga",
+        "partner_pending_text": (
+            "<b>🤝 Hamkorlik</b>\n\n"
+            "⏳ Arizangiz ko'rib chiqilmoqda.\n\n"
+            "Tasdiqlangandan keyin sizga partner havola ochiladi."
+        ),
+        "partner_blocked_text": "<b>🤝 Hamkorlik</b>\n\n⛔ Partnerlik kirishingiz bloklangan.",
+        "partner_active_text": (
+            "<b>🤝 Partner kabinet</b>\n\n"
+            "🔗 Havolangiz:\n<code>{link}</code>\n\n"
+            "💰 Balans: <b>{balance}</b>\n"
+            "⏳ Jarayonda: <b>{in_progress}</b>\n"
+            "📤 Yechib olingan: <b>{withdrawn}</b>\n\n"
+            "👥 Kelganlar: <b>{referrals}</b>\n"
+            "💳 To'lov qilganlar: <b>{paid_referrals}</b>"
+        ),
+        "partner_get_link_button": "📋 Linkni olish",
+        "partner_payout_button": "💸 Pul yechish",
+        "partner_link_text": "<b>📋 Partner havolangiz</b>\n\n<code>{link}</code>",
+        "partner_application_channel_prompt": "<b>🤝 Partner ariza</b>\n\n1. Qayerda reklama qilasiz?",
+        "partner_application_audience_prompt": "<b>🤝 Partner ariza</b>\n\n2. Taxminiy auditoriya soni?",
+        "partner_application_contact_prompt": "<b>🤝 Partner ariza</b>\n\n3. Aloqa username?",
+        "partner_application_invalid": "Javobni aniqroq yozing.",
+        "partner_payout_unavailable_text": (
+            "<b>💸 Pul yechish</b>\n\n"
+            "Balansingiz: <b>{balance}</b>\n"
+            "Minimal yechish: <b>{minimum}</b>\n\n"
+            "Hozircha pul yechish mumkin emas."
+        ),
+        "partner_payout_choose_method": "<b>💸 Pul yechish</b>\n\nBalans: <b>{balance}</b>\n\nTo'lov turini tanlang:",
+        "partner_payout_bank_button": "Bank karta",
+        "partner_payout_alipay_button": "Alipay",
+        "partner_payout_other_button": "Boshqa",
+        "partner_payout_bank_name_prompt": "<b>💸 Pul yechish</b>\n\nBank nomini yozing.",
+        "partner_payout_account_prompt": "<b>💸 Pul yechish</b>\n\nKarta raqami yoki rekvizitlarni yozing.",
+        "partner_payout_holder_prompt": "<b>💸 Pul yechish</b>\n\nIsm familiyangizni yozing.",
+        "partner_payout_note_prompt": "<b>💸 Pul yechish</b>\n\nIzoh yozing. Izoh bo'lmasa, «-» yuboring.",
+        "partner_payout_invalid": "Ma'lumotni aniqroq yozing.",
+        "partner_payout_created_text": "<b>✅ Payout request yuborildi</b>\n\nSumma: <b>{amount}</b>\n\nBu summa tekshiruv tugaguncha reserved qilindi.",
+        "partner_approved_notification": "<b>✅ Partner arizangiz tasdiqlandi</b>\n\nPartner havolangiz ochildi.",
+        "partner_blocked_notification": "<b>⛔ Partnerlik kirishingiz bloklandi.</b>",
+        "partner_unblocked_notification": "<b>✅ Partnerlik kirishingiz qayta ochildi.</b>",
+        "partner_commission_notification": "<b>💰 Komissiya yozildi</b>\n\nKomissiya: <b>{commission}</b>\n{bonus_line}",
+        "partner_bonus_unlocked_line": "🎁 Locked $1 bonus ochildi.",
+        "partner_payout_paid_notification": "<b>✅ Partner payout to'landi</b>\n\nSumma: <b>{amount}</b>",
+        "partner_payout_deadline_notification": "⏰ Partner payout'ingiz {days} kun ichida tushadi.",
+        "partner_payout_rejected_notification": "❌ {amount} payout request rad qilindi. Summa balansga qaytdi.",
+        "partner_admin_message": "<b>✉️ Admin xabari</b>\n\n<blockquote>{text}</blockquote>",
+    },
+}
+
 MINIAPP_COURSE_I18N = {
     "uz": {
         "course_miniapp_quiz_intro": "📝 Quiz vaqti\n\nEndi Dars {lesson_id} bo‘yicha qisqa testdan o‘ting.\nQuiz Mini App ichida ochiladi.\nNatija botga qaytib ko‘rsatiladi.",
@@ -1224,4 +1413,7 @@ for _lang, _texts in MINIAPP_COURSE_I18N.items():
     COURSE_I18N.setdefault(_lang, {}).update(_texts)
 
 for _lang, _texts in FEEDBACK_I18N.items():
+    TEXTS.setdefault(_lang, {}).update(_texts)
+
+for _lang, _texts in PARTNER_I18N.items():
     TEXTS.setdefault(_lang, {}).update(_texts)

@@ -2,14 +2,8 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from app.config import settings
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import CourseEngineService
-from app.services.referral_service import (
-    REFERRAL_TRIAL_ACCESS_DAYS,
-    REFERRAL_TRIAL_REQUIRED_ACTIVE,
-    ReferralService,
-)
 from app.bot.keyboards.subscription import payment_method_keyboard
 from app.bot.keyboards.course import reminder_time_keyboard
 from app.bot.utils.i18n import t
@@ -74,37 +68,24 @@ async def handle_profile_button(message: Message, state: FSMContext, session):
     await message.answer(
         _profile_text(user, lang, referral_total, reminder_text),
         parse_mode="HTML",
-        reply_markup=profile_menu_keyboard(lang),
+        reply_markup=profile_menu_keyboard(lang, user),
     )
 
 
 @router.message(F.text.in_([
-    "👥 Дӯст даъват кардан",
-    "👥 Пригласить друга",
-    "👥 Do'st chaqirish",
+    "🤝 Ҳамкорӣ",
+    "🤝 Партнёрство",
+    "🤝 Hamkorlik",
 ]))
-async def handle_invite_button(message: Message, state: FSMContext, session):
+async def handle_partner_button(message: Message, state: FSMContext, session):
+    from app.bot.handlers.partner import open_partner_for_message
+
     user_repo = UserRepository(session)
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     if not user:
         return
-    lang = user.language if user.language else "ru"
     await _clear_voice_mode(user, session, state)
-    await user_repo.ensure_referral_code(user)
-    trial_count = await ReferralService(session).get_trial_activation_progress(user)
-    await session.commit()
-
-    referral_link = f"https://t.me/{settings.BOT_USERNAME}?start={user.referral_code}"
-    text = t(
-        "referral_invite_text",
-        lang,
-        link=referral_link,
-        count=trial_count,
-        required=REFERRAL_TRIAL_REQUIRED_ACTIVE,
-        days=REFERRAL_TRIAL_ACCESS_DAYS,
-    )
-
-    await message.answer(text, parse_mode="HTML", disable_web_page_preview=True)
+    await open_partner_for_message(message, state, session)
 
 
 @router.message(F.text.in_([

@@ -5,7 +5,9 @@ from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
 from app.services.subscription_service import SubscriptionService
 from app.services.payment_notify_service import PaymentNotifyService
+from app.services.partner_service import PartnerService
 from app.bot.keyboards.admin_review import admin_reject_reason_keyboard
+from app.config import settings
 
 
 router = Router()
@@ -19,8 +21,15 @@ REJECT_REASON_LABELS = {
 }
 
 
+def _is_admin(telegram_id: int) -> bool:
+    return telegram_id in settings.admin_id_list
+
+
 @router.callback_query(F.data.startswith("admin_payment:approve:"))
 async def admin_payment_approve_handler(callback: CallbackQuery, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
     payment_repo = PaymentRepository(session)
     user_repo = UserRepository(session)
     subscription_service = SubscriptionService(session)
@@ -43,6 +52,7 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         discount_source=payment.discount_source,
         payment=payment,
     )
+    partner, commission_usd, unlocked_bonus = await PartnerService(session).record_approved_payment(payment)
 
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     await session.commit()
@@ -62,10 +72,21 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         bot=callback.bot,
         user=user,
     )
+    if partner:
+        await PartnerService(session).notify_partner(
+            callback.bot,
+            partner,
+            "partner_commission_notification",
+            commission=f"${commission_usd:.2f}",
+            include_bonus_line=unlocked_bonus,
+        )
 
 
 @router.callback_query(F.data.startswith("admin_payment:reject:"))
 async def admin_payment_reject_handler(callback: CallbackQuery, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
     payment_repo = PaymentRepository(session)
     user_repo = UserRepository(session)
     payment_notify_service = PaymentNotifyService()
@@ -100,6 +121,9 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
 
 @router.callback_query(F.data.startswith("admin_payment:reject_reason:"))
 async def admin_payment_reject_reason_select_handler(callback: CallbackQuery, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
     payment_id = int(callback.data.split(":")[2])
     await callback.answer()
     await callback.message.answer(
@@ -110,6 +134,9 @@ async def admin_payment_reject_reason_select_handler(callback: CallbackQuery, se
 
 @router.callback_query(F.data.startswith("admin_payment:reject_with:"))
 async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
     payment_repo = PaymentRepository(session)
     user_repo = UserRepository(session)
     payment_notify_service = PaymentNotifyService()
