@@ -337,46 +337,46 @@ async def _profile_referral_count(session, user) -> int:
     return await referral_repo.count_by_referrer(user.telegram_id)
 
 
-def profile_menu_keyboard(lang: str) -> InlineKeyboardMarkup:
+def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
     labels = {
         "tj": {
             "subscription": "💎 Обуна",
             "language": "🌐 Забон",
             "level": "📊 Дараҷа",
-            "course": "📚 Курс",
-            "qa": "💬 Саволу ҷавоб",
         },
         "uz": {
             "subscription": "💎 Obuna",
             "language": "🌐 Til",
             "level": "📊 Daraja",
-            "course": "📚 Kurs",
-            "qa": "💬 Savol-javob",
         },
         "ru": {
             "subscription": "💎 Подписка",
             "language": "🌐 Язык",
             "level": "📊 Уровень",
-            "course": "📚 Курс",
-            "qa": "💬 Вопрос-ответ",
         },
     }
     l = labels.get(lang, labels["ru"])
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
+    rows = [
             [
                 InlineKeyboardButton(text=l["subscription"], callback_data="subscription:open"),
                 InlineKeyboardButton(text=l["language"], callback_data="profile_menu:language"),
             ],
             [
                 InlineKeyboardButton(text=l["level"], callback_data="profile_menu:level"),
-                InlineKeyboardButton(text=l["course"], callback_data="profile_menu:course"),
             ],
-            [
-                InlineKeyboardButton(text=l["qa"], callback_data="profile_menu:qa"),
-            ],
-        ]
-    )
+    ]
+    if getattr(user, "learning_mode", "qa") == "course":
+        rows.append([
+                InlineKeyboardButton(text=t("profile_to_qa_button", lang), callback_data="profile_menu:qa"),
+        ])
+    else:
+        rows.append([
+                InlineKeyboardButton(text=t("profile_to_course_button", lang), callback_data="profile_menu:course"),
+        ])
+    rows.append([
+        InlineKeyboardButton(text=t("menu_partner", lang), callback_data="partner:open"),
+    ])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 @router.message(Command("profile"))
@@ -395,7 +395,7 @@ async def profile_command(message: Message, state: FSMContext, session):
     await message.answer(
         text,
         parse_mode="HTML",
-        reply_markup=profile_menu_keyboard(lang),
+        reply_markup=profile_menu_keyboard(lang, user),
     )
 
 

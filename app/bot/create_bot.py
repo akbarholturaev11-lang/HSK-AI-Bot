@@ -23,6 +23,8 @@ from app.bot.handlers.messages import router as messages_router
 from app.bot.handlers.course import router as course_router
 from app.bot.handlers.admin import router as admin_router
 from app.bot.handlers.admin_audio import router as admin_audio_router
+from app.bot.handlers.partner import router as partner_router
+from app.bot.handlers.admin_partner import router as admin_partner_router
 
 
 def create_bot(settings):
@@ -44,7 +46,9 @@ def create_bot(settings):
     dp.include_router(admin_broadcast_router)
     dp.include_router(admin_ads_router)
     dp.include_router(admin_audio_router)   # admin FSM flows must stay before generic text/photo handlers
+    dp.include_router(admin_partner_router)
     dp.include_router(feedback_router)
+    dp.include_router(partner_router)
     dp.include_router(referral_router)
     dp.include_router(subscription_router)
     dp.include_router(menu_router)
