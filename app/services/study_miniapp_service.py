@@ -60,11 +60,15 @@ class StudyMiniAppService:
         lesson_order = 0
 
         progress = await self.progress_repo.get_by_user_id(user.id)
-        if progress:
-            level = str(getattr(progress, "level", "") or level).strip().lower()
+        progress_level = str(getattr(progress, "level", "") or "").strip().lower()
+        if level not in {"hsk1", "hsk2", "hsk3", "hsk4", "hsk4a", "hsk4b"}:
+            level = progress_level
+
+        if progress and level == "hsk4" and progress_level == "hsk4":
             if progress.current_lesson_id:
                 lesson = await self.lesson_repo.get_by_id(progress.current_lesson_id)
-                lesson_order = int(getattr(lesson, "lesson_order", 0) or 0)
+                if str(getattr(lesson, "level", "") or "").strip().lower() == "hsk4":
+                    lesson_order = int(getattr(lesson, "lesson_order", 0) or 0)
 
         if level == "hsk4":
             return "hsk4b" if lesson_order > 10 else "hsk4a"
