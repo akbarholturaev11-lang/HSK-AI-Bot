@@ -38,11 +38,6 @@ def course_vocab_stroke_order_keyboard(
     vocab_page: int | None = None,
     next_callback: str = "course:go_next_step",
 ) -> InlineKeyboardMarkup:
-    labels = {
-        "uz": "✍️ Ieroglif yozilishini ko'rish",
-        "ru": "✍️ Посмотреть написание иероглифов",
-        "tj": "✍️ Тарзи навишти иероглифҳо",
-    }
     next_labels = {
         "uz": "▶️ Davom etamiz",
         "ru": "▶️ Продолжаем",
@@ -52,7 +47,7 @@ def course_vocab_stroke_order_keyboard(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=labels.get(lang, labels["ru"]),
+                    text="🀄",
                     web_app=WebAppInfo(
                         url=course_stroke_order_url(
                             lesson,
@@ -61,9 +56,7 @@ def course_vocab_stroke_order_keyboard(
                             vocab_page=vocab_page,
                         )
                     ),
-                )
-            ],
-            [
+                ),
                 InlineKeyboardButton(
                     text=next_labels.get(lang, next_labels["ru"]),
                     callback_data=next_callback,
