@@ -74,6 +74,7 @@ from app.services.referral_service import (
     REFERRAL_TRIAL_REQUIRED_ACTIVE,
     ReferralService,
 )
+from app.services.study_miniapp_service import StudyMiniAppService
 from app.bot.utils.i18n import t
 
 
@@ -820,6 +821,22 @@ async def handle_web_app_data(message: Message, session):
         payload = json.loads(message.web_app_data.data or "{}")
     except (TypeError, json.JSONDecodeError):
         payload = {}
+
+    action = str(payload.get("action") or "").strip()
+    if action == "open_subscription":
+        await StudyMiniAppService(session).send_subscription_menu(
+            message.bot,
+            message.from_user.id,
+        )
+        return
+
+    if action == "discuss_quiz_with_ai":
+        await StudyMiniAppService(session).send_quiz_ai_discussion(
+            message.bot,
+            message.from_user.id,
+            payload,
+        )
+        return
 
     if not await _send_miniapp_result_message(message, session, payload):
         user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
