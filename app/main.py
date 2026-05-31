@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 from aiogram import Bot
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
+from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import settings
 from app.bot.create_bot import create_bot
@@ -138,6 +139,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 
 
 @app.get("/health")
