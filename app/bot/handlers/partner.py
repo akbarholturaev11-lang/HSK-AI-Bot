@@ -17,7 +17,7 @@ from app.bot.keyboards.partner import (
 )
 from app.bot.utils.i18n import t
 from app.repositories.user_repo import UserRepository
-from app.services.partner_service import PARTNER_MIN_PAYOUT_USD, PartnerService
+from app.services.partner_service import PartnerService
 
 
 router = Router()
@@ -108,7 +108,16 @@ async def _render_partner_text(session, telegram_id: int) -> tuple[str, InlineKe
     partner = await service.repo.get_by_telegram_id(telegram_id)
 
     if not partner:
-        return t("partner_not_partner_text", lang), partner_apply_keyboard(lang)
+        return (
+            t(
+                "partner_not_partner_text",
+                lang,
+                commission_offer=await service.get_commission_offer(),
+                bonus=_fmt_usd(await service.get_signup_bonus_usd()),
+                minimum=_fmt_usd(await service.get_min_payout_usd()),
+            ),
+            partner_apply_keyboard(lang),
+        )
     if partner.status == "pending":
         return t("partner_pending_text", lang), partner_close_keyboard(lang)
     if partner.status == "blocked":
@@ -298,8 +307,9 @@ async def partner_payout_callback(callback: CallbackQuery, state: FSMContext, se
         await callback.answer()
         return
     balance = await service.get_balance(partner)
+    minimum = await service.get_min_payout_usd()
     await callback.answer()
-    if balance.balance_usd < PARTNER_MIN_PAYOUT_USD:
+    if balance.balance_usd < minimum:
         await _edit_callback_block(
             callback,
             state,
@@ -307,7 +317,7 @@ async def partner_payout_callback(callback: CallbackQuery, state: FSMContext, se
                 "partner_payout_unavailable_text",
                 lang,
                 balance=_fmt_usd(balance.balance_usd),
-                minimum=_fmt_usd(PARTNER_MIN_PAYOUT_USD),
+                minimum=_fmt_usd(minimum),
             ),
             partner_dashboard_keyboard(lang),
         )
@@ -405,6 +415,7 @@ async def partner_payout_note(message: Message, state: FSMContext, session):
     await _delete_answer(message)
     if not payout:
         balance = await service.get_balance(partner)
+        minimum = await service.get_min_payout_usd()
         await _edit_state_block(
             message,
             state,
@@ -412,7 +423,7 @@ async def partner_payout_note(message: Message, state: FSMContext, session):
                 "partner_payout_unavailable_text",
                 lang,
                 balance=_fmt_usd(balance.balance_usd),
-                minimum=_fmt_usd(PARTNER_MIN_PAYOUT_USD),
+                minimum=_fmt_usd(minimum),
             ),
             partner_dashboard_keyboard(lang),
         )
