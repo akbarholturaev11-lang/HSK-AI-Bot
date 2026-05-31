@@ -109,11 +109,40 @@ def admin_settings_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="💱 USDT kursini o'zgartirish", callback_data="adm:partners:set_rate")],
-            [InlineKeyboardButton(text="📈 Foizli komissiyani belgilash", callback_data="adm:partners:set_percent")],
-            [InlineKeyboardButton(text="💵 Aniq summa komissiyasini belgilash", callback_data="adm:partners:set_fixed")],
+            [InlineKeyboardButton(text="🧮 Hisoblash turini tanlash", callback_data="adm:partners:commission_mode")],
+            [InlineKeyboardButton(text="📈 Foizni o'zgartirish", callback_data="adm:partners:set_percent")],
+            [InlineKeyboardButton(text="💵 Belgilangan summani o'zgartirish", callback_data="adm:partners:set_fixed")],
             [InlineKeyboardButton(text="🎁 Bonusni o'zgartirish", callback_data="adm:partners:set_bonus")],
             [InlineKeyboardButton(text="💸 Minimal yechishni o'zgartirish", callback_data="adm:partners:set_minimum")],
             [InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")],
+        ]
+    )
+
+
+def admin_commission_mode_keyboard(commission_mode: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=f"{'✅' if commission_mode == 'percent' else '▫️'} Foizda hisoblash",
+                    callback_data="adm:partners:mode:percent",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=f"{'✅' if commission_mode == 'fixed' else '▫️'} Aniq summada hisoblash",
+                    callback_data="adm:partners:mode:fixed",
+                )
+            ],
+            [InlineKeyboardButton(text="⬅️ Sozlamalar", callback_data="adm:partners:settings")],
+        ]
+    )
+
+
+def admin_settings_back_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="⬅️ Sozlamalar", callback_data="adm:partners:settings")],
         ]
     )
 
@@ -142,13 +171,19 @@ async def _partner_detail_text(session, partner: Partner) -> str:
 async def _settings_text(session) -> str:
     service = PartnerService(session)
     commission_mode = await service.get_commission_mode()
-    mode_label = "Foizli" if commission_mode == "percent" else "Aniq summa"
+    mode_label = "Foizda hisoblash" if commission_mode == "percent" else "Aniq summada hisoblash"
+    active_value = (
+        f"{_fmt_number(await service.get_commission_percent())}%"
+        if commission_mode == "percent"
+        else f"${await service.get_commission_usd():.2f}"
+    )
     return (
         "⚙️ <b>Hamkorlik sozlamalari</b>\n\n"
         f"1 USDT = <b>{await service.get_usdt_tjs_rate():.4f} TJS</b>\n"
-        f"Faol komissiya turi: <b>{mode_label}</b>\n"
-        f"Foizli komissiya: <b>{_fmt_number(await service.get_commission_percent())}%</b>\n"
-        f"Aniq summa komissiyasi: <b>${await service.get_commission_usd():.2f}</b>\n"
+        f"Hisoblash turi: <b>{mode_label}</b>\n"
+        f"Faol komissiya: <b>{active_value}</b>\n\n"
+        f"Saqlangan foiz: <b>{_fmt_number(await service.get_commission_percent())}%</b>\n"
+        f"Saqlangan summa: <b>${await service.get_commission_usd():.2f}</b>\n"
         f"Hamkor bonusi: <b>${await service.get_signup_bonus_usd():.2f} locked</b>\n"
         f"Minimal payout: <b>${await service.get_min_payout_usd():.2f}</b>"
     )
@@ -445,6 +480,42 @@ async def admin_partner_settings(callback: CallbackQuery, state: FSMContext, ses
     await _edit_callback(callback, await _settings_text(session), admin_settings_keyboard())
 
 
+@router.callback_query(F.data == "adm:partners:commission_mode")
+async def admin_partner_commission_mode(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    await state.clear()
+    service = PartnerService(session)
+    commission_mode = await service.get_commission_mode()
+    mode_label = "Foizda hisoblash" if commission_mode == "percent" else "Aniq summada hisoblash"
+    await callback.answer()
+    await _edit_callback(
+        callback,
+        "🧮 <b>Komissiya hisoblash turi</b>\n\n"
+        "Faqat bitta tur faol bo'ladi.\n"
+        f"Hozirgi tanlov: <b>{mode_label}</b>",
+        admin_commission_mode_keyboard(commission_mode),
+    )
+
+
+@router.callback_query(F.data.startswith("adm:partners:mode:"))
+async def admin_partner_commission_mode_select(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    commission_mode = callback.data.split(":")[3]
+    if commission_mode not in {"percent", "fixed"}:
+        await callback.answer("Hisoblash turi noto'g'ri", show_alert=True)
+        return
+    await state.clear()
+    service = PartnerService(session)
+    await service.set_commission_mode(commission_mode)
+    await session.commit()
+    await callback.answer("Hisoblash turi saqlandi", show_alert=True)
+    await _edit_callback(callback, await _settings_text(session), admin_settings_keyboard())
+
+
 @router.callback_query(
     F.data.in_(
         {
@@ -482,7 +553,7 @@ async def admin_partner_setting_prompt(callback: CallbackQuery, state: FSMContex
     await _edit_callback(
         callback,
         prompts[setting_type],
-        admin_partner_back_keyboard(),
+        admin_settings_back_keyboard(),
     )
 
 
@@ -507,10 +578,8 @@ async def _save_decimal_setting(message: Message, state: FSMContext, session, se
         await service.set_usdt_tjs_rate(value)
     elif setting_type == "set_percent":
         await service.set_commission_percent(value)
-        await service.set_commission_mode("percent")
     elif setting_type == "set_fixed":
         await service.set_commission_usd(value)
-        await service.set_commission_mode("fixed")
     elif setting_type == "set_bonus":
         await service.set_signup_bonus_usd(value)
     else:
