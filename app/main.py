@@ -172,6 +172,11 @@ async def study_miniapp():
     return FileResponse("app/static/study.html")
 
 
+@app.get("/stroke-order.html")
+async def stroke_order_miniapp():
+    return FileResponse("app/static/stroke-order.html")
+
+
 @app.post("/api/miniapp/access")
 async def miniapp_access(request: Request):
     telegram_id = extract_verified_webapp_user_id(

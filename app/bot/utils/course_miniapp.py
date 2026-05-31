@@ -41,14 +41,11 @@ def is_course_miniapp_supported(lesson) -> bool:
     return min_lesson <= lesson_id <= max_lesson
 
 
-def _miniapp_base_url_for_level(level: str) -> str:
-    base_url = (settings.MINI_APP_BASE_URL or "").strip() or "https://YOURDOMAIN.com/hsk3.html"
-    normalized_level = (level or "").strip().lower()
-    target_file = {
-        "hsk1": "hsk1.html",
-        "hsk2": "hsk2.html",
-        "hsk4": "hsk4.html",
-    }.get(normalized_level, "hsk3.html")
+def _miniapp_base_url_for_file(target_file: str) -> str:
+    base_url = (
+        (settings.MINI_APP_BASE_URL or "").strip()
+        or "https://telegram-chinese-bot-production.up.railway.app/hsk3.html"
+    )
 
     parts = urlsplit(base_url)
     if parts.path.endswith(".html"):
@@ -56,6 +53,16 @@ def _miniapp_base_url_for_level(level: str) -> str:
         return urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
 
     return base_url.rstrip("/") + f"/{target_file}"
+
+
+def _miniapp_base_url_for_level(level: str) -> str:
+    normalized_level = (level or "").strip().lower()
+    target_file = {
+        "hsk1": "hsk1.html",
+        "hsk2": "hsk2.html",
+        "hsk4": "hsk4.html",
+    }.get(normalized_level, "hsk3.html")
+    return _miniapp_base_url_for_file(target_file)
 
 
 def course_miniapp_url(lesson, mode: str, lang: str | None = None, block_no: int | None = None) -> str:
@@ -71,6 +78,26 @@ def course_miniapp_url(lesson, mode: str, lang: str | None = None, block_no: int
         params["block"] = int(block_no)
     query = urlencode(params)
     return f"{base_url}{separator}{query}"
+
+
+def course_stroke_order_url(
+    lesson,
+    lang: str | None = None,
+    block_no: int | None = None,
+    vocab_page: int | None = None,
+) -> str:
+    base_url = _miniapp_base_url_for_file("stroke-order.html")
+    separator = "&" if "?" in base_url else "?"
+    params = {
+        "lesson": course_miniapp_lesson_id(lesson),
+        "level": (getattr(lesson, "level", "") or "hsk1").strip().lower(),
+        "lang": normalize_miniapp_lang(lang),
+    }
+    if block_no:
+        params["block"] = int(block_no)
+    if vocab_page in {1, 2}:
+        params["vocab_page"] = int(vocab_page)
+    return f"{base_url}{separator}{urlencode(params)}"
 
 
 def format_miniapp_quiz_intro(lang: str, lesson, block_no: int | None = None) -> str:
