@@ -22,6 +22,7 @@ from app.services.partner_service import PartnerService
 from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
+from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
@@ -38,6 +39,30 @@ logger = logging.getLogger(__name__)
 
 bot, dp = create_bot(settings)
 _last_feedback_check_at = None
+_study_ai_tasks = set()
+
+
+def _track_study_ai_task(task) -> None:
+    _study_ai_tasks.add(task)
+
+    def _done(completed_task):
+        _study_ai_tasks.discard(completed_task)
+        if completed_task.cancelled():
+            return
+        error = completed_task.exception()
+        if error:
+            logger.error(
+                "Study Mini App QA discussion failed: %s",
+                error,
+                exc_info=(type(error), error, error.__traceback__),
+            )
+
+    task.add_done_callback(_done)
+
+
+async def _send_study_quiz_ai_discussion(telegram_id: int, payload: dict) -> None:
+    async with async_session_maker() as session:
+        await StudyMiniAppService(session).send_quiz_ai_discussion(bot, telegram_id, payload)
 
 
 async def _seed_lessons() -> None:
@@ -97,12 +122,18 @@ async def lifespan(app: FastAPI):
         seed_task.cancel()
         polling_task.cancel()
         scheduler_task.cancel()
+        study_ai_tasks = tuple(_study_ai_tasks)
+        for task in study_ai_tasks:
+            task.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await seed_task
         with contextlib.suppress(asyncio.CancelledError):
             await polling_task
         with contextlib.suppress(asyncio.CancelledError):
             await scheduler_task
+        for task in study_ai_tasks:
+            with contextlib.suppress(asyncio.CancelledError):
+                await task
         await bot.session.close()
 
 
@@ -134,6 +165,24 @@ async def hsk2_miniapp():
     return FileResponse("app/static/hsk2.html")
 
 
+@app.get("/study.html")
+async def study_miniapp():
+    return FileResponse("app/static/study.html")
+
+
+@app.post("/api/miniapp/access")
+async def miniapp_access(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    async with async_session_maker() as session:
+        return await StudyMiniAppService(session).get_access_payload(telegram_id)
+
+
 @app.get("/api/miniapp/lesson")
 async def miniapp_lesson(lesson: int, lang: str = "uz", level: str = "hsk3", block: int | None = None):
     resolved_lang = normalize_miniapp_lang(lang)
@@ -161,6 +210,27 @@ async def miniapp_event(request: Request):
         return {"ok": True}
 
     async with async_session_maker() as session:
+        study_service = StudyMiniAppService(session)
+
+        if event == "subscribe_clicked":
+            sent = await study_service.send_subscription_menu(bot, telegram_id)
+            return {"ok": bool(sent)}
+
+        if event == "quiz_ai_discuss_clicked":
+            _track_study_ai_task(
+                asyncio.create_task(_send_study_quiz_ai_discussion(telegram_id, payload))
+            )
+            return {"ok": True}
+
+        if event in {
+            "study_quiz_completed",
+            "starred_changed",
+            "audio_played",
+            "language_changed",
+            "level_changed",
+        }:
+            return {"ok": True}
+
         if event == "app_error":
             saved = await AppErrorContextService(session).record_miniapp_error(
                 telegram_id=telegram_id,
