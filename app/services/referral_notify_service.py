@@ -8,12 +8,14 @@ class ReferralNotifyService:
         self,
         bot: Bot,
         referrer_user,
+        count: int,
+        required: int,
     ) -> None:
         if not referrer_user:
             return
 
         lang = referrer_user.language if referrer_user.language else "ru"
-        text = t("referral_bonus_received", lang)
+        text = t("referral_bonus_received", lang, count=count, required=required)
 
         try:
             await bot.send_message(

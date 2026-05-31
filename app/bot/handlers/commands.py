@@ -11,14 +11,10 @@ from aiogram.types import (
 from sqlalchemy import select, func
 from app.db.models.user import User
 
-from app.config import settings
 from app.repositories.user_repo import UserRepository
-from app.services.referral_service import (
-    REFERRAL_TRIAL_ACCESS_DAYS,
-    REFERRAL_TRIAL_REQUIRED_ACTIVE,
-    ReferralService,
-)
+from app.services.referral_service import ReferralService
 from app.bot.handlers.subscription import build_subscription_main_text_for_user
+from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.subscription import subscription_main_keyboard, payment_method_keyboard
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.utils.i18n import t
@@ -365,16 +361,14 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
                 InlineKeyboardButton(text=l["level"], callback_data="profile_menu:level"),
             ],
     ]
-    if getattr(user, "learning_mode", "qa") == "course":
-        rows.append([
-                InlineKeyboardButton(text=t("profile_to_qa_button", lang), callback_data="profile_menu:qa"),
-        ])
-    else:
-        rows.append([
-                InlineKeyboardButton(text=t("profile_to_course_button", lang), callback_data="profile_menu:course"),
-        ])
+    mode_button = (
+        InlineKeyboardButton(text=t("profile_to_qa_button", lang), callback_data="profile_menu:qa")
+        if getattr(user, "learning_mode", "qa") == "course"
+        else InlineKeyboardButton(text=t("profile_to_course_button", lang), callback_data="profile_menu:course")
+    )
     rows.append([
         InlineKeyboardButton(text=t("menu_partner", lang), callback_data="partner:open"),
+        mode_button,
     ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -528,25 +522,19 @@ async def invite_command_handler(message: Message, state: FSMContext, session):
         return
 
     await _clear_voice_mode(user, session, state)
-    await user_repo.ensure_referral_code(user)
-    trial_count = await ReferralService(session).get_trial_activation_progress(user)
+    referral_service = ReferralService(session)
+    lang, text = await referral_service.build_trial_progress_text(user)
     await session.commit()
 
-    referral_link = f"https://t.me/{settings.BOT_USERNAME}?start={user.referral_code}"
-    lang = user.language if user.language else "ru"
-    text = t(
-        "referral_invite_text",
-        lang,
-        link=referral_link,
-        count=trial_count,
-        required=REFERRAL_TRIAL_REQUIRED_ACTIVE,
-        days=REFERRAL_TRIAL_ACCESS_DAYS,
-    )
-
-    await message.answer(
+    sent = await message.answer(
         text,
         parse_mode="HTML",
         disable_web_page_preview=True,
+    )
+    await referral_service.remember_trial_progress_message(
+        user,
+        chat_id=sent.chat.id,
+        message_id=sent.message_id,
     )
 
 
@@ -694,4 +682,7 @@ async def profile_menu_qa(callback: CallbackQuery, state: FSMContext, session):
     await session.commit()
     lang = user.language if user.language else "ru"
     await callback.answer()
-    await callback.message.answer(t("send_first_message", lang))
+    await callback.message.answer(
+        t("send_first_message", lang),
+        reply_markup=main_menu_keyboard(lang),
+    )

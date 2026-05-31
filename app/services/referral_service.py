@@ -2,7 +2,10 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from aiogram import Bot
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 
+from app.bot.utils.i18n import t
+from app.config import settings
 from app.repositories.user_repo import UserRepository
 from app.repositories.referral_repo import ReferralRepository
 from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
@@ -52,6 +55,60 @@ class ReferralService:
             started_at=started_at,
         )
         return min(count, REFERRAL_TRIAL_REQUIRED_ACTIVE)
+
+    async def build_trial_progress_text(self, referrer) -> tuple[str, str]:
+        await self.user_repo.ensure_referral_code(referrer)
+        active_count = await self.get_trial_activation_progress(referrer)
+        joined_count = await self.referral_repo.count_by_referrer(referrer.telegram_id)
+        referral_link = f"https://t.me/{settings.BOT_USERNAME}?start={referrer.referral_code}"
+        lang = referrer.language if referrer.language else "ru"
+        return lang, t(
+            "referral_invite_text",
+            lang,
+            link=referral_link,
+            joined_count=joined_count,
+            count=active_count,
+            required=REFERRAL_TRIAL_REQUIRED_ACTIVE,
+            days=REFERRAL_TRIAL_ACCESS_DAYS,
+        )
+
+    async def remember_trial_progress_message(
+        self,
+        referrer,
+        chat_id: int,
+        message_id: int,
+    ) -> None:
+        await self.user_repo.set_referral_trial_progress_message(
+            referrer,
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+        await self.session.commit()
+
+    async def update_trial_progress_message(self, bot: Bot, referrer) -> None:
+        chat_id = getattr(referrer, "referral_trial_progress_chat_id", None)
+        message_id = getattr(referrer, "referral_trial_progress_message_id", None)
+        if not chat_id or not message_id:
+            return
+
+        _, text = await self.build_trial_progress_text(referrer)
+        try:
+            await bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=message_id,
+                text=text,
+                disable_web_page_preview=True,
+                parse_mode="HTML",
+            )
+        except TelegramBadRequest as exc:
+            if "message is not modified" in str(exc).lower():
+                return
+            await self.user_repo.clear_referral_trial_progress_message(referrer)
+        except TelegramForbiddenError:
+            await self.user_repo.clear_referral_trial_progress_message(referrer)
+        except Exception:
+            return
+        await self.session.commit()
 
     async def _grant_trial_access_if_ready(
         self,
@@ -109,6 +166,7 @@ class ReferralService:
         self,
         invited_user_telegram_id: int,
         referral_code: Optional[str],
+        bot: Optional[Bot] = None,
     ) -> None:
         if not referral_code:
             return
@@ -140,6 +198,8 @@ class ReferralService:
             invited_user_telegram_id=invited_user_telegram_id,
         )
         await self.session.commit()
+        if bot:
+            await self.update_trial_progress_message(bot, referrer)
 
     async def activate_referral_if_eligible(
         self,
@@ -185,19 +245,22 @@ class ReferralService:
             await self.user_repo.increment_discount_referral_count(referrer, 1)
             referral.counts_for_discount = True
 
+        trial_activation_progress = await self.get_trial_activation_progress(referrer)
         trial_access_unlocked = await self._grant_trial_access_if_ready(
             referrer=referrer,
             activated_at=referral.activated_at,
         )
 
         await self.session.commit()
+        await self.update_trial_progress_message(bot, referrer)
 
         if bonus_given_now and not referrer.discount_progress_message_id:
             await self.referral_notify_service.notify_bonus_received(
                 bot=bot,
                 referrer_user=referrer,
+                count=trial_activation_progress,
+                required=REFERRAL_TRIAL_REQUIRED_ACTIVE,
             )
-
         if trial_access_unlocked:
             await self.referral_notify_service.notify_trial_access_unlocked(
                 bot=bot,

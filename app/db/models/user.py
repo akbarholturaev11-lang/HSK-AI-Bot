@@ -54,6 +54,8 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    referral_trial_progress_chat_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
+    referral_trial_progress_message_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
       
     last_limit_reset_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
