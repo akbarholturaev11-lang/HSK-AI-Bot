@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.services.onboarding_service import OnboardingService
 from app.bot.utils.i18n import t
+from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.onboarding import language_keyboard, level_keyboard
 from app.bot.fsm.onboarding import OnboardingStates
 
@@ -28,6 +29,13 @@ def _challenge_context(base: str) -> str:
     return f"{base} {_OPTIONAL_CHALLENGE_CONTEXT_RULE}"
 
 
+def _menu_keyboard_for_user(user):
+    lang = user.language if user and user.language else "ru"
+    if getattr(user, "learning_mode", "qa") == "course":
+        return course_menu_keyboard(lang)
+    return main_menu_keyboard(lang)
+
+
 @router.message(CommandStart())
 async def cmd_start(
     message: Message,
@@ -45,13 +53,15 @@ async def cmd_start(
         full_name=message.from_user.full_name if message.from_user else None,
         username=message.from_user.username if message.from_user else None,
         referral_code=referral_code,
+        bot=message.bot,
     )
 
     await state.clear()
 
     if not created and user.language and user.level:
         await message.answer(
-            t("welcome_back", user.language, name=first_name)
+            t("welcome_back", user.language, name=first_name),
+            reply_markup=_menu_keyboard_for_user(user),
         )
         return
 
@@ -337,6 +347,7 @@ async def process_level(callback: CallbackQuery, state: FSMContext, session):
     await callback.message.answer(
         t("onboarding_special_welcome", user.language, user_num=user_num),
         parse_mode="HTML",
+        reply_markup=main_menu_keyboard(user.language),
     )
 
     display_text, ai_context = _get_demo_lesson(level, user.language)

@@ -175,6 +175,21 @@ class UserRepository:
         user.referral_code = self._generate_referral_code()
         await self.session.flush()
 
+    async def set_referral_trial_progress_message(
+        self,
+        user: User,
+        chat_id: int,
+        message_id: int,
+    ) -> None:
+        user.referral_trial_progress_chat_id = chat_id
+        user.referral_trial_progress_message_id = message_id
+        await self.session.flush()
+
+    async def clear_referral_trial_progress_message(self, user: User) -> None:
+        user.referral_trial_progress_chat_id = None
+        user.referral_trial_progress_message_id = None
+        await self.session.flush()
+
     async def was_daily_limit_offer_sent_today(self, user: User) -> bool:
         if not user.daily_limit_offer_sent_at:
             return False

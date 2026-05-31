@@ -43,9 +43,9 @@ TEXTS = {
         "access_daily_image_limit_reached": "<b>📸 Лимити фотои имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Лимити фотои имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
         "referral_invite_button": "👥 Дӯст даъват кардан",
-        "referral_bonus_received": "Таклифи шумо қабул шуд ✅\nБа шумо +5 саволи бонусӣ дода шуд. Акнун метавонед боз аз бот истифода баред.",
+        "referral_bonus_received": "Таклифи шумо қабул шуд ✅\nБа шумо +5 саволи бонусӣ дода шуд. Акнун метавонед боз аз бот истифода баред.\n\nҲисоби дастрасии 3-рӯза: {count}/{required}",
         "referral_trial_access_unlocked": "<b>✅ {days} рӯз дастрасии ройгон кушода шуд</b>\n\n<blockquote>Ин обунаи пулакӣ нест. Матн, курс ва фото бо лимити ройгони $2 кор мекунанд. Саволи овозӣ танҳо бо обунаи пулакӣ кушода мешавад.</blockquote>",
-        "referral_invite_text": "<b>Силкаи даъвати шумо:</b>\n<code>{link}</code>\n\n<blockquote>Дӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.\n\nҲисоб: {count}/{required}</blockquote>",
+        "referral_invite_text": "<b>Силкаи даъвати шумо:</b>\n<code>{link}</code>\n\n<blockquote>Дӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯсти фаъол даъват кунед ва {days} рӯз дастрасии ройгон гиред.\n\n👥 Бо силка даромаданд: {joined_count}\n✅ Ҳисоби фаъол: {count}/{required}</blockquote>",
 
         "payment_back": "⬅️ Бозгашт",        
         "btn_visa": "💳 VISA",
@@ -185,9 +185,9 @@ TEXTS = {
         "access_daily_image_limit_reached": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
         "referral_invite_button": "👥 Пригласить друга",
-        "referral_bonus_received": "Ваше приглашение принято ✅\nВам начислено +5 бонусных вопросов. Теперь вы снова можете пользоваться ботом.",
+        "referral_bonus_received": "Ваше приглашение принято ✅\nВам начислено +5 бонусных вопросов. Теперь вы снова можете пользоваться ботом.\n\nСчетчик доступа на 3 дня: {count}/{required}",
         "referral_trial_access_unlocked": "<b>✅ Открыт бесплатный доступ на {days} дня</b>\n\n<blockquote>Это не платная подписка. Текст, курс и фото работают с бесплатным лимитом $2. Голосовые вопросы открываются только с платной подпиской.</blockquote>",
-        "referral_invite_text": "<b>Ваша ссылка:</b>\n<code>{link}</code>\n\n<blockquote>Пригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.\n\nСчет: {count}/{required}</blockquote>",
+        "referral_invite_text": "<b>Ваша ссылка:</b>\n<code>{link}</code>\n\n<blockquote>Пригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} активных друзей и получите {days} дня бесплатного доступа.\n\n👥 Перешли по ссылке: {joined_count}\n✅ Активный счетчик: {count}/{required}</blockquote>",
         "subscription_expires_tomorrow": "Завтра день окончания вашей подписки.",
         "daily_limit_renewed": "✅ Ваш дневной лимит обновлён. Снова можете пользоваться ботом.",
         "access_payment_pending_review": "<b>⏳ Ваш платёж на проверке</b>\n\n<blockquote>Платёж отправлен на проверку. Пожалуйста, дождитесь подтверждения администратора.</blockquote>",
@@ -338,9 +338,9 @@ TEXTS = {
         "access_daily_image_limit_reached": "<b>📸 Bugungi foto limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Bugungi foto limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",
         "referral_invite_button": "👥 Do‘st chaqirish",
-        "referral_bonus_received": "Taklifingiz qabul qilindi ✅\nSizga +5 bonus savol berildi. Endi botdan yana foydalanishingiz mumkin.",
+        "referral_bonus_received": "Taklifingiz qabul qilindi ✅\nSizga +5 bonus savol berildi. Endi botdan yana foydalanishingiz mumkin.\n\n3 kunlik kirish hisobi: {count}/{required}",
         "referral_trial_access_unlocked": "<b>✅ {days} kun bepul foydalanish ochildi</b>\n\n<blockquote>Bu pullik obuna emas. Matn, kurs va foto 2 dollarlik bepul limit bilan ishlaydi. Ovozli savol faqat pullik obunada ochiladi.</blockquote>",
-        "referral_invite_text": "<b>Sizning taklif havolangiz:</b>\n<code>{link}</code>\n\n<blockquote>Do‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.\n\nHisob: {count}/{required}</blockquote>",
+        "referral_invite_text": "<b>Sizning taklif havolangiz:</b>\n<code>{link}</code>\n\n<blockquote>Do‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} ta faol do‘st chaqiring va {days} kun bepul foydalanish oling.\n\n👥 Havola orqali kirganlar: {joined_count}\n✅ Faol hisob: {count}/{required}</blockquote>",
 
         "payment_back": "⬅️ Orqaga",
         "payment_method_choose": "<b>💳 To‘lov usulini tanlang:</b>",
@@ -1164,9 +1164,9 @@ PARTNER_I18N = {
             "Бонус танҳо баъд аз аввалин пардохти ҳақиқии referral фаъол мегардад.\n\n"
             "💰 Минимал маблағи гирифтани пул: {minimum}"
         ),
-        "partner_apply_button": "✅ Шарик шудан",
-        "profile_to_course_button": "📚 Ба режими курс гузаштан",
-        "profile_to_qa_button": "🤖 Ба AI Савол / QA гузаштан",
+        "partner_apply_button": "✅ Ҳамкор шудан",
+        "profile_to_course_button": "📚 Курс",
+        "profile_to_qa_button": "💬 Саволу ҷавоб",
         "partner_back_button": "⬅️ Бозгашт",
         "partner_pending_text": (
             "<b>🤝 Ҳамкорӣ</b>\n\n"
@@ -1226,8 +1226,8 @@ PARTNER_I18N = {
             "💰 Минимальная сумма вывода: {minimum}"
         ),
         "partner_apply_button": "✅ Стать партнёром",
-        "profile_to_course_button": "📚 Перейти в режим курса",
-        "profile_to_qa_button": "🤖 Перейти в AI Вопрос / QA",
+        "profile_to_course_button": "📚 Курс",
+        "profile_to_qa_button": "💬 Вопрос-ответ",
         "partner_back_button": "⬅️ Назад",
         "partner_pending_text": (
             "<b>🤝 Партнёрство</b>\n\n"
@@ -1286,9 +1286,9 @@ PARTNER_I18N = {
             "Bonus faqat referral'ning birinchi haqiqiy to'lovidan keyin faollashadi.\n\n"
             "💰 Minimal pul yechish summasi: {minimum}"
         ),
-        "partner_apply_button": "✅ Partner bo'lish",
-        "profile_to_course_button": "📚 Kurs rejimiga o'tish",
-        "profile_to_qa_button": "🤖 AI Savol / QA rejimga o'tish",
+        "partner_apply_button": "✅ Hamkor bo'lish",
+        "profile_to_course_button": "📚 Kurs",
+        "profile_to_qa_button": "💬 Savol-javob",
         "partner_back_button": "⬅️ Orqaga",
         "partner_pending_text": (
             "<b>🤝 Hamkorlik</b>\n\n"
