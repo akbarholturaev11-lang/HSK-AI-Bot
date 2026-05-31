@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
-from app.bot.utils.course_miniapp import course_miniapp_url
+from app.bot.utils.course_miniapp import course_miniapp_url, course_stroke_order_url
 from app.bot.utils.i18n import t
 
 
@@ -24,6 +24,49 @@ def course_homework_miniapp_keyboard(lang: str, lesson) -> InlineKeyboardMarkup:
                 InlineKeyboardButton(
                     text=t("course_miniapp_homework_button", lang),
                     web_app=WebAppInfo(url=course_miniapp_url(lesson, "homework", lang)),
+                )
+            ],
+        ]
+    )
+
+
+def course_vocab_stroke_order_keyboard(
+    lang: str,
+    lesson,
+    *,
+    block_no: int | None = None,
+    vocab_page: int | None = None,
+    next_callback: str = "course:go_next_step",
+) -> InlineKeyboardMarkup:
+    labels = {
+        "uz": "✍️ Ieroglif yozilishini ko'rish",
+        "ru": "✍️ Посмотреть написание иероглифов",
+        "tj": "✍️ Тарзи навишти иероглифҳо",
+    }
+    next_labels = {
+        "uz": "▶️ Davom etamiz",
+        "ru": "▶️ Продолжаем",
+        "tj": "▶️ Идома медиҳем",
+    }
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=labels.get(lang, labels["ru"]),
+                    web_app=WebAppInfo(
+                        url=course_stroke_order_url(
+                            lesson,
+                            lang,
+                            block_no=block_no,
+                            vocab_page=vocab_page,
+                        )
+                    ),
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=next_labels.get(lang, next_labels["ru"]),
+                    callback_data=next_callback,
                 )
             ],
         ]

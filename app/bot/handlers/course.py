@@ -19,9 +19,9 @@ from app.services.course_progress_summary_service import CourseProgressSummarySe
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course import (
     lesson_selection_keyboard, review_choice_keyboard,
-    course_intro_keyboard, course_vocab_keyboard, course_dialogue_keyboard,
+    course_intro_keyboard, course_dialogue_keyboard,
     course_grammar_keyboard, course_homework_keyboard,
-    course_next_step_keyboard, course_vocab_v2_keyboard, course_dialogue_n_keyboard,
+    course_next_step_keyboard, course_dialogue_n_keyboard,
     next_study_time_inline_keyboard,
     hsk4_part_selection_keyboard, filter_hsk4_lessons_by_part, normalize_hsk4_part,
 )
@@ -37,6 +37,7 @@ from app.bot.keyboards.course_context import (
 from app.bot.keyboards.course_miniapp import (
     course_homework_miniapp_keyboard,
     course_quiz_miniapp_keyboard,
+    course_vocab_stroke_order_keyboard,
 )
 
 from app.config import COURSE_MODE_ENABLED
@@ -1185,7 +1186,11 @@ def _keyboard_for_step(lang: str, step: str, lesson=None):
     if step == "intro" and v2:
         return course_next_step_keyboard(lang)
     if is_block_vocab_step(step):
-        return course_vocab_v2_keyboard(lang)
+        return course_vocab_stroke_order_keyboard(
+            lang,
+            lesson,
+            block_no=get_block_no_from_step(step),
+        )
     if is_block_grammar_step(step):
         return course_next_step_keyboard(lang)
     if is_block_quiz_step(step):
@@ -1195,7 +1200,11 @@ def _keyboard_for_step(lang: str, step: str, lesson=None):
         return course_next_step_keyboard(lang)
     # V2 vocab steps — audio + next
     if step in ("vocab_1", "vocab_2"):
-        return course_vocab_v2_keyboard(lang)
+        return course_vocab_stroke_order_keyboard(
+            lang,
+            lesson,
+            vocab_page=1 if step == "vocab_1" else 2,
+        )
     # V2 dialogue_N steps — audio + next
     if step.startswith("dialogue_"):
         try:
@@ -1210,7 +1219,11 @@ def _keyboard_for_step(lang: str, step: str, lesson=None):
     if step == "intro":
         return course_intro_keyboard(lang)
     if step == "vocab":
-        return course_vocab_keyboard(lang)
+        return course_vocab_stroke_order_keyboard(
+            lang,
+            lesson,
+            next_callback="course:go_dialogue",
+        )
     if step == "dialogue":
         return course_dialogue_keyboard(lang)
     if step == "grammar":
