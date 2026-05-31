@@ -1157,12 +1157,12 @@ FEEDBACK_I18N = {
 PARTNER_I18N = {
     "tj": {
         "partner_not_partner_text": (
-            "<b>🤝 Ҳамкорӣ</b>\n\n"
-            "HSK AI-ро тавсия диҳед.\n"
-            "Агар корбари овардаи шумо обуна гирад, шумо комиссия мегиред.\n\n"
-            "🎁 Пас аз шарик шудан ба шумо $1 бонус дода мешавад.\n"
-            "💸 Ҳадди ақали гирифтани пул: $5\n\n"
-            "<i>Бонуси $1 баъд аз пардохти ҳақиқии аввалини referral кушода мешавад.</i>"
+            "<b>🤝 Барномаи ҳамкорӣ</b>\n\n"
+            "HSK AI-ро ба аудитория, дӯстон ё шиносҳои худ тавсия диҳед ва аз ҳар "
+            "обунаи referral-и худ {commission_offer} даромад гиред. 💸\n\n"
+            "🎁 Пас аз ҳамкор шудан, ба шумо {bonus} бонус дода мешавад.\n\n"
+            "Бонус танҳо баъд аз аввалин пардохти ҳақиқии referral фаъол мегардад.\n\n"
+            "💰 Минимал маблағи гирифтани пул: {minimum}"
         ),
         "partner_apply_button": "✅ Шарик шудан",
         "profile_to_course_button": "📚 Ба режими курс гузаштан",
@@ -1210,7 +1210,7 @@ PARTNER_I18N = {
         "partner_blocked_notification": "<b>⛔ Дастрасии шарикии шумо баста шуд.</b>",
         "partner_unblocked_notification": "<b>✅ Дастрасии шарикии шумо дубора кушода шуд.</b>",
         "partner_commission_notification": "<b>💰 Комиссия илова шуд</b>\n\nКомиссия: <b>{commission}</b>\n{bonus_line}",
-        "partner_bonus_unlocked_line": "🎁 Бонуси locked $1 кушода шуд.",
+        "partner_bonus_unlocked_line": "🎁 Бонуси locked {bonus} кушода шуд.",
         "partner_payout_paid_notification": "<b>✅ Пардохти шарикӣ иҷро шуд</b>\n\nМаблағ: <b>{amount}</b>",
         "partner_payout_deadline_notification": "⏰ Пардохти шарикии шумо дар давоми {days} рӯз мерасад.",
         "partner_payout_rejected_notification": "❌ Дархости гирифтани {amount} рад карда шуд. Маблағ ба баланс баргашт.",
@@ -1218,12 +1218,12 @@ PARTNER_I18N = {
     },
     "ru": {
         "partner_not_partner_text": (
-            "<b>🤝 Партнёрство</b>\n\n"
-            "Рекомендуйте HSK AI.\n"
-            "Если приглашённый вами пользователь оформит подписку, вы получите комиссию.\n\n"
-            "🎁 После подключения партнёрства вы получите бонус $1.\n"
-            "💸 Минимальная сумма вывода: $5\n\n"
-            "<i>Бонус $1 разблокируется после первой реальной оплаты referral-пользователя.</i>"
+            "<b>🤝 Партнёрская программа</b>\n\n"
+            "Рекомендуйте HSK AI своей аудитории, друзьям или знакомым и получайте "
+            "{commission_offer} дохода с каждой referral-подписки. 💸\n\n"
+            "🎁 После подключения партнёрства вы получите бонус {bonus}.\n\n"
+            "Бонус активируется только после первой реальной оплаты referral-пользователя.\n\n"
+            "💰 Минимальная сумма вывода: {minimum}"
         ),
         "partner_apply_button": "✅ Стать партнёром",
         "profile_to_course_button": "📚 Перейти в режим курса",
@@ -1271,7 +1271,7 @@ PARTNER_I18N = {
         "partner_blocked_notification": "<b>⛔ Ваш партнёрский доступ заблокирован.</b>",
         "partner_unblocked_notification": "<b>✅ Ваш партнёрский доступ снова открыт.</b>",
         "partner_commission_notification": "<b>💰 Начислена комиссия</b>\n\nКомиссия: <b>{commission}</b>\n{bonus_line}",
-        "partner_bonus_unlocked_line": "🎁 Заблокированный бонус $1 разблокирован.",
+        "partner_bonus_unlocked_line": "🎁 Заблокированный бонус {bonus} разблокирован.",
         "partner_payout_paid_notification": "<b>✅ Партнёрская выплата выполнена</b>\n\nСумма: <b>{amount}</b>",
         "partner_payout_deadline_notification": "⏰ Ваша партнёрская выплата поступит в течение {days} дн.",
         "partner_payout_rejected_notification": "❌ Запрос на вывод {amount} отклонён. Сумма возвращена на баланс.",
@@ -1279,12 +1279,12 @@ PARTNER_I18N = {
     },
     "uz": {
         "partner_not_partner_text": (
-            "<b>🤝 Hamkorlik</b>\n\n"
-            "HSK AI'ni tavsiya qiling.\n"
-            "Siz olib kelgan user obuna olsa, siz komissiya olasiz.\n\n"
-            "🎁 Partner bo'lganingizda $1 bonus beriladi.\n"
-            "💸 Minimal yechish: $5\n\n"
-            "<i>$1 bonus 1 ta real paid referral bo'lgandan keyin ochiladi.</i>"
+            "<b>🤝 Hamkorlik dasturi</b>\n\n"
+            "HSK AI'ni auditoriyangiz, do'stlaringiz yoki tanishlaringizga tavsiya qiling "
+            "va har bir referral obunasidan {commission_offer} daromad oling. 💸\n\n"
+            "🎁 Hamkor bo'lganingizdan keyin sizga {bonus} bonus beriladi.\n\n"
+            "Bonus faqat referral'ning birinchi haqiqiy to'lovidan keyin faollashadi.\n\n"
+            "💰 Minimal pul yechish summasi: {minimum}"
         ),
         "partner_apply_button": "✅ Partner bo'lish",
         "profile_to_course_button": "📚 Kurs rejimiga o'tish",
@@ -1332,7 +1332,7 @@ PARTNER_I18N = {
         "partner_blocked_notification": "<b>⛔ Partnerlik kirishingiz bloklandi.</b>",
         "partner_unblocked_notification": "<b>✅ Partnerlik kirishingiz qayta ochildi.</b>",
         "partner_commission_notification": "<b>💰 Komissiya yozildi</b>\n\nKomissiya: <b>{commission}</b>\n{bonus_line}",
-        "partner_bonus_unlocked_line": "🎁 Locked $1 bonus ochildi.",
+        "partner_bonus_unlocked_line": "🎁 Locked {bonus} bonus ochildi.",
         "partner_payout_paid_notification": "<b>✅ Partner payout to'landi</b>\n\nSumma: <b>{amount}</b>",
         "partner_payout_deadline_notification": "⏰ Partner payout'ingiz {days} kun ichida tushadi.",
         "partner_payout_rejected_notification": "❌ {amount} payout request rad qilindi. Summa balansga qaytdi.",

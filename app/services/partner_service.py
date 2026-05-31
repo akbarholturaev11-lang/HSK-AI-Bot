@@ -14,15 +14,22 @@ from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.partner_repo import PartnerRepository
 from app.repositories.user_repo import UserRepository
+from app.services.portfolio_service import PortfolioService
 
 
 PARTNER_LINK_PREFIX = "partner_"
-PARTNER_USD_RATE_KEY = "partner_usd_rate"
+PARTNER_USDT_TJS_RATE_KEY = "partner_usd_rate"
+PARTNER_COMMISSION_MODE_KEY = "partner_commission_mode"
+PARTNER_COMMISSION_PERCENT_KEY = "partner_commission_percent"
 PARTNER_COMMISSION_USD_KEY = "partner_commission_usd"
-DEFAULT_PARTNER_USD_RATE = Decimal("10.90")
+PARTNER_SIGNUP_BONUS_USD_KEY = "partner_signup_bonus_usd"
+PARTNER_MIN_PAYOUT_USD_KEY = "partner_min_payout_usd"
+DEFAULT_PARTNER_USDT_TJS_RATE = Decimal("10.90")
+DEFAULT_PARTNER_COMMISSION_MODE = "percent"
+DEFAULT_PARTNER_COMMISSION_PERCENT = Decimal("20.00")
 DEFAULT_PARTNER_COMMISSION_USD = Decimal("1.00")
-PARTNER_SIGNUP_BONUS_USD = Decimal("1.00")
-PARTNER_MIN_PAYOUT_USD = Decimal("5.00")
+DEFAULT_PARTNER_SIGNUP_BONUS_USD = Decimal("1.00")
+DEFAULT_PARTNER_MIN_PAYOUT_USD = Decimal("5.00")
 OPEN_PAYOUT_STATUSES = ("pending", "deadline_set")
 
 
@@ -45,7 +52,10 @@ class PartnerService:
     def _money(self, value) -> Decimal:
         return Decimal(value or 0).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
-    async def _get_decimal_setting(self, key: str, default: Decimal) -> Decimal:
+    def _compact_decimal(self, value: Decimal) -> str:
+        return format(value.normalize(), "f")
+
+    async def _get_decimal_setting(self, key: str, default: Decimal, *, allow_zero: bool = False) -> Decimal:
         raw_value = await self.setting_repo.get(key)
         if raw_value is None:
             return default
@@ -53,21 +63,87 @@ class PartnerService:
             value = Decimal(raw_value)
         except (InvalidOperation, TypeError):
             return default
-        return value if value > 0 else default
+        if value > 0 or (allow_zero and value == 0):
+            return value
+        return default
 
-    async def get_usd_rate(self) -> Decimal:
-        return await self._get_decimal_setting(PARTNER_USD_RATE_KEY, DEFAULT_PARTNER_USD_RATE)
+    async def get_usdt_tjs_rate(self) -> Decimal:
+        return await self._get_decimal_setting(PARTNER_USDT_TJS_RATE_KEY, DEFAULT_PARTNER_USDT_TJS_RATE)
 
-    async def set_usd_rate(self, value: Decimal) -> None:
-        await self.setting_repo.set(PARTNER_USD_RATE_KEY, str(value.quantize(Decimal("0.0001"))))
+    async def set_usdt_tjs_rate(self, value: Decimal) -> None:
+        await self.setting_repo.set(PARTNER_USDT_TJS_RATE_KEY, str(value.quantize(Decimal("0.0001"))))
+
+    async def get_commission_mode(self) -> str:
+        value = await self.setting_repo.get(PARTNER_COMMISSION_MODE_KEY)
+        return value if value in {"percent", "fixed"} else DEFAULT_PARTNER_COMMISSION_MODE
+
+    async def set_commission_mode(self, value: str) -> None:
+        if value not in {"percent", "fixed"}:
+            raise ValueError("Unsupported partner commission mode")
+        await self.setting_repo.set(PARTNER_COMMISSION_MODE_KEY, value)
+
+    async def get_commission_percent(self) -> Decimal:
+        return self._money(
+            await self._get_decimal_setting(
+                PARTNER_COMMISSION_PERCENT_KEY,
+                DEFAULT_PARTNER_COMMISSION_PERCENT,
+                allow_zero=True,
+            )
+        )
+
+    async def set_commission_percent(self, value: Decimal) -> None:
+        await self.setting_repo.set(PARTNER_COMMISSION_PERCENT_KEY, str(self._money(value)))
 
     async def get_commission_usd(self) -> Decimal:
         return self._money(
-            await self._get_decimal_setting(PARTNER_COMMISSION_USD_KEY, DEFAULT_PARTNER_COMMISSION_USD)
+            await self._get_decimal_setting(
+                PARTNER_COMMISSION_USD_KEY,
+                DEFAULT_PARTNER_COMMISSION_USD,
+                allow_zero=True,
+            )
         )
 
     async def set_commission_usd(self, value: Decimal) -> None:
         await self.setting_repo.set(PARTNER_COMMISSION_USD_KEY, str(self._money(value)))
+
+    async def get_signup_bonus_usd(self) -> Decimal:
+        return self._money(
+            await self._get_decimal_setting(
+                PARTNER_SIGNUP_BONUS_USD_KEY,
+                DEFAULT_PARTNER_SIGNUP_BONUS_USD,
+                allow_zero=True,
+            )
+        )
+
+    async def set_signup_bonus_usd(self, value: Decimal) -> None:
+        await self.setting_repo.set(PARTNER_SIGNUP_BONUS_USD_KEY, str(self._money(value)))
+
+    async def get_min_payout_usd(self) -> Decimal:
+        return self._money(
+            await self._get_decimal_setting(PARTNER_MIN_PAYOUT_USD_KEY, DEFAULT_PARTNER_MIN_PAYOUT_USD)
+        )
+
+    async def set_min_payout_usd(self, value: Decimal) -> None:
+        await self.setting_repo.set(PARTNER_MIN_PAYOUT_USD_KEY, str(self._money(value)))
+
+    async def get_commission_offer(self) -> str:
+        if await self.get_commission_mode() == "fixed":
+            return f"${await self.get_commission_usd():.2f}"
+        return f"{self._compact_decimal(await self.get_commission_percent())}%"
+
+    async def calculate_commission_usd(self, payment) -> Decimal:
+        if await self.get_commission_mode() == "fixed":
+            return await self.get_commission_usd()
+        currency_key = (payment.currency or "").strip().lower()
+        if currency_key in {"somoni", "tjs", "сомони"}:
+            revenue_usd = Decimal(str(payment.amount)) / await self.get_usdt_tjs_rate()
+        else:
+            converted = PortfolioService(None).amount_to_usd(payment.amount, payment.currency)
+            revenue_usd = Decimal(str(converted)) if converted is not None else None
+        if revenue_usd is None:
+            return Decimal("0.00")
+        percent = await self.get_commission_percent()
+        return self._money(revenue_usd * percent / Decimal("100"))
 
     async def submit_application(
         self,
@@ -87,12 +163,14 @@ class PartnerService:
     async def approve(self, partner: Partner, admin_telegram_id: int) -> None:
         await self.repo.set_status(partner, "active", admin_telegram_id)
         if not await self.repo.get_signup_bonus(partner.id):
-            await self.repo.add_credit(
-                partner_id=partner.id,
-                credit_type="signup_bonus",
-                amount_usd=PARTNER_SIGNUP_BONUS_USD,
-                is_locked=True,
-            )
+            bonus = await self.get_signup_bonus_usd()
+            if bonus > 0:
+                await self.repo.add_credit(
+                    partner_id=partner.id,
+                    credit_type="signup_bonus",
+                    amount_usd=bonus,
+                    is_locked=True,
+                )
 
     async def block(self, partner: Partner, admin_telegram_id: int) -> None:
         await self.repo.set_status(partner, "blocked", admin_telegram_id)
@@ -136,7 +214,7 @@ class PartnerService:
         if not partner or partner.status != "active":
             return None, Decimal("0.00"), False
 
-        commission = await self.get_commission_usd()
+        commission = await self.calculate_commission_usd(payment)
         await self.repo.add_credit(
             partner_id=partner.id,
             credit_type="paid_referral_commission",
@@ -172,9 +250,9 @@ class PartnerService:
         note: Optional[str],
     ) -> Optional[PartnerPayout]:
         balance = await self.get_balance(partner)
-        if balance.balance_usd < PARTNER_MIN_PAYOUT_USD:
+        if balance.balance_usd < await self.get_min_payout_usd():
             return None
-        rate = await self.get_usd_rate()
+        rate = await self.get_usdt_tjs_rate()
         local_amount = (balance.balance_usd * rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         return await self.repo.create_payout(
             partner_id=partner.id,
@@ -192,7 +270,7 @@ class PartnerService:
         from app.bot.handlers.admin_partner import admin_partner_detail_keyboard
 
         text = (
-            "🤝 <b>Yangi partner arizasi</b>\n\n"
+            "🤝 <b>Yangi hamkorlik arizasi</b>\n\n"
             f"Telegram ID: <code>{partner.user_telegram_id}</code>\n"
             f"Reklama joyi: {escape(partner.promotion_channel)}\n"
             f"Auditoriya: {escape(partner.audience_size)}\n"
@@ -228,12 +306,12 @@ class PartnerService:
         balance = await self.get_balance(partner) if partner else None
         username = f"@{escape(user.username)}" if user and user.username else "—"
         return (
-            "💸 <b>Partner payout request</b>\n\n"
-            f"Partner: <b>{username}</b>\n"
+            "💸 <b>Hamkor pul yechish so'rovi</b>\n\n"
+            f"Hamkor: <b>{username}</b>\n"
             f"Telegram ID: <code>{partner.user_telegram_id if partner else '—'}</code>\n"
             f"So'ralgan summa: <b>${payout.amount_usd:.2f}</b>\n"
-            f"Kurs: <code>1 USD = {payout.exchange_rate:.4f} som</code>\n"
-            f"To'lanadi: <b>{payout.local_amount:.2f} som</b>\n\n"
+            f"Kurs: <code>1 USDT = {payout.exchange_rate:.4f} TJS</code>\n"
+            f"To'lanadi: <b>{payout.local_amount:.2f} somoni</b>\n\n"
             f"Balans: <b>${balance.balance_usd:.2f}</b>\n"
             f"Jarayonda: <b>${balance.in_progress_usd:.2f}</b>\n"
             f"Yechilgan jami: <b>${balance.withdrawn_usd:.2f}</b>\n"
@@ -252,7 +330,7 @@ class PartnerService:
                 try:
                     await bot.send_message(
                         chat_id=admin_id,
-                        text=f"⏰ Partner payout #{payout.id} muddati keldi.\n\n{await self.build_admin_payout_text(payout)}",
+                        text=f"⏰ Hamkor payout #{payout.id} muddati keldi.\n\n{await self.build_admin_payout_text(payout)}",
                     )
                 except Exception:
                     pass
@@ -266,7 +344,12 @@ class PartnerService:
         lang = user.language or "ru"
         include_bonus_line = kwargs.pop("include_bonus_line", False)
         if key == "partner_commission_notification":
-            kwargs["bonus_line"] = t("partner_bonus_unlocked_line", lang) if include_bonus_line else ""
+            signup_bonus = await self.repo.get_signup_bonus(partner.id) if include_bonus_line else None
+            kwargs["bonus_line"] = (
+                t("partner_bonus_unlocked_line", lang, bonus=f"${signup_bonus.amount_usd:.2f}")
+                if signup_bonus
+                else ""
+            )
         try:
             await bot.send_message(
                 chat_id=user.telegram_id,

@@ -23,6 +23,18 @@ def _is_admin(telegram_id: int) -> bool:
     return telegram_id in settings.admin_id_list
 
 
+def _fmt_number(value: Decimal) -> str:
+    return format(value.normalize(), "f")
+
+
+def _status_label(status: str) -> str:
+    return {
+        "pending": "Kutilmoqda",
+        "active": "Faol",
+        "blocked": "Bloklangan",
+    }.get(status, status)
+
+
 async def _edit_callback(
     callback: CallbackQuery,
     text: str,
@@ -38,10 +50,10 @@ async def _edit_callback(
 def admin_partners_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="⏳ Pending arizalar", callback_data="adm:partners:pending")],
-            [InlineKeyboardButton(text="✅ Active partnerlar", callback_data="adm:partners:active")],
-            [InlineKeyboardButton(text="💸 Payout requestlar", callback_data="adm:partners:payouts")],
-            [InlineKeyboardButton(text="💱 USD kursi va komissiya", callback_data="adm:partners:settings")],
+            [InlineKeyboardButton(text="⏳ Kutilayotgan arizalar", callback_data="adm:partners:pending")],
+            [InlineKeyboardButton(text="✅ Faol hamkorlar", callback_data="adm:partners:active")],
+            [InlineKeyboardButton(text="💸 Pul yechish so'rovlari", callback_data="adm:partners:payouts")],
+            [InlineKeyboardButton(text="⚙️ Hamkorlik sozlamalari", callback_data="adm:partners:settings")],
             [InlineKeyboardButton(text="📊 Umumiy statistika", callback_data="adm:partners:stats")],
             [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
         ]
@@ -51,7 +63,7 @@ def admin_partners_keyboard() -> InlineKeyboardMarkup:
 def admin_partner_back_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="⬅️ Partnerlar", callback_data="adm:partners")],
+            [InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")],
         ]
     )
 
@@ -59,12 +71,12 @@ def admin_partner_back_keyboard() -> InlineKeyboardMarkup:
 def admin_partner_detail_keyboard(partner: Partner) -> InlineKeyboardMarkup:
     rows = []
     if partner.status == "pending":
-        rows.append([InlineKeyboardButton(text="✅ Approve", callback_data=f"adm:partner_approve:{partner.id}")])
+        rows.append([InlineKeyboardButton(text="✅ Tasdiqlash", callback_data=f"adm:partner_approve:{partner.id}")])
     if partner.status == "active":
-        rows.append([InlineKeyboardButton(text="⛔ Block", callback_data=f"adm:partner_block:{partner.id}")])
+        rows.append([InlineKeyboardButton(text="⛔ Bloklash", callback_data=f"adm:partner_block:{partner.id}")])
     if partner.status == "blocked":
-        rows.append([InlineKeyboardButton(text="✅ Unblock", callback_data=f"adm:partner_unblock:{partner.id}")])
-    rows.append([InlineKeyboardButton(text="⬅️ Partnerlar", callback_data="adm:partners")])
+        rows.append([InlineKeyboardButton(text="✅ Blokdan chiqarish", callback_data=f"adm:partner_unblock:{partner.id}")])
+    rows.append([InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -75,7 +87,7 @@ def admin_payout_keyboard(payout_id: int) -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="✉️ Xabar yuborish", callback_data=f"adm:payout_message:{payout_id}")],
             [InlineKeyboardButton(text="⏰ Muddat belgilash", callback_data=f"adm:payout_deadline:{payout_id}")],
             [InlineKeyboardButton(text="❌ Rad qilish", callback_data=f"adm:payout_reject:{payout_id}")],
-            [InlineKeyboardButton(text="⬅️ Partnerlar", callback_data="adm:partners")],
+            [InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")],
         ]
     )
 
@@ -88,7 +100,7 @@ def admin_deadline_keyboard(payout_id: int) -> InlineKeyboardMarkup:
                 InlineKeyboardButton(text="3 kun", callback_data=f"adm:payout_due:{payout_id}:3"),
                 InlineKeyboardButton(text="7 kun", callback_data=f"adm:payout_due:{payout_id}:7"),
             ],
-            [InlineKeyboardButton(text="⬅️ Partnerlar", callback_data="adm:partners")],
+            [InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")],
         ]
     )
 
@@ -96,9 +108,12 @@ def admin_deadline_keyboard(payout_id: int) -> InlineKeyboardMarkup:
 def admin_settings_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="💱 USD kursini o'zgartirish", callback_data="adm:partners:set_rate")],
-            [InlineKeyboardButton(text="💵 Komissiyani o'zgartirish", callback_data="adm:partners:set_commission")],
-            [InlineKeyboardButton(text="⬅️ Partnerlar", callback_data="adm:partners")],
+            [InlineKeyboardButton(text="💱 USDT kursini o'zgartirish", callback_data="adm:partners:set_rate")],
+            [InlineKeyboardButton(text="📈 Foizli komissiyani belgilash", callback_data="adm:partners:set_percent")],
+            [InlineKeyboardButton(text="💵 Aniq summa komissiyasini belgilash", callback_data="adm:partners:set_fixed")],
+            [InlineKeyboardButton(text="🎁 Bonusni o'zgartirish", callback_data="adm:partners:set_bonus")],
+            [InlineKeyboardButton(text="💸 Minimal yechishni o'zgartirish", callback_data="adm:partners:set_minimum")],
+            [InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")],
         ]
     )
 
@@ -109,8 +124,8 @@ async def _partner_detail_text(session, partner: Partner) -> str:
     balance = await service.get_balance(partner)
     username = f"@{escape(user.username)}" if user and user.username else "—"
     return (
-        f"🤝 <b>Partner #{partner.id}</b>\n\n"
-        f"Status: <b>{escape(partner.status)}</b>\n"
+        f"🤝 <b>Hamkor #{partner.id}</b>\n\n"
+        f"Holat: <b>{escape(_status_label(partner.status))}</b>\n"
         f"Username: <b>{username}</b>\n"
         f"Telegram ID: <code>{partner.user_telegram_id}</code>\n"
         f"Reklama joyi: {escape(partner.promotion_channel)}\n"
@@ -126,12 +141,16 @@ async def _partner_detail_text(session, partner: Partner) -> str:
 
 async def _settings_text(session) -> str:
     service = PartnerService(session)
+    commission_mode = await service.get_commission_mode()
+    mode_label = "Foizli" if commission_mode == "percent" else "Aniq summa"
     return (
-        "💱 <b>Partner sozlamalari</b>\n\n"
-        f"1 USD = <b>{await service.get_usd_rate():.4f} som</b>\n"
-        f"Har approved payment komissiyasi: <b>${await service.get_commission_usd():.2f}</b>\n"
-        "Partner bonus: <b>$1.00 locked</b>\n"
-        "Minimal payout: <b>$5.00</b>"
+        "⚙️ <b>Hamkorlik sozlamalari</b>\n\n"
+        f"1 USDT = <b>{await service.get_usdt_tjs_rate():.4f} TJS</b>\n"
+        f"Faol komissiya turi: <b>{mode_label}</b>\n"
+        f"Foizli komissiya: <b>{_fmt_number(await service.get_commission_percent())}%</b>\n"
+        f"Aniq summa komissiyasi: <b>${await service.get_commission_usd():.2f}</b>\n"
+        f"Hamkor bonusi: <b>${await service.get_signup_bonus_usd():.2f} locked</b>\n"
+        f"Minimal payout: <b>${await service.get_min_payout_usd():.2f}</b>"
     )
 
 
@@ -144,7 +163,7 @@ async def admin_partners_panel(callback: CallbackQuery, state: FSMContext, sessi
     await callback.answer()
     await _edit_callback(
         callback,
-        "🤝 <b>Partnerlar</b>\n\nKerakli bo'limni tanlang.",
+        "🤝 <b>Hamkorlar</b>\n\nKerakli bo'limni tanlang.",
         admin_partners_keyboard(),
     )
 
@@ -160,11 +179,11 @@ async def admin_partner_list(callback: CallbackQuery, session):
         [InlineKeyboardButton(text=f"#{partner.id} · {partner.user_telegram_id}", callback_data=f"adm:partner:{partner.id}")]
         for partner in partners
     ]
-    rows.append([InlineKeyboardButton(text="⬅️ Partnerlar", callback_data="adm:partners")])
+    rows.append([InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")])
     await callback.answer()
     await _edit_callback(
         callback,
-        f"🤝 <b>{'Pending arizalar' if status == 'pending' else 'Active partnerlar'}</b>\n\n"
+        f"🤝 <b>{'Kutilayotgan arizalar' if status == 'pending' else 'Faol hamkorlar'}</b>\n\n"
         f"Jami: <b>{len(partners)}</b>",
         InlineKeyboardMarkup(inline_keyboard=rows),
     )
@@ -233,11 +252,11 @@ async def admin_payout_list(callback: CallbackQuery, session):
         [InlineKeyboardButton(text=f"#{payout.id} · ${payout.amount_usd:.2f}", callback_data=f"adm:payout:{payout.id}")]
         for payout in payouts
     ]
-    rows.append([InlineKeyboardButton(text="⬅️ Partnerlar", callback_data="adm:partners")])
+    rows.append([InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")])
     await callback.answer()
     await _edit_callback(
         callback,
-        f"💸 <b>Payout requestlar</b>\n\nJami: <b>{len(payouts)}</b>",
+        f"💸 <b>Pul yechish so'rovlari</b>\n\nJami: <b>{len(payouts)}</b>",
         InlineKeyboardMarkup(inline_keyboard=rows),
     )
 
@@ -426,25 +445,43 @@ async def admin_partner_settings(callback: CallbackQuery, state: FSMContext, ses
     await _edit_callback(callback, await _settings_text(session), admin_settings_keyboard())
 
 
-@router.callback_query(F.data.in_({"adm:partners:set_rate", "adm:partners:set_commission"}))
+@router.callback_query(
+    F.data.in_(
+        {
+            "adm:partners:set_rate",
+            "adm:partners:set_percent",
+            "adm:partners:set_fixed",
+            "adm:partners:set_bonus",
+            "adm:partners:set_minimum",
+        }
+    )
+)
 async def admin_partner_setting_prompt(callback: CallbackQuery, state: FSMContext):
     if not _is_admin(callback.from_user.id):
         await callback.answer()
         return
     setting_type = callback.data.split(":")[2]
+    prompts = {
+        "set_rate": "💱 Yangi USDT kursini TJS'da yuboring. Masalan: <code>10.90</code>",
+        "set_percent": "📈 Referral to'lovidan beriladigan foizni yuboring. Masalan: <code>20</code>",
+        "set_fixed": "💵 Har bir paid referral uchun aniq summani USD'da yuboring. Masalan: <code>1.00</code>",
+        "set_bonus": "🎁 Yangi partner bonusini USD'da yuboring. Masalan: <code>1.00</code>",
+        "set_minimum": "💸 Minimal yechish summasini USD'da yuboring. Masalan: <code>5.00</code>",
+    }
+    states = {
+        "set_rate": AdminPartnerStates.waiting_usdt_tjs_rate,
+        "set_percent": AdminPartnerStates.waiting_commission_percent,
+        "set_fixed": AdminPartnerStates.waiting_commission_fixed,
+        "set_bonus": AdminPartnerStates.waiting_signup_bonus,
+        "set_minimum": AdminPartnerStates.waiting_min_payout,
+    }
     await state.clear()
     await state.update_data(admin_partner_setting_type=setting_type)
-    await state.set_state(
-        AdminPartnerStates.waiting_usd_rate
-        if setting_type == "set_rate"
-        else AdminPartnerStates.waiting_commission
-    )
+    await state.set_state(states[setting_type])
     await callback.answer()
     await _edit_callback(
         callback,
-        "💱 Yangi USD kursini yuboring. Masalan: <code>10.90</code>"
-        if setting_type == "set_rate"
-        else "💵 Yangi komissiyani USD'da yuboring. Masalan: <code>1.00</code>",
+        prompts[setting_type],
         admin_partner_back_keyboard(),
     )
 
@@ -457,27 +494,55 @@ async def _save_decimal_setting(message: Message, state: FSMContext, session, se
     except InvalidOperation:
         await message.answer("Musbat raqam yuboring. Masalan: <code>10.90</code>", parse_mode="HTML")
         return
-    if value <= 0 or value > Decimal("100000"):
-        await message.answer("Musbat va real qiymat yuboring.")
+    if not value.is_finite():
+        await message.answer("Real qiymat yuboring.")
+        return
+    allow_zero = setting_type in {"set_percent", "set_fixed", "set_bonus"}
+    max_value = Decimal("100") if setting_type == "set_percent" else Decimal("100000")
+    if value < 0 or (not allow_zero and value == 0) or value > max_value:
+        await message.answer("Real qiymat yuboring.")
         return
     service = PartnerService(session)
     if setting_type == "set_rate":
-        await service.set_usd_rate(value)
-    else:
+        await service.set_usdt_tjs_rate(value)
+    elif setting_type == "set_percent":
+        await service.set_commission_percent(value)
+        await service.set_commission_mode("percent")
+    elif setting_type == "set_fixed":
         await service.set_commission_usd(value)
+        await service.set_commission_mode("fixed")
+    elif setting_type == "set_bonus":
+        await service.set_signup_bonus_usd(value)
+    else:
+        await service.set_min_payout_usd(value)
     await session.commit()
     await state.clear()
     await message.answer(f"✅ Saqlandi.\n\n{await _settings_text(session)}", reply_markup=admin_settings_keyboard())
 
 
-@router.message(StateFilter(AdminPartnerStates.waiting_usd_rate))
+@router.message(StateFilter(AdminPartnerStates.waiting_usdt_tjs_rate))
 async def admin_partner_rate_value(message: Message, state: FSMContext, session):
     await _save_decimal_setting(message, state, session, "set_rate")
 
 
-@router.message(StateFilter(AdminPartnerStates.waiting_commission))
-async def admin_partner_commission_value(message: Message, state: FSMContext, session):
-    await _save_decimal_setting(message, state, session, "set_commission")
+@router.message(StateFilter(AdminPartnerStates.waiting_commission_percent))
+async def admin_partner_commission_percent_value(message: Message, state: FSMContext, session):
+    await _save_decimal_setting(message, state, session, "set_percent")
+
+
+@router.message(StateFilter(AdminPartnerStates.waiting_commission_fixed))
+async def admin_partner_commission_fixed_value(message: Message, state: FSMContext, session):
+    await _save_decimal_setting(message, state, session, "set_fixed")
+
+
+@router.message(StateFilter(AdminPartnerStates.waiting_signup_bonus))
+async def admin_partner_bonus_value(message: Message, state: FSMContext, session):
+    await _save_decimal_setting(message, state, session, "set_bonus")
+
+
+@router.message(StateFilter(AdminPartnerStates.waiting_min_payout))
+async def admin_partner_minimum_value(message: Message, state: FSMContext, session):
+    await _save_decimal_setting(message, state, session, "set_minimum")
 
 
 @router.callback_query(F.data == "adm:partners:stats")
@@ -490,18 +555,18 @@ async def admin_partner_stats(callback: CallbackQuery, session):
     await callback.answer()
     await _edit_callback(
         callback,
-        "📊 <b>Partner statistika</b>\n\n"
-        f"Pending: <b>{stats['pending']}</b>\n"
-        f"Active: <b>{stats['active']}</b>\n"
-        f"Blocked: <b>{stats['blocked']}</b>\n\n"
+        "📊 <b>Hamkorlik statistikasi</b>\n\n"
+        f"Kutilayotgan arizalar: <b>{stats['pending']}</b>\n"
+        f"Faol hamkorlar: <b>{stats['active']}</b>\n"
+        f"Bloklanganlar: <b>{stats['blocked']}</b>\n\n"
         f"Kelgan userlar: <b>{stats['referrals']}</b>\n"
         f"Trial / non-paid: <b>{stats['trial_users']}</b>\n"
         f"To'lov qilganlar: <b>{stats['paid_referrals']}</b>\n"
         f"Savol berganlar: <b>{stats['question_users']}</b>\n"
         f"Kursga kirganlar: <b>{stats['course_users']}</b>\n"
-        f"Paid conversion: <b>{conversion}%</b>\n\n"
+        f"To'lov konversiyasi: <b>{conversion}%</b>\n\n"
         f"Credit yozilgan: <b>${stats['credited_usd']:.2f}</b>\n"
-        f"Reserved payout: <b>${stats['reserved_usd']:.2f}</b>\n"
+        f"Band qilingan payout: <b>${stats['reserved_usd']:.2f}</b>\n"
         f"To'langan payout: <b>${stats['withdrawn_usd']:.2f}</b>",
         admin_partner_back_keyboard(),
     )

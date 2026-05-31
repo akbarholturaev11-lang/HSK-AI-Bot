@@ -15,7 +15,10 @@ class PartnerPayoutStates(StatesGroup):
 
 
 class AdminPartnerStates(StatesGroup):
-    waiting_usd_rate = State()
-    waiting_commission = State()
+    waiting_usdt_tjs_rate = State()
+    waiting_commission_percent = State()
+    waiting_commission_fixed = State()
+    waiting_signup_bonus = State()
+    waiting_min_payout = State()
     waiting_payout_screenshot = State()
     waiting_partner_message = State()
