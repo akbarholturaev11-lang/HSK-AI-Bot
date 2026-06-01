@@ -4,6 +4,7 @@ from typing import Any, Optional
 from zoneinfo import ZoneInfo
 
 from app.bot.utils.i18n import t
+from app.services.subscription_currency_service import format_subscription_price
 
 
 ADMIN_TZ = ZoneInfo("Asia/Shanghai")
@@ -85,24 +86,26 @@ def build_discount_plan_line(
     base: int,
     currency: str,
     percent: int = 0,
+    local_equivalents: str = "",
 ) -> str:
+    hint = f"\n   <i>(≈ {local_equivalents})</i>" if local_equivalents else ""
     if percent > 0:
         final = int(round(base * (100 - percent) / 100))
         return t(
             "subscription_admin_discount_plan_discounted",
             lang,
             plan=plan_label(plan, lang),
-            base=base,
-            final=final,
-            currency=currency,
+            base_price=format_subscription_price(base, currency),
+            final_price=format_subscription_price(final, currency),
+            local_equivalents=hint,
         )
 
     return t(
         "subscription_admin_discount_plan_regular",
         lang,
         plan=plan_label(plan, lang),
-        base=base,
-        currency=currency,
+        base_price=format_subscription_price(base, currency),
+        local_equivalents=hint,
     )
 
 

@@ -10,6 +10,10 @@ from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.user_repo import UserRepository
 from app.services.discount_service import DiscountService
 from app.services.payment_service import PaymentService
+from app.services.subscription_currency_service import (
+    SubscriptionCurrencyService,
+    format_subscription_price,
+)
 from app.services.subscription_price_service import SubscriptionPriceService
 from app.bot.utils.discount_formatter import build_admin_discount_block, build_discount_plan_line
 from app.bot.utils.i18n import t
@@ -67,7 +71,37 @@ async def _plan_price(session, plan_type: str, payment_method: str | None) -> tu
         return price.amount, price.currency
     if payment_method in ("alipay", "wechat"):
         return (66 if plan_type == "1_month" else 29), "¥"
-    return (89 if plan_type == "1_month" else 29), "somoni"
+    return (10 if plan_type == "1_month" else 3), "USD"
+
+
+async def _visa_local_hint(session, amount: int, currency: str) -> str:
+    if (currency or "").strip().lower() not in {"usd", "$"}:
+        return ""
+    equivalents = await SubscriptionCurrencyService(session).format_local_equivalents(amount)
+    return f"\n<i>(≈ {equivalents})</i>"
+
+
+async def _discount_plan_line(
+    session,
+    *,
+    lang: str,
+    plan: str,
+    base: int,
+    currency: str,
+    percent: int = 0,
+) -> str:
+    final = int(round(base * (100 - percent) / 100)) if percent > 0 else base
+    local_equivalents = ""
+    if (currency or "").strip().lower() in {"usd", "$"}:
+        local_equivalents = await SubscriptionCurrencyService(session).format_local_equivalents(final)
+    return build_discount_plan_line(
+        lang=lang,
+        plan=plan,
+        base=base,
+        currency=currency,
+        percent=percent,
+        local_equivalents=local_equivalents,
+    )
 
 
 async def _admin_discount_choices(session, user):
@@ -127,7 +161,8 @@ async def _admin_discount_offer(session, user, lang: str, *, as_window: bool = F
         choice = plan_choices.get(plan)
         percent = choice.percent if choice else 0
         lines.append(
-            build_discount_plan_line(
+            await _discount_plan_line(
+                session,
                 lang=lang,
                 plan=plan,
                 base=base,
@@ -159,14 +194,22 @@ def _plan_label(plan_type: str, lang: str) -> str:
     return labels.get(lang, labels["ru"]).get(plan_type, plan_type)
 
 
+async def _plan_card(session, plan_type: str, lang: str, amount: int, currency: str, icon: str) -> str:
+    price = format_subscription_price(amount, currency)
+    hint = await _visa_local_hint(session, amount, currency)
+    return f"<blockquote>{icon} <b>{_plan_label(plan_type, lang)}</b>\n💵 <b>{price}</b>{hint}</blockquote>"
+
+
 async def build_subscription_main_text_for_user(session, user, lang: str) -> str:
     price_10 = await _plan_price(session, "10_days", getattr(user, "payment_method", None))
     price_1m = await _plan_price(session, "1_month", getattr(user, "payment_method", None))
 
     base = (
         f"{t('subscription_main_title', lang)}\n\n"
-        f"{_plan_label('10_days', lang)} — {price_10[0]} {price_10[1]}\n"
-        f"{_plan_label('1_month', lang)} — {price_1m[0]} {price_1m[1]}"
+        f"{t('subscription_main_benefits', lang)}\n\n"
+        f"{await _plan_card(session, '10_days', lang, price_10[0], price_10[1], '📦')}\n\n"
+        f"{await _plan_card(session, '1_month', lang, price_1m[0], price_1m[1], '🌟')}\n\n"
+        f"{t('subscription_main_choose', lang)}"
     )
 
     # Show discount hint only if user hasn't used it yet
@@ -200,8 +243,8 @@ async def build_subscription_discount_progress_text(
 
         base += (
             f"\n\n{t('subscription_discount_ready', lang)}\n\n"
-            f"{_plan_label('10_days', lang)} — {discount_10} {price_10[1]}\n"
-            f"{_plan_label('1_month', lang)} — {discount_1m} {price_1m[1]}"
+            f"{await _plan_card(session, '10_days', lang, discount_10, price_10[1], '📦')}\n\n"
+            f"{await _plan_card(session, '1_month', lang, discount_1m, price_1m[1], '🌟')}"
         )
 
     return base
@@ -302,7 +345,8 @@ async def build_admin_discount_plan_view(
         choice = choices[(payment_method, plan)]
         base, currency = await _plan_price(session, plan, payment_method)
         lines.append(
-            build_discount_plan_line(
+            await _discount_plan_line(
+                session,
                 lang=lang,
                 plan=plan,
                 base=base,
@@ -365,7 +409,8 @@ async def build_feedback_discount_plan_view(
     for plan in PLANS:
         base, currency = await _plan_price(session, plan, payment_method)
         lines.append(
-            build_discount_plan_line(
+            await _discount_plan_line(
+                session,
                 lang=lang,
                 plan=plan,
                 base=base,
@@ -412,7 +457,7 @@ async def _replace_with_text(
     )
 
 
-def build_checkout_text(lang: str, checkout_info: dict) -> str:
+async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
     plan_type = checkout_info["plan_type"]
     base_amount = checkout_info["base_amount"]
     final_amount = checkout_info["final_amount"]
@@ -422,28 +467,41 @@ def build_checkout_text(lang: str, checkout_info: dict) -> str:
 
     if lang == "tj":
         plan_label = "10 рӯз" if plan_type == "10_days" else "1 моҳ"
-        plan_line = f"Тариф: {plan_label}"
+        plan_line = f"📦 Тариф: <b>{plan_label}</b>"
     elif lang == "uz":
         plan_label = "10 kunlik" if plan_type == "10_days" else "1 oylik"
-        plan_line = f"Tarif: {plan_label}"
+        plan_line = f"📦 Tarif: <b>{plan_label}</b>"
     else:
         plan_label = "10 дней" if plan_type == "10_days" else "1 месяц"
-        plan_line = f"Тариф: {plan_label}"
+        plan_line = f"📦 Тариф: <b>{plan_label}</b>"
 
     title_key = "checkout_title_qr" if is_qr else "checkout_title_visa"
+    local_hint = await _visa_local_hint(session, final_amount, currency)
 
     lines = [
         t(title_key, lang),
+        "",
         plan_line,
         "",
     ]
 
     if discount_applied:
-        lines.append(f"{t('subscription_original_price_label', lang)}: {base_amount} {currency}")
+        lines.append(
+            f"💰 {t('subscription_original_price_label', lang)}: "
+            f"<s>{format_subscription_price(base_amount, currency)}</s>"
+        )
         percent = checkout_info.get("discount_percent", 20)
-        lines.append(f"💎 {t('subscription_discounted_price_label', lang)}: {final_amount} {currency} (-{percent}%)")
+        lines.append(
+            f"💎 {t('subscription_discounted_price_label', lang)}: "
+            f"<b>{format_subscription_price(final_amount, currency)}</b> (-{percent}%)"
+        )
     else:
-        lines.append(f"{t('subscription_price_label', lang)}: {final_amount} {currency}")
+        lines.append(
+            f"💵 {t('subscription_price_label', lang)}: "
+            f"<b>{format_subscription_price(final_amount, currency)}</b>"
+        )
+    if local_hint:
+        lines.append(local_hint.lstrip())
 
     lines.append("")
 
@@ -974,7 +1032,7 @@ async def checkout_change_plan_handler(callback: CallbackQuery, session):
 
 
 async def _show_checkout(callback: CallbackQuery, user_repo: UserRepository, user, lang: str, plan: str, checkout_info: dict):
-    text = build_checkout_text(lang, checkout_info)
+    text = await build_checkout_text(user_repo.session, lang, checkout_info)
     keyboard = checkout_keyboard(lang)
 
     checkout_msg_id: int | None = None
@@ -997,12 +1055,14 @@ async def _show_checkout(callback: CallbackQuery, user_repo: UserRepository, use
                 photo,
                 caption=text,
                 reply_markup=keyboard,
+                parse_mode="HTML",
             )
             checkout_msg_id = sent.message_id
         else:
             sent = await callback.message.edit_text(
                 text,
                 reply_markup=keyboard,
+                parse_mode="HTML",
                 disable_web_page_preview=True,
             )
             checkout_msg_id = callback.message.message_id
@@ -1011,6 +1071,7 @@ async def _show_checkout(callback: CallbackQuery, user_repo: UserRepository, use
             await callback.message.edit_text(
                 text,
                 reply_markup=keyboard,
+                parse_mode="HTML",
                 disable_web_page_preview=True,
             )
             checkout_msg_id = callback.message.message_id
@@ -1019,6 +1080,7 @@ async def _show_checkout(callback: CallbackQuery, user_repo: UserRepository, use
             sent = await callback.message.answer(
                 text,
                 reply_markup=keyboard,
+                parse_mode="HTML",
                 disable_web_page_preview=True,
             )
             checkout_msg_id = sent.message_id

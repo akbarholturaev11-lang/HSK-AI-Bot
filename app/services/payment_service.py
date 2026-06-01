@@ -7,8 +7,8 @@ from app.services.subscription_price_service import SubscriptionPriceService
 
 
 PLAN_PRICES = {
-    "10_days": 29,
-    "1_month": 89,
+    "10_days": 3,
+    "1_month": 10,
 }
 
 DISCOUNT_PERCENT = 20

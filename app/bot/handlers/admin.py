@@ -6,6 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from sqlalchemy import select, func
 from datetime import datetime, timezone, timedelta
+from decimal import Decimal, InvalidOperation
 from html import escape
 
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
@@ -24,6 +25,11 @@ from app.services.required_channel_service import (
     RequiredChannelService,
     is_main_channel,
     normalize_channel_username,
+)
+from app.services.subscription_currency_service import (
+    VISA_LOCAL_RATE_KEYS,
+    SubscriptionCurrencyService,
+    format_subscription_price,
 )
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
 from app.bot.handlers.admin_broadcast import open_broadcast_panel_for_callback
@@ -199,7 +205,7 @@ def _parse_amount_currency(text: str) -> tuple[float, str] | None:
 
 def _method_label(method: str) -> str:
     return {
-        "visa": "Visa/somoni",
+        "visa": "Visa/USD",
         "alipay": "Alipay/¥",
         "wechat": "WeChat/¥",
     }.get(method, method)
@@ -215,11 +221,22 @@ async def _prices_text(session) -> str:
     for price in prices:
         lines.append(
             f"{_method_label(price.payment_method)} · {_plan_label_admin(price.plan_type)}: "
-            f"<b>{price.amount} {price.currency}</b>"
+            f"<b>{format_subscription_price(price.amount, price.currency)}</b>"
         )
     lines.extend([
         "",
-        "Narxni o'zgartirish uchun pastdagi tarifni tanlang.",
+        "💱 <b>VISA lokal ekvivalent kurslari</b>",
+    ])
+    rates = await SubscriptionCurrencyService(session).all_rates()
+    for currency_code, rate in rates.items():
+        label = SubscriptionCurrencyService.rate_label(currency_code)
+        value = SubscriptionCurrencyService.format_rate(currency_code, rate)
+        lines.append(f"<code>1 USD = {value} {label}</code>")
+    lines.extend([
+        "",
+        "<i>Bu kurslar faqat VISA tariflari ostidagi TJS, UZS va RUB ekvivalentlarini hisoblaydi.</i>",
+        "",
+        "Narx yoki kursni o'zgartirish uchun pastdagi tugmani tanlang.",
     ])
     return "\n".join(lines)
 
@@ -237,6 +254,13 @@ def prices_keyboard() -> InlineKeyboardMarkup:
                 callback_data=f"adm:price_set:{method}:1_month",
             ),
         ])
+    rows.append([
+        InlineKeyboardButton(text="💱 USD → TJS", callback_data="adm:visa_rate_set:tjs"),
+        InlineKeyboardButton(text="💱 USD → UZS", callback_data="adm:visa_rate_set:uzs"),
+    ])
+    rows.append([
+        InlineKeyboardButton(text="💱 USD → RUB", callback_data="adm:visa_rate_set:rub"),
+    ])
     rows.append([InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -742,7 +766,7 @@ async def admin_price_set_callback(callback: CallbackQuery, state: FSMContext, s
         f"💳 <b>Narx o'zgartirish</b>\n\n"
         f"Usul: <b>{_method_label(method)}</b>\n"
         f"Tarif: <b>{_plan_label_admin(plan)}</b>\n\n"
-        "Yangi narxni raqam bilan yuboring. Masalan: <code>99</code>",
+        "Yangi narxni raqam bilan yuboring. Masalan: <code>10</code>",
         reply_markup=admin_back_keyboard(),
         parse_mode="HTML",
     )
@@ -777,7 +801,66 @@ async def admin_price_amount_handler(message: Message, state: FSMContext, sessio
     await state.clear()
     await message.answer(
         f"✅ Narx yangilandi: <b>{_method_label(price.payment_method)} · "
-        f"{_plan_label_admin(price.plan_type)} = {price.amount} {price.currency}</b>",
+        f"{_plan_label_admin(price.plan_type)} = "
+        f"{format_subscription_price(price.amount, price.currency)}</b>",
+        parse_mode="HTML",
+        reply_markup=prices_keyboard(),
+    )
+
+
+@router.callback_query(F.data.startswith("adm:visa_rate_set:"))
+async def admin_visa_rate_set_callback(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    currency_code = callback.data.split(":")[-1]
+    if currency_code not in VISA_LOCAL_RATE_KEYS:
+        await callback.answer("Noto'g'ri valyuta", show_alert=True)
+        return
+    await state.update_data(visa_rate_currency=currency_code)
+    await state.set_state(AdminPriceStates.waiting_rate)
+    label = SubscriptionCurrencyService.rate_label(currency_code)
+    current_rate = await SubscriptionCurrencyService(session).get_rate(currency_code)
+    formatted_rate = SubscriptionCurrencyService.format_rate(currency_code, current_rate)
+    await callback.answer()
+    await _edit_callback_message(
+        callback,
+        f"💱 <b>VISA lokal kursini o'zgartirish</b>\n\n"
+        f"Valyuta: <b>{label}</b>\n\n"
+        f"Joriy kurs: <code>1 USD = {formatted_rate} {label}</code>\n\n"
+        f"1 USD uchun yangi {label} kursini yuboring.\n"
+        f"Masalan: <code>{formatted_rate}</code>",
+        reply_markup=admin_back_keyboard(),
+        parse_mode="HTML",
+    )
+
+
+@router.message(StateFilter(AdminPriceStates.waiting_rate))
+async def admin_visa_rate_amount_handler(message: Message, state: FSMContext, session):
+    if not _is_admin(message.from_user.id):
+        return
+    try:
+        value = Decimal((message.text or "").strip().replace(",", "."))
+    except InvalidOperation:
+        await message.answer("❌ Kurs raqam bo'lishi kerak. Masalan: <code>9.2464</code>", parse_mode="HTML")
+        return
+    if not value.is_finite() or value <= 0 or value > Decimal("1000000000"):
+        await message.answer("❌ Kurs 0 dan katta bo'lishi kerak.")
+        return
+
+    data = await state.get_data()
+    currency_code = data.get("visa_rate_currency")
+    service = SubscriptionCurrencyService(session)
+    if not await service.set_rate(currency_code, value):
+        await message.answer("❌ Kurs saqlanmadi. Valyuta noto'g'ri.")
+        return
+    await session.commit()
+    await state.clear()
+
+    label = service.rate_label(currency_code)
+    formatted = service.format_rate(currency_code, value)
+    await message.answer(
+        f"✅ VISA lokal kursi yangilandi: <b>1 USD = {formatted} {label}</b>",
         parse_mode="HTML",
         reply_markup=prices_keyboard(),
     )
