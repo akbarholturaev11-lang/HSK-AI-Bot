@@ -53,7 +53,7 @@ TEXTS = {
         "btn_wechat": "WeChatpay",
         
         "payment_method_choose": "<b>💳 Усули пардохтро интихоб кунед:</b>",
-        "subscription_block": "<blockquote>\n💳 <b>Обунаро интихоб кунед:</b>\n\n🚀 Пас аз гирифтани обуна шумо метавонед аз бот бе ягон лимит истифода баред.\n\n📅 10 рӯз — 29 ¥\n📅 1 моҳ — 89 ¥\n\n👥 3 дӯстро даъват кунед ва 🎁 20% тахфиф гиред.\n\n📲 QR кодро скан карда пардохт кунед\n</blockquote>",
+        "subscription_block": "💎 <b>Тарифҳои обуна</b>\n\n🚀 Обуна гиред ва аз бот бе ягон лимит истифода баред.\n\n🗓️ 10 рӯз - 29 ¥\n🗓️ 1 моҳ - 66 ¥\n\n🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.\n\n👇 <b>Тарифро интихоб кунед:</b>",
         "subscription_checkout_block": "<blockquote>\n💳 <b>Шумо ин обунаро интихоб кардед:</b>\n\n📦 Тариф: <b>{plan}</b>\n💰 Нарх: <b>{price} ¥</b>\n\n📲 <b>Маълумоти пардохт:</b>\nБо QR-код пардохт кунед\n\n👤 NAME: Akbarshoh\n\n📸 Пас аз пардохт скриншотро фиристед\n</blockquote>",
 
         "subscription_main_title": "💎 <b>Тарифҳои обуна</b>",
@@ -67,7 +67,7 @@ TEXTS = {
         "checkout_qr_scan": "QR-кодро скан карда пардохт кунед.",
         "checkout_title_visa": "💳 <b>Шумо ин обунаро интихоб кардед</b>",
         "checkout_title_qr": "📱 <b>Пардохт тавассути QR-код</b>",
-        "subscription_referral_discount_button": "👥 Дӯст даъват кардан",
+        "subscription_referral_discount_button": "🎁 Тахфиф гирифтан",
         "subscription_button_10_days": "10 рӯз",
         "subscription_button_1_month": "1 моҳ",
         "subscription_referral_hint": "🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.",
@@ -98,7 +98,7 @@ TEXTS = {
         "subscription_admin_discount_rule_once": "як маротиба",
         "subscription_admin_discount_rule_repeat": "ҳар {days} рӯз",
         "subscription_admin_discount_remaining_done": "ба анҷом расид",
-        "subscription_invite_button": "👥 Дӯст даъват кардан",
+        "subscription_invite_button": "🎁 Тахфиф гирифтан",
         "subscription_back_to_main": "⬅️ Ба обунаи оддӣ баргаштан",
         "subscription_discount_text_blocked": "Шумо ҳоло дар бахши 20% тахфиф ҳастед. Лутфан истиноди даъватро истифода баред ё ба обунаи оддӣ баргардед.",
         
@@ -205,7 +205,7 @@ TEXTS = {
 
         "payment_back": "⬅️ Назад",
         "payment_method_choose": "<b>💳 Выберите способ оплаты:</b>",
-        "subscription_block": "<blockquote>\n💳 <b>Выберите подписку:</b>\n\n🚀 После покупки подписки вы сможете пользоваться ботом без ограничений.\n\n📅 10 дней — 29 ¥\n📅 1 месяц — 89 ¥\n\n👥 Пригласите 3 друзей и получите 🎁 скидку 20%.\n\n📲 Отсканируйте QR-код для оплаты\n</blockquote>",
+        "subscription_block": "💎 <b>Тарифы подписки</b>\n\n🚀 Оформите подписку и пользуйтесь ботом без ограничений.\n\n🗓️ 10 дней - 29 ¥\n🗓️ 1 месяц - 66 ¥\n\n🎁 Пригласите 3 новых друзей и получите скидку 20%.\n\n👇 <b>Выберите тариф:</b>",
         "subscription_checkout_block": "<blockquote>\n💳 <b>Вы выбрали подписку:</b>\n\n📦 Тариф: <b>{plan}</b>\n💰 Цена: <b>{price} ¥</b>\n\n📲 <b>Реквизиты для оплаты:</b>\nОплатите через QR-код\n\n👤 NAME: Akbarshoh\n\n📸 После оплаты отправьте скриншот\n</blockquote>",
 
         "subscription_main_title": "💎 <b>Тарифы подписки</b>",
@@ -219,7 +219,7 @@ TEXTS = {
         "checkout_qr_scan": "Отсканируйте QR-код для оплаты.",
         "checkout_title_visa": "💳 <b>Вы выбрали подписку</b>",
         "checkout_title_qr": "📱 <b>Оплата через QR-код</b>",
-        "subscription_referral_discount_button": "👥 Пригласить друга",
+        "subscription_referral_discount_button": "🎁 Получить скидку",
         "subscription_button_10_days": "10 дней",
         "subscription_button_1_month": "1 месяц",
         "subscription_referral_hint": "🎁 Пригласите 3 новых друзей и получите скидку 20%.",
@@ -250,7 +250,7 @@ TEXTS = {
         "subscription_admin_discount_rule_once": "один раз",
         "subscription_admin_discount_rule_repeat": "каждые {days} дней",
         "subscription_admin_discount_remaining_done": "завершилась",
-        "subscription_invite_button": "👥 Пригласить друга",
+        "subscription_invite_button": "🎁 Получить скидку",
         "subscription_back_to_main": "⬅️ Вернуться к обычной подписке",
 
         "checkout_change_plan_button": "🔄 Выбрать другой тариф",
@@ -350,7 +350,7 @@ TEXTS = {
 
         "payment_back": "⬅️ Orqaga",
         "payment_method_choose": "<b>💳 To‘lov usulini tanlang:</b>",
-        "subscription_block": "<blockquote>\n💳 <b>Obunani tanlang:</b>\n\n🚀 Obuna olganingizdan keyin botdan hech qanday limitsiz foydalanasiz.\n\n📅 10 kunlik — 29 ¥\n📅 1 oylik — 89 ¥\n\n👥 3 ta yangi do‘st taklif qiling va 🎁 20% chegirma oling.\n\n📲 QR kodni skaner qilib to‘lov qiling\n</blockquote>",
+        "subscription_block": "💎 <b>Obuna tariflari</b>\n\n🚀 Obuna oling va botdan hech qanday limitlarsiz foydalaning.\n\n🗓️ 10 kunlik - 29 ¥\n🗓️ 1 oylik - 66 ¥\n\n🎁 3 ta yangi do‘st taklif qiling va 20% chegirma oling.\n\n👇 <b>Tarifni tanlang:</b>",
         "subscription_checkout_block": "<blockquote>\n💳 <b>Siz ushbu obunani tanladingiz:</b>\n\n📦 Tarif: <b>{plan}</b>\n💰 Narx: <b>{price} ¥</b>\n\n📲 <b>To‘lov rekviziti:</b>\nQR kod orqali to‘lov qiling\n\n👤 NAME: Akbarshoh\n\n📸 To‘lov qilib bo‘lgach, skrinshotini yuboring\n</blockquote>",
 
         "subscription_main_title": "💎 <b>Obuna tariflari</b>",
@@ -364,7 +364,7 @@ TEXTS = {
         "checkout_qr_scan": "QR kodni skaner qilib to'lov qiling.",
         "checkout_title_visa": "💳 <b>Siz tanlagan obuna</b>",
         "checkout_title_qr": "📱 <b>QR kod orqali to'lov</b>",
-        "subscription_referral_discount_button": "👥 Do‘st chaqirish",
+        "subscription_referral_discount_button": "🎁 Chegirma olish",
         "subscription_button_10_days": "10 kunlik",
         "subscription_button_1_month": "1 oylik",
         "subscription_referral_hint": "🎁 3 ta yangi do‘st taklif qiling va 20% chegirma oling.",
@@ -395,7 +395,7 @@ TEXTS = {
         "subscription_admin_discount_rule_once": "bir marta",
         "subscription_admin_discount_rule_repeat": "har {days} kunda",
         "subscription_admin_discount_remaining_done": "tugagan",
-        "subscription_invite_button": "👥 Do‘st chaqirish",
+        "subscription_invite_button": "🎁 Chegirma olish",
         "subscription_back_to_main": "⬅️ Oddiy obunaga qaytish",
 
         "image_invalid_format": "Bu format qo’llanmaydi. Iltimos, rasmni foto yoki image-fayl sifatida yuboring.",
