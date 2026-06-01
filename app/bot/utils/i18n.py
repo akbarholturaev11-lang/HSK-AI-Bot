@@ -58,6 +58,7 @@ TEXTS = {
 
         "subscription_main_title": "💎 <b>Тарифҳои обуна</b>",
         "subscription_main_benefits": "<blockquote>🚀 Бо обуна AI-ҷавобҳо, курс, фото ва voice бе лимит дастрас мешаванд.</blockquote>",
+        "subscription_main_visa_benefits": "Обуна гиред ва аз бот бе ягон лимит истифода баред.",
         "subscription_main_choose": "👇 <b>Тарифро интихоб кунед:</b>",
         "subscription_plan_10_days": "10 рӯз — $3",
         "subscription_plan_1_month": "1 моҳ — $10",
@@ -209,6 +210,7 @@ TEXTS = {
 
         "subscription_main_title": "💎 <b>Тарифы подписки</b>",
         "subscription_main_benefits": "<blockquote>🚀 С подпиской доступны без лимитов: AI-ответы, курс, фото и voice.</blockquote>",
+        "subscription_main_visa_benefits": "Оформите подписку и пользуйтесь ботом без ограничений.",
         "subscription_main_choose": "👇 <b>Выберите тариф:</b>",
         "subscription_plan_10_days": "10 дней — $3",
         "subscription_plan_1_month": "1 месяц — $10",
@@ -353,6 +355,7 @@ TEXTS = {
 
         "subscription_main_title": "💎 <b>Obuna tariflari</b>",
         "subscription_main_benefits": "<blockquote>🚀 Obuna bilan AI javoblar, kurs, foto va voice imkoniyatlaridan limitsiz foydalanasiz.</blockquote>",
+        "subscription_main_visa_benefits": "Obuna oling va botdan hech qanday limitlarsiz foydalaning.",
         "subscription_main_choose": "👇 <b>Tarifni tanlang:</b>",
         "subscription_plan_10_days": "10 kunlik — $3",
         "subscription_plan_1_month": "1 oylik — $10",

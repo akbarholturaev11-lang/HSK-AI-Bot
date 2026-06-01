@@ -77,8 +77,8 @@ async def _plan_price(session, plan_type: str, payment_method: str | None) -> tu
 async def _visa_local_hint(session, amount: int, currency: str) -> str:
     if (currency or "").strip().lower() not in {"usd", "$"}:
         return ""
-    equivalents = await SubscriptionCurrencyService(session).format_local_equivalents(amount)
-    return f"\n<i>(≈ {equivalents})</i>"
+    equivalents = await SubscriptionCurrencyService(session).format_local_equivalent_lines(amount)
+    return f"\n({equivalents})"
 
 
 async def _discount_plan_line(
@@ -200,17 +200,39 @@ async def _plan_card(session, plan_type: str, lang: str, amount: int, currency: 
     return f"<blockquote>{icon} <b>{_plan_label(plan_type, lang)}</b>\n💵 <b>{price}</b>{hint}</blockquote>"
 
 
+async def _visa_plan_line(session, plan_type: str, lang: str, amount: int, currency: str) -> str:
+    price = format_subscription_price(amount, currency)
+    hint = await _visa_local_hint(session, amount, currency)
+    return f"🗓️ <b>{_plan_label(plan_type, lang)}</b> — 💵 <b>{price}</b>{hint}"
+
+
 async def build_subscription_main_text_for_user(session, user, lang: str) -> str:
     price_10 = await _plan_price(session, "10_days", getattr(user, "payment_method", None))
     price_1m = await _plan_price(session, "1_month", getattr(user, "payment_method", None))
 
-    base = (
-        f"{t('subscription_main_title', lang)}\n\n"
-        f"{t('subscription_main_benefits', lang)}\n\n"
-        f"{await _plan_card(session, '10_days', lang, price_10[0], price_10[1], '📦')}\n\n"
-        f"{await _plan_card(session, '1_month', lang, price_1m[0], price_1m[1], '🌟')}\n\n"
-        f"{t('subscription_main_choose', lang)}"
+    is_visa_usd = all(
+        (currency or "").strip().lower() in {"usd", "$"}
+        for _, currency in (price_10, price_1m)
     )
+    if is_visa_usd:
+        plan_lines = "\n\n".join([
+            await _visa_plan_line(session, "10_days", lang, price_10[0], price_10[1]),
+            await _visa_plan_line(session, "1_month", lang, price_1m[0], price_1m[1]),
+        ])
+        base = (
+            f"{t('subscription_main_title', lang)}\n\n"
+            f"{t('subscription_main_visa_benefits', lang)}\n\n"
+            f"<blockquote>{plan_lines}</blockquote>\n\n"
+            f"{t('subscription_main_choose', lang)}"
+        )
+    else:
+        base = (
+            f"{t('subscription_main_title', lang)}\n\n"
+            f"{t('subscription_main_benefits', lang)}\n\n"
+            f"{await _plan_card(session, '10_days', lang, price_10[0], price_10[1], '📦')}\n\n"
+            f"{await _plan_card(session, '1_month', lang, price_1m[0], price_1m[1], '🌟')}\n\n"
+            f"{t('subscription_main_choose', lang)}"
+        )
 
     # Show discount hint only if user hasn't used it yet
     if not user.discount_used:
@@ -477,6 +499,18 @@ async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
 
     title_key = "checkout_title_qr" if is_qr else "checkout_title_visa"
     local_hint = await _visa_local_hint(session, final_amount, currency)
+
+    if not is_qr and not discount_applied:
+        return "\n".join([
+            t(title_key, lang),
+            "",
+            f"<blockquote>{plan_line} — 💵 {t('subscription_price_label', lang)}: "
+            f"<b>{format_subscription_price(final_amount, currency)}</b>{local_hint}</blockquote>",
+            "",
+            f"{t('payment_details_label', lang)}: {settings.PAYMENT_DETAILS}",
+            "",
+            t("payment_send_screenshot", lang),
+        ])
 
     lines = [
         t(title_key, lang),
