@@ -17,6 +17,16 @@
 
 ---
 
+## Git Push And Main Branch Rule
+
+- When the user says `push`, asks to publish to GitHub, or requests a deploy push without naming a separate branch or PR workflow, treat `origin/main` as the final target.
+- A feature-branch push is not completion. Do not report success until the intended commit is confirmed on the remote `origin/main` ref.
+- Fetch the current remote state before pushing and inspect the intended commit against `origin/main` history.
+- If the working tree is dirty or histories diverge, do not include unrelated user changes, force-push, or reset. Create a clean temporary worktree from `origin/main`, cherry-pick only the intended commit, and push `HEAD:main`.
+- After pushing, verify the remote `origin/main` ref again and report the commit hash that reached `main`.
+
+---
+
 ## Memory Discipline Rule
 
 Do not treat `PROJECT_MEMORY.md` as a diary.

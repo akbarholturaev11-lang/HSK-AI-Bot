@@ -137,6 +137,11 @@ Agar git ishlatilsa:
 - kichik commitlar qil
 - working state saqla
 - commit message aniq bo‘lsin
+- User `push qil`, `GitHubga chiqar` yoki deploy uchun push qilishni so‘rasa, alohida branch yoki PR aytilmagan bo‘lsa yakuniy target `origin/main` bo‘lsin.
+- Feature branchga push qilish ish tugadi degani emas. Kerakli commit `origin/main` ga yetib borganini remote ref orqali tekshirmaguncha push muvaffaqiyatli deb xabar berma.
+- Pushdan oldin remote holatini yangila va intended commit bilan `origin/main` history holatini tekshir.
+- Dirty working tree yoki branch divergence bo‘lsa unrelated user o‘zgarishlarini commit qilma, force push qilma va reset qilma. `origin/main` dan vaqtinchalik toza worktree yaratib, faqat intended commitni cherry-pick qil va `HEAD:main` ga push qil.
+- Pushdan keyin `origin/main` refini qayta tekshir va final javobda `main` ga chiqqan commit hashni yoz.
 
 Format:
 
