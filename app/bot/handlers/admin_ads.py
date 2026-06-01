@@ -363,10 +363,12 @@ async def ads_content(message: Message, state: FSMContext):
         return
     if content_type == "text" and len(text) > 4096:
         data = await state.get_data()
+        await _delete_admin_input(message)
         await _edit_stored_panel(message, state, _wizard_text(data, "Qisqaroq matn yuboring.", "Matn 4096 belgidan oshmasin."), ad_cancel_keyboard())
         return
     if content_type in {"photo", "video"} and len(text) > 1024:
         data = await state.get_data()
+        await _delete_admin_input(message)
         await _edit_stored_panel(message, state, _wizard_text(data, "Captionni qisqartiring.", "Foto/video caption 1024 belgidan oshmasin."), ad_cancel_keyboard())
         return
 

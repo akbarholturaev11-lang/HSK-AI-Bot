@@ -53,8 +53,13 @@ from app.bot.utils.course_formatter import (
 )
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.course import course_reminder_timezone_keyboard
+from app.bot.utils.workflow_message import (
+    REMINDER_PANEL_CHAT_ID,
+    REMINDER_PANEL_MSG_ID,
+    edit_callback_workflow_message,
+)
 import json
-from datetime import datetime, timezone
+from datetime import datetime, time, timezone
 
 
 
@@ -1586,8 +1591,66 @@ async def course_audio_dialogue_handler(callback: CallbackQuery, session):
     await _send_audio_file(callback, session, "dialogue_1")
 
 
+@router.callback_query(F.data.startswith("course:reminder_time:"))
+async def course_set_reminder_time_handler(callback: CallbackQuery, state: FSMContext, session):
+    user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+    if not user:
+        await callback.answer()
+        return
+
+    try:
+        hour = int(callback.data.split(":")[-2])
+        minute = int(callback.data.split(":")[-1])
+        reminder_time = time(hour, minute)
+    except (TypeError, ValueError, IndexError):
+        await callback.answer()
+        return
+
+    engine = CourseEngineService(session)
+    progress = await engine.progress_repo.get_by_user_id(user.id)
+    if not progress:
+        await callback.answer()
+        return
+
+    await engine.progress_repo.set_reminder(progress, enabled=True, reminder_time=reminder_time)
+    await engine.progress_repo.set_waiting_for(progress, "none")
+    await session.commit()
+    await callback.answer()
+    await edit_callback_workflow_message(
+        callback,
+        state,
+        t("course_reminder_tz_title", user.language or "ru"),
+        chat_id_key=REMINDER_PANEL_CHAT_ID,
+        message_id_key=REMINDER_PANEL_MSG_ID,
+        reply_markup=course_reminder_timezone_keyboard(),
+    )
+
+
+@router.callback_query(F.data == "course:reminder_cancel")
+async def course_cancel_reminder_setup_handler(callback: CallbackQuery, state: FSMContext, session):
+    user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+    if not user:
+        await callback.answer()
+        return
+
+    engine = CourseEngineService(session)
+    progress = await engine.progress_repo.get_by_user_id(user.id)
+    if progress:
+        await engine.progress_repo.set_waiting_for(progress, "none")
+        await session.commit()
+
+    await callback.answer()
+    await edit_callback_workflow_message(
+        callback,
+        state,
+        t("course_reminder_cancelled", user.language or "ru"),
+        chat_id_key=REMINDER_PANEL_CHAT_ID,
+        message_id_key=REMINDER_PANEL_MSG_ID,
+    )
+
+
 @router.callback_query(F.data.startswith("course:set_tz:"))
-async def course_set_timezone_handler(callback: CallbackQuery, session):
+async def course_set_timezone_handler(callback: CallbackQuery, state: FSMContext, session):
     user_repo = UserRepository(session)
     engine = CourseEngineService(session)
 
@@ -1617,12 +1680,10 @@ async def course_set_timezone_handler(callback: CallbackQuery, session):
     time_str = progress.reminder_time.strftime("%H:%M")
 
     await callback.answer()
-    try:
-        await callback.message.delete()
-    except Exception:
-        pass
-    await callback.message.answer(
+    await edit_callback_workflow_message(
+        callback,
+        state,
         t("course_reminder_tz_saved", lang, time=time_str, tz=tz_label),
-        reply_markup=course_menu_keyboard(lang) if user.learning_mode == "course" else main_menu_keyboard(lang),
-        parse_mode="HTML",
+        chat_id_key=REMINDER_PANEL_CHAT_ID,
+        message_id_key=REMINDER_PANEL_MSG_ID,
     )

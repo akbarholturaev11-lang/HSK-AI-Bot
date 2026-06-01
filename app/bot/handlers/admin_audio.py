@@ -18,10 +18,17 @@ from app.config import settings
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_audio_repo import CourseAudioRepository
 from app.bot.fsm.admin_audio import AdminAudioStates
+from app.bot.utils.workflow_message import (
+    delete_message_safely,
+    edit_callback_workflow_message,
+    edit_stored_workflow_message,
+)
 
 router = Router()
 
 LEVELS = ["hsk1", "hsk2", "hsk3", "hsk4"]
+_AUDIO_PANEL_CHAT_ID = "audio_panel_chat_id"
+_AUDIO_PANEL_MSG_ID = "audio_panel_msg_id"
 
 
 # ─── helpers ────────────────────────────────────────────────────────────────
@@ -408,15 +415,18 @@ async def ask_for_audio_file(callback: CallbackQuery, session, state: FSMContext
 
     type_label = _audio_type_label(audio_type)
     await callback.answer()
-    await callback.message.edit_text(
+    await edit_callback_workflow_message(
+        callback,
+        state,
         f"🎙 <b>{lesson.level.upper()} · Dars {lesson.lesson_order} · {audio_type}</b>\n"
         f"📖 {lesson.title}\n\n"
         f"⬇️ <b>{type_label}</b> uchun audio faylni yuboring\n"
         f"(voice yoki mp3/ogg fayl)",
+        chat_id_key=_AUDIO_PANEL_CHAT_ID,
+        message_id_key=_AUDIO_PANEL_MSG_ID,
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="❌ Bekor qilish", callback_data=f"adm_audio:lesson:{lesson_id}")]
         ]),
-        parse_mode="HTML",
     )
 
 
@@ -441,18 +451,32 @@ async def receive_audio_file(message: Message, session, state: FSMContext):
     elif message.document:
         file_id = message.document.file_id
     else:
-        await message.answer("❌ Audio, voice yoki fayl yuboring")
+        await delete_message_safely(message)
+        await edit_stored_workflow_message(
+            message,
+            state,
+            "❌ Audio, voice yoki fayl yuboring",
+            chat_id_key=_AUDIO_PANEL_CHAT_ID,
+            message_id_key=_AUDIO_PANEL_MSG_ID,
+        )
         return
 
     audio_repo = CourseAudioRepository(session)
     lesson_repo = CourseLessonRepository(session)
 
     await audio_repo.upsert(level=level, lesson_order=lesson_order, audio_type=audio_type, file_id=file_id)
-    await state.clear()
+    await delete_message_safely(message)
 
     lesson = await lesson_repo.get_by_id(lesson_id)
     if not lesson:
-        await message.answer("✅ Saqlandi!")
+        await edit_stored_workflow_message(
+            message,
+            state,
+            "✅ Saqlandi!",
+            chat_id_key=_AUDIO_PANEL_CHAT_ID,
+            message_id_key=_AUDIO_PANEL_MSG_ID,
+        )
+        await state.clear()
         return
 
     # Keyingi yuklanmagan audio turini topamiz
@@ -468,17 +492,28 @@ async def receive_audio_file(message: Message, session, state: FSMContext):
         else "\n🎉 Bu darsning barcha audiolari yuklandi!"
     )
 
-    await message.answer(
+    await edit_stored_workflow_message(
+        message,
+        state,
         f"✅ <b>Saqlandi!</b>\n"
         f"📍 {level.upper()} · Dars {lesson_order} · <code>{audio_type}</code> ({_audio_type_label(audio_type)})"
         f"{remaining}",
+        chat_id_key=_AUDIO_PANEL_CHAT_ID,
+        message_id_key=_AUDIO_PANEL_MSG_ID,
         reply_markup=_after_upload_keyboard(lesson, next_type),
-        parse_mode="HTML",
     )
+    await state.clear()
 
 
 @router.message(StateFilter(AdminAudioStates.waiting_for_audio))
-async def wrong_file_type(message: Message):
+async def wrong_file_type(message: Message, state: FSMContext):
     if not _is_admin(message.from_user.id):
         return
-    await message.answer("⚠️ Voice yoki audio fayl yuboring (matn emas)")
+    await delete_message_safely(message)
+    await edit_stored_workflow_message(
+        message,
+        state,
+        "⚠️ Voice yoki audio fayl yuboring (matn emas)",
+        chat_id_key=_AUDIO_PANEL_CHAT_ID,
+        message_id_key=_AUDIO_PANEL_MSG_ID,
+    )

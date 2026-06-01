@@ -12,8 +12,15 @@ from app.config import settings
 from app.repositories.user_repo import UserRepository
 from app.bot.fsm.admin_broadcast import BroadcastStates
 from app.bot.keyboards.admin_broadcast import broadcast_panel_keyboard, broadcast_confirm_keyboard
+from app.bot.utils.workflow_message import (
+    delete_message_safely,
+    edit_callback_workflow_message,
+    edit_stored_workflow_message,
+)
 
 router = Router()
+_PANEL_CHAT_ID = "panel_chat_id"
+_PANEL_MSG_ID = "panel_msg_id"
 
 
 def _is_admin(user_id: int) -> bool:
@@ -93,6 +100,28 @@ def _initial_broadcast_state() -> dict:
     }
 
 
+async def _edit_callback_panel(callback: CallbackQuery, state: FSMContext, text: str, reply_markup=None) -> None:
+    await edit_callback_workflow_message(
+        callback,
+        state,
+        text,
+        chat_id_key=_PANEL_CHAT_ID,
+        message_id_key=_PANEL_MSG_ID,
+        reply_markup=reply_markup,
+    )
+
+
+async def _edit_stored_panel(message: Message, state: FSMContext, text: str, reply_markup=None) -> None:
+    await edit_stored_workflow_message(
+        message,
+        state,
+        text,
+        chat_id_key=_PANEL_CHAT_ID,
+        message_id_key=_PANEL_MSG_ID,
+        reply_markup=reply_markup,
+    )
+
+
 async def open_broadcast_panel_for_message(message: Message, state: FSMContext) -> None:
     await state.clear()
     await state.update_data(**_initial_broadcast_state())
@@ -101,7 +130,7 @@ async def open_broadcast_panel_for_message(message: Message, state: FSMContext) 
         reply_markup=broadcast_panel_keyboard(None, None, None, section="main"),
         parse_mode="HTML",
     )
-    await state.update_data(panel_msg_id=sent.message_id, panel_chat_id=sent.chat.id)
+    await state.update_data(**{_PANEL_MSG_ID: sent.message_id, _PANEL_CHAT_ID: sent.chat.id})
 
 
 async def open_broadcast_panel_for_callback(callback: CallbackQuery, state: FSMContext) -> None:
@@ -112,7 +141,7 @@ async def open_broadcast_panel_for_callback(callback: CallbackQuery, state: FSMC
         reply_markup=broadcast_panel_keyboard(None, None, None, section="main"),
         parse_mode="HTML",
     )
-    await state.update_data(panel_msg_id=sent.message_id, panel_chat_id=sent.chat.id)
+    await state.update_data(**{_PANEL_MSG_ID: sent.message_id, _PANEL_CHAT_ID: sent.chat.id})
 
 
 async def _redraw_panel(callback: CallbackQuery, data: dict) -> None:
@@ -285,7 +314,9 @@ async def bc_enter_text(callback: CallbackQuery, state: FSMContext):
     await state.update_data(target_user_id=None, target_label=None)
     await state.set_state(BroadcastStates.waiting_for_text)
     await callback.answer()
-    await callback.message.answer(
+    await _edit_callback_panel(
+        callback,
+        state,
         "✏️ Xabarni yuboring:\n"
         "• faqat matn\n"
         "• foto + caption\n"
@@ -302,11 +333,12 @@ async def bc_target_user(callback: CallbackQuery, state: FSMContext):
     await state.update_data(target_user_id=None, target_label=None)
     await state.set_state(BroadcastStates.waiting_for_target)
     await callback.answer()
-    await callback.message.answer(
+    await _edit_callback_panel(
+        callback,
+        state,
         "🎯 Bitta userga xabar\n\n"
         "Telegram ID yoki username yuboring.\n"
         "Misol: <code>123456789</code> yoki <code>@username</code>",
-        parse_mode="HTML",
     )
 
 
@@ -317,8 +349,9 @@ async def bc_receive_target(message: Message, state: FSMContext, session):
 
     identifier = (message.text or "").strip()
     user = await UserRepository(session).find_by_identifier(identifier)
+    await delete_message_safely(message)
     if not user:
-        await message.answer("❌ User topilmadi. Telegram ID yoki @username ni tekshiring.")
+        await _edit_stored_panel(message, state, "❌ User topilmadi. Telegram ID yoki @username ni tekshiring.")
         return
 
     target_label = f"{user.full_name or '-'}"
@@ -329,11 +362,12 @@ async def bc_receive_target(message: Message, state: FSMContext, session):
         target_label=target_label,
     )
     await state.set_state(BroadcastStates.waiting_for_text)
-    await message.answer(
+    await _edit_stored_panel(
+        message,
+        state,
         f"✅ Target: <b>{escape(target_label)}</b>\n"
         f"ID: <code>{user.telegram_id}</code>\n\n"
         "Endi xabarni yuboring: matn, foto yoki video + caption.",
-        parse_mode="HTML",
     )
 
 
@@ -353,10 +387,12 @@ async def bc_receive_text(message: Message, state: FSMContext, session):
         media_file_id = message.video.file_id
 
     if not text and not media_file_id:
-        await message.answer("Matn, foto yoki video yuboring.")
+        await delete_message_safely(message)
+        await _edit_stored_panel(message, state, "Matn, foto yoki video yuboring.")
         return
     if content_type in ("photo", "video") and len(text) > 1024:
-        await message.answer("Foto/video caption 1024 belgidan oshmasin.")
+        await delete_message_safely(message)
+        await _edit_stored_panel(message, state, "Foto/video caption 1024 belgidan oshmasin.")
         return
 
     await state.set_state(None)
@@ -401,6 +437,7 @@ async def bc_receive_text(message: Message, state: FSMContext, session):
 
     panel_msg_id = data.get("panel_msg_id")
     panel_chat_id = data.get("panel_chat_id")
+    await delete_message_safely(message)
 
     if panel_msg_id and panel_chat_id:
         try:
@@ -420,7 +457,7 @@ async def bc_receive_text(message: Message, state: FSMContext, session):
         reply_markup=broadcast_confirm_keyboard(),
         parse_mode="HTML",
     )
-    await state.update_data(panel_msg_id=sent.message_id, panel_chat_id=sent.chat.id)
+    await state.update_data(**{_PANEL_MSG_ID: sent.message_id, _PANEL_CHAT_ID: sent.chat.id})
 
 
 # ── Confirm / Cancel ─────────────────────────────────────────────────────────

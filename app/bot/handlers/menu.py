@@ -7,6 +7,12 @@ from app.services.course_engine_service import CourseEngineService
 from app.bot.keyboards.subscription import payment_method_keyboard
 from app.bot.keyboards.course import reminder_time_keyboard
 from app.bot.utils.i18n import t
+from app.bot.utils.workflow_message import (
+    REMINDER_PANEL_CHAT_ID,
+    REMINDER_PANEL_MSG_ID,
+    delete_message_safely,
+    edit_stored_workflow_message,
+)
 
 
 router = Router()
@@ -121,15 +127,26 @@ async def handle_reminder_time_button(message: Message, state: FSMContext, sessi
     engine = CourseEngineService(session)
     _, progress, error_key = await engine.get_or_create_progress(message.from_user.id)
     if error_key or not progress:
-        await message.answer(t(error_key or "course_no_lesson_found", lang))
+        await delete_message_safely(message)
+        await edit_stored_workflow_message(
+            message,
+            state,
+            t(error_key or "course_no_lesson_found", lang),
+            chat_id_key=REMINDER_PANEL_CHAT_ID,
+            message_id_key=REMINDER_PANEL_MSG_ID,
+        )
         return
 
     await engine.progress_repo.set_waiting_for(progress, "reminder_setup")
     await session.commit()
-    await message.answer(
+    await delete_message_safely(message)
+    await edit_stored_workflow_message(
+        message,
+        state,
         t("course_reminder_setup_msg", lang),
+        chat_id_key=REMINDER_PANEL_CHAT_ID,
+        message_id_key=REMINDER_PANEL_MSG_ID,
         reply_markup=reminder_time_keyboard(lang),
-        parse_mode="HTML",
     )
 
 
