@@ -206,6 +206,10 @@ async def _visa_plan_line(session, plan_type: str, lang: str, amount: int, curre
     return f"🗓️ <b>{_plan_label(plan_type, lang)}</b> — 💵 <b>{price}</b>{hint}"
 
 
+def _compact_plan_line(plan_type: str, lang: str, amount: int, currency: str) -> str:
+    return f"🗓️ {_plan_label(plan_type, lang)} - {format_subscription_price(amount, currency)}"
+
+
 async def build_subscription_main_text_for_user(session, user, lang: str) -> str:
     price_10 = await _plan_price(session, "10_days", getattr(user, "payment_method", None))
     price_1m = await _plan_price(session, "1_month", getattr(user, "payment_method", None))
@@ -222,23 +226,27 @@ async def build_subscription_main_text_for_user(session, user, lang: str) -> str
         base = (
             f"{t('subscription_main_title', lang)}\n\n"
             f"{t('subscription_main_visa_benefits', lang)}\n\n"
-            f"<blockquote>{plan_lines}</blockquote>\n\n"
-            f"{t('subscription_main_choose', lang)}"
+            f"<blockquote>{plan_lines}</blockquote>"
         )
     else:
+        plan_lines = "\n".join([
+            _compact_plan_line("10_days", lang, price_10[0], price_10[1]),
+            _compact_plan_line("1_month", lang, price_1m[0], price_1m[1]),
+        ])
         base = (
             f"{t('subscription_main_title', lang)}\n\n"
-            f"{t('subscription_main_benefits', lang)}\n\n"
-            f"{await _plan_card(session, '10_days', lang, price_10[0], price_10[1], '📦')}\n\n"
-            f"{await _plan_card(session, '1_month', lang, price_1m[0], price_1m[1], '🌟')}\n\n"
-            f"{t('subscription_main_choose', lang)}"
+            f"🚀 {t('subscription_main_visa_benefits', lang)}\n\n"
+            f"{plan_lines}"
         )
+        if not user.discount_used:
+            base += f"\n\n{t('subscription_referral_hint', lang)}"
+        return f"{base}\n\n{t('subscription_main_choose', lang)}"
 
     # Show discount hint only if user hasn't used it yet
     if not user.discount_used:
         base += f"\n\n{t('subscription_referral_hint', lang)}"
 
-    return base
+    return f"{base}\n\n{t('subscription_main_choose', lang)}"
 
 
 async def build_subscription_discount_progress_text(
