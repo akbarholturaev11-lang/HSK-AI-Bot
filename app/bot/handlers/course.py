@@ -1588,9 +1588,6 @@ async def course_audio_dialogue_handler(callback: CallbackQuery, session):
 
 @router.callback_query(F.data.startswith("course:set_tz:"))
 async def course_set_timezone_handler(callback: CallbackQuery, session):
-    if await _block_if_course_disabled(callback, session):
-        return
-
     user_repo = UserRepository(session)
     engine = CourseEngineService(session)
 
