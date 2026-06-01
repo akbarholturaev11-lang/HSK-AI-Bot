@@ -1,7 +1,7 @@
 import json
 
 from app.bot.utils.i18n import t
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
@@ -286,17 +286,24 @@ def next_study_time_inline_keyboard(lang: str) -> InlineKeyboardMarkup:
     ])
 
 
-def reminder_time_keyboard(lang: str) -> ReplyKeyboardMarkup:
+def reminder_time_keyboard(lang: str) -> InlineKeyboardMarkup:
     cancel_map = {
         "uz": "❌ Bekor qilish",
         "ru": "❌ Отмена",
         "tj": "❌ Бекор кардан",
     }
-    return ReplyKeyboardMarkup(
-        keyboard=[
-            [KeyboardButton(text="08:00"), KeyboardButton(text="14:00"), KeyboardButton(text="20:00")],
-            [KeyboardButton(text=cancel_map.get(lang, "❌ Отмена"))],
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="08:00", callback_data="course:reminder_time:08:00"),
+                InlineKeyboardButton(text="14:00", callback_data="course:reminder_time:14:00"),
+                InlineKeyboardButton(text="20:00", callback_data="course:reminder_time:20:00"),
+            ],
+            [
+                InlineKeyboardButton(
+                    text=cancel_map.get(lang, "❌ Отмена"),
+                    callback_data="course:reminder_cancel",
+                ),
+            ],
         ],
-        resize_keyboard=True,
-        one_time_keyboard=True,
     )

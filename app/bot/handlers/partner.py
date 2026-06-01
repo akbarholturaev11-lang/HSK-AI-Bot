@@ -231,6 +231,7 @@ async def partner_application_channel(message: Message, state: FSMContext, sessi
     lang = _lang(user)
     value = (message.text or "").strip()
     if len(value) < 2:
+        await _delete_answer(message)
         await _edit_state_block(message, state, t("partner_application_invalid", lang), partner_close_keyboard(lang))
         return
     await state.update_data(partner_promotion_channel=value)
@@ -245,6 +246,7 @@ async def partner_application_audience(message: Message, state: FSMContext, sess
     lang = _lang(user)
     value = (message.text or "").strip()
     if len(value) < 1:
+        await _delete_answer(message)
         await _edit_state_block(message, state, t("partner_application_invalid", lang), partner_close_keyboard(lang))
         return
     await state.update_data(partner_audience_size=value)
@@ -259,6 +261,7 @@ async def partner_application_contact(message: Message, state: FSMContext, sessi
     lang = _lang(user)
     value = (message.text or "").strip()
     if len(value) < 2:
+        await _delete_answer(message)
         await _edit_state_block(message, state, t("partner_application_invalid", lang), partner_close_keyboard(lang))
         return
     data = await state.get_data()
@@ -357,6 +360,7 @@ async def partner_payout_bank_name(message: Message, state: FSMContext, session)
     lang = _lang(user)
     value = (message.text or "").strip()
     if len(value) < 2:
+        await _delete_answer(message)
         await _edit_state_block(message, state, t("partner_payout_invalid", lang), partner_dashboard_keyboard(lang))
         return
     await state.update_data(partner_payout_bank_name=value)
@@ -371,6 +375,7 @@ async def partner_payout_account(message: Message, state: FSMContext, session):
     lang = _lang(user)
     value = (message.text or "").strip()
     if len(value) < 3:
+        await _delete_answer(message)
         await _edit_state_block(message, state, t("partner_payout_invalid", lang), partner_dashboard_keyboard(lang))
         return
     await state.update_data(partner_payout_account_details=value)
@@ -385,6 +390,7 @@ async def partner_payout_holder(message: Message, state: FSMContext, session):
     lang = _lang(user)
     value = (message.text or "").strip()
     if len(value) < 2:
+        await _delete_answer(message)
         await _edit_state_block(message, state, t("partner_payout_invalid", lang), partner_dashboard_keyboard(lang))
         return
     await state.update_data(partner_payout_holder_name=value)
@@ -402,6 +408,7 @@ async def partner_payout_note(message: Message, state: FSMContext, session):
     service = PartnerService(session)
     partner = await service.repo.get_by_telegram_id(message.from_user.id)
     if not partner or partner.status != "active":
+        await _delete_answer(message)
         await state.clear()
         return
     payout = await service.create_payout_request(

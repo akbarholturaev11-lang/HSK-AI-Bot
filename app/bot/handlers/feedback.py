@@ -20,12 +20,19 @@ from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.user_repo import UserRepository
 from app.services.admin_notify_service import AdminNotifyService
 from app.services.bot_feedback_service import BotFeedbackService
+from app.bot.utils.workflow_message import (
+    delete_message_safely,
+    edit_callback_workflow_message,
+    edit_stored_workflow_message,
+)
 
 
 router = Router()
 DISLIKE_DETAIL_REQUIRED_CODES = {"unclear", "pace"}
 MAX_FEEDBACK_DETAIL_TEXT = 1000
 MAX_ADMIN_REPLY_TEXT = 3000
+_ADMIN_REPLY_CHAT_ID = "admin_feedback_reply_chat_id"
+_ADMIN_REPLY_MSG_ID = "admin_feedback_reply_msg_id"
 
 
 def _is_admin(user_id: int) -> bool:
@@ -62,7 +69,14 @@ async def _edit_message(target, text: str, reply_markup=None) -> None:
         await target.answer(text, reply_markup=reply_markup, parse_mode="HTML")
 
 
-async def _edit_stored_message(message: Message, message_id: int, text: str, reply_markup=None) -> None:
+async def _edit_stored_message(
+    message: Message,
+    message_id: int,
+    text: str,
+    reply_markup=None,
+    *,
+    delete_input: bool = True,
+) -> None:
     try:
         await message.bot.edit_message_text(
             chat_id=message.chat.id,
@@ -75,10 +89,18 @@ async def _edit_stored_message(message: Message, message_id: int, text: str, rep
         sent = await message.answer(text, reply_markup=reply_markup, parse_mode="HTML")
         message_id = sent.message_id
 
-    try:
-        await message.delete()
-    except Exception:
-        pass
+    if delete_input:
+        await delete_message_safely(message)
+
+
+async def _edit_admin_reply_block(message: Message, state: FSMContext, text: str) -> None:
+    await edit_stored_workflow_message(
+        message,
+        state,
+        text,
+        chat_id_key=_ADMIN_REPLY_CHAT_ID,
+        message_id_key=_ADMIN_REPLY_MSG_ID,
+    )
 
 
 def _extract_dislike_detail(message: Message, lang: str):
@@ -243,10 +265,13 @@ async def admin_feedback_reply_start(callback: CallbackQuery, state: FSMContext,
     await state.set_state(FeedbackStates.waiting_admin_reply)
     await state.update_data(admin_feedback_id=feedback.id)
     await callback.answer()
-    await callback.message.answer(
+    await edit_callback_workflow_message(
+        callback,
+        state,
         f"✍️ <b>Otziv #{feedback.id}</b> uchun userga yuboriladigan javob matnini yozing.",
+        chat_id_key=_ADMIN_REPLY_CHAT_ID,
+        message_id_key=_ADMIN_REPLY_MSG_ID,
         reply_markup=admin_feedback_reply_cancel_keyboard(feedback.id),
-        parse_mode="HTML",
     )
 
 
@@ -269,12 +294,14 @@ async def admin_feedback_reply_text_handler(message: Message, state: FSMContext,
 
     text = (message.text or "").strip()
     if text.lower() in {"/cancel", "cancel", "bekor"}:
+        await delete_message_safely(message)
+        await _edit_admin_reply_block(message, state, "❌ Javob yozish bekor qilindi.")
         await state.clear()
-        await message.answer("❌ Javob yozish bekor qilindi.")
         return
 
     if not text or text.startswith("/"):
-        await message.answer("Userga yuboriladigan oddiy matn yozing yoki /cancel yuboring.")
+        await delete_message_safely(message)
+        await _edit_admin_reply_block(message, state, "Userga yuboriladigan oddiy matn yozing yoki /cancel yuboring.")
         return
 
     data = await state.get_data()
@@ -282,8 +309,9 @@ async def admin_feedback_reply_text_handler(message: Message, state: FSMContext,
     feedback_repo = BotFeedbackRepository(session)
     feedback = await feedback_repo.get_by_id(feedback_id)
     if not feedback:
+        await delete_message_safely(message)
+        await _edit_admin_reply_block(message, state, "Otziv topilmadi.")
         await state.clear()
-        await message.answer("Otziv topilmadi.")
         return
 
     user = await UserRepository(session).get_by_telegram_id(feedback.telegram_id)
@@ -302,8 +330,9 @@ async def admin_feedback_reply_text_handler(message: Message, state: FSMContext,
             parse_mode="HTML",
         )
     except Exception:
+        await delete_message_safely(message)
+        await _edit_admin_reply_block(message, state, "❌ Javob userga yuborilmadi. Ehtimol user botni bloklagan.")
         await state.clear()
-        await message.answer("❌ Javob userga yuborilmadi. Ehtimol user botni bloklagan.")
         return
 
     await feedback_repo.mark_admin_reply(
@@ -312,8 +341,9 @@ async def admin_feedback_reply_text_handler(message: Message, state: FSMContext,
         reply_text=reply_text,
     )
     await session.commit()
+    await delete_message_safely(message)
+    await _edit_admin_reply_block(message, state, "✅ Javob userga yuborildi.")
     await state.clear()
-    await message.answer("✅ Javob userga yuborildi.")
 
 
 @router.message(StateFilter(FeedbackStates.waiting_admin_reply))
@@ -321,7 +351,8 @@ async def admin_feedback_reply_non_text_handler(message: Message, state: FSMCont
     if not _is_admin(message.from_user.id):
         return
 
-    await message.answer("Faqat matn yuboring yoki /cancel bilan bekor qiling.")
+    await delete_message_safely(message)
+    await _edit_admin_reply_block(message, state, "Faqat matn yuboring yoki /cancel bilan bekor qiling.")
 
 
 @router.message(StateFilter(FeedbackStates.waiting_other_text), F.text)
@@ -339,13 +370,22 @@ async def feedback_other_text_handler(message: Message, state: FSMContext, sessi
     lang = user.language if user and user.language else "ru"
 
     if not feedback or not user or feedback.status == "completed":
+        await _edit_stored_message(
+            message,
+            int(message_id or message.message_id),
+            t("feedback_not_found", lang),
+        )
         await state.clear()
-        await message.answer(t("feedback_not_found", lang))
         return
 
     text = (message.text or "").strip()
     if not text:
-        await message.answer(t("feedback_other_empty", lang))
+        await _edit_stored_message(
+            message,
+            int(message_id or feedback.prompt_message_id or message.message_id),
+            t("feedback_other_empty", lang),
+            feedback_cancel_keyboard(feedback.id, lang),
+        )
         return
 
     if field == "liked":
@@ -377,8 +417,12 @@ async def feedback_other_text_handler(message: Message, state: FSMContext, sessi
         )
         return
 
+    await _edit_stored_message(
+        message,
+        int(message_id or feedback.prompt_message_id or message.message_id),
+        t("feedback_not_found", lang),
+    )
     await state.clear()
-    await message.answer(t("feedback_not_found", lang))
 
 
 @router.message(StateFilter(FeedbackStates.waiting_dislike_detail))
@@ -402,13 +446,22 @@ async def feedback_dislike_detail_handler(message: Message, state: FSMContext, s
         or feedback.status == "completed"
         or dislike_code not in DISLIKE_DETAIL_REQUIRED_CODES
     ):
+        await _edit_stored_message(
+            message,
+            int(message_id or message.message_id),
+            t("feedback_not_found", lang),
+        )
         await state.clear()
-        await message.answer(t("feedback_not_found", lang))
         return
 
     detail_text, attachment_file_id, attachment_type = _extract_dislike_detail(message, lang)
     if not detail_text and not attachment_file_id:
-        await message.answer(t("feedback_dislike_detail_required", lang))
+        await _edit_stored_message(
+            message,
+            int(message_id or feedback.prompt_message_id or message.message_id),
+            t("feedback_dislike_detail_required", lang),
+            feedback_cancel_keyboard(feedback.id, lang),
+        )
         return
 
     label = str(dislike_label or feedback_dislike_label(dislike_code, lang))
@@ -427,6 +480,7 @@ async def feedback_dislike_detail_handler(message: Message, state: FSMContext, s
         message,
         int(message_id or feedback.prompt_message_id or message.message_id),
         t("feedback_thanks", lang),
+        delete_input=attachment_file_id is None,
     )
     await AdminNotifyService().notify_bot_feedback(
         bot=message.bot,
@@ -437,6 +491,13 @@ async def feedback_dislike_detail_handler(message: Message, state: FSMContext, s
 
 @router.message(StateFilter(FeedbackStates.waiting_other_text))
 async def feedback_other_non_text_handler(message: Message, state: FSMContext, session):
+    data = await state.get_data()
     user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
     lang = user.language if user and user.language else "ru"
-    await message.answer(t("feedback_other_text_only", lang))
+    feedback_id = int(data.get("feedback_id") or 0)
+    await _edit_stored_message(
+        message,
+        int(data.get("message_id") or message.message_id),
+        t("feedback_other_text_only", lang),
+        feedback_cancel_keyboard(feedback_id, lang),
+    )

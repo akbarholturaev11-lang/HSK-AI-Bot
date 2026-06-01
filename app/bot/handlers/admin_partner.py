@@ -14,9 +14,16 @@ from app.config import settings
 from app.db.models.partner import Partner, PartnerPayout
 from app.repositories.user_repo import UserRepository
 from app.services.partner_service import PartnerService
+from app.bot.utils.workflow_message import (
+    delete_message_safely,
+    edit_callback_workflow_message,
+    edit_stored_workflow_message,
+)
 
 
 router = Router()
+_PARTNER_PANEL_CHAT_ID = "admin_partner_panel_chat_id"
+_PARTNER_PANEL_MSG_ID = "admin_partner_panel_msg_id"
 
 
 def _is_admin(telegram_id: int) -> bool:
@@ -45,6 +52,38 @@ async def _edit_callback(
     except TelegramBadRequest as exc:
         if "message is not modified" not in str(exc).lower():
             await callback.message.answer(text, reply_markup=keyboard, parse_mode="HTML")
+
+
+async def _edit_callback_flow(
+    callback: CallbackQuery,
+    state: FSMContext,
+    text: str,
+    keyboard: InlineKeyboardMarkup,
+) -> None:
+    await edit_callback_workflow_message(
+        callback,
+        state,
+        text,
+        chat_id_key=_PARTNER_PANEL_CHAT_ID,
+        message_id_key=_PARTNER_PANEL_MSG_ID,
+        reply_markup=keyboard,
+    )
+
+
+async def _edit_state_flow(
+    message: Message,
+    state: FSMContext,
+    text: str,
+    keyboard: InlineKeyboardMarkup,
+) -> None:
+    await edit_stored_workflow_message(
+        message,
+        state,
+        text,
+        chat_id_key=_PARTNER_PANEL_CHAT_ID,
+        message_id_key=_PARTNER_PANEL_MSG_ID,
+        reply_markup=keyboard,
+    )
 
 
 def admin_partners_keyboard() -> InlineKeyboardMarkup:
@@ -329,8 +368,9 @@ async def admin_payout_pay(callback: CallbackQuery, state: FSMContext, session):
     await state.update_data(admin_partner_payout_id=payout.id)
     await state.set_state(AdminPartnerStates.waiting_payout_screenshot)
     await callback.answer()
-    await _edit_callback(
+    await _edit_callback_flow(
         callback,
+        state,
         f"✅ <b>Payout #{payout.id}</b>\n\nTo'lovni bajaring va screenshot yuboring.",
         admin_partner_back_keyboard(),
     )
@@ -344,14 +384,13 @@ async def admin_payout_screenshot(message: Message, state: FSMContext, session):
     service = PartnerService(session)
     payout = await service.repo.get_payout(int(data.get("admin_partner_payout_id") or 0))
     if not payout or payout.status not in {"pending", "deadline_set"}:
+        await _edit_state_flow(message, state, "❌ Payout yopilgan yoki topilmadi.", admin_partner_back_keyboard())
         await state.clear()
-        await message.answer("❌ Payout yopilgan yoki topilmadi.")
         return
     partner = await service.repo.get_by_id(payout.partner_id)
     screenshot_file_id = message.photo[-1].file_id
     await service.repo.mark_payout_paid(payout, screenshot_file_id, message.from_user.id)
     await session.commit()
-    await state.clear()
     user = await UserRepository(session).get_by_telegram_id(partner.user_telegram_id) if partner else None
     if user:
         try:
@@ -362,16 +401,20 @@ async def admin_payout_screenshot(message: Message, state: FSMContext, session):
             )
         except Exception:
             pass
-    await message.answer(
+    await _edit_state_flow(
+        message,
+        state,
         f"✅ Payout #{payout.id} paid qilindi.",
-        reply_markup=admin_partners_keyboard(),
+        admin_partners_keyboard(),
     )
+    await state.clear()
 
 
 @router.message(StateFilter(AdminPartnerStates.waiting_payout_screenshot))
-async def admin_payout_screenshot_only(message: Message):
+async def admin_payout_screenshot_only(message: Message, state: FSMContext):
     if _is_admin(message.from_user.id):
-        await message.answer("Screenshotni photo ko'rinishida yuboring.")
+        await delete_message_safely(message)
+        await _edit_state_flow(message, state, "Screenshotni photo ko'rinishida yuboring.", admin_partner_back_keyboard())
 
 
 @router.callback_query(F.data.startswith("adm:payout_message:"))
@@ -386,8 +429,9 @@ async def admin_payout_message(callback: CallbackQuery, state: FSMContext, sessi
     await state.update_data(admin_partner_payout_id=payout.id)
     await state.set_state(AdminPartnerStates.waiting_partner_message)
     await callback.answer()
-    await _edit_callback(
+    await _edit_callback_flow(
         callback,
+        state,
         f"✉️ <b>Payout #{payout.id}</b>\n\nPartnerga yuboriladigan xabarni yozing.",
         admin_partner_back_keyboard(),
     )
@@ -399,19 +443,22 @@ async def admin_partner_message_text(message: Message, state: FSMContext, sessio
         return
     text = (message.text or "").strip()
     if not text:
-        await message.answer("Xabar matnini yuboring.")
+        await delete_message_safely(message)
+        await _edit_state_flow(message, state, "Xabar matnini yuboring.", admin_partner_back_keyboard())
         return
     data = await state.get_data()
     service = PartnerService(session)
     payout = await service.repo.get_payout(int(data.get("admin_partner_payout_id") or 0))
     partner = await service.repo.get_by_id(payout.partner_id) if payout else None
     if not payout or not partner:
+        await delete_message_safely(message)
+        await _edit_state_flow(message, state, "❌ Payout topilmadi.", admin_partner_back_keyboard())
         await state.clear()
-        await message.answer("❌ Payout topilmadi.")
         return
     await service.notify_partner(message.bot, partner, "partner_admin_message", text=escape(text))
+    await delete_message_safely(message)
+    await _edit_state_flow(message, state, "✅ Xabar yuborildi.", admin_partners_keyboard())
     await state.clear()
-    await message.answer("✅ Xabar yuborildi.", reply_markup=admin_partners_keyboard())
 
 
 @router.callback_query(F.data.startswith("adm:payout_deadline:"))
@@ -550,8 +597,9 @@ async def admin_partner_setting_prompt(callback: CallbackQuery, state: FSMContex
     await state.update_data(admin_partner_setting_type=setting_type)
     await state.set_state(states[setting_type])
     await callback.answer()
-    await _edit_callback(
+    await _edit_callback_flow(
         callback,
+        state,
         prompts[setting_type],
         admin_settings_back_keyboard(),
     )
@@ -563,15 +611,23 @@ async def _save_decimal_setting(message: Message, state: FSMContext, session, se
     try:
         value = Decimal((message.text or "").strip().replace(",", "."))
     except InvalidOperation:
-        await message.answer("Musbat raqam yuboring. Masalan: <code>10.90</code>", parse_mode="HTML")
+        await delete_message_safely(message)
+        await _edit_state_flow(
+            message,
+            state,
+            "Musbat raqam yuboring. Masalan: <code>10.90</code>",
+            admin_settings_back_keyboard(),
+        )
         return
     if not value.is_finite():
-        await message.answer("Real qiymat yuboring.")
+        await delete_message_safely(message)
+        await _edit_state_flow(message, state, "Real qiymat yuboring.", admin_settings_back_keyboard())
         return
     allow_zero = setting_type in {"set_percent", "set_fixed", "set_bonus"}
     max_value = Decimal("100") if setting_type == "set_percent" else Decimal("100000")
     if value < 0 or (not allow_zero and value == 0) or value > max_value:
-        await message.answer("Real qiymat yuboring.")
+        await delete_message_safely(message)
+        await _edit_state_flow(message, state, "Real qiymat yuboring.", admin_settings_back_keyboard())
         return
     service = PartnerService(session)
     if setting_type == "set_rate":
@@ -585,8 +641,9 @@ async def _save_decimal_setting(message: Message, state: FSMContext, session, se
     else:
         await service.set_min_payout_usd(value)
     await session.commit()
+    await delete_message_safely(message)
+    await _edit_state_flow(message, state, f"✅ Saqlandi.\n\n{await _settings_text(session)}", admin_settings_keyboard())
     await state.clear()
-    await message.answer(f"✅ Saqlandi.\n\n{await _settings_text(session)}", reply_markup=admin_settings_keyboard())
 
 
 @router.message(StateFilter(AdminPartnerStates.waiting_usdt_tjs_rate))

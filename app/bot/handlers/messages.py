@@ -77,6 +77,12 @@ from app.services.referral_service import (
 )
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.bot.utils.i18n import t
+from app.bot.utils.workflow_message import (
+    REMINDER_PANEL_CHAT_ID,
+    REMINDER_PANEL_MSG_ID,
+    delete_message_safely,
+    edit_stored_workflow_message,
+)
 
 
 router = Router()
@@ -121,6 +127,7 @@ _ADMIN_FSM_STATES = {
     AdminPortfolioStates.waiting_amount.state,
     AdminPortfolioStates.waiting_reason.state,
     AdminPriceStates.waiting_amount.state,
+    AdminPriceStates.waiting_rate.state,
     AdminRequiredChannelStates.waiting_channel.state,
 }
 
@@ -140,6 +147,17 @@ def _parse_reminder_time(text: str):
     except (ValueError, AttributeError):
         pass
     return None
+
+
+async def _edit_reminder_panel(message: Message, state: FSMContext, text: str, reply_markup=None) -> None:
+    await edit_stored_workflow_message(
+        message,
+        state,
+        text,
+        chat_id_key=REMINDER_PANEL_CHAT_ID,
+        message_id_key=REMINDER_PANEL_MSG_ID,
+        reply_markup=reply_markup,
+    )
 
 
 def _format_static_exercise_result(result: dict, lang: str) -> str:
@@ -950,16 +968,16 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             if msg_text == cancel_map.get(user_lang, "❌ Отмена"):
                 await reminder_engine.progress_repo.set_waiting_for(reminder_progress, "none")
                 await session.commit()
-                keyboard = course_menu_keyboard(user_lang) if user.learning_mode == "course" else main_menu_keyboard(user_lang)
-                await message.answer(
-                    t("course_reminder_cancelled", user_lang),
-                    reply_markup=keyboard,
-                )
+                await delete_message_safely(message)
+                await _edit_reminder_panel(message, state, t("course_reminder_cancelled", user_lang))
                 return
 
             parsed_reminder = _parse_reminder_time(msg_text)
             if not parsed_reminder:
-                await message.answer(
+                await delete_message_safely(message)
+                await _edit_reminder_panel(
+                    message,
+                    state,
                     t("course_invalid_time_format", user_lang),
                     reply_markup=reminder_time_keyboard(user_lang),
                 )
@@ -972,7 +990,10 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             )
             await reminder_engine.progress_repo.set_waiting_for(reminder_progress, "none")
             await session.commit()
-            await message.answer(
+            await delete_message_safely(message)
+            await _edit_reminder_panel(
+                message,
+                state,
                 t("course_reminder_tz_title", user_lang),
                 reply_markup=course_reminder_timezone_keyboard(),
             )
@@ -1057,10 +1078,12 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 return
             await engine.progress_repo.set_waiting_for(progress_rm, "reminder_setup")
             await session.commit()
-            await message.answer(
+            await delete_message_safely(message)
+            await _edit_reminder_panel(
+                message,
+                state,
                 t("course_reminder_setup_msg", user_lang),
                 reply_markup=reminder_time_keyboard(user_lang),
-                parse_mode="HTML",
             )
             return
 
@@ -1074,14 +1097,15 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             if msg_text == cancel_map.get(user_lang, "❌ Отмена"):
                 await engine.progress_repo.set_waiting_for(progress, "none")
                 await session.commit()
-                await message.answer(
-                    t("course_reminder_cancelled", user_lang),
-                    reply_markup=course_menu_keyboard(user_lang),
-                )
+                await delete_message_safely(message)
+                await _edit_reminder_panel(message, state, t("course_reminder_cancelled", user_lang))
                 return
             parsed_reminder = _parse_reminder_time(msg_text)
             if not parsed_reminder:
-                await message.answer(
+                await delete_message_safely(message)
+                await _edit_reminder_panel(
+                    message,
+                    state,
                     t("course_invalid_time_format", user_lang),
                     reply_markup=reminder_time_keyboard(user_lang),
                 )
@@ -1089,8 +1113,10 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             await engine.progress_repo.set_reminder(progress, enabled=True, reminder_time=parsed_reminder)
             await engine.progress_repo.set_waiting_for(progress, "none")
             await session.commit()
-            # Faqat bitta blok — timezone tanlash (yakuniy xabar timezone tanlanganida yuboriladi)
-            await message.answer(
+            await delete_message_safely(message)
+            await _edit_reminder_panel(
+                message,
+                state,
                 t("course_reminder_tz_title", user_lang),
                 reply_markup=course_reminder_timezone_keyboard(),
             )

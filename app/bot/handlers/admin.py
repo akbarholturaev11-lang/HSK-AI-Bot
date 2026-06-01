@@ -33,10 +33,17 @@ from app.services.subscription_currency_service import (
 )
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
 from app.bot.handlers.admin_broadcast import open_broadcast_panel_for_callback
+from app.bot.utils.workflow_message import (
+    delete_message_safely,
+    edit_callback_workflow_message,
+    edit_stored_workflow_message,
+)
 
 router = Router()
 
 ADMIN_MENU_TEXT = "<b>🛠 Admin panel</b>\n\nQuyidagi amallardan birini tanlang:"
+_ADMIN_FLOW_CHAT_ID = "admin_flow_chat_id"
+_ADMIN_FLOW_MSG_ID = "admin_flow_msg_id"
 
 
 def _is_admin(user_id: int) -> bool:
@@ -141,6 +148,40 @@ async def _edit_message_by_id(
         if "message is not modified" in str(exc).lower():
             return True
         return False
+
+
+async def _edit_admin_flow_callback(
+    callback: CallbackQuery,
+    state: FSMContext,
+    text: str,
+    *,
+    reply_markup: InlineKeyboardMarkup | None = None,
+) -> None:
+    await edit_callback_workflow_message(
+        callback,
+        state,
+        text,
+        chat_id_key=_ADMIN_FLOW_CHAT_ID,
+        message_id_key=_ADMIN_FLOW_MSG_ID,
+        reply_markup=reply_markup,
+    )
+
+
+async def _edit_admin_flow_message(
+    message: Message,
+    state: FSMContext,
+    text: str,
+    *,
+    reply_markup: InlineKeyboardMarkup | None = None,
+) -> None:
+    await edit_stored_workflow_message(
+        message,
+        state,
+        text,
+        chat_id_key=_ADMIN_FLOW_CHAT_ID,
+        message_id_key=_ADMIN_FLOW_MSG_ID,
+        reply_markup=reply_markup,
+    )
 
 
 async def _send_or_edit_portfolio_prompt(
@@ -857,14 +898,14 @@ async def admin_price_set_callback(callback: CallbackQuery, state: FSMContext, s
     await state.update_data(price_method=method, price_plan=plan)
     await state.set_state(AdminPriceStates.waiting_amount)
     await callback.answer()
-    await _edit_callback_message(
+    await _edit_admin_flow_callback(
         callback,
+        state,
         f"💳 <b>Narx o'zgartirish</b>\n\n"
         f"Usul: <b>{_method_label(method)}</b>\n"
         f"Tarif: <b>{_plan_label_admin(plan)}</b>\n\n"
         "Yangi narxni raqam bilan yuboring. Masalan: <code>10</code>",
         reply_markup=admin_back_keyboard(),
-        parse_mode="HTML",
     )
 
 
@@ -875,10 +916,16 @@ async def admin_price_amount_handler(message: Message, state: FSMContext, sessio
     try:
         amount = int((message.text or "").strip())
     except ValueError:
-        await message.answer("❌ Narx raqam bo'lishi kerak. Masalan: <code>99</code>", parse_mode="HTML")
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(
+            message,
+            state,
+            "❌ Narx raqam bo'lishi kerak. Masalan: <code>99</code>",
+        )
         return
     if amount <= 0 or amount > 1_000_000:
-        await message.answer("❌ Narx 1 dan 1 000 000 gacha bo'lsin.")
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(message, state, "❌ Narx 1 dan 1 000 000 gacha bo'lsin.")
         return
 
     data = await state.get_data()
@@ -891,17 +938,20 @@ async def admin_price_amount_handler(message: Message, state: FSMContext, sessio
         updated_by_telegram_id=message.from_user.id,
     )
     if not price:
-        await message.answer("❌ Narx saqlanmadi. Tarif noto'g'ri.")
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(message, state, "❌ Narx saqlanmadi. Tarif noto'g'ri.")
         return
     await session.commit()
-    await state.clear()
-    await message.answer(
+    await delete_message_safely(message)
+    await _edit_admin_flow_message(
+        message,
+        state,
         f"✅ Narx yangilandi: <b>{_method_label(price.payment_method)} · "
         f"{_plan_label_admin(price.plan_type)} = "
         f"{format_subscription_price(price.amount, price.currency)}</b>",
-        parse_mode="HTML",
         reply_markup=prices_keyboard(),
     )
+    await state.clear()
 
 
 @router.callback_query(F.data.startswith("adm:visa_rate_set:"))
@@ -919,15 +969,15 @@ async def admin_visa_rate_set_callback(callback: CallbackQuery, state: FSMContex
     current_rate = await SubscriptionCurrencyService(session).get_rate(currency_code)
     formatted_rate = SubscriptionCurrencyService.format_rate(currency_code, current_rate)
     await callback.answer()
-    await _edit_callback_message(
+    await _edit_admin_flow_callback(
         callback,
+        state,
         f"💱 <b>VISA lokal kursini o'zgartirish</b>\n\n"
         f"Valyuta: <b>{label}</b>\n\n"
         f"Joriy kurs: <code>1 USD = {formatted_rate} {label}</code>\n\n"
         f"1 USD uchun yangi {label} kursini yuboring.\n"
         f"Masalan: <code>{formatted_rate}</code>",
         reply_markup=admin_back_keyboard(),
-        parse_mode="HTML",
     )
 
 
@@ -938,28 +988,37 @@ async def admin_visa_rate_amount_handler(message: Message, state: FSMContext, se
     try:
         value = Decimal((message.text or "").strip().replace(",", "."))
     except InvalidOperation:
-        await message.answer("❌ Kurs raqam bo'lishi kerak. Masalan: <code>9.2464</code>", parse_mode="HTML")
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(
+            message,
+            state,
+            "❌ Kurs raqam bo'lishi kerak. Masalan: <code>9.2464</code>",
+        )
         return
     if not value.is_finite() or value <= 0 or value > Decimal("1000000000"):
-        await message.answer("❌ Kurs 0 dan katta bo'lishi kerak.")
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(message, state, "❌ Kurs 0 dan katta bo'lishi kerak.")
         return
 
     data = await state.get_data()
     currency_code = data.get("visa_rate_currency")
     service = SubscriptionCurrencyService(session)
     if not await service.set_rate(currency_code, value):
-        await message.answer("❌ Kurs saqlanmadi. Valyuta noto'g'ri.")
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(message, state, "❌ Kurs saqlanmadi. Valyuta noto'g'ri.")
         return
     await session.commit()
-    await state.clear()
 
     label = service.rate_label(currency_code)
     formatted = service.format_rate(currency_code, value)
-    await message.answer(
+    await delete_message_safely(message)
+    await _edit_admin_flow_message(
+        message,
+        state,
         f"✅ VISA lokal kursi yangilandi: <b>1 USD = {formatted} {label}</b>",
-        parse_mode="HTML",
         reply_markup=prices_keyboard(),
     )
+    await state.clear()
 
 
 @router.callback_query(F.data == "adm:channels")
@@ -994,8 +1053,9 @@ async def admin_channel_add_callback(callback: CallbackQuery, state: FSMContext,
         return
     await state.set_state(AdminRequiredChannelStates.waiting_channel)
     await callback.answer()
-    await _edit_callback_message(
+    await _edit_admin_flow_callback(
         callback,
+        state,
         "➕ <b>Kanal qo'shish</b>\n\n"
         "Eng oson yo'l: kanaldan bitta postni shu yerga forward qiling.\n\n"
         "Yoki public kanal uchun shunchaki yuboring:\n"
@@ -1003,7 +1063,6 @@ async def admin_channel_add_callback(callback: CallbackQuery, state: FSMContext,
         "<code>https://t.me/channel</code>\n\n"
         "Private kanal bo'lsa, botni kanalga admin qilib qo'ying va post forward qiling.",
         reply_markup=admin_back_keyboard(),
-        parse_mode="HTML",
     )
 
 
@@ -1013,10 +1072,12 @@ async def admin_channel_add_message(message: Message, state: FSMContext, session
         return
     parsed = await _extract_channel_input(message)
     if not parsed:
-        await message.answer(
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(
+            message,
+            state,
             "❌ Kanalni aniqlay olmadim.\n\n"
             "Kanaldan post forward qiling yoki <code>@channel</code> / <code>t.me/channel</code> yuboring.",
-            parse_mode="HTML",
         )
         return
     chat_id, invite_link, title = parsed
@@ -1029,9 +1090,10 @@ async def admin_channel_add_message(message: Message, state: FSMContext, session
         created_by_telegram_id=message.from_user.id,
     )
     await session.commit()
-    await state.clear()
     text, keyboard = await _channel_panel_text(session)
-    await message.answer(f"✅ Kanal saqlandi.\n\n{text}", reply_markup=keyboard, parse_mode="HTML")
+    await delete_message_safely(message)
+    await _edit_admin_flow_message(message, state, f"✅ Kanal saqlandi.\n\n{text}", reply_markup=keyboard)
+    await state.clear()
 
 
 @router.callback_query(F.data.startswith("adm:channel_toggle:"))
@@ -1162,12 +1224,18 @@ async def admin_portfolio_amount_handler(message: Message, state: FSMContext, se
     data = await state.get_data()
     transaction_type = data.get("portfolio_transaction_type")
     if transaction_type not in {"profit", "expense"}:
+        await delete_message_safely(message)
+        await _send_or_edit_portfolio_prompt(
+            state=state,
+            message=message,
+            text="❌ Portfel flow buzildi. Qaytadan boshlang.",
+        )
         await state.clear()
-        await message.answer("❌ Portfel flow buzildi. Qaytadan boshlang.")
         return
 
     parsed = _parse_amount_currency(message.text or "")
     if not parsed:
+        await delete_message_safely(message)
         await _send_or_edit_portfolio_prompt(
             state=state,
             message=message,
@@ -1180,6 +1248,7 @@ async def admin_portfolio_amount_handler(message: Message, state: FSMContext, se
         return
 
     amount, currency = parsed
+    await delete_message_safely(message)
     await _ask_portfolio_reason(
         state=state,
         message=message,
@@ -1195,6 +1264,7 @@ async def admin_portfolio_reason_handler(message: Message, state: FSMContext, se
         return
 
     note = (message.text or "").strip()
+    await delete_message_safely(message)
     if len(note) < 2:
         await _send_or_edit_portfolio_prompt(
             state=state,
@@ -1212,8 +1282,12 @@ async def admin_portfolio_reason_handler(message: Message, state: FSMContext, se
     amount = data.get("portfolio_amount")
     currency = data.get("portfolio_currency")
     if transaction_type not in {"profit", "expense"} or amount is None or not currency:
+        await _send_or_edit_portfolio_prompt(
+            state=state,
+            message=message,
+            text="❌ Portfel flow buzildi. Qaytadan boshlang.",
+        )
         await state.clear()
-        await message.answer("❌ Portfel flow buzildi. Qaytadan boshlang.")
         return
 
     transaction = await PortfolioService(session).add_manual_transaction(
@@ -1224,8 +1298,12 @@ async def admin_portfolio_reason_handler(message: Message, state: FSMContext, se
         note=note,
     )
     if not transaction:
+        await _send_or_edit_portfolio_prompt(
+            state=state,
+            message=message,
+            text="❌ Currency noto'g'ri. Qaytadan boshlang.",
+        )
         await state.clear()
-        await message.answer("❌ Currency noto'g'ri. Qaytadan boshlang.")
         return
 
     await session.commit()
