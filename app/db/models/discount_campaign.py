@@ -35,6 +35,13 @@ class DiscountCampaign(Base):
     quota_total: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     repeat_interval_days: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 
+    notify_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    notify_media_type: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
+    notify_media_file_id: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
+    notification_sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    notification_sent_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    notification_failed_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
     created_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

@@ -48,6 +48,12 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "reason_ru": "VARCHAR(700)",
         "reason_uz": "VARCHAR(700)",
         "target_telegram_id": "BIGINT",
+        "notify_enabled": "BOOLEAN DEFAULT false NOT NULL",
+        "notify_media_type": "VARCHAR(16)",
+        "notify_media_file_id": "VARCHAR(512)",
+        "notification_sent_at": "TIMESTAMP WITH TIME ZONE",
+        "notification_sent_count": "INTEGER DEFAULT 0 NOT NULL",
+        "notification_failed_count": "INTEGER DEFAULT 0 NOT NULL",
     },
     "bot_feedbacks": {
         "price_offer_due_at": "TIMESTAMP WITH TIME ZONE",

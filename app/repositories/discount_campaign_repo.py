@@ -34,6 +34,9 @@ class DiscountCampaignRepository:
         plan_type: Optional[str] = None,
         quota_total: Optional[int] = None,
         repeat_interval_days: Optional[int] = None,
+        notify_enabled: bool = False,
+        notify_media_type: Optional[str] = None,
+        notify_media_file_id: Optional[str] = None,
         created_by_telegram_id: Optional[int] = None,
     ) -> DiscountCampaign:
         campaign = DiscountCampaign(
@@ -56,6 +59,9 @@ class DiscountCampaignRepository:
             plan_type=plan_type,
             quota_total=quota_total,
             repeat_interval_days=repeat_interval_days,
+            notify_enabled=notify_enabled,
+            notify_media_type=notify_media_type,
+            notify_media_file_id=notify_media_file_id,
             created_by_telegram_id=created_by_telegram_id,
         )
         self.session.add(campaign)
@@ -86,6 +92,32 @@ class DiscountCampaignRepository:
             .order_by(DiscountCampaign.percent.desc(), DiscountCampaign.created_at.desc())
         )
         return list(result.scalars().all())
+
+    async def list_due_notifications(self, now: Optional[datetime] = None) -> list[DiscountCampaign]:
+        now = now or datetime.now(timezone.utc)
+        result = await self.session.execute(
+            select(DiscountCampaign)
+            .where(DiscountCampaign.is_active.is_(True))
+            .where(DiscountCampaign.notify_enabled.is_(True))
+            .where(DiscountCampaign.notification_sent_at.is_(None))
+            .where(DiscountCampaign.starts_at <= now)
+            .where(DiscountCampaign.ends_at > now)
+            .order_by(DiscountCampaign.starts_at.asc(), DiscountCampaign.id.asc())
+        )
+        return list(result.scalars().all())
+
+    async def mark_notification_sent(
+        self,
+        campaign: DiscountCampaign,
+        *,
+        sent_count: int,
+        failed_count: int,
+        now: Optional[datetime] = None,
+    ) -> None:
+        campaign.notification_sent_at = now or datetime.now(timezone.utc)
+        campaign.notification_sent_count = sent_count
+        campaign.notification_failed_count = failed_count
+        await self.session.flush()
 
     async def deactivate(self, campaign: DiscountCampaign) -> None:
         campaign.is_active = False
