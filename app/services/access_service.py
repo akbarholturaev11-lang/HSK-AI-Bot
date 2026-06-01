@@ -32,10 +32,30 @@ class AccessService:
     async def _downgrade_expired_user(self, user) -> None:
         user.status = "trial"
         user.end_date = None
+        if getattr(user, "learning_mode", "qa") == "course":
+            user.learning_mode = "qa"
+            user.voice_mode = "none"
         await self.session.flush()
 
     def _is_paid_user(self, user) -> bool:
         return user.payment_status == "approved"
+
+    async def ensure_active_course_access(self, user) -> bool:
+        if not user:
+            return False
+
+        if user.status == "active" and self._is_date_expired(user.end_date):
+            await self._downgrade_expired_user(user)
+
+        if user.status == "active":
+            return True
+
+        if getattr(user, "learning_mode", "qa") == "course":
+            user.learning_mode = "qa"
+            user.voice_mode = "none"
+            await self.session.flush()
+
+        return False
 
     def _is_same_active_window(self, user, budget) -> bool:
         if not getattr(user, "start_date", None) or not getattr(user, "end_date", None):
@@ -144,7 +164,7 @@ class AccessService:
 
         return True, ""
 
-    async def downgrade_expired_active_users(self) -> int:
+    async def downgrade_expired_active_users(self) -> tuple[int, list[int]]:
         result = await self.session.execute(
             select(User).where(
                 User.status == "active",
@@ -153,17 +173,21 @@ class AccessService:
         )
         users = list(result.scalars().all())
         changed = 0
+        ejected_course_telegram_ids = []
 
         for user in users:
             if not self._is_date_expired(user.end_date):
                 continue
+            was_in_course = getattr(user, "learning_mode", "qa") == "course"
             await self._downgrade_expired_user(user)
+            if was_in_course:
+                ejected_course_telegram_ids.append(user.telegram_id)
             changed += 1
 
         if changed:
             await self.session.commit()
 
-        return changed
+        return changed, ejected_course_telegram_ids
 
     async def can_use_text_ai(self, telegram_id: int) -> Tuple[bool, str]:
         user = await self.user_repo.get_by_telegram_id(telegram_id)

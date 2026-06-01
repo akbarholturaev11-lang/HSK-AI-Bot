@@ -24,6 +24,7 @@ from app.bot.utils.response_effect import ResponseEffect
 from app.bot.handlers.course import (
     get_course_keyboard_for_step,
     _keyboard_for_step,
+    _ensure_active_course_access,
     run_course_entry_flow,
     _resolve_lessons_for_user_level,
     filter_unlocked_lessons,
@@ -94,6 +95,16 @@ _COURSE_TUTOR_STEPS = {
     "dialogue",
     "grammar",
 }
+
+
+def _is_stale_course_menu_text(text: str, lang: str) -> bool:
+    return text in {
+        t("course_settings_button", lang),
+        t("course_progress", lang),
+        t("course_reread_button", lang),
+        t("course_back_to_qa_button", lang),
+    }
+
 
 _ADMIN_FSM_STATES = {
     AdminAudioStates.waiting_for_audio.state,
@@ -618,6 +629,13 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     user_lang = user.language if user and user.language else "ru"
 
+    if user and user.learning_mode == "course" and not await _ensure_active_course_access(
+        session=session,
+        user=user,
+        respond=message.answer,
+    ):
+        return
+
     if user and user.selected_plan_type and user.payment_status != "approved":
         await message.answer(
             t("payment_send_screenshot_only", user_lang),
@@ -770,6 +788,20 @@ async def voice_mode_select_handler(callback: CallbackQuery, state: FSMContext, 
 
 
 
+async def _send_course_result_error(message: Message, session, error_key: str) -> None:
+    user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
+    if error_key == "course_only_active_users" and user:
+        await _ensure_active_course_access(
+            session=session,
+            user=user,
+            respond=message.answer,
+        )
+        return
+
+    lang = user.language if user and user.language else "ru"
+    await message.answer(t(error_key, lang), parse_mode="HTML")
+
+
 async def _send_miniapp_result_message(message: Message, session, payload: dict) -> bool:
     event = str(payload.get("event") or "").strip()
     service = CourseMiniAppResultService(session)
@@ -777,9 +809,7 @@ async def _send_miniapp_result_message(message: Message, session, payload: dict)
     if event == "quiz_completed":
         result = await service.save_quiz_result(message.from_user.id, payload)
         if result.get("error_key"):
-            user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
-            lang = user.language if user and user.language else "ru"
-            await message.answer(t(result["error_key"], lang), parse_mode="HTML")
+            await _send_course_result_error(message, session, result["error_key"])
             return True
 
         user = result["user"]
@@ -798,9 +828,7 @@ async def _send_miniapp_result_message(message: Message, session, payload: dict)
     if event == "homework_submitted":
         result = await service.save_homework_result(message.from_user.id, payload)
         if result.get("error_key"):
-            user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
-            lang = user.language if user and user.language else "ru"
-            await message.answer(t(result["error_key"], lang), parse_mode="HTML")
+            await _send_course_result_error(message, session, result["error_key"])
             return True
 
         user = result["user"]
@@ -860,6 +888,24 @@ async def handle_text_message(message: Message, state: FSMContext, session):
     user_lang = user.language if user and user.language else "ru"
 
     if message.text and message.text.startswith("/"):
+        return
+
+    if (
+        user
+        and _is_stale_course_menu_text((message.text or "").strip(), user_lang)
+        and not await _ensure_active_course_access(
+            session=session,
+            user=user,
+            respond=message.answer,
+        )
+    ):
+        return
+
+    if user and user.learning_mode == "course" and not await _ensure_active_course_access(
+        session=session,
+        user=user,
+        respond=message.answer,
+    ):
         return
 
     if user and user.selected_plan_type and user.payment_status != "approved":
@@ -1380,6 +1426,13 @@ async def handle_image_message(message: Message, state: FSMContext, session):
 
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     user_lang = user.language if user and user.language else "ru"
+
+    if user and user.learning_mode == "course" and not await _ensure_active_course_access(
+        session=session,
+        user=user,
+        respond=message.answer,
+    ):
+        return
 
     can_use, message_key = await access_service.can_use_image_ai(message.from_user.id)
     if not can_use:

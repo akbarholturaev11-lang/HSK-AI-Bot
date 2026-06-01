@@ -43,6 +43,7 @@ class CourseReminderService:
             .join(User, CourseProgress.user_id == User.id)
             .where(CourseProgress.reminder_enabled.is_(True))
             .where(CourseProgress.reminder_time.isnot(None))
+            .where(User.status == "active")
         )
         rows = result.all()
 
@@ -88,7 +89,7 @@ class CourseReminderService:
             select(CourseProgress, User)
             .join(User, CourseProgress.user_id == User.id)
             .where(CourseProgress.completed_lessons_count > 0)
-            .where(User.status.in_(("trial", "active")))
+            .where(User.status == "active")
         )
         rows = result.all()
         summary_service = CourseProgressSummaryService(self.session)

@@ -55,6 +55,10 @@ class CourseMiniAppResultService:
         if not user:
             return None, None, None, "access_start_first"
 
+        if not await AccessService(self.session).ensure_active_course_access(user):
+            await self.session.commit()
+            return user, None, None, "course_only_active_users"
+
         progress = await self.progress_repo.get_by_user_id(user.id)
         if not progress or not progress.current_lesson_id:
             return user, progress, None, "course_no_lesson_found"

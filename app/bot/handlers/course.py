@@ -16,6 +16,7 @@ from app.services.course_engine_service import (
     is_block_vocab_step,
 )
 from app.services.course_progress_summary_service import CourseProgressSummaryService
+from app.services.access_service import AccessService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course import (
     lesson_selection_keyboard, review_choice_keyboard,
@@ -77,10 +78,41 @@ async def _block_if_course_disabled(callback, session):
         await callback.answer()
         await callback.message.answer(msg_map.get(lang, msg_map["ru"]))
         return True
+
+    if callback.data != "course:back_to_qa":
+        user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+        if user and not await _ensure_active_course_access(
+            session=session,
+            user=user,
+            respond=callback.message.answer,
+        ):
+            await callback.answer()
+            return True
+
     return False
 
 
 router = Router()
+
+
+async def _ensure_active_course_access(*, session, user, respond) -> bool:
+    access_service = AccessService(session)
+    if await access_service.ensure_active_course_access(user):
+        return True
+
+    await session.commit()
+    lang = user.language if user and user.language else "ru"
+    await respond(
+        t("course_only_active_users", lang),
+        reply_markup=main_menu_keyboard(lang),
+        parse_mode="HTML",
+    )
+    await respond(
+        t("payment_method_choose", lang),
+        reply_markup=payment_method_keyboard(lang),
+        parse_mode="HTML",
+    )
+    return False
 
 
 def _course_level_candidates(level: str | None) -> tuple[str, ...]:
@@ -298,15 +330,6 @@ async def course_lessons_page_handler(callback: CallbackQuery, session):
 
     lang = user.language if user.language else "ru"
 
-    if user.status != "active":
-        await callback.answer()
-        await callback.message.answer(
-            t("course_only_active_users", lang),
-            reply_markup=payment_method_keyboard(lang),
-            parse_mode="HTML",
-        )
-        return
-
     parts = callback.data.split(":")
     try:
         page = int(parts[2])
@@ -350,15 +373,6 @@ async def course_hsk4_part_handler(callback: CallbackQuery, session):
         return
 
     lang = user.language if user.language else "ru"
-
-    if user.status != "active":
-        await callback.answer()
-        await callback.message.answer(
-            t("course_only_active_users", lang),
-            reply_markup=payment_method_keyboard(lang),
-            parse_mode="HTML",
-        )
-        return
 
     hsk4_part = normalize_hsk4_part(callback.data.split(":")[-1])
     if not hsk4_part:
@@ -487,12 +501,11 @@ async def run_course_entry_flow(
 
     lang = user.language if user.language else "ru"
 
-    if user.status != "active":
-        await respond(
-            t("course_only_active_users", lang),
-            reply_markup=payment_method_keyboard(lang),
-            parse_mode="HTML",
-        )
+    if not await _ensure_active_course_access(
+        session=session,
+        user=user,
+        respond=respond,
+    ):
         return
 
     user.learning_mode = "course"
@@ -819,15 +832,6 @@ async def course_progress_handler(callback: CallbackQuery, session):
 
     lang = user.language if user.language else "ru"
 
-    if user.status != "active":
-        await callback.answer()
-        await callback.message.answer(
-            t("course_only_active_users", lang),
-            reply_markup=payment_method_keyboard(lang),
-            parse_mode="HTML",
-        )
-        return
-
     user, progress, lesson, error_key = await engine.get_current_lesson(callback.from_user.id)
     if error_key:
         await callback.answer()
@@ -873,15 +877,6 @@ async def course_review_last_handler(callback: CallbackQuery, state: FSMContext,
         return
 
     lang = user.language if user.language else "ru"
-
-    if user.status != "active":
-        await callback.answer()
-        await callback.message.answer(
-            t("course_only_active_users", lang),
-            reply_markup=payment_method_keyboard(lang),
-            parse_mode="HTML",
-        )
-        return
 
     user.learning_mode = "course"
     user.voice_mode = "none"
@@ -1508,6 +1503,9 @@ from app.repositories.course_audio_repo import CourseAudioRepository
 
 async def _send_audio_file(callback: CallbackQuery, session, audio_type: str):
     """DB dan file_id topib yuboradi, yo'q bo'lsa foydalanuvchi tilida xabar ko'rsatadi."""
+    if await _block_if_course_disabled(callback, session):
+        return
+
     user_repo = UserRepository(session)
     engine = CourseEngineService(session)
 
@@ -1559,6 +1557,9 @@ async def course_audio_dialogue_handler(callback: CallbackQuery, session):
 
 @router.callback_query(F.data.startswith("course:set_tz:"))
 async def course_set_timezone_handler(callback: CallbackQuery, session):
+    if await _block_if_course_disabled(callback, session):
+        return
+
     user_repo = UserRepository(session)
     engine = CourseEngineService(session)
 

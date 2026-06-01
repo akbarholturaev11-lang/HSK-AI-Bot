@@ -6,6 +6,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from app.services.onboarding_service import OnboardingService
+from app.services.access_service import AccessService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.onboarding import language_keyboard, level_keyboard
@@ -59,6 +60,9 @@ async def cmd_start(
     await state.clear()
 
     if not created and user.language and user.level:
+        if getattr(user, "learning_mode", "qa") == "course":
+            await AccessService(session).ensure_active_course_access(user)
+            await session.commit()
         await message.answer(
             t("welcome_back", user.language, name=first_name),
             reply_markup=_menu_keyboard_for_user(user),
