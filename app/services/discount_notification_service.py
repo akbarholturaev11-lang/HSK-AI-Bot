@@ -11,6 +11,7 @@ from app.bot.utils.discount_formatter import build_admin_discount_block, build_d
 from app.db.models.discount_campaign import DiscountCampaign
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.user_repo import UserRepository
+from app.services.subscription_currency_service import SubscriptionCurrencyService
 from app.services.subscription_price_service import SubscriptionPriceService
 
 
@@ -113,7 +114,7 @@ class DiscountNotificationService:
             return price.amount, price.currency
         if payment_method in ("alipay", "wechat"):
             return (66 if plan_type == "1_month" else 29), "¥"
-        return (89 if plan_type == "1_month" else 29), "somoni"
+        return (10 if plan_type == "1_month" else 3), "USD"
 
     async def _notification_text(
         self,
@@ -126,6 +127,12 @@ class DiscountNotificationService:
         lines = []
         for plan in plans:
             base, currency = await self._plan_price(plan, payment_method)
+            final = int(round(base * (100 - campaign.percent) / 100))
+            local_equivalents = ""
+            if (currency or "").strip().lower() in {"usd", "$"}:
+                local_equivalents = await SubscriptionCurrencyService(
+                    self.session
+                ).format_local_equivalents(final)
             lines.append(
                 build_discount_plan_line(
                     lang=lang,
@@ -133,6 +140,7 @@ class DiscountNotificationService:
                     base=base,
                     currency=currency,
                     percent=campaign.percent,
+                    local_equivalents=local_equivalents,
                 )
             )
 

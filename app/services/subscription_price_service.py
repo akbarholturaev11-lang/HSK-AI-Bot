@@ -1,14 +1,15 @@
 from dataclasses import dataclass
 
 from app.repositories.subscription_price_repo import SubscriptionPriceRepository
+from app.services.subscription_currency_service import normalize_visa_price
 
 
 PAYMENT_METHODS = ("visa", "alipay", "wechat")
 PLANS = ("10_days", "1_month")
 
 DEFAULT_SUBSCRIPTION_PRICES: dict[tuple[str, str], tuple[int, str]] = {
-    ("visa", "10_days"): (29, "somoni"),
-    ("visa", "1_month"): (89, "somoni"),
+    ("visa", "10_days"): (3, "USD"),
+    ("visa", "1_month"): (10, "USD"),
     ("alipay", "10_days"): (29, "¥"),
     ("alipay", "1_month"): (66, "¥"),
     ("wechat", "10_days"): (29, "¥"),
@@ -39,7 +40,8 @@ class SubscriptionPriceService:
 
         price = await self.repo.get(method, plan_type)
         if price:
-            return SubscriptionPriceValue(method, plan_type, price.amount, price.currency)
+            amount, currency = self._normalize_price(method, price.amount, price.currency)
+            return SubscriptionPriceValue(method, plan_type, amount, currency)
 
         default = DEFAULT_SUBSCRIPTION_PRICES.get((method, plan_type))
         if not default:
@@ -59,7 +61,7 @@ class SubscriptionPriceService:
         if plan_type not in PLANS or amount <= 0:
             return None
 
-        currency = "¥" if method in {"alipay", "wechat"} else "somoni"
+        currency = "¥" if method in {"alipay", "wechat"} else "USD"
         price = await self.repo.set_price(
             payment_method=method,
             plan_type=plan_type,
@@ -71,7 +73,11 @@ class SubscriptionPriceService:
 
     async def all_prices(self) -> list[SubscriptionPriceValue]:
         rows = {
-            (row.payment_method, row.plan_type): (row.amount, row.currency)
+            (row.payment_method, row.plan_type): self._normalize_price(
+                row.payment_method,
+                row.amount,
+                row.currency,
+            )
             for row in await self.repo.list_all()
         }
         result = []
@@ -80,3 +86,9 @@ class SubscriptionPriceService:
                 amount, currency = rows.get((method, plan), DEFAULT_SUBSCRIPTION_PRICES[(method, plan)])
                 result.append(SubscriptionPriceValue(method, plan, amount, currency))
         return result
+
+    @staticmethod
+    def _normalize_price(method: str, amount: int, currency: str) -> tuple[int, str]:
+        if method == "visa":
+            return normalize_visa_price(amount, currency)
+        return amount, currency
