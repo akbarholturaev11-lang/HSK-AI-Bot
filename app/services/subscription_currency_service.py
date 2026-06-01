@@ -83,6 +83,16 @@ class SubscriptionCurrencyService:
             )
         )
 
+    async def format_local_equivalent_lines(self, usd_amount: int) -> str:
+        rates = await self.all_rates()
+        return "\n".join(
+            (
+                f"= {self._format_amount(Decimal(usd_amount) * rates['tjs'], 2)} TJS 🇹🇯",
+                f"= {self._format_amount(Decimal(usd_amount) * rates['uzs'], 0)} UZS 🇺🇿",
+                f"= {self._format_amount(Decimal(usd_amount) * rates['rub'], 2)} RUB 🇷🇺",
+            )
+        )
+
     @staticmethod
     def rate_label(currency_code: str) -> str:
         return LOCAL_RATE_LABELS.get(currency_code, currency_code.upper())

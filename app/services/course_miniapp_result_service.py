@@ -55,6 +55,9 @@ class CourseMiniAppResultService:
         if not user:
             return None, None, None, "access_start_first"
 
+        if getattr(user, "learning_mode", "qa") != "course":
+            return user, None, None, "course_choose_mode_first"
+
         if not await AccessService(self.session).ensure_active_course_access(user):
             await self.session.commit()
             return user, None, None, "course_only_active_users"

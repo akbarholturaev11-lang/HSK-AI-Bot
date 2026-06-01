@@ -795,6 +795,7 @@ async def _send_course_result_error(message: Message, session, error_key: str) -
             session=session,
             user=user,
             respond=message.answer,
+            expired_from_course=True,
         )
         return
 

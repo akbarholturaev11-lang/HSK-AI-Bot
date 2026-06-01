@@ -47,7 +47,7 @@ def _is_admin(user_id: int) -> bool:
 def admin_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="📊 Statistika", callback_data="adm:stats")],
-        [InlineKeyboardButton(text="🔎 User qidirish", callback_data="adm:user_search_info")],
+        [InlineKeyboardButton(text="🔎 Foydalanuvchi qidirish", callback_data="adm:user_search_info")],
         [InlineKeyboardButton(text="💼 Portfel", callback_data="adm:portfolio")],
         [InlineKeyboardButton(text="💳 Obuna narxlari", callback_data="adm:prices")],
         [InlineKeyboardButton(text="📣 Majburiy kanal obunasi", callback_data="adm:channels")],
@@ -412,12 +412,68 @@ def _fmt_dt(value) -> str:
         return str(value)
 
 
-async def _admin_user_info_text(session, user: User) -> str:
-    fields = []
-    for column in User.__table__.columns:
-        value = getattr(user, column.name, None)
-        fields.append(f"{column.name}: {value}")
+def _admin_label(value, labels: dict[str, str]) -> str:
+    raw = str(value or "—")
+    return labels.get(raw, raw.replace("_", " "))
 
+
+def _yes_no(value) -> str:
+    return "Ha" if value else "Yo'q"
+
+
+def _enabled_label(value) -> str:
+    return "Yoqilgan" if value else "O'chirilgan"
+
+
+def _payment_total_text(rows) -> str:
+    totals = [
+        format_subscription_price(int(row.total_sum or 0), row.currency)
+        for row in rows
+        if row.total_sum
+    ]
+    return " · ".join(totals) if totals else "—"
+
+
+def _course_step_label(value: str | None) -> str:
+    step = str(value or "—")
+    exact_labels = {
+        "intro": "Kirish",
+        "vocab": "So'zlar",
+        "dialogue": "Dialog",
+        "grammar": "Grammatika",
+        "exercise": "Test",
+        "satisfaction_check": "Dars bahosi",
+        "homework": "Uyga vazifa",
+        "completed": "Tugatilgan",
+    }
+    if step in exact_labels:
+        return exact_labels[step]
+
+    prefix_labels = {
+        "block_vocab_": "blok: so'zlar",
+        "block_grammar_": "blok: grammatika",
+        "block_quiz_": "blok: test",
+        "vocab_": "qism: so'zlar",
+        "dialogue_": "dialog",
+    }
+    for prefix, label in prefix_labels.items():
+        if step.startswith(prefix):
+            return f"{step.removeprefix(prefix)}-{label}"
+    return step.replace("_", " ")
+
+
+def _homework_status_label(value: str | None) -> str:
+    return _admin_label(
+        value,
+        {
+            "none": "Boshlanmagan",
+            "assigned": "Berilgan",
+            "completed": "Tugatilgan",
+        },
+    )
+
+
+async def _admin_user_info_text(session, user: User) -> str:
     payment_rows = await session.execute(
         select(Payment)
         .where(Payment.user_telegram_id == user.telegram_id)
@@ -428,12 +484,12 @@ async def _admin_user_info_text(session, user: User) -> str:
     payment_count = (await session.execute(
         select(func.count()).select_from(Payment).where(Payment.user_telegram_id == user.telegram_id)
     )).scalar() or 0
-    approved_sum = (await session.execute(
-        select(func.sum(Payment.amount)).where(
+    approved_totals = (await session.execute(
+        select(Payment.currency, func.sum(Payment.amount).label("total_sum")).where(
             Payment.user_telegram_id == user.telegram_id,
             Payment.payment_status == "approved",
-        )
-    )).scalar() or 0
+        ).group_by(Payment.currency)
+    )).fetchall()
 
     referral_rows = await session.execute(
         select(Referral.status, func.count().label("cnt"))
@@ -452,48 +508,88 @@ async def _admin_user_info_text(session, user: User) -> str:
     )
     progress = progress_result.scalar_one_or_none()
 
+    status_labels = {
+        "active": "Faol",
+        "trial": "Sinov rejimi",
+        "expired": "Muddati tugagan",
+        "blocked": "Bloklangan",
+        "free": "Bepul",
+    }
+    payment_status_labels = {
+        "none": "To'lov qilinmagan",
+        "draft": "Tarif tanlangan",
+        "pending": "Tekshiruv kutilmoqda",
+        "approved": "Tasdiqlangan",
+        "rejected": "Rad etilgan",
+    }
+    learning_mode_labels = {"qa": "Savol-javob", "course": "Kurs"}
+    language_labels = {"tj": "Tojikcha", "uz": "O'zbekcha", "ru": "Ruscha"}
+    plan_labels = {"10_days": "10 kunlik", "1_month": "1 oylik"}
+    bonus_balance = max((user.bonus_questions or 0) - (user.bonus_questions_used or 0), 0)
+
     lines = [
-        "🔎 <b>User to'liq ma'lumoti</b>",
+        "🔎 <b>Foydalanuvchi ma'lumoti</b>",
         "",
+        "👤 <b>Asosiy ma'lumotlar</b>",
+        f"Ism: <b>{escape(user.full_name or '—')}</b>",
         f"Telegram ID: <code>{user.telegram_id}</code>",
         f"Username: <b>@{escape(user.username)}</b>" if user.username else "Username: —",
-        f"Full name: <b>{escape(user.full_name or '—')}</b>",
+        f"Til: <b>{_admin_label(user.language, language_labels)}</b>",
+        f"Daraja: <b>{escape(user.level or '—')}</b>",
+        f"Ro'yxatdan o'tgan: <code>{_fmt_dt(user.created_at)}</code>",
+        f"Oxirgi faollik: <code>{_fmt_dt(user.last_active_at)}</code>",
         "",
-        "<b>User model:</b>",
-        "<blockquote>",
-        escape("\n".join(fields[:60])),
-        "</blockquote>",
+        "🔐 <b>Kirish va obuna</b>",
+        f"Holat: <b>{_admin_label(user.status, status_labels)}</b>",
+        f"O'qish rejimi: <b>{_admin_label(user.learning_mode, learning_mode_labels)}</b>",
+        f"To'lov holati: <b>{_admin_label(user.payment_status, payment_status_labels)}</b>",
+        f"To'lov usuli: <b>{escape(_method_label(user.payment_method)) if user.payment_method else '—'}</b>",
+        f"Tanlangan tarif: <b>{_admin_label(user.selected_plan_type, plan_labels)}</b>",
+        f"Obuna boshlangan: <code>{_fmt_dt(user.start_date)}</code>",
+        f"Obuna tugaydi: <code>{_fmt_dt(user.end_date)}</code>",
+        f"Savollar: <b>{user.questions_used}/{user.question_limit}</b>",
+        f"Bonus savollar qoldig'i: <b>{bonus_balance}</b>",
         "",
-        "<b>Referallar:</b>",
+        "🎁 <b>Referallar va chegirma</b>",
         f"Chaqirganlari jami: <b>{referral_total}</b>",
-        f"Statuslar: <code>{escape(str(referral_counts))}</code>",
-        f"Discount counter: <b>{user.discount_referral_count}</b>",
-        f"Taklif qilgan user: <code>{invited_ref.referrer_telegram_id if invited_ref else '—'}</code>",
+        f"Faollashgan: <b>{referral_counts.get('activated', 0)}</b>",
+        f"Kutilmoqda: <b>{referral_counts.get('pending', 0)}</b>",
+        f"Chegirma hisobi: <b>{user.discount_referral_count}/3</b>",
+        f"Chegirmaga tayyor: <b>{_yes_no(user.discount_eligible)}</b>",
+        f"Chegirma ishlatilgan: <b>{_yes_no(user.discount_used)}</b>",
+        f"Taklif qilgan foydalanuvchi: <code>{invited_ref.referrer_telegram_id if invited_ref else '—'}</code>",
         "",
-        "<b>To'lovlar:</b>",
-        f"Jami payment: <b>{payment_count}</b>",
-        f"Tasdiqlangan summa: <b>{approved_sum or 0}</b>",
+        "💳 <b>To'lovlar</b>",
+        f"Jami arizalar: <b>{payment_count}</b>",
+        f"Tasdiqlangan tushum: <b>{_payment_total_text(approved_totals)}</b>",
     ]
-    for payment in payments:
-        lines.append(
-            f"#{payment.id} {payment.payment_status} · {payment.plan_type} · "
-            f"{payment.amount} {payment.currency} · {payment.payment_method or '-'} · {_fmt_dt(payment.submitted_at)}"
-        )
+    if payments:
+        lines.append("<b>Oxirgi 5 ta ariza:</b>")
+        for payment in payments:
+            lines.append(
+                f"#{payment.id} · {_admin_label(payment.payment_status, payment_status_labels)}\n"
+                f"  {_admin_label(payment.plan_type, plan_labels)} · "
+                f"{escape(_method_label(payment.payment_method)) if payment.payment_method else '—'} · "
+                f"{format_subscription_price(payment.amount, payment.currency)}\n"
+                f"  <code>{_fmt_dt(payment.submitted_at)}</code>"
+            )
+    else:
+        lines.append("Hali to'lov arizasi yo'q.")
 
-    lines.extend(["", "<b>Kurs progress:</b>"])
+    lines.extend(["", "📚 <b>Kurs natijalari</b>"])
     if progress:
         lines.extend([
-            f"Level: <b>{escape(progress.level)}</b>",
-            f"Current lesson id: <code>{progress.current_lesson_id}</code>",
-            f"Current step: <code>{escape(progress.current_step)}</code>",
-            f"Completed lessons: <b>{progress.completed_lessons_count}</b>",
-            f"Homework: <code>{escape(progress.homework_status)}</code>",
-            f"Reminder: <b>{progress.reminder_enabled}</b> · {progress.reminder_time or '—'}",
-            f"Last opened: <code>{_fmt_dt(progress.last_opened_at)}</code>",
-            f"Last completed: <code>{_fmt_dt(progress.last_completed_at)}</code>",
+            f"Daraja: <b>{escape((progress.level or '—').upper())}</b>",
+            f"Joriy dars ID: <code>{progress.current_lesson_id or '—'}</code>",
+            f"Joriy bosqich: <b>{escape(_course_step_label(progress.current_step))}</b>",
+            f"Tugatilgan darslar: <b>{progress.completed_lessons_count}</b>",
+            f"Uyga vazifa: <b>{escape(_homework_status_label(progress.homework_status))}</b>",
+            f"Eslatma: <b>{_enabled_label(progress.reminder_enabled)}</b> · {progress.reminder_time or '—'}",
+            f"Oxirgi ochilgan: <code>{_fmt_dt(progress.last_opened_at)}</code>",
+            f"Oxirgi tugatilgan: <code>{_fmt_dt(progress.last_completed_at)}</code>",
         ])
     else:
-        lines.append("Kurs progress yo'q.")
+        lines.append("Kurs hali boshlanmagan.")
 
     return "\n".join(lines)
 
@@ -695,9 +791,9 @@ async def admin_user_search_info(callback: CallbackQuery, session):
     await callback.answer()
     await _edit_callback_message(
         callback,
-        "🔎 <b>User qidirish</b>\n\n"
+        "🔎 <b>Foydalanuvchi qidirish</b>\n\n"
         "Buyruq: <code>/user TELEGRAM_ID</code> yoki <code>/user @username</code>\n\n"
-        "Natijada user modeli, to'lovlar, referallar va kurs progress chiqadi.",
+        "Natijada asosiy ma'lumotlar, obuna, referallar, to'lovlar va kurs natijalari tartibli ko'rinadi.",
         reply_markup=admin_back_keyboard(),
         parse_mode="HTML",
     )
@@ -722,7 +818,7 @@ async def admin_user_search_command(message: Message, session):
         return
 
     if len(users) > 1:
-        lines = ["Bir nechta user topildi. Aniq ID bilan qayta qidiring:", ""]
+        lines = ["Bir nechta foydalanuvchi topildi. Aniq ID bilan qayta qidiring:", ""]
         for item in users:
             username = f"@{item.username}" if item.username else "—"
             lines.append(f"<code>{item.telegram_id}</code> · {escape(item.full_name or '—')} · {escape(username)}")

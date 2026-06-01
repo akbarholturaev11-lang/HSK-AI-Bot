@@ -95,22 +95,53 @@ async def _block_if_course_disabled(callback, session):
 router = Router()
 
 
-async def _ensure_active_course_access(*, session, user, respond) -> bool:
+def _course_locked_offer_text(lang: str) -> str:
+    return (
+        f"<b>{t('course_locked_title', lang)}</b>\n\n"
+        f"<blockquote>{t('course_locked_text', lang)}</blockquote>\n\n"
+        f"{t('payment_method_choose', lang)}"
+    )
+
+
+async def _send_course_access_offer(*, respond, lang: str, expired_from_course: bool) -> None:
+    if expired_from_course:
+        await respond(
+            t("course_only_active_users", lang),
+            reply_markup=main_menu_keyboard(lang),
+            parse_mode="HTML",
+        )
+        await respond(
+            t("payment_method_choose", lang),
+            reply_markup=payment_method_keyboard(lang),
+            parse_mode="HTML",
+        )
+        return
+
+    await respond(
+        _course_locked_offer_text(lang),
+        reply_markup=payment_method_keyboard(lang),
+        parse_mode="HTML",
+    )
+
+
+async def _ensure_active_course_access(
+    *,
+    session,
+    user,
+    respond,
+    expired_from_course: bool | None = None,
+) -> bool:
+    was_in_course = getattr(user, "learning_mode", "qa") == "course"
     access_service = AccessService(session)
     if await access_service.ensure_active_course_access(user):
         return True
 
     await session.commit()
     lang = user.language if user and user.language else "ru"
-    await respond(
-        t("course_only_active_users", lang),
-        reply_markup=main_menu_keyboard(lang),
-        parse_mode="HTML",
-    )
-    await respond(
-        t("payment_method_choose", lang),
-        reply_markup=payment_method_keyboard(lang),
-        parse_mode="HTML",
+    await _send_course_access_offer(
+        respond=respond,
+        lang=lang,
+        expired_from_course=was_in_course if expired_from_course is None else expired_from_course,
     )
     return False
 
