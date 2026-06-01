@@ -19,12 +19,17 @@ from app.services.expiry_reminder_service import ExpiryReminderService
 from app.services.course_reminder_service import CourseReminderService
 from app.services.bot_feedback_service import BotFeedbackService
 from app.services.ad_campaign_service import AdCampaignService
+from app.services.discount_notification_service import DiscountNotificationService
 from app.services.partner_service import PartnerService
 from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
+from app.repositories.user_repo import UserRepository
+from app.bot.keyboards.main_menu import main_menu_keyboard
+from app.bot.keyboards.subscription import payment_method_keyboard
+from app.bot.utils.i18n import t
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
     course_miniapp_continue_keyboard,
@@ -41,6 +46,29 @@ logger = logging.getLogger(__name__)
 bot, dp = create_bot(settings)
 _last_feedback_check_at = None
 _study_ai_tasks = set()
+
+
+async def _send_course_access_expired_offer(session, telegram_id: int) -> None:
+    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+    if not user:
+        return
+
+    lang = user.language if user.language else "ru"
+    try:
+        await bot.send_message(
+            chat_id=telegram_id,
+            text=t("course_only_active_users", lang),
+            reply_markup=main_menu_keyboard(lang),
+            parse_mode="HTML",
+        )
+        await bot.send_message(
+            chat_id=telegram_id,
+            text=t("payment_method_choose", lang),
+            reply_markup=payment_method_keyboard(lang),
+            parse_mode="HTML",
+        )
+    except Exception as error:
+        logger.warning("Failed to notify expired course user %s: %s", telegram_id, error)
 
 
 def _track_study_ai_task(task) -> None:
@@ -84,7 +112,9 @@ async def _background_scheduler(bot: Bot) -> None:
         await asyncio.sleep(60)
         try:
             async with async_session_maker() as session:
-                await AccessService(session).downgrade_expired_active_users()
+                _, expired_course_user_ids = await AccessService(session).downgrade_expired_active_users()
+                for telegram_id in expired_course_user_ids:
+                    await _send_course_access_expired_offer(session, telegram_id)
             async with async_session_maker() as session:
                 await DailyResetService(session).send_daily_reset_notifications(bot)
             async with async_session_maker() as session:
@@ -95,6 +125,8 @@ async def _background_scheduler(bot: Bot) -> None:
                 await CourseReminderService(session).send_weekly_progress_reports(bot)
             async with async_session_maker() as session:
                 await BotFeedbackService(session).send_due_price_discount_offers(bot)
+            async with async_session_maker() as session:
+                await DiscountNotificationService(session).send_due_notifications(bot)
             async with async_session_maker() as session:
                 await PartnerService(session).send_due_payout_reminders(bot)
             async with async_session_maker() as session:
@@ -250,6 +282,8 @@ async def miniapp_event(request: Request):
         if event == "quiz_completed":
             result = await service.save_quiz_result(telegram_id, payload)
             if result.get("error_key"):
+                if result["error_key"] == "course_only_active_users":
+                    await _send_course_access_expired_offer(session, telegram_id)
                 return {"ok": False, "error": result["error_key"]}
 
             user = result["user"]
@@ -269,6 +303,8 @@ async def miniapp_event(request: Request):
         if event == "homework_submitted":
             result = await service.save_homework_result(telegram_id, payload)
             if result.get("error_key"):
+                if result["error_key"] == "course_only_active_users":
+                    await _send_course_access_expired_offer(session, telegram_id)
                 return {"ok": False, "error": result["error_key"]}
 
             user = result["user"]
