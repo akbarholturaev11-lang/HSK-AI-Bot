@@ -8,6 +8,7 @@ from sqlalchemy import select, func
 from datetime import datetime, timezone, timedelta
 from decimal import Decimal, InvalidOperation
 from html import escape
+from math import isfinite
 
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
 from app.bot.fsm.admin_management import AdminPriceStates, AdminRequiredChannelStates
@@ -85,8 +86,35 @@ def portfolio_keyboard() -> InlineKeyboardMarkup:
     ])
 
 
-def portfolio_history_keyboard() -> InlineKeyboardMarkup:
+def portfolio_history_keyboard(rows) -> InlineKeyboardMarkup:
+    buttons = []
+    for row in rows:
+        if row.source not in PortfolioService.MANUAL_SOURCES:
+            continue
+        icon = _portfolio_type_icon(row.transaction_type)
+        buttons.append([
+            InlineKeyboardButton(
+                text=f"✏️ #{row.id} {icon} {_usd(row.amount_usd)}",
+                callback_data=f"adm:portfolio_edit:{row.id}",
+            )
+        ])
+    buttons.append([InlineKeyboardButton(text="⬅️ Portfel", callback_data="adm:portfolio")])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
+
+
+def portfolio_edit_type_keyboard(transaction_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
+        [
+            InlineKeyboardButton(
+                text="➕ Foyda",
+                callback_data=f"adm:portfolio_edit_type:{transaction_id}:profit",
+            ),
+            InlineKeyboardButton(
+                text="➖ Rasxod",
+                callback_data=f"adm:portfolio_edit_type:{transaction_id}:expense",
+            ),
+        ],
+        [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="adm:portfolio_cancel")],
         [InlineKeyboardButton(text="⬅️ Portfel", callback_data="adm:portfolio")],
     ])
 
@@ -239,7 +267,7 @@ def _parse_amount_currency(text: str) -> tuple[float, str] | None:
         amount = float(parts[0].replace(",", "."))
     except ValueError:
         return None
-    if amount <= 0:
+    if not isfinite(amount) or amount <= 0:
         return None
     return amount, parts[1]
 
@@ -593,7 +621,7 @@ async def _admin_user_info_text(session, user: User) -> str:
         "",
         "🎁 <b>Referallar va chegirma</b>",
         f"Chaqirganlari jami: <b>{referral_total}</b>",
-        f"Faollashgan: <b>{referral_counts.get('activated', 0)}</b>",
+        f"Faollashgan: <b>{referral_counts.get('active', 0)}</b>",
         f"Kutilmoqda: <b>{referral_counts.get('pending', 0)}</b>",
         f"Chegirma hisobi: <b>{user.discount_referral_count}/3</b>",
         f"Chegirmaga tayyor: <b>{_yes_no(user.discount_eligible)}</b>",
@@ -773,7 +801,7 @@ def _portfolio_history_text(rows) -> str:
         if row.original_amount is not None and row.original_currency:
             original = f" · {row.original_amount:g} {escape(row.original_currency)}"
         lines.append(
-            f"{icon} <code>{date_text}</code> {sign}{_usd(row.amount_usd)}"
+            f"{icon} <code>#{row.id}</code> · <code>{date_text}</code> {sign}{_usd(row.amount_usd)}"
             f"{original}\n"
             f"  <b>{source}</b>{f' — {note}' if note else ''}"
         )
@@ -1143,9 +1171,93 @@ async def admin_portfolio_history_callback(callback: CallbackQuery, session):
     await _edit_callback_message(
         callback,
         _portfolio_history_text(rows),
-        reply_markup=portfolio_history_keyboard(),
+        reply_markup=portfolio_history_keyboard(rows),
         parse_mode="HTML",
     )
+
+
+@router.callback_query(F.data.startswith("adm:portfolio_edit:"))
+async def admin_portfolio_edit_callback(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    try:
+        transaction_id = int(callback.data.split(":")[2])
+    except (AttributeError, IndexError, ValueError):
+        await callback.answer("Transaction noto'g'ri", show_alert=True)
+        return
+
+    transaction = await PortfolioService(session).get_manual_transaction(transaction_id)
+    if not transaction:
+        await callback.answer("Faqat qo'lda qo'shilgan transaction edit qilinadi", show_alert=True)
+        return
+
+    await state.clear()
+    await state.update_data(portfolio_edit_transaction_id=transaction.id)
+    await callback.answer()
+    edited = await _edit_callback_message(
+        callback,
+        f"✏️ <b>Portfel yozuvini edit qilish</b>\n\n"
+        f"Transaction: <code>#{transaction.id}</code>\n"
+        f"Joriy tur: <b>{_portfolio_type_label(transaction.transaction_type)}</b>\n"
+        f"Joriy summa: <b>{_usd(transaction.amount_usd)}</b>\n"
+        f"Sabab: <b>{escape(transaction.note or '—')}</b>\n\n"
+        "To'g'ri turini tanlang:",
+        reply_markup=portfolio_edit_type_keyboard(transaction.id),
+        parse_mode="HTML",
+    )
+    if edited:
+        await state.update_data(
+            portfolio_prompt_chat_id=edited.chat.id,
+            portfolio_prompt_message_id=edited.message_id,
+        )
+
+
+@router.callback_query(F.data.startswith("adm:portfolio_edit_type:"))
+async def admin_portfolio_edit_type_callback(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    try:
+        _, _, transaction_id_text, transaction_type = callback.data.split(":")
+        transaction_id = int(transaction_id_text)
+    except (AttributeError, ValueError):
+        await callback.answer("Transaction noto'g'ri", show_alert=True)
+        return
+    if transaction_type not in {"profit", "expense"}:
+        await callback.answer("Transaction turi noto'g'ri", show_alert=True)
+        return
+
+    transaction = await PortfolioService(session).get_manual_transaction(transaction_id)
+    if not transaction:
+        await callback.answer("Transaction topilmadi", show_alert=True)
+        return
+
+    await state.update_data(
+        portfolio_edit_transaction_id=transaction.id,
+        portfolio_transaction_type=transaction_type,
+    )
+    await state.set_state(AdminPortfolioStates.waiting_amount)
+    await callback.answer()
+    icon = _portfolio_type_icon(transaction_type)
+    label = _portfolio_type_label(transaction_type)
+    edited = await _edit_callback_message(
+        callback,
+        f"{icon} <b>#{transaction.id} {label} summasini edit qilish</b>\n\n"
+        "Yangi summa va currency yuboring:\n"
+        "<code>50 usd</code>\n"
+        "<code>120 somoni</code>\n"
+        "<code>200 ¥</code>",
+        reply_markup=portfolio_cancel_keyboard(),
+        parse_mode="HTML",
+    )
+    if edited:
+        await state.update_data(
+            portfolio_prompt_chat_id=edited.chat.id,
+            portfolio_prompt_message_id=edited.message_id,
+        )
 
 
 @router.callback_query(F.data == "adm:portfolio_expense_info")
@@ -1290,18 +1402,29 @@ async def admin_portfolio_reason_handler(message: Message, state: FSMContext, se
         await state.clear()
         return
 
-    transaction = await PortfolioService(session).add_manual_transaction(
-        transaction_type=transaction_type,
-        admin_telegram_id=message.from_user.id,
-        amount=float(amount),
-        currency=str(currency),
-        note=note,
-    )
+    portfolio_service = PortfolioService(session)
+    edit_transaction_id = data.get("portfolio_edit_transaction_id")
+    if edit_transaction_id:
+        transaction = await portfolio_service.update_manual_transaction(
+            transaction_id=int(edit_transaction_id),
+            transaction_type=transaction_type,
+            amount=float(amount),
+            currency=str(currency),
+            note=note,
+        )
+    else:
+        transaction = await portfolio_service.add_manual_transaction(
+            transaction_type=transaction_type,
+            admin_telegram_id=message.from_user.id,
+            amount=float(amount),
+            currency=str(currency),
+            note=note,
+        )
     if not transaction:
         await _send_or_edit_portfolio_prompt(
             state=state,
             message=message,
-            text="❌ Currency noto'g'ri. Qaytadan boshlang.",
+            text="❌ Transaction saqlanmadi. Qaytadan boshlang.",
         )
         await state.clear()
         return
@@ -1311,12 +1434,13 @@ async def admin_portfolio_reason_handler(message: Message, state: FSMContext, se
     await session.commit()
     await state.clear()
     label = "Foyda" if transaction_type == "profit" else "Rasxod"
+    action = "yangilandi" if edit_transaction_id else "qo'shildi"
     edited = await _edit_message_by_id(
         message,
         chat_id=data.get("portfolio_prompt_chat_id"),
         message_id=data.get("portfolio_prompt_message_id"),
         text=(
-            f"✅ {label} qo'shildi: <b>{_usd(transaction.amount_usd)}</b>\n"
+            f"✅ {label} {action}: <b>{_usd(transaction.amount_usd)}</b>\n"
             f"📝 Sabab: {escape(note)}\n\n"
             f"{_portfolio_summary_text(summary)}"
         ),
@@ -1324,7 +1448,7 @@ async def admin_portfolio_reason_handler(message: Message, state: FSMContext, se
     )
     if not edited:
         await message.answer(
-            f"✅ {label} qo'shildi: <b>{_usd(transaction.amount_usd)}</b>\n"
+            f"✅ {label} {action}: <b>{_usd(transaction.amount_usd)}</b>\n"
             f"📝 Sabab: {escape(note)}\n\n"
             f"{_portfolio_summary_text(summary)}",
             reply_markup=portfolio_keyboard(),
@@ -1426,7 +1550,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         select(func.count()).select_from(Referral)
     )).scalar() or 0
     ref_activated = (await session.execute(
-        select(func.count()).select_from(Referral).where(Referral.status == "activated")
+        select(func.count()).select_from(Referral).where(Referral.status == "active")
     )).scalar() or 0
     ref_bonus = (await session.execute(
         select(func.count()).select_from(Referral).where(Referral.bonus_granted == True)  # noqa: E712
