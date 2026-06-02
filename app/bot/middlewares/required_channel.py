@@ -36,6 +36,8 @@ PENDING_FORCE_SUB_MESSAGE_ID = "force_sub_pending_message_id"
 def _is_partner_entry_event(event: Any) -> bool:
     if isinstance(event, Message):
         text = (event.text or "").strip()
+        if not text:
+            return False
         command = text.split(maxsplit=1)[0].split("@", maxsplit=1)[0]
         return text in PARTNER_MENU_TEXTS or command == "/partner"
     if isinstance(event, CallbackQuery):
