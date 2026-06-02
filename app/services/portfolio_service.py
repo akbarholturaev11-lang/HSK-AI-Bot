@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from math import isfinite
 from typing import Optional
 
 from sqlalchemy import delete, func, or_, select
@@ -27,6 +28,8 @@ class PortfolioSummary:
 
 
 class PortfolioService:
+    MANUAL_SOURCES = {"manual_profit", "manual_expense"}
+
     def __init__(self, session):
         self.session = session
 
@@ -109,7 +112,7 @@ class PortfolioService:
         currency: str,
         note: str,
     ) -> Optional[PortfolioTransaction]:
-        if transaction_type not in {"profit", "expense"}:
+        if transaction_type not in {"profit", "expense"} or not isfinite(amount) or amount <= 0:
             return None
 
         amount_usd = self.amount_to_usd(amount, currency)
@@ -127,6 +130,44 @@ class PortfolioService:
             created_at=datetime.now(timezone.utc),
         )
         self.session.add(transaction)
+        await self.session.flush()
+        return transaction
+
+    async def get_manual_transaction(self, transaction_id: int) -> Optional[PortfolioTransaction]:
+        result = await self.session.execute(
+            select(PortfolioTransaction)
+            .where(PortfolioTransaction.id == transaction_id)
+            .where(PortfolioTransaction.source.in_(self.MANUAL_SOURCES))
+            .limit(1)
+        )
+        return result.scalar_one_or_none()
+
+    async def update_manual_transaction(
+        self,
+        *,
+        transaction_id: int,
+        transaction_type: str,
+        amount: float,
+        currency: str,
+        note: str,
+    ) -> Optional[PortfolioTransaction]:
+        if transaction_type not in {"profit", "expense"} or not isfinite(amount) or amount <= 0:
+            return None
+
+        amount_usd = self.amount_to_usd(amount, currency)
+        if amount_usd is None:
+            return None
+
+        transaction = await self.get_manual_transaction(transaction_id)
+        if not transaction:
+            return None
+
+        transaction.transaction_type = transaction_type
+        transaction.source = f"manual_{transaction_type}"
+        transaction.amount_usd = amount_usd
+        transaction.original_amount = amount
+        transaction.original_currency = currency
+        transaction.note = note
         await self.session.flush()
         return transaction
 
