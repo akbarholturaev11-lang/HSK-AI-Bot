@@ -12,26 +12,25 @@ from app.config import settings
 from app.db.models.partner import Partner, PartnerCredit, PartnerPayout, PartnerReferral
 from app.db.models.user import User
 from app.repositories.bot_setting_repo import BotSettingRepository
-from app.repositories.partner_repo import PAYOUT_OPEN_STATUSES, PartnerRepository
+from app.repositories.partner_repo import PartnerRepository
 from app.repositories.user_repo import UserRepository
 from app.services.portfolio_service import PortfolioService
 
 
 PARTNER_LINK_PREFIX = "partner_"
 PARTNER_USDT_TJS_RATE_KEY = "partner_usd_rate"
-PARTNER_USD_CNY_RATE_KEY = "partner_usd_cny_rate"
 PARTNER_COMMISSION_MODE_KEY = "partner_commission_mode"
 PARTNER_COMMISSION_PERCENT_KEY = "partner_commission_percent"
 PARTNER_COMMISSION_USD_KEY = "partner_commission_usd"
 PARTNER_SIGNUP_BONUS_USD_KEY = "partner_signup_bonus_usd"
 PARTNER_MIN_PAYOUT_USD_KEY = "partner_min_payout_usd"
 DEFAULT_PARTNER_USDT_TJS_RATE = Decimal("10.90")
-DEFAULT_PARTNER_USD_CNY_RATE = Decimal("6.80")
 DEFAULT_PARTNER_COMMISSION_MODE = "percent"
 DEFAULT_PARTNER_COMMISSION_PERCENT = Decimal("20.00")
 DEFAULT_PARTNER_COMMISSION_USD = Decimal("1.00")
 DEFAULT_PARTNER_SIGNUP_BONUS_USD = Decimal("1.00")
 DEFAULT_PARTNER_MIN_PAYOUT_USD = Decimal("5.00")
+OPEN_PAYOUT_STATUSES = ("pending", "deadline_set")
 
 
 @dataclass(frozen=True)
@@ -73,12 +72,6 @@ class PartnerService:
 
     async def set_usdt_tjs_rate(self, value: Decimal) -> None:
         await self.setting_repo.set(PARTNER_USDT_TJS_RATE_KEY, str(value.quantize(Decimal("0.0001"))))
-
-    async def get_usd_cny_rate(self) -> Decimal:
-        return await self._get_decimal_setting(PARTNER_USD_CNY_RATE_KEY, DEFAULT_PARTNER_USD_CNY_RATE)
-
-    async def set_usd_cny_rate(self, value: Decimal) -> None:
-        await self.setting_repo.set(PARTNER_USD_CNY_RATE_KEY, str(value.quantize(Decimal("0.0001"))))
 
     async def get_commission_mode(self) -> str:
         value = await self.setting_repo.get(PARTNER_COMMISSION_MODE_KEY)
@@ -169,14 +162,15 @@ class PartnerService:
 
     async def approve(self, partner: Partner, admin_telegram_id: int) -> None:
         await self.repo.set_status(partner, "active", admin_telegram_id)
-        bonus = await self.get_signup_bonus_usd()
-        if bonus > 0 and await self.repo.claim_signup_bonus(partner.id):
-            await self.repo.add_credit(
-                partner_id=partner.id,
-                credit_type="signup_bonus",
-                amount_usd=bonus,
-                is_locked=True,
-            )
+        if not await self.repo.get_signup_bonus(partner.id):
+            bonus = await self.get_signup_bonus_usd()
+            if bonus > 0:
+                await self.repo.add_credit(
+                    partner_id=partner.id,
+                    credit_type="signup_bonus",
+                    amount_usd=bonus,
+                    is_locked=True,
+                )
 
     async def block(self, partner: Partner, admin_telegram_id: int) -> None:
         await self.repo.set_status(partner, "blocked", admin_telegram_id)
@@ -235,7 +229,7 @@ class PartnerService:
 
     async def get_balance(self, partner: Partner) -> PartnerBalance:
         credits = await self.repo.sum_unlocked_credits(partner.id)
-        in_progress = await self.repo.sum_payouts(partner.id, PAYOUT_OPEN_STATUSES)
+        in_progress = await self.repo.sum_payouts(partner.id, OPEN_PAYOUT_STATUSES)
         withdrawn = await self.repo.sum_payouts(partner.id, ("paid",))
         return PartnerBalance(
             balance_usd=self._money(credits - in_progress - withdrawn),
@@ -254,33 +248,22 @@ class PartnerService:
         account_details: str,
         holder_name: Optional[str],
         note: Optional[str],
-        recipient_qr_code_file_id: Optional[str] = None,
     ) -> Optional[PartnerPayout]:
-        partner = await self.repo.get_by_id_for_update(partner.id)
-        if not partner or partner.status != "active" or await self.repo.has_open_payout(partner.id):
-            return None
         balance = await self.get_balance(partner)
         if balance.balance_usd < await self.get_min_payout_usd():
             return None
-        if payment_method in {"alipay", "wechat"}:
-            rate = await self.get_usd_cny_rate()
-            local_currency = "CNY"
-        else:
-            rate = await self.get_usdt_tjs_rate()
-            local_currency = "TJS"
+        rate = await self.get_usdt_tjs_rate()
         local_amount = (balance.balance_usd * rate).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         return await self.repo.create_payout(
             partner_id=partner.id,
             amount_usd=balance.balance_usd,
             exchange_rate=rate,
             local_amount=local_amount,
-            local_currency=local_currency,
             payment_method=payment_method,
             bank_name=bank_name,
             account_details=account_details,
             holder_name=holder_name,
             note=note,
-            recipient_qr_code_file_id=recipient_qr_code_file_id,
         )
 
     async def notify_application(self, bot: Bot, partner: Partner) -> None:
@@ -308,27 +291,11 @@ class PartnerService:
 
         text = await self.build_admin_payout_text(payout)
         for admin_id in settings.admin_id_list:
-            if payout.recipient_qr_code_file_id:
-                try:
-                    await bot.send_photo(
-                        chat_id=admin_id,
-                        photo=payout.recipient_qr_code_file_id,
-                        caption=(
-                            f"📱 Partner payout #{payout.id} QR kodi\n\n"
-                            "Partnerga pulni shu QR kod orqali to'lang."
-                        ),
-                    )
-                except Exception:
-                    pass
             try:
                 await bot.send_message(
                     chat_id=admin_id,
                     text=text,
-                    reply_markup=admin_payout_keyboard(
-                        payout.id,
-                        has_qr_code=bool(payout.recipient_qr_code_file_id),
-                        status=payout.status,
-                    ),
+                    reply_markup=admin_payout_keyboard(payout.id),
                 )
             except Exception:
                 pass
@@ -338,19 +305,13 @@ class PartnerService:
         user = await self.user_repo.get_by_telegram_id(partner.user_telegram_id) if partner else None
         balance = await self.get_balance(partner) if partner else None
         username = f"@{escape(user.username)}" if user and user.username else "—"
-        processing_admin = (
-            f"\nBand qilgan admin: <code>{payout.processing_by_telegram_id}</code>"
-            if payout.processing_by_telegram_id
-            else ""
-        )
         return (
             "💸 <b>Hamkor pul yechish so'rovi</b>\n\n"
             f"Hamkor: <b>{username}</b>\n"
             f"Telegram ID: <code>{partner.user_telegram_id if partner else '—'}</code>\n"
             f"So'ralgan summa: <b>${payout.amount_usd:.2f}</b>\n"
-            f"Kurs: <code>1 USD = {payout.exchange_rate:.4f} {escape(payout.local_currency)}</code>\n"
-            f"To'lanadi: <b>{payout.local_amount:.2f} {escape(payout.local_currency)}</b>\n"
-            f"Holat: <b>{escape(payout.status)}</b>{processing_admin}\n\n"
+            f"Kurs: <code>1 USDT = {payout.exchange_rate:.4f} TJS</code>\n"
+            f"To'lanadi: <b>{payout.local_amount:.2f} somoni</b>\n\n"
             f"Balans: <b>${balance.balance_usd:.2f}</b>\n"
             f"Jarayonda: <b>${balance.in_progress_usd:.2f}</b>\n"
             f"Yechilgan jami: <b>${balance.withdrawn_usd:.2f}</b>\n"
@@ -360,7 +321,6 @@ class PartnerService:
             f"Bank: <b>{escape(payout.bank_name or '—')}</b>\n"
             f"Rekvizit: <code>{escape(payout.account_details)}</code>\n"
             f"Ism: <b>{escape(payout.holder_name or '—')}</b>\n"
-            f"QR kod: <b>{'biriktirilgan' if payout.recipient_qr_code_file_id else '—'}</b>\n"
             f"Izoh: {escape(payout.note or '—')}"
         )
 
@@ -444,7 +404,7 @@ class PartnerService:
         ).scalar() or 0
         reserved_usd = (
             await self.session.execute(
-                select(func.sum(PartnerPayout.amount_usd)).where(PartnerPayout.status.in_(PAYOUT_OPEN_STATUSES))
+                select(func.sum(PartnerPayout.amount_usd)).where(PartnerPayout.status.in_(OPEN_PAYOUT_STATUSES))
             )
         ).scalar() or 0
         withdrawn_usd = (

@@ -21,7 +21,6 @@ from app.services.partner_service import PartnerService
 
 
 router = Router()
-_QR_PAYOUT_METHODS = {"alipay", "wechat"}
 
 
 def _fmt_usd(value: Decimal) -> str:
@@ -313,14 +312,6 @@ async def partner_payout_callback(callback: CallbackQuery, state: FSMContext, se
     balance = await service.get_balance(partner)
     minimum = await service.get_min_payout_usd()
     await callback.answer()
-    if await service.repo.has_open_payout(partner.id):
-        await _edit_callback_block(
-            callback,
-            state,
-            t("partner_payout_already_open_text", lang),
-            partner_dashboard_keyboard(lang),
-        )
-        return
     if balance.balance_usd < minimum:
         await _edit_callback_block(
             callback,
@@ -347,7 +338,7 @@ async def partner_payout_method_callback(callback: CallbackQuery, state: FSMCont
     user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
     lang = _lang(user)
     method = callback.data.split(":")[2]
-    if method not in {"bank_card", "alipay", "wechat", "other"}:
+    if method not in {"bank_card", "alipay", "other"}:
         await callback.answer()
         return
     await state.clear()
@@ -356,101 +347,11 @@ async def partner_payout_method_callback(callback: CallbackQuery, state: FSMCont
     if method == "bank_card":
         await state.set_state(PartnerPayoutStates.waiting_bank_name)
         text = t("partner_payout_bank_name_prompt", lang)
-    elif method in _QR_PAYOUT_METHODS:
-        await state.update_data(
-            partner_payout_bank_name=None,
-            partner_payout_account_details="QR code attached",
-            partner_payout_holder_name=None,
-        )
-        await state.set_state(PartnerPayoutStates.waiting_qr_code)
-        text = t("partner_payout_qr_prompt", lang)
     else:
         await state.update_data(partner_payout_bank_name=None)
         await state.set_state(PartnerPayoutStates.waiting_account_details)
         text = t("partner_payout_account_prompt", lang)
     await _edit_callback_block(callback, state, text, partner_dashboard_keyboard(lang))
-
-
-async def _submit_payout_request(
-    message: Message,
-    state: FSMContext,
-    session,
-    *,
-    delete_answer: bool,
-) -> None:
-    user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
-    lang = _lang(user)
-    data = await state.get_data()
-    service = PartnerService(session)
-    partner = await service.repo.get_by_telegram_id(message.from_user.id)
-    if not partner or partner.status != "active":
-        if delete_answer:
-            await _delete_answer(message)
-        await state.clear()
-        return
-    payout = await service.create_payout_request(
-        partner=partner,
-        payment_method=str(data.get("partner_payout_method") or ""),
-        bank_name=data.get("partner_payout_bank_name"),
-        account_details=str(data.get("partner_payout_account_details") or ""),
-        holder_name=str(data.get("partner_payout_holder_name") or "") or None,
-        note=str(data.get("partner_payout_note") or "") or None,
-        recipient_qr_code_file_id=str(data.get("partner_payout_qr_code_file_id") or "") or None,
-    )
-    if delete_answer:
-        await _delete_answer(message)
-    if not payout:
-        if await service.repo.has_open_payout(partner.id):
-            await _edit_state_block(
-                message,
-                state,
-                t("partner_payout_already_open_text", lang),
-                partner_dashboard_keyboard(lang),
-            )
-            await state.clear()
-            return
-        balance = await service.get_balance(partner)
-        minimum = await service.get_min_payout_usd()
-        await _edit_state_block(
-            message,
-            state,
-            t(
-                "partner_payout_unavailable_text",
-                lang,
-                balance=_fmt_usd(balance.balance_usd),
-                minimum=_fmt_usd(minimum),
-            ),
-            partner_dashboard_keyboard(lang),
-        )
-        await state.clear()
-        return
-    await session.commit()
-    await service.notify_payout_request(message.bot, payout)
-    await _edit_state_block(
-        message,
-        state,
-        t("partner_payout_created_text", lang, amount=_fmt_usd(payout.amount_usd)),
-        partner_dashboard_keyboard(lang),
-    )
-    await state.clear()
-
-
-@router.message(StateFilter(PartnerPayoutStates.waiting_qr_code), F.photo)
-async def partner_payout_qr_code(message: Message, state: FSMContext, session):
-    await state.update_data(partner_payout_qr_code_file_id=message.photo[-1].file_id)
-    await _submit_payout_request(message, state, session, delete_answer=False)
-
-
-@router.message(StateFilter(PartnerPayoutStates.waiting_qr_code))
-async def partner_payout_qr_code_only(message: Message, state: FSMContext, session):
-    user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
-    await _delete_answer(message)
-    await _edit_state_block(
-        message,
-        state,
-        t("partner_payout_qr_photo_only", _lang(user)),
-        partner_dashboard_keyboard(_lang(user)),
-    )
 
 
 @router.message(StateFilter(PartnerPayoutStates.waiting_bank_name))
@@ -500,6 +401,47 @@ async def partner_payout_holder(message: Message, state: FSMContext, session):
 
 @router.message(StateFilter(PartnerPayoutStates.waiting_note))
 async def partner_payout_note(message: Message, state: FSMContext, session):
+    user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
+    lang = _lang(user)
     note = (message.text or "").strip()
-    await state.update_data(partner_payout_note=note or None)
-    await _submit_payout_request(message, state, session, delete_answer=True)
+    data = await state.get_data()
+    service = PartnerService(session)
+    partner = await service.repo.get_by_telegram_id(message.from_user.id)
+    if not partner or partner.status != "active":
+        await _delete_answer(message)
+        await state.clear()
+        return
+    payout = await service.create_payout_request(
+        partner=partner,
+        payment_method=str(data.get("partner_payout_method") or ""),
+        bank_name=data.get("partner_payout_bank_name"),
+        account_details=str(data.get("partner_payout_account_details") or ""),
+        holder_name=str(data.get("partner_payout_holder_name") or ""),
+        note=note or None,
+    )
+    await _delete_answer(message)
+    if not payout:
+        balance = await service.get_balance(partner)
+        minimum = await service.get_min_payout_usd()
+        await _edit_state_block(
+            message,
+            state,
+            t(
+                "partner_payout_unavailable_text",
+                lang,
+                balance=_fmt_usd(balance.balance_usd),
+                minimum=_fmt_usd(minimum),
+            ),
+            partner_dashboard_keyboard(lang),
+        )
+        await state.clear()
+        return
+    await session.commit()
+    await service.notify_payout_request(message.bot, payout)
+    await _edit_state_block(
+        message,
+        state,
+        t("partner_payout_created_text", lang, amount=_fmt_usd(payout.amount_usd)),
+        partner_dashboard_keyboard(lang),
+    )
+    await state.clear()

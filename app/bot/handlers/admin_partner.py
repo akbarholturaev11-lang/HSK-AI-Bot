@@ -12,7 +12,6 @@ from app.bot.fsm.partner import AdminPartnerStates
 from app.bot.utils.i18n import t
 from app.config import settings
 from app.db.models.partner import Partner, PartnerPayout
-from app.repositories.partner_repo import PAYOUT_EDITABLE_STATUSES, PAYOUT_PROCESSING_STATUS
 from app.repositories.user_repo import UserRepository
 from app.services.partner_service import PartnerService
 from app.bot.utils.workflow_message import (
@@ -40,16 +39,6 @@ def _status_label(status: str) -> str:
         "pending": "Kutilmoqda",
         "active": "Faol",
         "blocked": "Bloklangan",
-    }.get(status, status)
-
-
-def _payout_status_label(status: str) -> str:
-    return {
-        "pending": "Kutilmoqda",
-        "deadline_set": "Muddat belgilangan",
-        "processing": "Admin to'lov qilmoqda",
-        "paid": "To'langan",
-        "rejected": "Rad qilingan",
     }.get(status, status)
 
 
@@ -130,49 +119,14 @@ def admin_partner_detail_keyboard(partner: Partner) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-def admin_payout_keyboard(
-    payout_id: int,
-    *,
-    has_qr_code: bool = False,
-    status: str = "pending",
-) -> InlineKeyboardMarkup:
-    rows = []
-    if has_qr_code:
-        rows.append([InlineKeyboardButton(text="📱 QR kodni ko'rish", callback_data=f"adm:payout_qr:{payout_id}")])
-    if status == PAYOUT_PROCESSING_STATUS:
-        rows.extend(
-            [
-                [InlineKeyboardButton(text="🔄 To'lovni davom ettirish", callback_data=f"adm:payout_pay:{payout_id}")],
-                [
-                    InlineKeyboardButton(
-                        text="🔓 To'lov jarayonini bekor qilish",
-                        callback_data=f"adm:payout_payment_cancel:{payout_id}",
-                    )
-                ],
-            ]
-        )
-    else:
-        rows.extend(
-            [
-                [InlineKeyboardButton(text="✅ To'lash", callback_data=f"adm:payout_pay:{payout_id}")],
-                [InlineKeyboardButton(text="✉️ Xabar yuborish", callback_data=f"adm:payout_message:{payout_id}")],
-                [InlineKeyboardButton(text="⏰ Muddat belgilash", callback_data=f"adm:payout_deadline:{payout_id}")],
-                [InlineKeyboardButton(text="❌ Rad qilish", callback_data=f"adm:payout_reject:{payout_id}")],
-            ]
-        )
-    rows.append([InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")])
-    return InlineKeyboardMarkup(inline_keyboard=rows)
-
-
-def admin_payout_payment_cancel_keyboard(payout_id: int) -> InlineKeyboardMarkup:
+def admin_payout_keyboard(payout_id: int) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="🔓 To'lov jarayonini bekor qilish",
-                    callback_data=f"adm:payout_payment_cancel:{payout_id}",
-                )
-            ],
+            [InlineKeyboardButton(text="✅ To'lash", callback_data=f"adm:payout_pay:{payout_id}")],
+            [InlineKeyboardButton(text="✉️ Xabar yuborish", callback_data=f"adm:payout_message:{payout_id}")],
+            [InlineKeyboardButton(text="⏰ Muddat belgilash", callback_data=f"adm:payout_deadline:{payout_id}")],
+            [InlineKeyboardButton(text="❌ Rad qilish", callback_data=f"adm:payout_reject:{payout_id}")],
+            [InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")],
         ]
     )
 
@@ -193,8 +147,7 @@ def admin_deadline_keyboard(payout_id: int) -> InlineKeyboardMarkup:
 def admin_settings_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="💱 USD/TJS kursini o'zgartirish", callback_data="adm:partners:set_rate")],
-            [InlineKeyboardButton(text="💴 CNY kursini o'zgartirish", callback_data="adm:partners:set_cny_rate")],
+            [InlineKeyboardButton(text="💱 USDT kursini o'zgartirish", callback_data="adm:partners:set_rate")],
             [InlineKeyboardButton(text="🧮 Hisoblash turini tanlash", callback_data="adm:partners:commission_mode")],
             [InlineKeyboardButton(text="📈 Foizni o'zgartirish", callback_data="adm:partners:set_percent")],
             [InlineKeyboardButton(text="💵 Belgilangan summani o'zgartirish", callback_data="adm:partners:set_fixed")],
@@ -265,8 +218,7 @@ async def _settings_text(session) -> str:
     )
     return (
         "⚙️ <b>Hamkorlik sozlamalari</b>\n\n"
-        f"1 USD = <b>{await service.get_usdt_tjs_rate():.4f} TJS</b>\n"
-        f"1 USD = <b>{await service.get_usd_cny_rate():.4f} CNY</b>\n"
+        f"1 USDT = <b>{await service.get_usdt_tjs_rate():.4f} TJS</b>\n"
         f"Hisoblash turi: <b>{mode_label}</b>\n"
         f"Faol komissiya: <b>{active_value}</b>\n\n"
         f"Saqlangan foiz: <b>{_fmt_number(await service.get_commission_percent())}%</b>\n"
@@ -371,12 +323,7 @@ async def admin_payout_list(callback: CallbackQuery, session):
         return
     payouts = await PartnerService(session).repo.list_open_payouts()
     rows = [
-        [
-            InlineKeyboardButton(
-                text=f"#{payout.id} · ${payout.amount_usd:.2f} · {_payout_status_label(payout.status)}",
-                callback_data=f"adm:payout:{payout.id}",
-            )
-        ]
+        [InlineKeyboardButton(text=f"#{payout.id} · ${payout.amount_usd:.2f}", callback_data=f"adm:payout:{payout.id}")]
         for payout in payouts
     ]
     rows.append([InlineKeyboardButton(text="⬅️ Hamkorlar", callback_data="adm:partners")])
@@ -398,43 +345,12 @@ async def admin_payout_detail(callback: CallbackQuery, session):
         await callback.answer("Payout topilmadi", show_alert=True)
         return
     await callback.answer()
-    await _edit_callback(
-        callback,
-        await PartnerService(session).build_admin_payout_text(payout),
-        admin_payout_keyboard(
-            payout.id,
-            has_qr_code=bool(payout.recipient_qr_code_file_id),
-            status=payout.status,
-        ),
-    )
-
-
-@router.callback_query(F.data.startswith("adm:payout_qr:"))
-async def admin_payout_qr_code(callback: CallbackQuery, session):
-    if not _is_admin(callback.from_user.id):
-        await callback.answer()
-        return
-    payout = await PartnerService(session).repo.get_payout(int(callback.data.split(":")[2]))
-    if not payout or not payout.recipient_qr_code_file_id:
-        await callback.answer("QR kod topilmadi", show_alert=True)
-        return
-    await callback.answer()
-    try:
-        await callback.bot.send_photo(
-            chat_id=callback.from_user.id,
-            photo=payout.recipient_qr_code_file_id,
-            caption=(
-                f"📱 Partner payout #{payout.id} QR kodi\n\n"
-                "Partnerga pulni shu QR kod orqali to'lang."
-            ),
-        )
-    except Exception:
-        await callback.message.answer("❌ QR kodni yuborib bo'lmadi.")
+    await _edit_callback(callback, await PartnerService(session).build_admin_payout_text(payout), admin_payout_keyboard(payout.id))
 
 
 async def _get_open_payout(callback: CallbackQuery, session) -> PartnerPayout | None:
     payout = await PartnerService(session).repo.get_payout(int(callback.data.split(":")[2]))
-    if not payout or payout.status not in PAYOUT_EDITABLE_STATUSES:
+    if not payout or payout.status not in {"pending", "deadline_set"}:
         await callback.answer("Payout yopilgan yoki topilmadi", show_alert=True)
         return None
     return payout
@@ -445,13 +361,9 @@ async def admin_payout_pay(callback: CallbackQuery, state: FSMContext, session):
     if not _is_admin(callback.from_user.id):
         await callback.answer()
         return
-    service = PartnerService(session)
-    payout_id = int(callback.data.split(":")[2])
-    payout = await service.repo.claim_payout_for_payment(payout_id, callback.from_user.id)
+    payout = await _get_open_payout(callback, session)
     if not payout:
-        await callback.answer("Payout boshqa admin tomonidan band qilingan yoki yopilgan", show_alert=True)
         return
-    await session.commit()
     await state.clear()
     await state.update_data(admin_partner_payout_id=payout.id)
     await state.set_state(AdminPartnerStates.waiting_payout_screenshot)
@@ -459,37 +371,9 @@ async def admin_payout_pay(callback: CallbackQuery, state: FSMContext, session):
     await _edit_callback_flow(
         callback,
         state,
-        f"✅ <b>Payout #{payout.id}</b>\n\n"
-        f"To'lang: <b>{payout.local_amount:.2f} {escape(payout.local_currency)}</b>\n"
-        "To'lov tugagach screenshot yuboring.",
-        admin_payout_payment_cancel_keyboard(payout.id),
+        f"✅ <b>Payout #{payout.id}</b>\n\nTo'lovni bajaring va screenshot yuboring.",
+        admin_partner_back_keyboard(),
     )
-
-
-@router.callback_query(F.data.startswith("adm:payout_payment_cancel:"))
-async def admin_payout_payment_cancel(callback: CallbackQuery, state: FSMContext, session):
-    if not _is_admin(callback.from_user.id):
-        await callback.answer()
-        return
-    service = PartnerService(session)
-    payout_id = int(callback.data.split(":")[2])
-    if not await service.repo.release_payout_payment(payout_id, callback.from_user.id):
-        await callback.answer("Bu payout siz tomonidan band qilinmagan", show_alert=True)
-        return
-    await session.commit()
-    payout = await service.repo.get_payout(payout_id)
-    await state.clear()
-    await callback.answer("To'lov jarayoni bekor qilindi", show_alert=True)
-    if payout:
-        await _edit_callback(
-            callback,
-            await service.build_admin_payout_text(payout),
-            admin_payout_keyboard(
-                payout.id,
-                has_qr_code=bool(payout.recipient_qr_code_file_id),
-                status=payout.status,
-            ),
-        )
 
 
 @router.message(StateFilter(AdminPartnerStates.waiting_payout_screenshot), F.photo)
@@ -499,21 +383,13 @@ async def admin_payout_screenshot(message: Message, state: FSMContext, session):
     data = await state.get_data()
     service = PartnerService(session)
     payout = await service.repo.get_payout(int(data.get("admin_partner_payout_id") or 0))
-    if not payout or payout.status != PAYOUT_PROCESSING_STATUS:
+    if not payout or payout.status not in {"pending", "deadline_set"}:
         await _edit_state_flow(message, state, "❌ Payout yopilgan yoki topilmadi.", admin_partner_back_keyboard())
         await state.clear()
         return
     partner = await service.repo.get_by_id(payout.partner_id)
     screenshot_file_id = message.photo[-1].file_id
-    if not await service.repo.mark_payout_paid(payout.id, screenshot_file_id, message.from_user.id):
-        await _edit_state_flow(
-            message,
-            state,
-            "❌ Payout boshqa admin tomonidan band qilingan yoki yopilgan.",
-            admin_partner_back_keyboard(),
-        )
-        await state.clear()
-        return
+    await service.repo.mark_payout_paid(payout, screenshot_file_id, message.from_user.id)
     await session.commit()
     user = await UserRepository(session).get_by_telegram_id(partner.user_telegram_id) if partner else None
     if user:
@@ -538,14 +414,7 @@ async def admin_payout_screenshot(message: Message, state: FSMContext, session):
 async def admin_payout_screenshot_only(message: Message, state: FSMContext):
     if _is_admin(message.from_user.id):
         await delete_message_safely(message)
-        data = await state.get_data()
-        payout_id = int(data.get("admin_partner_payout_id") or 0)
-        await _edit_state_flow(
-            message,
-            state,
-            "Screenshotni photo ko'rinishida yuboring.",
-            admin_payout_payment_cancel_keyboard(payout_id),
-        )
+        await _edit_state_flow(message, state, "Screenshotni photo ko'rinishida yuboring.", admin_partner_back_keyboard())
 
 
 @router.callback_query(F.data.startswith("adm:payout_message:"))
@@ -616,28 +485,18 @@ async def admin_payout_due(callback: CallbackQuery, session):
     parts = callback.data.split(":")
     payout = await PartnerService(session).repo.get_payout(int(parts[2]))
     days = int(parts[3])
-    if not payout or payout.status not in PAYOUT_EDITABLE_STATUSES or days not in {1, 3, 7}:
+    if not payout or payout.status not in {"pending", "deadline_set"} or days not in {1, 3, 7}:
         await callback.answer("Payout yopilgan yoki muddat noto'g'ri", show_alert=True)
         return
     service = PartnerService(session)
     deadline = datetime.now(timezone.utc) + timedelta(days=days)
-    if not await service.repo.set_payout_deadline(payout.id, deadline, callback.from_user.id):
-        await callback.answer("Payout boshqa admin tomonidan band qilingan yoki yopilgan", show_alert=True)
-        return
+    await service.repo.set_payout_deadline(payout, deadline, callback.from_user.id)
     partner = await service.repo.get_by_id(payout.partner_id)
     await session.commit()
     if partner:
         await service.notify_partner(callback.bot, partner, "partner_payout_deadline_notification", days=days)
     await callback.answer("Muddat saqlandi", show_alert=True)
-    await _edit_callback(
-        callback,
-        await service.build_admin_payout_text(payout),
-        admin_payout_keyboard(
-            payout.id,
-            has_qr_code=bool(payout.recipient_qr_code_file_id),
-            status=payout.status,
-        ),
-    )
+    await _edit_callback(callback, await service.build_admin_payout_text(payout), admin_payout_keyboard(payout.id))
 
 
 @router.callback_query(F.data.startswith("adm:payout_reject:"))
@@ -650,9 +509,7 @@ async def admin_payout_reject(callback: CallbackQuery, session):
         return
     service = PartnerService(session)
     partner = await service.repo.get_by_id(payout.partner_id)
-    if not await service.repo.reject_payout(payout.id, callback.from_user.id):
-        await callback.answer("Payout boshqa admin tomonidan band qilingan yoki yopilgan", show_alert=True)
-        return
+    await service.repo.reject_payout(payout, callback.from_user.id)
     await session.commit()
     if partner:
         await service.notify_partner(callback.bot, partner, "partner_payout_rejected_notification", amount=f"${payout.amount_usd:.2f}")
@@ -710,7 +567,6 @@ async def admin_partner_commission_mode_select(callback: CallbackQuery, state: F
     F.data.in_(
         {
             "adm:partners:set_rate",
-            "adm:partners:set_cny_rate",
             "adm:partners:set_percent",
             "adm:partners:set_fixed",
             "adm:partners:set_bonus",
@@ -724,8 +580,7 @@ async def admin_partner_setting_prompt(callback: CallbackQuery, state: FSMContex
         return
     setting_type = callback.data.split(":")[2]
     prompts = {
-        "set_rate": "💱 Yangi USD kursini TJS'da yuboring. Masalan: <code>10.90</code>",
-        "set_cny_rate": "💴 Yangi USD kursini CNY'da yuboring. Masalan: <code>6.80</code>",
+        "set_rate": "💱 Yangi USDT kursini TJS'da yuboring. Masalan: <code>10.90</code>",
         "set_percent": "📈 Referral to'lovidan beriladigan foizni yuboring. Masalan: <code>20</code>",
         "set_fixed": "💵 Har bir paid referral uchun aniq summani USD'da yuboring. Masalan: <code>1.00</code>",
         "set_bonus": "🎁 Yangi partner bonusini USD'da yuboring. Masalan: <code>1.00</code>",
@@ -733,7 +588,6 @@ async def admin_partner_setting_prompt(callback: CallbackQuery, state: FSMContex
     }
     states = {
         "set_rate": AdminPartnerStates.waiting_usdt_tjs_rate,
-        "set_cny_rate": AdminPartnerStates.waiting_usd_cny_rate,
         "set_percent": AdminPartnerStates.waiting_commission_percent,
         "set_fixed": AdminPartnerStates.waiting_commission_fixed,
         "set_bonus": AdminPartnerStates.waiting_signup_bonus,
@@ -778,8 +632,6 @@ async def _save_decimal_setting(message: Message, state: FSMContext, session, se
     service = PartnerService(session)
     if setting_type == "set_rate":
         await service.set_usdt_tjs_rate(value)
-    elif setting_type == "set_cny_rate":
-        await service.set_usd_cny_rate(value)
     elif setting_type == "set_percent":
         await service.set_commission_percent(value)
     elif setting_type == "set_fixed":
@@ -797,11 +649,6 @@ async def _save_decimal_setting(message: Message, state: FSMContext, session, se
 @router.message(StateFilter(AdminPartnerStates.waiting_usdt_tjs_rate))
 async def admin_partner_rate_value(message: Message, state: FSMContext, session):
     await _save_decimal_setting(message, state, session, "set_rate")
-
-
-@router.message(StateFilter(AdminPartnerStates.waiting_usd_cny_rate))
-async def admin_partner_cny_rate_value(message: Message, state: FSMContext, session):
-    await _save_decimal_setting(message, state, session, "set_cny_rate")
 
 
 @router.message(StateFilter(AdminPartnerStates.waiting_commission_percent))

@@ -107,15 +107,6 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "note": "TEXT",
         "created_at": "TIMESTAMP WITH TIME ZONE",
     },
-    "partners": {
-        "signup_bonus_granted_at": "TIMESTAMP WITH TIME ZONE",
-    },
-    "partner_payouts": {
-        "recipient_qr_code_file_id": "VARCHAR(512)",
-        "local_currency": "VARCHAR(8) DEFAULT 'TJS' NOT NULL",
-        "processing_by_telegram_id": "BIGINT",
-        "processing_started_at": "TIMESTAMP WITH TIME ZONE",
-    },
 }
 
 
@@ -141,20 +132,7 @@ async def _ensure_bootstrap_columns(conn) -> None:
                     raise
 
 
-async def _ensure_bootstrap_indexes(conn) -> None:
-    await conn.execute(
-        text(
-            """
-            CREATE UNIQUE INDEX IF NOT EXISTS uq_partner_payouts_one_open_per_partner
-            ON partner_payouts (partner_id)
-            WHERE status IN ('pending', 'deadline_set', 'processing')
-            """
-        )
-    )
-
-
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         await _ensure_bootstrap_columns(conn)
-        await _ensure_bootstrap_indexes(conn)
