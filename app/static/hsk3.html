@@ -1112,6 +1112,11 @@ function showResult(){
   const {c,t}=S.qScore,pct=t?Math.round(c/t*100):0,wrong=t-c;
   const activeLesson=(miniMode&&initialLesson)?initialLesson:(typeof S.qFilter==='number'?S.qFilter:null);
   const activeBlock=miniLessonData?.block_no||initialBlock||null;
+  const answers=qList.map(x=>({
+    question_id:x.id||null,
+    selected_index:typeof x.selected_index==='number'?x.selected_index:null,
+    selected_answer:x.selected_answer||''
+  }));
   const wrong_items=qList.filter(x=>x.correct===false).map(x=>({
     lesson_id:x.lesson||activeLesson,
     block_no:x.block_no||activeBlock,
@@ -1155,6 +1160,7 @@ function showResult(){
         score:c,
         total:t,
         percent:pct,
+        answers,
         wrong_items
       });
     }

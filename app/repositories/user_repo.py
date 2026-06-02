@@ -18,6 +18,14 @@ class UserRepository:
         )
         return result.scalar_one_or_none()
 
+    async def get_by_telegram_id_for_update(self, telegram_id: int) -> Optional[User]:
+        result = await self.session.execute(
+            select(User)
+            .where(User.telegram_id == telegram_id)
+            .with_for_update()
+        )
+        return result.scalar_one_or_none()
+
     async def find_by_identifier(self, identifier: str) -> Optional[User]:
         value = (identifier or "").strip()
         if not value:

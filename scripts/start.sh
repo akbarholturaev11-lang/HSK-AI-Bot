@@ -3,19 +3,20 @@ set -e
 
 echo "=== Alembic migration check ==="
 
-# alembic current xato bo'lsa ham to'xtatmaymiz
-CURRENT=$(alembic current 2>&1 || true)
+if ! CURRENT=$(alembic current 2>&1); then
+    echo "Alembic current failed. Refusing to continue:"
+    echo "$CURRENT"
+    exit 1
+fi
 echo "Alembic current output:"
 echo "$CURRENT"
 
-# Revision ID bor-yo'qligini tekshiramiz (masalan: "0016_add_course_promo_sent (head)")
-# Agar output da hech qanday revision ID bo'lmasa — stamp head
+# Empty databases must migrate from base. Existing unversioned schemas must fail
+# during upgrade and be reconciled explicitly after review.
 if echo "$CURRENT" | grep -qE "^[0-9a-f]|[0-9]{4}_"; then
     echo "Revision found in DB — running upgrade head normally."
 else
-    echo "No revision ID detected (only INFO lines or empty). Stamping at head..."
-    alembic stamp head
-    echo "Stamp complete."
+    echo "No revision ID detected. Running upgrade head from base without stamping."
 fi
 
 echo "=== Running alembic upgrade head ==="
