@@ -2,10 +2,15 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Optional
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, case, func, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.partner import Partner, PartnerCredit, PartnerPayout, PartnerReferral
+
+
+PAYOUT_EDITABLE_STATUSES = ("pending", "deadline_set")
+PAYOUT_PROCESSING_STATUS = "processing"
+PAYOUT_OPEN_STATUSES = (*PAYOUT_EDITABLE_STATUSES, PAYOUT_PROCESSING_STATUS)
 
 
 class PartnerRepository:
@@ -14,6 +19,12 @@ class PartnerRepository:
 
     async def get_by_id(self, partner_id: int) -> Optional[Partner]:
         return await self.session.get(Partner, partner_id)
+
+    async def get_by_id_for_update(self, partner_id: int) -> Optional[Partner]:
+        result = await self.session.execute(
+            select(Partner).where(Partner.id == partner_id).with_for_update()
+        )
+        return result.scalar_one_or_none()
 
     async def get_by_telegram_id(self, telegram_id: int) -> Optional[Partner]:
         result = await self.session.execute(
@@ -113,6 +124,27 @@ class PartnerRepository:
         )
         return result.scalar_one_or_none()
 
+    async def claim_signup_bonus(self, partner_id: int) -> bool:
+        existing_bonus = await self.get_signup_bonus(partner_id)
+        if existing_bonus:
+            await self.session.execute(
+                update(Partner)
+                .where(Partner.id == partner_id)
+                .where(Partner.signup_bonus_granted_at.is_(None))
+                .values(signup_bonus_granted_at=existing_bonus.created_at)
+            )
+            await self.session.flush()
+            return False
+        result = await self.session.execute(
+            update(Partner)
+            .where(Partner.id == partner_id)
+            .where(Partner.signup_bonus_granted_at.is_(None))
+            .values(signup_bonus_granted_at=datetime.now(timezone.utc))
+            .returning(Partner.id)
+        )
+        await self.session.flush()
+        return result.scalar_one_or_none() is not None
+
     async def add_credit(
         self,
         *,
@@ -149,23 +181,27 @@ class PartnerRepository:
         amount_usd: Decimal,
         exchange_rate: Decimal,
         local_amount: Decimal,
+        local_currency: str,
         payment_method: str,
         bank_name: Optional[str],
         account_details: str,
         holder_name: Optional[str],
         note: Optional[str],
+        recipient_qr_code_file_id: Optional[str],
     ) -> PartnerPayout:
         payout = PartnerPayout(
             partner_id=partner_id,
             amount_usd=amount_usd,
             exchange_rate=exchange_rate,
             local_amount=local_amount,
+            local_currency=local_currency,
             status="pending",
             payment_method=payment_method,
             bank_name=bank_name,
             account_details=account_details,
             holder_name=holder_name,
             note=note,
+            recipient_qr_code_file_id=recipient_qr_code_file_id,
         )
         self.session.add(payout)
         await self.session.flush()
@@ -177,11 +213,64 @@ class PartnerRepository:
     async def list_open_payouts(self, limit: int = 40) -> list[PartnerPayout]:
         result = await self.session.execute(
             select(PartnerPayout)
-            .where(PartnerPayout.status.in_(("pending", "deadline_set")))
+            .where(PartnerPayout.status.in_(PAYOUT_OPEN_STATUSES))
             .order_by(PartnerPayout.created_at.asc(), PartnerPayout.id.asc())
             .limit(limit)
         )
         return list(result.scalars().all())
+
+    async def has_open_payout(self, partner_id: int) -> bool:
+        result = await self.session.execute(
+            select(PartnerPayout.id)
+            .where(PartnerPayout.partner_id == partner_id)
+            .where(PartnerPayout.status.in_(PAYOUT_OPEN_STATUSES))
+            .limit(1)
+        )
+        return result.scalar_one_or_none() is not None
+
+    async def claim_payout_for_payment(self, payout_id: int, admin_id: int) -> Optional[PartnerPayout]:
+        now = datetime.now(timezone.utc)
+        result = await self.session.execute(
+            update(PartnerPayout)
+            .where(PartnerPayout.id == payout_id)
+            .where(
+                or_(
+                    PartnerPayout.status.in_(PAYOUT_EDITABLE_STATUSES),
+                    and_(
+                        PartnerPayout.status == PAYOUT_PROCESSING_STATUS,
+                        PartnerPayout.processing_by_telegram_id == admin_id,
+                    ),
+                )
+            )
+            .values(
+                status=PAYOUT_PROCESSING_STATUS,
+                processing_by_telegram_id=admin_id,
+                processing_started_at=now,
+            )
+            .returning(PartnerPayout.id)
+        )
+        await self.session.flush()
+        claimed_id = result.scalar_one_or_none()
+        return await self.get_payout(claimed_id) if claimed_id is not None else None
+
+    async def release_payout_payment(self, payout_id: int, admin_id: int) -> bool:
+        result = await self.session.execute(
+            update(PartnerPayout)
+            .where(PartnerPayout.id == payout_id)
+            .where(PartnerPayout.status == PAYOUT_PROCESSING_STATUS)
+            .where(PartnerPayout.processing_by_telegram_id == admin_id)
+            .values(
+                status=case(
+                    (PartnerPayout.deadline_at.is_not(None), "deadline_set"),
+                    else_="pending",
+                ),
+                processing_by_telegram_id=None,
+                processing_started_at=None,
+            )
+            .returning(PartnerPayout.id)
+        )
+        await self.session.flush()
+        return result.scalar_one_or_none() is not None
 
     async def list_due_payout_reminders(self, now: Optional[datetime] = None) -> list[PartnerPayout]:
         now = now or datetime.now(timezone.utc)
@@ -211,25 +300,57 @@ class PartnerRepository:
         )
         return Decimal(result.scalar() or 0).quantize(Decimal("0.01"))
 
-    async def set_payout_deadline(self, payout: PartnerPayout, deadline_at: datetime, admin_id: int) -> None:
-        payout.status = "deadline_set"
-        payout.deadline_at = deadline_at
-        payout.reminder_sent_at = None
-        payout.reviewed_by_telegram_id = admin_id
+    async def set_payout_deadline(self, payout_id: int, deadline_at: datetime, admin_id: int) -> bool:
+        result = await self.session.execute(
+            update(PartnerPayout)
+            .where(PartnerPayout.id == payout_id)
+            .where(PartnerPayout.status.in_(PAYOUT_EDITABLE_STATUSES))
+            .values(
+                status="deadline_set",
+                deadline_at=deadline_at,
+                reminder_sent_at=None,
+                reviewed_by_telegram_id=admin_id,
+            )
+            .returning(PartnerPayout.id)
+        )
         await self.session.flush()
+        return result.scalar_one_or_none() is not None
 
-    async def mark_payout_paid(self, payout: PartnerPayout, screenshot_file_id: str, admin_id: int) -> None:
-        payout.status = "paid"
-        payout.proof_screenshot_file_id = screenshot_file_id
-        payout.reviewed_by_telegram_id = admin_id
-        payout.reviewed_at = datetime.now(timezone.utc)
+    async def mark_payout_paid(self, payout_id: int, screenshot_file_id: str, admin_id: int) -> bool:
+        result = await self.session.execute(
+            update(PartnerPayout)
+            .where(PartnerPayout.id == payout_id)
+            .where(PartnerPayout.status == PAYOUT_PROCESSING_STATUS)
+            .where(PartnerPayout.processing_by_telegram_id == admin_id)
+            .values(
+                status="paid",
+                proof_screenshot_file_id=screenshot_file_id,
+                reviewed_by_telegram_id=admin_id,
+                reviewed_at=datetime.now(timezone.utc),
+                processing_by_telegram_id=None,
+                processing_started_at=None,
+            )
+            .returning(PartnerPayout.id)
+        )
         await self.session.flush()
+        return result.scalar_one_or_none() is not None
 
-    async def reject_payout(self, payout: PartnerPayout, admin_id: int) -> None:
-        payout.status = "rejected"
-        payout.reviewed_by_telegram_id = admin_id
-        payout.reviewed_at = datetime.now(timezone.utc)
+    async def reject_payout(self, payout_id: int, admin_id: int) -> bool:
+        result = await self.session.execute(
+            update(PartnerPayout)
+            .where(PartnerPayout.id == payout_id)
+            .where(PartnerPayout.status.in_(PAYOUT_EDITABLE_STATUSES))
+            .values(
+                status="rejected",
+                reviewed_by_telegram_id=admin_id,
+                reviewed_at=datetime.now(timezone.utc),
+                processing_by_telegram_id=None,
+                processing_started_at=None,
+            )
+            .returning(PartnerPayout.id)
+        )
         await self.session.flush()
+        return result.scalar_one_or_none() is not None
 
     async def mark_reminder_sent(self, payout: PartnerPayout) -> None:
         payout.reminder_sent_at = datetime.now(timezone.utc)

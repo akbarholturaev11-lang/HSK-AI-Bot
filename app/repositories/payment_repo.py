@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional, List
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.payment import Payment
@@ -152,21 +152,41 @@ class PaymentRepository:
         self,
         payment: Payment,
         admin_comment: Optional[str] = None,
-    ) -> None:
-        payment.payment_status = "approved"
-        payment.admin_comment = admin_comment
-        payment.reviewed_at = datetime.now(timezone.utc)
+    ) -> bool:
+        result = await self.session.execute(
+            update(Payment)
+            .where(Payment.id == payment.id)
+            .where(Payment.payment_status == "pending")
+            .values(
+                payment_status="approved",
+                admin_comment=admin_comment,
+                reviewed_at=datetime.now(timezone.utc),
+            )
+            .returning(Payment.id)
+            .execution_options(synchronize_session="fetch")
+        )
         await self.session.flush()
+        return result.scalar_one_or_none() is not None
 
     async def reject(
         self,
         payment: Payment,
         admin_comment: Optional[str] = None,
-    ) -> None:
-        payment.payment_status = "rejected"
-        payment.admin_comment = admin_comment
-        payment.reviewed_at = datetime.now(timezone.utc)
+    ) -> bool:
+        result = await self.session.execute(
+            update(Payment)
+            .where(Payment.id == payment.id)
+            .where(Payment.payment_status == "pending")
+            .values(
+                payment_status="rejected",
+                admin_comment=admin_comment,
+                reviewed_at=datetime.now(timezone.utc),
+            )
+            .returning(Payment.id)
+            .execution_options(synchronize_session="fetch")
+        )
         await self.session.flush()
+        return result.scalar_one_or_none() is not None
 
     async def count_pending(self) -> int:
         from sqlalchemy import func
