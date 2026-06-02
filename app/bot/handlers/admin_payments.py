@@ -45,13 +45,19 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
 
-    await payment_repo.approve(payment, admin_comment="approved by admin")
-    await subscription_service.activate_plan(
+    if not await payment_repo.approve(payment, admin_comment="approved by admin"):
+        await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
+        return
+    activated = await subscription_service.activate_plan(
         telegram_id=payment.user_telegram_id,
         plan_type=payment.plan_type,
         discount_source=payment.discount_source,
         payment=payment,
     )
+    if not activated:
+        await session.rollback()
+        await callback.answer("Tarifni faollashtirib bo'lmadi", show_alert=True)
+        return
     partner, commission_usd, unlocked_bonus = await PartnerService(session).record_approved_payment(payment)
 
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
@@ -102,7 +108,9 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
         await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
         return
 
-    await payment_repo.reject(payment, admin_comment="rejected by admin")
+    if not await payment_repo.reject(payment, admin_comment="rejected by admin"):
+        await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
+        return
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     if user:
         await user_repo.set_selected_plan_type(user, payment.plan_type)
@@ -155,7 +163,9 @@ async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, sess
         return
 
     reason_label = REJECT_REASON_LABELS.get(reason_code, "Boshqa sabab")
-    await payment_repo.reject(payment, admin_comment=reason_label)
+    if not await payment_repo.reject(payment, admin_comment=reason_label):
+        await callback.answer("Bu to'lov allaqachon ko'rib chiqilgan", show_alert=True)
+        return
 
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     if user:

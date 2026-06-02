@@ -43,6 +43,7 @@ def partner_payout_methods_keyboard(lang: str) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [InlineKeyboardButton(text=t("partner_payout_bank_button", lang), callback_data="partner:payout_method:bank_card")],
             [InlineKeyboardButton(text=t("partner_payout_alipay_button", lang), callback_data="partner:payout_method:alipay")],
+            [InlineKeyboardButton(text=t("partner_payout_wechat_button", lang), callback_data="partner:payout_method:wechat")],
             [InlineKeyboardButton(text=t("partner_payout_other_button", lang), callback_data="partner:payout_method:other")],
             [InlineKeyboardButton(text=t("partner_back_button", lang), callback_data="partner:dashboard")],
         ]
