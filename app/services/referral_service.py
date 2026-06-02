@@ -207,7 +207,8 @@ class ReferralService:
         invited_user_telegram_id: int,
     ) -> None:
         referral = await self.referral_repo.get_by_invited_user_telegram_id(
-            invited_user_telegram_id
+            invited_user_telegram_id,
+            for_update=True,
         )
         if not referral:
             return
@@ -224,7 +225,9 @@ class ReferralService:
 
         await self.referral_repo.activate(referral)
 
-        referrer = await self.user_repo.get_by_telegram_id(referral.referrer_telegram_id)
+        referrer = await self.user_repo.get_by_telegram_id_for_update(
+            referral.referrer_telegram_id
+        )
         if not referrer:
             await self.session.commit()
             return

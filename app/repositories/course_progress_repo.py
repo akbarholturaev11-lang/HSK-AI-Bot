@@ -11,10 +11,16 @@ class CourseProgressRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_by_user_id(self, user_id: int) -> Optional[CourseProgress]:
-        result = await self.session.execute(
-            select(CourseProgress).where(CourseProgress.user_id == user_id)
-        )
+    async def get_by_user_id(
+        self,
+        user_id: int,
+        *,
+        for_update: bool = False,
+    ) -> Optional[CourseProgress]:
+        query = select(CourseProgress).where(CourseProgress.user_id == user_id)
+        if for_update:
+            query = query.with_for_update()
+        result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
     async def create(

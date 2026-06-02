@@ -33,7 +33,6 @@ class DailyResetService:
             should_notify = user.questions_used > 0
 
             user.questions_used = 0
-            user.bonus_questions_used = 0
             user.last_limit_reset_at = now
 
             if should_notify:
