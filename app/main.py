@@ -28,7 +28,6 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.repositories.user_repo import UserRepository
 from app.bot.keyboards.main_menu import main_menu_keyboard
-from app.bot.keyboards.course import homework_retry_keyboard
 from app.bot.keyboards.subscription import payment_method_keyboard
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course_miniapp import (
@@ -313,11 +312,7 @@ async def miniapp_event(request: Request):
             await bot.send_message(
                 chat_id=telegram_id,
                 text=format_miniapp_homework_result(lang, result),
-                reply_markup=(
-                    course_homework_done_keyboard(lang)
-                    if result.get("passed")
-                    else homework_retry_keyboard(lang)
-                ),
+                reply_markup=course_homework_done_keyboard(lang),
                 parse_mode="HTML",
             )
             return {"ok": True}

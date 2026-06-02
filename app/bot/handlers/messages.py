@@ -854,11 +854,7 @@ async def _send_miniapp_result_message(message: Message, session, payload: dict)
         lang = user.language if user and user.language else "ru"
         await message.answer(
             format_miniapp_homework_result(lang, result),
-            reply_markup=(
-                course_homework_done_keyboard(lang)
-                if result.get("passed")
-                else homework_retry_keyboard(lang)
-            ),
+            reply_markup=course_homework_done_keyboard(lang),
             parse_mode="HTML",
         )
         return True

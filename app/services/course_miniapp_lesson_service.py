@@ -444,11 +444,7 @@ class CourseMiniAppLessonService:
                 questions.append(dict(filler[cursor % len(filler)]))
                 cursor += 1
 
-        result = questions[:target_count]
-        scope = str(block_no) if block_no else "all"
-        for index, question in enumerate(result, 1):
-            question["id"] = f"{lesson_order}:{scope}:{index}"
-        return result
+        return questions[:target_count]
 
     async def get_payload(self, lesson_order: int, lang: str, level: str = "hsk3", block_no: int | None = None) -> dict | None:
         lang = normalize_miniapp_lang(lang)

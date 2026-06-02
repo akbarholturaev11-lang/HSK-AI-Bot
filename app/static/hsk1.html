@@ -1470,7 +1470,6 @@ let quizIndex = 0;
 let quizScore = 0;
 let answered = false;
 let wrongItems = [];
-let miniLessonData = null;
 
 function t(key, vars = {}) {
   let text = (UI[lang] && UI[lang][key]) || UI.tj[key] || key;
@@ -1509,29 +1508,6 @@ function activeTranslations() {
   const blockTranslations = activeBlock?.homework?.translations?.[lang];
   if (blockTranslations?.length) return blockTranslations;
   return lesson?.homework?.translations?.[lang] || [];
-}
-
-async function loadMiniLessonData() {
-  try {
-    const blockParam = activeBlock ? `&block=${activeBlock.no}` : "";
-    const res = await fetch(`/api/miniapp/lesson?level=hsk1&lesson=${lesson.id}&lang=${lang}${blockParam}`);
-    const data = await res.json();
-    if (data?.ok && data.lesson) miniLessonData = data.lesson;
-  } catch (e) {}
-}
-
-function apiQuizQuestions() {
-  if (!miniLessonData?.quiz_questions?.length) return [];
-  return miniLessonData.quiz_questions.map(item => ({
-    questionId: item.id,
-    type: item.type,
-    category: item.cat,
-    question: item.q,
-    hint: item.hint,
-    options: item.opts || [],
-    answer: (item.opts || [])[item.ans],
-    explanation: item.expl || ""
-  }));
 }
 
 function showPage(id) {
@@ -1636,9 +1612,6 @@ function makeGrammarQuestions() {
 }
 
 function buildQuiz() {
-  const apiQuestions = apiQuizQuestions();
-  if (apiQuestions.length) return apiQuestions;
-
   const types = ["hanzi_to_meaning", "meaning_to_hanzi", "pinyin_to_hanzi", "hanzi_to_pinyin"];
   const generated = [];
   const words = activeWords();
@@ -1741,7 +1714,6 @@ function answerQuestion(value) {
   const ok = value === item.answer;
   item.correct = ok;
   item.selected = value;
-  item.selectedIndex = item.options.indexOf(value);
   if (ok) quizScore += 1;
 
   document.querySelectorAll(".qopt").forEach(button => {
@@ -1800,11 +1772,6 @@ function showResult() {
     score: quizScore,
     total,
     percent,
-    answers: quizQuestions.map(item => ({
-      question_id: item.questionId || null,
-      selected_index: item.selectedIndex,
-      selected_answer: item.selected || ""
-    })),
     wrong_items: wrongItems
   });
 }
@@ -2043,14 +2010,13 @@ function escapeAttr(value) {
   return escapeHTML(value).replaceAll("`", "&#096;");
 }
 
-async function init() {
+function init() {
   document.documentElement.lang = lang;
-  await flushPendingEvents();
+  flushPendingEvents();
   if (!isValid) {
     renderError();
     return;
   }
-  await loadMiniLessonData();
   renderHeader();
   if (mode === "quiz") {
     renderQuizStart();

@@ -14,15 +14,12 @@ class ReferralRepository:
     async def get_by_invited_user_telegram_id(
         self,
         invited_user_telegram_id: int,
-        *,
-        for_update: bool = False,
     ) -> Optional[Referral]:
-        query = select(Referral).where(
-            Referral.invited_user_telegram_id == invited_user_telegram_id
+        result = await self.session.execute(
+            select(Referral).where(
+                Referral.invited_user_telegram_id == invited_user_telegram_id
+            )
         )
-        if for_update:
-            query = query.with_for_update()
-        result = await self.session.execute(query)
         return result.scalar_one_or_none()
 
     async def create(

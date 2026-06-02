@@ -116,6 +116,7 @@ class BotFeedbackService:
         user.status = "active"
         user.end_date = base_end + timedelta(days=FEEDBACK_REWARD_DAYS)
         user.questions_used = 0
+        user.bonus_questions_used = 0
         user.last_limit_reset_at = now
         user.expiry_reminder_sent_at = None
         user.selected_plan_type = None
