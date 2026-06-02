@@ -12,10 +12,12 @@ class PartnerPayoutStates(StatesGroup):
     waiting_account_details = State()
     waiting_holder_name = State()
     waiting_note = State()
+    waiting_qr_code = State()
 
 
 class AdminPartnerStates(StatesGroup):
     waiting_usdt_tjs_rate = State()
+    waiting_usd_cny_rate = State()
     waiting_commission_percent = State()
     waiting_commission_fixed = State()
     waiting_signup_bonus = State()

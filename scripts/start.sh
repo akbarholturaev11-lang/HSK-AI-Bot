@@ -19,12 +19,8 @@ else
 fi
 
 echo "=== Running alembic upgrade head ==="
-alembic upgrade head && echo "Migrations OK." || {
-    echo "Upgrade still failed — force stamp and retry..."
-    alembic stamp head
-    alembic upgrade head
-    echo "Done after force stamp."
-}
+alembic upgrade head
+echo "Migrations OK."
 
 echo "=== Starting uvicorn ==="
 export PYTHONUNBUFFERED=1

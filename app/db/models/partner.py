@@ -7,10 +7,12 @@ from sqlalchemy import (
     Boolean,
     DateTime,
     ForeignKey,
+    Index,
     Integer,
     Numeric,
     String,
     Text,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -30,6 +32,7 @@ class Partner(Base):
 
     approved_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
     approved_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    signup_bonus_granted_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     blocked_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
@@ -85,6 +88,14 @@ class PartnerCredit(Base):
 
 class PartnerPayout(Base):
     __tablename__ = "partner_payouts"
+    __table_args__ = (
+        Index(
+            "uq_partner_payouts_one_open_per_partner",
+            "partner_id",
+            unique=True,
+            postgresql_where=text("status IN ('pending', 'deadline_set', 'processing')"),
+        ),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     partner_id: Mapped[int] = mapped_column(
@@ -95,6 +106,7 @@ class PartnerPayout(Base):
     amount_usd: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
     exchange_rate: Mapped[Decimal] = mapped_column(Numeric(12, 4), nullable=False)
     local_amount: Mapped[Decimal] = mapped_column(Numeric(14, 2), nullable=False)
+    local_currency: Mapped[str] = mapped_column(String(8), default="TJS", nullable=False)
     status: Mapped[str] = mapped_column(String(24), default="pending", index=True, nullable=False)
 
     payment_method: Mapped[str] = mapped_column(String(24), nullable=False)
@@ -102,9 +114,12 @@ class PartnerPayout(Base):
     account_details: Mapped[str] = mapped_column(Text, nullable=False)
     holder_name: Mapped[Optional[str]] = mapped_column(String(180), nullable=True)
     note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    recipient_qr_code_file_id: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
 
     deadline_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     reminder_sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    processing_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
+    processing_started_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     proof_screenshot_file_id: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
     reviewed_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
     reviewed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
