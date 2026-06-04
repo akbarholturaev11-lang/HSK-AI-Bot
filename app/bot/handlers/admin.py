@@ -274,7 +274,7 @@ def _parse_amount_currency(text: str) -> tuple[float, str] | None:
 
 def _method_label(method: str) -> str:
     return {
-        "visa": "Visa/USD",
+        "visa": "Visa/Card TJS",
         "alipay": "Alipay/¥",
         "wechat": "WeChat/¥",
     }.get(method, method)
@@ -294,18 +294,9 @@ async def _prices_text(session) -> str:
         )
     lines.extend([
         "",
-        "💱 <b>VISA lokal ekvivalent kurslari</b>",
-    ])
-    rates = await SubscriptionCurrencyService(session).all_rates()
-    for currency_code, rate in rates.items():
-        label = SubscriptionCurrencyService.rate_label(currency_code)
-        value = SubscriptionCurrencyService.format_rate(currency_code, rate)
-        lines.append(f"<code>1 USD = {value} {label}</code>")
-    lines.extend([
+        "<i>Visa/Card obuna narxi faqat TJSda yuradi. Alipay/WeChat narxlari ¥ bo'lib qoladi.</i>",
         "",
-        "<i>Bu kurslar faqat VISA tariflari ostidagi TJS, UZS va RUB ekvivalentlarini hisoblaydi.</i>",
-        "",
-        "Narx yoki kursni o'zgartirish uchun pastdagi tugmani tanlang.",
+        "Narxni o'zgartirish uchun pastdagi tugmani tanlang.",
     ])
     return "\n".join(lines)
 
@@ -323,13 +314,6 @@ def prices_keyboard() -> InlineKeyboardMarkup:
                 callback_data=f"adm:price_set:{method}:1_month",
             ),
         ])
-    rows.append([
-        InlineKeyboardButton(text="💱 USD → TJS", callback_data="adm:visa_rate_set:tjs"),
-        InlineKeyboardButton(text="💱 USD → UZS", callback_data="adm:visa_rate_set:uzs"),
-    ])
-    rows.append([
-        InlineKeyboardButton(text="💱 USD → RUB", callback_data="adm:visa_rate_set:rub"),
-    ])
     rows.append([InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -926,13 +910,18 @@ async def admin_price_set_callback(callback: CallbackQuery, state: FSMContext, s
     await state.update_data(price_method=method, price_plan=plan)
     await state.set_state(AdminPriceStates.waiting_amount)
     await callback.answer()
+    currency_label = "TJS" if method == "visa" else "¥"
+    example_amount = 89 if method == "visa" and plan == "1_month" else 29
+    if method in {"alipay", "wechat"} and plan == "1_month":
+        example_amount = 66
     await _edit_admin_flow_callback(
         callback,
         state,
         f"💳 <b>Narx o'zgartirish</b>\n\n"
         f"Usul: <b>{_method_label(method)}</b>\n"
         f"Tarif: <b>{_plan_label_admin(plan)}</b>\n\n"
-        "Yangi narxni raqam bilan yuboring. Masalan: <code>10</code>",
+        f"Yangi narxni <b>{currency_label}</b> bo'yicha raqam bilan yuboring. "
+        f"Masalan: <code>{example_amount}</code>",
         reply_markup=admin_back_keyboard(),
     )
 

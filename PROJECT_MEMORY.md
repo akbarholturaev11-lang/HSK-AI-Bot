@@ -554,6 +554,31 @@ Files touched:
 Risk:
 - Runtime database must be reseeded or app restarted in deployed environments before Telegram course messages show HSK4-L17 through HSK4-L20.
 
+### 2026-06-04 — Localized admin messaging and TJS card subscriptions
+
+Changed:
+- Admin broadcast and ad campaign text can be written once in Tajik, then localized to TJ/UZ/RU through AI before sending; users receive the variant matching their language.
+- Broadcast and ad campaign confirm flows include an admin test send without clearing the prepared message.
+- Visa/Card subscription pricing is TJS-only: 10 days = 29 TJS, 1 month = 89 TJS by default. Alipay/WeChat remain in yuan.
+- Stale checkout drafts are recalculated when a screenshot arrives so old USD drafts do not survive after the TJS switch.
+- Expired admin/feedback discount buttons edit the original offer message to an expired text instead of only showing an alert.
+
+Why:
+- Admins should not send separate messages per language, and card subscription revenue should be priced in somoni.
+
+Files touched:
+- `app/services/broadcast_translation_service.py`
+- `app/bot/handlers/admin_broadcast.py`
+- `app/bot/handlers/admin_ads.py`
+- `app/services/ad_campaign_service.py`
+- `app/services/subscription_price_service.py`
+- `app/bot/handlers/subscription.py`
+- `app/services/payment_service.py`
+
+Risk:
+- Broadcast/ad translations depend on `OPENAI_API_KEY`; if translation fails, the Tajik source is used as a safe fallback.
+- Telegram bot updates do not expose user IP, so non-TJ card users see a general bank-rate TJS payment note instead of IP-based country detection.
+
 ---
 
 ## 11. Known Problems

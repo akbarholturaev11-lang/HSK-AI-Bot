@@ -338,6 +338,11 @@ class PartnerService:
         user = await self.user_repo.get_by_telegram_id(partner.user_telegram_id) if partner else None
         balance = await self.get_balance(partner) if partner else None
         username = f"@{escape(user.username)}" if user and user.username else "—"
+        language_label = {
+            "tj": "TJ",
+            "ru": "RU",
+            "uz": "UZ",
+        }.get((user.language if user else "") or "", "—")
         processing_admin = (
             f"\nBand qilgan admin: <code>{payout.processing_by_telegram_id}</code>"
             if payout.processing_by_telegram_id
@@ -347,6 +352,7 @@ class PartnerService:
             "💸 <b>Hamkor pul yechish so'rovi</b>\n\n"
             f"Hamkor: <b>{username}</b>\n"
             f"Telegram ID: <code>{partner.user_telegram_id if partner else '—'}</code>\n"
+            f"Til: <b>{language_label}</b>\n"
             f"So'ralgan summa: <b>${payout.amount_usd:.2f}</b>\n"
             f"Kurs: <code>1 USD = {payout.exchange_rate:.4f} {escape(payout.local_currency)}</code>\n"
             f"To'lanadi: <b>{payout.local_amount:.2f} {escape(payout.local_currency)}</b>\n"

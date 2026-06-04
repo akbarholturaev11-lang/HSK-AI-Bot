@@ -8,8 +8,8 @@ PAYMENT_METHODS = ("visa", "alipay", "wechat")
 PLANS = ("10_days", "1_month")
 
 DEFAULT_SUBSCRIPTION_PRICES: dict[tuple[str, str], tuple[int, str]] = {
-    ("visa", "10_days"): (3, "USD"),
-    ("visa", "1_month"): (10, "USD"),
+    ("visa", "10_days"): (29, "TJS"),
+    ("visa", "1_month"): (89, "TJS"),
     ("alipay", "10_days"): (29, "¥"),
     ("alipay", "1_month"): (66, "¥"),
     ("wechat", "10_days"): (29, "¥"),
@@ -40,7 +40,7 @@ class SubscriptionPriceService:
 
         price = await self.repo.get(method, plan_type)
         if price:
-            amount, currency = self._normalize_price(method, price.amount, price.currency)
+            amount, currency = self._normalize_price(method, plan_type, price.amount, price.currency)
             return SubscriptionPriceValue(method, plan_type, amount, currency)
 
         default = DEFAULT_SUBSCRIPTION_PRICES.get((method, plan_type))
@@ -61,7 +61,7 @@ class SubscriptionPriceService:
         if plan_type not in PLANS or amount <= 0:
             return None
 
-        currency = "¥" if method in {"alipay", "wechat"} else "USD"
+        currency = "¥" if method in {"alipay", "wechat"} else "TJS"
         price = await self.repo.set_price(
             payment_method=method,
             plan_type=plan_type,
@@ -75,6 +75,7 @@ class SubscriptionPriceService:
         rows = {
             (row.payment_method, row.plan_type): self._normalize_price(
                 row.payment_method,
+                row.plan_type,
                 row.amount,
                 row.currency,
             )
@@ -88,7 +89,10 @@ class SubscriptionPriceService:
         return result
 
     @staticmethod
-    def _normalize_price(method: str, amount: int, currency: str) -> tuple[int, str]:
+    def _normalize_price(method: str, plan_type: str, amount: int, currency: str) -> tuple[int, str]:
         if method == "visa":
-            return normalize_visa_price(amount, currency)
+            normalized_amount, normalized_currency = normalize_visa_price(amount, currency)
+            if (normalized_currency or "").strip().lower() not in {"tjs", "somoni", "сомони"}:
+                return DEFAULT_SUBSCRIPTION_PRICES[("visa", plan_type)]
+            return normalized_amount, "TJS"
         return amount, currency

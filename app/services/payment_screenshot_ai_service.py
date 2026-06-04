@@ -9,7 +9,7 @@ Analyze the payment screenshot and extract information.
 Respond ONLY in this exact JSON format, no other text:
 {
   "amount": <number or null>,
-  "currency": <"somoni" or "CNY" or "USD" or "unknown">,
+  "currency": <"TJS" or "somoni" or "CNY" or "unknown">,
   "date": <"today" or "recent" or "old" or "unknown">,
   "payment_system": <"Alipay" or "WeChat" or "Visa" or "bank_transfer" or "unknown">,
   "verdict": <"trusted" or "suspicious" or "rejected">,

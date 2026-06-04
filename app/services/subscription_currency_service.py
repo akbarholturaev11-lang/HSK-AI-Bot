@@ -27,17 +27,15 @@ LOCAL_RATE_LABELS = {
 def format_subscription_price(amount: int, currency: str) -> str:
     if (currency or "").strip().lower() in {"usd", "$"}:
         return f"${amount}"
+    if (currency or "").strip().lower() in {"tjs", "somoni", "сомони"}:
+        return f"{amount} TJS 💸"
     return f"{amount} {currency}"
 
 
 def normalize_visa_price(amount: int, currency: str) -> tuple[int, str]:
     currency_key = (currency or "").strip().lower()
     if currency_key in {"somoni", "tjs", "сомони"}:
-        converted = (Decimal(amount) / LEGACY_VISA_SOMONI_RATE).quantize(
-            Decimal("1"),
-            rounding=ROUND_HALF_UP,
-        )
-        return max(int(converted), 1), "USD"
+        return amount, "TJS"
     if currency_key in {"usd", "$"}:
         return amount, "USD"
     return amount, currency

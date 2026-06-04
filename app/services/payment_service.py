@@ -7,8 +7,8 @@ from app.services.subscription_price_service import SubscriptionPriceService
 
 
 PLAN_PRICES = {
-    "10_days": 3,
-    "1_month": 10,
+    "10_days": 29,
+    "1_month": 89,
 }
 
 DISCOUNT_PERCENT = 20
@@ -212,34 +212,31 @@ class PaymentService:
         draft_payment = await self.payment_repo.get_latest_draft_by_user(telegram_id)
 
         if draft_payment:
-            if draft_payment.plan_type != plan_type:
-                user = await self.user_repo.get_by_telegram_id(telegram_id)
-                checkout_info = await self.get_checkout_info(
-                    user=user,
-                    plan_type=plan_type,
-                    force_admin_discount=draft_payment.discount_source == "admin_campaign",
-                    admin_discount_campaign_id=draft_payment.discount_campaign_id,
-                    force_feedback_discount=draft_payment.discount_source == "feedback_price_offer",
-                )
-                if not checkout_info:
-                    return None, "payment_invalid_plan"
-                await self.payment_repo.update_checkout(
-                    draft_payment,
-                    plan_type=plan_type,
-                    amount=checkout_info["final_amount"],
-                    currency=checkout_info["currency"],
-                    payment_method=user.payment_method,
-                    base_amount=checkout_info["base_amount"],
-                    payment_status="pending",
-                    screenshot_file_id=screenshot_file_id,
-                    discount_source=checkout_info["discount_source"],
-                    discount_percent=checkout_info["discount_percent"],
-                    discount_campaign_id=checkout_info["discount_campaign_id"],
-                    discount_title=checkout_info["discount_title"],
-                    discount_details=checkout_info["discount_details"],
-                )
-            else:
-                await self.payment_repo.update_screenshot(draft_payment, screenshot_file_id)
+            user = await self.user_repo.get_by_telegram_id(telegram_id)
+            checkout_info = await self.get_checkout_info(
+                user=user,
+                plan_type=plan_type,
+                force_admin_discount=draft_payment.discount_source == "admin_campaign",
+                admin_discount_campaign_id=draft_payment.discount_campaign_id,
+                force_feedback_discount=draft_payment.discount_source == "feedback_price_offer",
+            )
+            if not checkout_info:
+                return None, "payment_invalid_plan"
+            await self.payment_repo.update_checkout(
+                draft_payment,
+                plan_type=plan_type,
+                amount=checkout_info["final_amount"],
+                currency=checkout_info["currency"],
+                payment_method=user.payment_method,
+                base_amount=checkout_info["base_amount"],
+                payment_status="pending",
+                screenshot_file_id=screenshot_file_id,
+                discount_source=checkout_info["discount_source"],
+                discount_percent=checkout_info["discount_percent"],
+                discount_campaign_id=checkout_info["discount_campaign_id"],
+                discount_title=checkout_info["discount_title"],
+                discount_details=checkout_info["discount_details"],
+            )
             await self.session.commit()
             return draft_payment, "updated"
 

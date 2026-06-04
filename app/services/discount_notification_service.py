@@ -114,7 +114,7 @@ class DiscountNotificationService:
             return price.amount, price.currency
         if payment_method in ("alipay", "wechat"):
             return (66 if plan_type == "1_month" else 29), "¥"
-        return (10 if plan_type == "1_month" else 3), "USD"
+        return (89 if plan_type == "1_month" else 29), "TJS"
 
     async def _notification_text(
         self,

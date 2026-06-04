@@ -71,14 +71,30 @@ async def _plan_price(session, plan_type: str, payment_method: str | None) -> tu
         return price.amount, price.currency
     if payment_method in ("alipay", "wechat"):
         return (66 if plan_type == "1_month" else 29), "¥"
-    return (10 if plan_type == "1_month" else 3), "USD"
+    return (89 if plan_type == "1_month" else 29), "TJS"
 
 
 async def _visa_local_hint(session, amount: int, currency: str) -> str:
-    if (currency or "").strip().lower() not in {"usd", "$"}:
-        return ""
-    equivalents = await SubscriptionCurrencyService(session).format_local_equivalent_lines(amount)
-    return f"\n({equivalents})"
+    return ""
+
+
+def _is_card_currency(currency: str) -> bool:
+    return (currency or "").strip().lower() in {"tjs", "somoni", "сомони"}
+
+
+def _card_payment_note(lang: str) -> str:
+    notes = {
+        "tj": "💳 Бо ҳар гуна корти бонкӣ метавонед пардохт кунед.",
+        "ru": (
+            "💳 Можно оплатить любой банковской картой.\n"
+            "Если ваша карта не в TJS, оплатите эквивалент суммы в TJS по курсу вашего банка на эту карту."
+        ),
+        "uz": (
+            "💳 Istalgan bank kartasi orqali to'lov qilishingiz mumkin.\n"
+            "Agar kartangiz TJSda bo'lmasa, bankingiz kursi bo'yicha TJS ekvivalentini shu kartaga yuboring."
+        ),
+    }
+    return notes.get(lang, notes["ru"])
 
 
 async def _discount_plan_line(
@@ -196,14 +212,12 @@ def _plan_label(plan_type: str, lang: str) -> str:
 
 async def _plan_card(session, plan_type: str, lang: str, amount: int, currency: str, icon: str) -> str:
     price = format_subscription_price(amount, currency)
-    hint = await _visa_local_hint(session, amount, currency)
-    return f"<blockquote>{icon} <b>{_plan_label(plan_type, lang)}</b>\n💵 <b>{price}</b>{hint}</blockquote>"
+    return f"<blockquote>{icon} <b>{_plan_label(plan_type, lang)}</b>\n💵 <b>{price}</b></blockquote>"
 
 
 async def _visa_plan_line(session, plan_type: str, lang: str, amount: int, currency: str) -> str:
     price = format_subscription_price(amount, currency)
-    hint = await _visa_local_hint(session, amount, currency)
-    return f"🗓️ <b>{_plan_label(plan_type, lang)}</b> — 💵 <b>{price}</b>{hint}"
+    return f"🗓️ <b>{_plan_label(plan_type, lang)}</b> — 💵 <b>{price}</b>"
 
 
 def _compact_plan_line(plan_type: str, lang: str, amount: int, currency: str) -> str:
@@ -214,11 +228,11 @@ async def build_subscription_main_text_for_user(session, user, lang: str) -> str
     price_10 = await _plan_price(session, "10_days", getattr(user, "payment_method", None))
     price_1m = await _plan_price(session, "1_month", getattr(user, "payment_method", None))
 
-    is_visa_usd = all(
-        (currency or "").strip().lower() in {"usd", "$"}
+    is_card_payment = all(
+        _is_card_currency(currency)
         for _, currency in (price_10, price_1m)
     )
-    if is_visa_usd:
+    if is_card_payment:
         plan_lines = "\n\n".join([
             await _visa_plan_line(session, "10_days", lang, price_10[0], price_10[1]),
             await _visa_plan_line(session, "1_month", lang, price_1m[0], price_1m[1]),
@@ -226,7 +240,8 @@ async def build_subscription_main_text_for_user(session, user, lang: str) -> str
         base = (
             f"{t('subscription_main_title', lang)}\n\n"
             f"{t('subscription_main_visa_benefits', lang)}\n\n"
-            f"<blockquote>{plan_lines}</blockquote>"
+            f"<blockquote>{plan_lines}</blockquote>\n\n"
+            f"{_card_payment_note(lang)}"
         )
     else:
         plan_lines = "\n".join([
@@ -487,6 +502,19 @@ async def _replace_with_text(
     )
 
 
+async def _replace_with_expired_offer(callback: CallbackQuery, lang: str, key: str) -> None:
+    try:
+        await callback.answer()
+    except Exception:
+        pass
+    await _replace_with_text(
+        callback,
+        t(key, lang),
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+    )
+
+
 async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
     plan_type = checkout_info["plan_type"]
     base_amount = checkout_info["base_amount"]
@@ -507,6 +535,7 @@ async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
 
     title_key = "checkout_title_qr" if is_qr else "checkout_title_visa"
     local_hint = await _visa_local_hint(session, final_amount, currency)
+    card_note = _card_payment_note(lang) if not is_qr else ""
 
     if not is_qr and not discount_applied:
         return "\n".join([
@@ -514,6 +543,8 @@ async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
             "",
             f"<blockquote>{plan_line} — 💵 {t('subscription_price_label', lang)}: "
             f"<b>{format_subscription_price(final_amount, currency)}</b>{local_hint}</blockquote>",
+            "",
+            card_note,
             "",
             f"{t('payment_details_label', lang)}: {settings.PAYMENT_DETAILS}",
             "",
@@ -550,6 +581,8 @@ async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
     if is_qr:
         lines.append(t("checkout_qr_scan", lang))
     else:
+        lines.append(card_note)
+        lines.append("")
         lines.append(f"{t('payment_details_label', lang)}: {settings.PAYMENT_DETAILS}")
 
     lines.extend([
@@ -595,7 +628,7 @@ async def discount_offer_open_handler(callback: CallbackQuery, session):
 
     view = await build_admin_discount_payment_view(session, user, lang, campaign_id=campaign_id)
     if not view:
-        await callback.answer(t("subscription_admin_discount_expired", lang), show_alert=True)
+        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
         return
 
     text, keyboard = view
@@ -620,7 +653,8 @@ async def feedback_discount_open_handler(callback: CallbackQuery, session):
     feedback_id = int(callback.data.split(":")[2])
     view = await build_feedback_discount_payment_view(session, user, lang, feedback_id)
     if not view:
-        await callback.answer(t("feedback_price_offer_expired", lang), show_alert=True)
+        await callback.answer()
+        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
         return
 
     await callback.answer()
@@ -648,7 +682,8 @@ async def feedback_discount_method_handler(callback: CallbackQuery, session):
     lang = user.language or "ru"
 
     if payment_method not in PAYMENT_METHODS:
-        await callback.answer(t("feedback_price_offer_expired", lang), show_alert=True)
+        await callback.answer()
+        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
         return
 
     user.payment_method = payment_method
@@ -662,7 +697,8 @@ async def feedback_discount_method_handler(callback: CallbackQuery, session):
         payment_method,
     )
     if not view:
-        await callback.answer(t("feedback_price_offer_expired", lang), show_alert=True)
+        await callback.answer()
+        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
         return
 
     await callback.answer()
@@ -691,12 +727,14 @@ async def feedback_discount_plan_handler(callback: CallbackQuery, session):
     lang = user.language or "ru"
 
     if payment_method not in PAYMENT_METHODS or plan not in PLANS:
-        await callback.answer(t("feedback_price_offer_expired", lang), show_alert=True)
+        await callback.answer()
+        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
         return
 
     feedback = await _get_available_feedback_offer(session, user, feedback_id)
     if not feedback:
-        await callback.answer(t("feedback_price_offer_expired", lang), show_alert=True)
+        await callback.answer()
+        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
         return
 
     user.payment_method = payment_method
@@ -711,7 +749,8 @@ async def feedback_discount_plan_handler(callback: CallbackQuery, session):
     )
 
     if not payment or not checkout_info or checkout_info.get("discount_source") != "feedback_price_offer":
-        await callback.answer(t("feedback_price_offer_expired", lang), show_alert=True)
+        await callback.answer()
+        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
         return
 
     await user_repo.set_selected_plan_type(user, plan)
@@ -738,7 +777,8 @@ async def discount_offer_method_handler(callback: CallbackQuery, session):
         payment_method = parts[2]
 
     if payment_method not in PAYMENT_METHODS:
-        await callback.answer(t("subscription_admin_discount_expired", user.language or "ru"), show_alert=True)
+        await callback.answer()
+        await _replace_with_expired_offer(callback, user.language or "ru", "subscription_admin_discount_expired")
         return
 
     user.payment_method = payment_method
@@ -754,11 +794,7 @@ async def discount_offer_method_handler(callback: CallbackQuery, session):
     )
     await callback.answer()
     if not view:
-        await _replace_with_text(
-            callback,
-            t("subscription_admin_discount_expired", lang),
-            parse_mode="HTML",
-        )
+        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
         return
 
     text, keyboard = view
@@ -783,7 +819,7 @@ async def discount_offer_change_payment_handler(callback: CallbackQuery, session
     await callback.answer()
     view = await build_admin_discount_payment_view(session, user, lang, campaign_id=campaign_id)
     if not view:
-        await callback.answer(t("subscription_admin_discount_expired", lang), show_alert=True)
+        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
         return
     text, keyboard = view
     await _replace_with_text(
@@ -806,7 +842,7 @@ async def discount_offer_back_entry_handler(callback: CallbackQuery, session):
     view = await build_admin_discount_entry_view(session, user, lang, campaign_id=campaign_id)
     await callback.answer()
     if not view:
-        await callback.answer(t("subscription_admin_discount_expired", lang), show_alert=True)
+        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
         return
     text, keyboard = view
     await _replace_with_text(
@@ -829,7 +865,7 @@ async def discount_offer_back_payment_handler(callback: CallbackQuery, session):
     view = await build_admin_discount_payment_view(session, user, lang, campaign_id=campaign_id)
     await callback.answer()
     if not view:
-        await callback.answer(t("subscription_admin_discount_expired", lang), show_alert=True)
+        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
         return
     text, keyboard = view
     await _replace_with_text(
@@ -1012,7 +1048,7 @@ async def checkout_change_plan_handler(callback: CallbackQuery, session):
             campaign_id=draft.discount_campaign_id,
         )
         if not view:
-            await callback.answer(t("subscription_admin_discount_expired", lang), show_alert=True)
+            await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
             return
         text, keyboard = view
         await _replace_with_text(
@@ -1028,7 +1064,7 @@ async def checkout_change_plan_handler(callback: CallbackQuery, session):
     if draft and draft.discount_source == "feedback_price_offer":
         feedback = await BotFeedbackRepository(session).get_latest_available_price_offer(callback.from_user.id)
         if not feedback:
-            await callback.answer(t("feedback_price_offer_expired", lang), show_alert=True)
+            await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
             return
         view = await build_feedback_discount_plan_view(
             session,
@@ -1038,7 +1074,7 @@ async def checkout_change_plan_handler(callback: CallbackQuery, session):
             draft.payment_method or user.payment_method or "visa",
         )
         if not view:
-            await callback.answer(t("feedback_price_offer_expired", lang), show_alert=True)
+            await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
             return
         text, keyboard = view
         await _replace_with_text(
@@ -1161,13 +1197,13 @@ async def discount_offer_plan_handler(callback: CallbackQuery, session):
         payment_method = None
 
     if plan not in PLANS:
-        await callback.answer(t("subscription_admin_discount_expired", lang), show_alert=True)
+        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
         return
 
     if not payment_method:
         view = await build_admin_discount_payment_view(session, user, lang, campaign_id=campaign_id)
         if not view:
-            await callback.answer(t("subscription_admin_discount_expired", lang), show_alert=True)
+            await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
             return
         text, keyboard = view
         await _replace_with_text(
@@ -1195,7 +1231,7 @@ async def discount_offer_plan_handler(callback: CallbackQuery, session):
         or checkout_info.get("discount_source") != "admin_campaign"
         or (campaign_id and checkout_info.get("discount_campaign_id") != campaign_id)
     ):
-        await callback.answer(t("subscription_admin_discount_expired", lang), show_alert=True)
+        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
         return
 
     await user_repo.set_selected_plan_type(user, plan)

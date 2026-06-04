@@ -75,7 +75,7 @@ def subscription_discount_ready_keyboard(lang: str) -> InlineKeyboardMarkup:
 def payment_method_keyboard(lang: str):
     return InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(text="💳 VISA card", callback_data="payment:visa"),
+            InlineKeyboardButton(text="💳 Bank karta / TJS", callback_data="payment:visa"),
         ],
         [
             InlineKeyboardButton(text="🇨🇳 Alipay", callback_data="payment:alipay"),
@@ -95,7 +95,7 @@ def discount_payment_method_keyboard(
     campaign_id: int | None = None,
 ):
     labels = {
-        "visa": "💳 VISA card",
+        "visa": "💳 Bank karta / TJS",
         "alipay": "🇨🇳 Alipay",
         "wechat": "🇨🇳 WeChat Pay",
     }
@@ -168,7 +168,7 @@ def admin_discount_plan_keyboard(
 
 def feedback_discount_payment_method_keyboard(feedback_id: int, lang: str):
     labels = {
-        "visa": "💳 VISA card",
+        "visa": "💳 Bank karta / TJS",
         "alipay": "🇨🇳 Alipay",
         "wechat": "🇨🇳 WeChat Pay",
     }

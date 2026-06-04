@@ -23,6 +23,13 @@ from app.config import settings
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages
 from app.repositories.user_repo import UserRepository
 from app.services.ad_campaign_service import send_ad_payload
+from app.services.broadcast_translation_service import (
+    BroadcastTranslationService,
+    SUPPORTED_BROADCAST_LANGUAGES,
+    broadcast_languages_or_all,
+    encode_localized_broadcast_text,
+    localized_broadcast_preview,
+)
 
 router = Router()
 
@@ -93,7 +100,7 @@ def _content_preview(data: dict, limit: int = 180) -> str:
     text = data.get("message_text") or ""
     if not text:
         return f"[{_MEDIA_LABELS.get(content_type, content_type)}]"
-    return text[:limit] + ("..." if len(text) > limit else "")
+    return localized_broadcast_preview(text, limit=limit)
 
 
 def _validate_send_count(duration_hours: int, send_count: int) -> str | None:
@@ -202,6 +209,41 @@ async def _target_count(session, data: dict) -> int:
     )
     admin_ids = _admin_ids()
     return len([user for user in users if user.telegram_id not in admin_ids])
+
+
+async def _target_users(session, data: dict) -> list:
+    users = await UserRepository(session).get_ad_target_users(
+        languages=_selected_languages(data),
+        include_active_subscribers=bool(data.get("include_active_subscribers")),
+    )
+    admin_ids = _admin_ids()
+    return [user for user in users if user.telegram_id not in admin_ids]
+
+
+def _actual_user_languages(users) -> list[str]:
+    selected = {
+        user.language if getattr(user, "language", None) in SUPPORTED_BROADCAST_LANGUAGES else "tj"
+        for user in users
+    }
+    return [lang for lang in SUPPORTED_BROADCAST_LANGUAGES if lang in selected]
+
+
+async def _prepare_localized_ad_text(session, data: dict) -> str | None:
+    text = data.get("message_text") or ""
+    if not text:
+        return None
+    existing = data.get("localized_message_text")
+    if existing:
+        return existing
+    max_length = 1024 if data.get("content_type") in {"photo", "video"} else 4096
+    users = await _target_users(session, data)
+    target_languages = _actual_user_languages(users) or broadcast_languages_or_all(_selected_languages(data))
+    localized = await BroadcastTranslationService().translate_from_tajik(
+        text,
+        target_languages,
+        max_length=max_length,
+    )
+    return encode_localized_broadcast_text(localized.texts)
 
 
 async def _confirm_text(session, data: dict) -> str:
@@ -596,7 +638,7 @@ async def ads_start_at_message(message: Message, state: FSMContext, session):
 
 
 @router.callback_query(F.data == "ads:test")
-async def ads_test(callback: CallbackQuery, state: FSMContext):
+async def ads_test(callback: CallbackQuery, state: FSMContext, session):
     if not _is_admin(callback.from_user.id):
         await callback.answer()
         return
@@ -605,13 +647,22 @@ async def ads_test(callback: CallbackQuery, state: FSMContext):
         await callback.answer("Xabar topilmadi", show_alert=True)
         return
     try:
-        await send_ad_payload(
-            callback.bot,
-            chat_id=callback.from_user.id,
-            text=data.get("message_text"),
-            content_type=data.get("content_type"),
-            media_file_id=data.get("media_file_id"),
-        )
+        localized_text = data.get("localized_message_text")
+        if data.get("message_text") and not localized_text:
+            localized_text = await _prepare_localized_ad_text(session, data)
+            await state.update_data(localized_message_text=localized_text)
+            data = await state.get_data()
+        languages = broadcast_languages_or_all(_selected_languages(data))
+        for lang in languages:
+            await callback.bot.send_message(callback.from_user.id, f"👁 Reklama test {_LANG_LABELS[lang]}")
+            await send_ad_payload(
+                callback.bot,
+                chat_id=callback.from_user.id,
+                text=localized_text or data.get("message_text"),
+                content_type=data.get("content_type"),
+                media_file_id=data.get("media_file_id"),
+                language=lang,
+            )
         await callback.answer("Test yuborildi", show_alert=True)
     except Exception as exc:
         await callback.answer(f"Test xato: {str(exc)[:80]}", show_alert=True)
@@ -631,9 +682,10 @@ async def ads_confirm(callback: CallbackQuery, state: FSMContext, session):
     starts_at = data["starts_at"]
     ends_at = starts_at + timedelta(hours=data["duration_hours"])
     target_count = await _target_count(session, data)
+    localized_message_text = await _prepare_localized_ad_text(session, data)
     campaign = await AdCampaignRepository(session).create(
         title=data["title"],
-        message_text=data.get("message_text") or None,
+        message_text=localized_message_text or data.get("message_text") or None,
         content_type=data["content_type"],
         media_file_id=data.get("media_file_id"),
         starts_at=starts_at,

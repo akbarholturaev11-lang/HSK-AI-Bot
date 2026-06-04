@@ -249,6 +249,7 @@ class UserRepository:
     async def get_filtered_users(
         self,
         language: Optional[str] = None,
+        languages: Optional[list[str]] = None,
         status: Optional[str] = None,
         level: Optional[str] = None,
         learning_mode: Optional[str] = None,
@@ -260,7 +261,9 @@ class UserRepository:
         activity_filter: Optional[str] = None,
     ) -> list[User]:
         query = select(User)
-        if language:
+        if languages:
+            query = query.where(User.language.in_(languages))
+        elif language:
             query = query.where(User.language == language)
         if status:
             query = query.where(User.status == status)

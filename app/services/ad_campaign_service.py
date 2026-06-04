@@ -8,6 +8,7 @@ from app.config import settings
 from app.db.models.ad_campaign import AdCampaign
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages
 from app.repositories.user_repo import UserRepository
+from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 
 
 @dataclass
@@ -26,13 +27,15 @@ async def send_ad_payload(
     text: str | None,
     content_type: str,
     media_file_id: str | None,
+    language: str | None = None,
 ) -> None:
+    localized_text = localized_broadcast_text_for_language(text, language)
     if content_type == "photo" and media_file_id:
-        await bot.send_photo(chat_id=chat_id, photo=media_file_id, caption=text or None)
+        await bot.send_photo(chat_id=chat_id, photo=media_file_id, caption=localized_text or None)
     elif content_type == "video" and media_file_id:
-        await bot.send_video(chat_id=chat_id, video=media_file_id, caption=text or None)
+        await bot.send_video(chat_id=chat_id, video=media_file_id, caption=localized_text or None)
     else:
-        await bot.send_message(chat_id=chat_id, text=text or "")
+        await bot.send_message(chat_id=chat_id, text=localized_text or "")
 
 
 class AdCampaignService:
@@ -82,6 +85,7 @@ class AdCampaignService:
                     text=campaign.message_text,
                     content_type=campaign.content_type,
                     media_file_id=campaign.media_file_id,
+                    language=user.language,
                 )
                 sent_count += 1
             except Exception as exc:

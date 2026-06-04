@@ -8,7 +8,7 @@ def _mark(active: bool) -> str:
 
 
 def broadcast_panel_keyboard(
-    lang_filter: Optional[str],
+    target_languages: Optional[list[str]],
     status_filter: Optional[str],
     level_filter: Optional[str],
     mode_filter: Optional[str] = None,
@@ -26,10 +26,12 @@ def broadcast_panel_keyboard(
     def back_btn() -> InlineKeyboardButton:
         return InlineKeyboardButton(text="⬅️ Panelga qaytish", callback_data="bc:section:main")
 
-    def lang_btn(val: Optional[str], label: str) -> InlineKeyboardButton:
+    selected_languages = set(target_languages or [])
+
+    def lang_btn(val: str, label: str) -> InlineKeyboardButton:
         return InlineKeyboardButton(
-            text=f"{_mark(lang_filter == val)}{label}",
-            callback_data=f"bc:lang:{val or 'all'}",
+            text=f"{_mark(val in selected_languages)}{label}",
+            callback_data=f"bc:lang:{val}",
         )
 
     def status_btn(val: Optional[str], label: str) -> InlineKeyboardButton:
@@ -87,7 +89,15 @@ def broadcast_panel_keyboard(
         )
 
     if section == "lang":
-        rows = [[lang_btn(None, "Hammasi"), lang_btn("uz", "UZ"), lang_btn("ru", "RU"), lang_btn("tj", "TJ")]]
+        rows = [
+            [lang_btn("tj", "TJ"), lang_btn("uz", "UZ"), lang_btn("ru", "RU")],
+            [
+                InlineKeyboardButton(
+                    text=f"{_mark(not selected_languages)}Hammasi",
+                    callback_data="bc:lang:all",
+                )
+            ],
+        ]
     elif section == "status":
         rows = [
             [status_btn(None, "Hammasi"), status_btn("active", "Faol"), status_btn("trial", "Sinov")],
@@ -136,6 +146,7 @@ def broadcast_panel_keyboard(
 
 def broadcast_confirm_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="👁 Admin test", callback_data="bc:test")],
         [
             InlineKeyboardButton(text="✅ Yuborish", callback_data="bc:confirm"),
             InlineKeyboardButton(text="❌ Bekor qilish", callback_data="bc:cancel"),
