@@ -28,7 +28,7 @@ def format_subscription_price(amount: int, currency: str) -> str:
     if (currency or "").strip().lower() in {"usd", "$"}:
         return f"${amount}"
     if (currency or "").strip().lower() in {"tjs", "somoni", "сомони"}:
-        return f"{amount} TJS 💸"
+        return f"{amount} TJS 🇹🇯"
     return f"{amount} {currency}"
 
 

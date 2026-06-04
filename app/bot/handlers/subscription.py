@@ -217,7 +217,7 @@ async def _plan_card(session, plan_type: str, lang: str, amount: int, currency: 
 
 async def _visa_plan_line(session, plan_type: str, lang: str, amount: int, currency: str) -> str:
     price = format_subscription_price(amount, currency)
-    return f"🗓️ <b>{_plan_label(plan_type, lang)}</b> — 💵 <b>{price}</b>"
+    return f"{_plan_label(plan_type, lang)} — {price}"
 
 
 def _compact_plan_line(plan_type: str, lang: str, amount: int, currency: str) -> str:
@@ -233,15 +233,16 @@ async def build_subscription_main_text_for_user(session, user, lang: str) -> str
         for _, currency in (price_10, price_1m)
     )
     if is_card_payment:
-        plan_lines = "\n\n".join([
+        plan_lines = "\n".join([
             await _visa_plan_line(session, "10_days", lang, price_10[0], price_10[1]),
             await _visa_plan_line(session, "1_month", lang, price_1m[0], price_1m[1]),
+            "",
+            _card_payment_note(lang),
         ])
         base = (
             f"{t('subscription_main_title', lang)}\n\n"
             f"{t('subscription_main_visa_benefits', lang)}\n\n"
-            f"<blockquote>{plan_lines}</blockquote>\n\n"
-            f"{_card_payment_note(lang)}"
+            f"<blockquote>{plan_lines}</blockquote>"
         )
     else:
         plan_lines = "\n".join([
