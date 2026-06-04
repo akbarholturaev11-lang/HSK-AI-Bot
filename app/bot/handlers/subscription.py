@@ -97,6 +97,125 @@ def _card_payment_note(lang: str) -> str:
     return notes.get(lang, notes["ru"])
 
 
+def _card_texts(lang: str) -> dict[str, str]:
+    texts = {
+        "tj": {
+            "main_title": "💎 <b>Тарифҳои обуна</b>",
+            "benefits": "Обуна гиред ва аз бот бе лимит истифода баред.",
+            "card_note_short": "💳 Бо ҳар гуна корти бонкӣ метавонед пардохт кунед.",
+            "card_note_full": (
+                "💳 Бо ҳар гуна корти бонкӣ метавонед пардохт кунед.\n"
+                "Агар корти шумо бо TJS набошад, эквиваленти маблағро бо курси бонки худ ба ҳамин корт пардохт кунед."
+            ),
+            "referral_hint": "🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.",
+            "choose": "👇 <b>Тарифро интихоб кунед:</b>",
+            "checkout_title": "💳 Шумо обунаро интихоб кардед",
+            "plan_label": "Тариф",
+            "price_label": "Нарх",
+            "payment_details_label": "Реквизити пардохт",
+            "send_screenshot": "Пас аз пардохт скриншотро фиристед.",
+        },
+        "ru": {
+            "main_title": "💎 <b>Тарифы подписки</b>",
+            "benefits": "Оформите подписку и пользуйтесь ботом без ограничений.",
+            "card_note_short": "💳 Можно оплатить любой банковской картой.",
+            "card_note_full": (
+                "💳 Можно оплатить любой банковской картой.\n"
+                "Если ваша карта не в TJS, оплатите эквивалент суммы в TJS по курсу вашего банка на эту карту."
+            ),
+            "referral_hint": "🎁 Пригласите 3 новых друзей и получите скидку 20%.",
+            "choose": "👇 <b>Выберите тариф:</b>",
+            "checkout_title": "💳 Вы выбрали подписку",
+            "plan_label": "Тариф",
+            "price_label": "Цена",
+            "payment_details_label": "Реквизиты для оплаты",
+            "send_screenshot": "После оплаты отправьте скриншот.",
+        },
+        "uz": {
+            "main_title": "💎 <b>Obuna tariflari</b>",
+            "benefits": "Obuna oling va botdan limitsiz foydalaning.",
+            "card_note_short": "💳 Istalgan bank kartasi orqali to'lov qilishingiz mumkin.",
+            "card_note_full": (
+                "💳 Istalgan bank kartasi orqali to'lov qilishingiz mumkin.\n"
+                "Agar kartangiz TJSda bo'lmasa, bankingiz kursi bo'yicha TJS ekvivalentini shu kartaga yuboring."
+            ),
+            "referral_hint": "🎁 3 ta yangi do'st taklif qiling va 20% chegirma oling.",
+            "choose": "👇 <b>Tarifni tanlang:</b>",
+            "checkout_title": "💳 Siz obunani tanladingiz",
+            "plan_label": "Tarif",
+            "price_label": "Narx",
+            "payment_details_label": "To'lov rekviziti",
+            "send_screenshot": "To'lovdan keyin skrinshot yuboring.",
+        },
+    }
+    return texts.get(lang, texts["ru"])
+
+
+def _card_plan_label(plan_type: str, lang: str) -> str:
+    labels = {
+        "tj": {"10_days": "10 рӯз", "1_month": "1 моҳ"},
+        "ru": {"10_days": "10 дней", "1_month": "1 месяц"},
+        "uz": {"10_days": "10 kunlik", "1_month": "1 oylik"},
+    }
+    return labels.get(lang, labels["ru"]).get(plan_type, plan_type)
+
+
+def _card_main_price(amount: int) -> str:
+    return f"💸 {amount} TJS 🇹🇯"
+
+
+def _card_checkout_price(amount: int) -> str:
+    return f"{amount} TJS 💸"
+
+
+def _card_main_plan_line(plan_type: str, lang: str, amount: int) -> str:
+    return f"🗓️ {_card_plan_label(plan_type, lang)} — {_card_main_price(amount)}"
+
+
+def _card_main_text(
+    lang: str,
+    price_10: tuple[int, str],
+    price_1m: tuple[int, str],
+    *,
+    show_discount_hint: bool,
+) -> str:
+    texts = _card_texts(lang)
+    plan_lines = "\n".join([
+        _card_main_plan_line("10_days", lang, price_10[0]),
+        _card_main_plan_line("1_month", lang, price_1m[0]),
+        "",
+        texts["card_note_short"],
+    ])
+    base = (
+        f"{texts['main_title']}\n\n"
+        f"{texts['benefits']}\n\n"
+        f"<blockquote>{plan_lines}</blockquote>"
+    )
+    if show_discount_hint:
+        base += f"\n\n{texts['referral_hint']}"
+    return f"{base}\n\n{texts['choose']}"
+
+
+def _card_checkout_text(lang: str, checkout_info: dict) -> str:
+    texts = _card_texts(lang)
+    plan_type = checkout_info["plan_type"]
+    price = _card_checkout_price(checkout_info["final_amount"])
+    details = settings.PAYMENT_DETAILS
+    return "\n".join([
+        texts["checkout_title"],
+        "",
+        "<blockquote>"
+        f"{texts['plan_label']}: 🗓️ {_card_plan_label(plan_type, lang)}\n"
+        f"{texts['price_label']}: {price}\n"
+        f"{texts['card_note_full']}"
+        "</blockquote>",
+        "",
+        f"{texts['payment_details_label']}: {details}",
+        "",
+        texts["send_screenshot"],
+    ])
+
+
 async def _discount_plan_line(
     session,
     *,
@@ -233,17 +352,7 @@ async def build_subscription_main_text_for_user(session, user, lang: str) -> str
         for _, currency in (price_10, price_1m)
     )
     if is_card_payment:
-        plan_lines = "\n".join([
-            await _visa_plan_line(session, "10_days", lang, price_10[0], price_10[1]),
-            await _visa_plan_line(session, "1_month", lang, price_1m[0], price_1m[1]),
-            "",
-            _card_payment_note(lang),
-        ])
-        base = (
-            f"{t('subscription_main_title', lang)}\n\n"
-            f"{t('subscription_main_visa_benefits', lang)}\n\n"
-            f"<blockquote>{plan_lines}</blockquote>"
-        )
+        return _card_main_text(lang, price_10, price_1m, show_discount_hint=not user.discount_used)
     else:
         plan_lines = "\n".join([
             _compact_plan_line("10_days", lang, price_10[0], price_10[1]),
@@ -257,12 +366,6 @@ async def build_subscription_main_text_for_user(session, user, lang: str) -> str
         if not user.discount_used:
             base += f"\n\n{t('subscription_referral_hint', lang)}"
         return f"{base}\n\n{t('subscription_main_choose', lang)}"
-
-    # Show discount hint only if user hasn't used it yet
-    if not user.discount_used:
-        base += f"\n\n{t('subscription_referral_hint', lang)}"
-
-    return f"{base}\n\n{t('subscription_main_choose', lang)}"
 
 
 async def build_subscription_discount_progress_text(
@@ -523,6 +626,9 @@ async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
     discount_applied = checkout_info["discount_applied"]
     currency = checkout_info["currency"]
     is_qr = (currency == "¥")
+
+    if _is_card_currency(currency):
+        return _card_checkout_text(lang, checkout_info)
 
     if lang == "tj":
         plan_label = "10 рӯз" if plan_type == "10_days" else "1 моҳ"

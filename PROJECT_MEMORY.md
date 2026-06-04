@@ -207,6 +207,25 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-04 — Localized TJS card subscription blocks
+
+Changed:
+- Card/TJS subscription selection and checkout messages now keep one compact format while matching the user's language (TJ/RU/UZ).
+- TJS plan prices show `💸 {amount} TJS 🇹🇯` in the plan list and `{amount} TJS 💸` in checkout.
+- Alipay/WeChat QR payment flow remains separate.
+
+Why:
+- Avoid mixed-language payment instructions and keep card payment instructions easy to read.
+
+Files touched:
+- `app/bot/handlers/subscription.py`
+
+Risk:
+- Text-only card flow change; payment amount and subscription logic unchanged.
+
+Follow-up:
+- Verify rendered Telegram blockquote spacing on production bot after deploy.
+
 ### 2026-05-25 — Course narrative text formatting
 
 Changed:
