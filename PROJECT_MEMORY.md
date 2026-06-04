@@ -207,6 +207,24 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-05 — Command/menu input cleanup
+
+Changed:
+- Private-chat slash commands and main/course reply menu button messages are deleted after their handlers run.
+
+Why:
+- Keep Telegram chats clean while preserving command behavior.
+
+Files touched:
+- `app/bot/middlewares/cleanup.py`
+- `app/bot/create_bot.py`
+
+Risk:
+- Delete failures are ignored; group chats are not affected.
+
+Follow-up:
+- Verify on production bot that Telegram allows deleting incoming private-chat command messages.
+
 ### 2026-06-04 — Localized TJS card subscription blocks
 
 Changed:

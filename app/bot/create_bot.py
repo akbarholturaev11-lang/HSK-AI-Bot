@@ -1,4 +1,5 @@
 from app.db.session import async_session_maker
+from app.bot.middlewares.cleanup import CommandCleanupMiddleware
 from app.bot.middlewares.db import DBSessionMiddleware
 from app.bot.middlewares.required_channel import RequiredChannelMiddleware
 from aiogram import Bot, Dispatcher
@@ -34,6 +35,7 @@ def create_bot(settings):
     )
     dp = Dispatcher(storage=MemoryStorage())
 
+    dp.message.outer_middleware(CommandCleanupMiddleware())
     dp.message.middleware(DBSessionMiddleware(async_session_maker))
     dp.callback_query.middleware(DBSessionMiddleware(async_session_maker))
     dp.message.middleware(RequiredChannelMiddleware(async_session_maker))
