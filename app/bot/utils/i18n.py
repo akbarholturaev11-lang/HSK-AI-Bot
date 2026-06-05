@@ -51,6 +51,7 @@ TEXTS = {
         "btn_visa": "💳 VISA",
         "btn_alipay": "Alipay",
         "btn_wechat": "WeChatpay",
+        "payment_method_visa_button": "💳 Корти бонкӣ / VISA",
         
         "payment_method_choose": "<b>💳 Усули пардохтро интихоб кунед:</b>",
         "subscription_block": "💎 <b>Тарифҳои обуна</b>\n\n🚀 Обуна гиред ва аз бот бе ягон лимит истифода баред.\n\n🗓️ 10 рӯз - 29 ¥\n🗓️ 1 моҳ - 66 ¥\n\n🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.\n\n👇 <b>Тарифро интихоб кунед:</b>",
@@ -204,6 +205,7 @@ TEXTS = {
         "subscription_discount_text_blocked": "Вы уже используете скидку. Вернитесь к обычной подписке.",
 
         "payment_back": "⬅️ Назад",
+        "payment_method_visa_button": "💳 Банковская карта / VISA",
         "payment_method_choose": "<b>💳 Выберите способ оплаты:</b>",
         "subscription_block": "💎 <b>Тарифы подписки</b>\n\n🚀 Оформите подписку и пользуйтесь ботом без ограничений.\n\n🗓️ 10 дней - 29 ¥\n🗓️ 1 месяц - 66 ¥\n\n🎁 Пригласите 3 новых друзей и получите скидку 20%.\n\n👇 <b>Выберите тариф:</b>",
         "subscription_checkout_block": "<blockquote>\n💳 <b>Вы выбрали подписку:</b>\n\n📦 Тариф: <b>{plan}</b>\n💰 Цена: <b>{price} ¥</b>\n\n📲 <b>Реквизиты для оплаты:</b>\nОплатите через QR-код\n\n👤 NAME: Akbarshoh\n\n📸 После оплаты отправьте скриншот\n</blockquote>",
@@ -349,6 +351,7 @@ TEXTS = {
         "referral_invite_text": "<b>Sizning taklif havolangiz:</b>\n<code>{link}</code>\n\n<blockquote>Do‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} ta faol do‘st chaqiring va {days} kun bepul foydalanish oling.\n\n👥 Havola orqali kirganlar: {joined_count}\n✅ Faol hisob: {count}/{required}</blockquote>",
 
         "payment_back": "⬅️ Orqaga",
+        "payment_method_visa_button": "💳 Bank kartasi / VISA",
         "payment_method_choose": "<b>💳 To‘lov usulini tanlang:</b>",
         "subscription_block": "💎 <b>Obuna tariflari</b>\n\n🚀 Obuna oling va botdan hech qanday limitlarsiz foydalaning.\n\n🗓️ 10 kunlik - 29 ¥\n🗓️ 1 oylik - 66 ¥\n\n🎁 3 ta yangi do‘st taklif qiling va 20% chegirma oling.\n\n👇 <b>Tarifni tanlang:</b>",
         "subscription_checkout_block": "<blockquote>\n💳 <b>Siz ushbu obunani tanladingiz:</b>\n\n📦 Tarif: <b>{plan}</b>\n💰 Narx: <b>{price} ¥</b>\n\n📲 <b>To‘lov rekviziti:</b>\nQR kod orqali to‘lov qiling\n\n👤 NAME: Akbarshoh\n\n📸 To‘lov qilib bo‘lgach, skrinshotini yuboring\n</blockquote>",
