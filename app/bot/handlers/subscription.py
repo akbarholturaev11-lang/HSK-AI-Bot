@@ -329,9 +329,49 @@ def _plan_label(plan_type: str, lang: str) -> str:
     return labels.get(lang, labels["ru"]).get(plan_type, plan_type)
 
 
-async def _plan_card(session, plan_type: str, lang: str, amount: int, currency: str, icon: str) -> str:
-    price = format_subscription_price(amount, currency)
-    return f"<blockquote>{icon} <b>{_plan_label(plan_type, lang)}</b>\n💵 <b>{price}</b></blockquote>"
+def _discount_price_detail_line(
+    *,
+    lang: str,
+    plan: str,
+    base: int,
+    final: int,
+    currency: str,
+    percent: int,
+    icon: str = "📅",
+) -> str:
+    return "\n".join([
+        f"{icon} <b>{_plan_label(plan, lang)}</b>",
+        f"💰 {t('subscription_original_price_label', lang)}: "
+        f"<s>{format_subscription_price(base, currency)}</s>",
+        f"💎 {t('subscription_discounted_price_label', lang)}: "
+        f"<b>{format_subscription_price(final, currency)}</b> (-{percent}%)",
+    ])
+
+
+def _discount_plan_card(
+    *,
+    lang: str,
+    plan: str,
+    base: int,
+    final: int,
+    currency: str,
+    percent: int,
+    icon: str,
+) -> str:
+    detail = _discount_price_detail_line(
+        lang=lang,
+        plan=plan,
+        base=base,
+        final=final,
+        currency=currency,
+        percent=percent,
+        icon=icon,
+    )
+    return (
+        "<blockquote>"
+        f"{detail}"
+        "</blockquote>"
+    )
 
 
 async def _visa_plan_line(session, plan_type: str, lang: str, amount: int, currency: str) -> str:
@@ -389,11 +429,29 @@ async def build_subscription_discount_progress_text(
         price_1m = await _plan_price(session, "1_month", payment_method)
         discount_10 = int(round(price_10[0] * 0.8))
         discount_1m = int(round(price_1m[0] * 0.8))
+        card_10 = _discount_plan_card(
+            lang=lang,
+            plan="10_days",
+            base=price_10[0],
+            final=discount_10,
+            currency=price_10[1],
+            percent=20,
+            icon="📦",
+        )
+        card_1m = _discount_plan_card(
+            lang=lang,
+            plan="1_month",
+            base=price_1m[0],
+            final=discount_1m,
+            currency=price_1m[1],
+            percent=20,
+            icon="🌟",
+        )
 
         base += (
             f"\n\n{t('subscription_discount_ready', lang)}\n\n"
-            f"{await _plan_card(session, '10_days', lang, discount_10, price_10[1], '📦')}\n\n"
-            f"{await _plan_card(session, '1_month', lang, discount_1m, price_1m[1], '🌟')}"
+            f"{card_10}\n\n"
+            f"{card_1m}"
         )
 
     return base
@@ -557,12 +615,13 @@ async def build_feedback_discount_plan_view(
     lines = []
     for plan in PLANS:
         base, currency = await _plan_price(session, plan, payment_method)
+        final = int(round(base * 0.8))
         lines.append(
-            await _discount_plan_line(
-                session,
+            _discount_price_detail_line(
                 lang=lang,
                 plan=plan,
                 base=base,
+                final=final,
                 currency=currency,
                 percent=20,
             )
