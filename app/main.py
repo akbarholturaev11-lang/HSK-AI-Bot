@@ -2,7 +2,6 @@ import asyncio
 import contextlib
 import logging
 from contextlib import asynccontextmanager
-from datetime import datetime, timedelta, timezone
 
 from aiogram import Bot
 from fastapi import FastAPI, Request
@@ -45,7 +44,6 @@ from app.bot.utils.course_miniapp import (
 logger = logging.getLogger(__name__)
 
 bot, dp = create_bot(settings)
-_last_feedback_check_at = None
 _study_ai_tasks = set()
 
 
@@ -107,8 +105,6 @@ async def _seed_lessons() -> None:
 
 
 async def _background_scheduler(bot: Bot) -> None:
-    global _last_feedback_check_at
-
     while True:
         await asyncio.sleep(60)
         try:
@@ -132,14 +128,8 @@ async def _background_scheduler(bot: Bot) -> None:
                 await PartnerService(session).send_due_payout_reminders(bot)
             async with async_session_maker() as session:
                 await AdCampaignService(session).send_due_ads(bot)
-            now = datetime.now(timezone.utc)
-            if (
-                _last_feedback_check_at is None
-                or now - _last_feedback_check_at >= timedelta(hours=24)
-            ):
-                async with async_session_maker() as session:
-                    await BotFeedbackService(session).send_due_feedback_requests(bot)
-                _last_feedback_check_at = now
+            async with async_session_maker() as session:
+                await BotFeedbackService(session).send_due_feedback_requests(bot)
         except Exception as e:
             print("Scheduler error:", e)
 

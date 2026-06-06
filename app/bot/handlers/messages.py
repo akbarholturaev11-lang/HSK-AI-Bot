@@ -521,8 +521,11 @@ async def _process_translator_voice_transcript(
     telegram_message_id: int | None = None,
     cleanup_message: Message | None = None,
 ) -> None:
-    can_use, message_key = await AccessService(session).can_use_text_ai(user.telegram_id)
+    access_service = AccessService(session)
+    can_use, message_key = await access_service.can_use_text_ai(user.telegram_id)
     if not can_use:
+        if message_key == "access_daily_limit_reached":
+            await session.commit()
         if cleanup_message:
             try:
                 await cleanup_message.delete()

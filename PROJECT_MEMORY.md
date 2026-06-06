@@ -207,6 +207,30 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-06 — Feedback prompt and reward timing
+
+Changed:
+- Feedback reward access is now 30 minutes instead of 1 day.
+- Feedback requests are sent only after the user is at least 1 day old and has hit the daily text limit; the prompt becomes due 5 minutes after that limit event.
+
+Why:
+- Feedback should be requested after real limit friction, not just because the account is old.
+- Feedback reward should not give a full day by default.
+
+Files touched:
+- `app/services/access_service.py`
+- `app/services/bot_feedback_service.py`
+- `app/main.py`
+- `app/bot/handlers/messages.py`
+- `app/bot/utils/i18n.py`
+
+Risk:
+- Existing `users.daily_limit_offer_sent_at` is reused as the limit-hit timestamp; no migration.
+- Scheduler now checks feedback requests every 60 seconds, relying on pending feedback retry rules to prevent repeated prompts.
+
+Follow-up:
+- Smoke test with a user older than 1 day: hit the daily text limit, wait 5 minutes, confirm the feedback prompt appears once and reward activates for 30 minutes.
+
 ### 2026-06-06 — Feedback limit discount offer
 
 Changed:

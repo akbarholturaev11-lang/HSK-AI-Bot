@@ -1012,7 +1012,7 @@ FEEDBACK_I18N = {
         "feedback_like_question": (
             "<b>1 дақиқа фикри шумо лозим 🙏</b>\n\n"
             "<blockquote>Ба шумо дар бот кадом ҷиҳат бештар писанд омад?\n"
-            "Ҷавоб диҳед — ба шумо 1 рӯз дастрасии бе лимит медиҳем.</blockquote>"
+            "Ҷавоб диҳед — ба шумо 30 дақиқа дастрасии бе лимит медиҳем.</blockquote>"
         ),
         "feedback_dislike_question": (
             "<b>Акнун росташро гӯед:</b>\n\n"
@@ -1038,7 +1038,7 @@ FEEDBACK_I18N = {
         "feedback_thanks": (
             "<b>Раҳмат барои одзив ✅</b>\n\n"
             "<blockquote>Мо албатта камбудиҳоро ислоҳ мекунем.\n"
-            "Ба шумо 1 рӯз дастрасии бе лимит фаъол шуд.</blockquote>"
+            "Ба шумо 30 дақиқа дастрасии бе лимит фаъол шуд.</blockquote>"
         ),
         "feedback_price_offer_text": (
             "<b>Мо одзиви шуморо дидем 🙏</b>\n\n"
@@ -1069,7 +1069,7 @@ FEEDBACK_I18N = {
         "feedback_like_question": (
             "<b>Нужна 1 минута вашего мнения 🙏</b>\n\n"
             "<blockquote>Что в боте вам понравилось больше всего?\n"
-            "Ответьте — мы дадим вам 1 день доступа без лимитов.</blockquote>"
+            "Ответьте — мы дадим вам 30 минут доступа без лимитов.</blockquote>"
         ),
         "feedback_dislike_question": (
             "<b>Теперь честно:</b>\n\n"
@@ -1095,7 +1095,7 @@ FEEDBACK_I18N = {
         "feedback_thanks": (
             "<b>Спасибо за отзыв ✅</b>\n\n"
             "<blockquote>Мы обязательно постараемся убрать недочёты.\n"
-            "Вам активирован 1 день доступа без лимитов.</blockquote>"
+            "Вам активировано 30 минут доступа без лимитов.</blockquote>"
         ),
         "feedback_price_offer_text": (
             "<b>Мы заметили ваш отзыв 🙏</b>\n\n"
@@ -1126,7 +1126,7 @@ FEEDBACK_I18N = {
         "feedback_like_question": (
             "<b>1 daqiqa fikringiz kerak 🙏</b>\n\n"
             "<blockquote>Botda sizga qaysi jihat eng ko'p yoqdi?\n"
-            "Javob bersangiz, sizga 1 kunlik limitsiz kirish beramiz.</blockquote>"
+            "Javob bersangiz, sizga 30 minutlik limitsiz kirish beramiz.</blockquote>"
         ),
         "feedback_dislike_question": (
             "<b>Endi rostini ayting:</b>\n\n"
@@ -1152,7 +1152,7 @@ FEEDBACK_I18N = {
         "feedback_thanks": (
             "<b>Otziv uchun rahmat ✅</b>\n\n"
             "<blockquote>Biz albatta kamchiliklarni yo'qotishga harakat qilamiz.\n"
-            "Sizga 1 kunlik limitsiz kirish faollashtirildi.</blockquote>"
+            "Sizga 30 minutlik limitsiz kirish faollashtirildi.</blockquote>"
         ),
         "feedback_price_offer_text": (
             "<b>Biz sizning otzivingizni payqadik 🙏</b>\n\n"

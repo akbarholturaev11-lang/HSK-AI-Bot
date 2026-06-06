@@ -135,6 +135,8 @@ class AccessService:
         if user.questions_used >= user.question_limit:
             bonus_balance = self.user_repo.get_bonus_balance(user)
             if bonus_balance <= 0:
+                if not await self.user_repo.was_daily_limit_offer_sent_today(user):
+                    await self.user_repo.mark_daily_limit_offer_sent(user)
                 return False, "access_daily_limit_reached"
 
         return True, ""
