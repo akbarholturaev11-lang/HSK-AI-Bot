@@ -12,7 +12,10 @@ from app.bot.keyboards.feedback import (
 from app.bot.utils.i18n import t
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.user import User
-from app.repositories.bot_feedback_repo import BotFeedbackRepository
+from app.repositories.bot_feedback_repo import (
+    FEEDBACK_DISCOUNT_OFFER_CODES,
+    BotFeedbackRepository,
+)
 from app.repositories.user_repo import UserRepository
 
 
@@ -130,7 +133,10 @@ class BotFeedbackService:
         user: User,
     ) -> None:
         await self.feedback_repo.complete(feedback)
-        if feedback.disliked_code == "price" and not feedback.price_offer_due_at:
+        if (
+            feedback.disliked_code in FEEDBACK_DISCOUNT_OFFER_CODES
+            and not feedback.price_offer_due_at
+        ):
             await self.feedback_repo.schedule_price_offer(
                 feedback,
                 datetime.now(timezone.utc) + FEEDBACK_PRICE_OFFER_DELAY,
@@ -149,10 +155,15 @@ class BotFeedbackService:
                 continue
 
             lang = user.language if user.language else feedback.language or "ru"
+            text_key = (
+                "feedback_limits_offer_text"
+                if feedback.disliked_code == "limits"
+                else "feedback_price_offer_text"
+            )
             try:
                 await bot.send_message(
                     chat_id=user.telegram_id,
-                    text=t("feedback_price_offer_text", lang),
+                    text=t(text_key, lang),
                     reply_markup=feedback_price_offer_keyboard(feedback.id, lang),
                     parse_mode="HTML",
                 )

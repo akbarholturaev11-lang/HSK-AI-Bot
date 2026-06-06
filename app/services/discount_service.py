@@ -134,11 +134,16 @@ class DiscountService:
         if not feedback:
             return DiscountChoice()
 
+        reason = (
+            "user bot limitlari kam deb belgilagan."
+            if feedback.disliked_code == "limits"
+            else "user obuna narxini qimmat deb belgilagan."
+        )
         return DiscountChoice(
             source="feedback_price_offer",
             percent=20,
             title="Feedback 20%",
-            details=f"Bot feedback #{feedback.id}: user obuna narxini qimmat deb belgilagan.",
+            details=f"Bot feedback #{feedback.id}: {reason}",
         )
 
     def _matches_campaign(

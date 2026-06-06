@@ -207,6 +207,27 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-06 — Feedback limit discount offer
+
+Changed:
+- Bot feedback dislike option `limits` now schedules the same 5-minute 20% subscription discount offer as `price`.
+- The limits offer uses a separate user-facing message about bot limits, but reuses the existing feedback discount checkout/payment flow.
+
+Why:
+- Users who say bot limits are too low should get the same conversion path as users who say subscription price is high.
+
+Files touched:
+- `app/repositories/bot_feedback_repo.py`
+- `app/services/bot_feedback_service.py`
+- `app/services/discount_service.py`
+- `app/bot/utils/i18n.py`
+
+Risk:
+- Existing DB fields are reused; no migration. Scheduler still sends due offers from the existing 60-second background loop.
+
+Follow-up:
+- Smoke test in Telegram: choose `Limitlar kam`, wait 5 minutes, open the 20% discount flow, and submit a payment screenshot.
+
 ### 2026-06-06 — Image caption as AI command
 
 Changed:

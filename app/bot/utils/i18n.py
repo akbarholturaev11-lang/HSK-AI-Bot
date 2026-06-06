@@ -1045,6 +1045,11 @@ FEEDBACK_I18N = {
             "<blockquote>Шумо гуфтед, ки нархи обуна баланд аст. Барои ҳамин ба шумо пешниҳоди махсус додем: "
             "обунаро бо <b>20% тахфиф</b> гирифта метавонед.</blockquote>"
         ),
+        "feedback_limits_offer_text": (
+            "<b>Мо одзиви шуморо дидем 🙏</b>\n\n"
+            "<blockquote>Мо фаҳмидем, ки лимитҳои бот ба шумо фишор овардаанд. Барои ҳамин қарор кардем, "
+            "ки барои истифодаи бот бе ягон лимит ба шумо обунаро бо <b>20% тахфиф</b> пешниҳод кунем.</blockquote>"
+        ),
         "feedback_price_offer_button": "🎁 Истифодаи 20% тахфиф",
         "feedback_price_offer_payment_choose": "💳 Барои истифодаи 20% тахфиф усули пардохтро интихоб кунед:",
         "feedback_price_offer_plan_choose": "🎁 <b>20% тахфифи махсус</b>\n\n<blockquote>{lines}</blockquote>\n\nТарифро интихоб кунед:",
@@ -1097,6 +1102,11 @@ FEEDBACK_I18N = {
             "<blockquote>Вы отметили, что цена подписки высокая. Поэтому мы подготовили для вас специальное предложение: "
             "подписка со <b>скидкой 20%</b>.</blockquote>"
         ),
+        "feedback_limits_offer_text": (
+            "<b>Мы увидели ваш отзыв 🙏</b>\n\n"
+            "<blockquote>Мы поняли, что лимиты бота вас ограничили. Поэтому решили дать вам подписку "
+            "для использования бота без лимитов со <b>скидкой 20%</b>.</blockquote>"
+        ),
         "feedback_price_offer_button": "🎁 Получить скидку 20%",
         "feedback_price_offer_payment_choose": "💳 Выберите способ оплаты для скидки 20%:",
         "feedback_price_offer_plan_choose": "🎁 <b>Специальная скидка 20%</b>\n\n<blockquote>{lines}</blockquote>\n\nВыберите тариф:",
@@ -1148,6 +1158,11 @@ FEEDBACK_I18N = {
             "<b>Biz sizning otzivingizni payqadik 🙏</b>\n\n"
             "<blockquote>Siz obuna narxi balandligini belgiladingiz. Shuning uchun sizga maxsus taklif berdik: "
             "obunani <b>20% chegirma</b> bilan olishingiz mumkin.</blockquote>"
+        ),
+        "feedback_limits_offer_text": (
+            "<b>Biz sizning otzivingizni ko'rdik 🙏</b>\n\n"
+            "<blockquote>Bot limitlari sizni ezib qo'yganini tushundik. Shuning uchun botdan hech qanday "
+            "limitlarsiz foydalanishingiz uchun sizga obunani <b>20% chegirma</b> narxida berishga qaror qildik.</blockquote>"
         ),
         "feedback_price_offer_button": "🎁 20% chegirmadan foydalanish",
         "feedback_price_offer_payment_choose": "💳 20% chegirma uchun to'lov usulini tanlang:",

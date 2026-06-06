@@ -8,6 +8,9 @@ from app.db.models.bot_feedback import BotFeedback
 from app.db.models.user import User
 
 
+FEEDBACK_DISCOUNT_OFFER_CODES = ("price", "limits")
+
+
 class BotFeedbackRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -115,7 +118,7 @@ class BotFeedbackRepository:
         result = await self.session.execute(
             select(BotFeedback)
             .where(BotFeedback.status == "completed")
-            .where(BotFeedback.disliked_code == "price")
+            .where(BotFeedback.disliked_code.in_(FEEDBACK_DISCOUNT_OFFER_CODES))
             .where(BotFeedback.price_offer_due_at.is_not(None))
             .where(BotFeedback.price_offer_due_at <= now)
             .where(BotFeedback.price_offer_sent_at.is_(None))
@@ -140,7 +143,7 @@ class BotFeedbackRepository:
             .where(BotFeedback.id == feedback_id)
             .where(BotFeedback.telegram_id == telegram_id)
             .where(BotFeedback.status == "completed")
-            .where(BotFeedback.disliked_code == "price")
+            .where(BotFeedback.disliked_code.in_(FEEDBACK_DISCOUNT_OFFER_CODES))
             .where(BotFeedback.price_offer_sent_at.is_not(None))
             .where(BotFeedback.price_offer_used_at.is_(None))
             .limit(1)
@@ -152,7 +155,7 @@ class BotFeedbackRepository:
             select(BotFeedback)
             .where(BotFeedback.telegram_id == telegram_id)
             .where(BotFeedback.status == "completed")
-            .where(BotFeedback.disliked_code == "price")
+            .where(BotFeedback.disliked_code.in_(FEEDBACK_DISCOUNT_OFFER_CODES))
             .where(BotFeedback.price_offer_sent_at.is_not(None))
             .where(BotFeedback.price_offer_used_at.is_(None))
             .order_by(BotFeedback.price_offer_sent_at.desc())
