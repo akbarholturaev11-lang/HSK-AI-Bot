@@ -104,14 +104,16 @@ def _card_texts(lang: str) -> dict[str, str]:
             "benefits": "Обуна гиред ва аз бот бе лимит истифода баред.",
             "card_note_short": "💳 Бо ҳар гуна корти бонкӣ метавонед пардохт кунед.",
             "card_note_full": (
-                "💳 Бо ҳар гуна корти бонкӣ метавонед пардохт кунед.\n"
-                "Агар корти шумо бо TJS набошад, эквиваленти маблағро бо курси бонки худ ба ҳамин корт пардохт кунед."
+                "Агар корти шумо корти Тоҷикистон набошад, маблағро бо қурби бонки худ "
+                "дар TJS ҳисоб карда ба ҳамин корт фиристед."
             ),
             "referral_hint": "🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.",
             "choose": "👇 <b>Тарифро интихоб кунед:</b>",
             "checkout_title": "💳 Шумо обунаро интихоб кардед",
             "plan_label": "Тариф",
             "price_label": "Нарх",
+            "bank_label": "Бонк",
+            "bank_name": "DC city",
             "payment_details_label": "Реквизити пардохт",
             "send_screenshot": "Пас аз пардохт скриншотро фиристед.",
         },
@@ -120,14 +122,16 @@ def _card_texts(lang: str) -> dict[str, str]:
             "benefits": "Оформите подписку и пользуйтесь ботом без ограничений.",
             "card_note_short": "💳 Можно оплатить любой банковской картой.",
             "card_note_full": (
-                "💳 Можно оплатить любой банковской картой.\n"
-                "Если ваша карта не в TJS, оплатите эквивалент суммы в TJS по курсу вашего банка на эту карту."
+                "Если ваша карта не таджикская, рассчитайте сумму в TJS по курсу вашего банка "
+                "и отправьте на эту карту."
             ),
             "referral_hint": "🎁 Пригласите 3 новых друзей и получите скидку 20%.",
             "choose": "👇 <b>Выберите тариф:</b>",
             "checkout_title": "💳 Вы выбрали подписку",
             "plan_label": "Тариф",
             "price_label": "Цена",
+            "bank_label": "Банк",
+            "bank_name": "DC city",
             "payment_details_label": "Реквизиты для оплаты",
             "send_screenshot": "После оплаты отправьте скриншот.",
         },
@@ -136,14 +140,16 @@ def _card_texts(lang: str) -> dict[str, str]:
             "benefits": "Obuna oling va botdan limitsiz foydalaning.",
             "card_note_short": "💳 Istalgan bank kartasi orqali to'lov qilishingiz mumkin.",
             "card_note_full": (
-                "💳 Istalgan bank kartasi orqali to'lov qilishingiz mumkin.\n"
-                "Agar kartangiz TJSda bo'lmasa, bankingiz kursi bo'yicha TJS ekvivalentini shu kartaga yuboring."
+                "Agar kartangiz Tojikiston kartasi bo'lmasa, o'z bankingiz kursi bo'yicha "
+                "TJS valyutasida hisoblab shu kartaga yuboring."
             ),
             "referral_hint": "🎁 3 ta yangi do'st taklif qiling va 20% chegirma oling.",
             "choose": "👇 <b>Tarifni tanlang:</b>",
             "checkout_title": "💳 Siz obunani tanladingiz",
             "plan_label": "Tarif",
             "price_label": "Narx",
+            "bank_label": "Bank",
+            "bank_name": "DC city",
             "payment_details_label": "To'lov rekviziti",
             "send_screenshot": "To'lovdan keyin skrinshot yuboring.",
         },
@@ -165,7 +171,7 @@ def _card_main_price(amount: int) -> str:
 
 
 def _card_checkout_price(amount: int) -> str:
-    return f"{amount} TJS 💸"
+    return f"💸 {amount} TJS"
 
 
 def _card_main_plan_line(plan_type: str, lang: str, amount: int) -> str:
@@ -200,8 +206,8 @@ def _card_checkout_text(lang: str, checkout_info: dict) -> str:
     texts = _card_texts(lang)
     plan_type = checkout_info["plan_type"]
     price = _card_checkout_price(checkout_info["final_amount"])
-    details = settings.PAYMENT_DETAILS
-    return "\n".join([
+    details = settings.PAYMENT_DETAILS.strip()
+    lines = [
         texts["checkout_title"],
         "",
         "<blockquote>"
@@ -210,10 +216,16 @@ def _card_checkout_text(lang: str, checkout_info: dict) -> str:
         f"{texts['card_note_full']}"
         "</blockquote>",
         "",
-        f"{texts['payment_details_label']}: {details}",
+        f"{texts['bank_label']}: 🏦 {texts['bank_name']}",
+        f"{texts['payment_details_label']}:",
+    ]
+    if details:
+        lines.append(details)
+    lines.extend([
         "",
         texts["send_screenshot"],
     ])
+    return "\n".join(lines)
 
 
 async def _discount_plan_line(
