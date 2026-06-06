@@ -1506,6 +1506,7 @@ async def handle_image_message(message: Message, state: FSMContext, session):
             telegram_id=message.from_user.id,
             file_id=file_id,
             mime_type=mime_type,
+            user_text=message.caption,
             telegram_message_id=message.message_id,
         )
     finally:

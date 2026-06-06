@@ -39,6 +39,7 @@ class ImageQAService:
         telegram_id: int,
         file_id: str,
         mime_type: str,
+        user_text: Optional[str] = None,
         telegram_message_id: Optional[int] = None,
     ) -> str:
         can_use, message_key = await self.access_service.can_use_image_ai(telegram_id)
@@ -49,10 +50,15 @@ class ImageQAService:
         if not user:
             return "access_start_first"
 
+        cleaned_user_text = (user_text or "").strip()
+        image_message_content = f"file_id: {file_id}"
+        if cleaned_user_text:
+            image_message_content = f"{image_message_content}\ncaption: {cleaned_user_text}"
+
         await self.message_repo.create(
             user_id=user.id,
             role="user",
-            content=file_id,
+            content=image_message_content,
             content_type="image",
             telegram_message_id=telegram_message_id,
         )
@@ -69,6 +75,7 @@ class ImageQAService:
 
         assistant_reply = await self.image_explainer_service.explain_analysis(
             analyzer_result=analyzer_result,
+            user_command=cleaned_user_text,
             user_language=user.language,
             user_level=user.level,
         )
@@ -100,6 +107,7 @@ class ImageQAService:
 
         image_context = (
             "LAST_IMAGE_LESSON_CONTEXT\n"
+            f"User command/caption:\n{cleaned_user_text or 'None'}\n\n"
             f"Analyzer result:\n{analyzer_result}\n\n"
             f"Final lesson reply:\n{assistant_reply}\n\n"
             "User may ask follow-up questions about this image lesson."

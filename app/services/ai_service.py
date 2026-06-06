@@ -81,8 +81,15 @@ class AIService:
 
         if history:
             for msg in history:
-                if msg.get("role") in ("user", "assistant"):
-                    messages.append(msg)
+                role = msg.get("role")
+                content = msg.get("content")
+                if role in ("system", "user", "assistant") and content:
+                    messages.append(
+                        {
+                            "role": role,
+                            "content": content,
+                        }
+                    )
 
         messages.append(
             {

@@ -63,7 +63,7 @@ class QAService:
             }
             for msg in recent_messages
             if msg.role in ("user", "assistant")
-            and msg.content_type not in ("image_context", "voice", "voice_translator")
+            and msg.content_type not in ("image", "image_context", "voice", "voice_translator")
         ]
 
         latest_image_context = await self.message_repo.get_latest_image_context_by_user(

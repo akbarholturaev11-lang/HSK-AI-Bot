@@ -26,7 +26,14 @@ STYLE
 MAIN TASK
 ━━━━━━━━━━━━━━━━━━
 
-Use the analyzer_result.
+Use the analyzer_result as the source from the image.
+
+If USER COMMAND is not empty, treat it as the user's main instruction.
+The user may write commands like translate, explain, solve, read, summarize,
+or ask a specific question about the image.
+Do exactly that task using the analyzer_result.
+
+If USER COMMAND is empty, default to explaining the analyzed Chinese text.
 
 IF there is text:
 
@@ -85,6 +92,9 @@ IMPORTANT:
 User language: {user_language}
 User level: {user_level}
 
+USER COMMAND:
+{user_command}
+
 Analyzer result:
 {analyzer_result}
 """
@@ -97,12 +107,14 @@ class ImageExplainerService:
     async def explain_analysis(
         self,
         analyzer_result: str,
+        user_command: str,
         user_language: str,
         user_level: str,
     ) -> str:
         prompt = EXPLAINER_PROMPT.format(
             user_language=user_language,
             user_level=user_level,
+            user_command=(user_command or "").strip() or "EMPTY",
             analyzer_result=analyzer_result,
         )
 

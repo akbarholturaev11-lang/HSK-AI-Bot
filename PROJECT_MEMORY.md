@@ -207,6 +207,30 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-06 — Image caption as AI command
+
+Changed:
+- Photo messages now pass Telegram caption text into the image AI flow.
+- The image explainer treats caption text as the user's command and uses analyzer output as the image source context.
+- Image file IDs are excluded from normal QA chat history; follow-up context should come from stored image context.
+- QA AI history now keeps system context messages, so stored image context is available in follow-up questions.
+
+Why:
+- Users sending photo + text like "Tarjima qil" need the bot to follow the text instruction instead of only explaining the image.
+
+Files touched:
+- `app/bot/handlers/messages.py`
+- `app/services/image_qa_service.py`
+- `app/services/image_explainer_service.py`
+- `app/services/qa_service.py`
+- `app/services/ai_service.py`
+
+Risk:
+- Prompt-only behavior change; image limits, subscription access, and payment logic are unchanged.
+
+Follow-up:
+- Test in Telegram with a photo caption command such as "Tarjima qil".
+
 ### 2026-06-05 — Command/menu input cleanup
 
 Changed:
