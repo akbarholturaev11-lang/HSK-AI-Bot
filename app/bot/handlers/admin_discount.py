@@ -29,7 +29,10 @@ from app.bot.keyboards.admin_discount import (
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.user_repo import UserRepository
 from app.services.discount_notification_service import DiscountNotificationService
+from app.services.payment_qr_code_service import PaymentQrCodeService
 from app.services.discount_translation_service import DiscountTranslationService
+from app.services.subscription_currency_service import format_subscription_price
+from app.services.subscription_price_service import SubscriptionPriceService
 
 router = Router()
 
@@ -37,6 +40,10 @@ ADMIN_TZ = ZoneInfo("Asia/Shanghai")
 _PANEL_CHAT_ID = "discount_panel_chat_id"
 _PANEL_MSG_ID = "discount_panel_msg_id"
 _EDIT_MODE = "discount_edit_mode"
+_PAYMENT_QR_ITEMS = "discount_payment_qr_items"
+_PAYMENT_QR_INDEX = "discount_payment_qr_index"
+_QR_METHODS = ("alipay", "wechat")
+_PLANS = ("10_days", "1_month")
 
 _LABELS = {
     "status": {
@@ -105,6 +112,14 @@ def _fmt_notify(data: dict) -> str:
     return "Faqat matn"
 
 
+def _fmt_payment_qr(data: dict) -> str:
+    items = data.get(_PAYMENT_QR_ITEMS) or []
+    if not items:
+        return "—"
+    done = len([item for item in items if item.get("file_id")])
+    return f"{done}/{len(items)}"
+
+
 def _cancel_keyboard_for(data: dict):
     return discount_edit_back_keyboard() if data.get(_EDIT_MODE) else discount_cancel_keyboard()
 
@@ -131,6 +146,7 @@ def _wizard_text(data: dict, prompt: str, error: Optional[str] = None) -> str:
         f"Limit: <b>{_fmt_quota(data.get('quota_total'))}</b>",
         f"Qoida: <b>{_fmt_repeat(data.get('repeat_interval_days'))}</b>",
         f"Xabar: <b>{_fmt_notify(data)}</b>",
+        f"QR kod: <b>{_fmt_payment_qr(data)}</b>",
         "</blockquote>",
         "",
         f"➡️ <b>{prompt}</b>",
@@ -225,6 +241,10 @@ async def _clear_edit_mode(state: FSMContext) -> dict:
     return await state.get_data()
 
 
+async def _clear_payment_qr_data(state: FSMContext) -> None:
+    await state.update_data(**{_PAYMENT_QR_ITEMS: None, _PAYMENT_QR_INDEX: 0})
+
+
 async def _return_to_preview_callback(callback: CallbackQuery, state: FSMContext) -> None:
     data = await _clear_edit_mode(state)
     await state.set_state(None)
@@ -256,8 +276,141 @@ def _preview(data: dict) -> str:
         f"tarif=<b>{_fmt_filter(data.get('plan_type'))}</b>\n"
         f"Limit: <b>{quota}</b>\n"
         f"Qoida: <b>{usage}</b>\n"
-        f"Userlarga xabar: <b>{_fmt_notify(data)}</b>\n\n"
+        f"Userlarga xabar: <b>{_fmt_notify(data)}</b>\n"
+        f"QR kod: <b>{_fmt_payment_qr(data)}</b>\n\n"
         "Tasdiqlaysizmi?"
+    )
+
+
+def _selected_qr_methods(data: dict) -> list[str]:
+    payment_method = data.get("payment_method")
+    if payment_method in _QR_METHODS:
+        return [payment_method]
+    if payment_method:
+        return []
+    return list(_QR_METHODS)
+
+
+def _selected_qr_plans(data: dict) -> list[str]:
+    plan_type = data.get("plan_type")
+    if plan_type in _PLANS:
+        return [plan_type]
+    return list(_PLANS)
+
+
+async def _build_discount_qr_items(session, data: dict) -> list[dict]:
+    percent = int(data.get("percent") or 0)
+    if percent <= 0:
+        return []
+
+    items: list[dict] = []
+    price_service = SubscriptionPriceService(session)
+    for method in _selected_qr_methods(data):
+        for plan in _selected_qr_plans(data):
+            price = await price_service.get_price(method, plan)
+            if not price or price.currency != "¥":
+                continue
+            amount = int(round(price.amount * (100 - percent) / 100))
+            items.append(
+                {
+                    "payment_method": method,
+                    "plan_type": plan,
+                    "amount": amount,
+                    "currency": price.currency,
+                    "label": f"admin chegirma {percent}%",
+                }
+            )
+    return items
+
+
+def _discount_qr_prompt(item: dict, index: int, total: int) -> str:
+    return (
+        f"📱 <b>Chegirma QR kodi</b> ({index + 1}/{total})\n\n"
+        f"Usul: <b>{PaymentQrCodeService.method_label(item['payment_method'])}</b>\n"
+        f"Tarif: <b>{_label('plan', item['plan_type'])}</b>\n"
+        f"Narx: <b>{format_subscription_price(int(item['amount']), item['currency'])}</b>\n"
+        f"Turi: <b>{escape(str(item['label']))}</b>\n\n"
+        "Shu chegirma narxiga mos QR kod rasmini yuboring."
+    )
+
+
+def _payment_qr_items_complete(required_items: list[dict], stored_items: list[dict]) -> bool:
+    if not required_items:
+        return True
+    if len(required_items) != len(stored_items):
+        return False
+
+    stored_by_key = {
+        (
+            item.get("payment_method"),
+            item.get("plan_type"),
+            int(item.get("amount") or 0),
+            item.get("currency"),
+        ): item
+        for item in stored_items
+    }
+    for item in required_items:
+        key = (
+            item.get("payment_method"),
+            item.get("plan_type"),
+            int(item.get("amount") or 0),
+            item.get("currency"),
+        )
+        if not stored_by_key.get(key, {}).get("file_id"):
+            return False
+    return True
+
+
+async def _edit_discount_qr_prompt_message(message: Message, state: FSMContext) -> None:
+    data = await state.get_data()
+    items = data.get(_PAYMENT_QR_ITEMS) or []
+    index = int(data.get(_PAYMENT_QR_INDEX) or 0)
+    if not items or index >= len(items):
+        await _edit_stored_panel(message, state, "❌ QR navbati topilmadi.", discount_cancel_keyboard())
+        return
+    await _edit_stored_panel(
+        message,
+        state,
+        _discount_qr_prompt(items[index], index, len(items)),
+        discount_cancel_keyboard(),
+    )
+
+
+async def _maybe_request_payment_qr_callback(callback: CallbackQuery, state: FSMContext, session) -> None:
+    data = await state.get_data()
+    items = await _build_discount_qr_items(session, data)
+    if not items:
+        await state.set_state(None)
+        data = await _clear_edit_mode(state)
+        await _edit_callback_panel(callback, state, _preview(data), discount_confirm_keyboard())
+        return
+
+    await state.update_data(**{_PAYMENT_QR_ITEMS: items, _PAYMENT_QR_INDEX: 0})
+    await state.set_state(DiscountStates.waiting_payment_qr)
+    await _edit_callback_panel(
+        callback,
+        state,
+        _discount_qr_prompt(items[0], 0, len(items)),
+        discount_cancel_keyboard(),
+    )
+
+
+async def _maybe_request_payment_qr_message(message: Message, state: FSMContext, session) -> None:
+    data = await state.get_data()
+    items = await _build_discount_qr_items(session, data)
+    if not items:
+        await state.set_state(None)
+        data = await _clear_edit_mode(state)
+        await _edit_stored_panel(message, state, _preview(data), discount_confirm_keyboard())
+        return
+
+    await state.update_data(**{_PAYMENT_QR_ITEMS: items, _PAYMENT_QR_INDEX: 0})
+    await state.set_state(DiscountStates.waiting_payment_qr)
+    await _edit_stored_panel(
+        message,
+        state,
+        _discount_qr_prompt(items[0], 0, len(items)),
+        discount_cancel_keyboard(),
     )
 
 
@@ -395,7 +548,7 @@ async def discount_title(message: Message, state: FSMContext):
 
 
 @router.message(StateFilter(DiscountStates.waiting_percent))
-async def discount_percent(message: Message, state: FSMContext):
+async def discount_percent(message: Message, state: FSMContext, session):
     if not _is_admin(message.from_user.id):
         return
     try:
@@ -421,11 +574,12 @@ async def discount_percent(message: Message, state: FSMContext):
         )
         return
     await state.update_data(percent=percent)
+    await _clear_payment_qr_data(state)
     data = await state.get_data()
     await _delete_admin_input(message)
     await state.set_state(None)
     if _is_edit_mode(data, "percent"):
-        await _return_to_preview_message(message, state)
+        await _maybe_request_payment_qr_message(message, state, session)
         return
 
     await _edit_stored_panel(
@@ -567,6 +721,7 @@ async def discount_payment_method(callback: CallbackQuery, state: FSMContext):
         await callback.answer()
         return
     await state.update_data(payment_method=_none_if_all(callback.data.split(":")[2]))
+    await _clear_payment_qr_data(state)
     await callback.answer()
     data = await state.get_data()
     await _edit_callback_panel(
@@ -578,15 +733,16 @@ async def discount_payment_method(callback: CallbackQuery, state: FSMContext):
 
 
 @router.callback_query(F.data.startswith("disc:plan:"))
-async def discount_plan(callback: CallbackQuery, state: FSMContext):
+async def discount_plan(callback: CallbackQuery, state: FSMContext, session):
     if not _is_admin(callback.from_user.id):
         await callback.answer()
         return
     await state.update_data(plan_type=_none_if_all(callback.data.split(":")[2]))
+    await _clear_payment_qr_data(state)
     await callback.answer()
     data = await state.get_data()
     if _is_edit_mode(data, "payment_plan"):
-        await _return_to_preview_callback(callback, state)
+        await _maybe_request_payment_qr_callback(callback, state, session)
         return
 
     await _edit_callback_panel(
@@ -774,7 +930,7 @@ async def discount_quota(message: Message, state: FSMContext):
 
 
 @router.callback_query(F.data.startswith("disc:notify:"))
-async def discount_notify_choice(callback: CallbackQuery, state: FSMContext):
+async def discount_notify_choice(callback: CallbackQuery, state: FSMContext, session):
     if not _is_admin(callback.from_user.id):
         await callback.answer()
         return
@@ -788,8 +944,11 @@ async def discount_notify_choice(callback: CallbackQuery, state: FSMContext):
             notify_media_type=None,
             notify_media_file_id=None,
         )
-        data = await _clear_edit_mode(state)
-        await _edit_callback_panel(callback, state, _preview(data), discount_confirm_keyboard())
+        data = await state.get_data()
+        if _is_edit_mode(data, "notify"):
+            await _return_to_preview_callback(callback, state)
+            return
+        await _maybe_request_payment_qr_callback(callback, state, session)
         return
 
     if value == "media":
@@ -809,12 +968,15 @@ async def discount_notify_choice(callback: CallbackQuery, state: FSMContext):
         notify_media_type=None,
         notify_media_file_id=None,
     )
-    data = await _clear_edit_mode(state)
-    await _edit_callback_panel(callback, state, _preview(data), discount_confirm_keyboard())
+    data = await state.get_data()
+    if _is_edit_mode(data, "notify"):
+        await _return_to_preview_callback(callback, state)
+        return
+    await _maybe_request_payment_qr_callback(callback, state, session)
 
 
 @router.callback_query(F.data == "disc:notify_media_skip")
-async def discount_notify_media_skip(callback: CallbackQuery, state: FSMContext):
+async def discount_notify_media_skip(callback: CallbackQuery, state: FSMContext, session):
     if not _is_admin(callback.from_user.id):
         await callback.answer()
         return
@@ -824,13 +986,16 @@ async def discount_notify_media_skip(callback: CallbackQuery, state: FSMContext)
         notify_media_file_id=None,
     )
     await state.set_state(None)
-    data = await _clear_edit_mode(state)
     await callback.answer()
-    await _edit_callback_panel(callback, state, _preview(data), discount_confirm_keyboard())
+    data = await state.get_data()
+    if _is_edit_mode(data, "notify"):
+        await _return_to_preview_callback(callback, state)
+        return
+    await _maybe_request_payment_qr_callback(callback, state, session)
 
 
 @router.message(StateFilter(DiscountStates.waiting_notify_media))
-async def discount_notify_media(message: Message, state: FSMContext):
+async def discount_notify_media(message: Message, state: FSMContext, session):
     if not _is_admin(message.from_user.id):
         return
 
@@ -864,9 +1029,48 @@ async def discount_notify_media(message: Message, state: FSMContext):
         notify_media_file_id=media_file_id,
     )
     await state.set_state(None)
-    data = await _clear_edit_mode(state)
     await _delete_admin_input(message)
+    data = await state.get_data()
+    if _is_edit_mode(data, "notify"):
+        await _return_to_preview_message(message, state)
+        return
+    await _maybe_request_payment_qr_message(message, state, session)
+
+
+@router.message(StateFilter(DiscountStates.waiting_payment_qr), F.photo)
+async def discount_payment_qr_photo(message: Message, state: FSMContext):
+    if not _is_admin(message.from_user.id):
+        return
+
+    data = await state.get_data()
+    items = data.get(_PAYMENT_QR_ITEMS) or []
+    index = int(data.get(_PAYMENT_QR_INDEX) or 0)
+    if not items or index >= len(items):
+        await _delete_admin_input(message)
+        await _edit_stored_panel(message, state, "❌ QR navbati topilmadi.", discount_cancel_keyboard())
+        return
+
+    items[index]["file_id"] = message.photo[-1].file_id
+    index += 1
+    await _delete_admin_input(message)
+
+    if index < len(items):
+        await state.update_data(**{_PAYMENT_QR_ITEMS: items, _PAYMENT_QR_INDEX: index})
+        await _edit_discount_qr_prompt_message(message, state)
+        return
+
+    await state.update_data(**{_PAYMENT_QR_ITEMS: items, _PAYMENT_QR_INDEX: index})
+    await state.set_state(None)
+    data = await _clear_edit_mode(state)
     await _edit_stored_panel(message, state, _preview(data), discount_confirm_keyboard())
+
+
+@router.message(StateFilter(DiscountStates.waiting_payment_qr))
+async def discount_payment_qr_only(message: Message, state: FSMContext):
+    if not _is_admin(message.from_user.id):
+        return
+    await _delete_admin_input(message)
+    await _edit_discount_qr_prompt_message(message, state)
 
 
 @router.callback_query(F.data == "disc:review")
@@ -1016,6 +1220,14 @@ async def discount_confirm(callback: CallbackQuery, state: FSMContext, session):
     if ends_at <= now:
         await callback.answer("Bu chegirma muddati allaqachon tugagan. Boshlanish yoki muddatni o'zgartiring.", show_alert=True)
         return
+
+    required_qr_items = await _build_discount_qr_items(session, data)
+    stored_qr_items = data.get(_PAYMENT_QR_ITEMS) or []
+    if not _payment_qr_items_complete(required_qr_items, stored_qr_items):
+        await callback.answer("Alipay/WeChat QR kodlari yetishmayapti", show_alert=True)
+        await _maybe_request_payment_qr_callback(callback, state, session)
+        return
+
     title_i18n = await _prepare_title_i18n(data)
     data.update(title_i18n)
     await state.update_data(**title_i18n)
@@ -1042,6 +1254,20 @@ async def discount_confirm(callback: CallbackQuery, state: FSMContext, session):
         created_by_telegram_id=callback.from_user.id,
     )
     campaign_id = campaign.id
+    qr_items = []
+    for item in stored_qr_items:
+        if not item.get("file_id"):
+            continue
+        qr_items.append(
+            {
+                **item,
+                "scope": PaymentQrCodeService.admin_campaign_scope(campaign_id),
+            }
+        )
+    await PaymentQrCodeService(session).save_qr_codes(
+        qr_items,
+        created_by_telegram_id=callback.from_user.id,
+    )
     await session.commit()
     await callback.answer("Chegirma saqlandi", show_alert=True)
 

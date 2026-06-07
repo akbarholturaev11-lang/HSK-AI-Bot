@@ -9,6 +9,7 @@ from app.repositories.payment_repo import PaymentRepository
 from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.user_repo import UserRepository
 from app.services.discount_service import DiscountService
+from app.services.payment_qr_code_service import PaymentQrCodeService
 from app.services.payment_service import PaymentService
 from app.services.subscription_currency_service import (
     SubscriptionCurrencyService,
@@ -49,6 +50,73 @@ QR_PHOTO_PATHS = {
     "alipay_admin_discount":    str(_STATIC_PAYMENTS / "alipay_admin_discount.jpg"),
     "wechat_admin_discount":    str(_STATIC_PAYMENTS / "wechat_admin_discount.jpg"),
 }
+
+
+def _static_qr_key_for_checkout(user, plan: str, checkout_info: dict) -> str | None:
+    payment_method = getattr(user, "payment_method", None)
+    if not PaymentQrCodeService.is_qr_method(payment_method):
+        return None
+
+    discount_source = checkout_info.get("discount_source") or "none"
+    if discount_source == "admin_campaign":
+        return None
+
+    amount = int(checkout_info["final_amount"])
+    currency = checkout_info["currency"]
+    if checkout_info.get("discount_applied"):
+        discount_percent = int(checkout_info.get("discount_percent") or 0)
+        if discount_source not in {"referral", "feedback_price_offer"} or discount_percent != 20:
+            return None
+        if PaymentQrCodeService.is_default_subscription_amount(
+            payment_method=payment_method,
+            plan_type=plan,
+            amount=amount,
+            currency=currency,
+            discount_percent=20,
+        ):
+            return f"{payment_method}_{plan}_discount"
+        return None
+
+    if PaymentQrCodeService.is_default_subscription_amount(
+        payment_method=payment_method,
+        plan_type=plan,
+        amount=amount,
+        currency=currency,
+    ):
+        return f"{payment_method}_{plan}"
+    return None
+
+
+async def _uploaded_qr_file_id(session, user, plan: str, checkout_info: dict) -> str | None:
+    payment_method = getattr(user, "payment_method", None)
+    if not PaymentQrCodeService.is_qr_method(payment_method):
+        return None
+
+    scope = PaymentQrCodeService.checkout_scope(
+        discount_source=checkout_info.get("discount_source") or "none",
+        discount_percent=int(checkout_info.get("discount_percent") or 0),
+        discount_campaign_id=checkout_info.get("discount_campaign_id"),
+    )
+    if not scope:
+        return None
+
+    return await PaymentQrCodeService(session).get_file_id(
+        scope=scope,
+        payment_method=payment_method,
+        plan_type=plan,
+        amount=int(checkout_info["final_amount"]),
+        currency=checkout_info["currency"],
+    )
+
+
+async def _checkout_qr_photo(session, user, plan: str, checkout_info: dict):
+    static_key = _static_qr_key_for_checkout(user, plan, checkout_info)
+    if static_key:
+        photo_path = QR_PHOTO_PATHS.get(static_key)
+        if photo_path and Path(photo_path).exists():
+            return FSInputFile(photo_path)
+
+    return await _uploaded_qr_file_id(session, user, plan, checkout_info)
 
 
 def _parse_campaign_id(value: str | None) -> int | None:
@@ -690,7 +758,7 @@ async def _replace_with_expired_offer(callback: CallbackQuery, lang: str, key: s
     )
 
 
-async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
+async def build_checkout_text(session, lang: str, checkout_info: dict, *, qr_available: bool = True) -> str:
     plan_type = checkout_info["plan_type"]
     base_amount = checkout_info["base_amount"]
     final_amount = checkout_info["final_amount"]
@@ -757,16 +825,17 @@ async def build_checkout_text(session, lang: str, checkout_info: dict) -> str:
     lines.append("")
 
     if is_qr:
-        lines.append(t("checkout_qr_scan", lang))
+        lines.append(t("checkout_qr_scan" if qr_available else "checkout_qr_missing", lang))
     else:
         lines.append(card_note)
         lines.append("")
         lines.append(f"{t('payment_details_label', lang)}: {settings.PAYMENT_DETAILS}")
 
-    lines.extend([
-        "",
-        t("payment_send_screenshot", lang),
-    ])
+    if not is_qr or qr_available:
+        lines.extend([
+            "",
+            t("payment_send_screenshot", lang),
+        ])
 
     return "\n".join(lines)
 
@@ -1288,21 +1357,14 @@ async def checkout_change_plan_handler(callback: CallbackQuery, session):
 
 
 async def _show_checkout(callback: CallbackQuery, user_repo: UserRepository, user, lang: str, plan: str, checkout_info: dict):
-    text = await build_checkout_text(user_repo.session, lang, checkout_info)
     keyboard = checkout_keyboard(lang)
 
     checkout_msg_id: int | None = None
 
     if checkout_info["currency"] == "¥":
-        if checkout_info.get("discount_source") == "admin_campaign":
-            qr_key = f"{user.payment_method}_admin_discount"
-        else:
-            qr_key = f"{user.payment_method}_{plan}"
-            if checkout_info.get("discount_applied"):
-                qr_key += "_discount"
-        photo_path = QR_PHOTO_PATHS.get(qr_key)
-        if photo_path:
-            photo = FSInputFile(photo_path)
+        photo = await _checkout_qr_photo(user_repo.session, user, plan, checkout_info)
+        text = await build_checkout_text(user_repo.session, lang, checkout_info, qr_available=bool(photo))
+        if photo:
             try:
                 await callback.message.delete()
             except Exception:
@@ -1315,14 +1377,28 @@ async def _show_checkout(callback: CallbackQuery, user_repo: UserRepository, use
             )
             checkout_msg_id = sent.message_id
         else:
-            sent = await callback.message.edit_text(
-                text,
-                reply_markup=keyboard,
-                parse_mode="HTML",
-                disable_web_page_preview=True,
-            )
-            checkout_msg_id = callback.message.message_id
+            try:
+                await callback.message.edit_text(
+                    text,
+                    reply_markup=keyboard,
+                    parse_mode="HTML",
+                    disable_web_page_preview=True,
+                )
+                checkout_msg_id = callback.message.message_id
+            except Exception:
+                try:
+                    await callback.message.delete()
+                except Exception:
+                    pass
+                sent = await callback.message.answer(
+                    text,
+                    reply_markup=keyboard,
+                    parse_mode="HTML",
+                    disable_web_page_preview=True,
+                )
+                checkout_msg_id = sent.message_id
     else:
+        text = await build_checkout_text(user_repo.session, lang, checkout_info)
         try:
             await callback.message.edit_text(
                 text,

@@ -207,6 +207,32 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-07 — Price-specific Alipay/WeChat QR codes
+
+Changed:
+- Added `payment_qr_codes` storage for uploaded Telegram QR `file_id`s by scope, payment method, plan, amount, and currency.
+- Alipay/WeChat custom subscription prices now require admin to upload the matching regular QR and the matching 20% discount QR before the price is saved.
+- Admin discount campaigns that target or include Alipay/WeChat now require campaign QR codes per affected method/plan discounted amount.
+- Checkout uses old static QR files only for default Alipay/WeChat prices and default 20% referral/feedback discounts; non-default missing QR no longer falls back to an old fixed-price QR.
+
+Why:
+- Alipay/WeChat QR codes are amount-specific, so users must never receive a QR for a different price after admin changes prices or creates a discount.
+
+Files touched:
+- `app/db/models/payment_qr_code.py`
+- `app/repositories/payment_qr_code_repo.py`
+- `app/services/payment_qr_code_service.py`
+- `app/bot/handlers/admin.py`
+- `app/bot/handlers/admin_discount.py`
+- `app/bot/handlers/subscription.py`
+- `alembic/versions/0036_add_payment_qr_codes.py`
+
+Risk:
+- Existing active admin discount campaigns created before this change do not have campaign-scoped QR records; for Alipay/WeChat checkout they may show "QR not ready" instead of the old generic admin discount QR.
+
+Follow-up:
+- Run migration/init DB, then smoke test: custom Alipay/WeChat price, 20% referral/feedback checkout, and admin discount campaign checkout.
+
 ### 2026-06-06 — Feedback prompt and reward timing
 
 Changed:
