@@ -164,6 +164,16 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.add_middleware(GZipMiddleware, minimum_size=1024)
 
+MINIAPP_HTML_HEADERS = {
+    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    "Pragma": "no-cache",
+    "Expires": "0",
+}
+
+
+def miniapp_file_response(path: str) -> FileResponse:
+    return FileResponse(path, headers=MINIAPP_HTML_HEADERS)
+
 
 @app.get("/health")
 async def health():
@@ -172,32 +182,32 @@ async def health():
 
 @app.get("/hsk3.html")
 async def hsk3_miniapp():
-    return FileResponse("app/static/hsk3.html")
+    return miniapp_file_response("app/static/hsk3.html")
 
 
 @app.get("/hsk4.html")
 async def hsk4_miniapp():
-    return FileResponse("app/static/hsk4.html")
+    return miniapp_file_response("app/static/hsk4.html")
 
 
 @app.get("/hsk1.html")
 async def hsk1_miniapp():
-    return FileResponse("app/static/hsk1.html")
+    return miniapp_file_response("app/static/hsk1.html")
 
 
 @app.get("/hsk2.html")
 async def hsk2_miniapp():
-    return FileResponse("app/static/hsk2.html")
+    return miniapp_file_response("app/static/hsk2.html")
 
 
 @app.get("/study.html")
 async def study_miniapp():
-    return FileResponse("app/static/study.html")
+    return miniapp_file_response("app/static/study.html")
 
 
 @app.get("/stroke-order.html")
 async def stroke_order_miniapp():
-    return FileResponse("app/static/stroke-order.html")
+    return miniapp_file_response("app/static/stroke-order.html")
 
 
 @app.post("/api/miniapp/access")
