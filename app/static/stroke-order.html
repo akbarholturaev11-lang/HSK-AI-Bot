@@ -8,28 +8,41 @@
   <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
   <style>
     :root {
-      color-scheme: light;
-      --bg: #f7f7f2;
-      --card: #ffffff;
-      --ink: #17231e;
-      --muted: #728078;
-      --line: #e4e9e5;
-      --green: #15865e;
-      --green-soft: #e7f5ee;
-      --amber: #d99523;
-      --shadow: 0 14px 34px rgba(30, 67, 52, .08);
+      color-scheme: dark;
+      --bg: #090b10;
+      --card: #121923;
+      --card-strong: #172031;
+      --ink: #f4f7fb;
+      --muted: #aab4c5;
+      --faint: #6f7a91;
+      --line: rgba(148, 163, 184, .16);
+      --line-strong: rgba(148, 163, 184, .28);
+      --green: #35d07f;
+      --green-soft: rgba(53, 208, 127, .14);
+      --blue: #5b8cff;
+      --blue-soft: rgba(91, 140, 255, .16);
+      --amber: #f2b84b;
+      --shadow: 0 18px 48px rgba(0, 0, 0, .30);
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 12% -8%, rgba(91, 140, 255, .18), transparent 34%),
+        linear-gradient(180deg, #0b0e15 0%, var(--bg) 48%, #07090d 100%);
       color: var(--ink);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    button { font: inherit; }
+    button {
+      font: inherit;
+      touch-action: manipulation;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease, color .16s ease;
+    }
+
+    button:active { transform: scale(.98); }
 
     .app {
       width: min(100%, 560px);
@@ -44,11 +57,12 @@
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 18px;
+      padding-top: env(safe-area-inset-top);
     }
 
     .eyebrow {
       margin-bottom: 4px;
-      color: var(--muted);
+      color: var(--faint);
       font-size: 13px;
       font-weight: 700;
     }
@@ -62,7 +76,7 @@
     .counter {
       flex: 0 0 auto;
       padding: 7px 11px;
-      border: 1px solid #cae6d9;
+      border: 1px solid rgba(53, 208, 127, .30);
       border-radius: 999px;
       background: var(--green-soft);
       color: var(--green);
@@ -87,7 +101,7 @@
       padding: 9px 11px;
       border: 1px solid var(--line);
       border-radius: 13px;
-      background: var(--card);
+      background: linear-gradient(180deg, var(--card-strong), var(--card));
       color: var(--ink);
       font-size: 17px;
       font-weight: 700;
@@ -95,15 +109,15 @@
 
     .word-chip.active {
       border-color: var(--green);
-      background: var(--green);
-      color: #fff;
+      background: linear-gradient(180deg, #39da88, var(--green));
+      color: #07110c;
     }
 
     .card {
       overflow: hidden;
       border: 1px solid var(--line);
-      border-radius: 22px;
-      background: var(--card);
+      border-radius: 20px;
+      background: linear-gradient(180deg, var(--card-strong), var(--card));
       box-shadow: var(--shadow);
     }
 
@@ -113,7 +127,7 @@
     }
 
     .practice-label {
-      color: var(--muted);
+      color: var(--faint);
       font-size: 13px;
       font-weight: 700;
     }
@@ -131,11 +145,11 @@
       width: min(39vw, 158px);
       height: min(39vw, 158px);
       overflow: hidden;
-      border: 1px solid #dce5df;
+      border: 1px solid #d8e0dc;
       border-radius: 15px;
       background:
-        linear-gradient(90deg, transparent calc(50% - .5px), #dae5de 50%, transparent calc(50% + .5px)),
-        linear-gradient(transparent calc(50% - .5px), #dae5de 50%, transparent calc(50% + .5px)),
+        linear-gradient(90deg, transparent calc(50% - .5px), #d5dfda 50%, transparent calc(50% + .5px)),
+        linear-gradient(transparent calc(50% - .5px), #d5dfda 50%, transparent calc(50% + .5px)),
         #fbfdfb;
       transition: border-color .18s ease, box-shadow .18s ease;
     }
@@ -158,7 +172,7 @@
       right: 7px;
       padding: 4px 7px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, .9);
+      background: rgba(255, 255, 255, .92);
       color: var(--amber);
       font-size: 11px;
       font-weight: 800;
@@ -169,21 +183,21 @@
       width: 100%;
       height: 100%;
       place-items: center;
-      color: var(--muted);
+      color: #6f7a78;
       font-size: 42px;
       font-weight: 700;
     }
 
     .status {
       min-height: 20px;
-      color: var(--muted);
+      color: var(--faint);
       font-size: 13px;
     }
 
     .replay {
       margin-top: 9px;
       padding: 10px 14px;
-      border: 0;
+      border: 1px solid rgba(53, 208, 127, .26);
       border-radius: 12px;
       background: var(--green-soft);
       color: var(--green);
@@ -210,7 +224,7 @@
 
     .meaning {
       margin-top: 7px;
-      color: #47564f;
+      color: var(--muted);
       font-size: 16px;
       line-height: 1.4;
     }
@@ -219,10 +233,10 @@
       width: 100%;
       margin-top: 16px;
       padding: 13px 15px;
-      border: 1px solid #b8ddcc;
+      border: 1px solid rgba(91, 140, 255, .30);
       border-radius: 14px;
-      background: #fff;
-      color: var(--green);
+      background: rgba(91, 140, 255, .10);
+      color: var(--blue);
       font-weight: 800;
     }
 
@@ -240,8 +254,8 @@
       left: 0;
       padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
       border-top: 1px solid var(--line);
-      background: rgba(255, 255, 255, .94);
-      backdrop-filter: blur(14px);
+      background: rgba(9, 11, 16, .92);
+      backdrop-filter: blur(22px);
     }
 
     .bottom-inner {
@@ -254,17 +268,17 @@
 
     .nav-button {
       padding: 13px 14px;
-      border: 1px solid #cfd9d3;
+      border: 1px solid var(--line);
       border-radius: 14px;
-      background: #fff;
-      color: var(--ink);
+      background: rgba(255, 255, 255, .03);
+      color: var(--muted);
       font-weight: 800;
     }
 
     .nav-button.primary {
       border-color: var(--green);
-      background: var(--green);
-      color: #fff;
+      background: linear-gradient(180deg, #39da88, var(--green));
+      color: #07110c;
     }
 
     .nav-button:disabled {
