@@ -13,6 +13,8 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
+MINIAPP_ASSET_VERSION = "20260609-premium-dark"
+
 
 def normalize_miniapp_lang(lang: str | None) -> str:
     normalized = (lang or "").strip().lower()
@@ -73,6 +75,7 @@ def course_miniapp_url(lesson, mode: str, lang: str | None = None, block_no: int
         "lesson": course_miniapp_lesson_id(lesson),
         "mode": mode,
         "lang": normalize_miniapp_lang(lang),
+        "v": MINIAPP_ASSET_VERSION,
     }
     if block_no:
         params["block"] = int(block_no)
@@ -92,6 +95,7 @@ def course_stroke_order_url(
         "lesson": course_miniapp_lesson_id(lesson),
         "level": (getattr(lesson, "level", "") or "hsk1").strip().lower(),
         "lang": normalize_miniapp_lang(lang),
+        "v": MINIAPP_ASSET_VERSION,
     }
     if block_no:
         params["block"] = int(block_no)
