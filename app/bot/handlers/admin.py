@@ -13,6 +13,7 @@ from math import isfinite
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
 from app.bot.fsm.admin_management import AdminPriceStates, AdminRequiredChannelStates
 from app.config import settings
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.user_repo import UserRepository
 from app.repositories.course_audio_repo import CourseAudioRepository
 from app.db.models.user import User
@@ -38,6 +39,7 @@ from app.services.subscription_currency_service import (
     format_subscription_price,
 )
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
+from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
 from app.bot.handlers.admin_broadcast import open_broadcast_panel_for_callback
 from app.bot.utils.workflow_message import (
     delete_message_safely,
@@ -359,7 +361,13 @@ async def _prices_text(session) -> str:
             f"1 USD = <code>{SubscriptionCurrencyService.format_rate('rub', rates['rub'])}</code> RUB",
         ]
     )
+    details = await BotSettingRepository(session).get(PAYMENT_DETAILS_KEY)
+    details = (details or settings.PAYMENT_DETAILS or "").strip()
+    short = (details[:60] + "…") if len(details) > 60 else (details or "—")
     lines.extend([
+        "",
+        "💳 <b>Karta rekviziti (mini app)</b>",
+        f"<code>{escape(short)}</code>",
         "",
         "<i>Visa/Card obuna narxi faqat TJSda yuradi. Alipay/WeChat narxlari ¥ bo'lib qoladi.</i>",
         "",
@@ -390,6 +398,7 @@ def prices_keyboard() -> InlineKeyboardMarkup:
         InlineKeyboardButton(text="🔄 AUTO kurs ON", callback_data="adm:visa_rate_auto:on"),
         InlineKeyboardButton(text="✋ AUTO kurs OFF", callback_data="adm:visa_rate_auto:off"),
     ])
+    rows.append([InlineKeyboardButton(text="💳 Karta rekviziti", callback_data="adm:payment_details")])
     rows.append([InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -1210,6 +1219,51 @@ async def admin_visa_rate_amount_handler(message: Message, state: FSMContext, se
         message,
         state,
         f"✅ VISA lokal kursi yangilandi: <b>1 USD = {formatted} {label}</b>",
+        reply_markup=prices_keyboard(),
+    )
+    await state.clear()
+
+
+@router.callback_query(F.data == "adm:payment_details")
+async def admin_payment_details_callback(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    current = await BotSettingRepository(session).get(PAYMENT_DETAILS_KEY)
+    current = (current or settings.PAYMENT_DETAILS or "").strip()
+    await state.set_state(AdminPriceStates.waiting_payment_details)
+    await callback.answer()
+    await _edit_admin_flow_callback(
+        callback,
+        state,
+        "💳 <b>Bank karta rekviziti</b>\n\n"
+        "Bu matn mini appda VISA/karta to'lovida foydalanuvchiga ko'rsatiladi.\n\n"
+        f"Joriy:\n<code>{escape(current or '—')}</code>\n\n"
+        "Yangi rekvizit matnini yuboring (ism, karta raqami va boshqalar).",
+        reply_markup=admin_back_keyboard(),
+    )
+
+
+@router.message(StateFilter(AdminPriceStates.waiting_payment_details))
+async def admin_payment_details_handler(message: Message, state: FSMContext, session):
+    if not _is_admin(message.from_user.id):
+        return
+    text_value = (message.text or "").strip()
+    if not text_value:
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(message, state, "❌ Rekvizit matni bo'sh bo'lmasin.")
+        return
+    if len(text_value) > 1500:
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(message, state, "❌ Matn juda uzun (1500 belgidan kam bo'lsin).")
+        return
+    await BotSettingRepository(session).set(PAYMENT_DETAILS_KEY, text_value)
+    await session.commit()
+    await delete_message_safely(message)
+    await _edit_admin_flow_message(
+        message,
+        state,
+        "✅ Karta rekviziti yangilandi. Mini appda darhol ko'rinadi.",
         reply_markup=prices_keyboard(),
     )
     await state.clear()
