@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260609-premium-dark"
+MINIAPP_ASSET_VERSION = "20260610-emerald-win"
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:

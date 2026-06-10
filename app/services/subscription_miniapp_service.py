@@ -8,6 +8,7 @@ from typing import Any
 from aiogram import Bot
 
 from app.config import settings
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.user_repo import UserRepository
 from app.services.admin_notify_service import AdminNotifyService
@@ -20,6 +21,7 @@ from app.services.subscription_price_service import PLANS, SubscriptionPriceServ
 
 CARD_COUNTRIES = {"tj", "uz", "ru", "other"}
 MINIAPP_METHODS = {"visa", "alipay", "wechat"}
+PAYMENT_DETAILS_KEY = "subscription_payment_details"
 MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024
 _STATIC_PAYMENTS = Path(__file__).parent.parent / "static" / "payments"
 
@@ -50,11 +52,21 @@ class SubscriptionMiniAppService:
         self.price_service = SubscriptionPriceService(session)
         self.payment_service = PaymentService(session)
         self.currency_service = SubscriptionCurrencyService(session)
+        self.setting_repo = BotSettingRepository(session)
+
+    async def payment_details(self) -> str:
+        stored = await self.setting_repo.get(PAYMENT_DETAILS_KEY)
+        if stored and stored.strip():
+            return stored.strip()
+        return settings.PAYMENT_DETAILS.strip()
 
     async def overview(self, telegram_id: int) -> dict[str, Any]:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
+
+        await self.user_repo.ensure_referral_code(user)
+        await self.session.commit()
 
         return {
             "ok": True,
@@ -62,8 +74,20 @@ class SubscriptionMiniAppService:
             "discount": await self._discount_payload(user),
             "prices": await self._prices_payload(user),
             "card_countries": ["tj", "uz", "ru", "other"],
-            "payment_details": settings.PAYMENT_DETAILS.strip(),
+            "payment_details": await self.payment_details(),
         }
+
+    async def start_discount(self, telegram_id: int) -> dict[str, Any]:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return {"ok": False, "error": "access_start_first"}
+
+        await self.user_repo.ensure_referral_code(user)
+        if not user.discount_used and not user.discount_offer_started_at:
+            await self.user_repo.start_discount_offer(user)
+        await self.session.commit()
+
+        return {"ok": True, "discount": await self._discount_payload(user)}
 
     async def quote(
         self,
@@ -205,10 +229,19 @@ class SubscriptionMiniAppService:
         return result
 
     async def _discount_payload(self, user) -> dict[str, Any]:
+        referral_code = getattr(user, "referral_code", None)
+        referral_link = (
+            f"https://t.me/{settings.BOT_USERNAME}?start={referral_code}"
+            if referral_code and settings.BOT_USERNAME
+            else ""
+        )
         return {
             "referral_20_available": bool(user.discount_eligible and not user.discount_used),
             "referral_count": int(getattr(user, "discount_referral_count", 0) or 0),
             "referral_required": 3,
+            "discount_used": bool(getattr(user, "discount_used", False)),
+            "offer_started": bool(getattr(user, "discount_offer_started_at", None)),
+            "referral_link": referral_link,
         }
 
     async def _checkout_info(self, user, plan_type: str, payment_method: str) -> dict[str, Any] | None:
@@ -274,7 +307,7 @@ class SubscriptionMiniAppService:
             "discount_applied": checkout_info["discount_applied"],
             "discount_percent": checkout_info["discount_percent"],
             "discount_source": checkout_info["discount_source"],
-            "payment_details": settings.PAYMENT_DETAILS.strip() if payment_method == "visa" else "",
+            "payment_details": (await self.payment_details()) if payment_method == "visa" else "",
         }
 
     async def _qr_payload(

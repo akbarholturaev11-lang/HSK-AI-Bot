@@ -258,6 +258,19 @@ async def subscription_miniapp_overview(request: Request):
         return await SubscriptionMiniAppService(session).overview(telegram_id)
 
 
+@app.post("/api/subscription-miniapp/discount-start")
+async def subscription_miniapp_discount_start(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    async with async_session_maker() as session:
+        return await SubscriptionMiniAppService(session).start_discount(telegram_id)
+
+
 @app.post("/api/subscription-miniapp/quote")
 async def subscription_miniapp_quote(request: Request):
     telegram_id = extract_verified_webapp_user_id(
