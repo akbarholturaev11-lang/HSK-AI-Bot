@@ -329,9 +329,10 @@ const I18N={
     needScreenshot:"Avval to'lov screenshotini yuklang.",
     preview:"Preview mode: Telegram init data yo'q. Real submit faqat bot ichida ishlaydi.",
     previewSubmit:"Real bot ichida ochilganda admin tekshiruvga yuboriladi.",
-    doneTitle:"So'rov yuborildi",
-    doneText:"To'lov admin tekshiruviga ketdi. Tasdiqlangach bot sizga qisqa xabar yuboradi.",
-    error:"Xatolik yuz berdi. Qayta urinib ko'ring."
+    doneTitle:"So'rov yuborildi ✅",
+    doneText:"To'lov admin tekshiruviga yuborildi. Tekshiruv taxminan 5–15 daqiqa davom etadi. Tasdiqlangach bot sizga xabar yuboradi.",
+    error:"Xatolik yuz berdi. Qayta urinib ko'ring.",
+    loadError:"Ma'lumotni yuklab bo'lmadi. Internetni tekshirib, mini appni qayta oching."
   },
   ru:{
     title:"Подписка",
@@ -387,9 +388,10 @@ const I18N={
     needScreenshot:"Сначала загрузите screenshot оплаты.",
     preview:"Preview mode: Telegram init data нет. Реальная отправка работает только внутри бота.",
     previewSubmit:"Внутри реального бота заявка уйдёт админу на проверку.",
-    doneTitle:"Заявка отправлена",
-    doneText:"Платёж ушёл на проверку админу. После подтверждения бот отправит короткое сообщение.",
-    error:"Произошла ошибка. Попробуйте снова."
+    doneTitle:"Заявка отправлена ✅",
+    doneText:"Платёж отправлен на проверку админу. Проверка занимает примерно 5–15 минут. После подтверждения бот пришлёт вам сообщение.",
+    error:"Произошла ошибка. Попробуйте снова.",
+    loadError:"Не удалось загрузить данные. Проверьте интернет и откройте мини-приложение заново."
   },
   tj:{
     title:"Обуна",
@@ -445,9 +447,10 @@ const I18N={
     needScreenshot:"Аввал screenshot-и пардохтро бор кунед.",
     preview:"Preview mode: Telegram init data нест. Submit-и real танҳо дар bot кор мекунад.",
     previewSubmit:"Дар bot-и real дархост ба admin барои санҷиш меравад.",
-    doneTitle:"Дархост фиристода шуд",
-    doneText:"Пардохт ба admin барои санҷиш рафт. Баъд аз тасдиқ bot паёми кӯтоҳ мефиристад.",
-    error:"Хатогӣ шуд. Боз кӯшиш кунед."
+    doneTitle:"Дархост фиристода шуд ✅",
+    doneText:"Пардохт ба санҷиши admin фиристода шуд. Санҷиш тахминан 5–15 дақиқа давом мекунад. Баъд аз тасдиқ bot ба шумо хабар мефиристад.",
+    error:"Хатогӣ шуд. Боз кӯшиш кунед.",
+    loadError:"Маълумотро бор кардан нашуд. Интернетро тафтиш карда, mini app-ро аз нав кушоед."
   }
 };
 
@@ -463,7 +466,8 @@ const state={
   screenshotDataUrl:"",
   screenshotName:"",
   busy:false,
-  done:false
+  done:false,
+  loadError:false
 };
 
 function $(selector){return document.querySelector(selector)}
@@ -545,6 +549,16 @@ function mockQuote(){
     qr:state.method==="visa"?null:{available:false}
   };
 }
+function fallbackOverview(){
+  const mock=mockOverview();
+  return {
+    ok:true,
+    language:state.lang,
+    discount:null,
+    payment_details:"",
+    prices:mock.prices
+  };
+}
 async function loadOverview(){
   setBusy(true);
   try{
@@ -554,10 +568,16 @@ async function loadOverview(){
       const data=await api(API.overview,{});
       state.overview=data;
       state.lang=normalizeLang(PARAMS.get("lang")||data.language||state.lang);
+      state.loadError=false;
     }
   }catch(error){
-    state.preview=true;
-    state.overview=mockOverview();
+    if(!INIT_DATA){
+      state.preview=true;
+      state.overview=mockOverview();
+    }else{
+      state.loadError=true;
+      state.overview=state.overview||fallbackOverview();
+    }
     toast(tr().error);
   }finally{
     setBusy(false);
@@ -606,8 +626,9 @@ function render(){
   document.documentElement.lang=state.lang;
   $("#title").textContent=text.title;
   $$("#langTabs button").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===state.lang));
-  $("#status").textContent=state.preview?text.preview:"";
-  $("#status").classList.toggle("show",state.preview);
+  const statusText=state.preview?text.preview:(state.loadError?text.loadError:"");
+  $("#status").textContent=statusText;
+  $("#status").classList.toggle("show",Boolean(statusText));
   const items=flow();
   const screen=currentScreen();
   $$(".screen").forEach(node=>node.classList.toggle("active",node.dataset.screen===screen));
@@ -630,37 +651,7 @@ function renderStart(text){
   const perks=text.perks||[];
   $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
   $("#plansTitle").textContent=text.plansTitle;
-  const discount=state.overview?.discount||{};
-  const required=discount.referral_required||3;
-  const count=Math.max(0,Math.min(discount.referral_count||0,required));
-  const box=$("#discountBox");
-  const bar=$("#discountBar");
-  const btn=$("#discountBtn");
-  box.style.display="flex";
-  $("#discountBadge").textContent="20%";
-  if(discount.discount_used){
-    box.classList.add("used");
-    $("#discountTitle").textContent=text.discountUsed;
-    $("#discountText").textContent="";
-    bar.style.display="none";
-    btn.style.display="none";
-  }else if(discount.referral_20_available){
-    box.classList.remove("used");
-    $("#discountTitle").textContent=text.discountReady;
-    $("#discountText").textContent=text.discountActiveText;
-    bar.style.display="none";
-    btn.style.display="none";
-  }else{
-    box.classList.remove("used");
-    $("#discountTitle").textContent=text.discountLockTitle;
-    $("#discountText").textContent=discount.offer_started
-      ? text.discountProgress.replace("{count}",count).replace("{required}",required)
-      : text.discountInviteText;
-    bar.style.display="block";
-    bar.firstElementChild.style.width=Math.round(count/required*100)+"%";
-    btn.style.display="block";
-    btn.textContent=text.discountBtn;
-  }
+  renderDiscount(text);
   $("#plans").innerHTML=PLAN_ORDER.map(plan=>{
     const info=priceInfo(state.method,plan);
     const selected=state.plan===plan?"selected":"";
@@ -687,6 +678,36 @@ function renderStart(text){
       <i class="dot"></i>
     </button>`;
   }).join("");
+}
+function renderDiscount(text){
+  const discount=state.overview?.discount;
+  const box=$("#discountBox");
+  const bar=$("#discountBar");
+  const btn=$("#discountBtn");
+  if(!discount||discount.discount_used){
+    box.style.display="none";
+    return;
+  }
+  const required=discount.referral_required||3;
+  const count=Math.max(0,Math.min(discount.referral_count||0,required));
+  box.style.display="flex";
+  box.classList.remove("used");
+  $("#discountBadge").textContent="20%";
+  if(discount.referral_20_available){
+    $("#discountTitle").textContent=text.discountReady;
+    $("#discountText").textContent=text.discountActiveText;
+    bar.style.display="none";
+    btn.style.display="none";
+  }else{
+    $("#discountTitle").textContent=text.discountLockTitle;
+    $("#discountText").textContent=discount.offer_started
+      ? text.discountProgress.replace("{count}",count).replace("{required}",required)
+      : text.discountInviteText;
+    bar.style.display="block";
+    bar.firstElementChild.style.width=Math.round(count/required*100)+"%";
+    btn.style.display="block";
+    btn.textContent=text.discountBtn;
+  }
 }
 function renderCountry(text){
   $("#countryTitle").textContent=text.countryTitle;
