@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>HSK AI Subscription</title>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#080a0d;
+  --surface:#11161d;
+  --surface2:#171e27;
+  --surface3:#202936;
+  --line:rgba(223,232,245,.14);
+  --line2:rgba(223,232,245,.28);
+  --text:#f6f8fb;
+  --muted:#a8b3c2;
+  --blue:#6ea8ff;
+  --green:#49d99d;
+  --amber:#f3c15f;
+  --red:#ff6b7a;
+  --radius:8px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
+body{overflow-x:hidden;background:linear-gradient(180deg,#101722 0%,#080a0d 56%,#07080b 100%)}
+button,input{font:inherit}
+button{border:0;color:inherit;background:none;touch-action:manipulation}
+button:active{transform:scale(.985)}
+.app{min-height:100dvh;max-width:520px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top,0px)) 14px calc(104px + env(safe-area-inset-bottom,0px))}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.brand{display:flex;flex-direction:column;gap:3px}
+.kicker{font-size:11px;color:var(--green);font-weight:800;text-transform:uppercase}
+h1{font-size:26px;line-height:1.08;font-weight:900;letter-spacing:0}
+.lang{display:grid;grid-template-columns:repeat(3,34px);gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04)}
+.lang button{height:28px;border-radius:999px;color:var(--muted);font-size:12px;font-weight:850}
+.lang button.active{background:#f6f8fb;color:#0b1118}
+.status{display:none;margin:0 0 12px;border:1px solid rgba(243,193,95,.3);border-radius:var(--radius);background:rgba(243,193,95,.1);padding:10px 12px;color:#ffe0a0;font-size:12px;line-height:1.35;font-weight:750}
+.status.show{display:block}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.steps i{height:4px;border-radius:999px;background:rgba(255,255,255,.1)}
+.steps i.active{background:var(--blue)}
+.screen{display:none;animation:fade .18s ease}
+.screen.active{display:block}
+.hero{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(180deg,var(--surface2),var(--surface));padding:14px}
+.hero h2{font-size:21px;line-height:1.14;letter-spacing:0}
+.hero p{margin-top:8px;color:var(--muted);font-size:13px;line-height:1.45}
+.benefits{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.benefit{border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.035);padding:10px;min-height:74px}
+.benefit strong{display:block;font-size:13px;line-height:1.25}
+.benefit span{display:block;margin-top:5px;color:var(--muted);font-size:12px;line-height:1.3}
+.section{margin-top:14px}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:8px}
+.section h3{font-size:15px;font-weight:900}
+.section small{color:var(--muted);font-size:12px;font-weight:800;text-align:right}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.plan{min-height:124px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.035);padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.plan.selected,.choice.selected{border-color:rgba(110,168,255,.88);box-shadow:0 0 0 2px rgba(110,168,255,.15) inset;background:rgba(110,168,255,.1)}
+.plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.plan-name{font-size:13px;color:var(--muted);font-weight:850}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-height:22px;border-radius:999px;padding:3px 7px;background:rgba(73,217,157,.14);color:#8df0c2;font-size:11px;font-weight:900}
+.price{font-size:29px;line-height:1;font-weight:950;letter-spacing:0;margin-top:10px}
+.price small{font-size:12px;color:var(--muted);font-weight:850;margin-left:3px}
+.old-price{display:none;margin-top:8px;color:var(--muted);font-size:12px;text-decoration:line-through}
+.discounted .old-price{display:block}
+.list{display:grid;gap:8px}
+.choice{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.035);padding:0 12px;text-align:left}
+.choice strong{display:block;font-size:14px;line-height:1.22}
+.choice span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.32}
+.dot{flex:0 0 auto;width:18px;height:18px;border-radius:50%;border:2px solid var(--line2)}
+.selected .dot{border-color:var(--blue);box-shadow:inset 0 0 0 4px #101722;background:var(--blue)}
+.quote-card{border:1px solid rgba(110,168,255,.44);border-radius:var(--radius);background:rgba(110,168,255,.11);padding:14px;margin-top:12px}
+.quote-label{color:#c8d8ff;font-size:12px;font-weight:850}
+.quote-amount{margin-top:7px;font-size:34px;line-height:1;font-weight:950;letter-spacing:0}
+.quote-amount small{font-size:14px;color:#dce7ff;font-weight:850;margin-left:5px}
+.meta{display:grid;gap:7px;margin-top:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.035);padding:10px 11px}
+.row span{color:var(--muted);font-size:12px;font-weight:800}
+.row strong{font-size:13px;text-align:right;line-height:1.25}
+.paybox{margin-top:12px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.035);padding:12px}
+.paybox h4{font-size:14px;margin-bottom:7px}
+.paybox p,.paybox pre{color:var(--muted);font-size:12px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.qr{display:flex;align-items:center;justify-content:center;min-height:220px;border:1px dashed var(--line2);border-radius:var(--radius);background:#fff;margin-top:10px;overflow:hidden}
+.qr img{display:block;max-width:100%;max-height:280px}
+.qr.empty{background:rgba(255,255,255,.035);color:var(--muted);font-size:13px;text-align:center;padding:18px}
+.upload{display:block;margin-top:12px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.045);padding:12px;cursor:pointer}
+.upload input{display:none}
+.upload strong{display:block;font-size:14px}
+.upload span{display:block;margin-top:5px;color:var(--muted);font-size:12px;line-height:1.35}
+.upload.ready{border-color:rgba(73,217,157,.55);background:rgba(73,217,157,.09)}
+.done{display:grid;gap:12px;text-align:center;padding-top:44px}
+.done-mark{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:rgba(73,217,157,.14);color:#8df0c2;font-size:30px;font-weight:950}
+.done h2{font-size:24px}
+.done p{color:var(--muted);font-size:13px;line-height:1.45}
+.bottom{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(8,10,13,.92);backdrop-filter:blur(16px);border-top:1px solid var(--line)}
+.bottom-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:94px 1fr;gap:8px}
+.back,.cta{height:50px;border-radius:var(--radius);font-weight:950;font-size:15px}
+.back{background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.back.hide{display:none}
+.back.hide+.cta{grid-column:1/3}
+.cta{background:#f6f8fb;color:#0a1017}
+.cta:disabled{opacity:.55;transform:none}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(12px);max-width:calc(100% - 28px);border-radius:999px;background:#f6f8fb;color:#0a1017;padding:10px 13px;font-size:13px;font-weight:850;opacity:0;pointer-events:none;transition:.18s ease;box-shadow:0 18px 45px rgba(0,0,0,.42);z-index:20}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.loading{position:fixed;inset:0;display:none;place-items:center;background:rgba(8,10,13,.62);backdrop-filter:blur(8px);z-index:30}
+.loading.show{display:grid}
+.spinner{width:36px;height:36px;border-radius:50%;border:3px solid rgba(255,255,255,.18);border-top-color:#fff;animation:spin .8s linear infinite}
+@keyframes fade{from{opacity:0;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (min-width:620px){
+  body{background:#06080b}
+  .app{padding-top:24px}
+  .bottom{left:50%;right:auto;transform:translateX(-50%);width:520px;border-left:1px solid var(--line);border-right:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0}
+}
+@media (max-width:374px){
+  .app{padding-left:10px;padding-right:10px}
+  .plans,.benefits{grid-template-columns:1fr}
+  h1{font-size:23px}
+  .quote-amount{font-size:30px}
+}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="kicker">HSK AI</div>
+      <h1 id="title">Obuna</h1>
+    </div>
+    <div class="lang" id="langTabs">
+      <button type="button" data-lang="uz">UZ</button>
+      <button type="button" data-lang="ru">RU</button>
+      <button type="button" data-lang="tj">TJ</button>
+    </div>
+  </header>
+
+  <div class="status" id="status"></div>
+  <div class="steps" id="steps"><i></i><i></i><i></i></div>
+
+  <section class="screen active" data-screen="start">
+    <div class="hero">
+      <h2 id="heroTitle"></h2>
+      <p id="heroText"></p>
+      <div class="benefits" id="benefits"></div>
+    </div>
+
+    <section class="section">
+      <div class="section-head">
+        <h3 id="plansTitle"></h3>
+        <small id="discountHint"></small>
+      </div>
+      <div class="plans" id="plans"></div>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h3 id="methodsTitle"></h3>
+        <small id="methodHint"></small>
+      </div>
+      <div class="list" id="methods"></div>
+    </section>
+  </section>
+
+  <section class="screen" data-screen="country">
+    <div class="hero">
+      <h2 id="countryTitle"></h2>
+      <p id="countryText"></p>
+      <div class="list section" id="countries"></div>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="pay">
+    <div class="hero">
+      <h2 id="payTitle"></h2>
+      <p id="payText"></p>
+      <div class="quote-card">
+        <div class="quote-label" id="amountLabel"></div>
+        <div class="quote-amount"><span id="amountValue">...</span><small id="amountCurrency"></small></div>
+      </div>
+      <div class="meta" id="summaryRows"></div>
+      <div class="paybox" id="paymentBox"></div>
+      <label class="upload" id="uploadBox">
+        <input type="file" id="receiptInput" accept="image/*">
+        <strong id="uploadTitle"></strong>
+        <span id="uploadText"></span>
+      </label>
+    </div>
+  </section>
+
+  <section class="screen" data-screen="done">
+    <div class="done">
+      <div class="done-mark">✓</div>
+      <h2 id="doneTitle"></h2>
+      <p id="doneText"></p>
+    </div>
+  </section>
+</main>
+
+<footer class="bottom" id="bottom">
+  <div class="bottom-inner">
+    <button class="back hide" type="button" id="backBtn"></button>
+    <button class="cta" type="button" id="nextBtn"></button>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+<div class="loading" id="loading"><div class="spinner"></div></div>
+
+<script>
+const tg=window.Telegram?.WebApp;
+try{tg?.ready?.();tg?.expand?.();}catch(e){}
+
+const API={
+  overview:"/api/subscription-miniapp/overview",
+  quote:"/api/subscription-miniapp/quote",
+  submit:"/api/subscription-miniapp/submit"
+};
+const PARAMS=new URLSearchParams(window.location.search);
+const INIT_DATA=tg?.initData||"";
+const PLAN_ORDER=["10_days","1_month"];
+const METHOD_ORDER=["visa","alipay","wechat"];
+const COUNTRY_ORDER=["tj","uz","ru","other"];
+
+const I18N={
+  uz:{
+    title:"Obuna",
+    heroTitle:"Tarif va to'lov usulini tanlang",
+    heroText:"Obuna bilan kurs, AI javoblar, foto, voice, quiz va xato tahlili to'liq ochiladi.",
+    benefits:[
+      ["AI yordamchi","Savol va mashqlarga tez javob olasiz."],
+      ["Kurs rejimi","HSK darslari va progress tartibli boradi."],
+      ["Foto va voice","Rasm va ovozli savollar bilan ishlaysiz."],
+      ["Xato tahlili","Quiz va javoblardagi xatolar tushuntiriladi."]
+    ],
+    plansTitle:"Tarif",
+    methodsTitle:"To'lov usuli",
+    discountReady:"20% chegirma qo'llanadi",
+    discountProgress:"20% chegirma: {count}/{required} referral",
+    planLabels:{ten:"10 kun",month:"1 oy",fast:"Tez start",best:"Eng foydali"},
+    methods:{
+      visa:["Bank karta / VISA","Tojik, o'zbek, rus yoki boshqa davlat kartasi"],
+      alipay:["Alipay","QR orqali yuan to'lovi"],
+      wechat:["WeChat Pay","QR orqali yuan to'lovi"]
+    },
+    methodHint:"Tarif va to'lov bir oynada",
+    countryTitle:"Karta qaysi davlatniki?",
+    countryText:"Karta davlatini tanlang. Bot summa va kursni backendda qayta hisoblaydi.",
+    countries:{
+      tj:["Tojikiston kartasi","TJS ko'rinishida to'lov"],
+      uz:["O'zbekiston kartasi","UZS ekvivalentida to'lov"],
+      ru:["Rossiya kartasi","RUB ekvivalentida to'lov"],
+      other:["Boshqa davlat kartasi","USD ekvivalentida to'lov"]
+    },
+    payTitle:"To'lovni yakunlash",
+    payText:"Quyidagi summa backend hisoblagan final summa. To'lovdan keyin screenshot yuklang.",
+    amountLabel:"To'lanadigan summa",
+    rows:{plan:"Tarif",method:"Usul",country:"Karta davlati",base:"Botdagi narx",rate:"Kurs"},
+    detailsTitle:"To'lov rekviziti",
+    qrTitle:"QR kod",
+    qrMissing:"Bu narx uchun QR hali tayyor emas. Admin QR yuklagandan keyin ochiladi.",
+    uploadTitle:"To'lov screenshotini yuklash",
+    uploadText:"JPG, PNG yoki WEBP. Screenshot adminsiz avtomatik tekshiruvdan o'tmaydi.",
+    uploaded:"Screenshot tanlandi: {name}",
+    next:"Davom etish",
+    back:"Orqaga",
+    submit:"So'rov yuborish",
+    loading:"Hisoblanmoqda...",
+    needScreenshot:"Avval to'lov screenshotini yuklang.",
+    preview:"Preview mode: Telegram init data yo'q. Real submit faqat bot ichida ishlaydi.",
+    previewSubmit:"Real bot ichida ochilganda admin tekshiruvga yuboriladi.",
+    doneTitle:"So'rov yuborildi",
+    doneText:"To'lov admin tekshiruviga ketdi. Tasdiqlangach bot sizga qisqa xabar yuboradi.",
+    error:"Xatolik yuz berdi. Qayta urinib ko'ring."
+  },
+  ru:{
+    title:"Подписка",
+    heroTitle:"Выберите тариф и оплату",
+    heroText:"Подписка открывает курс, AI-ответы, фото, voice, quiz и разбор ошибок.",
+    benefits:[
+      ["AI-помощник","Быстрые ответы по вопросам и упражнениям."],
+      ["Курс","HSK-уроки и прогресс идут по порядку."],
+      ["Фото и voice","Работаете с фото и голосовыми вопросами."],
+      ["Разбор ошибок","Ошибки в quiz и ответах объясняются."]
+    ],
+    plansTitle:"Тариф",
+    methodsTitle:"Способ оплаты",
+    discountReady:"Скидка 20% применится",
+    discountProgress:"Скидка 20%: {count}/{required} реферала",
+    planLabels:{ten:"10 дней",month:"1 месяц",fast:"Быстрый старт",best:"Выгодно"},
+    methods:{
+      visa:["Банковская карта / VISA","Карта Таджикистана, Узбекистана, России или другой страны"],
+      alipay:["Alipay","Оплата в юанях через QR"],
+      wechat:["WeChat Pay","Оплата в юанях через QR"]
+    },
+    methodHint:"Тариф и оплата в одном окне",
+    countryTitle:"Из какой страны карта?",
+    countryText:"Выберите страну карты. Бот пересчитает сумму и курс на backend.",
+    countries:{
+      tj:["Карта Таджикистана","Оплата в TJS"],
+      uz:["Карта Узбекистана","Оплата в UZS"],
+      ru:["Карта России","Оплата в RUB"],
+      other:["Карта другой страны","Оплата в USD"]
+    },
+    payTitle:"Завершение оплаты",
+    payText:"Ниже финальная сумма, рассчитанная backend. После оплаты загрузите screenshot.",
+    amountLabel:"Сумма к оплате",
+    rows:{plan:"Тариф",method:"Способ",country:"Страна карты",base:"Цена в боте",rate:"Курс"},
+    detailsTitle:"Реквизиты",
+    qrTitle:"QR-код",
+    qrMissing:"QR для этой цены пока не готов. Он появится после загрузки админом.",
+    uploadTitle:"Загрузить screenshot оплаты",
+    uploadText:"JPG, PNG или WEBP. AI-проверка в этом пути не используется.",
+    uploaded:"Screenshot выбран: {name}",
+    next:"Продолжить",
+    back:"Назад",
+    submit:"Отправить заявку",
+    loading:"Считаем...",
+    needScreenshot:"Сначала загрузите screenshot оплаты.",
+    preview:"Preview mode: Telegram init data нет. Реальная отправка работает только внутри бота.",
+    previewSubmit:"Внутри реального бота заявка уйдёт админу на проверку.",
+    doneTitle:"Заявка отправлена",
+    doneText:"Платёж ушёл на проверку админу. После подтверждения бот отправит короткое сообщение.",
+    error:"Произошла ошибка. Попробуйте снова."
+  },
+  tj:{
+    title:"Обуна",
+    heroTitle:"Тариф ва пардохтро интихоб кунед",
+    heroText:"Бо обуна курс, AI ҷавобҳо, фото, voice, quiz ва таҳлили хатоҳо кушода мешаванд.",
+    benefits:[
+      ["AI ёрдамчӣ","Ба саволҳо ва машқҳо зуд ҷавоб мегиред."],
+      ["Режими курс","Дарсҳои HSK ва progress бо тартиб мераванд."],
+      ["Фото ва voice","Бо расм ва саволҳои овозӣ кор мекунед."],
+      ["Таҳлили хато","Хатоҳои quiz ва ҷавобҳо шарҳ дода мешаванд."]
+    ],
+    plansTitle:"Тариф",
+    methodsTitle:"Усули пардохт",
+    discountReady:"20% тахфиф ҳисоб мешавад",
+    discountProgress:"20% тахфиф: {count}/{required} referral",
+    planLabels:{ten:"10 рӯз",month:"1 моҳ",fast:"Оғози тез",best:"Фоиданок"},
+    methods:{
+      visa:["Корти бонкӣ / VISA","Корти тоҷик, ӯзбек, рус ё дигар давлат"],
+      alipay:["Alipay","Пардохти юан бо QR"],
+      wechat:["WeChat Pay","Пардохти юан бо QR"]
+    },
+    methodHint:"Тариф ва пардохт дар як равзана",
+    countryTitle:"Корт аз кадом давлат аст?",
+    countryText:"Давлати кортро интихоб кунед. Bot маблағ ва курсро дар backend ҳисоб мекунад.",
+    countries:{
+      tj:["Корти Тоҷикистон","Пардохт бо TJS"],
+      uz:["Корти Ӯзбекистон","Пардохт бо UZS"],
+      ru:["Корти Русия","Пардохт бо RUB"],
+      other:["Корти дигар давлат","Пардохт бо USD"]
+    },
+    payTitle:"Пардохтро анҷом диҳед",
+    payText:"Ин маблағи final аст, ки backend ҳисоб кард. Баъд аз пардохт screenshot бор кунед.",
+    amountLabel:"Маблағи пардохт",
+    rows:{plan:"Тариф",method:"Усул",country:"Давлати корт",base:"Нархи bot",rate:"Курс"},
+    detailsTitle:"Реквизити пардохт",
+    qrTitle:"QR код",
+    qrMissing:"QR барои ин нарх ҳоло тайёр нест. Баъд аз upload-и admin кушода мешавад.",
+    uploadTitle:"Screenshot-и пардохтро бор кунед",
+    uploadText:"JPG, PNG ё WEBP. AI санҷиш дар ин роҳ истифода намешавад.",
+    uploaded:"Screenshot интихоб шуд: {name}",
+    next:"Давом",
+    back:"Бозгашт",
+    submit:"Фиристодан",
+    loading:"Ҳисоб мешавад...",
+    needScreenshot:"Аввал screenshot-и пардохтро бор кунед.",
+    preview:"Preview mode: Telegram init data нест. Submit-и real танҳо дар bot кор мекунад.",
+    previewSubmit:"Дар bot-и real дархост ба admin барои санҷиш меравад.",
+    doneTitle:"Дархост фиристода шуд",
+    doneText:"Пардохт ба admin барои санҷиш рафт. Баъд аз тасдиқ bot паёми кӯтоҳ мефиристад.",
+    error:"Хатогӣ шуд. Боз кӯшиш кунед."
+  }
+};
+
+const state={
+  lang:normalizeLang(PARAMS.get("lang")||tg?.initDataUnsafe?.user?.language_code||"uz"),
+  preview:!INIT_DATA,
+  overview:null,
+  plan:"10_days",
+  method:"visa",
+  country:"tj",
+  step:0,
+  quote:null,
+  screenshotDataUrl:"",
+  screenshotName:"",
+  busy:false,
+  done:false
+};
+
+function $(selector){return document.querySelector(selector)}
+function $$(selector){return Array.from(document.querySelectorAll(selector))}
+function tr(){return I18N[state.lang]||I18N.uz}
+function normalizeLang(value){
+  const lang=String(value||"").toLowerCase();
+  if(lang==="tg"||lang==="tg-cyrl")return "tj";
+  if(["uz","ru","tj"].includes(lang))return lang;
+  return "uz";
+}
+function money(amount){
+  const raw=String(amount??"").trim();
+  const numeric=Number(raw.replace(/\s/g,""));
+  if(Number.isFinite(numeric))return numeric.toLocaleString("ru-RU");
+  return raw||"...";
+}
+function priceInfo(method=state.method,plan=state.plan){
+  return state.overview?.prices?.[method]?.[plan]||mockOverview().prices[method][plan];
+}
+function flow(){return state.done?["done"]:(state.method==="visa"?["start","country","pay"]:["start","pay"])}
+function currentScreen(){return flow()[state.step]||"start"}
+function api(path,body){
+  return fetch(path,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
+    body:JSON.stringify(body||{})
+  }).then(async response=>{
+    const data=await response.json().catch(()=>({ok:false,error:"bad_json"}));
+    if(!response.ok||!data.ok)throw new Error(data.error||"api_error");
+    return data;
+  });
+}
+function mockOverview(){
+  return {
+    ok:true,
+    language:state.lang,
+    discount:{referral_20_available:true,referral_count:3,referral_required:3},
+    payment_details:"Preview karta rekviziti\nNAME: HSK AI\nCARD: 0000 0000 0000 0000",
+    prices:{
+      visa:{
+        "10_days":{base_amount:29,final_amount:23,currency:"TJS",discount_applied:true,discount_percent:20},
+        "1_month":{base_amount:89,final_amount:71,currency:"TJS",discount_applied:true,discount_percent:20}
+      },
+      alipay:{
+        "10_days":{base_amount:29,final_amount:23,currency:"¥",discount_applied:true,discount_percent:20},
+        "1_month":{base_amount:66,final_amount:53,currency:"¥",discount_applied:true,discount_percent:20}
+      },
+      wechat:{
+        "10_days":{base_amount:29,final_amount:23,currency:"¥",discount_applied:true,discount_percent:20},
+        "1_month":{base_amount:66,final_amount:53,currency:"¥",discount_applied:true,discount_percent:20}
+      }
+    }
+  };
+}
+function mockQuote(){
+  const info=priceInfo();
+  const rates={
+    tj:{amount:info.final_amount,currency:"TJS",rate:"1 TJS = 1 TJS"},
+    uz:{amount:Math.round(info.final_amount*1300/1000)*1000,currency:"UZS",rate:"1 USD = 9.2464 TJS; 1 USD = 12 001.94 UZS (manual)"},
+    ru:{amount:(info.final_amount*7.7).toFixed(2),currency:"RUB",rate:"1 USD = 9.2464 TJS; 1 USD = 71.0224 RUB (manual)"},
+    other:{amount:(info.final_amount/9.2464).toFixed(2),currency:"USD",rate:"1 USD = 9.2464 TJS (manual)"}
+  };
+  const card=rates[state.country]||rates.tj;
+  return {
+    plan_type:state.plan,
+    payment_method:state.method,
+    card_country:state.method==="visa"?state.country:null,
+    base_amount:info.base_amount,
+    base_currency:info.currency,
+    final_amount:info.final_amount,
+    final_currency:info.currency,
+    pay_amount:state.method==="visa"?card.amount:info.final_amount,
+    pay_currency:state.method==="visa"?card.currency:info.currency,
+    exchange_rate:state.method==="visa"?card.rate:"",
+    discount_applied:info.discount_applied,
+    discount_percent:info.discount_percent,
+    payment_details:state.method==="visa"?state.overview.payment_details:"",
+    qr:state.method==="visa"?null:{available:false}
+  };
+}
+async function loadOverview(){
+  setBusy(true);
+  try{
+    if(state.preview){
+      state.overview=mockOverview();
+    }else{
+      const data=await api(API.overview,{});
+      state.overview=data;
+      state.lang=normalizeLang(PARAMS.get("lang")||data.language||state.lang);
+    }
+  }catch(error){
+    state.preview=true;
+    state.overview=mockOverview();
+    toast(tr().error);
+  }finally{
+    setBusy(false);
+    render();
+  }
+}
+async function loadQuote(){
+  setBusy(true);
+  try{
+    if(state.preview){
+      state.quote=mockQuote();
+    }else{
+      const data=await api(API.quote,{
+        plan_type:state.plan,
+        payment_method:state.method,
+        card_country:state.method==="visa"?state.country:null
+      });
+      state.quote=data.quote;
+    }
+  }catch(error){
+    state.quote=null;
+    toast(error.message||tr().error);
+  }finally{
+    setBusy(false);
+    render();
+  }
+}
+function setBusy(value){
+  state.busy=Boolean(value);
+  $("#loading").classList.toggle("show",state.busy);
+  $("#nextBtn").disabled=state.busy;
+}
+function setStep(step){
+  const items=flow();
+  state.step=Math.max(0,Math.min(step,items.length-1));
+  if(currentScreen()==="pay")loadQuote();
+  render();
+}
+function setLang(lang){
+  state.lang=normalizeLang(lang);
+  document.documentElement.lang=state.lang;
+  render();
+}
+function render(){
+  const text=tr();
+  document.documentElement.lang=state.lang;
+  $("#title").textContent=text.title;
+  $$("#langTabs button").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===state.lang));
+  $("#status").textContent=state.preview?text.preview:"";
+  $("#status").classList.toggle("show",state.preview);
+  const items=flow();
+  const screen=currentScreen();
+  $$(".screen").forEach(node=>node.classList.toggle("active",node.dataset.screen===screen));
+  $$("#steps i").forEach((node,index)=>{
+    node.style.display=state.done||index>=items.length?"none":"block";
+    node.classList.toggle("active",index<=state.step);
+  });
+  $("#bottom").style.display=state.done?"none":"block";
+  renderStart(text);
+  renderCountry(text);
+  renderPay(text);
+  $("#backBtn").textContent=text.back;
+  $("#nextBtn").textContent=screen==="pay"?text.submit:text.next;
+  $("#backBtn").classList.toggle("hide",state.step===0);
+}
+function renderStart(text){
+  $("#heroTitle").textContent=text.heroTitle;
+  $("#heroText").textContent=text.heroText;
+  $("#benefits").innerHTML=text.benefits.map(item=>`<div class="benefit"><strong>${item[0]}</strong><span>${item[1]}</span></div>`).join("");
+  $("#plansTitle").textContent=text.plansTitle;
+  const discount=state.overview?.discount||{};
+  $("#discountHint").textContent=discount.referral_20_available
+    ? text.discountReady
+    : text.discountProgress.replace("{count}",discount.referral_count||0).replace("{required}",discount.referral_required||3);
+  $("#plans").innerHTML=PLAN_ORDER.map(plan=>{
+    const info=priceInfo(state.method,plan);
+    const selected=state.plan===plan?"selected":"";
+    const discounted=info.discount_applied?"discounted":"";
+    const name=plan==="10_days"?text.planLabels.ten:text.planLabels.month;
+    const badge=plan==="10_days"?text.planLabels.fast:text.planLabels.best;
+    return `<button class="plan ${selected} ${discounted}" type="button" data-plan="${plan}">
+      <span class="plan-top"><span class="plan-name">${name}</span><span class="badge">${badge}</span></span>
+      <span>
+        <span class="price">${money(info.final_amount)}<small>${info.currency}</small></span>
+        <span class="old-price">${money(info.base_amount)} ${info.currency}</span>
+      </span>
+    </button>`;
+  }).join("");
+  $("#methodsTitle").textContent=text.methodsTitle;
+  $("#methodHint").textContent=text.methodHint;
+  $("#methods").innerHTML=METHOD_ORDER.map(method=>{
+    const item=text.methods[method];
+    const selected=state.method===method?"selected":"";
+    return `<button class="choice ${selected}" type="button" data-method="${method}">
+      <span><strong>${item[0]}</strong><span>${item[1]}</span></span><i class="dot"></i>
+    </button>`;
+  }).join("");
+}
+function renderCountry(text){
+  $("#countryTitle").textContent=text.countryTitle;
+  $("#countryText").textContent=text.countryText;
+  $("#countries").innerHTML=COUNTRY_ORDER.map(country=>{
+    const item=text.countries[country];
+    const selected=state.country===country?"selected":"";
+    return `<button class="choice ${selected}" type="button" data-country="${country}">
+      <span><strong>${item[0]}</strong><span>${item[1]}</span></span><i class="dot"></i>
+    </button>`;
+  }).join("");
+}
+function renderPay(text){
+  const quote=state.quote||mockQuote();
+  $("#payTitle").textContent=text.payTitle;
+  $("#payText").textContent=text.payText;
+  $("#amountLabel").textContent=text.amountLabel;
+  $("#amountValue").textContent=money(quote.pay_amount);
+  $("#amountCurrency").textContent=quote.pay_currency||"";
+  const planText=state.plan==="10_days"?text.planLabels.ten:text.planLabels.month;
+  const methodText=text.methods[state.method][0];
+  const rows=[
+    [text.rows.plan,planText],
+    [text.rows.method,methodText],
+    [text.rows.base,`${money(quote.final_amount)} ${quote.final_currency}`]
+  ];
+  if(state.method==="visa"){
+    rows.splice(2,0,[text.rows.country,text.countries[state.country][0]]);
+    if(quote.exchange_rate)rows.push([text.rows.rate,quote.exchange_rate]);
+  }
+  $("#summaryRows").innerHTML=rows.map(row=>`<div class="row"><span>${row[0]}</span><strong>${row[1]}</strong></div>`).join("");
+  if(state.method==="visa"){
+    $("#paymentBox").innerHTML=`<h4>${text.detailsTitle}</h4><pre>${escapeHtml(quote.payment_details||state.overview?.payment_details||"")}</pre>`;
+  }else if(quote.qr?.available&&quote.qr?.image_data_url){
+    $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4><div class="qr"><img src="${quote.qr.image_data_url}" alt="QR"></div>`;
+  }else{
+    $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4><div class="qr empty">${text.qrMissing}</div>`;
+  }
+  $("#uploadTitle").textContent=state.screenshotName?text.uploaded.replace("{name}",state.screenshotName):text.uploadTitle;
+  $("#uploadText").textContent=state.screenshotName?text.uploadText:text.uploadText;
+  $("#uploadBox").classList.toggle("ready",Boolean(state.screenshotDataUrl));
+}
+function escapeHtml(value){
+  return String(value||"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+}
+function toast(message){
+  const node=$("#toast");
+  node.textContent=message;
+  node.classList.add("show");
+  clearTimeout(window.toastTimer);
+  window.toastTimer=setTimeout(()=>node.classList.remove("show"),2200);
+}
+async function submitPayment(){
+  if(!state.screenshotDataUrl){
+    toast(tr().needScreenshot);
+    return;
+  }
+  if(state.preview){
+    toast(tr().previewSubmit);
+    return;
+  }
+  setBusy(true);
+  try{
+    await api(API.submit,{
+      plan_type:state.plan,
+      payment_method:state.method,
+      card_country:state.method==="visa"?state.country:null,
+      screenshot_data_url:state.screenshotDataUrl
+    });
+    state.done=true;
+    state.step=0;
+    $("#doneTitle").textContent=tr().doneTitle;
+    $("#doneText").textContent=tr().doneText;
+  }catch(error){
+    toast(error.message||tr().error);
+  }finally{
+    setBusy(false);
+    render();
+  }
+}
+document.addEventListener("click",event=>{
+  const langBtn=event.target.closest("[data-lang]");
+  if(langBtn){setLang(langBtn.dataset.lang);return}
+  const planBtn=event.target.closest("[data-plan]");
+  if(planBtn){state.plan=planBtn.dataset.plan;state.quote=null;render();return}
+  const methodBtn=event.target.closest("[data-method]");
+  if(methodBtn){
+    state.method=methodBtn.dataset.method;
+    state.quote=null;
+    state.step=0;
+    render();
+    return;
+  }
+  const countryBtn=event.target.closest("[data-country]");
+  if(countryBtn){state.country=countryBtn.dataset.country;state.quote=null;render();return}
+});
+$("#nextBtn").addEventListener("click",()=>{
+  const screen=currentScreen();
+  if(screen==="pay"){submitPayment();return}
+  setStep(state.step+1);
+});
+$("#backBtn").addEventListener("click",()=>setStep(state.step-1));
+$("#receiptInput").addEventListener("change",event=>{
+  const file=event.target.files?.[0];
+  if(!file)return;
+  if(!file.type.startsWith("image/")){
+    toast(tr().needScreenshot);
+    return;
+  }
+  const reader=new FileReader();
+  reader.onload=()=>{
+    state.screenshotDataUrl=String(reader.result||"");
+    state.screenshotName=file.name;
+    render();
+  };
+  reader.readAsDataURL(file);
+});
+loadOverview();
+</script>
+</body>
+</html>

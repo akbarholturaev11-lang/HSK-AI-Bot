@@ -339,12 +339,26 @@ async def _edit_price_qr_prompt(message: Message, state: FSMContext) -> None:
 
 async def _prices_text(session) -> str:
     prices = await SubscriptionPriceService(session).all_prices()
+    currency_service = SubscriptionCurrencyService(session)
+    auto_rates = await currency_service.is_auto_rate_enabled()
+    rates, rate_source = await currency_service.effective_rates()
+    rate_mode = "AUTO real kurs" if auto_rates and rate_source == "auto" else "AUTO fallback: MANUAL kurs" if auto_rates else "MANUAL admin kurs"
     lines = ["💳 <b>Obuna narxlari</b>", ""]
     for price in prices:
         lines.append(
             f"{_method_label(price.payment_method)} · {_plan_label_admin(price.plan_type)}: "
             f"<b>{format_subscription_price(price.amount, price.currency)}</b>"
         )
+    lines.extend(
+        [
+            "",
+            "💱 <b>Bank karta kurslari</b>",
+            f"Rejim: <b>{rate_mode}</b>",
+            f"1 USD = <code>{SubscriptionCurrencyService.format_rate('tjs', rates['tjs'])}</code> TJS",
+            f"1 USD = <code>{SubscriptionCurrencyService.format_rate('uzs', rates['uzs'])}</code> UZS",
+            f"1 USD = <code>{SubscriptionCurrencyService.format_rate('rub', rates['rub'])}</code> RUB",
+        ]
+    )
     lines.extend([
         "",
         "<i>Visa/Card obuna narxi faqat TJSda yuradi. Alipay/WeChat narxlari ¥ bo'lib qoladi.</i>",
@@ -367,6 +381,15 @@ def prices_keyboard() -> InlineKeyboardMarkup:
                 callback_data=f"adm:price_set:{method}:1_month",
             ),
         ])
+    rows.append([
+        InlineKeyboardButton(text="💱 TJS kurs", callback_data="adm:visa_rate_set:tjs"),
+        InlineKeyboardButton(text="💱 UZS kurs", callback_data="adm:visa_rate_set:uzs"),
+        InlineKeyboardButton(text="💱 RUB kurs", callback_data="adm:visa_rate_set:rub"),
+    ])
+    rows.append([
+        InlineKeyboardButton(text="🔄 AUTO kurs ON", callback_data="adm:visa_rate_auto:on"),
+        InlineKeyboardButton(text="✋ AUTO kurs OFF", callback_data="adm:visa_rate_auto:off"),
+    ])
     rows.append([InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -1105,6 +1128,24 @@ async def admin_price_qr_only_handler(message: Message, state: FSMContext):
         return
     await delete_message_safely(message)
     await _edit_price_qr_prompt(message, state)
+
+
+@router.callback_query(F.data.startswith("adm:visa_rate_auto:"))
+async def admin_visa_rate_auto_callback(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    enabled = callback.data.split(":")[-1] == "on"
+    await SubscriptionCurrencyService(session).set_auto_rate_enabled(enabled)
+    await session.commit()
+    await state.clear()
+    await callback.answer("AUTO kurs yoqildi" if enabled else "AUTO kurs o'chirildi", show_alert=True)
+    await _edit_callback_message(
+        callback,
+        await _prices_text(session),
+        reply_markup=prices_keyboard(),
+        parse_mode="HTML",
+    )
 
 
 @router.callback_query(F.data.startswith("adm:visa_rate_set:"))

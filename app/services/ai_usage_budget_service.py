@@ -70,6 +70,12 @@ class AIUsageBudgetService:
 
     async def create_for_payment(self, payment, starts_at: datetime, ends_at: datetime) -> Optional[AIUsageBudget]:
         total_budget = self._ai_budget_usd(payment.amount, payment.currency)
+        budget_amount = payment.amount
+        budget_currency = payment.currency
+        if total_budget is None and getattr(payment, "base_amount", None):
+            total_budget = self._ai_budget_usd(payment.base_amount, "TJS")
+            budget_amount = payment.base_amount
+            budget_currency = "TJS"
         if total_budget is None:
             return None
 
@@ -81,8 +87,8 @@ class AIUsageBudgetService:
             user_telegram_id=payment.user_telegram_id,
             payment_id=payment.id,
             plan_type=payment.plan_type,
-            amount=payment.amount,
-            currency=payment.currency,
+            amount=budget_amount,
+            currency=budget_currency,
             total_budget_usd=total_budget,
             segment_1_budget_usd=segment_budget,
             segment_2_budget_usd=segment_budget,

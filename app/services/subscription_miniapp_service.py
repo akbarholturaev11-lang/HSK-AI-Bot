@@ -1,0 +1,394 @@
+from __future__ import annotations
+
+import base64
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+from aiogram import Bot
+
+from app.config import settings
+from app.repositories.payment_repo import PaymentRepository
+from app.repositories.user_repo import UserRepository
+from app.services.admin_notify_service import AdminNotifyService
+from app.services.discount_service import DiscountService
+from app.services.payment_qr_code_service import PaymentQrCodeService
+from app.services.payment_service import PaymentService
+from app.services.subscription_currency_service import SubscriptionCurrencyService
+from app.services.subscription_price_service import PLANS, SubscriptionPriceService
+
+
+CARD_COUNTRIES = {"tj", "uz", "ru", "other"}
+MINIAPP_METHODS = {"visa", "alipay", "wechat"}
+MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024
+_STATIC_PAYMENTS = Path(__file__).parent.parent / "static" / "payments"
+
+QR_PHOTO_PATHS = {
+    "alipay_10_days": _STATIC_PAYMENTS / "alipay_10_days.jpg",
+    "alipay_10_days_discount": _STATIC_PAYMENTS / "alipay_10_days_discount.jpg",
+    "alipay_1_month": _STATIC_PAYMENTS / "alipay_1_month.jpg",
+    "alipay_1_month_discount": _STATIC_PAYMENTS / "alipay_1_month_discount.jpg",
+    "wechat_10_days": _STATIC_PAYMENTS / "wechat_10_days.jpg",
+    "wechat_10_days_discount": _STATIC_PAYMENTS / "wechat_10_days_discount.jpg",
+    "wechat_1_month": _STATIC_PAYMENTS / "wechat_1_month.jpg",
+    "wechat_1_month_discount": _STATIC_PAYMENTS / "wechat_1_month_discount.jpg",
+}
+
+
+@dataclass(frozen=True)
+class ScreenshotPayload:
+    data: bytes
+    mime_type: str
+    filename: str
+
+
+class SubscriptionMiniAppService:
+    def __init__(self, session):
+        self.session = session
+        self.user_repo = UserRepository(session)
+        self.payment_repo = PaymentRepository(session)
+        self.price_service = SubscriptionPriceService(session)
+        self.payment_service = PaymentService(session)
+        self.currency_service = SubscriptionCurrencyService(session)
+
+    async def overview(self, telegram_id: int) -> dict[str, Any]:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return {"ok": False, "error": "access_start_first"}
+
+        return {
+            "ok": True,
+            "language": getattr(user, "language", None) or "uz",
+            "discount": await self._discount_payload(user),
+            "prices": await self._prices_payload(user),
+            "card_countries": ["tj", "uz", "ru", "other"],
+            "payment_details": settings.PAYMENT_DETAILS.strip(),
+        }
+
+    async def quote(
+        self,
+        *,
+        telegram_id: int,
+        plan_type: str,
+        payment_method: str,
+        card_country: str | None = None,
+        bot: Bot | None = None,
+        include_qr: bool = True,
+    ) -> dict[str, Any]:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return {"ok": False, "error": "access_start_first"}
+
+        checkout_info = await self._checkout_info(user, plan_type, payment_method)
+        if not checkout_info:
+            return {"ok": False, "error": "payment_invalid_plan"}
+
+        payload = {
+            "ok": True,
+            "quote": await self._quote_payload(
+                user=user,
+                plan_type=plan_type,
+                payment_method=payment_method,
+                card_country=card_country,
+                checkout_info=checkout_info,
+            ),
+        }
+        if include_qr and PaymentQrCodeService.is_qr_method(payment_method):
+            payload["quote"]["qr"] = await self._qr_payload(
+                bot=bot,
+                user=user,
+                payment_method=payment_method,
+                plan_type=plan_type,
+                checkout_info=checkout_info,
+            )
+        return payload
+
+    async def submit(
+        self,
+        *,
+        telegram_id: int,
+        plan_type: str,
+        payment_method: str,
+        card_country: str | None,
+        screenshot_data_url: str,
+        bot: Bot,
+    ) -> dict[str, Any]:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return {"ok": False, "error": "access_start_first"}
+
+        screenshot = self._decode_screenshot(screenshot_data_url)
+        if not screenshot:
+            return {"ok": False, "error": "invalid_screenshot"}
+
+        checkout_info = await self._checkout_info(user, plan_type, payment_method)
+        if not checkout_info:
+            return {"ok": False, "error": "payment_invalid_plan"}
+
+        if PaymentQrCodeService.is_qr_method(payment_method):
+            qr_payload = await self._qr_payload(
+                bot=bot,
+                user=user,
+                payment_method=payment_method,
+                plan_type=plan_type,
+                checkout_info=checkout_info,
+            )
+            if not qr_payload.get("available"):
+                return {"ok": False, "error": "qr_not_ready"}
+
+        quote = await self._quote_payload(
+            user=user,
+            plan_type=plan_type,
+            payment_method=payment_method,
+            card_country=card_country,
+            checkout_info=checkout_info,
+        )
+
+        user.payment_method = payment_method
+        user.selected_plan_type = None
+        payment = await self.payment_repo.create(
+            user_telegram_id=telegram_id,
+            plan_type=plan_type,
+            amount=int(checkout_info["final_amount"]),
+            currency=str(checkout_info["currency"]),
+            payment_status="pending",
+            payment_method=payment_method,
+            base_amount=int(checkout_info["base_amount"]),
+            discount_source=str(checkout_info["discount_source"]),
+            discount_percent=int(checkout_info["discount_percent"]),
+            discount_campaign_id=checkout_info["discount_campaign_id"],
+            discount_title=checkout_info["discount_title"],
+            discount_details=checkout_info["discount_details"],
+            card_country=quote.get("card_country") if payment_method == "visa" else None,
+            local_amount=quote.get("pay_amount") if payment_method == "visa" else None,
+            local_currency=quote.get("pay_currency") if payment_method == "visa" else None,
+            exchange_rate=quote.get("exchange_rate") if payment_method == "visa" else None,
+        )
+        await self.session.commit()
+
+        pending_count = await self.payment_repo.count_pending()
+        file_id = await AdminNotifyService().notify_payment_review(
+            bot=bot,
+            payment=payment,
+            user=user,
+            ai_result=None,
+            pending_count=pending_count,
+            screenshot_bytes=screenshot.data,
+            screenshot_filename=screenshot.filename,
+        )
+        if file_id:
+            payment.screenshot_file_id = file_id
+            await self.session.commit()
+
+        return {
+            "ok": True,
+            "payment_id": payment.id,
+            "status": "pending",
+        }
+
+    async def _prices_payload(self, user) -> dict[str, dict[str, dict[str, Any]]]:
+        result: dict[str, dict[str, dict[str, Any]]] = {}
+        for method in MINIAPP_METHODS:
+            result[method] = {}
+            for plan in PLANS:
+                info = await self._checkout_info(user, plan, method)
+                if not info:
+                    continue
+                result[method][plan] = {
+                    "base_amount": info["base_amount"],
+                    "final_amount": info["final_amount"],
+                    "currency": info["currency"],
+                    "discount_applied": info["discount_applied"],
+                    "discount_percent": info["discount_percent"],
+                    "discount_source": info["discount_source"],
+                }
+        return result
+
+    async def _discount_payload(self, user) -> dict[str, Any]:
+        return {
+            "referral_20_available": bool(user.discount_eligible and not user.discount_used),
+            "referral_count": int(getattr(user, "discount_referral_count", 0) or 0),
+            "referral_required": 3,
+        }
+
+    async def _checkout_info(self, user, plan_type: str, payment_method: str) -> dict[str, Any] | None:
+        if plan_type not in PLANS or payment_method not in MINIAPP_METHODS:
+            return None
+        price = await self.price_service.get_price(payment_method, plan_type)
+        if not price:
+            return None
+        discount = await DiscountService(self.session).get_best_discount(
+            user=user,
+            plan_type=plan_type,
+            payment_method=payment_method,
+            include_admin_campaigns=False,
+        )
+        final_amount = self.payment_service.calculate_percent_discounted_price(price.amount, discount.percent)
+        return {
+            "plan_type": plan_type,
+            "base_amount": price.amount,
+            "final_amount": final_amount,
+            "currency": price.currency,
+            "discount_applied": discount.percent > 0,
+            "discount_percent": discount.percent,
+            "discount_source": discount.source,
+            "discount_campaign_id": discount.campaign_id,
+            "discount_title": discount.title,
+            "discount_details": discount.details,
+        }
+
+    async def _quote_payload(
+        self,
+        *,
+        user,
+        plan_type: str,
+        payment_method: str,
+        card_country: str | None,
+        checkout_info: dict[str, Any],
+    ) -> dict[str, Any]:
+        pay_amount = str(checkout_info["final_amount"])
+        pay_currency = str(checkout_info["currency"])
+        exchange_rate = ""
+        normalized_country = None
+        if payment_method == "visa":
+            normalized_country = card_country if card_country in CARD_COUNTRIES else "tj"
+            card_quote = await self.currency_service.quote_card_amount(
+                int(checkout_info["final_amount"]),
+                normalized_country,
+            )
+            pay_amount = card_quote.amount
+            pay_currency = card_quote.currency
+            exchange_rate = card_quote.exchange_rate
+
+        return {
+            "plan_type": plan_type,
+            "payment_method": payment_method,
+            "card_country": normalized_country,
+            "base_amount": checkout_info["base_amount"],
+            "base_currency": checkout_info["currency"],
+            "final_amount": checkout_info["final_amount"],
+            "final_currency": checkout_info["currency"],
+            "pay_amount": pay_amount,
+            "pay_currency": pay_currency,
+            "exchange_rate": exchange_rate,
+            "discount_applied": checkout_info["discount_applied"],
+            "discount_percent": checkout_info["discount_percent"],
+            "discount_source": checkout_info["discount_source"],
+            "payment_details": settings.PAYMENT_DETAILS.strip() if payment_method == "visa" else "",
+        }
+
+    async def _qr_payload(
+        self,
+        *,
+        bot: Bot | None,
+        user,
+        payment_method: str,
+        plan_type: str,
+        checkout_info: dict[str, Any],
+    ) -> dict[str, Any]:
+        if not PaymentQrCodeService.is_qr_method(payment_method):
+            return {"available": False}
+
+        image_bytes = self._static_qr_bytes(payment_method, plan_type, checkout_info)
+        if image_bytes:
+            return {
+                "available": True,
+                "image_data_url": self._data_url(image_bytes, "image/jpeg"),
+            }
+
+        if not bot:
+            return {"available": False}
+
+        file_id = await self._uploaded_qr_file_id(payment_method, plan_type, checkout_info)
+        if not file_id:
+            return {"available": False}
+        try:
+            file = await bot.get_file(file_id)
+            file_buffer = await bot.download_file(file.file_path)
+            file_buffer.seek(0)
+            return {
+                "available": True,
+                "image_data_url": self._data_url(file_buffer.read(), "image/jpeg"),
+            }
+        except Exception:
+            return {"available": False}
+
+    def _static_qr_bytes(self, payment_method: str, plan_type: str, checkout_info: dict[str, Any]) -> bytes | None:
+        discount_source = checkout_info.get("discount_source") or "none"
+        if discount_source not in {"none", "referral"}:
+            return None
+        amount = int(checkout_info["final_amount"])
+        currency = str(checkout_info["currency"])
+        if checkout_info.get("discount_applied"):
+            if int(checkout_info.get("discount_percent") or 0) != 20:
+                return None
+            if not PaymentQrCodeService.is_default_subscription_amount(
+                payment_method=payment_method,
+                plan_type=plan_type,
+                amount=amount,
+                currency=currency,
+                discount_percent=20,
+            ):
+                return None
+            key = f"{payment_method}_{plan_type}_discount"
+        else:
+            if not PaymentQrCodeService.is_default_subscription_amount(
+                payment_method=payment_method,
+                plan_type=plan_type,
+                amount=amount,
+                currency=currency,
+            ):
+                return None
+            key = f"{payment_method}_{plan_type}"
+
+        path = QR_PHOTO_PATHS.get(key)
+        if path and path.exists():
+            return path.read_bytes()
+        return None
+
+    async def _uploaded_qr_file_id(
+        self,
+        payment_method: str,
+        plan_type: str,
+        checkout_info: dict[str, Any],
+    ) -> str | None:
+        scope = PaymentQrCodeService.checkout_scope(
+            discount_source=checkout_info.get("discount_source") or "none",
+            discount_percent=int(checkout_info.get("discount_percent") or 0),
+            discount_campaign_id=checkout_info.get("discount_campaign_id"),
+        )
+        if not scope:
+            return None
+        return await PaymentQrCodeService(self.session).get_file_id(
+            scope=scope,
+            payment_method=payment_method,
+            plan_type=plan_type,
+            amount=int(checkout_info["final_amount"]),
+            currency=str(checkout_info["currency"]),
+        )
+
+    @staticmethod
+    def _decode_screenshot(value: str) -> ScreenshotPayload | None:
+        prefix, _, raw_base64 = (value or "").partition(",")
+        if not raw_base64 or ";base64" not in prefix:
+            return None
+        mime_type = prefix.replace("data:", "").replace(";base64", "").strip().lower()
+        if mime_type not in {"image/jpeg", "image/jpg", "image/png", "image/webp"}:
+            return None
+        try:
+            data = base64.b64decode(raw_base64, validate=True)
+        except Exception:
+            return None
+        if not data or len(data) > MAX_SCREENSHOT_BYTES:
+            return None
+        extension = "jpg" if mime_type in {"image/jpeg", "image/jpg"} else mime_type.rsplit("/", 1)[-1]
+        return ScreenshotPayload(
+            data=data,
+            mime_type=mime_type,
+            filename=f"payment.{extension}",
+        )
+
+    @staticmethod
+    def _data_url(data: bytes, mime_type: str) -> str:
+        encoded = base64.b64encode(data).decode("ascii")
+        return f"data:{mime_type};base64,{encoded}"

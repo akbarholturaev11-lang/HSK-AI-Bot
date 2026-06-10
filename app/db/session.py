@@ -38,6 +38,10 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "discount_campaign_id": "INTEGER",
         "discount_title": "VARCHAR(120)",
         "discount_details": "TEXT",
+        "card_country": "VARCHAR(16)",
+        "local_amount": "VARCHAR(32)",
+        "local_currency": "VARCHAR(16)",
+        "exchange_rate": "VARCHAR(80)",
     },
     "discount_campaigns": {
         "title_tj": "VARCHAR(180)",

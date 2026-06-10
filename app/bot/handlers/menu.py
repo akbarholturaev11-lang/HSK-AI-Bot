@@ -4,7 +4,7 @@ from aiogram.types import Message
 
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import CourseEngineService
-from app.bot.keyboards.subscription import payment_method_keyboard
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.keyboards.course import reminder_time_keyboard
 from app.bot.utils.i18n import t
 from app.bot.utils.workflow_message import (
@@ -45,8 +45,8 @@ async def handle_subscription_button(message: Message, state: FSMContext, sessio
     await _clear_voice_mode(user, session, state)
 
     await message.answer(
-        t("payment_method_choose", lang),
-        reply_markup=payment_method_keyboard(lang),
+        t("subscription_miniapp_entry_text", lang),
+        reply_markup=subscription_miniapp_keyboard(lang, source="menu_subscription"),
         parse_mode="HTML",
     )
 

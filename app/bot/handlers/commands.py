@@ -15,7 +15,7 @@ from app.repositories.user_repo import UserRepository
 from app.services.referral_service import ReferralService
 from app.bot.handlers.subscription import build_subscription_main_text_for_user
 from app.bot.keyboards.main_menu import main_menu_keyboard
-from app.bot.keyboards.subscription import subscription_main_keyboard, payment_method_keyboard
+from app.bot.keyboards.subscription import subscription_main_keyboard, subscription_miniapp_keyboard
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.utils.i18n import t
 
@@ -405,8 +405,8 @@ async def subscription_command_handler(message: Message, state: FSMContext, sess
     await _clear_voice_mode(user, session, state)
 
     await message.answer(
-        t("payment_method_choose", lang),
-        reply_markup=payment_method_keyboard(lang),
+        t("subscription_miniapp_entry_text", lang),
+        reply_markup=subscription_miniapp_keyboard(lang, source="command_subscription"),
         parse_mode="HTML",
     )
 

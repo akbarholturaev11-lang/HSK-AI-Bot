@@ -2,7 +2,7 @@ import json
 from datetime import datetime, timezone
 
 from app.bot.keyboards.main_menu import main_menu_keyboard
-from app.bot.keyboards.subscription import payment_method_keyboard
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
@@ -97,8 +97,8 @@ class StudyMiniAppService:
         lang = getattr(user, "language", None) or "ru"
         await bot.send_message(
             chat_id=telegram_id,
-            text=t("payment_method_choose", lang),
-            reply_markup=payment_method_keyboard(lang),
+            text=t("subscription_miniapp_entry_text", lang),
+            reply_markup=subscription_miniapp_keyboard(lang, source="study_miniapp"),
             parse_mode="HTML",
         )
         return True

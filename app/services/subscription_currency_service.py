@@ -1,4 +1,7 @@
+from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+
+import httpx
 
 from app.repositories.bot_setting_repo import BotSettingRepository
 
@@ -8,6 +11,7 @@ VISA_LOCAL_RATE_KEYS = {
     "uzs": "subscription_visa_usd_uzs_rate",
     "rub": "subscription_visa_usd_rub_rate",
 }
+VISA_AUTO_RATE_ENABLED_KEY = "subscription_visa_auto_rate_enabled"
 
 # Editable defaults based on official rates available on 2026-06-01.
 DEFAULT_VISA_LOCAL_RATES = {
@@ -21,7 +25,23 @@ LOCAL_RATE_LABELS = {
     "tjs": "TJS",
     "uzs": "UZS",
     "rub": "RUB",
+    "usd": "USD",
 }
+CARD_COUNTRY_CURRENCY = {
+    "tj": "tjs",
+    "uz": "uzs",
+    "ru": "rub",
+    "other": "usd",
+}
+
+
+@dataclass(frozen=True)
+class CardCurrencyQuote:
+    country: str
+    amount: str
+    currency: str
+    exchange_rate: str
+    source: str
 
 
 def format_subscription_price(amount: int, currency: str) -> str:
@@ -62,6 +82,19 @@ class SubscriptionCurrencyService:
             for currency_code in VISA_LOCAL_RATE_KEYS
         }
 
+    async def is_auto_rate_enabled(self) -> bool:
+        return await self.setting_repo.get_bool(VISA_AUTO_RATE_ENABLED_KEY, default=False)
+
+    async def set_auto_rate_enabled(self, enabled: bool) -> None:
+        await self.setting_repo.set_bool(VISA_AUTO_RATE_ENABLED_KEY, enabled)
+
+    async def effective_rates(self) -> tuple[dict[str, Decimal], str]:
+        if await self.is_auto_rate_enabled():
+            live_rates = await self._fetch_live_usd_rates()
+            if live_rates:
+                return live_rates, "auto"
+        return await self.all_rates(), "manual"
+
     async def set_rate(self, currency_code: str, value: Decimal) -> bool:
         if currency_code not in VISA_LOCAL_RATE_KEYS or not value.is_finite() or value <= 0:
             return False
@@ -70,6 +103,46 @@ class SubscriptionCurrencyService:
             str(value.quantize(Decimal("0.0001"))),
         )
         return True
+
+    async def quote_card_amount(self, tjs_amount: int, country: str | None) -> CardCurrencyQuote:
+        normalized_country = country if country in CARD_COUNTRY_CURRENCY else "tj"
+        target_currency = CARD_COUNTRY_CURRENCY[normalized_country]
+        if target_currency == "tjs":
+            return CardCurrencyQuote(
+                country=normalized_country,
+                amount=str(int(tjs_amount)),
+                currency="TJS",
+                exchange_rate="1 TJS = 1 TJS",
+                source="base",
+            )
+
+        rates, source = await self.effective_rates()
+        usd_amount = Decimal(tjs_amount) / rates["tjs"]
+        if target_currency == "usd":
+            local_amount = self._format_amount(usd_amount, 2)
+            exchange_rate = f"1 USD = {self._format_amount(rates['tjs'], 4)} TJS"
+            return CardCurrencyQuote(
+                country=normalized_country,
+                amount=local_amount,
+                currency="USD",
+                exchange_rate=f"{exchange_rate} ({source})",
+                source=source,
+            )
+
+        local_amount = usd_amount * rates[target_currency]
+        decimals = 0 if target_currency == "uzs" else 2
+        exchange_rate = (
+            f"1 USD = {self._format_amount(rates['tjs'], 4)} TJS; "
+            f"1 USD = {self._format_amount(rates[target_currency], decimals)} "
+            f"{self.rate_label(target_currency)}"
+        )
+        return CardCurrencyQuote(
+            country=normalized_country,
+            amount=self._format_amount(local_amount, decimals),
+            currency=self.rate_label(target_currency),
+            exchange_rate=f"{exchange_rate} ({source})",
+            source=source,
+        )
 
     async def format_local_equivalents(self, usd_amount: int) -> str:
         rates = await self.all_rates()
@@ -105,3 +178,27 @@ class SubscriptionCurrencyService:
         quantizer = Decimal("1") if decimals == 0 else Decimal("1." + ("0" * decimals))
         rounded = value.quantize(quantizer, rounding=ROUND_HALF_UP)
         return f"{rounded:,.{decimals}f}".replace(",", " ")
+
+    async def _fetch_live_usd_rates(self) -> dict[str, Decimal] | None:
+        try:
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                response = await client.get("https://open.er-api.com/v6/latest/USD")
+                response.raise_for_status()
+                payload = response.json()
+        except Exception:
+            return None
+
+        rates = payload.get("rates") if isinstance(payload, dict) else None
+        if not isinstance(rates, dict):
+            return None
+        try:
+            result = {
+                "tjs": Decimal(str(rates["TJS"])),
+                "uzs": Decimal(str(rates["UZS"])),
+                "rub": Decimal(str(rates["RUB"])),
+            }
+        except (KeyError, InvalidOperation):
+            return None
+        if not all(value.is_finite() and value > 0 for value in result.values()):
+            return None
+        return result

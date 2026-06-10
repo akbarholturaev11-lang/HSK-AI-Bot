@@ -1,6 +1,20 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 
+from app.bot.utils.course_miniapp import subscription_miniapp_url
 from app.bot.utils.i18n import t
+
+
+def subscription_miniapp_keyboard(lang: str, source: str = "subscription_button") -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=t("subscription_miniapp_open_button", lang),
+                    web_app=WebAppInfo(url=subscription_miniapp_url(lang, source=source)),
+                )
+            ]
+        ]
+    )
 
 
 def subscription_main_keyboard(lang: str, show_discount: bool = True) -> InlineKeyboardMarkup:

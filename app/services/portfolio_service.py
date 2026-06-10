@@ -67,14 +67,20 @@ class PortfolioService:
 
     async def record_subscription_profit(self, payment: Payment) -> None:
         revenue_usd = self.amount_to_usd(payment.amount, payment.currency)
+        original_amount = payment.amount
+        original_currency = payment.currency
+        if revenue_usd is None and payment.base_amount:
+            revenue_usd = self.amount_to_usd(payment.base_amount, "TJS")
+            original_amount = payment.base_amount
+            original_currency = "TJS"
         if revenue_usd is None:
             return
 
         transaction = await self._get_transaction(payment.id, "subscription_profit")
         if transaction:
             transaction.amount_usd = revenue_usd
-            transaction.original_amount = payment.amount
-            transaction.original_currency = payment.currency
+            transaction.original_amount = original_amount
+            transaction.original_currency = original_currency
             transaction.user_telegram_id = payment.user_telegram_id
             transaction.note = "100% revenue from subscription"
         else:
@@ -83,8 +89,8 @@ class PortfolioService:
                     transaction_type="profit",
                     source="subscription_profit",
                     amount_usd=revenue_usd,
-                    original_amount=payment.amount,
-                    original_currency=payment.currency,
+                    original_amount=original_amount,
+                    original_currency=original_currency,
                     payment_id=payment.id,
                     user_telegram_id=payment.user_telegram_id,
                     note="100% revenue from subscription",
@@ -218,6 +224,8 @@ class PortfolioService:
         count = 0
         for payment in result.scalars().all():
             amount_usd = self.amount_to_usd(payment.amount, payment.currency)
+            if amount_usd is None and payment.base_amount:
+                amount_usd = self.amount_to_usd(payment.base_amount, "TJS")
             if amount_usd is None:
                 continue
             total_usd += amount_usd

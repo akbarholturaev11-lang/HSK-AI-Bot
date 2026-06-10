@@ -24,11 +24,12 @@ from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.study_miniapp_service import StudyMiniAppService
+from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.repositories.user_repo import UserRepository
 from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.course import homework_retry_keyboard
-from app.bot.keyboards.subscription import payment_method_keyboard
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
@@ -62,8 +63,8 @@ async def _send_course_access_expired_offer(session, telegram_id: int) -> None:
         )
         await bot.send_message(
             chat_id=telegram_id,
-            text=t("payment_method_choose", lang),
-            reply_markup=payment_method_keyboard(lang),
+            text=t("subscription_miniapp_entry_text", lang),
+            reply_markup=subscription_miniapp_keyboard(lang, source="course_expired"),
             parse_mode="HTML",
         )
     except Exception as error:
@@ -205,6 +206,16 @@ async def study_miniapp():
     return miniapp_file_response("app/static/study.html")
 
 
+@app.get("/subscription.html")
+async def subscription_miniapp():
+    return miniapp_file_response("app/static/subscription.html")
+
+
+@app.get("/subscription-preview.html")
+async def subscription_preview_miniapp():
+    return miniapp_file_response("app/static/subscription.html")
+
+
 @app.get("/stroke-order.html")
 async def stroke_order_miniapp():
     return miniapp_file_response("app/static/stroke-order.html")
@@ -232,6 +243,60 @@ async def miniapp_lesson(lesson: int, lang: str = "uz", level: str = "hsk3", blo
         if not payload:
             return {"ok": False, "error": "lesson_not_found"}
         return {"ok": True, "lesson": payload}
+
+
+@app.post("/api/subscription-miniapp/overview")
+async def subscription_miniapp_overview(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    async with async_session_maker() as session:
+        return await SubscriptionMiniAppService(session).overview(telegram_id)
+
+
+@app.post("/api/subscription-miniapp/quote")
+async def subscription_miniapp_quote(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    payload = await request.json()
+    async with async_session_maker() as session:
+        return await SubscriptionMiniAppService(session).quote(
+            telegram_id=telegram_id,
+            plan_type=str(payload.get("plan_type") or ""),
+            payment_method=str(payload.get("payment_method") or ""),
+            card_country=payload.get("card_country"),
+            bot=bot,
+        )
+
+
+@app.post("/api/subscription-miniapp/submit")
+async def subscription_miniapp_submit(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    payload = await request.json()
+    async with async_session_maker() as session:
+        return await SubscriptionMiniAppService(session).submit(
+            telegram_id=telegram_id,
+            plan_type=str(payload.get("plan_type") or ""),
+            payment_method=str(payload.get("payment_method") or ""),
+            card_country=payload.get("card_country"),
+            screenshot_data_url=str(payload.get("screenshot_data_url") or ""),
+            bot=bot,
+        )
 
 
 @app.post("/api/miniapp/event")

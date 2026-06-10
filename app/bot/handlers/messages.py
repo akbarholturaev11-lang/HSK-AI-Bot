@@ -51,7 +51,7 @@ from app.bot.keyboards.main_menu import main_menu_keyboard, course_menu_keyboard
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.keyboards.referral import referral_daily_limit_keyboard
 from app.bot.keyboards.mode import course_promo_keyboard
-from app.bot.keyboards.subscription import payment_method_keyboard
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.course_formatter import format_intro, format_step
 from app.bot.utils.course_miniapp import (
     format_miniapp_homework_result,
@@ -677,7 +677,7 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         await session.commit()
         await message.answer(
             t("voice_subscription_required", user_lang),
-            reply_markup=payment_method_keyboard(user_lang),
+            reply_markup=subscription_miniapp_keyboard(user_lang, source="voice_required"),
             parse_mode="HTML",
         )
         return

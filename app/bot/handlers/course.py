@@ -26,7 +26,7 @@ from app.bot.keyboards.course import (
     next_study_time_inline_keyboard,
     hsk4_part_selection_keyboard, filter_hsk4_lessons_by_part, normalize_hsk4_part,
 )
-from app.bot.keyboards.subscription import payment_method_keyboard
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.keyboards.course_context import (
     course_understood_keyboard,
     course_review_offer_keyboard,
@@ -104,7 +104,7 @@ def _course_locked_offer_text(lang: str) -> str:
     return (
         f"<b>{t('course_locked_title', lang)}</b>\n\n"
         f"<blockquote>{t('course_locked_text', lang)}</blockquote>\n\n"
-        f"{t('payment_method_choose', lang)}"
+        f"{t('subscription_miniapp_entry_text', lang)}"
     )
 
 
@@ -116,15 +116,15 @@ async def _send_course_access_offer(*, respond, lang: str, expired_from_course: 
             parse_mode="HTML",
         )
         await respond(
-            t("payment_method_choose", lang),
-            reply_markup=payment_method_keyboard(lang),
+            t("subscription_miniapp_entry_text", lang),
+            reply_markup=subscription_miniapp_keyboard(lang, source="course_expired"),
             parse_mode="HTML",
         )
         return
 
     await respond(
         _course_locked_offer_text(lang),
-        reply_markup=payment_method_keyboard(lang),
+        reply_markup=subscription_miniapp_keyboard(lang, source="course_locked"),
         parse_mode="HTML",
     )
 

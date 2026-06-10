@@ -207,6 +207,26 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-09 — Subscription flow moved to Mini App
+
+Changed:
+- Normal subscription entrypoints now open `subscription.html` as a Telegram Mini App instead of continuing the chat checkout flow.
+- Mini App APIs `/api/subscription-miniapp/overview`, `/quote`, and `/submit` calculate prices server-side, apply only the normal referral 20% discount path, and send submitted screenshots to the existing admin payment review queue without AI screenshot verification.
+- Admin price panel now includes manual bank-card rates for TJS/UZS/RUB and an AUTO live-rate toggle; Mini App card quotes use admin rates unless AUTO live rates are enabled and available.
+- `payments` now stores optional `card_country`, `local_amount`, `local_currency`, and `exchange_rate` for Mini App card payments.
+
+Why:
+- Subscription checkout should stay inside the Mini App, avoid chat-return steps for the normal Obuna button, and prevent frontend-side price/rate mistakes.
+
+Files touched:
+- `app/static/subscription.html`, `app/main.py`, `app/services/subscription_miniapp_service.py`, `app/services/subscription_currency_service.py`, `app/bot/handlers/*`, `app/bot/keyboards/subscription.py`, `app/db/models/payment.py`, `app/repositories/payment_repo.py`, `alembic/versions/0037_add_miniapp_payment_local_fields.py`
+
+Risk:
+- Live exchange rates depend on the external rate provider; if unavailable, backend falls back to admin manual rates.
+
+Follow-up:
+- Verify the Mini App inside Telegram with real `initData`, uploaded QR codes for non-default Alipay/WeChat prices, and a real admin approval.
+
 ### 2026-06-07 — Price-specific Alipay/WeChat QR codes
 
 Changed:

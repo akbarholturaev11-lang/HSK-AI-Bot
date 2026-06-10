@@ -26,6 +26,7 @@ from app.bot.keyboards.subscription import (
     feedback_discount_plan_keyboard,
     subscription_discount_progress_keyboard,
     subscription_discount_ready_keyboard,
+    subscription_miniapp_keyboard,
     payment_method_keyboard,
 )
 from app.bot.keyboards.checkout import checkout_keyboard
@@ -853,8 +854,8 @@ async def subscription_open_handler(callback: CallbackQuery, session):
 
     await callback.answer()
     await callback.message.edit_text(
-        t("payment_method_choose", lang),
-        reply_markup=payment_method_keyboard(lang),
+        t("subscription_miniapp_entry_text", lang),
+        reply_markup=subscription_miniapp_keyboard(lang, source="subscription_open"),
         parse_mode="HTML"
     )
 

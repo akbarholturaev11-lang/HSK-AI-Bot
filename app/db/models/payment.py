@@ -29,6 +29,11 @@ class Payment(Base):
     discount_title: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
     discount_details: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
+    card_country: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
+    local_amount: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
+    local_currency: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
+    exchange_rate: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+
     checkout_msg_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     screenshot_msg_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     waiting_msg_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
