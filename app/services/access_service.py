@@ -50,6 +50,9 @@ class AccessService:
         if user.status == "active":
             return True
 
+        if user.status == "trial":
+            return True
+
         if getattr(user, "learning_mode", "qa") == "course":
             user.learning_mode = "qa"
             user.voice_mode = "none"

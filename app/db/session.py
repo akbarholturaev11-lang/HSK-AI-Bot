@@ -26,6 +26,11 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "voice_mode": "VARCHAR(20) DEFAULT 'none' NOT NULL",
         "username": "VARCHAR(64)",
         "referral_trial_count_started_at": "TIMESTAMP WITH TIME ZONE",
+        "trial_course_lesson_id": "INTEGER",
+        "trial_course_started_at": "TIMESTAMP WITH TIME ZONE",
+        "trial_course_completed_at": "TIMESTAMP WITH TIME ZONE",
+        "trial_quiz_explanation_used_at": "TIMESTAMP WITH TIME ZONE",
+        "force_sub_required_at": "TIMESTAMP WITH TIME ZONE",
     },
     "payments": {
         "checkout_msg_id": "INTEGER",

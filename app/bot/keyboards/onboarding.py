@@ -1,3 +1,5 @@
+import json
+
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from app.bot.utils.i18n import t
 
@@ -28,3 +30,67 @@ def level_keyboard(lang: str) -> InlineKeyboardMarkup:
             ],
         ]
     )
+
+
+def trial_lesson_choice_keyboard(lang: str) -> InlineKeyboardMarkup:
+    labels = {
+        "uz": ("🚀 Tavsiya: 1-darsdan boshlash", "📚 Boshqa dars tanlash"),
+        "ru": ("🚀 Рекомендация: начать с 1-го урока", "📚 Выбрать другой урок"),
+        "tj": ("🚀 Тавсия: аз дарси 1 оғоз кардан", "📚 Интихоби дарси дигар"),
+    }
+    first_label, choose_label = labels.get(lang, labels["ru"])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=first_label, callback_data="trial_lesson:first")],
+            [InlineKeyboardButton(text=choose_label, callback_data="trial_lesson:choose")],
+        ]
+    )
+
+
+def _parse_lesson_title(raw: str, lang: str) -> str:
+    if not raw:
+        return ""
+    try:
+        data = json.loads(raw)
+    except Exception:
+        return raw
+    if isinstance(data, dict):
+        return str(data.get("zh") or data.get(lang) or data.get("uz") or data.get("ru") or raw)
+    return raw
+
+
+def trial_lesson_selection_keyboard(
+    lessons: list,
+    page: int = 0,
+    lang: str = "ru",
+) -> InlineKeyboardMarkup:
+    page_size = 7
+    start = page * page_size
+    end = start + page_size
+    buttons = []
+    for lesson in lessons[start:end]:
+        title = _parse_lesson_title(str(getattr(lesson, "title", "") or ""), lang).strip()
+        buttons.append([
+            InlineKeyboardButton(
+                text=f"{lesson.lesson_order}. {title[:48]}",
+                callback_data=f"trial_lesson:pick:{lesson.id}",
+            )
+        ])
+
+    nav = []
+    prev_labels = {"tj": "⬅️ Қабл", "uz": "⬅️ Oldingi", "ru": "⬅️ Назад"}
+    next_labels = {"tj": "Баъд ➡️", "uz": "Keyingi ➡️", "ru": "Далее ➡️"}
+    if page > 0:
+        nav.append(InlineKeyboardButton(
+            text=prev_labels.get(lang, "⬅️"),
+            callback_data=f"trial_lesson:page:{page - 1}",
+        ))
+    if end < len(lessons):
+        nav.append(InlineKeyboardButton(
+            text=next_labels.get(lang, "➡️"),
+            callback_data=f"trial_lesson:page:{page + 1}",
+        ))
+    if nav:
+        buttons.append(nav)
+
+    return InlineKeyboardMarkup(inline_keyboard=buttons)

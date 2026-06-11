@@ -29,6 +29,8 @@ from app.bot.handlers.course import (
     _resolve_lessons_for_user_level,
     filter_unlocked_lessons,
     send_course_completion_prompt,
+    _send_trial_completed_offer,
+    _ensure_trial_lesson_access,
 )
 from app.bot.keyboards.course import (
     lesson_selection_keyboard,
@@ -66,6 +68,7 @@ from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_engine_service import CourseEngineService, get_block_no_from_step, is_block_quiz_step
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_tutor_service import CourseTutorService
+from app.services.course_trial_service import CourseTrialService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.image_input_service import ImageInputService
 from app.services.image_qa_service import ImageQAService
@@ -1098,6 +1101,14 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         if error_key:
             await message.answer(t(error_key, user_lang))
             return
+        if not await _ensure_trial_lesson_access(
+            session=session,
+            user=current_user,
+            lesson=lesson,
+            respond=message.answer,
+        ):
+            await session.commit()
+            return
 
         if progress.waiting_for == "reminder_setup":
             cancel_map = {"uz": "❌ Bekor qilish", "ru": "❌ Отмена", "tj": "❌ Бекор кардан"}
@@ -1137,6 +1148,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             return
 
         if progress.current_step == "completed" and progress.homework_status == "completed":
+            trial_service = CourseTrialService(session)
+            if not trial_service.is_paid_user(current_user):
+                await trial_service.mark_trial_completed(current_user, getattr(lesson, "id", None))
+                await session.commit()
+                await _send_trial_completed_offer(respond=message.answer, lang=user_lang)
+                return
+
             if progress.waiting_for == "review_choice":
                 await message.answer(
                     t("course_review_choice", user_lang),
@@ -1286,6 +1304,19 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             await _send_budget_notice(message.answer, budget_record, user_lang)
 
             if isinstance(result, dict) and result.get("passed"):
+                trial_service = CourseTrialService(session)
+                if not trial_service.is_paid_user(user):
+                    _, _, completed_lesson, completed_error = await engine.complete_current_lesson_once(
+                        message.from_user.id
+                    )
+                    if completed_error:
+                        await message.answer(t(completed_error, user_lang))
+                        return
+                    await trial_service.mark_trial_completed(user, getattr(completed_lesson, "id", None))
+                    await session.commit()
+                    await _send_trial_completed_offer(respond=message.answer, lang=user_lang)
+                    return
+
                 _, _, next_lesson, next_error = await engine.activate_next_lesson(message.from_user.id)
                 if next_error == "course_no_next_lesson":
                     _, refreshed_progress, refreshed_lesson, refreshed_error = await engine.get_current_lesson(
@@ -1330,6 +1361,19 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
         if progress.waiting_for == "next_study_time":
             # Agar kimdir eski holatda qolib ketgan bo’lsa — avtomatik o’tkazib yuborish
+            trial_service = CourseTrialService(session)
+            if not trial_service.is_paid_user(user):
+                _, _, completed_lesson, completed_error = await engine.complete_current_lesson_once(
+                    message.from_user.id
+                )
+                if completed_error:
+                    await message.answer(t(completed_error, user_lang))
+                    return
+                await trial_service.mark_trial_completed(user, getattr(completed_lesson, "id", None))
+                await session.commit()
+                await _send_trial_completed_offer(respond=message.answer, lang=user_lang)
+                return
+
             await engine.set_next_study_at(message.from_user.id, None)
             _, rp, rl, re_err = await engine.get_current_lesson(message.from_user.id)
             if not re_err:

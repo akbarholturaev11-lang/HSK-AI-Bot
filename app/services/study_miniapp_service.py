@@ -82,11 +82,14 @@ class StudyMiniAppService:
             return {"ok": False, "error": "access_start_first"}
 
         paid = self.is_paid_user(user)
+        limits = dict(PAID_LIMITS if paid else TRIAL_LIMITS)
+        if not paid and getattr(user, "trial_quiz_explanation_used_at", None) is None:
+            limits["wrong_analysis"] = True
         return {
             "status": "active" if paid else "trial",
             "language": getattr(user, "language", None) or "uz",
             "level": await self._resolve_level(user),
-            "limits": dict(PAID_LIMITS if paid else TRIAL_LIMITS),
+            "limits": limits,
         }
 
     async def send_subscription_menu(self, bot, telegram_id: int) -> bool:
@@ -141,10 +144,12 @@ class StudyMiniAppService:
         if not user:
             return False
 
-        if not self.is_paid_user(user):
-            return await self.send_subscription_menu(bot, telegram_id)
-
         lang = getattr(user, "language", None) or "ru"
+        if not self.is_paid_user(user):
+            if getattr(user, "trial_quiz_explanation_used_at", None) is not None:
+                return await self.send_subscription_menu(bot, telegram_id)
+            user.trial_quiz_explanation_used_at = datetime.now(timezone.utc)
+
         user.learning_mode = "qa"
         user.voice_mode = "none"
         await self.session.commit()

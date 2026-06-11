@@ -17,6 +17,8 @@ from app.services.course_engine_service import (
 )
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.access_service import AccessService
+from app.services.course_trial_service import CourseTrialService
+from app.services.required_channel_service import RequiredChannelService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course import (
     lesson_selection_keyboard, review_choice_keyboard,
@@ -58,7 +60,6 @@ from app.bot.utils.workflow_message import (
     REMINDER_PANEL_MSG_ID,
     edit_callback_workflow_message,
 )
-import json
 from datetime import datetime, time, timezone
 
 
@@ -129,6 +130,97 @@ async def _send_course_access_offer(*, respond, lang: str, expired_from_course: 
     )
 
 
+async def _send_trial_locked_offer(*, respond, lang: str) -> None:
+    await _send_course_access_offer(
+        respond=respond,
+        lang=lang,
+        expired_from_course=False,
+    )
+
+
+def _trial_course_completed_text(lang: str) -> str:
+    texts = {
+        "uz": (
+            "🎉 <b>Bepul dars tugadi</b>\n\n"
+            "<blockquote>Siz kurs rejimini sinab ko'rdingiz: dars, quiz, xato tahlili va uyga vazifa.</blockquote>\n\n"
+            "Keyingi darslarni ochish uchun obuna oling."
+        ),
+        "ru": (
+            "🎉 <b>Бесплатный урок завершён</b>\n\n"
+            "<blockquote>Вы попробовали режим курса: урок, quiz, разбор ошибок и домашнее задание.</blockquote>\n\n"
+            "Чтобы открыть следующие уроки, оформите подписку."
+        ),
+        "tj": (
+            "🎉 <b>Дарси ройгон анҷом шуд</b>\n\n"
+            "<blockquote>Шумо реҷаи курсро санҷидед: дарс, quiz, таҳлили хатоҳо ва вазифаи хонагӣ.</blockquote>\n\n"
+            "Барои кушодани дарсҳои навбатӣ обуна гиред."
+        ),
+    }
+    return texts.get(lang, texts["ru"])
+
+
+async def _send_trial_completed_offer(*, respond, lang: str) -> None:
+    await respond(
+        _trial_course_completed_text(lang),
+        reply_markup=subscription_miniapp_keyboard(lang, source="course_trial_completed", mode="subscription"),
+        parse_mode="HTML",
+    )
+
+
+async def _ensure_trial_lesson_access(*, session, user, lesson, respond) -> bool:
+    if not user or not lesson:
+        return False
+
+    trial_service = CourseTrialService(session)
+    if trial_service.is_paid_user(user):
+        return True
+    if await trial_service.ensure_trial_lesson(user, lesson.id):
+        return True
+
+    lang = user.language if user and user.language else "ru"
+    await session.commit()
+    await _send_trial_locked_offer(respond=respond, lang=lang)
+    return False
+
+
+async def _guard_current_lesson_trial_access(*, session, user, lesson, respond) -> bool:
+    if not await _ensure_trial_lesson_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=respond,
+    ):
+        await session.commit()
+        return False
+    return True
+
+
+async def _maybe_show_force_sub_checkpoint(*, callback: CallbackQuery, session, user, step: str) -> bool:
+    trial_service = CourseTrialService(session)
+    if not trial_service.should_start_force_sub_at_step(step):
+        return False
+    if not trial_service.is_free_user(user):
+        return False
+
+    await trial_service.mark_force_sub_required(user)
+    await session.commit()
+
+    required_service = RequiredChannelService(session)
+    missing = await required_service.missing_channels(callback.bot, callback.from_user.id)
+    if not missing:
+        return False
+
+    lang = user.language if user and user.language else "ru"
+    await callback.answer(t("force_sub_required_alert", lang), show_alert=True)
+    await callback.message.answer(
+        required_service.build_required_text(missing, lang),
+        reply_markup=required_service.build_required_keyboard(missing, lang),
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+    )
+    return True
+
+
 async def _ensure_active_course_access(
     *,
     session,
@@ -138,7 +230,10 @@ async def _ensure_active_course_access(
 ) -> bool:
     was_in_course = getattr(user, "learning_mode", "qa") == "course"
     access_service = AccessService(session)
-    if await access_service.ensure_active_course_access(user):
+    await access_service.ensure_active_course_access(user)
+
+    trial_service = CourseTrialService(session)
+    if trial_service.is_paid_user(user) or trial_service.is_free_user(user):
         return True
 
     await session.commit()
@@ -447,13 +542,34 @@ async def course_pick_lesson_handler(callback: CallbackQuery, session):
     if await _block_if_course_disabled(callback, session):
         return
 
+    user_repo = UserRepository(session)
     engine = CourseEngineService(session)
 
-    lang = callback.from_user.language_code if callback.from_user.language_code in ["ru", "uz", "tj"] else "ru"
+    user = await user_repo.get_by_telegram_id(callback.from_user.id)
+    lang = user.language if user and user.language else (
+        callback.from_user.language_code if callback.from_user.language_code in ["ru", "uz", "tj"] else "ru"
+    )
 
     try:
         lesson_id = int(callback.data.split(":")[-1])
     except Exception:
+        await callback.answer()
+        return
+
+    lesson = await engine.lesson_repo.get_by_id(lesson_id)
+    if not lesson:
+        await callback.answer()
+        await callback.message.answer(t("course_no_lesson_found", lang))
+        return
+    if user and lesson.level not in _course_level_candidates(user.level):
+        await callback.answer(t("course_lesson_not_unlocked", lang), show_alert=True)
+        return
+    if user and not await _ensure_trial_lesson_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
         await callback.answer()
         return
 
@@ -558,8 +674,18 @@ async def run_course_entry_flow(
             waiting_for="none",
         )
 
-    # Kurs rejimiga kirish bilanoq menyuni ko'rsat
-    await respond(t("course_menu_title", lang), reply_markup=course_menu_keyboard(lang))
+    if progress.current_lesson_id:
+        current_lesson = await engine.lesson_repo.get_by_id(progress.current_lesson_id)
+        if current_lesson and not await _ensure_trial_lesson_access(
+            session=session,
+            user=user,
+            lesson=current_lesson,
+            respond=respond,
+        ):
+            return
+
+    if show_menu:
+        await respond(t("course_menu_title", lang), reply_markup=course_menu_keyboard(lang))
 
     if not progress.current_lesson_id:
         lessons, resolved_level = await _resolve_lessons_for_user_level(engine, user.level)
@@ -593,6 +719,18 @@ async def run_course_entry_flow(
                     lang=lang,
                     progress=p2,
                 )
+        return
+
+    trial_service = CourseTrialService(session)
+    if (
+        not trial_service.is_paid_user(user)
+        and getattr(progress, "current_step", None) == "completed"
+        and getattr(progress, "homework_status", None) == "completed"
+    ):
+        lesson = await engine.lesson_repo.get_by_id(progress.current_lesson_id)
+        await trial_service.mark_trial_completed(user, getattr(lesson, "id", None))
+        await session.commit()
+        await _send_trial_completed_offer(respond=respond, lang=lang)
         return
 
     if (
@@ -756,6 +894,14 @@ async def course_review_yes_handler(callback: CallbackQuery, session):
         await callback.answer()
         await callback.message.answer(t(error_key, lang))
         return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
 
     review_text = format_step(lesson, lang, "review") or _static_course_missing_text(lang)
 
@@ -818,10 +964,31 @@ async def course_review_no_handler(callback: CallbackQuery, session):
         await callback.answer()
         await callback.message.answer(t(current_error_key, lang))
         return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
 
     if getattr(progress, "homework_status", None) != "completed":
         await callback.answer()
         await callback.message.answer(t("course_complete_homework_first", lang))
+        return
+
+    trial_service = CourseTrialService(session)
+    if not trial_service.is_paid_user(user):
+        _, _, completed_lesson, completed_error = await engine.complete_current_lesson_once(callback.from_user.id)
+        if completed_error:
+            await callback.answer()
+            await callback.message.answer(t(completed_error, lang))
+            return
+        await trial_service.mark_trial_completed(user, getattr(completed_lesson, "id", None))
+        await session.commit()
+        await callback.answer()
+        await _send_trial_completed_offer(respond=callback.message.answer, lang=lang)
         return
 
     user, progress, lesson, next_lesson, error_key = await engine.complete_lesson_and_unlock_next(callback.from_user.id)
@@ -872,6 +1039,14 @@ async def course_progress_handler(callback: CallbackQuery, session):
     if error_key:
         await callback.answer()
         await callback.message.answer(t(error_key, lang))
+        return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
         return
 
     current_lesson_title = lesson.title if lesson else "—"
@@ -924,6 +1099,14 @@ async def course_review_last_handler(callback: CallbackQuery, state: FSMContext,
         await callback.answer()
         await callback.message.answer(t(error_key, lang))
         return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
 
     step = progress.current_step
     text = format_step(lesson, lang, step) or ""
@@ -950,6 +1133,20 @@ async def course_satisfied_yes_handler(callback: CallbackQuery, session):
         return
 
     lang = user.language if user.language else "ru"
+
+    current_user, _current_progress, current_lesson, current_error = await engine.get_current_lesson(callback.from_user.id)
+    if current_error:
+        await callback.answer()
+        await callback.message.answer(t(current_error, lang))
+        return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=current_user,
+        lesson=current_lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
 
     user, progress, lesson, error_key = await engine.mark_satisfied_and_go_to_homework(callback.from_user.id)
     if error_key:
@@ -993,6 +1190,20 @@ async def course_satisfied_no_handler(callback: CallbackQuery, session):
 
     lang = user.language if user.language else "ru"
 
+    current_user, _current_progress, current_lesson, current_error = await engine.get_current_lesson(callback.from_user.id)
+    if current_error:
+        await callback.answer()
+        await callback.message.answer(t(current_error, lang))
+        return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=current_user,
+        lesson=current_lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
+
     user, progress, lesson, error_key = await engine.mark_not_satisfied_and_stay(callback.from_user.id)
     if error_key:
         await callback.answer()
@@ -1025,6 +1236,14 @@ async def course_show_homework_handler(callback: CallbackQuery, session):
     if error_key:
         await callback.answer()
         await callback.message.answer(t(error_key, lang))
+        return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
         return
 
     if progress.current_step == "homework" and progress.homework_status != "completed":
@@ -1066,6 +1285,14 @@ async def course_homework_reread_handler(callback: CallbackQuery, session):
         await callback.answer()
         await callback.message.answer(t(error_key, lang))
         return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
 
     await engine.progress_repo.set_current_lesson_and_step(
         progress=progress,
@@ -1105,6 +1332,14 @@ async def course_start_next_lesson_handler(callback: CallbackQuery, session):
         await callback.answer()
         await callback.message.answer(t(current_error_key, lang))
         return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
 
     if progress.homework_status != "completed":
         can_skip_after_low_score = (
@@ -1117,6 +1352,21 @@ async def course_start_next_lesson_handler(callback: CallbackQuery, session):
             await callback.answer()
             await callback.message.answer(t("course_complete_homework_first", lang))
             return
+
+    trial_service = CourseTrialService(session)
+    if not trial_service.is_paid_user(user):
+        completed_user, completed_progress, completed_lesson, completed_error = await engine.complete_current_lesson_once(
+            callback.from_user.id
+        )
+        if completed_error:
+            await callback.answer()
+            await callback.message.answer(t(completed_error, lang))
+            return
+        await trial_service.mark_trial_completed(user, getattr(completed_lesson, "id", None))
+        await session.commit()
+        await callback.answer()
+        await _send_trial_completed_offer(respond=callback.message.answer, lang=lang)
+        return
 
     user, progress, lesson, next_lesson, error_key = await engine.complete_lesson_and_unlock_next(callback.from_user.id)
     if error_key:
@@ -1159,6 +1409,11 @@ async def course_level_upgrade_yes_handler(callback: CallbackQuery, session):
 
     lang = user.language if user.language else "ru"
 
+    if not CourseTrialService(session).is_paid_user(user):
+        await callback.answer()
+        await _send_trial_locked_offer(respond=callback.message.answer, lang=lang)
+        return
+
     user, progress, _completed_lesson, next_lesson, error_key = await engine.advance_to_next_level(callback.from_user.id)
     if error_key:
         await callback.answer()
@@ -1192,6 +1447,11 @@ async def course_level_upgrade_no_handler(callback: CallbackQuery, session):
         return
 
     lang = user.language if user.language else "ru"
+
+    if not CourseTrialService(session).is_paid_user(user):
+        await callback.answer()
+        await _send_trial_locked_offer(respond=callback.message.answer, lang=lang)
+        return
 
     _, _progress, lesson, error_key = await engine.complete_current_lesson_once(callback.from_user.id)
     if error_key:
@@ -1334,6 +1594,14 @@ async def _go_to_step(callback, session, step: str):
         await callback.answer()
         await callback.message.answer(t(error_key, lang))
         return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
 
     # V2 dars uchun V1 step nomlarini V2 ga remap qilamiz
     step = _v2_remap(step, lesson)
@@ -1387,6 +1655,20 @@ async def course_go_next_step(callback: CallbackQuery, session):
 
     lang = user.language if user.language else "ru"
 
+    current_user, _current_progress, current_lesson, current_error = await engine.get_current_lesson(callback.from_user.id)
+    if current_error:
+        await callback.answer()
+        await callback.message.answer(t(current_error, lang))
+        return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=current_user,
+        lesson=current_lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
+
     user, progress, lesson, error_key = await engine.go_to_next_step(callback.from_user.id)
     if error_key:
         await callback.answer()
@@ -1402,6 +1684,14 @@ async def course_go_next_step(callback: CallbackQuery, session):
             "quiz_result" if is_course_miniapp_supported(lesson) else "exercise_answer",
         )
         await session.commit()
+
+    if await _maybe_show_force_sub_checkpoint(
+        callback=callback,
+        session=session,
+        user=user,
+        step=step,
+    ):
+        return
 
     await callback.answer()
     await _send_step(callback.message.answer, user, lesson, step, lang, session)
@@ -1425,8 +1715,24 @@ async def course_repeat_step(callback: CallbackQuery, session):
         await callback.answer()
         await callback.message.answer(t(error_key, lang))
         return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
+        return
 
     step = progress.current_step
+    if await _maybe_show_force_sub_checkpoint(
+        callback=callback,
+        session=session,
+        user=user,
+        step=step,
+    ):
+        return
+
     await callback.answer()
     await _send_step(callback.message.answer, user, lesson, step, lang, session)
 
@@ -1444,6 +1750,20 @@ async def _finish_study_time_flow(callback: CallbackQuery, session, saved_text: 
 
     _, progress, lesson, err = await engine.get_current_lesson(callback.from_user.id)
     if err or not lesson:
+        return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        return
+
+    trial_service = CourseTrialService(session)
+    if not trial_service.is_paid_user(user):
+        await trial_service.mark_trial_completed(user, getattr(lesson, "id", None))
+        await session.commit()
+        await _send_trial_completed_offer(respond=callback.message.answer, lang=lang)
         return
 
     if getattr(progress, "waiting_for", None) == "review_choice":
@@ -1556,6 +1876,14 @@ async def _send_audio_file(callback: CallbackQuery, session, audio_type: str):
     user, progress, lesson, error_key = await engine.get_current_lesson(callback.from_user.id)
     if error_key or not lesson:
         await callback.answer(unavailable, show_alert=True)
+        return
+    if not await _guard_current_lesson_trial_access(
+        session=session,
+        user=user,
+        lesson=lesson,
+        respond=callback.message.answer,
+    ):
+        await callback.answer()
         return
 
     level = (lesson.level or "hsk1").lower()
