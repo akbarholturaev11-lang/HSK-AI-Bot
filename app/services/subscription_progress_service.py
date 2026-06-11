@@ -1,10 +1,7 @@
 from aiogram import Bot
 
-from app.bot.handlers.subscription import build_subscription_discount_progress_text, _referral_link
-from app.bot.keyboards.subscription import (
-    subscription_discount_progress_keyboard,
-    subscription_discount_ready_keyboard,
-)
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
+from app.bot.utils.i18n import t
 from app.services.discount_service import DiscountService
 
 
@@ -27,20 +24,17 @@ class SubscriptionProgressService:
         count, discount_eligible = await DiscountService(self.session).sync_referral_discount_progress(referrer_user)
 
         try:
-            referral_link = await _referral_link(bot, referrer_user.referral_code)
-            text = await build_subscription_discount_progress_text(
-                self.session,
+            text = t("subscription_miniapp_entry_text", lang)
+            keyboard = subscription_miniapp_keyboard(
                 lang,
-                referral_link,
-                count,
-                discount_eligible=discount_eligible,
-                discount_used=referrer_user.discount_used,
-                payment_method=referrer_user.payment_method,
-            )
-            keyboard = (
-                subscription_discount_ready_keyboard(lang)
-                if discount_eligible and not referrer_user.discount_used
-                else subscription_discount_progress_keyboard(lang)
+                source="referral_progress_update",
+                mode="referral_discount",
+                text=t(
+                    "subscription_referral_discount_button"
+                    if discount_eligible and not referrer_user.discount_used
+                    else "subscription_miniapp_open_button",
+                    lang,
+                ),
             )
             await bot.edit_message_text(
                 chat_id=referrer_user.discount_progress_chat_id,

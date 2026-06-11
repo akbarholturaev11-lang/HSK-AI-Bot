@@ -11,7 +11,7 @@ def main_menu_keyboard(lang: str) -> ReplyKeyboardMarkup:
                 KeyboardButton(text=t("menu_profile", lang)),
                 KeyboardButton(
                     text=t("menu_subscription", lang),
-                    web_app=WebAppInfo(url=subscription_miniapp_url(lang, source="main_menu")),
+                    web_app=WebAppInfo(url=subscription_miniapp_url(lang, source="main_menu", mode="subscription")),
                 ),
             ],
             [

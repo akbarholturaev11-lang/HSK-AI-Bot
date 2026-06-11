@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from app.bot.keyboards.subscription import subscription_miniapp_button
 from app.bot.utils.i18n import t
 
 
@@ -13,9 +14,11 @@ def referral_daily_limit_keyboard(lang: str) -> InlineKeyboardMarkup:
                 )
             ],
             [
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="daily_limit",
+                    mode="subscription",
                     text=t("menu_subscription", lang),
-                    callback_data="subscription:open",
                 )
             ],
         ]
@@ -32,9 +35,11 @@ def photo_limit_subscription_keyboard(lang: str) -> InlineKeyboardMarkup:
                 )
             ],
             [
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="photo_limit",
+                    mode="subscription",
                     text=t("menu_subscription", lang),
-                    callback_data="subscription:open",
                 )
             ],
         ]

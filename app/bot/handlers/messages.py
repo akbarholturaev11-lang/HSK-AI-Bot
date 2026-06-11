@@ -677,7 +677,7 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         await session.commit()
         await message.answer(
             t("voice_subscription_required", user_lang),
-            reply_markup=subscription_miniapp_keyboard(user_lang, source="voice_required"),
+            reply_markup=subscription_miniapp_keyboard(user_lang, source="voice_required", mode="subscription"),
             parse_mode="HTML",
         )
         return

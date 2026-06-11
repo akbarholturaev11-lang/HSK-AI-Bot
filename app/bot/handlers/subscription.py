@@ -28,6 +28,7 @@ from app.bot.keyboards.subscription import (
     feedback_discount_plan_keyboard,
     subscription_discount_progress_keyboard,
     subscription_discount_ready_keyboard,
+    subscription_miniapp_button,
     subscription_miniapp_keyboard,
     payment_method_keyboard,
 )
@@ -573,27 +574,37 @@ async def build_subscription_discount_progress_text(
 def build_subscription_main_keyboard_for_user(user, lang: str, show_referral: bool = True) -> InlineKeyboardMarkup:
     rows = [
         [
-            InlineKeyboardButton(
+            subscription_miniapp_button(
+                lang,
+                source="legacy_subscription_main",
+                mode="subscription",
                 text=t("subscription_button_10_days", lang),
-                callback_data="subscription:plan:10_days",
+                plan="10_days",
             ),
-            InlineKeyboardButton(
+            subscription_miniapp_button(
+                lang,
+                source="legacy_subscription_main",
+                mode="subscription",
                 text=t("subscription_button_1_month", lang),
-                callback_data="subscription:plan:1_month",
+                plan="1_month",
             ),
         ],
     ]
     if show_referral and not user.discount_used:
         rows.append([
-            InlineKeyboardButton(
+            subscription_miniapp_button(
+                lang,
+                source="legacy_subscription_main_referral",
+                mode="referral_discount",
                 text=t("subscription_referral_discount_button", lang),
-                callback_data="subscription:referral_discount",
             )
         ])
     rows.append([
-        InlineKeyboardButton(
+        subscription_miniapp_button(
+            lang,
+            source="legacy_subscription_main_back",
+            mode="subscription",
             text=t("payment_back", lang),
-            callback_data="subscription:change_payment_method",
         ),
     ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -791,6 +802,45 @@ async def _replace_with_expired_offer(callback: CallbackQuery, lang: str, key: s
     )
 
 
+def _miniapp_button_text(lang: str, mode: str) -> str:
+    if mode == "admin_discount":
+        return t("subscription_admin_discount_button", lang)
+    if mode == "feedback_discount":
+        return t("feedback_price_offer_button", lang)
+    if mode == "referral_discount":
+        return t("subscription_referral_discount_button", lang)
+    return t("subscription_miniapp_open_button", lang)
+
+
+async def _replace_with_miniapp_entry(
+    callback: CallbackQuery,
+    lang: str,
+    *,
+    source: str,
+    mode: str = "subscription",
+    campaign_id: int | None = None,
+    feedback_id: int | None = None,
+    plan: str | None = None,
+    method: str | None = None,
+) -> None:
+    await _replace_with_text(
+        callback,
+        t("subscription_miniapp_entry_text", lang),
+        reply_markup=subscription_miniapp_keyboard(
+            lang,
+            source=source,
+            mode=mode,
+            campaign_id=campaign_id,
+            feedback_id=feedback_id,
+            plan=plan,
+            method=method,
+            text=_miniapp_button_text(lang, mode),
+        ),
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+    )
+
+
 async def build_checkout_text(session, lang: str, checkout_info: dict, *, qr_available: bool = True) -> str:
     plan_type = checkout_info["plan_type"]
     base_amount = checkout_info["base_amount"]
@@ -887,10 +937,11 @@ async def subscription_open_handler(callback: CallbackQuery, session):
     lang = user.language if user.language else "ru"
 
     await callback.answer()
-    await callback.message.edit_text(
-        t("subscription_miniapp_entry_text", lang),
-        reply_markup=subscription_miniapp_keyboard(lang, source="subscription_open"),
-        parse_mode="HTML"
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="subscription_open",
+        mode="subscription",
     )
 
 
@@ -907,19 +958,12 @@ async def discount_offer_open_handler(callback: CallbackQuery, session):
     parts = callback.data.split(":")
     campaign_id = _parse_campaign_id(parts[2] if len(parts) > 2 else None)
     await callback.answer()
-
-    view = await build_admin_discount_payment_view(session, user, lang, campaign_id=campaign_id)
-    if not view:
-        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
-        return
-
-    text, keyboard = view
-    await _replace_with_text(
+    await _replace_with_miniapp_entry(
         callback,
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
-        disable_web_page_preview=True,
+        lang,
+        source="legacy_admin_discount_open",
+        mode="admin_discount",
+        campaign_id=campaign_id,
     )
 
 
@@ -933,20 +977,13 @@ async def feedback_discount_open_handler(callback: CallbackQuery, session):
 
     lang = user.language or "ru"
     feedback_id = int(callback.data.split(":")[2])
-    view = await build_feedback_discount_payment_view(session, user, lang, feedback_id)
-    if not view:
-        await callback.answer()
-        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
-        return
-
     await callback.answer()
-    text, keyboard = view
-    await _replace_with_text(
+    await _replace_with_miniapp_entry(
         callback,
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
-        disable_web_page_preview=True,
+        lang,
+        source="legacy_feedback_discount_open",
+        mode="feedback_discount",
+        feedback_id=feedback_id,
     )
 
 
@@ -968,29 +1005,14 @@ async def feedback_discount_method_handler(callback: CallbackQuery, session):
         await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
         return
 
-    user.payment_method = payment_method
-    await session.flush()
-
-    view = await build_feedback_discount_plan_view(
-        session,
-        user,
-        lang,
-        feedback_id,
-        payment_method,
-    )
-    if not view:
-        await callback.answer()
-        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
-        return
-
     await callback.answer()
-    text, keyboard = view
-    await _replace_with_text(
+    await _replace_with_miniapp_entry(
         callback,
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
-        disable_web_page_preview=True,
+        lang,
+        source="legacy_feedback_discount_method",
+        mode="feedback_discount",
+        feedback_id=feedback_id,
+        method=payment_method,
     )
 
 
@@ -1013,32 +1035,16 @@ async def feedback_discount_plan_handler(callback: CallbackQuery, session):
         await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
         return
 
-    feedback = await _get_available_feedback_offer(session, user, feedback_id)
-    if not feedback:
-        await callback.answer()
-        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
-        return
-
-    user.payment_method = payment_method
-    await session.flush()
-
-    payment_service = PaymentService(session)
-    payment, checkout_info, error_key = await payment_service.create_checkout_draft(
-        telegram_id=callback.from_user.id,
-        plan_type=plan,
-        force_feedback_discount=True,
-        feedback_id=feedback.id,
-    )
-
-    if not payment or not checkout_info or checkout_info.get("discount_source") != "feedback_price_offer":
-        await callback.answer()
-        await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
-        return
-
-    await user_repo.set_selected_plan_type(user, plan)
-    await _show_checkout(callback, user_repo, user, lang, plan, checkout_info)
-    await session.commit()
     await callback.answer()
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_feedback_discount_plan",
+        mode="feedback_discount",
+        feedback_id=feedback_id,
+        method=payment_method,
+        plan=plan,
+    )
 
 
 @router.callback_query(F.data.startswith("discount_offer:method:"))
@@ -1063,29 +1069,15 @@ async def discount_offer_method_handler(callback: CallbackQuery, session):
         await _replace_with_expired_offer(callback, user.language or "ru", "subscription_admin_discount_expired")
         return
 
-    user.payment_method = payment_method
-    await session.commit()
-
     lang = user.language or "ru"
-    view = await build_admin_discount_plan_view(
-        session,
-        user,
-        lang,
-        user.payment_method,
-        campaign_id=campaign_id,
-    )
     await callback.answer()
-    if not view:
-        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
-        return
-
-    text, keyboard = view
-    await _replace_with_text(
+    await _replace_with_miniapp_entry(
         callback,
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
-        disable_web_page_preview=True,
+        lang,
+        source="legacy_admin_discount_method",
+        mode="admin_discount",
+        campaign_id=campaign_id,
+        method=payment_method,
     )
 
 
@@ -1099,16 +1091,12 @@ async def discount_offer_change_payment_handler(callback: CallbackQuery, session
     parts = callback.data.split(":")
     campaign_id = _parse_campaign_id(parts[2] if len(parts) > 2 else None)
     await callback.answer()
-    view = await build_admin_discount_payment_view(session, user, lang, campaign_id=campaign_id)
-    if not view:
-        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
-        return
-    text, keyboard = view
-    await _replace_with_text(
+    await _replace_with_miniapp_entry(
         callback,
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
+        lang,
+        source="legacy_admin_discount_change_payment",
+        mode="admin_discount",
+        campaign_id=campaign_id,
     )
 
 
@@ -1121,17 +1109,13 @@ async def discount_offer_back_entry_handler(callback: CallbackQuery, session):
     lang = user.language or "ru"
     parts = callback.data.split(":")
     campaign_id = _parse_campaign_id(parts[2] if len(parts) > 2 else None)
-    view = await build_admin_discount_entry_view(session, user, lang, campaign_id=campaign_id)
     await callback.answer()
-    if not view:
-        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
-        return
-    text, keyboard = view
-    await _replace_with_text(
+    await _replace_with_miniapp_entry(
         callback,
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
+        lang,
+        source="legacy_admin_discount_back_entry",
+        mode="admin_discount",
+        campaign_id=campaign_id,
     )
 
 
@@ -1144,17 +1128,13 @@ async def discount_offer_back_payment_handler(callback: CallbackQuery, session):
     lang = user.language or "ru"
     parts = callback.data.split(":")
     campaign_id = _parse_campaign_id(parts[2] if len(parts) > 2 else None)
-    view = await build_admin_discount_payment_view(session, user, lang, campaign_id=campaign_id)
     await callback.answer()
-    if not view:
-        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
-        return
-    text, keyboard = view
-    await _replace_with_text(
+    await _replace_with_miniapp_entry(
         callback,
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
+        lang,
+        source="legacy_admin_discount_back_payment",
+        mode="admin_discount",
+        campaign_id=campaign_id,
     )
 
 
@@ -1179,36 +1159,14 @@ async def subscription_referral_discount_handler(callback: CallbackQuery, sessio
         await user_repo.start_discount_offer(user)
 
     await session.flush()
-    count, discount_eligible = await DiscountService(session).sync_referral_discount_progress(user)
+    await DiscountService(session).sync_referral_discount_progress(user)
 
     lang = user.language if user.language else "ru"
-    referral_link = await _referral_link(callback.bot, user.referral_code)
-
-    text = await build_subscription_discount_progress_text(
-        session,
+    await _replace_with_miniapp_entry(
+        callback,
         lang,
-        referral_link,
-        count,
-        discount_eligible=discount_eligible,
-        discount_used=user.discount_used,
-        payment_method=user.payment_method,
-    )
-    keyboard = (
-        subscription_discount_ready_keyboard(lang)
-        if discount_eligible and not user.discount_used
-        else subscription_discount_progress_keyboard(lang)
-    )
-
-    await callback.message.edit_text(
-        text,
-        reply_markup=keyboard,
-        disable_web_page_preview=True,
-    )
-
-    await user_repo.set_discount_progress_message(
-        user=user,
-        chat_id=callback.message.chat.id,
-        message_id=callback.message.message_id,
+        source="legacy_referral_discount",
+        mode="referral_discount",
     )
     await session.commit()
     await callback.answer()
@@ -1224,17 +1182,16 @@ async def subscription_back_to_main_handler(callback: CallbackQuery, session):
         return
 
     lang = user.language if user.language else "ru"
-    text, keyboard = await build_subscription_main_view(session, user, lang)
-
-    await callback.message.edit_text(
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
-        disable_web_page_preview=True,
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_subscription_back",
+        mode="subscription",
     )
 
     await user_repo.clear_discount_progress_message(user)
     await session.commit()
+    await callback.answer()
 
 
 @router.callback_query(F.data == "payment:visa")
@@ -1247,16 +1204,13 @@ async def payment_visa_handler(callback: CallbackQuery, session):
     if not user:
         return
 
-    user.payment_method = "visa"
-    await session.commit()
-
     lang = user.language if user.language else "ru"
-    text, keyboard = await build_subscription_main_view(session, user, lang)
-
-    await callback.message.edit_text(
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_payment_visa",
+        mode="subscription",
+        method="visa",
     )
 
 
@@ -1270,16 +1224,13 @@ async def payment_alipay_handler(callback: CallbackQuery, session):
     if not user:
         return
 
-    user.payment_method = "alipay"
-    await session.commit()
-
     lang = user.language if user.language else "ru"
-    text, keyboard = await build_subscription_main_view(session, user, lang)
-
-    await callback.message.edit_text(
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_payment_alipay",
+        mode="subscription",
+        method="alipay",
     )
 
 
@@ -1293,16 +1244,13 @@ async def payment_wechat_handler(callback: CallbackQuery, session):
     if not user:
         return
 
-    user.payment_method = "wechat"
-    await session.commit()
-
     lang = user.language if user.language else "ru"
-    text, keyboard = await build_subscription_main_view(session, user, lang)
-
-    await callback.message.edit_text(
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_payment_wechat",
+        mode="subscription",
+        method="wechat",
     )
 
 
@@ -1321,74 +1269,30 @@ async def checkout_change_plan_handler(callback: CallbackQuery, session):
     await user_repo.set_selected_plan_type(user, None)
     await session.commit()
 
+    mode = "subscription"
+    campaign_id = None
+    feedback_id = None
     if draft and draft.discount_source == "admin_campaign":
-        view = await build_admin_discount_plan_view(
-            session,
-            user,
-            lang,
-            draft.payment_method or user.payment_method or "visa",
-            campaign_id=draft.discount_campaign_id,
-        )
-        if not view:
-            await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
-            return
-        text, keyboard = view
-        await _replace_with_text(
-            callback,
-            text,
-            reply_markup=keyboard,
-            parse_mode="HTML",
-            disable_web_page_preview=True,
-        )
-        await callback.answer()
-        return
-
-    if draft and draft.discount_source == "feedback_price_offer":
+        mode = "admin_discount"
+        campaign_id = draft.discount_campaign_id
+    elif draft and draft.discount_source == "feedback_price_offer":
+        mode = "feedback_discount"
         feedback = await BotFeedbackRepository(session).get_latest_available_price_offer(callback.from_user.id)
-        if not feedback:
-            await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
-            return
-        view = await build_feedback_discount_plan_view(
-            session,
-            user,
-            lang,
-            feedback.id,
-            draft.payment_method or user.payment_method or "visa",
-        )
-        if not view:
-            await _replace_with_expired_offer(callback, lang, "feedback_price_offer_expired")
-            return
-        text, keyboard = view
-        await _replace_with_text(
-            callback,
-            text,
-            reply_markup=keyboard,
-            parse_mode="HTML",
-            disable_web_page_preview=True,
-        )
-        await callback.answer()
-        return
+        feedback_id = feedback.id if feedback else None
+    elif draft and draft.discount_source == "referral":
+        mode = "referral_discount"
 
-    text, keyboard = await build_subscription_main_view(session, user, lang)
-
-    try:
-        await callback.message.edit_text(
-            text,
-            reply_markup=keyboard,
-            parse_mode="HTML",
-            disable_web_page_preview=True,
-        )
-    except Exception:
-        # message is a photo (QR checkout) — delete and send new text message
-        await callback.message.delete()
-        await callback.message.answer(
-            text,
-            reply_markup=keyboard,
-            parse_mode="HTML",
-            disable_web_page_preview=True,
-        )
-
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_checkout_change_plan",
+        mode=mode,
+        campaign_id=campaign_id,
+        feedback_id=feedback_id,
+        method=(draft.payment_method if draft else None) or user.payment_method,
+    )
     await callback.answer()
+    return
 
 
 async def _show_checkout(callback: CallbackQuery, user_repo: UserRepository, user, lang: str, plan: str, checkout_info: dict):
@@ -1489,43 +1393,15 @@ async def discount_offer_plan_handler(callback: CallbackQuery, session):
         await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
         return
 
-    if not payment_method:
-        view = await build_admin_discount_payment_view(session, user, lang, campaign_id=campaign_id)
-        if not view:
-            await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
-            return
-        text, keyboard = view
-        await _replace_with_text(
-            callback,
-            text,
-            reply_markup=keyboard,
-            parse_mode="HTML",
-        )
-        return
-
-    user.payment_method = payment_method
-    await session.flush()
-
-    payment_service = PaymentService(session)
-    payment, checkout_info, error_key = await payment_service.create_checkout_draft(
-        telegram_id=callback.from_user.id,
-        plan_type=plan,
-        force_admin_discount=True,
-        admin_discount_campaign_id=campaign_id,
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_admin_discount_plan",
+        mode="admin_discount",
+        campaign_id=campaign_id,
+        method=payment_method,
+        plan=plan,
     )
-
-    if (
-        not payment
-        or not checkout_info
-        or checkout_info.get("discount_source") != "admin_campaign"
-        or (campaign_id and checkout_info.get("discount_campaign_id") != campaign_id)
-    ):
-        await _replace_with_expired_offer(callback, lang, "subscription_admin_discount_expired")
-        return
-
-    await user_repo.set_selected_plan_type(user, plan)
-    await _show_checkout(callback, user_repo, user, lang, plan, checkout_info)
-    await session.commit()
 
 
 @router.callback_query(F.data.startswith("subscription:plan:"))
@@ -1540,30 +1416,15 @@ async def subscription_plan_handler(callback: CallbackQuery, session):
 
     lang = user.language or "ru"
 
-    if not user.payment_method:
-        await callback.message.edit_text(
-            t("payment_method_choose", lang),
-            reply_markup=payment_method_keyboard(lang),
-            parse_mode="HTML",
-        )
-        return
-
     plan = callback.data.split(":")[-1]
-
-    payment_service = PaymentService(session)
-    payment, checkout_info, error_key = await payment_service.create_checkout_draft(
-        telegram_id=callback.from_user.id,
-        plan_type=plan,
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_subscription_plan",
+        mode="subscription",
+        plan=plan,
+        method=user.payment_method,
     )
-
-    if not payment or not checkout_info:
-        if error_key:
-            await callback.message.answer(t(error_key, lang))
-        return
-
-    await user_repo.set_selected_plan_type(user, plan)
-    await _show_checkout(callback, user_repo, user, lang, plan, checkout_info)
-    await session.commit()
 
 
 @router.callback_query(F.data == "payment:back")
@@ -1586,12 +1447,12 @@ async def payment_retry_handler(callback: CallbackQuery, session):
         return
 
     lang = user.language if user.language else "ru"
-    text, keyboard = await build_subscription_main_view(session, user, lang)
     await callback.answer()
-    await callback.message.answer(
-        text,
-        reply_markup=keyboard,
-        parse_mode="HTML",
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_payment_retry",
+        mode="subscription",
     )
 
 
@@ -1607,8 +1468,9 @@ async def subscription_change_payment_method_handler(callback: CallbackQuery, se
 
     lang = user.language if user.language else "ru"
 
-    await callback.message.edit_text(
-        t("payment_method_choose", lang),
-        reply_markup=payment_method_keyboard(lang),
-        parse_mode="HTML",
+    await _replace_with_miniapp_entry(
+        callback,
+        lang,
+        source="legacy_change_payment_method",
+        mode="subscription",
     )

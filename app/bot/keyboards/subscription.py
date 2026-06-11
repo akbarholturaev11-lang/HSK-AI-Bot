@@ -4,13 +4,54 @@ from app.bot.utils.course_miniapp import subscription_miniapp_url
 from app.bot.utils.i18n import t
 
 
-def subscription_miniapp_keyboard(lang: str, source: str = "subscription_button") -> InlineKeyboardMarkup:
+def subscription_miniapp_button(
+    lang: str,
+    source: str = "subscription_button",
+    text: str | None = None,
+    mode: str | None = None,
+    campaign_id: int | None = None,
+    feedback_id: int | None = None,
+    plan: str | None = None,
+    method: str | None = None,
+) -> InlineKeyboardButton:
+    return InlineKeyboardButton(
+        text=text or t("subscription_miniapp_open_button", lang),
+        web_app=WebAppInfo(
+            url=subscription_miniapp_url(
+                lang,
+                source=source,
+                mode=mode,
+                campaign_id=campaign_id,
+                feedback_id=feedback_id,
+                plan=plan,
+                method=method,
+            )
+        ),
+    )
+
+
+def subscription_miniapp_keyboard(
+    lang: str,
+    source: str = "subscription_button",
+    text: str | None = None,
+    mode: str | None = None,
+    campaign_id: int | None = None,
+    feedback_id: int | None = None,
+    plan: str | None = None,
+    method: str | None = None,
+) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
-                    text=t("subscription_miniapp_open_button", lang),
-                    web_app=WebAppInfo(url=subscription_miniapp_url(lang, source=source)),
+                subscription_miniapp_button(
+                    lang,
+                    source=source,
+                    text=text,
+                    mode=mode,
+                    campaign_id=campaign_id,
+                    feedback_id=feedback_id,
+                    plan=plan,
+                    method=method,
                 )
             ]
         ]
@@ -23,26 +64,36 @@ def subscription_main_keyboard(lang: str, show_discount: bool = True) -> InlineK
     # Invite button shown FIRST — only if user hasn't used discount yet
     if show_discount:
         rows.append([
-            InlineKeyboardButton(
+            subscription_miniapp_button(
+                lang,
+                source="legacy_referral_discount",
+                mode="referral_discount",
                 text=t("subscription_referral_discount_button", lang),
-                callback_data="subscription:referral_discount",
             )
         ])
 
     rows.append([
-        InlineKeyboardButton(
+        subscription_miniapp_button(
+            lang,
+            source="legacy_plan",
+            mode="subscription",
             text=t("subscription_button_10_days", lang),
-            callback_data="subscription:plan:10_days",
+            plan="10_days",
         ),
-        InlineKeyboardButton(
+        subscription_miniapp_button(
+            lang,
+            source="legacy_plan",
+            mode="subscription",
             text=t("subscription_button_1_month", lang),
-            callback_data="subscription:plan:1_month",
+            plan="1_month",
         ),
     ])
     rows.append([
-        InlineKeyboardButton(
+        subscription_miniapp_button(
+            lang,
+            source="legacy_change_payment",
+            mode="subscription",
             text=t("payment_back", lang),
-            callback_data="subscription:change_payment_method",
         ),
     ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -53,9 +104,11 @@ def subscription_discount_progress_keyboard(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="legacy_referral_progress",
+                    mode="referral_discount",
                     text=t("subscription_back_to_main", lang),
-                    callback_data="subscription:back_to_main",
                 )
             ]
         ]
@@ -67,19 +120,27 @@ def subscription_discount_ready_keyboard(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="legacy_referral_ready",
+                    mode="referral_discount",
                     text=t("subscription_button_10_days", lang),
-                    callback_data="subscription:plan:10_days",
+                    plan="10_days",
                 ),
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="legacy_referral_ready",
+                    mode="referral_discount",
                     text=t("subscription_button_1_month", lang),
-                    callback_data="subscription:plan:1_month",
+                    plan="1_month",
                 ),
             ],
             [
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="legacy_referral_ready_back",
+                    mode="referral_discount",
                     text=t("subscription_back_to_main", lang),
-                    callback_data="subscription:back_to_main",
                 ),
             ],
         ]
@@ -89,13 +150,18 @@ def subscription_discount_ready_keyboard(lang: str) -> InlineKeyboardMarkup:
 def payment_method_keyboard(lang: str):
     return InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(text=t("payment_method_visa_button", lang), callback_data="payment:visa"),
+            subscription_miniapp_button(
+                lang,
+                source="legacy_payment_method",
+                text=t("payment_method_visa_button", lang),
+                method="visa",
+            ),
         ],
         [
-            InlineKeyboardButton(text="🇨🇳 Alipay", callback_data="payment:alipay"),
+            subscription_miniapp_button(lang, source="legacy_payment_method", text="🇨🇳 Alipay", method="alipay"),
         ],
         [
-            InlineKeyboardButton(text="🇨🇳 WeChat Pay", callback_data="payment:wechat"),
+            subscription_miniapp_button(lang, source="legacy_payment_method", text="🇨🇳 WeChat Pay", method="wechat"),
         ],
         [
             InlineKeyboardButton(text=t("payment_back", lang), callback_data="payment:back"),
@@ -118,12 +184,16 @@ def discount_payment_method_keyboard(
     for method in methods:
         if method not in labels:
             continue
-        callback_data = (
-            f"discount_offer:method:{campaign_id}:{method}"
-            if campaign_id
-            else f"discount_offer:method:{method}"
-        )
-        rows.append([InlineKeyboardButton(text=labels[method], callback_data=callback_data)])
+        rows.append([
+            subscription_miniapp_button(
+                lang,
+                source="legacy_admin_discount_method",
+                mode="admin_discount",
+                text=labels[method],
+                campaign_id=campaign_id,
+                method=method,
+            )
+        ])
 
     back_callback = f"discount_offer:back_entry:{campaign_id}" if campaign_id else "discount_offer:back_entry"
     rows.append([InlineKeyboardButton(text=t("payment_back", lang), callback_data=back_callback)])
@@ -131,13 +201,15 @@ def discount_payment_method_keyboard(
 
 
 def admin_discount_entry_keyboard(lang: str, campaign_id: int | None = None) -> InlineKeyboardMarkup:
-    callback_data = f"discount_offer:open:{campaign_id}" if campaign_id else "discount_offer:open"
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="admin_discount",
+                    mode="admin_discount",
+                    campaign_id=campaign_id,
                     text=t("subscription_admin_discount_button", lang),
-                    callback_data=callback_data,
                 )
             ]
         ]
@@ -155,17 +227,34 @@ def admin_discount_plan_keyboard(
     plan_buttons = []
     for plan in plans:
         if campaign_id and payment_method:
-            callback_data = f"discount_offer:plan:{campaign_id}:{payment_method}:{plan}"
-        elif payment_method:
-            callback_data = f"discount_offer:plan:{payment_method}:{plan}"
-        else:
-            callback_data = f"discount_offer:plan:{plan}"
-        plan_buttons.append(
-            InlineKeyboardButton(
+            button = subscription_miniapp_button(
+                lang,
+                source="legacy_admin_discount_plan",
+                mode="admin_discount",
+                campaign_id=campaign_id,
+                method=payment_method,
+                plan=plan,
                 text=t("subscription_button_10_days" if plan == "10_days" else "subscription_button_1_month", lang),
-                callback_data=callback_data,
             )
-        )
+        elif payment_method:
+            button = subscription_miniapp_button(
+                lang,
+                source="legacy_admin_discount_plan",
+                mode="admin_discount",
+                method=payment_method,
+                plan=plan,
+                text=t("subscription_button_10_days" if plan == "10_days" else "subscription_button_1_month", lang),
+            )
+        else:
+            button = subscription_miniapp_button(
+                lang,
+                source="legacy_admin_discount_plan",
+                mode="admin_discount",
+                campaign_id=campaign_id,
+                plan=plan,
+                text=t("subscription_button_10_days" if plan == "10_days" else "subscription_button_1_month", lang),
+            )
+        plan_buttons.append(button)
 
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -188,10 +277,14 @@ def feedback_discount_payment_method_keyboard(feedback_id: int, lang: str):
     }
     return InlineKeyboardMarkup(inline_keyboard=[
         [
-            InlineKeyboardButton(
-                text=label,
-                callback_data=f"feedback_discount:method:{feedback_id}:{method}",
-            )
+                subscription_miniapp_button(
+                    lang,
+                    source="legacy_feedback_discount_method",
+                    mode="feedback_discount",
+                    feedback_id=feedback_id,
+                    text=label,
+                    method=method,
+                )
         ]
         for method, label in labels.items()
     ] + [
@@ -209,19 +302,32 @@ def feedback_discount_plan_keyboard(
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="legacy_feedback_discount_plan",
+                    mode="feedback_discount",
+                    feedback_id=feedback_id,
+                    method=payment_method,
+                    plan="10_days",
                     text=t("subscription_button_10_days", lang),
-                    callback_data=f"feedback_discount:plan:{feedback_id}:{payment_method}:10_days",
                 ),
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="legacy_feedback_discount_plan",
+                    mode="feedback_discount",
+                    feedback_id=feedback_id,
+                    method=payment_method,
+                    plan="1_month",
                     text=t("subscription_button_1_month", lang),
-                    callback_data=f"feedback_discount:plan:{feedback_id}:{payment_method}:1_month",
                 ),
             ],
             [
-                InlineKeyboardButton(
+                subscription_miniapp_button(
+                    lang,
+                    source="legacy_feedback_discount_back",
+                    mode="feedback_discount",
+                    feedback_id=feedback_id,
                     text=t("payment_back", lang),
-                    callback_data=f"feedback_discount:open:{feedback_id}",
                 )
             ],
         ]

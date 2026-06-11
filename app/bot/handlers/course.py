@@ -117,14 +117,14 @@ async def _send_course_access_offer(*, respond, lang: str, expired_from_course: 
         )
         await respond(
             t("subscription_miniapp_entry_text", lang),
-            reply_markup=subscription_miniapp_keyboard(lang, source="course_expired"),
+            reply_markup=subscription_miniapp_keyboard(lang, source="course_expired", mode="subscription"),
             parse_mode="HTML",
         )
         return
 
     await respond(
         _course_locked_offer_text(lang),
-        reply_markup=subscription_miniapp_keyboard(lang, source="course_locked"),
+        reply_markup=subscription_miniapp_keyboard(lang, source="course_locked", mode="subscription"),
         parse_mode="HTML",
     )
 

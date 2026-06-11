@@ -7,15 +7,9 @@ from aiogram import Bot
 
 from app.config import settings
 from app.bot.keyboards.subscription import admin_discount_entry_keyboard
-from app.bot.utils.discount_formatter import build_admin_discount_block, build_discount_plan_line
 from app.db.models.discount_campaign import DiscountCampaign
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.user_repo import UserRepository
-from app.services.subscription_currency_service import SubscriptionCurrencyService
-from app.services.subscription_price_service import SubscriptionPriceService
-
-
-PLANS = ("10_days", "1_month")
 
 
 @dataclass
@@ -108,50 +102,50 @@ class DiscountNotificationService:
             level=campaign.audience_level,
         )
 
-    async def _plan_price(self, plan_type: str, payment_method: Optional[str]) -> tuple[int, str]:
-        price = await SubscriptionPriceService(self.session).get_price(payment_method, plan_type)
-        if price:
-            return price.amount, price.currency
-        if payment_method in ("alipay", "wechat"):
-            return (66 if plan_type == "1_month" else 29), "¥"
-        return (89 if plan_type == "1_month" else 29), "TJS"
-
     async def _notification_text(
         self,
         campaign: DiscountCampaign,
         lang: str,
         user_payment_method: Optional[str],
     ) -> str:
-        payment_method = campaign.payment_method or user_payment_method
-        plans = [campaign.plan_type] if campaign.plan_type else list(PLANS)
-        lines = []
-        for plan in plans:
-            base, currency = await self._plan_price(plan, payment_method)
-            final = int(round(base * (100 - campaign.percent) / 100))
-            local_equivalents = ""
-            if (currency or "").strip().lower() in {"usd", "$"}:
-                local_equivalents = await SubscriptionCurrencyService(
-                    self.session
-                ).format_local_equivalents(final)
-            lines.append(
-                build_discount_plan_line(
-                    lang=lang,
-                    plan=plan,
-                    base=base,
-                    currency=currency,
-                    percent=campaign.percent,
-                    local_equivalents=local_equivalents,
-                )
-            )
-
-        return build_admin_discount_block(
-            lang=lang,
-            discount=campaign,
-            percent=campaign.percent,
-            starts_at=campaign.starts_at,
-            ends_at=campaign.ends_at,
-            quota_total=campaign.quota_total,
-            repeat_interval_days=campaign.repeat_interval_days,
-            plan_lines="\n".join(lines),
-            now=datetime.now(timezone.utc),
+        title = (
+            getattr(campaign, f"title_{lang}", None)
+            or campaign.title
+            or {
+                "tj": "Тахфифи махсус",
+                "ru": "Специальная скидка",
+                "uz": "Maxsus chegirma",
+            }.get(lang, "Maxsus chegirma")
         )
+        reason = (
+            getattr(campaign, f"reason_{lang}", None)
+            or campaign.reason
+            or ""
+        )
+        labels = {
+            "tj": {
+                "title": "🎁 <b>Тахфифи махсус омода аст</b>",
+                "discount": "Тахфиф",
+                "open": "Тариф ва пардохт дар Mini App кушода мешавад.",
+            },
+            "ru": {
+                "title": "🎁 <b>Специальная скидка готова</b>",
+                "discount": "Скидка",
+                "open": "Тариф и оплата откроются в Mini App.",
+            },
+            "uz": {
+                "title": "🎁 <b>Maxsus chegirma tayyor</b>",
+                "discount": "Chegirma",
+                "open": "Tarif va to'lov Mini App ichida ochiladi.",
+            },
+        }.get(lang, {})
+        lines = [
+            labels.get("title", "🎁 <b>Maxsus chegirma tayyor</b>"),
+            "",
+            f"<b>{title}</b>",
+            f"{labels.get('discount', 'Chegirma')}: <b>{campaign.percent}%</b>",
+        ]
+        if reason:
+            lines.extend(["", reason])
+        lines.extend(["", labels.get("open", "Tarif va to'lov Mini App ichida ochiladi.")])
+        return "\n".join(lines)

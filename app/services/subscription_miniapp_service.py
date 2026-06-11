@@ -21,6 +21,7 @@ from app.services.subscription_price_service import PLANS, SubscriptionPriceServ
 
 CARD_COUNTRIES = {"tj", "uz", "ru", "other"}
 MINIAPP_METHODS = {"visa", "alipay", "wechat"}
+MINIAPP_MODES = {"subscription", "referral_discount", "admin_discount", "feedback_discount"}
 PAYMENT_DETAILS_KEY = "subscription_payment_details"
 MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024
 _STATIC_PAYMENTS = Path(__file__).parent.parent / "static" / "payments"
@@ -61,7 +62,15 @@ class SubscriptionMiniAppService:
             return stored.strip()
         return settings.PAYMENT_DETAILS.strip()
 
-    async def overview(self, telegram_id: int, bot: Bot | None = None) -> dict[str, Any]:
+    async def overview(
+        self,
+        telegram_id: int,
+        bot: Bot | None = None,
+        mode: str | None = None,
+        campaign_id: int | None = None,
+        feedback_id: int | None = None,
+    ) -> dict[str, Any]:
+        mode = self._normalize_mode(mode)
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
@@ -71,7 +80,9 @@ class SubscriptionMiniAppService:
             return {
                 "ok": True,
                 "language": getattr(user, "language", None) or "uz",
+                "mode": mode,
                 "pending_payment": self._pending_payment_payload(pending_payment),
+                "offer": None,
                 "discount": None,
                 "prices": {},
                 "card_countries": ["tj", "uz", "ru", "other"],
@@ -84,13 +95,21 @@ class SubscriptionMiniAppService:
         await discount_service.sync_referral_discount_progress(user)
         await self.session.commit()
         payment_details = await self.payment_details()
+        prices = await self._prices_payload(
+            user,
+            mode=mode,
+            campaign_id=campaign_id,
+            feedback_id=feedback_id,
+        )
 
         return {
             "ok": True,
             "language": getattr(user, "language", None) or "uz",
+            "mode": mode,
             "pending_payment": None,
+            "offer": self._offer_payload(mode, prices),
             "discount": await self._discount_payload(user, bot=bot),
-            "prices": await self._prices_payload(user),
+            "prices": prices,
             "card_countries": ["tj", "uz", "ru", "other"],
             "payment_details": payment_details,
             "payment_details_configured": bool(payment_details),
@@ -118,12 +137,23 @@ class SubscriptionMiniAppService:
         card_country: str | None = None,
         bot: Bot | None = None,
         include_qr: bool = True,
+        mode: str | None = None,
+        campaign_id: int | None = None,
+        feedback_id: int | None = None,
     ) -> dict[str, Any]:
+        mode = self._normalize_mode(mode)
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
 
-        checkout_info = await self._checkout_info(user, plan_type, payment_method)
+        checkout_info = await self._checkout_info(
+            user,
+            plan_type,
+            payment_method,
+            mode=mode,
+            campaign_id=campaign_id,
+            feedback_id=feedback_id,
+        )
         if not checkout_info:
             return {"ok": False, "error": "payment_invalid_plan"}
         payment_details = await self.payment_details() if payment_method == "visa" else ""
@@ -160,7 +190,11 @@ class SubscriptionMiniAppService:
         card_country: str | None,
         screenshot_data_url: str,
         bot: Bot,
+        mode: str | None = None,
+        campaign_id: int | None = None,
+        feedback_id: int | None = None,
     ) -> dict[str, Any]:
+        mode = self._normalize_mode(mode)
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
@@ -178,7 +212,14 @@ class SubscriptionMiniAppService:
         if not screenshot:
             return {"ok": False, "error": "invalid_screenshot"}
 
-        checkout_info = await self._checkout_info(user, plan_type, payment_method)
+        checkout_info = await self._checkout_info(
+            user,
+            plan_type,
+            payment_method,
+            mode=mode,
+            campaign_id=campaign_id,
+            feedback_id=feedback_id,
+        )
         if not checkout_info:
             return {"ok": False, "error": "payment_invalid_plan"}
         payment_details = await self.payment_details() if payment_method == "visa" else ""
@@ -251,12 +292,26 @@ class SubscriptionMiniAppService:
             "status": "pending",
         }
 
-    async def _prices_payload(self, user) -> dict[str, dict[str, dict[str, Any]]]:
+    async def _prices_payload(
+        self,
+        user,
+        *,
+        mode: str,
+        campaign_id: int | None = None,
+        feedback_id: int | None = None,
+    ) -> dict[str, dict[str, dict[str, Any]]]:
         result: dict[str, dict[str, dict[str, Any]]] = {}
         for method in MINIAPP_METHODS:
             result[method] = {}
             for plan in PLANS:
-                info = await self._checkout_info(user, plan, method)
+                info = await self._checkout_info(
+                    user,
+                    plan,
+                    method,
+                    mode=mode,
+                    campaign_id=campaign_id,
+                    feedback_id=feedback_id,
+                )
                 if not info:
                     continue
                 result[method][plan] = {
@@ -266,8 +321,52 @@ class SubscriptionMiniAppService:
                     "discount_applied": info["discount_applied"],
                     "discount_percent": info["discount_percent"],
                     "discount_source": info["discount_source"],
+                    "discount_campaign_id": info["discount_campaign_id"],
+                    "discount_title": info["discount_title"],
+                    "discount_title_tj": info["discount_title_tj"],
+                    "discount_title_ru": info["discount_title_ru"],
+                    "discount_title_uz": info["discount_title_uz"],
+                    "discount_reason": info["discount_reason"],
+                    "discount_reason_tj": info["discount_reason_tj"],
+                    "discount_reason_ru": info["discount_reason_ru"],
+                    "discount_reason_uz": info["discount_reason_uz"],
+                    "discount_details": info["discount_details"],
                 }
         return result
+
+    def _offer_payload(self, mode: str, prices: dict[str, dict[str, dict[str, Any]]]) -> dict[str, Any] | None:
+        if mode not in {"admin_discount", "feedback_discount"}:
+            return None
+
+        offers = [
+            item
+            for plans in prices.values()
+            for item in plans.values()
+            if item.get("discount_applied")
+        ]
+        if not offers:
+            return {
+                "type": mode,
+                "available": False,
+                "percent": 0,
+            }
+
+        best = max(offers, key=lambda item: int(item.get("discount_percent") or 0))
+        return {
+            "type": mode,
+            "available": True,
+            "percent": int(best.get("discount_percent") or 0),
+            "campaign_id": best.get("discount_campaign_id"),
+            "title": best.get("discount_title"),
+            "title_tj": best.get("discount_title_tj"),
+            "title_ru": best.get("discount_title_ru"),
+            "title_uz": best.get("discount_title_uz"),
+            "reason": best.get("discount_reason"),
+            "reason_tj": best.get("discount_reason_tj"),
+            "reason_ru": best.get("discount_reason_ru"),
+            "reason_uz": best.get("discount_reason_uz"),
+            "details": best.get("discount_details"),
+        }
 
     async def _discount_payload(self, user, bot: Bot | None = None) -> dict[str, Any] | None:
         if getattr(user, "discount_used", False):
@@ -300,18 +399,52 @@ class SubscriptionMiniAppService:
             "submitted_at": payment.submitted_at.isoformat() if payment.submitted_at else "",
         }
 
-    async def _checkout_info(self, user, plan_type: str, payment_method: str) -> dict[str, Any] | None:
+    async def _checkout_info(
+        self,
+        user,
+        plan_type: str,
+        payment_method: str,
+        *,
+        mode: str = "subscription",
+        campaign_id: int | None = None,
+        feedback_id: int | None = None,
+    ) -> dict[str, Any] | None:
         if plan_type not in PLANS or payment_method not in MINIAPP_METHODS:
             return None
         price = await self.price_service.get_price(payment_method, plan_type)
         if not price:
             return None
-        discount = await DiscountService(self.session).get_best_discount(
-            user=user,
-            plan_type=plan_type,
-            payment_method=payment_method,
-            include_admin_campaigns=False,
-        )
+        discount_service = DiscountService(self.session)
+        if mode == "admin_discount":
+            if campaign_id:
+                discount = await discount_service.get_campaign_discount(
+                    campaign_id=campaign_id,
+                    user=user,
+                    plan_type=plan_type,
+                    payment_method=payment_method,
+                )
+            else:
+                discount = await discount_service.get_best_admin_discount(
+                    user=user,
+                    plan_type=plan_type,
+                    payment_method=payment_method,
+                )
+            if discount.source != "admin_campaign":
+                return None
+        elif mode == "feedback_discount":
+            discount = await discount_service.get_feedback_price_discount(
+                user=user,
+                feedback_id=feedback_id,
+            )
+            if discount.source != "feedback_price_offer":
+                return None
+        else:
+            discount = await discount_service.get_best_discount(
+                user=user,
+                plan_type=plan_type,
+                payment_method=payment_method,
+                include_admin_campaigns=False,
+            )
         final_amount = self.payment_service.calculate_percent_discounted_price(price.amount, discount.percent)
         return {
             "plan_type": plan_type,
@@ -323,8 +456,20 @@ class SubscriptionMiniAppService:
             "discount_source": discount.source,
             "discount_campaign_id": discount.campaign_id,
             "discount_title": discount.title,
+            "discount_title_tj": discount.title_tj,
+            "discount_title_ru": discount.title_ru,
+            "discount_title_uz": discount.title_uz,
+            "discount_reason": discount.reason,
+            "discount_reason_tj": discount.reason_tj,
+            "discount_reason_ru": discount.reason_ru,
+            "discount_reason_uz": discount.reason_uz,
             "discount_details": discount.details,
         }
+
+    @staticmethod
+    def _normalize_mode(value: str | None) -> str:
+        mode = (value or "subscription").strip().lower()
+        return mode if mode in MINIAPP_MODES else "subscription"
 
     async def _quote_payload(
         self,
