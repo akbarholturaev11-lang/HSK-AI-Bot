@@ -5,17 +5,45 @@ from typing import Optional
 from aiogram.types import Message
 
 
+_STATE_POOLS: dict[str, tuple[tuple[str, ...], ...]] = {
+    "qa": (
+        ("🤔", "🧠", "✍️", "🔎", "✨"),
+        ("💡", "📖", "🧩", "✍️", "✅"),
+        ("🔍", "🧠", "📚", "✍️", "💫"),
+        ("📝", "🔎", "💡", "🧠", "✍️"),
+    ),
+    "course": (
+        ("📚", "🔤", "🧩", "✍️", "🎯"),
+        ("📘", "💬", "🧠", "📝", "✅"),
+        ("🧑‍🏫", "📖", "🔎", "✍️", "✨"),
+    ),
+    "image": (
+        ("📷", "🔎", "🧠", "✍️", "✨"),
+        ("🖼️", "🔍", "📖", "💡", "✍️"),
+        ("📸", "🔤", "🧩", "🧠", "✅"),
+    ),
+}
+
+
+def _select_states(mode: str, seed: int | None) -> tuple[str, ...]:
+    pools = _STATE_POOLS.get(mode) or _STATE_POOLS["qa"]
+    index = abs(seed or 0) % len(pools)
+    return pools[index]
+
+
 class ResponseEffect:
     def __init__(
         self,
         message: Message,
         step_delay: float = 1.6,
-        states: tuple[str, ...] = ("🔥", "⚡", "✍️", "📚", "💫", "💎"),
+        states: tuple[str, ...] | None = None,
         delete_on_stop: bool = True,
+        mode: str = "qa",
+        seed: int | None = None,
     ):
         self.message = message
         self.step_delay = step_delay
-        self.states = states
+        self.states = states or _select_states(mode, seed if seed is not None else message.message_id)
         self.delete_on_stop = delete_on_stop
         self.temp_message = None
         self._task: Optional[asyncio.Task] = None

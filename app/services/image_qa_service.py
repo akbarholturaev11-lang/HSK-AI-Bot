@@ -79,6 +79,10 @@ class ImageQAService:
             user_language=user.language,
             user_level=user.level,
         )
+        assistant_reply = (assistant_reply or "").strip()
+        if not assistant_reply:
+            return "ai_empty_response"
+
         budget_service = AIUsageBudgetService(self.session)
         analyzer_record = await budget_service.record_usage(
             telegram_id=telegram_id,

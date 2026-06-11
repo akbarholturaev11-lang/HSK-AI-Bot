@@ -72,7 +72,12 @@ async def _send_course_access_expired_offer(session, telegram_id: int) -> None:
         await bot.send_message(
             chat_id=telegram_id,
             text=t("subscription_miniapp_entry_text", lang),
-            reply_markup=subscription_miniapp_keyboard(lang, source="course_expired", mode="subscription"),
+            reply_markup=subscription_miniapp_keyboard(
+                lang,
+                source="course_expired",
+                mode="subscription",
+                include_free_mode=True,
+            ),
             parse_mode="HTML",
         )
     except Exception as error:
@@ -401,24 +406,93 @@ async def miniapp_event(request: Request):
             return {"ok": True}
 
         if event == "homework_submitted":
+            pre_user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            lang = pre_user.language if pre_user and pre_user.language else "ru"
+            processing_message = None
+            try:
+                processing_message = await bot.send_message(
+                    chat_id=telegram_id,
+                    text=t("course_miniapp_homework_processing", lang),
+                    parse_mode="HTML",
+                )
+            except Exception as error:
+                logger.warning("Failed to send homework processing message to %s: %s", telegram_id, error)
+
             result = await service.save_homework_result(telegram_id, payload)
             if result.get("error_key"):
                 if result["error_key"] == "course_only_active_users":
-                    await _send_course_access_expired_offer(session, telegram_id)
+                    if processing_message:
+                        try:
+                            await processing_message.edit_text(
+                                text=t(result["error_key"], lang),
+                                parse_mode="HTML",
+                            )
+                        except Exception as error:
+                            logger.warning("Failed to edit homework processing error for %s: %s", telegram_id, error)
+                        await bot.send_message(
+                            chat_id=telegram_id,
+                            text=t("subscription_miniapp_entry_text", lang),
+                            reply_markup=subscription_miniapp_keyboard(
+                                lang,
+                                source="course_expired",
+                                mode="subscription",
+                                include_free_mode=True,
+                            ),
+                            parse_mode="HTML",
+                        )
+                    else:
+                        await _send_course_access_expired_offer(session, telegram_id)
+                elif processing_message:
+                    try:
+                        await processing_message.edit_text(
+                            text=t(result["error_key"], lang),
+                            parse_mode="HTML",
+                        )
+                    except Exception as error:
+                        logger.warning("Failed to edit homework processing error for %s: %s", telegram_id, error)
+                        await bot.send_message(
+                            chat_id=telegram_id,
+                            text=t(result["error_key"], lang),
+                            parse_mode="HTML",
+                        )
+                else:
+                    await bot.send_message(
+                        chat_id=telegram_id,
+                        text=t(result["error_key"], lang),
+                        parse_mode="HTML",
+                    )
                 return {"ok": False, "error": result["error_key"]}
 
             user = result["user"]
             lang = user.language if user and user.language else "ru"
-            await bot.send_message(
-                chat_id=telegram_id,
-                text=format_miniapp_homework_result(lang, result),
-                reply_markup=(
-                    course_homework_done_keyboard(lang)
-                    if result.get("passed")
-                    else homework_retry_keyboard(lang)
-                ),
-                parse_mode="HTML",
+            result_text = format_miniapp_homework_result(lang, result)
+            result_markup = (
+                course_homework_done_keyboard(lang)
+                if result.get("passed")
+                else homework_retry_keyboard(lang)
             )
+            if processing_message:
+                try:
+                    await processing_message.edit_text(
+                        text=result_text,
+                        reply_markup=result_markup,
+                        parse_mode="HTML",
+                    )
+                except Exception as error:
+                    logger.warning("Failed to edit homework processing result for %s: %s", telegram_id, error)
+                    await bot.send_message(
+                        chat_id=telegram_id,
+                        text=result_text,
+                        reply_markup=result_markup,
+                        parse_mode="HTML",
+                    )
+            else:
+                await bot.send_message(
+                    chat_id=telegram_id,
+                    text=result_text,
+                    reply_markup=result_markup,
+                    parse_mode="HTML",
+                )
             return {"ok": True}
 
     return {"ok": False, "error": "unknown_event"}

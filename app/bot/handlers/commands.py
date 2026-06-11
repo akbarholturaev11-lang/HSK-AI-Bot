@@ -108,9 +108,9 @@ def _level_label(value: str, lang: str) -> str:
 
 def _learning_mode_label(value: str, lang: str) -> str:
     labels = {
-        "tj": {"qa": "Саволу ҷавоб", "course": "Курс"},
-        "uz": {"qa": "Savol-javob", "course": "Kurs"},
-        "ru": {"qa": "Вопрос-ответ", "course": "Курс"},
+        "tj": {"qa": "Реҷаи одӣ", "course": "Курс"},
+        "uz": {"qa": "Oddiy rejim", "course": "Kurs"},
+        "ru": {"qa": "Обычный режим", "course": "Курс"},
     }
     unknown = {"tj": "Номаълум", "uz": "Noma'lum", "ru": "Неизвестно"}
     return labels.get(lang, labels["ru"]).get(value, unknown.get(lang, unknown["ru"]))

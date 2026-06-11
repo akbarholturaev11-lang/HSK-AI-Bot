@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from html import escape
 from datetime import datetime, timezone, time
@@ -89,11 +90,14 @@ from app.bot.utils.workflow_message import (
 
 
 router = Router()
+logger = logging.getLogger(__name__)
 
 MAX_VOICE_DURATION_SECONDS = 60
 VOICE_MODE_NONE = "none"
 VOICE_MODE_QA = "qa"
 VOICE_MODE_TRANSLATOR = "translator"
+TELEGRAM_TEXT_LIMIT = 4096
+SAFE_TEXT_CHUNK_LIMIT = 3900
 
 _COURSE_TUTOR_STEPS = {
     "intro",
@@ -104,6 +108,94 @@ _COURSE_TUTOR_STEPS = {
     "dialogue",
     "grammar",
 }
+_LEGACY_COURSE_BACK_TO_QA_TEXTS = {
+    "↩️ Savol-javobga qaytish",
+    "↩️ Вернуться к вопрос-ответ",
+    "↩️ Бозгашт ба савол-ҷавоб",
+}
+
+
+def _response_seed(user, text: str | None = None) -> int:
+    question_count = int(getattr(user, "questions_used", 0) or 0)
+    text_score = sum(ord(char) for char in (text or "")[:80])
+    return question_count + text_score
+
+
+def _split_text_chunks(text: str, max_length: int = SAFE_TEXT_CHUNK_LIMIT) -> list[str]:
+    remaining = text.strip()
+    chunks: list[str] = []
+    while remaining:
+        if len(remaining) <= max_length:
+            chunks.append(remaining)
+            break
+
+        split_at = max(
+            remaining.rfind("\n\n", 0, max_length),
+            remaining.rfind("\n", 0, max_length),
+            remaining.rfind(" ", 0, max_length),
+        )
+        if split_at < max_length // 2:
+            split_at = max_length
+
+        chunks.append(remaining[:split_at].strip())
+        remaining = remaining[split_at:].strip()
+
+    return [chunk for chunk in chunks if chunk]
+
+
+async def _send_answer_payload(
+    message: Message,
+    payload: str,
+    *,
+    reply_markup=None,
+    parse_mode: str | None = None,
+) -> None:
+    if len(payload) <= TELEGRAM_TEXT_LIMIT:
+        await message.answer(payload, reply_markup=reply_markup, parse_mode=parse_mode)
+        return
+
+    chunks = _split_text_chunks(payload)
+    for index, chunk in enumerate(chunks):
+        await message.answer(
+            chunk,
+            reply_markup=reply_markup if index == len(chunks) - 1 else None,
+            parse_mode=parse_mode,
+        )
+
+
+async def _safe_answer_text(
+    message: Message,
+    text: str | None,
+    lang: str,
+    *,
+    reply_markup=None,
+    parse_mode: str | None = None,
+) -> None:
+    payload = (text or "").strip() or t("ai_empty_response", lang)
+
+    if parse_mode and len(payload) > TELEGRAM_TEXT_LIMIT:
+        try:
+            await _send_answer_payload(message, payload, reply_markup=reply_markup)
+            return
+        except Exception:
+            logger.exception("Failed to send long AI reply without parse_mode")
+
+    try:
+        await _send_answer_payload(message, payload, reply_markup=reply_markup, parse_mode=parse_mode)
+        return
+    except Exception:
+        logger.exception("Failed to send AI reply with parse_mode=%s", parse_mode)
+        if parse_mode:
+            try:
+                await _send_answer_payload(message, payload, reply_markup=reply_markup)
+                return
+            except Exception:
+                logger.exception("Failed to send fallback AI reply without parse_mode")
+
+    try:
+        await message.answer(t("ai_response_failed", lang), reply_markup=reply_markup)
+    except Exception:
+        logger.exception("Failed to send final AI failure notice")
 
 
 def _is_stale_course_menu_text(text: str, lang: str) -> bool:
@@ -112,6 +204,7 @@ def _is_stale_course_menu_text(text: str, lang: str) -> bool:
         t("course_progress", lang),
         t("course_reread_button", lang),
         t("course_back_to_qa_button", lang),
+        *_LEGACY_COURSE_BACK_TO_QA_TEXTS,
     }
 
 
@@ -218,7 +311,12 @@ def _can_use_voice(user) -> bool:
 
 
 def _is_i18n_access_key(value: str) -> bool:
-    return value.startswith("access_") or value.startswith("ai_budget_")
+    value = value or ""
+    return (
+        value.startswith("access_")
+        or value.startswith("ai_budget_")
+        or value in {"ai_empty_response", "ai_response_failed"}
+    )
 
 
 def _is_course_tutor_step(step: str) -> bool:
@@ -314,7 +412,7 @@ async def _answer_course_tutor_question(
     if not await _ensure_ai_available(access_service, message.from_user.id, message.answer, lang):
         return True
 
-    effect = ResponseEffect(message)
+    effect = ResponseEffect(message, mode="course", seed=_response_seed(user, text))
     await effect.start()
     try:
         tutor = CourseTutorService()
@@ -344,11 +442,17 @@ async def _answer_course_tutor_question(
         )
         await _consume_text_ai_usage(session, access_service, message.bot, message.from_user.id)
         await session.commit()
+    except Exception:
+        logger.exception("Course tutor AI failed for user %s", message.from_user.id)
+        await message.answer(t("ai_response_failed", lang))
+        return True
     finally:
         await effect.stop()
 
-    await message.answer(
+    await _safe_answer_text(
+        message,
         reply,
+        lang,
         reply_markup=_keyboard_for_step(lang, progress.current_step, lesson),
         parse_mode="HTML",
     )
@@ -497,6 +601,13 @@ async def _process_qa_voice_transcript(
             text=transcript,
             telegram_message_id=telegram_message_id,
         )
+    except Exception:
+        logger.exception("QA voice AI failed for user %s", user.telegram_id)
+        await source_message.answer(
+            t("ai_response_failed", lang),
+            reply_markup=_voice_mode_cancel_keyboard(lang),
+        )
+        return
     finally:
         await effect.stop()
 
@@ -508,8 +619,10 @@ async def _process_qa_voice_transcript(
         )
         return
 
-    await source_message.answer(
+    await _safe_answer_text(
+        source_message,
         reply,
+        lang,
         reply_markup=_voice_mode_cancel_keyboard(lang),
     )
     await _send_budget_notice(source_message.answer, qa_service.last_budget_record, lang)
@@ -851,22 +964,79 @@ async def _send_miniapp_result_message(message: Message, session, payload: dict)
         return True
 
     if event == "homework_submitted":
+        pre_user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
+        lang = pre_user.language if pre_user and pre_user.language else "ru"
+        processing_message = None
+        try:
+            processing_message = await message.answer(
+                t("course_miniapp_homework_processing", lang),
+                parse_mode="HTML",
+            )
+        except Exception:
+            processing_message = None
+
         result = await service.save_homework_result(message.from_user.id, payload)
         if result.get("error_key"):
-            await _send_course_result_error(message, session, result["error_key"])
+            if result["error_key"] == "course_only_active_users":
+                if processing_message:
+                    try:
+                        await processing_message.edit_text(
+                            t(result["error_key"], lang),
+                            parse_mode="HTML",
+                        )
+                    except Exception:
+                        pass
+                    await message.answer(
+                        t("subscription_miniapp_entry_text", lang),
+                        reply_markup=subscription_miniapp_keyboard(
+                            lang,
+                            source="course_expired",
+                            mode="subscription",
+                            include_free_mode=True,
+                        ),
+                        parse_mode="HTML",
+                    )
+                else:
+                    await _send_course_result_error(message, session, result["error_key"])
+            elif processing_message:
+                try:
+                    await processing_message.edit_text(
+                        t(result["error_key"], lang),
+                        parse_mode="HTML",
+                    )
+                except Exception:
+                    await _send_course_result_error(message, session, result["error_key"])
+            else:
+                await _send_course_result_error(message, session, result["error_key"])
             return True
 
         user = result["user"]
         lang = user.language if user and user.language else "ru"
-        await message.answer(
-            format_miniapp_homework_result(lang, result),
-            reply_markup=(
-                course_homework_done_keyboard(lang)
-                if result.get("passed")
-                else homework_retry_keyboard(lang)
-            ),
-            parse_mode="HTML",
+        result_text = format_miniapp_homework_result(lang, result)
+        result_markup = (
+            course_homework_done_keyboard(lang)
+            if result.get("passed")
+            else homework_retry_keyboard(lang)
         )
+        if processing_message:
+            try:
+                await processing_message.edit_text(
+                    result_text,
+                    reply_markup=result_markup,
+                    parse_mode="HTML",
+                )
+            except Exception:
+                await message.answer(
+                    result_text,
+                    reply_markup=result_markup,
+                    parse_mode="HTML",
+                )
+        else:
+            await message.answer(
+                result_text,
+                reply_markup=result_markup,
+                parse_mode="HTML",
+            )
         return True
 
     return False
@@ -1058,7 +1228,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             )
             return
 
-        if msg_text == t("course_back_to_qa_button", user_lang):
+        if msg_text == t("course_back_to_qa_button", user_lang) or msg_text in _LEGACY_COURSE_BACK_TO_QA_TEXTS:
             user.learning_mode = "qa"
             user.voice_mode = "none"
             await session.commit()
@@ -1195,7 +1365,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             if miniapp_context:
                 contextual_message = f"{miniapp_context}\n\nFOYDALANUVCHI XABARI:\n{user_question}"
 
-            effect = ResponseEffect(message)
+            effect = ResponseEffect(message, mode="course", seed=_response_seed(refreshed_user, user_question))
             await effect.start()
             try:
                 tutor = CourseTutorService()
@@ -1214,12 +1384,18 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 )
                 await _consume_text_ai_usage(session, access_service, message.bot, message.from_user.id)
                 await session.commit()
+            except Exception:
+                logger.exception("Course review AI failed for user %s", message.from_user.id)
+                await message.answer(t("ai_response_failed", user_lang))
+                return
             finally:
                 await effect.stop()
 
             await message.answer(t("course_lesson_reexplaining", user_lang))
-            await message.answer(
+            await _safe_answer_text(
+                message,
                 text or t("course_lesson_what_unclear", user_lang),
+                user_lang,
                 reply_markup=get_course_keyboard_for_step(user_lang, "satisfaction_check"),
                 parse_mode="HTML",
             )
@@ -1269,13 +1445,17 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             if not await _ensure_ai_available(access_service, message.from_user.id, message.answer, user_lang):
                 return
 
-            effect = ResponseEffect(message)
+            effect = ResponseEffect(message, mode="course", seed=_response_seed(user, msg_text))
             await effect.start()
             try:
                 result = await engine.mark_homework_submitted(
                     message.from_user.id,
                     message.text or "",
                 )
+            except Exception:
+                logger.exception("Course homework AI failed for user %s", message.from_user.id)
+                await message.answer(t("ai_response_failed", user_lang))
+                return
             finally:
                 await effect.stop()
 
@@ -1293,8 +1473,10 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             await session.commit()
 
             if isinstance(result, dict):
-                await message.answer(
+                await _safe_answer_text(
+                    message,
                     _format_homework_evaluation_result(result, user_lang),
+                    user_lang,
                     reply_markup=None if result.get("passed") else homework_retry_keyboard(user_lang),
                     parse_mode="HTML",
                 )
@@ -1434,7 +1616,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         await message.answer(t(message_key, user_lang), parse_mode="HTML")
         return
 
-    effect = ResponseEffect(message)
+    effect = ResponseEffect(message, mode="qa", seed=_response_seed(user, message.text))
     await effect.start()
 
     try:
@@ -1445,6 +1627,10 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             text=message.text,
             telegram_message_id=message.message_id,
         )
+    except Exception:
+        logger.exception("QA text AI failed for user %s", message.from_user.id)
+        await message.answer(t("ai_response_failed", user_lang))
+        return
     finally:
         await effect.stop()
 
@@ -1452,7 +1638,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         await message.answer(t(reply, user_lang), parse_mode="HTML")
         return
 
-    await message.answer(reply)
+    await _safe_answer_text(message, reply, user_lang)
     await _send_budget_notice(message.answer, qa_service.last_budget_record, user_lang)
 
     # Show course promo after 3rd QA message (once per user)
@@ -1543,7 +1729,7 @@ async def handle_image_message(message: Message, state: FSMContext, session):
         await message.answer(t("image_invalid_format", user_lang))
         return
 
-    effect = ResponseEffect(message)
+    effect = ResponseEffect(message, mode="image", seed=_response_seed(user, message.caption))
     await effect.start()
 
     try:
@@ -1556,6 +1742,10 @@ async def handle_image_message(message: Message, state: FSMContext, session):
             user_text=message.caption,
             telegram_message_id=message.message_id,
         )
+    except Exception:
+        logger.exception("Image AI failed for user %s", message.from_user.id)
+        await message.answer(t("ai_response_failed", user_lang))
+        return
     finally:
         await effect.stop()
 
@@ -1563,7 +1753,7 @@ async def handle_image_message(message: Message, state: FSMContext, session):
         await message.answer(t(reply, user_lang), parse_mode="HTML")
         return
 
-    await message.answer(reply)
+    await _safe_answer_text(message, reply, user_lang)
     await _send_budget_notice(message.answer, image_qa_service.last_budget_record, user_lang)
 
 

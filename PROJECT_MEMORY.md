@@ -207,6 +207,34 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-12 — Course trial fallback and homework processing feedback
+
+Changed:
+- Course subscription offers shown after course/trial lock now include an "Oddiy rejim" fallback button that switches the user back to `learning_mode="qa"` with existing daily limits and sends a short explanation that no automatic lessons are sent in this mode.
+- Mini App homework submission now sends an immediate "AI is checking" chat message and edits that same message into the final AI homework result.
+- Text/photo/course/voice AI replies now use a safer send path: empty AI content returns a localized fallback, AI exceptions send a visible retry message, malformed HTML retries without parse mode, and long replies are split into Telegram-safe chunks.
+- The temporary "bot is working" edit effect now chooses different emoji sequences by mode (`qa`, `course`, `image`) and a seed based on user question count/text.
+
+Why:
+- Trial users who finish the free course lesson need a clear non-paid path back to daily-limited QA instead of only seeing the subscription button.
+- Homework AI checks can take time, so the bot should visibly work instead of staying silent.
+- AI or Telegram formatting failures should not make the bot appear to ignore a user message when an app-level fallback can still be sent.
+
+Files touched:
+- `app/bot/keyboards/subscription.py`
+- `app/bot/handlers/course.py`
+- `app/main.py`
+- `app/bot/handlers/messages.py`
+- `app/bot/utils/i18n.py`
+
+Risk:
+- Free mode does not grant new access; it only sets `learning_mode="qa"` and existing daily limits still control usage.
+- Telegram message edit failures fall back to sending the final result as a new message.
+- The fallback cannot fix upstream outages or Telegram delivery failures, but it prevents silent app-level failures for empty AI output, exceptions, bad HTML, and overlong text.
+
+Follow-up:
+- Smoke test in Telegram: finish a trial lesson, tap "Oddiy rejim", ask text/photo/course questions, then submit homework from the Mini App and confirm the processing message edits into the final result.
+
 ### 2026-06-12 — AI usage budget live-rate calculation
 
 Changed:

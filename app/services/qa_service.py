@@ -111,7 +111,9 @@ class QAService:
             model_override=QA_MODEL,
             max_completion_tokens=QA_MAX_COMPLETION_TOKENS,
         )
-        assistant_reply = usage_result.content
+        assistant_reply = (usage_result.content or "").strip()
+        if not assistant_reply:
+            return "ai_empty_response"
 
         await self.message_repo.create(
             user_id=user.id,
