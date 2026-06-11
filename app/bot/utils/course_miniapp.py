@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260611-subscription-qr-download-ui"
+MINIAPP_ASSET_VERSION = "20260611-subscription-help-tjs-rate"
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:

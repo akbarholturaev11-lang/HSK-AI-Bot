@@ -39,9 +39,11 @@ button:active{transform:scale(.98)}
 .brand{display:flex;flex-direction:column;gap:4px}
 .kicker{font-size:11px;color:var(--emerald);font-weight:800;text-transform:uppercase;letter-spacing:.14em}
 h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
+.top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 .lang{display:grid;grid-template-columns:repeat(3,34px);gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);backdrop-filter:blur(8px)}
 .lang button{height:28px;border-radius:999px;color:var(--muted);font-size:12px;font-weight:850;transition:.16s}
 .lang button.active{background:linear-gradient(135deg,var(--emerald),var(--emerald2));color:#04130d;box-shadow:0 4px 14px rgba(52,227,164,.4)}
+.help-btn{width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--mint);font-size:17px;font-weight:950;box-shadow:0 8px 22px rgba(0,0,0,.18)}
 .status{display:none;margin:0 0 12px;border:1px solid rgba(255,210,125,.3);border-radius:var(--radius-sm);background:rgba(255,210,125,.1);padding:11px 13px;color:#ffe3ad;font-size:12px;line-height:1.4;font-weight:750}
 .status.show{display:block}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px}
@@ -193,10 +195,13 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
       <div class="kicker">HSK AI</div>
       <h1 id="title">Obuna</h1>
     </div>
-    <div class="lang" id="langTabs">
-      <button type="button" data-lang="uz">UZ</button>
-      <button type="button" data-lang="ru">RU</button>
-      <button type="button" data-lang="tj">TJ</button>
+    <div class="top-actions">
+      <div class="lang" id="langTabs">
+        <button type="button" data-lang="uz">UZ</button>
+        <button type="button" data-lang="ru">RU</button>
+        <button type="button" data-lang="tj">TJ</button>
+      </div>
+      <button class="help-btn" type="button" id="helpBtn" aria-label="Help">?</button>
     </div>
   </header>
 
@@ -292,6 +297,17 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
     </div>
   </div>
 </div>
+<div class="sheet" id="supportSheet" aria-hidden="true">
+  <button class="sheet-backdrop" type="button" id="supportBackdrop" aria-label="Close"></button>
+  <div class="sheet-panel">
+    <h3 id="supportTitle"></h3>
+    <p id="supportText"></p>
+    <div class="sheet-actions">
+      <button class="sheet-primary" type="button" id="openSupportBtn"></button>
+      <button class="sheet-close" type="button" id="closeSupportBtn"></button>
+    </div>
+  </div>
+</div>
 <div class="loading" id="loading"><div class="spinner"></div></div>
 
 <script>
@@ -309,6 +325,7 @@ const INIT_DATA=tg?.initData||"";
 const PLAN_ORDER=["10_days","1_month"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const COUNTRY_ORDER=["tj","uz","ru","other"];
+const SUPPORT_URL="https://t.me/akbarchina";
 
 const I18N={
   uz:{
@@ -336,6 +353,9 @@ const I18N={
     copied:"Link copy qilindi.",
     copyFailed:"Linkni copy qilib bo'lmadi.",
     close:"Yopish",
+    supportTitle:"Yordam",
+    supportText:"To'lov qildingiz, lekin tasdiq kelmasa yoki xatolik bo'lsa, admin @akbarchina ga yozing. Nima bo'lganini qisqa yozib, screenshot yuboring.",
+    supportButton:"Adminga yozish",
     plansTitle:"Tarif",
     methodsTitle:"To'lov usuli",
     discountReady:"20% chegirma qo'llanadi",
@@ -416,6 +436,9 @@ const I18N={
     copied:"Ссылка скопирована.",
     copyFailed:"Не удалось скопировать ссылку.",
     close:"Закрыть",
+    supportTitle:"Помощь",
+    supportText:"Если оплатили, но подтверждение не пришло или появилась ошибка, напишите админу @akbarchina. Коротко опишите проблему и отправьте screenshot.",
+    supportButton:"Написать админу",
     plansTitle:"Тариф",
     methodsTitle:"Способ оплаты",
     discountReady:"Скидка 20% применится",
@@ -496,6 +519,9 @@ const I18N={
     copied:"Link copy шуд.",
     copyFailed:"Link-ро copy кардан нашуд.",
     close:"Пӯшидан",
+    supportTitle:"Ёрдам",
+    supportText:"Агар пардохт кардед, вале тасдиқ наомад ё хато баромад, ба admin @akbarchina нависед. Мушкилро кӯтоҳ нависед ва screenshot фиристед.",
+    supportButton:"Ба admin навиштан",
     plansTitle:"Тариф",
     methodsTitle:"Усули пардохт",
     discountReady:"20% тахфиф ҳисоб мешавад",
@@ -567,6 +593,7 @@ const state={
   quoteError:"",
   inviteOpen:false,
   inviteLink:"",
+  supportOpen:false,
   busy:false,
   busyOverlay:false,
   done:false,
@@ -648,9 +675,9 @@ function mockQuote(){
   const info=priceInfo();
   const rates={
     tj:{amount:info.final_amount,currency:"TJS",rate:"1 TJS = 1 TJS"},
-    uz:{amount:Math.round(info.final_amount*1300/1000)*1000,currency:"UZS",rate:"1 USD = 9.2464 TJS; 1 USD = 12 001.94 UZS (manual)"},
-    ru:{amount:(info.final_amount*7.7).toFixed(2),currency:"RUB",rate:"1 USD = 9.2464 TJS; 1 USD = 71.0224 RUB (manual)"},
-    other:{amount:(info.final_amount/9.2464).toFixed(2),currency:"USD",rate:"1 USD = 9.2464 TJS (manual)"}
+    uz:{amount:Math.round(info.final_amount*1300/1000)*1000,currency:"UZS",rate:"1 TJS = 1 298.13 UZS"},
+    ru:{amount:(info.final_amount*7.68).toFixed(2),currency:"RUB",rate:"1 TJS = 7.68 RUB"},
+    other:{amount:(info.final_amount/9.2464).toFixed(2),currency:"USD",rate:"1 TJS = 0.1082 USD"}
   };
   const card=rates[state.country]||rates.tj;
   return {
@@ -781,6 +808,7 @@ function render(){
   renderCountry(text);
   renderPay(text);
   renderDone(text);
+  renderSupportSheet(text);
   $("#backBtn").textContent=text.back;
   $("#nextBtn").textContent=screen==="pay"?text.submit:text.next;
   $("#backBtn").classList.toggle("hide",state.step===0);
@@ -967,6 +995,16 @@ function renderInviteSheet(text){
   $("#copyInviteBtn").textContent=text.copyLink;
   $("#closeInviteBtn").textContent=text.close;
 }
+function renderSupportSheet(text){
+  const sheet=$("#supportSheet");
+  const visible=Boolean(state.supportOpen);
+  sheet.classList.toggle("show",visible);
+  sheet.setAttribute("aria-hidden",visible?"false":"true");
+  $("#supportTitle").textContent=text.supportTitle;
+  $("#supportText").textContent=text.supportText;
+  $("#openSupportBtn").textContent=text.supportButton;
+  $("#closeSupportBtn").textContent=text.close;
+}
 function showInviteSheet(link){
   if(!link){toast(tr().error);return}
   state.inviteLink=link;
@@ -975,6 +1013,14 @@ function showInviteSheet(link){
 }
 function hideInviteSheet(){
   state.inviteOpen=false;
+  render();
+}
+function showSupportSheet(){
+  state.supportOpen=true;
+  render();
+}
+function hideSupportSheet(){
+  state.supportOpen=false;
   render();
 }
 async function copyText(value,successMessage,failedMessage){
@@ -1008,6 +1054,13 @@ function closeMiniApp(){
     return;
   }
   window.close();
+}
+function openSupportChat(){
+  if(tg&&typeof tg.openTelegramLink==="function"){
+    tg.openTelegramLink(SUPPORT_URL);
+    return;
+  }
+  window.open(SUPPORT_URL,"_blank");
 }
 function qrFileName(){
   const plan=String(state.plan||"plan").replace(/[^a-z0-9_-]/gi,"");
@@ -1121,6 +1174,10 @@ $("#shareInviteBtn").addEventListener("click",()=>shareReferral(state.inviteLink
 $("#copyInviteBtn").addEventListener("click",()=>copyReferralLink(state.inviteLink));
 $("#closeInviteBtn").addEventListener("click",hideInviteSheet);
 $("#inviteBackdrop").addEventListener("click",hideInviteSheet);
+$("#helpBtn").addEventListener("click",showSupportSheet);
+$("#openSupportBtn").addEventListener("click",openSupportChat);
+$("#closeSupportBtn").addEventListener("click",hideSupportSheet);
+$("#supportBackdrop").addEventListener("click",hideSupportSheet);
 $("#receiptInput").addEventListener("change",event=>{
   const file=event.target.files?.[0];
   if(!file)return;
