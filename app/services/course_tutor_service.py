@@ -622,7 +622,9 @@ QOIDALAR:
             history=history or [],
             model_override=COURSE_MODEL,
         )
-        response = self.last_ai_result.content
+        response = (self.last_ai_result.content or "").strip()
+        if not response:
+            return ""
 
         if (
             step in _CONVERSATIONAL_STEPS

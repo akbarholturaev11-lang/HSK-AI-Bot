@@ -118,14 +118,24 @@ async def _send_course_access_offer(*, respond, lang: str, expired_from_course: 
         )
         await respond(
             t("subscription_miniapp_entry_text", lang),
-            reply_markup=subscription_miniapp_keyboard(lang, source="course_expired", mode="subscription"),
+            reply_markup=subscription_miniapp_keyboard(
+                lang,
+                source="course_expired",
+                mode="subscription",
+                include_free_mode=True,
+            ),
             parse_mode="HTML",
         )
         return
 
     await respond(
         _course_locked_offer_text(lang),
-        reply_markup=subscription_miniapp_keyboard(lang, source="course_locked", mode="subscription"),
+        reply_markup=subscription_miniapp_keyboard(
+            lang,
+            source="course_locked",
+            mode="subscription",
+            include_free_mode=True,
+        ),
         parse_mode="HTML",
     )
 
@@ -162,7 +172,12 @@ def _trial_course_completed_text(lang: str) -> str:
 async def _send_trial_completed_offer(*, respond, lang: str) -> None:
     await respond(
         _trial_course_completed_text(lang),
-        reply_markup=subscription_miniapp_keyboard(lang, source="course_trial_completed", mode="subscription"),
+        reply_markup=subscription_miniapp_keyboard(
+            lang,
+            source="course_trial_completed",
+            mode="subscription",
+            include_free_mode=True,
+        ),
         parse_mode="HTML",
     )
 
@@ -618,6 +633,32 @@ async def mode_qa_handler(callback: CallbackQuery, state: FSMContext, session):
     await callback.answer()
     await callback.message.answer(t("trial_started_info", lang))
     await callback.message.answer(t("send_first_message", lang), reply_markup=main_menu_keyboard(lang))
+
+
+@router.callback_query(F.data == "mode:free_qa")
+async def mode_free_qa_handler(callback: CallbackQuery, state: FSMContext, session):
+    user_repo = UserRepository(session)
+    user = await user_repo.get_by_telegram_id(callback.from_user.id)
+
+    lang = callback.from_user.language_code if callback.from_user.language_code in ["ru", "uz", "tj"] else "ru"
+    if not user:
+        await callback.answer()
+        await callback.message.answer(t("user_not_found", lang))
+        return
+
+    lang = user.language if user.language else "ru"
+    user.learning_mode = "qa"
+    user.voice_mode = "none"
+    await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
+    await session.commit()
+
+    await callback.answer()
+    await callback.message.answer(
+        t("free_mode_info", lang),
+        reply_markup=main_menu_keyboard(lang),
+        parse_mode="HTML",
+    )
+
 
 @router.callback_query(F.data == "mode:course")
 async def course_mode_open_handler(callback: CallbackQuery, state: FSMContext, session):

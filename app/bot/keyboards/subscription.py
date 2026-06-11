@@ -39,23 +39,30 @@ def subscription_miniapp_keyboard(
     feedback_id: int | None = None,
     plan: str | None = None,
     method: str | None = None,
+    include_free_mode: bool = False,
 ) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                subscription_miniapp_button(
-                    lang,
-                    source=source,
-                    text=text,
-                    mode=mode,
-                    campaign_id=campaign_id,
-                    feedback_id=feedback_id,
-                    plan=plan,
-                    method=method,
-                )
-            ]
+    rows = [
+        [
+            subscription_miniapp_button(
+                lang,
+                source=source,
+                text=text,
+                mode=mode,
+                campaign_id=campaign_id,
+                feedback_id=feedback_id,
+                plan=plan,
+                method=method,
+            )
         ]
-    )
+    ]
+    if include_free_mode:
+        rows.append([
+            InlineKeyboardButton(
+                text=t("subscription_free_mode_button", lang),
+                callback_data="mode:free_qa",
+            )
+        ])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 def subscription_main_keyboard(lang: str, show_discount: bool = True) -> InlineKeyboardMarkup:
