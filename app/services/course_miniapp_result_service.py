@@ -19,6 +19,7 @@ from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.access_service import AccessService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.course_tutor_service import CourseTutorService
+from app.services.course_trial_service import CourseTrialService
 
 
 class CourseMiniAppResultService:
@@ -168,7 +169,9 @@ class CourseMiniAppResultService:
         if getattr(user, "learning_mode", "qa") != "course":
             return user, None, None, "course_choose_mode_first"
 
-        if not await AccessService(self.session).ensure_active_course_access(user):
+        await AccessService(self.session).ensure_active_course_access(user)
+        trial_service = CourseTrialService(self.session)
+        if not (trial_service.is_paid_user(user) or trial_service.is_free_user(user)):
             await self.session.commit()
             return user, None, None, "course_only_active_users"
 
@@ -179,6 +182,9 @@ class CourseMiniAppResultService:
         lesson = await self.lesson_repo.get_by_id(progress.current_lesson_id)
         if not lesson:
             return user, progress, None, "course_no_lesson_found"
+
+        if not trial_service.can_access_lesson(user, lesson.id):
+            return user, progress, lesson, "course_only_active_users"
 
         if not is_course_miniapp_supported(lesson):
             return user, progress, lesson, "course_miniapp_unsupported_lesson"
@@ -242,6 +248,9 @@ class CourseMiniAppResultService:
                 step=next_step,
                 waiting_for="none",
             )
+            trial_service = CourseTrialService(self.session)
+            if trial_service.should_start_force_sub_at_step(next_step):
+                await trial_service.mark_force_sub_required(user)
         else:
             next_step = "satisfaction_check"
             await self.progress_repo.set_current_lesson_and_step(
@@ -329,6 +338,7 @@ class CourseMiniAppResultService:
                 step="completed",
                 waiting_for="none",
             )
+            await CourseTrialService(self.session).mark_trial_completed(user, lesson.id)
         else:
             await self.progress_repo.set_homework_status(progress, "assigned")
             await self.progress_repo.set_current_lesson_and_step(

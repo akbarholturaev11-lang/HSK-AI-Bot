@@ -79,6 +79,24 @@ class User(Base):
 
     course_promo_sent: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
+    trial_course_lesson_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    trial_course_started_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    trial_course_completed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    trial_quiz_explanation_used_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    force_sub_required_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

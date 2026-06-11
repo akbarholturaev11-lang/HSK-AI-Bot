@@ -13,6 +13,7 @@ from app.services.required_channel_service import RequiredChannelService, is_adm
 ONBOARDING_STATES = {
     OnboardingStates.choosing_language.state,
     OnboardingStates.choosing_level.state,
+    OnboardingStates.choosing_trial_lesson.state,
 }
 PARTNER_STATES = {
     PartnerApplicationStates.waiting_promotion_channel.state,
@@ -87,6 +88,9 @@ class RequiredChannelMiddleware(BaseMiddleware):
                 return await handler(event, data)
 
             if user and user.status == "active" and user.payment_status == "approved":
+                return await handler(event, data)
+
+            if not getattr(user, "force_sub_required_at", None):
                 return await handler(event, data)
 
             service = RequiredChannelService(session)

@@ -48,6 +48,10 @@ def _fmt_date(dt) -> str:
         return str(dt)
 
 
+def _pct(part: int, total: int) -> float:
+    return round(part / total * 100, 1) if total > 0 else 0.0
+
+
 def _status_label(status: str, lang: str) -> str:
     return {
         "free": "Free",
@@ -611,14 +615,103 @@ async def admin_stats_handler(message: Message, session):
         select(func.count()).select_from(Payment).where(Payment.payment_status == "approved")
     )
     total_paid = result.scalar() or 0
+    paid_users = (await session.execute(
+        select(func.count()).select_from(User).where(User.payment_status == "approved")
+    )).scalar() or 0
+    trial_course_started = (await session.execute(
+        select(func.count()).select_from(User).where(User.trial_course_started_at.is_not(None))
+    )).scalar() or 0
+    trial_course_completed = (await session.execute(
+        select(func.count()).select_from(User).where(User.trial_course_completed_at.is_not(None))
+    )).scalar() or 0
+    trial_quiz_explained = (await session.execute(
+        select(func.count()).select_from(User).where(User.trial_quiz_explanation_used_at.is_not(None))
+    )).scalar() or 0
+    force_sub_checkpoint = (await session.execute(
+        select(func.count()).select_from(User).where(User.force_sub_required_at.is_not(None))
+    )).scalar() or 0
+    checkpoint_completed = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.force_sub_required_at.is_not(None),
+            User.trial_course_completed_at.is_not(None),
+            User.trial_course_completed_at >= User.force_sub_required_at,
+        )
+    )).scalar() or 0
+    trial_paid_after_start = (await session.execute(
+        select(func.count(func.distinct(Payment.user_telegram_id)))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at.is_not(None),
+            User.trial_course_started_at.is_not(None),
+            Payment.reviewed_at >= User.trial_course_started_at,
+        )
+    )).scalar() or 0
+    trial_revenue_after_start = (await session.execute(
+        select(func.sum(Payment.amount))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at.is_not(None),
+            User.trial_course_started_at.is_not(None),
+            Payment.reviewed_at >= User.trial_course_started_at,
+        )
+    )).scalar() or 0
+    checkpoint_paid_after = (await session.execute(
+        select(func.count(func.distinct(Payment.user_telegram_id)))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at.is_not(None),
+            User.force_sub_required_at.is_not(None),
+            Payment.reviewed_at >= User.force_sub_required_at,
+        )
+    )).scalar() or 0
+    completed_paid_after = (await session.execute(
+        select(func.count(func.distinct(Payment.user_telegram_id)))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at.is_not(None),
+            User.trial_course_completed_at.is_not(None),
+            Payment.reviewed_at >= User.trial_course_completed_at,
+        )
+    )).scalar() or 0
+    trial_started_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.trial_course_started_at >= week_ago)
+    )).scalar() or 0
+    trial_completed_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.trial_course_completed_at >= week_ago)
+    )).scalar() or 0
+    trial_paid_week = (await session.execute(
+        select(func.count(func.distinct(Payment.user_telegram_id)))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at >= week_ago,
+            User.trial_course_started_at.is_not(None),
+            Payment.reviewed_at >= User.trial_course_started_at,
+        )
+    )).scalar() or 0
 
     trial = status_counts.get("trial", 0)
     active = status_counts.get("active", 0)
     expired = status_counts.get("expired", 0)
     blocked = status_counts.get("blocked", 0)
 
-    conversion = round(active / total * 100, 1) if total > 0 else 0
-    engagement = round(active_users / total * 100, 1) if total > 0 else 0
+    conversion = _pct(paid_users, total)
+    engagement = _pct(active_users, total)
+    trial_complete_rate = _pct(trial_course_completed, trial_course_started)
+    trial_ai_rate = _pct(trial_quiz_explained, trial_course_started)
+    trial_paid_rate = _pct(trial_paid_after_start, trial_course_started)
+    completed_paid_rate = _pct(completed_paid_after, trial_course_completed)
+    checkpoint_complete_rate = _pct(checkpoint_completed, force_sub_checkpoint)
+    checkpoint_paid_rate = _pct(checkpoint_paid_after, force_sub_checkpoint)
 
     lang_str = " | ".join(f"{k}: {v}" for k, v in sorted(lang_counts.items()))
 
@@ -627,11 +720,23 @@ async def admin_stats_handler(message: Message, session):
         f"<b>👥 Foydalanuvchilar:</b>\n"
         f"  Jami: {total}\n"
         f"  Trial: {trial}\n"
-        f"  Aktiv obuna: {active}\n"
+        f"  Active status: {active}\n"
+        f"  Paid user: {paid_users}\n"
         f"  Tugagan: {expired}\n"
         f"  Bloklangan: {blocked}\n\n"
+        f"<b>📚 Trial course funnel:</b>\n"
+        f"  Dars boshlagan: {trial_course_started} | 7 kun: +{trial_started_week}\n"
+        f"  Dars tugatgan: {trial_course_completed} ({trial_complete_rate}%) | 7 kun: +{trial_completed_week}\n"
+        f"  AI xato tahlili: {trial_quiz_explained} ({trial_ai_rate}%)\n"
+        f"  Kanal checkpoint: {force_sub_checkpoint}\n"
+        f"  Checkpoint → tugatdi: {checkpoint_completed} ({checkpoint_complete_rate}%)\n\n"
+        f"<b>💰 Trial → Payment:</b>\n"
+        f"  Trialdan keyin paid: {trial_paid_after_start} ({trial_paid_rate}%) | 7 kun: +{trial_paid_week}\n"
+        f"  Completed → paid: {completed_paid_after} ({completed_paid_rate}%)\n"
+        f"  Checkpoint → paid: {checkpoint_paid_after} ({checkpoint_paid_rate}%)\n"
+        f"  Trialdan keyingi tushum: {int(trial_revenue_after_start):,} so'm\n\n"
         f"<b>📈 Konversiya:</b>\n"
-        f"  Trial → Obuna: {conversion}%\n"
+        f"  User → Paid: {conversion}%\n"
         f"  Savol berganlar: {active_users} ({engagement}%)\n"
         f"  Bu hafta yangilar: +{new_this_week}\n\n"
         f"<b>💳 To'lovlar:</b>\n"

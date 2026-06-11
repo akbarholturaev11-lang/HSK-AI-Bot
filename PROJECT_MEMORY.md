@@ -789,6 +789,42 @@ Risk:
 
 ---
 
+### 2026-06-11 — New user course trial funnel and channel checkpoint
+
+Changed:
+- New users start as `status="trial"` instead of 24-hour active access.
+- Onboarding keeps language and level selection, then asks which course lesson to start: recommended first lesson or another lesson from the selected level.
+- Free users can fully complete one selected `CourseLesson`; access to another lesson, next lesson, or level upgrade shows the subscription Mini App offer.
+- Added `users.trial_course_lesson_id`, `trial_course_started_at`, `trial_course_completed_at`, `trial_quiz_explanation_used_at`, and `force_sub_required_at`.
+- Required-channel checks are skipped until `force_sub_required_at` is set; the flag is set when a free user reaches `block_vocab_2` (`2-qism yangi so'zlar`). After that, existing required-channel middleware checks every free-user event. Paid approved users bypass this check.
+- Course Mini App quiz results also set the checkpoint flag if the next step is `block_vocab_2`.
+- Admin stats now show paid users by `payment_status="approved"` plus trial course started/completed, trial AI explanation, channel checkpoint, trial-to-paid, completed-to-paid, checkpoint-to-paid, and post-trial revenue metrics.
+
+Preserved:
+- Paid approved users still use the existing `AIUsageBudgetService` structure for text/photo/voice-related AI usage.
+- Free text AI and photo AI remain daily-limit based; voice remains subscription-only.
+- Existing course lesson internals stay intact: vocab, dialogue, block quizzes, grammar, homework, and Mini App result flow are not rewritten.
+
+Risk:
+- Existing old users with course progress but no `trial_course_lesson_id` may get their current lesson assigned as their one free trial lesson when they enter course mode.
+
+Files touched:
+- `app/bot/handlers/start.py`
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/messages.py`
+- `app/bot/middlewares/required_channel.py`
+- `app/bot/handlers/required_channel.py`
+- `app/bot/utils/i18n.py`
+- `app/services/course_trial_service.py`
+- `app/services/access_service.py`
+- `app/services/course_miniapp_result_service.py`
+- `app/services/study_miniapp_service.py`
+- `app/db/models/user.py`
+- `app/db/session.py`
+- `alembic/versions/0038_add_user_trial_course_fields.py`
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

@@ -7,8 +7,8 @@ TEXTS = {
         "language_selected": "Забон интихоб шуд ✅",
         "level_saved_explained": "✅ Сатҳи шумо сабт шуд. Ин ба мо кӯмак мекунад, ки дарсҳоро ба шумо мувофиқ кунем.",
         "trial_started_info": "🎁 Ба шумо дастрасии ройгон кушода шуд.",
-        "onboarding_special_welcome": "🌟 Шумо <b>{user_num}</b>-умин корбари мо шудед!\n\n<blockquote>🎁 Ба хотири ин, ба шумо 24 соат дастрасии active кушода шуд. Матн ва фото бо лимити рӯзона кор мекунанд.</blockquote>",
-        "trial_24h_info": "🎁 <b>24 соат дастрасии фаъол кушода шуд!</b>\n\n<blockquote>Шумо метавонед режими савол-ҷавоб ва режими курсро истифода баред.\n\nМатн ва фото бо лимити рӯзона кор мекунанд.</blockquote>",
+        "onboarding_special_welcome": "🌟 Шумо <b>{user_num}</b>-умин корбари мо шудед!\n\n<blockquote>🎁 Ба шумо як дарси курс пурра ройгон кушода мешавад. Матн ва фото бо лимити рӯзона кор мекунанд.</blockquote>",
+        "trial_24h_info": "🎁 <b>Дастрасии ройгон кушода шуд!</b>\n\n<blockquote>Як дарси интихобшудаи курсро пурра месанҷед.\n\nМатн ва фото бо лимити рӯзона кор мекунанд.</blockquote>",
         "send_first_message": "Акнун калима, ҷумла ё саволи хитоии худро фиристед — дарсро аз ҳамон ҷо оғоз мекунем.",
         "level_beginner": "Аз 0",
 
@@ -164,8 +164,8 @@ TEXTS = {
         "language_selected": "Язык выбран ✅",
         "level_saved_explained": "✅ Ваш уровень сохранён. Это поможет нам подстроить уроки под вас.",
         "trial_started_info": "🎁 Вам открыт бесплатный доступ.",
-        "onboarding_special_welcome": "🌟 Вы стали нашим <b>{user_num}-м</b> пользователем!\n\n<blockquote>🎁 В честь этого вам открыт active-доступ на <b>24 часа</b>. Текст и фото работают с дневными лимитами.</blockquote>",
-        "trial_24h_info": "🎁 <b>Активирован доступ на 24 часа!</b>\n\n<blockquote>Вы можете использовать режим вопрос-ответ и режим курса.\n\nТекст и фото работают с дневными лимитами.</blockquote>",
+        "onboarding_special_welcome": "🌟 Вы стали нашим <b>{user_num}-м</b> пользователем!\n\n<blockquote>🎁 Вам открыт один полный урок курса бесплатно. Текст и фото работают с дневными лимитами.</blockquote>",
+        "trial_24h_info": "🎁 <b>Бесплатный доступ открыт!</b>\n\n<blockquote>Вы полностью попробуете один выбранный урок курса.\n\nТекст и фото работают с дневными лимитами.</blockquote>",
         "send_first_message": "Теперь отправьте китайское слово, фразу или свой вопрос — и начнём урок с этого.",
         "level_beginner": "С нуля",
 
@@ -317,8 +317,8 @@ TEXTS = {
         "language_selected": "Til tanlandi ✅",
         "level_saved_explained": "✅ Darajangiz saqlandi. Bu darslarni sizga moslashtirishga yordam beradi.",
         "trial_started_info": "🎁 Sizga bepul kirish ochildi.",
-        "onboarding_special_welcome": "🌟 Siz bizning <b>{user_num}-chi</b> foydalanuvchimiz bo’ldingiz!\n\n<blockquote>🎁 Buning sharofati bilan sizga <b>24 soat</b> active kirish ochildi. Matn va rasm kunlik limit bilan ishlaydi.</blockquote>",
-        "trial_24h_info": "🎁 <b>24 soatlik active kirish faollashtirildi!</b>\n\n<blockquote>Savol-javob rejimi va kurs rejimidan foydalanishingiz mumkin.\n\nMatn va rasm kunlik limit bilan ishlaydi.</blockquote>",
+        "onboarding_special_welcome": "🌟 Siz bizning <b>{user_num}-chi</b> foydalanuvchimiz bo’ldingiz!\n\n<blockquote>🎁 Sizga bitta kurs darsi to‘liq bepul ochiladi. Matn va rasm kunlik limit bilan ishlaydi.</blockquote>",
+        "trial_24h_info": "🎁 <b>Bepul kirish ochildi!</b>\n\n<blockquote>Bitta tanlangan kurs darsini to‘liq sinab ko‘rasiz.\n\nMatn va rasm kunlik limit bilan ishlaydi.</blockquote>",
         "send_first_message": "Endi xitoycha so’z, gap yoki savolingizni yuboring — darsni o’sha yerdan boshlaymiz.",
         "level_beginner": "0 dan",
 
@@ -525,9 +525,9 @@ COURSE_I18N = {
             "— Дарсҳо: муқаддима, калимаҳо, аудио, диалог, грамматика, машқ, тест ва вазифаи хонагӣ\n"
             "— Менюи поёнӣ: Танзимот, Пешрафт, Аз нав хондани дарс, Вақти ёдраскунак, Профил, Бозгашт ба савол-ҷавоб\n\n"
             "💳 <b>Лимит ва обуна</b>\n"
-            "— Бо дастрасии 24-соата саволу ҷавоб ва курс кушода мешавад\n"
+            "— Дар trial як дарси интихобшудаи курс пурра кушода мешавад; саволҳои AI бо лимити рӯзона мемонанд\n"
             "— Анализи сурат бо лимити 2 сурат дар як рӯз кор мекунад\n"
-            "— Обуна имконияти AI ҷавобҳо, курс, сурат ва voice-ро васеъ мекунад\n\n"
+            "— Бо обуна AI ҷавобҳо, курс, сурат ва voice бе лимит кор мекунанд\n\n"
             "⚙️ <b>Фармонҳои асосӣ</b>\n"
             "👤 /profile — профил\n"
             "💳 /subscription — обуна\n"
@@ -700,9 +700,9 @@ COURSE_I18N = {
             "— Уроки: введение, слова, аудио, диалог, грамматика, упражнение, тест и домашнее задание\n"
             "— Нижнее меню: Настройки, Прогресс, Перечитать урок, Напоминание, Профиль, Вернуться к вопрос-ответ\n\n"
             "💳 <b>Лимиты и подписка</b>\n"
-            "— При доступе на 24 часа открыты вопрос-ответ и курс\n"
+            "— В trial полностью открыт один выбранный урок курса; AI-вопросы остаются с дневным лимитом\n"
             "— Фото-анализ работает с лимитом 2 фото в день\n"
-            "— Подписка расширяет доступ к AI-ответам, курсу, фото и voice\n\n"
+            "— С подпиской AI-ответы, курс, фото и voice работают без лимитов\n\n"
             "⚙️ <b>Основные команды</b>\n"
             "👤 /profile — профиль\n"
             "💳 /subscription — подписка\n"
@@ -875,9 +875,9 @@ COURSE_I18N = {
             "— Darslar: kirish, so‘zlar, audio, dialog, grammatika, mashq, test va uyga vazifa\n"
             "— Pastki menyu: Sozlamalar, Progress, Darsni qayta o‘qish, Eslatma vaqti, Profil, Savol-javobga qaytish\n\n"
             "💳 <b>Limit va obuna</b>\n"
-            "— 24 soatlik kirishda savol-javob va kurs ochiladi\n"
+            "— Trialda bitta tanlangan kurs darsi to‘liq ochiladi; AI savollar kunlik limit bilan qoladi\n"
             "— Foto analiz kuniga 2 ta limit bilan ishlaydi\n"
-            "— Obuna AI javoblar, kurs, foto va voice imkoniyatlarini kengaytiradi\n\n"
+            "— Obuna bilan AI javoblar, kurs, foto va voice limitsiz ishlaydi\n\n"
             "⚙️ <b>Asosiy komandalar</b>\n"
             "👤 /profile — profil\n"
             "💳 /subscription — obuna\n"
