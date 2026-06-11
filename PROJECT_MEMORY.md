@@ -222,6 +222,8 @@ Changed:
 - VISA/card payment details are rendered as readable rows with copy buttons for card-like numbers; Tajikistan card payments hide the exchange-rate row.
 - The main reply-keyboard subscription button is now a Web App button that opens the Subscription Mini App directly; command/profile flows still send the explanatory Mini App entry block.
 - QR payment screens let the user tap the QR to reveal a download button for saving the QR image.
+- Card exchange-rate rows shown to users use direct TJS rates, for example `1 TJS = ... RUB`, instead of displaying USD/USDT-style cross-rate chains.
+- Subscription Mini App has a top Help button with the public admin contact for payment-confirmation problems and visible errors; it remains available on pending-payment screens.
 
 Why:
 - Users were seeing wrong/fallback QR, card details, referral links, and discount state in the subscription Mini App, and payment submits could appear successful even if admin review did not receive the request.

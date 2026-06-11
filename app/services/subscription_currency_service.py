@@ -120,27 +120,29 @@ class SubscriptionCurrencyService:
         usd_amount = Decimal(tjs_amount) / rates["tjs"]
         if target_currency == "usd":
             local_amount = self._format_amount(usd_amount, 2)
-            exchange_rate = f"1 USD = {self._format_amount(rates['tjs'], 4)} TJS"
+            exchange_rate = self._direct_tjs_rate_label(
+                Decimal("1") / rates["tjs"],
+                target_currency,
+            )
             return CardCurrencyQuote(
                 country=normalized_country,
                 amount=local_amount,
                 currency="USD",
-                exchange_rate=f"{exchange_rate} ({source})",
+                exchange_rate=exchange_rate,
                 source=source,
             )
 
         local_amount = usd_amount * rates[target_currency]
         decimals = 0 if target_currency == "uzs" else 2
-        exchange_rate = (
-            f"1 USD = {self._format_amount(rates['tjs'], 4)} TJS; "
-            f"1 USD = {self._format_amount(rates[target_currency], decimals)} "
-            f"{self.rate_label(target_currency)}"
+        exchange_rate = self._direct_tjs_rate_label(
+            rates[target_currency] / rates["tjs"],
+            target_currency,
         )
         return CardCurrencyQuote(
             country=normalized_country,
             amount=self._format_amount(local_amount, decimals),
             currency=self.rate_label(target_currency),
-            exchange_rate=f"{exchange_rate} ({source})",
+            exchange_rate=exchange_rate,
             source=source,
         )
 
@@ -178,6 +180,11 @@ class SubscriptionCurrencyService:
         quantizer = Decimal("1") if decimals == 0 else Decimal("1." + ("0" * decimals))
         rounded = value.quantize(quantizer, rounding=ROUND_HALF_UP)
         return f"{rounded:,.{decimals}f}".replace(",", " ")
+
+    @classmethod
+    def _direct_tjs_rate_label(cls, value: Decimal, currency_code: str) -> str:
+        decimals = 4 if currency_code == "usd" else 2
+        return f"1 TJS = {cls._format_amount(value, decimals)} {cls.rate_label(currency_code)}"
 
     async def _fetch_live_usd_rates(self) -> dict[str, Decimal] | None:
         try:
