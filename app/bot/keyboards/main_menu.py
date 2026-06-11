@@ -1,6 +1,5 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-from app.bot.utils.course_miniapp import subscription_miniapp_url
 from app.bot.utils.i18n import t
 
 
@@ -9,10 +8,7 @@ def main_menu_keyboard(lang: str) -> ReplyKeyboardMarkup:
         keyboard=[
             [
                 KeyboardButton(text=t("menu_profile", lang)),
-                KeyboardButton(
-                    text=t("menu_subscription", lang),
-                    web_app=WebAppInfo(url=subscription_miniapp_url(lang, source="main_menu", mode="subscription")),
-                ),
+                KeyboardButton(text=t("menu_subscription", lang)),
             ],
             [
                 KeyboardButton(text=t("menu_course_mode", lang)),
