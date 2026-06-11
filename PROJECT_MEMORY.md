@@ -207,6 +207,29 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-12 — AI usage budget live-rate calculation
+
+Changed:
+- Paid subscription AI usage budgets now try live USD exchange rates when a payment is approved, including TJS and CNY, with admin-set subscription rates as fallback.
+- The admin subscription price panel now includes a CNY fallback rate for Alipay/WeChat AI budget conversion.
+- AI usage budget profit reserve changed from 40% to 50%.
+- The fixed $1 Railway/server deduction was removed from per-payment AI budget calculation.
+
+Why:
+- Subscription limits should follow real exchange rates and updated business margin rules, but live-rate failures must fall back to admin-controlled rates instead of hardcoded TJS/CNY values.
+
+Files touched:
+- `app/bot/handlers/admin.py`
+- `app/services/ai_usage_budget_service.py`
+- `app/services/subscription_currency_service.py`
+
+Risk:
+- New approved payments will receive smaller AI budgets than before because profit reserve increased to 50%, but no extra $1 deduction is taken.
+- Existing active AI budgets are not recalculated automatically.
+
+Follow-up:
+- After deploy, approve a small test payment and verify the created `ai_usage_budgets.total_budget_usd` against live/fallback rates.
+
 ### 2026-06-11 — Mini App subscription payment/referral repair
 
 Changed:

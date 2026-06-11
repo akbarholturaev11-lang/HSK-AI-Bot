@@ -8,12 +8,13 @@ from sqlalchemy import select
 
 from app.db.models.ai_usage import AIUsageBudget, AIUsageEvent
 from app.services.ai_service import AIUsageResult
+from app.services.subscription_currency_service import DEFAULT_USD_CNY_RATE, DEFAULT_VISA_LOCAL_RATES, SubscriptionCurrencyService
 
 
-USD_TO_SOMONI = 9.37
-USD_TO_YUAN = 6.80
-PROFIT_MARGIN = 0.40
-RAILWAY_SHARE_USD = 1.0
+USD_TO_SOMONI = float(DEFAULT_VISA_LOCAL_RATES["tjs"])
+USD_TO_YUAN = float(DEFAULT_USD_CNY_RATE)
+PROFIT_MARGIN = 0.50
+RAILWAY_SHARE_USD = 0.0
 SEGMENT_COUNT = 2
 COOLDOWN_HOURS = 6
 REFERRAL_TRIAL_PLAN_TYPE = "referral_trial_3_days"
@@ -52,28 +53,33 @@ class AIUsageBudgetService:
             return dt.replace(tzinfo=timezone.utc)
         return dt.astimezone(timezone.utc)
 
-    def _amount_to_usd(self, amount: int, currency: str) -> Optional[float]:
+    async def _live_or_manual_usd_rates(self):
+        rates, _ = await SubscriptionCurrencyService(self.session).live_or_manual_usd_rates()
+        return rates
+
+    def _amount_to_usd(self, amount: int, currency: str, rates) -> Optional[float]:
         currency_key = (currency or "").strip().lower()
         if currency_key in {"somoni", "tjs", "сомони"}:
-            return amount / USD_TO_SOMONI
+            return amount / float(rates["tjs"])
         if currency_key in {"usd", "$"}:
             return float(amount)
         if currency_key in {"¥", "cny", "yuan", "юань"}:
-            return amount / USD_TO_YUAN
+            return amount / float(rates["cny"])
         return None
 
-    def _ai_budget_usd(self, amount: int, currency: str) -> Optional[float]:
-        revenue_usd = self._amount_to_usd(amount, currency)
+    def _ai_budget_usd(self, amount: int, currency: str, rates) -> Optional[float]:
+        revenue_usd = self._amount_to_usd(amount, currency, rates)
         if revenue_usd is None:
             return None
         return max((revenue_usd * (1 - PROFIT_MARGIN)) - RAILWAY_SHARE_USD, 0.0)
 
     async def create_for_payment(self, payment, starts_at: datetime, ends_at: datetime) -> Optional[AIUsageBudget]:
-        total_budget = self._ai_budget_usd(payment.amount, payment.currency)
+        rates = await self._live_or_manual_usd_rates()
+        total_budget = self._ai_budget_usd(payment.amount, payment.currency, rates)
         budget_amount = payment.amount
         budget_currency = payment.currency
         if total_budget is None and getattr(payment, "base_amount", None):
-            total_budget = self._ai_budget_usd(payment.base_amount, "TJS")
+            total_budget = self._ai_budget_usd(payment.base_amount, "TJS", rates)
             budget_amount = payment.base_amount
             budget_currency = "TJS"
         if total_budget is None:

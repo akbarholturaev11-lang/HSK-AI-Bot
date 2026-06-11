@@ -11,6 +11,10 @@ VISA_LOCAL_RATE_KEYS = {
     "uzs": "subscription_visa_usd_uzs_rate",
     "rub": "subscription_visa_usd_rub_rate",
 }
+SUBSCRIPTION_USD_RATE_KEYS = {
+    **VISA_LOCAL_RATE_KEYS,
+    "cny": "subscription_usd_cny_rate",
+}
 VISA_AUTO_RATE_ENABLED_KEY = "subscription_visa_auto_rate_enabled"
 
 # Editable defaults based on official rates available on 2026-06-01.
@@ -18,6 +22,11 @@ DEFAULT_VISA_LOCAL_RATES = {
     "tjs": Decimal("9.2464"),
     "uzs": Decimal("12001.94"),
     "rub": Decimal("71.0224"),
+}
+DEFAULT_USD_CNY_RATE = Decimal("6.80")
+DEFAULT_SUBSCRIPTION_USD_RATES = {
+    **DEFAULT_VISA_LOCAL_RATES,
+    "cny": DEFAULT_USD_CNY_RATE,
 }
 
 LEGACY_VISA_SOMONI_RATE = DEFAULT_VISA_LOCAL_RATES["tjs"]
@@ -66,8 +75,8 @@ class SubscriptionCurrencyService:
         self.setting_repo = BotSettingRepository(session)
 
     async def get_rate(self, currency_code: str) -> Decimal:
-        default = DEFAULT_VISA_LOCAL_RATES[currency_code]
-        raw_value = await self.setting_repo.get(VISA_LOCAL_RATE_KEYS[currency_code])
+        default = DEFAULT_SUBSCRIPTION_USD_RATES[currency_code]
+        raw_value = await self.setting_repo.get(SUBSCRIPTION_USD_RATE_KEYS[currency_code])
         if not raw_value:
             return default
         try:
@@ -79,7 +88,7 @@ class SubscriptionCurrencyService:
     async def all_rates(self) -> dict[str, Decimal]:
         return {
             currency_code: await self.get_rate(currency_code)
-            for currency_code in VISA_LOCAL_RATE_KEYS
+            for currency_code in SUBSCRIPTION_USD_RATE_KEYS
         }
 
     async def is_auto_rate_enabled(self) -> bool:
@@ -95,11 +104,17 @@ class SubscriptionCurrencyService:
                 return live_rates, "auto"
         return await self.all_rates(), "manual"
 
+    async def live_or_manual_usd_rates(self) -> tuple[dict[str, Decimal], str]:
+        live_rates = await self._fetch_live_usd_rates()
+        if live_rates:
+            return live_rates, "auto"
+        return await self.all_rates(), "manual"
+
     async def set_rate(self, currency_code: str, value: Decimal) -> bool:
-        if currency_code not in VISA_LOCAL_RATE_KEYS or not value.is_finite() or value <= 0:
+        if currency_code not in SUBSCRIPTION_USD_RATE_KEYS or not value.is_finite() or value <= 0:
             return False
         await self.setting_repo.set(
-            VISA_LOCAL_RATE_KEYS[currency_code],
+            SUBSCRIPTION_USD_RATE_KEYS[currency_code],
             str(value.quantize(Decimal("0.0001"))),
         )
         return True
@@ -206,6 +221,10 @@ class SubscriptionCurrencyService:
             }
         except (KeyError, InvalidOperation):
             return None
+        try:
+            result["cny"] = Decimal(str(rates.get("CNY", DEFAULT_USD_CNY_RATE)))
+        except InvalidOperation:
+            result["cny"] = DEFAULT_USD_CNY_RATE
         if not all(value.is_finite() and value > 0 for value in result.values()):
             return None
         return result
