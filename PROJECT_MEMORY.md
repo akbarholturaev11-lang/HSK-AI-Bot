@@ -216,6 +216,12 @@ Changed:
 - Referral 20% discount progress is recalculated from active referral records instead of trusting only `users.discount_referral_count`.
 - Referral links for the 3-friend discount use the live bot username when possible, and the Mini App invite flow now supports localized share text plus copy-link-only.
 - Legacy chat checkout reads admin-updated card payment details from `bot_settings.subscription_payment_details`.
+- Reopening the Subscription Mini App while a payment is still pending shows a localized waiting screen instead of allowing duplicate payment submissions.
+- The first Subscription Mini App screen now removes the extra explanatory hero block and keeps only concrete subscription benefits plus plan/payment choices.
+- Users who already used the referral discount no longer receive discount UI or discounted pricing from the Mini App.
+- VISA/card payment details are rendered as readable rows with copy buttons for card-like numbers; Tajikistan card payments hide the exchange-rate row.
+- The main reply-keyboard subscription button is now a Web App button that opens the Subscription Mini App directly; command/profile flows still send the explanatory Mini App entry block.
+- QR payment screens let the user tap the QR to reveal a download button for saving the QR image.
 
 Why:
 - Users were seeing wrong/fallback QR, card details, referral links, and discount state in the subscription Mini App, and payment submits could appear successful even if admin review did not receive the request.
