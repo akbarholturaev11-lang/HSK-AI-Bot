@@ -98,7 +98,7 @@ class StudyMiniAppService:
         await bot.send_message(
             chat_id=telegram_id,
             text=t("subscription_miniapp_entry_text", lang),
-            reply_markup=subscription_miniapp_keyboard(lang, source="study_miniapp"),
+            reply_markup=subscription_miniapp_keyboard(lang, source="study_miniapp", mode="subscription"),
             parse_mode="HTML",
         )
         return True

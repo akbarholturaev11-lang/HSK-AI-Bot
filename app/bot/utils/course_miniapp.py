@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260611-subscription-help-tjs-rate"
+MINIAPP_ASSET_VERSION = "20260611-subscription-miniapp-modes"
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:
@@ -104,7 +104,15 @@ def course_stroke_order_url(
     return f"{base_url}{separator}{urlencode(params)}"
 
 
-def subscription_miniapp_url(lang: str | None = None, source: str | None = None) -> str:
+def subscription_miniapp_url(
+    lang: str | None = None,
+    source: str | None = None,
+    mode: str | None = None,
+    campaign_id: int | None = None,
+    feedback_id: int | None = None,
+    plan: str | None = None,
+    method: str | None = None,
+) -> str:
     base_url = _miniapp_base_url_for_file("subscription.html")
     separator = "&" if "?" in base_url else "?"
     params = {
@@ -113,6 +121,16 @@ def subscription_miniapp_url(lang: str | None = None, source: str | None = None)
     }
     if source:
         params["source"] = str(source)
+    if mode:
+        params["mode"] = str(mode)
+    if campaign_id:
+        params["campaign_id"] = int(campaign_id)
+    if feedback_id:
+        params["feedback_id"] = int(feedback_id)
+    if plan:
+        params["plan"] = str(plan)
+    if method:
+        params["method"] = str(method)
     return f"{base_url}{separator}{urlencode(params)}"
 
 

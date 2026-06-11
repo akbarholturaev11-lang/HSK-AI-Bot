@@ -27,6 +27,9 @@
 html{scroll-behavior:smooth}
 html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
 body{overflow-x:hidden;position:relative;background:radial-gradient(125% 80% at 50% -8%,#0d3127 0%,#08201a 44%,#05110d 100%)}
+body.mode-referral_discount{--gold:#ffe08f}
+body.mode-admin_discount{--gold:#ffd36d;--emerald:#62e6b2;--mint:#a8f7d8}
+body.mode-feedback_discount{--gold:#ffd08a;--emerald:#74e7ff;--mint:#c2f7ff}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
     radial-gradient(58% 40% at 82% 6%,rgba(52,227,164,.16),transparent 70%),
@@ -326,10 +329,19 @@ const PLAN_ORDER=["10_days","1_month"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const COUNTRY_ORDER=["tj","uz","ru","other"];
 const SUPPORT_URL="https://t.me/akbarchina";
+const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
 
 const I18N={
   uz:{
     title:"Obuna",
+    modeTitles:{subscription:"Obuna",referral_discount:"3 do'st chegirmasi",admin_discount:"Maxsus chegirma",feedback_discount:"20% taklif"},
+    modeTv:{subscription:"Obuna nima beradi",referral_discount:"Referral chegirma",admin_discount:"Admin maxsus taklifi",feedback_discount:"Siz uchun chegirma"},
+    modePlans:{subscription:"Tarif",referral_discount:"Chegirmali tarif",admin_discount:"Maxsus tarif",feedback_discount:"20% chegirmali tarif"},
+    adminDiscountTitle:"Maxsus chegirma {percent}%",
+    adminDiscountText:"Admin bergan maxsus taklif. Mos tarif va to'lovlar shu oynada ko'rsatiladi.",
+    feedbackDiscountTitle:"Siz uchun 20% taklif",
+    feedbackDiscountText:"Fikr bildirganingiz uchun chegirma shu oynada hisoblanadi.",
+    offerExpired:"Bu taklif tugagan yoki sizga mos emas.",
     heroTitle:"Tarif va to'lov usulini tanlang",
     heroText:"Obuna bilan kurs, AI javoblar, foto, voice, quiz va xato tahlili to'liq ochiladi.",
     benefits:[
@@ -413,6 +425,14 @@ const I18N={
   },
   ru:{
     title:"Подписка",
+    modeTitles:{subscription:"Подписка",referral_discount:"Скидка за 3 друзей",admin_discount:"Специальная скидка",feedback_discount:"Предложение 20%"},
+    modeTv:{subscription:"Что дает подписка",referral_discount:"Реферальная скидка",admin_discount:"Спецпредложение админа",feedback_discount:"Скидка для вас"},
+    modePlans:{subscription:"Тариф",referral_discount:"Тариф со скидкой",admin_discount:"Специальный тариф",feedback_discount:"Тариф со скидкой 20%"},
+    adminDiscountTitle:"Специальная скидка {percent}%",
+    adminDiscountText:"Специальное предложение от админа. Подходящие тарифы и способы оплаты показаны здесь.",
+    feedbackDiscountTitle:"Для вас предложение 20%",
+    feedbackDiscountText:"Скидка за обратную связь будет рассчитана в этом окне.",
+    offerExpired:"Это предложение закончилось или вам не подходит.",
     heroTitle:"Выберите тариф и оплату",
     heroText:"Подписка открывает курс, AI-ответы, фото, voice, quiz и разбор ошибок.",
     benefits:[
@@ -496,6 +516,14 @@ const I18N={
   },
   tj:{
     title:"Обуна",
+    modeTitles:{subscription:"Обуна",referral_discount:"Тахфифи 3 дӯст",admin_discount:"Тахфифи махсус",feedback_discount:"Таклифи 20%"},
+    modeTv:{subscription:"Обуна чӣ медиҳад",referral_discount:"Тахфифи referral",admin_discount:"Пешниҳоди махсуси admin",feedback_discount:"Тахфиф барои шумо"},
+    modePlans:{subscription:"Тариф",referral_discount:"Тарифи тахфифӣ",admin_discount:"Тарифи махсус",feedback_discount:"Тарифи 20% тахфиф"},
+    adminDiscountTitle:"Тахфифи махсус {percent}%",
+    adminDiscountText:"Пешниҳоди махсуси admin. Тариф ва усули пардохти мувофиқ дар ҳамин ҷо нишон дода мешавад.",
+    feedbackDiscountTitle:"Барои шумо таклифи 20%",
+    feedbackDiscountText:"Барои feedback тахфиф дар ҳамин равзана ҳисоб мешавад.",
+    offerExpired:"Ин пешниҳод тамом шудааст ё ба шумо мувофиқ нест.",
     heroTitle:"Тариф ва пардохтро интихоб кунед",
     heroText:"Бо обуна курс, AI ҷавобҳо, фото, voice, quiz ва таҳлили хатоҳо кушода мешаванд.",
     benefits:[
@@ -581,10 +609,13 @@ const I18N={
 
 const state={
   lang:normalizeLang(PARAMS.get("lang")||tg?.initDataUnsafe?.user?.language_code||"uz"),
+  mode:normalizeMode(PARAMS.get("mode")),
+  campaignId:positiveParam(PARAMS.get("campaign_id")),
+  feedbackId:positiveParam(PARAMS.get("feedback_id")),
   preview:!INIT_DATA,
   overview:null,
-  plan:"10_days",
-  method:"visa",
+  plan:PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"10_days",
+  method:METHOD_ORDER.includes(PARAMS.get("method"))?PARAMS.get("method"):"visa",
   country:"tj",
   step:0,
   quote:null,
@@ -606,6 +637,14 @@ const state={
 function $(selector){return document.querySelector(selector)}
 function $$(selector){return Array.from(document.querySelectorAll(selector))}
 function tr(){return I18N[state.lang]||I18N.uz}
+function normalizeMode(value){
+  const mode=String(value||"subscription").toLowerCase();
+  return MODE_ORDER.includes(mode)?mode:"subscription";
+}
+function positiveParam(value){
+  const number=Number.parseInt(value||"",10);
+  return Number.isFinite(number)&&number>0?number:null;
+}
 function normalizeLang(value){
   const lang=String(value||"").toLowerCase();
   if(lang==="tg"||lang==="tg-cyrl")return "tj";
@@ -619,8 +658,32 @@ function money(amount){
   return raw||"...";
 }
 function priceInfo(method=state.method,plan=state.plan){
-  return state.overview?.prices?.[method]?.[plan]||mockOverview().prices[method][plan];
+  const real=state.overview?.prices?.[method]?.[plan];
+  if(real)return real;
+  return state.preview?mockOverview().prices?.[method]?.[plan]||null:null;
 }
+function availableMethods(){
+  const prices=state.overview?.prices||mockOverview().prices;
+  return METHOD_ORDER.filter(method=>Object.keys(prices?.[method]||{}).length>0);
+}
+function availablePlans(method=state.method){
+  const prices=state.overview?.prices||mockOverview().prices;
+  return PLAN_ORDER.filter(plan=>prices?.[method]?.[plan]);
+}
+function ensureSelection(){
+  const methods=availableMethods();
+  if(!methods.includes(state.method))state.method=methods[0]||"visa";
+  const plans=availablePlans(state.method);
+  if(!plans.includes(state.plan))state.plan=plans[0]||"10_days";
+}
+function contextPayload(){
+  return {
+    mode:state.mode,
+    campaign_id:state.campaignId,
+    feedback_id:state.feedbackId
+  };
+}
+function hasCurrentPrice(){return Boolean(priceInfo(state.method,state.plan))}
 function flow(){return state.done||state.pending?["done"]:(state.method==="visa"?["start","country","pay"]:["start","pay"])}
 function currentScreen(){return flow()[state.step]||"start"}
 function api(path,body){
@@ -641,7 +704,7 @@ function errorText(code){
     payment_details_missing:text.paymentDetailsMissing,
     admin_notification_failed:text.adminNotificationFailed,
     qr_not_ready:text.qrMissing,
-    payment_invalid_plan:text.error,
+    payment_invalid_plan:text.offerExpired,
     access_start_first:text.invalidTelegram,
     bad_json:text.error,
     api_error:text.error
@@ -649,30 +712,43 @@ function errorText(code){
   return errors[code]||text.error;
 }
 function mockOverview(){
+  const special=state.mode==="admin_discount"||state.mode==="feedback_discount";
+  const percent=state.mode==="admin_discount"?30:(state.mode==="feedback_discount"?20:0);
+  const apply=item=>special?{
+    ...item,
+    final_amount:Math.round(item.base_amount*(100-percent)/100),
+    discount_applied:true,
+    discount_percent:percent,
+    discount_source:state.mode==="admin_discount"?"admin_campaign":"feedback_price_offer",
+    discount_title:state.mode==="admin_discount"?"Preview admin discount":"Preview feedback discount"
+  }:item;
   return {
     ok:true,
     language:state.lang,
+    mode:state.mode,
     pending_payment:null,
+    offer:special?{type:state.mode,available:true,percent,title:"Preview discount"}:null,
     discount:{referral_20_available:false,referral_count:0,referral_required:3,discount_used:false,offer_started:false,referral_link:""},
     payment_details:"Preview karta rekviziti\nNAME: HSK AI\nCARD: 0000 0000 0000 0000",
     prices:{
       visa:{
-        "10_days":{base_amount:29,final_amount:29,currency:"TJS",discount_applied:false,discount_percent:0},
-        "1_month":{base_amount:89,final_amount:89,currency:"TJS",discount_applied:false,discount_percent:0}
+        "10_days":apply({base_amount:29,final_amount:29,currency:"TJS",discount_applied:false,discount_percent:0}),
+        "1_month":apply({base_amount:89,final_amount:89,currency:"TJS",discount_applied:false,discount_percent:0})
       },
       alipay:{
-        "10_days":{base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0},
-        "1_month":{base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0}
+        "10_days":apply({base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0}),
+        "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0})
       },
       wechat:{
-        "10_days":{base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0},
-        "1_month":{base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0}
+        "10_days":apply({base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0}),
+        "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0})
       }
     }
   };
 }
 function mockQuote(){
   const info=priceInfo();
+  if(!info)return null;
   const rates={
     tj:{amount:info.final_amount,currency:"TJS",rate:"1 TJS = 1 TJS"},
     uz:{amount:Math.round(info.final_amount*1300/1000)*1000,currency:"UZS",rate:"1 TJS = 1 298.13 UZS"},
@@ -702,7 +778,9 @@ function fallbackOverview(){
   return {
     ok:true,
     language:state.lang,
+    mode:state.mode,
     pending_payment:null,
+    offer:null,
     discount:null,
     payment_details:"",
     prices:mock.prices
@@ -710,8 +788,10 @@ function fallbackOverview(){
 }
 function applyOverview(data){
   state.overview=data;
+  state.mode=normalizeMode(data?.mode||state.mode);
   state.pending=Boolean(data?.pending_payment);
   state.pendingPayment=data?.pending_payment||null;
+  ensureSelection();
   if(state.pending){
     state.done=false;
     state.step=0;
@@ -727,7 +807,7 @@ async function loadOverview(){
     if(state.preview){
       applyOverview(mockOverview());
     }else{
-      const data=await api(API.overview,{});
+      const data=await api(API.overview,contextPayload());
       applyOverview(data);
       state.lang=normalizeLang(PARAMS.get("lang")||data.language||state.lang);
       state.loadError=false;
@@ -751,10 +831,12 @@ async function loadQuote(){
   state.quoteError="";
   state.qrActionsOpen=false;
   try{
+    if(!hasCurrentPrice())throw new Error(tr().offerExpired);
     if(state.preview){
       state.quote=mockQuote();
     }else{
       const data=await api(API.quote,{
+        ...contextPayload(),
         plan_type:state.plan,
         payment_method:state.method,
         card_country:state.method==="visa"?state.country:null
@@ -787,10 +869,19 @@ function setLang(lang){
   document.documentElement.lang=state.lang;
   render();
 }
+function modeText(text,key){
+  return text[key]?.[state.mode]||text[key]?.subscription||text.title;
+}
+function localizedOfferField(offer,field){
+  if(!offer)return "";
+  return offer[`${field}_${state.lang}`]||offer[field]||"";
+}
 function render(){
   const text=tr();
+  document.body.classList.remove("mode-subscription","mode-referral_discount","mode-admin_discount","mode-feedback_discount");
+  document.body.classList.add(`mode-${state.mode}`);
   document.documentElement.lang=state.lang;
-  $("#title").textContent=text.title;
+  $("#title").textContent=modeText(text,"modeTitles");
   $$("#langTabs button").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===state.lang));
   const statusText=state.preview?text.preview:(state.loadError?text.loadError:"");
   $("#status").textContent=statusText;
@@ -812,17 +903,19 @@ function render(){
   $("#backBtn").textContent=text.back;
   $("#nextBtn").textContent=screen==="pay"?text.submit:text.next;
   $("#backBtn").classList.toggle("hide",state.step===0);
-  $("#nextBtn").disabled=state.busy||(!state.preview&&state.loadError)||(screen==="pay"&&!state.preview&&!state.quote);
+  $("#nextBtn").disabled=state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="pay"&&!state.preview&&!state.quote);
 }
 function renderStart(text){
-  $("#tvTitle").textContent=text.tvTitle;
+  $("#tvTitle").textContent=modeText(text,"modeTv");
   const perks=text.perks||[];
   $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
-  $("#plansTitle").textContent=text.plansTitle;
+  $("#plansTitle").textContent=modeText(text,"modePlans");
   renderDiscount(text);
   renderInviteSheet(text);
-  $("#plans").innerHTML=PLAN_ORDER.map(plan=>{
+  const plans=availablePlans(state.method);
+  $("#plans").innerHTML=(plans.length?plans:[]).map(plan=>{
     const info=priceInfo(state.method,plan);
+    if(!info)return "";
     const selected=state.plan===plan?"selected":"";
     const discounted=info.discount_applied?"discounted":"";
     const name=plan==="10_days"?text.planLabels.ten:text.planLabels.month;
@@ -834,12 +927,12 @@ function renderStart(text){
         <span class="old-price">${money(info.base_amount)} ${info.currency}</span>
       </span>
     </button>`;
-  }).join("");
+  }).join("") || `<div class="detail-empty">${text.offerExpired}</div>`;
   $("#methodsTitle").textContent=text.methodsTitle;
   $("#methodHint").textContent=text.methodHint;
   $("#methodHint").style.display=text.methodHint?"block":"none";
   const methodIcons={visa:"💳",alipay:"支",wechat:"微"};
-  $("#methods").innerHTML=METHOD_ORDER.map(method=>{
+  $("#methods").innerHTML=availableMethods().map(method=>{
     const item=text.methods[method];
     const selected=state.method===method?"selected":"";
     return `<button class="choice ${selected}" type="button" data-method="${method}">
@@ -851,9 +944,28 @@ function renderStart(text){
 }
 function renderDiscount(text){
   const discount=state.overview?.discount;
+  const offer=state.overview?.offer;
   const box=$("#discountBox");
   const bar=$("#discountBar");
   const btn=$("#discountBtn");
+  if(state.mode==="admin_discount"||state.mode==="feedback_discount"){
+    box.style.display="flex";
+    box.classList.toggle("used",!offer?.available);
+    $("#discountBadge").textContent=offer?.available?`${offer.percent||0}%`:"!";
+    if(!offer?.available){
+      $("#discountTitle").textContent=text.offerExpired;
+      $("#discountText").textContent="";
+    }else if(state.mode==="admin_discount"){
+      $("#discountTitle").textContent=localizedOfferField(offer,"title")||text.adminDiscountTitle.replace("{percent}",offer.percent||0);
+      $("#discountText").textContent=localizedOfferField(offer,"reason")||text.adminDiscountText;
+    }else{
+      $("#discountTitle").textContent=text.feedbackDiscountTitle;
+      $("#discountText").textContent=text.feedbackDiscountText;
+    }
+    bar.style.display="none";
+    btn.style.display="none";
+    return;
+  }
   if(!discount||discount.discount_used){
     box.style.display="none";
     return;
@@ -1097,6 +1209,7 @@ async function submitPayment(){
   setBusy(true);
   try{
     const data=await api(API.submit,{
+      ...contextPayload(),
       plan_type:state.plan,
       payment_method:state.method,
       card_country:state.method==="visa"?state.country:null,
@@ -1127,6 +1240,7 @@ document.addEventListener("click",event=>{
   const methodBtn=event.target.closest("[data-method]");
   if(methodBtn){
     state.method=methodBtn.dataset.method;
+    ensureSelection();
     state.quote=null;
     state.qrActionsOpen=false;
     state.step=0;
@@ -1138,6 +1252,7 @@ document.addEventListener("click",event=>{
 });
 $("#nextBtn").addEventListener("click",()=>{
   const screen=currentScreen();
+  if(!hasCurrentPrice()){toast(tr().offerExpired);return}
   if(screen==="pay"){submitPayment();return}
   setStep(state.step+1);
 });
@@ -1157,7 +1272,7 @@ async function inviteForDiscount(){
   }
   setBusy(true);
   try{
-    const data=await api(API.discountStart,{});
+    const data=await api(API.discountStart,contextPayload());
     state.overview.discount=data.discount;
     link=data.discount.referral_link||link;
   }catch(error){

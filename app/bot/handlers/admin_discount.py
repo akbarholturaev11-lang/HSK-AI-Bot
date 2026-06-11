@@ -278,6 +278,7 @@ def _preview(data: dict) -> str:
         f"Qoida: <b>{usage}</b>\n"
         f"Userlarga xabar: <b>{_fmt_notify(data)}</b>\n"
         f"QR kod: <b>{_fmt_payment_qr(data)}</b>\n\n"
+        "ℹ️ User checkoutni chatda emas, maxsus Mini App oynasida bajaradi.\n\n"
         "Tasdiqlaysizmi?"
     )
 
@@ -423,7 +424,8 @@ async def admin_discount_panel(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     text = (
         "🎁 <b>Chegirma boshqaruvi</b>\n\n"
-        "Admin kampaniya ochadi, checkoutda avtomatik narx tushadi va payment review'da manbasi ko'rinadi."
+        "Admin kampaniya yaratadi. User tugmani bosganda maxsus checkout Mini App ichida ochiladi, "
+        "payment review'da chegirma manbasi ko'rinadi."
     )
     try:
         sent = await callback.message.edit_text(

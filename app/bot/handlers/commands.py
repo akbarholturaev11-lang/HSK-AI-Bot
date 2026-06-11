@@ -15,7 +15,11 @@ from app.repositories.user_repo import UserRepository
 from app.services.referral_service import ReferralService
 from app.bot.handlers.subscription import build_subscription_main_text_for_user
 from app.bot.keyboards.main_menu import main_menu_keyboard
-from app.bot.keyboards.subscription import subscription_main_keyboard, subscription_miniapp_keyboard
+from app.bot.keyboards.subscription import (
+    subscription_main_keyboard,
+    subscription_miniapp_button,
+    subscription_miniapp_keyboard,
+)
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.utils.i18n import t
 
@@ -354,7 +358,12 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
     l = labels.get(lang, labels["ru"])
     rows = [
             [
-                InlineKeyboardButton(text=l["subscription"], callback_data="subscription:open"),
+                subscription_miniapp_button(
+                    lang,
+                    source="profile_subscription",
+                    mode="subscription",
+                    text=l["subscription"],
+                ),
                 InlineKeyboardButton(text=l["language"], callback_data="profile_menu:language"),
             ],
             [
@@ -406,7 +415,7 @@ async def subscription_command_handler(message: Message, state: FSMContext, sess
 
     await message.answer(
         t("subscription_miniapp_entry_text", lang),
-        reply_markup=subscription_miniapp_keyboard(lang, source="command_subscription"),
+        reply_markup=subscription_miniapp_keyboard(lang, source="command_subscription", mode="subscription"),
         parse_mode="HTML",
     )
 

@@ -48,6 +48,14 @@ bot, dp = create_bot(settings)
 _study_ai_tasks = set()
 
 
+def _positive_int(value) -> int | None:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return None
+    return parsed if parsed > 0 else None
+
+
 async def _send_course_access_expired_offer(session, telegram_id: int) -> None:
     user = await UserRepository(session).get_by_telegram_id(telegram_id)
     if not user:
@@ -64,7 +72,7 @@ async def _send_course_access_expired_offer(session, telegram_id: int) -> None:
         await bot.send_message(
             chat_id=telegram_id,
             text=t("subscription_miniapp_entry_text", lang),
-            reply_markup=subscription_miniapp_keyboard(lang, source="course_expired"),
+            reply_markup=subscription_miniapp_keyboard(lang, source="course_expired", mode="subscription"),
             parse_mode="HTML",
         )
     except Exception as error:
@@ -254,8 +262,15 @@ async def subscription_miniapp_overview(request: Request):
     if not telegram_id:
         return {"ok": False, "error": "invalid_telegram_init_data"}
 
+    payload = await request.json()
     async with async_session_maker() as session:
-        return await SubscriptionMiniAppService(session).overview(telegram_id, bot=bot)
+        return await SubscriptionMiniAppService(session).overview(
+            telegram_id,
+            bot=bot,
+            mode=str(payload.get("mode") or ""),
+            campaign_id=_positive_int(payload.get("campaign_id")),
+            feedback_id=_positive_int(payload.get("feedback_id")),
+        )
 
 
 @app.post("/api/subscription-miniapp/discount-start")
@@ -288,6 +303,9 @@ async def subscription_miniapp_quote(request: Request):
             payment_method=str(payload.get("payment_method") or ""),
             card_country=payload.get("card_country"),
             bot=bot,
+            mode=str(payload.get("mode") or ""),
+            campaign_id=_positive_int(payload.get("campaign_id")),
+            feedback_id=_positive_int(payload.get("feedback_id")),
         )
 
 
@@ -309,6 +327,9 @@ async def subscription_miniapp_submit(request: Request):
             card_country=payload.get("card_country"),
             screenshot_data_url=str(payload.get("screenshot_data_url") or ""),
             bot=bot,
+            mode=str(payload.get("mode") or ""),
+            campaign_id=_positive_int(payload.get("campaign_id")),
+            feedback_id=_positive_int(payload.get("feedback_id")),
         )
 
 

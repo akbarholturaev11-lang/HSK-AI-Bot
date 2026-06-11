@@ -46,7 +46,7 @@ async def handle_subscription_button(message: Message, state: FSMContext, sessio
 
     await message.answer(
         t("subscription_miniapp_entry_text", lang),
-        reply_markup=subscription_miniapp_keyboard(lang, source="menu_subscription"),
+        reply_markup=subscription_miniapp_keyboard(lang, source="menu_subscription", mode="subscription"),
         parse_mode="HTML",
     )
 

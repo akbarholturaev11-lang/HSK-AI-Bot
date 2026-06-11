@@ -218,6 +218,8 @@ Changed:
 - Legacy chat checkout reads admin-updated card payment details from `bot_settings.subscription_payment_details`.
 - Reopening the Subscription Mini App while a payment is still pending shows a localized waiting screen instead of allowing duplicate payment submissions.
 - The first Subscription Mini App screen now removes the extra explanatory hero block and keeps only concrete subscription benefits plus plan/payment choices.
+- Profile and text/photo limit subscription buttons now open the Subscription Mini App directly with WebApp buttons instead of routing through the legacy `subscription:open` entry block.
+- Subscription, referral discount, feedback discount, and admin campaign discount checkout now run through the Subscription Mini App modes (`subscription`, `referral_discount`, `feedback_discount`, `admin_discount`). Chat checkout plan/payment callbacks are legacy fallbacks that redirect to Mini App, and admin campaign notifications use a short Mini App entry instead of chat checkout blocks.
 - Users who already used the referral discount no longer receive discount UI or discounted pricing from the Mini App.
 - VISA/card payment details are rendered as readable rows with copy buttons for card-like numbers; Tajikistan card payments hide the exchange-rate row.
 - The main reply-keyboard subscription button is now a Web App button that opens the Subscription Mini App directly; command/profile flows still send the explanatory Mini App entry block.

@@ -113,7 +113,7 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
         return
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     if user:
-        await user_repo.set_selected_plan_type(user, payment.plan_type)
+        await user_repo.set_selected_plan_type(user, None)
     await session.commit()
 
     await callback.answer("❌ Rad etildi", show_alert=True)
@@ -124,6 +124,7 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
         user=user,
         reason=None,
         plan_type=payment.plan_type,
+        payment=payment,
     )
 
 
@@ -169,7 +170,7 @@ async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, sess
 
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     if user:
-        await user_repo.set_selected_plan_type(user, payment.plan_type)
+        await user_repo.set_selected_plan_type(user, None)
     await session.commit()
 
     await callback.answer(f"❌ Rad etildi: {reason_label}", show_alert=True)
@@ -180,4 +181,5 @@ async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, sess
         user=user,
         reason=reason_code,
         plan_type=payment.plan_type,
+        payment=payment,
     )
