@@ -34,7 +34,7 @@ from app.services.required_channel_service import (
     normalize_channel_username,
 )
 from app.services.subscription_currency_service import (
-    VISA_LOCAL_RATE_KEYS,
+    SUBSCRIPTION_USD_RATE_KEYS,
     SubscriptionCurrencyService,
     format_subscription_price,
 )
@@ -358,11 +358,12 @@ async def _prices_text(session) -> str:
     lines.extend(
         [
             "",
-            "💱 <b>Bank karta kurslari</b>",
+            "💱 <b>Obuna fallback kurslari</b>",
             f"Rejim: <b>{rate_mode}</b>",
             f"1 USD = <code>{SubscriptionCurrencyService.format_rate('tjs', rates['tjs'])}</code> TJS",
             f"1 USD = <code>{SubscriptionCurrencyService.format_rate('uzs', rates['uzs'])}</code> UZS",
             f"1 USD = <code>{SubscriptionCurrencyService.format_rate('rub', rates['rub'])}</code> RUB",
+            f"1 USD = <code>{SubscriptionCurrencyService.format_rate('cny', rates['cny'])}</code> CNY",
         ]
     )
     details = await BotSettingRepository(session).get(PAYMENT_DETAILS_KEY)
@@ -397,6 +398,9 @@ def prices_keyboard() -> InlineKeyboardMarkup:
         InlineKeyboardButton(text="💱 TJS kurs", callback_data="adm:visa_rate_set:tjs"),
         InlineKeyboardButton(text="💱 UZS kurs", callback_data="adm:visa_rate_set:uzs"),
         InlineKeyboardButton(text="💱 RUB kurs", callback_data="adm:visa_rate_set:rub"),
+    ])
+    rows.append([
+        InlineKeyboardButton(text="💴 CNY kurs", callback_data="adm:visa_rate_set:cny"),
     ])
     rows.append([
         InlineKeyboardButton(text="🔄 AUTO kurs ON", callback_data="adm:visa_rate_auto:on"),
@@ -1173,7 +1177,7 @@ async def admin_visa_rate_set_callback(callback: CallbackQuery, state: FSMContex
         await callback.answer()
         return
     currency_code = callback.data.split(":")[-1]
-    if currency_code not in VISA_LOCAL_RATE_KEYS:
+    if currency_code not in SUBSCRIPTION_USD_RATE_KEYS:
         await callback.answer("Noto'g'ri valyuta", show_alert=True)
         return
     await state.update_data(visa_rate_currency=currency_code)
@@ -1185,7 +1189,7 @@ async def admin_visa_rate_set_callback(callback: CallbackQuery, state: FSMContex
     await _edit_admin_flow_callback(
         callback,
         state,
-        f"💱 <b>VISA lokal kursini o'zgartirish</b>\n\n"
+        f"💱 <b>Obuna fallback kursini o'zgartirish</b>\n\n"
         f"Valyuta: <b>{label}</b>\n\n"
         f"Joriy kurs: <code>1 USD = {formatted_rate} {label}</code>\n\n"
         f"1 USD uchun yangi {label} kursini yuboring.\n"
@@ -1228,7 +1232,7 @@ async def admin_visa_rate_amount_handler(message: Message, state: FSMContext, se
     await _edit_admin_flow_message(
         message,
         state,
-        f"✅ VISA lokal kursi yangilandi: <b>1 USD = {formatted} {label}</b>",
+        f"✅ Obuna fallback kursi yangilandi: <b>1 USD = {formatted} {label}</b>",
         reply_markup=prices_keyboard(),
     )
     await state.clear()
