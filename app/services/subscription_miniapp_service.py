@@ -66,6 +66,19 @@ class SubscriptionMiniAppService:
         if not user:
             return {"ok": False, "error": "access_start_first"}
 
+        pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
+        if pending_payment:
+            return {
+                "ok": True,
+                "language": getattr(user, "language", None) or "uz",
+                "pending_payment": self._pending_payment_payload(pending_payment),
+                "discount": None,
+                "prices": {},
+                "card_countries": ["tj", "uz", "ru", "other"],
+                "payment_details": "",
+                "payment_details_configured": False,
+            }
+
         await self.user_repo.ensure_referral_code(user)
         discount_service = DiscountService(self.session)
         await discount_service.sync_referral_discount_progress(user)
@@ -75,6 +88,7 @@ class SubscriptionMiniAppService:
         return {
             "ok": True,
             "language": getattr(user, "language", None) or "uz",
+            "pending_payment": None,
             "discount": await self._discount_payload(user, bot=bot),
             "prices": await self._prices_payload(user),
             "card_countries": ["tj", "uz", "ru", "other"],
@@ -150,6 +164,15 @@ class SubscriptionMiniAppService:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
+
+        pending_payment = await self.payment_repo.get_latest_pending_by_user(telegram_id)
+        if pending_payment:
+            return {
+                "ok": True,
+                "payment_id": pending_payment.id,
+                "status": "pending",
+                "already_pending": True,
+            }
 
         screenshot = self._decode_screenshot(screenshot_data_url)
         if not screenshot:
@@ -246,7 +269,9 @@ class SubscriptionMiniAppService:
                 }
         return result
 
-    async def _discount_payload(self, user, bot: Bot | None = None) -> dict[str, Any]:
+    async def _discount_payload(self, user, bot: Bot | None = None) -> dict[str, Any] | None:
+        if getattr(user, "discount_used", False):
+            return None
         referral_count, referral_available = await DiscountService(self.session).sync_referral_discount_progress(user)
         referral_code = getattr(user, "referral_code", None)
         bot_username = await self._bot_username(bot)
@@ -262,6 +287,17 @@ class SubscriptionMiniAppService:
             "discount_used": bool(getattr(user, "discount_used", False)),
             "offer_started": bool(getattr(user, "discount_offer_started_at", None)),
             "referral_link": referral_link,
+        }
+
+    @staticmethod
+    def _pending_payment_payload(payment) -> dict[str, Any]:
+        return {
+            "id": payment.id,
+            "plan_type": payment.plan_type,
+            "payment_method": payment.payment_method,
+            "amount": payment.amount,
+            "currency": payment.currency,
+            "submitted_at": payment.submitted_at.isoformat() if payment.submitted_at else "",
         }
 
     async def _checkout_info(self, user, plan_type: str, payment_method: str) -> dict[str, Any] | None:

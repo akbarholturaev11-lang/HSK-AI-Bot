@@ -113,12 +113,26 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.04);padding:11px 13px}
 .row span{color:var(--muted);font-size:12px;font-weight:800}
 .row strong{font-size:13px;text-align:right;line-height:1.28;font-weight:850}
-.paybox{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:14px}
-.paybox h4{font-size:14px;margin-bottom:8px;font-weight:850}
+.paybox{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:16px}
+.paybox h4{font-size:15px;margin-bottom:8px;font-weight:900}
 .paybox p,.paybox pre{color:var(--muted);font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.qr{display:flex;align-items:center;justify-content:center;min-height:220px;border:1px dashed var(--line2);border-radius:var(--radius-sm);background:#fff;margin-top:11px;overflow:hidden}
+.detail-hint{margin-bottom:11px;color:#b9dccf;font-size:12px;line-height:1.45}
+.detail-list{display:grid;gap:9px}
+.detail-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.045);padding:11px 12px;min-height:48px}
+.detail-row span{min-width:0;color:var(--text);font-size:13px;line-height:1.38;font-weight:750;word-break:break-word}
+.detail-row.copyable{border-color:rgba(52,227,164,.34);background:linear-gradient(160deg,rgba(52,227,164,.1),rgba(255,255,255,.035))}
+.copy-detail{height:34px;min-width:66px;border-radius:10px;background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:12px;font-weight:950;padding:0 10px}
+.detail-empty{border:1px dashed var(--line2);border-radius:var(--radius-sm);padding:16px;color:var(--muted);font-size:13px;line-height:1.45;text-align:center;background:rgba(255,255,255,.035)}
+.qr{display:flex;align-items:center;justify-content:center;width:100%;min-height:220px;border:1px dashed var(--line2);border-radius:var(--radius-sm);background:#fff;margin-top:11px;overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.qr-tappable{cursor:pointer}
+.qr-tappable:active{transform:scale(.99)}
 .qr img{display:block;max-width:100%;max-height:280px}
 .qr.empty{background:rgba(255,255,255,.04);color:var(--muted);font-size:13px;text-align:center;padding:20px}
+.qr-hint{margin-top:9px;text-align:center;color:var(--muted);font-size:12px;line-height:1.35}
+.qr-actions{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(-4px);transition:grid-template-rows .2s ease,opacity .2s ease,transform .2s ease}
+.qr-actions.show{grid-template-rows:1fr;opacity:1;transform:translateY(0)}
+.qr-actions-inner{overflow:hidden}
+.qr-download{width:100%;height:46px;margin-top:10px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:14px;font-weight:950}
 .upload{display:block;margin-top:14px;border:1.5px dashed var(--line2);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:14px;cursor:pointer;transition:.18s}
 .upload input{display:none}
 .upload strong{display:block;font-size:14px;font-weight:850}
@@ -128,6 +142,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .done-mark{position:relative;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:linear-gradient(135deg,var(--emerald),var(--emerald2));color:#04130d;font-size:42px;font-weight:950;box-shadow:0 0 0 10px rgba(52,227,164,.12),0 18px 50px rgba(52,227,164,.4);animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
 .done h2{font-size:25px;font-weight:900}
 .done p{color:var(--muted);font-size:13px;line-height:1.5;max-width:320px;margin:0 auto}
+.done-return{height:54px;border-radius:var(--radius);background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:15px;font-weight:950;margin:8px auto 0;padding:0 24px;min-width:190px}
 .bottom{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(5,17,13,.35),rgba(5,17,13,.94));backdrop-filter:blur(18px);border-top:1px solid var(--line)}
 .bottom-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:96px 1fr;gap:9px}
 .back,.cta{height:54px;border-radius:var(--radius);font-weight:950;font-size:15px;transition:.18s}
@@ -194,11 +209,6 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
       <div class="tv-screen"><div class="tv-track" id="tvTrack"></div></div>
     </div>
 
-    <div class="hero">
-      <h2 id="heroTitle"></h2>
-      <p id="heroText"></p>
-    </div>
-
     <section class="section">
       <div class="section-head">
         <h3 id="plansTitle"></h3>
@@ -255,9 +265,10 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 
   <section class="screen" data-screen="done">
     <div class="done">
-      <div class="done-mark">✓</div>
+      <div class="done-mark" id="doneMark">✓</div>
       <h2 id="doneTitle"></h2>
       <p id="doneText"></p>
+      <button class="done-return" type="button" id="botReturnBtn"></button>
     </div>
   </section>
 </main>
@@ -310,11 +321,11 @@ const I18N={
       ["Foto va voice","Rasm va ovozli savollar bilan ishlaysiz."],
       ["Xato tahlili","Quiz va javoblardagi xatolar tushuntiriladi."]
     ],
-    tvTitle:"Obuna nimalar ochadi",
-    perks:["🤖 Cheksiz AI javob","📚 To'liq HSK kurs","🖼 Foto tahlil","🎙 Voice savollar","🧩 Quiz va testlar","📈 Progress kuzatuvi","✅ Xato tahlili","⚡ Tez javob","🏆 Tartibli natija"],
+    tvTitle:"Obuna nima beradi",
+    perks:["📚 HSK darslari bosqichma-bosqich","🤖 AI savol-javob kengayadi","🖼 Rasm va ieroglif tahlili","🎙 Voice savollar bilan practice","🧩 Quiz, test va xato tahlili","📈 Progress botda saqlanadi","⚡ Kunlik mashq tezroq yuradi","✅ Obuna davrida cheklovlar kamayadi"],
     discountActiveText:"Bu obunaga avtomatik qo'llanadi.",
     discountLockTitle:"20% chegirmani oching",
-    discountInviteText:"3 do'stingiz botdan foydalansa, 20% chegirma bir marta ochiladi.",
+    discountInviteText:"3 do'stingiz botdan foydalansa, 20% chegirma ochiladi.",
     discountUsed:"20% chegirma allaqachon ishlatilgan.",
     discountBtn:"Do'stlarni chaqirish",
     shareText:"HSK AI — xitoy tilini AI bilan o'rgan. Qo'shilsang menga 20% chegirma ochiladi 👇",
@@ -335,9 +346,9 @@ const I18N={
       alipay:["Alipay","QR orqali yuan to'lovi"],
       wechat:["WeChat Pay","QR orqali yuan to'lovi"]
     },
-    methodHint:"Tarif va to'lov bir oynada",
+    methodHint:"",
     countryTitle:"Karta qaysi davlatniki?",
-    countryText:"Karta davlatini tanlang. Bot summa va kursni backendda qayta hisoblaydi.",
+    countryText:"Karta davlatini tanlang, summa shu valyutada ko'rsatiladi.",
     countries:{
       tj:["Tojikiston kartasi","TJS ko'rinishida to'lov"],
       uz:["O'zbekiston kartasi","UZS ekvivalentida to'lov"],
@@ -345,14 +356,21 @@ const I18N={
       other:["Boshqa davlat kartasi","USD ekvivalentida to'lov"]
     },
     payTitle:"To'lovni yakunlash",
-    payText:"Quyidagi summa backend hisoblagan final summa. To'lovdan keyin screenshot yuklang.",
+    payText:"Summani to'lang va to'lov screenshotini yuklang.",
     amountLabel:"To'lanadigan summa",
     rows:{plan:"Tarif",method:"Usul",country:"Karta davlati",base:"Botdagi narx",rate:"Kurs"},
-    detailsTitle:"To'lov rekviziti",
+    detailsTitle:"Karta rekvizitlari",
+    detailsHint:"To'lovni shu rekvizitlarga qiling. Karta raqamini copy qilish uchun yonidagi tugmani bosing.",
+    copyValue:"Copy",
+    copiedValue:"Copy qilindi.",
+    noDetails:"Karta rekviziti hali kiritilmagan. Keyinroq qayta urinib ko'ring.",
     qrTitle:"QR kod",
-    qrMissing:"Bu narx uchun QR hali tayyor emas. Admin QR yuklagandan keyin ochiladi.",
+    qrTapHint:"QR ustiga bosing — yuklab olish tugmasi chiqadi.",
+    downloadQr:"QR kodni yuklab olish",
+    qrDownloaded:"QR yuklash boshlandi.",
+    qrMissing:"QR kod hozircha tayyor emas.",
     uploadTitle:"To'lov screenshotini yuklash",
-    uploadText:"JPG, PNG yoki WEBP. Screenshot adminsiz avtomatik tekshiruvdan o'tmaydi.",
+    uploadText:"JPG, PNG yoki WEBP.",
     uploaded:"Screenshot tanlandi: {name}",
     next:"Davom etish",
     back:"Orqaga",
@@ -362,12 +380,15 @@ const I18N={
     preview:"Preview mode: Telegram init data yo'q. Real submit faqat bot ichida ishlaydi.",
     previewSubmit:"Real bot ichida ochilganda admin tekshiruvga yuboriladi.",
     doneTitle:"So'rov yuborildi ✅",
-    doneText:"To'lov admin tekshiruviga yuborildi. Tekshiruv taxminan 5–15 daqiqa davom etadi. Tasdiqlangach bot sizga xabar yuboradi.",
+    doneText:"To'lov tekshiruvga yuborildi. Tekshiruv taxminan 5–15 daqiqa davom etadi. Tasdiqlangach bot sizga xabar yuboradi.",
+    pendingTitle:"So'rovingiz tekshiruvda",
+    pendingText:"To'lov so'rovingiz tekshiruvda. Iltimos, tasdiq kelguncha kuting.",
+    returnToBot:"Botga qaytish",
     error:"Xatolik yuz berdi. Qayta urinib ko'ring.",
     loadError:"Ma'lumotni yuklab bo'lmadi. Internetni tekshirib, mini appni qayta oching.",
     quoteError:"To'lov ma'lumotini hozir ochib bo'lmadi. Qayta urinib ko'ring.",
-    paymentDetailsMissing:"Karta rekviziti sozlanmagan. Admin avval karta rekvizitini kiritsin.",
-    adminNotificationFailed:"To'lov so'rovi adminga yetmadi. Qayta urinib ko'ring.",
+    paymentDetailsMissing:"Karta rekviziti hozircha tayyor emas. Keyinroq urinib ko'ring.",
+    adminNotificationFailed:"To'lov so'rovi yuborilmadi. Qayta urinib ko'ring.",
     invalidTelegram:"Mini appni bot ichidan qayta oching."
   },
   ru:{
@@ -380,11 +401,11 @@ const I18N={
       ["Фото и voice","Работаете с фото и голосовыми вопросами."],
       ["Разбор ошибок","Ошибки в quiz и ответах объясняются."]
     ],
-    tvTitle:"Что открывает подписка",
-    perks:["🤖 Безлимитный AI","📚 Полный курс HSK","🖼 Разбор фото","🎙 Голосовые вопросы","🧩 Квизы и тесты","📈 Прогресс","✅ Разбор ошибок","⚡ Быстрые ответы","🏆 Стабильный результат"],
+    tvTitle:"Что дает подписка",
+    perks:["📚 HSK-уроки по шагам","🤖 Больше AI-вопросов и ответов","🖼 Разбор фото и иероглифов","🎙 Практика с voice-вопросами","🧩 Quiz, тесты и разбор ошибок","📈 Прогресс сохраняется в боте","⚡ Ежедневная практика быстрее","✅ На время подписки меньше ограничений"],
     discountActiveText:"Применится к этой подписке автоматически.",
     discountLockTitle:"Откройте скидку 20%",
-    discountInviteText:"Пригласите 3 друзей — когда они начнут пользоваться ботом, откроется разовая скидка 20%.",
+    discountInviteText:"Пригласите 3 друзей — откроется скидка 20%.",
     discountUsed:"Скидка 20% уже использована.",
     discountBtn:"Пригласить друзей",
     shareText:"HSK AI — учи китайский с AI. Присоединяйся, и мне откроется скидка 20% 👇",
@@ -405,9 +426,9 @@ const I18N={
       alipay:["Alipay","Оплата в юанях через QR"],
       wechat:["WeChat Pay","Оплата в юанях через QR"]
     },
-    methodHint:"Тариф и оплата в одном окне",
+    methodHint:"",
     countryTitle:"Из какой страны карта?",
-    countryText:"Выберите страну карты. Бот пересчитает сумму и курс на backend.",
+    countryText:"Выберите страну карты, сумма будет показана в нужной валюте.",
     countries:{
       tj:["Карта Таджикистана","Оплата в TJS"],
       uz:["Карта Узбекистана","Оплата в UZS"],
@@ -415,14 +436,21 @@ const I18N={
       other:["Карта другой страны","Оплата в USD"]
     },
     payTitle:"Завершение оплаты",
-    payText:"Ниже финальная сумма, рассчитанная backend. После оплаты загрузите screenshot.",
+    payText:"Оплатите сумму и загрузите screenshot оплаты.",
     amountLabel:"Сумма к оплате",
     rows:{plan:"Тариф",method:"Способ",country:"Страна карты",base:"Цена в боте",rate:"Курс"},
-    detailsTitle:"Реквизиты",
+    detailsTitle:"Реквизиты карты",
+    detailsHint:"Оплатите по этим реквизитам. Чтобы скопировать номер карты, нажмите кнопку рядом.",
+    copyValue:"Copy",
+    copiedValue:"Скопировано.",
+    noDetails:"Реквизиты карты ещё не добавлены. Попробуйте позже.",
     qrTitle:"QR-код",
-    qrMissing:"QR для этой цены пока не готов. Он появится после загрузки админом.",
+    qrTapHint:"Нажмите на QR — появится кнопка загрузки.",
+    downloadQr:"Скачать QR-код",
+    qrDownloaded:"Загрузка QR началась.",
+    qrMissing:"QR-код пока не готов.",
     uploadTitle:"Загрузить screenshot оплаты",
-    uploadText:"JPG, PNG или WEBP. AI-проверка в этом пути не используется.",
+    uploadText:"JPG, PNG или WEBP.",
     uploaded:"Screenshot выбран: {name}",
     next:"Продолжить",
     back:"Назад",
@@ -432,12 +460,15 @@ const I18N={
     preview:"Preview mode: Telegram init data нет. Реальная отправка работает только внутри бота.",
     previewSubmit:"Внутри реального бота заявка уйдёт админу на проверку.",
     doneTitle:"Заявка отправлена ✅",
-    doneText:"Платёж отправлен на проверку админу. Проверка занимает примерно 5–15 минут. После подтверждения бот пришлёт вам сообщение.",
+    doneText:"Платёж отправлен на проверку. Проверка занимает примерно 5–15 минут. После подтверждения бот пришлёт вам сообщение.",
+    pendingTitle:"Ваша заявка на проверке",
+    pendingText:"Платёж уже находится на проверке. Пожалуйста, дождитесь подтверждения.",
+    returnToBot:"Вернуться в бот",
     error:"Произошла ошибка. Попробуйте снова.",
     loadError:"Не удалось загрузить данные. Проверьте интернет и откройте мини-приложение заново.",
     quoteError:"Не удалось открыть данные оплаты. Попробуйте ещё раз.",
-    paymentDetailsMissing:"Реквизиты карты не настроены. Админ должен сначала добавить реквизиты.",
-    adminNotificationFailed:"Заявка не дошла до админа. Попробуйте ещё раз.",
+    paymentDetailsMissing:"Реквизиты карты пока не готовы. Попробуйте позже.",
+    adminNotificationFailed:"Заявку не удалось отправить. Попробуйте ещё раз.",
     invalidTelegram:"Откройте mini app из бота."
   },
   tj:{
@@ -450,11 +481,11 @@ const I18N={
       ["Фото ва voice","Бо расм ва саволҳои овозӣ кор мекунед."],
       ["Таҳлили хато","Хатоҳои quiz ва ҷавобҳо шарҳ дода мешаванд."]
     ],
-    tvTitle:"Обуна чӣ мекушояд",
-    perks:["🤖 AI бе маҳдудият","📚 Курси пурраи HSK","🖼 Таҳлили фото","🎙 Саволҳои овозӣ","🧩 Quiz ва тестҳо","📈 Пайгирии progress","✅ Таҳлили хато","⚡ Ҷавоби зуд","🏆 Натиҷаи устувор"],
+    tvTitle:"Обуна чӣ медиҳад",
+    perks:["📚 Дарсҳои HSK қадам ба қадам","🤖 Саволу ҷавоби AI васеъ мешавад","🖼 Таҳлили расм ва иероглиф","🎙 Practice бо саволҳои voice","🧩 Quiz, тест ва таҳлили хато","📈 Progress дар bot нигоҳ дошта мешавад","⚡ Машқи ҳаррӯза тезтар меравад","✅ Дар вақти обуна маҳдудият кам мешавад"],
     discountActiveText:"Ба ин обуна худкор татбиқ мешавад.",
     discountLockTitle:"Тахфифи 20%-ро кушоед",
-    discountInviteText:"3 дӯстро даъват кунед — вақте онҳо аз бот истифода кунанд, тахфифи 20% якдафъаина кушода мешавад.",
+    discountInviteText:"3 дӯстро даъват кунед — тахфифи 20% кушода мешавад.",
     discountUsed:"Тахфифи 20% аллакай истифода шуд.",
     discountBtn:"Даъвати дӯстон",
     shareText:"HSK AI — забони хитоиро бо AI омӯз. Ҳамроҳ шав, ба ман тахфифи 20% кушода мешавад 👇",
@@ -475,9 +506,9 @@ const I18N={
       alipay:["Alipay","Пардохти юан бо QR"],
       wechat:["WeChat Pay","Пардохти юан бо QR"]
     },
-    methodHint:"Тариф ва пардохт дар як равзана",
+    methodHint:"",
     countryTitle:"Корт аз кадом давлат аст?",
-    countryText:"Давлати кортро интихоб кунед. Bot маблағ ва курсро дар backend ҳисоб мекунад.",
+    countryText:"Давлати кортро интихоб кунед, маблағ бо ҳамон валюта нишон дода мешавад.",
     countries:{
       tj:["Корти Тоҷикистон","Пардохт бо TJS"],
       uz:["Корти Ӯзбекистон","Пардохт бо UZS"],
@@ -485,14 +516,21 @@ const I18N={
       other:["Корти дигар давлат","Пардохт бо USD"]
     },
     payTitle:"Пардохтро анҷом диҳед",
-    payText:"Ин маблағи final аст, ки backend ҳисоб кард. Баъд аз пардохт screenshot бор кунед.",
+    payText:"Маблағро пардохт кунед ва screenshot-и пардохтро бор кунед.",
     amountLabel:"Маблағи пардохт",
     rows:{plan:"Тариф",method:"Усул",country:"Давлати корт",base:"Нархи bot",rate:"Курс"},
-    detailsTitle:"Реквизити пардохт",
+    detailsTitle:"Реквизитҳои корт",
+    detailsHint:"Пардохтро ба ҳамин реквизитҳо кунед. Барои copy кардани рақами корт тугмаи паҳлӯяшро пахш кунед.",
+    copyValue:"Copy",
+    copiedValue:"Copy шуд.",
+    noDetails:"Реквизити корт ҳоло ворид нашудааст. Баъдтар боз кӯшиш кунед.",
     qrTitle:"QR код",
-    qrMissing:"QR барои ин нарх ҳоло тайёр нест. Баъд аз upload-и admin кушода мешавад.",
+    qrTapHint:"QR-ро пахш кунед — тугмаи download мебарояд.",
+    downloadQr:"QR кодро download кардан",
+    qrDownloaded:"Download-и QR оғоз шуд.",
+    qrMissing:"QR код ҳоло тайёр нест.",
     uploadTitle:"Screenshot-и пардохтро бор кунед",
-    uploadText:"JPG, PNG ё WEBP. AI санҷиш дар ин роҳ истифода намешавад.",
+    uploadText:"JPG, PNG ё WEBP.",
     uploaded:"Screenshot интихоб шуд: {name}",
     next:"Давом",
     back:"Бозгашт",
@@ -502,12 +540,15 @@ const I18N={
     preview:"Preview mode: Telegram init data нест. Submit-и real танҳо дар bot кор мекунад.",
     previewSubmit:"Дар bot-и real дархост ба admin барои санҷиш меравад.",
     doneTitle:"Дархост фиристода шуд ✅",
-    doneText:"Пардохт ба санҷиши admin фиристода шуд. Санҷиш тахминан 5–15 дақиқа давом мекунад. Баъд аз тасдиқ bot ба шумо хабар мефиристад.",
+    doneText:"Пардохт ба санҷиш фиристода шуд. Санҷиш тахминан 5–15 дақиқа давом мекунад. Баъд аз тасдиқ bot ба шумо хабар мефиристад.",
+    pendingTitle:"Дархости шумо дар санҷиш аст",
+    pendingText:"Дархости пардохти шумо дар санҷиш аст. Лутфан то тасдиқ интизор шавед.",
+    returnToBot:"Ба bot баргаштан",
     error:"Хатогӣ шуд. Боз кӯшиш кунед.",
     loadError:"Маълумотро бор кардан нашуд. Интернетро тафтиш карда, mini app-ро аз нав кушоед.",
     quoteError:"Маълумоти пардохт ҳоло кушода нашуд. Боз кӯшиш кунед.",
-    paymentDetailsMissing:"Реквизити корт танзим нашудааст. Admin аввал реквизитро ворид кунад.",
-    adminNotificationFailed:"Дархости пардохт ба admin нарасид. Боз кӯшиш кунед.",
+    paymentDetailsMissing:"Реквизити корт ҳоло тайёр нест. Баъдтар кӯшиш кунед.",
+    adminNotificationFailed:"Дархости пардохт фиристода нашуд. Боз кӯшиш кунед.",
     invalidTelegram:"Mini app-ро аз дохили bot кушоед."
   }
 };
@@ -527,7 +568,11 @@ const state={
   inviteOpen:false,
   inviteLink:"",
   busy:false,
+  busyOverlay:false,
   done:false,
+  pending:false,
+  pendingPayment:null,
+  qrActionsOpen:false,
   loadError:false
 };
 
@@ -549,7 +594,7 @@ function money(amount){
 function priceInfo(method=state.method,plan=state.plan){
   return state.overview?.prices?.[method]?.[plan]||mockOverview().prices[method][plan];
 }
-function flow(){return state.done?["done"]:(state.method==="visa"?["start","country","pay"]:["start","pay"])}
+function flow(){return state.done||state.pending?["done"]:(state.method==="visa"?["start","country","pay"]:["start","pay"])}
 function currentScreen(){return flow()[state.step]||"start"}
 function api(path,body){
   return fetch(path,{
@@ -580,6 +625,7 @@ function mockOverview(){
   return {
     ok:true,
     language:state.lang,
+    pending_payment:null,
     discount:{referral_20_available:false,referral_count:0,referral_required:3,discount_used:false,offer_started:false,referral_link:""},
     payment_details:"Preview karta rekviziti\nNAME: HSK AI\nCARD: 0000 0000 0000 0000",
     prices:{
@@ -620,7 +666,7 @@ function mockQuote(){
     exchange_rate:state.method==="visa"?card.rate:"",
     discount_applied:info.discount_applied,
     discount_percent:info.discount_percent,
-    payment_details:state.method==="visa"?state.overview.payment_details:"",
+    payment_details:state.method==="visa"?(state.overview?.payment_details||mockOverview().payment_details):"",
     qr:state.method==="visa"?null:{available:false}
   };
 }
@@ -629,29 +675,43 @@ function fallbackOverview(){
   return {
     ok:true,
     language:state.lang,
+    pending_payment:null,
     discount:null,
     payment_details:"",
     prices:mock.prices
   };
 }
+function applyOverview(data){
+  state.overview=data;
+  state.pending=Boolean(data?.pending_payment);
+  state.pendingPayment=data?.pending_payment||null;
+  if(state.pending){
+    state.done=false;
+    state.step=0;
+    state.quote=null;
+    state.qrActionsOpen=false;
+    state.screenshotDataUrl="";
+    state.screenshotName="";
+  }
+}
 async function loadOverview(){
-  setBusy(true);
+  setBusy(true,false);
   try{
     if(state.preview){
-      state.overview=mockOverview();
+      applyOverview(mockOverview());
     }else{
       const data=await api(API.overview,{});
-      state.overview=data;
+      applyOverview(data);
       state.lang=normalizeLang(PARAMS.get("lang")||data.language||state.lang);
       state.loadError=false;
     }
   }catch(error){
     if(!INIT_DATA){
       state.preview=true;
-      state.overview=mockOverview();
+      applyOverview(mockOverview());
     }else{
       state.loadError=true;
-      state.overview=state.overview||fallbackOverview();
+      applyOverview(state.overview||fallbackOverview());
     }
     toast(state.preview?tr().preview:tr().loadError);
   }finally{
@@ -662,6 +722,7 @@ async function loadOverview(){
 async function loadQuote(){
   setBusy(true);
   state.quoteError="";
+  state.qrActionsOpen=false;
   try{
     if(state.preview){
       state.quote=mockQuote();
@@ -682,9 +743,10 @@ async function loadQuote(){
     render();
   }
 }
-function setBusy(value){
+function setBusy(value,overlay=true){
   state.busy=Boolean(value);
-  $("#loading").classList.toggle("show",state.busy);
+  state.busyOverlay=Boolean(value&&overlay);
+  $("#loading").classList.toggle("show",state.busyOverlay);
   $("#nextBtn").disabled=state.busy;
 }
 function setStep(step){
@@ -708,23 +770,23 @@ function render(){
   $("#status").classList.toggle("show",Boolean(statusText));
   const items=flow();
   const screen=currentScreen();
+  const finalScreen=state.done||state.pending;
   $$(".screen").forEach(node=>node.classList.toggle("active",node.dataset.screen===screen));
   $$("#steps i").forEach((node,index)=>{
-    node.style.display=state.done||index>=items.length?"none":"block";
+    node.style.display=finalScreen||index>=items.length?"none":"block";
     node.classList.toggle("active",index<=state.step);
   });
-  $("#bottom").style.display=state.done?"none":"block";
+  $("#bottom").style.display=finalScreen?"none":"block";
   renderStart(text);
   renderCountry(text);
   renderPay(text);
+  renderDone(text);
   $("#backBtn").textContent=text.back;
   $("#nextBtn").textContent=screen==="pay"?text.submit:text.next;
   $("#backBtn").classList.toggle("hide",state.step===0);
   $("#nextBtn").disabled=state.busy||(!state.preview&&state.loadError)||(screen==="pay"&&!state.preview&&!state.quote);
 }
 function renderStart(text){
-  $("#heroTitle").textContent=text.heroTitle;
-  $("#heroText").textContent=text.heroText;
   $("#tvTitle").textContent=text.tvTitle;
   const perks=text.perks||[];
   $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
@@ -747,6 +809,7 @@ function renderStart(text){
   }).join("");
   $("#methodsTitle").textContent=text.methodsTitle;
   $("#methodHint").textContent=text.methodHint;
+  $("#methodHint").style.display=text.methodHint?"block":"none";
   const methodIcons={visa:"💳",alipay:"支",wechat:"微"};
   $("#methods").innerHTML=METHOD_ORDER.map(method=>{
     const item=text.methods[method];
@@ -788,6 +851,13 @@ function renderDiscount(text){
     btn.textContent=text.discountBtn;
   }
 }
+function renderDone(text){
+  const pending=Boolean(state.pending&&!state.done);
+  $("#doneMark").textContent=pending?"…":"✓";
+  $("#doneTitle").textContent=pending?text.pendingTitle:text.doneTitle;
+  $("#doneText").textContent=pending?text.pendingText:text.doneText;
+  $("#botReturnBtn").textContent=text.returnToBot;
+}
 function renderCountry(text){
   $("#countryTitle").textContent=text.countryTitle;
   $("#countryText").textContent=text.countryText;
@@ -825,13 +895,22 @@ function renderPay(text){
   ];
   if(state.method==="visa"){
     rows.splice(2,0,[text.rows.country,text.countries[state.country][0]]);
-    if(quote.exchange_rate)rows.push([text.rows.rate,quote.exchange_rate]);
+    if(state.country!=="tj"&&quote.exchange_rate)rows.push([text.rows.rate,quote.exchange_rate]);
   }
   $("#summaryRows").innerHTML=rows.map(row=>`<div class="row"><span>${row[0]}</span><strong>${row[1]}</strong></div>`).join("");
   if(state.method==="visa"){
-    $("#paymentBox").innerHTML=`<h4>${text.detailsTitle}</h4><pre>${escapeHtml(quote.payment_details||state.overview?.payment_details||"")}</pre>`;
+    $("#paymentBox").innerHTML=renderPaymentDetails(quote.payment_details||state.overview?.payment_details||"",text);
   }else if(quote.qr?.available&&quote.qr?.image_data_url){
-    $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4><div class="qr"><img src="${quote.qr.image_data_url}" alt="QR"></div>`;
+    $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4>
+      <button class="qr qr-tappable" type="button" data-qr-toggle aria-label="${escapeAttr(text.downloadQr)}">
+        <img src="${quote.qr.image_data_url}" alt="QR">
+      </button>
+      <p class="qr-hint">${text.qrTapHint}</p>
+      <div class="qr-actions ${state.qrActionsOpen?"show":""}">
+        <div class="qr-actions-inner">
+          <button class="qr-download" type="button" data-download-qr>${text.downloadQr}</button>
+        </div>
+      </div>`;
   }else{
     $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4><div class="qr empty">${text.qrMissing}</div>`;
   }
@@ -841,6 +920,34 @@ function renderPay(text){
 }
 function escapeHtml(value){
   return String(value||"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+}
+function escapeAttr(value){
+  return escapeHtml(value).replace(/`/g,"&#96;");
+}
+function paymentDetailRows(details){
+  return String(details||"")
+    .split(/\n+/)
+    .map(line=>line.trim())
+    .filter(Boolean)
+    .map(line=>{
+      const match=line.match(/\+?\d[\d\s\-()]{7,}\d/);
+      const copyValue=match?match[0].replace(/\D/g,""):"";
+      return {line,copyValue:copyValue.length>=8?copyValue:""};
+    });
+}
+function renderPaymentDetails(details,text){
+  const rows=paymentDetailRows(details);
+  if(!rows.length){
+    return `<h4>${text.detailsTitle}</h4><div class="detail-empty">${text.noDetails}</div>`;
+  }
+  return `<h4>${text.detailsTitle}</h4>
+    <p class="detail-hint">${text.detailsHint}</p>
+    <div class="detail-list">
+      ${rows.map(row=>`<div class="detail-row ${row.copyValue?"copyable":""}">
+        <span>${escapeHtml(row.line)}</span>
+        ${row.copyValue?`<button class="copy-detail" type="button" data-copy-detail data-copy-value="${escapeAttr(row.copyValue)}">${text.copyValue}</button>`:""}
+      </div>`).join("")}
+    </div>`;
 }
 function toast(message){
   const node=$("#toast");
@@ -870,14 +977,14 @@ function hideInviteSheet(){
   state.inviteOpen=false;
   render();
 }
-async function copyReferralLink(link){
-  if(!link){toast(tr().error);return}
+async function copyText(value,successMessage,failedMessage){
+  if(!value){toast(tr().error);return}
   try{
     if(navigator.clipboard?.writeText){
-      await navigator.clipboard.writeText(link);
+      await navigator.clipboard.writeText(value);
     }else{
       const input=document.createElement("textarea");
-      input.value=link;
+      input.value=value;
       input.setAttribute("readonly","");
       input.style.position="fixed";
       input.style.left="-9999px";
@@ -887,10 +994,39 @@ async function copyReferralLink(link){
       input.remove();
       if(!copied)throw new Error("copy_failed");
     }
-    toast(tr().copied);
+    toast(successMessage);
   }catch(error){
-    toast(tr().copyFailed);
+    toast(failedMessage);
   }
+}
+async function copyReferralLink(link){
+  await copyText(link,tr().copied,tr().copyFailed);
+}
+function closeMiniApp(){
+  if(tg&&typeof tg.close==="function"){
+    tg.close();
+    return;
+  }
+  window.close();
+}
+function qrFileName(){
+  const plan=String(state.plan||"plan").replace(/[^a-z0-9_-]/gi,"");
+  const method=String(state.method||"qr").replace(/[^a-z0-9_-]/gi,"");
+  return `hsk-ai-${method}-${plan}-qr.jpg`;
+}
+function downloadQrImage(){
+  const image=state.quote?.qr?.image_data_url;
+  if(!image){
+    toast(tr().qrMissing);
+    return;
+  }
+  const link=document.createElement("a");
+  link.href=image;
+  link.download=qrFileName();
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  toast(tr().qrDownloaded);
 }
 async function submitPayment(){
   if(!state.screenshotDataUrl){
@@ -907,16 +1043,16 @@ async function submitPayment(){
   }
   setBusy(true);
   try{
-    await api(API.submit,{
+    const data=await api(API.submit,{
       plan_type:state.plan,
       payment_method:state.method,
       card_country:state.method==="visa"?state.country:null,
       screenshot_data_url:state.screenshotDataUrl
     });
-    state.done=true;
+    state.pending=Boolean(data.already_pending);
+    state.pendingPayment=data.already_pending?data:null;
+    state.done=!state.pending;
     state.step=0;
-    $("#doneTitle").textContent=tr().doneTitle;
-    $("#doneText").textContent=tr().doneText;
   }catch(error){
     toast(error.message||tr().error);
   }finally{
@@ -925,20 +1061,27 @@ async function submitPayment(){
   }
 }
 document.addEventListener("click",event=>{
+  const qrToggle=event.target.closest("[data-qr-toggle]");
+  if(qrToggle){state.qrActionsOpen=!state.qrActionsOpen;render();return}
+  const qrDownload=event.target.closest("[data-download-qr]");
+  if(qrDownload){downloadQrImage();return}
+  const copyBtn=event.target.closest("[data-copy-detail]");
+  if(copyBtn){copyText(copyBtn.dataset.copyValue,tr().copiedValue,tr().copyFailed);return}
   const langBtn=event.target.closest("[data-lang]");
   if(langBtn){setLang(langBtn.dataset.lang);return}
   const planBtn=event.target.closest("[data-plan]");
-  if(planBtn){state.plan=planBtn.dataset.plan;state.quote=null;render();return}
+  if(planBtn){state.plan=planBtn.dataset.plan;state.quote=null;state.qrActionsOpen=false;render();return}
   const methodBtn=event.target.closest("[data-method]");
   if(methodBtn){
     state.method=methodBtn.dataset.method;
     state.quote=null;
+    state.qrActionsOpen=false;
     state.step=0;
     render();
     return;
   }
   const countryBtn=event.target.closest("[data-country]");
-  if(countryBtn){state.country=countryBtn.dataset.country;state.quote=null;render();return}
+  if(countryBtn){state.country=countryBtn.dataset.country;state.quote=null;state.qrActionsOpen=false;render();return}
 });
 $("#nextBtn").addEventListener("click",()=>{
   const screen=currentScreen();
@@ -946,6 +1089,7 @@ $("#nextBtn").addEventListener("click",()=>{
   setStep(state.step+1);
 });
 $("#backBtn").addEventListener("click",()=>setStep(state.step-1));
+$("#botReturnBtn").addEventListener("click",closeMiniApp);
 function shareReferral(link){
   if(!link){toast(tr().error);return}
   const url="https://t.me/share/url?url="+encodeURIComponent(link)+"&text="+encodeURIComponent(tr().shareText);
@@ -992,6 +1136,7 @@ $("#receiptInput").addEventListener("change",event=>{
   };
   reader.readAsDataURL(file);
 });
+render();
 loadOverview();
 </script>
 </body>
