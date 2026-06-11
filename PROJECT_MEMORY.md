@@ -773,6 +773,22 @@ Risk:
 
 ---
 
+### 2026-06-11 — Menu subscription WebApp auth fix
+
+Changed:
+- Main reply keyboard `Obuna` is a normal text button again; the bot handler sends an inline Mini App button with `mode=subscription`.
+
+Why:
+- Reply-keyboard `web_app` launches were not reliably connecting the Subscription Mini App to the bot for some users. Inline WebApp buttons keep the Telegram init data flow stable.
+
+Files touched:
+- `app/bot/keyboards/main_menu.py`
+
+Risk:
+- The menu subscription path uses one bot message before opening the Mini App instead of opening directly from the reply keyboard.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
