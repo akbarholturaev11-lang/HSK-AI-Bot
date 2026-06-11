@@ -5,10 +5,12 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 
 from app.config import settings
+from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.payment_repo import PaymentRepository
 from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.user_repo import UserRepository
 from app.services.discount_service import DiscountService
+from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
 from app.services.payment_qr_code_service import PaymentQrCodeService
 from app.services.payment_service import PaymentService
 from app.services.subscription_currency_service import (
@@ -35,6 +37,7 @@ from app.bot.keyboards.checkout import checkout_keyboard
 router = Router()
 PAYMENT_METHODS = ("visa", "alipay", "wechat")
 PLANS = ("10_days", "1_month")
+_BOT_USERNAME_CACHE = None
 
 # subscription.py → bot/handlers/ → bot/ → app/ → project root → app/static/payments/
 _STATIC_PAYMENTS = Path(__file__).parent.parent.parent / "static" / "payments"
@@ -271,11 +274,16 @@ def _card_main_text(
     return f"{base}\n\n{texts['choose']}"
 
 
-def _card_checkout_text(lang: str, checkout_info: dict) -> str:
+async def _payment_details_text(session) -> str:
+    stored = await BotSettingRepository(session).get(PAYMENT_DETAILS_KEY)
+    return (stored or settings.PAYMENT_DETAILS or "").strip()
+
+
+async def _card_checkout_text(session, lang: str, checkout_info: dict) -> str:
     texts = _card_texts(lang)
     plan_type = checkout_info["plan_type"]
     price = _card_checkout_price(checkout_info["final_amount"])
-    details = settings.PAYMENT_DETAILS.strip()
+    details = await _payment_details_text(session)
     lines = [
         texts["checkout_title"],
         "",
@@ -487,6 +495,30 @@ async def build_subscription_main_text_for_user(session, user, lang: str) -> str
         if not user.discount_used:
             base += f"\n\n{t('subscription_referral_hint', lang)}"
         return f"{base}\n\n{t('subscription_main_choose', lang)}"
+
+
+async def _bot_username(bot) -> str:
+    global _BOT_USERNAME_CACHE
+    if _BOT_USERNAME_CACHE:
+        return _BOT_USERNAME_CACHE
+    try:
+        me = await bot.get_me()
+        username = (getattr(me, "username", None) or "").strip().lstrip("@")
+        if username:
+            _BOT_USERNAME_CACHE = username
+            return username
+    except Exception:
+        pass
+    username = (settings.BOT_USERNAME or "").strip().lstrip("@")
+    _BOT_USERNAME_CACHE = username
+    return username
+
+
+async def _referral_link(bot, referral_code: str | None) -> str:
+    username = await _bot_username(bot)
+    if not username or not referral_code:
+        return ""
+    return f"https://t.me/{username}?start={referral_code}"
 
 
 async def build_subscription_discount_progress_text(
@@ -768,7 +800,7 @@ async def build_checkout_text(session, lang: str, checkout_info: dict, *, qr_ava
     is_qr = (currency == "¥")
 
     if _is_card_currency(currency):
-        return _card_checkout_text(lang, checkout_info)
+        return await _card_checkout_text(session, lang, checkout_info)
 
     if lang == "tj":
         plan_label = "10 рӯз" if plan_type == "10_days" else "1 моҳ"
@@ -785,6 +817,7 @@ async def build_checkout_text(session, lang: str, checkout_info: dict, *, qr_ava
     card_note = _card_payment_note(lang) if not is_qr else ""
 
     if not is_qr and not discount_applied:
+        details = await _payment_details_text(session)
         return "\n".join([
             t(title_key, lang),
             "",
@@ -793,7 +826,7 @@ async def build_checkout_text(session, lang: str, checkout_info: dict, *, qr_ava
             "",
             card_note,
             "",
-            f"{t('payment_details_label', lang)}: {settings.PAYMENT_DETAILS}",
+            f"{t('payment_details_label', lang)}: {details}",
             "",
             t("payment_send_screenshot", lang),
         ])
@@ -828,9 +861,10 @@ async def build_checkout_text(session, lang: str, checkout_info: dict, *, qr_ava
     if is_qr:
         lines.append(t("checkout_qr_scan" if qr_available else "checkout_qr_missing", lang))
     else:
+        details = await _payment_details_text(session)
         lines.append(card_note)
         lines.append("")
-        lines.append(f"{t('payment_details_label', lang)}: {settings.PAYMENT_DETAILS}")
+        lines.append(f"{t('payment_details_label', lang)}: {details}")
 
     if not is_qr or qr_available:
         lines.extend([
@@ -1145,23 +1179,23 @@ async def subscription_referral_discount_handler(callback: CallbackQuery, sessio
         await user_repo.start_discount_offer(user)
 
     await session.flush()
+    count, discount_eligible = await DiscountService(session).sync_referral_discount_progress(user)
 
     lang = user.language if user.language else "ru"
-    referral_link = f"https://t.me/{settings.BOT_USERNAME}?start={user.referral_code}"
-    count = user.discount_referral_count
+    referral_link = await _referral_link(callback.bot, user.referral_code)
 
     text = await build_subscription_discount_progress_text(
         session,
         lang,
         referral_link,
         count,
-        discount_eligible=user.discount_eligible,
+        discount_eligible=discount_eligible,
         discount_used=user.discount_used,
         payment_method=user.payment_method,
     )
     keyboard = (
         subscription_discount_ready_keyboard(lang)
-        if user.discount_eligible and not user.discount_used
+        if discount_eligible and not user.discount_used
         else subscription_discount_progress_keyboard(lang)
     )
 

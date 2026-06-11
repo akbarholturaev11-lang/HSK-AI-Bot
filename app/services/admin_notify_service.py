@@ -142,8 +142,11 @@ class AdminNotifyService:
         pending_count: int = 1,
         screenshot_bytes: bytes | None = None,
         screenshot_filename: str = "payment.jpg",
+        require_delivery: bool = False,
     ) -> str | None:
         if not self.admin_ids:
+            if require_delivery:
+                raise RuntimeError("admin_ids_not_configured")
             return None
 
         text = self.build_payment_review_text(
@@ -170,6 +173,7 @@ class AdminNotifyService:
 
         keyboard = admin_payment_review_keyboard(payment.id, "uz")
         first_file_id = None
+        sent_count = 0
 
         for admin_id in self.admin_ids:
             try:
@@ -188,6 +192,7 @@ class AdminNotifyService:
                             text=text,
                             reply_markup=keyboard,
                         )
+                    sent_count += 1
                 elif payment.screenshot_file_id:
                     if len(text) <= 1000:
                         await bot.send_photo(
@@ -206,14 +211,18 @@ class AdminNotifyService:
                             text=text,
                             reply_markup=keyboard,
                         )
+                    sent_count += 1
                 else:
                     await bot.send_message(
                         chat_id=admin_id,
                         text=text,
                         reply_markup=keyboard,
                     )
+                    sent_count += 1
             except Exception:
                 pass
+        if require_delivery and sent_count == 0:
+            raise RuntimeError("admin_notification_failed")
         return first_file_id
 
     def _feedback_user_age(self, user) -> str:

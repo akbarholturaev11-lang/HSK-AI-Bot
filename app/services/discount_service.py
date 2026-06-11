@@ -5,6 +5,10 @@ from typing import Optional
 from app.db.models.discount_campaign import DiscountCampaign
 from app.repositories.bot_feedback_repo import BotFeedbackRepository
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
+from app.repositories.referral_repo import ReferralRepository
+
+
+REFERRAL_DISCOUNT_REQUIRED = 3
 
 
 @dataclass
@@ -34,6 +38,47 @@ class DiscountService:
         self.session = session
         self.repo = DiscountCampaignRepository(session)
         self.feedback_repo = BotFeedbackRepository(session)
+        self.referral_repo = ReferralRepository(session)
+
+    async def sync_referral_discount_progress(self, user) -> tuple[int, bool]:
+        if not user:
+            return 0, False
+
+        changed = False
+        if getattr(user, "discount_used", False):
+            if getattr(user, "discount_eligible", False):
+                user.discount_eligible = False
+                changed = True
+            if changed:
+                await self.session.flush()
+            return int(getattr(user, "discount_referral_count", 0) or 0), False
+
+        started_at = getattr(user, "discount_offer_started_at", None)
+        if not started_at:
+            if int(getattr(user, "discount_referral_count", 0) or 0) != 0:
+                user.discount_referral_count = 0
+                changed = True
+            if getattr(user, "discount_eligible", False):
+                user.discount_eligible = False
+                changed = True
+            if changed:
+                await self.session.flush()
+            return 0, False
+
+        count = await self.referral_repo.count_active_since(
+            referrer_telegram_id=user.telegram_id,
+            started_at=started_at,
+        )
+        eligible = count >= REFERRAL_DISCOUNT_REQUIRED
+        if int(getattr(user, "discount_referral_count", 0) or 0) != count:
+            user.discount_referral_count = count
+            changed = True
+        if bool(getattr(user, "discount_eligible", False)) != eligible:
+            user.discount_eligible = eligible
+            changed = True
+        if changed:
+            await self.session.flush()
+        return count, eligible
 
     async def get_best_discount(
         self,
@@ -45,7 +90,8 @@ class DiscountService:
     ) -> DiscountChoice:
         choices: list[DiscountChoice] = []
 
-        if user.discount_eligible and not user.discount_used:
+        _, referral_discount_available = await self.sync_referral_discount_progress(user)
+        if referral_discount_available:
             choices.append(
                 DiscountChoice(
                     source="referral",

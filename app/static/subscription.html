@@ -137,6 +137,17 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .cta:disabled{opacity:.5;box-shadow:none}
 .toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(12px);max-width:calc(100% - 28px);border-radius:999px;background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;padding:11px 15px;font-size:13px;font-weight:850;opacity:0;pointer-events:none;transition:.2s ease;box-shadow:0 18px 45px rgba(0,0,0,.42);z-index:20}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.sheet{position:fixed;inset:0;z-index:25;display:none;align-items:flex-end;justify-content:center}
+.sheet.show{display:flex}
+.sheet-backdrop{position:absolute;inset:0;background:rgba(2,8,6,.62);backdrop-filter:blur(8px);transform:none}
+.sheet-panel{position:relative;width:100%;max-width:520px;border:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;background:#071a14;padding:17px 15px calc(17px + env(safe-area-inset-bottom,0px));box-shadow:0 -18px 60px rgba(0,0,0,.45);animation:sheetUp .22s ease}
+.sheet-panel h3{font-size:17px;line-height:1.25;font-weight:900}
+.sheet-panel p{margin-top:7px;color:var(--muted);font-size:12px;line-height:1.45}
+.sheet-actions{display:grid;gap:9px;margin-top:14px}
+.sheet-actions button{min-height:50px;border-radius:var(--radius-sm);font-weight:900;font-size:14px}
+.sheet-primary{background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d}
+.sheet-secondary{border:1px solid var(--line2);background:rgba(255,255,255,.06);color:var(--text)}
+.sheet-close{color:var(--muted)}
 .loading{position:fixed;inset:0;display:none;place-items:center;background:rgba(5,17,13,.66);backdrop-filter:blur(8px);z-index:30}
 .loading.show{display:grid}
 .spinner{width:38px;height:38px;border-radius:50%;border:3px solid rgba(143,245,207,.2);border-top-color:var(--emerald);animation:spin .8s linear infinite}
@@ -145,6 +156,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
+@keyframes sheetUp{from{transform:translateY(18px);opacity:.7}to{transform:translateY(0);opacity:1}}
 @media (prefers-reduced-motion:reduce){.tv-track{animation-duration:60s}}
 @media (min-width:620px){
   .app{padding-top:26px}
@@ -256,6 +268,18 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
   </div>
 </footer>
 <div class="toast" id="toast"></div>
+<div class="sheet" id="inviteSheet" aria-hidden="true">
+  <button class="sheet-backdrop" type="button" id="inviteBackdrop" aria-label="Close"></button>
+  <div class="sheet-panel">
+    <h3 id="inviteTitle"></h3>
+    <p id="inviteText"></p>
+    <div class="sheet-actions">
+      <button class="sheet-primary" type="button" id="shareInviteBtn"></button>
+      <button class="sheet-secondary" type="button" id="copyInviteBtn"></button>
+      <button class="sheet-close" type="button" id="closeInviteBtn"></button>
+    </div>
+  </div>
+</div>
 <div class="loading" id="loading"><div class="spinner"></div></div>
 
 <script>
@@ -293,6 +317,13 @@ const I18N={
     discountUsed:"20% chegirma allaqachon ishlatilgan.",
     discountBtn:"Do'stlarni chaqirish",
     shareText:"HSK AI — xitoy tilini AI bilan o'rgan. Qo'shilsang menga 20% chegirma ochiladi 👇",
+    inviteTitle:"Referral link tayyor",
+    inviteText:"Xabar siz tanlagan tilda yuboriladi. Xohlasangiz faqat linkni copy qiling.",
+    shareLocalized:"Xabar bilan yuborish",
+    copyLink:"Faqat linkni copy qilish",
+    copied:"Link copy qilindi.",
+    copyFailed:"Linkni copy qilib bo'lmadi.",
+    close:"Yopish",
     plansTitle:"Tarif",
     methodsTitle:"To'lov usuli",
     discountReady:"20% chegirma qo'llanadi",
@@ -332,7 +363,11 @@ const I18N={
     doneTitle:"So'rov yuborildi ✅",
     doneText:"To'lov admin tekshiruviga yuborildi. Tekshiruv taxminan 5–15 daqiqa davom etadi. Tasdiqlangach bot sizga xabar yuboradi.",
     error:"Xatolik yuz berdi. Qayta urinib ko'ring.",
-    loadError:"Ma'lumotni yuklab bo'lmadi. Internetni tekshirib, mini appni qayta oching."
+    loadError:"Ma'lumotni yuklab bo'lmadi. Internetni tekshirib, mini appni qayta oching.",
+    quoteError:"To'lov ma'lumotini hozir ochib bo'lmadi. Qayta urinib ko'ring.",
+    paymentDetailsMissing:"Karta rekviziti sozlanmagan. Admin avval karta rekvizitini kiritsin.",
+    adminNotificationFailed:"To'lov so'rovi adminga yetmadi. Qayta urinib ko'ring.",
+    invalidTelegram:"Mini appni bot ichidan qayta oching."
   },
   ru:{
     title:"Подписка",
@@ -352,6 +387,13 @@ const I18N={
     discountUsed:"Скидка 20% уже использована.",
     discountBtn:"Пригласить друзей",
     shareText:"HSK AI — учи китайский с AI. Присоединяйся, и мне откроется скидка 20% 👇",
+    inviteTitle:"Реферальная ссылка готова",
+    inviteText:"Сообщение отправится на выбранном языке. Можно скопировать только ссылку.",
+    shareLocalized:"Отправить с текстом",
+    copyLink:"Скопировать только ссылку",
+    copied:"Ссылка скопирована.",
+    copyFailed:"Не удалось скопировать ссылку.",
+    close:"Закрыть",
     plansTitle:"Тариф",
     methodsTitle:"Способ оплаты",
     discountReady:"Скидка 20% применится",
@@ -391,7 +433,11 @@ const I18N={
     doneTitle:"Заявка отправлена ✅",
     doneText:"Платёж отправлен на проверку админу. Проверка занимает примерно 5–15 минут. После подтверждения бот пришлёт вам сообщение.",
     error:"Произошла ошибка. Попробуйте снова.",
-    loadError:"Не удалось загрузить данные. Проверьте интернет и откройте мини-приложение заново."
+    loadError:"Не удалось загрузить данные. Проверьте интернет и откройте мини-приложение заново.",
+    quoteError:"Не удалось открыть данные оплаты. Попробуйте ещё раз.",
+    paymentDetailsMissing:"Реквизиты карты не настроены. Админ должен сначала добавить реквизиты.",
+    adminNotificationFailed:"Заявка не дошла до админа. Попробуйте ещё раз.",
+    invalidTelegram:"Откройте mini app из бота."
   },
   tj:{
     title:"Обуна",
@@ -411,6 +457,13 @@ const I18N={
     discountUsed:"Тахфифи 20% аллакай истифода шуд.",
     discountBtn:"Даъвати дӯстон",
     shareText:"HSK AI — забони хитоиро бо AI омӯз. Ҳамроҳ шав, ба ман тахфифи 20% кушода мешавад 👇",
+    inviteTitle:"Referral link тайёр аст",
+    inviteText:"Паём бо забони интихобшуда фиристода мешавад. Метавонед танҳо link-ро copy кунед.",
+    shareLocalized:"Бо паём фиристодан",
+    copyLink:"Танҳо link-ро copy кардан",
+    copied:"Link copy шуд.",
+    copyFailed:"Link-ро copy кардан нашуд.",
+    close:"Пӯшидан",
     plansTitle:"Тариф",
     methodsTitle:"Усули пардохт",
     discountReady:"20% тахфиф ҳисоб мешавад",
@@ -450,7 +503,11 @@ const I18N={
     doneTitle:"Дархост фиристода шуд ✅",
     doneText:"Пардохт ба санҷиши admin фиристода шуд. Санҷиш тахминан 5–15 дақиқа давом мекунад. Баъд аз тасдиқ bot ба шумо хабар мефиристад.",
     error:"Хатогӣ шуд. Боз кӯшиш кунед.",
-    loadError:"Маълумотро бор кардан нашуд. Интернетро тафтиш карда, mini app-ро аз нав кушоед."
+    loadError:"Маълумотро бор кардан нашуд. Интернетро тафтиш карда, mini app-ро аз нав кушоед.",
+    quoteError:"Маълумоти пардохт ҳоло кушода нашуд. Боз кӯшиш кунед.",
+    paymentDetailsMissing:"Реквизити корт танзим нашудааст. Admin аввал реквизитро ворид кунад.",
+    adminNotificationFailed:"Дархости пардохт ба admin нарасид. Боз кӯшиш кунед.",
+    invalidTelegram:"Mini app-ро аз дохили bot кушоед."
   }
 };
 
@@ -465,6 +522,9 @@ const state={
   quote:null,
   screenshotDataUrl:"",
   screenshotName:"",
+  quoteError:"",
+  inviteOpen:false,
+  inviteLink:"",
   busy:false,
   done:false,
   loadError:false
@@ -497,28 +557,42 @@ function api(path,body){
     body:JSON.stringify(body||{})
   }).then(async response=>{
     const data=await response.json().catch(()=>({ok:false,error:"bad_json"}));
-    if(!response.ok||!data.ok)throw new Error(data.error||"api_error");
+    if(!response.ok||!data.ok)throw new Error(errorText(data.error||"api_error"));
     return data;
   });
+}
+function errorText(code){
+  const text=tr();
+  const errors={
+    invalid_telegram_init_data:text.invalidTelegram,
+    payment_details_missing:text.paymentDetailsMissing,
+    admin_notification_failed:text.adminNotificationFailed,
+    qr_not_ready:text.qrMissing,
+    payment_invalid_plan:text.error,
+    access_start_first:text.invalidTelegram,
+    bad_json:text.error,
+    api_error:text.error
+  };
+  return errors[code]||text.error;
 }
 function mockOverview(){
   return {
     ok:true,
     language:state.lang,
-    discount:{referral_20_available:false,referral_count:1,referral_required:3,discount_used:false,offer_started:false,referral_link:"https://t.me/HSK_AI_bot?start=demo"},
+    discount:{referral_20_available:false,referral_count:0,referral_required:3,discount_used:false,offer_started:false,referral_link:""},
     payment_details:"Preview karta rekviziti\nNAME: HSK AI\nCARD: 0000 0000 0000 0000",
     prices:{
       visa:{
-        "10_days":{base_amount:29,final_amount:23,currency:"TJS",discount_applied:true,discount_percent:20},
-        "1_month":{base_amount:89,final_amount:71,currency:"TJS",discount_applied:true,discount_percent:20}
+        "10_days":{base_amount:29,final_amount:29,currency:"TJS",discount_applied:false,discount_percent:0},
+        "1_month":{base_amount:89,final_amount:89,currency:"TJS",discount_applied:false,discount_percent:0}
       },
       alipay:{
-        "10_days":{base_amount:29,final_amount:23,currency:"¥",discount_applied:true,discount_percent:20},
-        "1_month":{base_amount:66,final_amount:53,currency:"¥",discount_applied:true,discount_percent:20}
+        "10_days":{base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0},
+        "1_month":{base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0}
       },
       wechat:{
-        "10_days":{base_amount:29,final_amount:23,currency:"¥",discount_applied:true,discount_percent:20},
-        "1_month":{base_amount:66,final_amount:53,currency:"¥",discount_applied:true,discount_percent:20}
+        "10_days":{base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0},
+        "1_month":{base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0}
       }
     }
   };
@@ -578,7 +652,7 @@ async function loadOverview(){
       state.loadError=true;
       state.overview=state.overview||fallbackOverview();
     }
-    toast(tr().error);
+    toast(state.preview?tr().preview:tr().loadError);
   }finally{
     setBusy(false);
     render();
@@ -586,6 +660,7 @@ async function loadOverview(){
 }
 async function loadQuote(){
   setBusy(true);
+  state.quoteError="";
   try{
     if(state.preview){
       state.quote=mockQuote();
@@ -599,7 +674,8 @@ async function loadQuote(){
     }
   }catch(error){
     state.quote=null;
-    toast(error.message||tr().error);
+    state.quoteError=error.message||tr().quoteError;
+    toast(state.quoteError);
   }finally{
     setBusy(false);
     render();
@@ -643,6 +719,7 @@ function render(){
   $("#backBtn").textContent=text.back;
   $("#nextBtn").textContent=screen==="pay"?text.submit:text.next;
   $("#backBtn").classList.toggle("hide",state.step===0);
+  $("#nextBtn").disabled=state.busy||(!state.preview&&state.loadError)||(screen==="pay"&&!state.preview&&!state.quote);
 }
 function renderStart(text){
   $("#heroTitle").textContent=text.heroTitle;
@@ -652,6 +729,7 @@ function renderStart(text){
   $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
   $("#plansTitle").textContent=text.plansTitle;
   renderDiscount(text);
+  renderInviteSheet(text);
   $("#plans").innerHTML=PLAN_ORDER.map(plan=>{
     const info=priceInfo(state.method,plan);
     const selected=state.plan===plan?"selected":"";
@@ -721,10 +799,20 @@ function renderCountry(text){
   }).join("");
 }
 function renderPay(text){
-  const quote=state.quote||mockQuote();
+  const quote=state.quote||(state.preview?mockQuote():null);
   $("#payTitle").textContent=text.payTitle;
   $("#payText").textContent=text.payText;
   $("#amountLabel").textContent=text.amountLabel;
+  if(!quote){
+    $("#amountValue").textContent="...";
+    $("#amountCurrency").textContent="";
+    $("#summaryRows").innerHTML="";
+    $("#paymentBox").innerHTML=`<h4>${text.detailsTitle}</h4><div class="qr empty">${state.quoteError||text.quoteError}</div>`;
+    $("#uploadTitle").textContent=state.screenshotName?text.uploaded.replace("{name}",state.screenshotName):text.uploadTitle;
+    $("#uploadText").textContent=text.uploadText;
+    $("#uploadBox").classList.toggle("ready",Boolean(state.screenshotDataUrl));
+    return;
+  }
   $("#amountValue").textContent=money(quote.pay_amount);
   $("#amountCurrency").textContent=quote.pay_currency||"";
   const planText=state.plan==="10_days"?text.planLabels.ten:text.planLabels.month;
@@ -760,9 +848,56 @@ function toast(message){
   clearTimeout(window.toastTimer);
   window.toastTimer=setTimeout(()=>node.classList.remove("show"),2200);
 }
+function renderInviteSheet(text){
+  const sheet=$("#inviteSheet");
+  const visible=Boolean(state.inviteOpen&&state.inviteLink);
+  sheet.classList.toggle("show",visible);
+  sheet.setAttribute("aria-hidden",visible?"false":"true");
+  $("#inviteTitle").textContent=text.inviteTitle;
+  $("#inviteText").textContent=text.inviteText;
+  $("#shareInviteBtn").textContent=text.shareLocalized;
+  $("#copyInviteBtn").textContent=text.copyLink;
+  $("#closeInviteBtn").textContent=text.close;
+}
+function showInviteSheet(link){
+  if(!link){toast(tr().error);return}
+  state.inviteLink=link;
+  state.inviteOpen=true;
+  render();
+}
+function hideInviteSheet(){
+  state.inviteOpen=false;
+  render();
+}
+async function copyReferralLink(link){
+  if(!link){toast(tr().error);return}
+  try{
+    if(navigator.clipboard?.writeText){
+      await navigator.clipboard.writeText(link);
+    }else{
+      const input=document.createElement("textarea");
+      input.value=link;
+      input.setAttribute("readonly","");
+      input.style.position="fixed";
+      input.style.left="-9999px";
+      document.body.appendChild(input);
+      input.select();
+      const copied=document.execCommand("copy");
+      input.remove();
+      if(!copied)throw new Error("copy_failed");
+    }
+    toast(tr().copied);
+  }catch(error){
+    toast(tr().copyFailed);
+  }
+}
 async function submitPayment(){
   if(!state.screenshotDataUrl){
     toast(tr().needScreenshot);
+    return;
+  }
+  if(!state.preview&&!state.quote){
+    toast(state.quoteError||tr().quoteError);
     return;
   }
   if(state.preview){
@@ -820,7 +955,6 @@ async function inviteForDiscount(){
   let link=state.overview?.discount?.referral_link||"";
   if(state.preview){
     toast(tr().preview);
-    shareReferral(link);
     return;
   }
   setBusy(true);
@@ -835,9 +969,13 @@ async function inviteForDiscount(){
   }
   setBusy(false);
   render();
-  shareReferral(link);
+  showInviteSheet(link);
 }
 $("#discountBtn").addEventListener("click",inviteForDiscount);
+$("#shareInviteBtn").addEventListener("click",()=>shareReferral(state.inviteLink));
+$("#copyInviteBtn").addEventListener("click",()=>copyReferralLink(state.inviteLink));
+$("#closeInviteBtn").addEventListener("click",hideInviteSheet);
+$("#inviteBackdrop").addEventListener("click",hideInviteSheet);
 $("#receiptInput").addEventListener("change",event=>{
   const file=event.target.files?.[0];
   if(!file)return;
