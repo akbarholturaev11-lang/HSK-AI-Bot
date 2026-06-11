@@ -207,6 +207,36 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-11 — Mini App subscription payment/referral repair
+
+Changed:
+- Subscription Mini App no longer shows demo/fallback payment data to real Telegram users when quote/overview APIs fail.
+- VISA/card checkout now fails with a clear error if admin payment details are not configured.
+- Mini App submit creates a pending payment only if at least one admin payment-review notification is delivered; otherwise it rolls back and returns an error.
+- Referral 20% discount progress is recalculated from active referral records instead of trusting only `users.discount_referral_count`.
+- Referral links for the 3-friend discount use the live bot username when possible, and the Mini App invite flow now supports localized share text plus copy-link-only.
+- Legacy chat checkout reads admin-updated card payment details from `bot_settings.subscription_payment_details`.
+
+Why:
+- Users were seeing wrong/fallback QR, card details, referral links, and discount state in the subscription Mini App, and payment submits could appear successful even if admin review did not receive the request.
+
+Files touched:
+- `app/static/subscription.html`
+- `app/services/subscription_miniapp_service.py`
+- `app/services/admin_notify_service.py`
+- `app/services/discount_service.py`
+- `app/services/subscription_progress_service.py`
+- `app/bot/handlers/subscription.py`
+- `app/bot/utils/course_miniapp.py`
+- `app/main.py`
+
+Risk:
+- If admin IDs are wrong or blocked, Mini App payment submit now returns an error instead of silently accepting the request.
+- Graphify update was attempted but refused to overwrite the existing graph because the rebuilt graph had fewer nodes.
+
+Follow-up:
+- After deploy, test inside Telegram with real `initData`: VISA/card quote, Alipay/WeChat QR quote, screenshot submit, admin approval, and referral share/copy in UZ/RU/TJ.
+
 ### 2026-06-09 — Subscription flow moved to Mini App
 
 Changed:

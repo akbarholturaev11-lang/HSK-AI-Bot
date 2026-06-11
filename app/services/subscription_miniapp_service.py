@@ -24,6 +24,7 @@ MINIAPP_METHODS = {"visa", "alipay", "wechat"}
 PAYMENT_DETAILS_KEY = "subscription_payment_details"
 MAX_SCREENSHOT_BYTES = 8 * 1024 * 1024
 _STATIC_PAYMENTS = Path(__file__).parent.parent / "static" / "payments"
+_BOT_USERNAME_CACHE: str | None = None
 
 QR_PHOTO_PATHS = {
     "alipay_10_days": _STATIC_PAYMENTS / "alipay_10_days.jpg",
@@ -60,24 +61,28 @@ class SubscriptionMiniAppService:
             return stored.strip()
         return settings.PAYMENT_DETAILS.strip()
 
-    async def overview(self, telegram_id: int) -> dict[str, Any]:
+    async def overview(self, telegram_id: int, bot: Bot | None = None) -> dict[str, Any]:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
 
         await self.user_repo.ensure_referral_code(user)
+        discount_service = DiscountService(self.session)
+        await discount_service.sync_referral_discount_progress(user)
         await self.session.commit()
+        payment_details = await self.payment_details()
 
         return {
             "ok": True,
             "language": getattr(user, "language", None) or "uz",
-            "discount": await self._discount_payload(user),
+            "discount": await self._discount_payload(user, bot=bot),
             "prices": await self._prices_payload(user),
             "card_countries": ["tj", "uz", "ru", "other"],
-            "payment_details": await self.payment_details(),
+            "payment_details": payment_details,
+            "payment_details_configured": bool(payment_details),
         }
 
-    async def start_discount(self, telegram_id: int) -> dict[str, Any]:
+    async def start_discount(self, telegram_id: int, bot: Bot | None = None) -> dict[str, Any]:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
@@ -85,9 +90,10 @@ class SubscriptionMiniAppService:
         await self.user_repo.ensure_referral_code(user)
         if not user.discount_used and not user.discount_offer_started_at:
             await self.user_repo.start_discount_offer(user)
+        await DiscountService(self.session).sync_referral_discount_progress(user)
         await self.session.commit()
 
-        return {"ok": True, "discount": await self._discount_payload(user)}
+        return {"ok": True, "discount": await self._discount_payload(user, bot=bot)}
 
     async def quote(
         self,
@@ -106,6 +112,9 @@ class SubscriptionMiniAppService:
         checkout_info = await self._checkout_info(user, plan_type, payment_method)
         if not checkout_info:
             return {"ok": False, "error": "payment_invalid_plan"}
+        payment_details = await self.payment_details() if payment_method == "visa" else ""
+        if payment_method == "visa" and not payment_details:
+            return {"ok": False, "error": "payment_details_missing"}
 
         payload = {
             "ok": True,
@@ -115,6 +124,7 @@ class SubscriptionMiniAppService:
                 payment_method=payment_method,
                 card_country=card_country,
                 checkout_info=checkout_info,
+                payment_details=payment_details,
             ),
         }
         if include_qr and PaymentQrCodeService.is_qr_method(payment_method):
@@ -148,6 +158,9 @@ class SubscriptionMiniAppService:
         checkout_info = await self._checkout_info(user, plan_type, payment_method)
         if not checkout_info:
             return {"ok": False, "error": "payment_invalid_plan"}
+        payment_details = await self.payment_details() if payment_method == "visa" else ""
+        if payment_method == "visa" and not payment_details:
+            return {"ok": False, "error": "payment_details_missing"}
 
         if PaymentQrCodeService.is_qr_method(payment_method):
             qr_payload = await self._qr_payload(
@@ -166,6 +179,7 @@ class SubscriptionMiniAppService:
             payment_method=payment_method,
             card_country=card_country,
             checkout_info=checkout_info,
+            payment_details=payment_details,
         )
 
         user.payment_method = payment_method
@@ -188,21 +202,25 @@ class SubscriptionMiniAppService:
             local_currency=quote.get("pay_currency") if payment_method == "visa" else None,
             exchange_rate=quote.get("exchange_rate") if payment_method == "visa" else None,
         )
-        await self.session.commit()
 
         pending_count = await self.payment_repo.count_pending()
-        file_id = await AdminNotifyService().notify_payment_review(
-            bot=bot,
-            payment=payment,
-            user=user,
-            ai_result=None,
-            pending_count=pending_count,
-            screenshot_bytes=screenshot.data,
-            screenshot_filename=screenshot.filename,
-        )
+        try:
+            file_id = await AdminNotifyService().notify_payment_review(
+                bot=bot,
+                payment=payment,
+                user=user,
+                ai_result=None,
+                pending_count=pending_count,
+                screenshot_bytes=screenshot.data,
+                screenshot_filename=screenshot.filename,
+                require_delivery=True,
+            )
+        except Exception:
+            await self.session.rollback()
+            return {"ok": False, "error": "admin_notification_failed"}
         if file_id:
             payment.screenshot_file_id = file_id
-            await self.session.commit()
+        await self.session.commit()
 
         return {
             "ok": True,
@@ -228,16 +246,18 @@ class SubscriptionMiniAppService:
                 }
         return result
 
-    async def _discount_payload(self, user) -> dict[str, Any]:
+    async def _discount_payload(self, user, bot: Bot | None = None) -> dict[str, Any]:
+        referral_count, referral_available = await DiscountService(self.session).sync_referral_discount_progress(user)
         referral_code = getattr(user, "referral_code", None)
+        bot_username = await self._bot_username(bot)
         referral_link = (
-            f"https://t.me/{settings.BOT_USERNAME}?start={referral_code}"
-            if referral_code and settings.BOT_USERNAME
+            f"https://t.me/{bot_username}?start={referral_code}"
+            if referral_code and bot_username
             else ""
         )
         return {
-            "referral_20_available": bool(user.discount_eligible and not user.discount_used),
-            "referral_count": int(getattr(user, "discount_referral_count", 0) or 0),
+            "referral_20_available": bool(referral_available and not user.discount_used),
+            "referral_count": int(referral_count),
             "referral_required": 3,
             "discount_used": bool(getattr(user, "discount_used", False)),
             "offer_started": bool(getattr(user, "discount_offer_started_at", None)),
@@ -278,6 +298,7 @@ class SubscriptionMiniAppService:
         payment_method: str,
         card_country: str | None,
         checkout_info: dict[str, Any],
+        payment_details: str | None = None,
     ) -> dict[str, Any]:
         pay_amount = str(checkout_info["final_amount"])
         pay_currency = str(checkout_info["currency"])
@@ -307,8 +328,25 @@ class SubscriptionMiniAppService:
             "discount_applied": checkout_info["discount_applied"],
             "discount_percent": checkout_info["discount_percent"],
             "discount_source": checkout_info["discount_source"],
-            "payment_details": (await self.payment_details()) if payment_method == "visa" else "",
+            "payment_details": (payment_details or "") if payment_method == "visa" else "",
         }
+
+    async def _bot_username(self, bot: Bot | None) -> str:
+        global _BOT_USERNAME_CACHE
+        if _BOT_USERNAME_CACHE:
+            return _BOT_USERNAME_CACHE
+        if bot:
+            try:
+                me = await bot.get_me()
+                username = (getattr(me, "username", None) or "").strip().lstrip("@")
+                if username:
+                    _BOT_USERNAME_CACHE = username
+                    return username
+            except Exception:
+                pass
+        username = (settings.BOT_USERNAME or "").strip().lstrip("@")
+        _BOT_USERNAME_CACHE = username
+        return username
 
     async def _qr_payload(
         self,
