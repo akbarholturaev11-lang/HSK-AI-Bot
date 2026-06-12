@@ -40,6 +40,16 @@ class AccessService:
     def _is_paid_user(self, user) -> bool:
         return user.payment_status == "approved"
 
+    def is_paid_user(self, user) -> bool:
+        return bool(user) and self._is_paid_user(user)
+
+    def can_use_trial_voice(self, user) -> bool:
+        return (
+            user is not None
+            and getattr(user, "status", "") == "trial"
+            and getattr(user, "trial_voice_used_at", None) is None
+        )
+
     async def ensure_active_course_access(self, user) -> bool:
         if not user:
             return False

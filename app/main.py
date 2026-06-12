@@ -23,6 +23,7 @@ from app.services.partner_service import PartnerService
 from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
+from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
@@ -33,8 +34,7 @@ from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
-    course_miniapp_continue_keyboard,
-    course_miniapp_understood_keyboard,
+    course_miniapp_quiz_result_keyboard,
 )
 from app.bot.utils.course_miniapp import (
     format_miniapp_homework_result,
@@ -140,6 +140,8 @@ async def _background_scheduler(bot: Bot) -> None:
                 await DiscountNotificationService(session).send_due_notifications(bot)
             async with async_session_maker() as session:
                 await PartnerService(session).send_due_payout_reminders(bot)
+            async with async_session_maker() as session:
+                await OnboardingTipService(session).send_due_tips(bot)
             async with async_session_maker() as session:
                 await AdCampaignService(session).send_due_ads(bot)
             async with async_session_maker() as session:
@@ -393,10 +395,11 @@ async def miniapp_event(request: Request):
 
             user = result["user"]
             lang = user.language if user and user.language else "ru"
-            if result.get("block_no"):
-                reply_markup = course_miniapp_continue_keyboard(lang)
-            else:
-                reply_markup = course_miniapp_understood_keyboard(lang)
+            reply_markup = course_miniapp_quiz_result_keyboard(
+                lang,
+                block_no=bool(result.get("block_no")),
+                low_score=int(result.get("percent") or 0) < 60,
+            )
             await bot.send_message(
                 chat_id=telegram_id,
                 text=format_miniapp_quiz_result(lang, result),

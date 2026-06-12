@@ -18,6 +18,12 @@ from app.services.course_engine_service import (
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.access_service import AccessService
 from app.services.course_trial_service import CourseTrialService
+from app.services.onboarding_tip_service import (
+    OnboardingTipService,
+    TIP_KEY_COURSE_DIALOGUE,
+    TIP_KEY_COURSE_GRAMMAR,
+    TIP_KEY_COURSE_VOCAB,
+)
 from app.services.required_channel_service import RequiredChannelService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course import (
@@ -1564,6 +1570,32 @@ def _keyboard_for_step(lang: str, step: str, lesson=None):
     return get_course_keyboard_for_step(lang, step)
 
 
+def _course_tip_key_for_step(step: str) -> str | None:
+    step = (step or "").strip()
+    if step in {"vocab", "vocab_1", "vocab_2"} or is_block_vocab_step(step):
+        return TIP_KEY_COURSE_VOCAB
+    if step == "dialogue" or step.startswith("dialogue_"):
+        return TIP_KEY_COURSE_DIALOGUE
+    if step == "grammar" or is_block_grammar_step(step):
+        return TIP_KEY_COURSE_GRAMMAR
+    return None
+
+
+async def _queue_course_onboarding_tip(session, user, lesson, step: str, lang: str) -> None:
+    tip_key = _course_tip_key_for_step(step)
+    if not tip_key:
+        return
+    queued = await OnboardingTipService(session).queue_course_tip(
+        user=user,
+        lesson=lesson,
+        step=step,
+        tip_key=tip_key,
+        lang=lang,
+    )
+    if queued:
+        await session.commit()
+
+
 def _static_course_missing_text(lang: str) -> str:
     messages = {
         "uz": "Bu bo'lim uchun tayyor kurs materiali topilmadi. Dars seed faylini tekshirish kerak.",
@@ -1612,6 +1644,7 @@ async def _send_step(respond, user, lesson, step: str, lang: str, session):
     if text is not None:
         keyboard = _keyboard_for_step(lang, step, lesson)
         await respond(text, reply_markup=keyboard, parse_mode="HTML")
+        await _queue_course_onboarding_tip(session, user, lesson, step, lang)
     else:
         keyboard = _keyboard_for_step(lang, step, lesson)
         await respond(_static_course_missing_text(lang), reply_markup=keyboard, parse_mode="HTML")

@@ -96,6 +96,49 @@ def course_miniapp_continue_keyboard(lang: str) -> InlineKeyboardMarkup:
     )
 
 
+def course_miniapp_quiz_result_keyboard(
+    lang: str,
+    *,
+    block_no: bool = False,
+    low_score: bool = False,
+) -> InlineKeyboardMarkup:
+    rows = []
+    if low_score:
+        rows.append(
+            [
+                InlineKeyboardButton(
+                    text=t("course_miniapp_discuss_mistakes_button", lang),
+                    callback_data="course_miniapp:discuss_mistakes",
+                )
+            ]
+        )
+
+    if block_no:
+        rows.append(
+            [
+                InlineKeyboardButton(
+                    text=t("course_next_step", lang),
+                    callback_data="course:repeat_step",
+                )
+            ]
+        )
+    else:
+        rows.append(
+            [
+                InlineKeyboardButton(
+                    text=t("course_miniapp_yes_button", lang),
+                    callback_data="course:satisfied_yes",
+                ),
+                InlineKeyboardButton(
+                    text=t("course_miniapp_no_button", lang),
+                    callback_data="course:satisfied_no",
+                ),
+            ]
+        )
+
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
 def course_homework_done_keyboard(lang: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[

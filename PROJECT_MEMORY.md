@@ -876,6 +876,26 @@ Files touched:
 
 ---
 
+### 2026-06-12 — One-time onboarding tips and trial voice sample
+
+Changed:
+- Added `onboarding_tip_events` to queue contextual one-time bot tips per user.
+- Course vocab/dialogue/grammar sections queue a 30-second tip; the scheduler sends it only if the user is still on that same course step.
+- Normal text/photo usage can queue one-time photo and voice feature tips.
+- Added `users.trial_voice_used_at`; trial users can try voice once, while paid approved users keep normal voice access.
+- Course Mini App quiz results below 60% show an AI mistake-discussion button that sends the latest quiz context to `CourseTutorService` and edits the processing message into the AI explanation.
+
+Files touched:
+- `app/services/onboarding_tip_service.py`
+- `app/db/models/onboarding_tip_event.py`
+- `app/db/models/user.py`
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/messages.py`
+- `app/main.py`
+- `alembic/versions/0039_add_onboarding_tip_events.py`
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

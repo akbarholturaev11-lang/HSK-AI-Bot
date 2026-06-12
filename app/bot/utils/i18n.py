@@ -1483,3 +1483,108 @@ for _lang, _texts in FEEDBACK_I18N.items():
 
 for _lang, _texts in PARTNER_I18N.items():
     TEXTS.setdefault(_lang, {}).update(_texts)
+
+ONBOARDING_TIP_I18N = {
+    "uz": {
+        "referral_trial_access_unlocked": "<b>✅ {days} kunlik bepul kirish ochildi</b>\n\n<blockquote>Bu pullik obuna emas. Matn, kurs va foto $2 bepul limit bilan ishlaydi. Voice'ni trialda 1 marta sinab ko'rishingiz mumkin.</blockquote>",
+        "onboarding_tip_course_vocab": (
+            "🧠 <b>Yangi so'zlarni tezroq eslab qolishni xohlaysizmi?</b>\n\n"
+            "<blockquote>Ieroglifni daftarga 3 qatordan yozing. Yozayotgan paytda baland ovozda o'qing.\n\n"
+            "Keyin har bir yangi so'z bilan kamida 3 ta gap tuzing. Iloji bo'lsa, gaplarni o'z hayotingizga bog'lang.\n\n"
+            "Har kuni darsni boshlashdan oldin bir marta takrorlang.</blockquote>\n\n"
+            "Ieroglif yozilish tartibini ko'rish uchun yuqoridagi 🀄 tugmasini bosing. Takrorlash uchun klaviatura yonidagi HSK ⭐ tugmasidan foydalaning."
+        ),
+        "onboarding_tip_course_dialogue": (
+            "💬 <b>Dialog bo'limi bo'yicha maslahat</b>\n\n"
+            "<blockquote>Agar biror so'z yoki gap tushunarsiz bo'lsa, shu yerning o'zida yozing. AI uni sodda qilib tushuntiradi.\n\n"
+            "Dialog audiosini eshitish uchun yuqoridagi 🔉 tugmasini bosing.</blockquote>"
+        ),
+        "onboarding_tip_course_grammar": (
+            "📚 <b>Grammatika bo'yicha maslahat</b>\n\n"
+            "<blockquote>Agar qoida tushunarsiz bo'lsa yoki yana misollar bilan tushuntirishni xohlasangiz, shunchaki chatga yozing. AI aynan shu dars bo'yicha tushuntiradi.</blockquote>"
+        ),
+        "onboarding_tip_normal_photo": (
+            "📸 <b>Kitob, ieroglif yoki dialog rasmini yuborib ko'ring</b>\n\n"
+            "<blockquote>Bot rasmni o'qib tushuntiradi: xitoychada nima deyilishi, pinyin, tarjima va misollar bilan javob beradi.\n\n"
+            "Hozir biror kitob sahifasi, daftar yoki ieroglif rasmini yuborib sinab ko'rishingiz mumkin.</blockquote>"
+        ),
+        "onboarding_tip_normal_voice": (
+            "🎙 <b>Voice rejim ham bor</b>\n\n"
+            "<blockquote>Bot bilan oddiy voice orqali gaplashishingiz yoki uni tarjimon sifatida ishlatishingiz mumkin.\n\n"
+            "Trialda voice bir marta sinab ko'rish uchun ochiq. Hozir voice yuborib ko'ring.</blockquote>"
+        ),
+        "course_miniapp_discuss_mistakes_button": "🧠 Xatolarimni AI bilan muhokama qilish",
+        "course_miniapp_mistakes_ai_processing": "🧠 AI xatolaringizdan xulosa chiqarib, ularni qaytarmaslik uchun tushuntirish tayyorlayapti...",
+        "course_miniapp_mistakes_ai_prompt": "Men quizda shunday xatolar qildim. Menga sodda qilib tushuntir, nima uchun xato bo'lganini ko'rsat va bu xatolarni qaytarmaslik uchun qanday yodlashni ayt.",
+        "course_miniapp_mistakes_ai_continue_hint": "Tushungan bo'lsangiz, keyingi qismga o'tish uchun pastdagi tugmani bosing.",
+    },
+    "ru": {
+        "referral_trial_access_unlocked": "<b>✅ {days} дня бесплатного доступа открыты</b>\n\n<blockquote>Это не платная подписка. Текст, курс и фото работают в рамках бесплатного лимита $2. Voice можно попробовать 1 раз в trial.</blockquote>",
+        "onboarding_tip_course_vocab": (
+            "🧠 <b>Хотите быстрее запоминать новые слова?</b>\n\n"
+            "<blockquote>Запишите иероглиф в тетради по 3 строки. Пока пишете, произносите его вслух.\n\n"
+            "Затем составьте минимум 3 предложения с каждым новым словом. По возможности связывайте примеры со своей жизнью.\n\n"
+            "Перед началом каждого урока повторяйте один раз.</blockquote>\n\n"
+            "Чтобы посмотреть порядок написания иероглифа, нажмите кнопку 🀄 сверху. Для повторения используйте кнопку HSK ⭐ рядом с клавиатурой."
+        ),
+        "onboarding_tip_course_dialogue": (
+            "💬 <b>Совет по разделу диалога</b>\n\n"
+            "<blockquote>Если слово или фраза непонятны, напишите прямо здесь. AI объяснит проще.\n\n"
+            "Чтобы прослушать аудио диалога, нажмите кнопку 🔉 сверху.</blockquote>"
+        ),
+        "onboarding_tip_course_grammar": (
+            "📚 <b>Совет по грамматике</b>\n\n"
+            "<blockquote>Если правило непонятно или хотите ещё примеры, просто напишите в чат. AI объяснит именно по этому уроку.</blockquote>"
+        ),
+        "onboarding_tip_normal_photo": (
+            "📸 <b>Попробуйте отправить фото книги, иероглифа или диалога</b>\n\n"
+            "<blockquote>Бот прочитает фото и объяснит: как это будет по-китайски, pinyin, перевод и примеры.\n\n"
+            "Можете прямо сейчас отправить страницу книги, тетрадь или иероглиф.</blockquote>"
+        ),
+        "onboarding_tip_normal_voice": (
+            "🎙 <b>Есть ещё voice-режим</b>\n\n"
+            "<blockquote>Можно говорить с ботом голосом или использовать его как переводчика.\n\n"
+            "В trial voice открыт для одной пробы. Отправьте voice сейчас и проверьте.</blockquote>"
+        ),
+        "course_miniapp_discuss_mistakes_button": "🧠 Обсудить ошибки с AI",
+        "course_miniapp_mistakes_ai_processing": "🧠 AI готовит объяснение ваших ошибок, чтобы вы их больше не повторяли...",
+        "course_miniapp_mistakes_ai_prompt": "Я сделал такие ошибки в quiz. Объясни простыми словами, почему это ошибка, и как запомнить, чтобы не повторять.",
+        "course_miniapp_mistakes_ai_continue_hint": "Если стало понятно, нажмите кнопку ниже, чтобы перейти к следующей части.",
+    },
+    "tj": {
+        "referral_trial_access_unlocked": "<b>✅ {days} рӯз дастрасии ройгон кушода шуд</b>\n\n<blockquote>Ин обунаи пулакӣ нест. Матн, курс ва фото бо лимити ройгони $2 кор мекунанд. Voice-ро дар trial 1 бор санҷида метавонед.</blockquote>",
+        "onboarding_tip_course_vocab": (
+            "🧠 <b>Мехоҳед калимаҳои навро тезтар аз худ кунед?</b>\n\n"
+            "<blockquote>Иероглифро дар дафтар 3 қатор нависед. Ҳангоми навиштан онро бо овози баланд хонед.\n\n"
+            "Баъд бо ҳар калимаи нав камаш 3 ҷумла созед. Агар шавад, ҷумлаҳоро ба ҳаёти худ пайваст кунед.\n\n"
+            "Ҳар рӯз пеш аз оғози дарс як бор такрор кунед.</blockquote>\n\n"
+            "Барои дидани тартиби навишти иероглиф тугмаи 🀄-ро аз боло пахш кунед. Барои такрор аз тугмаи HSK ⭐ назди клавиатура истифода баред."
+        ),
+        "onboarding_tip_course_dialogue": (
+            "💬 <b>Маслиҳат барои қисми диалог</b>\n\n"
+            "<blockquote>Агар ягон калима ё ҷумла нофаҳмо бошад, ҳамин ҷо нависед. AI онро содда мефаҳмонад.\n\n"
+            "Барои шунидани аудиои диалог тугмаи 🔉-ро аз боло пахш кунед.</blockquote>"
+        ),
+        "onboarding_tip_course_grammar": (
+            "📚 <b>Маслиҳат барои грамматика</b>\n\n"
+            "<blockquote>Агар қоида нофаҳмо бошад ё хоҳед бо мисолҳои бештар фаҳмонда шавад, танҳо ба чат нависед. AI аз рӯи ҳамин дарс мефаҳмонад.</blockquote>"
+        ),
+        "onboarding_tip_normal_photo": (
+            "📸 <b>Сурати китоб, иероглиф ё диалогро фиристода бинед</b>\n\n"
+            "<blockquote>Бот суратро хонда мефаҳмонад: ба чинӣ чӣ мешавад, pinyin, тарҷума ва мисолҳо медиҳад.\n\n"
+            "Ҳозир метавонед саҳифаи китоб, дафтар ё иероглифро фиристода санҷед.</blockquote>"
+        ),
+        "onboarding_tip_normal_voice": (
+            "🎙 <b>Voice-режим ҳам ҳаст</b>\n\n"
+            "<blockquote>Метавонед бо бот бо voice гап занед ё онро ҳамчун тарҷумон истифода баред.\n\n"
+            "Дар trial voice барои як бор санҷидан кушода аст. Ҳозир voice фиристода бинед.</blockquote>"
+        ),
+        "course_miniapp_discuss_mistakes_button": "🧠 Хатоҳоямро бо AI муҳокима кардан",
+        "course_miniapp_mistakes_ai_processing": "🧠 AI хатогиҳои шуморо таҳлил карда, барои такрор накардан шарҳ тайёр мекунад...",
+        "course_miniapp_mistakes_ai_prompt": "Ман дар quiz чунин хатогиҳо кардам. Ба ман содда фаҳмон, чаро ин хато аст ва чӣ тавр ёд гирам, ки дигар такрор нашавад.",
+        "course_miniapp_mistakes_ai_continue_hint": "Агар фаҳмо шуд, барои гузаштан ба қисми навбатӣ тугмаи поёнро пахш кунед.",
+    },
+}
+
+for _lang, _texts in ONBOARDING_TIP_I18N.items():
+    TEXTS.setdefault(_lang, {}).update(_texts)

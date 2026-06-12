@@ -92,6 +92,10 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    trial_voice_used_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
     force_sub_required_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
         nullable=True,

@@ -485,9 +485,9 @@ def format_block_quiz(lesson, lang: str, n: int) -> str:
         "ru": "📝 Мини-тест",
     }
     intro = {
-        "uz": "Keyingi qismga o'tishdan oldin shu dialogni tez tekshiramiz.",
-        "tj": "Пеш аз қисми навбатӣ ҳамин муколамаро зуд месанҷем.",
-        "ru": "Перед следующей частью быстро проверим этот диалог.",
+        "uz": "Keyingi qismga o'tishdan oldin shu qismdagi yangi so'zlar va grammatikani tez tekshiramiz. 60%dan past bo'lsa, xatolarni AI bilan muhokama qilishingiz mumkin.",
+        "tj": "Пеш аз қисми навбатӣ калимаҳои нав ва грамматикаи ҳамин қисмро зуд месанҷем. Агар натиҷа аз 60% паст бошад, метавонед хатоҳоро бо AI муҳокима кунед.",
+        "ru": "Перед следующей частью быстро проверим новые слова и грамматику этого блока. Если результат ниже 60%, ошибки можно обсудить с AI.",
     }
     answer_hint = {
         "uz": "Mini App ochilmasa, javoblarni shu yerga yozishingiz mumkin.",
