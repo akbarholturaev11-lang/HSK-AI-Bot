@@ -207,6 +207,30 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-13 — Admin user deletion flow simplified and hardened
+
+Changed:
+- Admin panel delete-user button now starts an FSM flow: admin taps delete, bot waits for Telegram ID, admin sends only the numeric ID, and the bot deletes the user.
+- Duplicate `/deleteuser` handler was removed from the broadcast router; the legacy `/deleteuser TELEGRAM_ID` fallback now uses the same repository delete path.
+- User deletion now explicitly clears direct internal user-linked rows (`messages`, course progress/attempts, onboarding tip events, bot feedback) before deleting the `users` row.
+
+Why:
+- `/deleteuser` was duplicated across routers and admin panel forced command usage instead of a simple ID prompt.
+- Delete could fail or behave inconsistently when related user rows existed and DB cascade was not enough.
+
+Files touched:
+- `app/bot/fsm/admin_management.py`
+- `app/bot/handlers/admin.py`
+- `app/bot/handlers/admin_broadcast.py`
+- `app/bot/handlers/messages.py`
+- `app/repositories/user_repo.py`
+
+Risk:
+- Payment/portfolio/partner audit rows are intentionally not deleted; they may still reference the Telegram ID for business history.
+
+Follow-up:
+- Deploy and smoke test in Telegram: Admin panel → Foydalanuvchini o'chirish → send numeric Telegram ID → confirm user disappears/restarts cleanly.
+
 ### 2026-06-13 — Subscription Mini App card payment display cleanup
 
 Changed:

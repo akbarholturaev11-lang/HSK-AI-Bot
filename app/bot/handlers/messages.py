@@ -19,7 +19,7 @@ from aiogram.types import (
 from app.bot.fsm.admin_audio import AdminAudioStates
 from app.bot.fsm.admin_broadcast import BroadcastStates
 from app.bot.fsm.admin_discount import DiscountStates
-from app.bot.fsm.admin_management import AdminPriceStates, AdminRequiredChannelStates
+from app.bot.fsm.admin_management import AdminPriceStates, AdminRequiredChannelStates, AdminUserStates
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
 from app.bot.utils.response_effect import ResponseEffect
 from app.bot.handlers.course import (
@@ -229,6 +229,7 @@ _ADMIN_FSM_STATES = {
     AdminPriceStates.waiting_amount.state,
     AdminPriceStates.waiting_rate.state,
     AdminRequiredChannelStates.waiting_channel.state,
+    AdminUserStates.waiting_delete_user_id.state,
 }
 
 

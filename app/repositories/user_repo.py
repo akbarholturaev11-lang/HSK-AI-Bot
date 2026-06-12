@@ -331,11 +331,29 @@ class UserRepository:
 
     async def delete_by_telegram_id(self, telegram_id: int) -> bool:
         from sqlalchemy import delete as sql_delete
+        from app.db.models.bot_feedback import BotFeedback
+        from app.db.models.course_attempts import CourseAttempt
+        from app.db.models.course_progress import CourseProgress
         from app.db.models.message import Message
+        from app.db.models.onboarding_tip_event import OnboardingTipEvent
 
         user = await self.get_by_telegram_id(telegram_id)
         if not user:
             return False
+        await self.session.execute(
+            sql_delete(BotFeedback).where(
+                (BotFeedback.user_id == user.id) | (BotFeedback.telegram_id == telegram_id)
+            )
+        )
+        await self.session.execute(
+            sql_delete(OnboardingTipEvent).where(OnboardingTipEvent.user_id == user.id)
+        )
+        await self.session.execute(
+            sql_delete(CourseAttempt).where(CourseAttempt.user_id == user.id)
+        )
+        await self.session.execute(
+            sql_delete(CourseProgress).where(CourseProgress.user_id == user.id)
+        )
         await self.session.execute(
             sql_delete(Message).where(Message.user_id == user.id)
         )

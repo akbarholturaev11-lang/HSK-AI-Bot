@@ -11,7 +11,7 @@ from html import escape
 from math import isfinite
 
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
-from app.bot.fsm.admin_management import AdminPriceStates, AdminRequiredChannelStates
+from app.bot.fsm.admin_management import AdminPriceStates, AdminRequiredChannelStates, AdminUserStates
 from app.config import settings
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.user_repo import UserRepository
@@ -2051,19 +2051,87 @@ async def admin_stats_callback(callback: CallbackQuery, session):
 
 
 @router.callback_query(F.data == "adm:deleteuser_info")
-async def admin_deleteuser_info(callback: CallbackQuery, session):
+async def admin_deleteuser_info(callback: CallbackQuery, state: FSMContext, session):
     if not _is_admin(callback.from_user.id):
         await callback.answer()
         return
+    await state.set_state(AdminUserStates.waiting_delete_user_id)
     await callback.answer()
-    await _edit_callback_message(
+    await _edit_admin_flow_callback(
         callback,
+        state,
         "🗑 <b>Foydalanuvchini o'chirish</b>\n\n"
-        "Buyruq: <code>/deleteuser TELEGRAM_ID</code>\n\n"
-        "Misol: <code>/deleteuser 123456789</code>",
+        "Telegram ID yuboring. Masalan:\n"
+        "<code>123456789</code>",
         reply_markup=admin_back_keyboard(),
-        parse_mode="HTML",
     )
+
+
+def _parse_delete_user_id(text: str | None) -> int | None:
+    value = (text or "").strip()
+    if not value:
+        return None
+    if value.startswith("/deleteuser"):
+        parts = value.split(maxsplit=1)
+        value = parts[1].strip() if len(parts) == 2 else ""
+    if not value.isdigit():
+        return None
+    return int(value)
+
+
+async def _delete_user_by_telegram_id(session, target_id: int) -> bool:
+    user_repo = UserRepository(session)
+    deleted = await user_repo.delete_by_telegram_id(target_id)
+    await session.commit()
+    return deleted
+
+
+@router.message(StateFilter(AdminUserStates.waiting_delete_user_id))
+async def admin_deleteuser_waiting_id_handler(message: Message, state: FSMContext, session):
+    if not _is_admin(message.from_user.id):
+        return
+
+    target_id = _parse_delete_user_id(message.text)
+    await delete_message_safely(message)
+    if target_id is None:
+        await _edit_admin_flow_message(
+            message,
+            state,
+            "❌ Telegram ID faqat raqam bo'lishi kerak.\n\n"
+            "Masalan: <code>123456789</code>",
+            reply_markup=admin_back_keyboard(),
+        )
+        return
+
+    try:
+        deleted = await _delete_user_by_telegram_id(session, target_id)
+    except Exception:
+        await session.rollback()
+        await _edit_admin_flow_message(
+            message,
+            state,
+            "❌ User o'chirishda DB xato chiqdi. IDni tekshirib qayta yuboring.",
+            reply_markup=admin_back_keyboard(),
+        )
+        return
+
+    if not deleted:
+        await _edit_admin_flow_message(
+            message,
+            state,
+            f"❌ User <code>{target_id}</code> topilmadi.\n\n"
+            "Boshqa Telegram ID yuboring.",
+            reply_markup=admin_back_keyboard(),
+        )
+        return
+
+    await _edit_admin_flow_message(
+        message,
+        state,
+        f"✅ User <code>{target_id}</code> o'chirildi.",
+        reply_markup=admin_back_keyboard(),
+    )
+    await state.clear()
 
 
 @router.message(Command("deleteuser"))
@@ -2071,26 +2139,21 @@ async def admin_deleteuser_handler(message: Message, session):
     if not _is_admin(message.from_user.id):
         return
 
-    parts = message.text.strip().split()
-    if len(parts) < 2:
+    target_id = _parse_delete_user_id(message.text)
+    if target_id is None:
         await message.answer("Foydalanish: <code>/deleteuser TELEGRAM_ID</code>", parse_mode="HTML")
         return
 
     try:
-        target_id = int(parts[1])
-    except ValueError:
-        await message.answer("❌ Noto'g'ri ID format")
+        deleted = await _delete_user_by_telegram_id(session, target_id)
+    except Exception:
+        await session.rollback()
+        await message.answer("❌ User o'chirishda DB xato chiqdi.")
         return
-
-    user_repo = UserRepository(session)
-    user = await user_repo.get_by_telegram_id(target_id)
-    if not user:
-        await message.answer(f"❌ Foydalanuvchi topilmadi: {target_id}")
-        return
-
-    await session.delete(user)
-    await session.commit()
-    await message.answer(f"✅ Foydalanuvchi {target_id} o'chirildi")
+    if deleted:
+        await message.answer(f"✅ User <code>{target_id}</code> o'chirildi.", parse_mode="HTML")
+    else:
+        await message.answer(f"❌ User <code>{target_id}</code> topilmadi.", parse_mode="HTML")
 
 
 @router.callback_query(F.data == "adm:broadcast_info")
