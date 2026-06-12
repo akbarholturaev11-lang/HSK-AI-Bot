@@ -11,3 +11,7 @@ class AdminPriceStates(StatesGroup):
 
 class AdminRequiredChannelStates(StatesGroup):
     waiting_channel = State()
+
+
+class AdminUserStates(StatesGroup):
+    waiting_delete_user_id = State()

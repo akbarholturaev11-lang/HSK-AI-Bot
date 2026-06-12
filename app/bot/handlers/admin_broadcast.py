@@ -666,26 +666,3 @@ async def bc_cancel(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await callback.message.edit_text("❌ Broadcast bekor qilindi.")
 
-
-@router.message(Command("deleteuser"))
-async def delete_user_command(message: Message, session):
-    if not _is_admin(message.from_user.id):
-        return
-
-    parts = message.text.split()
-    if len(parts) != 2 or not parts[1].isdigit():
-        await message.answer("Foydalanish: /deleteuser <telegram_id>")
-        return
-
-    telegram_id = int(parts[1])
-    repo = UserRepository(session)
-    try:
-        deleted = await repo.delete_by_telegram_id(telegram_id)
-        await session.commit()
-        if deleted:
-            await message.answer(f"✅ User {telegram_id} o'chirildi.")
-        else:
-            await message.answer(f"❌ User {telegram_id} topilmadi.")
-    except Exception as e:
-        await session.rollback()
-        await message.answer(f"❌ Xato: {e}")
