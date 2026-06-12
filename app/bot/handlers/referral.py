@@ -1,4 +1,5 @@
 from aiogram import Router, F
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import CallbackQuery
 
 from app.repositories.user_repo import UserRepository
@@ -26,13 +27,19 @@ async def referral_invite_handler(callback: CallbackQuery, session):
     _, text = await _build_referral_invite_text(session, user)
 
     await callback.answer()
-    sent = await callback.message.answer(
-        text,
-        disable_web_page_preview=True,
-        parse_mode="HTML",
-    )
+    if not callback.message:
+        return
+    try:
+        await callback.message.edit_text(
+            text,
+            disable_web_page_preview=True,
+            parse_mode="HTML",
+        )
+    except TelegramBadRequest as exc:
+        if "message is not modified" not in str(exc).lower():
+            return
     await ReferralService(session).remember_trial_progress_message(
         user,
-        chat_id=sent.chat.id,
-        message_id=sent.message_id,
+        chat_id=callback.message.chat.id,
+        message_id=callback.message.message_id,
     )

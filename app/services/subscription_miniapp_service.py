@@ -17,6 +17,7 @@ from app.services.payment_qr_code_service import PaymentQrCodeService
 from app.services.payment_service import PaymentService
 from app.services.subscription_currency_service import SubscriptionCurrencyService
 from app.services.subscription_price_service import PLANS, SubscriptionPriceService
+from app.services.support_contact_service import get_admin_contact_url
 
 
 CARD_COUNTRIES = {"tj", "uz", "ru", "other"}
@@ -81,6 +82,7 @@ class SubscriptionMiniAppService:
                 "ok": True,
                 "language": getattr(user, "language", None) or "uz",
                 "mode": mode,
+                "support_url": await get_admin_contact_url(self.session),
                 "pending_payment": self._pending_payment_payload(pending_payment),
                 "offer": None,
                 "discount": None,
@@ -106,6 +108,7 @@ class SubscriptionMiniAppService:
             "ok": True,
             "language": getattr(user, "language", None) or "uz",
             "mode": mode,
+            "support_url": await get_admin_contact_url(self.session),
             "pending_payment": None,
             "offer": self._offer_payload(mode, prices),
             "discount": await self._discount_payload(user, bot=bot),
@@ -567,7 +570,7 @@ class SubscriptionMiniAppService:
 
     def _static_qr_bytes(self, payment_method: str, plan_type: str, checkout_info: dict[str, Any]) -> bytes | None:
         discount_source = checkout_info.get("discount_source") or "none"
-        if discount_source not in {"none", "referral"}:
+        if discount_source not in {"none", "referral", "feedback_price_offer"}:
             return None
         amount = int(checkout_info["final_amount"])
         currency = str(checkout_info["currency"])

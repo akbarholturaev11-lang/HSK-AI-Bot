@@ -66,33 +66,58 @@ def course_vocab_stroke_order_keyboard(
     )
 
 
-def course_miniapp_understood_keyboard(lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=t("course_miniapp_yes_button", lang),
-                    callback_data="course:satisfied_yes",
-                ),
-                InlineKeyboardButton(
-                    text=t("course_miniapp_no_button", lang),
-                    callback_data="course:satisfied_no",
-                ),
-            ],
+def _discuss_mistakes_row(lang: str) -> list[InlineKeyboardButton]:
+    return [
+        InlineKeyboardButton(
+            text=t("course_miniapp_discuss_mistakes_button", lang),
+            callback_data="course:discuss_quiz_mistakes",
+        )
+    ]
+
+
+def course_miniapp_understood_keyboard(
+    lang: str,
+    *,
+    discuss_mistakes: bool = False,
+) -> InlineKeyboardMarkup:
+    rows = []
+    if discuss_mistakes:
+        rows.append(_discuss_mistakes_row(lang))
+    rows.append(
+        [
+            InlineKeyboardButton(
+                text=t("course_miniapp_yes_button", lang),
+                callback_data="course:satisfied_yes",
+            ),
+            InlineKeyboardButton(
+                text=t("course_miniapp_no_button", lang),
+                callback_data="course:satisfied_no",
+            ),
         ]
+    )
+    return InlineKeyboardMarkup(
+        inline_keyboard=rows
     )
 
 
-def course_miniapp_continue_keyboard(lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=t("course_next_step", lang),
-                    callback_data="course:repeat_step",
-                )
-            ],
+def course_miniapp_continue_keyboard(
+    lang: str,
+    *,
+    discuss_mistakes: bool = False,
+) -> InlineKeyboardMarkup:
+    rows = []
+    if discuss_mistakes:
+        rows.append(_discuss_mistakes_row(lang))
+    rows.append(
+        [
+            InlineKeyboardButton(
+                text=t("course_next_step", lang),
+                callback_data="course:repeat_step",
+            )
         ]
+    )
+    return InlineKeyboardMarkup(
+        inline_keyboard=rows
     )
 
 

@@ -73,6 +73,12 @@ from app.services.course_trial_service import CourseTrialService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.image_input_service import ImageInputService
 from app.services.image_qa_service import ImageQAService
+from app.services.onboarding_tip_service import (
+    QA_PHOTO_TIP,
+    QA_VOICE_TIP,
+    OnboardingTipService,
+    schedule_onboarding_tip,
+)
 from app.services.qa_service import QAService
 from app.services.referral_service import (
     REFERRAL_TRIAL_ACCESS_DAYS,
@@ -369,6 +375,33 @@ async def _send_budget_notice(respond, record, lang: str) -> None:
         await respond(t(message_key, lang), parse_mode="HTML")
 
 
+async def _queue_onboarding_tip(message: Message, session, user, tip_key: str) -> None:
+    if not user:
+        return
+    queued = await OnboardingTipService(session).queue_once(user, tip_key)
+    if not queued:
+        return
+    await session.commit()
+    schedule_onboarding_tip(message.bot, user.telegram_id, tip_key)
+
+
+async def _maybe_queue_limit_voice_tip(message: Message, session, user) -> bool:
+    if not user or getattr(user, "payment_status", "") == "approved":
+        return False
+    question_limit = int(getattr(user, "question_limit", 0) or 0)
+    questions_used = int(getattr(user, "questions_used", 0) or 0)
+    text_remaining = max(question_limit - questions_used, 0) if question_limit > 0 else 0
+    image_count = await MessageRepository(session).count_user_messages_today(
+        user_id=user.id,
+        content_type="image",
+    )
+    image_remaining = max(2 - image_count, 0)
+    if text_remaining == 1 or image_remaining == 1:
+        await _queue_onboarding_tip(message, session, user, QA_VOICE_TIP)
+        return True
+    return False
+
+
 async def _build_referral_limit_text(session, user, lang: str, key: str) -> str:
     count = 0
     if user:
@@ -457,6 +490,10 @@ async def _answer_course_tutor_question(
         parse_mode="HTML",
     )
     await _send_budget_notice(message.answer, budget_record, lang)
+    refreshed_user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
+    queued_voice_tip = await _maybe_queue_limit_voice_tip(message, session, refreshed_user)
+    if not queued_voice_tip:
+        await _queue_onboarding_tip(message, session, refreshed_user, QA_PHOTO_TIP)
     return True
 
 
@@ -789,10 +826,19 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         await message.answer(t(message_key, user_lang), parse_mode="HTML")
         return
 
-    if not _can_use_voice(user):
+    paid_voice_allowed = _can_use_voice(user)
+    trial_voice_allowed = False
+    if not paid_voice_allowed:
+        trial_voice_allowed = access_service.can_use_trial_voice(user)
+    if not paid_voice_allowed and not trial_voice_allowed:
         await session.commit()
+        message_key = (
+            "voice_trial_daily_limit_reached"
+            if access_service.trial_voice_used_today(user)
+            else "voice_subscription_required"
+        )
         await message.answer(
-            t("voice_subscription_required", user_lang),
+            t(message_key, user_lang),
             reply_markup=subscription_miniapp_keyboard(user_lang, source="voice_required", mode="subscription"),
             parse_mode="HTML",
         )
@@ -816,6 +862,8 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
         ai_result=transcript_result,
         source="voice_transcribe",
     )
+    if trial_voice_allowed:
+        await access_service.mark_trial_voice_used(user)
     await session.commit()
 
     if user.learning_mode == "course":
@@ -952,10 +1000,17 @@ async def _send_miniapp_result_message(message: Message, session, payload: dict)
 
         user = result["user"]
         lang = user.language if user and user.language else "ru"
+        discuss_mistakes = bool(result.get("wrong_items")) and int(result.get("percent") or 0) < 60
         if result.get("block_no"):
-            reply_markup = course_miniapp_continue_keyboard(lang)
+            reply_markup = course_miniapp_continue_keyboard(
+                lang,
+                discuss_mistakes=discuss_mistakes,
+            )
         else:
-            reply_markup = course_miniapp_understood_keyboard(lang)
+            reply_markup = course_miniapp_understood_keyboard(
+                lang,
+                discuss_mistakes=discuss_mistakes,
+            )
         await message.answer(
             format_miniapp_quiz_result(lang, result),
             reply_markup=reply_markup,
@@ -1640,9 +1695,12 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
     await _safe_answer_text(message, reply, user_lang)
     await _send_budget_notice(message.answer, qa_service.last_budget_record, user_lang)
+    refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
+    queued_voice_tip = await _maybe_queue_limit_voice_tip(message, session, refreshed_user)
+    if not queued_voice_tip:
+        await _queue_onboarding_tip(message, session, refreshed_user, QA_PHOTO_TIP)
 
     # Show course promo after 3rd QA message (once per user)
-    refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
     if (
         refreshed_user
         and not refreshed_user.course_promo_sent
@@ -1755,6 +1813,8 @@ async def handle_image_message(message: Message, state: FSMContext, session):
 
     await _safe_answer_text(message, reply, user_lang)
     await _send_budget_notice(message.answer, image_qa_service.last_budget_record, user_lang)
+    refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
+    await _maybe_queue_limit_voice_tip(message, session, refreshed_user)
 
 
 @router.message(F.document)

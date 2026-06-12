@@ -1011,7 +1011,7 @@ function makeQ(word,lesson,type){
     q=`Gapni to'ldiring: 我今天学习了“____”这个词。`;
     hint+=` · ma'nosi: ${cleanMeaning(word.m)}`;
   }
-  return {lesson,type,q,hint,cat,opts:optsData.opts,ans:optsData.ans,expl:exampleFor(word)};
+  return {lesson,type,word:word.h,q,hint,cat,opts:optsData.opts,ans:optsData.ans,expl:exampleFor(word)};
 }
 function buildLessonQuizzes(){
   const obj={};
@@ -1019,7 +1019,9 @@ function buildLessonQuizzes(){
   for(let lesson=1;lesson<=20;lesson++){
     const words=VOCAB.filter(v=>v.l===lesson);
     obj[lesson]=[];
-    words.forEach((w,idx)=>types.forEach(t=>obj[lesson].push(makeQ(w,lesson,t))));
+    for(let pass=0;pass<types.length;pass++){
+      words.forEach((w,idx)=>obj[lesson].push(makeQ(w,lesson,types[(idx+pass)%types.length])));
+    }
     // Safety: every lesson must have at least 10 items even if a future VOCAB lesson becomes small.
     let i=0;
     while(obj[lesson].length<10&&words.length){obj[lesson].push(makeQ(words[i%words.length],lesson,types[i%types.length]));i++;}
@@ -1049,15 +1051,49 @@ function seededShuffle(list,seed){
 }
 function getQuizPool(){
   if(miniMode&&mode==='quiz'&&miniLessonData?.quiz_questions?.length)return [...miniLessonData.quiz_questions];
-  if(miniMode&&mode==='quiz'&&initialLesson)return [...(LESSON_QUIZZES[initialLesson]||[])];
-  if(typeof S.qFilter==='number')return [...(LESSON_QUIZZES[S.qFilter]||[])];
-  return Object.values(LESSON_QUIZZES).flat();
+  if(miniMode&&mode==='quiz'&&initialLesson)return [...(LESSON_QUIZZES[initialLesson]||[]),...(QUIZ_QUESTIONS.filter(q=>q.lesson===initialLesson))];
+  if(typeof S.qFilter==='number')return [...(LESSON_QUIZZES[S.qFilter]||[]),...QUIZ_QUESTIONS.filter(q=>q.lesson===S.qFilter)];
+  return [...Object.values(LESSON_QUIZZES).flat(),...QUIZ_QUESTIONS];
+}
+function quizQuestionKey(q){
+  return `${q.type||q.cat||''}:${q.q||''}`;
+}
+function quizWordKey(q){
+  return q.word||q.zh||'';
+}
+function isGrammarQuestion(q){
+  const type=String(q.type||'');
+  const cat=String(q.cat||'').toLowerCase();
+  return type.startsWith('grammar')||cat.includes('grammatika')||cat.includes('grammar')||cat.includes('грам');
+}
+function selectQuizQuestions(pool,size){
+  const shuffled=seededShuffle(pool,Date.now().toString());
+  const picked=[],seenQ=new Set(),seenWord=new Set();
+  const grammarLimit=(miniMode&&mode==='quiz')?1:2;
+  let grammarCount=0;
+  function tryPick(q,{allowSameWord=false,allowExtraGrammar=false}={}){
+    const qKey=quizQuestionKey(q);
+    if(!qKey||seenQ.has(qKey))return false;
+    const grammar=isGrammarQuestion(q);
+    if(grammar&&!allowExtraGrammar&&grammarCount>=grammarLimit)return false;
+    const wKey=quizWordKey(q);
+    if(wKey&&!allowSameWord&&seenWord.has(wKey))return false;
+    picked.push({...q});
+    seenQ.add(qKey);
+    if(wKey)seenWord.add(wKey);
+    if(grammar)grammarCount++;
+    return true;
+  }
+  for(const q of shuffled){if(picked.length>=size)break;tryPick(q);}
+  for(const q of shuffled){if(picked.length>=size)break;tryPick(q,{allowSameWord:true});}
+  for(const q of shuffled){if(picked.length>=size)break;tryPick(q,{allowSameWord:true,allowExtraGrammar:true});}
+  return picked;
 }
 function startQuiz(){
   let pool=getQuizPool();
   if(!pool.length)pool=[...QUIZ_QUESTIONS];
   const sessionSize=(miniMode&&mode==='quiz')?10:((typeof S.qFilter==='number')?20:60);
-  qList=seededShuffle(pool,Date.now().toString()).slice(0,Math.max(10,sessionSize)).map(q=>({...q}));
+  qList=selectQuizQuestions(pool,Math.max(10,sessionSize));
   qReported=false;
   qIdx=0;qAnswered=false;
   S.qScore={c:0,t:0};save();

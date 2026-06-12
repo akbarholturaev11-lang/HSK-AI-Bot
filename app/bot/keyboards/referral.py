@@ -9,7 +9,7 @@ def referral_daily_limit_keyboard(lang: str) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=t("referral_invite_button", lang),
+                    text=t("referral_bonus_question_button", lang),
                     callback_data="referral:invite",
                 )
             ],
@@ -30,7 +30,7 @@ def photo_limit_subscription_keyboard(lang: str) -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=t("referral_invite_button", lang),
+                    text=t("referral_bonus_question_button", lang),
                     callback_data="referral:invite",
                 )
             ],

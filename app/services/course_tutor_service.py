@@ -253,7 +253,7 @@ QOIDALAR:
             "lesson_vocabulary": vocab[:5],
         }
 
-        prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisан. Grammatika qoidalarini aniq va qisqa tushuntir.
+        prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisan. Grammatika qoidalarini qisqa, tushunarli va amaliy tushuntir.
 
 GRAMMATIKA MA'LUMOTI:
 {json.dumps(data, ensure_ascii=False, indent=2)}
@@ -261,10 +261,11 @@ GRAMMATIKA MA'LUMOTI:
 QOIDALAR:
 - Faqat {user_language} tilida javob ber, {user_level} darajasi
 - Xitoy: <b>...</b>, pinyin: <code>...</code>
-- Har bir grammatika nuqtasi: qoida → bo'sh joy bilan naqsh → dars lug'atidan 2 ta misol
-- O'xshash tuzilmalar bo'lsa (masalan 的/地/得, 吗/呢, 在/有), tezkor maslahat bilan solishtir
-- Misollar FAQAT lesson_vocabulary so'zlaridan foydalansin
-- Jami 10 qatordan oshmasin
+- Har bir grammatika nuqtasi 4-5 qatordan oshmasin
+- Format: qolip → qachon ishlatiladi → 1 aniq misol → bitta foydali ehtiyot nuqtasi
+- Misol dars lug'ati yoki darsdagi gaplardan bo'lsin
+- O'xshash tuzilmalar bo'lsa faqat 1 qisqa farqni ayt
+- Keraksiz motivatsion gap, uzun kirish va nazariya yozma
 - Foydalanuvchi savol bersa tushuntir va TAKLIF qil (masalan: "Bu qoidani boshqa misollar bilan ko'rmoqchimisiz?")
 {_EXPLANATION_RULE}"""
 
@@ -541,7 +542,7 @@ QOIDALAR:
             "grammar_points": self._block_grammar(lesson, block),
             "block_vocabulary": self._block_words(lesson, block),
         }
-        prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisan. Shu dialogdan keyingi grammatikani qisqa va aniq tushuntir.
+        prompt = f"""Sen do'stona HSK xitoy tili o'qituvchisisan. Shu dialogdan keyingi grammatikani qisqa, tushunarli va foydali blok qilib tushuntir.
 
 GRAMMATIKA MA'LUMOTI:
 {json.dumps(data, ensure_ascii=False, indent=2)}
@@ -549,9 +550,10 @@ GRAMMATIKA MA'LUMOTI:
 QOIDALAR:
 - Faqat {user_language} tilida javob ber, {user_level} darajasi
 - Xitoy: <b>...</b>, pinyin: <code>...</code>
-- Har bir qoida: naqsh → oddiy izoh → shu dialogdan 1 misol
+- Har bir qoida 5-7 qatordan oshmasin
+- Format: qolip → oddiy ma'no → shu dialogda nima vazifa bajaryapti → 1 misol → bitta ehtiyot nuqtasi
+- Uzun nazariya, kitobcha uslub va keraksiz umumiy gaplar yozma
 - Darsdan tashqariga chiqma
-- Jami 10 qatordan oshmasin
 {_EXPLANATION_RULE}"""
         return prompt, data
 

@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260611-subscription-miniapp-modes"
+MINIAPP_ASSET_VERSION = "20260612-all-level-quiz-grammar"
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:
@@ -139,9 +139,9 @@ def format_miniapp_quiz_intro(lang: str, lesson, block_no: int | None = None) ->
     if not block_no:
         return text
     labels = {
-        "uz": f"\n\nQism {block_no} bo'yicha qisqa test.",
-        "ru": f"\n\nКороткий тест по части {block_no}.",
-        "tj": f"\n\nТести кӯтоҳ аз рӯи қисми {block_no}.",
+        "uz": f"\n\nQism {block_no}: savollar shu qismdagi yangi so'zlar va grammatikadan.",
+        "ru": f"\n\nЧасть {block_no}: вопросы будут по новым словам и грамматике этой части.",
+        "tj": f"\n\nҚисм {block_no}: саволҳо аз калимаҳои нав ва грамматикаи ҳамин қисм мешаванд.",
     }
     return text + labels.get(lang, labels["ru"])
 

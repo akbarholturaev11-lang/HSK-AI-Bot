@@ -1532,6 +1532,7 @@ function apiQuizQuestions() {
   return miniLessonData.quiz_questions.map(item => ({
     questionId: item.id,
     type: item.type,
+    word: item.word || item.zh || "",
     category: item.cat,
     question: item.q,
     hint: item.hint,
@@ -1619,6 +1620,7 @@ function makeWordQuestion(word, type, index) {
 
   return {
     type,
+    word: word.h,
     category,
     question,
     hint: t("answerPrompt"),
@@ -1644,25 +1646,75 @@ function makeGrammarQuestions() {
 
 function buildQuiz() {
   const apiQuestions = apiQuizQuestions();
-  if (apiQuestions.length) return apiQuestions;
+  if (apiQuestions.length) {
+    return selectQuizQuestions(apiQuestions, apiQuestions.length, `hsk1-api-${lesson.id}-${activeBlock?.no || "all"}-${lang}`);
+  }
 
   const types = ["hanzi_to_meaning", "meaning_to_hanzi", "pinyin_to_hanzi", "hanzi_to_pinyin"];
-  const generated = [];
+  const wordQuestions = [];
   const words = activeWords();
   const grammarQuestions = makeGrammarQuestions();
-  words.forEach((word, wordIndex) => {
-    types.forEach(type => generated.push(makeWordQuestion(word, type, wordIndex)));
+  types.forEach((_, passIndex) => {
+    words.forEach((word, wordIndex) => {
+      wordQuestions.push(makeWordQuestion(word, types[(wordIndex + passIndex) % types.length], wordIndex));
+    });
   });
-  generated.push(...grammarQuestions);
 
   const targetCount = activeBlock ? Math.min(6, Math.max(4, words.length * 2 + grammarQuestions.length)) : 10;
-  const ordered = shuffle(generated, `hsk1-${lesson.id}-${activeBlock?.no || "all"}-${lang}`).slice(0, targetCount);
-  let fallbackIndex = 0;
-  while (ordered.length < targetCount && words.length) {
-    ordered.push(makeWordQuestion(words[fallbackIndex % words.length], types[fallbackIndex % types.length], fallbackIndex));
-    fallbackIndex += 1;
+  return selectQuizQuestions(
+    [...wordQuestions, ...grammarQuestions],
+    targetCount,
+    `hsk1-${lesson.id}-${activeBlock?.no || "all"}-${lang}`
+  );
+}
+
+function quizQuestionKey(item) {
+  return `${item.type || item.category || ""}:${item.question || ""}`;
+}
+
+function quizWordKey(item) {
+  return item.word || "";
+}
+
+function isGrammarQuestion(item) {
+  const type = String(item.type || "");
+  const category = String(item.category || "").toLowerCase();
+  return type.startsWith("grammar") || category.includes("grammar") || category.includes("grammatika") || category.includes("грам");
+}
+
+function selectQuizQuestions(pool, targetCount, seed) {
+  const shuffled = shuffle(pool, seed);
+  const selected = [];
+  const seenQuestions = new Set();
+  const seenWords = new Set();
+  const grammarLimit = activeBlock ? 1 : 2;
+  let grammarCount = 0;
+
+  function tryPick(item, { allowSameWord = false, allowExtraGrammar = false } = {}) {
+    const questionKey = quizQuestionKey(item);
+    if (!questionKey || seenQuestions.has(questionKey)) return false;
+    const grammar = isGrammarQuestion(item);
+    if (grammar && !allowExtraGrammar && grammarCount >= grammarLimit) return false;
+    const wordKey = quizWordKey(item);
+    if (wordKey && !allowSameWord && seenWords.has(wordKey)) return false;
+
+    selected.push({ ...item });
+    seenQuestions.add(questionKey);
+    if (wordKey) seenWords.add(wordKey);
+    if (grammar) grammarCount += 1;
+    return true;
   }
-  return ordered.slice(0, targetCount);
+
+  shuffled.forEach(item => {
+    if (selected.length < targetCount) tryPick(item);
+  });
+  shuffled.forEach(item => {
+    if (selected.length < targetCount) tryPick(item, { allowSameWord: true });
+  });
+  shuffled.forEach(item => {
+    if (selected.length < targetCount) tryPick(item, { allowSameWord: true, allowExtraGrammar: true });
+  });
+  return selected.slice(0, targetCount);
 }
 
 function renderHeader() {

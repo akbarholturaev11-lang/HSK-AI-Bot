@@ -30,6 +30,7 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "trial_course_started_at": "TIMESTAMP WITH TIME ZONE",
         "trial_course_completed_at": "TIMESTAMP WITH TIME ZONE",
         "trial_quiz_explanation_used_at": "TIMESTAMP WITH TIME ZONE",
+        "trial_voice_used_at": "TIMESTAMP WITH TIME ZONE",
         "force_sub_required_at": "TIMESTAMP WITH TIME ZONE",
     },
     "payments": {

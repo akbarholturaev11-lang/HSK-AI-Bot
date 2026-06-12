@@ -133,6 +133,257 @@ def _append_text_line(lines: list[str], line: dict, lang: str) -> None:
 _NUMS = ["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "🔟"]
 
 
+_GRAMMAR_DETAIL_LABELS = {
+    "meaning": {"uz": "Ma'nosi", "ru": "Значение", "tj": "Маъно"},
+    "use": {"uz": "Qachon ishlatiladi", "ru": "Когда использовать", "tj": "Кай истифода мешавад"},
+    "pattern": {"uz": "Qolip", "ru": "Шаблон", "tj": "Қолаб"},
+    "example": {"uz": "Dialogdan misol", "ru": "Пример из диалога", "tj": "Мисол аз муколама"},
+    "analysis": {"uz": "Tahlil", "ru": "Разбор", "tj": "Таҳлил"},
+    "attention": {"uz": "E'tibor", "ru": "Важно", "tj": "Муҳим"},
+}
+
+
+def _detail_label(key: str, lang: str) -> str:
+    labels = _GRAMMAR_DETAIL_LABELS.get(key, {})
+    return labels.get(lang, labels.get("ru", key))
+
+
+def _lesson_level(lesson) -> str:
+    return str(getattr(lesson, "level", "") or "").strip().lower()
+
+
+def _lesson_code(lesson) -> str:
+    return str(getattr(lesson, "lesson_code", "") or "").strip().upper()
+
+
+def _is_hsk4_lesson(lesson) -> bool:
+    return _lesson_level(lesson) == "hsk4" or _lesson_code(lesson).startswith("HSK4")
+
+
+def _grammar_title(item: dict, lang: str) -> str:
+    return item.get(f"title_{lang}") or _uz_fallback(lang, item.get("title_uz")) or item.get("title_zh") or ""
+
+
+def _grammar_meaning(item: dict, lang: str) -> str:
+    title_zh = item.get("title_zh") or ""
+    title_lang = item.get(f"title_{lang}") or _uz_fallback(lang, item.get("title_uz")) or ""
+    if title_lang and title_lang != title_zh:
+        return title_lang
+    return ""
+
+
+def _grammar_rule(item: dict, lang: str) -> str:
+    return (
+        item.get(f"rule_{lang}")
+        or _uz_fallback(lang, item.get("rule_uz"))
+        or item.get("explanation")
+        or item.get("rule")
+        or ""
+    )
+
+
+def _grammar_formula(item: dict) -> str:
+    return item.get("formula") or item.get("pattern") or item.get("title_zh") or ""
+
+
+def _grammar_examples(item: dict) -> list[dict]:
+    examples = item.get("examples") or []
+    return [example for example in examples if isinstance(example, dict)]
+
+
+def _hsk4_grammar_analysis(title_zh: str, lang: str) -> str:
+    title = (title_zh or "").replace(" ", "")
+    texts = {
+        "emphasis": {
+            "uz": "Gapda kutilganidan kuchliroq holat ta'kidlanadi; odatda 都/也 natijani kuchaytiradi.",
+            "ru": "В предложении подчеркивается более сильный или неожиданный случай; 都/也 обычно усиливает результат.",
+            "tj": "Дар ҷумла ҳолати қавитар ё ғайричашмдошт таъкид мешавад; 都/也 натиҷаро қавитар мекунад.",
+        },
+        "condition": {
+            "uz": "Birinchi qism shart yoki vaziyatni beradi, ikkinchi qism esa shu shartdagi natijani ko'rsatadi.",
+            "ru": "Первая часть задает условие или ситуацию, вторая показывает результат при этом условии.",
+            "tj": "Қисми аввал шарт ё вазъиятро медиҳад, қисми дуюм натиҷаи онро нишон медиҳад.",
+        },
+        "contrast": {
+            "uz": "Oldingi fikrdan keyin qarama-qarshi yoki kutilmagan natija keladi; tarjimada 'ammo/lekin' ohangi kuchli.",
+            "ru": "После первой мысли идет противоположный или неожиданный результат; смысл близок к 'однако/но'.",
+            "tj": "Баъди фикри аввал натиҷаи муқобил ё ғайричашмдошт меояд; маънояш ба 'аммо/вале' наздик аст.",
+        },
+        "sequence": {
+            "uz": "Bu qolip gapdagi fikrlarni tartiblaydi: qo'shimcha ma'lumot, davomiy qadam yoki parallel holat qo'shadi.",
+            "ru": "Этот шаблон упорядочивает мысль: добавляет информацию, следующий шаг или параллельное действие.",
+            "tj": "Ин қолаб фикрро тартиб медиҳад: маълумоти иловагӣ, қадами баъдӣ ё ҳолати ҳамзамон меорад.",
+        },
+        "topic": {
+            "uz": "Qolip mavzu, soha yoki baholash nuqtasini oldinga chiqaradi; undan keyin asosiy fikr aytiladi.",
+            "ru": "Шаблон выносит тему, сферу или точку оценки вперед; затем идет основная мысль.",
+            "tj": "Қолаб мавзу, соҳа ё нуқтаи баҳоро пеш меорад; баъд фикри асосӣ гуфта мешавад.",
+        },
+        "complement": {
+            "uz": "Bu yerda ma'no faqat fe'lda emas, fe'ldan keyingi qo'shimcha qismda ham turibdi; natija/yo'nalish/holatni tekshiring.",
+            "ru": "Смысл не только в глаголе, но и в части после него; проверьте результат, направление или состояние.",
+            "tj": "Маъно танҳо дар феъл нест, балки дар қисми баъди феъл ҳам ҳаст; натиҷа, самт ё ҳолатро санҷед.",
+        },
+        "generic": {
+            "uz": "Avval gapdagi mantiqiy munosabatni toping, keyin xitoycha qolipni shu joyga qo'ying.",
+            "ru": "Сначала найдите логическую связь в предложении, затем поставьте китайский шаблон в это место.",
+            "tj": "Аввал робитаи мантиқии ҷумларо ёбед, баъд қолаби чиниро ба ҳамон ҷо гузоред.",
+        },
+    }
+
+    if any(marker in title for marker in ("连", "甚至", "都/也")):
+        key = "emphasis"
+    elif any(marker in title for marker in ("即使", "尽管", "虽然", "无论", "不管", "再", "只有", "只要", "一……就", "否则", "如果")):
+        key = "condition"
+    elif any(marker in title for marker in ("然而", "却", "相反", "不过", "而不是", "而")):
+        key = "contrast"
+    elif any(marker in title for marker in ("同时", "另外", "并且", "接着", "首先", "其次", "除此以外", "总的来说")):
+        key = "sequence"
+    elif any(marker in title for marker in ("对于", "在于", "说起", "V+起", "方面", "上")):
+        key = "topic"
+    elif any(marker in title for marker in ("起来", "出来", "下去", "上", "受不了", "V+着+V+着")):
+        key = "complement"
+    else:
+        key = "generic"
+
+    return texts[key].get(lang, texts[key]["ru"])
+
+
+def _hsk4_grammar_tip(title_zh: str, lang: str) -> str:
+    title = (title_zh or "").replace(" ", "")
+    tips = [
+        (("不仅", "不但"), {
+            "uz": "Ikkinchi qismda odatda 也/还/而且 keladi; ikki tomonni ham ijobiy kuchaytiradi.",
+            "ru": "Во второй части обычно стоит 也/还/而且; конструкция усиливает оба положительных признака.",
+            "tj": "Дар қисми дуюм одатан 也/还/而且 меояд; ду хусусияти мусбатро қавитар мекунад.",
+        }),
+        (("从来",), {
+            "uz": "Inkor ma'nosida ko'pincha 没/不 bilan ishlaydi: 从来没... = hech qachon ...magan.",
+            "ru": "В отрицании обычно идет с 没/不: 从来没... = никогда не....",
+            "tj": "Дар маънои инкор одатан бо 没/不 меояд: 从来没... = ҳеч вақт ... накардааст.",
+        }),
+        (("刚",), {
+            "uz": "刚 fe'ldan oldin keladi va 'hozirgina/yangi' ma'nosini beradi; uzoq o'tmish uchun ishlatmang.",
+            "ru": "刚 ставится перед глаголом и значит 'только что/недавно'; не используйте для далекого прошлого.",
+            "tj": "刚 пеш аз феъл меояд ва маънои 'нав/ҳозир' медиҳад; барои гузаштаи дур истифода накунед.",
+        }),
+        (("即使", "尽管", "无论", "不管", "再"), {
+            "uz": "Natija qismida ko'pincha 也/都/还 keladi; shu so'z natija o'zgarmasligini ko'rsatadi.",
+            "ru": "В части результата часто стоит 也/都/还; оно показывает, что результат не меняется.",
+            "tj": "Дар қисми натиҷа одатан 也/都/还 меояд; он тағйир наёфтани натиҷаро нишон медиҳад.",
+        }),
+        (("否则",), {
+            "uz": "Avval maslahat/shart keladi, keyin 否则 bilan yomon yoki kutilmagan natija aytiladi.",
+            "ru": "Сначала идет совет или условие, затем через 否则 называется нежелательный результат.",
+            "tj": "Аввал маслиҳат ё шарт меояд, баъд бо 否则 натиҷаи номатлуб гуфта мешавад.",
+        }),
+        (("然而", "却", "相反", "不过"), {
+            "uz": "Bular oddiy 'va' emas; oldingi fikrga burilish yoki qarama-qarshi natija qo'shadi.",
+            "ru": "Это не простое 'и'; слова дают поворот мысли или противоположный результат.",
+            "tj": "Инҳо 'ва'-и одӣ нестанд; гардиши фикр ё натиҷаи муқобил меоранд.",
+        }),
+        (("并且", "同时", "另外", "除此以外"), {
+            "uz": "Ikkinchi fikr birinchisini davom ettiradi yoki qo'shimcha qiladi; qarama-qarshilik ma'nosi yo'q.",
+            "ru": "Вторая мысль продолжает или дополняет первую; противопоставления здесь нет.",
+            "tj": "Фикри дуюм аввалиро идома ё пурра мекунад; маънои муқобил нест.",
+        }),
+        (("对于", "在于", "说起"), {
+            "uz": "Bu qolipdan keyin mavzu keladi; asosiy hukm yoki baho keyingi qismda aytiladi.",
+            "ru": "После шаблона идет тема; главное суждение или оценка дается дальше.",
+            "tj": "Баъди қолаб мавзу меояд; ҳукм ё баҳои асосӣ дар қисми баъдӣ гуфта мешавад.",
+        }),
+        (("是否",), {
+            "uz": "是否 yozma va rasmiyroq uslub; og'zaki nutqda ko'pincha 是不是 ishlatiladi.",
+            "ru": "是否 более письменное и официальное; в разговоре чаще используют 是不是.",
+            "tj": "是否 бештар хаттӣ ва расмӣ аст; дар гуфтор бештар 是不是 истифода мешавад.",
+        }),
+        (("把",), {
+            "uz": "把 dan keyingi obyektga nima bo'lganini fe'l va natija qismi bilan aniq ko'rsating.",
+            "ru": "После 把 нужно ясно показать, что произошло с объектом, через глагол и результат.",
+            "tj": "Баъди 把 бояд бо феъл ва натиҷа нишон диҳед, ки бо объект чӣ шуд.",
+        }),
+    ]
+    for markers, localized in tips:
+        if any(marker in title for marker in markers):
+            return localized.get(lang, localized["ru"])
+    return ""
+
+
+def _append_basic_grammar_item(lines: list[str], item: dict, lang: str, index: int) -> None:
+    g_title = _grammar_title(item, lang)
+    rule = _grammar_rule(item, lang)
+
+    lines.append("━━━━━━━━━━━━━━")
+    lines.append(f"<b>📌 {index}. {g_title}</b>")
+    lines.append("")
+    if rule:
+        for rule_line in rule.split("\n"):
+            lines.append(f"   {rule_line}")
+
+    examples = _grammar_examples(item)
+    if examples:
+        eg_label = {"uz": "💬 Misollar:", "tj": "💬 Мисолҳо:", "ru": "💬 Примеры:"}
+        lines.append("")
+        lines.append(f"   {eg_label.get(lang, eg_label['ru'])}")
+        for ex in examples[:3]:
+            zh = ex.get("zh", "")
+            pinyin = ex.get("pinyin", "")
+            meaning = ex.get(lang) or _uz_fallback(lang, ex.get("uz")) or ex.get("meaning") or ""
+            lines.append(f"   • <b>{zh}</b> <i>({pinyin})</i> — {meaning}")
+    lines.append("")
+
+
+def _append_hsk4_grammar_item(lines: list[str], item: dict, lang: str, index: int) -> None:
+    title_zh = item.get("title_zh") or ""
+    g_title = _grammar_title(item, lang)
+    meaning = _grammar_meaning(item, lang)
+    rule = _grammar_rule(item, lang)
+    formula = _grammar_formula(item)
+    examples = _grammar_examples(item)
+    first_example = examples[0] if examples else {}
+
+    lines.append("━━━━━━━━━━━━━━")
+    lines.append(f"<b>📌 {index}. {g_title}</b>")
+    lines.append("")
+
+    if formula:
+        pattern_line = f"<b>{_detail_label('pattern', lang)}:</b> <code>{formula}</code>"
+        if meaning:
+            pattern_line += f" — {meaning}"
+        lines.append(pattern_line)
+    elif meaning:
+        lines.append(f"<b>{_detail_label('meaning', lang)}:</b> {meaning}")
+    if rule:
+        lines.append(f"<b>{_detail_label('use', lang)}:</b> {rule}")
+
+    if first_example:
+        zh = first_example.get("zh", "")
+        pinyin = first_example.get("pinyin", "")
+        meaning = (
+            first_example.get(lang)
+            or _uz_fallback(lang, first_example.get("uz"))
+            or first_example.get("meaning")
+            or ""
+        )
+        lines.append("")
+        lines.append(f"<b>{_detail_label('example', lang)}:</b>")
+        if zh:
+            example_line = f"<b>{zh}</b>"
+            if pinyin:
+                example_line += f" <i>{pinyin}</i>"
+            lines.append(example_line)
+        if meaning:
+            lines.append(meaning)
+
+    tip = _hsk4_grammar_tip(title_zh or g_title, lang)
+    lines.append("")
+    lines.append(
+        f"<b>{_detail_label('attention', lang)}:</b> "
+        f"{tip or _hsk4_grammar_analysis(title_zh or g_title, lang)}"
+    )
+    lines.append("")
+
+
 def format_vocab(lesson, lang: str, lesson_total_steps: int = 6) -> str:
     vocab = _parse(lesson.vocabulary_json, [])
     title = _parse_title(lesson.title or "")
@@ -485,9 +736,9 @@ def format_block_quiz(lesson, lang: str, n: int) -> str:
         "ru": "📝 Мини-тест",
     }
     intro = {
-        "uz": "Keyingi qismga o'tishdan oldin shu dialogni tez tekshiramiz.",
-        "tj": "Пеш аз қисми навбатӣ ҳамин муколамаро зуд месанҷем.",
-        "ru": "Перед следующей частью быстро проверим этот диалог.",
+        "uz": "Quizdan o'ting: qani, shu qismdagi yangi so'zlar va grammatikadan nimani eslab qoldingiz?",
+        "tj": "Quiz-ро гузаред: бинем, аз калимаҳои нав ва грамматикаи ҳамин қисм чӣ дар хотир монд?",
+        "ru": "Пройдите quiz: посмотрим, что осталось в памяти по новым словам и грамматике этой части.",
     }
     answer_hint = {
         "uz": "Mini App ochilmasa, javoblarni shu yerga yozishingiz mumkin.",
@@ -586,34 +837,10 @@ def format_block_grammar(lesson, lang: str, n: int) -> str:
         lines.append("")
 
     for index, item in enumerate(grammar_items, 1):
-        g_title = item.get(f"title_{lang}") or _uz_fallback(lang, item.get("title_uz")) or item.get("title_zh") or ""
-        rule = (
-            item.get(f"rule_{lang}")
-            or _uz_fallback(lang, item.get("rule_uz"))
-            or item.get("explanation")
-            or item.get("rule")
-            or ""
-        )
-
-        lines.append("━━━━━━━━━━━━━━")
-        lines.append(f"<b>📌 {index}. {g_title}</b>")
-        lines.append("")
-        if rule:
-            for rule_line in rule.split("\n"):
-                lines.append(f"   {rule_line}")
-        examples = item.get("examples", [])
-        if examples:
-            eg_label = {"uz": "💬 Misollar:", "tj": "💬 Мисолҳо:", "ru": "💬 Примеры:"}
-            lines.append("")
-            lines.append(f"   {eg_label.get(lang, eg_label['ru'])}")
-            for ex in examples[:3]:
-                if not isinstance(ex, dict):
-                    continue
-                zh = ex.get("zh", "")
-                pinyin = ex.get("pinyin", "")
-                meaning = ex.get(lang) or _uz_fallback(lang, ex.get("uz")) or ex.get("meaning") or ""
-                lines.append(f"   • <b>{zh}</b> <i>({pinyin})</i> — {meaning}")
-        lines.append("")
+        if _is_hsk4_lesson(lesson):
+            _append_hsk4_grammar_item(lines, item, lang, index)
+        else:
+            _append_basic_grammar_item(lines, item, lang, index)
 
     lines.append("━━━━━━━━━━━━━━")
     return "\n".join(lines).rstrip()
@@ -754,33 +981,10 @@ def format_grammar_v2(lesson, lang: str) -> str:
     for i, g in enumerate(grammar, 1):
         if not isinstance(g, dict):
             continue
-
-        g_title = g.get(f"title_{lang}") or _uz_fallback(lang, g.get("title_uz")) or g.get("title_zh") or ""
-        rule = (
-            g.get(f"rule_{lang}")
-            or _uz_fallback(lang, g.get("rule_uz"))
-            or g.get("explanation")
-            or g.get("rule")
-            or ""
-        )
-
-        lines.append("━━━━━━━━━━━━━━")
-        lines.append(f"<b>📌 {i}. {g_title}</b>")
-        lines.append("")
-        for rule_line in rule.split("\n"):
-            lines.append(f"   {rule_line}")
-        lines.append("")
-
-        examples = g.get("examples", [])
-        if examples:
-            eg_label = {"uz": "💬 Misollar:", "tj": "💬 Мисолҳо:", "ru": "💬 Примеры:"}
-            lines.append(f"   {eg_label.get(lang, eg_label['ru'])}")
-            for ex in examples:
-                zh = ex.get("zh", "")
-                pinyin = ex.get("pinyin", "")
-                meaning = ex.get(lang) or _uz_fallback(lang, ex.get("uz")) or ex.get("meaning") or ""
-                lines.append(f"   • <b>{zh}</b> <i>({pinyin})</i> — {meaning}")
-            lines.append("")
+        if _is_hsk4_lesson(lesson):
+            _append_hsk4_grammar_item(lines, g, lang, i)
+        else:
+            _append_basic_grammar_item(lines, g, lang, i)
 
     lines.append("━━━━━━━━━━━━━━")
     return "\n".join(lines)

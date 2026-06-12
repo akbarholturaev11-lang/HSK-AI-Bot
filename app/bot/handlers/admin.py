@@ -40,6 +40,12 @@ from app.services.subscription_currency_service import (
 )
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
+from app.services.support_contact_service import (
+    ADMIN_CONTACT_KEY,
+    admin_contact_url,
+    get_admin_contact,
+    normalize_admin_contact,
+)
 from app.bot.handlers.admin_broadcast import open_broadcast_panel_for_callback
 from app.bot.utils.workflow_message import (
     delete_message_safely,
@@ -75,6 +81,7 @@ def admin_menu_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="📣 Reklama kampaniyasi", callback_data="adm:ads_panel")],
         [InlineKeyboardButton(text="🎁 Chegirma boshqaruv", callback_data="adm:discount_panel")],
         [InlineKeyboardButton(text="🤝 Hamkorlar", callback_data="adm:partners")],
+        [InlineKeyboardButton(text="🆘 Yordam kontakti", callback_data="adm:support_contact")],
         [InlineKeyboardButton(text="✅ Obuna berish", callback_data="adm:giveaccess_info")],
         [InlineKeyboardButton(text="🎵 Audio boshqaruv", callback_data="adm:audio_panel")],
     ])
@@ -1279,6 +1286,73 @@ async def admin_payment_details_handler(message: Message, state: FSMContext, ses
         state,
         "✅ Karta rekviziti yangilandi. Mini appda darhol ko'rinadi.",
         reply_markup=prices_keyboard(),
+    )
+    await state.clear()
+
+
+@router.callback_query(F.data == "adm:support_contact")
+async def admin_support_contact_callback(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    current = await get_admin_contact(session)
+    await state.set_state(AdminPriceStates.waiting_admin_contact)
+    await callback.answer()
+    await _edit_admin_flow_callback(
+        callback,
+        state,
+        "🆘 <b>Yordam kontakti</b>\n\n"
+        "Bu kontakt /help va menyudagi Yordam blokida inline tugma sifatida chiqadi.\n\n"
+        f"Joriy:\n<code>{escape(current)}</code>\n\n"
+        "Yangi kontaktni yuboring. Masalan: <code>@username</code> yoki "
+        "<code>https://t.me/username</code>.",
+        reply_markup=admin_back_keyboard(),
+    )
+
+
+@router.message(StateFilter(AdminPriceStates.waiting_admin_contact))
+async def admin_support_contact_handler(message: Message, state: FSMContext, session):
+    if not _is_admin(message.from_user.id):
+        return
+    raw_contact = (message.text or "").strip()
+    if not raw_contact:
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(
+            message,
+            state,
+            "❌ Kontakt bo'sh bo'lmasin.",
+            reply_markup=admin_back_keyboard(),
+        )
+        return
+    contact = normalize_admin_contact(raw_contact)
+    if not admin_contact_url(contact):
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(
+            message,
+            state,
+            "❌ Kontakt noto'g'ri. <code>@username</code> yoki "
+            "<code>https://t.me/username</code> formatida yuboring.",
+            reply_markup=admin_back_keyboard(),
+        )
+        return
+    if len(contact) > 200:
+        await delete_message_safely(message)
+        await _edit_admin_flow_message(
+            message,
+            state,
+            "❌ Kontakt 200 belgidan oshmasin.",
+            reply_markup=admin_back_keyboard(),
+        )
+        return
+
+    await BotSettingRepository(session).set(ADMIN_CONTACT_KEY, contact)
+    await session.commit()
+    await delete_message_safely(message)
+    await _edit_admin_flow_message(
+        message,
+        state,
+        "✅ Yordam kontakti yangilandi.",
+        reply_markup=admin_menu_keyboard(),
     )
     await state.clear()
 

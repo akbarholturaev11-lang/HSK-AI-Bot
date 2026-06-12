@@ -164,6 +164,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .sheet-panel{position:relative;width:100%;max-width:520px;border:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;background:#071a14;padding:17px 15px calc(17px + env(safe-area-inset-bottom,0px));box-shadow:0 -18px 60px rgba(0,0,0,.45);animation:sheetUp .22s ease}
 .sheet-panel h3{font-size:17px;line-height:1.25;font-weight:900}
 .sheet-panel p{margin-top:7px;color:var(--muted);font-size:12px;line-height:1.45}
+.invite-link{display:block;margin-top:10px;border:1px solid var(--line2);border-radius:var(--radius-sm);background:rgba(255,255,255,.05);padding:10px 11px;color:var(--mint);font-size:12px;line-height:1.4;word-break:break-all;user-select:all}
 .sheet-actions{display:grid;gap:9px;margin-top:14px}
 .sheet-actions button{min-height:50px;border-radius:var(--radius-sm);font-weight:900;font-size:14px}
 .sheet-primary{background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d}
@@ -293,6 +294,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
   <div class="sheet-panel">
     <h3 id="inviteTitle"></h3>
     <p id="inviteText"></p>
+    <code class="invite-link" id="inviteLinkText"></code>
     <div class="sheet-actions">
       <button class="sheet-primary" type="button" id="shareInviteBtn"></button>
       <button class="sheet-secondary" type="button" id="copyInviteBtn"></button>
@@ -328,7 +330,7 @@ const INIT_DATA=tg?.initData||"";
 const PLAN_ORDER=["10_days","1_month"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const COUNTRY_ORDER=["tj","uz","ru","other"];
-const SUPPORT_URL="https://t.me/akbarchina";
+const DEFAULT_SUPPORT_URL="https://t.me/akbarchina";
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
 
 const I18N={
@@ -363,10 +365,11 @@ const I18N={
     shareLocalized:"Xabar bilan yuborish",
     copyLink:"Faqat linkni copy qilish",
     copied:"Link copy qilindi.",
+    copiedButton:"Copy qilindi",
     copyFailed:"Linkni copy qilib bo'lmadi.",
     close:"Yopish",
     supportTitle:"Yordam",
-    supportText:"To'lov qildingiz, lekin tasdiq kelmasa yoki xatolik bo'lsa, admin @akbarchina ga yozing. Nima bo'lganini qisqa yozib, screenshot yuboring.",
+    supportText:"To'lov yoki mini appda muammo bo'lsa, adminga qisqa yozing va screenshot yuboring.",
     supportButton:"Adminga yozish",
     plansTitle:"Tarif",
     methodsTitle:"To'lov usuli",
@@ -454,10 +457,11 @@ const I18N={
     shareLocalized:"Отправить с текстом",
     copyLink:"Скопировать только ссылку",
     copied:"Ссылка скопирована.",
+    copiedButton:"Скопировано",
     copyFailed:"Не удалось скопировать ссылку.",
     close:"Закрыть",
     supportTitle:"Помощь",
-    supportText:"Если оплатили, но подтверждение не пришло или появилась ошибка, напишите админу @akbarchina. Коротко опишите проблему и отправьте screenshot.",
+    supportText:"Если возникла проблема с оплатой или mini app, коротко напишите админу и отправьте screenshot.",
     supportButton:"Написать админу",
     plansTitle:"Тариф",
     methodsTitle:"Способ оплаты",
@@ -545,10 +549,11 @@ const I18N={
     shareLocalized:"Бо паём фиристодан",
     copyLink:"Танҳо link-ро copy кардан",
     copied:"Link copy шуд.",
+    copiedButton:"Copy шуд",
     copyFailed:"Link-ро copy кардан нашуд.",
     close:"Пӯшидан",
     supportTitle:"Ёрдам",
-    supportText:"Агар пардохт кардед, вале тасдиқ наомад ё хато баромад, ба admin @akbarchina нависед. Мушкилро кӯтоҳ нависед ва screenshot фиристед.",
+    supportText:"Агар бо пардохт ё mini app мушкил шавад, ба admin кӯтоҳ нависед ва screenshot фиристед.",
     supportButton:"Ба admin навиштан",
     plansTitle:"Тариф",
     methodsTitle:"Усули пардохт",
@@ -624,7 +629,9 @@ const state={
   quoteError:"",
   inviteOpen:false,
   inviteLink:"",
+  inviteCopied:false,
   supportOpen:false,
+  supportUrl:DEFAULT_SUPPORT_URL,
   busy:false,
   busyOverlay:false,
   done:false,
@@ -789,6 +796,7 @@ function fallbackOverview(){
 function applyOverview(data){
   state.overview=data;
   state.mode=normalizeMode(data?.mode||state.mode);
+  state.supportUrl=data?.support_url||DEFAULT_SUPPORT_URL;
   state.pending=Boolean(data?.pending_payment);
   state.pendingPayment=data?.pending_payment||null;
   ensureSelection();
@@ -1103,8 +1111,9 @@ function renderInviteSheet(text){
   sheet.setAttribute("aria-hidden",visible?"false":"true");
   $("#inviteTitle").textContent=text.inviteTitle;
   $("#inviteText").textContent=text.inviteText;
+  $("#inviteLinkText").textContent=state.inviteLink||"";
   $("#shareInviteBtn").textContent=text.shareLocalized;
-  $("#copyInviteBtn").textContent=text.copyLink;
+  $("#copyInviteBtn").textContent=state.inviteCopied?(text.copiedButton||text.copied):text.copyLink;
   $("#closeInviteBtn").textContent=text.close;
 }
 function renderSupportSheet(text){
@@ -1120,6 +1129,7 @@ function renderSupportSheet(text){
 function showInviteSheet(link){
   if(!link){toast(tr().error);return}
   state.inviteLink=link;
+  state.inviteCopied=false;
   state.inviteOpen=true;
   render();
 }
@@ -1136,7 +1146,7 @@ function hideSupportSheet(){
   render();
 }
 async function copyText(value,successMessage,failedMessage){
-  if(!value){toast(tr().error);return}
+  if(!value){toast(tr().error);return false}
   try{
     if(navigator.clipboard?.writeText){
       await navigator.clipboard.writeText(value);
@@ -1153,12 +1163,18 @@ async function copyText(value,successMessage,failedMessage){
       if(!copied)throw new Error("copy_failed");
     }
     toast(successMessage);
+    return true;
   }catch(error){
     toast(failedMessage);
+    return false;
   }
 }
 async function copyReferralLink(link){
-  await copyText(link,tr().copied,tr().copyFailed);
+  const copied=await copyText(link,tr().copied,tr().copyFailed);
+  if(copied){
+    state.inviteCopied=true;
+    render();
+  }
 }
 function closeMiniApp(){
   if(tg&&typeof tg.close==="function"){
@@ -1168,11 +1184,16 @@ function closeMiniApp(){
   window.close();
 }
 function openSupportChat(){
-  if(tg&&typeof tg.openTelegramLink==="function"){
-    tg.openTelegramLink(SUPPORT_URL);
+  const url=state.supportUrl||DEFAULT_SUPPORT_URL;
+  if(tg&&typeof tg.openTelegramLink==="function"&&(url.includes("t.me/")||url.startsWith("tg://"))){
+    tg.openTelegramLink(url);
     return;
   }
-  window.open(SUPPORT_URL,"_blank");
+  if(tg&&typeof tg.openLink==="function"){
+    tg.openLink(url);
+    return;
+  }
+  window.open(url,"_blank");
 }
 function qrFileName(){
   const plan=String(state.plan||"plan").replace(/[^a-z0-9_-]/gi,"");
@@ -1185,13 +1206,25 @@ function downloadQrImage(){
     toast(tr().qrMissing);
     return;
   }
-  const link=document.createElement("a");
-  link.href=image;
-  link.download=qrFileName();
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  toast(tr().qrDownloaded);
+  try{
+    fetch(image)
+      .then(response=>response.blob())
+      .then(blob=>{
+        const objectUrl=URL.createObjectURL(blob);
+        const link=document.createElement("a");
+        link.href=objectUrl;
+        link.download=qrFileName();
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(()=>URL.revokeObjectURL(objectUrl),30000);
+        toast(tr().qrDownloaded);
+      })
+      .catch(()=>{window.open(image,"_blank");toast(tr().qrDownloaded)});
+  }catch(error){
+    window.open(image,"_blank");
+    toast(tr().qrDownloaded);
+  }
 }
 async function submitPayment(){
   if(!state.screenshotDataUrl){

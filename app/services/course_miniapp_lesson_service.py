@@ -282,6 +282,22 @@ class CourseMiniAppLessonService:
                 return example
         return {}
 
+    def _unique_questions(self, questions: list[dict]) -> list[dict]:
+        seen = set()
+        unique = []
+        for question in questions:
+            if not isinstance(question, dict):
+                continue
+            key = (
+                str(question.get("type") or ""),
+                str(question.get("q") or ""),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            unique.append(question)
+        return unique
+
     def _word_quiz_questions(self, vocab: list[dict], lesson_order: int, lang: str, block_no: int | None = None) -> list[dict]:
         text = _QUIZ_TEXT[lang]
         questions = []
@@ -290,52 +306,61 @@ class CourseMiniAppLessonService:
         pinyins = [item["pinyin"] for item in vocab]
         types = ("hanzi_to_meaning", "meaning_to_hanzi", "pinyin_to_hanzi", "hanzi_to_pinyin")
 
-        for word in vocab:
+        def build_question(word: dict, question_type: str) -> dict | None:
             zh = word["zh"]
             pinyin = word["pinyin"]
             meaning = word["meaning"]
             if not zh or not meaning:
-                continue
+                return None
 
-            for question_type in types:
-                if question_type == "hanzi_to_meaning":
-                    answer = meaning
-                    options = [answer] + self._distractors(meanings, answer)
-                    question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
-                    hint = text["hint"].format(lesson=lesson_order)
-                elif question_type == "meaning_to_hanzi":
-                    answer = zh
-                    options = [answer] + self._distractors(hanzis, answer)
-                    question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
-                    hint = text["hint"].format(lesson=lesson_order)
-                elif question_type == "pinyin_to_hanzi":
-                    answer = zh
-                    options = [answer] + self._distractors(hanzis, answer)
-                    question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
-                    hint = text["hint"].format(lesson=lesson_order)
-                elif question_type == "hanzi_to_pinyin":
-                    answer = pinyin
-                    options = [answer] + self._distractors(pinyins, answer)
-                    question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
-                    hint = text["hint"].format(lesson=lesson_order)
-                else:
-                    continue
+            if question_type == "hanzi_to_meaning":
+                answer = meaning
+                options = [answer] + self._distractors(meanings, answer)
+                question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
+            elif question_type == "meaning_to_hanzi":
+                answer = zh
+                options = [answer] + self._distractors(hanzis, answer)
+                question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
+            elif question_type == "pinyin_to_hanzi":
+                if not pinyin:
+                    return None
+                answer = zh
+                options = [answer] + self._distractors(hanzis, answer)
+                question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
+            elif question_type == "hanzi_to_pinyin":
+                if not pinyin:
+                    return None
+                answer = pinyin
+                options = [answer] + self._distractors(pinyins, answer)
+                question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
+            else:
+                return None
 
-                options, answer_index = self._shuffle_options(options, answer, f"{zh}:{question_type}:{lang}")
-                questions.append(
-                    {
-                        "lesson": lesson_order,
-                        "block_no": block_no,
-                        "type": question_type,
-                        "q": question,
-                        "hint": hint,
-                        "cat": text["cat"],
-                        "opts": options,
-                        "ans": answer_index,
-                        "expl": text["correct"].format(zh=zh, meaning=meaning, pinyin=pinyin),
-                    }
-                )
-        return questions
+            options = list(dict.fromkeys(value for value in options if value))
+            if len(options) < 2:
+                return None
+
+            options, answer_index = self._shuffle_options(options, answer, f"{zh}:{question_type}:{lang}")
+            return {
+                "lesson": lesson_order,
+                "block_no": block_no,
+                "type": question_type,
+                "word": zh,
+                "q": question,
+                "hint": text["hint"].format(lesson=lesson_order),
+                "cat": text["cat"],
+                "opts": options,
+                "ans": answer_index,
+                "expl": text["correct"].format(zh=zh, meaning=meaning, pinyin=pinyin),
+            }
+
+        for pass_index in range(len(types)):
+            for word_index, word in enumerate(vocab):
+                question_type = types[(word_index + pass_index) % len(types)]
+                question = build_question(word, question_type)
+                if question:
+                    questions.append(question)
+        return self._unique_questions(questions)
 
     def _grammar_quiz_questions(
         self,
@@ -424,25 +449,31 @@ class CourseMiniAppLessonService:
     ) -> list[dict]:
         word_questions = self._word_quiz_questions(vocab, lesson_order, lang, block_no)
         grammar_pool = lesson_grammar or grammar
-        grammar_questions = self._grammar_quiz_questions(grammar, grammar_pool, lesson_order, lang, block_no)
+        grammar_questions = self._unique_questions(
+            self._grammar_quiz_questions(grammar, grammar_pool, lesson_order, lang, block_no)
+        )
 
         target_count = 10
-        grammar_target = min(len(grammar_questions), 4)
-        questions = grammar_questions[:grammar_target]
-        questions.extend(word_questions[: max(0, target_count - len(questions))])
+        grammar_target = min(len(grammar_questions), 1 if block_no else 2)
+        word_target = max(0, target_count - grammar_target)
 
-        remaining = word_questions[max(0, target_count - grammar_target):] + grammar_questions[grammar_target:]
-        cursor = 0
-        while len(questions) < target_count and remaining:
-            questions.append(remaining[cursor % len(remaining)])
-            cursor += 1
+        selected_words = word_questions[:word_target]
+        selected_grammar = grammar_questions[:grammar_target]
+        questions = selected_words[:4] + selected_grammar[:1] + selected_words[4:] + selected_grammar[1:]
+        questions = self._unique_questions(questions)
+
+        remaining = word_questions[word_target:] + grammar_questions[grammar_target:]
+        for question in remaining:
+            if len(questions) >= target_count:
+                break
+            questions = self._unique_questions([*questions, question])
 
         if len(questions) < target_count:
             filler = word_questions + grammar_questions
-            cursor = 0
-            while len(questions) < target_count and filler:
-                questions.append(dict(filler[cursor % len(filler)]))
-                cursor += 1
+            for question in filler:
+                if len(questions) >= target_count:
+                    break
+                questions = self._unique_questions([*questions, dict(question)])
 
         result = questions[:target_count]
         scope = str(block_no) if block_no else "all"

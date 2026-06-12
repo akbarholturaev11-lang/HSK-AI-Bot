@@ -40,6 +40,25 @@ class AccessService:
     def _is_paid_user(self, user) -> bool:
         return user.payment_status == "approved"
 
+    def trial_voice_used_today(self, user) -> bool:
+        used_at = getattr(user, "trial_voice_used_at", None)
+        if not used_at:
+            return False
+        return self._as_utc(used_at).date() == datetime.now(timezone.utc).date()
+
+    def can_use_trial_voice(self, user) -> bool:
+        if not user:
+            return False
+        if self._is_paid_user(user):
+            return False
+        if getattr(user, "status", "") not in {"trial", "active"}:
+            return False
+        return not self.trial_voice_used_today(user)
+
+    async def mark_trial_voice_used(self, user) -> None:
+        user.trial_voice_used_at = datetime.now(timezone.utc)
+        await self.session.flush()
+
     async def ensure_active_course_access(self, user) -> bool:
         if not user:
             return False
