@@ -486,6 +486,8 @@ class SubscriptionMiniAppService:
     ) -> dict[str, Any]:
         pay_amount = str(checkout_info["final_amount"])
         pay_currency = str(checkout_info["currency"])
+        pay_base_amount = str(checkout_info["base_amount"])
+        pay_base_currency = str(checkout_info["currency"])
         exchange_rate = ""
         normalized_country = None
         if payment_method == "visa":
@@ -497,6 +499,16 @@ class SubscriptionMiniAppService:
             pay_amount = card_quote.amount
             pay_currency = card_quote.currency
             exchange_rate = card_quote.exchange_rate
+            if checkout_info["discount_applied"]:
+                base_card_quote = await self.currency_service.quote_card_amount(
+                    int(checkout_info["base_amount"]),
+                    normalized_country,
+                )
+                pay_base_amount = base_card_quote.amount
+                pay_base_currency = base_card_quote.currency
+            else:
+                pay_base_amount = pay_amount
+                pay_base_currency = pay_currency
 
         return {
             "plan_type": plan_type,
@@ -508,6 +520,8 @@ class SubscriptionMiniAppService:
             "final_currency": checkout_info["currency"],
             "pay_amount": pay_amount,
             "pay_currency": pay_currency,
+            "pay_base_amount": pay_base_amount,
+            "pay_base_currency": pay_base_currency,
             "exchange_rate": exchange_rate,
             "discount_applied": checkout_info["discount_applied"],
             "discount_percent": checkout_info["discount_percent"],
