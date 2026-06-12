@@ -290,12 +290,12 @@ const UI = {
     writeAnswer: "Ҷавоби худро нависед",
     send: "Фиристодан",
     submitHomework: "Фиристодани вазифаи хонагӣ",
-    submitted: "Вазифа супорида шуд",
+    submitted: "Вазифа фиристода шуд. Акнун ба бот баргардед ва натиҷаро бинед.",
     lessonNotFound: "Дарс ёфт нашуд ё пайванд нодуруст аст.",
     lessonNotFoundTitle: "Дарс ёфт нашуд",
     internetError: "Хатои интернет / баъдтар дубора фиристода мешавад",
-    quizSub: "{topic}",
-    homeworkSub: "{topic}",
+    quizSub: "Mini App · саволҳо танҳо аз ҳамин дарс",
+    homeworkSub: "Mini App · вазифа аз бот кушода шудааст",
     quizKicker: "HSK 1 · {count} савол",
     startSub: "Саволҳо аз калимаҳо ва грамматикаи ҳамин дарс сохта шудаанд.",
     lesson: "Дарс",
@@ -314,9 +314,9 @@ const UI = {
     grammarTaskHelp: "Бо сохтори грамматикии дарс 2 ҷумлаи чинӣ созед.",
     translationTaskTitle: "3) Машқи тарҷума",
     translationTaskHelp: "Ин 2 ҷумларо ба чинӣ тарҷума кунед.",
-    fillAll: "Ҳама қисмҳоро пур кунед.",
+    fillAll: "Ҳама қисмҳоро пур кунед. Вазифаи холӣ ба бот натиҷаи фоиданок намедиҳад.",
     savedLocally: "Ҷавоб нигоҳ дошта шуд. Вақте интернет кор кунад, дубора фиристода мешавад.",
-    note: "{lessonTitle} · {topic}",
+    note: "Дарси асосӣ дар бот мемонад. Ин саҳифа танҳо барои фиристодани вазифаи хонагии <b>{lessonLabel}</b> аст.",
     meaningQuestion: "«{hanzi}» чӣ маъно дорад?",
     meaningToHanziQuestion: "«{meaning}» кадом калима аст?",
     pinyinQuestion: "«{pinyin}» кадом калима аст?",
@@ -341,12 +341,12 @@ const UI = {
     writeAnswer: "Напишите ваш ответ",
     send: "Отправить",
     submitHomework: "Отправить домашнее задание",
-    submitted: "Задание отправлено",
+    submitted: "Задание отправлено. Вернитесь в бот, чтобы увидеть результат.",
     lessonNotFound: "Урок не найден или ссылка неверная.",
     lessonNotFoundTitle: "Урок не найден",
     internetError: "Ошибка интернета / будет отправлено позже",
-    quizSub: "{topic}",
-    homeworkSub: "{topic}",
+    quizSub: "Mini App · вопросы только этого урока",
+    homeworkSub: "Mini App · задание открыто из бота",
     quizKicker: "HSK 1 · {count} вопросов",
     startSub: "Вопросы собраны из слов и грамматики этого урока.",
     lesson: "Урок",
@@ -365,9 +365,9 @@ const UI = {
     grammarTaskHelp: "Составьте 2 предложения на китайском по грамматике урока.",
     translationTaskTitle: "3) Перевод",
     translationTaskHelp: "Переведите эти 2 предложения на китайский.",
-    fillAll: "Заполните все разделы.",
+    fillAll: "Заполните все разделы. Пустое задание не даст боту полезный результат.",
     savedLocally: "Ответ сохранен. Когда интернет заработает, он будет отправлен повторно.",
-    note: "{lessonTitle} · {topic}",
+    note: "Основной урок остаётся в боте. Эта страница только для отправки домашнего задания по <b>{lessonLabel}</b>.",
     meaningQuestion: "Что означает «{hanzi}»?",
     meaningToHanziQuestion: "Какое слово означает «{meaning}»?",
     pinyinQuestion: "Какое слово читается «{pinyin}»?",
@@ -392,12 +392,12 @@ const UI = {
     writeAnswer: "Javobingizni yozing",
     send: "Yuborish",
     submitHomework: "Uyga vazifani yuborish",
-    submitted: "Vazifa topshirildi",
+    submitted: "Vazifa yuborildi. Endi botga qaytib natijani ko‘rishingiz mumkin.",
     lessonNotFound: "Dars topilmadi yoki noto‘g‘ri link.",
     lessonNotFoundTitle: "Dars topilmadi",
     internetError: "Internet xatosi / keyinroq qayta yuboriladi",
-    quizSub: "{topic}",
-    homeworkSub: "{topic}",
+    quizSub: "Mini App · faqat shu dars savollari",
+    homeworkSub: "Mini App · faqat botdan ochilgan vazifa",
     quizKicker: "HSK 1 · {count} savol",
     startSub: "Savollar shu dars so‘zlari va grammatikasidan tuzilgan.",
     lesson: "Dars",
@@ -416,9 +416,9 @@ const UI = {
     grammarTaskHelp: "Darsdagi grammar strukturadan 2 ta xitoycha gap tuzing.",
     translationTaskTitle: "3) Tarjima mashqi",
     translationTaskHelp: "Quyidagi 2 ta gapni xitoychaga tarjima qiling.",
-    fillAll: "Hamma bo‘limlarni to‘ldiring.",
+    fillAll: "Hamma bo‘limlarni to‘ldiring. Bo‘sh vazifa botga foydali result bermaydi.",
     savedLocally: "Javob saqlandi. Internet ishlaganda qayta yuboriladi.",
-    note: "{lessonTitle} · {topic}",
+    note: "Botdagi dars asosiy qoladi. Bu sahifa faqat <b>{lessonLabel}</b> uyga vazifasini topshirish uchun.",
     meaningQuestion: "«{hanzi}» nimani anglatadi?",
     meaningToHanziQuestion: "«{meaning}» qaysi so‘z?",
     pinyinQuestion: "«{pinyin}» qaysi so‘z?",
@@ -1461,8 +1461,12 @@ BOOK_LESSON_FIXES.forEach(fix => {
 });
 
 const params = new URLSearchParams(window.location.search);
-const rawLang = (params.get("lang") || "tj").toLowerCase();
-const lang = ["tj", "ru", "uz"].includes(rawLang) ? rawLang : "tj";
+function normalizeLang(value) {
+  const raw = (value || "").toLowerCase();
+  if (raw === "tg" || raw === "tg-cyrl") return "tj";
+  return ["uz", "ru", "tj"].includes(raw) ? raw : "uz";
+}
+const lang = normalizeLang(params.get("lang") || "uz");
 const rawLesson = params.get("lesson");
 const lessonId = rawLesson && /^\d+$/.test(rawLesson) ? Number(rawLesson) : NaN;
 const mode = (params.get("mode") || "").toLowerCase();
@@ -1494,8 +1498,13 @@ function text(value) {
 
 function blockLabel() {
   if (!activeBlock) return "";
-  const labels = { uz: "Qism", ru: "Часть", tj: "Қисм" };
-  return `${labels[lang] || labels.ru} ${activeBlock.no}`;
+  const labels = { uz: "qism", ru: "часть", tj: "қисм" };
+  return `${labels[lang] || labels.uz} ${activeBlock.no}`;
+}
+
+function lessonLabel() {
+  const part = blockLabel();
+  return part ? `${lesson.id} · ${part}` : String(lesson.id);
 }
 
 function activeWords() {
@@ -1718,20 +1727,17 @@ function selectQuizQuestions(pool, targetCount, seed) {
 }
 
 function renderHeader() {
-  const title = text(lesson.title);
-  const topic = text(lesson.topic);
   const part = blockLabel();
-  const titleText = part ? `${title} · ${part}` : title;
   const pill = part ? `HSK 1 · ${t("lesson")} ${lesson.id} · ${part}` : `HSK 1 · ${t("lesson")} ${lesson.id}`;
 
   if (mode === "quiz") {
-    document.getElementById("quiz-title").textContent = `${titleText} · Quiz`;
-    document.getElementById("quiz-sub").textContent = t("quizSub", { topic });
+    document.getElementById("quiz-title").textContent = `${t("lesson")} ${lessonLabel()} · Quiz 🧠`;
+    document.getElementById("quiz-sub").textContent = t("quizSub");
     document.getElementById("quiz-pill").textContent = pill;
   }
   if (mode === "homework") {
-    document.getElementById("hw-page-title").textContent = `${titleText} · ${t("homework")}`;
-    document.getElementById("hw-page-sub").textContent = t("homeworkSub", { topic });
+    document.getElementById("hw-page-title").textContent = `${t("lesson")} ${lessonLabel()} · ${t("homework")} ✍️`;
+    document.getElementById("hw-page-sub").textContent = t("homeworkSub");
     document.getElementById("hw-pill").textContent = pill;
   }
 }
@@ -1869,9 +1875,7 @@ function showResult() {
 }
 
 function renderHomework() {
-  const lessonTitle = text(lesson.title);
-  const topic = text(lesson.topic);
-  document.getElementById("hw-lesson-note").textContent = t("note", { lessonTitle, topic });
+  document.getElementById("hw-lesson-note").innerHTML = t("note", { lessonLabel: lessonLabel() });
   document.getElementById("hw-vocab-title").textContent = t("vocabTaskTitle");
   document.getElementById("hw-vocab-help").textContent = t("vocabTaskHelp");
   document.getElementById("hw-grammar-title").textContent = t("grammarTaskTitle");
@@ -1913,32 +1917,27 @@ async function submitHomework() {
     return;
   }
 
-  const answers = [
-    {
-      type: "vocab_sentences",
-      prompt: t("vocabTaskHelp"),
-      answer: vocabAnswer
-    },
-    {
-      type: "grammar_sentences",
-      prompt: t("grammarTaskHelp"),
-      answer: grammarAnswer
-    },
-    {
-      type: "translation_exercises",
-      prompt: activeTranslations(),
-      answer: translationAnswer
-    }
-  ];
+  const answers = {
+    vocab_sentences: vocabAnswer,
+    grammar_sentences: grammarAnswer,
+    translations: translationAnswer
+  };
 
   const delivered = await reportEvent("homework_submitted", {
     lesson_id: lesson.id,
     block_no: activeBlock?.no || null,
-    answers
+    answers,
+    submitted_at: new Date().toISOString()
   });
 
   status.className = `hw-status show ${delivered ? "ok" : "no"}`;
-  status.textContent = delivered ? t("submitted") : `${t("submitted")}. ${t("internetError")}`;
+  status.textContent = delivered ? t("submitted") : `${t("submitted")} ${t("internetError")}`;
+  try {
+    const key = "hsk1_homework_submissions";
+    const old = JSON.parse(localStorage.getItem(key) || "[]");
+    old.push({ lesson_id: lesson.id, block_no: activeBlock?.no || null, answers, submitted_at: new Date().toISOString() });
+    localStorage.setItem(key, JSON.stringify(old));
+  } catch (e) {}
   document.getElementById("hw-submit-btn").style.display = "none";
   document.getElementById("hw-return-btn").style.display = "flex";
 }
@@ -1966,6 +1965,11 @@ async function reportEvent(eventName, payload = {}) {
   } catch (e) {
     if (eventName !== "app_error") {
       reportAppError(e, { source: "report_event_failed", failed_event: eventName });
+    }
+    if ((eventName === "quiz_completed" || eventName === "homework_submitted") && tg?.sendData) {
+      try {
+        tg.sendData(JSON.stringify(eventPayload));
+      } catch (_e) {}
     }
     const pending = safeJSON("hsk1_pending_events", []);
     pending.push(eventPayload);
@@ -2112,7 +2116,7 @@ async function init() {
   await loadMiniLessonData();
   renderHeader();
   if (mode === "quiz") {
-    renderQuizStart();
+    startQuiz();
     showPage("quiz-page");
   }
   if (mode === "homework") {

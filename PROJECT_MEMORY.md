@@ -252,6 +252,28 @@ Risk:
 Follow-up:
 - Smoke test real Telegram Mini App card checkout with TJ and non-TJ cards, including a discount mode.
 
+### 2026-06-13 — HSK1/HSK2 Mini App quiz and homework flow aligned with HSK4
+
+Changed:
+- HSK1 and HSK2 Mini App quiz pages now open directly into the lesson quiz, matching the HSK4 flow instead of showing a separate start card.
+- HSK1 and HSK2 homework pages now use the same purpose text style as HSK4 and submit homework answers as `vocab_sentences`, `grammar_sentences`, and `translations`.
+- Homework submit keeps the return-to-bot button visible after submission, with local/offline fallback and Telegram `sendData` fallback aligned to HSK4-style event handling.
+- Mini App asset version was bumped so Telegram opens the updated static files.
+
+Why:
+- Quiz and homework Mini Apps needed consistent UI and behavior across all HSK levels.
+
+Files touched:
+- `app/static/hsk1.html`
+- `app/static/hsk2.html`
+- `app/bot/utils/course_miniapp.py`
+
+Risk:
+- HSK1/HSK2 direct quiz start removes the previous pre-quiz start screen; course result saving still uses the existing `/api/miniapp/event` path.
+
+Follow-up:
+- Smoke test Telegram Mini App links for HSK1 and HSK2: quiz result returns to bot, homework submission shows return button, and bot receives AI homework result.
+
 ### 2026-06-12 — Course text AI separated from QA daily text limit
 
 Changed:
