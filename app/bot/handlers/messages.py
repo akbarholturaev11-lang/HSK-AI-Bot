@@ -46,7 +46,7 @@ from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
     course_homework_miniapp_keyboard,
     course_miniapp_continue_keyboard,
-    course_miniapp_understood_keyboard,
+    course_miniapp_quiz_result_keyboard,
     course_quiz_miniapp_keyboard,
 )
 from app.bot.keyboards.checkout import checkout_keyboard
@@ -74,10 +74,8 @@ from app.services.course_progress_summary_service import CourseProgressSummarySe
 from app.services.image_input_service import ImageInputService
 from app.services.image_qa_service import ImageQAService
 from app.services.onboarding_tip_service import (
-    QA_PHOTO_TIP,
-    QA_VOICE_TIP,
     OnboardingTipService,
-    schedule_onboarding_tip,
+    TIP_KEY_NORMAL_PHOTO,
 )
 from app.services.qa_service import QAService
 from app.services.referral_service import (
@@ -335,8 +333,18 @@ def _is_course_tutor_step(step: str) -> bool:
     )
 
 
-async def _ensure_ai_available(access_service: AccessService, telegram_id: int, respond, lang: str) -> bool:
-    can_use, message_key = await access_service.can_use_text_ai(telegram_id)
+async def _ensure_ai_available(
+    access_service: AccessService,
+    telegram_id: int,
+    respond,
+    lang: str,
+    *,
+    enforce_daily_limit: bool = True,
+) -> bool:
+    can_use, message_key = await access_service.can_use_text_ai(
+        telegram_id,
+        enforce_daily_limit=enforce_daily_limit,
+    )
     if can_use:
         return True
     if message_key == "access_daily_limit_reached":
@@ -375,31 +383,28 @@ async def _send_budget_notice(respond, record, lang: str) -> None:
         await respond(t(message_key, lang), parse_mode="HTML")
 
 
-async def _queue_onboarding_tip(message: Message, session, user, tip_key: str) -> None:
+async def _queue_normal_photo_tip(session, user, lang: str) -> None:
     if not user:
         return
-    queued = await OnboardingTipService(session).queue_once(user, tip_key)
-    if not queued:
-        return
-    await session.commit()
-    schedule_onboarding_tip(message.bot, user.telegram_id, tip_key)
-
-
-async def _maybe_queue_limit_voice_tip(message: Message, session, user) -> bool:
-    if not user or getattr(user, "payment_status", "") == "approved":
-        return False
-    question_limit = int(getattr(user, "question_limit", 0) or 0)
-    questions_used = int(getattr(user, "questions_used", 0) or 0)
-    text_remaining = max(question_limit - questions_used, 0) if question_limit > 0 else 0
-    image_count = await MessageRepository(session).count_user_messages_today(
-        user_id=user.id,
-        content_type="image",
+    queued = await OnboardingTipService(session).queue_once(
+        user=user,
+        tip_key=TIP_KEY_NORMAL_PHOTO,
+        lang=lang,
+        context={"type": "normal"},
     )
-    image_remaining = max(2 - image_count, 0)
-    if text_remaining == 1 or image_remaining == 1:
-        await _queue_onboarding_tip(message, session, user, QA_VOICE_TIP)
-        return True
-    return False
+    if queued:
+        await session.commit()
+
+
+async def _queue_normal_voice_tip_if_near_limit(session, user, lang: str) -> None:
+    if not user:
+        return
+    queued = await OnboardingTipService(session).queue_voice_tip_if_near_limit(
+        user=user,
+        lang=lang,
+    )
+    if queued:
+        await session.commit()
 
 
 async def _build_referral_limit_text(session, user, lang: str, key: str) -> str:
@@ -415,8 +420,16 @@ async def _build_referral_limit_text(session, user, lang: str, key: str) -> str:
     )
 
 
-async def _consume_text_ai_usage(session, access_service: AccessService, bot, telegram_id: int) -> None:
-    await access_service.consume_one_question(telegram_id)
+async def _consume_text_ai_usage(
+    session,
+    access_service: AccessService,
+    bot,
+    telegram_id: int,
+    *,
+    consume_question: bool = True,
+) -> None:
+    if consume_question:
+        await access_service.consume_one_question(telegram_id)
     await ReferralService(session).activate_referral_if_eligible(
         bot=bot,
         invited_user_telegram_id=telegram_id,
@@ -442,7 +455,13 @@ async def _answer_course_tutor_question(
     if not text:
         return False
 
-    if not await _ensure_ai_available(access_service, message.from_user.id, message.answer, lang):
+    if not await _ensure_ai_available(
+        access_service,
+        message.from_user.id,
+        message.answer,
+        lang,
+        enforce_daily_limit=False,
+    ):
         return True
 
     effect = ResponseEffect(message, mode="course", seed=_response_seed(user, text))
@@ -473,7 +492,13 @@ async def _answer_course_tutor_question(
             ai_result=tutor.last_ai_result,
             source="course_tutor",
         )
-        await _consume_text_ai_usage(session, access_service, message.bot, message.from_user.id)
+        await _consume_text_ai_usage(
+            session,
+            access_service,
+            message.bot,
+            message.from_user.id,
+            consume_question=False,
+        )
         await session.commit()
     except Exception:
         logger.exception("Course tutor AI failed for user %s", message.from_user.id)
@@ -490,10 +515,8 @@ async def _answer_course_tutor_question(
         parse_mode="HTML",
     )
     await _send_budget_notice(message.answer, budget_record, lang)
-    refreshed_user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
-    queued_voice_tip = await _maybe_queue_limit_voice_tip(message, session, refreshed_user)
-    if not queued_voice_tip:
-        await _queue_onboarding_tip(message, session, refreshed_user, QA_PHOTO_TIP)
+    await _queue_normal_photo_tip(session, user, lang)
+    await _queue_normal_voice_tip_if_near_limit(session, user, lang)
     return True
 
 
@@ -1000,17 +1023,11 @@ async def _send_miniapp_result_message(message: Message, session, payload: dict)
 
         user = result["user"]
         lang = user.language if user and user.language else "ru"
-        discuss_mistakes = bool(result.get("wrong_items")) and int(result.get("percent") or 0) < 60
-        if result.get("block_no"):
-            reply_markup = course_miniapp_continue_keyboard(
-                lang,
-                discuss_mistakes=discuss_mistakes,
-            )
-        else:
-            reply_markup = course_miniapp_understood_keyboard(
-                lang,
-                discuss_mistakes=discuss_mistakes,
-            )
+        reply_markup = course_miniapp_quiz_result_keyboard(
+            lang,
+            block_no=bool(result.get("block_no")),
+            low_score=int(result.get("percent") or 0) < 60,
+        )
         await message.answer(
             format_miniapp_quiz_result(lang, result),
             reply_markup=reply_markup,
@@ -1124,6 +1141,118 @@ async def handle_web_app_data(message: Message, session):
         user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
         lang = user.language if user and user.language else "ru"
         await message.answer(t("course_miniapp_lesson_mismatch", lang), parse_mode="HTML")
+
+
+async def _edit_or_send_course_ai_block(message: Message, text: str, lang: str, reply_markup=None) -> None:
+    payload = (text or "").strip() or t("ai_empty_response", lang)
+    try:
+        await message.edit_text(payload, reply_markup=reply_markup, parse_mode="HTML")
+        return
+    except Exception:
+        logger.exception("Failed to edit course AI discussion with HTML")
+
+    try:
+        await message.edit_text(payload, reply_markup=reply_markup)
+        return
+    except Exception:
+        logger.exception("Failed to edit course AI discussion without HTML")
+
+    await _safe_answer_text(message, payload, lang, reply_markup=reply_markup, parse_mode="HTML")
+
+
+@router.callback_query(F.data == "course_miniapp:discuss_mistakes")
+async def course_miniapp_discuss_mistakes_handler(callback: CallbackQuery, state: FSMContext, session):
+    user_repo = UserRepository(session)
+    access_service = AccessService(session)
+
+    user = await user_repo.get_by_telegram_id(callback.from_user.id)
+    lang = user.language if user and user.language else "ru"
+    await callback.answer()
+
+    if not user:
+        await callback.message.answer(t("access_start_first", lang), parse_mode="HTML")
+        return
+
+    if not await _ensure_ai_available(
+        access_service,
+        callback.from_user.id,
+        callback.message.answer,
+        lang,
+        enforce_daily_limit=False,
+    ):
+        return
+
+    engine = CourseEngineService(session)
+    current_user, progress, lesson, error_key = await engine.get_current_lesson(callback.from_user.id)
+    if error_key:
+        await callback.message.answer(t(error_key, lang), parse_mode="HTML")
+        return
+
+    processing_message = callback.message
+    try:
+        await processing_message.edit_text(
+            t("course_miniapp_mistakes_ai_processing", lang),
+            parse_mode="HTML",
+        )
+    except Exception:
+        processing_message = await callback.message.answer(
+            t("course_miniapp_mistakes_ai_processing", lang),
+            parse_mode="HTML",
+        )
+
+    miniapp_context = await CourseMiniAppResultService(session).build_ai_context(
+        user_id=current_user.id,
+        lesson_id=lesson.id,
+    )
+    prompt = t("course_miniapp_mistakes_ai_prompt", lang)
+    contextual_message = prompt
+    if miniapp_context:
+        contextual_message = f"{miniapp_context}\n\nFOYDALANUVCHI XABARI:\n{prompt}"
+
+    try:
+        tutor = CourseTutorService()
+        reply = await tutor.generate_step_response(
+            user_language=lang,
+            user_level=current_user.level if current_user.level else "hsk3",
+            lesson=lesson,
+            step=getattr(progress, "current_step", "review") or "review",
+            user_message=contextual_message,
+        )
+        budget_record = await _record_ai_usage(
+            session=session,
+            telegram_id=callback.from_user.id,
+            ai_result=tutor.last_ai_result,
+            source="course_miniapp_mistakes_discussion",
+        )
+        await _consume_text_ai_usage(
+            session,
+            access_service,
+            callback.message.bot,
+            callback.from_user.id,
+            consume_question=False,
+        )
+        await session.commit()
+    except Exception:
+        logger.exception("Course Mini App mistakes discussion failed for user %s", callback.from_user.id)
+        await _edit_or_send_course_ai_block(
+            processing_message,
+            t("ai_response_failed", lang),
+            lang,
+            reply_markup=course_miniapp_continue_keyboard(lang),
+        )
+        return
+
+    final_text = (
+        f"{(reply or t('ai_empty_response', lang)).strip()}\n\n"
+        f"{t('course_miniapp_mistakes_ai_continue_hint', lang)}"
+    )
+    await _edit_or_send_course_ai_block(
+        processing_message,
+        final_text,
+        lang,
+        reply_markup=course_miniapp_continue_keyboard(lang),
+    )
+    await _send_budget_notice(callback.message.answer, budget_record, lang)
 
 
 @router.message(F.text & ~F.text.startswith("/"))
@@ -1408,7 +1537,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             await engine.progress_repo.set_waiting_for(refreshed_progress, "satisfaction_answer")
             await session.commit()
 
-            if not await _ensure_ai_available(access_service, message.from_user.id, message.answer, user_lang):
+            if not await _ensure_ai_available(
+                access_service,
+                message.from_user.id,
+                message.answer,
+                user_lang,
+                enforce_daily_limit=False,
+            ):
                 return
 
             miniapp_context = await CourseMiniAppResultService(session).build_ai_context(
@@ -1437,7 +1572,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                     ai_result=tutor.last_ai_result,
                     source="course_miniapp_context_review" if miniapp_context else "course_review",
                 )
-                await _consume_text_ai_usage(session, access_service, message.bot, message.from_user.id)
+                await _consume_text_ai_usage(
+                    session,
+                    access_service,
+                    message.bot,
+                    message.from_user.id,
+                    consume_question=False,
+                )
                 await session.commit()
             except Exception:
                 logger.exception("Course review AI failed for user %s", message.from_user.id)
@@ -1497,7 +1638,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 await message.answer(t("course_homework_empty", user_lang))
                 return
 
-            if not await _ensure_ai_available(access_service, message.from_user.id, message.answer, user_lang):
+            if not await _ensure_ai_available(
+                access_service,
+                message.from_user.id,
+                message.answer,
+                user_lang,
+                enforce_daily_limit=False,
+            ):
                 return
 
             effect = ResponseEffect(message, mode="course", seed=_response_seed(user, msg_text))
@@ -1524,7 +1671,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 ai_result=result.get("ai_result") if isinstance(result, dict) else None,
                 source="course_homework",
             )
-            await _consume_text_ai_usage(session, access_service, message.bot, message.from_user.id)
+            await _consume_text_ai_usage(
+                session,
+                access_service,
+                message.bot,
+                message.from_user.id,
+                consume_question=False,
+            )
             await session.commit()
 
             if isinstance(result, dict):
@@ -1695,12 +1848,11 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
     await _safe_answer_text(message, reply, user_lang)
     await _send_budget_notice(message.answer, qa_service.last_budget_record, user_lang)
-    refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
-    queued_voice_tip = await _maybe_queue_limit_voice_tip(message, session, refreshed_user)
-    if not queued_voice_tip:
-        await _queue_onboarding_tip(message, session, refreshed_user, QA_PHOTO_TIP)
 
     # Show course promo after 3rd QA message (once per user)
+    refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
+    await _queue_normal_photo_tip(session, refreshed_user, user_lang)
+    await _queue_normal_voice_tip_if_near_limit(session, refreshed_user, user_lang)
     if (
         refreshed_user
         and not refreshed_user.course_promo_sent
@@ -1814,7 +1966,7 @@ async def handle_image_message(message: Message, state: FSMContext, session):
     await _safe_answer_text(message, reply, user_lang)
     await _send_budget_notice(message.answer, image_qa_service.last_budget_record, user_lang)
     refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
-    await _maybe_queue_limit_voice_tip(message, session, refreshed_user)
+    await _queue_normal_voice_tip_if_near_limit(session, refreshed_user, user_lang)
 
 
 @router.message(F.document)

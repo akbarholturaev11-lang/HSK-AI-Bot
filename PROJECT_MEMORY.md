@@ -207,48 +207,60 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-12 — Course text AI separated from QA daily text limit
+
+Changed:
+- Trial/free course-mode text AI checks now bypass the QA daily text limit and course text AI usage no longer increments `users.questions_used`.
+- Normal QA text messages still use `questions_used/question_limit` exactly as before.
+
+Why:
+- Course-mode text help should not consume or block the user's QA-mode daily text allowance.
+
+Files touched:
+- `app/services/access_service.py`
+- `app/bot/handlers/messages.py`
+
+Risk:
+- This affects only text AI access accounting; photo and voice limits are unchanged.
+
+Follow-up:
+- Smoke test with a trial user: ask course tutor/homework/mistake discussion, then switch to QA and confirm daily text remaining was not reduced.
+
 ### 2026-06-12 — Subscription Mini App referral, QR, and help contact fixes
 
 Changed:
-- Limit-offer referral buttons now say “Bonus savol olish” and edit the existing limit block into the referral invite/progress text instead of sending a new message.
-- Subscription Mini App referral sheet now shows the referral link visibly, updates copy status in the button, and uses a more robust blob-based QR download fallback.
-- Feedback 20% discount checkout can reuse the default 20% QR image when the amount matches.
-- Help text was shortened and now shows admin contact as an inline button; admin contact is configurable from the admin panel via `bot_settings.admin_contact`.
+- Limit-offer referral buttons use clearer bonus-question wording and update the existing limit block into referral invite/progress text.
+- Subscription Mini App referral sheet shows the referral link visibly, improves copy status, and uses a stronger QR download/open fallback.
+- Help text is shorter and uses an admin contact inline button backed by configurable `bot_settings.admin_contact`.
 
 Why:
-- Users could not clearly see copied referral links, QR download was unreliable in Telegram WebView, and help text was too long.
+- Users needed clearer referral actions, visible invite links, more reliable QR handling in Telegram WebView, and simpler help/contact access.
 
 Files touched:
 - `app/static/subscription.html`
 - `app/services/subscription_miniapp_service.py`
 - `app/services/support_contact_service.py`
 - `app/bot/handlers/referral.py`
-- `app/bot/keyboards/referral.py`
 - `app/bot/keyboards/help.py`
-- `app/bot/handlers/commands.py`
-- `app/bot/handlers/menu.py`
-- `app/bot/handlers/admin.py`
-- `app/bot/fsm/admin_management.py`
 - `app/bot/utils/i18n.py`
 
 Risk:
-- QR download still depends on Telegram WebView/browser download behavior; fallback opens the QR image if direct download is blocked.
+- QR download still depends on Telegram WebView/browser behavior; fallback opens the image if direct download is blocked.
 
 Follow-up:
-- Smoke test in Telegram: Mini App referral copy/share, Alipay/WeChat QR display/download, `/help` button, and admin contact edit flow.
+- Smoke test Mini App referral copy/share, QR display/download, and `/help` admin contact button.
 
 ### 2026-06-12 — Course grammar and all-level quiz quality tuning
 
 Changed:
-- HSK4 course grammar blocks now render as concise useful blocks: pattern, usage, one lesson example, and one attention note instead of a thin one-line rule.
-- Course tutor grammar prompts now require short practical explanation blocks and avoid long theoretical responses.
-- HSK1-HSK4 Mini App quiz selection now prioritizes distinct newly learned words before repeating alternate question types, limits grammar repetition, and deduplicates exact questions.
-- Backend Mini App quiz questions now include word metadata so frontend selection can avoid asking several early questions from the same word.
+- HSK4 grammar blocks render as concise useful blocks: pattern, usage, one lesson example, and one attention note.
+- HSK1-HSK4 Mini App quiz selection prioritizes distinct new words before repeating alternate question types, limits grammar repetition, and deduplicates exact questions.
+- Backend Mini App quiz questions include word metadata so frontend selection can avoid several early questions from the same word.
 - Course quiz intro text was simplified into a direct challenge-style prompt.
 
 Why:
-- HSK4 grammar explanations felt weak, but making them long would hurt UX; the better direction is short, clear, and practical.
-- Quiz users should be tested on more of the newly learned words, not several duplicate-style questions from the first few words.
+- Quiz users should be tested on more newly learned words, not duplicate-style questions from the first few words.
+- HSK4 grammar needed to be useful without becoming a long theory block.
 
 Files touched:
 - `app/bot/utils/course_formatter.py`
@@ -262,45 +274,10 @@ Files touched:
 - `app/static/hsk4.html`
 
 Risk:
-- Quiz sessions may contain fewer than the target count if a small block does not have enough unique valid questions, but this avoids low-quality duplicates.
-- Existing unrelated Mini App/course changes in the working tree were preserved.
+- Small blocks can return fewer than the target count if there are not enough unique valid questions, but this avoids low-quality duplicates.
 
 Follow-up:
-- Smoke test HSK1-HSK4 course quizzes in Telegram/Mini App and confirm the first questions cover different new words.
-
-### 2026-06-12 — Contextual onboarding tips and quiz mistake discussion
-
-Changed:
-- Added one-time contextual onboarding tips for course vocabulary, dialogue, grammar, QA photo usage, and voice usage; tips are queued once per user and delivered after a short delay only if the user is still in the matching course step.
-- Added `onboarding_tip_events` to track queued/sent tips and `users.trial_voice_used_at` to allow non-paid users one successful voice trial per day.
-- Course Mini App quiz results below 60% now show an "discuss mistakes with AI" button that sends stored `wrong_items` and lesson context to the existing course tutor flow, edits the processing message into the AI explanation, then shows the continue/understood button.
-- Quiz intro text was clarified to explain what is tested and when AI mistake discussion is available.
-
-Why:
-- New and existing users need one practical, non-spam introduction to high-value bot features at the moment they can use them.
-- Low quiz scores should convert into immediate learning feedback instead of only showing wrong answers.
-
-Files touched:
-- `app/services/onboarding_tip_service.py`
-- `app/services/access_service.py`
-- `app/main.py`
-- `app/bot/handlers/course.py`
-- `app/bot/handlers/messages.py`
-- `app/bot/keyboards/course_miniapp.py`
-- `app/bot/utils/i18n.py`
-- `app/bot/utils/course_formatter.py`
-- `app/bot/utils/course_miniapp.py`
-- `app/db/models/onboarding_tip_event.py`
-- `app/db/models/user.py`
-- `app/db/session.py`
-- `alembic/versions/0039_add_onboarding_tip_events.py`
-
-Risk:
-- Delayed tips rely on background tasks and the scheduler; if the process restarts before 30 seconds, the scheduler retries due unsent tips.
-- Trial voice now has a daily free path, but still requires normal AI text access and consumes AI/question usage after processing.
-
-Follow-up:
-- Run DB migration on deploy, then smoke test: vocab/dialogue/grammar delayed tips, QA photo tip, near-limit voice tip, trial voice daily lock, and a <60% Mini App quiz mistake discussion.
+- Smoke test HSK1-HSK4 block quiz in Telegram/Mini App and confirm the first questions cover different new words.
 
 ### 2026-06-12 — Course trial fallback and homework processing feedback
 
@@ -968,6 +945,26 @@ Files touched:
 - `app/db/models/user.py`
 - `app/db/session.py`
 - `alembic/versions/0038_add_user_trial_course_fields.py`
+
+---
+
+### 2026-06-12 — One-time onboarding tips and trial voice sample
+
+Changed:
+- Added `onboarding_tip_events` to queue contextual one-time bot tips per user.
+- Course vocab/dialogue/grammar sections queue a 30-second tip; the scheduler sends it only if the user is still on that same course step.
+- Normal text/photo usage can queue one-time photo and voice feature tips.
+- Added `users.trial_voice_used_at`; trial users can try voice once, while paid approved users keep normal voice access.
+- Course Mini App quiz results below 60% show an AI mistake-discussion button that sends the latest quiz context to `CourseTutorService` and edits the processing message into the AI explanation.
+
+Files touched:
+- `app/services/onboarding_tip_service.py`
+- `app/db/models/onboarding_tip_event.py`
+- `app/db/models/user.py`
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/messages.py`
+- `app/main.py`
+- `alembic/versions/0039_add_onboarding_tip_events.py`
 
 ---
 

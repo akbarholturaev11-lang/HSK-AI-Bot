@@ -34,8 +34,7 @@ from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
-    course_miniapp_continue_keyboard,
-    course_miniapp_understood_keyboard,
+    course_miniapp_quiz_result_keyboard,
 )
 from app.bot.utils.course_miniapp import (
     format_miniapp_homework_result,
@@ -142,11 +141,11 @@ async def _background_scheduler(bot: Bot) -> None:
             async with async_session_maker() as session:
                 await PartnerService(session).send_due_payout_reminders(bot)
             async with async_session_maker() as session:
+                await OnboardingTipService(session).send_due_tips(bot)
+            async with async_session_maker() as session:
                 await AdCampaignService(session).send_due_ads(bot)
             async with async_session_maker() as session:
                 await BotFeedbackService(session).send_due_feedback_requests(bot)
-            async with async_session_maker() as session:
-                await OnboardingTipService(session).send_due_tips(bot)
         except Exception as e:
             print("Scheduler error:", e)
 
@@ -396,17 +395,11 @@ async def miniapp_event(request: Request):
 
             user = result["user"]
             lang = user.language if user and user.language else "ru"
-            discuss_mistakes = bool(result.get("wrong_items")) and int(result.get("percent") or 0) < 60
-            if result.get("block_no"):
-                reply_markup = course_miniapp_continue_keyboard(
-                    lang,
-                    discuss_mistakes=discuss_mistakes,
-                )
-            else:
-                reply_markup = course_miniapp_understood_keyboard(
-                    lang,
-                    discuss_mistakes=discuss_mistakes,
-                )
+            reply_markup = course_miniapp_quiz_result_keyboard(
+                lang,
+                block_no=bool(result.get("block_no")),
+                low_score=int(result.get("percent") or 0) < 60,
+            )
             await bot.send_message(
                 chat_id=telegram_id,
                 text=format_miniapp_quiz_result(lang, result),

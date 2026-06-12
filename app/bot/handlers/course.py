@@ -18,17 +18,12 @@ from app.services.course_engine_service import (
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.access_service import AccessService
 from app.services.course_trial_service import CourseTrialService
-from app.services.ai_usage_budget_service import AIUsageBudgetService
-from app.services.course_miniapp_result_service import CourseMiniAppResultService
-from app.services.course_tutor_service import CourseTutorService
 from app.services.onboarding_tip_service import (
-    COURSE_DIALOGUE_TIP,
-    COURSE_GRAMMAR_TIP,
-    COURSE_VOCAB_TIP,
     OnboardingTipService,
-    schedule_onboarding_tip,
+    TIP_KEY_COURSE_DIALOGUE,
+    TIP_KEY_COURSE_GRAMMAR,
+    TIP_KEY_COURSE_VOCAB,
 )
-from app.services.referral_service import ReferralService
 from app.services.required_channel_service import RequiredChannelService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.course import (
@@ -1520,117 +1515,6 @@ async def course_level_upgrade_no_handler(callback: CallbackQuery, session):
     )
 
 
-async def _edit_or_send_course_ai_result(message: Message, text: str, lang: str, reply_markup=None) -> None:
-    payload = (text or "").strip() or t("ai_empty_response", lang)
-    if len(payload) > 3900:
-        await message.answer(payload, reply_markup=reply_markup)
-        return
-    try:
-        await message.edit_text(payload, reply_markup=reply_markup, parse_mode="HTML")
-    except Exception:
-        try:
-            await message.edit_text(payload, reply_markup=reply_markup)
-        except Exception:
-            await message.answer(payload, reply_markup=reply_markup)
-
-
-@router.callback_query(F.data == "course:discuss_quiz_mistakes")
-async def course_discuss_quiz_mistakes_handler(callback: CallbackQuery, session):
-    if await _block_if_course_disabled(callback, session):
-        return
-
-    user_repo = UserRepository(session)
-    engine = CourseEngineService(session)
-    access_service = AccessService(session)
-
-    user = await user_repo.get_by_telegram_id(callback.from_user.id)
-    if not user:
-        await callback.answer()
-        await callback.message.answer(t("access_start_first", "ru"))
-        return
-
-    lang = user.language if user.language else "ru"
-    current_user, progress, lesson, error_key = await engine.get_current_lesson(callback.from_user.id)
-    if error_key:
-        await callback.answer()
-        await callback.message.answer(t(error_key, lang), parse_mode="HTML")
-        return
-    if not await _guard_current_lesson_trial_access(
-        session=session,
-        user=current_user,
-        lesson=lesson,
-        respond=callback.message.answer,
-    ):
-        await callback.answer()
-        return
-
-    can_use, message_key = await access_service.can_use_text_ai(callback.from_user.id)
-    if not can_use:
-        await session.commit()
-        await callback.answer()
-        await callback.message.answer(t(message_key, lang), parse_mode="HTML")
-        return
-
-    miniapp_context = await CourseMiniAppResultService(session).build_ai_context(
-        user_id=current_user.id,
-        lesson_id=lesson.id,
-    )
-    if not miniapp_context:
-        await callback.answer()
-        await callback.message.answer(t("course_miniapp_lesson_mismatch", lang), parse_mode="HTML")
-        return
-
-    await callback.answer()
-    processing_message = await callback.message.answer(
-        t("course_miniapp_discuss_mistakes_processing", lang),
-        parse_mode="HTML",
-    )
-
-    prompt = t("course_miniapp_discuss_mistakes_prompt", lang)
-    contextual_message = f"{miniapp_context}\n\nFOYDALANUVCHI XABARI:\n{prompt}"
-    try:
-        tutor = CourseTutorService()
-        reply = await tutor.generate_step_response(
-            user_language=lang,
-            user_level=current_user.level if current_user.level else "hsk3",
-            lesson=lesson,
-            step="review",
-            user_message=contextual_message,
-        )
-        budget_record = await AIUsageBudgetService(session).record_usage(
-            telegram_id=callback.from_user.id,
-            result=tutor.last_ai_result,
-            source="course_quiz_mistakes",
-        )
-        await access_service.consume_one_question(callback.from_user.id)
-        await ReferralService(session).activate_referral_if_eligible(
-            bot=callback.bot,
-            invited_user_telegram_id=callback.from_user.id,
-        )
-        await access_service.downgrade_non_paid_active_if_budget_depleted(callback.from_user.id)
-        await session.commit()
-    except Exception:
-        await processing_message.edit_text(t("ai_response_failed", lang))
-        return
-
-    next_markup = (
-        course_miniapp_understood_keyboard(lang)
-        if getattr(progress, "current_step", None) == "satisfaction_check"
-        else course_miniapp_continue_keyboard(lang)
-    )
-    result_text = f"{reply}\n\n{t('course_miniapp_ai_understood_hint', lang)}"
-    await _edit_or_send_course_ai_result(
-        processing_message,
-        result_text,
-        lang,
-        reply_markup=next_markup,
-    )
-    if budget_record and (getattr(budget_record, "cooldown_started", False) or getattr(budget_record, "budget_depleted", False)):
-        message_key = getattr(budget_record, "message_key", "")
-        if message_key:
-            await callback.message.answer(t(message_key, lang), parse_mode="HTML")
-
-
 def _keyboard_for_step(lang: str, step: str, lesson=None):
     """Har qanday step uchun to'g'ri klaviaturani qaytaradi (V1 + V2)."""
     from app.services.course_engine_service import is_v2_lesson as _is_v2
@@ -1686,6 +1570,32 @@ def _keyboard_for_step(lang: str, step: str, lesson=None):
     return get_course_keyboard_for_step(lang, step)
 
 
+def _course_tip_key_for_step(step: str) -> str | None:
+    step = (step or "").strip()
+    if step in {"vocab", "vocab_1", "vocab_2"} or is_block_vocab_step(step):
+        return TIP_KEY_COURSE_VOCAB
+    if step == "dialogue" or step.startswith("dialogue_"):
+        return TIP_KEY_COURSE_DIALOGUE
+    if step == "grammar" or is_block_grammar_step(step):
+        return TIP_KEY_COURSE_GRAMMAR
+    return None
+
+
+async def _queue_course_onboarding_tip(session, user, lesson, step: str, lang: str) -> None:
+    tip_key = _course_tip_key_for_step(step)
+    if not tip_key:
+        return
+    queued = await OnboardingTipService(session).queue_course_tip(
+        user=user,
+        lesson=lesson,
+        step=step,
+        tip_key=tip_key,
+        lang=lang,
+    )
+    if queued:
+        await session.commit()
+
+
 def _static_course_missing_text(lang: str) -> str:
     messages = {
         "uz": "Bu bo'lim uchun tayyor kurs materiali topilmadi. Dars seed faylini tekshirish kerak.",
@@ -1711,37 +1621,6 @@ def _v2_remap(step: str, lesson) -> str:
     return mapping.get(step, step)
 
 
-def _onboarding_tip_for_course_step(step: str) -> str | None:
-    if step in {"vocab", "vocab_1", "vocab_2"} or is_block_vocab_step(step):
-        return COURSE_VOCAB_TIP
-    if step == "dialogue" or step.startswith("dialogue_"):
-        return COURSE_DIALOGUE_TIP
-    if step == "grammar" or is_block_grammar_step(step):
-        return COURSE_GRAMMAR_TIP
-    return None
-
-
-async def _queue_course_onboarding_tip(respond, session, user, lesson, step: str) -> None:
-    tip_key = _onboarding_tip_for_course_step(step)
-    if not tip_key or not user or not lesson:
-        return
-
-    queued = await OnboardingTipService(session).queue_once(
-        user,
-        tip_key,
-        lesson_id=lesson.id,
-        step=step,
-    )
-    if not queued:
-        return
-
-    await session.commit()
-    message = getattr(respond, "__self__", None)
-    bot = getattr(message, "bot", None)
-    if bot:
-        schedule_onboarding_tip(bot, user.telegram_id, tip_key)
-
-
 async def _send_step(respond, user, lesson, step: str, lang: str, session):
     """Step kontentini format qilib yuboradi (V1 va V2 uchun)."""
     if is_block_quiz_step(step) and is_course_miniapp_supported(lesson):
@@ -1765,11 +1644,10 @@ async def _send_step(respond, user, lesson, step: str, lang: str, session):
     if text is not None:
         keyboard = _keyboard_for_step(lang, step, lesson)
         await respond(text, reply_markup=keyboard, parse_mode="HTML")
+        await _queue_course_onboarding_tip(session, user, lesson, step, lang)
     else:
         keyboard = _keyboard_for_step(lang, step, lesson)
         await respond(_static_course_missing_text(lang), reply_markup=keyboard, parse_mode="HTML")
-
-    await _queue_course_onboarding_tip(respond, session, user, lesson, step)
 
 
 async def _go_to_step(callback, session, step: str):

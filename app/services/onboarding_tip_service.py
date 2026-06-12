@@ -1,206 +1,213 @@
-import asyncio
-import logging
+from __future__ import annotations
+
+import json
 from datetime import datetime, timedelta, timezone
 
-from aiogram import Bot
 from sqlalchemy import select
 
 from app.bot.utils.i18n import t
 from app.db.models.onboarding_tip_event import OnboardingTipEvent
 from app.db.models.user import User
-from app.db.session import async_session_maker
 from app.repositories.course_progress_repo import CourseProgressRepository
-from app.repositories.user_repo import UserRepository
+from app.repositories.message_repo import MessageRepository
 
 
-logger = logging.getLogger(__name__)
+TIP_DELAY_SECONDS = 30
+TIP_KEY_COURSE_VOCAB = "course_vocab"
+TIP_KEY_COURSE_DIALOGUE = "course_dialogue"
+TIP_KEY_COURSE_GRAMMAR = "course_grammar"
+TIP_KEY_NORMAL_PHOTO = "normal_photo"
+TIP_KEY_NORMAL_VOICE = "normal_voice"
 
-ONBOARDING_TIP_DELAY_SECONDS = 30
-COURSE_VOCAB_TIP = "course_vocab_tip"
-COURSE_DIALOGUE_TIP = "course_dialogue_tip"
-COURSE_GRAMMAR_TIP = "course_grammar_tip"
-QA_PHOTO_TIP = "qa_photo_tip"
-QA_VOICE_TIP = "qa_voice_tip"
-
-COURSE_TIP_KEYS = {
-    COURSE_VOCAB_TIP,
-    COURSE_DIALOGUE_TIP,
-    COURSE_GRAMMAR_TIP,
+_COURSE_TIP_KEYS = {
+    TIP_KEY_COURSE_VOCAB,
+    TIP_KEY_COURSE_DIALOGUE,
+    TIP_KEY_COURSE_GRAMMAR,
 }
-
-TIP_TEXT_KEYS = {
-    COURSE_VOCAB_TIP: "onboarding_tip_course_vocab",
-    COURSE_DIALOGUE_TIP: "onboarding_tip_course_dialogue",
-    COURSE_GRAMMAR_TIP: "onboarding_tip_course_grammar",
-    QA_PHOTO_TIP: "onboarding_tip_qa_photo",
-    QA_VOICE_TIP: "onboarding_tip_qa_voice",
-}
-
-_TIP_TASKS: set[asyncio.Task] = set()
-
-
-def _track_tip_task(task: asyncio.Task) -> None:
-    _TIP_TASKS.add(task)
-
-    def _done(completed_task: asyncio.Task) -> None:
-        _TIP_TASKS.discard(completed_task)
-        if completed_task.cancelled():
-            return
-        error = completed_task.exception()
-        if error:
-            logger.warning("Onboarding tip task failed: %s", error, exc_info=True)
-
-    task.add_done_callback(_done)
-
-
-def _as_utc(value: datetime | None) -> datetime | None:
-    if value is None:
-        return None
-    if value.tzinfo is None:
-        return value.replace(tzinfo=timezone.utc)
-    return value.astimezone(timezone.utc)
 
 
 class OnboardingTipService:
     def __init__(self, session):
         self.session = session
-        self.user_repo = UserRepository(session)
 
-    async def _get_event(self, user_id: int, tip_key: str) -> OnboardingTipEvent | None:
-        result = await self.session.execute(
-            select(OnboardingTipEvent).where(
-                OnboardingTipEvent.user_id == user_id,
-                OnboardingTipEvent.tip_key == tip_key,
-            )
-        )
-        return result.scalar_one_or_none()
+    @staticmethod
+    def _now() -> datetime:
+        return datetime.now(timezone.utc)
+
+    @staticmethod
+    def _tip_text_key(tip_key: str) -> str:
+        return f"onboarding_tip_{tip_key}"
+
+    @staticmethod
+    def _parse_context(raw: str | None) -> dict:
+        if not raw:
+            return {}
+        try:
+            data = json.loads(raw)
+        except (TypeError, json.JSONDecodeError):
+            return {}
+        return data if isinstance(data, dict) else {}
 
     async def queue_once(
         self,
-        user,
-        tip_key: str,
         *,
-        lesson_id: int | None = None,
-        step: str | None = None,
-        delay_seconds: int = ONBOARDING_TIP_DELAY_SECONDS,
+        user: User,
+        tip_key: str,
+        lang: str,
+        delay_seconds: int = TIP_DELAY_SECONDS,
+        context: dict | None = None,
     ) -> bool:
-        if tip_key not in TIP_TEXT_KEYS or not user:
+        if not user:
             return False
 
-        now = datetime.now(timezone.utc)
-        scheduled_at = now + timedelta(seconds=delay_seconds)
-        event = await self._get_event(user.id, tip_key)
-        if event and event.sent_at:
+        result = await self.session.execute(
+            select(OnboardingTipEvent)
+            .where(OnboardingTipEvent.user_id == user.id)
+            .where(OnboardingTipEvent.tip_key == tip_key)
+        )
+        event = result.scalar_one_or_none()
+        if event and event.status == "sent":
             return False
+
+        now = self._now()
+        due_at = now + timedelta(seconds=delay_seconds)
+        payload = json.dumps(context or {}, ensure_ascii=False) if context else None
+        normalized_lang = lang if lang in {"uz", "ru", "tj"} else "ru"
 
         if event:
-            event.trigger_lesson_id = lesson_id
-            event.trigger_step = step
-            event.scheduled_at = scheduled_at
+            event.lang = normalized_lang
+            event.status = "queued"
+            event.context_json = payload
+            event.due_at = due_at
             event.updated_at = now
         else:
-            self.session.add(
-                OnboardingTipEvent(
-                    user_id=user.id,
-                    tip_key=tip_key,
-                    trigger_lesson_id=lesson_id,
-                    trigger_step=step,
-                    scheduled_at=scheduled_at,
-                    created_at=now,
-                    updated_at=now,
-                )
+            event = OnboardingTipEvent(
+                user_id=user.id,
+                tip_key=tip_key,
+                lang=normalized_lang,
+                status="queued",
+                context_json=payload,
+                due_at=due_at,
+                created_at=now,
+                updated_at=now,
             )
+            self.session.add(event)
+
         await self.session.flush()
         return True
 
-    async def _is_course_tip_context_valid(self, user, event: OnboardingTipEvent) -> bool:
-        if event.tip_key not in COURSE_TIP_KEYS:
-            return True
+    async def queue_course_tip(
+        self,
+        *,
+        user: User,
+        lesson,
+        step: str,
+        tip_key: str,
+        lang: str,
+    ) -> bool:
+        lesson_id = getattr(lesson, "id", None)
+        if not lesson_id:
+            return False
+        return await self.queue_once(
+            user=user,
+            tip_key=tip_key,
+            lang=lang,
+            context={
+                "type": "course",
+                "lesson_id": int(lesson_id),
+                "step": step,
+            },
+        )
+
+    async def queue_voice_tip_if_near_limit(self, *, user: User, lang: str) -> bool:
+        if not user or getattr(user, "payment_status", "none") == "approved":
+            return False
+        if getattr(user, "trial_voice_used_at", None) is not None:
+            return False
+
+        near_text_limit = False
+        if getattr(user, "status", "") == "trial":
+            question_limit = int(getattr(user, "question_limit", 0) or 0)
+            questions_used = int(getattr(user, "questions_used", 0) or 0)
+            near_text_limit = question_limit > 0 and question_limit - questions_used <= 1
+
+        image_count = await MessageRepository(self.session).count_user_messages_today(
+            user_id=user.id,
+            content_type="image",
+        )
+        near_image_limit = image_count >= 1
+
+        if not near_text_limit and not near_image_limit:
+            return False
+
+        return await self.queue_once(
+            user=user,
+            tip_key=TIP_KEY_NORMAL_VOICE,
+            lang=lang,
+            context={"type": "normal"},
+        )
+
+    async def _course_context_is_current(self, user: User, context: dict) -> bool:
         if getattr(user, "learning_mode", "qa") != "course":
+            return False
+
+        lesson_id = context.get("lesson_id")
+        step = str(context.get("step") or "").strip()
+        if not lesson_id or not step:
             return False
 
         progress = await CourseProgressRepository(self.session).get_by_user_id(user.id)
         if not progress:
             return False
-        if event.trigger_lesson_id and progress.current_lesson_id != event.trigger_lesson_id:
-            return False
-        if event.trigger_step and progress.current_step != event.trigger_step:
-            return False
-        if getattr(progress, "current_step", "") == "completed":
-            return False
-        return True
 
-    async def send_due_tip(self, bot: Bot, telegram_id: int, tip_key: str) -> bool:
-        user = await self.user_repo.get_by_telegram_id(telegram_id)
-        if not user:
-            return False
-
-        event = await self._get_event(user.id, tip_key)
-        if not event or event.sent_at:
-            return False
-
-        now = datetime.now(timezone.utc)
-        scheduled_at = _as_utc(event.scheduled_at)
-        if scheduled_at and scheduled_at > now:
-            return False
-        if not await self._is_course_tip_context_valid(user, event):
-            return False
-
-        text_key = TIP_TEXT_KEYS.get(tip_key)
-        if not text_key:
-            return False
-
-        lang = getattr(user, "language", None) or "ru"
-        await bot.send_message(
-            chat_id=telegram_id,
-            text=t(text_key, lang),
-            parse_mode="HTML",
+        return (
+            int(getattr(progress, "current_lesson_id", 0) or 0) == int(lesson_id)
+            and (getattr(progress, "current_step", "") or "") == step
+            and (getattr(progress, "waiting_for", "none") or "none") == "none"
         )
-        event.sent_at = now
-        event.updated_at = now
-        await self.session.commit()
+
+    async def _should_send(self, user: User, event: OnboardingTipEvent) -> bool:
+        if not user or getattr(user, "status", "") == "blocked":
+            return False
+        if event.tip_key in _COURSE_TIP_KEYS:
+            return await self._course_context_is_current(user, self._parse_context(event.context_json))
         return True
 
-    async def send_due_tips(self, bot: Bot, limit: int = 50) -> int:
-        now = datetime.now(timezone.utc)
+    async def send_due_tips(self, bot, limit: int = 50) -> int:
+        now = self._now()
         result = await self.session.execute(
             select(OnboardingTipEvent)
-            .where(OnboardingTipEvent.sent_at.is_(None))
-            .where(OnboardingTipEvent.scheduled_at <= now)
-            .order_by(OnboardingTipEvent.scheduled_at.asc())
+            .where(OnboardingTipEvent.status == "queued")
+            .where(OnboardingTipEvent.due_at <= now)
+            .order_by(OnboardingTipEvent.due_at.asc())
             .limit(limit)
         )
         events = list(result.scalars().all())
-        sent = 0
+        sent_count = 0
+
         for event in events:
             user = await self.session.get(User, event.user_id)
-            if not user:
+            event.updated_at = now
+            if not await self._should_send(user, event):
+                event.status = "skipped"
                 continue
-            if await self.send_due_tip(bot, user.telegram_id, event.tip_key):
-                sent += 1
-        return sent
 
+            lang = event.lang or getattr(user, "language", None) or "ru"
+            try:
+                await bot.send_message(
+                    chat_id=user.telegram_id,
+                    text=t(self._tip_text_key(event.tip_key), lang),
+                    parse_mode="HTML",
+                )
+            except Exception:
+                event.status = "skipped"
+                continue
 
-async def _deliver_tip_after_delay(
-    bot: Bot,
-    telegram_id: int,
-    tip_key: str,
-    delay_seconds: int,
-) -> None:
-    await asyncio.sleep(delay_seconds)
-    async with async_session_maker() as session:
-        await OnboardingTipService(session).send_due_tip(bot, telegram_id, tip_key)
+            event.status = "sent"
+            event.sent_at = now
+            sent_count += 1
 
+        if events:
+            await self.session.commit()
 
-def schedule_onboarding_tip(
-    bot: Bot,
-    telegram_id: int,
-    tip_key: str,
-    *,
-    delay_seconds: int = ONBOARDING_TIP_DELAY_SECONDS,
-) -> None:
-    _track_tip_task(
-        asyncio.create_task(
-            _deliver_tip_after_delay(bot, telegram_id, tip_key, delay_seconds)
-        )
-    )
+        return sent_count

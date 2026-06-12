@@ -40,6 +40,9 @@ class AccessService:
     def _is_paid_user(self, user) -> bool:
         return user.payment_status == "approved"
 
+    def is_paid_user(self, user) -> bool:
+        return bool(user) and self._is_paid_user(user)
+
     def trial_voice_used_today(self, user) -> bool:
         used_at = getattr(user, "trial_voice_used_at", None)
         if not used_at:
@@ -47,13 +50,11 @@ class AccessService:
         return self._as_utc(used_at).date() == datetime.now(timezone.utc).date()
 
     def can_use_trial_voice(self, user) -> bool:
-        if not user:
-            return False
-        if self._is_paid_user(user):
-            return False
-        if getattr(user, "status", "") not in {"trial", "active"}:
-            return False
-        return not self.trial_voice_used_today(user)
+        return (
+            user is not None
+            and getattr(user, "status", "") == "trial"
+            and not self.trial_voice_used_today(user)
+        )
 
     async def mark_trial_voice_used(self, user) -> None:
         user.trial_voice_used_at = datetime.now(timezone.utc)
@@ -213,7 +214,12 @@ class AccessService:
 
         return changed, ejected_course_telegram_ids
 
-    async def can_use_text_ai(self, telegram_id: int) -> Tuple[bool, str]:
+    async def can_use_text_ai(
+        self,
+        telegram_id: int,
+        *,
+        enforce_daily_limit: bool = True,
+    ) -> Tuple[bool, str]:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return False, "access_start_first"
@@ -236,6 +242,8 @@ class AccessService:
                     if uses_budget and not downgraded:
                         return can_use, message_key
                     if not uses_budget:
+                        if not enforce_daily_limit:
+                            return True, ""
                         return await self._can_use_daily_text_limit(user)
                 else:
                     return await self._can_use_ai_budget(telegram_id)
@@ -245,6 +253,8 @@ class AccessService:
             # falls through to trial logic below
 
         if user.status == "trial":
+            if not enforce_daily_limit:
+                return True, ""
             return await self._can_use_daily_text_limit(user)
 
         return False, "access_start_first"
@@ -285,7 +295,15 @@ class AccessService:
 
         return False, "access_start_first"
 
-    async def consume_one_question(self, telegram_id: int) -> None:
+    async def consume_one_question(
+        self,
+        telegram_id: int,
+        *,
+        consume_daily_limit: bool = True,
+    ) -> None:
+        if not consume_daily_limit:
+            return
+
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return
