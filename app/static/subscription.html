@@ -114,6 +114,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .quote-label{position:relative;color:var(--mint);font-size:12px;font-weight:850}
 .quote-amount{position:relative;margin-top:8px;font-size:36px;line-height:1;font-weight:950;letter-spacing:-.02em}
 .quote-amount small{font-size:15px;color:#cdeee0;font-weight:850;margin-left:6px}
+.quote-old{display:none;position:relative;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.25;font-weight:850;text-decoration:line-through}
+.quote-old.show{display:block}
 .meta{display:grid;gap:8px;margin-top:14px}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.04);padding:11px 13px}
 .row span{color:var(--muted);font-size:12px;font-weight:800}
@@ -121,7 +123,10 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .paybox{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:16px}
 .paybox h4{font-size:15px;margin-bottom:8px;font-weight:900}
 .paybox p,.paybox pre{color:var(--muted);font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.detail-hint{margin-bottom:11px;color:#b9dccf;font-size:12px;line-height:1.45}
+.detail-hint{display:block;width:100%;margin-bottom:11px;color:#b9dccf;font-size:12px;line-height:1.45;text-align:left}
+.detail-hint-text{display:block}
+.detail-hint.collapsed .detail-hint-text{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.detail-hint-more{display:block;margin-top:4px;color:var(--mint);font-size:11px;font-weight:900}
 .detail-list{display:grid;gap:9px}
 .detail-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.045);padding:11px 12px;min-height:48px}
 .detail-row span{min-width:0;color:var(--text);font-size:13px;line-height:1.38;font-weight:750;word-break:break-word}
@@ -261,6 +266,7 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
       <div class="quote-card">
         <div class="quote-label" id="amountLabel"></div>
         <div class="quote-amount"><span id="amountValue">...</span><small id="amountCurrency"></small></div>
+        <div class="quote-old" id="amountOld"></div>
       </div>
       <div class="meta" id="summaryRows"></div>
       <div class="paybox" id="paymentBox"></div>
@@ -330,6 +336,7 @@ const INIT_DATA=tg?.initData||"";
 const PLAN_ORDER=["10_days","1_month"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const COUNTRY_ORDER=["tj","uz","ru","other"];
+const CARD_BANK_NAME="Dushanbe City";
 const DEFAULT_SUPPORT_URL="https://t.me/akbarchina";
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
 
@@ -393,9 +400,15 @@ const I18N={
     payTitle:"To'lovni yakunlash",
     payText:"Summani to'lang va to'lov screenshotini yuklang.",
     amountLabel:"To'lanadigan summa",
-    rows:{plan:"Tarif",method:"Usul",country:"Karta davlati",base:"Botdagi narx",rate:"Kurs"},
+    rows:{plan:"Tarif",method:"Usul",bank:"TJK bank nomi",rate:"Kurs"},
     detailsTitle:"Karta rekvizitlari",
     detailsHint:"To'lovni shu rekvizitlarga qiling. Karta raqamini copy qilish uchun yonidagi tugmani bosing.",
+    cardHints:{
+      tj:"Tojikistonning hamma kartalari orqali to'lov qilishingiz mumkin. Agar kartangiz DC City bo'lsa, pul o'tkazish bo'limiga kirib, 'po nomeru karta' variantini tanlab to'lov qiling. Agar kartangiz boshqa bankniki bo'lsa, bank ilovasida 'DC City' deb qidiring yoki 'Korti Milli Tojikiston' variantini tanlab to'lov qiling.",
+      foreign:"Karta Tojikiston VISA kartasi. Agar bankingizda Tojikiston bank kartasiga pul jo'natish imkoni bo'lsa, o'sha variantdan foydalaning. Bo'lmasa, 'Mejdunarodniy VISA' orqali ham to'lov qilishingiz mumkin."
+    },
+    showMore:"Ko'proq",
+    showLess:"Yopish",
     copyValue:"Copy",
     copiedValue:"Copy qilindi.",
     noDetails:"Karta rekviziti hali kiritilmagan. Keyinroq qayta urinib ko'ring.",
@@ -485,9 +498,15 @@ const I18N={
     payTitle:"Завершение оплаты",
     payText:"Оплатите сумму и загрузите screenshot оплаты.",
     amountLabel:"Сумма к оплате",
-    rows:{plan:"Тариф",method:"Способ",country:"Страна карты",base:"Цена в боте",rate:"Курс"},
+    rows:{plan:"Тариф",method:"Способ",bank:"Банк TJK",rate:"Курс"},
     detailsTitle:"Реквизиты карты",
     detailsHint:"Оплатите по этим реквизитам. Чтобы скопировать номер карты, нажмите кнопку рядом.",
+    cardHints:{
+      tj:"Можно оплатить с любой карты Таджикистана. Если карта DC City, откройте перевод и выберите перевод по номеру карты. Если карта другого банка, в приложении банка найдите DC City или вариант «Корти миллии Точикистон».",
+      foreign:"Это таджикская VISA-карта. Если в вашем банке есть перевод на карту банка Таджикистана, используйте его. Если нет, можно оплатить через «Международный VISA»."
+    },
+    showMore:"Показать полностью",
+    showLess:"Скрыть",
     copyValue:"Copy",
     copiedValue:"Скопировано.",
     noDetails:"Реквизиты карты ещё не добавлены. Попробуйте позже.",
@@ -553,7 +572,7 @@ const I18N={
     copyFailed:"Link-ро copy кардан нашуд.",
     close:"Пӯшидан",
     supportTitle:"Ёрдам",
-    supportText:"Агар бо пардохт ё mini app мушкил шавад, ба admin кӯтоҳ нависед ва screenshot фиристед.",
+    supportText:"Агар пардохт ё mini app кор накунад, ба admin кӯтоҳ нависед ва screenshot фиристед.",
     supportButton:"Ба admin навиштан",
     plansTitle:"Тариф",
     methodsTitle:"Усули пардохт",
@@ -566,20 +585,26 @@ const I18N={
       wechat:["WeChat Pay","Пардохти юан бо QR"]
     },
     methodHint:"",
-    countryTitle:"Корт аз кадом давлат аст?",
-    countryText:"Давлати кортро интихоб кунед, маблағ бо ҳамон валюта нишон дода мешавад.",
+    countryTitle:"Кортатон аз кадом давлат аст?",
+    countryText:"Давлати кортро интихоб кунед, маблағ бо ҳамон валюта мебарояд.",
     countries:{
       tj:["Корти Тоҷикистон","Пардохт бо TJS"],
       uz:["Корти Ӯзбекистон","Пардохт бо UZS"],
       ru:["Корти Русия","Пардохт бо RUB"],
       other:["Корти дигар давлат","Пардохт бо USD"]
     },
-    payTitle:"Пардохтро анҷом диҳед",
+    payTitle:"Пардохтро тамом кунед",
     payText:"Маблағро пардохт кунед ва screenshot-и пардохтро бор кунед.",
     amountLabel:"Маблағи пардохт",
-    rows:{plan:"Тариф",method:"Усул",country:"Давлати корт",base:"Нархи bot",rate:"Курс"},
-    detailsTitle:"Реквизитҳои корт",
-    detailsHint:"Пардохтро ба ҳамин реквизитҳо кунед. Барои copy кардани рақами корт тугмаи паҳлӯяшро пахш кунед.",
+    rows:{plan:"Тариф",method:"Усул",bank:"Номи банк",rate:"Курс"},
+    detailsTitle:"Реквизити корт",
+    detailsHint:"Ба ҳамин реквизит пардохт кунед. Барои copy кардани рақами корт тугмаи паҳлӯяшро пахш кунед.",
+    cardHints:{
+      tj:"Бо ҳама кортҳои Тоҷикистон пардохт карда метавонед. Агар кортатон DC City бошад, ба бахши перевод дароед ва варианти 'по номеру карты'-ро интихоб кунед. Агар кортатон аз дигар банк бошад, дар app-и банк 'DC City' ё 'Корти миллии Тоҷикистон'-ро ёфта пардохт кунед.",
+      foreign:"Ин реквизит корти VISA-и Тоҷикистон аст. Агар дар app-и банки шумо фиристодани пул ба корти Тоҷикистон бошад, ҳамонро интихоб кунед. Агар набошад, аз варианти 'Международный VISA' ҳам пардохт карда метавонед."
+    },
+    showMore:"Пурра дидан",
+    showLess:"Кам кардан",
     copyValue:"Copy",
     copiedValue:"Copy шуд.",
     noDetails:"Реквизити корт ҳоло ворид нашудааст. Баъдтар боз кӯшиш кунед.",
@@ -638,6 +663,7 @@ const state={
   pending:false,
   pendingPayment:null,
   qrActionsOpen:false,
+  detailHintOpen:false,
   loadError:false
 };
 
@@ -756,13 +782,14 @@ function mockOverview(){
 function mockQuote(){
   const info=priceInfo();
   if(!info)return null;
-  const rates={
-    tj:{amount:info.final_amount,currency:"TJS",rate:"1 TJS = 1 TJS"},
-    uz:{amount:Math.round(info.final_amount*1300/1000)*1000,currency:"UZS",rate:"1 TJS = 1 298.13 UZS"},
-    ru:{amount:(info.final_amount*7.68).toFixed(2),currency:"RUB",rate:"1 TJS = 7.68 RUB"},
-    other:{amount:(info.final_amount/9.2464).toFixed(2),currency:"USD",rate:"1 TJS = 0.1082 USD"}
-  };
-  const card=rates[state.country]||rates.tj;
+  const cardAmount=tjsAmount=>({
+    tj:{amount:tjsAmount,currency:"TJS",rate:"1 TJS = 1 TJS"},
+    uz:{amount:Math.round(tjsAmount*1300/1000)*1000,currency:"UZS",rate:"1 TJS = 1 298.13 UZS"},
+    ru:{amount:(tjsAmount*7.68).toFixed(2),currency:"RUB",rate:"1 TJS = 7.68 RUB"},
+    other:{amount:(tjsAmount/9.2464).toFixed(2),currency:"USD",rate:"1 TJS = 0.1082 USD"}
+  }[state.country]||{amount:tjsAmount,currency:"TJS",rate:"1 TJS = 1 TJS"});
+  const card=cardAmount(info.final_amount);
+  const baseCard=cardAmount(info.base_amount);
   return {
     plan_type:state.plan,
     payment_method:state.method,
@@ -773,6 +800,8 @@ function mockQuote(){
     final_currency:info.currency,
     pay_amount:state.method==="visa"?card.amount:info.final_amount,
     pay_currency:state.method==="visa"?card.currency:info.currency,
+    pay_base_amount:state.method==="visa"?baseCard.amount:info.base_amount,
+    pay_base_currency:state.method==="visa"?baseCard.currency:info.currency,
     exchange_rate:state.method==="visa"?card.rate:"",
     discount_applied:info.discount_applied,
     discount_percent:info.discount_percent,
@@ -838,6 +867,7 @@ async function loadQuote(){
   setBusy(true);
   state.quoteError="";
   state.qrActionsOpen=false;
+  state.detailHintOpen=false;
   try{
     if(!hasCurrentPrice())throw new Error(tr().offerExpired);
     if(state.preview){
@@ -1025,6 +1055,8 @@ function renderPay(text){
   if(!quote){
     $("#amountValue").textContent="...";
     $("#amountCurrency").textContent="";
+    $("#amountOld").textContent="";
+    $("#amountOld").classList.remove("show");
     $("#summaryRows").innerHTML="";
     $("#paymentBox").innerHTML=`<h4>${text.detailsTitle}</h4><div class="qr empty">${state.quoteError||text.quoteError}</div>`;
     $("#uploadTitle").textContent=state.screenshotName?text.uploaded.replace("{name}",state.screenshotName):text.uploadTitle;
@@ -1034,15 +1066,19 @@ function renderPay(text){
   }
   $("#amountValue").textContent=money(quote.pay_amount);
   $("#amountCurrency").textContent=quote.pay_currency||"";
+  const oldAmount=quote.pay_base_amount??quote.base_amount;
+  const oldCurrency=quote.pay_base_currency||quote.base_currency||quote.pay_currency||"";
+  const hasOldAmount=Boolean(quote.discount_applied&&oldAmount&&(`${oldAmount}`!==`${quote.pay_amount}`||oldCurrency!==quote.pay_currency));
+  $("#amountOld").textContent=hasOldAmount?`${money(oldAmount)} ${oldCurrency}`:"";
+  $("#amountOld").classList.toggle("show",hasOldAmount);
   const planText=state.plan==="10_days"?text.planLabels.ten:text.planLabels.month;
   const methodText=text.methods[state.method][0];
   const rows=[
     [text.rows.plan,planText],
-    [text.rows.method,methodText],
-    [text.rows.base,`${money(quote.final_amount)} ${quote.final_currency}`]
+    [text.rows.method,methodText]
   ];
   if(state.method==="visa"){
-    rows.splice(2,0,[text.rows.country,text.countries[state.country][0]]);
+    rows.push([text.rows.bank,CARD_BANK_NAME]);
     if(state.country!=="tj"&&quote.exchange_rate)rows.push([text.rows.rate,quote.exchange_rate]);
   }
   $("#summaryRows").innerHTML=rows.map(row=>`<div class="row"><span>${row[0]}</span><strong>${row[1]}</strong></div>`).join("");
@@ -1083,13 +1119,24 @@ function paymentDetailRows(details){
       return {line,copyValue:copyValue.length>=8?copyValue:""};
     });
 }
+function cardInstructionText(text){
+  const hints=text.cardHints||{};
+  if(state.country==="tj")return hints.tj||text.detailsHint;
+  return hints.foreign||text.detailsHint;
+}
 function renderPaymentDetails(details,text){
   const rows=paymentDetailRows(details);
   if(!rows.length){
     return `<h4>${text.detailsTitle}</h4><div class="detail-empty">${text.noDetails}</div>`;
   }
+  const instruction=cardInstructionText(text);
+  const hintClass=state.detailHintOpen?"":"collapsed";
+  const hintToggleText=state.detailHintOpen?(text.showLess||"Less"):(text.showMore||"More");
   return `<h4>${text.detailsTitle}</h4>
-    <p class="detail-hint">${text.detailsHint}</p>
+    <button class="detail-hint ${hintClass}" type="button" data-detail-hint-toggle>
+      <span class="detail-hint-text">${escapeHtml(instruction)}</span>
+      <span class="detail-hint-more">${escapeHtml(hintToggleText)}</span>
+    </button>
     <div class="detail-list">
       ${rows.map(row=>`<div class="detail-row ${row.copyValue?"copyable":""}">
         <span>${escapeHtml(row.line)}</span>
@@ -1264,24 +1311,27 @@ document.addEventListener("click",event=>{
   if(qrToggle){state.qrActionsOpen=!state.qrActionsOpen;render();return}
   const qrDownload=event.target.closest("[data-download-qr]");
   if(qrDownload){downloadQrImage();return}
+  const detailHint=event.target.closest("[data-detail-hint-toggle]");
+  if(detailHint){state.detailHintOpen=!state.detailHintOpen;render();return}
   const copyBtn=event.target.closest("[data-copy-detail]");
   if(copyBtn){copyText(copyBtn.dataset.copyValue,tr().copiedValue,tr().copyFailed);return}
   const langBtn=event.target.closest("[data-lang]");
   if(langBtn){setLang(langBtn.dataset.lang);return}
   const planBtn=event.target.closest("[data-plan]");
-  if(planBtn){state.plan=planBtn.dataset.plan;state.quote=null;state.qrActionsOpen=false;render();return}
+  if(planBtn){state.plan=planBtn.dataset.plan;state.quote=null;state.qrActionsOpen=false;state.detailHintOpen=false;render();return}
   const methodBtn=event.target.closest("[data-method]");
   if(methodBtn){
     state.method=methodBtn.dataset.method;
     ensureSelection();
     state.quote=null;
     state.qrActionsOpen=false;
+    state.detailHintOpen=false;
     state.step=0;
     render();
     return;
   }
   const countryBtn=event.target.closest("[data-country]");
-  if(countryBtn){state.country=countryBtn.dataset.country;state.quote=null;state.qrActionsOpen=false;render();return}
+  if(countryBtn){state.country=countryBtn.dataset.country;state.quote=null;state.qrActionsOpen=false;state.detailHintOpen=false;render();return}
 });
 $("#nextBtn").addEventListener("click",()=>{
   const screen=currentScreen();

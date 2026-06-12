@@ -207,6 +207,27 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-13 — Subscription Mini App card payment display cleanup
+
+Changed:
+- Card checkout payment summary no longer shows the card-country row or duplicate bot-price row.
+- Card checkout now shows `Dushanbe City` as the TJK bank name and keeps the exchange-rate row only for non-TJ cards.
+- Discounted card quotes now include the original local payable amount so the Mini App can show it as a small crossed-out amount above/beside the discounted payable amount.
+- Card payment instructions are collapsed by default and expand on tap; Tajik wording was simplified and the `Intiqol` mention was removed.
+
+Why:
+- Users saw duplicate pricing and overly long payment instructions on the final card payment screen.
+
+Files touched:
+- `app/static/subscription.html`
+- `app/services/subscription_miniapp_service.py`
+
+Risk:
+- Payment creation still uses the existing final amount; this change mainly affects display and quote payload shape.
+
+Follow-up:
+- Smoke test real Telegram Mini App card checkout with TJ and non-TJ cards, including a discount mode.
+
 ### 2026-06-12 — Course text AI separated from QA daily text limit
 
 Changed:
