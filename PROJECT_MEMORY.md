@@ -207,6 +207,33 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-13 — Broadcast and ad campaign CTA buttons
+
+Changed:
+- Admin broadcast and ad campaign creation now ask whether to add one inline button under the outgoing message.
+- Ready button actions include subscription Mini App, partner, course mode, reminder setup, help, admin contact, profile, plus a custom external URL with optional custom button text.
+- Ad campaigns store the optional button as `ad_campaigns.button_config` JSON text, with migration/bootstrap support for existing databases.
+
+Why:
+- Marketing messages need direct CTA buttons without manually building separate bot flows for each campaign.
+
+Files touched:
+- `app/bot/keyboards/promo_button.py`
+- `app/bot/handlers/admin_broadcast.py`
+- `app/bot/handlers/admin_ads.py`
+- `app/bot/handlers/menu.py`
+- `app/db/models/ad_campaign.py`
+- `app/repositories/ad_campaign_repo.py`
+- `app/services/ad_campaign_service.py`
+- `app/db/session.py`
+- `alembic/versions/0040_add_ad_campaign_button_config.py`
+
+Risk:
+- Button action callbacks send a new message and leave the original broadcast/ad message intact; Telegram smoke testing is needed for each CTA type.
+
+Follow-up:
+- Run migration/deploy, then test broadcast and ad campaign with no button, subscription, profile, reminder, admin contact, and external URL buttons.
+
 ### 2026-06-13 — AI level ceiling hardened
 
 Changed:

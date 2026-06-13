@@ -12,6 +12,16 @@ from app.config import settings
 from app.repositories.user_repo import UserRepository
 from app.bot.fsm.admin_broadcast import BroadcastStates
 from app.bot.keyboards.admin_broadcast import broadcast_panel_keyboard, broadcast_confirm_keyboard
+from app.bot.keyboards.promo_button import (
+    build_promo_button_markup,
+    decode_promo_button_config,
+    normalize_promo_button_config,
+    normalize_promo_button_url,
+    promo_button_choice_keyboard,
+    promo_button_summary,
+    promo_button_text_keyboard,
+    promo_button_url_keyboard,
+)
 from app.services.broadcast_translation_service import (
     BroadcastTranslationService,
     SUPPORTED_BROADCAST_LANGUAGES,
@@ -20,6 +30,7 @@ from app.services.broadcast_translation_service import (
     localized_broadcast_text_for_language,
     normalize_broadcast_languages,
 )
+from app.services.support_contact_service import get_admin_contact_url
 from app.bot.utils.workflow_message import (
     delete_message_safely,
     edit_callback_workflow_message,
@@ -110,6 +121,9 @@ def _initial_broadcast_state() -> dict:
         "activity_filter": None,
         "target_user_id": None,
         "target_label": None,
+        "promo_button_config": None,
+        "pending_button_action": None,
+        "pending_button_url": None,
         "bc_section": "main",
     }
 
@@ -166,13 +180,14 @@ async def _send_broadcast_payload(
     text: str,
     content_type: str,
     media_file_id: str | None,
+    reply_markup=None,
 ) -> None:
     if content_type == "photo" and media_file_id:
-        await bot.send_photo(chat_id, media_file_id, caption=text or None)
+        await bot.send_photo(chat_id, media_file_id, caption=text or None, reply_markup=reply_markup)
     elif content_type == "video" and media_file_id:
-        await bot.send_video(chat_id, media_file_id, caption=text or None)
+        await bot.send_video(chat_id, media_file_id, caption=text or None, reply_markup=reply_markup)
     else:
-        await bot.send_message(chat_id, text)
+        await bot.send_message(chat_id, text, reply_markup=reply_markup)
 
 
 async def _edit_callback_panel(callback: CallbackQuery, state: FSMContext, text: str, reply_markup=None) -> None:
@@ -194,6 +209,70 @@ async def _edit_stored_panel(message: Message, state: FSMContext, text: str, rep
         chat_id_key=_PANEL_CHAT_ID,
         message_id_key=_PANEL_MSG_ID,
         reply_markup=reply_markup,
+    )
+
+
+def _broadcast_button_prompt_text() -> str:
+    return (
+        "🔘 <b>Xabar ostiga knopka qo'shasizmi?</b>\n\n"
+        "Tayyor bot funksiyasini tanlang, tashqi link qo'shing yoki knopkasiz davom eting."
+    )
+
+
+def _broadcast_button_text_prompt(data: dict) -> str:
+    summary = escape(promo_button_summary({
+        "action": data.get("pending_button_action"),
+        "url": data.get("pending_button_url"),
+    }))
+    return (
+        "✏️ <b>Knopka nomi</b>\n\n"
+        f"Tanlangan: <b>{summary}</b>\n\n"
+        "Nom yozing yoki default nom bilan davom eting."
+    )
+
+
+async def _broadcast_confirm_text(session, data: dict) -> str:
+    users = await _get_target_users(session, data)
+    count = len(users)
+
+    content_type = data.get("broadcast_content_type", "text")
+    text = data.get("broadcast_text", "")
+    media_label = {"text": "Matn", "photo": "Foto", "video": "Video"}[content_type]
+    preview_source = text if text else f"[{media_label}]"
+    preview = escape(preview_source[:200] + ("..." if len(preview_source) > 200 else ""))
+    selected_languages = broadcast_languages_or_all(_selected_languages(data))
+    language_preview = ", ".join(_LANG_LABELS[item] for item in selected_languages)
+    button_summary = escape(promo_button_summary(data.get("promo_button_config")))
+    return (
+        "📢 <b>Broadcast tasdiqlash</b>\n\n"
+        f"Tur: <b>{media_label}</b>\n"
+        f"<blockquote>{preview}</blockquote>\n\n"
+        f"🔘 Knopka: <b>{button_summary}</b>\n"
+        f"👥 Target: <b>{escape(data.get('target_label') or f'{count} ta user')}</b>\n"
+        f"🌐 Tillarga moslash: <b>{language_preview}</b>\n"
+        "Source matn tojikcha deb olinadi; UZ/RU kerak bo'lsa AI tarjima qiladi.\n"
+        "⚠️ Xabar faqat tanlangan user yoki filter segmentiga yuboriladi.\n\n"
+        "Tasdiqlaysizmi?"
+    )
+
+
+async def _show_broadcast_confirm_from_message(message: Message, state: FSMContext, session) -> None:
+    data = await state.get_data()
+    await _edit_stored_panel(
+        message,
+        state,
+        await _broadcast_confirm_text(session, data),
+        broadcast_confirm_keyboard(),
+    )
+
+
+async def _show_broadcast_confirm_from_callback(callback: CallbackQuery, state: FSMContext, session) -> None:
+    data = await state.get_data()
+    await _edit_callback_panel(
+        callback,
+        state,
+        await _broadcast_confirm_text(session, data),
+        broadcast_confirm_keyboard(),
     )
 
 
@@ -487,51 +566,168 @@ async def bc_receive_text(message: Message, state: FSMContext, session):
         broadcast_text=text,
         broadcast_content_type=content_type,
         broadcast_media_file_id=media_file_id,
+        promo_button_config=None,
+        pending_button_action=None,
+        pending_button_url=None,
     )
+    await delete_message_safely(message)
+    await _edit_stored_panel(
+        message,
+        state,
+        _broadcast_button_prompt_text(),
+        promo_button_choice_keyboard("bc"),
+    )
+
+
+# ── Optional button ──────────────────────────────────────────────────────────
+
+@router.callback_query(F.data == "bc:button:none")
+async def bc_button_none(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    await state.set_state(None)
+    await state.update_data(
+        promo_button_config=None,
+        pending_button_action=None,
+        pending_button_url=None,
+    )
+    await callback.answer()
+    await _show_broadcast_confirm_from_callback(callback, state, session)
+
+
+@router.callback_query(F.data.startswith("bc:button:"))
+async def bc_button_action(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    action = callback.data.split(":")[2]
+    if action == "none":
+        await callback.answer()
+        return
+    if action == "url":
+        await state.set_state(BroadcastStates.waiting_for_button_url)
+        await state.update_data(pending_button_action="url", pending_button_url=None)
+        await callback.answer()
+        await _edit_callback_panel(
+            callback,
+            state,
+            "🔗 Tashqi linkni yuboring.\n\nMisol: <code>https://example.com</code> yoki <code>@username</code>",
+            promo_button_url_keyboard("bc"),
+        )
+        return
+
+    config = normalize_promo_button_config(action)
+    if not config:
+        await callback.answer("Noto'g'ri button turi", show_alert=True)
+        return
+
+    await state.set_state(BroadcastStates.waiting_for_button_text)
+    await state.update_data(pending_button_action=action, pending_button_url=None)
+    data = await state.get_data()
+    await callback.answer()
+    await _edit_callback_panel(
+        callback,
+        state,
+        _broadcast_button_text_prompt(data),
+        promo_button_text_keyboard("bc"),
+    )
+
+
+@router.message(StateFilter(BroadcastStates.waiting_for_button_url))
+async def bc_button_url_message(message: Message, state: FSMContext):
+    if not _is_admin(message.from_user.id):
+        return
+
+    url = normalize_promo_button_url(message.text)
+    await delete_message_safely(message)
+    if not url:
+        await _edit_stored_panel(
+            message,
+            state,
+            "❌ Link noto'g'ri. <code>https://...</code>, <code>t.me/...</code> yoki <code>@username</code> yuboring.",
+            promo_button_url_keyboard("bc"),
+        )
+        return
+
+    await state.set_state(BroadcastStates.waiting_for_button_text)
+    await state.update_data(pending_button_action="url", pending_button_url=url)
+    data = await state.get_data()
+    await _edit_stored_panel(
+        message,
+        state,
+        _broadcast_button_text_prompt(data),
+        promo_button_text_keyboard("bc"),
+    )
+
+
+@router.callback_query(F.data == "bc:button_text_default")
+async def bc_button_text_default(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
 
     data = await state.get_data()
-    users = await _get_target_users(session, data)
-    count = len(users)
-
-    media_label = {"text": "Matn", "photo": "Foto", "video": "Video"}[content_type]
-    preview_source = text if text else f"[{media_label}]"
-    preview = escape(preview_source[:200] + ("..." if len(preview_source) > 200 else ""))
-    selected_languages = broadcast_languages_or_all(_selected_languages(data))
-    language_preview = ", ".join(_LANG_LABELS[item] for item in selected_languages)
-    confirm_text = (
-        "📢 <b>Broadcast tasdiqlash</b>\n\n"
-        f"Tur: <b>{media_label}</b>\n"
-        f"<blockquote>{preview}</blockquote>\n\n"
-        f"👥 Target: <b>{escape(data.get('target_label') or f'{count} ta user')}</b>\n"
-        f"🌐 Tillarga moslash: <b>{language_preview}</b>\n"
-        "Source matn tojikcha deb olinadi; UZ/RU kerak bo'lsa AI tarjima qiladi.\n"
-        "⚠️ Xabar faqat tanlangan user yoki filter segmentiga yuboriladi.\n\n"
-        "Tasdiqlaysizmi?"
+    config = normalize_promo_button_config(
+        data.get("pending_button_action"),
+        url=data.get("pending_button_url"),
     )
+    if not config:
+        await callback.answer("Button ma'lumoti topilmadi", show_alert=True)
+        return
 
-    panel_msg_id = data.get("panel_msg_id")
-    panel_chat_id = data.get("panel_chat_id")
+    await state.set_state(None)
+    await state.update_data(
+        promo_button_config=config,
+        pending_button_action=None,
+        pending_button_url=None,
+    )
+    await callback.answer()
+    await _show_broadcast_confirm_from_callback(callback, state, session)
+
+
+@router.message(StateFilter(BroadcastStates.waiting_for_button_text))
+async def bc_button_text_message(message: Message, state: FSMContext, session):
+    if not _is_admin(message.from_user.id):
+        return
+
+    button_text = (message.text or "").strip()
     await delete_message_safely(message)
+    if len(button_text) < 1 or len(button_text) > 64:
+        data = await state.get_data()
+        await _edit_stored_panel(
+            message,
+            state,
+            _broadcast_button_text_prompt(data) + "\n\n⚠️ Nom 1-64 belgi bo'lsin.",
+            promo_button_text_keyboard("bc"),
+        )
+        return
 
-    if panel_msg_id and panel_chat_id:
-        try:
-            await message.bot.edit_message_text(
-                text=confirm_text,
-                chat_id=panel_chat_id,
-                message_id=panel_msg_id,
-                reply_markup=broadcast_confirm_keyboard(),
-                parse_mode="HTML",
-            )
-            return
-        except Exception:
-            pass
-
-    sent = await message.answer(
-        confirm_text,
-        reply_markup=broadcast_confirm_keyboard(),
-        parse_mode="HTML",
+    data = await state.get_data()
+    config = normalize_promo_button_config(
+        data.get("pending_button_action"),
+        text=button_text,
+        url=data.get("pending_button_url"),
     )
-    await state.update_data(**{_PANEL_MSG_ID: sent.message_id, _PANEL_CHAT_ID: sent.chat.id})
+    if not config:
+        await _edit_stored_panel(
+            message,
+            state,
+            "❌ Button ma'lumoti noto'g'ri. Qaytadan tanlang.",
+            promo_button_choice_keyboard("bc"),
+        )
+        await state.set_state(None)
+        return
+
+    await state.set_state(None)
+    await state.update_data(
+        promo_button_config=config,
+        pending_button_action=None,
+        pending_button_url=None,
+    )
+    await _show_broadcast_confirm_from_message(message, state, session)
 
 
 # ── Confirm / Cancel ─────────────────────────────────────────────────────────
@@ -546,6 +742,7 @@ async def bc_test(callback: CallbackQuery, state: FSMContext, session):
     broadcast_text = data.get("broadcast_text", "")
     content_type = data.get("broadcast_content_type", "text")
     media_file_id = data.get("broadcast_media_file_id")
+    button_config = data.get("promo_button_config")
     if not broadcast_text and not media_file_id:
         await callback.answer("Xabar topilmadi", show_alert=True)
         return
@@ -569,6 +766,12 @@ async def bc_test(callback: CallbackQuery, state: FSMContext, session):
                 text=localized_broadcast_text_for_language(localized_text or broadcast_text, lang),
                 content_type=content_type,
                 media_file_id=media_file_id,
+                reply_markup=await build_promo_button_markup(
+                    session,
+                    button_config,
+                    lang=lang,
+                    source="broadcast_test",
+                ),
             )
             await asyncio.sleep(0.05)
         await callback.answer("Test yuborildi", show_alert=True)
@@ -588,6 +791,7 @@ async def bc_confirm(callback: CallbackQuery, state: FSMContext, session):
     broadcast_text = data.get("broadcast_text", "")
     content_type = data.get("broadcast_content_type", "text")
     media_file_id = data.get("broadcast_media_file_id")
+    button_config = data.get("promo_button_config")
     await state.clear()
 
     if not broadcast_text and not media_file_id:
@@ -609,6 +813,9 @@ async def bc_confirm(callback: CallbackQuery, state: FSMContext, session):
     sent_count = 0
     failed_count = 0
     last_update = time.monotonic()
+    button_contact_url = None
+    if (decode_promo_button_config(button_config) or {}).get("action") == "contact":
+        button_contact_url = await get_admin_contact_url(session)
 
     for i, user in enumerate(users, start=1):
         try:
@@ -620,6 +827,13 @@ async def bc_confirm(callback: CallbackQuery, state: FSMContext, session):
                     text=text,
                     content_type=content_type,
                     media_file_id=media_file_id,
+                    reply_markup=await build_promo_button_markup(
+                        session,
+                        button_config,
+                        lang=user.language,
+                        source="broadcast",
+                        contact_url=button_contact_url,
+                    ),
                 )
             elif content_type == "video" and media_file_id:
                 text = localized_broadcast_text_for_language(localized_text, user.language)
@@ -629,6 +843,13 @@ async def bc_confirm(callback: CallbackQuery, state: FSMContext, session):
                     text=text,
                     content_type=content_type,
                     media_file_id=media_file_id,
+                    reply_markup=await build_promo_button_markup(
+                        session,
+                        button_config,
+                        lang=user.language,
+                        source="broadcast",
+                        contact_url=button_contact_url,
+                    ),
                 )
             else:
                 await _send_broadcast_payload(
@@ -637,6 +858,13 @@ async def bc_confirm(callback: CallbackQuery, state: FSMContext, session):
                     text=localized_broadcast_text_for_language(localized_text, user.language),
                     content_type=content_type,
                     media_file_id=media_file_id,
+                    reply_markup=await build_promo_button_markup(
+                        session,
+                        button_config,
+                        lang=user.language,
+                        source="broadcast",
+                        contact_url=button_contact_url,
+                    ),
                 )
             sent_count += 1
         except Exception:
@@ -665,4 +893,3 @@ async def bc_cancel(callback: CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.answer()
     await callback.message.edit_text("❌ Broadcast bekor qilindi.")
-

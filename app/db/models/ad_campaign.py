@@ -24,6 +24,7 @@ class AdCampaign(Base):
     message_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     content_type: Mapped[str] = mapped_column(String(16), default="text", nullable=False)
     media_file_id: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
+    button_config: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)

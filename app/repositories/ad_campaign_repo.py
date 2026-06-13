@@ -37,12 +37,14 @@ class AdCampaignRepository:
         target_languages: Optional[list[str]] = None,
         include_active_subscribers: bool = False,
         created_by_telegram_id: Optional[int] = None,
+        button_config: Optional[str] = None,
     ) -> AdCampaign:
         campaign = AdCampaign(
             title=title,
             message_text=message_text,
             content_type=content_type,
             media_file_id=media_file_id,
+            button_config=button_config,
             starts_at=starts_at,
             ends_at=ends_at,
             next_send_at=starts_at,

@@ -65,6 +65,9 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "notification_sent_count": "INTEGER DEFAULT 0 NOT NULL",
         "notification_failed_count": "INTEGER DEFAULT 0 NOT NULL",
     },
+    "ad_campaigns": {
+        "button_config": "TEXT",
+    },
     "bot_feedbacks": {
         "price_offer_due_at": "TIMESTAMP WITH TIME ZONE",
         "price_offer_sent_at": "TIMESTAMP WITH TIME ZONE",

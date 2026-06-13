@@ -8,7 +8,9 @@ from app.config import settings
 from app.db.models.ad_campaign import AdCampaign
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages
 from app.repositories.user_repo import UserRepository
+from app.bot.keyboards.promo_button import build_promo_button_markup, decode_promo_button_config
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
+from app.services.support_contact_service import get_admin_contact_url
 
 
 @dataclass
@@ -28,14 +30,25 @@ async def send_ad_payload(
     content_type: str,
     media_file_id: str | None,
     language: str | None = None,
+    reply_markup=None,
 ) -> None:
     localized_text = localized_broadcast_text_for_language(text, language)
     if content_type == "photo" and media_file_id:
-        await bot.send_photo(chat_id=chat_id, photo=media_file_id, caption=localized_text or None)
+        await bot.send_photo(
+            chat_id=chat_id,
+            photo=media_file_id,
+            caption=localized_text or None,
+            reply_markup=reply_markup,
+        )
     elif content_type == "video" and media_file_id:
-        await bot.send_video(chat_id=chat_id, video=media_file_id, caption=localized_text or None)
+        await bot.send_video(
+            chat_id=chat_id,
+            video=media_file_id,
+            caption=localized_text or None,
+            reply_markup=reply_markup,
+        )
     else:
-        await bot.send_message(chat_id=chat_id, text=localized_text or "")
+        await bot.send_message(chat_id=chat_id, text=localized_text or "", reply_markup=reply_markup)
 
 
 class AdCampaignService:
@@ -74,6 +87,9 @@ class AdCampaignService:
         sent_count = 0
         failed_count = 0
         delivery_count = 0
+        button_contact_url = None
+        if (decode_promo_button_config(campaign.button_config) or {}).get("action") == "contact":
+            button_contact_url = await get_admin_contact_url(self.session)
 
         for user in target_users:
             status = "sent"
@@ -86,6 +102,13 @@ class AdCampaignService:
                     content_type=campaign.content_type,
                     media_file_id=campaign.media_file_id,
                     language=user.language,
+                    reply_markup=await build_promo_button_markup(
+                        self.session,
+                        campaign.button_config,
+                        lang=user.language,
+                        source="ad_campaign",
+                        contact_url=button_contact_url,
+                    ),
                 )
                 sent_count += 1
             except Exception as exc:

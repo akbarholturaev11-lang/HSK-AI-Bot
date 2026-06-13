@@ -19,6 +19,16 @@ from app.bot.keyboards.admin_ads import (
     ad_send_count_keyboard,
     ad_start_keyboard,
 )
+from app.bot.keyboards.promo_button import (
+    build_promo_button_markup,
+    encode_promo_button_config,
+    normalize_promo_button_config,
+    normalize_promo_button_url,
+    promo_button_choice_keyboard,
+    promo_button_summary,
+    promo_button_text_keyboard,
+    promo_button_url_keyboard,
+)
 from app.config import settings
 from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages
 from app.repositories.user_repo import UserRepository
@@ -129,6 +139,7 @@ def _wizard_text(data: dict, prompt: str, error: str | None = None) -> str:
         "<blockquote>",
         f"Nomi: <b>{escape(str(data.get('title') or '—'))}</b>",
         f"Xabar: <b>{_MEDIA_LABELS.get(content_type, '—')}</b>",
+        f"Knopka: <b>{escape(promo_button_summary(data.get('promo_button_config')))}</b>",
         f"Muddat: <b>{_fmt_duration(duration_hours)}</b>",
         f"Yuborish: <b>{send_count or '—'} marta</b>",
         f"Interval: <b>{_fmt_interval(duration_hours, send_count)}</b>",
@@ -246,6 +257,24 @@ async def _prepare_localized_ad_text(session, data: dict) -> str | None:
     return encode_localized_broadcast_text(localized.texts)
 
 
+def _ad_button_prompt_text(data: dict) -> str:
+    return (
+        _wizard_text(data, "Xabar ostiga knopka qo'shasizmi?")
+        + "\n\nTayyor bot funksiyasini tanlang, tashqi link qo'shing yoki knopkasiz davom eting."
+    )
+
+
+def _ad_button_text_prompt(data: dict) -> str:
+    summary = escape(promo_button_summary({
+        "action": data.get("pending_button_action"),
+        "url": data.get("pending_button_url"),
+    }))
+    return (
+        _wizard_text(data, "Knopka nomini yozing yoki default nom bilan davom eting.")
+        + f"\n\nTanlangan: <b>{summary}</b>"
+    )
+
+
 async def _confirm_text(session, data: dict) -> str:
     starts_at = data["starts_at"]
     ends_at = starts_at + timedelta(hours=data["duration_hours"])
@@ -256,6 +285,7 @@ async def _confirm_text(session, data: dict) -> str:
         f"Nomi: <b>{escape(str(data['title']))}</b>\n"
         f"Tur: <b>{_MEDIA_LABELS.get(data.get('content_type'), '—')}</b>\n"
         f"<blockquote>{preview}</blockquote>\n\n"
+        f"Knopka: <b>{escape(promo_button_summary(data.get('promo_button_config')))}</b>\n"
         f"Muddat: <b>{_fmt_time(starts_at)}</b> dan <b>{_fmt_time(ends_at)}</b> gacha\n"
         f"Yuborish: <b>{data['send_count_total']} marta</b> · {_fmt_interval(data['duration_hours'], data['send_count_total'])}\n"
         f"Til: <b>{_fmt_languages(_selected_languages(data))}</b>\n"
@@ -418,10 +448,180 @@ async def ads_content(message: Message, state: FSMContext):
         message_text=text,
         content_type=content_type,
         media_file_id=media_file_id,
+        promo_button_config=None,
+        pending_button_action=None,
+        pending_button_url=None,
     )
     await state.set_state(None)
     data = await state.get_data()
     await _delete_admin_input(message)
+    await _edit_stored_panel(
+        message,
+        state,
+        _ad_button_prompt_text(data),
+        promo_button_choice_keyboard("ads"),
+    )
+
+
+@router.callback_query(F.data == "ads:button:none")
+async def ads_button_none(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    await state.set_state(None)
+    await state.update_data(
+        promo_button_config=None,
+        pending_button_action=None,
+        pending_button_url=None,
+    )
+    data = await state.get_data()
+    await callback.answer()
+    await _edit_callback_panel(
+        callback,
+        state,
+        _wizard_text(data, "Reklama qancha muddat aktiv bo'lsin?"),
+        ad_duration_keyboard(),
+    )
+
+
+@router.callback_query(F.data.startswith("ads:button:"))
+async def ads_button_action(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    action = callback.data.split(":")[2]
+    if action == "none":
+        await callback.answer()
+        return
+    if action == "url":
+        await state.set_state(AdCampaignStates.waiting_button_url)
+        await state.update_data(pending_button_action="url", pending_button_url=None)
+        await callback.answer()
+        await _edit_callback_panel(
+            callback,
+            state,
+            "🔗 Tashqi linkni yuboring.\n\nMisol: <code>https://example.com</code> yoki <code>@username</code>",
+            promo_button_url_keyboard("ads"),
+        )
+        return
+
+    config = normalize_promo_button_config(action)
+    if not config:
+        await callback.answer("Noto'g'ri button turi", show_alert=True)
+        return
+
+    await state.set_state(AdCampaignStates.waiting_button_text)
+    await state.update_data(pending_button_action=action, pending_button_url=None)
+    data = await state.get_data()
+    await callback.answer()
+    await _edit_callback_panel(
+        callback,
+        state,
+        _ad_button_text_prompt(data),
+        promo_button_text_keyboard("ads"),
+    )
+
+
+@router.message(StateFilter(AdCampaignStates.waiting_button_url))
+async def ads_button_url_message(message: Message, state: FSMContext):
+    if not _is_admin(message.from_user.id):
+        return
+
+    url = normalize_promo_button_url(message.text)
+    await _delete_admin_input(message)
+    if not url:
+        await _edit_stored_panel(
+            message,
+            state,
+            "❌ Link noto'g'ri. <code>https://...</code>, <code>t.me/...</code> yoki <code>@username</code> yuboring.",
+            promo_button_url_keyboard("ads"),
+        )
+        return
+
+    await state.set_state(AdCampaignStates.waiting_button_text)
+    await state.update_data(pending_button_action="url", pending_button_url=url)
+    data = await state.get_data()
+    await _edit_stored_panel(
+        message,
+        state,
+        _ad_button_text_prompt(data),
+        promo_button_text_keyboard("ads"),
+    )
+
+
+@router.callback_query(F.data == "ads:button_text_default")
+async def ads_button_text_default(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    data = await state.get_data()
+    config = normalize_promo_button_config(
+        data.get("pending_button_action"),
+        url=data.get("pending_button_url"),
+    )
+    if not config:
+        await callback.answer("Button ma'lumoti topilmadi", show_alert=True)
+        return
+
+    await state.set_state(None)
+    await state.update_data(
+        promo_button_config=config,
+        pending_button_action=None,
+        pending_button_url=None,
+    )
+    data = await state.get_data()
+    await callback.answer()
+    await _edit_callback_panel(
+        callback,
+        state,
+        _wizard_text(data, "Reklama qancha muddat aktiv bo'lsin?"),
+        ad_duration_keyboard(),
+    )
+
+
+@router.message(StateFilter(AdCampaignStates.waiting_button_text))
+async def ads_button_text_message(message: Message, state: FSMContext):
+    if not _is_admin(message.from_user.id):
+        return
+
+    button_text = (message.text or "").strip()
+    await _delete_admin_input(message)
+    if len(button_text) < 1 or len(button_text) > 64:
+        data = await state.get_data()
+        await _edit_stored_panel(
+            message,
+            state,
+            _ad_button_text_prompt(data) + "\n\n⚠️ Nom 1-64 belgi bo'lsin.",
+            promo_button_text_keyboard("ads"),
+        )
+        return
+
+    data = await state.get_data()
+    config = normalize_promo_button_config(
+        data.get("pending_button_action"),
+        text=button_text,
+        url=data.get("pending_button_url"),
+    )
+    if not config:
+        await state.set_state(None)
+        await _edit_stored_panel(
+            message,
+            state,
+            "❌ Button ma'lumoti noto'g'ri. Qaytadan tanlang.",
+            promo_button_choice_keyboard("ads"),
+        )
+        return
+
+    await state.set_state(None)
+    await state.update_data(
+        promo_button_config=config,
+        pending_button_action=None,
+        pending_button_url=None,
+    )
+    data = await state.get_data()
     await _edit_stored_panel(
         message,
         state,
@@ -662,6 +862,12 @@ async def ads_test(callback: CallbackQuery, state: FSMContext, session):
                 content_type=data.get("content_type"),
                 media_file_id=data.get("media_file_id"),
                 language=lang,
+                reply_markup=await build_promo_button_markup(
+                    session,
+                    data.get("promo_button_config"),
+                    lang=lang,
+                    source="ad_campaign_test",
+                ),
             )
         await callback.answer("Test yuborildi", show_alert=True)
     except Exception as exc:
@@ -694,6 +900,7 @@ async def ads_confirm(callback: CallbackQuery, state: FSMContext, session):
         target_languages=_selected_languages(data),
         include_active_subscribers=bool(data.get("include_active_subscribers")),
         created_by_telegram_id=callback.from_user.id,
+        button_config=encode_promo_button_config(data.get("promo_button_config")),
     )
     campaign_id = campaign.id
     await session.commit()
@@ -745,6 +952,7 @@ async def ads_list(callback: CallbackQuery, session):
             f"#{item.id} <b>{escape(item.title)}</b> — {status}\n"
             f"  {item.rounds_sent}/{item.send_count_total} raund · sent: {sent}, xato: {failed}\n"
             f"  Til: {langs} · Faol obuna: {active}\n"
+            f"  Knopka: {escape(promo_button_summary(item.button_config))}\n"
             f"  Keyingi: {_fmt_time(item.next_send_at)}"
         )
 

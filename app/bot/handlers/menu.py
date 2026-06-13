@@ -1,7 +1,8 @@
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import CallbackQuery, Message
 
+from app.config import COURSE_MODE_ENABLED
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import CourseEngineService
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
@@ -27,6 +28,109 @@ async def _clear_voice_mode(user, session, state: FSMContext | None = None) -> N
     if user and (getattr(user, "voice_mode", "none") or "none") != "none":
         user.voice_mode = "none"
         await session.commit()
+
+
+@router.callback_query(F.data.startswith("promo:action:"))
+async def handle_promo_action_callback(callback: CallbackQuery, state: FSMContext, session):
+    action = callback.data.split(":")[-1]
+    user_repo = UserRepository(session)
+    user = await user_repo.get_by_telegram_id(callback.from_user.id)
+    lang = user.language if user and user.language else "ru"
+
+    if not user:
+        await callback.answer()
+        await callback.message.answer(t("access_start_first", lang))
+        return
+
+    await state.clear()
+    await _clear_voice_mode(user, session, state)
+
+    if action == "profile":
+        from app.bot.handlers.commands import (
+            _profile_referral_count,
+            _profile_reminder_text,
+            _profile_text,
+            profile_menu_keyboard,
+        )
+
+        referral_total = await _profile_referral_count(session, user)
+        reminder_text = await _profile_reminder_text(session, user, lang)
+        await callback.answer()
+        await callback.message.answer(
+            _profile_text(user, lang, referral_total, reminder_text),
+            parse_mode="HTML",
+            reply_markup=profile_menu_keyboard(lang, user),
+        )
+        return
+
+    if action == "partner":
+        from app.bot.handlers.partner import _render_partner_text
+
+        text, keyboard = await _render_partner_text(session, callback.from_user.id)
+        await session.commit()
+        await callback.answer()
+        await callback.message.answer(
+            text,
+            reply_markup=keyboard,
+            parse_mode="HTML",
+            disable_web_page_preview=True,
+        )
+        return
+
+    if action == "course":
+        from app.bot.handlers.course import run_course_entry_flow
+
+        await callback.answer()
+        if not COURSE_MODE_ENABLED:
+            msg_map = {
+                "uz": "🚧 Kurs rejimi hozircha ishlab chiqilmoqda.",
+                "ru": "🚧 Режим курса сейчас в разработке.",
+                "tj": "🚧 Реҷаи курс ҳоло дар навсози аст.",
+            }
+            await callback.message.answer(msg_map.get(lang, msg_map["ru"]))
+            return
+        await run_course_entry_flow(
+            session=session,
+            telegram_id=callback.from_user.id,
+            respond=callback.message.answer,
+            show_menu=True,
+        )
+        return
+
+    if action == "reminder":
+        engine = CourseEngineService(session)
+        _, progress, error_key = await engine.get_or_create_progress(callback.from_user.id)
+        await callback.answer()
+        if error_key or not progress:
+            await callback.message.answer(t(error_key or "course_no_lesson_found", lang))
+            return
+
+        await engine.progress_repo.set_waiting_for(progress, "reminder_setup")
+        await session.commit()
+        sent = await callback.message.answer(
+            t("course_reminder_setup_msg", lang),
+            reply_markup=reminder_time_keyboard(lang),
+        )
+        await state.update_data(
+            **{
+                REMINDER_PANEL_CHAT_ID: sent.chat.id,
+                REMINDER_PANEL_MSG_ID: sent.message_id,
+            }
+        )
+        return
+
+    if action == "help":
+        contact_url = await get_admin_contact_url(session)
+        await callback.answer()
+        await callback.message.answer(
+            await build_help_text(session, lang),
+            reply_markup=help_contact_keyboard(lang, contact_url),
+            parse_mode="HTML",
+            disable_web_page_preview=True,
+        )
+        return
+
+    await callback.answer("Button eskirgan yoki noto'g'ri.", show_alert=True)
 
 # ──────────────────────────────────────────────
 # QA rejim menyusi — barcha tugmalar handleri
