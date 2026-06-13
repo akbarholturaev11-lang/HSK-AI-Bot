@@ -1,17 +1,16 @@
 from __future__ import annotations
 
 import re
+from html import escape
 
 from app.repositories.bot_setting_repo import BotSettingRepository
 
 
 ADMIN_CONTACT_KEY = "admin_contact"
-DEFAULT_ADMIN_CONTACT = "@akbarchina"
 
 
 def normalize_admin_contact(value: str | None) -> str:
-    contact = (value or "").strip()
-    return contact or DEFAULT_ADMIN_CONTACT
+    return (value or "").strip()
 
 
 def admin_contact_url(value: str | None) -> str:
@@ -37,3 +36,11 @@ async def get_admin_contact(session) -> str:
 
 async def get_admin_contact_url(session) -> str:
     return admin_contact_url(await get_admin_contact(session))
+
+
+async def get_admin_contact_html(session, label: str = "admin") -> str:
+    contact_url = await get_admin_contact_url(session)
+    safe_label = escape(label)
+    if not contact_url:
+        return safe_label
+    return f"<a href=\"{escape(contact_url, quote=True)}\">{safe_label}</a>"

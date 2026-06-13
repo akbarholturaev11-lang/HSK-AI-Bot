@@ -6,7 +6,10 @@ class AdminPriceStates(StatesGroup):
     waiting_qr_code = State()
     waiting_rate = State()
     waiting_payment_details = State()
-    waiting_admin_contact = State()
+
+
+class AdminHelpStates(StatesGroup):
+    waiting_link = State()
 
 
 class AdminRequiredChannelStates(StatesGroup):

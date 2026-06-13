@@ -19,7 +19,7 @@ from aiogram.types import (
 from app.bot.fsm.admin_audio import AdminAudioStates
 from app.bot.fsm.admin_broadcast import BroadcastStates
 from app.bot.fsm.admin_discount import DiscountStates
-from app.bot.fsm.admin_management import AdminPriceStates, AdminRequiredChannelStates, AdminUserStates
+from app.bot.fsm.admin_management import AdminHelpStates, AdminPriceStates, AdminRequiredChannelStates, AdminUserStates
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
 from app.bot.utils.response_effect import ResponseEffect
 from app.bot.handlers.course import (
@@ -84,6 +84,7 @@ from app.services.referral_service import (
     ReferralService,
 )
 from app.services.study_miniapp_service import StudyMiniAppService
+from app.services.support_contact_service import get_admin_contact_html
 from app.bot.utils.i18n import t
 from app.bot.utils.workflow_message import (
     REMINDER_PANEL_CHAT_ID,
@@ -226,6 +227,7 @@ _ADMIN_FSM_STATES = {
     DiscountStates.waiting_notify_media.state,
     AdminPortfolioStates.waiting_amount.state,
     AdminPortfolioStates.waiting_reason.state,
+    AdminHelpStates.waiting_link.state,
     AdminPriceStates.waiting_amount.state,
     AdminPriceStates.waiting_rate.state,
     AdminRequiredChannelStates.waiting_channel.state,
@@ -847,7 +849,10 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
 
     can_use, message_key = await access_service.can_use_text_ai(message.from_user.id)
     if not can_use and message_key in {"access_blocked", "access_payment_pending_review"}:
-        await message.answer(t(message_key, user_lang), parse_mode="HTML")
+        kwargs = {}
+        if message_key == "access_blocked":
+            kwargs["support_contact"] = await get_admin_contact_html(session, "ADMIN")
+        await message.answer(t(message_key, user_lang, **kwargs), parse_mode="HTML")
         return
 
     paid_voice_allowed = _can_use_voice(user)

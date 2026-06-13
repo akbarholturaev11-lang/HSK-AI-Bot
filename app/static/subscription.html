@@ -362,7 +362,6 @@ const PLAN_ORDER=["10_days","1_month"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const COUNTRY_ORDER=["tj","uz","ru","other"];
 const CARD_BANK_NAME="Dushanbe City";
-const DEFAULT_SUPPORT_URL="https://t.me/akbarchina";
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
 
 const I18N={
@@ -678,7 +677,7 @@ const state={
   inviteLink:"",
   inviteCopied:false,
   supportOpen:false,
-  supportUrl:DEFAULT_SUPPORT_URL,
+  supportUrl:"",
   busy:false,
   busyOverlay:false,
   done:false,
@@ -848,7 +847,7 @@ function fallbackOverview(){
 function applyOverview(data){
   state.overview=data;
   state.mode=normalizeMode(data?.mode||state.mode);
-  state.supportUrl=data?.support_url||DEFAULT_SUPPORT_URL;
+  state.supportUrl=data?.support_url||"";
   state.pending=Boolean(data?.pending_payment);
   state.pendingPayment=data?.pending_payment||null;
   ensureSelection();
@@ -1269,7 +1268,8 @@ function closeMiniApp(){
   window.close();
 }
 function openSupportChat(){
-  const url=state.supportUrl||DEFAULT_SUPPORT_URL;
+  const url=state.supportUrl||"";
+  if(!url)return;
   if(tg&&typeof tg.openTelegramLink==="function"&&(url.includes("t.me/")||url.startsWith("tg://"))){
     tg.openTelegramLink(url);
     return;

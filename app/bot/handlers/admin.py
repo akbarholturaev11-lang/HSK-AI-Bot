@@ -11,7 +11,7 @@ from html import escape
 from math import isfinite
 
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
-from app.bot.fsm.admin_management import AdminPriceStates, AdminRequiredChannelStates, AdminUserStates
+from app.bot.fsm.admin_management import AdminHelpStates, AdminPriceStates, AdminRequiredChannelStates, AdminUserStates
 from app.config import settings
 from app.repositories.bot_setting_repo import BotSettingRepository
 from app.repositories.user_repo import UserRepository
@@ -45,6 +45,12 @@ from app.services.support_contact_service import (
     admin_contact_url,
     get_admin_contact,
     normalize_admin_contact,
+)
+from app.services.help_settings_service import (
+    HELP_LANGS,
+    HELP_VIDEO_FIELD_BY_KEY,
+    HELP_VIDEO_FIELDS,
+    normalize_help_url,
 )
 from app.bot.handlers.admin_broadcast import open_broadcast_panel_for_callback
 from app.bot.utils.workflow_message import (
@@ -81,7 +87,7 @@ def admin_menu_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="📣 Reklama kampaniyasi", callback_data="adm:ads_panel")],
         [InlineKeyboardButton(text="🎁 Chegirma boshqaruv", callback_data="adm:discount_panel")],
         [InlineKeyboardButton(text="🤝 Hamkorlar", callback_data="adm:partners")],
-        [InlineKeyboardButton(text="🆘 Yordam kontakti", callback_data="adm:support_contact")],
+        [InlineKeyboardButton(text="🆘 Help sozlamalari", callback_data="adm:help_settings")],
         [InlineKeyboardButton(text="✅ Obuna berish", callback_data="adm:giveaccess_info")],
         [InlineKeyboardButton(text="🎵 Audio boshqaruv", callback_data="adm:audio_panel")],
     ])
@@ -91,6 +97,71 @@ def admin_back_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
     ])
+
+
+def help_settings_back_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="⬅️ Help sozlamalari", callback_data="adm:help_settings")],
+        [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
+    ])
+
+
+def help_settings_keyboard() -> InlineKeyboardMarkup:
+    rows = []
+    for field in HELP_VIDEO_FIELDS:
+        rows.extend([
+            [
+                InlineKeyboardButton(
+                    text=f"{field.icon} {field.label} · TJ",
+                    callback_data=f"adm:help_link:{field.key}:tj",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=f"{field.icon} {field.label} · RU",
+                    callback_data=f"adm:help_link:{field.key}:ru",
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text=f"{field.icon} {field.label} · UZ",
+                    callback_data=f"adm:help_link:{field.key}:uz",
+                )
+            ],
+        ])
+    rows.append([InlineKeyboardButton(text="🆘 Admin contact link", callback_data="adm:help_link:admin_contact")])
+    rows.append([InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def _help_lang_label(lang: str | None) -> str:
+    return {"tj": "TJ", "ru": "RU", "uz": "UZ"}.get(lang or "", "—")
+
+
+async def help_settings_text(session) -> str:
+    repo = BotSettingRepository(session)
+    lines = [
+        "🆘 <b>Help sozlamalari</b>",
+        "",
+        "Video linklar 3 tilda alohida boshqariladi. Bo'sh link help matnida ko'rsatilmaydi.",
+        "",
+    ]
+    for field in HELP_VIDEO_FIELDS:
+        lines.append(f"{field.icon} <b>{escape(field.label)}</b>")
+        for lang in HELP_LANGS:
+            current = normalize_help_url(await repo.get(field.setting_key(lang)))
+            lines.append(f"{_help_lang_label(lang)}: <code>{escape(current or '—')}</code>")
+        lines.append("")
+
+    contact = await get_admin_contact(session)
+    contact_url = admin_contact_url(contact)
+    lines.extend([
+        "🆘 <b>Admin contact link</b>",
+        f"<code>{escape(contact_url or contact or '—')}</code>",
+        "",
+        "Tahrirlashda linkni tozalash uchun <code>-</code> yuboring.",
+    ])
+    return "\n".join(lines).strip()
 
 
 def portfolio_keyboard() -> InlineKeyboardMarkup:
@@ -1290,69 +1361,128 @@ async def admin_payment_details_handler(message: Message, state: FSMContext, ses
     await state.clear()
 
 
-@router.callback_query(F.data == "adm:support_contact")
-async def admin_support_contact_callback(callback: CallbackQuery, state: FSMContext, session):
+@router.callback_query(F.data.in_({"adm:help_settings", "adm:support_contact"}))
+async def admin_help_settings_callback(callback: CallbackQuery, state: FSMContext, session):
     if not _is_admin(callback.from_user.id):
         await callback.answer()
         return
-    current = await get_admin_contact(session)
-    await state.set_state(AdminPriceStates.waiting_admin_contact)
+    await state.clear()
     await callback.answer()
     await _edit_admin_flow_callback(
         callback,
         state,
-        "🆘 <b>Yordam kontakti</b>\n\n"
-        "Bu kontakt /help va menyudagi Yordam blokida inline tugma sifatida chiqadi.\n\n"
-        f"Joriy:\n<code>{escape(current)}</code>\n\n"
-        "Yangi kontaktni yuboring. Masalan: <code>@username</code> yoki "
-        "<code>https://t.me/username</code>.",
-        reply_markup=admin_back_keyboard(),
+        await help_settings_text(session),
+        reply_markup=help_settings_keyboard(),
     )
 
 
-@router.message(StateFilter(AdminPriceStates.waiting_admin_contact))
-async def admin_support_contact_handler(message: Message, state: FSMContext, session):
+@router.callback_query(F.data.startswith("adm:help_link:"))
+async def admin_help_link_prompt(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    parts = (callback.data or "").split(":")
+    target = parts[2] if len(parts) >= 3 else ""
+    lang = parts[3] if len(parts) >= 4 else None
+
+    if target == "admin_contact":
+        current = await get_admin_contact(session)
+        title = "Admin contact link"
+        current_display = admin_contact_url(current) or current
+    else:
+        field = HELP_VIDEO_FIELD_BY_KEY.get(target)
+        if not field or lang not in HELP_LANGS:
+            await callback.answer("Noto'g'ri sozlama.", show_alert=True)
+            return
+        current = await BotSettingRepository(session).get(field.setting_key(lang))
+        title = f"{field.label} · {_help_lang_label(lang)}"
+        current_display = normalize_help_url(current)
+
+    await state.update_data(admin_help_target=target, admin_help_lang=lang)
+    await state.set_state(AdminHelpStates.waiting_link)
+    await callback.answer()
+    await _edit_admin_flow_callback(
+        callback,
+        state,
+        "🆘 <b>Help link tahriri</b>\n\n"
+        f"Maydon: <b>{escape(title)}</b>\n\n"
+        f"Joriy:\n<code>{escape(current_display or '—')}</code>\n\n"
+        "Yangi link yuboring.\n"
+        "Qabul qilinadi: <code>https://...</code>, <code>http://...</code>, "
+        "<code>tg://...</code>, <code>t.me/...</code>"
+        "\n\nBo'sh qilish uchun <code>-</code> yuboring.",
+        reply_markup=help_settings_back_keyboard(),
+    )
+
+
+@router.message(StateFilter(AdminHelpStates.waiting_link))
+async def admin_help_link_handler(message: Message, state: FSMContext, session):
     if not _is_admin(message.from_user.id):
         return
-    raw_contact = (message.text or "").strip()
-    if not raw_contact:
+
+    data = await state.get_data()
+    target = data.get("admin_help_target")
+    lang = data.get("admin_help_lang")
+    raw_value = (message.text or "").strip()
+    should_clear = raw_value.lower() in {"-", "—", "clear", "tozalash", "очистить"}
+
+    if target == "admin_contact":
+        value = "" if should_clear else normalize_admin_contact(raw_value)
+        if value and not admin_contact_url(value):
+            await delete_message_safely(message)
+            await _edit_admin_flow_message(
+                message,
+                state,
+                "❌ Kontakt noto'g'ri. <code>@username</code>, <code>t.me/username</code> "
+                "yoki <code>https://t.me/username</code> formatida yuboring.",
+                reply_markup=help_settings_back_keyboard(),
+            )
+            return
+        setting_key = ADMIN_CONTACT_KEY
+    else:
+        field = HELP_VIDEO_FIELD_BY_KEY.get(str(target or ""))
+        if not field or lang not in HELP_LANGS:
+            await delete_message_safely(message)
+            await _edit_admin_flow_message(
+                message,
+                state,
+                "❌ Sozlama topilmadi. Help sozlamalaridan qayta tanlang.",
+                reply_markup=help_settings_keyboard(),
+            )
+            await state.clear()
+            return
+        value = "" if should_clear else normalize_help_url(raw_value)
+        if raw_value and not should_clear and not value:
+            await delete_message_safely(message)
+            await _edit_admin_flow_message(
+                message,
+                state,
+                "❌ Link noto'g'ri. <code>https://...</code>, <code>http://...</code>, "
+                "<code>tg://...</code> yoki <code>t.me/...</code> yuboring.",
+                reply_markup=help_settings_back_keyboard(),
+            )
+            return
+        setting_key = field.setting_key(lang)
+
+    if len(value) > 500:
         await delete_message_safely(message)
         await _edit_admin_flow_message(
             message,
             state,
-            "❌ Kontakt bo'sh bo'lmasin.",
-            reply_markup=admin_back_keyboard(),
-        )
-        return
-    contact = normalize_admin_contact(raw_contact)
-    if not admin_contact_url(contact):
-        await delete_message_safely(message)
-        await _edit_admin_flow_message(
-            message,
-            state,
-            "❌ Kontakt noto'g'ri. <code>@username</code> yoki "
-            "<code>https://t.me/username</code> formatida yuboring.",
-            reply_markup=admin_back_keyboard(),
-        )
-        return
-    if len(contact) > 200:
-        await delete_message_safely(message)
-        await _edit_admin_flow_message(
-            message,
-            state,
-            "❌ Kontakt 200 belgidan oshmasin.",
-            reply_markup=admin_back_keyboard(),
+            "❌ Link 500 belgidan oshmasin.",
+            reply_markup=help_settings_back_keyboard(),
         )
         return
 
-    await BotSettingRepository(session).set(ADMIN_CONTACT_KEY, contact)
+    await BotSettingRepository(session).set(setting_key, value)
     await session.commit()
     await delete_message_safely(message)
     await _edit_admin_flow_message(
         message,
         state,
-        "✅ Yordam kontakti yangilandi.",
-        reply_markup=admin_menu_keyboard(),
+        f"✅ Saqlandi.\n\n{await help_settings_text(session)}",
+        reply_markup=help_settings_keyboard(),
     )
     await state.clear()
 
