@@ -207,6 +207,27 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-13 — AI level ceiling hardened
+
+Changed:
+- General QA system prompt now explicitly forbids examples, vocabulary, grammar, sentence patterns, and explanations above the user's current level.
+- Course tutor prompts now append the same level-ceiling rule to every step response and homework evaluation.
+- Image explainer prompt now requires image explanations/examples to stay at or below the user's level.
+
+Why:
+- AI tutor behavior must not teach above the user's HSK level unless the user explicitly asks about higher-level content.
+
+Files touched:
+- `app/prompts/qa_system.txt`
+- `app/services/course_tutor_service.py`
+- `app/services/image_explainer_service.py`
+
+Risk:
+- Responses may become simpler and avoid advanced examples even when they would be interesting, which is intentional for level safety.
+
+Follow-up:
+- Smoke test HSK1/HSK2 QA, image explanation, and course lesson AI feedback with prompts asking for advanced examples.
+
 ### 2026-06-13 — Help links moved to admin-managed bot settings
 
 Changed:

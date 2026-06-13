@@ -47,6 +47,15 @@ Misollar:
 - Javob oxirida "Yana misollar xohlaysizmi?" kabi savol yozma
 """
 
+_LEVEL_CEILING_RULE = """
+DARAJA CHEGARASI (JUDA MUHIM):
+- Hech qachon foydalanuvchi darajasidan yuqori misol, grammatika, so'z, ibora yoki tushuntirish bermaysan
+- Faqat foydalanuvchi darajasi yoki undan past darajadagi xitoycha materialdan foydalan
+- Agar yuqori darajadagi narsa foydalanuvchi xabari yoki dars kontekstida kelgan bo'lsa, uni sodda qilib tushuntir va yuqori daraja ekanini ayt
+- Misollar yangi murakkab grammatika kiritmasin
+- Ikkilanib qolsang, doim soddaroq misol tanla
+"""
+
 
 class CourseTutorService:
     def __init__(self):
@@ -613,7 +622,7 @@ QOIDALAR:
     ) -> str:
         prompt, _ = self._build_prompt_for_step(lesson, step, user_language, user_level)
 
-        full_text = prompt
+        full_text = f"{prompt}\n{_LEVEL_CEILING_RULE}"
         if user_message:
             full_text += f"\n\nFOYDALANUVCHI XABARI:\n{user_message}"
 
@@ -677,6 +686,8 @@ RULES:
 - If there are mistakes, explain WHY each mistake is wrong
 - Show the correct version or a good example answer
 - Always include the score clearly, for example: "Ball: 72/100"
+- Never give examples, vocabulary, grammar, sentence patterns, or explanations above {user_level}
+- If a higher-level item appears in the student's submission, explain it using {user_level}-appropriate words and mark that fact in {user_language}
 - If score is below 60, do NOT tell the student to press menu buttons or reread the lesson.
   The bot will show separate action buttons after your feedback.
 - Do not use Markdown or HTML
