@@ -6,8 +6,10 @@ from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import CourseEngineService
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.keyboards.course import reminder_time_keyboard
+from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
 from app.services.help_settings_service import build_help_text
+from app.services.support_contact_service import get_admin_contact_url
 from app.bot.utils.workflow_message import (
     REMINDER_PANEL_CHAT_ID,
     REMINDER_PANEL_MSG_ID,
@@ -105,8 +107,10 @@ async def handle_help_button(message: Message, state: FSMContext, session):
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     lang = user.language if user and user.language else "ru"
     await _clear_voice_mode(user, session, state)
+    contact_url = await get_admin_contact_url(session)
     await message.answer(
         await build_help_text(session, lang),
+        reply_markup=help_contact_keyboard(lang, contact_url),
         parse_mode="HTML",
         disable_web_page_preview=True,
     )

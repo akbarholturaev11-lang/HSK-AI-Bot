@@ -233,7 +233,7 @@ Follow-up:
 Changed:
 - `/help` and menu Help now build 3-language HTML help text from `bot_settings` video-link keys instead of hardcoded help content/contact.
 - Admin panel now has one `Help sozlamalari` section containing 4 help video link types per language (`tj`, `ru`, `uz`) plus one global admin contact link.
-- Empty help video links are skipped in user help text; empty admin contact falls back to plain `ADMIN` text without a link.
+- Empty help video links are skipped in user help text; admin contact is shown as an inline button below the help message when configured.
 
 Why:
 - Help video URLs and support contact must be editable from the admin panel without code changes.
@@ -250,7 +250,7 @@ Files touched:
 - `app/static/subscription.html`
 
 Risk:
-- Existing deployments without `admin_contact` in `bot_settings` will show plain `ADMIN` until admin sets a contact link.
+- Existing deployments without `admin_contact` in `bot_settings` will show the help text without the contact button until admin sets a contact link.
 
 Follow-up:
 - In Telegram, test Admin panel → Help sozlamalari, set one video link for each language, then test `/help` and Help menu in TJ/RU/UZ.

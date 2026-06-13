@@ -21,8 +21,10 @@ from app.bot.keyboards.subscription import (
     subscription_miniapp_keyboard,
 )
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
+from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
 from app.services.help_settings_service import build_help_text
+from app.services.support_contact_service import get_admin_contact_url
 
 
 router = Router()
@@ -558,9 +560,11 @@ async def help_command_handler(message: Message, state: FSMContext, session):
     user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
     lang = getattr(user, "language", None) or "ru"
     await _clear_voice_mode(user, session, state)
+    contact_url = await get_admin_contact_url(session)
 
     await message.answer(
         await build_help_text(session, lang),
+        reply_markup=help_contact_keyboard(lang, contact_url),
         parse_mode="HTML",
         disable_web_page_preview=True,
     )
