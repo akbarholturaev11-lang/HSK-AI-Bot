@@ -207,6 +207,37 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-14 — Release feedback dashboard
+
+Changed:
+- Admin panel now has a Telegram-based Release feedback module for sending localized release announcements, collecting 1-5 ratings, required low-rating comments/screenshots, optional comments, and per-campaign stats.
+- Release messages include a "Sinab ko'rish" CTA; non-paid users get temporary 30-minute active test access without changing `payment_status`.
+- Completed release feedback from non-paid users creates a per-user 20% / 24-hour `admin_discount` campaign, so checkout reuses the existing Subscription Mini App admin discount flow.
+- Added `release_feedback_campaigns`, `release_feedback_deliveries`, and `release_feedback_responses`.
+- Admin statistics now includes overall bot feedback and release feedback metrics.
+
+Why:
+- Admin needs to announce new bot features, let users test them, collect actionable feedback, and track response/try/discount results.
+
+Files touched:
+- `app/bot/handlers/release_feedback.py`
+- `app/services/release_feedback_service.py`
+- `app/repositories/release_feedback_repo.py`
+- `app/db/models/release_feedback.py`
+- `app/bot/keyboards/release_feedback.py`
+- `app/bot/fsm/release_feedback.py`
+- `app/bot/handlers/admin.py`
+- `app/main.py`
+- `app/bot/create_bot.py`
+- `alembic/versions/0041_add_release_feedback.py`
+
+Risk:
+- Temporary test access sets non-paid users to `status="active"` for 30 minutes but does not make them paid; paid logic must continue to rely on `payment_status="approved"`.
+- Release feedback discounts are stored as normal admin discount campaigns targeted to one Telegram ID.
+
+Follow-up:
+- Run migration/deploy, then smoke test release create/test/send, user try access, 1-5 rating, low-rating comment, discount checkout, and admin stats.
+
 ### 2026-06-13 — Broadcast and ad campaign CTA buttons
 
 Changed:

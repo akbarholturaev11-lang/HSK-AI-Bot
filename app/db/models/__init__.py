@@ -3,6 +3,7 @@ from .referral import Referral
 from .payment import Payment
 from .discount_campaign import DiscountCampaign
 from .ad_campaign import AdCampaign, AdCampaignDelivery
+from .release_feedback import ReleaseFeedbackCampaign, ReleaseFeedbackDelivery, ReleaseFeedbackResponse
 from .bot_feedback import BotFeedback
 from .message import Message
 from .ai_usage import AIUsageBudget, AIUsageEvent

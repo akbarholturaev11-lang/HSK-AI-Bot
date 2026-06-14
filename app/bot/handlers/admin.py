@@ -20,6 +20,12 @@ from app.db.models.user import User
 from app.db.models.payment import Payment
 from app.db.models.course_progress import CourseProgress
 from app.db.models.referral import Referral
+from app.db.models.bot_feedback import BotFeedback
+from app.db.models.release_feedback import (
+    ReleaseFeedbackCampaign,
+    ReleaseFeedbackDelivery,
+    ReleaseFeedbackResponse,
+)
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
 from app.services.portfolio_service import PortfolioService
 from app.services.payment_qr_code_service import (
@@ -85,6 +91,7 @@ def admin_menu_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="🗑 Foydalanuvchini o'chirish", callback_data="adm:deleteuser_info")],
         [InlineKeyboardButton(text="📢 Broadcast xabar", callback_data="adm:broadcast_info")],
         [InlineKeyboardButton(text="📣 Reklama kampaniyasi", callback_data="adm:ads_panel")],
+        [InlineKeyboardButton(text="🆕 Release feedback", callback_data="adm:release_feedback")],
         [InlineKeyboardButton(text="🎁 Chegirma boshqaruv", callback_data="adm:discount_panel")],
         [InlineKeyboardButton(text="🤝 Hamkorlar", callback_data="adm:partners")],
         [InlineKeyboardButton(text="🆘 Help sozlamalari", callback_data="adm:help_settings")],
@@ -2083,6 +2090,47 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         select(func.count()).select_from(User).where(User.discount_used == True)  # noqa: E712
     )).scalar() or 0
 
+    # --- Feedback ---
+    bot_feedback_completed = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(BotFeedback.status == "completed")
+    )).scalar() or 0
+    bot_feedback_week = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.completed_at >= week_ago,
+        )
+    )).scalar() or 0
+    bot_feedback_disliked = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_code.is_not(None),
+        )
+    )).scalar() or 0
+    release_campaigns = (await session.execute(
+        select(func.count()).select_from(ReleaseFeedbackCampaign)
+    )).scalar() or 0
+    release_responses = (await session.execute(
+        select(func.count()).select_from(ReleaseFeedbackResponse)
+    )).scalar() or 0
+    release_responses_week = (await session.execute(
+        select(func.count()).select_from(ReleaseFeedbackResponse).where(
+            ReleaseFeedbackResponse.completed_at >= week_ago,
+        )
+    )).scalar() or 0
+    release_avg_rating = (await session.execute(
+        select(func.avg(ReleaseFeedbackResponse.rating))
+    )).scalar() or 0
+    release_try_clicked = (await session.execute(
+        select(func.count()).select_from(ReleaseFeedbackDelivery).where(
+            ReleaseFeedbackDelivery.try_clicked_at.is_not(None)
+        )
+    )).scalar() or 0
+    release_trial_granted = (await session.execute(
+        select(func.count()).select_from(ReleaseFeedbackDelivery).where(
+            ReleaseFeedbackDelivery.trial_granted_until.is_not(None)
+        )
+    )).scalar() or 0
+
     # --- Hisob ---
     free_cnt    = status_counts.get("free", 0)
     trial_cnt   = status_counts.get("trial", 0)
@@ -2165,6 +2213,11 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"<b>🎁 REFERALLAR</b>\n"
         f"  Jami: <b>{ref_total}</b>   Faollashgan: <b>{ref_activated}</b>   Bonus: <b>{ref_bonus}</b>\n"
         f"  Chegirma eligible: <b>{discount_eligible}</b>   Ishlatilgan: <b>{discount_used_cnt}</b>\n\n"
+
+        f"<b>📝 FEEDBACK</b>\n"
+        f"  Bot otzivlari: <b>{bot_feedback_completed}</b>   7 kun: <b>+{bot_feedback_week}</b>   Kamchilik yozgan: <b>{bot_feedback_disliked}</b>\n"
+        f"  Release kampaniya: <b>{release_campaigns}</b>   Javob: <b>{release_responses}</b>   7 kun: <b>+{release_responses_week}</b>\n"
+        f"  Release avg: <b>{round(float(release_avg_rating or 0), 2)}</b>   Sinab ko'rish: <b>{release_try_clicked}</b>   Test access: <b>{release_trial_granted}</b>\n\n"
 
         f"<b>📈 KONVERSIYA</b>\n"
         f"  User → Paid: <b>{conversion}%</b>\n"

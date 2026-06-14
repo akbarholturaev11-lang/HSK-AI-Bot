@@ -18,6 +18,7 @@ from app.bot.handlers.payments import router as payments_router
 from app.bot.handlers.admin_payments import router as admin_payments_router
 from app.bot.handlers.admin_broadcast import router as admin_broadcast_router
 from app.bot.handlers.admin_ads import router as admin_ads_router
+from app.bot.handlers.release_feedback import router as release_feedback_router
 from app.bot.handlers.admin_discount import router as admin_discount_router
 from app.bot.handlers.feedback import router as feedback_router
 from app.bot.handlers.messages import router as messages_router
@@ -47,6 +48,7 @@ def create_bot(settings):
     dp.include_router(admin_discount_router)
     dp.include_router(admin_broadcast_router)
     dp.include_router(admin_ads_router)
+    dp.include_router(release_feedback_router)
     dp.include_router(admin_audio_router)   # admin FSM flows must stay before generic text/photo handlers
     dp.include_router(admin_partner_router)
     dp.include_router(feedback_router)

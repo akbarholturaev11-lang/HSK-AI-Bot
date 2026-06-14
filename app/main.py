@@ -18,6 +18,7 @@ from app.services.expiry_reminder_service import ExpiryReminderService
 from app.services.course_reminder_service import CourseReminderService
 from app.services.bot_feedback_service import BotFeedbackService
 from app.services.ad_campaign_service import AdCampaignService
+from app.services.release_feedback_service import ReleaseFeedbackService
 from app.services.discount_notification_service import DiscountNotificationService
 from app.services.partner_service import PartnerService
 from app.services.app_error_context_service import AppErrorContextService
@@ -144,6 +145,8 @@ async def _background_scheduler(bot: Bot) -> None:
                 await OnboardingTipService(session).send_due_tips(bot)
             async with async_session_maker() as session:
                 await AdCampaignService(session).send_due_ads(bot)
+            async with async_session_maker() as session:
+                await ReleaseFeedbackService(session).send_due_campaigns(bot)
             async with async_session_maker() as session:
                 await BotFeedbackService(session).send_due_feedback_requests(bot)
         except Exception as e:
