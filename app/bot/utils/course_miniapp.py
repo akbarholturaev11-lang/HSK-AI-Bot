@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260613-all-level-miniapp-flow"
+MINIAPP_ASSET_VERSION = "20260619-course-miniapp-v2"
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:

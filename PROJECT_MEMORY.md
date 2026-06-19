@@ -207,6 +207,35 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-19 — Course Mini App quiz and reinforcement UI
+
+Changed:
+- Course Mini App quiz payload now serves 5 server-graded questions with backward-compatible `opts/ans/id` plus UI metadata for `multiple_choice`, `listening_choice`, and `fill_blank`.
+- Homework user-facing flow was renamed to Mustahkamlash / Закрепление / Мустаҳкамкунӣ while backend `homework` endpoint/state names stay compatible.
+- Mini App homework can now complete as interactive reinforcement (`word_order`, `match_pairs`, `listening_choice`, `stroke_preview`) without mandatory written answers or AI grading.
+- HSK1-HSK4 static course pages load a shared Mini App v2 renderer only for `mode=quiz/homework`; normal study pages keep their existing code path.
+
+Why:
+- Course flow should feel lighter and more interactive after lessons while preserving Lesson → Quiz → Result → Mustahkamlash → Result → Next Lesson.
+
+Files touched:
+- `app/services/course_miniapp_lesson_service.py`
+- `app/services/course_miniapp_result_service.py`
+- `app/static/course-miniapp-v2.js`
+- `app/static/hsk1.html`
+- `app/static/hsk2.html`
+- `app/static/hsk3.html`
+- `app/static/hsk4.html`
+- `app/bot/utils/i18n.py`
+- `app/bot/utils/course_miniapp.py`
+- `app/main.py`
+
+Risk:
+- Full end-to-end Telegram smoke test still needs real `initData`, active course state, and production DB.
+
+Follow-up:
+- Smoke test HSK1-HSK4 quiz and Mustahkamlash from Telegram Mini App, including bot result messages and next lesson unlock.
+
 ### 2026-06-19 — Release feedback fixes and active stats
 
 Changed:

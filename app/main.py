@@ -239,6 +239,11 @@ async def stroke_order_miniapp():
     return miniapp_file_response("app/static/stroke-order.html")
 
 
+@app.get("/course-miniapp-v2.js")
+async def course_miniapp_v2_script():
+    return miniapp_file_response("app/static/course-miniapp-v2.js")
+
+
 @app.post("/api/miniapp/access")
 async def miniapp_access(request: Request):
     telegram_id = extract_verified_webapp_user_id(

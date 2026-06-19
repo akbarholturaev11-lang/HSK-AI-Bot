@@ -71,6 +71,125 @@ class CourseMiniAppResultService:
                 return False
         return True
 
+    @staticmethod
+    def _normalize_token_list(value: Any) -> list[str]:
+        if not isinstance(value, list):
+            return []
+        return [str(item).strip() for item in value if str(item).strip()]
+
+    @staticmethod
+    def _normalize_pair_set(value: Any) -> set[tuple[str, str]]:
+        if not isinstance(value, list):
+            return set()
+        pairs = set()
+        for item in value:
+            if isinstance(item, dict):
+                left = str(item.get("left") or "").strip()
+                right = str(item.get("right") or "").strip()
+            elif isinstance(item, (list, tuple)) and len(item) >= 2:
+                left = str(item[0] or "").strip()
+                right = str(item[1] or "").strip()
+            else:
+                continue
+            if left and right:
+                pairs.add((left, right))
+        return pairs
+
+    async def _grade_reinforcement(self, user, lesson, payload: dict, answers: dict) -> dict | None:
+        submitted = answers.get("reinforcement_results") or answers.get("practice_results")
+        if not isinstance(submitted, list) or not submitted:
+            return None
+
+        lesson_payload = await CourseMiniAppLessonService(self.session).get_payload(
+            lesson_order=course_miniapp_lesson_id(lesson),
+            lang=getattr(user, "language", None) or "ru",
+            level=getattr(lesson, "level", None) or "hsk1",
+            block_no=self._to_int(payload.get("block_no") or payload.get("block")) or None,
+        )
+        tasks = (lesson_payload or {}).get("reinforcement_tasks")
+        if not isinstance(tasks, list) or not tasks:
+            return None
+
+        submitted_by_id = {}
+        for item in submitted:
+            if not isinstance(item, dict):
+                return None
+            task_id = str(item.get("task_id") or item.get("id") or "").strip()
+            if not task_id or task_id in submitted_by_id:
+                return None
+            submitted_by_id[task_id] = item
+
+        task_ids = {str(task.get("id") or "") for task in tasks}
+        if set(submitted_by_id) != task_ids:
+            return None
+
+        score = 0
+        normalized_results = []
+        feedback = []
+        for task in tasks:
+            task_id = str(task.get("id") or "")
+            task_type = str(task.get("type") or "")
+            submitted_item = submitted_by_id[task_id]
+            correct = False
+
+            if task_type in {"multiple_choice", "listening_choice", "fill_blank"}:
+                options = task.get("options") or task.get("opts") or []
+                answer = str(task.get("answer") or "")
+                selected_answer = str(submitted_item.get("selected_answer") or "").strip()
+                selected_index = self._to_int(submitted_item.get("selected_index"), -1)
+                if not selected_answer and isinstance(options, list) and 0 <= selected_index < len(options):
+                    selected_answer = str(options[selected_index])
+                correct = bool(answer and selected_answer == answer)
+                normalized_answer = selected_answer
+            elif task_type in {"word_order", "build_chinese_sentence"}:
+                expected = self._normalize_token_list(task.get("answer"))
+                actual = self._normalize_token_list(
+                    submitted_item.get("answer_tokens") or submitted_item.get("tokens")
+                )
+                correct = bool(expected and actual == expected)
+                normalized_answer = actual
+            elif task_type == "match_pairs":
+                expected_pairs = self._normalize_pair_set(task.get("pairs"))
+                actual_pairs = self._normalize_pair_set(submitted_item.get("pairs"))
+                correct = bool(expected_pairs and actual_pairs == expected_pairs)
+                normalized_answer = sorted(actual_pairs)
+            elif task_type == "stroke_preview":
+                correct = bool(submitted_item.get("completed") or submitted_item.get("seen"))
+                normalized_answer = "seen" if correct else ""
+            else:
+                return None
+
+            if correct:
+                score += 1
+            else:
+                feedback.append(
+                    {
+                        "question": str(task.get("prompt") or task_type),
+                        "correct_answer": task.get("answer") or task.get("explanation") or "",
+                        "explanation": str(task.get("explanation") or ""),
+                    }
+                )
+
+            normalized_results.append(
+                {
+                    "task_id": task_id,
+                    "type": task_type,
+                    "correct": correct,
+                    "answer": normalized_answer,
+                }
+            )
+
+        total = len(tasks)
+        percent = round((score / total) * 100) if total else 0
+        return {
+            "results": normalized_results,
+            "score": score,
+            "total": total,
+            "percent": percent,
+            "passed": total > 0,
+            "feedback": normalize_result_items(feedback),
+        }
+
     def _validate_quiz_state(self, progress, block_no: int) -> bool:
         current_step = str(getattr(progress, "current_step", "") or "")
         if getattr(progress, "waiting_for", "none") != "quiz_result":
@@ -286,6 +405,53 @@ class CourseMiniAppResultService:
             return {"error_key": "course_miniapp_lesson_mismatch"}
 
         answers = self._normalize_homework_answers(payload.get("answers"))
+        reinforcement = await self._grade_reinforcement(user, lesson, payload, answers)
+        if reinforcement:
+            homework_score = int(reinforcement["percent"])
+            await self.attempt_repo.create(
+                user_id=user.id,
+                lesson_id=lesson.id,
+                attempt_type="homework",
+                step_name="miniapp_reinforcement",
+                score=homework_score,
+                passed=True,
+                answers_json=json.dumps(
+                    {
+                        "telegram_id": telegram_id,
+                        "lesson_id": course_miniapp_lesson_id(lesson),
+                        "answers": answers,
+                        "reinforcement_results": reinforcement["results"],
+                        "homework_score": homework_score,
+                        "feedback": reinforcement["feedback"],
+                        "status": "completed",
+                        "source": "miniapp_reinforcement_graded",
+                    },
+                    ensure_ascii=False,
+                ),
+                ai_feedback="\n".join(reinforcement["feedback"]) if reinforcement["feedback"] else None,
+            )
+            await self.progress_repo.set_homework_status(progress, "completed")
+            await self.progress_repo.set_current_lesson_and_step(
+                progress=progress,
+                lesson_id=lesson.id,
+                step="completed",
+                waiting_for="none",
+            )
+            await CourseTrialService(self.session).mark_trial_completed(user, lesson.id)
+            await self.session.commit()
+
+            return {
+                "error_key": None,
+                "user": user,
+                "lesson": lesson,
+                "lesson_id": course_miniapp_lesson_id(lesson),
+                "answers": answers,
+                "homework_score": homework_score,
+                "feedback": reinforcement["feedback"],
+                "status": "completed",
+                "passed": True,
+            }
+
         if not self._has_homework_answers(answers):
             return {"error_key": "course_homework_empty"}
 
@@ -397,7 +563,7 @@ class CourseMiniAppResultService:
                 "wrong_items": wrong_items[:10],
             }
 
-        if homework.get("source") in {"miniapp", "miniapp_server_graded"}:
+        if homework.get("source") in {"miniapp", "miniapp_server_graded", "miniapp_reinforcement_graded"}:
             feedback = normalize_result_items(homework.get("feedback"))
             context_payload["miniapp_homework_result"] = {
                 "lesson_id": homework.get("lesson_id"),

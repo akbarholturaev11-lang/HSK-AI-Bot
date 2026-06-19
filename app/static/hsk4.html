@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>HSK 4 · O'quv Tizimi</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="/course-miniapp-v2.js?v=20260619"></script>
 <style>
 :root{
   color-scheme:dark;
@@ -1245,6 +1246,17 @@ function submitHomework(){
 (async function init(){
   await flushPendingEvents();
   if(miniMode){
+    if(window.CourseMiniAppV2){
+      await window.CourseMiniAppV2.start({
+        level:"hsk4",
+        lessonId:initialLesson,
+        blockNo:initialBlock||null,
+        mode,
+        lang:uiLang,
+        pendingKey:"hsk4_pending_events"
+      });
+      return;
+    }
     document.body.classList.add('mini-mode');
     S.qFilter=initialLesson;
     save();
