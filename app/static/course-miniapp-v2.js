@@ -29,9 +29,17 @@
       type_multiple_choice: "Tanlash",
       type_listening_choice: "Eshitib tanlash",
       type_fill_blank: "Bo'sh joy",
+      type_fill_blank_choice: "Bo'sh joy",
+      type_tap_missing_word: "Yetishmayotgan so'z",
       type_word_order: "So'z tartibi",
+      type_build_sentence_chips: "Gap tuzish",
+      type_choose_meaning_in_context: "Context ma'no",
+      type_grammar_in_context: "Grammatika",
+      type_listen_and_fill: "Eshitib to'ldirish",
+      type_odd_one_out: "Ortiqchasini topish",
       type_build_chinese_sentence: "Xitoycha gap",
       type_match_pairs: "Moslashtirish",
+      type_quick_match: "Tez moslashtirish",
       type_stroke_preview: "Iyeroglif",
     },
     ru: {
@@ -63,9 +71,17 @@
       type_multiple_choice: "Выбор",
       type_listening_choice: "Аудирование",
       type_fill_blank: "Пропуск",
+      type_fill_blank_choice: "Пропуск",
+      type_tap_missing_word: "Пропущенное слово",
       type_word_order: "Порядок слов",
+      type_build_sentence_chips: "Собрать фразу",
+      type_choose_meaning_in_context: "Слово в контексте",
+      type_grammar_in_context: "Грамматика",
+      type_listen_and_fill: "Слушать и заполнить",
+      type_odd_one_out: "Лишнее слово",
       type_build_chinese_sentence: "Китайское предложение",
       type_match_pairs: "Пары",
+      type_quick_match: "Быстрые пары",
       type_stroke_preview: "Иероглиф",
     },
     tj: {
@@ -97,9 +113,17 @@
       type_multiple_choice: "Интихоб",
       type_listening_choice: "Гӯш карда интихоб",
       type_fill_blank: "Ҷои холӣ",
+      type_fill_blank_choice: "Ҷои холӣ",
+      type_tap_missing_word: "Калимаи намерасида",
       type_word_order: "Тартиби калимаҳо",
+      type_build_sentence_chips: "Сохтани ҷумла",
+      type_choose_meaning_in_context: "Маъно дар context",
+      type_grammar_in_context: "Грамматика",
+      type_listen_and_fill: "Гӯш карда пур кардан",
+      type_odd_one_out: "Калимаи номувофиқ",
       type_build_chinese_sentence: "Ҷумлаи чинӣ",
       type_match_pairs: "Ҷуфтҳо",
+      type_quick_match: "Ҷуфтҳои тез",
       type_stroke_preview: "Иероглиф",
     },
   };
@@ -198,6 +222,12 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
 .cmv2-option.correct{border-color:#17b978;box-shadow:0 4px 0 #9ee8c9;background:#effcf6;}
 .cmv2-option.wrong{border-color:#ee7c67;box-shadow:0 4px 0 #ffc0b5;background:#fff4f1;}
 .cmv2-blank{font-size:22px;font-weight:850;color:#252b36;line-height:1.35;margin-bottom:14px;padding-bottom:10px;border-bottom:3px solid #e5eaf2;}
+.cmv2-sentence{background:#fff;border:1px solid #e5eaf2;border-radius:20px;padding:18px 16px;margin:0 0 16px;box-shadow:0 10px 28px rgba(25,36,59,.07);}
+.cmv2-sentence-main{font-size:28px;line-height:1.35;font-weight:850;color:#242b36;word-break:break-word;}
+.cmv2-slot{display:inline-flex;align-items:center;justify-content:center;min-width:74px;min-height:42px;margin:0 3px;padding:2px 12px;border:2px solid #8bb9ff;border-radius:14px;background:#f4f9ff;color:#2f7cf6;vertical-align:middle;box-shadow:0 3px 0 #c4dcff;transition:transform .15s ease,background .15s ease;}
+.cmv2-slot.empty{color:#a7b1c0;background:#f8fbff;border-style:dashed;box-shadow:none;}
+.cmv2-slot.filled{transform:translateY(-1px);background:#eaf4ff;}
+.cmv2-highlight{display:inline-block;padding:0 7px;border-radius:10px;background:#eaf4ff;color:#1f65c8;border-bottom:3px solid #8bb9ff;}
 .cmv2-order-box{min-height:86px;border:2px dashed #d9e0ea;border-radius:18px;background:#fff;padding:12px;display:flex;gap:8px;flex-wrap:wrap;align-content:flex-start;margin-bottom:16px;}
 .cmv2-placeholder{color:#9aa3b2;font-size:15px;font-weight:700;align-self:center;}
 .cmv2-bank{display:flex;gap:9px;flex-wrap:wrap;}
@@ -266,9 +296,9 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
 
   function formatAnswer(task) {
     if (Array.isArray(task.answer)) {
-      return task.type === "build_chinese_sentence" ? task.answer.join("") : task.answer.join(" ");
+      return ["build_chinese_sentence", "build_sentence_chips"].includes(task.type) ? task.answer.join("") : task.answer.join(" ");
     }
-    if (task.type === "match_pairs") {
+    if (isMatchType(task.type)) {
       return (task.pairs || []).map((pair) => `${pair[0]} = ${pair[1]}`).join(" · ");
     }
     if (task.type === "stroke_preview") {
@@ -277,54 +307,100 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     return compact(task.answer);
   }
 
-  function normalizeChoiceTask(raw, index) {
+  const CHOICE_TYPES = new Set([
+    "multiple_choice",
+    "listening_choice",
+    "fill_blank",
+    "fill_blank_choice",
+    "tap_missing_word",
+    "choose_meaning_in_context",
+    "grammar_in_context",
+    "listen_and_fill",
+    "odd_one_out",
+    "grammar_example_to_pattern",
+    "grammar_pattern_to_example",
+  ]);
+  const ORDER_TYPES = new Set(["word_order", "build_chinese_sentence", "build_sentence_chips"]);
+  const MATCH_TYPES = new Set(["match_pairs", "quick_match"]);
+  const STROKE_TYPES = new Set(["stroke_preview"]);
+  const FILL_TYPES = new Set(["fill_blank", "fill_blank_choice", "tap_missing_word", "listen_and_fill"]);
+  const CONTEXT_TYPES = new Set(["choose_meaning_in_context", "grammar_in_context"]);
+
+  function isChoiceType(type) {
+    return CHOICE_TYPES.has(type);
+  }
+
+  function isOrderType(type) {
+    return ORDER_TYPES.has(type);
+  }
+
+  function isMatchType(type) {
+    return MATCH_TYPES.has(type);
+  }
+
+  function renderHighlightedText(value) {
+    const text = compact(value);
+    if (!text.includes("【") || !text.includes("】")) return esc(text);
+    const before = text.split("【")[0] || "";
+    const rest = text.slice(before.length + 1);
+    const target = rest.split("】")[0] || "";
+    const after = rest.slice(target.length + 1);
+    return `${esc(before)}<span class="cmv2-highlight">${esc(target)}</span>${esc(after)}`;
+  }
+
+  function renderBlankText(sentence, selected) {
+    const value = compact(sentence);
+    const slotClass = selected ? "cmv2-slot filled" : "cmv2-slot empty";
+    const slotText = selected || "...";
+    if (!value.includes("____")) {
+      return `${esc(value)} <span class="${slotClass}" id="cmv2-blank-slot">${esc(slotText)}</span>`;
+    }
+    const parts = value.split("____");
+    return `${esc(parts[0])}<span class="${slotClass}" id="cmv2-blank-slot">${esc(slotText)}</span>${esc(parts.slice(1).join("____"))}`;
+  }
+
+  function normalizeTask(raw, index, prefix = "task") {
     const options = raw.opts || raw.options || [];
+    let type = raw.type || (options.length ? "multiple_choice" : "multiple_choice");
+    if (!CHOICE_TYPES.has(type) && !ORDER_TYPES.has(type) && !MATCH_TYPES.has(type) && !STROKE_TYPES.has(type)) {
+      type = options.length ? "multiple_choice" : type;
+    }
     const answerIndex = Number.isInteger(raw.ans) ? raw.ans : Number(raw.ans);
-    const answer = compact(raw.answer || options[answerIndex]);
-    let type = raw.type || "multiple_choice";
-    if (!["multiple_choice", "listening_choice", "fill_blank"].includes(type)) type = "multiple_choice";
+    let answer = raw.answer;
+    if ((answer === undefined || answer === null || answer === "") && options.length && Number.isInteger(answerIndex)) {
+      answer = options[answerIndex];
+    }
     return {
-      id: compact(raw.id || raw.question_id || `quiz:${index}`),
+      id: compact(raw.id || raw.question_id || `${prefix}:${index}`),
       type,
       subtype: raw.subtype || raw.type || "",
-      label: raw.cat || raw.category || "",
+      label: raw.cat || raw.category || raw.label || "",
       prompt: raw.q || raw.prompt || "",
       hint: raw.hint || "",
       sentence: raw.sentence || "",
       source: raw.source || "",
+      translation: raw.translation || "",
+      target: raw.target || raw.word || "",
       audioText: raw.audioText || raw.audio_text || "",
+      tokens: Array.isArray(raw.tokens) ? raw.tokens : [],
       options,
       answer,
       answerIndex: Number.isInteger(answerIndex) ? answerIndex : options.indexOf(answer),
-      explanation: raw.expl || raw.explanation || "",
-    };
-  }
-
-  function normalizePracticeTask(raw, index) {
-    const type = raw.type || "multiple_choice";
-    const task = {
-      id: compact(raw.id || `practice:${index}`),
-      type,
-      label: raw.label || "",
-      prompt: raw.prompt || "",
-      source: raw.source || "",
-      sentence: raw.sentence || "",
-      audioText: raw.audioText || raw.audio_text || raw.word || "",
-      tokens: raw.tokens || [],
-      answer: raw.answer,
-      options: raw.options || raw.opts || [],
-      answerIndex: Number.isInteger(raw.ans) ? raw.ans : Number(raw.ans),
       pairs: raw.pairs || [],
       chars: raw.chars || [],
       word: raw.word || "",
       pinyin: raw.pinyin || "",
       meaning: raw.meaning || "",
-      explanation: raw.explanation || "",
+      explanation: raw.expl || raw.explanation || "",
     };
-    if (!task.answer && ["multiple_choice", "listening_choice", "fill_blank"].includes(type)) {
-      task.answer = task.options[task.answerIndex];
-    }
-    return task;
+  }
+
+  function normalizeChoiceTask(raw, index) {
+    return normalizeTask(raw, index, "quiz");
+  }
+
+  function normalizePracticeTask(raw, index) {
+    return normalizeTask(raw, index, "practice");
   }
 
   function fallbackPracticeTasks(lesson, state) {
@@ -442,19 +518,21 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     `;
 
     const target = document.getElementById("cmv2-task");
-    if (task.type === "word_order" || task.type === "build_chinese_sentence") renderOrderTask(state, target, task);
-    else if (task.type === "match_pairs") renderMatchTask(state, target, task);
+    if (isOrderType(task.type)) renderOrderTask(state, target, task);
+    else if (isMatchType(task.type)) renderMatchTask(state, target, task);
     else if (task.type === "stroke_preview") renderStrokeTask(state, target, task);
     else renderChoiceTask(state, target, task);
   }
 
   function renderChoiceTask(state, target, task) {
-    const hasAudio = task.type === "listening_choice" || task.audioText;
-    const sentence = task.type === "fill_blank" && task.sentence
-      ? `<div class="cmv2-blank">${esc(task.sentence).replace("____", "<u>____</u>")}</div>`
+    const hasAudio = task.type === "listening_choice" || task.type === "listen_and_fill" || task.audioText;
+    const fillLike = FILL_TYPES.has(task.type);
+    const contextLike = CONTEXT_TYPES.has(task.type);
+    const sentence = task.sentence
+      ? `<div class="cmv2-sentence"><div class="cmv2-sentence-main">${fillLike ? renderBlankText(task.sentence, "") : renderHighlightedText(task.sentence)}</div>${task.source ? `<div class="cmv2-source-sub">${esc(task.source)}</div>` : ""}</div>`
       : "";
-    const source = task.source
-      ? `<div class="cmv2-source"><div class="cmv2-source-main">${esc(task.source)}</div>${task.hint ? `<div class="cmv2-source-sub">${esc(task.hint)}</div>` : ""}</div>`
+    const source = task.source && !task.sentence
+      ? `<div class="cmv2-source"><div class="cmv2-source-main">${contextLike ? renderHighlightedText(task.source) : esc(task.source)}</div>${task.hint ? `<div class="cmv2-source-sub">${esc(task.hint)}</div>` : ""}</div>`
       : "";
     target.innerHTML = `
       ${source}
@@ -476,6 +554,13 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
           selected_index: Number(button.dataset.index),
           selected_answer: button.dataset.value,
         };
+        if (fillLike) {
+          const slot = document.getElementById("cmv2-blank-slot");
+          if (slot) {
+            slot.textContent = button.dataset.value;
+            slot.className = "cmv2-slot filled";
+          }
+        }
         document.getElementById("cmv2-primary").disabled = false;
         haptic("tap");
       };
@@ -483,10 +568,10 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
   }
 
   function renderOrderTask(state, target, task) {
-    const tokens = (task.tokens || []).map((token, index) => ({ id: `${index}:${token}`, text: token }));
+    const tokens = shuffle(task.tokens || [], `${task.id}:${state.attemptSeed || ""}`).map((token, index) => ({ id: `${index}:${token}`, text: token }));
     state.orderTokens = [];
     target.innerHTML = `
-      ${task.source ? `<div class="cmv2-source"><div class="cmv2-source-main">${esc(task.source)}</div></div>` : ""}
+      ${(task.translation || task.source) ? `<div class="cmv2-source"><div class="cmv2-source-sub">${esc(task.translation || task.source)}</div></div>` : ""}
       <div class="cmv2-order-box" id="cmv2-order-box"><span class="cmv2-placeholder">${esc(l(state, "orderPlaceholder"))}</span></div>
       <div class="cmv2-bank" id="cmv2-bank">
         ${tokens.map((token) => `<button class="cmv2-chip" type="button" data-id="${attr(token.id)}">${esc(token.text)}</button>`).join("")}
@@ -526,7 +611,7 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
 
   function renderMatchTask(state, target, task) {
     const pairs = task.pairs || [];
-    const rightItems = shuffle(pairs.map((pair) => pair[1]), task.id || "pairs");
+    const rightItems = shuffle(pairs.map((pair) => pair[1]), `${task.id || "pairs"}:${state.attemptSeed || ""}`);
     state.matchLeft = "";
     state.matchPairs = [];
     target.innerHTML = `
@@ -600,11 +685,11 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     let correct = false;
     const answer = state.answer || {};
 
-    if (["multiple_choice", "listening_choice", "fill_blank"].includes(task.type)) {
+    if (isChoiceType(task.type)) {
       correct = compact(answer.selected_answer) === compact(task.answer);
-    } else if (task.type === "word_order" || task.type === "build_chinese_sentence") {
+    } else if (isOrderType(task.type)) {
       correct = arraysEqual(answer.answer_tokens, task.answer);
-    } else if (task.type === "match_pairs") {
+    } else if (isMatchType(task.type)) {
       correct = samePairs(answer.pairs, task.pairs);
     } else if (task.type === "stroke_preview") {
       correct = Boolean(answer.completed || answer.seen);
@@ -718,8 +803,12 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
       percent,
       answers: state.results.map((item) => ({
         question_id: item.question_id,
+        type: item.type,
         selected_index: item.selected_index,
         selected_answer: item.selected_answer,
+        answer_tokens: item.answer_tokens,
+        pairs: item.pairs,
+        completed: item.completed,
       })),
       wrong_items: wrongItems,
     });
@@ -804,6 +893,27 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     primary.onclick = () => closeToBot(state);
   }
 
+  function nextAttemptSeed(state) {
+    const key = "hskai_attempt_history";
+    const attemptKey = `${state.level}:${state.lessonId}:${state.blockNo || "all"}:${state.mode}`;
+    try {
+      const history = JSON.parse(localStorage.getItem(key) || "{}");
+      const count = Number(history[attemptKey] || 0) + 1;
+      history[attemptKey] = count;
+      localStorage.setItem(key, JSON.stringify(history));
+      return `${attemptKey}:${count}`;
+    } catch (e) {
+      return `${attemptKey}:${Date.now()}`;
+    }
+  }
+
+  function prepareTasksForAttempt(state, tasks, limit) {
+    const selected = tasks.slice(0, limit);
+    if (selected.length <= 1) return selected;
+    return shuffle(selected, state.attemptSeed || `${state.level}:${state.lessonId}:${state.mode}`);
+  }
+
+
   async function start(config) {
     injectStyles();
     try { tg()?.ready?.(); tg()?.expand?.(); } catch (e) {}
@@ -823,15 +933,19 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
       checked: false,
       answer: null,
       results: [],
+      attemptSeed: "",
     };
     setShell(state);
     try {
       await loadLesson(state);
+      state.attemptSeed = nextAttemptSeed(state);
       if (state.mode === "quiz") {
-        state.tasks = (state.lesson.quiz_questions || []).map(normalizeChoiceTask).slice(0, 5);
+        const quizTasks = (state.lesson.quiz_questions || []).map(normalizeChoiceTask);
+        state.tasks = prepareTasksForAttempt(state, quizTasks, 5);
       } else {
         const rawTasks = state.lesson.reinforcement_tasks || state.lesson.practice_tasks || [];
-        state.tasks = (rawTasks.length ? rawTasks : fallbackPracticeTasks(state.lesson, state)).map(normalizePracticeTask).slice(0, 4);
+        const practiceTasks = (rawTasks.length ? rawTasks : fallbackPracticeTasks(state.lesson, state)).map(normalizePracticeTask);
+        state.tasks = prepareTasksForAttempt(state, practiceTasks, 4);
       }
       if (!state.tasks.length) {
         renderError(state, l(state, "noTasks"));

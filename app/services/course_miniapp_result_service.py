@@ -132,7 +132,7 @@ class CourseMiniAppResultService:
             submitted_item = submitted_by_id[task_id]
             correct = False
 
-            if task_type in {"multiple_choice", "listening_choice", "fill_blank"}:
+            if task_type in {"multiple_choice", "listening_choice", "fill_blank", "fill_blank_choice", "tap_missing_word", "choose_meaning_in_context", "grammar_in_context", "listen_and_fill", "odd_one_out"}:
                 options = task.get("options") or task.get("opts") or []
                 answer = str(task.get("answer") or "")
                 selected_answer = str(submitted_item.get("selected_answer") or "").strip()
@@ -141,14 +141,14 @@ class CourseMiniAppResultService:
                     selected_answer = str(options[selected_index])
                 correct = bool(answer and selected_answer == answer)
                 normalized_answer = selected_answer
-            elif task_type in {"word_order", "build_chinese_sentence"}:
+            elif task_type in {"word_order", "build_chinese_sentence", "build_sentence_chips"}:
                 expected = self._normalize_token_list(task.get("answer"))
                 actual = self._normalize_token_list(
                     submitted_item.get("answer_tokens") or submitted_item.get("tokens")
                 )
                 correct = bool(expected and actual == expected)
                 normalized_answer = actual
-            elif task_type == "match_pairs":
+            elif task_type in {"match_pairs", "quick_match"}:
                 expected_pairs = self._normalize_pair_set(task.get("pairs"))
                 actual_pairs = self._normalize_pair_set(submitted_item.get("pairs"))
                 correct = bool(expected_pairs and actual_pairs == expected_pairs)
@@ -227,49 +227,88 @@ class CourseMiniAppResultService:
         if set(submitted_by_id) != {str(question.get("id") or "") for question in canonical_questions}:
             return None
 
+        choice_types = {
+            "multiple_choice",
+            "listening_choice",
+            "fill_blank",
+            "fill_blank_choice",
+            "tap_missing_word",
+            "choose_meaning_in_context",
+            "grammar_in_context",
+            "listen_and_fill",
+            "odd_one_out",
+            "grammar_example_to_pattern",
+            "grammar_pattern_to_example",
+        }
+        order_types = {"word_order", "build_chinese_sentence", "build_sentence_chips"}
+
         score = 0
         wrong_items = []
         normalized_answers = []
         for question in canonical_questions:
             question_id = str(question.get("id") or "")
-            options = question.get("opts")
-            try:
-                correct_index = int(question.get("ans"))
-            except (TypeError, ValueError):
-                return None
-            if not isinstance(options, list) or not (0 <= correct_index < len(options)):
-                return None
-
+            question_type = str(question.get("type") or "multiple_choice")
             answer = submitted_by_id[question_id]
-            selected_answer = str(answer.get("selected_answer") or "")
-            selected_index = self._to_int(answer.get("selected_index"), -1)
-            if not (0 <= selected_index < len(options)):
-                if selected_answer not in options:
+
+            if question_type in order_types:
+                expected = self._normalize_token_list(question.get("answer"))
+                actual = self._normalize_token_list(answer.get("answer_tokens") or answer.get("tokens"))
+                if not expected or not actual:
                     return None
-                selected_index = options.index(selected_answer)
-            if selected_answer and selected_answer != str(options[selected_index]):
+                is_correct = actual == expected
+                selected_answer = " ".join(actual)
+                correct_answer = " ".join(expected)
+                normalized_answers.append(
+                    {
+                        "question_id": question_id,
+                        "selected_index": None,
+                        "selected_answer": selected_answer,
+                        "answer_tokens": actual,
+                    }
+                )
+            elif question_type in choice_types or question.get("opts"):
+                options = question.get("opts") or question.get("options")
+                try:
+                    correct_index = int(question.get("ans"))
+                except (TypeError, ValueError):
+                    return None
+                if not isinstance(options, list) or not (0 <= correct_index < len(options)):
+                    return None
+
+                selected_answer = str(answer.get("selected_answer") or "")
+                selected_index = self._to_int(answer.get("selected_index"), -1)
+                if not (0 <= selected_index < len(options)):
+                    if selected_answer not in options:
+                        return None
+                    selected_index = options.index(selected_answer)
+                if selected_answer and selected_answer != str(options[selected_index]):
+                    return None
+
+                selected_answer = str(options[selected_index])
+                correct_answer = str(options[correct_index])
+                is_correct = selected_index == correct_index
+                normalized_answers.append(
+                    {
+                        "question_id": question_id,
+                        "selected_index": selected_index,
+                        "selected_answer": selected_answer,
+                    }
+                )
+            else:
                 return None
 
-            selected_answer = str(options[selected_index])
-            is_correct = selected_index == correct_index
             if is_correct:
                 score += 1
             else:
                 wrong_items.append(
                     {
-                        "question": str(question.get("q") or ""),
+                        "question": str(question.get("q") or question.get("prompt") or ""),
                         "selected_answer": selected_answer,
-                        "correct_answer": str(options[correct_index]),
-                        "explanation": str(question.get("expl") or ""),
+                        "correct_answer": correct_answer,
+                        "explanation": str(question.get("expl") or question.get("explanation") or ""),
                     }
                 )
-            normalized_answers.append(
-                {
-                    "question_id": question_id,
-                    "selected_index": selected_index,
-                    "selected_answer": selected_answer,
-                }
-            )
+
 
         total = len(canonical_questions)
         return {

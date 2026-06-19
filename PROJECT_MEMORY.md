@@ -207,6 +207,27 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-19 — Course Mini App micro-game question mix
+
+Changed:
+- Course Mini App quiz now generates interactive micro-game question types: `fill_blank_choice`, `choose_meaning_in_context`, `grammar_in_context`, `listen_and_fill`, and `build_sentence_chips`, with multiple-choice fallback.
+- Reinforcement now prefers `build_sentence_chips`, `quick_match`, `stroke_preview`, and `fill_blank_choice`.
+- Mini App v2 renderer supports visual blank slots, highlighted target words/grammar, chip sentence building, quick match, repeat-attempt task order variation, and mixed quiz grading.
+
+Why:
+- Quiz and reinforcement should feel like fast interactive practice, not only plain option tests.
+
+Files touched:
+- `app/services/course_miniapp_lesson_service.py`
+- `app/services/course_miniapp_result_service.py`
+- `app/static/course-miniapp-v2.js`
+
+Risk:
+- Full Telegram Mini App smoke test still needs real initData and active course progress.
+
+Follow-up:
+- Smoke test HSK3 quiz/homework in Telegram and confirm result messages unlock the next lesson.
+
 ### 2026-06-19 — Course Mini App release announcement template
 
 Changed:
