@@ -352,7 +352,7 @@ async def _confirm_text(session, data: dict) -> str:
         f"Sinash joyi: <b>{escape(_FEATURE_LABELS.get(data.get('feature_key') or 'general', 'Umumiy'))}</b>\n"
         f"Yuborish vaqti: <b>{_fmt_time(send_at)}</b>\n"
         "Feedback: <b>1-5 ball</b>, 1-2 uchun izoh majburiy.\n"
-        "Sinab ko'rish: <b>non-paid userlarga 24 soat test access</b>.\n"
+        "Sinab ko'rish: <b>non-paid userlarga 30 minut limitsiz test access</b>.\n"
         "Chegirma: <b>non-paid userlarga oldindan aytilgan 20% / 24 soat</b>.\n\n"
         "Saqlaysizmi?"
     )

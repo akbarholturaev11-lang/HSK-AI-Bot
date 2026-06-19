@@ -29,7 +29,7 @@
 
 ## Release Feedback After Major Updates
 
-After every major user-visible update, Codex must prepare a release feedback draft for the admin.
+After every major user-visible update, Codex must prepare a release feedback draft for the admin in the final handoff. Do not finish a major visible update without this draft.
 
 Major update means:
 - new user-facing feature
@@ -55,6 +55,7 @@ Rules:
 - Send only if admin approves.
 - If admin rejects or does not approve, do not send.
 - Use the existing Telegram admin `Release feedback` module when possible.
+- The draft must be tailored to the exact code change Codex just made, not a generic announcement.
 - The reward must be disclosed before rating/comment collection, not only after completion.
 - The test CTA must point users toward the changed feature when possible.
 

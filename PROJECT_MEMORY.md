@@ -212,7 +212,7 @@ Risk: Unknown / needs inspection
 Changed:
 - Release feedback now asks admin which bot area changed and routes `Sinab ko'rish` toward that feature when possible.
 - Release feedback reward text is disclosed before rating; after feedback it confirms the promised 20% / 24-hour discount.
-- Release feedback test access is 24 hours and creates a small fixed AI usage budget, avoiding immediate free daily limit blocking.
+- Release feedback test access is 30 minutes and bypasses normal free daily/AI budget limits during that window, so users can actually test the changed feature.
 - Per-user release feedback discount campaigns are one-use, and the Mini App can fall back to the standard 20% QR when a per-campaign QR is not uploaded.
 - Admin main stats no longer include release feedback stats; bot feedback stats moved to a separate `Otziv statistikasi` page.
 - `last_active_at` is updated on user messages/callbacks; admin active-user stats use Asia/Shanghai day boundaries and show 24-hour active users.
@@ -228,17 +228,20 @@ Files touched:
 - `app/repositories/release_feedback_repo.py`
 - `app/services/subscription_miniapp_service.py`
 - `app/services/ai_usage_budget_service.py`
+- `app/services/access_service.py`
 - `app/bot/handlers/admin.py`
 - `app/bot/middlewares/db.py`
 - `app/bot/handlers/commands.py`
 - `alembic/versions/0042_release_feedback_feature_trial.py`
+- `alembic/versions/0043_restore_release_feedback_trial_30_minutes.py`
+- `AI_RULES.md`
 
 Risk:
-- Release feedback test access is still not a paid subscription; paid checks must continue to rely on `payment_status="approved"`.
+- Release feedback test access is still not a paid subscription; it is a 30-minute non-paid test window, and paid checks must continue to rely on `payment_status="approved"`.
 - Existing active stats only become accurate for a user after their next message/callback updates `last_active_at`.
 
 Follow-up:
-- Run migration/deploy, then smoke test release create/test/send, feature routing, trial budget, QR checkout, and admin stats after a user interaction.
+- Run migration/deploy, then smoke test release create/test/send, feature routing, 30-minute no-limit test access, QR checkout, and admin stats after a user interaction.
 
 ### 2026-06-19 — Release feedback approval workflow rule
 
@@ -256,10 +259,10 @@ Files touched:
 - `PROJECT_MEMORY.md`
 
 Risk:
-- This is a process rule, not an automatic deploy hook. Future Codex sessions must follow it manually using the existing Release feedback admin module.
+- This is a required Codex handoff rule, not an automatic deploy hook. Future Codex sessions must include the draft after major user-visible changes and use the existing Release feedback admin module after admin approval.
 
 Follow-up:
-- For the next major deploy, prepare the release feedback draft in the final handoff and wait for admin approval before sending.
+- For every major deploy, prepare the release feedback draft in the final handoff and wait for admin approval before sending.
 
 ### 2026-06-14 — Release feedback dashboard
 

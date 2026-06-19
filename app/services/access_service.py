@@ -4,6 +4,7 @@ from typing import Tuple
 from sqlalchemy import select
 
 from app.db.models.user import User
+from app.db.models.release_feedback import ReleaseFeedbackDelivery
 from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
 from app.repositories.payment_repo import PaymentRepository
@@ -42,6 +43,22 @@ class AccessService:
 
     def is_paid_user(self, user) -> bool:
         return bool(user) and self._is_paid_user(user)
+
+    async def _has_active_release_feedback_trial(self, user) -> bool:
+        if not user or user.status != "active" or self._is_paid_user(user):
+            return False
+        if self._is_date_expired(user.end_date):
+            return False
+
+        now = datetime.now(timezone.utc)
+        result = await self.session.execute(
+            select(ReleaseFeedbackDelivery.id)
+            .where(ReleaseFeedbackDelivery.user_telegram_id == user.telegram_id)
+            .where(ReleaseFeedbackDelivery.trial_granted_until.is_not(None))
+            .where(ReleaseFeedbackDelivery.trial_granted_until > now)
+            .limit(1)
+        )
+        return result.scalar_one_or_none() is not None
 
     def trial_voice_used_today(self, user) -> bool:
         used_at = getattr(user, "trial_voice_used_at", None)
@@ -108,6 +125,8 @@ class AccessService:
     async def downgrade_non_paid_active_if_budget_depleted(self, telegram_id: int) -> bool:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user or user.status != "active" or self._is_paid_user(user):
+            return False
+        if await self._has_active_release_feedback_trial(user):
             return False
 
         budget_service = AIUsageBudgetService(self.session)
@@ -238,6 +257,8 @@ class AccessService:
                 # falls through to trial logic below
             else:
                 if not self._is_paid_user(user):
+                    if await self._has_active_release_feedback_trial(user):
+                        return True, ""
                     can_use, message_key, downgraded, uses_budget = await self._can_use_non_paid_active_budget(user)
                     if uses_budget and not downgraded:
                         return can_use, message_key
@@ -278,6 +299,8 @@ class AccessService:
                 # falls through to trial logic below
             else:
                 if not self._is_paid_user(user):
+                    if await self._has_active_release_feedback_trial(user):
+                        return True, ""
                     can_use, message_key, downgraded, uses_budget = await self._can_use_non_paid_active_budget(user)
                     if uses_budget and not downgraded:
                         return can_use, message_key
@@ -306,6 +329,8 @@ class AccessService:
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
+            return
+        if await self._has_active_release_feedback_trial(user):
             return
 
         if user.status == "trial":

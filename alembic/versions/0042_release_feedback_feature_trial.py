@@ -20,11 +20,6 @@ def upgrade() -> None:
         "release_feedback_campaigns",
         sa.Column("feature_key", sa.String(length=32), nullable=False, server_default="general"),
     )
-    op.execute(
-        "UPDATE release_feedback_campaigns "
-        "SET trial_access_minutes = 1440 "
-        "WHERE trial_access_minutes = 30"
-    )
     op.alter_column("release_feedback_campaigns", "feature_key", server_default=None)
 
 

@@ -36,7 +36,7 @@ class ReleaseFeedbackCampaign(Base):
 
     discount_percent: Mapped[int] = mapped_column(Integer, default=20, nullable=False)
     discount_hours: Mapped[int] = mapped_column(Integer, default=24, nullable=False)
-    trial_access_minutes: Mapped[int] = mapped_column(Integer, default=1440, nullable=False)
+    trial_access_minutes: Mapped[int] = mapped_column(Integer, default=30, nullable=False)
 
     created_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

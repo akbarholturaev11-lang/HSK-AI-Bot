@@ -13,7 +13,7 @@ from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedb
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.release_feedback_repo import ReleaseFeedbackRepository, decode_languages
 from app.repositories.user_repo import UserRepository
-from app.services.ai_usage_budget_service import AIUsageBudgetService, RELEASE_FEEDBACK_TRIAL_PLAN_TYPE
+from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 from app.config import settings
 
@@ -58,9 +58,9 @@ _DISCOUNT_TEXTS = {
 }
 
 _TRY_GRANTED_TEXTS = {
-    "uz": "Test access ochildi: 24 soat ichida yangilangan joyni 1-2 marta sinab ko'ring.",
-    "ru": "Тестовый доступ открыт: в течение 24 часов попробуйте обновлённый раздел 1-2 раза.",
-    "tj": "Дастрасии тестӣ кушода шуд: дар 24 соат қисми навшударо 1-2 маротиба санҷед.",
+    "uz": "Test access ochildi: 30 minut ichida yangilangan joyni limitsiz sinab ko'ring.",
+    "ru": "Тестовый доступ открыт: в течение 30 минут пробуйте обновлённый раздел без лимита.",
+    "tj": "Дастрасии тестӣ кушода шуд: дар 30 дақиқа қисми навшударо бе лимит санҷед.",
 }
 
 _TRY_ALREADY_TEXTS = {
@@ -68,9 +68,6 @@ _TRY_ALREADY_TEXTS = {
     "ru": "У вас уже есть доступ, чтобы попробовать эту функцию.",
     "tj": "Шумо аллакай барои санҷидани ин функсия дастрасӣ доред.",
 }
-
-RELEASE_FEEDBACK_TRIAL_BUDGET_USD = 0.03
-
 
 @dataclass(frozen=True)
 class ReleaseFeedbackSendResult:
@@ -310,7 +307,7 @@ class ReleaseFeedbackService:
             return False, getattr(user, "end_date", None)
 
         now = datetime.now(timezone.utc)
-        until = now + timedelta(minutes=int(campaign.trial_access_minutes or 1440))
+        until = now + timedelta(minutes=int(campaign.trial_access_minutes or 30))
         current_end = getattr(user, "end_date", None)
         if current_end and current_end.tzinfo is None:
             current_end = current_end.replace(tzinfo=timezone.utc)
@@ -332,15 +329,7 @@ class ReleaseFeedbackService:
         user.selected_plan_type = None
         user.pending_checkout_msg_id = None
 
-        await AIUsageBudgetService(self.session).create_fixed_budget(
-            telegram_id=user.telegram_id,
-            plan_type=RELEASE_FEEDBACK_TRIAL_PLAN_TYPE,
-            amount=0,
-            currency="USD",
-            total_budget_usd=RELEASE_FEEDBACK_TRIAL_BUDGET_USD,
-            starts_at=now,
-            ends_at=until,
-        )
+        await AIUsageBudgetService(self.session).expire_active_budgets(user.telegram_id)
 
         await self.repo.mark_try_clicked(
             campaign_id=campaign.id,

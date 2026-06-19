@@ -70,7 +70,7 @@ class ReleaseFeedbackRepository:
         created_by_telegram_id: Optional[int] = None,
         discount_percent: int = 20,
         discount_hours: int = 24,
-        trial_access_minutes: int = 1440,
+        trial_access_minutes: int = 30,
     ) -> ReleaseFeedbackCampaign:
         campaign = ReleaseFeedbackCampaign(
             title=title,
