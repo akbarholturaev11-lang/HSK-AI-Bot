@@ -177,6 +177,38 @@ Priority:
 - payment flow
 - subscription logic
 
+## Release feedback qoidasi
+
+Katta va user ko'radigan update bo'lsa, Codex ish tugagach release feedback draft tayyorlaydi.
+
+Katta update hisoblanadi:
+
+- yangi user-facing funksiya
+- obuna/payment/access logic o'zgarishi
+- kurs, AI javob, foto/voice, Mini App yoki admin paneldagi katta workflow o'zgarishi
+- user sinab ko'rishi kerak bo'lgan UX o'zgarishi
+
+Codex draftda shularni tayyorlaydi:
+
+- release nomi
+- userga yuboriladigan qisqa matn
+- aynan nima yangilangani
+- user qayerda sinashi kerakligi
+- `Sinab ko'rish` tugmasi qaysi joyga olib borishi kerakligi
+- 1-5 baholash matni
+- feedback berganda nima olishi oldindan aytilgan matn
+- target segment
+- statsda kuzatiladigan metriclar
+
+Muhim:
+
+- Userlarga avtomatik yuborma.
+- Deploydan keyin admin tasdiq so'raladi.
+- Admin tasdiqlasa mavjud `Release feedback` moduli orqali yuboriladi.
+- Admin rad etsa yoki javob bermasa yuborilmaydi.
+- Sinab ko'rish tugmasi oddiy dekor bo'lmasin; imkon bo'lsa yangilangan joyni ochsin, bo'lmasa aniq instruktsiya bersin.
+- Release feedback matnida reward oldindan aytiladi; keyin "aytganimizdek sizga chegirma berildi" deb tasdiqlanadi.
+
 ---
 
 ## Web loyiha rejimi

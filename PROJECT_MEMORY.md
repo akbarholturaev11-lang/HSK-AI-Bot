@@ -207,6 +207,27 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-19 — Release feedback approval workflow rule
+
+Changed:
+- Added a project rule that after every major user-visible update, Codex must prepare a release feedback draft tailored to that update.
+- The draft must explain what changed, where the user should test it, what the `Sinab ko'rish` CTA should do, target segment, rating prompt, reward text before feedback, and stats to watch.
+- Release feedback must not be sent automatically; after deploy, admin approval is required. If admin rejects or does not approve, nothing is sent.
+
+Why:
+- Release feedback should be tied to the exact update users need to test, without surprising users or sending unapproved broadcasts.
+
+Files touched:
+- `AGENTS.md`
+- `AI_RULES.md`
+- `PROJECT_MEMORY.md`
+
+Risk:
+- This is a process rule, not an automatic deploy hook. Future Codex sessions must follow it manually using the existing Release feedback admin module.
+
+Follow-up:
+- For the next major deploy, prepare the release feedback draft in the final handoff and wait for admin approval before sending.
+
 ### 2026-06-14 — Release feedback dashboard
 
 Changed:

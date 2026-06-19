@@ -27,6 +27,39 @@
 
 ---
 
+## Release Feedback After Major Updates
+
+After every major user-visible update, Codex must prepare a release feedback draft for the admin.
+
+Major update means:
+- new user-facing feature
+- payment, subscription, discount, or access logic change
+- course, AI answer, photo, voice, Mini App, admin workflow, or visible UX change
+- any change users should actively test after deploy
+
+The draft must include:
+- release title
+- short user-facing announcement text
+- what changed
+- where/how users should test it
+- intended `Sinab ko'rish` action or fallback instruction
+- target segment
+- rating prompt
+- reward/discount text shown before feedback
+- confirmation text shown after reward is granted
+- stats to watch
+
+Rules:
+- Do not auto-send release feedback to users.
+- After deploy, ask admin for approval.
+- Send only if admin approves.
+- If admin rejects or does not approve, do not send.
+- Use the existing Telegram admin `Release feedback` module when possible.
+- The reward must be disclosed before rating/comment collection, not only after completion.
+- The test CTA must point users toward the changed feature when possible.
+
+---
+
 ## Memory Discipline Rule
 
 Do not treat `PROJECT_MEMORY.md` as a diary.
