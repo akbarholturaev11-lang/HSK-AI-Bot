@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import os
@@ -73,6 +74,11 @@ from app.services.course_trial_service import CourseTrialService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.image_input_service import ImageInputService
 from app.services.image_qa_service import ImageQAService
+from app.services.message_draft_service import (
+    finish_draft_if_needed,
+    send_draft_or_fallback,
+    update_draft_or_fallback,
+)
 from app.services.onboarding_tip_service import (
     OnboardingTipService,
     TIP_KEY_NORMAL_PHOTO,
@@ -124,6 +130,39 @@ def _response_seed(user, text: str | None = None) -> int:
     question_count = int(getattr(user, "questions_used", 0) or 0)
     text_score = sum(ord(char) for char in (text or "")[:80])
     return question_count + text_score
+
+
+_AI_DRAFT_PREVIEWS = {
+    "tj": (
+        "AI ҷавобро тайёр мекунад...",
+        "Саволро таҳлил карда истодаам...",
+        "Мисол ва шарҳро ҷамъ мекунам...",
+        "Ҷавобро кӯтоҳ карда истодаам...",
+    ),
+    "uz": (
+        "AI javob tayyorlayapti...",
+        "Savolni tahlil qilyapman...",
+        "Misol va izohlarni yig'yapman...",
+        "Javobni ixchamlayapman...",
+    ),
+    "ru": (
+        "AI готовит ответ...",
+        "Разбираю вопрос...",
+        "Собираю пример и объяснение...",
+        "Сокращаю ответ...",
+    ),
+}
+
+
+def _ai_draft_preview(lang: str, index: int = 0) -> str:
+    previews = _AI_DRAFT_PREVIEWS.get(lang, _AI_DRAFT_PREVIEWS["ru"])
+    return previews[min(max(index, 0), len(previews) - 1)]
+
+
+async def _run_ai_draft_updates(bot, chat_id: int, lang: str) -> None:
+    for index in range(1, len(_AI_DRAFT_PREVIEWS.get(lang, _AI_DRAFT_PREVIEWS["ru"]))):
+        await asyncio.sleep(1.4)
+        await update_draft_or_fallback(bot, chat_id, _ai_draft_preview(lang, index))
 
 
 def _split_text_chunks(text: str, max_length: int = SAFE_TEXT_CHUNK_LIMIT) -> list[str]:
@@ -181,18 +220,21 @@ async def _safe_answer_text(
     if parse_mode and len(payload) > TELEGRAM_TEXT_LIMIT:
         try:
             await _send_answer_payload(message, payload, reply_markup=reply_markup)
+            logger.info("final_ai_message_sent", extra={"chat_id": message.chat.id})
             return
         except Exception:
             logger.exception("Failed to send long AI reply without parse_mode")
 
     try:
         await _send_answer_payload(message, payload, reply_markup=reply_markup, parse_mode=parse_mode)
+        logger.info("final_ai_message_sent", extra={"chat_id": message.chat.id})
         return
     except Exception:
         logger.exception("Failed to send AI reply with parse_mode=%s", parse_mode)
         if parse_mode:
             try:
                 await _send_answer_payload(message, payload, reply_markup=reply_markup)
+                logger.info("final_ai_message_sent", extra={"chat_id": message.chat.id})
                 return
             except Exception:
                 logger.exception("Failed to send fallback AI reply without parse_mode")
@@ -1830,8 +1872,19 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         await message.answer(t(message_key, user_lang), parse_mode="HTML")
         return
 
-    effect = ResponseEffect(message, mode="qa", seed=_response_seed(user, message.text))
-    await effect.start()
+    chat_id = message.chat.id
+    draft_update_task = None
+    await send_draft_or_fallback(
+        message.bot,
+        chat_id,
+        _ai_draft_preview(user_lang, 0),
+        source_message=message,
+        fallback_mode="qa",
+        seed=_response_seed(user, message.text),
+    )
+    draft_update_task = asyncio.create_task(
+        _run_ai_draft_updates(message.bot, chat_id, user_lang)
+    )
 
     try:
         qa_service = QAService(session)
@@ -1846,7 +1899,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         await message.answer(t("ai_response_failed", user_lang))
         return
     finally:
-        await effect.stop()
+        if draft_update_task:
+            draft_update_task.cancel()
+            try:
+                await draft_update_task
+            except asyncio.CancelledError:
+                pass
+        await finish_draft_if_needed(message.bot, chat_id)
 
     if _is_i18n_access_key(reply):
         await message.answer(t(reply, user_lang), parse_mode="HTML")

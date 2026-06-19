@@ -1,3 +1,5 @@
+import asyncio
+
 from app.bot.keyboards.onboarding import level_keyboard
 from aiogram import Router, F
 from aiogram.filters import Command
@@ -24,6 +26,11 @@ from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
 from app.services.help_settings_service import build_help_text
+from app.services.message_draft_service import (
+    finish_draft_if_needed,
+    send_draft_or_fallback,
+    update_draft_or_fallback,
+)
 from app.services.support_contact_service import get_admin_contact_url
 
 
@@ -567,6 +574,33 @@ async def help_command_handler(message: Message, state: FSMContext, session):
         reply_markup=help_contact_keyboard(lang, contact_url),
         parse_mode="HTML",
         disable_web_page_preview=True,
+    )
+
+
+@router.message(Command("draft_test"))
+async def draft_test_handler(message: Message):
+    chat_id = message.chat.id
+    await send_draft_or_fallback(
+        message.bot,
+        chat_id,
+        "Draft test: preparing reply...",
+        source_message=message,
+        fallback_mode="qa",
+        seed=message.message_id,
+    )
+    try:
+        for preview in (
+            "Draft test: analyzing question...",
+            "Draft test: preparing examples...",
+            "Draft test: finalizing answer...",
+        ):
+            await asyncio.sleep(1.3)
+            await update_draft_or_fallback(message.bot, chat_id, preview)
+    finally:
+        await finish_draft_if_needed(message.bot, chat_id)
+
+    await message.answer(
+        "Draft test complete. Final message was sent through normal sendMessage flow."
     )
 
 
