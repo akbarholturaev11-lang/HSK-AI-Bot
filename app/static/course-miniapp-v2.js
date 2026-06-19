@@ -6,12 +6,22 @@
       reinforce: "Mustahkamlash",
       check: "Tekshirish",
       continue: "Davom etish",
+      understood: "Tushunarli",
       return: "Botga qaytish",
       correct: "To'g'ri!",
       wrong: "Yana bir marta ko'ring",
       correctAnswer: "To'g'ri javob",
       yourAnswer: "Sizning javobingiz",
+      explainError: "Xatoni tushuntirish",
+      explanationTitle: "Xato sababi",
+      answerLine: "Javob",
+      noExplanation: "Javobni solishtiring: ma'no, so'z tartibi yoki tanlangan chip mos kelmagan.",
       listen: "Eshitish",
+      listenSlow: "Sekin",
+      speak: "Gapirish",
+      recording: "Eshitilyapti...",
+      voiceUnsupported: "Bu qurilmada ovoz tanish ishlamadi",
+      skipVoice: "O'tkazib yuborish",
       seen: "Ko'rdim",
       tapPairs: "Juftliklarni tanlang",
       orderPlaceholder: "So'zlarni shu yerga yig'ing",
@@ -41,6 +51,7 @@
       type_match_pairs: "Moslashtirish",
       type_quick_match: "Tez moslashtirish",
       type_stroke_preview: "Iyeroglif",
+      type_speak_repeat: "Ovoz bilan takrorlash",
     },
     ru: {
       brand: "HSK AI",
@@ -48,12 +59,22 @@
       reinforce: "Закрепление",
       check: "Проверить",
       continue: "Продолжить",
+      understood: "Понятно",
       return: "Вернуться в бот",
       correct: "Правильно!",
       wrong: "Посмотрите ещё раз",
       correctAnswer: "Правильный ответ",
       yourAnswer: "Ваш ответ",
+      explainError: "Объяснение ошибки",
+      explanationTitle: "Почему ошибка",
+      answerLine: "Ответ",
+      noExplanation: "Сравните ответ: значение, порядок слов или выбранный чип не совпал.",
       listen: "Слушать",
+      listenSlow: "Медленно",
+      speak: "Говорить",
+      recording: "Слушаю...",
+      voiceUnsupported: "Распознавание голоса недоступно на этом устройстве",
+      skipVoice: "Пропустить",
       seen: "Посмотрел",
       tapPairs: "Выберите пары",
       orderPlaceholder: "Соберите слова здесь",
@@ -83,6 +104,7 @@
       type_match_pairs: "Пары",
       type_quick_match: "Быстрые пары",
       type_stroke_preview: "Иероглиф",
+      type_speak_repeat: "Повторить голосом",
     },
     tj: {
       brand: "HSK AI",
@@ -90,12 +112,22 @@
       reinforce: "Мустаҳкамкунӣ",
       check: "Санҷидан",
       continue: "Давом додан",
+      understood: "Фаҳмо",
       return: "Бозгашт ба бот",
       correct: "Дуруст!",
       wrong: "Боз як бор бинед",
       correctAnswer: "Ҷавоби дуруст",
       yourAnswer: "Ҷавоби шумо",
+      explainError: "Шарҳи хато",
+      explanationTitle: "Сабаби хато",
+      answerLine: "Ҷавоб",
+      noExplanation: "Ҷавобро муқоиса кунед: маъно, тартиби калимаҳо ё чипи интихобшуда мувофиқ нашуд.",
       listen: "Гӯш кардан",
+      listenSlow: "Оҳиста",
+      speak: "Гап задан",
+      recording: "Гӯш карда истодаам...",
+      voiceUnsupported: "Шинохти овоз дар ин дастгоҳ дастрас нест",
+      skipVoice: "Гузарондан",
       seen: "Дидам",
       tapPairs: "Ҷуфтҳоро интихоб кунед",
       orderPlaceholder: "Калимаҳоро ин ҷо ҷамъ кунед",
@@ -125,8 +157,16 @@
       type_match_pairs: "Ҷуфтҳо",
       type_quick_match: "Ҷуфтҳои тез",
       type_stroke_preview: "Иероглиф",
+      type_speak_repeat: "Бо овоз такрор кардан",
     },
   };
+
+  const CHARACTERS = [
+    { id: "lumo", name: "Lumo", accent: "#7ce66b", face: "#d9fff2", shell: "#2dd4bf", mood: "curious", trait: "fast-feedback coach" },
+    { id: "byte", name: "Byte", accent: "#67b7ff", face: "#eaf6ff", shell: "#3b82f6", mood: "sharp", trait: "grammar scanner" },
+    { id: "nuri", name: "Nuri", accent: "#c084fc", face: "#f4e8ff", shell: "#8b5cf6", mood: "calm", trait: "pronunciation listener" },
+    { id: "orbit", name: "Orbit", accent: "#f9a8d4", face: "#fff0f7", shell: "#ec4899", mood: "playful", trait: "memory booster" },
+  ];
 
   function l(state, key, vars = {}) {
     let text = (LABELS[state.lang] || LABELS.uz)[key] || LABELS.uz[key] || key;
@@ -157,6 +197,103 @@
 
   function compact(value) {
     return String(value || "").trim();
+  }
+
+  function normalizeVoiceText(value) {
+    return String(value || "")
+      .toLowerCase()
+      .replace(/[\s。，、！？!?.,;:：；"'“”‘’()（）\[\]{}<>《》-]/g, "")
+      .trim();
+  }
+
+  function voiceMatches(actual, expected) {
+    const heard = normalizeVoiceText(actual);
+    const target = normalizeVoiceText(expected);
+    if (!heard || !target) return false;
+    return heard === target || heard.includes(target) || (target.includes(heard) && heard.length >= 2);
+  }
+
+  function speechRecognitionFactory() {
+    return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  }
+
+  function getCharacter(state, task) {
+    if (task.type === "speak_repeat") return CHARACTERS.find((item) => item.id === "nuri") || CHARACTERS[0];
+    if (String(task.type || "").includes("grammar")) return CHARACTERS.find((item) => item.id === "byte") || CHARACTERS[0];
+    if (isMatchType(task.type)) return CHARACTERS.find((item) => item.id === "orbit") || CHARACTERS[0];
+    const seed = `${state.lessonId}:${state.blockNo || 0}:${task.id || state.index}:${task.type || ""}`;
+    let value = 0;
+    for (let i = 0; i < seed.length; i += 1) value = (value + seed.charCodeAt(i) * (i + 1)) % 997;
+    return CHARACTERS[value % CHARACTERS.length];
+  }
+
+  function robotSvg(character, mood = "idle") {
+    const happy = mood === "happy";
+    const sad = mood === "sad";
+    const listening = mood === "listening";
+    const eyeY = happy ? 61 : 58;
+    const eyeShape = listening ? "M52 58 q6 -7 12 0" : `M52 ${eyeY} h14`;
+    const rightEyeShape = listening ? "M86 58 q6 -7 12 0" : `M86 ${eyeY} h14`;
+    const mouth = happy ? "M63 84 q13 14 28 0" : sad ? "M64 91 q13 -12 28 0" : "M66 86 h24";
+    const wave = listening
+      ? `<path d="M118 48 q13 12 0 24" fill="none" stroke="${attr(character.accent)}" stroke-width="5" stroke-linecap="round"/><path d="M128 41 q24 20 0 40" fill="none" stroke="${attr(character.accent)}" stroke-width="4" stroke-linecap="round" opacity=".7"/>`
+      : "";
+    return `
+      <svg viewBox="0 0 160 160" role="img" aria-label="${attr(character.name)}" class="cmv2-robot-svg">
+        <ellipse cx="80" cy="139" rx="48" ry="10" fill="#091216" opacity=".35"/>
+        <path d="M80 27 v-13" stroke="${attr(character.accent)}" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="80" cy="10" r="8" fill="${attr(character.accent)}"/>
+        <rect x="24" y="36" width="112" height="92" rx="30" fill="${attr(character.shell)}"/>
+        <rect x="35" y="47" width="90" height="68" rx="24" fill="${attr(character.face)}"/>
+        <rect x="14" y="65" width="18" height="36" rx="9" fill="#263842"/>
+        <rect x="128" y="65" width="18" height="36" rx="9" fill="#263842"/>
+        <path d="${eyeShape}" fill="none" stroke="#132129" stroke-width="8" stroke-linecap="round"/>
+        <path d="${rightEyeShape}" fill="none" stroke="#132129" stroke-width="8" stroke-linecap="round"/>
+        <path d="${mouth}" fill="none" stroke="#132129" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="47" cy="76" r="5" fill="${attr(character.accent)}" opacity=".55"/>
+        <circle cx="111" cy="76" r="5" fill="${attr(character.accent)}" opacity=".55"/>
+        <path d="M50 128 v12M110 128 v12" stroke="#263842" stroke-width="10" stroke-linecap="round"/>
+        ${wave}
+      </svg>
+    `;
+  }
+
+  function bubbleHtml(state, task) {
+    const fillLike = FILL_TYPES.has(task.type);
+    const contextLike = CONTEXT_TYPES.has(task.type);
+    let main = "";
+    let sub = task.hint || "";
+    if (task.type === "stroke_preview") {
+      main = esc(task.word || (task.chars || []).join(""));
+      sub = [task.pinyin, task.meaning].filter(Boolean).join(" · ");
+    } else if (isMatchType(task.type)) {
+      main = esc(task.prompt || l(state, "tapPairs"));
+      sub = task.explanation || "";
+    } else if (isOrderType(task.type)) {
+      main = esc(task.translation || task.source || task.prompt || "");
+      sub = l(state, "orderPlaceholder");
+    } else if (task.type === "speak_repeat") {
+      main = esc(task.audioText || task.answer || "");
+      sub = task.translation || task.source || l(state, "type_speak_repeat");
+    } else if (task.sentence) {
+      main = fillLike ? renderBlankText(task.sentence, "") : renderHighlightedText(task.sentence);
+      sub = task.source || task.translation || task.hint || "";
+    } else if (task.source) {
+      main = contextLike ? renderHighlightedText(task.source) : esc(task.source);
+      sub = task.translation || task.hint || "";
+    } else {
+      main = esc(task.hint || task.label || taskLabel(state, task.type, task.type));
+      sub = task.label && task.hint ? task.label : "";
+    }
+    const audioText = task.audioText || (task.type === "speak_repeat" ? task.answer : "");
+    const audioButton = audioText
+      ? `<button class="cmv2-audio cmv2-bubble-audio" id="cmv2-bubble-audio" type="button" data-audio="${attr(audioText)}">▶ ${esc(l(state, "listen"))}</button>`
+      : "";
+    return `
+      <div class="cmv2-bubble-main">${main}</div>
+      ${sub ? `<div class="cmv2-bubble-sub">${esc(sub)}</div>` : ""}
+      ${audioButton}
+    `;
   }
 
   function arraysEqual(a, b) {
@@ -263,6 +400,22 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
 .cmv2-status{margin-top:14px;border-radius:16px;padding:12px 13px;background:#f2f6fb;color:#637083;font-weight:750;font-size:13px;line-height:1.4;}
 .cmv2-error{padding:22px;background:#fff;border:1px solid #e5eaf2;border-radius:20px;box-shadow:0 10px 28px rgba(25,36,59,.07);}
 @media (min-width:640px){.cmv2{max-width:520px;margin:0 auto;border-left:1px solid #edf0f6;border-right:1px solid #edf0f6;}.cmv2-feedback,.cmv2-footer{left:50%;right:auto;width:520px;transform:translateX(-50%);} .cmv2-feedback{transform:translate(-50%,18px);} .cmv2-feedback.show{transform:translate(-50%,0);}}
+body.course-miniapp-v2{background:#131f24;color:#f2f7fb;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+.cmv2{background:#131f24;color:#f2f7fb;}
+.cmv2-top{background:#131f24;border-bottom:0;padding:calc(14px + env(safe-area-inset-top,0px)) 20px 8px;backdrop-filter:none;}
+.cmv2-row{gap:14px;}.cmv2-close{background:transparent;color:#6f838f;border-radius:10px;font-size:34px;font-weight:800;width:42px;height:42px;}.cmv2-brand{color:#7ce66b;font-size:24px;font-weight:950;letter-spacing:0;}.cmv2-xp{color:#f28acb;font-size:20px;min-width:68px;}.cmv2-xp::before{content:"⚡";display:inline-grid;place-items:center;width:29px;height:29px;margin-right:8px;border-radius:8px;background:#f28acb;color:#fff;font-size:19px;vertical-align:middle;box-shadow:inset -6px 0 rgba(0,0,0,.12);}
+.cmv2-progress{height:20px;background:#3a4853;border-radius:999px;margin-top:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06);}.cmv2-progress span{background:linear-gradient(90deg,#68f7e5 0%,#55b4ff 46%,#7ee35f 100%);box-shadow:inset 0 -4px rgba(0,0,0,.08);}.cmv2-main{padding:20px 20px 196px;background:#131f24;}.cmv2-meta{margin-bottom:16px;}.cmv2-pill{background:transparent;color:#c18cff;font-size:19px;text-transform:uppercase;letter-spacing:0;font-weight:950;padding:0;min-height:0;border-radius:0;}.cmv2-count{color:#7f929d;font-size:13px;font-weight:850;}.cmv2-prompt{color:#f5f7fb;font-size:27px;line-height:1.15;margin:0 0 20px;font-weight:950;}
+.cmv2-scene{display:grid;grid-template-columns:minmax(104px,34%) 1fr;gap:14px;align-items:end;margin:0 0 22px;}.cmv2-character{position:relative;min-height:160px;display:flex;align-items:flex-end;justify-content:center;}.cmv2-robot-svg{width:min(172px,100%);height:auto;display:block;filter:drop-shadow(0 12px 0 rgba(0,0,0,.18));}.cmv2-character-tag{position:absolute;left:50%;bottom:-3px;transform:translateX(-50%);display:flex;align-items:center;gap:5px;min-height:24px;padding:3px 9px;border-radius:999px;background:#22313a;color:#dbe8ef;border:1px solid #40515d;font-size:11px;font-weight:900;white-space:nowrap;}
+.cmv2-bubble{position:relative;min-height:132px;border:3px solid #40515d;border-radius:18px;padding:20px 20px 16px;background:#131f24;color:#f7fbff;align-self:center;}.cmv2-bubble::before{content:"";position:absolute;left:-26px;bottom:35px;width:26px;height:24px;background:#131f24;border-left:3px solid #40515d;border-bottom:3px solid #40515d;transform:skewX(-34deg);border-bottom-left-radius:5px;}.cmv2-bubble-main{font-size:32px;line-height:1.25;font-weight:650;color:#f7fbff;word-break:break-word;}.cmv2-bubble-sub{margin-top:10px;color:#7f929d;font-size:15px;line-height:1.35;font-weight:800;}.cmv2-bubble-audio{margin:14px 0 0;}.cmv2-audio{background:transparent;color:#61bfff;border:0;padding:8px 0;font-size:17px;font-weight:950;}
+.cmv2-source,.cmv2-sentence{background:transparent;border:0;border-radius:0;padding:0;margin:0 0 14px;box-shadow:none;color:#f2f7fb;}.cmv2-source-main,.cmv2-sentence-main{color:#f2f7fb;font-size:29px;}.cmv2-source-sub{color:#7f929d;font-weight:800;}.cmv2-highlight{background:transparent;color:#f7fbff;border-bottom:4px dotted #738692;border-radius:0;padding:0 2px;}.cmv2-blank{color:#f2f7fb;border-bottom:4px solid #40515d;}.cmv2-slot{border-color:#4d6370;background:#192830;color:#f7fbff;box-shadow:0 4px 0 #2d3d47;min-width:78px;}.cmv2-slot.empty{background:#192830;color:#697d88;border-style:solid;box-shadow:0 4px 0 #2d3d47;}.cmv2-slot.filled{background:#20313b;color:#f7fbff;border-color:#8b5cf6;box-shadow:0 4px 0 #5b3ca1;}
+.cmv2-answer-lines{display:flex;flex-direction:column;gap:28px;margin:18px 0 42px;}.cmv2-answer-line{height:2px;background:#40515d;border-radius:999px;}.cmv2-options{display:flex;flex-direction:row;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center;margin-top:28px;}.cmv2-option,.cmv2-chip,.cmv2-match-btn{background:#131f24;color:#f5f7fb;border:3px solid #40515d;box-shadow:0 5px 0 #2b3942;border-radius:16px;font-size:22px;font-weight:650;min-height:58px;}.cmv2-option{width:auto;min-width:92px;text-align:center;padding:12px 18px;}.cmv2-option.selected,.cmv2-chip.selected,.cmv2-match-btn.active{border-color:#67b7ff;background:#172933;box-shadow:0 5px 0 #315d75;}.cmv2-option.correct{border-color:#58cc02;background:#193220;box-shadow:0 5px 0 #3a8f0f;color:#dfffce;}.cmv2-option.wrong{border-color:#e75f5a;background:#321d22;box-shadow:0 5px 0 #a84b4a;color:#ffd9d7;}
+.cmv2-order-box{min-height:116px;border:0;border-top:2px solid #40515d;border-bottom:2px solid #40515d;border-radius:0;background:transparent;padding:20px 0;margin:0 0 28px;}.cmv2-placeholder{color:#647984;font-size:16px;font-weight:900;}.cmv2-bank{justify-content:center;gap:12px;}.cmv2-chip{font-size:25px;padding:11px 18px;}.cmv2-chip:disabled{opacity:.25;background:#131f24;box-shadow:none;}.cmv2-match{gap:12px;margin-top:10px;}.cmv2-match-col{gap:12px;}.cmv2-match-btn{font-size:18px;}.cmv2-match-btn.done{border-color:#58cc02;background:#193220;color:#dfffce;box-shadow:0 5px 0 #3a8f0f;}.cmv2-pair{border:2px solid #40515d;background:#17252c;color:#f2f7fb;border-radius:14px;font-weight:850;}
+.cmv2-stroke{background:#17252c;border:3px solid #40515d;border-radius:20px;box-shadow:0 6px 0 #2b3942;color:#f2f7fb;}.cmv2-hanzi{color:#f7fbff;}.cmv2-pinyin{color:#67b7ff;}.cmv2-meaning{color:#9cadb6;}.cmv2-voice-card{display:flex;flex-direction:column;gap:14px;align-items:center;margin-top:10px;}.cmv2-mic{width:108px;height:108px;border-radius:999px;border:4px solid #67b7ff;background:#172933;color:#f7fbff;font-size:38px;font-weight:950;box-shadow:0 8px 0 #315d75;}.cmv2-mic.recording{border-color:#f28acb;background:#332331;box-shadow:0 8px 0 #9f4d7b;animation:cmv2-pulse 1s infinite;}.cmv2-transcript{min-height:52px;width:100%;border:2px solid #40515d;border-radius:16px;padding:13px 14px;color:#dbe8ef;background:#17252c;font-size:18px;font-weight:800;text-align:center;}.cmv2-voice-skip{border:0;background:transparent;color:#9cadb6;font-size:15px;font-weight:900;text-decoration:underline;}
+.cmv2-feedback{bottom:calc(78px + env(safe-area-inset-bottom,0px));padding:0;z-index:35;}.cmv2-sheet{border-radius:0;padding:22px 20px 20px;background:#22313a;border:0;box-shadow:none;}.cmv2-sheet.ok{background:#193320;color:#58cc02;border:0;}.cmv2-sheet.no{background:#22313a;color:#e75f5a;border:0;}.cmv2-sheet-title{font-size:28px;font-weight:950;margin-bottom:10px;}.cmv2-sheet-text{font-size:19px;line-height:1.35;font-weight:650;color:inherit;}.cmv2-explain-btn{width:100%;min-height:58px;margin-top:18px;border:3px solid #a85b5d;border-radius:18px;background:transparent;color:#e75f5a;font-size:17px;font-weight:950;text-transform:uppercase;}.cmv2-footer{background:#22313a;border-top:0;padding:12px 20px calc(14px + env(safe-area-inset-bottom,0px));}.cmv2-primary{min-height:62px;border-radius:18px;background:#58cc02;color:#10210b;font-size:18px;font-weight:950;box-shadow:0 7px 0 #46a302;text-transform:uppercase;}.cmv2-primary:active{box-shadow:0 4px 0 #46a302;}.cmv2-primary.danger{background:#e75f5a;color:#111b20;box-shadow:0 7px 0 #c64a45;}.cmv2-primary:disabled{background:#3b4953;box-shadow:none;color:#6d7e88;opacity:1;}
+.cmv2-result h1{color:#f7fbff;}.cmv2-result p{color:#9cadb6;}.cmv2-result-icon{background:linear-gradient(135deg,#58cc02,#67b7ff);color:#101a1e;}.cmv2-status,.cmv2-error{background:#17252c;color:#dbe8ef;border:2px solid #40515d;box-shadow:none;}.cmv2-modal{position:fixed;inset:0;background:rgba(7,13,16,.72);display:grid;place-items:end center;padding:20px;z-index:60;}.cmv2-modal-card{width:min(100%,520px);max-height:82vh;overflow:auto;background:#22313a;border:3px solid #40515d;border-radius:24px;padding:20px;color:#f7fbff;box-shadow:0 24px 60px rgba(0,0,0,.36);}.cmv2-modal-head{display:grid;grid-template-columns:88px 1fr;gap:14px;align-items:center;margin-bottom:14px;}.cmv2-modal-title{font-size:24px;font-weight:950;color:#f7fbff;}.cmv2-modal-text{font-size:17px;line-height:1.45;color:#dbe8ef;font-weight:700;margin:0 0 16px;}.cmv2-modal-answer{border:2px solid #40515d;background:#17252c;border-radius:18px;padding:14px;margin:0 0 14px;color:#f7fbff;font-size:18px;font-weight:850;}
+@keyframes cmv2-pulse{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
+@media (max-width:390px){.cmv2-main{padding-left:16px;padding-right:16px}.cmv2-scene{grid-template-columns:100px 1fr;gap:10px}.cmv2-bubble{padding:16px 14px}.cmv2-bubble-main{font-size:27px}.cmv2-prompt{font-size:25px}.cmv2-option,.cmv2-chip{font-size:20px}}
+@media (min-width:640px){.cmv2{max-width:520px;border-left:1px solid #22313a;border-right:1px solid #22313a}.cmv2-feedback{left:50%;right:auto;width:520px;transform:translate(-50%,18px)}.cmv2-feedback.show{transform:translate(-50%,0)}.cmv2-footer{left:50%;right:auto;width:520px;transform:translateX(-50%)}}
 `;
     document.head.appendChild(style);
   }
@@ -278,14 +431,15 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     } catch (e) {}
   }
 
-  function speak(text) {
+  function speak(text, rate = 0.82) {
     const value = compact(text);
     if (!value || !window.speechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(value);
       utterance.lang = "zh-CN";
-      utterance.rate = 0.82;
+      utterance.rate = rate;
+      utterance.pitch = 1.02;
       window.speechSynthesis.speak(utterance);
     } catch (e) {}
   }
@@ -303,6 +457,9 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     }
     if (task.type === "stroke_preview") {
       return [task.word, task.pinyin, task.meaning].filter(Boolean).join(" · ");
+    }
+    if (task.type === "speak_repeat") {
+      return compact(task.answer || task.audioText);
     }
     return compact(task.answer);
   }
@@ -323,6 +480,7 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
   const ORDER_TYPES = new Set(["word_order", "build_chinese_sentence", "build_sentence_chips"]);
   const MATCH_TYPES = new Set(["match_pairs", "quick_match"]);
   const STROKE_TYPES = new Set(["stroke_preview"]);
+  const SPEAK_TYPES = new Set(["speak_repeat"]);
   const FILL_TYPES = new Set(["fill_blank", "fill_blank_choice", "tap_missing_word", "listen_and_fill"]);
   const CONTEXT_TYPES = new Set(["choose_meaning_in_context", "grammar_in_context"]);
 
@@ -336,6 +494,10 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
 
   function isMatchType(type) {
     return MATCH_TYPES.has(type);
+  }
+
+  function isSpeakType(type) {
+    return SPEAK_TYPES.has(type);
   }
 
   function renderHighlightedText(value) {
@@ -362,7 +524,7 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
   function normalizeTask(raw, index, prefix = "task") {
     const options = raw.opts || raw.options || [];
     let type = raw.type || (options.length ? "multiple_choice" : "multiple_choice");
-    if (!CHOICE_TYPES.has(type) && !ORDER_TYPES.has(type) && !MATCH_TYPES.has(type) && !STROKE_TYPES.has(type)) {
+    if (!CHOICE_TYPES.has(type) && !ORDER_TYPES.has(type) && !MATCH_TYPES.has(type) && !STROKE_TYPES.has(type) && !SPEAK_TYPES.has(type)) {
       type = options.length ? "multiple_choice" : type;
     }
     const answerIndex = Number.isInteger(raw.ans) ? raw.ans : Number(raw.ans);
@@ -424,6 +586,15 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
         audioText: words[0].zh,
         options: words.map((item) => item.zh),
         answer: words[0].zh,
+        explanation: `${words[0].zh} = ${words[0].meaning}`,
+      });
+      tasks.push({
+        id: "fallback:speak",
+        type: "speak_repeat",
+        prompt: l(state, "type_speak_repeat"),
+        audioText: words[0].zh,
+        answer: words[0].zh,
+        translation: words[0].meaning,
         explanation: `${words[0].zh} = ${words[0].meaning}`,
       });
       tasks.push({
@@ -494,6 +665,7 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
   function renderTask(state) {
     state.checked = false;
     state.answer = null;
+    state.lastResult = null;
     const task = state.tasks[state.index];
     if (!task) return renderResult(state);
 
@@ -501,9 +673,11 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     const main = document.getElementById("cmv2-main");
     const primary = document.getElementById("cmv2-primary");
     const feedback = document.getElementById("cmv2-feedback");
+    const character = getCharacter(state, task);
     feedback.className = "cmv2-feedback";
     feedback.innerHTML = "";
     primary.disabled = true;
+    primary.classList.remove("danger");
     primary.textContent = l(state, "check");
     primary.onclick = () => checkTask(state);
 
@@ -512,48 +686,46 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
         <span class="cmv2-pill">${esc(state.mode === "quiz" ? l(state, "quiz") : l(state, "reinforce"))}</span>
         <span class="cmv2-count">${esc(lessonLine(state))} · ${state.index + 1}/${state.tasks.length}</span>
       </div>
-      <div class="cmv2-pill" style="margin-bottom:12px;">${esc(taskLabel(state, task.type, task.label))}</div>
       <h1 class="cmv2-prompt">${esc(task.prompt || task.label || "")}</h1>
+      <section class="cmv2-scene">
+        <div class="cmv2-character">
+          ${robotSvg(character, task.type === "speak_repeat" ? "listening" : "idle")}
+          <div class="cmv2-character-tag">${esc(character.name)} · ${esc(character.mood)}</div>
+        </div>
+        <div class="cmv2-bubble">${bubbleHtml(state, task)}</div>
+      </section>
       <div id="cmv2-task"></div>
     `;
+
+    const bubbleAudio = document.getElementById("cmv2-bubble-audio");
+    if (bubbleAudio) bubbleAudio.onclick = () => speak(bubbleAudio.dataset.audio || task.audioText || task.answer);
 
     const target = document.getElementById("cmv2-task");
     if (isOrderType(task.type)) renderOrderTask(state, target, task);
     else if (isMatchType(task.type)) renderMatchTask(state, target, task);
+    else if (isSpeakType(task.type)) renderSpeakTask(state, target, task);
     else if (task.type === "stroke_preview") renderStrokeTask(state, target, task);
     else renderChoiceTask(state, target, task);
   }
 
   function renderChoiceTask(state, target, task) {
-    const hasAudio = task.type === "listening_choice" || task.type === "listen_and_fill" || task.audioText;
     const fillLike = FILL_TYPES.has(task.type);
-    const contextLike = CONTEXT_TYPES.has(task.type);
-    const sentence = task.sentence
-      ? `<div class="cmv2-sentence"><div class="cmv2-sentence-main">${fillLike ? renderBlankText(task.sentence, "") : renderHighlightedText(task.sentence)}</div>${task.source ? `<div class="cmv2-source-sub">${esc(task.source)}</div>` : ""}</div>`
-      : "";
-    const source = task.source && !task.sentence
-      ? `<div class="cmv2-source"><div class="cmv2-source-main">${contextLike ? renderHighlightedText(task.source) : esc(task.source)}</div>${task.hint ? `<div class="cmv2-source-sub">${esc(task.hint)}</div>` : ""}</div>`
-      : "";
     target.innerHTML = `
-      ${source}
-      ${sentence}
-      ${hasAudio ? `<button class="cmv2-audio" id="cmv2-audio" type="button">▶ ${esc(l(state, "listen"))}</button>` : ""}
+      <div class="cmv2-answer-lines" aria-hidden="true">
+        <div class="cmv2-answer-line"></div>
+        <div class="cmv2-answer-line"></div>
+      </div>
       <div class="cmv2-options">
         ${(task.options || []).map((option, index) => `
           <button class="cmv2-option" type="button" data-index="${index}" data-value="${attr(option)}">${esc(option)}</button>
         `).join("")}
       </div>
     `;
-    const audio = document.getElementById("cmv2-audio");
-    if (audio) audio.onclick = () => speak(task.audioText || task.answer);
     target.querySelectorAll(".cmv2-option").forEach((button) => {
       button.onclick = () => {
         target.querySelectorAll(".cmv2-option").forEach((item) => item.classList.remove("selected"));
         button.classList.add("selected");
-        state.answer = {
-          selected_index: Number(button.dataset.index),
-          selected_answer: button.dataset.value,
-        };
+        state.answer = { selected_index: Number(button.dataset.index), selected_answer: button.dataset.value };
         if (fillLike) {
           const slot = document.getElementById("cmv2-blank-slot");
           if (slot) {
@@ -571,7 +743,6 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     const tokens = shuffle(task.tokens || [], `${task.id}:${state.attemptSeed || ""}`).map((token, index) => ({ id: `${index}:${token}`, text: token }));
     state.orderTokens = [];
     target.innerHTML = `
-      ${(task.translation || task.source) ? `<div class="cmv2-source"><div class="cmv2-source-sub">${esc(task.translation || task.source)}</div></div>` : ""}
       <div class="cmv2-order-box" id="cmv2-order-box"><span class="cmv2-placeholder">${esc(l(state, "orderPlaceholder"))}</span></div>
       <div class="cmv2-bank" id="cmv2-bank">
         ${tokens.map((token) => `<button class="cmv2-chip" type="button" data-id="${attr(token.id)}">${esc(token.text)}</button>`).join("")}
@@ -666,6 +837,65 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     syncPairs();
   }
 
+  function renderSpeakTask(state, target, task) {
+    const Recognition = speechRecognitionFactory();
+    const supported = Boolean(Recognition);
+    state.answer = { transcript: "", skipped: false, voice_unsupported: !supported };
+    target.innerHTML = `
+      <div class="cmv2-voice-card">
+        <button class="cmv2-mic" id="cmv2-mic" type="button" ${supported ? "" : "disabled"}>🎙</button>
+        <div class="cmv2-transcript" id="cmv2-transcript">${esc(supported ? l(state, "speak") : l(state, "voiceUnsupported"))}</div>
+        ${supported ? "" : `<button class="cmv2-voice-skip" id="cmv2-voice-skip" type="button">${esc(l(state, "skipVoice"))}</button>`}
+      </div>
+    `;
+    const primary = document.getElementById("cmv2-primary");
+    const transcriptBox = document.getElementById("cmv2-transcript");
+    const mic = document.getElementById("cmv2-mic");
+    const skip = document.getElementById("cmv2-voice-skip");
+    if (skip) {
+      skip.onclick = () => {
+        state.answer = { transcript: "", skipped: true, voice_unsupported: true };
+        primary.disabled = false;
+        transcriptBox.textContent = l(state, "voiceUnsupported");
+        haptic("tap");
+      };
+    }
+    if (!supported || !mic) return;
+    mic.onclick = () => {
+      const recognition = new Recognition();
+      recognition.lang = "zh-CN";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 3;
+      mic.classList.add("recording");
+      mic.disabled = true;
+      transcriptBox.textContent = l(state, "recording");
+      try { recognition.start(); } catch (e) {
+        mic.classList.remove("recording");
+        mic.disabled = false;
+        transcriptBox.textContent = l(state, "voiceUnsupported");
+        state.answer = { transcript: "", skipped: true, voice_unsupported: true };
+        primary.disabled = false;
+        return;
+      }
+      recognition.onresult = (event) => {
+        const transcript = event.results?.[0]?.[0]?.transcript || "";
+        state.answer = { transcript, skipped: false, voice_unsupported: false };
+        transcriptBox.textContent = transcript || l(state, "speak");
+        primary.disabled = !compact(transcript);
+      };
+      recognition.onerror = () => {
+        state.answer = { transcript: "", skipped: true, voice_unsupported: false };
+        transcriptBox.textContent = l(state, "skipVoice");
+        primary.disabled = false;
+      };
+      recognition.onend = () => {
+        mic.classList.remove("recording");
+        mic.disabled = false;
+      };
+      haptic("tap");
+    };
+  }
+
   function renderStrokeTask(state, target, task) {
     target.innerHTML = `
       <div class="cmv2-stroke">
@@ -685,15 +915,11 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     let correct = false;
     const answer = state.answer || {};
 
-    if (isChoiceType(task.type)) {
-      correct = compact(answer.selected_answer) === compact(task.answer);
-    } else if (isOrderType(task.type)) {
-      correct = arraysEqual(answer.answer_tokens, task.answer);
-    } else if (isMatchType(task.type)) {
-      correct = samePairs(answer.pairs, task.pairs);
-    } else if (task.type === "stroke_preview") {
-      correct = Boolean(answer.completed || answer.seen);
-    }
+    if (isChoiceType(task.type)) correct = compact(answer.selected_answer) === compact(task.answer);
+    else if (isOrderType(task.type)) correct = arraysEqual(answer.answer_tokens, task.answer);
+    else if (isMatchType(task.type)) correct = samePairs(answer.pairs, task.pairs);
+    else if (task.type === "stroke_preview") correct = Boolean(answer.completed || answer.seen);
+    else if (isSpeakType(task.type)) correct = voiceMatches(answer.transcript, task.answer || task.audioText);
 
     state.checked = true;
     if (correct) state.score += 1;
@@ -708,17 +934,23 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
       answer_tokens: answer.answer_tokens || [],
       pairs: answer.pairs || [],
       completed: Boolean(answer.completed || answer.seen),
+      transcript: answer.transcript || "",
+      skipped: Boolean(answer.skipped),
+      voice_unsupported: Boolean(answer.voice_unsupported),
       prompt: task.prompt,
       correct_answer: formatAnswer(task),
       explanation: task.explanation || "",
     };
+    state.lastResult = result;
     state.results.push(result);
     paintAnswerState(task, correct, answer);
-    showFeedback(state, task, correct);
+    showFeedback(state, task, correct, result);
     updateTop(state);
-    document.getElementById("cmv2-primary").disabled = false;
-    document.getElementById("cmv2-primary").textContent = l(state, "continue");
-    document.getElementById("cmv2-primary").onclick = () => continueTask(state);
+    const primary = document.getElementById("cmv2-primary");
+    primary.disabled = false;
+    primary.classList.toggle("danger", !correct);
+    primary.textContent = l(state, "continue");
+    primary.onclick = () => continueTask(state);
     haptic(correct ? "success" : "error");
   }
 
@@ -734,19 +966,46 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     });
   }
 
-  function showFeedback(state, task, correct) {
+  function showFeedback(state, task, correct, result) {
     const feedback = document.getElementById("cmv2-feedback");
     const answer = formatAnswer(task);
-    const text = correct
-      ? (task.explanation || l(state, "xp", { xp: 5 }))
-      : `${l(state, "correctAnswer")}: ${answer}${task.explanation ? ` · ${task.explanation}` : ""}`;
+    const text = correct ? (task.explanation || l(state, "xp", { xp: 5 })) : `${l(state, "correctAnswer")}: ${answer}`;
     feedback.innerHTML = `
       <div class="cmv2-sheet ${correct ? "ok" : "no"}">
         <div class="cmv2-sheet-title">${esc(correct ? l(state, "correct") : l(state, "wrong"))}</div>
         <div class="cmv2-sheet-text">${esc(text)}</div>
+        ${correct ? "" : `<button class="cmv2-explain-btn" id="cmv2-explain" type="button">${esc(l(state, "explainError"))}</button>`}
       </div>
     `;
     feedback.className = "cmv2-feedback show";
+    const explain = document.getElementById("cmv2-explain");
+    if (explain) explain.onclick = () => openExplanation(state, task, result);
+  }
+
+  function openExplanation(state, task, result) {
+    const existing = document.getElementById("cmv2-modal");
+    if (existing) existing.remove();
+    const character = getCharacter(state, task);
+    const correctAnswer = result?.correct_answer || formatAnswer(task);
+    const userAnswer = result?.transcript || result?.selected_answer || (result?.answer_tokens || []).join(" ") || "";
+    const explanation = task.explanation || result?.explanation || l(state, "noExplanation");
+    const modal = document.createElement("div");
+    modal.id = "cmv2-modal";
+    modal.className = "cmv2-modal";
+    modal.innerHTML = `
+      <div class="cmv2-modal-card" role="dialog" aria-modal="true">
+        <div class="cmv2-modal-head">
+          <div>${robotSvg(character, "sad")}</div>
+          <div><div class="cmv2-modal-title">${esc(l(state, "explanationTitle"))}</div><div class="cmv2-bubble-sub">${esc(character.name)} · ${esc(character.trait)}</div></div>
+        </div>
+        ${userAnswer ? `<div class="cmv2-modal-answer">${esc(l(state, "yourAnswer"))}: ${esc(userAnswer)}</div>` : ""}
+        <div class="cmv2-modal-answer">${esc(l(state, "answerLine"))}: ${esc(correctAnswer)}</div>
+        <p class="cmv2-modal-text">${esc(explanation)}</p>
+        <button class="cmv2-primary danger" id="cmv2-modal-ok" type="button">${esc(l(state, "understood"))}</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    document.getElementById("cmv2-modal-ok").onclick = () => modal.remove();
   }
 
   function continueTask(state) {
@@ -763,6 +1022,7 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
     const primary = document.getElementById("cmv2-primary");
     feedback.className = "cmv2-feedback";
     feedback.innerHTML = "";
+    primary.classList.remove("danger");
     const total = state.tasks.length;
     const percent = total ? Math.round((state.score / total) * 100) : 0;
     const title = state.mode === "quiz" ? l(state, "quizDone") : l(state, "reinforceDone");
@@ -776,6 +1036,7 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
       </div>
     `;
     primary.disabled = false;
+    primary.classList.remove("danger");
     primary.textContent = l(state, "return");
     primary.onclick = () => closeToBot(state);
 
@@ -809,6 +1070,9 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
         answer_tokens: item.answer_tokens,
         pairs: item.pairs,
         completed: item.completed,
+        transcript: item.transcript,
+        skipped: item.skipped,
+        voice_unsupported: item.voice_unsupported,
       })),
       wrong_items: wrongItems,
     });
@@ -823,6 +1087,9 @@ body.course-miniapp-v2 *{box-sizing:border-box;-webkit-tap-highlight-color:trans
       answer_tokens: item.answer_tokens,
       pairs: item.pairs,
       completed: item.completed,
+      transcript: item.transcript,
+      skipped: item.skipped,
+      voice_unsupported: item.voice_unsupported,
       correct: item.correct,
     }));
     return reportEvent(state, "homework_submitted", {

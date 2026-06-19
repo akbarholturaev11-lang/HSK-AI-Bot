@@ -207,6 +207,28 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-19 — Course Mini App Duolingo-style lesson shell and voice reinforcement
+
+Changed:
+- Course Mini App v2 quiz/homework renderer now uses a dark lesson shell with speech bubbles, bottom feedback, wrong-answer explanation modal, word-bank style chips, and original HSK AI robot characters instead of the previous card UI.
+- Wrong answers show a localized explanation button (`Объяснение ошибки` in Russian) and a second modal with user answer, correct answer, and explanation.
+- Reinforcement can include `speak_repeat`; the frontend uses Web Speech API (`zh-CN`) when available and sends transcript/skipped metadata, while backend grading validates transcript safely and allows fallback when speech recognition is unavailable.
+
+Why:
+- Quiz and Mustahkamlash should match the requested ready lesson experience while staying branded to HSK AI and preserving server-graded course flow.
+
+Files touched:
+- `app/static/course-miniapp-v2.js`
+- `app/services/course_miniapp_lesson_service.py`
+- `app/services/course_miniapp_result_service.py`
+- `app/bot/utils/course_miniapp.py`
+
+Risk:
+- Real speech recognition depends on Telegram WebView/browser support and user microphone permission; fallback skip prevents blocking.
+
+Follow-up:
+- Smoke test quiz/homework in Telegram on iOS and Android, especially `speak_repeat` microphone behavior.
+
 ### 2026-06-19 — Course Mini App micro-game question mix
 
 Changed:

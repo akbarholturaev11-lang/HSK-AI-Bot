@@ -25,6 +25,7 @@ _QUIZ_TEXT = {
         "listen_and_fill": "Eshiting va tanlang",
         "odd_one_out": "Mos kelmaydiganini toping",
         "quick_match": "Mos juftlikni toping",
+        "speak_repeat": "Xitoycha gapni ovoz bilan takrorlang",
         "meaning_hint": "ma'nosi: {meaning}",
         "correct": "To'g'ri javob: {zh} — {meaning}.",
         "grammar_cat": "Grammatika",
@@ -52,6 +53,7 @@ _QUIZ_TEXT = {
         "listen_and_fill": "Послушайте и выберите",
         "odd_one_out": "Найдите лишнее слово",
         "quick_match": "Найдите пары",
+        "speak_repeat": "Повторите китайскую фразу голосом",
         "meaning_hint": "значение: {meaning}",
         "correct": "Правильный ответ: {zh} — {meaning}.",
         "grammar_cat": "Грамматика",
@@ -79,6 +81,7 @@ _QUIZ_TEXT = {
         "listen_and_fill": "Гӯш кунед ва интихоб кунед",
         "odd_one_out": "Калимаи номувофиқро ёбед",
         "quick_match": "Ҷуфтҳои мувофиқро ёбед",
+        "speak_repeat": "Ҷумлаи чиниро бо овоз такрор кунед",
         "meaning_hint": "маъно: {meaning}",
         "correct": "Ҷавоби дуруст: {zh} — {meaning}.",
         "grammar_cat": "Грамматика",
@@ -525,6 +528,20 @@ class CourseMiniAppLessonService:
                 }
             )
 
+        if zh_sentence and translated_sentence:
+            tasks.append(
+                {
+                    "id": f"{lesson_order}:{scope}:reinforce:4",
+                    "type": "speak_repeat",
+                    "prompt": _QUIZ_TEXT[lang]["speak_repeat"],
+                    "audioText": zh_sentence,
+                    "answer": zh_sentence,
+                    "translation": translated_sentence,
+                    "source": translated_sentence,
+                    "explanation": f"{zh_sentence} = {translated_sentence}",
+                }
+            )
+
         sentence_candidates = self._sentence_word_candidates(vocab, sentence_pairs)
         if sentence_candidates:
             word, sentence, translation = sentence_candidates[0]
@@ -539,7 +556,7 @@ class CourseMiniAppLessonService:
                 if len(options) >= 2:
                     tasks.append(
                         {
-                            "id": f"{lesson_order}:{scope}:reinforce:4",
+                            "id": f"{lesson_order}:{scope}:reinforce:5",
                             "type": "fill_blank_choice",
                             "prompt": _QUIZ_TEXT[lang]["fill_blank_choice"],
                             "sentence": blank_sentence,

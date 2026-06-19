@@ -95,6 +95,19 @@ class CourseMiniAppResultService:
                 pairs.add((left, right))
         return pairs
 
+    @staticmethod
+    def _normalize_voice_text(value: Any) -> str:
+        text = str(value or "").lower()
+        return "".join(char for char in text if char.isalnum() or "一" <= char <= "鿿")
+
+    @classmethod
+    def _voice_matches(cls, transcript: Any, expected: Any) -> bool:
+        heard = cls._normalize_voice_text(transcript)
+        target = cls._normalize_voice_text(expected)
+        if not heard or not target:
+            return False
+        return heard == target or target in heard or (heard in target and len(heard) >= 2)
+
     async def _grade_reinforcement(self, user, lesson, payload: dict, answers: dict) -> dict | None:
         submitted = answers.get("reinforcement_results") or answers.get("practice_results")
         if not isinstance(submitted, list) or not submitted:
@@ -156,6 +169,16 @@ class CourseMiniAppResultService:
             elif task_type == "stroke_preview":
                 correct = bool(submitted_item.get("completed") or submitted_item.get("seen"))
                 normalized_answer = "seen" if correct else ""
+            elif task_type == "speak_repeat":
+                transcript = str(submitted_item.get("transcript") or "").strip()
+                expected = str(task.get("answer") or task.get("audioText") or "").strip()
+                skipped = bool(submitted_item.get("skipped") or submitted_item.get("voice_unsupported"))
+                correct = self._voice_matches(transcript, expected)
+                normalized_answer = {
+                    "transcript": transcript,
+                    "skipped": skipped,
+                    "voice_unsupported": bool(submitted_item.get("voice_unsupported")),
+                }
             else:
                 return None
 
