@@ -36,7 +36,7 @@ def release_feedback_optional_comment_keyboard(campaign_id: int) -> InlineKeyboa
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="✍️ Izoh yozish", callback_data=f"relfb:{campaign_id}:comment")],
-            [InlineKeyboardButton(text="➡️ Skip", callback_data=f"relfb:{campaign_id}:skip")],
+            [InlineKeyboardButton(text="➡️ O'tkazib yuborish", callback_data=f"relfb:{campaign_id}:skip")],
         ]
     )
 
@@ -84,17 +84,37 @@ def release_feedback_after_rating_keyboard(
         ])
     rows.extend([
         [InlineKeyboardButton(text="✍️ Izoh yozish", callback_data=f"relfb:{release_campaign_id}:comment")],
-        [InlineKeyboardButton(text="➡️ Skip", callback_data=f"relfb:{release_campaign_id}:skip")],
+        [InlineKeyboardButton(text="➡️ O'tkazib yuborish", callback_data=f"relfb:{release_campaign_id}:skip")],
     ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def release_feedback_feature_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="💬 Oddiy AI savol", callback_data="rf:feature:qa"),
+                InlineKeyboardButton(text="🖼 Foto tahlil", callback_data="rf:feature:image"),
+            ],
+            [
+                InlineKeyboardButton(text="📚 Kurs rejimi", callback_data="rf:feature:course"),
+                InlineKeyboardButton(text="👤 Profil", callback_data="rf:feature:profile"),
+            ],
+            [
+                InlineKeyboardButton(text="💳 Obuna/Chegirma", callback_data="rf:feature:subscription"),
+                InlineKeyboardButton(text="🧭 Umumiy", callback_data="rf:feature:general"),
+            ],
+            [InlineKeyboardButton(text="❌ Bekor qilish", callback_data="rf:cancel")],
+        ]
+    )
 
 
 def release_feedback_panel_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="➕ Yangi release", callback_data="rf:new")],
-            [InlineKeyboardButton(text="📋 Scheduled/Recent", callback_data="rf:list")],
-            [InlineKeyboardButton(text="🎯 Target filterlar", callback_data="rf:filters")],
+            [InlineKeyboardButton(text="➕ Yangi yangilik", callback_data="rf:new")],
+            [InlineKeyboardButton(text="📋 Rejadagi va oxirgilar", callback_data="rf:list")],
+            [InlineKeyboardButton(text="🎯 Kimlarga yuborish", callback_data="rf:filters")],
             [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
         ]
     )
@@ -123,7 +143,7 @@ def release_feedback_send_time_keyboard() -> InlineKeyboardMarkup:
 def release_feedback_confirm_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="👁 Admin test", callback_data="rf:test")],
+            [InlineKeyboardButton(text="👁 Test yuborish", callback_data="rf:test")],
             [
                 InlineKeyboardButton(text="✅ Saqlash", callback_data="rf:confirm"),
                 InlineKeyboardButton(text="❌ Bekor qilish", callback_data="rf:cancel"),
@@ -137,7 +157,7 @@ def release_feedback_list_keyboard(campaigns) -> InlineKeyboardMarkup:
     for campaign in campaigns:
         rows.append([
             InlineKeyboardButton(
-                text=f"📊 #{campaign.id} stats",
+                text=f"📊 #{campaign.id} statistika",
                 callback_data=f"rf:stats:{campaign.id}",
             )
         ])
@@ -149,8 +169,8 @@ def release_feedback_list_keyboard(campaigns) -> InlineKeyboardMarkup:
                 )
             ])
     rows.extend([
-        [InlineKeyboardButton(text="➕ Yangi release", callback_data="rf:new")],
-        [InlineKeyboardButton(text="⬅️ Release panel", callback_data="rf:panel")],
+        [InlineKeyboardButton(text="➕ Yangi yangilik", callback_data="rf:new")],
+        [InlineKeyboardButton(text="⬅️ Yangilik otzivi", callback_data="rf:panel")],
     ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -163,6 +183,6 @@ def release_feedback_stats_keyboard(campaign_id: int, can_stop: bool) -> InlineK
         ])
     rows.extend([
         [InlineKeyboardButton(text="📋 Ro'yxat", callback_data="rf:list")],
-        [InlineKeyboardButton(text="⬅️ Release panel", callback_data="rf:panel")],
+        [InlineKeyboardButton(text="⬅️ Yangilik otzivi", callback_data="rf:panel")],
     ])
     return InlineKeyboardMarkup(inline_keyboard=rows)

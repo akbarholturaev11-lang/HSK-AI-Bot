@@ -56,6 +56,7 @@ class ReleaseFeedbackRepository:
         content_type: str,
         media_file_id: Optional[str],
         send_at: datetime,
+        feature_key: str = "general",
         target_languages: Optional[list[str]] = None,
         status_filter: Optional[str] = None,
         level_filter: Optional[str] = None,
@@ -69,13 +70,14 @@ class ReleaseFeedbackRepository:
         created_by_telegram_id: Optional[int] = None,
         discount_percent: int = 20,
         discount_hours: int = 24,
-        trial_access_minutes: int = 30,
+        trial_access_minutes: int = 1440,
     ) -> ReleaseFeedbackCampaign:
         campaign = ReleaseFeedbackCampaign(
             title=title,
             message_text=message_text,
             content_type=content_type,
             media_file_id=media_file_id,
+            feature_key=feature_key or "general",
             status="scheduled",
             send_at=send_at,
             target_languages=encode_languages(target_languages),

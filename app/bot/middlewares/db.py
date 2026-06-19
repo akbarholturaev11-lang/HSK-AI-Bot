@@ -1,5 +1,6 @@
 from aiogram import BaseMiddleware
 from typing import Callable, Dict, Any, Awaitable
+from datetime import datetime, timezone
 
 from app.repositories.user_repo import UserRepository
 
@@ -27,6 +28,8 @@ class DBSessionMiddleware(BaseMiddleware):
                     if tg_user.username and user.username != tg_user.username:
                         user.username = tg_user.username
                         changed = True
+                    user.last_active_at = datetime.now(timezone.utc)
+                    changed = True
                     if changed:
                         await session.commit()
             return await handler(event, data)

@@ -9,6 +9,7 @@ from datetime import datetime, timezone, timedelta
 from decimal import Decimal, InvalidOperation
 from html import escape
 from math import isfinite
+from zoneinfo import ZoneInfo
 
 from app.bot.fsm.admin_portfolio import AdminPortfolioStates
 from app.bot.fsm.admin_management import AdminHelpStates, AdminPriceStates, AdminRequiredChannelStates, AdminUserStates
@@ -21,11 +22,6 @@ from app.db.models.payment import Payment
 from app.db.models.course_progress import CourseProgress
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
-from app.db.models.release_feedback import (
-    ReleaseFeedbackCampaign,
-    ReleaseFeedbackDelivery,
-    ReleaseFeedbackResponse,
-)
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
 from app.services.portfolio_service import PortfolioService
 from app.services.payment_qr_code_service import (
@@ -70,6 +66,7 @@ router = Router()
 ADMIN_MENU_TEXT = "<b>🛠 Admin panel</b>\n\nQuyidagi amallardan birini tanlang:"
 _ADMIN_FLOW_CHAT_ID = "admin_flow_chat_id"
 _ADMIN_FLOW_MSG_ID = "admin_flow_msg_id"
+ADMIN_STATS_TZ = ZoneInfo("Asia/Shanghai")
 
 
 def _is_admin(user_id: int) -> bool:
@@ -91,7 +88,7 @@ def admin_menu_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="🗑 Foydalanuvchini o'chirish", callback_data="adm:deleteuser_info")],
         [InlineKeyboardButton(text="📢 Broadcast xabar", callback_data="adm:broadcast_info")],
         [InlineKeyboardButton(text="📣 Reklama kampaniyasi", callback_data="adm:ads_panel")],
-        [InlineKeyboardButton(text="🆕 Release feedback", callback_data="adm:release_feedback")],
+        [InlineKeyboardButton(text="🆕 Yangilik otzivi", callback_data="adm:release_feedback")],
         [InlineKeyboardButton(text="🎁 Chegirma boshqaruv", callback_data="adm:discount_panel")],
         [InlineKeyboardButton(text="🤝 Hamkorlar", callback_data="adm:partners")],
         [InlineKeyboardButton(text="🆘 Help sozlamalari", callback_data="adm:help_settings")],
@@ -102,6 +99,13 @@ def admin_menu_keyboard() -> InlineKeyboardMarkup:
 
 def admin_back_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
+    ])
+
+
+def admin_stats_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="📝 Otziv statistikasi", callback_data="adm:feedback_stats")],
         [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
     ])
 
@@ -1908,7 +1912,8 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         return
 
     now = datetime.now(timezone.utc)
-    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    today_start = now.astimezone(ADMIN_STATS_TZ).replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
+    last_24h = now - timedelta(hours=24)
     week_ago = now - timedelta(days=7)
     month_ago = now - timedelta(days=30)
 
@@ -1952,6 +1957,9 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     )).scalar() or 0
     active_today = (await session.execute(
         select(func.count()).select_from(User).where(User.last_active_at >= today_start)
+    )).scalar() or 0
+    active_24h = (await session.execute(
+        select(func.count()).select_from(User).where(User.last_active_at >= last_24h)
     )).scalar() or 0
     active_week = (await session.execute(
         select(func.count()).select_from(User).where(User.last_active_at >= week_ago)
@@ -2090,47 +2098,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         select(func.count()).select_from(User).where(User.discount_used == True)  # noqa: E712
     )).scalar() or 0
 
-    # --- Feedback ---
-    bot_feedback_completed = (await session.execute(
-        select(func.count()).select_from(BotFeedback).where(BotFeedback.status == "completed")
-    )).scalar() or 0
-    bot_feedback_week = (await session.execute(
-        select(func.count()).select_from(BotFeedback).where(
-            BotFeedback.status == "completed",
-            BotFeedback.completed_at >= week_ago,
-        )
-    )).scalar() or 0
-    bot_feedback_disliked = (await session.execute(
-        select(func.count()).select_from(BotFeedback).where(
-            BotFeedback.status == "completed",
-            BotFeedback.disliked_code.is_not(None),
-        )
-    )).scalar() or 0
-    release_campaigns = (await session.execute(
-        select(func.count()).select_from(ReleaseFeedbackCampaign)
-    )).scalar() or 0
-    release_responses = (await session.execute(
-        select(func.count()).select_from(ReleaseFeedbackResponse)
-    )).scalar() or 0
-    release_responses_week = (await session.execute(
-        select(func.count()).select_from(ReleaseFeedbackResponse).where(
-            ReleaseFeedbackResponse.completed_at >= week_ago,
-        )
-    )).scalar() or 0
-    release_avg_rating = (await session.execute(
-        select(func.avg(ReleaseFeedbackResponse.rating))
-    )).scalar() or 0
-    release_try_clicked = (await session.execute(
-        select(func.count()).select_from(ReleaseFeedbackDelivery).where(
-            ReleaseFeedbackDelivery.try_clicked_at.is_not(None)
-        )
-    )).scalar() or 0
-    release_trial_granted = (await session.execute(
-        select(func.count()).select_from(ReleaseFeedbackDelivery).where(
-            ReleaseFeedbackDelivery.trial_granted_until.is_not(None)
-        )
-    )).scalar() or 0
-
     # --- Hisob ---
     free_cnt    = status_counts.get("free", 0)
     trial_cnt   = status_counts.get("trial", 0)
@@ -2163,7 +2130,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"{l.upper()}: {level_counts.get(l, 0)}" for l in level_order
     )
     lang_str = "  " + " | ".join(f"{k}: {v}" for k, v in sorted(lang_counts.items()))
-    now_str  = now.strftime("%d.%m.%Y %H:%M UTC")
+    now_str  = now.astimezone(ADMIN_STATS_TZ).strftime("%d.%m.%Y %H:%M Asia/Shanghai")
 
     text = (
         f"📊 <b>Statistika</b>  <i>{now_str}</i>\n"
@@ -2176,7 +2143,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
 
         f"<b>📅 FAOLLIK</b>\n"
         f"  Yangi:  bugun <b>+{new_today}</b>  |  hafta <b>+{new_week}</b>  |  oy <b>+{new_month}</b>\n"
-        f"  Aktiv:  bugun <b>{active_today}</b>  |  hafta <b>{active_week}</b>\n\n"
+        f"  Aktiv:  bugun <b>{active_today}</b>  |  24 soat <b>{active_24h}</b>  |  hafta <b>{active_week}</b>\n\n"
 
         f"<b>📊 DARAJALAR</b>\n"
         f"{level_str}\n\n"
@@ -2214,14 +2181,119 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Jami: <b>{ref_total}</b>   Faollashgan: <b>{ref_activated}</b>   Bonus: <b>{ref_bonus}</b>\n"
         f"  Chegirma eligible: <b>{discount_eligible}</b>   Ishlatilgan: <b>{discount_used_cnt}</b>\n\n"
 
-        f"<b>📝 FEEDBACK</b>\n"
-        f"  Bot otzivlari: <b>{bot_feedback_completed}</b>   7 kun: <b>+{bot_feedback_week}</b>   Kamchilik yozgan: <b>{bot_feedback_disliked}</b>\n"
-        f"  Release kampaniya: <b>{release_campaigns}</b>   Javob: <b>{release_responses}</b>   7 kun: <b>+{release_responses_week}</b>\n"
-        f"  Release avg: <b>{round(float(release_avg_rating or 0), 2)}</b>   Sinab ko'rish: <b>{release_try_clicked}</b>   Test access: <b>{release_trial_granted}</b>\n\n"
-
         f"<b>📈 KONVERSIYA</b>\n"
         f"  User → Paid: <b>{conversion}%</b>\n"
         f"  Savol berganlar: <b>{qa_users}</b> (<b>{engagement}%</b>)"
+    )
+
+    await callback.answer()
+    await _edit_callback_message(
+        callback,
+        text,
+        reply_markup=admin_stats_keyboard(),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(F.data == "adm:feedback_stats")
+async def admin_feedback_stats_callback(callback: CallbackQuery, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    now = datetime.now(timezone.utc)
+    week_ago = now - timedelta(days=7)
+    month_ago = now - timedelta(days=30)
+
+    completed = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(BotFeedback.status == "completed")
+    )).scalar() or 0
+    completed_week = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.completed_at >= week_ago,
+        )
+    )).scalar() or 0
+    completed_month = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.completed_at >= month_ago,
+        )
+    )).scalar() or 0
+    price_high = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_code == "price",
+        )
+    )).scalar() or 0
+    limit_unhappy = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_code == "limits",
+        )
+    )).scalar() or 0
+    unclear = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_code == "unclear",
+        )
+    )).scalar() or 0
+    pace = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_code == "pace",
+        )
+    )).scalar() or 0
+    other = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_code == "other",
+        )
+    )).scalar() or 0
+    disliked_total = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_code.is_not(None),
+        )
+    )).scalar() or 0
+    text_comments = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_text.is_not(None),
+        )
+    )).scalar() or 0
+    screenshots = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(
+            BotFeedback.status == "completed",
+            BotFeedback.disliked_attachment_file_id.is_not(None),
+        )
+    )).scalar() or 0
+    discount_offers_sent = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(BotFeedback.price_offer_sent_at.is_not(None))
+    )).scalar() or 0
+    discount_offers_used = (await session.execute(
+        select(func.count()).select_from(BotFeedback).where(BotFeedback.price_offer_used_at.is_not(None))
+    )).scalar() or 0
+
+    now_str = now.strftime("%d.%m.%Y %H:%M UTC")
+    text = (
+        f"📝 <b>Otziv statistikasi</b>  <i>{now_str}</i>\n"
+        f"{'─' * 32}\n\n"
+        f"Jami yakunlangan: <b>{completed}</b>\n"
+        f"7 kun: <b>+{completed_week}</b>   30 kun: <b>+{completed_month}</b>\n\n"
+        f"<b>Asosiy noroziliklar</b>\n"
+        f"Obuna narxi baland: <b>{price_high}</b>\n"
+        f"Limitdan norozi: <b>{limit_unhappy}</b>\n"
+        f"Tushunarsiz javob: <b>{unclear}</b>\n"
+        f"Tezlik/pace muammo: <b>{pace}</b>\n"
+        f"Boshqa: <b>{other}</b>\n"
+        f"Kamchilik yozgan jami: <b>{disliked_total}</b>\n\n"
+        f"<b>Dalil/izoh</b>\n"
+        f"Matnli izoh: <b>{text_comments}</b>\n"
+        f"Screenshot: <b>{screenshots}</b>\n\n"
+        f"<b>Chegirma offer</b>\n"
+        f"Yuborilgan: <b>{discount_offers_sent}</b>\n"
+        f"Ishlatilgan: <b>{discount_offers_used}</b>"
     )
 
     await callback.answer()

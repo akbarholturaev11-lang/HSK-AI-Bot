@@ -207,6 +207,39 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-19 — Release feedback fixes and active stats
+
+Changed:
+- Release feedback now asks admin which bot area changed and routes `Sinab ko'rish` toward that feature when possible.
+- Release feedback reward text is disclosed before rating; after feedback it confirms the promised 20% / 24-hour discount.
+- Release feedback test access is 24 hours and creates a small fixed AI usage budget, avoiding immediate free daily limit blocking.
+- Per-user release feedback discount campaigns are one-use, and the Mini App can fall back to the standard 20% QR when a per-campaign QR is not uploaded.
+- Admin main stats no longer include release feedback stats; bot feedback stats moved to a separate `Otziv statistikasi` page.
+- `last_active_at` is updated on user messages/callbacks; admin active-user stats use Asia/Shanghai day boundaries and show 24-hour active users.
+
+Why:
+- Users must know the reward before giving feedback, must be able to test the actual changed feature, and admin stats must show real active usage.
+
+Files touched:
+- `app/bot/handlers/release_feedback.py`
+- `app/services/release_feedback_service.py`
+- `app/bot/keyboards/release_feedback.py`
+- `app/db/models/release_feedback.py`
+- `app/repositories/release_feedback_repo.py`
+- `app/services/subscription_miniapp_service.py`
+- `app/services/ai_usage_budget_service.py`
+- `app/bot/handlers/admin.py`
+- `app/bot/middlewares/db.py`
+- `app/bot/handlers/commands.py`
+- `alembic/versions/0042_release_feedback_feature_trial.py`
+
+Risk:
+- Release feedback test access is still not a paid subscription; paid checks must continue to rely on `payment_status="approved"`.
+- Existing active stats only become accurate for a user after their next message/callback updates `last_active_at`.
+
+Follow-up:
+- Run migration/deploy, then smoke test release create/test/send, feature routing, trial budget, QR checkout, and admin stats after a user interaction.
+
 ### 2026-06-19 — Release feedback approval workflow rule
 
 Changed:

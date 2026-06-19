@@ -13,6 +13,7 @@ from app.bot.keyboards.release_feedback import (
     release_feedback_cancel_keyboard,
     release_feedback_confirm_keyboard,
     release_feedback_discount_keyboard,
+    release_feedback_feature_keyboard,
     release_feedback_list_keyboard,
     release_feedback_panel_keyboard,
     release_feedback_rating_keyboard,
@@ -20,6 +21,8 @@ from app.bot.keyboards.release_feedback import (
     release_feedback_stats_keyboard,
     release_feedback_test_rating_keyboard,
 )
+from app.bot.keyboards.main_menu import main_menu_keyboard
+from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.workflow_message import delete_message_safely
 from app.config import settings
 from app.repositories.release_feedback_repo import (
@@ -53,6 +56,14 @@ _PANEL_CHAT_ID = "rf_panel_chat_id"
 _PANEL_MSG_ID = "rf_panel_msg_id"
 _LANG_LABELS = {"tj": "TJ", "uz": "UZ", "ru": "RU"}
 _MEDIA_LABELS = {"text": "Matn", "photo": "Foto", "video": "Video"}
+_FEATURE_LABELS = {
+    "general": "Umumiy",
+    "qa": "Oddiy AI savol",
+    "image": "Foto tahlil",
+    "course": "Kurs rejimi",
+    "profile": "Profil",
+    "subscription": "Obuna/Chegirma",
+}
 _MAX_COMMENT_TEXT = 1000
 
 
@@ -76,6 +87,7 @@ def _initial_state() -> dict:
         "discount_filter": None,
         "course_promo_filter": None,
         "activity_filter": None,
+        "feature_key": "general",
         "rf_section": "main",
     }
 
@@ -128,7 +140,7 @@ def _panel_text(data: dict) -> str:
 
     selected = _selected_languages(data)
     return (
-        "🆕 <b>Release feedback</b>\n\n"
+        "🆕 <b>Yangilik otzivi</b>\n\n"
         "<blockquote>"
         f"Til: <b>{_languages_label(selected)}</b>\n"
         f"Status: <b>{label('status', data.get('status_filter'))}</b>\n"
@@ -215,11 +227,11 @@ def _filter_keyboard(data: dict) -> InlineKeyboardMarkup:
             [section_btn("level", "📚 Daraja"), section_btn("mode", "🎯 Rejim")],
             [section_btn("payment", "💳 To'lov"), section_btn("discount", "🎁 Chegirma")],
             [section_btn("activity", "⚡ Aktivlik")],
-            [InlineKeyboardButton(text="➕ Yangi release", callback_data="rf:new")],
-            [InlineKeyboardButton(text="📋 Scheduled/Recent", callback_data="rf:list")],
-            [InlineKeyboardButton(text="⬅️ Release panel", callback_data="rf:panel")],
+            [InlineKeyboardButton(text="➕ Yangi yangilik", callback_data="rf:new")],
+            [InlineKeyboardButton(text="📋 Rejadagi va oxirgilar", callback_data="rf:list")],
+            [InlineKeyboardButton(text="⬅️ Yangilik otzivi", callback_data="rf:panel")],
         ])
-    rows.append([back_btn(), InlineKeyboardButton(text="➕ Yangi release", callback_data="rf:new")])
+    rows.append([back_btn(), InlineKeyboardButton(text="➕ Yangi yangilik", callback_data="rf:new")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -259,7 +271,7 @@ async def _edit_stored_panel(message: Message, state: FSMContext, text: str, rep
 async def _show_main_panel(target, state: FSMContext, *, edit: bool = True) -> None:
     await state.clear()
     await state.update_data(**_initial_state())
-    text = "🆕 <b>Release feedback</b>\n\nYangilik yuboring, userlardan 1-5 ball va izoh oling."
+    text = "🆕 <b>Yangilik otzivi</b>\n\nYangilik yuboring, userlardan 1-5 ball va izoh oling."
     if isinstance(target, CallbackQuery):
         await target.answer()
         if edit:
@@ -332,15 +344,16 @@ async def _confirm_text(session, data: dict) -> str:
     preview = escape(_content_preview(data))
     send_at = data.get("send_at")
     return (
-        "🆕 <b>Release feedback tasdiqlash</b>\n\n"
+        "🆕 <b>Yangilik otzivini tasdiqlash</b>\n\n"
         f"Nomi: <b>{escape(str(data.get('title') or '—'))}</b>\n"
         f"Tur: <b>{_MEDIA_LABELS.get(data.get('content_type'), '—')}</b>\n"
         f"<blockquote>{preview}</blockquote>\n\n"
         f"Target: <b>{count} ta user</b>\n"
+        f"Sinash joyi: <b>{escape(_FEATURE_LABELS.get(data.get('feature_key') or 'general', 'Umumiy'))}</b>\n"
         f"Yuborish vaqti: <b>{_fmt_time(send_at)}</b>\n"
         "Feedback: <b>1-5 ball</b>, 1-2 uchun izoh majburiy.\n"
-        "Sinab ko'rish: <b>non-paid userlarga 30 daqiqa test access</b>.\n"
-        "Chegirma: <b>non-paid userlarga 20% / 24 soat</b>.\n\n"
+        "Sinab ko'rish: <b>non-paid userlarga 24 soat test access</b>.\n"
+        "Chegirma: <b>non-paid userlarga oldindan aytilgan 20% / 24 soat</b>.\n\n"
         "Saqlaysizmi?"
     )
 
@@ -447,6 +460,79 @@ async def _complete_response(
         user=user,
     )
     return response, discount_campaign_id
+
+
+async def _route_try_feature(callback: CallbackQuery, state: FSMContext, session, user, campaign) -> None:
+    lang = user.language if user and user.language else "ru"
+    feature_key = getattr(campaign, "feature_key", None) or "general"
+
+    if feature_key == "course":
+        from app.bot.handlers.course import run_course_entry_flow
+
+        await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
+        await run_course_entry_flow(
+            session=session,
+            telegram_id=callback.from_user.id,
+            respond=callback.message.answer,
+        )
+        return
+
+    if feature_key == "profile":
+        from app.bot.handlers.commands import _profile_referral_count, _profile_reminder_text, _profile_text, profile_menu_keyboard
+
+        referral_total = await _profile_referral_count(session, user)
+        reminder_text = await _profile_reminder_text(session, user, lang)
+        await callback.message.answer(
+            _profile_text(user, lang, referral_total, reminder_text),
+            reply_markup=profile_menu_keyboard(lang, user),
+            parse_mode="HTML",
+        )
+        return
+
+    if feature_key == "subscription":
+        from app.bot.handlers.subscription import build_subscription_main_text_for_user
+
+        await callback.message.answer(
+            await build_subscription_main_text_for_user(session, user, lang),
+            reply_markup=subscription_miniapp_keyboard(lang, source="release_feedback_try", mode="subscription"),
+            parse_mode="HTML",
+        )
+        return
+
+    if feature_key == "qa":
+        user.learning_mode = "qa"
+        user.voice_mode = "none"
+        await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
+        await session.flush()
+        await callback.message.answer(
+            {
+                "uz": "Oddiy AI savol rejimi ochildi. Endi yangilangan joyni sinash uchun savolingizni yozing.",
+                "ru": "Открыт обычный режим AI-вопросов. Напишите вопрос, чтобы попробовать обновление.",
+                "tj": "Реҷаи одии саволи AI кушода шуд. Барои санҷидани навигарӣ саволи худро нависед.",
+            }.get(lang, "Напишите вопрос, чтобы попробовать обновление."),
+            reply_markup=main_menu_keyboard(lang),
+        )
+        return
+
+    if feature_key == "image":
+        await callback.message.answer(
+            {
+                "uz": "Foto tahlilni sinash uchun rasm yuboring.",
+                "ru": "Чтобы попробовать анализ фото, отправьте изображение.",
+                "tj": "Барои санҷидани таҳлили фото, расм фиристед.",
+            }.get(lang, "Отправьте изображение, чтобы попробовать обновление."),
+            reply_markup=main_menu_keyboard(lang),
+        )
+        return
+
+    await callback.message.answer(
+        {
+            "uz": "Yangilangan joyni sinash uchun menyudan kerakli bo'limni tanlang.",
+            "ru": "Чтобы попробовать обновление, выберите нужный раздел в меню.",
+            "tj": "Барои санҷидани навигарӣ, аз меню қисми лозимиро интихоб кунед.",
+        }.get(lang, "Выберите нужный раздел в меню."),
+        reply_markup=main_menu_keyboard(lang),
+    )
 
 
 @router.message(Command("release_feedback"))
@@ -587,7 +673,7 @@ async def rf_new(callback: CallbackQuery, state: FSMContext):
     await _edit_callback_panel(
         callback,
         state,
-        "🆕 <b>Yangi release feedback</b>\n\nRelease nomini yozing.",
+        "🆕 <b>Yangi yangilik otzivi</b>\n\nYangilik nomini yozing.",
         release_feedback_cancel_keyboard(),
     )
 
@@ -599,14 +685,14 @@ async def rf_title(message: Message, state: FSMContext):
     title = (message.text or "").strip()
     await delete_message_safely(message)
     if len(title) < 2:
-        await _edit_stored_panel(message, state, "Nom juda qisqa. Release nomini yozing.", release_feedback_cancel_keyboard())
+        await _edit_stored_panel(message, state, "Nom juda qisqa. Yangilik nomini yozing.", release_feedback_cancel_keyboard())
         return
     await state.update_data(title=title[:120])
     await state.set_state(ReleaseFeedbackAdminStates.waiting_content)
     await _edit_stored_panel(
         message,
         state,
-        "Release e'lonini yuboring:\n"
+        "Yangilik e'lonini yuboring:\n"
         "• matn\n"
         "• foto + caption\n"
         "• video + caption\n\n"
@@ -646,8 +732,32 @@ async def rf_content(message: Message, state: FSMContext):
         media_file_id=media_file_id,
         localized_message_text=None,
     )
+    await state.set_state(ReleaseFeedbackAdminStates.waiting_feature)
+    await _edit_stored_panel(
+        message,
+        state,
+        "Yangilik botning qaysi joyida sinab ko'riladi?",
+        release_feedback_feature_keyboard(),
+    )
+
+
+@router.callback_query(F.data.startswith("rf:feature:"))
+async def rf_feature(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    feature_key = callback.data.split(":")[2]
+    if feature_key not in _FEATURE_LABELS:
+        feature_key = "general"
+    await state.update_data(feature_key=feature_key)
     await state.set_state(None)
-    await _edit_stored_panel(message, state, "Qachon yuborilsin?", release_feedback_send_time_keyboard())
+    await callback.answer()
+    await _edit_callback_panel(
+        callback,
+        state,
+        f"Sinash joyi: <b>{escape(_FEATURE_LABELS[feature_key])}</b>\n\nQachon yuborilsin?",
+        release_feedback_send_time_keyboard(),
+    )
 
 
 @router.callback_query(F.data.startswith("rf:send_at:"))
@@ -710,7 +820,7 @@ async def rf_test(callback: CallbackQuery, state: FSMContext, session):
             await state.update_data(localized_message_text=localized)
         languages = broadcast_languages_or_all(_selected_languages(data))
         for lang in languages:
-            await callback.bot.send_message(callback.from_user.id, f"👁 Release test {_LANG_LABELS[lang]}")
+            await callback.bot.send_message(callback.from_user.id, f"👁 Yangilik testi {_LANG_LABELS[lang]}")
             await send_release_feedback_payload(
                 callback.bot,
                 chat_id=callback.from_user.id,
@@ -743,6 +853,7 @@ async def rf_confirm(callback: CallbackQuery, state: FSMContext, session):
         content_type=data["content_type"],
         media_file_id=data.get("media_file_id"),
         send_at=data["send_at"],
+        feature_key=data.get("feature_key") or "general",
         target_languages=_selected_languages(data),
         status_filter=data.get("status_filter"),
         level_filter=data.get("level_filter"),
@@ -758,12 +869,12 @@ async def rf_confirm(callback: CallbackQuery, state: FSMContext, session):
     campaign_id = campaign.id
     await session.commit()
     await state.clear()
-    await callback.answer("Release saqlandi", show_alert=True)
+    await callback.answer("Yangilik saqlandi", show_alert=True)
     await callback.message.edit_text(
-        f"✅ Release feedback #{campaign_id} saqlandi.\n"
+        f"✅ Yangilik otzivi #{campaign_id} saqlandi.\n"
         f"Target: {target_count} ta user\n"
         f"Yuborish vaqti: {_fmt_time(data['send_at'])}\n\n"
-        "Scheduler due release'larni 1 daqiqa ichida yuboradi.",
+        "Scheduler yuborish vaqti kelgan yangiliklarni 1 daqiqa ichida yuboradi.",
         reply_markup=release_feedback_panel_keyboard(),
         parse_mode="HTML",
     )
@@ -779,19 +890,19 @@ async def rf_list(callback: CallbackQuery, session):
     await callback.answer()
     if not campaigns:
         await callback.message.edit_text(
-            "Hozircha release feedback yo'q.",
+            "Hozircha yangilik otzivi yo'q.",
             reply_markup=release_feedback_panel_keyboard(),
             parse_mode="HTML",
         )
         return
-    lines = ["📋 <b>Release feedback kampaniyalari</b>", ""]
+    lines = ["📋 <b>Yangilik otzivi kampaniyalari</b>", ""]
     for item in campaigns:
         stats = await repo.stats(item.id)
         langs = _languages_label(decode_languages(item.target_languages))
         lines.append(
             f"#{item.id} <b>{escape(item.title)}</b> — {_status_label(item)}\n"
-            f"  Send: {_fmt_time(item.send_at)} · Til: {langs}\n"
-            f"  Sent: {stats.delivered}, xato: {stats.failed}, javob: {stats.responses}, avg: {stats.average_rating}"
+            f"  Yuborish: {_fmt_time(item.send_at)} · Til: {langs}\n"
+            f"  Yetdi: {stats.delivered}, xato: {stats.failed}, javob: {stats.responses}, o'rtacha: {stats.average_rating}"
         )
     await callback.message.edit_text(
         "\n\n".join(lines),
@@ -820,17 +931,17 @@ async def rf_stats(callback: CallbackQuery, session):
     if not comment_lines:
         comment_lines.append("  Izoh yo'q")
     text = (
-        f"📊 <b>Release feedback #{campaign.id}</b>\n"
+        f"📊 <b>Yangilik otzivi #{campaign.id}</b>\n"
         f"<b>{escape(campaign.title)}</b>\n\n"
         f"Status: <b>{_status_label(campaign)}</b>\n"
-        f"Send: <b>{_fmt_time(campaign.send_at)}</b>\n\n"
-        f"Delivered: <b>{stats.delivered}</b> · Failed: <b>{stats.failed}</b>\n"
-        f"Responses: <b>{stats.responses}</b> · Avg: <b>{stats.average_rating}</b>\n"
+        f"Yuborish: <b>{_fmt_time(campaign.send_at)}</b>\n\n"
+        f"Yetib bordi: <b>{stats.delivered}</b> · Xato: <b>{stats.failed}</b>\n"
+        f"Javoblar: <b>{stats.responses}</b> · O'rtacha: <b>{stats.average_rating}</b>\n"
         f"1: <b>{stats.rating_1}</b>  2: <b>{stats.rating_2}</b>  3: <b>{stats.rating_3}</b>  "
         f"4: <b>{stats.rating_4}</b>  5: <b>{stats.rating_5}</b>\n"
-        f"Comments/screenshots: <b>{stats.comments}</b>\n"
-        f"Try clicked: <b>{stats.try_clicked}</b> · Test access: <b>{stats.trial_granted}</b>\n"
-        f"Discount offered: <b>{stats.discount_offered}</b> · used/pending: <b>{stats.discount_used}</b>\n\n"
+        f"Izoh/screenshot: <b>{stats.comments}</b>\n"
+        f"Sinab ko'rish bosildi: <b>{stats.try_clicked}</b> · Test access: <b>{stats.trial_granted}</b>\n"
+        f"Chegirma berildi: <b>{stats.discount_offered}</b> · ishlatilgan/kutilmoqda: <b>{stats.discount_used}</b>\n\n"
         "<b>Oxirgi izohlar:</b>\n"
         + "\n".join(comment_lines)
     )
@@ -857,7 +968,7 @@ async def rf_stop(callback: CallbackQuery, session):
     await session.commit()
     await callback.answer("To'xtatildi", show_alert=True)
     await callback.message.edit_text(
-        f"⛔ Release feedback #{campaign_id} to'xtatildi.",
+        f"⛔ Yangilik otzivi #{campaign_id} to'xtatildi.",
         reply_markup=release_feedback_panel_keyboard(),
         parse_mode="HTML",
     )
@@ -871,7 +982,7 @@ async def rf_cancel(callback: CallbackQuery, state: FSMContext):
     await state.clear()
     await callback.answer()
     await callback.message.edit_text(
-        "❌ Release feedback bekor qilindi.",
+        "❌ Yangilik otzivi bekor qilindi.",
         reply_markup=release_feedback_panel_keyboard(),
         parse_mode="HTML",
     )
@@ -910,11 +1021,12 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
             campaign=campaign,
             user=user,
         )
-        await session.commit()
         if granted:
             await callback.answer(release_feedback_try_granted_text(lang), show_alert=True)
         else:
             await callback.answer(release_feedback_try_already_text(lang), show_alert=True)
+        await _route_try_feature(callback, state, session, user, campaign)
+        await session.commit()
         return
 
     if action == "rate" and value:

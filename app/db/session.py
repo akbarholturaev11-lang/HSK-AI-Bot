@@ -68,6 +68,9 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
     "ad_campaigns": {
         "button_config": "TEXT",
     },
+    "release_feedback_campaigns": {
+        "feature_key": "VARCHAR(32) DEFAULT 'general' NOT NULL",
+    },
     "bot_feedbacks": {
         "price_offer_due_at": "TIMESTAMP WITH TIME ZONE",
         "price_offer_sent_at": "TIMESTAMP WITH TIME ZONE",

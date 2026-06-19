@@ -78,10 +78,10 @@ def _profile_status_label(user, lang: str) -> str:
 
     if status == "active":
         return {
-            "tj": "Мӯҳлати санҷишӣ",
-            "uz": "Sinov muddati",
-            "ru": "Пробный срок",
-        }.get(lang, "Sinov muddati")
+            "tj": "Дастрасии тестӣ",
+            "uz": "Bepul test access",
+            "ru": "Тестовый доступ",
+        }.get(lang, "Bepul test access")
 
     return _status_label(status, lang)
 
@@ -283,7 +283,7 @@ def _profile_text(
             details.append(f"💳 <b>Обуна:</b> {plan}")
             details.append(f"⌛ <b>Анҷом:</b> {ends_str}")
         elif is_temporary_active and temporary_days is not None:
-            details.append(f"⏳ <b>Мӯҳлати санҷишӣ:</b> {_days_label(temporary_days, lang)}")
+            details.append("⏳ <b>Дастрасии тестӣ:</b> фаъол")
             details.append(f"⌛ <b>Анҷом:</b> {ends_str}")
         text = (
             f"<b>👤 Профили шумо</b>\n\n"
@@ -306,7 +306,7 @@ def _profile_text(
             details.append(f"💳 <b>Obuna:</b> {plan}")
             details.append(f"⌛ <b>Tugash:</b> {ends_str}")
         elif is_temporary_active and temporary_days is not None:
-            details.append(f"⏳ <b>Sinov muddati:</b> {_days_label(temporary_days, lang)}")
+            details.append("⏳ <b>Test access:</b> faol")
             details.append(f"⌛ <b>Tugash:</b> {ends_str}")
         text = (
             f"<b>👤 Profilingiz</b>\n\n"
@@ -328,7 +328,7 @@ def _profile_text(
         details.append(f"💳 <b>Подписка:</b> {plan}")
         details.append(f"⌛ <b>Окончание:</b> {ends_str}")
     elif is_temporary_active and temporary_days is not None:
-        details.append(f"⏳ <b>Пробный срок:</b> {_days_label(temporary_days, lang)}")
+        details.append("⏳ <b>Тестовый доступ:</b> активен")
         details.append(f"⌛ <b>Окончание:</b> {ends_str}")
     text = (
         f"<b>👤 Ваш профиль</b>\n\n"

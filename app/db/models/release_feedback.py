@@ -15,6 +15,7 @@ class ReleaseFeedbackCampaign(Base):
     message_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     content_type: Mapped[str] = mapped_column(String(16), default="text", nullable=False)
     media_file_id: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
+    feature_key: Mapped[str] = mapped_column(String(32), default="general", nullable=False)
 
     status: Mapped[str] = mapped_column(String(16), default="scheduled", index=True, nullable=False)
     send_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True, nullable=False)
@@ -35,7 +36,7 @@ class ReleaseFeedbackCampaign(Base):
 
     discount_percent: Mapped[int] = mapped_column(Integer, default=20, nullable=False)
     discount_hours: Mapped[int] = mapped_column(Integer, default=24, nullable=False)
-    trial_access_minutes: Mapped[int] = mapped_column(Integer, default=30, nullable=False)
+    trial_access_minutes: Mapped[int] = mapped_column(Integer, default=1440, nullable=False)
 
     created_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)
     created_at: Mapped[datetime] = mapped_column(

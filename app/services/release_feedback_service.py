@@ -13,20 +13,30 @@ from app.db.models.release_feedback import ReleaseFeedbackCampaign, ReleaseFeedb
 from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.release_feedback_repo import ReleaseFeedbackRepository, decode_languages
 from app.repositories.user_repo import UserRepository
+from app.services.ai_usage_budget_service import AIUsageBudgetService, RELEASE_FEEDBACK_TRIAL_PLAN_TYPE
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 from app.config import settings
 
 
 _PROMPT_TEXTS = {
-    "uz": "\n\nYangilik sizga qanchalik foydali bo'ldi? 1-5 ball bering.",
-    "ru": "\n\nНасколько полезным было обновление? Оцените от 1 до 5.",
-    "tj": "\n\nИн навигарӣ барои шумо то чӣ ҳад фоиданок буд? Аз 1 то 5 баҳогузорӣ кунед.",
+    "uz": (
+        "\n\nYangilikni sinab ko'ring va 1-5 ball bering. "
+        "Fikr qoldirsangiz, obunangiz bo'lmasa sizga 24 soatlik 20% chegirma beriladi."
+    ),
+    "ru": (
+        "\n\nПопробуйте обновление и оцените от 1 до 5. "
+        "Если оставите отзыв и у вас нет подписки, вам откроется скидка 20% на 24 часа."
+    ),
+    "tj": (
+        "\n\nНавигариро санҷед ва аз 1 то 5 баҳо диҳед. "
+        "Агар фикр гузоред ва обуна надошта бошед, барои шумо тахфифи 20% ба 24 соат кушода мешавад."
+    ),
 }
 
 _LOW_RATING_COMMENT_TEXTS = {
-    "uz": "Nima noqulay bo'ldi? Iltimos, qisqa izoh yoki screenshot yuboring.",
-    "ru": "Что было неудобно? Отправьте короткий комментарий или скриншот.",
-    "tj": "Чӣ ноқулай буд? Лутфан шарҳи кӯтоҳ ё скриншот фиристед.",
+    "uz": "Nima noqulay bo'ldi? Qisqa izoh yoki screenshot yuboring. Shundan keyin chegirma ochiladi.",
+    "ru": "Что было неудобно? Отправьте короткий комментарий или скриншот. После этого скидка откроется.",
+    "tj": "Чӣ ноқулай буд? Шарҳи кӯтоҳ ё скриншот фиристед. Баъд аз ин тахфиф кушода мешавад.",
 }
 
 _OPTIONAL_COMMENT_TEXTS = {
@@ -42,15 +52,15 @@ _THANKS_TEXTS = {
 }
 
 _DISCOUNT_TEXTS = {
-    "uz": "Rahmat. Sizga 24 soatlik 20% chegirma ochildi.",
-    "ru": "Спасибо. Для вас открыта скидка 20% на 24 часа.",
-    "tj": "Ташаккур. Барои шумо тахфифи 20% барои 24 соат кушода шуд.",
+    "uz": "Rahmat. Aytganimizdek, sizga 24 soatlik 20% chegirma berildi.",
+    "ru": "Спасибо. Как и обещали, для вас открыта скидка 20% на 24 часа.",
+    "tj": "Ташаккур. Тавре гуфта будем, барои шумо тахфифи 20% ба 24 соат дода шуд.",
 }
 
 _TRY_GRANTED_TEXTS = {
-    "uz": "Test access ochildi. 30 daqiqa ichida funksiyani sinab ko'rishingiz mumkin.",
-    "ru": "Тестовый доступ открыт. Вы можете попробовать функцию в течение 30 минут.",
-    "tj": "Дастрасии тестӣ кушода шуд. Шумо метавонед функсияро дар давоми 30 дақиқа санҷед.",
+    "uz": "Test access ochildi: 24 soat ichida yangilangan joyni 1-2 marta sinab ko'ring.",
+    "ru": "Тестовый доступ открыт: в течение 24 часов попробуйте обновлённый раздел 1-2 раза.",
+    "tj": "Дастрасии тестӣ кушода шуд: дар 24 соат қисми навшударо 1-2 маротиба санҷед.",
 }
 
 _TRY_ALREADY_TEXTS = {
@@ -58,6 +68,8 @@ _TRY_ALREADY_TEXTS = {
     "ru": "У вас уже есть доступ, чтобы попробовать эту функцию.",
     "tj": "Шумо аллакай барои санҷидани ин функсия дастрасӣ доред.",
 }
+
+RELEASE_FEEDBACK_TRIAL_BUDGET_USD = 0.03
 
 
 @dataclass(frozen=True)
@@ -269,7 +281,7 @@ class ReleaseFeedbackService:
             starts_at=now,
             ends_at=now + timedelta(hours=hours),
             target_telegram_id=user.telegram_id,
-            quota_total=None,
+            quota_total=1,
             repeat_interval_days=None,
             notify_enabled=False,
             created_by_telegram_id=campaign.created_by_telegram_id,
@@ -298,12 +310,17 @@ class ReleaseFeedbackService:
             return False, getattr(user, "end_date", None)
 
         now = datetime.now(timezone.utc)
-        until = now + timedelta(minutes=int(campaign.trial_access_minutes or 30))
+        until = now + timedelta(minutes=int(campaign.trial_access_minutes or 1440))
         current_end = getattr(user, "end_date", None)
         if current_end and current_end.tzinfo is None:
             current_end = current_end.replace(tzinfo=timezone.utc)
         if user.status == "active" and current_end and current_end > until:
-            until = current_end
+            await self.repo.mark_try_clicked(
+                campaign_id=campaign.id,
+                user_telegram_id=user.telegram_id,
+                trial_granted_until=current_end,
+            )
+            return False, current_end
 
         if user.status != "active":
             user.start_date = now
@@ -312,6 +329,18 @@ class ReleaseFeedbackService:
         user.questions_used = 0
         user.last_limit_reset_at = now
         user.expiry_reminder_sent_at = None
+        user.selected_plan_type = None
+        user.pending_checkout_msg_id = None
+
+        await AIUsageBudgetService(self.session).create_fixed_budget(
+            telegram_id=user.telegram_id,
+            plan_type=RELEASE_FEEDBACK_TRIAL_PLAN_TYPE,
+            amount=0,
+            currency="USD",
+            total_budget_usd=RELEASE_FEEDBACK_TRIAL_BUDGET_USD,
+            starts_at=now,
+            ends_at=until,
+        )
 
         await self.repo.mark_try_clicked(
             campaign_id=campaign.id,

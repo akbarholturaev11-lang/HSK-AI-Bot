@@ -18,6 +18,7 @@ RAILWAY_SHARE_USD = 0.0
 SEGMENT_COUNT = 2
 COOLDOWN_HOURS = 6
 REFERRAL_TRIAL_PLAN_TYPE = "referral_trial_3_days"
+RELEASE_FEEDBACK_TRIAL_PLAN_TYPE = "release_feedback_trial"
 BUDGET_EPSILON_USD = 0.000001
 
 MODEL_PRICING_USD_PER_1M = {
@@ -167,7 +168,7 @@ class AIUsageBudgetService:
         await self.session.flush()
 
     def is_fixed_trial_budget(self, budget: AIUsageBudget) -> bool:
-        return budget.plan_type == REFERRAL_TRIAL_PLAN_TYPE
+        return budget.plan_type in {REFERRAL_TRIAL_PLAN_TYPE, RELEASE_FEEDBACK_TRIAL_PLAN_TYPE}
 
     def total_spent_usd(self, budget: AIUsageBudget) -> float:
         return float(budget.segment_1_spent_usd or 0.0) + float(budget.segment_2_spent_usd or 0.0)
