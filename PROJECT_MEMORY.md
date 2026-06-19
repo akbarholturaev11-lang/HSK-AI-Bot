@@ -207,6 +207,25 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-19 — Course Mini App release announcement template
+
+Changed:
+- Release feedback admin panel now includes a ready Course Mini App update template with localized UZ/RU/TJ text.
+- The template preserves selected target filters, defaults to `mode_filter=course`, sets `feature_key=course`, and reuses the existing release send/test/schedule flow.
+
+Why:
+- Course Mini App UI changes need a fast way to show the update to users without manually rewriting the announcement each time.
+
+Files touched:
+- `app/bot/handlers/release_feedback.py`
+- `app/bot/keyboards/release_feedback.py`
+
+Risk:
+- Admin must still confirm/send the campaign; this does not auto-broadcast on deploy.
+
+Follow-up:
+- Use admin panel → Release feedback → Course Mini App update → Admin test → Hozir/Schedule.
+
 ### 2026-06-19 — Course Mini App quiz and reinforcement UI
 
 Changed:

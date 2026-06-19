@@ -113,6 +113,7 @@ def release_feedback_panel_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="➕ Yangi yangilik", callback_data="rf:new")],
+            [InlineKeyboardButton(text="⚡ Course Mini App update", callback_data="rf:template:course_miniapp_v2")],
             [InlineKeyboardButton(text="📋 Rejadagi va oxirgilar", callback_data="rf:list")],
             [InlineKeyboardButton(text="🎯 Kimlarga yuborish", callback_data="rf:filters")],
             [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],

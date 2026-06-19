@@ -65,6 +65,27 @@ _FEATURE_LABELS = {
     "subscription": "Obuna/Chegirma",
 }
 _MAX_COMMENT_TEXT = 1000
+_COURSE_MINIAPP_V2_RELEASE_TITLE = "Course Mini App v2: quiz va mustahkamlash"
+_COURSE_MINIAPP_V2_RELEASE_TEXTS = {
+    "uz": (
+        "⚡ Course mode yangilandi!\n\n"
+        "Quiz endi yengil interaktiv formatda: 5 ta tez savol, speaker, chiplar, progress va darhol feedback.\n\n"
+        "Uyga vazifa o'rniga Mustahkamlash qo'shildi: so'z tartiblash, mos juftlik, eshitib tanlash va iyeroglifni ko'rish.\n\n"
+        "Kursga kiring va keyingi darsda sinab ko'ring."
+    ),
+    "ru": (
+        "⚡ Course mode обновился!\n\n"
+        "Quiz теперь в лёгком интерактивном формате: 5 быстрых вопросов, speaker, chips, progress и мгновенный feedback.\n\n"
+        "Вместо домашнего задания добавлено Закрепление: порядок слов, пары, выбор на слух и просмотр иероглифа.\n\n"
+        "Зайдите в курс и попробуйте на следующем уроке."
+    ),
+    "tj": (
+        "⚡ Course mode нав шуд!\n\n"
+        "Quiz ҳоло дар формати сабуки интерактивӣ аст: 5 саволи тез, speaker, chip-ҳо, progress ва feedback-и фаврӣ.\n\n"
+        "Ба ҷои вазифаи хонагӣ Мустаҳкамкунӣ илова шуд: тартиби калимаҳо, ҷуфтҳо, интихоб аз рӯи шунидан ва дидани иероглиф.\n\n"
+        "Ба курс дароед ва дар дарси навбатӣ санҷед."
+    ),
+}
 
 
 def _is_admin(user_id: int) -> bool:
@@ -90,6 +111,26 @@ def _initial_state() -> dict:
         "feature_key": "general",
         "rf_section": "main",
     }
+
+
+def _course_miniapp_v2_template_state(current: dict | None = None) -> dict:
+    current = current or {}
+    data = _initial_state()
+    for key in data:
+        if key in current:
+            data[key] = current[key]
+    data.update(
+        {
+            "title": _COURSE_MINIAPP_V2_RELEASE_TITLE,
+            "message_text": _COURSE_MINIAPP_V2_RELEASE_TEXTS["tj"],
+            "content_type": "text",
+            "media_file_id": None,
+            "localized_message_text": encode_localized_broadcast_text(_COURSE_MINIAPP_V2_RELEASE_TEXTS),
+            "mode_filter": current.get("mode_filter") or "course",
+            "feature_key": "course",
+        }
+    )
+    return data
 
 
 def _selected_languages(data: dict) -> list[str]:
@@ -228,6 +269,7 @@ def _filter_keyboard(data: dict) -> InlineKeyboardMarkup:
             [section_btn("payment", "💳 To'lov"), section_btn("discount", "🎁 Chegirma")],
             [section_btn("activity", "⚡ Aktivlik")],
             [InlineKeyboardButton(text="➕ Yangi yangilik", callback_data="rf:new")],
+            [InlineKeyboardButton(text="⚡ Course Mini App update", callback_data="rf:template:course_miniapp_v2")],
             [InlineKeyboardButton(text="📋 Rejadagi va oxirgilar", callback_data="rf:list")],
             [InlineKeyboardButton(text="⬅️ Yangilik otzivi", callback_data="rf:panel")],
         ])
@@ -675,6 +717,27 @@ async def rf_new(callback: CallbackQuery, state: FSMContext):
         state,
         "🆕 <b>Yangi yangilik otzivi</b>\n\nYangilik nomini yozing.",
         release_feedback_cancel_keyboard(),
+    )
+
+
+@router.callback_query(F.data == "rf:template:course_miniapp_v2")
+async def rf_course_miniapp_v2_template(callback: CallbackQuery, state: FSMContext):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    current = await state.get_data()
+    await state.clear()
+    await state.update_data(**_course_miniapp_v2_template_state(current))
+    await callback.answer("Course update template tayyor", show_alert=True)
+    await _edit_callback_panel(
+        callback,
+        state,
+        "⚡ <b>Course Mini App update</b>\n\n"
+        "Tayyor 3 tilli release matni qo'yildi.\n"
+        "Target default: <b>Kurs rejimi</b>.\n"
+        "Sinash joyi: <b>Kurs rejimi</b>.\n\n"
+        "Qachon yuborilsin?",
+        release_feedback_send_time_keyboard(),
     )
 
 
