@@ -17,6 +17,23 @@
 
 ---
 
+## E2E Smoke Test Rule
+
+After important updates to the Telegram Mini App, course/lesson flow, quiz flow, backend progress events, subscription/paywall, or payment/access logic, verify the main flows with Playwright E2E smoke tests.
+
+Cover at least:
+- App opens successfully.
+- `?lesson=5` routing works.
+- `?tab=quiz`, `?tab=words`, and `?tab=grammar` routing works where supported.
+- Quiz can be completed and shows a score.
+- Backend progress events are sent/saved.
+- API errors fall back to `localStorage` where the Mini App supports fallback.
+- Subscription/paywall state is shown correctly.
+- Payment approval opens access.
+- Return-to-bot button/event works.
+
+---
+
 ## Git Push And Main Branch Rule
 
 - When the user says `push`, asks to publish to GitHub, or requests a deploy push without naming a separate branch or PR workflow, treat `origin/main` as the final target.

@@ -199,6 +199,8 @@ function playWordAudio(index){playAudio(VOCAB[index]?.h||"")}
 function playGrammarAudio(index){playAudio(GRAMMAR[index]?.e?.zh||"")}
 function setLabels(){document.documentElement.lang=lang;document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=I18N[lang][el.dataset.i18n]||el.dataset.i18n);document.querySelectorAll("[data-placeholder]").forEach(el=>el.placeholder=I18N[lang][el.dataset.placeholder]||"");document.querySelectorAll("#level-label,#fc-level-label,#grammar-level-label,#quiz-level-label").forEach(el=>el.textContent=DATA.label)}
 function showPage(next){page=next;document.querySelectorAll(".page").forEach(el=>el.classList.toggle("active",el.id===`page-${next}`));document.querySelectorAll(".nav button").forEach(el=>el.classList.toggle("active",el.dataset.page===next));if(next==="flashcards")renderFlashcards();if(next==="grammar")renderGrammar();if(next==="quiz")renderQuizFilters();window.scrollTo(0,0)}
+function normalizeLaunchTab(value){const tab=String(value||"").toLowerCase();if(["words","word","flashcards","flashcard"].includes(tab))return"flashcards";if(["grammar","gram"].includes(tab))return"grammar";if(tab==="quiz")return"quiz";if(["lessons","lesson"].includes(tab))return"lessons";return""}
+function applyLaunchRoute(){const target=normalizeLaunchTab(LAUNCH.tab),hasLesson=LESSONS.some(item=>item.n===launchLesson);if(hasLesson&&target==="flashcards")fcFilter=launchLesson;if(hasLesson&&target==="grammar")grammarFilter=launchLesson;if(hasLesson&&target==="quiz")quizLesson=launchLesson;if(LAUNCH.mode==="quiz"&&hasLesson){quizLesson=launchLesson;showPage("quiz");startQuiz();return}if(target)showPage(target)}
 function renderKPIs(){const done=state.done.filter(n=>LESSONS.some(l=>l.n===n)).length,pct=Math.round(done/Math.max(LESSONS.length,1)*100);document.getElementById("kpis").innerHTML=[["done",done,I18N[lang].done,pct],["left",LESSONS.length-done,I18N[lang].left,100-pct],["stars",stars.length,I18N[lang].saved,Math.min(stars.length/Math.max(limit("starred_limit",3),1)*100,100)]].map(([key,value,label,width])=>`<div class="kpi"><strong>${value}</strong><span>${esc(label)}</span><div class="progress"><i style="width:${width}%"></i></div></div>`).join("")}
 function toggleDone(n){state.done=state.done.includes(n)?state.done.filter(x=>x!==n):[...state.done,n];saveState();renderLessons()}
 function openLessonQuiz(n){quizLesson=n;showPage("quiz");startQuiz()}
@@ -237,7 +239,7 @@ function discussQuizWithAI(){withVerifiedAccess(discussQuizWithAIReady)}
 function discussQuizWithAIReady(){if(ACCESS.limits?.wrong_analysis!==true){showLimitModal("wrong_analysis");return}bridge.discussQuiz?.({lesson_id:quizLesson,score:lastQuizScore,total:lastQuizTotal,percent:lastQuizPercent,wrong_items:lastWrongItems})}
 window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;renderKPIs()};
 window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:"uz";ACCESS=bridge.getAccess?.()||ACCESS;setLabels();renderLessons();renderFlashcards();renderGrammar();questions=[];renderQuizFilters()};
-setLabels();renderLessons();renderFlashcards();renderGrammar();renderQuizFilters();if(LAUNCH.mode==="quiz"&&LESSONS.some(item=>item.n===launchLesson)){quizLesson=launchLesson;showPage("quiz");startQuiz()}
+setLabels();renderLessons();renderFlashcards();renderGrammar();renderQuizFilters();applyLaunchRoute()
 </script>
 </body>
 </html>
