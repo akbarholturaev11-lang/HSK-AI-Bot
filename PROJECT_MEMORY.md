@@ -207,25 +207,30 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
-### 2026-06-20 — Course Mini App easier sentence chips
+### 2026-06-20 — Course pilot compact first 3 lessons
 
 Changed:
-- Course Mini App `build_sentence_chips` now groups Chinese sentences into vocabulary/grammar chunks instead of one chip per Hanzi character, with a max of 7 chips.
-- Mini App typography and feedback/modal sizing were tightened for smaller, less heavy screens.
+- HSK1-HSK4 lessons 1-3 now return a compact pilot experience payload for Course Mini App quiz/reinforcement: consistent skeleton, shorter task count, and varied activities by lesson order.
+- Lessons 4+ keep the existing payload shape and course flow.
+- Added `course_pilot_events` for opened/completed/returned telemetry, with admin stats showing pilot open, quiz completion, reinforcement completion, drop signal, and lesson breakdown.
 
 Why:
-- Character-by-character sentence building was too difficult and visually crowded on mobile.
+- Trial course completion was a weak signal; the pilot keeps structure familiar while making the first three lessons lighter and measurable before expanding changes.
 
 Files touched:
 - `app/services/course_miniapp_lesson_service.py`
+- `app/services/course_miniapp_result_service.py`
 - `app/static/course-miniapp-v2.js`
-- `app/bot/utils/course_miniapp.py`
+- `app/main.py`
+- `app/bot/handlers/admin.py`
+- `app/db/models/course_pilot_event.py`
+- `alembic/versions/0043_add_course_pilot_events.py`
 
 Risk:
-- Very long sentences may be chunked into larger phrase chips, which is intentional to keep the task easier.
+- Pilot telemetry is append-only and should not affect access/payment logic, but Mini App smoke testing is needed with real Telegram `initData`.
 
 Follow-up:
-- Smoke test Course Mini App quiz and Mustahkamlash on Telegram mobile after deploy.
+- Watch Course pilot 1-3 stats before applying the compact format to later lessons.
 
 ### 2026-06-19 — Daily 3-min onboarding loop
 
@@ -252,7 +257,7 @@ Files touched:
 - `app/services/course_trial_service.py`
 - `app/db/models/user.py`
 - `app/db/session.py`
-- `alembic/versions/0044_add_daily_practice_fields.py`
+- `alembic/versions/0042_add_daily_practice_fields.py`
 
 Risk:
 - `force_sub_required_at` now represents QA-limit channel checkpoint going forward, but old rows may still include historical course checkpoint data.
@@ -260,54 +265,11 @@ Risk:
 Follow-up:
 - Watch D1 completion, D2 return, and Daily→Course before judging payment conversion.
 
-### 2026-06-19 — Course Mini App Duolingo-style lesson shell and voice reinforcement
-
-Changed:
-- Course Mini App v2 quiz/homework renderer now uses a dark lesson shell with speech bubbles, bottom feedback, wrong-answer explanation modal, word-bank style chips, and original HSK AI robot characters instead of the previous card UI.
-- Wrong answers show a localized explanation button (`Объяснение ошибки` in Russian) and a second modal with user answer, correct answer, and explanation.
-- Reinforcement can include `speak_repeat`; the frontend uses Web Speech API (`zh-CN`) when available and sends transcript/skipped metadata, while backend grading validates transcript safely and allows fallback when speech recognition is unavailable.
-
-Why:
-- Quiz and Mustahkamlash should match the requested ready lesson experience while staying branded to HSK AI and preserving server-graded course flow.
-
-Files touched:
-- `app/static/course-miniapp-v2.js`
-- `app/services/course_miniapp_lesson_service.py`
-- `app/services/course_miniapp_result_service.py`
-- `app/bot/utils/course_miniapp.py`
-
-Risk:
-- Real speech recognition depends on Telegram WebView/browser support and user microphone permission; fallback skip prevents blocking.
-
-Follow-up:
-- Smoke test quiz/homework in Telegram on iOS and Android, especially `speak_repeat` microphone behavior.
-
-### 2026-06-19 — Course Mini App micro-game question mix
-
-Changed:
-- Course Mini App quiz now generates interactive micro-game question types: `fill_blank_choice`, `choose_meaning_in_context`, `grammar_in_context`, `listen_and_fill`, and `build_sentence_chips`, with multiple-choice fallback.
-- Reinforcement now prefers `build_sentence_chips`, `quick_match`, `stroke_preview`, and `fill_blank_choice`.
-- Mini App v2 renderer supports visual blank slots, highlighted target words/grammar, chip sentence building, quick match, repeat-attempt task order variation, and mixed quiz grading.
-
-Why:
-- Quiz and reinforcement should feel like fast interactive practice, not only plain option tests.
-
-Files touched:
-- `app/services/course_miniapp_lesson_service.py`
-- `app/services/course_miniapp_result_service.py`
-- `app/static/course-miniapp-v2.js`
-
-Risk:
-- Full Telegram Mini App smoke test still needs real initData and active course progress.
-
-Follow-up:
-- Smoke test HSK3 quiz/homework in Telegram and confirm result messages unlock the next lesson.
-
 ### 2026-06-19 — Course Mini App release announcement template
 
 Changed:
 - Release feedback admin panel now includes a ready Course Mini App update template with localized UZ/RU/TJ text.
-- The template preserves selected target filters, defaults to `mode_filter=course`, sets `feature_key=course`, and reuses the existing release send/test/schedule flow.
+- The template preserves selected target filters, defaults to `mode_filter=course`, and reuses the existing release send/test/schedule flow.
 
 Why:
 - Course Mini App UI changes need a fast way to show the update to users without manually rewriting the announcement each time.
@@ -351,63 +313,6 @@ Risk:
 Follow-up:
 - Smoke test HSK1-HSK4 quiz and Mustahkamlash from Telegram Mini App, including bot result messages and next lesson unlock.
 
-### 2026-06-19 — Release feedback fixes and active stats
-
-Changed:
-- Release feedback now asks admin which bot area changed and routes `Sinab ko'rish` toward that feature when possible.
-- Release feedback reward text is disclosed before rating; after feedback it confirms the promised 20% / 24-hour discount.
-- Release feedback test access is 30 minutes and bypasses normal free daily/AI budget limits during that window, so users can actually test the changed feature.
-- Per-user release feedback discount campaigns are one-use, and the Mini App can fall back to the standard 20% QR when a per-campaign QR is not uploaded.
-- Admin main stats no longer include release feedback stats; bot feedback stats moved to a separate `Otziv statistikasi` page.
-- `last_active_at` is updated on user messages/callbacks; admin active-user stats use Asia/Shanghai day boundaries and show 24-hour active users.
-
-Why:
-- Users must know the reward before giving feedback, must be able to test the actual changed feature, and admin stats must show real active usage.
-
-Files touched:
-- `app/bot/handlers/release_feedback.py`
-- `app/services/release_feedback_service.py`
-- `app/bot/keyboards/release_feedback.py`
-- `app/db/models/release_feedback.py`
-- `app/repositories/release_feedback_repo.py`
-- `app/services/subscription_miniapp_service.py`
-- `app/services/ai_usage_budget_service.py`
-- `app/services/access_service.py`
-- `app/bot/handlers/admin.py`
-- `app/bot/middlewares/db.py`
-- `app/bot/handlers/commands.py`
-- `alembic/versions/0042_release_feedback_feature_trial.py`
-- `alembic/versions/0043_restore_release_feedback_trial_30_minutes.py`
-- `AI_RULES.md`
-
-Risk:
-- Release feedback test access is still not a paid subscription; it is a 30-minute non-paid test window, and paid checks must continue to rely on `payment_status="approved"`.
-- Existing active stats only become accurate for a user after their next message/callback updates `last_active_at`.
-
-Follow-up:
-- Run migration/deploy, then smoke test release create/test/send, feature routing, 30-minute no-limit test access, QR checkout, and admin stats after a user interaction.
-
-### 2026-06-19 — Release feedback approval workflow rule
-
-Changed:
-- Added a project rule that after every major user-visible update, Codex must prepare a release feedback draft tailored to that update.
-- The draft must explain what changed, where the user should test it, what the `Sinab ko'rish` CTA should do, target segment, rating prompt, reward text before feedback, and stats to watch.
-- Release feedback must not be sent automatically; after deploy, admin approval is required. If admin rejects or does not approve, nothing is sent.
-
-Why:
-- Release feedback should be tied to the exact update users need to test, without surprising users or sending unapproved broadcasts.
-
-Files touched:
-- `AGENTS.md`
-- `AI_RULES.md`
-- `PROJECT_MEMORY.md`
-
-Risk:
-- This is a required Codex handoff rule, not an automatic deploy hook. Future Codex sessions must include the draft after major user-visible changes and use the existing Release feedback admin module after admin approval.
-
-Follow-up:
-- For every major deploy, prepare the release feedback draft in the final handoff and wait for admin approval before sending.
-
 ### 2026-06-14 — Release feedback dashboard
 
 Changed:
@@ -438,6 +343,23 @@ Risk:
 
 Follow-up:
 - Run migration/deploy, then smoke test release create/test/send, user try access, 1-5 rating, low-rating comment, discount checkout, and admin stats.
+
+### 2026-06-14 — Feedback prompt delay removed
+
+Changed:
+- Bot feedback requests are now eligible immediately after the daily limit offer is sent, without the previous 5-minute delay.
+
+Why:
+- User requested faster otziv collection after the daily limit is reached.
+
+Files touched:
+- `app/services/bot_feedback_service.py`
+
+Risk:
+- Feedback prompt may appear sooner after the limit message; retry and 30-day completion throttles still apply.
+
+Follow-up:
+- Smoke test a daily-limit user and confirm the otziv prompt is sent on the next scheduler cycle.
 
 ### 2026-06-13 — Broadcast and ad campaign CTA buttons
 
@@ -1342,28 +1264,28 @@ Files touched:
 
 ---
 
-### 2026-06-20 — Text AI wait loader
+### 2026-06-19 — Direct AI message draft
 
 Changed:
-- Removed the Telegram `sendMessageDraft` implementation and its service.
-- `ResponseEffect` now shows plain text loading messages instead of emoji-only progress messages.
-- While the loading message is active, the bot also refreshes Telegram `sendChatAction("typing")` so the typing indicator appears at the top.
-- QA, course tutor, course review/homework, image AI, and voice AI flows use the same text-loader path with mode-specific texts.
+- QA text AI replies now call Telegram `sendMessageDraft` directly; no draft feature flag remains.
+- New `MessageDraftService` tries Telegram `sendMessageDraft` first and falls back to the existing `ResponseEffect` loader or `sendChatAction("typing")`.
+- Final AI replies still use the normal send message flow; draft is only a waiting effect.
 
 Why:
-- Telegram draft API behavior was unreliable in production, and the requested UX is a visible text loader that disappears before the final AI answer.
+- Allows testing Telegram draft-based AI typing UX without removing the existing emoji/progress loader.
 
 Files touched:
-- `app/bot/utils/response_effect.py`
+- `app/services/message_draft_service.py`
 - `app/bot/handlers/messages.py`
 - `app/bot/handlers/commands.py`
-- `app/services/message_draft_service.py`
+- `app/config.py`
+- `.env.example`
 
 Risk:
-- Voice transcription still keeps its transcript/choice message when the flow requires user selection; AI answer loaders still delete before final answers.
+- `aiogram==3.22.0` does not expose `sendMessageDraft`; raw Telegram HTTP is used only when the flag is enabled, and failures fall back safely.
 
 Follow-up:
-- Test normal QA, course question, photo, voice QA, and `/draft_test` in Telegram.
+- Test `/draft_test` and one normal QA text question in Telegram.
 
 ---
 

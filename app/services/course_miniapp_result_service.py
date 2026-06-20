@@ -8,6 +8,7 @@ from app.bot.utils.course_miniapp import (
 )
 from app.repositories.course_attempt_repo import CourseAttemptRepository
 from app.repositories.course_lesson_repo import CourseLessonRepository
+from app.repositories.course_pilot_event_repo import CoursePilotEventRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import (
@@ -29,6 +30,7 @@ class CourseMiniAppResultService:
         self.lesson_repo = CourseLessonRepository(session)
         self.progress_repo = CourseProgressRepository(session)
         self.attempt_repo = CourseAttemptRepository(session)
+        self.pilot_event_repo = CoursePilotEventRepository(session)
 
     @staticmethod
     def _to_int(value: Any, default: int = 0) -> int:
@@ -95,19 +97,6 @@ class CourseMiniAppResultService:
                 pairs.add((left, right))
         return pairs
 
-    @staticmethod
-    def _normalize_voice_text(value: Any) -> str:
-        text = str(value or "").lower()
-        return "".join(char for char in text if char.isalnum() or "一" <= char <= "鿿")
-
-    @classmethod
-    def _voice_matches(cls, transcript: Any, expected: Any) -> bool:
-        heard = cls._normalize_voice_text(transcript)
-        target = cls._normalize_voice_text(expected)
-        if not heard or not target:
-            return False
-        return heard == target or target in heard or (heard in target and len(heard) >= 2)
-
     async def _grade_reinforcement(self, user, lesson, payload: dict, answers: dict) -> dict | None:
         submitted = answers.get("reinforcement_results") or answers.get("practice_results")
         if not isinstance(submitted, list) or not submitted:
@@ -145,7 +134,7 @@ class CourseMiniAppResultService:
             submitted_item = submitted_by_id[task_id]
             correct = False
 
-            if task_type in {"multiple_choice", "listening_choice", "fill_blank", "fill_blank_choice", "tap_missing_word", "choose_meaning_in_context", "grammar_in_context", "listen_and_fill", "odd_one_out"}:
+            if task_type in {"multiple_choice", "listening_choice", "fill_blank"}:
                 options = task.get("options") or task.get("opts") or []
                 answer = str(task.get("answer") or "")
                 selected_answer = str(submitted_item.get("selected_answer") or "").strip()
@@ -154,14 +143,14 @@ class CourseMiniAppResultService:
                     selected_answer = str(options[selected_index])
                 correct = bool(answer and selected_answer == answer)
                 normalized_answer = selected_answer
-            elif task_type in {"word_order", "build_chinese_sentence", "build_sentence_chips"}:
+            elif task_type in {"word_order", "build_chinese_sentence"}:
                 expected = self._normalize_token_list(task.get("answer"))
                 actual = self._normalize_token_list(
                     submitted_item.get("answer_tokens") or submitted_item.get("tokens")
                 )
                 correct = bool(expected and actual == expected)
                 normalized_answer = actual
-            elif task_type in {"match_pairs", "quick_match"}:
+            elif task_type == "match_pairs":
                 expected_pairs = self._normalize_pair_set(task.get("pairs"))
                 actual_pairs = self._normalize_pair_set(submitted_item.get("pairs"))
                 correct = bool(expected_pairs and actual_pairs == expected_pairs)
@@ -169,16 +158,6 @@ class CourseMiniAppResultService:
             elif task_type == "stroke_preview":
                 correct = bool(submitted_item.get("completed") or submitted_item.get("seen"))
                 normalized_answer = "seen" if correct else ""
-            elif task_type == "speak_repeat":
-                transcript = str(submitted_item.get("transcript") or "").strip()
-                expected = str(task.get("answer") or task.get("audioText") or "").strip()
-                skipped = bool(submitted_item.get("skipped") or submitted_item.get("voice_unsupported"))
-                correct = self._voice_matches(transcript, expected)
-                normalized_answer = {
-                    "transcript": transcript,
-                    "skipped": skipped,
-                    "voice_unsupported": bool(submitted_item.get("voice_unsupported")),
-                }
             else:
                 return None
 
@@ -223,6 +202,30 @@ class CourseMiniAppResultService:
             return bool(expected_block_no and block_no == expected_block_no)
 
         return current_step == "exercise" and block_no == 0
+
+    async def _record_pilot_event(
+        self,
+        *,
+        user,
+        lesson,
+        event_type: str,
+        step_name: str,
+        mode: str,
+        block_no: int | None = None,
+        payload: dict | None = None,
+    ) -> None:
+        await self.pilot_event_repo.record(
+            telegram_id=user.telegram_id,
+            user_id=user.id,
+            lesson_id=lesson.id,
+            level=getattr(lesson, "level", None) or getattr(user, "level", "hsk1"),
+            lesson_order=course_miniapp_lesson_id(lesson),
+            block_no=block_no,
+            event_type=event_type,
+            step_name=step_name,
+            mode=mode,
+            payload=payload,
+        )
 
     async def _grade_quiz(self, user, lesson, block_no: int, payload: dict) -> dict | None:
         lesson_payload = await CourseMiniAppLessonService(self.session).get_payload(
@@ -417,6 +420,15 @@ class CourseMiniAppResultService:
             ),
             ai_feedback=None,
         )
+        await self._record_pilot_event(
+            user=user,
+            lesson=lesson,
+            event_type="completed",
+            step_name=f"quiz_block_{block_no}" if block_no else "quiz",
+            mode="quiz",
+            block_no=block_no or None,
+            payload={"score": score, "total": total, "percent": percent, "passed": passed},
+        )
 
         if block_no:
             next_step = CourseEngineService(self.session).get_next_step_name(
@@ -492,6 +504,15 @@ class CourseMiniAppResultService:
                 ),
                 ai_feedback="\n".join(reinforcement["feedback"]) if reinforcement["feedback"] else None,
             )
+            await self._record_pilot_event(
+                user=user,
+                lesson=lesson,
+                event_type="completed",
+                step_name="reinforcement",
+                mode="homework",
+                block_no=self._to_int(payload.get("block_no") or payload.get("block")) or None,
+                payload={"score": reinforcement["score"], "total": reinforcement["total"], "percent": homework_score},
+            )
             await self.progress_repo.set_homework_status(progress, "completed")
             await self.progress_repo.set_current_lesson_and_step(
                 progress=progress,
@@ -556,6 +577,15 @@ class CourseMiniAppResultService:
                 ensure_ascii=False,
             ),
             ai_feedback="\n".join(feedback) if feedback else None,
+        )
+        await self._record_pilot_event(
+            user=user,
+            lesson=lesson,
+            event_type="completed" if passed else "revision",
+            step_name="homework",
+            mode="homework",
+            block_no=self._to_int(payload.get("block_no") or payload.get("block")) or None,
+            payload={"score": homework_score, "passed": passed, "status": status},
         )
 
         if passed:

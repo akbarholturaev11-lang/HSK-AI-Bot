@@ -6,11 +6,13 @@ from contextlib import asynccontextmanager
 from aiogram import Bot
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse
+from sqlalchemy import select
 from starlette.middleware.gzip import GZipMiddleware
 
 from app.config import settings
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, init_db
+from app.db.models.course_lessons import CourseLesson
 from app.services.course_seed_service import CourseSeedService
 from app.services.access_service import AccessService
 from app.services.daily_reset_service import DailyResetService
@@ -29,6 +31,7 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.repositories.user_repo import UserRepository
+from app.repositories.course_pilot_event_repo import CoursePilotEventRepository
 from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.course import homework_retry_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
@@ -106,6 +109,40 @@ def _track_study_ai_task(task) -> None:
 async def _send_study_quiz_ai_discussion(telegram_id: int, payload: dict) -> None:
     async with async_session_maker() as session:
         await StudyMiniAppService(session).send_quiz_ai_discussion(bot, telegram_id, payload)
+
+
+async def _record_course_pilot_event(
+    session,
+    *,
+    telegram_id: int,
+    level: str,
+    lesson_order: int,
+    event_type: str,
+    step_name: str,
+    mode: str,
+    block_no: int | None = None,
+    payload: dict | None = None,
+) -> None:
+    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+    result = await session.execute(
+        select(CourseLesson)
+        .where(CourseLesson.level == (level or "").strip().lower())
+        .where(CourseLesson.lesson_order == lesson_order)
+        .limit(1)
+    )
+    lesson = result.scalar_one_or_none()
+    await CoursePilotEventRepository(session).record(
+        telegram_id=telegram_id,
+        user_id=getattr(user, "id", None),
+        lesson_id=getattr(lesson, "id", None),
+        level=level,
+        lesson_order=lesson_order,
+        block_no=block_no,
+        event_type=event_type,
+        step_name=step_name,
+        mode=mode,
+        payload=payload,
+    )
 
 
 async def _seed_lessons() -> None:
@@ -258,13 +295,37 @@ async def miniapp_access(request: Request):
 
 
 @app.get("/api/miniapp/lesson")
-async def miniapp_lesson(lesson: int, lang: str = "uz", level: str = "hsk3", block: int | None = None):
+async def miniapp_lesson(
+    request: Request,
+    lesson: int,
+    lang: str = "uz",
+    level: str = "hsk3",
+    block: int | None = None,
+    mode: str = "course",
+):
     resolved_lang = normalize_miniapp_lang(lang)
 
     async with async_session_maker() as session:
         payload = await CourseMiniAppLessonService(session).get_payload(lesson, resolved_lang, level=level, block_no=block)
         if not payload:
             return {"ok": False, "error": "lesson_not_found"}
+        telegram_id = extract_verified_webapp_user_id(
+            request.headers.get("X-Telegram-Init-Data", ""),
+            settings.BOT_TOKEN,
+        )
+        if telegram_id:
+            await _record_course_pilot_event(
+                session,
+                telegram_id=telegram_id,
+                level=str(payload.get("level") or level),
+                lesson_order=int(payload.get("lesson_id") or lesson),
+                event_type="opened",
+                step_name=f"{mode}_opened",
+                mode=mode,
+                block_no=payload.get("block_no"),
+                payload={"has_experience": bool(payload.get("experience"))},
+            )
+            await session.commit()
         return {"ok": True, "lesson": payload}
 
 
@@ -360,10 +421,22 @@ async def miniapp_event(request: Request):
     if not telegram_id:
         return {"ok": False, "error": "invalid_telegram_init_data"}
 
-    if event == "bot_return_clicked":
-        return {"ok": True}
-
     async with async_session_maker() as session:
+        if event == "bot_return_clicked":
+            await _record_course_pilot_event(
+                session,
+                telegram_id=telegram_id,
+                level=str(payload.get("level") or ""),
+                lesson_order=_positive_int(payload.get("lesson_id")) or 0,
+                event_type="returned",
+                step_name=str(payload.get("mode") or "course"),
+                mode=str(payload.get("mode") or "course"),
+                block_no=_positive_int(payload.get("block_no") or payload.get("block")),
+                payload=payload,
+            )
+            await session.commit()
+            return {"ok": True}
+
         study_service = StudyMiniAppService(session)
 
         if event == "subscribe_clicked":

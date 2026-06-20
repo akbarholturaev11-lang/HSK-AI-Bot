@@ -20,6 +20,7 @@ from app.repositories.course_audio_repo import CourseAudioRepository
 from app.db.models.user import User
 from app.db.models.payment import Payment
 from app.db.models.course_progress import CourseProgress
+from app.db.models.course_pilot_event import CoursePilotEvent
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
@@ -2084,6 +2085,94 @@ async def admin_stats_callback(callback: CallbackQuery, session):
             Payment.reviewed_at >= User.trial_course_started_at,
         )
     )).scalar() or 0
+    daily_started = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at.is_not(None))
+    )).scalar() or 0
+    daily_started_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at >= today_start)
+    )).scalar() or 0
+    daily_started_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at >= week_ago)
+    )).scalar() or 0
+    daily_completed = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_completed_at.is_not(None))
+    )).scalar() or 0
+    daily_completed_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_last_day == now.date())
+    )).scalar() or 0
+    daily_completed_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_completed_at >= week_ago)
+    )).scalar() or 0
+    daily_d2_return = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_streak >= 2)
+    )).scalar() or 0
+    daily_completed_course_opened = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.daily_practice_completed_at.is_not(None),
+            User.trial_course_started_at.is_not(None),
+            User.trial_course_started_at >= User.daily_practice_completed_at,
+        )
+    )).scalar() or 0
+    daily_completed_paid = (await session.execute(
+        select(func.count(func.distinct(Payment.user_telegram_id)))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at.is_not(None),
+            User.daily_practice_completed_at.is_not(None),
+            Payment.reviewed_at >= User.daily_practice_completed_at,
+        )
+    )).scalar() or 0
+    qa_limit_channel_joined = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.force_sub_required_at.is_not(None),
+            User.last_active_at >= User.force_sub_required_at,
+        )
+    )).scalar() or 0
+    pilot_opened = (await session.execute(
+        select(func.count(func.distinct(CoursePilotEvent.telegram_id))).where(
+            CoursePilotEvent.event_type == "opened"
+        )
+    )).scalar() or 0
+    pilot_quiz_completed = (await session.execute(
+        select(func.count(func.distinct(CoursePilotEvent.telegram_id))).where(
+            CoursePilotEvent.event_type == "completed",
+            CoursePilotEvent.mode == "quiz",
+        )
+    )).scalar() or 0
+    pilot_reinforced = (await session.execute(
+        select(func.count(func.distinct(CoursePilotEvent.telegram_id))).where(
+            CoursePilotEvent.event_type == "completed",
+            CoursePilotEvent.mode == "homework",
+        )
+    )).scalar() or 0
+    pilot_returned = (await session.execute(
+        select(func.count()).select_from(CoursePilotEvent).where(
+            CoursePilotEvent.event_type == "returned"
+        )
+    )).scalar() or 0
+    pilot_drop_rows = (await session.execute(
+        select(CoursePilotEvent.step_name, func.count().label("cnt"))
+        .where(CoursePilotEvent.event_type == "returned")
+        .group_by(CoursePilotEvent.step_name)
+        .order_by(func.count().desc())
+        .limit(4)
+    )).fetchall()
+    pilot_lesson_rows = (await session.execute(
+        select(
+            CoursePilotEvent.level,
+            CoursePilotEvent.lesson_order,
+            func.count(func.distinct(CoursePilotEvent.telegram_id)).filter(
+                CoursePilotEvent.event_type == "opened"
+            ).label("opened"),
+            func.count(func.distinct(CoursePilotEvent.telegram_id)).filter(
+                CoursePilotEvent.event_type == "completed"
+            ).label("completed"),
+        )
+        .group_by(CoursePilotEvent.level, CoursePilotEvent.lesson_order)
+        .order_by(CoursePilotEvent.level, CoursePilotEvent.lesson_order)
+    )).fetchall()
 
     daily_started = (await session.execute(
         select(func.count()).select_from(User).where(User.daily_practice_started_at.is_not(None))
@@ -2179,6 +2268,13 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     daily_course_rate = _pct(daily_completed_course_opened, daily_completed)
     daily_paid_rate = _pct(daily_completed_paid, daily_completed)
     qa_channel_join_rate = _pct(qa_limit_channel_joined, force_sub_checkpoint)
+    pilot_quiz_rate = _pct(pilot_quiz_completed, pilot_opened)
+    pilot_reinforce_rate = _pct(pilot_reinforced, pilot_opened)
+    pilot_drop_str = " | ".join(f"{row.step_name}: {row.cnt}" for row in pilot_drop_rows) or "hali yo'q"
+    pilot_lesson_str = " | ".join(
+        f"{str(row.level).upper()}-{row.lesson_order}: {int(row.opened or 0)}/{int(row.completed or 0)}"
+        for row in pilot_lesson_rows[:12]
+    ) or "hali yo'q"
 
     level_order = ["beginner", "hsk1", "hsk2", "hsk3", "hsk4"]
     level_str   = "  " + "   ".join(
@@ -2226,6 +2322,12 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Daily → Kurs: <b>{daily_completed_course_opened}</b> (<b>{daily_course_rate}%</b>)\n"
         f"  Daily → Paid: <b>{daily_completed_paid}</b> (<b>{daily_paid_rate}%</b>)\n"
         f"  QA limit → kanal: <b>{force_sub_checkpoint}</b>   Joined/continued: <b>{qa_limit_channel_joined}</b> (<b>{qa_channel_join_rate}%</b>)\n\n"
+
+        f"<b>🧪 COURSE PILOT 1-3</b>\n"
+        f"  Ochdi: <b>{pilot_opened}</b>   Quiz: <b>{pilot_quiz_completed}</b> (<b>{pilot_quiz_rate}%</b>)   Mustahkamlash: <b>{pilot_reinforced}</b> (<b>{pilot_reinforce_rate}%</b>)\n"
+        f"  Botga qaytish/drop signal: <b>{pilot_returned}</b>\n"
+        f"  Drop step: <b>{escape(pilot_drop_str)}</b>\n"
+        f"  Lesson open/complete: <b>{escape(pilot_lesson_str)}</b>\n\n"
 
         f"<b>🧪 TRIAL FUNNEL</b>\n"
         f"  Start: <b>{trial_course_started}</b>   Bugun: <b>+{trial_started_today}</b>   7 kun: <b>+{trial_started_week}</b>\n"

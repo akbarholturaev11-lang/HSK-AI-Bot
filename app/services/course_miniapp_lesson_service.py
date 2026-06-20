@@ -4,6 +4,7 @@ from sqlalchemy import select
 
 from app.bot.utils.course_miniapp import normalize_miniapp_lang
 from app.db.models.course_lessons import CourseLesson
+from app.repositories.course_pilot_event_repo import is_course_pilot_lesson
 
 
 _QUIZ_TEXT = {
@@ -17,15 +18,6 @@ _QUIZ_TEXT = {
         "listening_choice": "Eshiting va to'g'ri javobni tanlang",
         "fill_blank": "Bo'sh joyni to'ldiring",
         "fill_blank_sentence": "Men bugun ____ so'zini o'rgandim.",
-        "fill_blank_choice": "Bo'sh joyni to'ldiring",
-        "tap_missing_word": "Yetishmayotgan so'zni tanlang",
-        "build_sentence_chips": "Gapni to'g'ri tartiblang",
-        "choose_meaning_in_context": "Ajratilgan so'z nimani anglatadi?",
-        "grammar_in_context": "Ajratilgan qism qanday ma'no beradi?",
-        "listen_and_fill": "Eshiting va tanlang",
-        "odd_one_out": "Mos kelmaydiganini toping",
-        "quick_match": "Mos juftlikni toping",
-        "speak_repeat": "Xitoycha gapni ovoz bilan takrorlang",
         "meaning_hint": "ma'nosi: {meaning}",
         "correct": "To'g'ri javob: {zh} — {meaning}.",
         "grammar_cat": "Grammatika",
@@ -45,15 +37,6 @@ _QUIZ_TEXT = {
         "listening_choice": "Послушайте и выберите правильный ответ",
         "fill_blank": "Заполните пропуск",
         "fill_blank_sentence": "Сегодня я выучил слово ____.",
-        "fill_blank_choice": "Заполните пропуск",
-        "tap_missing_word": "Выберите пропущенное слово",
-        "build_sentence_chips": "Расставьте слова по порядку",
-        "choose_meaning_in_context": "Что означает выделенное слово?",
-        "grammar_in_context": "Что означает выделенная часть?",
-        "listen_and_fill": "Послушайте и выберите",
-        "odd_one_out": "Найдите лишнее слово",
-        "quick_match": "Найдите пары",
-        "speak_repeat": "Повторите китайскую фразу голосом",
         "meaning_hint": "значение: {meaning}",
         "correct": "Правильный ответ: {zh} — {meaning}.",
         "grammar_cat": "Грамматика",
@@ -73,15 +56,6 @@ _QUIZ_TEXT = {
         "listening_choice": "Гӯш кунед ва ҷавоби дурустро интихоб кунед",
         "fill_blank": "Ҷои холиро пур кунед",
         "fill_blank_sentence": "Ман имрӯз калимаи ____-ро омӯхтам.",
-        "fill_blank_choice": "Ҷои холиро пур кунед",
-        "tap_missing_word": "Калимаи намерасидаро интихоб кунед",
-        "build_sentence_chips": "Калимаҳоро бо тартиби дуруст гузоред",
-        "choose_meaning_in_context": "Калимаи ҷудошуда чӣ маъно дорад?",
-        "grammar_in_context": "Қисми ҷудошуда чӣ маъно медиҳад?",
-        "listen_and_fill": "Гӯш кунед ва интихоб кунед",
-        "odd_one_out": "Калимаи номувофиқро ёбед",
-        "quick_match": "Ҷуфтҳои мувофиқро ёбед",
-        "speak_repeat": "Ҷумлаи чиниро бо овоз такрор кунед",
         "meaning_hint": "маъно: {meaning}",
         "correct": "Ҷавоби дуруст: {zh} — {meaning}.",
         "grammar_cat": "Грамматика",
@@ -329,93 +303,6 @@ class CourseMiniAppLessonService:
                 return zh, translation
         return "", ""
 
-    def _sentence_pairs(self, grammar: list[dict]) -> list[tuple[str, str]]:
-        pairs: list[tuple[str, str]] = []
-        for item in grammar:
-            if not isinstance(item, dict):
-                continue
-            examples = item.get("examples") if isinstance(item.get("examples"), list) else []
-            for example in examples:
-                if not isinstance(example, dict):
-                    continue
-                zh = str(example.get("zh") or "").strip()
-                translation = str(example.get("translation") or "").strip()
-                if zh and translation:
-                    pairs.append((zh, translation))
-        return pairs
-
-    def _sentence_word_candidates(
-        self,
-        vocab: list[dict],
-        sentence_pairs: list[tuple[str, str]],
-    ) -> list[tuple[dict, str, str]]:
-        candidates: list[tuple[dict, str, str]] = []
-        seen = set()
-        words = sorted(
-            [item for item in vocab if item.get("zh") and item.get("meaning")],
-            key=lambda item: len(str(item.get("zh") or "")),
-            reverse=True,
-        )
-        for sentence, translation in sentence_pairs:
-            for word in words:
-                zh = str(word.get("zh") or "").strip()
-                key = (zh, sentence)
-                if zh and zh in sentence and key not in seen:
-                    seen.add(key)
-                    candidates.append((word, sentence, translation))
-        return candidates
-
-    def _blank_sentence(self, sentence: str, answer: str) -> str:
-        sentence = str(sentence or "").strip()
-        answer = str(answer or "").strip()
-        if not sentence or not answer or answer not in sentence:
-            return ""
-        return sentence.replace(answer, "____", 1)
-
-    def _highlight_sentence(self, sentence: str, target: str) -> str:
-        sentence = str(sentence or "").strip()
-        target = str(target or "").strip()
-        if not target:
-            return sentence
-        if target in sentence:
-            return sentence.replace(target, f"【{target}】", 1)
-        return f"{sentence} 【{target}】" if sentence else f"【{target}】"
-
-    def _choice_payload(
-        self,
-        *,
-        question_type: str,
-        lesson_order: int,
-        block_no: int | None,
-        prompt: str,
-        answer: str,
-        options: list[str],
-        seed: str,
-        explanation: str,
-        cat: str,
-        **extra,
-    ) -> dict | None:
-        clean_options = list(dict.fromkeys(str(value).strip() for value in options if str(value or "").strip()))
-        answer = str(answer or "").strip()
-        if not answer or answer not in clean_options or len(clean_options) < 2:
-            return None
-        shuffled, answer_index = self._shuffle_options(clean_options, answer, seed)
-        return {
-            "lesson": lesson_order,
-            "block_no": block_no,
-            "type": question_type,
-            "q": prompt,
-            "prompt": prompt,
-            "cat": cat,
-            "opts": shuffled,
-            "options": shuffled,
-            "ans": answer_index,
-            "answer": answer,
-            "expl": explanation,
-            "explanation": explanation,
-            **extra,
-        }
-
     def _order_tokens(self, value: str, *, chinese: bool = False) -> list[str]:
         text = str(value or "").strip()
         if not text:
@@ -455,73 +342,6 @@ class CourseMiniAppLessonService:
         )
         return [part.strip() for part in cleaned.split() if part.strip()]
 
-    def _chinese_sentence_chips(self, sentence: str, vocab: list[dict], max_tokens: int = 7) -> list[str]:
-        text = str(sentence or "").strip()
-        if not text:
-            return []
-
-        vocab_words = sorted(
-            {
-                str(item.get("zh") or "").strip()
-                for item in vocab
-                if isinstance(item, dict) and len(str(item.get("zh") or "").strip()) >= 2
-            },
-            key=len,
-            reverse=True,
-        )
-        tokens: list[str] = []
-        index = 0
-        while index < len(text):
-            char = text[index]
-            if char.isspace() or char in "，。！？,.!?;；:：":
-                index += 1
-                continue
-
-            matched = next((word for word in vocab_words if text.startswith(word, index)), "")
-            if matched:
-                tokens.append(matched)
-                index += len(matched)
-                continue
-
-            tokens.append(char)
-            index += 1
-
-        if not tokens:
-            return []
-
-        merged: list[str] = []
-        attach_previous = {"的", "了", "过", "着", "呢", "吗", "吧"}
-        attach_next = {"不", "没", "很", "太", "还", "也", "都", "就", "再"}
-        index = 0
-        while index < len(tokens):
-            token = tokens[index]
-            if token in attach_previous and merged:
-                merged[-1] += token
-                index += 1
-                continue
-            if token in attach_next and index + 1 < len(tokens):
-                merged.append(token + tokens[index + 1])
-                index += 2
-                continue
-            if token == "是" and merged:
-                merged[-1] += token
-                index += 1
-                continue
-            merged.append(token)
-            index += 1
-
-        while len(merged) > max_tokens:
-            merge_index = next((i for i, token in enumerate(merged) if len(token) == 1 and i + 1 < len(merged)), -1)
-            if merge_index < 0:
-                merge_index = next((i for i, token in enumerate(merged[1:], start=1) if len(token) == 1), -1)
-                if merge_index < 0:
-                    break
-                merged[merge_index - 1] += merged.pop(merge_index)
-                continue
-            merged[merge_index] += merged.pop(merge_index + 1)
-
-        return merged if 2 <= len(merged) <= max_tokens else []
-
     def _shuffled_tokens(self, tokens: list[str], seed: str) -> list[str]:
         if len(tokens) <= 1:
             return tokens
@@ -534,6 +354,98 @@ class CourseMiniAppLessonService:
         options = self._option_values(answer, candidates, count=count - 1)
         return self._shuffle_options(options, answer, seed)
 
+    def _pilot_experience(self, *, lesson: CourseLesson, lang: str, title: str) -> dict:
+        lesson_order = int(getattr(lesson, "lesson_order", 0) or 0)
+        variant = {
+            1: "word_game",
+            2: "roleplay",
+            3: "sentence_builder",
+        }.get(lesson_order, "word_game")
+        copy = {
+            "uz": {
+                "start": "Start",
+                "learn": "Learn",
+                "practice": "Practice",
+                "explain": "AI Explain",
+                "win": "Win",
+                "next": "Next",
+                "today": "Bugun qisqa dars: {title}",
+                "promise": "3-5 minutda bitta aniq natija olasiz.",
+                "win_text": "Bugun asosiy so'z/qoida va bitta amaliy mashqni tugatdingiz.",
+                "next_text": "Keyingi darsda shu bilimni yangi vaziyatda ishlatasiz.",
+            },
+            "ru": {
+                "start": "Start",
+                "learn": "Learn",
+                "practice": "Practice",
+                "explain": "AI Explain",
+                "win": "Win",
+                "next": "Next",
+                "today": "Сегодня короткий урок: {title}",
+                "promise": "За 3-5 минут получите один понятный результат.",
+                "win_text": "Сегодня вы закрепили ключевое слово/правило и одну практику.",
+                "next_text": "В следующем уроке вы примените это в новой ситуации.",
+            },
+            "tj": {
+                "start": "Start",
+                "learn": "Learn",
+                "practice": "Practice",
+                "explain": "AI Explain",
+                "win": "Win",
+                "next": "Next",
+                "today": "Имрӯз дарси кӯтоҳ: {title}",
+                "promise": "Дар 3-5 дақиқа як натиҷаи равшан мегиред.",
+                "win_text": "Имрӯз калима/қоидаи асосӣ ва як машқи амалӣ анҷом шуд.",
+                "next_text": "Дар дарси навбатӣ инро дар вазъияти нав истифода мебаред.",
+            },
+        }.get(lang, {})
+        return {
+            "pilot": True,
+            "variant": variant,
+            "skeleton": [
+                copy.get("start", "Start"),
+                copy.get("learn", "Learn"),
+                copy.get("practice", "Practice"),
+                copy.get("explain", "AI Explain"),
+                copy.get("win", "Win"),
+                copy.get("next", "Next"),
+            ],
+            "today": copy.get("today", "{title}").format(title=title),
+            "promise": copy.get("promise", ""),
+            "win_text": copy.get("win_text", ""),
+            "next_text": copy.get("next_text", ""),
+        }
+
+    def _pilot_vocab(self, vocab: list[dict]) -> list[dict]:
+        return [item for item in vocab if item.get("zh") and item.get("meaning")][:5]
+
+    def _pilot_grammar(self, grammar: list[dict]) -> list[dict]:
+        return [item for item in grammar if item.get("title") or item.get("rule")][:1]
+
+    def _pilot_reinforcement_tasks(
+        self,
+        *,
+        lesson: CourseLesson,
+        vocab: list[dict],
+        grammar: list[dict],
+        lesson_grammar: list[dict],
+        lang: str,
+    ) -> list[dict]:
+        lesson_order = int(getattr(lesson, "lesson_order", 0) or 0)
+        base_tasks = self._reinforcement_tasks(
+            vocab,
+            grammar or lesson_grammar,
+            lesson_order,
+            lang,
+        )
+        if lesson_order == 1:
+            priority = {"match_pairs": 0, "listening_choice": 1, "stroke_preview": 2}
+        elif lesson_order == 2:
+            priority = {"build_chinese_sentence": 0, "word_order": 1, "match_pairs": 2}
+        else:
+            priority = {"build_chinese_sentence": 0, "listening_choice": 1, "word_order": 2, "match_pairs": 3}
+        return sorted(base_tasks, key=lambda item: priority.get(str(item.get("type") or ""), 9))[:3]
+
     def _reinforcement_tasks(
         self,
         vocab: list[dict],
@@ -543,21 +455,23 @@ class CourseMiniAppLessonService:
         block_no: int | None = None,
     ) -> list[dict]:
         tasks: list[dict] = []
-        sentence_pairs = self._sentence_pairs(grammar)
-        zh_sentence, translated_sentence = sentence_pairs[0] if sentence_pairs else ("", "")
+        zh_sentence, translated_sentence = self._first_sentence_pair(grammar)
         scope = str(block_no) if block_no else "all"
 
-        chinese_tokens = self._chinese_sentence_chips(zh_sentence, vocab)
-        if zh_sentence and translated_sentence and len(chinese_tokens) >= 2:
+        answer_tokens = self._order_tokens(translated_sentence)
+        if zh_sentence and len(answer_tokens) >= 2:
             tasks.append(
                 {
                     "id": f"{lesson_order}:{scope}:reinforce:1",
-                    "type": "build_sentence_chips",
-                    "prompt": _QUIZ_TEXT[lang]["build_sentence_chips"],
-                    "translation": translated_sentence,
-                    "source": translated_sentence,
-                    "tokens": self._shuffled_tokens(chinese_tokens, f"build:{lesson_order}:{scope}:{lang}"),
-                    "answer": chinese_tokens,
+                    "type": "word_order",
+                    "prompt": {
+                        "uz": "Tarjimani so'zlardan tuzing",
+                        "ru": "Соберите перевод из слов",
+                        "tj": "Тарҷумаро аз калимаҳо созед",
+                    }.get(lang, "Tarjimani so'zlardan tuzing"),
+                    "source": zh_sentence,
+                    "tokens": self._shuffled_tokens(answer_tokens, f"wo:{lesson_order}:{scope}:{lang}"),
+                    "answer": answer_tokens,
                     "explanation": f"{zh_sentence} = {translated_sentence}",
                 }
             )
@@ -568,18 +482,44 @@ class CourseMiniAppLessonService:
             tasks.append(
                 {
                     "id": f"{lesson_order}:{scope}:reinforce:2",
-                    "type": "quick_match",
-                    "prompt": _QUIZ_TEXT[lang]["quick_match"],
+                    "type": "match_pairs",
+                    "prompt": {
+                        "uz": "Mos juftliklarni toping",
+                        "ru": "Найдите пары",
+                        "tj": "Ҷуфтҳои мувофиқро ёбед",
+                    }.get(lang, "Mos juftliklarni toping"),
                     "pairs": pairs,
                     "explanation": " · ".join(f"{left} = {right}" for left, right in pairs),
                 }
             )
 
+        listening_word = next((item for item in vocab if item.get("zh") and item.get("meaning")), None)
+        if listening_word:
+            hanzis = [item["zh"] for item in vocab if item.get("zh")]
+            options, answer_index = self._sample_options(
+                listening_word["zh"],
+                hanzis,
+                f"listen:{lesson_order}:{scope}:{lang}",
+            )
+            if len(options) >= 2:
+                tasks.append(
+                    {
+                        "id": f"{lesson_order}:{scope}:reinforce:3",
+                        "type": "listening_choice",
+                        "prompt": _QUIZ_TEXT[lang]["listening_choice"],
+                        "audioText": listening_word["zh"],
+                        "options": options,
+                        "answer": listening_word["zh"],
+                        "ans": answer_index,
+                        "explanation": f"{listening_word['zh']} = {listening_word['meaning']}",
+                    }
+                )
+
         stroke_word = next((item for item in vocab if item.get("zh") and any("\u4e00" <= char <= "\u9fff" for char in item.get("zh", ""))), None)
         if stroke_word:
             tasks.append(
                 {
-                    "id": f"{lesson_order}:{scope}:reinforce:3",
+                    "id": f"{lesson_order}:{scope}:reinforce:4",
                     "type": "stroke_preview",
                     "prompt": {
                         "uz": "Iyeroglif shaklini ko'ring",
@@ -595,67 +535,23 @@ class CourseMiniAppLessonService:
                 }
             )
 
-        if zh_sentence and translated_sentence:
-            tasks.append(
-                {
-                    "id": f"{lesson_order}:{scope}:reinforce:4",
-                    "type": "speak_repeat",
-                    "prompt": _QUIZ_TEXT[lang]["speak_repeat"],
-                    "audioText": zh_sentence,
-                    "answer": zh_sentence,
-                    "translation": translated_sentence,
-                    "source": translated_sentence,
-                    "explanation": f"{zh_sentence} = {translated_sentence}",
-                }
-            )
-
-        sentence_candidates = self._sentence_word_candidates(vocab, sentence_pairs)
-        if sentence_candidates:
-            word, sentence, translation = sentence_candidates[0]
-            hanzis = [item["zh"] for item in vocab if item.get("zh")]
-            blank_sentence = self._blank_sentence(sentence, word["zh"])
-            if blank_sentence:
-                options, answer_index = self._sample_options(
-                    word["zh"],
-                    hanzis,
-                    f"reinforce-fill:{lesson_order}:{scope}:{lang}",
-                )
-                if len(options) >= 2:
-                    tasks.append(
-                        {
-                            "id": f"{lesson_order}:{scope}:reinforce:5",
-                            "type": "fill_blank_choice",
-                            "prompt": _QUIZ_TEXT[lang]["fill_blank_choice"],
-                            "sentence": blank_sentence,
-                            "options": options,
-                            "opts": options,
-                            "answer": word["zh"],
-                            "ans": answer_index,
-                            "explanation": f"{sentence} = {translation or word['meaning']}",
-                        }
-                    )
-
-        if len(tasks) < 3 and pair_words:
-            listening_word = pair_words[0]
-            hanzis = [item["zh"] for item in vocab if item.get("zh")]
-            options, answer_index = self._sample_options(
-                listening_word["zh"],
-                hanzis,
-                f"listen:{lesson_order}:{scope}:{lang}",
-            )
-            if len(options) >= 2:
-                tasks.append(
+        if len(tasks) < 3 and zh_sentence:
+            chinese_tokens = self._order_tokens(zh_sentence, chinese=True)
+            if len(chinese_tokens) >= 2:
+                tasks.insert(
+                    0,
                     {
-                        "id": f"{lesson_order}:{scope}:reinforce:fallback-listen",
-                        "type": "listening_choice",
-                        "prompt": _QUIZ_TEXT[lang]["listening_choice"],
-                        "audioText": listening_word["zh"],
-                        "options": options,
-                        "opts": options,
-                        "answer": listening_word["zh"],
-                        "ans": answer_index,
-                        "explanation": f"{listening_word['zh']} = {listening_word['meaning']}",
-                    }
+                        "id": f"{lesson_order}:{scope}:reinforce:0",
+                        "type": "build_chinese_sentence",
+                        "prompt": {
+                            "uz": f"Xitoycha gapni tuzing: {translated_sentence}",
+                            "ru": f"Соберите китайское предложение: {translated_sentence}",
+                            "tj": f"Ҷумлаи чиниро созед: {translated_sentence}",
+                        }.get(lang, f"Xitoycha gapni tuzing: {translated_sentence}"),
+                        "tokens": self._shuffled_tokens(chinese_tokens, f"zh:{lesson_order}:{scope}:{lang}"),
+                        "answer": chinese_tokens,
+                        "explanation": zh_sentence,
+                    },
                 )
 
         return tasks[:4]
@@ -976,6 +872,7 @@ class CourseMiniAppLessonService:
         lesson_order: int,
         lang: str,
         block_no: int | None = None,
+        target_count: int = 5,
     ) -> list[dict]:
         word_questions = self._word_quiz_questions(vocab, lesson_order, lang, block_no)
         grammar_pool = lesson_grammar or grammar
@@ -991,9 +888,8 @@ class CourseMiniAppLessonService:
             block_no,
         )
 
-        target_count = 5
-        pool = self._unique_questions([*interactive_questions, *word_questions, *grammar_questions])
-        result: list[dict] = []
+        grammar_target = min(len(grammar_questions), 1 if block_no or target_count < 5 else 2)
+        word_target = max(0, target_count - grammar_target)
 
         def take(type_names: tuple[str, ...]) -> None:
             if len(result) >= target_count:
@@ -1052,12 +948,39 @@ class CourseMiniAppLessonService:
         grammar = self._grammar(lesson, lang, block)
         lesson_grammar = self._grammar(lesson, lang)
         homework = self._homework(lesson, lang)
-        reinforcement_tasks = self._reinforcement_tasks(
+        title = self._title(lesson.title, lang)
+        pilot = is_course_pilot_lesson(level, lesson.lesson_order)
+        if pilot:
+            vocab = self._pilot_vocab(vocab)
+            grammar = self._pilot_grammar(grammar or lesson_grammar)
+            quiz_target_count = 3 if lesson.lesson_order == 1 else 4
+            reinforcement_tasks = self._pilot_reinforcement_tasks(
+                lesson=lesson,
+                vocab=vocab,
+                grammar=grammar,
+                lesson_grammar=lesson_grammar,
+                lang=lang,
+            )
+            experience = self._pilot_experience(lesson=lesson, lang=lang, title=title)
+        else:
+            quiz_target_count = 5
+            reinforcement_tasks = self._reinforcement_tasks(
+                vocab,
+                grammar or lesson_grammar,
+                lesson.lesson_order,
+                lang,
+                int(block.get("block_no")) if block else None,
+            )
+            experience = None
+
+        quiz_questions = self._quiz_questions(
             vocab,
-            grammar or lesson_grammar,
+            grammar,
+            lesson_grammar,
             lesson.lesson_order,
             lang,
             int(block.get("block_no")) if block else None,
+            target_count=quiz_target_count,
         )
         return {
             "lesson_id": lesson.lesson_order,
@@ -1065,17 +988,11 @@ class CourseMiniAppLessonService:
             "level": level,
             "block_no": int(block.get("block_no")) if block else None,
             "lang": lang,
-            "title": self._title(lesson.title, lang),
+            "title": title,
+            "experience": experience,
             "vocabulary": vocab,
             "grammar": grammar,
             "homework": homework,
-            "quiz_questions": self._quiz_questions(
-                vocab,
-                grammar,
-                lesson_grammar,
-                lesson.lesson_order,
-                lang,
-                int(block.get("block_no")) if block else None,
-            ),
+            "quiz_questions": quiz_questions,
             "reinforcement_tasks": reinforcement_tasks,
         }
