@@ -207,6 +207,39 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-19 — Daily 3-min onboarding loop
+
+Changed:
+- New/free onboarding now starts with `DailyPractice`: 3 words, 2 quick quiz prompts, and 1 simple sentence after language and level selection.
+- Course mode remains available from the menu and from DailyPractice, but it is no longer the primary onboarding path.
+- Added `users.daily_practice_started_at`, `daily_practice_completed_at`, `daily_practice_streak`, and `daily_practice_last_day`.
+- Required-channel subscription is no longer enforced globally or inside course `block_vocab_2`; it is checked only when a free QA user reaches the daily text limit.
+- Trial course paywalls include a free QA fallback button, and admin stats show DailyPractice start/completion, D1→D2 return, Daily→Course, Daily→Paid, and QA-limit channel metrics.
+
+Why:
+- Trial course-first funnel showed low completion and no payment conversion. The new loop optimizes for quick daily completion and return before pushing full course depth.
+
+Files touched:
+- `app/bot/handlers/start.py`
+- `app/bot/handlers/messages.py`
+- `app/bot/middlewares/required_channel.py`
+- `app/bot/handlers/required_channel.py`
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/admin.py`
+- `app/bot/handlers/commands.py`
+- `app/bot/keyboards/onboarding.py`
+- `app/services/daily_practice_service.py`
+- `app/services/course_trial_service.py`
+- `app/db/models/user.py`
+- `app/db/session.py`
+- `alembic/versions/0044_add_daily_practice_fields.py`
+
+Risk:
+- `force_sub_required_at` now represents QA-limit channel checkpoint going forward, but old rows may still include historical course checkpoint data.
+
+Follow-up:
+- Watch D1 completion, D2 return, and Daily→Course before judging payment conversion.
+
 ### 2026-06-19 — Course Mini App Duolingo-style lesson shell and voice reinforcement
 
 Changed:

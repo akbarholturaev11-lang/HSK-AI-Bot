@@ -108,10 +108,16 @@ router = Router()
 
 
 def _course_locked_offer_text(lang: str) -> str:
+    free_fallback = {
+        "uz": "Obuna olmasangiz ham daily limit bilan savol-javobda davom etishingiz mumkin.",
+        "ru": "Даже без подписки можно продолжить в вопрос-ответ с дневным лимитом.",
+        "tj": "Бе обуна ҳам метавонед дар савол-ҷавоб бо лимити рӯзона давом диҳед.",
+    }.get(lang, "Даже без подписки можно продолжить в вопрос-ответ с дневным лимитом.")
     return (
         f"<b>{t('course_locked_title', lang)}</b>\n\n"
         f"<blockquote>{t('course_locked_text', lang)}</blockquote>\n\n"
-        f"{t('subscription_miniapp_entry_text', lang)}"
+        f"{t('subscription_miniapp_entry_text', lang)}\n"
+        f"{free_fallback}"
     )
 
 
@@ -158,18 +164,21 @@ def _trial_course_completed_text(lang: str) -> str:
     texts = {
         "uz": (
             "🎉 <b>Bepul dars tugadi</b>\n\n"
-            "<blockquote>Siz kurs rejimini sinab ko'rdingiz: dars, quiz, xato tahlili va uyga vazifa.</blockquote>\n\n"
-            "Keyingi darslarni ochish uchun obuna oling."
+            "<blockquote>Siz kurs rejimini sinab ko'rdingiz: dars, quiz, xato tahlili va mustahkamlash.</blockquote>\n\n"
+            "Keyingi darslarni ochish uchun obuna oling.\n"
+            "Obuna olmasangiz ham daily limit bilan savol-javobda davom etishingiz mumkin."
         ),
         "ru": (
             "🎉 <b>Бесплатный урок завершён</b>\n\n"
-            "<blockquote>Вы попробовали режим курса: урок, quiz, разбор ошибок и домашнее задание.</blockquote>\n\n"
-            "Чтобы открыть следующие уроки, оформите подписку."
+            "<blockquote>Вы попробовали режим курса: урок, quiz, разбор ошибок и закрепление.</blockquote>\n\n"
+            "Чтобы открыть следующие уроки, оформите подписку.\n"
+            "Даже без подписки можно продолжить в вопрос-ответ с дневным лимитом."
         ),
         "tj": (
             "🎉 <b>Дарси ройгон анҷом шуд</b>\n\n"
-            "<blockquote>Шумо реҷаи курсро санҷидед: дарс, quiz, таҳлили хатоҳо ва вазифаи хонагӣ.</blockquote>\n\n"
-            "Барои кушодани дарсҳои навбатӣ обуна гиред."
+            "<blockquote>Шумо реҷаи курсро санҷидед: дарс, quiz, таҳлили хатоҳо ва мустаҳкамкунӣ.</blockquote>\n\n"
+            "Барои кушодани дарсҳои навбатӣ обуна гиред.\n"
+            "Бе обуна ҳам метавонед дар савол-ҷавоб бо лимити рӯзона давом диҳед."
         ),
     }
     return texts.get(lang, texts["ru"])

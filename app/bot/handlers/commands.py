@@ -636,7 +636,10 @@ async def admin_stats_handler(message: Message, session):
 
     # Users registered in last 7 days
     from datetime import datetime, timezone, timedelta
-    week_ago = datetime.now(timezone.utc) - timedelta(days=7)
+    now = datetime.now(timezone.utc)
+    today = now.date()
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    week_ago = now - timedelta(days=7)
     result = await session.execute(
         select(func.count()).select_from(User).where(User.created_at >= week_ago)
     )
@@ -738,6 +741,52 @@ async def admin_stats_handler(message: Message, session):
         )
     )).scalar() or 0
 
+    daily_started = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at.is_not(None))
+    )).scalar() or 0
+    daily_started_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at >= today_start)
+    )).scalar() or 0
+    daily_started_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at >= week_ago)
+    )).scalar() or 0
+    daily_completed = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_completed_at.is_not(None))
+    )).scalar() or 0
+    daily_completed_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_last_day == today)
+    )).scalar() or 0
+    daily_completed_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_completed_at >= week_ago)
+    )).scalar() or 0
+    daily_d2_return = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_streak >= 2)
+    )).scalar() or 0
+    daily_completed_course_opened = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.daily_practice_completed_at.is_not(None),
+            User.trial_course_started_at.is_not(None),
+            User.trial_course_started_at >= User.daily_practice_completed_at,
+        )
+    )).scalar() or 0
+    daily_completed_paid = (await session.execute(
+        select(func.count(func.distinct(Payment.user_telegram_id)))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at.is_not(None),
+            User.daily_practice_completed_at.is_not(None),
+            Payment.reviewed_at >= User.daily_practice_completed_at,
+        )
+    )).scalar() or 0
+    qa_limit_channel_joined = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.force_sub_required_at.is_not(None),
+            User.last_active_at >= User.force_sub_required_at,
+        )
+    )).scalar() or 0
+
     trial = status_counts.get("trial", 0)
     active = status_counts.get("active", 0)
     expired = status_counts.get("expired", 0)
@@ -751,6 +800,11 @@ async def admin_stats_handler(message: Message, session):
     completed_paid_rate = _pct(completed_paid_after, trial_course_completed)
     checkpoint_complete_rate = _pct(checkpoint_completed, force_sub_checkpoint)
     checkpoint_paid_rate = _pct(checkpoint_paid_after, force_sub_checkpoint)
+    daily_complete_rate = _pct(daily_completed, daily_started)
+    daily_return_rate = _pct(daily_d2_return, daily_completed)
+    daily_course_rate = _pct(daily_completed_course_opened, daily_completed)
+    daily_paid_rate = _pct(daily_completed_paid, daily_completed)
+    qa_channel_join_rate = _pct(qa_limit_channel_joined, force_sub_checkpoint)
 
     lang_str = " | ".join(f"{k}: {v}" for k, v in sorted(lang_counts.items()))
 
@@ -763,6 +817,13 @@ async def admin_stats_handler(message: Message, session):
         f"  Paid user: {paid_users}\n"
         f"  Tugagan: {expired}\n"
         f"  Bloklangan: {blocked}\n\n"
+        f"<b>⚡ Daily 3-min retention:</b>\n"
+        f"  Start: {daily_started} | bugun: +{daily_started_today} | 7 kun: +{daily_started_week}\n"
+        f"  Tugatdi: {daily_completed} ({daily_complete_rate}%) | bugun: +{daily_completed_today} | 7 kun: +{daily_completed_week}\n"
+        f"  D1 → D2 qaytdi: {daily_d2_return} ({daily_return_rate}%)\n"
+        f"  Daily → Kurs: {daily_completed_course_opened} ({daily_course_rate}%)\n"
+        f"  Daily → Paid: {daily_completed_paid} ({daily_paid_rate}%)\n"
+        f"  QA limit → kanal: {force_sub_checkpoint} | joined/continued: {qa_limit_channel_joined} ({qa_channel_join_rate}%)\n\n"
         f"<b>📚 Trial course funnel:</b>\n"
         f"  Dars boshlagan: {trial_course_started} | 7 kun: +{trial_started_week}\n"
         f"  Dars tugatgan: {trial_course_completed} ({trial_complete_rate}%) | 7 kun: +{trial_completed_week}\n"

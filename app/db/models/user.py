@@ -1,7 +1,7 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Optional
 
-from sqlalchemy import BigInteger, String, Integer, DateTime, Boolean
+from sqlalchemy import BigInteger, String, Integer, DateTime, Boolean, Date
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import Column
 
@@ -100,6 +100,16 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    daily_practice_started_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    daily_practice_completed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    daily_practice_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    daily_practice_last_day: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

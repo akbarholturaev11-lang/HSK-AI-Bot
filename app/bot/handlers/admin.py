@@ -785,6 +785,10 @@ async def _admin_user_info_text(session, user: User) -> str:
         f"Obuna tugaydi: <code>{_fmt_dt(user.end_date)}</code>",
         f"Savollar: <b>{user.questions_used}/{user.question_limit}</b>",
         f"Bonus savollar qoldig'i: <b>{bonus_balance}</b>",
+        f"Daily practice boshlandi: <code>{_fmt_dt(user.daily_practice_started_at)}</code>",
+        f"Daily practice tugadi: <code>{_fmt_dt(user.daily_practice_completed_at)}</code>",
+        f"Daily streak: <b>{user.daily_practice_streak or 0}</b>",
+        f"Daily oxirgi kun: <code>{user.daily_practice_last_day or '—'}</code>",
         f"Trial dars ID: <b>{user.trial_course_lesson_id or '—'}</b>",
         f"Trial dars boshlandi: <code>{_fmt_dt(user.trial_course_started_at)}</code>",
         f"Trial dars tugadi: <code>{_fmt_dt(user.trial_course_completed_at)}</code>",
@@ -2081,6 +2085,52 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         )
     )).scalar() or 0
 
+    daily_started = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at.is_not(None))
+    )).scalar() or 0
+    daily_started_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at >= today_start)
+    )).scalar() or 0
+    daily_started_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at >= week_ago)
+    )).scalar() or 0
+    daily_completed = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_completed_at.is_not(None))
+    )).scalar() or 0
+    daily_completed_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_last_day == now.date())
+    )).scalar() or 0
+    daily_completed_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_completed_at >= week_ago)
+    )).scalar() or 0
+    daily_d2_return = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_streak >= 2)
+    )).scalar() or 0
+    daily_completed_course_opened = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.daily_practice_completed_at.is_not(None),
+            User.trial_course_started_at.is_not(None),
+            User.trial_course_started_at >= User.daily_practice_completed_at,
+        )
+    )).scalar() or 0
+    daily_completed_paid = (await session.execute(
+        select(func.count(func.distinct(Payment.user_telegram_id)))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at.is_not(None),
+            User.daily_practice_completed_at.is_not(None),
+            Payment.reviewed_at >= User.daily_practice_completed_at,
+        )
+    )).scalar() or 0
+    qa_limit_channel_joined = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.force_sub_required_at.is_not(None),
+            User.last_active_at >= User.force_sub_required_at,
+        )
+    )).scalar() or 0
+
     # --- Referallar ---
     ref_total = (await session.execute(
         select(func.count()).select_from(Referral)
@@ -2124,6 +2174,11 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     completed_paid_rate = _pct(completed_paid_after, trial_course_completed)
     checkpoint_complete_rate = _pct(checkpoint_completed, force_sub_checkpoint)
     checkpoint_paid_rate = _pct(checkpoint_paid_after, force_sub_checkpoint)
+    daily_complete_rate = _pct(daily_completed, daily_started)
+    daily_return_rate = _pct(daily_d2_return, daily_completed)
+    daily_course_rate = _pct(daily_completed_course_opened, daily_completed)
+    daily_paid_rate = _pct(daily_completed_paid, daily_completed)
+    qa_channel_join_rate = _pct(qa_limit_channel_joined, force_sub_checkpoint)
 
     level_order = ["beginner", "hsk1", "hsk2", "hsk3", "hsk4"]
     level_str   = "  " + "   ".join(
@@ -2163,6 +2218,14 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Yozilgan: <b>{course_total}</b>   Dars tugatganlar: <b>{course_with_lessons}</b>\n"
         f"  Jami tugatilgan darslar: <b>{course_lessons_sum}</b>   O'rtacha: <b>{avg_lessons}</b>\n"
         f"  Eslatma yoqilgan: <b>{course_reminders}</b>\n\n"
+
+        f"<b>⚡ DAILY 3-MIN</b>\n"
+        f"  Start: <b>{daily_started}</b>   Bugun: <b>+{daily_started_today}</b>   7 kun: <b>+{daily_started_week}</b>\n"
+        f"  Tugatdi: <b>{daily_completed}</b> (<b>{daily_complete_rate}%</b>)   Bugun: <b>+{daily_completed_today}</b>   7 kun: <b>+{daily_completed_week}</b>\n"
+        f"  D1 → D2 qaytdi: <b>{daily_d2_return}</b> (<b>{daily_return_rate}%</b>)\n"
+        f"  Daily → Kurs: <b>{daily_completed_course_opened}</b> (<b>{daily_course_rate}%</b>)\n"
+        f"  Daily → Paid: <b>{daily_completed_paid}</b> (<b>{daily_paid_rate}%</b>)\n"
+        f"  QA limit → kanal: <b>{force_sub_checkpoint}</b>   Joined/continued: <b>{qa_limit_channel_joined}</b> (<b>{qa_channel_join_rate}%</b>)\n\n"
 
         f"<b>🧪 TRIAL FUNNEL</b>\n"
         f"  Start: <b>{trial_course_started}</b>   Bugun: <b>+{trial_started_today}</b>   7 kun: <b>+{trial_started_week}</b>\n"

@@ -65,4 +65,4 @@ class CourseTrialService:
             await self.session.flush()
 
     def should_start_force_sub_at_step(self, step: str) -> bool:
-        return (step or "").strip() == "block_vocab_2"
+        return False

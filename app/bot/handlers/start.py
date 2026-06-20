@@ -8,9 +8,13 @@ from app.services.onboarding_service import OnboardingService
 from app.services.access_service import AccessService
 from app.services.course_engine_service import CourseEngineService
 from app.services.course_trial_service import CourseTrialService
+from app.services.daily_practice_service import DailyPracticeService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.onboarding import (
+    daily_practice_check_keyboard,
+    daily_practice_entry_keyboard,
+    daily_practice_finish_keyboard,
     language_keyboard,
     level_keyboard,
     trial_lesson_choice_keyboard,
@@ -90,6 +94,42 @@ async def _send_trial_lesson_choice(callback: CallbackQuery, state: FSMContext, 
             pass
     await callback.message.answer(text, reply_markup=keyboard, parse_mode="HTML")
     await state.set_state(OnboardingStates.choosing_trial_lesson)
+
+
+async def _send_daily_practice_entry_message(message: Message, state: FSMContext, session, user=None) -> None:
+    if user is None:
+        user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
+    lang = user.language if user and user.language else "ru"
+    service = DailyPracticeService(session)
+    await message.answer(
+        service.entry_text(user, lang),
+        reply_markup=daily_practice_entry_keyboard(lang),
+        parse_mode="HTML",
+    )
+    await state.set_state(OnboardingStates.daily_practice)
+
+
+async def _send_daily_practice_entry_callback(
+    callback: CallbackQuery,
+    state: FSMContext,
+    session,
+    *,
+    edit: bool,
+) -> None:
+    user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+    lang = user.language if user and user.language else "ru"
+    service = DailyPracticeService(session)
+    text = service.entry_text(user, lang)
+    keyboard = daily_practice_entry_keyboard(lang)
+    if edit:
+        try:
+            await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="HTML")
+            await state.set_state(OnboardingStates.daily_practice)
+            return
+        except Exception:
+            pass
+    await callback.message.answer(text, reply_markup=keyboard, parse_mode="HTML")
+    await state.set_state(OnboardingStates.daily_practice)
 
 
 async def _start_trial_lesson(
@@ -183,17 +223,13 @@ async def cmd_start(
     await state.clear()
 
     if not created and user.language and user.level:
+        daily_service = DailyPracticeService(session)
         if (
             user.payment_status != "approved"
-            and user.status == "trial"
-            and not getattr(user, "trial_course_lesson_id", None)
+            and getattr(user, "learning_mode", "qa") != "course"
+            and not daily_service.is_completed_today(user)
         ):
-            await message.answer(
-                _lesson_choice_text(user.language, user.level),
-                reply_markup=trial_lesson_choice_keyboard(user.language),
-                parse_mode="HTML",
-            )
-            await state.set_state(OnboardingStates.choosing_trial_lesson)
+            await _send_daily_practice_entry_message(message, state, session, user=user)
             return
 
         if getattr(user, "learning_mode", "qa") == "course":
@@ -470,6 +506,83 @@ async def process_level(callback: CallbackQuery, state: FSMContext, session):
 
     await callback.answer()
 
+    await _send_daily_practice_entry_callback(callback, state, session, edit=True)
+
+
+@router.callback_query(F.data == "daily_practice:start")
+async def daily_practice_start(callback: CallbackQuery, state: FSMContext, session):
+    user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+    lang = user.language if user and user.language else "ru"
+    if not user:
+        await callback.answer()
+        await callback.message.answer(t("access_start_first", lang))
+        return
+
+    service = DailyPracticeService(session)
+    await service.mark_started(user)
+    await session.commit()
+
+    await callback.answer()
+    try:
+        await callback.message.edit_text(
+            service.practice_text(user, lang),
+            reply_markup=daily_practice_check_keyboard(lang),
+            parse_mode="HTML",
+        )
+    except Exception:
+        await callback.message.answer(
+            service.practice_text(user, lang),
+            reply_markup=daily_practice_check_keyboard(lang),
+            parse_mode="HTML",
+        )
+    await state.set_state(OnboardingStates.daily_practice)
+
+
+@router.callback_query(F.data == "daily_practice:complete")
+async def daily_practice_complete(callback: CallbackQuery, state: FSMContext, session):
+    user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+    lang = user.language if user and user.language else "ru"
+    if not user:
+        await callback.answer()
+        await callback.message.answer(t("access_start_first", lang))
+        return
+
+    service = DailyPracticeService(session)
+    if not getattr(user, "daily_practice_started_at", None):
+        await service.mark_started(user)
+    await service.mark_completed(user)
+    user.learning_mode = "qa"
+    user.voice_mode = "none"
+    if user.payment_status != "approved" and user.status != "blocked":
+        user.status = "trial"
+        user.start_date = None
+        user.end_date = None
+    await session.commit()
+
+    await callback.answer()
+    try:
+        await callback.message.edit_text(
+            service.completion_text(user, lang),
+            reply_markup=daily_practice_finish_keyboard(lang),
+            parse_mode="HTML",
+        )
+    except Exception:
+        await callback.message.answer(
+            service.completion_text(user, lang),
+            reply_markup=daily_practice_finish_keyboard(lang),
+            parse_mode="HTML",
+        )
+    await state.clear()
+    await callback.message.answer(
+        t("send_first_message", lang),
+        reply_markup=main_menu_keyboard(lang),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(F.data == "daily_practice:course")
+async def daily_practice_course(callback: CallbackQuery, state: FSMContext, session):
+    await callback.answer()
     await _send_trial_lesson_choice(callback, state, session, edit=True)
 
 

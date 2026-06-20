@@ -56,6 +56,10 @@ from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.keyboards.referral import referral_daily_limit_keyboard
 from app.bot.keyboards.mode import course_promo_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
+from app.bot.middlewares.required_channel import (
+    PENDING_FORCE_SUB_MESSAGE_ID,
+    PENDING_FORCE_SUB_TEXT,
+)
 from app.bot.utils.course_formatter import format_intro, format_step
 from app.bot.utils.course_miniapp import (
     format_miniapp_homework_result,
@@ -91,6 +95,7 @@ from app.services.referral_service import (
 )
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.support_contact_service import get_admin_contact_html
+from app.services.required_channel_service import RequiredChannelService
 from app.bot.utils.i18n import t
 from app.bot.utils.workflow_message import (
     REMINDER_PANEL_CHAT_ID,
@@ -464,6 +469,42 @@ async def _build_referral_limit_text(session, user, lang: str, key: str) -> str:
         days=REFERRAL_TRIAL_ACCESS_DAYS,
     )
 
+
+async def _send_qa_limit_required_channel_if_needed(
+    message: Message,
+    state: FSMContext,
+    session,
+    user,
+    lang: str,
+) -> bool:
+    if not user or user.payment_status == "approved":
+        return False
+
+    service = RequiredChannelService(session)
+    missing = await service.missing_channels(message.bot, message.from_user.id)
+    if not missing:
+        return False
+
+    if getattr(user, "force_sub_required_at", None) is None:
+        user.force_sub_required_at = datetime.now(timezone.utc)
+        await session.flush()
+
+    if message.text and not message.text.strip().startswith("/"):
+        await state.update_data(
+            **{
+                PENDING_FORCE_SUB_TEXT: message.text,
+                PENDING_FORCE_SUB_MESSAGE_ID: message.message_id,
+            }
+        )
+
+    await session.commit()
+    await message.answer(
+        service.build_required_text(missing, lang),
+        reply_markup=service.build_required_keyboard(missing, lang),
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+    )
+    return True
 
 async def _consume_text_ai_usage(
     session,
@@ -1853,6 +1894,15 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
     if not can_use:
         if message_key == "access_daily_limit_reached":
+            if await _send_qa_limit_required_channel_if_needed(
+                message=message,
+                state=state,
+                session=session,
+                user=user,
+                lang=user_lang,
+            ):
+                return
+
             text = await _build_referral_limit_text(
                 session,
                 user,

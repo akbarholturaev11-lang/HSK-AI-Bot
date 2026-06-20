@@ -47,6 +47,49 @@ def trial_lesson_choice_keyboard(lang: str) -> InlineKeyboardMarkup:
     )
 
 
+def daily_practice_entry_keyboard(lang: str) -> InlineKeyboardMarkup:
+    labels = {
+        "uz": ("🚀 Bugungi 3 daqiqalik mashq", "📚 Kursni boshlash"),
+        "ru": ("🚀 Сегодняшняя практика на 3 минуты", "📚 Начать курс"),
+        "tj": ("🚀 Машқи 3-дақиқаи имрӯз", "📚 Оғози курс"),
+    }
+    practice_label, course_label = labels.get(lang, labels["ru"])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=practice_label, callback_data="daily_practice:start")],
+            [InlineKeyboardButton(text=course_label, callback_data="daily_practice:course")],
+        ]
+    )
+
+
+def daily_practice_finish_keyboard(lang: str) -> InlineKeyboardMarkup:
+    labels = {
+        "uz": ("💬 Bepul savol-javobga o'tish", "📚 Kursni boshlash"),
+        "ru": ("💬 Перейти в бесплатный вопрос-ответ", "📚 Начать курс"),
+        "tj": ("💬 Ба савол-ҷавоби ройгон гузаштан", "📚 Оғози курс"),
+    }
+    qa_label, course_label = labels.get(lang, labels["ru"])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=qa_label, callback_data="mode:free_qa")],
+            [InlineKeyboardButton(text=course_label, callback_data="daily_practice:course")],
+        ]
+    )
+
+
+def daily_practice_check_keyboard(lang: str) -> InlineKeyboardMarkup:
+    labels = {
+        "uz": "✅ Javoblarni ko'rish",
+        "ru": "✅ Посмотреть ответы",
+        "tj": "✅ Дидани ҷавобҳо",
+    }
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="daily_practice:complete")],
+        ]
+    )
+
+
 def _parse_lesson_title(raw: str, lang: str) -> str:
     if not raw:
         return ""

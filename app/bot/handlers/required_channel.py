@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
@@ -43,6 +45,10 @@ async def force_sub_check(callback: CallbackQuery, state: FSMContext, session):
         return
 
     await callback.answer(t("force_sub_unlocked_alert", lang), show_alert=True)
+    if user:
+        user.last_active_at = datetime.now(timezone.utc)
+        await session.flush()
+
     data = await state.get_data()
     pending_text = (data.get(PENDING_FORCE_SUB_TEXT) or "").strip()
     pending_message_id = data.get(PENDING_FORCE_SUB_MESSAGE_ID)

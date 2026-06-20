@@ -32,6 +32,10 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "trial_quiz_explanation_used_at": "TIMESTAMP WITH TIME ZONE",
         "trial_voice_used_at": "TIMESTAMP WITH TIME ZONE",
         "force_sub_required_at": "TIMESTAMP WITH TIME ZONE",
+        "daily_practice_started_at": "TIMESTAMP WITH TIME ZONE",
+        "daily_practice_completed_at": "TIMESTAMP WITH TIME ZONE",
+        "daily_practice_streak": "INTEGER DEFAULT 0 NOT NULL",
+        "daily_practice_last_day": "DATE",
     },
     "payments": {
         "checkout_msg_id": "INTEGER",
