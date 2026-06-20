@@ -1293,11 +1293,11 @@ Files touched:
 
 Changed:
 - Added `ENABLE_MESSAGE_DRAFTS` for QA text AI replies.
-- New `MessageDraftService` tries Telegram `sendMessageDraft` first and falls back to the existing `ResponseEffect` loader or `sendChatAction("typing")`.
+- New `MessageDraftService` tries Telegram `sendMessageDraft` first and falls back only to `sendChatAction("typing")`; the emoji `ResponseEffect` loader is not used in this draft path.
 - Final AI replies still use the normal send message flow; draft is only a waiting effect.
 
 Why:
-- Allows testing Telegram draft-based AI typing UX without removing the existing emoji/progress loader.
+- Allows testing Telegram draft-based AI typing UX without showing duplicate emoji/progress loader messages in QA draft flow.
 
 Files touched:
 - `app/services/message_draft_service.py`
@@ -1307,7 +1307,7 @@ Files touched:
 - `.env.example`
 
 Risk:
-- `aiogram==3.22.0` does not expose `sendMessageDraft`; raw Telegram HTTP is used only when the flag is enabled, and failures fall back safely.
+- `aiogram==3.22.0` does not expose `sendMessageDraft`; raw Telegram HTTP is used only when the flag is enabled, and failures fall back to Telegram typing action without sending an emoji loader message.
 
 Follow-up:
 - Test `/draft_test` and one normal QA text question with `ENABLE_MESSAGE_DRAFTS=true` in Telegram.

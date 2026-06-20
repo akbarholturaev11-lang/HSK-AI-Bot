@@ -1,11 +1,9 @@
 import logging
 import time
 from dataclasses import dataclass
-from typing import Any
 
 import aiohttp
 
-from app.bot.utils.response_effect import ResponseEffect
 from app.config import settings
 
 
@@ -22,11 +20,7 @@ _ACTIVE_DRAFTS: dict[int, "MessageDraftState"] = {}
 @dataclass
 class MessageDraftState:
     chat_id: int
-    source_message: Any | None = None
-    fallback_mode: str = "qa"
-    seed: int | None = None
     using_draft: bool = False
-    fallback_effect: ResponseEffect | None = None
     last_update_at: float = 0.0
     update_count: int = 0
     max_updates: int = _MAX_UPDATES_PER_REPLY
@@ -92,27 +86,6 @@ async def _use_typing_fallback(bot, chat_id: int) -> None:
         logger.exception("typing_fallback_used_failed", extra={"chat_id": chat_id})
 
 
-async def _start_old_loader_fallback(bot, state: MessageDraftState, preview_text: str) -> None:
-    if state.fallback_effect:
-        return
-
-    if state.source_message is not None:
-        try:
-            effect = ResponseEffect(
-                state.source_message,
-                mode=state.fallback_mode,
-                seed=state.seed,
-            )
-            await effect.start()
-            state.fallback_effect = effect
-            logger.info("old_loader_fallback_used", extra={"chat_id": state.chat_id})
-            return
-        except Exception:
-            logger.exception("old_loader_fallback_used_failed", extra={"chat_id": state.chat_id})
-
-    await _use_typing_fallback(bot, state.chat_id)
-
-
 async def send_draft_or_fallback(
     bot,
     chat_id: int,
@@ -126,9 +99,6 @@ async def send_draft_or_fallback(
 ) -> MessageDraftState:
     state = MessageDraftState(
         chat_id=chat_id,
-        source_message=source_message,
-        fallback_mode=fallback_mode,
-        seed=seed,
         max_updates=max_updates,
         min_update_interval=min_update_interval,
     )
@@ -144,7 +114,7 @@ async def send_draft_or_fallback(
         except Exception:
             logger.exception("message_draft_failed", extra={"chat_id": chat_id})
 
-    await _start_old_loader_fallback(bot, state, preview_text)
+    await _use_typing_fallback(bot, chat_id)
     return state
 
 
@@ -169,14 +139,8 @@ async def update_draft_or_fallback(bot, chat_id: int, preview_text: str) -> bool
         except Exception:
             logger.exception("message_draft_failed", extra={"chat_id": chat_id})
             state.using_draft = False
-            await _start_old_loader_fallback(bot, state, preview_text)
+            await _use_typing_fallback(bot, chat_id)
             return False
-
-    if state.fallback_effect:
-        await state.fallback_effect.set_text(_preview_text(preview_text))
-        state.update_count += 1
-        state.last_update_at = now
-        return True
 
     await _use_typing_fallback(bot, chat_id)
     state.update_count += 1
@@ -187,13 +151,4 @@ async def update_draft_or_fallback(bot, chat_id: int, preview_text: str) -> bool
 async def finish_draft_if_needed(bot=None, chat_id: int | None = None) -> None:
     if chat_id is None:
         return
-
-    state = _ACTIVE_DRAFTS.pop(chat_id, None)
-    if not state:
-        return
-
-    if state.fallback_effect:
-        try:
-            await state.fallback_effect.stop()
-        except Exception:
-            logger.exception("old_loader_fallback_used_failed", extra={"chat_id": chat_id})
+    _ACTIVE_DRAFTS.pop(chat_id, None)
