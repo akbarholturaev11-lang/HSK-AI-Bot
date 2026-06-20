@@ -5,6 +5,11 @@ from typing import Optional
 from aiogram.types import Message
 
 
+_DEFAULT_STEP_DELAY_SECONDS = 2.7
+_WAVE_INTERVAL_SECONDS = 0.9
+_LAST_STATE_DELAY_MULTIPLIER = 2.5
+_WAVE_FRAMES = ("", "~", "~~", "~~~", "~~", "~")
+
 _STATE_POOLS: dict[str, dict[str, tuple[str, ...]]] = {
     "qa": {
         "uz": ("Analiz qilyapman...", "Javob tayyorlayapman...", "Tekshiryapman...", "O'ylayapman..."),
@@ -43,17 +48,24 @@ def _select_states(mode: str, seed: int | None, lang: str = "uz") -> tuple[str, 
     return states
 
 
+def _render_state(text: str, wave_index: int) -> str:
+    frame = _WAVE_FRAMES[wave_index % len(_WAVE_FRAMES)]
+    return f"{frame} {text}" if frame else text
+
+
 class ResponseEffect:
     def __init__(
         self,
         message: Message,
-        step_delay: float = 1.6,
+        step_delay: float = _DEFAULT_STEP_DELAY_SECONDS,
         states: tuple[str, ...] | None = None,
         delete_on_stop: bool = True,
         mode: str = "qa",
         seed: int | None = None,
         lang: str = "uz",
         typing_interval: float = 4.0,
+        wave_interval: float = _WAVE_INTERVAL_SECONDS,
+        last_state_delay_multiplier: float = _LAST_STATE_DELAY_MULTIPLIER,
     ):
         self.message = message
         self.step_delay = step_delay
@@ -61,6 +73,8 @@ class ResponseEffect:
         self.delete_on_stop = delete_on_stop
         self.temp_message = None
         self.typing_interval = typing_interval
+        self.wave_interval = wave_interval
+        self.last_state_delay_multiplier = last_state_delay_multiplier
         self._task: Optional[asyncio.Task] = None
         self._typing_task: Optional[asyncio.Task] = None
         self._stopped = False
@@ -78,24 +92,36 @@ class ResponseEffect:
                 await self._send_typing()
 
     async def _runner(self):
-        index = 1
+        state_index = 0
+        wave_index = 0
+        elapsed = 0.0
         while not self._stopped:
-            await asyncio.sleep(self.step_delay)
+            await asyncio.sleep(self.wave_interval)
             if self._stopped:
                 break
 
+            elapsed += self.wave_interval
+            state_delay = self.step_delay
+            if state_index == len(self.states) - 1:
+                state_delay *= self.last_state_delay_multiplier
+
+            if elapsed >= state_delay:
+                state_index = (state_index + 1) % len(self.states)
+                wave_index = 0
+                elapsed = 0.0
+            else:
+                wave_index += 1
+
             try:
                 await self.temp_message.edit_text(
-                    self.states[index % len(self.states)]
+                    _render_state(self.states[state_index], wave_index)
                 )
             except Exception:
                 pass
 
-            index += 1
-
     async def start(self):
         await self._send_typing()
-        self.temp_message = await self.message.answer(self.states[0])
+        self.temp_message = await self.message.answer(_render_state(self.states[0], 0))
         self._task = asyncio.create_task(self._runner())
         self._typing_task = asyncio.create_task(self._typing_runner())
 

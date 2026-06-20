@@ -611,7 +611,7 @@ def _voice_answer_loader_text(lang: str, *, translate: bool = False) -> str:
 async def _transcribe_voice_message(message: Message, user, lang: str):
     effect = ResponseEffect(
         message,
-        step_delay=1.8,
+        step_delay=2.7,
         mode="voice",
         lang=lang,
         delete_on_stop=False,
@@ -706,7 +706,7 @@ async def _process_qa_voice_transcript(
 
     effect = ResponseEffect(
         source_message,
-        step_delay=1.6,
+        step_delay=2.7,
         mode="voice",
         lang=lang,
     )
@@ -789,7 +789,7 @@ async def _process_translator_voice_transcript(
     else:
         effect = ResponseEffect(
             source_message,
-            step_delay=1.6,
+            step_delay=2.7,
             mode="translate",
             lang=lang,
         )
