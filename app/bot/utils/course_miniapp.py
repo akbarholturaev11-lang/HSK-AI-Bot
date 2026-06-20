@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260620-course-miniapp-compact-shell"
+MINIAPP_ASSET_VERSION = "20260620-course-miniapp-easy-chips"
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:

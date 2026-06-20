@@ -207,6 +207,26 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-20 — Course Mini App easier sentence chips
+
+Changed:
+- Course Mini App `build_sentence_chips` now groups Chinese sentences into vocabulary/grammar chunks instead of one chip per Hanzi character, with a max of 7 chips.
+- Mini App typography and feedback/modal sizing were tightened for smaller, less heavy screens.
+
+Why:
+- Character-by-character sentence building was too difficult and visually crowded on mobile.
+
+Files touched:
+- `app/services/course_miniapp_lesson_service.py`
+- `app/static/course-miniapp-v2.js`
+- `app/bot/utils/course_miniapp.py`
+
+Risk:
+- Very long sentences may be chunked into larger phrase chips, which is intentional to keep the task easier.
+
+Follow-up:
+- Smoke test Course Mini App quiz and Mustahkamlash on Telegram mobile after deploy.
+
 ### 2026-06-19 — Daily 3-min onboarding loop
 
 Changed:

@@ -455,6 +455,73 @@ class CourseMiniAppLessonService:
         )
         return [part.strip() for part in cleaned.split() if part.strip()]
 
+    def _chinese_sentence_chips(self, sentence: str, vocab: list[dict], max_tokens: int = 7) -> list[str]:
+        text = str(sentence or "").strip()
+        if not text:
+            return []
+
+        vocab_words = sorted(
+            {
+                str(item.get("zh") or "").strip()
+                for item in vocab
+                if isinstance(item, dict) and len(str(item.get("zh") or "").strip()) >= 2
+            },
+            key=len,
+            reverse=True,
+        )
+        tokens: list[str] = []
+        index = 0
+        while index < len(text):
+            char = text[index]
+            if char.isspace() or char in "，。！？,.!?;；:：":
+                index += 1
+                continue
+
+            matched = next((word for word in vocab_words if text.startswith(word, index)), "")
+            if matched:
+                tokens.append(matched)
+                index += len(matched)
+                continue
+
+            tokens.append(char)
+            index += 1
+
+        if not tokens:
+            return []
+
+        merged: list[str] = []
+        attach_previous = {"的", "了", "过", "着", "呢", "吗", "吧"}
+        attach_next = {"不", "没", "很", "太", "还", "也", "都", "就", "再"}
+        index = 0
+        while index < len(tokens):
+            token = tokens[index]
+            if token in attach_previous and merged:
+                merged[-1] += token
+                index += 1
+                continue
+            if token in attach_next and index + 1 < len(tokens):
+                merged.append(token + tokens[index + 1])
+                index += 2
+                continue
+            if token == "是" and merged:
+                merged[-1] += token
+                index += 1
+                continue
+            merged.append(token)
+            index += 1
+
+        while len(merged) > max_tokens:
+            merge_index = next((i for i, token in enumerate(merged) if len(token) == 1 and i + 1 < len(merged)), -1)
+            if merge_index < 0:
+                merge_index = next((i for i, token in enumerate(merged[1:], start=1) if len(token) == 1), -1)
+                if merge_index < 0:
+                    break
+                merged[merge_index - 1] += merged.pop(merge_index)
+                continue
+            merged[merge_index] += merged.pop(merge_index + 1)
+
+        return merged if 2 <= len(merged) <= max_tokens else []
+
     def _shuffled_tokens(self, tokens: list[str], seed: str) -> list[str]:
         if len(tokens) <= 1:
             return tokens
@@ -480,7 +547,7 @@ class CourseMiniAppLessonService:
         zh_sentence, translated_sentence = sentence_pairs[0] if sentence_pairs else ("", "")
         scope = str(block_no) if block_no else "all"
 
-        chinese_tokens = self._order_tokens(zh_sentence, chinese=True)
+        chinese_tokens = self._chinese_sentence_chips(zh_sentence, vocab)
         if zh_sentence and translated_sentence and len(chinese_tokens) >= 2:
             tasks.append(
                 {
@@ -879,7 +946,7 @@ class CourseMiniAppLessonService:
                     questions.append(question)
 
         for sentence, translation in sentence_pairs:
-            tokens = self._order_tokens(sentence, chinese=True)
+            tokens = self._chinese_sentence_chips(sentence, vocab)
             if len(tokens) >= 2 and translation:
                 questions.append(
                     {
