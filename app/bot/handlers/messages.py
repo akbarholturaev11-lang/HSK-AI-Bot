@@ -1,4 +1,3 @@
-import asyncio
 import json
 import logging
 import os
@@ -78,11 +77,6 @@ from app.services.course_trial_service import CourseTrialService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.image_input_service import ImageInputService
 from app.services.image_qa_service import ImageQAService
-from app.services.message_draft_service import (
-    finish_draft_if_needed,
-    send_draft_or_fallback,
-    update_draft_or_fallback,
-)
 from app.services.onboarding_tip_service import (
     OnboardingTipService,
     TIP_KEY_NORMAL_PHOTO,
@@ -135,39 +129,6 @@ def _response_seed(user, text: str | None = None) -> int:
     question_count = int(getattr(user, "questions_used", 0) or 0)
     text_score = sum(ord(char) for char in (text or "")[:80])
     return question_count + text_score
-
-
-_AI_DRAFT_PREVIEWS = {
-    "tj": (
-        "AI ҷавобро тайёр мекунад...",
-        "Саволро таҳлил карда истодаам...",
-        "Мисол ва шарҳро ҷамъ мекунам...",
-        "Ҷавобро кӯтоҳ карда истодаам...",
-    ),
-    "uz": (
-        "AI javob tayyorlayapti...",
-        "Savolni tahlil qilyapman...",
-        "Misol va izohlarni yig'yapman...",
-        "Javobni ixchamlayapman...",
-    ),
-    "ru": (
-        "AI готовит ответ...",
-        "Разбираю вопрос...",
-        "Собираю пример и объяснение...",
-        "Сокращаю ответ...",
-    ),
-}
-
-
-def _ai_draft_preview(lang: str, index: int = 0) -> str:
-    previews = _AI_DRAFT_PREVIEWS.get(lang, _AI_DRAFT_PREVIEWS["ru"])
-    return previews[min(max(index, 0), len(previews) - 1)]
-
-
-async def _run_ai_draft_updates(bot, chat_id: int, lang: str) -> None:
-    for index in range(1, len(_AI_DRAFT_PREVIEWS.get(lang, _AI_DRAFT_PREVIEWS["ru"]))):
-        await asyncio.sleep(1.4)
-        await update_draft_or_fallback(bot, chat_id, _ai_draft_preview(lang, index))
 
 
 def _split_text_chunks(text: str, max_length: int = SAFE_TEXT_CHUNK_LIMIT) -> list[str]:
@@ -550,7 +511,7 @@ async def _answer_course_tutor_question(
     ):
         return True
 
-    effect = ResponseEffect(message, mode="course", seed=_response_seed(user, text))
+    effect = ResponseEffect(message, mode="course", seed=_response_seed(user, text), lang=lang)
     await effect.start()
     try:
         tutor = CourseTutorService()
@@ -633,16 +594,26 @@ def _voice_mode_cancel_keyboard(lang: str) -> ReplyKeyboardMarkup:
     )
 
 
+def _voice_answer_loader_text(lang: str, *, translate: bool = False) -> str:
+    if translate:
+        return {
+            "uz": "Tarjima qilyapman...",
+            "ru": "Перевожу...",
+            "tj": "Тарҷума мекунам...",
+        }.get(lang, "Перевожу...")
+    return {
+        "uz": "Javob tayyorlayapman...",
+        "ru": "Готовлю ответ...",
+        "tj": "Ҷавоб тайёр мекунам...",
+    }.get(lang, "Готовлю ответ...")
+
+
 async def _transcribe_voice_message(message: Message, user, lang: str):
     effect = ResponseEffect(
         message,
         step_delay=1.8,
-        states=(
-            t("voice_status_received", lang),
-            t("voice_status_transcribing", lang),
-            t("voice_status_understanding", lang),
-            t("voice_status_answering", lang),
-        ),
+        mode="voice",
+        lang=lang,
         delete_on_stop=False,
     )
     await effect.start()
@@ -736,7 +707,8 @@ async def _process_qa_voice_transcript(
     effect = ResponseEffect(
         source_message,
         step_delay=1.6,
-        states=(t("voice_status_answering", lang), "✍️", "🧠"),
+        mode="voice",
+        lang=lang,
     )
     await effect.start()
     try:
@@ -811,14 +783,15 @@ async def _process_translator_voice_transcript(
     effect = None
     if cleanup_message:
         try:
-            await cleanup_message.edit_text(t("voice_status_answering", lang))
+            await cleanup_message.edit_text(_voice_answer_loader_text(lang, translate=True))
         except Exception:
             pass
     else:
         effect = ResponseEffect(
             source_message,
             step_delay=1.6,
-            states=(t("voice_status_answering", lang), "🌐", "🧠"),
+            mode="translate",
+            lang=lang,
         )
         await effect.start()
 
@@ -1644,7 +1617,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             if miniapp_context:
                 contextual_message = f"{miniapp_context}\n\nFOYDALANUVCHI XABARI:\n{user_question}"
 
-            effect = ResponseEffect(message, mode="course", seed=_response_seed(refreshed_user, user_question))
+            effect = ResponseEffect(message, mode="course", seed=_response_seed(refreshed_user, user_question), lang=user_lang)
             await effect.start()
             try:
                 tutor = CourseTutorService()
@@ -1736,7 +1709,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             ):
                 return
 
-            effect = ResponseEffect(message, mode="course", seed=_response_seed(user, msg_text))
+            effect = ResponseEffect(message, mode="course", seed=_response_seed(user, msg_text), lang=user_lang)
             await effect.start()
             try:
                 result = await engine.mark_homework_submitted(
@@ -1922,20 +1895,8 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         await message.answer(t(message_key, user_lang), parse_mode="HTML")
         return
 
-    chat_id = message.chat.id
-    draft_update_task = None
-    await send_draft_or_fallback(
-        message.bot,
-        chat_id,
-        _ai_draft_preview(user_lang, 0),
-        draft_id=message.message_id,
-        source_message=message,
-        fallback_mode="qa",
-        seed=_response_seed(user, message.text),
-    )
-    draft_update_task = asyncio.create_task(
-        _run_ai_draft_updates(message.bot, chat_id, user_lang)
-    )
+    effect = ResponseEffect(message, mode="qa", seed=_response_seed(user, message.text), lang=user_lang)
+    await effect.start()
 
     try:
         qa_service = QAService(session)
@@ -1950,13 +1911,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         await message.answer(t("ai_response_failed", user_lang))
         return
     finally:
-        if draft_update_task:
-            draft_update_task.cancel()
-            try:
-                await draft_update_task
-            except asyncio.CancelledError:
-                pass
-        await finish_draft_if_needed(message.bot, chat_id)
+        await effect.stop()
 
     if _is_i18n_access_key(reply):
         await message.answer(t(reply, user_lang), parse_mode="HTML")
@@ -2055,7 +2010,7 @@ async def handle_image_message(message: Message, state: FSMContext, session):
         await message.answer(t("image_invalid_format", user_lang))
         return
 
-    effect = ResponseEffect(message, mode="image", seed=_response_seed(user, message.caption))
+    effect = ResponseEffect(message, mode="image", seed=_response_seed(user, message.caption), lang=user_lang)
     await effect.start()
 
     try:

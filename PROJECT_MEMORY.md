@@ -1342,28 +1342,28 @@ Files touched:
 
 ---
 
-### 2026-06-19 — Direct AI message draft
+### 2026-06-20 — Text AI wait loader
 
 Changed:
-- QA text AI replies now call Telegram `sendMessageDraft` directly; no draft feature flag remains.
-- `MessageDraftService` sends a stable non-zero `draft_id` (`message.message_id`) for the initial draft and all updates, and falls back only to `sendChatAction("typing")`.
-- Final AI replies still use the normal send message flow; draft is only a waiting effect.
+- Removed the Telegram `sendMessageDraft` implementation and its service.
+- `ResponseEffect` now shows plain text loading messages instead of emoji-only progress messages.
+- While the loading message is active, the bot also refreshes Telegram `sendChatAction("typing")` so the typing indicator appears at the top.
+- QA, course tutor, course review/homework, image AI, and voice AI flows use the same text-loader path with mode-specific texts.
 
 Why:
-- Allows testing Telegram draft-based AI typing UX without showing duplicate emoji/progress loader messages in QA draft flow.
+- Telegram draft API behavior was unreliable in production, and the requested UX is a visible text loader that disappears before the final AI answer.
 
 Files touched:
-- `app/services/message_draft_service.py`
+- `app/bot/utils/response_effect.py`
 - `app/bot/handlers/messages.py`
 - `app/bot/handlers/commands.py`
-- `app/config.py`
-- `.env.example`
+- `app/services/message_draft_service.py`
 
 Risk:
-- `aiogram==3.22.0` does not expose `sendMessageDraft`; raw Telegram HTTP is used, and failures log Telegram response descriptions then fall back to typing without sending an emoji loader message.
+- Voice transcription still keeps its transcript/choice message when the flow requires user selection; AI answer loaders still delete before final answers.
 
 Follow-up:
-- Test `/draft_test` and one normal QA text question in Telegram.
+- Test normal QA, course question, photo, voice QA, and `/draft_test` in Telegram.
 
 ---
 
