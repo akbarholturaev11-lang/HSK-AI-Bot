@@ -660,6 +660,7 @@ const I18N={
 
 const state={
   lang:normalizeLang(PARAMS.get("lang")||tg?.initDataUnsafe?.user?.language_code||"uz"),
+  source:String(PARAMS.get("source")||"").trim(),
   mode:normalizeMode(PARAMS.get("mode")),
   campaignId:positiveParam(PARAMS.get("campaign_id")),
   feedbackId:positiveParam(PARAMS.get("feedback_id")),
@@ -733,6 +734,7 @@ function ensureSelection(){
 }
 function contextPayload(){
   return {
+    source:state.source,
     mode:state.mode,
     campaign_id:state.campaignId,
     feedback_id:state.feedbackId

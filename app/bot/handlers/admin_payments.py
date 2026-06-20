@@ -6,6 +6,7 @@ from app.repositories.user_repo import UserRepository
 from app.services.subscription_service import SubscriptionService
 from app.services.payment_notify_service import PaymentNotifyService
 from app.services.partner_service import PartnerService
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.bot.keyboards.admin_review import admin_reject_reason_keyboard
 from app.config import settings
 
@@ -62,6 +63,14 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
 
     user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
     await session.commit()
+    await ConversionFunnelService().record(
+        event_name="payment_approved",
+        user=user,
+        telegram_id=payment.user_telegram_id,
+        source="admin_payment_approve",
+        payment_id=payment.id,
+        payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+    )
 
     await callback.answer("✅ Tasdiqlandi!", show_alert=True)
     await callback.message.edit_reply_markup(reply_markup=None)
@@ -115,6 +124,14 @@ async def admin_payment_reject_handler(callback: CallbackQuery, session):
     if user:
         await user_repo.set_selected_plan_type(user, None)
     await session.commit()
+    await ConversionFunnelService().record(
+        event_name="payment_rejected",
+        user=user,
+        telegram_id=payment.user_telegram_id,
+        source="admin_payment_reject",
+        payment_id=payment.id,
+        payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+    )
 
     await callback.answer("❌ Rad etildi", show_alert=True)
     await callback.message.edit_reply_markup(reply_markup=None)
@@ -172,6 +189,19 @@ async def admin_payment_reject_with_reason_handler(callback: CallbackQuery, sess
     if user:
         await user_repo.set_selected_plan_type(user, None)
     await session.commit()
+    await ConversionFunnelService().record(
+        event_name="payment_rejected",
+        user=user,
+        telegram_id=payment.user_telegram_id,
+        source="admin_payment_reject_reason",
+        payment_id=payment.id,
+        payload={
+            "plan_type": payment.plan_type,
+            "payment_method": payment.payment_method,
+            "reason_code": reason_code,
+            "reason_label": reason_label,
+        },
+    )
 
     await callback.answer(f"❌ Rad etildi: {reason_label}", show_alert=True)
     await callback.message.edit_reply_markup(reply_markup=None)

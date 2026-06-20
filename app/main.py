@@ -26,6 +26,7 @@ from app.services.partner_service import PartnerService
 from app.services.app_error_context_service import AppErrorContextService
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
@@ -36,6 +37,7 @@ from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.course import homework_retry_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
+from app.bot.utils.trial_value_flow import send_trial_quiz_value_teaser
 from app.bot.keyboards.course_miniapp import (
     course_homework_done_keyboard,
     course_miniapp_quiz_result_keyboard,
@@ -340,13 +342,27 @@ async def subscription_miniapp_overview(request: Request):
 
     payload = await request.json()
     async with async_session_maker() as session:
-        return await SubscriptionMiniAppService(session).overview(
+        result = await SubscriptionMiniAppService(session).overview(
             telegram_id,
             bot=bot,
             mode=str(payload.get("mode") or ""),
             campaign_id=_positive_int(payload.get("campaign_id")),
             feedback_id=_positive_int(payload.get("feedback_id")),
         )
+        if result.get("ok"):
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            await ConversionFunnelService().record(
+                event_name="checkout_opened",
+                user=user,
+                telegram_id=telegram_id,
+                source=str(payload.get("source") or payload.get("mode") or "subscription_miniapp"),
+                payload={
+                    "mode": str(payload.get("mode") or ""),
+                    "campaign_id": _positive_int(payload.get("campaign_id")),
+                    "feedback_id": _positive_int(payload.get("feedback_id")),
+                },
+            )
+        return result
 
 
 @app.post("/api/subscription-miniapp/discount-start")
@@ -396,7 +412,7 @@ async def subscription_miniapp_submit(request: Request):
 
     payload = await request.json()
     async with async_session_maker() as session:
-        return await SubscriptionMiniAppService(session).submit(
+        result = await SubscriptionMiniAppService(session).submit(
             telegram_id=telegram_id,
             plan_type=str(payload.get("plan_type") or ""),
             payment_method=str(payload.get("payment_method") or ""),
@@ -407,6 +423,21 @@ async def subscription_miniapp_submit(request: Request):
             campaign_id=_positive_int(payload.get("campaign_id")),
             feedback_id=_positive_int(payload.get("feedback_id")),
         )
+        if result.get("ok") and result.get("payment_id") and not result.get("already_pending"):
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            await ConversionFunnelService().record(
+                event_name="payment_screenshot_submitted",
+                user=user,
+                telegram_id=telegram_id,
+                source=str(payload.get("source") or payload.get("mode") or "subscription_miniapp"),
+                payment_id=_positive_int(result.get("payment_id")),
+                payload={
+                    "plan_type": str(payload.get("plan_type") or ""),
+                    "payment_method": str(payload.get("payment_method") or ""),
+                    "mode": str(payload.get("mode") or ""),
+                },
+            )
+        return result
 
 
 @app.post("/api/miniapp/event")
@@ -486,6 +517,15 @@ async def miniapp_event(request: Request):
                 text=format_miniapp_quiz_result(lang, result),
                 reply_markup=reply_markup,
                 parse_mode="HTML",
+            )
+            async def respond(text, **kwargs):
+                await bot.send_message(chat_id=telegram_id, text=text, **kwargs)
+
+            await send_trial_quiz_value_teaser(
+                session=session,
+                telegram_id=telegram_id,
+                result=result,
+                respond=respond,
             )
             return {"ok": True}
 

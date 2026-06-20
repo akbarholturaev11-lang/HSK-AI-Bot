@@ -7,6 +7,7 @@ from app.repositories.payment_repo import PaymentRepository
 from app.services.payment_service import PaymentService
 from app.services.admin_notify_service import AdminNotifyService
 from app.services.payment_screenshot_ai_service import PaymentScreenshotAIService
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.bot.utils.i18n import t
 
 router = Router()
@@ -107,4 +108,15 @@ async def payment_screenshot_handler(message: Message, session):
         user=user,
         ai_result=ai_result,
         pending_count=pending_count,
+    )
+    await ConversionFunnelService().record(
+        event_name="payment_screenshot_submitted",
+        user=user,
+        source="legacy_photo_payment",
+        payment_id=payment.id,
+        payload={
+            "plan_type": payment.plan_type,
+            "payment_method": payment.payment_method,
+            "status": status_or_error,
+        },
     )

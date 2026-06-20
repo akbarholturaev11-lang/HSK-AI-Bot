@@ -24,6 +24,7 @@ from app.db.models.course_pilot_event import CoursePilotEvent
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.portfolio_service import PortfolioService
 from app.services.payment_qr_code_service import (
     PaymentQrCodeService,
@@ -2248,8 +2249,17 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     approved_cnt, approved_sum = pay_by_status.get("approved", (0, 0))
     rejected_cnt, _            = pay_by_status.get("rejected", (0, 0))
     paid_user_cnt = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.payment_status == "approved",
+            User.status == "active",
+            User.end_date.is_not(None),
+            User.end_date > now,
+        )
+    )).scalar() or 0
+    historical_approved_users = (await session.execute(
         select(func.count()).select_from(User).where(User.payment_status == "approved")
     )).scalar() or 0
+    funnel_text = await ConversionFunnelService(session).admin_funnel_text(week_ago=week_ago)
 
     conversion  = _pct(paid_user_cnt, total)
     qa_users    = (await session.execute(
@@ -2290,6 +2300,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"<b>👥 FOYDALANUVCHILAR  [{total}]</b>\n"
         f"  Free: <b>{free_cnt}</b>   Trial: <b>{trial_cnt}</b>\n"
         f"  Active status: <b>{active_cnt}</b>   Paid: <b>{paid_user_cnt}</b>\n"
+        f"  Historical approved: <b>{historical_approved_users}</b>\n"
         f"  Tugagan: <b>{expired_cnt}</b>   Bloklangan: <b>{blocked_cnt}</b>\n\n"
 
         f"<b>📅 FAOLLIK</b>\n"
@@ -2341,6 +2352,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Completed → paid: <b>{completed_paid_after}</b> (<b>{completed_paid_rate}%</b>)\n"
         f"  Checkpoint → paid: <b>{checkpoint_paid_after}</b> (<b>{checkpoint_paid_rate}%</b>)\n"
         f"  Trialdan keyingi tushum: <b>{int(trial_revenue_after_start):,}</b> so'm\n\n"
+        f"{funnel_text}\n\n"
 
         f"<b>🎁 REFERALLAR</b>\n"
         f"  Jami: <b>{ref_total}</b>   Faollashgan: <b>{ref_activated}</b>   Bonus: <b>{ref_bonus}</b>\n"

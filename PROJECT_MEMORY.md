@@ -1289,6 +1289,44 @@ Follow-up:
 
 ---
 
+### 2026-06-21 - Conversion funnel tracking and course-first recovery
+
+Changed:
+- Added append-only `conversion_funnel_events` table via `0046_add_conversion_funnel_events.py`.
+- Canonical funnel events: `course_cta_seen`, `course_started`, `lesson_started`, `quiz_completed`, `ai_explanation_seen`, `homework_completed`, `paywall_seen`, `checkout_opened`, `payment_screenshot_submitted`, `payment_approved`, `payment_rejected`.
+- Added `ConversionFunnelService`; event writes use a separate short transaction and should not block user flow if tracking fails.
+- Admin stats now define Paid as `User.payment_status == "approved"` + `User.status == "active"` + `User.end_date > now`; old approved users are shown separately as Historical approved.
+- Daily Practice completion now shows Course CTA first, Free QA second.
+- QA daily limit now shows a course offer first with `📚 1-darsni bepul boshlash` and `💳 Obuna olish`, then existing required-channel/referral fallback.
+- Trial first Mini App lesson keeps existing homework/completion flow; after the full quiz, non-paid users can receive one automatic AI explanation and a soft paywall teaser. Quiz completion itself does not mark the trial lesson completed.
+
+Important:
+- Rejected payment funnel event means admin reject callback succeeded. It is not a gateway failure or checkout abandonment signal.
+- Prices, subscription plan logic, referral logic, payment approval rules, and Mini App auth were not intentionally changed.
+- `course_pilot_events` remains pilot telemetry only; broad conversion stats use `conversion_funnel_events`.
+
+Files:
+- `app/db/models/conversion_funnel_event.py`
+- `alembic/versions/0046_add_conversion_funnel_events.py`
+- `app/services/conversion_funnel_service.py`
+- `app/services/course_trial_value_service.py`
+- `app/bot/utils/trial_value_flow.py`
+- `app/bot/handlers/start.py`
+- `app/bot/handlers/messages.py`
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/payments.py`
+- `app/bot/handlers/admin_payments.py`
+- `app/bot/handlers/admin.py`
+- `app/bot/handlers/commands.py`
+- `app/main.py`
+- `app/static/subscription.html`
+
+Risk:
+- Funnel events are append-only and may contain duplicate raw events; admin funnel uses unique telegram users per event to avoid over-counting repeated opens.
+- Auto AI explanation adds one extra AI call only for non-paid users on lesson 1 full quiz, guarded by an `ai_explanation_seen` event check.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

@@ -8,6 +8,7 @@ from app.services.onboarding_service import OnboardingService
 from app.services.access_service import AccessService
 from app.services.course_engine_service import CourseEngineService
 from app.services.course_trial_service import CourseTrialService
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.daily_practice_service import DailyPracticeService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
@@ -83,6 +84,12 @@ def _lesson_choice_text(lang: str, level: str | None) -> str:
 async def _send_trial_lesson_choice(callback: CallbackQuery, state: FSMContext, session, *, edit: bool) -> None:
     user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
     lang = user.language if user and user.language else "ru"
+    if user:
+        await ConversionFunnelService().record(
+            event_name="course_started",
+            user=user,
+            source=str(callback.data or "trial_lesson_choice"),
+        )
     text = _lesson_choice_text(lang, user.level if user else None)
     keyboard = trial_lesson_choice_keyboard(lang)
     if edit:
@@ -181,6 +188,13 @@ async def _start_trial_lesson(
         await callback.answer()
         await callback.message.answer(t(error_key, lang))
         return
+    await ConversionFunnelService().record(
+        event_name="lesson_started",
+        user=user,
+        source="trial_lesson_pick",
+        lesson_id=lesson.id,
+        payload={"lesson_order": getattr(lesson, "lesson_order", None), "level": getattr(lesson, "level", None)},
+    )
 
     await state.clear()
     await callback.answer()
@@ -558,6 +572,11 @@ async def daily_practice_complete(callback: CallbackQuery, state: FSMContext, se
         user.start_date = None
         user.end_date = None
     await session.commit()
+    await ConversionFunnelService().record(
+        event_name="course_cta_seen",
+        user=user,
+        source="daily_practice_completion",
+    )
 
     await callback.answer()
     try:

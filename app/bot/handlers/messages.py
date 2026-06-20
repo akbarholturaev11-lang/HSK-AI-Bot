@@ -55,7 +55,7 @@ from app.bot.keyboards.main_menu import main_menu_keyboard, course_menu_keyboard
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.keyboards.referral import referral_daily_limit_keyboard
 from app.bot.keyboards.mode import course_promo_keyboard
-from app.bot.keyboards.subscription import subscription_miniapp_keyboard
+from app.bot.keyboards.subscription import subscription_miniapp_button, subscription_miniapp_keyboard
 from app.bot.middlewares.required_channel import (
     PENDING_FORCE_SUB_MESSAGE_ID,
     PENDING_FORCE_SUB_TEXT,
@@ -75,6 +75,7 @@ from app.services.course_engine_service import CourseEngineService, get_block_no
 from app.services.course_miniapp_result_service import CourseMiniAppResultService
 from app.services.course_tutor_service import CourseTutorService
 from app.services.course_trial_service import CourseTrialService
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.image_input_service import ImageInputService
 from app.services.image_qa_service import ImageQAService
@@ -97,6 +98,7 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.support_contact_service import get_admin_contact_html
 from app.services.required_channel_service import RequiredChannelService
 from app.bot.utils.i18n import t
+from app.bot.utils.trial_value_flow import send_trial_quiz_value_teaser
 from app.bot.utils.workflow_message import (
     REMINDER_PANEL_CHAT_ID,
     REMINDER_PANEL_MSG_ID,
@@ -467,6 +469,27 @@ async def _build_referral_limit_text(session, user, lang: str, key: str) -> str:
         count=count,
         required=REFERRAL_TRIAL_REQUIRED_ACTIVE,
         days=REFERRAL_TRIAL_ACCESS_DAYS,
+    )
+
+
+def _qa_limit_course_offer_keyboard(lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=t("qa_limit_course_start_button", lang),
+                    callback_data="daily_practice:course",
+                )
+            ],
+            [
+                subscription_miniapp_button(
+                    lang,
+                    source="qa_limit",
+                    mode="subscription",
+                    text=t("qa_limit_subscribe_button", lang),
+                )
+            ],
+        ]
     )
 
 
@@ -1135,6 +1158,12 @@ async def _send_miniapp_result_message(message: Message, session, payload: dict)
             reply_markup=reply_markup,
             parse_mode="HTML",
         )
+        await send_trial_quiz_value_teaser(
+            session=session,
+            telegram_id=message.from_user.id,
+            result=result,
+            respond=message.answer,
+        )
         return True
 
     if event == "homework_submitted":
@@ -1353,6 +1382,12 @@ async def course_miniapp_discuss_mistakes_handler(callback: CallbackQuery, state
         final_text,
         lang,
         reply_markup=course_miniapp_continue_keyboard(lang),
+    )
+    await ConversionFunnelService().record(
+        event_name="ai_explanation_seen",
+        user=current_user,
+        source="course_miniapp_discuss_mistakes",
+        lesson_id=lesson.id,
     )
     await _send_budget_notice(callback.message.answer, budget_record, lang)
 
@@ -1608,7 +1643,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
             if not trial_service.is_paid_user(current_user):
                 await trial_service.mark_trial_completed(current_user, getattr(lesson, "id", None))
                 await session.commit()
-                await _send_trial_completed_offer(respond=message.answer, lang=user_lang)
+                await _send_trial_completed_offer(
+                    respond=message.answer,
+                    lang=user_lang,
+                    user=current_user,
+                    telegram_id=message.from_user.id,
+                    lesson_id=getattr(lesson, "id", None),
+                )
                 return
 
             if progress.waiting_for == "review_choice":
@@ -1697,6 +1738,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 reply_markup=get_course_keyboard_for_step(user_lang, "satisfaction_check"),
                 parse_mode="HTML",
             )
+            await ConversionFunnelService().record(
+                event_name="ai_explanation_seen",
+                user=refreshed_user,
+                source="course_review",
+                lesson_id=getattr(refreshed_lesson, "id", None),
+                payload={"miniapp_context": bool(miniapp_context)},
+            )
             await _send_budget_notice(message.answer, budget_record, user_lang)
             return
 
@@ -1726,6 +1774,17 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 return
 
             satisfaction_text = format_step(refreshed_lesson, user_lang, "satisfaction_check")
+            await ConversionFunnelService().record(
+                event_name="quiz_completed",
+                user=user,
+                source="course_text_exercise",
+                lesson_id=getattr(refreshed_lesson, "id", None),
+                payload={
+                    "correct": result.get("correct") if isinstance(result, dict) else None,
+                    "total": result.get("total") if isinstance(result, dict) else None,
+                    "passed": result.get("passed") if isinstance(result, dict) else None,
+                },
+            )
 
             await message.answer(_format_static_exercise_result(result, user_lang), parse_mode="HTML")
             await message.answer(
@@ -1781,6 +1840,17 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                 consume_question=False,
             )
             await session.commit()
+            if isinstance(result, dict) and result.get("passed"):
+                await ConversionFunnelService().record(
+                    event_name="homework_completed",
+                    user=user,
+                    source="course_text_homework",
+                    lesson_id=getattr(lesson, "id", None),
+                    payload={
+                        "score": result.get("score"),
+                        "passed": result.get("passed"),
+                    },
+                )
 
             if isinstance(result, dict):
                 await _safe_answer_text(
@@ -1806,7 +1876,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                         return
                     await trial_service.mark_trial_completed(user, getattr(completed_lesson, "id", None))
                     await session.commit()
-                    await _send_trial_completed_offer(respond=message.answer, lang=user_lang)
+                    await _send_trial_completed_offer(
+                        respond=message.answer,
+                        lang=user_lang,
+                        user=user,
+                        telegram_id=message.from_user.id,
+                        lesson_id=getattr(completed_lesson, "id", None),
+                    )
                     return
 
                 _, _, next_lesson, next_error = await engine.activate_next_lesson(message.from_user.id)
@@ -1863,7 +1939,13 @@ async def handle_text_message(message: Message, state: FSMContext, session):
                     return
                 await trial_service.mark_trial_completed(user, getattr(completed_lesson, "id", None))
                 await session.commit()
-                await _send_trial_completed_offer(respond=message.answer, lang=user_lang)
+                await _send_trial_completed_offer(
+                    respond=message.answer,
+                    lang=user_lang,
+                    user=user,
+                    telegram_id=message.from_user.id,
+                    lesson_id=getattr(completed_lesson, "id", None),
+                )
                 return
 
             await engine.set_next_study_at(message.from_user.id, None)
@@ -1907,6 +1989,18 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
     if not can_use:
         if message_key == "access_daily_limit_reached":
+            if user:
+                await ConversionFunnelService().record(
+                    event_name="course_cta_seen",
+                    user=user,
+                    source="qa_daily_limit",
+                )
+            await message.answer(
+                t("qa_limit_course_offer", user_lang),
+                reply_markup=_qa_limit_course_offer_keyboard(user_lang),
+                parse_mode="HTML",
+            )
+
             if await _send_qa_limit_required_channel_if_needed(
                 message=message,
                 state=state,
@@ -1998,6 +2092,11 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         }
         photo_path = lang_photo_map.get(user_lang, "app/static/course_promo/ru.jpg")
         if os.path.exists(photo_path):
+            await ConversionFunnelService().record(
+                event_name="course_cta_seen",
+                user=refreshed_user,
+                source="qa_course_promo",
+            )
             await message.answer_photo(
                 FSInputFile(photo_path),
                 caption=t("course_promo_caption", user_lang),

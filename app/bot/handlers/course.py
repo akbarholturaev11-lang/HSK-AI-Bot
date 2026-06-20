@@ -17,6 +17,7 @@ from app.services.course_engine_service import (
 )
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 from app.services.access_service import AccessService
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_trial_service import CourseTrialService
 from app.services.onboarding_tip_service import (
     OnboardingTipService,
@@ -184,7 +185,21 @@ def _trial_course_completed_text(lang: str) -> str:
     return texts.get(lang, texts["ru"])
 
 
-async def _send_trial_completed_offer(*, respond, lang: str) -> None:
+async def _send_trial_completed_offer(
+    *,
+    respond,
+    lang: str,
+    user=None,
+    telegram_id: int | None = None,
+    lesson_id: int | None = None,
+) -> None:
+    await ConversionFunnelService().record(
+        event_name="paywall_seen",
+        user=user,
+        telegram_id=telegram_id,
+        source="course_trial_completed",
+        lesson_id=lesson_id,
+    )
     await respond(
         _trial_course_completed_text(lang),
         reply_markup=subscription_miniapp_keyboard(
@@ -611,6 +626,16 @@ async def course_pick_lesson_handler(callback: CallbackQuery, session):
             await callback.answer()
             await callback.message.answer(t(error_key, lang))
         return
+    await ConversionFunnelService().record(
+        event_name="lesson_started",
+        user=user,
+        source="course_pick_lesson",
+        lesson_id=lesson.id,
+        payload={
+            "lesson_order": getattr(lesson, "lesson_order", None),
+            "level": getattr(lesson, "level", None),
+        },
+    )
 
     await callback.answer()
     try:
@@ -719,6 +744,11 @@ async def run_course_entry_flow(
     user.learning_mode = "course"
     user.voice_mode = "none"
     await session.commit()
+    await ConversionFunnelService().record(
+        event_name="course_started",
+        user=user,
+        source="course_entry",
+    )
 
     progress = await engine.progress_repo.get_by_user_id(user.id)
     if not progress:
@@ -786,7 +816,13 @@ async def run_course_entry_flow(
         lesson = await engine.lesson_repo.get_by_id(progress.current_lesson_id)
         await trial_service.mark_trial_completed(user, getattr(lesson, "id", None))
         await session.commit()
-        await _send_trial_completed_offer(respond=respond, lang=lang)
+        await _send_trial_completed_offer(
+            respond=respond,
+            lang=lang,
+            user=user,
+            telegram_id=telegram_id,
+            lesson_id=getattr(lesson, "id", None),
+        )
         return
 
     if (
@@ -1044,7 +1080,13 @@ async def course_review_no_handler(callback: CallbackQuery, session):
         await trial_service.mark_trial_completed(user, getattr(completed_lesson, "id", None))
         await session.commit()
         await callback.answer()
-        await _send_trial_completed_offer(respond=callback.message.answer, lang=lang)
+        await _send_trial_completed_offer(
+            respond=callback.message.answer,
+            lang=lang,
+            user=user,
+            telegram_id=callback.from_user.id,
+            lesson_id=getattr(completed_lesson, "id", None),
+        )
         return
 
     user, progress, lesson, next_lesson, error_key = await engine.complete_lesson_and_unlock_next(callback.from_user.id)
@@ -1064,6 +1106,16 @@ async def course_review_no_handler(callback: CallbackQuery, session):
         )
         return
 
+    await ConversionFunnelService().record(
+        event_name="lesson_started",
+        user=user,
+        source="course_next_lesson",
+        lesson_id=next_lesson.id,
+        payload={
+            "lesson_order": getattr(next_lesson, "lesson_order", None),
+            "level": getattr(next_lesson, "level", None),
+        },
+    )
     text = format_intro(next_lesson, lang)
 
     await callback.answer()
@@ -1421,7 +1473,13 @@ async def course_start_next_lesson_handler(callback: CallbackQuery, session):
         await trial_service.mark_trial_completed(user, getattr(completed_lesson, "id", None))
         await session.commit()
         await callback.answer()
-        await _send_trial_completed_offer(respond=callback.message.answer, lang=lang)
+        await _send_trial_completed_offer(
+            respond=callback.message.answer,
+            lang=lang,
+            user=user,
+            telegram_id=callback.from_user.id,
+            lesson_id=getattr(completed_lesson, "id", None),
+        )
         return
 
     user, progress, lesson, next_lesson, error_key = await engine.complete_lesson_and_unlock_next(callback.from_user.id)
@@ -1441,6 +1499,16 @@ async def course_start_next_lesson_handler(callback: CallbackQuery, session):
         )
         return
 
+    await ConversionFunnelService().record(
+        event_name="lesson_started",
+        user=user,
+        source="course_next_lesson",
+        lesson_id=next_lesson.id,
+        payload={
+            "lesson_order": getattr(next_lesson, "lesson_order", None),
+            "level": getattr(next_lesson, "level", None),
+        },
+    )
     await callback.answer()
     await run_course_entry_flow(
         session=session,
@@ -1476,6 +1544,16 @@ async def course_level_upgrade_yes_handler(callback: CallbackQuery, session):
         await callback.message.answer(t(error_key, lang))
         return
 
+    await ConversionFunnelService().record(
+        event_name="lesson_started",
+        user=user,
+        source="course_level_upgrade",
+        lesson_id=next_lesson.id,
+        payload={
+            "lesson_order": getattr(next_lesson, "lesson_order", None),
+            "level": getattr(next_lesson, "level", None),
+        },
+    )
     await callback.answer()
     await callback.message.answer(
         t("course_level_upgraded", lang, level=_course_level_label(next_lesson.level)),
@@ -1846,7 +1924,13 @@ async def _finish_study_time_flow(callback: CallbackQuery, session, saved_text: 
     if not trial_service.is_paid_user(user):
         await trial_service.mark_trial_completed(user, getattr(lesson, "id", None))
         await session.commit()
-        await _send_trial_completed_offer(respond=callback.message.answer, lang=lang)
+        await _send_trial_completed_offer(
+            respond=callback.message.answer,
+            lang=lang,
+            user=user,
+            telegram_id=callback.from_user.id,
+            lesson_id=getattr(lesson, "id", None),
+        )
         return
 
     if getattr(progress, "waiting_for", None) == "review_choice":

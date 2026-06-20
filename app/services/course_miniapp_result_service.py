@@ -18,6 +18,7 @@ from app.services.course_engine_service import (
 )
 from app.services.ai_usage_budget_service import AIUsageBudgetService
 from app.services.access_service import AccessService
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.course_tutor_service import CourseTutorService
 from app.services.course_trial_service import CourseTrialService
@@ -453,6 +454,20 @@ class CourseMiniAppResultService:
                 waiting_for="satisfaction_answer",
             )
         await self.session.commit()
+        await ConversionFunnelService().record(
+            event_name="quiz_completed",
+            user=user,
+            source="course_miniapp",
+            lesson_id=lesson.id,
+            payload={
+                "lesson_order": course_miniapp_lesson_id(lesson),
+                "block_no": block_no or None,
+                "score": score,
+                "total": total,
+                "percent": percent,
+                "passed": passed,
+            },
+        )
 
         return {
             "error_key": None,
@@ -522,6 +537,18 @@ class CourseMiniAppResultService:
             )
             await CourseTrialService(self.session).mark_trial_completed(user, lesson.id)
             await self.session.commit()
+            await ConversionFunnelService().record(
+                event_name="homework_completed",
+                user=user,
+                source="course_miniapp_reinforcement",
+                lesson_id=lesson.id,
+                payload={
+                    "lesson_order": course_miniapp_lesson_id(lesson),
+                    "score": reinforcement["score"],
+                    "total": reinforcement["total"],
+                    "percent": homework_score,
+                },
+            )
 
             return {
                 "error_key": None,
@@ -606,6 +633,19 @@ class CourseMiniAppResultService:
                 waiting_for="homework_decision",
             )
         await self.session.commit()
+        if passed:
+            await ConversionFunnelService().record(
+                event_name="homework_completed",
+                user=user,
+                source="course_miniapp_homework",
+                lesson_id=lesson.id,
+                payload={
+                    "lesson_order": course_miniapp_lesson_id(lesson),
+                    "score": homework_score,
+                    "passed": passed,
+                    "status": status,
+                },
+            )
 
         return {
             "error_key": None,

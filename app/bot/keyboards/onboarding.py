@@ -64,15 +64,15 @@ def daily_practice_entry_keyboard(lang: str) -> InlineKeyboardMarkup:
 
 def daily_practice_finish_keyboard(lang: str) -> InlineKeyboardMarkup:
     labels = {
-        "uz": ("💬 Bepul savol-javobga o'tish", "📚 Kursni boshlash"),
-        "ru": ("💬 Перейти в бесплатный вопрос-ответ", "📚 Начать курс"),
-        "tj": ("💬 Ба савол-ҷавоби ройгон гузаштан", "📚 Оғози курс"),
+        "uz": ("📚 Kursni boshlash", "💬 Bepul savol-javobga o'tish"),
+        "ru": ("📚 Начать курс", "💬 Перейти в бесплатный вопрос-ответ"),
+        "tj": ("📚 Оғози курс", "💬 Ба савол-ҷавоби ройгон гузаштан"),
     }
-    qa_label, course_label = labels.get(lang, labels["ru"])
+    course_label, qa_label = labels.get(lang, labels["ru"])
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text=qa_label, callback_data="mode:free_qa")],
             [InlineKeyboardButton(text=course_label, callback_data="daily_practice:course")],
+            [InlineKeyboardButton(text=qa_label, callback_data="mode:free_qa")],
         ]
     )
 

@@ -14,6 +14,7 @@ from sqlalchemy import select, func
 from app.db.models.user import User
 
 from app.repositories.user_repo import UserRepository
+from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.referral_service import ReferralService
 from app.bot.handlers.subscription import build_subscription_main_text_for_user
 from app.bot.keyboards.main_menu import main_menu_keyboard
@@ -659,8 +660,17 @@ async def admin_stats_handler(message: Message, session):
     )
     total_paid = result.scalar() or 0
     paid_users = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.payment_status == "approved",
+            User.status == "active",
+            User.end_date.is_not(None),
+            User.end_date > now,
+        )
+    )).scalar() or 0
+    historical_approved_users = (await session.execute(
         select(func.count()).select_from(User).where(User.payment_status == "approved")
     )).scalar() or 0
+    funnel_text = await ConversionFunnelService(session).admin_funnel_text(week_ago=week_ago)
     trial_course_started = (await session.execute(
         select(func.count()).select_from(User).where(User.trial_course_started_at.is_not(None))
     )).scalar() or 0
@@ -861,6 +871,7 @@ async def admin_stats_handler(message: Message, session):
         f"  Trial: {trial}\n"
         f"  Active status: {active}\n"
         f"  Paid user: {paid_users}\n"
+        f"  Historical approved: {historical_approved_users}\n"
         f"  Tugagan: {expired}\n"
         f"  Bloklangan: {blocked}\n\n"
         f"<b>⚡ Daily 3-min retention:</b>\n"
@@ -881,6 +892,7 @@ async def admin_stats_handler(message: Message, session):
         f"  Completed → paid: {completed_paid_after} ({completed_paid_rate}%)\n"
         f"  Checkpoint → paid: {checkpoint_paid_after} ({checkpoint_paid_rate}%)\n"
         f"  Trialdan keyingi tushum: {int(trial_revenue_after_start):,} so'm\n\n"
+        f"{funnel_text}\n\n"
         f"<b>📈 Konversiya:</b>\n"
         f"  User → Paid: {conversion}%\n"
         f"  Savol berganlar: {active_users} ({engagement}%)\n"

@@ -1501,3 +1501,63 @@ ONBOARDING_TIP_I18N = {
 
 for _lang, _texts in ONBOARDING_TIP_I18N.items():
     TEXTS.setdefault(_lang, {}).update(_texts)
+
+CONVERSION_I18N = {
+    "uz": {
+        "qa_limit_course_offer": (
+            "<b>📊 Bugungi free QA limiti tugadi</b>\n\n"
+            "<blockquote>Endi kursda 1-darsni bepul boshlab, quiz va AI tushuntirishni ko'ring.</blockquote>"
+        ),
+        "qa_limit_course_start_button": "📚 1-darsni bepul boshlash",
+        "qa_limit_subscribe_button": "💳 Obuna olish",
+        "course_trial_ai_explanation_title": "🧠 <b>Bepul AI tushuntirish</b>",
+        "course_trial_ai_explanation_prompt": (
+            "Quiz natijasidan keyin bitta bepul AI tushuntirish ber. "
+            "O'quvchining xatolarini sodda tushuntir, eng muhim 1-2 so'z yoki qoidani ajrat, "
+            "javobni qisqa va foydali yakunla."
+        ),
+        "course_trial_soft_paywall_teaser": (
+            "🎉 <b>1-dars qiymatini ko'rdingiz</b>\n\n"
+            "<blockquote>2-dars va to'liq xato tahlili obuna bilan ochiladi.</blockquote>"
+        ),
+    },
+    "ru": {
+        "qa_limit_course_offer": (
+            "<b>📊 Бесплатный QA-лимит на сегодня закончился</b>\n\n"
+            "<blockquote>Начните 1-й урок бесплатно: quiz и одно AI-объяснение покажут ценность курса.</blockquote>"
+        ),
+        "qa_limit_course_start_button": "📚 Начать 1-й урок бесплатно",
+        "qa_limit_subscribe_button": "💳 Оформить подписку",
+        "course_trial_ai_explanation_title": "🧠 <b>Бесплатное AI-объяснение</b>",
+        "course_trial_ai_explanation_prompt": (
+            "После результата quiz дай одно бесплатное AI-объяснение. "
+            "Просто объясни ошибки ученика, выдели 1-2 самых важных слова или правила, "
+            "заверши коротко и полезно."
+        ),
+        "course_trial_soft_paywall_teaser": (
+            "🎉 <b>Вы увидели ценность 1-го урока</b>\n\n"
+            "<blockquote>2-й урок и полный разбор ошибок открываются по подписке.</blockquote>"
+        ),
+    },
+    "tj": {
+        "qa_limit_course_offer": (
+            "<b>📊 Лимити free QA-и имрӯз ба охир расид</b>\n\n"
+            "<blockquote>Дарси 1-ро ройгон оғоз кунед: quiz ва як шарҳи AI арзиши курсро нишон медиҳад.</blockquote>"
+        ),
+        "qa_limit_course_start_button": "📚 Дарси 1-ро ройгон оғоз кардан",
+        "qa_limit_subscribe_button": "💳 Обуна гирифтан",
+        "course_trial_ai_explanation_title": "🧠 <b>Шарҳи ройгони AI</b>",
+        "course_trial_ai_explanation_prompt": (
+            "Баъди натиҷаи quiz як шарҳи ройгони AI деҳ. "
+            "Хатогиҳои хонандаро содда фаҳмон, 1-2 калима ё қоидаи муҳимро ҷудо кун, "
+            "ҷавобро кӯтоҳ ва фоиданок анҷом деҳ."
+        ),
+        "course_trial_soft_paywall_teaser": (
+            "🎉 <b>Арзиши дарси 1-ро дидед</b>\n\n"
+            "<blockquote>Дарси 2 ва таҳлили пурраи хатоҳо бо обуна кушода мешавад.</blockquote>"
+        ),
+    },
+}
+
+for _lang, _texts in CONVERSION_I18N.items():
+    TEXTS.setdefault(_lang, {}).update(_texts)
