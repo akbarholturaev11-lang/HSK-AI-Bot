@@ -4,8 +4,6 @@ from dataclasses import dataclass
 
 import aiohttp
 
-from app.config import settings
-
 
 logger = logging.getLogger(__name__)
 
@@ -20,15 +18,12 @@ _ACTIVE_DRAFTS: dict[int, "MessageDraftState"] = {}
 @dataclass
 class MessageDraftState:
     chat_id: int
+    draft_id: int
     using_draft: bool = False
     last_update_at: float = 0.0
     update_count: int = 0
     max_updates: int = _MAX_UPDATES_PER_REPLY
     min_update_interval: float = _MIN_UPDATE_INTERVAL_SECONDS
-
-
-def is_message_draft_enabled() -> bool:
-    return bool(getattr(settings, "ENABLE_MESSAGE_DRAFTS", False))
 
 
 def _preview_text(value: str | None) -> str:
@@ -38,15 +33,24 @@ def _preview_text(value: str | None) -> str:
     return text[:_DRAFT_TEXT_LIMIT]
 
 
-async def _send_library_draft(bot, chat_id: int, preview_text: str) -> bool:
+def _normalize_draft_id(value: int | None, fallback: int) -> int:
+    try:
+        draft_id = int(value or fallback)
+    except (TypeError, ValueError):
+        draft_id = int(fallback)
+    draft_id = abs(draft_id)
+    return draft_id or 1
+
+
+async def _send_library_draft(bot, chat_id: int, draft_id: int, preview_text: str) -> bool:
     method = getattr(bot, "send_message_draft", None) or getattr(bot, "sendMessageDraft", None)
     if not callable(method):
         return False
-    await method(chat_id=chat_id, text=preview_text)
+    await method(chat_id=chat_id, draft_id=draft_id, text=preview_text)
     return True
 
 
-async def _send_raw_draft(bot, chat_id: int, preview_text: str) -> None:
+async def _send_raw_draft(bot, chat_id: int, draft_id: int, preview_text: str) -> None:
     token = getattr(bot, "token", "")
     if not token:
         raise RuntimeError("Bot token is not available for raw sendMessageDraft")
@@ -55,7 +59,7 @@ async def _send_raw_draft(bot, chat_id: int, preview_text: str) -> None:
     async with aiohttp.ClientSession(timeout=timeout) as http:
         async with http.post(
             f"https://api.telegram.org/bot{token}/{_DRAFT_METHOD}",
-            json={"chat_id": chat_id, "text": preview_text},
+            json={"chat_id": chat_id, "draft_id": draft_id, "text": preview_text},
         ) as response:
             try:
                 payload = await response.json(content_type=None)
@@ -67,11 +71,11 @@ async def _send_raw_draft(bot, chat_id: int, preview_text: str) -> None:
                 raise RuntimeError(f"sendMessageDraft failed: {description[:160]}")
 
 
-async def _send_message_draft(bot, chat_id: int, preview_text: str) -> None:
+async def _send_message_draft(bot, chat_id: int, draft_id: int, preview_text: str) -> None:
     text = _preview_text(preview_text)
-    if await _send_library_draft(bot, chat_id, text):
+    if await _send_library_draft(bot, chat_id, draft_id, text):
         return
-    await _send_raw_draft(bot, chat_id, text)
+    await _send_raw_draft(bot, chat_id, draft_id, text)
 
 
 async def _use_typing_fallback(bot, chat_id: int) -> None:
@@ -91,28 +95,34 @@ async def send_draft_or_fallback(
     chat_id: int,
     preview_text: str,
     *,
+    draft_id: int | None = None,
     source_message=None,
     fallback_mode: str = "qa",
     seed: int | None = None,
     max_updates: int = _MAX_UPDATES_PER_REPLY,
     min_update_interval: float = _MIN_UPDATE_INTERVAL_SECONDS,
 ) -> MessageDraftState:
+    stable_draft_id = _normalize_draft_id(draft_id, seed or chat_id)
     state = MessageDraftState(
         chat_id=chat_id,
+        draft_id=stable_draft_id,
         max_updates=max_updates,
         min_update_interval=min_update_interval,
     )
     _ACTIVE_DRAFTS[chat_id] = state
 
-    if is_message_draft_enabled():
-        try:
-            await _send_message_draft(bot, chat_id, preview_text)
-            state.using_draft = True
-            state.last_update_at = time.monotonic()
-            logger.info("message_draft_sent", extra={"chat_id": chat_id})
-            return state
-        except Exception:
-            logger.exception("message_draft_failed", extra={"chat_id": chat_id})
+    try:
+        await _send_message_draft(bot, chat_id, stable_draft_id, preview_text)
+        state.using_draft = True
+        state.last_update_at = time.monotonic()
+        logger.info("message_draft_sent", extra={"chat_id": chat_id, "draft_id": stable_draft_id})
+        return state
+    except Exception as error:
+        logger.exception(
+            "message_draft_failed: %s",
+            error,
+            extra={"chat_id": chat_id, "draft_id": stable_draft_id},
+        )
 
     await _use_typing_fallback(bot, chat_id)
     return state
@@ -129,15 +139,19 @@ async def update_draft_or_fallback(bot, chat_id: int, preview_text: str) -> bool
     if state.last_update_at and now - state.last_update_at < state.min_update_interval:
         return False
 
-    if state.using_draft and is_message_draft_enabled():
+    if state.using_draft:
         try:
-            await _send_message_draft(bot, chat_id, preview_text)
+            await _send_message_draft(bot, chat_id, state.draft_id, preview_text)
             state.update_count += 1
             state.last_update_at = now
-            logger.info("message_draft_updated", extra={"chat_id": chat_id})
+            logger.info("message_draft_updated", extra={"chat_id": chat_id, "draft_id": state.draft_id})
             return True
-        except Exception:
-            logger.exception("message_draft_failed", extra={"chat_id": chat_id})
+        except Exception as error:
+            logger.exception(
+                "message_draft_failed: %s",
+                error,
+                extra={"chat_id": chat_id, "draft_id": state.draft_id},
+            )
             state.using_draft = False
             await _use_typing_fallback(bot, chat_id)
             return False

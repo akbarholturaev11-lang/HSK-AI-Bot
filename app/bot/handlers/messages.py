@@ -1928,6 +1928,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
         message.bot,
         chat_id,
         _ai_draft_preview(user_lang, 0),
+        draft_id=message.message_id,
         source_message=message,
         fallback_mode="qa",
         seed=_response_seed(user, message.text),

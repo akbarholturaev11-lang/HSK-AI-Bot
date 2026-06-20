@@ -22,7 +22,6 @@ class Settings(BaseSettings):
 
     DEFAULT_LANGUAGE: str = "tj"
     LOG_LEVEL: str = "INFO"
-    ENABLE_MESSAGE_DRAFTS: bool = False
 
     AIRTABLE_API_KEY: str = ""
     AIRTABLE_BASE_ID: str = ""

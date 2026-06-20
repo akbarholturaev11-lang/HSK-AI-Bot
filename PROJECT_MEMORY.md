@@ -1322,11 +1322,11 @@ Files touched:
 
 ---
 
-### 2026-06-19 — AI message draft feature flag
+### 2026-06-19 — Direct AI message draft
 
 Changed:
-- Added `ENABLE_MESSAGE_DRAFTS` for QA text AI replies.
-- New `MessageDraftService` tries Telegram `sendMessageDraft` first and falls back only to `sendChatAction("typing")`; the emoji `ResponseEffect` loader is not used in this draft path.
+- QA text AI replies now call Telegram `sendMessageDraft` directly; no draft feature flag remains.
+- `MessageDraftService` sends a stable non-zero `draft_id` (`message.message_id`) for the initial draft and all updates, and falls back only to `sendChatAction("typing")`.
 - Final AI replies still use the normal send message flow; draft is only a waiting effect.
 
 Why:
@@ -1340,10 +1340,10 @@ Files touched:
 - `.env.example`
 
 Risk:
-- `aiogram==3.22.0` does not expose `sendMessageDraft`; raw Telegram HTTP is used only when the flag is enabled, and failures fall back to Telegram typing action without sending an emoji loader message.
+- `aiogram==3.22.0` does not expose `sendMessageDraft`; raw Telegram HTTP is used, and failures log Telegram response descriptions then fall back to typing without sending an emoji loader message.
 
 Follow-up:
-- Test `/draft_test` and one normal QA text question with `ENABLE_MESSAGE_DRAFTS=true` in Telegram.
+- Test `/draft_test` and one normal QA text question in Telegram.
 
 ---
 
@@ -1385,7 +1385,7 @@ Required:
 - `ADMIN_IDS`
 
 Optional:
-- `ENABLE_MESSAGE_DRAFTS`
+- Unknown / needs inspection
 
 ---
 

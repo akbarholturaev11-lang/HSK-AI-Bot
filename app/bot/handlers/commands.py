@@ -584,6 +584,7 @@ async def draft_test_handler(message: Message):
         message.bot,
         chat_id,
         "Draft test: preparing reply...",
+        draft_id=message.message_id,
         source_message=message,
         fallback_mode="qa",
         seed=message.message_id,
