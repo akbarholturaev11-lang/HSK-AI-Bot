@@ -416,6 +416,35 @@ body.course-miniapp-v2{background:#131f24;color:#f2f7fb;font-family:-apple-syste
 @keyframes cmv2-pulse{0%{transform:scale(1)}50%{transform:scale(1.04)}100%{transform:scale(1)}}
 @media (max-width:390px){.cmv2-main{padding-left:16px;padding-right:16px}.cmv2-scene{grid-template-columns:100px 1fr;gap:10px}.cmv2-bubble{padding:16px 14px}.cmv2-bubble-main{font-size:27px}.cmv2-prompt{font-size:25px}.cmv2-option,.cmv2-chip{font-size:20px}}
 @media (min-width:640px){.cmv2{max-width:520px;border-left:1px solid #22313a;border-right:1px solid #22313a}.cmv2-feedback{left:50%;right:auto;width:520px;transform:translate(-50%,18px)}.cmv2-feedback.show{transform:translate(-50%,0)}.cmv2-footer{left:50%;right:auto;width:520px;transform:translateX(-50%)}}
+.cmv2-top{padding:calc(8px + env(safe-area-inset-top,0px)) 20px 8px;}
+.cmv2-progress{height:14px;margin-top:0;}
+.cmv2-main{padding:16px 20px 156px;}
+.cmv2-meta{margin-bottom:12px;}
+.cmv2-pill{font-size:16px;font-weight:950;}
+.cmv2-count{display:none;}
+.cmv2-prompt{font-size:23px;line-height:1.2;margin:0 0 16px;font-weight:900;}
+.cmv2-scene{grid-template-columns:92px 1fr;gap:10px;align-items:end;margin:0 0 16px;}
+.cmv2-character{min-height:118px;}
+.cmv2-robot-svg{width:min(112px,100%);filter:drop-shadow(0 8px 0 rgba(0,0,0,.16));}
+.cmv2-character-tag{display:none;}
+.cmv2-bubble{min-height:110px;border-width:3px;border-radius:18px;padding:16px 16px 14px;}
+.cmv2-bubble::before{left:-21px;width:22px;height:22px;bottom:30px;}
+.cmv2-bubble-main{font-size:24px;line-height:1.25;font-weight:750;}
+.cmv2-bubble-sub{font-size:14px;line-height:1.35;margin-top:8px;}
+.cmv2-bubble-audio{margin-top:10px;}
+.cmv2-answer-lines{gap:24px;margin:12px 0 34px;}
+.cmv2-options{gap:10px;margin-top:22px;}
+.cmv2-option,.cmv2-chip,.cmv2-match-btn{font-size:19px;min-height:50px;border-radius:15px;}
+.cmv2-option{min-width:82px;padding:10px 15px;}
+.cmv2-order-box{min-height:92px;padding:16px 0;margin-bottom:22px;}
+.cmv2-bank{gap:10px;}
+.cmv2-chip{font-size:21px;padding:10px 15px;}
+.cmv2-voice-card{gap:12px;margin-top:8px;}
+.cmv2-mic{width:88px;height:88px;font-size:32px;box-shadow:0 6px 0 #315d75;}
+.cmv2-transcript{font-size:16px;min-height:46px;padding:11px 12px;}
+.cmv2-footer{padding:10px 20px calc(12px + env(safe-area-inset-bottom,0px));}
+.cmv2-primary{min-height:56px;font-size:16px;border-radius:17px;}
+@media (max-width:390px){.cmv2-main{padding-left:18px;padding-right:18px}.cmv2-scene{grid-template-columns:82px 1fr;gap:8px}.cmv2-character{min-height:108px}.cmv2-robot-svg{width:min(98px,100%)}.cmv2-bubble{padding:14px 13px}.cmv2-bubble-main{font-size:22px}.cmv2-prompt{font-size:22px}.cmv2-option,.cmv2-chip{font-size:18px}.cmv2-chip{font-size:20px}}
 `;
     document.head.appendChild(style);
   }
@@ -630,11 +659,6 @@ body.course-miniapp-v2{background:#131f24;color:#f2f7fb;font-family:-apple-syste
     document.body.innerHTML = `
       <div class="cmv2">
         <header class="cmv2-top">
-          <div class="cmv2-row">
-            <button class="cmv2-close" id="cmv2-close" type="button" aria-label="close">×</button>
-            <div class="cmv2-brand">${esc(l(state, "brand"))}</div>
-            <div class="cmv2-xp" id="cmv2-xp">${esc(l(state, "xp", { xp: 0 }))}</div>
-          </div>
           <div class="cmv2-progress"><span id="cmv2-progress"></span></div>
         </header>
         <main class="cmv2-main" id="cmv2-main">
@@ -646,7 +670,6 @@ body.course-miniapp-v2{background:#131f24;color:#f2f7fb;font-family:-apple-syste
         </footer>
       </div>
     `;
-    document.getElementById("cmv2-close").onclick = () => closeToBot(state);
   }
 
   function lessonLine(state) {
@@ -657,9 +680,7 @@ body.course-miniapp-v2{background:#131f24;color:#f2f7fb;font-family:-apple-syste
   function updateTop(state) {
     const progress = state.tasks.length ? Math.round((state.index / state.tasks.length) * 100) : 0;
     const bar = document.getElementById("cmv2-progress");
-    const xp = document.getElementById("cmv2-xp");
     if (bar) bar.style.width = `${Math.min(progress, 100)}%`;
-    if (xp) xp.textContent = l(state, "xp", { xp: state.xp });
   }
 
   function renderTask(state) {
