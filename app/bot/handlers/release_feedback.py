@@ -127,7 +127,6 @@ def _course_miniapp_v2_template_state(current: dict | None = None) -> dict:
             "media_file_id": None,
             "localized_message_text": encode_localized_broadcast_text(_COURSE_MINIAPP_V2_RELEASE_TEXTS),
             "mode_filter": current.get("mode_filter") or "course",
-            "feature_key": "course",
         }
     )
     return data
@@ -268,10 +267,10 @@ def _filter_keyboard(data: dict) -> InlineKeyboardMarkup:
             [section_btn("level", "📚 Daraja"), section_btn("mode", "🎯 Rejim")],
             [section_btn("payment", "💳 To'lov"), section_btn("discount", "🎁 Chegirma")],
             [section_btn("activity", "⚡ Aktivlik")],
-            [InlineKeyboardButton(text="➕ Yangi yangilik", callback_data="rf:new")],
+            [InlineKeyboardButton(text="➕ Yangi release", callback_data="rf:new")],
             [InlineKeyboardButton(text="⚡ Course Mini App update", callback_data="rf:template:course_miniapp_v2")],
-            [InlineKeyboardButton(text="📋 Rejadagi va oxirgilar", callback_data="rf:list")],
-            [InlineKeyboardButton(text="⬅️ Yangilik otzivi", callback_data="rf:panel")],
+            [InlineKeyboardButton(text="📋 Scheduled/Recent", callback_data="rf:list")],
+            [InlineKeyboardButton(text="⬅️ Release panel", callback_data="rf:panel")],
         ])
     rows.append([back_btn(), InlineKeyboardButton(text="➕ Yangi yangilik", callback_data="rf:new")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -734,8 +733,7 @@ async def rf_course_miniapp_v2_template(callback: CallbackQuery, state: FSMConte
         state,
         "⚡ <b>Course Mini App update</b>\n\n"
         "Tayyor 3 tilli release matni qo'yildi.\n"
-        "Target default: <b>Kurs rejimi</b>.\n"
-        "Sinash joyi: <b>Kurs rejimi</b>.\n\n"
+        "Target default: <b>Kurs rejimi</b>.\n\n"
         "Qachon yuborilsin?",
         release_feedback_send_time_keyboard(),
     )

@@ -26,7 +26,11 @@ from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.keyboards.help import help_contact_keyboard
 from app.bot.utils.i18n import t
 from app.services.help_settings_service import build_help_text
-from app.bot.utils.response_effect import ResponseEffect
+from app.services.message_draft_service import (
+    finish_draft_if_needed,
+    send_draft_or_fallback,
+    update_draft_or_fallback,
+)
 from app.services.support_contact_service import get_admin_contact_url
 
 
@@ -575,14 +579,30 @@ async def help_command_handler(message: Message, state: FSMContext, session):
 
 @router.message(Command("draft_test"))
 async def draft_test_handler(message: Message):
-    effect = ResponseEffect(message, mode="qa", seed=message.message_id, lang="uz")
-    await effect.start()
+    chat_id = message.chat.id
+    await send_draft_or_fallback(
+        message.bot,
+        chat_id,
+        "Draft test: preparing reply...",
+        draft_id=message.message_id,
+        source_message=message,
+        fallback_mode="qa",
+        seed=message.message_id,
+    )
     try:
-        await asyncio.sleep(4.2)
+        for preview in (
+            "Draft test: analyzing question...",
+            "Draft test: preparing examples...",
+            "Draft test: finalizing answer...",
+        ):
+            await asyncio.sleep(1.3)
+            await update_draft_or_fallback(message.bot, chat_id, preview)
     finally:
-        await effect.stop()
+        await finish_draft_if_needed(message.bot, chat_id)
 
-    await message.answer("Loader test tugadi.")
+    await message.answer(
+        "Draft test complete. Final message was sent through normal sendMessage flow."
+    )
 
 
 @router.message(Command("admin_stats"))
@@ -719,6 +739,51 @@ async def admin_stats_handler(message: Message, session):
             Payment.reviewed_at >= week_ago,
             User.trial_course_started_at.is_not(None),
             Payment.reviewed_at >= User.trial_course_started_at,
+        )
+    )).scalar() or 0
+    daily_started = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at.is_not(None))
+    )).scalar() or 0
+    daily_started_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at >= today_start)
+    )).scalar() or 0
+    daily_started_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_started_at >= week_ago)
+    )).scalar() or 0
+    daily_completed = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_completed_at.is_not(None))
+    )).scalar() or 0
+    daily_completed_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_last_day == today)
+    )).scalar() or 0
+    daily_completed_week = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_completed_at >= week_ago)
+    )).scalar() or 0
+    daily_d2_return = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_streak >= 2)
+    )).scalar() or 0
+    daily_completed_course_opened = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.daily_practice_completed_at.is_not(None),
+            User.trial_course_started_at.is_not(None),
+            User.trial_course_started_at >= User.daily_practice_completed_at,
+        )
+    )).scalar() or 0
+    daily_completed_paid = (await session.execute(
+        select(func.count(func.distinct(Payment.user_telegram_id)))
+        .select_from(Payment)
+        .join(User, User.telegram_id == Payment.user_telegram_id)
+        .where(
+            Payment.payment_status == "approved",
+            Payment.reviewed_at.is_not(None),
+            User.daily_practice_completed_at.is_not(None),
+            Payment.reviewed_at >= User.daily_practice_completed_at,
+        )
+    )).scalar() or 0
+    qa_limit_channel_joined = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.force_sub_required_at.is_not(None),
+            User.last_active_at >= User.force_sub_required_at,
         )
     )).scalar() or 0
 

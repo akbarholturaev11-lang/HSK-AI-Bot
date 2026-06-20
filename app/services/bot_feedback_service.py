@@ -21,7 +21,6 @@ from app.repositories.user_repo import UserRepository
 
 FEEDBACK_PERIOD_DAYS = 30
 FEEDBACK_JOIN_DELAY = timedelta(days=1)
-FEEDBACK_LIMIT_REACHED_DELAY = timedelta(minutes=5)
 FEEDBACK_RETRY_AFTER = timedelta(hours=24)
 FEEDBACK_REWARD_DURATION = timedelta(minutes=30)
 FEEDBACK_PRICE_OFFER_DELAY = timedelta(minutes=5)
@@ -62,13 +61,11 @@ class BotFeedbackService:
     async def send_due_feedback_requests(self, bot: Bot) -> int:
         now = datetime.now(timezone.utc)
         oldest_join_time = now - FEEDBACK_JOIN_DELAY
-        oldest_limit_reached_time = now - FEEDBACK_LIMIT_REACHED_DELAY
 
         result = await self.session.execute(
             select(User)
             .where(User.created_at <= oldest_join_time)
             .where(User.daily_limit_offer_sent_at.is_not(None))
-            .where(User.daily_limit_offer_sent_at <= oldest_limit_reached_time)
             .where(User.status != "blocked")
             .order_by(User.created_at.asc())
         )
