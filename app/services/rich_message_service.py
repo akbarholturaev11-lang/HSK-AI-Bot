@@ -34,17 +34,14 @@ class RichMessageService:
             return False
 
         try:
-            # Rich Message payload tayyorlash
             payload = {
                 "chat_id": chat_id,
                 **rich_payload
             }
             if reply_markup:
-                # aiogram reply_markup obyektini JSON ga o'tkazish
                 if hasattr(reply_markup, "model_dump_json"):
                     payload["reply_markup"] = reply_markup.model_dump_json(exclude_none=True)
                 else:
-                    # Eskiroq aiogram versiyalari uchun
                     payload["reply_markup"] = reply_markup.json()
 
             async with httpx.AsyncClient() as client:
@@ -59,7 +56,7 @@ class RichMessageService:
         except Exception as e:
             logger.exception(f"rich_template_build_failed chat_id={chat_id} error={str(e)}")
 
-        # Fallback: Agar Rich Message fail bo'lsa yoki xatolik bo'lsa
+        # Fallback
         try:
             await bot.send_message(chat_id, fallback_text, reply_markup=reply_markup, parse_mode="HTML")
             logger.info(f"rich_fallback_sent chat_id={chat_id}")
@@ -69,22 +66,25 @@ class RichMessageService:
         return False
 
     def build_vocab_rich_message(self, word: str, pinyin: str, translation: str, examples: list, mistakes: Optional[str] = None) -> Dict[str, Any]:
-        """Vocabulary Rich Message payloadini yaratadi."""
-        # Bu yerda Rich Message formati (masalan, Telegram'ning yangi xususiyatlari) bo'ladi
-        # Hozircha bu placeholder, chunki Rich Message spetsifikatsiyasi loyihaga qarab o'zgarishi mumkin.
-        # Biz uni HTML orqali simulyatsiya qilamiz yoki agar maxsus API bo'lsa shuni ishlatamiz.
-        text = (
-            f"<b>{escape(word)}</b>\n"
-            f"<i>{escape(pinyin)}</i>\n"
-            f"👉 {escape(translation)}\n\n"
-        )
+        """Vocabulary Rich Message — expandable blockquote bilan."""
+        examples_text = ""
         if examples:
-            text += "<b>Misollar:</b>\n"
-            for ex in examples:
-                text += f"• {escape(ex)}\n"
-        
+            examples_text = "\n".join([f"• {escape(ex)}" for ex in examples])
+
+        mistakes_text = ""
         if mistakes:
-            text += f"\n⚠️ <b>Xatolar:</b> {escape(mistakes)}"
+            mistakes_text = f"\n\n⚠️ <b>Eslatma:</b>\n{escape(mistakes)}"
+
+        text = (
+            f"<b>📖 Vocabulary</b>\n\n"
+            f"<blockquote expandable>"
+            f"<b>{escape(word)}</b>  •  <i>{escape(pinyin)}</i>\n"
+            f"👉 {escape(translation)}\n\n"
+            f"<b>Misollar:</b>\n"
+            f"{examples_text}"
+            f"{mistakes_text}"
+            f"</blockquote>"
+        )
 
         return {
             "text": text,
@@ -92,19 +92,26 @@ class RichMessageService:
         }
 
     def build_grammar_rich_message(self, title: str, formula: str, explanation: str, examples: list, common_mistakes: Optional[str] = None) -> Dict[str, Any]:
-        """Grammar Rich Message payloadini yaratadi."""
+        """Grammar Rich Message — expandable blockquote bilan."""
+        examples_text = ""
+        if examples:
+            examples_text = "\n".join([f"• {escape(ex)}" for ex in examples])
+
+        mistakes_text = ""
+        if common_mistakes:
+            mistakes_text = f"\n\n❌ <b>Xatolar:</b>\n{escape(common_mistakes)}"
+
         text = (
-            f"📐 <b>{escape(title)}</b>\n"
+            f"<b>📐 Grammar</b>\n\n"
+            f"<blockquote expandable>"
+            f"📌 <b>{escape(title)}</b>\n"
             f"<code>{escape(formula)}</code>\n\n"
             f"{escape(explanation)}\n\n"
+            f"<b>Misollar:</b>\n"
+            f"{examples_text}"
+            f"{mistakes_text}"
+            f"</blockquote>"
         )
-        if examples:
-            text += "<b>Misollar:</b>\n"
-            for ex in examples:
-                text += f"• {escape(ex)}\n"
-        
-        if common_mistakes:
-            text += f"\n❌ <b>Ko'p uchraydigan xatolar:</b>\n{escape(common_mistakes)}"
 
         return {
             "text": text,
@@ -112,20 +119,23 @@ class RichMessageService:
         }
 
     def build_quiz_result_rich_message(self, score: int, total: int, weak_points: list, wrong_answers: list) -> Dict[str, Any]:
-        """Quiz Result Rich Message payloadini yaratadi."""
+        """Quiz Result Rich Message — expandable blockquote bilan."""
         status = "✅ Zo'r!" if score / total >= 0.8 else "📈 Yana ozgina harakat qiling"
+
+        points_text = ""
+        if weak_points:
+            points_text = "\n".join([f"• {escape(pt)}" for pt in weak_points])
+
         text = (
-            f"📊 <b>Quiz natijasi</b>\n\n"
+            f"<b>📊 Quiz natijasi</b>\n\n"
+            f"<blockquote expandable>"
             f"Natija: <b>{score}/{total}</b>\n"
             f"Status: {status}\n\n"
+            f"🔍 <b>Kuchsiz tomonlar:</b>\n"
+            f"{points_text}\n\n"
+            f"❌ <b>Xato javoblar:</b> {len(wrong_answers)}"
+            f"</blockquote>"
         )
-        if weak_points:
-            text += "🔍 <b>Kuchsiz tomonlar:</b>\n"
-            for pt in weak_points:
-                text += f"• {escape(pt)}\n"
-        
-        if wrong_answers:
-            text += f"\n❌ <b>Xato javoblar soni:</b> {len(wrong_answers)}"
 
         return {
             "text": text,
@@ -133,18 +143,21 @@ class RichMessageService:
         }
 
     def build_news_rich_message(self, title: str, body: str, changelog: list, cta_text: str) -> Dict[str, Any]:
-        """News Rich Message payloadini yaratadi."""
-        text = (
-            f"📢 <b>{escape(title)}</b>\n\n"
-            f"{escape(body)}\n\n"
-        )
+        """News Rich Message — expandable blockquote bilan."""
+        changelog_text = ""
         if changelog:
-            text += "<b>Yangiliklar:</b>\n"
-            for item in changelog:
-                text += f"• {escape(item)}\n"
-        
+            changelog_text = "\n".join([f"• {escape(item)}" for item in changelog])
+
+        text = (
+            f"<b>📢 {escape(title)}</b>\n\n"
+            f"<blockquote expandable>"
+            f"{escape(body)}\n\n"
+            f"<b>Yangiliklar:</b>\n"
+            f"{changelog_text}"
+            f"</blockquote>"
+        )
         if cta_text:
-            text += f"\n✨ {escape(cta_text)}"
+            text += f"\n\n✨ <b>{escape(cta_text)}</b>"
 
         return {
             "text": text,
