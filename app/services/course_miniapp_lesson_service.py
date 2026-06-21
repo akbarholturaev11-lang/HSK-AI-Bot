@@ -879,17 +879,22 @@ class CourseMiniAppLessonService:
         grammar_questions = self._unique_questions(
             self._grammar_quiz_questions(grammar, grammar_pool, lesson_order, lang, block_no)
         )
-        interactive_questions = self._interactive_quiz_questions(
-            vocab,
-            grammar,
-            grammar_pool,
-            lesson_order,
-            lang,
-            block_no,
-        )
+        try:
+            interactive_questions = self._interactive_quiz_questions(
+                vocab,
+                grammar,
+                grammar_pool,
+                lesson_order,
+                lang,
+                block_no,
+            )
+        except Exception:
+            interactive_questions = []
 
         grammar_target = min(len(grammar_questions), 1 if block_no or target_count < 5 else 2)
         word_target = max(0, target_count - grammar_target)
+        pool = self._unique_questions([*interactive_questions, *word_questions, *grammar_questions])
+        result: list[dict] = []
 
         def take(type_names: tuple[str, ...]) -> None:
             if len(result) >= target_count:
