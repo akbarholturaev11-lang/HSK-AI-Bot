@@ -1,7 +1,7 @@
 import asyncio
 
 from app.bot.keyboards.onboarding import level_keyboard
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (
