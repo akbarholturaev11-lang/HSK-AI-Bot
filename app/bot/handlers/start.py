@@ -145,34 +145,59 @@ async def _start_trial_lesson(
     state: FSMContext,
     session,
     lesson_id: int,
+    show_menu: bool = False,
 ) -> None:
+    await callback.answer()
+    try:
+        await callback.message.delete()
+    except Exception:
+        pass
+
+    await _start_lesson_for_user(
+        telegram_id=callback.from_user.id,
+        respond=callback.message.answer,
+        state=state,
+        session=session,
+        lesson_id=lesson_id,
+        source="trial_lesson_pick",
+        show_menu=show_menu,
+    )
+
+
+async def _start_lesson_for_user(
+    *,
+    telegram_id: int,
+    respond,
+    state: FSMContext | None,
+    session,
+    lesson_id: int,
+    source: str,
+    show_menu: bool = False,
+) -> bool:
     user_repo = UserRepository(session)
     engine = CourseEngineService(session)
     trial_service = CourseTrialService(session)
 
-    user = await user_repo.get_by_telegram_id(callback.from_user.id)
+    user = await user_repo.get_by_telegram_id(telegram_id)
     if not user:
-        await callback.answer()
-        await callback.message.answer(t("access_start_first", "ru"))
-        return
+        await respond(t("access_start_first", "ru"))
+        return False
 
     lang = user.language if user.language else "ru"
     lesson = await engine.lesson_repo.get_by_id(lesson_id)
     if not lesson or lesson.level not in _course_level_candidates(user.level):
-        await callback.answer()
-        await callback.message.answer(t("course_lesson_not_unlocked", lang))
-        return
+        await respond(t("course_lesson_not_unlocked", lang))
+        return False
 
     if not await trial_service.ensure_trial_lesson(user, lesson.id):
         from app.bot.handlers.course import _send_course_access_offer
 
-        await callback.answer()
         await _send_course_access_offer(
-            respond=callback.message.answer,
+            respond=respond,
             lang=lang,
             expired_from_course=False,
         )
-        return
+        return False
 
     user.learning_mode = "course"
     user.voice_mode = "none"
@@ -183,34 +208,57 @@ async def _start_trial_lesson(
     user.expiry_reminder_sent_at = None
     await session.flush()
 
-    _, _, _, error_key = await engine.pick_lesson(callback.from_user.id, lesson.id)
+    _, _, _, error_key = await engine.pick_lesson(telegram_id, lesson.id)
     if error_key:
-        await callback.answer()
-        await callback.message.answer(t(error_key, lang))
-        return
+        await respond(t(error_key, lang))
+        return False
     await ConversionFunnelService().record(
         event_name="lesson_started",
         user=user,
-        source="trial_lesson_pick",
+        source=source,
         lesson_id=lesson.id,
         payload={"lesson_order": getattr(lesson, "lesson_order", None), "level": getattr(lesson, "level", None)},
     )
 
-    await state.clear()
-    await callback.answer()
-
-    try:
-        await callback.message.delete()
-    except Exception:
-        pass
+    if state:
+        await state.clear()
 
     from app.bot.handlers.course import run_course_entry_flow
 
     await run_course_entry_flow(
         session=session,
-        telegram_id=callback.from_user.id,
-        respond=callback.message.answer,
-        show_menu=True,
+        telegram_id=telegram_id,
+        respond=respond,
+        show_menu=show_menu,
+    )
+    return True
+
+
+async def _start_first_available_course_lesson(
+    *,
+    telegram_id: int,
+    respond,
+    state: FSMContext | None,
+    session,
+    source: str,
+    show_menu: bool = False,
+) -> bool:
+    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+    lang = user.language if user and user.language else "ru"
+    engine = CourseEngineService(session)
+    lessons, _ = await _resolve_lessons_for_user_level(engine, user.level if user else None)
+    if not lessons:
+        await respond(t("course_no_lessons_available", lang))
+        return False
+
+    return await _start_lesson_for_user(
+        telegram_id=telegram_id,
+        respond=respond,
+        state=state,
+        session=session,
+        lesson_id=lessons[0].id,
+        source=source,
+        show_menu=show_menu,
     )
 
 
@@ -237,21 +285,25 @@ async def cmd_start(
     await state.clear()
 
     if not created and user.language and user.level:
-        daily_service = DailyPracticeService(session)
-        if (
-            user.payment_status != "approved"
-            and getattr(user, "learning_mode", "qa") != "course"
-            and not daily_service.is_completed_today(user)
-        ):
-            await _send_daily_practice_entry_message(message, state, session, user=user)
+        engine = CourseEngineService(session)
+        progress = await engine.progress_repo.get_by_user_id(user.id)
+        if not progress or not progress.current_lesson_id:
+            await _start_first_available_course_lesson(
+                telegram_id=message.from_user.id,
+                respond=message.answer,
+                state=state,
+                session=session,
+                source="start_existing_first_lesson",
+            )
             return
 
-        if getattr(user, "learning_mode", "qa") == "course":
-            await AccessService(session).ensure_active_course_access(user)
-            await session.commit()
-        await message.answer(
-            t("welcome_back", user.language, name=first_name),
-            reply_markup=_menu_keyboard_for_user(user),
+        from app.bot.handlers.course import run_course_entry_flow
+
+        await run_course_entry_flow(
+            session=session,
+            telegram_id=message.from_user.id,
+            respond=message.answer,
+            show_menu=False,
         )
         return
 
@@ -509,7 +561,7 @@ async def process_level(callback: CallbackQuery, state: FSMContext, session):
         username=callback.from_user.username if callback.from_user else None,
     )
     user.level = level
-    user.learning_mode = "qa"
+    user.learning_mode = "course"
     user.voice_mode = "none"
     if user.payment_status != "approved":
         user.status = "trial"
@@ -519,8 +571,18 @@ async def process_level(callback: CallbackQuery, state: FSMContext, session):
     await session.commit()
 
     await callback.answer()
+    try:
+        await callback.message.delete()
+    except Exception:
+        pass
 
-    await _send_daily_practice_entry_callback(callback, state, session, edit=True)
+    await _start_first_available_course_lesson(
+        telegram_id=callback.from_user.id,
+        respond=callback.message.answer,
+        state=state,
+        session=session,
+        source="onboarding_first_lesson",
+    )
 
 
 @router.callback_query(F.data == "daily_practice:start")
@@ -592,17 +654,22 @@ async def daily_practice_complete(callback: CallbackQuery, state: FSMContext, se
             parse_mode="HTML",
         )
     await state.clear()
-    await callback.message.answer(
-        t("send_first_message", lang),
-        reply_markup=main_menu_keyboard(lang),
-        parse_mode="HTML",
-    )
 
 
 @router.callback_query(F.data == "daily_practice:course")
 async def daily_practice_course(callback: CallbackQuery, state: FSMContext, session):
     await callback.answer()
-    await _send_trial_lesson_choice(callback, state, session, edit=True)
+    try:
+        await callback.message.delete()
+    except Exception:
+        pass
+    await _start_first_available_course_lesson(
+        telegram_id=callback.from_user.id,
+        respond=callback.message.answer,
+        state=state,
+        session=session,
+        source="daily_practice_course",
+    )
 
 
 @router.callback_query(OnboardingStates.choosing_trial_lesson, F.data == "trial_lesson:first")

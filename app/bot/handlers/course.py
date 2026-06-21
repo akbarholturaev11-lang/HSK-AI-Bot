@@ -1668,11 +1668,17 @@ def _course_tip_key_for_step(step: str) -> str | None:
     return None
 
 
-async def _queue_course_onboarding_tip(session, user, lesson, step: str, lang: str) -> None:
+def _bot_from_respond(respond):
+    owner = getattr(respond, "__self__", None)
+    return getattr(owner, "bot", None)
+
+
+async def _queue_course_onboarding_tip(session, user, lesson, step: str, lang: str, bot=None) -> None:
     tip_key = _course_tip_key_for_step(step)
     if not tip_key:
         return
-    queued = await OnboardingTipService(session).queue_course_tip(
+    tip_service = OnboardingTipService(session)
+    queued = await tip_service.queue_course_tip(
         user=user,
         lesson=lesson,
         step=step,
@@ -1681,6 +1687,8 @@ async def _queue_course_onboarding_tip(session, user, lesson, step: str, lang: s
     )
     if queued:
         await session.commit()
+        if bot:
+            await tip_service.send_due_tips(bot, limit=5)
 
 
 def _static_course_missing_text(lang: str) -> str:
@@ -1731,7 +1739,14 @@ async def _send_step(respond, user, lesson, step: str, lang: str, session):
     if text is not None:
         keyboard = _keyboard_for_step(lang, step, lesson)
         await respond(text, reply_markup=keyboard, parse_mode="HTML")
-        await _queue_course_onboarding_tip(session, user, lesson, step, lang)
+        await _queue_course_onboarding_tip(
+            session,
+            user,
+            lesson,
+            step,
+            lang,
+            bot=_bot_from_respond(respond),
+        )
     else:
         keyboard = _keyboard_for_step(lang, step, lesson)
         await respond(_static_course_missing_text(lang), reply_markup=keyboard, parse_mode="HTML")

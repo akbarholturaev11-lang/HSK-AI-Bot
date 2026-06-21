@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260619-course-miniapp-v2"
+MINIAPP_ASSET_VERSION = "20260621-duo-lesson"
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:
@@ -58,13 +58,7 @@ def _miniapp_base_url_for_file(target_file: str) -> str:
 
 
 def _miniapp_base_url_for_level(level: str) -> str:
-    normalized_level = (level or "").strip().lower()
-    target_file = {
-        "hsk1": "hsk1.html",
-        "hsk2": "hsk2.html",
-        "hsk4": "hsk4.html",
-    }.get(normalized_level, "hsk3.html")
-    return _miniapp_base_url_for_file(target_file)
+    return _miniapp_base_url_for_file("duo-lesson.html")
 
 
 def course_miniapp_url(lesson, mode: str, lang: str | None = None, block_no: int | None = None) -> str:
@@ -73,6 +67,7 @@ def course_miniapp_url(lesson, mode: str, lang: str | None = None, block_no: int
     separator = "&" if "?" in base_url else "?"
     params = {
         "lesson": course_miniapp_lesson_id(lesson),
+        "level": level or "hsk1",
         "mode": mode,
         "lang": normalize_miniapp_lang(lang),
         "v": MINIAPP_ASSET_VERSION,

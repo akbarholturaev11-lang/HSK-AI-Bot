@@ -76,6 +76,8 @@ class CourseMiniAppResultService:
 
     @staticmethod
     def _normalize_token_list(value: Any) -> list[str]:
+        if isinstance(value, str):
+            return [item.strip() for item in value.split() if item.strip()]
         if not isinstance(value, list):
             return []
         return [str(item).strip() for item in value if str(item).strip()]
@@ -144,7 +146,7 @@ class CourseMiniAppResultService:
                     selected_answer = str(options[selected_index])
                 correct = bool(answer and selected_answer == answer)
                 normalized_answer = selected_answer
-            elif task_type in {"word_order", "build_chinese_sentence"}:
+            elif task_type in {"word_order", "build_chinese_sentence", "build_sentence_chips"}:
                 expected = self._normalize_token_list(task.get("answer"))
                 actual = self._normalize_token_list(
                     submitted_item.get("answer_tokens") or submitted_item.get("tokens")
@@ -280,6 +282,8 @@ class CourseMiniAppResultService:
             if question_type in order_types:
                 expected = self._normalize_token_list(question.get("answer"))
                 actual = self._normalize_token_list(answer.get("answer_tokens") or answer.get("tokens"))
+                if not actual:
+                    actual = self._normalize_token_list(answer.get("selected_answer"))
                 if not expected or not actual:
                     return None
                 is_correct = actual == expected

@@ -207,6 +207,34 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-21 — Course-first onboarding and Duo Mini App adapter
+
+Changed:
+- `/start` no longer sends new users into DailyPractice after language + level; it starts the first available course lesson directly so users see course value immediately.
+- Course quiz/homework buttons now open `duo-lesson.html`, which loads real course payload from `/api/miniapp/lesson` and submits quiz/homework results to `/api/miniapp/event`.
+- Course/QA onboarding tips are queued with zero delay and sent immediately when possible instead of waiting ~30 seconds.
+- Stroke-order Mini App now sends Telegram WebApp init data when loading lesson vocabulary.
+
+Why:
+- Conversion issue was users not seeing course value early and getting split between QA/DailyPractice/Course choices.
+
+Files touched:
+- `app/bot/handlers/start.py`
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/messages.py`
+- `app/bot/utils/course_miniapp.py`
+- `app/main.py`
+- `app/static/duo-lesson.html`
+- `app/static/stroke-order.html`
+- `app/services/course_miniapp_result_service.py`
+- `app/services/onboarding_tip_service.py`
+
+Risk:
+- Mini App result submission still depends on valid Telegram WebApp `initData`; local browser preview can only test fallback/static behavior.
+
+Follow-up:
+- Smoke test in Telegram after deploy: new `/start` onboarding, Duo quiz result, Duo homework result, stroke-order vocabulary open event.
+
 ### 2026-06-20 — Course pilot compact first 3 lessons
 
 Changed:

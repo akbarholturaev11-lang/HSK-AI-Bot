@@ -435,10 +435,11 @@ async def _send_budget_notice(respond, record, lang: str) -> None:
         await respond(t(message_key, lang), parse_mode="HTML")
 
 
-async def _queue_normal_photo_tip(session, user, lang: str) -> None:
+async def _queue_normal_photo_tip(session, user, lang: str, bot=None) -> None:
     if not user:
         return
-    queued = await OnboardingTipService(session).queue_once(
+    tip_service = OnboardingTipService(session)
+    queued = await tip_service.queue_once(
         user=user,
         tip_key=TIP_KEY_NORMAL_PHOTO,
         lang=lang,
@@ -446,17 +447,22 @@ async def _queue_normal_photo_tip(session, user, lang: str) -> None:
     )
     if queued:
         await session.commit()
+        if bot:
+            await tip_service.send_due_tips(bot, limit=5)
 
 
-async def _queue_normal_voice_tip_if_near_limit(session, user, lang: str) -> None:
+async def _queue_normal_voice_tip_if_near_limit(session, user, lang: str, bot=None) -> None:
     if not user:
         return
-    queued = await OnboardingTipService(session).queue_voice_tip_if_near_limit(
+    tip_service = OnboardingTipService(session)
+    queued = await tip_service.queue_voice_tip_if_near_limit(
         user=user,
         lang=lang,
     )
     if queued:
         await session.commit()
+        if bot:
+            await tip_service.send_due_tips(bot, limit=5)
 
 
 async def _build_referral_limit_text(session, user, lang: str, key: str) -> str:
@@ -625,8 +631,8 @@ async def _answer_course_tutor_question(
         parse_mode="HTML",
     )
     await _send_budget_notice(message.answer, budget_record, lang)
-    await _queue_normal_photo_tip(session, user, lang)
-    await _queue_normal_voice_tip_if_near_limit(session, user, lang)
+    await _queue_normal_photo_tip(session, user, lang, bot=message.bot)
+    await _queue_normal_voice_tip_if_near_limit(session, user, lang, bot=message.bot)
     return True
 
 
@@ -2074,8 +2080,8 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
     # Show course promo after 3rd QA message (once per user)
     refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
-    await _queue_normal_photo_tip(session, refreshed_user, user_lang)
-    await _queue_normal_voice_tip_if_near_limit(session, refreshed_user, user_lang)
+    await _queue_normal_photo_tip(session, refreshed_user, user_lang, bot=message.bot)
+    await _queue_normal_voice_tip_if_near_limit(session, refreshed_user, user_lang, bot=message.bot)
     if (
         refreshed_user
         and not refreshed_user.course_promo_sent
@@ -2194,7 +2200,7 @@ async def handle_image_message(message: Message, state: FSMContext, session):
     await _safe_answer_text(message, reply, user_lang)
     await _send_budget_notice(message.answer, image_qa_service.last_budget_record, user_lang)
     refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
-    await _queue_normal_voice_tip_if_near_limit(session, refreshed_user, user_lang)
+    await _queue_normal_voice_tip_if_near_limit(session, refreshed_user, user_lang, bot=message.bot)
 
 
 @router.message(F.document)

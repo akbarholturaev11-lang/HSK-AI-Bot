@@ -12,7 +12,7 @@ from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.message_repo import MessageRepository
 
 
-TIP_DELAY_SECONDS = 30
+TIP_DELAY_SECONDS = 0
 TIP_KEY_COURSE_VOCAB = "course_vocab"
 TIP_KEY_COURSE_DIALOGUE = "course_dialogue"
 TIP_KEY_COURSE_GRAMMAR = "course_grammar"

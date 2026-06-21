@@ -584,7 +584,10 @@
           lang,
         });
         if (blockNumber) apiParams.set("block", String(blockNumber));
-        const response = await fetch(`/api/miniapp/lesson?${apiParams}`);
+        apiParams.set("mode", "stroke");
+        const response = await fetch(`/api/miniapp/lesson?${apiParams}`, {
+          headers: { "X-Telegram-Init-Data": tg?.initData || "" },
+        });
         const payload = await response.json();
         if (!response.ok || !payload.ok) throw new Error(payload.error || "lesson_load_failed");
 
