@@ -33,6 +33,8 @@ from app.services.message_draft_service import (
     update_draft_or_fallback,
 )
 from app.services.support_contact_service import get_admin_contact_url
+from app.services.rich_message_service import RichMessageService
+from app.config import settings
 
 
 router = Router()
@@ -396,6 +398,48 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
     ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
+
+@router.message(Command("rich_test"))
+async def rich_test_command(message: Message, bot: Bot):
+    rich_service = RichMessageService(settings.BOT_TOKEN)
+    
+    # 1. Vocabulary Test
+    vocab_payload = rich_service.build_vocab_rich_message(
+        word="学习",
+        pinyin="xuéxí",
+        translation="O'qish, o'rganish",
+        examples=["我喜欢学习汉语 (Men xitoy tilini o'rganishni yoqtiraman)"],
+        mistakes="xuéxí ni 'o'qituvchi' deb ishlatmang."
+    )
+    await message.answer("🧪 <b>Test 1: Vocabulary Rich Message</b>", parse_mode="HTML")
+    await rich_service.send_rich_or_fallback(
+        bot, message.chat.id, vocab_payload, "Vocabulary Fallback: 学习 (xuéxí) - O'qish"
+    )
+
+    # 2. Grammar Test
+    grammar_payload = rich_service.build_grammar_rich_message(
+        title="'了' (le) qo'shimchasi",
+        formula="S + V + 了 + O",
+        explanation="Harakat tugallanganini bildiradi.",
+        examples=["我吃饭了 (Men ovqat yedim)"],
+        common_mistakes="Kelajakdagi harakatlar uchun '了' ishlatmang."
+    )
+    await message.answer("\n🧪 <b>Test 2: Grammar Rich Message</b>", parse_mode="HTML")
+    await rich_service.send_rich_or_fallback(
+        bot, message.chat.id, grammar_payload, "Grammar Fallback: '了' (le) - Harakat tugallangan"
+    )
+
+    # 3. Quiz Result Test
+    quiz_payload = rich_service.build_quiz_result_rich_message(
+        score=8,
+        total=10,
+        weak_points=["Tonlar", "Yozish"],
+        wrong_answers=["savol_3", "savol_7"]
+    )
+    await message.answer("\n🧪 <b>Test 3: Quiz Result Rich Message</b>", parse_mode="HTML")
+    await rich_service.send_rich_or_fallback(
+        bot, message.chat.id, quiz_payload, "Quiz Result Fallback: 8/10"
+    )
 
 @router.message(Command("profile"))
 async def profile_command(message: Message, state: FSMContext, session):

@@ -22,6 +22,7 @@ class Settings(BaseSettings):
 
     DEFAULT_LANGUAGE: str = "tj"
     LOG_LEVEL: str = "INFO"
+    ENABLE_RICH_MESSAGES: bool = True
 
     AIRTABLE_API_KEY: str = ""
     AIRTABLE_BASE_ID: str = ""
@@ -38,3 +39,4 @@ class Settings(BaseSettings):
 
 settings = Settings()
 COURSE_MODE_ENABLED = True
+# ENABLE_RICH_MESSAGES = True  # Moved to Settings class
