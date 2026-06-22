@@ -167,6 +167,67 @@ def mock_course_lesson(page):
     page.route("**/api/miniapp/event", lambda route: route.abort())
 
 
+def mock_course_lesson_flow(page):
+    page.route(
+        re.compile(r".*/api/miniapp/course-lesson\?.*"),
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "flow": {
+                    "id": "lesson:1:v1",
+                    "version": 1,
+                    "level": "hsk1",
+                    "lesson_id": 1,
+                    "title": "你好",
+                    "cards": [
+                        {
+                            "id": "word:1",
+                            "type": "active_word",
+                            "title": "Новое активное слово",
+                            "word": {"zh": "你好", "pinyin": "nǐ hǎo", "meaning": "привет"},
+                            "required": True,
+                        },
+                        {
+                            "id": "activity:meaning",
+                            "type": "meaning_guess",
+                            "title": "Выберите правильное значение",
+                            "prompt": "Что означает 你好?",
+                            "options": ["привет", "спасибо"],
+                            "correct_index": 0,
+                            "required": True,
+                        },
+                        {
+                            "id": "activity:pronunciation",
+                            "type": "pronunciation",
+                            "title": "Произнесите фразу вслух",
+                            "phrase": "你好",
+                            "pinyin": "nǐ hǎo",
+                            "translation": "привет",
+                            "required": True,
+                        },
+                    ],
+                },
+            },
+        ),
+    )
+    page.route(
+        f"{PROD_ORIGIN}/api/miniapp/course-lesson/complete",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "completed_lesson": 1,
+                "next_lesson": 2,
+                "percent": 100,
+                "correct": 1,
+                "total": 1,
+                "reward": {"xp": 30},
+            },
+        ),
+    )
+
+
 def study_frame(page):
     page.locator("#level-frame").wait_for(state="attached")
     return page.frame_locator("#level-frame")
@@ -265,6 +326,27 @@ def test_course_onboarding_completes_four_steps_and_opens_lesson(page):
     expect(frame.locator("#v2-onboarding")).to_have_count(0)
     expect(frame.locator("#page-course.active")).to_be_visible()
     expect(frame.locator("#v2-sheet .v2-sheet")).to_be_visible()
+
+
+def test_server_backed_lesson_cards_finish_with_reward(page):
+    mock_study_access(page, ACTIVE_ACCESS, fail_events=False)
+    mock_course_lesson_flow(page)
+
+    page.goto(app_url("/study.html?level=hsk1&lesson=1&tab=course&lang=ru"))
+    frame = study_frame(page)
+    expect(frame.locator("#v2-sheet .v2-sheet")).to_be_visible()
+    frame.locator("#v2-sheet .v2-primary").click()
+
+    expect(frame.locator("#page-lesson.active")).to_be_visible()
+    expect(frame.locator(".v2-word-hero")).to_contain_text("你好")
+    frame.locator(".v2-card-next").click()
+    frame.get_by_role("button", name="привет", exact=True).click()
+    frame.locator(".v2-card-next").click()
+    expect(frame.locator(".v2-pronunciation")).to_contain_text("nǐ hǎo")
+    frame.locator(".v2-card-next").click()
+
+    expect(frame.locator(".v2-lesson-result")).to_contain_text("100%")
+    expect(frame.locator(".v2-lesson-result")).to_contain_text("+30 XP")
 
 
 def test_study_quiz_score_and_event_localstorage_fallback(page):

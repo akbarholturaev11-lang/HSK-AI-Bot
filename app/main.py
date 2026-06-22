@@ -30,6 +30,7 @@ from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonFlowService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
@@ -535,6 +536,64 @@ async def miniapp_lesson(
         return {"ok": True, "lesson": payload}
 
 
+@app.get("/api/miniapp/course-lesson")
+async def miniapp_course_lesson(
+    request: Request,
+    lesson: int,
+    level: str,
+    lang: str = "ru",
+):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+        )
+    async with async_session_maker() as session:
+        result = await CourseMiniAppLessonFlowService(session).get_flow(
+            telegram_id,
+            level=level,
+            lesson_order=lesson,
+            lang=normalize_miniapp_lang(lang),
+        )
+    status_code = 200 if result.get("ok") else 403
+    return JSONResponse(status_code=status_code, content=result)
+
+
+@app.post("/api/miniapp/course-lesson/complete")
+async def miniapp_course_lesson_complete(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+        )
+    try:
+        payload = await request.json()
+        lesson_order = int(payload.get("lesson_id") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_lesson_payload"},
+        )
+    async with async_session_maker() as session:
+        result = await CourseMiniAppLessonFlowService(session).complete_flow(
+            telegram_id,
+            level=str(payload.get("level") or ""),
+            lesson_order=lesson_order,
+            lang=normalize_miniapp_lang(str(payload.get("lang") or "ru")),
+            responses=payload.get("responses") if isinstance(payload.get("responses"), list) else [],
+        )
+    status_code = 200 if result.get("ok") else 400
+    return JSONResponse(status_code=status_code, content=result)
+
+
 @app.post("/api/subscription-miniapp/overview")
 async def subscription_miniapp_overview(request: Request):
     telegram_id = extract_verified_webapp_user_id(
@@ -686,27 +745,7 @@ async def miniapp_event(request: Request):
             return {"ok": True}
 
         if event == "v2_lesson_completed":
-            result = await study_service.complete_v2_lesson(
-                telegram_id,
-                level=str(payload.get("level") or ""),
-                lesson_order=_positive_int(payload.get("lesson_id")) or 0,
-                percent=max(0, min(100, _positive_int(payload.get("percent")) or 0)),
-            )
-            if result.get("ok"):
-                user = await UserRepository(session).get_by_telegram_id(telegram_id)
-                level = str(payload.get("level") or "")
-                lesson_order = _positive_int(payload.get("lesson_id")) or 0
-                await analytics_service.record_server_event(
-                    event_name="lesson_completed",
-                    telegram_id=telegram_id,
-                    user_id=getattr(user, "id", None),
-                    level=level or None,
-                    lesson_order=lesson_order or None,
-                    dedupe_key=f"lesson:{level}:{lesson_order}",
-                    payload={"percent": max(0, min(100, _positive_int(payload.get("percent")) or 0))},
-                )
-                await session.commit()
-            return result
+            return {"ok": False, "error": "course_lesson_flow_required"}
 
         if event in analytics_service.CLIENT_EVENT_NAMES:
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
