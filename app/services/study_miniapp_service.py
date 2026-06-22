@@ -8,6 +8,9 @@ from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
 from app.services.qa_service import QAService
+from app.services.course_engine_service import CourseEngineService
+from app.services.course_trial_service import CourseTrialService
+from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 
 
 TRIAL_LIMITS = {
@@ -46,14 +49,7 @@ class StudyMiniAppService:
 
     @classmethod
     def is_paid_user(cls, user) -> bool:
-        end_date = cls._as_utc(getattr(user, "end_date", None))
-        return bool(
-            user
-            and getattr(user, "status", "") == "active"
-            and getattr(user, "payment_status", "") == "approved"
-            and end_date
-            and end_date > datetime.now(timezone.utc)
-        )
+        return CourseMiniAppAccessService.is_paid_user(user)
 
     async def _resolve_level(self, user) -> str:
         level = str(getattr(user, "level", "") or "").strip().lower()
@@ -85,11 +81,13 @@ class StudyMiniAppService:
         limits = dict(PAID_LIMITS if paid else TRIAL_LIMITS)
         if not paid and getattr(user, "trial_quiz_explanation_used_at", None) is None:
             limits["wrong_analysis"] = True
+        features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
         return {
             "status": "active" if paid else "trial",
             "language": getattr(user, "language", None) or "uz",
             "level": await self._resolve_level(user),
             "limits": limits,
+            "course_features": features,
         }
 
     async def send_subscription_menu(self, bot, telegram_id: int) -> bool:
@@ -105,6 +103,54 @@ class StudyMiniAppService:
             parse_mode="HTML",
         )
         return True
+
+    async def complete_v2_lesson(
+        self,
+        telegram_id: int,
+        *,
+        level: str,
+        lesson_order: int,
+        percent: int,
+    ) -> dict:
+        if percent < 60:
+            return {"ok": False, "error": "lesson_score_too_low"}
+
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return {"ok": False, "error": "access_start_first"}
+
+        progress = await self.progress_repo.get_by_user_id(user.id, for_update=True)
+        if not progress or not progress.current_lesson_id:
+            return {"ok": False, "error": "course_no_lesson_found"}
+
+        lesson = await self.lesson_repo.get_by_id(progress.current_lesson_id)
+        normalized_level = "hsk4" if level in {"hsk4", "hsk4a", "hsk4b"} else level
+        if (
+            not lesson
+            or str(getattr(lesson, "level", "") or "").lower() != normalized_level
+            or int(getattr(lesson, "lesson_order", 0) or 0) != lesson_order
+        ):
+            return {"ok": False, "error": "course_lesson_not_current"}
+
+        trial_service = CourseTrialService(self.session)
+        if not trial_service.is_paid_user(user) and not trial_service.can_access_lesson(user, lesson.id):
+            return {"ok": False, "error": "course_trial_lesson_locked"}
+        if not trial_service.is_paid_user(user):
+            await trial_service.mark_trial_completed(user, lesson.id)
+
+        engine = CourseEngineService(self.session)
+        _, updated_progress, completed_lesson, next_lesson, error_key = (
+            await engine.complete_lesson_and_unlock_next(telegram_id)
+        )
+        if error_key:
+            return {"ok": False, "error": error_key}
+
+        return {
+            "ok": True,
+            "completed_lesson": getattr(completed_lesson, "lesson_order", lesson_order),
+            "next_lesson": getattr(next_lesson, "lesson_order", None),
+            "completed_lessons_count": getattr(updated_progress, "completed_lessons_count", 0),
+        }
 
     @staticmethod
     def _discussion_prompt(payload: dict, lang: str) -> str:

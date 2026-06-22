@@ -205,10 +205,17 @@ class AIService:
         )
 
         model = "gpt-4o-mini-transcribe"
+        mime_type = {
+            ".aac": "audio/aac",
+            ".m4a": "audio/mp4",
+            ".mp4": "audio/mp4",
+            ".ogg": "audio/ogg",
+            ".webm": "audio/webm",
+        }.get(Path(filename).suffix.lower(), "application/octet-stream")
         response = await self.client.audio.transcriptions.create(
             model=model,
             chunking_strategy="auto",
-            file=(filename, audio_bytes, "audio/ogg"),
+            file=(filename, audio_bytes, mime_type),
             prompt=prompt,
             temperature=0,
         )
