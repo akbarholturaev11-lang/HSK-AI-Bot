@@ -32,6 +32,7 @@ from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonFlowService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
+from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
@@ -592,6 +593,54 @@ async def miniapp_course_lesson_complete(request: Request):
         )
     status_code = 200 if result.get("ok") else 400
     return JSONResponse(status_code=status_code, content=result)
+
+
+@app.post("/api/miniapp/practice/start")
+async def miniapp_practice_start(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+        async with async_session_maker() as session:
+            result = await CourseMiniAppPracticeService(session).start(
+                telegram_id,
+                mode=str(payload.get("mode") or ""),
+                level=str(payload.get("level") or "hsk1"),
+                lang=normalize_miniapp_lang(str(payload.get("lang") or "ru")),
+                skill=str(payload.get("skill") or ""),
+            )
+    except ValueError as error:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
+    return JSONResponse(status_code=200 if result.get("ok") else 403, content=result)
+
+
+@app.post("/api/miniapp/practice/complete")
+async def miniapp_practice_complete(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+        async with async_session_maker() as session:
+            result = await CourseMiniAppPracticeService(session).complete(
+                telegram_id,
+                session_id=str(payload.get("session_id") or ""),
+                mode=str(payload.get("mode") or ""),
+                level=str(payload.get("level") or "hsk1"),
+                lang=normalize_miniapp_lang(str(payload.get("lang") or "ru")),
+                skill=str(payload.get("skill") or ""),
+                answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+            )
+    except ValueError as error:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
 
 @app.post("/api/subscription-miniapp/overview")

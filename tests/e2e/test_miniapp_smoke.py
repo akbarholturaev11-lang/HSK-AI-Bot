@@ -228,6 +228,39 @@ def mock_course_lesson_flow(page):
     )
 
 
+def mock_practice_flow(page):
+    questions = [
+        {
+            "id": f"hsk1:1:{index}",
+            "level": "hsk1",
+            "lesson": 1,
+            "type": "multiple_choice",
+            "subtype": "hanzi_to_meaning",
+            "prompt": f"Practice question {index}",
+            "sentence": "",
+            "audio_text": "",
+            "options": ["Correct", "Wrong"],
+            "answer_index": 0,
+            "explanation": "Correct",
+        }
+        for index in range(1, 11)
+    ]
+    page.route(
+        f"{PROD_ORIGIN}/api/miniapp/practice/start",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "session": {
+                    "id": "practice:1:placement:placement:hsk1:v1",
+                    "mode": "placement",
+                    "skill": "",
+                    "level": "hsk1",
+                    "questions": questions,
+                },
+            },
+        ),
+    )
 def study_frame(page):
     page.locator("#level-frame").wait_for(state="attached")
     return page.frame_locator("#level-frame")
@@ -276,6 +309,7 @@ def test_study_app_open_and_query_tab_routing(page):
 
 def test_v2_home_course_voice_and_placement_flow(page):
     mock_study_access(page)
+    mock_practice_flow(page)
 
     page.goto(app_url("/study.html?level=hsk1&lang=ru&tab=home"))
     frame = study_frame(page)

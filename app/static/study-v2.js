@@ -83,6 +83,7 @@ let onboardingStep=0;
 let onboardingSubmitting=false;
 let onboarding={goal:["hsk_exam","study_china","work_china","daily_communication","travel"].includes(meta.goal)?meta.goal:"hsk_exam",level:LEVEL_KEY.startsWith("hsk4")?"hsk4":LEVEL_KEY,minutes:meta.minutes||10,startMode:"continue"};
 let lessonFlow=null,lessonCardIndex=0,lessonResponses={},lessonSubmitting=false,lessonOrderRemaining=[],lessonOrderSelected=[];
+let practiceSession=null;
 
 function normalizeMeta(){
   if(meta.lastActive!==today()){
@@ -167,7 +168,7 @@ function renderProfile(){
 }
 
 function renderTraining(){
-  document.getElementById("page-training").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('profile')" aria-label="Back">‹</button><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("training"))}</h1><p class="v2-subtitle">${esc(tx("trainingSub"))}</p></div><div class="v2-profile-list">${row("◖",tx("listening"),tx("words"),"V2.openWords(true)")}${row("◌",tx("speaking"),tx("voice"),"V2.showPage('voice')")}${row("✎",tx("writing"),tx("grammar"),"V2.openGrammar()")}${row("字",tx("characters"),tx("words"),"V2.openWords(false)")}${row("!",tx("mistakes"),tx("mistakesSub"),"V2.showPage('mistakes')")}</div>`;
+  document.getElementById("page-training").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('profile')" aria-label="Back">‹</button><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("training"))}</h1><p class="v2-subtitle">${esc(tx("trainingSub"))}</p></div><div class="v2-profile-list">${row("◖",tx("listening"),tx("words"),"V2.startTraining('listening')")}${row("◌",tx("speaking"),tx("voice"),"V2.showPage('voice')")}${row("✎",tx("writing"),tx("grammar"),"V2.startTraining('writing')")}${row("字",tx("characters"),tx("words"),"V2.startTraining('characters')")}${row("!",tx("mistakes"),tx("mistakesSub"),"V2.showPage('mistakes')")}</div>`;
 }
 
 function renderMistakes(){
@@ -194,7 +195,7 @@ function renderAll(){
 
 function showPage(next){
   document.querySelectorAll(".v2-page,.page").forEach(el=>el.classList.toggle("active",el.id===`page-${next}`));
-  const root=next==="quiz"&&["placement","mock"].includes(testMode)?"tests":["flashcards","grammar","quiz","lesson"].includes(next)?"course":next;
+  const root=next==="quiz"&&["placement","mock"].includes(testMode)?"tests":next==="quiz"&&testMode==="training"?"profile":["flashcards","grammar","quiz","lesson"].includes(next)?"course":next;
   document.querySelectorAll(".v2-nav button").forEach(el=>el.classList.toggle("active",el.dataset.page===root));
   if(next==="flashcards")renderFlashcards();
   if(next==="grammar")renderGrammar();
@@ -282,11 +283,20 @@ function buildExamQuestions(count){
   for(const lesson of LESSONS){if(pool.length>=count)break;const question=grammarQuestion(lesson.n);if(question)pool.push(question)}
   return pool.slice(0,count);
 }
-function beginCustomTest(mode){
-  testMode=mode;quizLesson=currentLesson()?.n||1;questions=buildExamQuestions(10);answers=Array(questions.length).fill(null);qIndex=0;showPage("quiz");document.getElementById("score-box").style.display="none";document.getElementById("quiz-box").style.display="block";renderQuizQuestion();
+async function beginCustomTest(mode,requestedLevel=LEVEL_KEY,skill=""){
+  testMode=mode;quizLesson=currentLesson()?.n||1;practiceSession=null;showPage("quiz");document.getElementById("score-box").style.display="none";const box=document.getElementById("quiz-box");box.style.display="block";box.innerHTML=`<div class="v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div>`;
+  try{
+    const result=await bridge.startPractice?.({mode,level:requestedLevel,lang,skill});
+    if(!result?.session)throw Object.assign(new Error("practice_failed"),{code:"practice_failed"});
+    practiceSession=result.session;questions=practiceSession.questions.map(item=>({serverId:item.id,q:item.prompt,opts:item.options,a:Number(item.answer_index),audioText:item.audio_text||"",sentence:item.sentence||"",explanation:item.explanation||""}));answers=Array(questions.length).fill(null);qIndex=0;renderQuizQuestion();
+  }catch(error){
+    if(!bridge.hasAuth?.()){questions=buildExamQuestions(10);answers=Array(questions.length).fill(null);qIndex=0;renderQuizQuestion();return}
+    const locked=error?.code==="free_feature_limit_reached";box.innerHTML=`<div class="v2-lesson-result"><div class="v2-result-mark">${locked?"◆":"!"}</div><h2>${esc(locked?tx("unlockMore"):tx("lessonLoadError"))}</h2><button class="v2-primary" onclick="${locked?"V2.openSubscription()":"V2.showPage('tests')"}">${esc(locked?tx("subscription"):tx("back"))}</button></div>`;
+  }
 }
-function startPlacement(){beginCustomTest("placement")}
-function startMock(level){if(level&&level!==LEVEL_KEY){bridge.openRoute?.({level,tab:"tests",exam:"mock"});return}beginCustomTest("mock")}
+function startPlacement(){beginCustomTest("placement",LEVEL_KEY)}
+function startMock(level){beginCustomTest("mock",level||LEVEL_KEY)}
+function startTraining(skill){beginCustomTest("training",LEVEL_KEY,skill)}
 
 function recommendedLevel(percent){
   const base=LEVEL_KEY.startsWith("hsk4")?3:Math.max(0,["hsk1","hsk2","hsk3"].indexOf(LEVEL_KEY));
@@ -361,18 +371,23 @@ async function onboardingNext(){
 const legacyFinishQuiz=finishQuiz;
 const legacyFlipFC=flipFC;
 finishQuiz=function(){
-  const mode=testMode;legacyFinishQuiz();rememberMistakes(lastWrongItems);
+  const mode=testMode,session=practiceSession;legacyFinishQuiz();rememberMistakes(lastWrongItems);
   if(mode==="lesson"&&lastQuizPercent>=60&&ACCESS.status!=="active"){meta.trialCourseCompleted=true;write(META_KEY,meta)}
-  if(lastQuizPercent>=60&&!state.done.includes(quizLesson)){state.done.push(quizLesson);saveState();addXP(20+Math.round(lastQuizPercent/10),"lesson")}else addXP(Math.max(5,Math.round(lastQuizPercent/10)),"quiz");
+  if(mode==="lesson"&&lastQuizPercent>=60&&!state.done.includes(quizLesson)){state.done.push(quizLesson);saveState();addXP(20+Math.round(lastQuizPercent/10),"lesson")}else addXP(Math.max(5,Math.round(lastQuizPercent/10)),"quiz");
   if(mode==="lesson"&&lastQuizPercent>=60){
     bridge.reportEvent?.("v2_lesson_completed",{lesson_id:quizLesson,percent:lastQuizPercent,score:lastQuizScore,total:lastQuizTotal});
   }
-  if(mode==="placement"){
-    const recommended=recommendedLevel(lastQuizPercent);write("hsk_v2_placement",{percent:lastQuizPercent,recommended,createdAt:new Date().toISOString()});
-    document.getElementById("score-box")?.insertAdjacentHTML("beforeend",`<div class="v2-goal" style="margin-top:12px"><div class="v2-kicker">${esc(tx("recommended"))}</div><h2 style="margin-top:6px">${recommended}</h2></div>`);
-  }
+  if(session&&["placement","mock","training"].includes(mode))submitPracticeResult(session);
   renderAll();testMode="";
 };
+async function submitPracticeResult(session){
+  try{
+    const result=await bridge.completePractice?.({session_id:session.id,mode:session.mode,skill:session.skill||"",level:session.level,lang,answers:questions.map((question,index)=>({question_id:question.serverId,selected_index:answers[index]}))});
+    if(!result?.ok)return;
+    rememberMistakes(result.wrong_items||[]);
+    if(session.mode==="placement"){write("hsk_v2_placement",{percent:result.percent,recommended:result.recommendation,createdAt:new Date().toISOString()});document.getElementById("score-box")?.insertAdjacentHTML("beforeend",`<div class="v2-goal" style="margin-top:12px"><div class="v2-kicker">${esc(tx("recommended"))}</div><h2 style="margin-top:6px">${esc(result.recommendation)}</h2></div>`)}
+  }catch(error){const locked=error?.code==="free_feature_limit_reached";document.getElementById("score-box")?.insertAdjacentHTML("beforeend",`<div class="v2-goal" style="margin-top:12px"><b>${esc(locked?tx("unlockMore"):tx("lessonLoadError"))}</b></div>`)}
+}
 flipFC=function(index){const card=document.querySelector(`[data-card="${index}"]`),was=card?.classList.contains("flipped");legacyFlipFC(index);setTimeout(()=>{const now=document.querySelector(`[data-card="${index}"]`)?.classList.contains("flipped");if(!was&&now){meta.daily.words=Math.min(5,Number(meta.daily.words||0)+1);write(META_KEY,meta);renderHome()}},80)};
 renderKPIs=function(){renderHome()};
 renderLessons=function(){renderCourse();renderHome()};
@@ -389,7 +404,7 @@ function applyLaunch(){
 
 function mount(){
   normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,openChest,openSettings,changeLanguage,changeLevel,openSubscription,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,continueLessonCard,retryLessonFlow,openNextLesson};
+  window.V2={showPage,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,openChest,openSettings,changeLanguage,changeLevel,openSubscription,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,continueLessonCard,retryLessonFlow,openNextLesson};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
   setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();applyLaunch();showOnboarding();

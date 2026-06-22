@@ -1456,6 +1456,20 @@ Key files:
 
 ---
 
+### 2026-06-23 - Server-backed Test and Training
+
+Changed:
+- Placement and HSK1-HSK4 mock tests now use canonical questions generated from existing `course_lessons` material and are graded server-side.
+- Listening, Writing and Characters training use the same HSK progression with skill filtering. Speaking continues to open AI Voice; Mistakes routes to the Mistake Engine area.
+- Placement uses the separate `placement` free entitlement. Mock tests and skill training share the single `training_test` free entitlement.
+- A free session is consumed when it starts; the same session can resume, but switching to another mock/training session is blocked after the one free use.
+- Server records `test_started`, `test_completed`, `training_started` and `training_completed` events.
+
+Key file:
+- `app/services/course_miniapp_practice_service.py`
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
