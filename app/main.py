@@ -30,6 +30,7 @@ from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
@@ -461,6 +462,42 @@ async def miniapp_access(request: Request):
         )
         await session.commit()
         return access_payload
+
+
+@app.post("/api/miniapp/onboarding")
+async def miniapp_onboarding(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+        )
+
+    payload = await request.json()
+    try:
+        timezone_offset = int(payload.get("timezone_offset_minutes") or 0)
+        async with async_session_maker() as session:
+            result = await CourseMiniAppOnboardingService(session).complete(
+                telegram_id,
+                level=str(payload.get("level") or ""),
+                goal=str(payload.get("goal") or ""),
+                daily_minutes=int(payload.get("daily_minutes") or 0),
+                start_mode=str(payload.get("start_mode") or ""),
+                timezone_offset_minutes=timezone_offset,
+            )
+    except (TypeError, ValueError) as error:
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_onboarding_payload", "message": str(error)},
+        )
+
+    if result.get("ok"):
+        return result
+    status_code = 409 if result.get("error") == "course_level_change_requires_placement" else 400
+    return JSONResponse(status_code=status_code, content=result)
 
 
 @app.get("/api/miniapp/lesson")

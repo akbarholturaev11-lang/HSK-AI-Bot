@@ -3,6 +3,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import json
+import logging
 
 from app.repositories.user_repo import UserRepository
 from app.services.course_engine_service import (
@@ -47,6 +48,7 @@ from app.bot.keyboards.course_context import (
 from app.bot.keyboards.course_miniapp import (
     course_homework_miniapp_keyboard,
     course_quiz_miniapp_keyboard,
+    course_study_miniapp_keyboard,
     course_vocab_stroke_order_keyboard,
 )
 
@@ -69,6 +71,8 @@ from app.bot.utils.workflow_message import (
 )
 from datetime import datetime, time, timezone
 
+
+logger = logging.getLogger(__name__)
 
 
 async def _block_if_course_disabled(callback, session):
@@ -760,6 +764,7 @@ async def run_course_entry_flow(
             waiting_for="none",
         )
 
+    current_lesson = None
     if progress.current_lesson_id:
         current_lesson = await engine.lesson_repo.get_by_id(progress.current_lesson_id)
         if current_lesson and not await _ensure_trial_lesson_access(
@@ -769,9 +774,53 @@ async def run_course_entry_flow(
             respond=respond,
         ):
             return
+    else:
+        lessons, _ = await _resolve_lessons_for_user_level(engine, user.level)
+        if not lessons:
+            await respond(t("course_no_lessons_available", lang))
+            return
+        _, progress, current_lesson, error_key = await engine.pick_lesson(
+            telegram_id,
+            lessons[0].id,
+        )
+        if error_key:
+            await respond(t(error_key, lang))
+            return
+        if not await _ensure_trial_lesson_access(
+            session=session,
+            user=user,
+            lesson=current_lesson,
+            respond=respond,
+        ):
+            return
 
-    if show_menu:
-        await respond(t("course_menu_title", lang), reply_markup=course_menu_keyboard(lang))
+    open_text = {
+        "uz": (
+            "📚 <b>HSK AI kursi Mini Appga ko‘chdi</b>\n\n"
+            "<blockquote>Darslar, so‘zlar, grammatika, quiz va AI Voice bitta joyda.</blockquote>"
+        ),
+        "ru": (
+            "📚 <b>Курс HSK AI переехал в Mini App</b>\n\n"
+            "<blockquote>Уроки, слова, грамматика, квиз и AI Voice теперь в одном месте.</blockquote>"
+        ),
+        "tj": (
+            "📚 <b>Курси HSK AI ба Mini App гузашт</b>\n\n"
+            "<blockquote>Дарсҳо, калимаҳо, грамматика, quiz ва AI Voice дар як ҷо.</blockquote>"
+        ),
+    }
+    try:
+        await respond(
+            open_text.get(lang, open_text["ru"]),
+            reply_markup=course_study_miniapp_keyboard(
+                lang,
+                level=getattr(current_lesson, "level", None) or getattr(progress, "level", None) or user.level,
+                lesson=getattr(current_lesson, "lesson_order", None),
+            ),
+            parse_mode="HTML",
+        )
+        return
+    except Exception:
+        logger.exception("Failed to open Course Mini App; using legacy course fallback")
 
     if not progress.current_lesson_id:
         lessons, resolved_level = await _resolve_lessons_for_user_level(engine, user.level)

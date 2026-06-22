@@ -11,6 +11,7 @@ from app.services.qa_service import QAService
 from app.services.course_engine_service import CourseEngineService
 from app.services.course_trial_service import CourseTrialService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 
 
 TRIAL_LIMITS = {
@@ -82,12 +83,22 @@ class StudyMiniAppService:
         if not paid and getattr(user, "trial_quiz_explanation_used_at", None) is None:
             limits["wrong_analysis"] = True
         features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
+        profile = await CourseMiniAppProfileService(self.session).get_or_create(user.id)
+        progress = await self.progress_repo.get_by_user_id(user.id)
         return {
             "status": "active" if paid else "trial",
             "language": getattr(user, "language", None) or "uz",
             "level": await self._resolve_level(user),
             "limits": limits,
             "course_features": features,
+            "course_profile": {
+                "goal": profile.goal,
+                "daily_minutes": profile.daily_minutes,
+                "start_mode": profile.start_mode,
+                "timezone_offset_minutes": profile.timezone_offset_minutes,
+                "onboarding_completed": profile.onboarding_completed_at is not None,
+                "has_progress": bool(progress and progress.current_lesson_id),
+            },
         }
 
     async def send_subscription_menu(self, bot, telegram_id: int) -> bool:

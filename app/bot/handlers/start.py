@@ -13,6 +13,7 @@ from app.services.daily_practice_service import DailyPracticeService
 from app.bot.utils.i18n import t
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.onboarding import (
+    course_mode_entry_keyboard,
     daily_practice_check_keyboard,
     daily_practice_entry_keyboard,
     daily_practice_finish_keyboard,
@@ -285,26 +286,20 @@ async def cmd_start(
     await state.clear()
 
     if not created and user.language and user.level:
-        engine = CourseEngineService(session)
-        progress = await engine.progress_repo.get_by_user_id(user.id)
-        if not progress or not progress.current_lesson_id:
-            await _start_first_available_course_lesson(
+        if getattr(user, "learning_mode", "qa") == "course":
+            from app.bot.handlers.course import run_course_entry_flow
+
+            await run_course_entry_flow(
+                session=session,
                 telegram_id=message.from_user.id,
                 respond=message.answer,
-                state=state,
-                session=session,
-                source="start_existing_first_lesson",
+                show_menu=False,
             )
-            return
-
-        from app.bot.handlers.course import run_course_entry_flow
-
-        await run_course_entry_flow(
-            session=session,
-            telegram_id=message.from_user.id,
-            respond=message.answer,
-            show_menu=False,
-        )
+        else:
+            await message.answer(
+                t("send_first_message", user.language),
+                reply_markup=main_menu_keyboard(user.language),
+            )
         return
 
     onboarding_msg = await message.answer(
@@ -314,7 +309,6 @@ async def cmd_start(
 
     await state.update_data(
         onboarding_message_id=onboarding_msg.message_id,
-        first_name=first_name,
     )
     await state.set_state(OnboardingStates.choosing_language)
 
@@ -337,21 +331,42 @@ async def process_language(callback: CallbackQuery, state: FSMContext, session):
 
     data = await state.get_data()
     onboarding_message_id = data.get("onboarding_message_id")
-    first_name = data.get("first_name", "Friend")
+
+    mode_text = {
+        "uz": (
+            "<b>Qanday o‘rganishni xohlaysiz?</b>\n\n"
+            "📚 <b>Kurs rejimi</b> — tartibli HSK darslari Mini App ichida.\n"
+            "🤖 <b>Oddiy rejim</b> — Telegram chatda xitoy tili bo‘yicha savollar."
+        ),
+        "ru": (
+            "<b>Как вы хотите учиться?</b>\n\n"
+            "📚 <b>Режим курса</b> — последовательные уроки HSK внутри Mini App.\n"
+            "🤖 <b>Обычный режим</b> — вопросы по китайскому языку прямо в Telegram."
+        ),
+        "tj": (
+            "<b>Чӣ тавр мехоҳед омӯзед?</b>\n\n"
+            "📚 <b>Реҷаи курс</b> — дарсҳои пайдарпайи HSK дар Mini App.\n"
+            "🤖 <b>Реҷаи оддӣ</b> — саволҳои забони чинӣ дар Telegram."
+        ),
+    }
 
     try:
         if onboarding_message_id:
             await callback.bot.edit_message_text(
                 chat_id=callback.message.chat.id,
                 message_id=onboarding_message_id,
-                text=f"{t('welcome', lang, name=first_name)}\n\n{t('choose_level', lang)}",
-                reply_markup=level_keyboard(lang),
+                text=mode_text.get(lang, mode_text["ru"]),
+                reply_markup=course_mode_entry_keyboard(lang),
+                parse_mode="HTML",
             )
     except Exception:
-        pass
+        await callback.message.answer(
+            mode_text.get(lang, mode_text["ru"]),
+            reply_markup=course_mode_entry_keyboard(lang),
+            parse_mode="HTML",
+        )
 
-    await state.update_data(lang=lang)
-    await state.set_state(OnboardingStates.choosing_level)
+    await state.clear()
 
 
 def _get_demo_lesson(level: str, lang: str) -> tuple:

@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260621-duo-lesson"
+MINIAPP_ASSET_VERSION = "20260623-course-v2"
 
 
 def normalize_miniapp_lang(lang: str | None) -> str:
@@ -76,6 +76,28 @@ def course_miniapp_url(lesson, mode: str, lang: str | None = None, block_no: int
         params["block"] = int(block_no)
     query = urlencode(params)
     return f"{base_url}{separator}{query}"
+
+
+def course_study_miniapp_url(
+    *,
+    lang: str | None = None,
+    level: str | None = None,
+    lesson: int | None = None,
+    tab: str | None = None,
+) -> str:
+    base_url = _miniapp_base_url_for_file("study.html")
+    separator = "&" if "?" in base_url else "?"
+    params = {
+        "lang": normalize_miniapp_lang(lang),
+        "v": MINIAPP_ASSET_VERSION,
+    }
+    if level:
+        params["level"] = str(level).strip().lower()
+    if lesson:
+        params["lesson"] = int(lesson)
+    if tab:
+        params["tab"] = str(tab)
+    return f"{base_url}{separator}{urlencode(params)}"
 
 
 def course_stroke_order_url(

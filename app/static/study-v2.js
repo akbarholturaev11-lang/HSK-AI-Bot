@@ -22,8 +22,8 @@ const copy={
     support:"Поддержка",notifications:"Уведомления",streak:"дней",xp:"XP",noMistakes:"Ошибок пока нет. Завершите квиз, и здесь появится персональная тренировка.",
     mistakesCount:"ошибок",recommended:"Рекомендуемый уровень",rewardReady:"Сундук готов",rewardLocked:"Заработайте ещё XP",
     onboardingTitle:"Китайский для реального общения",onboardingSub:"Соберём короткий план и сразу откроем первый урок.",
-    chooseGoal:"Зачем вы учите китайский?",chooseLevel:"Какой у вас уровень?",chooseTime:"Сколько минут в день?",chooseLanguage:"Выберите язык интерфейса",
-    next:"Далее",back:"Назад",finish:"Начать обучение",goalHsk:"Сдать HSK",goalStudy:"Учиться в Китае",goalWork:"Работать в Китае",goalTravel:"Путешествовать",goalDaily:"Общаться каждый день"
+    chooseGoal:"Зачем вы учите китайский?",chooseLevel:"Какой у вас уровень?",chooseTime:"Сколько минут в день?",chooseStart:"Откуда начать?",
+    next:"Далее",back:"Назад",finish:"Начать обучение",saving:"Сохраняем...",onboardingError:"Не удалось сохранить настройки. Попробуйте ещё раз.",goalHsk:"Сдать HSK",goalStudy:"Учиться в Китае",goalWork:"Работать в Китае",goalTravel:"Путешествовать",goalDaily:"Общаться каждый день",startLesson1:"Начать с урока 1",continueProgress:"Продолжить текущий прогресс",takePlacement:"Пройти тест уровня"
   },
   uz:{
     home:"Asosiy",course:"Kurs",voice:"AI Voice",tests:"Testlar",profile:"Profil",
@@ -40,8 +40,8 @@ const copy={
     subscription:"Obuna",subscriptionSub:"Mavjud bo'limda accessni boshqarish",support:"Yordam",notifications:"Bildirishnomalar",streak:"kun",xp:"XP",
     noMistakes:"Hozircha xato yo'q. Quizni tugating, personal mashqlar shu yerda paydo bo'ladi.",mistakesCount:"xato",recommended:"Tavsiya etilgan daraja",
     rewardReady:"Sandiq tayyor",rewardLocked:"Yana XP yig'ing",onboardingTitle:"Real muloqot uchun xitoy tili",onboardingSub:"Qisqa reja tuzamiz va birinchi darsni darhol ochamiz.",
-    chooseGoal:"Xitoy tilini nima uchun o'rganyapsiz?",chooseLevel:"Darajangiz qaysi?",chooseTime:"Kuniga necha daqiqa?",chooseLanguage:"Interfeys tilini tanlang",
-    next:"Keyingi",back:"Orqaga",finish:"O'qishni boshlash",goalHsk:"HSK topshirish",goalStudy:"Xitoyda o'qish",goalWork:"Xitoyda ishlash",goalTravel:"Sayohat",goalDaily:"Har kuni gaplashish"
+    chooseGoal:"Xitoy tilini nima uchun o'rganyapsiz?",chooseLevel:"Darajangiz qaysi?",chooseTime:"Kuniga necha daqiqa?",chooseStart:"Qayerdan boshlaysiz?",
+    next:"Keyingi",back:"Orqaga",finish:"O'qishni boshlash",saving:"Saqlanmoqda...",onboardingError:"Sozlamalarni saqlab bo'lmadi. Qayta urinib ko'ring.",goalHsk:"HSK topshirish",goalStudy:"Xitoyda o'qish",goalWork:"Xitoyda ishlash",goalTravel:"Sayohat",goalDaily:"Har kuni gaplashish",startLesson1:"1-darsdan boshlash",continueProgress:"Joriy progressdan davom etish",takePlacement:"Daraja testini topshirish"
   },
   tj:{
     home:"Асосӣ",course:"Курс",voice:"AI Voice",tests:"Тестҳо",profile:"Профил",
@@ -58,8 +58,8 @@ const copy={
     subscription:"Обуна",subscriptionSub:"Идораи дастрасӣ дар бахши мавҷуда",support:"Дастгирӣ",notifications:"Огоҳиҳо",streak:"рӯз",xp:"XP",
     noMistakes:"Ҳоло хато нест. Квизро анҷом диҳед, машқи шахсӣ дар ин ҷо пайдо мешавад.",mistakesCount:"хато",recommended:"Сатҳи тавсияшуда",
     rewardReady:"Сандуқ тайёр",rewardLocked:"Боз XP гиред",onboardingTitle:"Забони чинӣ барои муоширати воқеӣ",onboardingSub:"Нақшаи кӯтоҳ месозем ва дарси аввалро мекушоем.",
-    chooseGoal:"Барои чӣ забони чинӣ меомӯзед?",chooseLevel:"Сатҳи шумо кадом аст?",chooseTime:"Дар як рӯз чанд дақиқа?",chooseLanguage:"Забони интерфейсро интихоб кунед",
-    next:"Баъдӣ",back:"Бозгашт",finish:"Оғози омӯзиш",goalHsk:"Супоридани HSK",goalStudy:"Таҳсил дар Чин",goalWork:"Кор дар Чин",goalTravel:"Саёҳат",goalDaily:"Ҳар рӯз гуфтугӯ кардан"
+    chooseGoal:"Барои чӣ забони чинӣ меомӯзед?",chooseLevel:"Сатҳи шумо кадом аст?",chooseTime:"Дар як рӯз чанд дақиқа?",chooseStart:"Аз куҷо оғоз мекунед?",
+    next:"Баъдӣ",back:"Бозгашт",finish:"Оғози омӯзиш",saving:"Нигоҳ дошта мешавад...",onboardingError:"Танзимот нигоҳ дошта нашуд. Аз нав кӯшиш кунед.",goalHsk:"Супоридани HSK",goalStudy:"Таҳсил дар Чин",goalWork:"Кор дар Чин",goalTravel:"Саёҳат",goalDaily:"Ҳар рӯз гуфтугӯ кардан",startLesson1:"Аз дарси 1 оғоз кардан",continueProgress:"Идомаи пешрафти ҷорӣ",takePlacement:"Супоридани тести сатҳ"
   }
 };
 
@@ -74,10 +74,11 @@ const lessonIsDone=number=>state.done.includes(number)||(launchCurrent>1&&number
 const completedCount=()=>LESSONS.filter(item=>lessonIsDone(item.n)).length;
 const currentLesson=()=>LESSONS.find(item=>item.n===launchCurrent&&!lessonIsDone(item.n))||LESSONS.find(item=>!lessonIsDone(item.n))||LESSONS[LESSONS.length-1];
 
-let meta=read(META_KEY,{xp:0,streak:0,lastActive:"",daily:{date:today(),xp:0,lesson:0,words:0,voice:0},chests:0,goal:"goalHsk",minutes:10});
+let meta=read(META_KEY,{xp:0,streak:0,lastActive:"",daily:{date:today(),xp:0,lesson:0,words:0,voice:0},chests:0,goal:"hsk_exam",minutes:10});
 let testMode="";
 let onboardingStep=0;
-let onboarding={language:lang,goal:meta.goal||"goalHsk",level:LEVEL_KEY,minutes:meta.minutes||10};
+let onboardingSubmitting=false;
+let onboarding={goal:["hsk_exam","study_china","work_china","daily_communication","travel"].includes(meta.goal)?meta.goal:"hsk_exam",level:LEVEL_KEY.startsWith("hsk4")?"hsk4":LEVEL_KEY,minutes:meta.minutes||10,startMode:"continue"};
 
 function normalizeMeta(){
   if(meta.lastActive!==today()){
@@ -254,25 +255,46 @@ function openSubscription(){bridge.openSubscribe?.("v2_profile")}
 
 function toast(message){document.querySelector(".v2-toast")?.remove();const item=document.createElement("div");item.className="v2-toast";item.textContent=message;document.body.appendChild(item);setTimeout(()=>item.remove(),2200)}
 
-function showOnboarding(){
-  const query=new URLSearchParams(parent.location.search||location.search);if(localStorage.getItem(ONBOARDING_KEY)||query.get("tab")||query.get("lesson"))return;
+async function showOnboarding(){
+  const query=new URLSearchParams(parent.location.search||location.search);if(query.get("tab")||query.get("lesson"))return;
+  const nextAccess=await bridge.ensureAccess?.();ACCESS=nextAccess||bridge.getAccess?.()||ACCESS;
+  if(ACCESS.course_profile?.onboarding_completed)return;
+  if(localStorage.getItem(ONBOARDING_KEY)&&!bridge.hasAuth?.()&&!ACCESS.course_profile)return;
+  const profile=ACCESS.course_profile||{};
+  meta.goal=profile.goal||meta.goal;meta.minutes=Number(profile.daily_minutes||meta.minutes||10);
+  onboarding.goal=["hsk_exam","study_china","work_china","daily_communication","travel"].includes(meta.goal)?meta.goal:"hsk_exam";onboarding.minutes=meta.minutes;onboarding.startMode=profile.has_progress?"continue":"lesson_1";
   renderOnboarding();
+  bridge.reportEvent?.("onboarding_started",{event_id:`onboarding:${today()}`,level:onboarding.level});
 }
 function renderOnboarding(){
   document.getElementById("v2-onboarding")?.remove();const root=document.createElement("div");root.id="v2-onboarding";root.className="v2-onboarding";
   const steps=[
-    {title:tx("chooseLanguage"),sub:tx("onboardingSub"),values:[["ru","Русский"],["tj","Тоҷикӣ"],["uz","O'zbekcha"]],field:"language"},
-    {title:tx("chooseGoal"),sub:tx("onboardingTitle"),values:[["goalHsk",tx("goalHsk")],["goalStudy",tx("goalStudy")],["goalWork",tx("goalWork")],["goalTravel",tx("goalTravel")],["goalDaily",tx("goalDaily")]],field:"goal"},
-    {title:tx("chooseLevel"),sub:tx("pathSub"),values:[["hsk1","Beginner / HSK 1"],["hsk2","HSK 2"],["hsk3","HSK 3"],["hsk4a","HSK 4"]],field:"level"},
-    {title:tx("chooseTime"),sub:tx("dailyGoal"),values:[[5,"5 min"],[10,"10 min"],[15,"15 min"],[20,"20 min"]],field:"minutes"}
+    {title:tx("chooseLevel"),sub:tx("pathSub"),values:[["beginner","Beginner"],["hsk1","HSK 1"],["hsk2","HSK 2"],["hsk3","HSK 3"],["hsk4","HSK 4"]],field:"level"},
+    {title:tx("chooseGoal"),sub:tx("onboardingTitle"),values:[["hsk_exam",tx("goalHsk")],["study_china",tx("goalStudy")],["work_china",tx("goalWork")],["daily_communication",tx("goalDaily")],["travel",tx("goalTravel")]],field:"goal"},
+    {title:tx("chooseTime"),sub:tx("dailyGoal"),values:[[5,"5 min"],[10,"10 min"],[15,"15 min"],[20,"20 min"]],field:"minutes"},
+    {title:tx("chooseStart"),sub:tx("onboardingSub"),values:[["lesson_1",tx("startLesson1")],["continue",tx("continueProgress")],["placement",tx("takePlacement")]],field:"startMode"}
   ];
   const step=steps[onboardingStep];
-  root.innerHTML=`<div class="v2-onboard-progress">${steps.map((_,i)=>`<i class="${i<=onboardingStep?"on":""}"></i>`).join("")}</div><div class="v2-onboard-body"><div class="v2-brand-mark">汉</div><h1>${esc(step.title)}</h1><p>${esc(step.sub)}</p><div class="v2-choice-list">${step.values.map(value=>`<button class="v2-choice ${String(onboarding[step.field])===String(value[0])?"selected":""}" onclick="V2.pickOnboarding('${step.field}','${value[0]}')">${esc(value[1])}</button>`).join("")}</div></div><div class="v2-onboard-footer">${onboardingStep?`<button class="v2-secondary" onclick="V2.onboardingBack()">‹ ${esc(tx("back"))}</button>`:"<span></span>"}<button class="v2-primary" onclick="V2.onboardingNext()">${esc(onboardingStep===steps.length-1?tx("finish"):tx("next"))} ›</button></div>`;
+  root.innerHTML=`<div class="v2-onboard-progress">${steps.map((_,i)=>`<i class="${i<=onboardingStep?"on":""}"></i>`).join("")}</div><div class="v2-onboard-body"><div class="v2-brand-mark">汉</div><h1>${esc(step.title)}</h1><p>${esc(step.sub)}</p><div class="v2-choice-list">${step.values.map(value=>`<button class="v2-choice ${String(onboarding[step.field])===String(value[0])?"selected":""}" onclick="V2.pickOnboarding('${step.field}','${value[0]}')">${esc(value[1])}</button>`).join("")}</div></div><div class="v2-onboard-footer">${onboardingStep?`<button class="v2-secondary" ${onboardingSubmitting?"disabled":""} onclick="V2.onboardingBack()">‹ ${esc(tx("back"))}</button>`:"<span></span>"}<button class="v2-primary" ${onboardingSubmitting?"disabled":""} onclick="V2.onboardingNext()">${esc(onboardingSubmitting?tx("saving"):onboardingStep===steps.length-1?tx("finish"):tx("next"))} ›</button></div>`;
   document.body.appendChild(root);
 }
-function pickOnboarding(field,value){onboarding[field]=field==="minutes"?Number(value):value;if(field==="language")onboarding.language=value;renderOnboarding()}
+function pickOnboarding(field,value){onboarding[field]=field==="minutes"?Number(value):value;const events={level:"level_selected",goal:"goal_selected",minutes:"daily_time_selected",startMode:"start_point_selected"};bridge.reportEvent?.(events[field],{event_id:`onboarding:${field}:${value}`,level:onboarding.level,[field]:onboarding[field]});renderOnboarding()}
 function onboardingBack(){onboardingStep=Math.max(0,onboardingStep-1);renderOnboarding()}
-function onboardingNext(){if(onboardingStep<3){onboardingStep+=1;renderOnboarding();return}meta.goal=onboarding.goal;meta.minutes=onboarding.minutes;write(META_KEY,meta);localStorage.setItem(ONBOARDING_KEY,"1");bridge.openRoute?.({level:onboarding.level,lang:onboarding.language,tab:"home"})}
+async function onboardingNext(){
+  if(onboardingSubmitting)return;
+  if(onboardingStep<3){onboardingStep+=1;renderOnboarding();return}
+  onboardingSubmitting=true;renderOnboarding();
+  const payload={level:onboarding.level,goal:onboarding.goal,daily_minutes:onboarding.minutes,start_mode:onboarding.startMode,timezone_offset_minutes:-new Date().getTimezoneOffset()};
+  try{
+    let result=null;
+    try{result=await bridge.completeOnboarding?.(payload)}catch(error){if(bridge.hasAuth?.())throw error}
+    if(!result){
+      result={level:onboarding.level==="beginner"?"hsk1":onboarding.level==="hsk4"?"hsk4a":onboarding.level,lesson:onboarding.startMode==="lesson_1"?1:null,tab:onboarding.startMode==="placement"?"tests":"course",placement:onboarding.startMode==="placement"};
+    }
+    meta.goal=onboarding.goal;meta.minutes=onboarding.minutes;write(META_KEY,meta);localStorage.setItem(ONBOARDING_KEY,"1");
+    const route={level:result.level||LEVEL_KEY,lang,tab:result.tab||"course"};if(result.lesson)route.lesson=result.lesson;if(result.placement)route.exam="placement";bridge.openRoute?.(route);
+  }catch(_){onboardingSubmitting=false;renderOnboarding();toast(tx("onboardingError"))}
+}
 
 const legacyFinishQuiz=finishQuiz;
 const legacyFlipFC=flipFC;
@@ -297,9 +319,10 @@ function applyLaunch(){
   const params=bridge.getLaunchParams?.()||{};
   const target=normalizeLaunchTab(params.tab);
   if(params.exam==="mock")setTimeout(()=>startMock(),0);
+  else if(params.exam==="placement")setTimeout(()=>startPlacement(),0);
   else if(params.mode==="quiz"){quizLesson=Number(params.lesson)||quizLesson;showPage("quiz");startQuiz()}
-  else if(target){if(params.lesson){if(target==="flashcards")fcFilter=Number(params.lesson);if(target==="grammar")grammarFilter=Number(params.lesson);if(target==="quiz")quizLesson=Number(params.lesson)}showPage(target)}
-  else showPage(["home","course","voice","tests","profile"].includes(params.tab)?params.tab:"home");
+  else if(target){if(params.lesson){if(target==="flashcards")fcFilter=Number(params.lesson);if(target==="grammar")grammarFilter=Number(params.lesson);if(target==="quiz")quizLesson=Number(params.lesson)}showPage(target);if(target==="course"&&params.lesson)setTimeout(()=>openLesson(Number(params.lesson)),0)}
+  else {const page=["home","course","voice","tests","profile"].includes(params.tab)?params.tab:"home";showPage(page)}
 }
 
 function mount(){
