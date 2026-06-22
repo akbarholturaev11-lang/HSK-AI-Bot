@@ -18,6 +18,9 @@ PROD_ORIGIN = "https://telegram-chinese-bot-production.up.railway.app"
 
 STATIC_FILES = {
     "study.html": APP_ROOT / "app/static/study.html",
+    "study-v2.css": APP_ROOT / "app/static/study-v2.css",
+    "study-v2.js": APP_ROOT / "app/static/study-v2.js",
+    "voice-practice.html": APP_ROOT / "app/static/voice-practice.html",
     "hsk1.html": APP_ROOT / "app/static/hsk1.html",
     "subscription.html": APP_ROOT / "app/static/subscription.html",
     "course-miniapp-v2.js": APP_ROOT / "app/static/course-miniapp-v2.js",
@@ -87,7 +90,8 @@ def route_static_files(page):
         if not file_path:
             route.abort()
             return
-        content_type = "application/javascript" if file_path.suffix == ".js" else "text/html"
+        content_types = {".css": "text/css", ".js": "application/javascript"}
+        content_type = content_types.get(file_path.suffix, "text/html")
         route.fulfill(
             status=200,
             content_type=content_type,
@@ -96,7 +100,7 @@ def route_static_files(page):
 
     page.route(
         re.compile(
-            r"^http://hsk-ai\.local/(study\.html|hsk1\.html|subscription\.html|course-miniapp-v2\.js)(\?.*)?$"
+            r"^http://hsk-ai\.local/(study\.html|study-v2\.css|study-v2\.js|voice-practice\.html|hsk1\.html|subscription\.html|course-miniapp-v2\.js)(\?.*)?$"
         ),
         handle,
     )
@@ -191,6 +195,28 @@ def test_study_app_open_and_query_tab_routing(page):
         frame = study_frame(page)
         expect(frame.locator(page_selector)).to_have_class(re.compile(r"\bactive\b"))
         expect(frame.locator(active_filter)).to_contain_text("Dars 5")
+
+
+def test_v2_home_course_voice_and_placement_flow(page):
+    mock_study_access(page)
+
+    page.goto(app_url("/study.html?level=hsk1&lang=ru&tab=home"))
+    frame = study_frame(page)
+    expect(frame.locator("#page-home.active")).to_be_visible()
+    expect(frame.locator("#page-home")).to_contain_text("Продолжим китайский")
+
+    frame.locator('.v2-nav [data-page="course"]').click()
+    expect(frame.locator("#page-course.active")).to_be_visible()
+    expect(frame.locator("#page-course")).to_contain_text("Учебный путь")
+
+    frame.locator('.v2-nav [data-page="voice"]').click()
+    voice = frame.frame_locator("#voice-frame")
+    expect(voice.locator("#btn-welcome-start")).to_be_visible()
+
+    frame.locator('.v2-nav [data-page="tests"]').click()
+    frame.locator("#page-tests .v2-row-card").first.click()
+    expect(frame.locator("#page-quiz.active")).to_be_visible()
+    expect(frame.locator("#quiz-box .quiz-meta")).to_contain_text("1/10")
 
 
 def test_study_quiz_score_and_event_localstorage_fallback(page):

@@ -207,6 +207,65 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Course Mini App backend foundation
+
+Changed:
+- Added server-side Course Mini App profile preferences, one-time feature usage records, and a dedicated analytics event store.
+- Course access payload now exposes lesson, voice, placement, and training/test entitlements without changing payment approval or subscription rules.
+- Existing completed lesson trials and voice sessions are treated as already used, so migration cannot reopen free features.
+- Trusted completion events are server-only; client analytics events cannot grant progress or access.
+- Alembic head is `0048_add_course_miniapp_foundation`.
+
+Why:
+- Course onboarding, interactive lessons, tests, gamification, and analytics need one server-side foundation before replacing the prototype's local-only state.
+
+Files touched:
+- `app/db/models/course_miniapp_profile.py`
+- `app/db/models/course_feature_usage.py`
+- `app/db/models/course_miniapp_event.py`
+- `app/services/course_miniapp_access_service.py`
+- `app/services/course_miniapp_profile_service.py`
+- `app/services/course_miniapp_analytics_service.py`
+- `app/main.py`
+- `app/services/study_miniapp_service.py`
+- `alembic/versions/0048_add_course_miniapp_foundation.py`
+
+Risk:
+- Migration `0048` must run before the new entitlement and analytics paths receive production traffic.
+- Payment handlers and payment tables were intentionally not changed.
+
+Follow-up:
+- Phase 2 must persist Mini App onboarding through this profile service and emit the approved onboarding events.
+
+### 2026-06-23 — Course-first HSK AI V2 Mini App and AI Voice
+
+Changed:
+- `study.html` now loads the course-first V2 Mini App shell with Home, Course, Tests, Training, AI Voice, Profile, XP, streak, missions, rewards, league, and mistake review while preserving existing lesson query routes.
+- AI Voice now has verified Telegram Mini App APIs, capped session/turn/audio usage, OpenAI transcription and structured corrections, RU/TJ/UZ UI localization, and a persistent `voice_practice_sessions` table.
+- Passing the exact current V2 lesson now idempotently advances legacy course progress through `CourseEngineService`; free access is limited to the first trial lesson.
+- Alembic head is `0047_add_voice_practice_sessions`.
+
+Why:
+- The old study surface did not provide the requested unified course-first product experience, and the supplied voice prototype had mock endpoints only.
+
+Files touched:
+- `app/static/study.html`
+- `app/static/study-v2.css`
+- `app/static/study-v2.js`
+- `app/static/voice-practice.html`
+- `app/main.py`
+- `app/services/voice_practice_service.py`
+- `app/services/study_miniapp_service.py`
+- `app/db/models/voice_practice_session.py`
+- `alembic/versions/0047_add_voice_practice_sessions.py`
+
+Risk:
+- The V2 lesson score is currently calculated in the client; the server verifies Telegram identity, current lesson, access, pass threshold, and idempotence, but canonical server-side grading is still preferable.
+- Production AI Voice requires migration `0047` before traffic and a real Telegram microphone/initData smoke test after deploy.
+
+Follow-up:
+- Run Alembic upgrade during deploy, test AI Voice in Telegram, monitor session limits/OpenAI cost, and move canonical V2 quiz grading server-side before expanding high-value rewards.
+
 ### 2026-06-21 — Course-first onboarding and Duo Mini App adapter
 
 Changed:

@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 
 from aiogram import Bot
 from fastapi import FastAPI, Request
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy import select
 from starlette.middleware.gzip import GZipMiddleware
 
@@ -29,7 +29,9 @@ from app.services.course_miniapp_lesson_service import CourseMiniAppLessonServic
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.onboarding_tip_service import OnboardingTipService
 from app.services.study_miniapp_service import StudyMiniAppService
+from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
+from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.repositories.user_repo import UserRepository
 from app.repositories.course_pilot_event_repo import CoursePilotEventRepository
@@ -260,12 +262,152 @@ async def hsk2_miniapp():
 
 @app.get("/duo-lesson.html")
 async def duo_lesson_miniapp():
-    return miniapp_file_response("app/static/duo-lesson.html")
+    return miniapp_file_response("app/static/study.html")
 
 
 @app.get("/study.html")
 async def study_miniapp():
     return miniapp_file_response("app/static/study.html")
+
+
+@app.get("/voice-practice.html")
+async def voice_practice_miniapp():
+    return miniapp_file_response("app/static/voice-practice.html")
+
+
+@app.get("/study-v2.css")
+async def study_v2_styles():
+    return miniapp_file_response("app/static/study-v2.css")
+
+
+@app.get("/study-v2.js")
+async def study_v2_script():
+    return miniapp_file_response("app/static/study-v2.js")
+
+
+def _voice_practice_user_id(init_data: str) -> int | None:
+    return extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN)
+
+
+def _voice_practice_error(error: VoicePracticeError) -> JSONResponse:
+    return JSONResponse(
+        status_code=error.status_code,
+        content={"ok": False, "code": error.code, "message": error.message},
+    )
+
+
+@app.get("/api/voice-practice/me")
+async def voice_practice_me(request: Request):
+    telegram_id = _voice_practice_user_id(request.query_params.get("initData", ""))
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "code": "INVALID_INIT_DATA", "message": "Invalid Telegram init data."},
+        )
+    try:
+        async with async_session_maker() as session:
+            return await VoicePracticeService(session).user_status(telegram_id)
+    except VoicePracticeError as error:
+        return _voice_practice_error(error)
+
+
+@app.post("/api/voice-practice/session/start")
+async def voice_practice_start(request: Request):
+    payload = await request.json()
+    telegram_id = _voice_practice_user_id(str(payload.get("initData") or ""))
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "code": "INVALID_INIT_DATA", "message": "Invalid Telegram init data."},
+        )
+    try:
+        async with async_session_maker() as session:
+            result = await VoicePracticeService(session).start_session(
+                telegram_id,
+                role=str(payload.get("role") or ""),
+                level=str(payload.get("level") or ""),
+                language=str(payload.get("language") or ""),
+                voice=str(payload.get("voice") or ""),
+            )
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            await CourseMiniAppAnalyticsService(session).record_server_event(
+                event_name="voice_started",
+                telegram_id=telegram_id,
+                user_id=getattr(user, "id", None),
+                source="course_voice",
+                level=str(payload.get("level") or "") or None,
+                session_id=str(result.get("session_id") or "") or None,
+                dedupe_key=str(result.get("session_id") or "") or None,
+                payload={"role": str(payload.get("role") or "")},
+            )
+            await session.commit()
+            return result
+    except VoicePracticeError as error:
+        return _voice_practice_error(error)
+
+
+@app.post("/api/voice-practice/message")
+async def voice_practice_message(request: Request):
+    form = await request.form()
+    telegram_id = _voice_practice_user_id(str(form.get("initData") or ""))
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "code": "INVALID_INIT_DATA", "message": "Invalid Telegram init data."},
+        )
+    audio = form.get("audio")
+    if audio is None or not hasattr(audio, "read"):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "code": "EMPTY_AUDIO", "message": "Audio is required."},
+        )
+    audio_bytes = await audio.read(5 * 1024 * 1024 + 1)
+    try:
+        async with async_session_maker() as session:
+            return await VoicePracticeService(session).process_message(
+                telegram_id,
+                session_id=str(form.get("session_id") or ""),
+                audio_bytes=audio_bytes,
+                filename=str(getattr(audio, "filename", None) or "voice.webm"),
+            )
+    except VoicePracticeError as error:
+        return _voice_practice_error(error)
+
+
+@app.post("/api/voice-practice/session/end")
+async def voice_practice_end(request: Request):
+    payload = await request.json()
+    telegram_id = _voice_practice_user_id(str(payload.get("initData") or ""))
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "code": "INVALID_INIT_DATA", "message": "Invalid Telegram init data."},
+        )
+    try:
+        async with async_session_maker() as session:
+            session_id = str(payload.get("session_id") or "")
+            result = await VoicePracticeService(session).end_session(
+                telegram_id,
+                session_id,
+            )
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            await CourseMiniAppAnalyticsService(session).record_server_event(
+                event_name="voice_completed",
+                telegram_id=telegram_id,
+                user_id=getattr(user, "id", None),
+                source="course_voice",
+                session_id=session_id or None,
+                dedupe_key=session_id or None,
+                payload={
+                    "duration_seconds": result.get("duration_seconds", 0),
+                    "message_count": result.get("message_count", 0),
+                    "correction_count": len(result.get("corrections") or []),
+                },
+            )
+            await session.commit()
+            return result
+    except VoicePracticeError as error:
+        return _voice_practice_error(error)
 
 
 @app.get("/subscription.html")
@@ -297,8 +439,28 @@ async def miniapp_access(request: Request):
     if not telegram_id:
         return {"ok": False, "error": "invalid_telegram_init_data"}
 
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+
     async with async_session_maker() as session:
-        return await StudyMiniAppService(session).get_access_payload(telegram_id)
+        access_payload = await StudyMiniAppService(session).get_access_payload(telegram_id)
+        if access_payload.get("error"):
+            return access_payload
+
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        opened_at = str(payload.get("opened_at") or "").strip()[:80]
+        await CourseMiniAppAnalyticsService(session).record_server_event(
+            event_name="miniapp_opened",
+            telegram_id=telegram_id,
+            user_id=getattr(user, "id", None),
+            source="course_miniapp",
+            level=str(access_payload.get("level") or "") or None,
+            dedupe_key=f"open:{opened_at}" if opened_at else None,
+        )
+        await session.commit()
+        return access_payload
 
 
 @app.get("/api/miniapp/lesson")
@@ -474,6 +636,7 @@ async def miniapp_event(request: Request):
             return {"ok": True}
 
         study_service = StudyMiniAppService(session)
+        analytics_service = CourseMiniAppAnalyticsService(session)
 
         if event == "subscribe_clicked":
             sent = await study_service.send_subscription_menu(bot, telegram_id)
@@ -485,12 +648,52 @@ async def miniapp_event(request: Request):
             )
             return {"ok": True}
 
+        if event == "v2_lesson_completed":
+            result = await study_service.complete_v2_lesson(
+                telegram_id,
+                level=str(payload.get("level") or ""),
+                lesson_order=_positive_int(payload.get("lesson_id")) or 0,
+                percent=max(0, min(100, _positive_int(payload.get("percent")) or 0)),
+            )
+            if result.get("ok"):
+                user = await UserRepository(session).get_by_telegram_id(telegram_id)
+                level = str(payload.get("level") or "")
+                lesson_order = _positive_int(payload.get("lesson_id")) or 0
+                await analytics_service.record_server_event(
+                    event_name="lesson_completed",
+                    telegram_id=telegram_id,
+                    user_id=getattr(user, "id", None),
+                    level=level or None,
+                    lesson_order=lesson_order or None,
+                    dedupe_key=f"lesson:{level}:{lesson_order}",
+                    payload={"percent": max(0, min(100, _positive_int(payload.get("percent")) or 0))},
+                )
+                await session.commit()
+            return result
+
+        if event in analytics_service.CLIENT_EVENT_NAMES:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            result = await analytics_service.record_client_event(
+                event_name=event,
+                telegram_id=telegram_id,
+                user_id=getattr(user, "id", None),
+                level=str(payload.get("level") or "") or None,
+                lesson_order=_positive_int(payload.get("lesson_order") or payload.get("lesson_id")),
+                session_id=str(payload.get("session_id") or "") or None,
+                dedupe_key=str(payload.get("event_id") or payload.get("dedupe_key") or "") or None,
+                payload=payload,
+            )
+            if result.get("ok"):
+                await session.commit()
+            return result
+
         if event in {
             "study_quiz_completed",
             "starred_changed",
             "audio_played",
             "language_changed",
             "level_changed",
+            "v2_screen_opened",
         }:
             return {"ok": True}
 

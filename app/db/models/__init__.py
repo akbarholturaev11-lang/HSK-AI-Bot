@@ -21,3 +21,7 @@ from .course_progress import CourseProgress
 from .course_audio import CourseAudio
 from .course_pilot_event import CoursePilotEvent
 from .conversion_funnel_event import ConversionFunnelEvent
+from .voice_practice_session import VoicePracticeSession
+from .course_miniapp_profile import CourseMiniAppProfile
+from .course_feature_usage import CourseFeatureUsage
+from .course_miniapp_event import CourseMiniAppEvent
