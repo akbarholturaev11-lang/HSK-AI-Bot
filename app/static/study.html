@@ -39,7 +39,7 @@ iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 </style>
-<link rel="stylesheet" href="/study-v2.css?v=20260623-lesson-flow-v1">
+<link rel="stylesheet" href="/study-v2.css?v=20260623-practice-v1">
 </head>
 <body>
 <header class="top"><div class="title" id="app-title">HSK Study</div><button class="settings" id="settings-btn" aria-label="Settings">⚙</button></header>
@@ -247,7 +247,7 @@ window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;ren
 window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:"uz";ACCESS=bridge.getAccess?.()||ACCESS;setLabels();renderLessons();renderFlashcards();renderGrammar();questions=[];renderQuizFilters();if(page==="voice")renderVoiceFrame(true)};
 setLabels();renderLessons();renderFlashcards();renderGrammar();renderQuizFilters();applyLaunchRoute()
 </script>
-<script src="/study-v2.js?v=20260623-lesson-flow-v1"></script>
+<script src="/study-v2.js?v=20260623-practice-v1"></script>
 </body>
 </html>
 </template>
@@ -269,13 +269,16 @@ async function reportEvent(eventName,payload={}){const event={event:eventName,..
 async function completeOnboarding(payload){const res=await fetch("https://telegram-chinese-bot-production.up.railway.app/api/miniapp/onboarding",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":tg?.initData||""},body:JSON.stringify(payload||{})});const data=await res.json().catch(()=>({ok:false,error:"invalid_response"}));if(!res.ok||!data.ok){const error=new Error(data.error||`onboarding ${res.status}`);error.code=data.error||"onboarding_failed";throw error}ACCESS={...ACCESS,level:data.level||ACCESS.level,course_profile:data.profile||ACCESS.course_profile};saveAccess(ACCESS);syncFrameAccess();return data}
 async function loadCourseLesson(payload){const query=new URLSearchParams({level:String(payload?.level||currentLevel),lesson:String(payload?.lesson||""),lang:String(payload?.lang||currentLang)});const res=await fetch(`https://telegram-chinese-bot-production.up.railway.app/api/miniapp/course-lesson?${query}`,{headers:{"X-Telegram-Init-Data":tg?.initData||""}});const data=await res.json().catch(()=>({ok:false,error:"invalid_response"}));if(!res.ok||!data.ok){const error=new Error(data.error||`course lesson ${res.status}`);error.code=data.error||"course_lesson_failed";throw error}return data}
 async function completeCourseLesson(payload){const res=await fetch("https://telegram-chinese-bot-production.up.railway.app/api/miniapp/course-lesson/complete",{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":tg?.initData||""},body:JSON.stringify(payload||{})});const data=await res.json().catch(()=>({ok:false,error:"invalid_response"}));if(!res.ok||!data.ok){const error=new Error(data.error||`course lesson complete ${res.status}`);error.code=data.error||"course_lesson_complete_failed";error.result=data;throw error}ACCESS=await requestAccess().catch(()=>ACCESS);saveAccess(ACCESS);syncFrameAccess();return data}
+async function practiceRequest(path,payload){const res=await fetch(`https://telegram-chinese-bot-production.up.railway.app${path}`,{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":tg?.initData||""},body:JSON.stringify(payload||{})});const data=await res.json().catch(()=>({ok:false,error:"invalid_response"}));if(!res.ok||!data.ok){const error=new Error(data.error||`practice ${res.status}`);error.code=data.error||"practice_failed";error.result=data;throw error}return data}
+async function startPractice(payload){return practiceRequest("/api/miniapp/practice/start",payload)}
+async function completePractice(payload){const data=await practiceRequest("/api/miniapp/practice/complete",payload);ACCESS=await requestAccess().catch(()=>ACCESS);saveAccess(ACCESS);syncFrameAccess();return data}
 async function openSubscribeFromMiniApp(source){const next=new URL("subscription.html",window.location.href);next.searchParams.set("lang",currentLang||"uz");next.searchParams.set("source",source||"study");next.searchParams.set("level",currentLevel||"");window.location.href=next.toString();}
 async function discussQuizFromMiniApp(payload){const data={level:currentLevel,status:ACCESS.status,...payload};const reported=await reportEvent("quiz_ai_discuss_clicked",data);try{if(!reported)tg?.sendData?.(JSON.stringify({action:"discuss_quiz_with_ai",...data}));setTimeout(()=>tg?.close?.(),150)}catch(e){}}
 function syncFrameAccess(){try{const child=document.getElementById("level-frame").contentWindow;child.setAppAccess?.(ACCESS);child.setAppLanguage?.(currentLang)}catch(e){}}
 function applyAccess(next){ACCESS=normalizeAccess(next)||normalizeAccess(ACCESS_FALLBACK);accessReady=true;const previousLevel=currentLevel;resolveInitial(true);refreshOuter();if(currentLevel!==previousLevel)loadLevel(currentLevel);else syncFrameAccess();return ACCESS}
 function ensureAccess(){if(accessReady)return Promise.resolve(ACCESS);if(!accessPromise)accessPromise=loadAccess().then(applyAccess).finally(()=>{accessPromise=null});return accessPromise}
 function openRoute(changes={}){const next=new URL(location.href);Object.entries(changes).forEach(([key,value])=>{if(value===null||value===undefined||value==="")next.searchParams.delete(key);else next.searchParams.set(key,String(value))});location.href=next.toString()}
-window.MiniAppBridge={getAccess:()=>ACCESS,ensureAccess,getLevel:()=>currentLevel,getLanguage:()=>currentLang,getLaunchParams:()=>Object.fromEntries(params()),hasAuth:()=>Boolean(tg?.initData),reportEvent,completeOnboarding,loadCourseLesson,completeCourseLesson,openSubscribe:openSubscribeFromMiniApp,discussQuiz:discussQuizFromMiniApp,openRoute};
+window.MiniAppBridge={getAccess:()=>ACCESS,ensureAccess,getLevel:()=>currentLevel,getLanguage:()=>currentLang,getLaunchParams:()=>Object.fromEntries(params()),hasAuth:()=>Boolean(tg?.initData),reportEvent,completeOnboarding,loadCourseLesson,completeCourseLesson,startPractice,completePractice,openSubscribe:openSubscribeFromMiniApp,discussQuiz:discussQuizFromMiniApp,openRoute};
 function params(){return new URLSearchParams(location.search)}
 function normalizeLevel(level,lesson){if(level==="hsk4")return Number(lesson)>10?"hsk4b":"hsk4a";return level}
 function resolveInitial(useAccess=false){const query=params(),backendLevel=useAccess?ACCESS.level:"",backendLang=useAccess?ACCESS.language:"";currentLevel=normalizeLevel(query.get("level")||backendLevel||localStorage.getItem(LEVEL_KEY)||"hsk1",query.get("lesson"));currentLang=query.get("lang")||backendLang||localStorage.getItem(LANG_KEY)||"ru";if(!COURSE_DATA[currentLevel])currentLevel="hsk1";if(!["uz","ru","tj"].includes(currentLang))currentLang="ru";localStorage.setItem(LEVEL_KEY,currentLevel);localStorage.setItem(LANG_KEY,currentLang)}
