@@ -1437,6 +1437,25 @@ Files:
 
 ---
 
+### 2026-06-23 - Server-graded interactive lesson flow
+
+Changed:
+- Course Mini App lessons now load an authenticated canonical flow generated from existing `course_lessons` HSK material.
+- Each flow contains 3-4 active words plus meaning, listening, sentence builder, word order, translation, pronunciation and quick-quiz cards; card order varies by lesson.
+- Lesson completion requires every required card response and is graded again on the server. Client-supplied completion percentages are no longer accepted.
+- Only a passing server result advances existing `CourseProgress`; homework is not a completion gate.
+- Free lesson access uses `CourseMiniAppAccessService` entitlement and the existing assigned trial lesson. Payment/subscription rules were not changed.
+
+Key files:
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/services/course_miniapp_lesson_service.py`
+- `app/services/study_miniapp_service.py`
+- `app/main.py`
+- `app/static/study.html`
+- `app/static/study-v2.js`
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
