@@ -207,6 +207,35 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Server-backed Course Mistake Engine
+
+Changed:
+- Added `course_mistakes`, which aggregates lesson, test/training, and AI Voice corrections by word, grammar, character, and pronunciation weakness.
+- Added authenticated mistake overview and idempotent personalized review APIs; review questions are server-graded and tied to server-issued session events.
+- Mistake review uses the existing shared `training_test` one-time free entitlement. Paid access still follows the existing subscription check.
+- Added `mistake_review_started` and `mistake_review_completed` analytics. Alembic head is `0049_add_course_mistakes`.
+
+Why:
+- Personalized mistake review needs persistent cross-feature data instead of browser-only `localStorage`.
+
+Files touched:
+- `app/db/models/course_mistake.py`
+- `app/services/course_mistake_service.py`
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/services/course_miniapp_practice_service.py`
+- `app/services/voice_practice_service.py`
+- `app/main.py`
+- `app/static/study.html`
+- `app/static/study-v2.js`
+- `alembic/versions/0049_add_course_mistakes.py`
+
+Risk:
+- Migration `0049` must run before mistake collection receives production traffic.
+- Payment handlers, payment tables, and subscription approval logic were intentionally not changed.
+
+Follow-up:
+- Phase 7 should move XP, streak, and league state from browser storage to the server.
+
 ### 2026-06-23 — Course Mini App backend foundation
 
 Changed:

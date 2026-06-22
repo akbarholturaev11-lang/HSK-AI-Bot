@@ -6,6 +6,7 @@ from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
+from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_trial_service import CourseTrialService
 from app.services.study_miniapp_service import StudyMiniAppService
 
@@ -20,6 +21,7 @@ class CourseMiniAppLessonFlowService:
         self.progress_repo = CourseProgressRepository(session)
         self.lesson_repo = CourseLessonRepository(session)
         self.lesson_service = CourseMiniAppLessonService(session)
+        self.mistakes = CourseMistakeService(session)
 
     @staticmethod
     def _content_level(level: str) -> str:
@@ -432,15 +434,49 @@ class CourseMiniAppLessonFlowService:
 
         graded = []
         correct_count = 0
+        wrong_items = []
         for card in required_cards:
-            correct, scored = self._response_is_correct(card, response_map[str(card["id"])])
+            response = response_map[str(card["id"])]
+            correct, scored = self._response_is_correct(card, response)
             if scored:
                 graded.append(correct)
                 correct_count += int(correct)
+                if not correct:
+                    card_type = str(card.get("type") or "")
+                    if "selected_index" in response:
+                        try:
+                            selected_index = int(response.get("selected_index"))
+                        except (TypeError, ValueError):
+                            selected_index = -1
+                        options = card.get("options") or []
+                        user_answer = options[selected_index] if 0 <= selected_index < len(options) else ""
+                        correct_index = int(card.get("correct_index", -1))
+                        correct_answer = options[correct_index] if 0 <= correct_index < len(options) else ""
+                    else:
+                        user_answer = " ".join(str(item) for item in response.get("answer_tokens", []))
+                        correct_answer = " ".join(str(item) for item in card.get("answer_tokens", []))
+                    wrong_items.append(
+                        {
+                            "question": str(card.get("prompt") or card.get("title") or ""),
+                            "selected_answer": user_answer,
+                            "correct_answer": correct_answer,
+                            "explanation": str(card.get("explanation") or ""),
+                            "type": card_type,
+                        }
+                    )
         if not graded:
             return {"ok": False, "error": "course_lesson_has_no_graded_activities"}
         percent = round((correct_count / len(graded)) * 100)
+        await self.mistakes.record_items(
+            user,
+            wrong_items,
+            source="lesson",
+            level=str(lesson.level),
+            lesson_id=lesson.id,
+            lesson_order=lesson.lesson_order,
+        )
         if percent < 60:
+            await self.session.commit()
             return {
                 "ok": False,
                 "error": "lesson_score_too_low",
@@ -492,5 +528,6 @@ class CourseMiniAppLessonFlowService:
             "percent": percent,
             "correct": correct_count,
             "total": len(graded),
+            "wrong_items": wrong_items,
             "reward": {"xp": 20 + round(percent / 10)},
         }
