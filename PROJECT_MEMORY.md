@@ -1414,6 +1414,29 @@ Risk:
 
 ---
 
+### 2026-06-23 - Course Mini App onboarding migration
+
+Changed:
+- Language selection now ends with two explicit choices: Course Mini App or the existing Telegram QA mode.
+- Course onboarding is owned by the Mini App and stores level, goal, daily time, start point and timezone in `course_miniapp_profiles`.
+- Start points are `lesson_1`, `continue` and `placement`; existing cross-level progress is never silently reset.
+- Existing course users open `study.html` at their current lesson, while the legacy Telegram course flow remains the fallback if the WebApp message cannot be sent.
+- Onboarding selection/completion analytics are server-backed and deduplicated.
+
+Important:
+- This migration does not change payment, subscription, referral or QA access rules.
+- `Beginner` reuses HSK1 content; HSK4 renders through existing `hsk4a`/`hsk4b` assets.
+
+Files:
+- `app/services/course_miniapp_onboarding_service.py`
+- `app/services/study_miniapp_service.py`
+- `app/bot/handlers/start.py`
+- `app/bot/handlers/course.py`
+- `app/static/study.html`
+- `app/static/study-v2.js`
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

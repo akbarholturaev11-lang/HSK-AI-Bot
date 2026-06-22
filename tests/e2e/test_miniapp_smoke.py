@@ -120,6 +120,22 @@ def mock_study_access(page, access=ACTIVE_ACCESS, fail_events=True):
         )
 
 
+def mock_course_onboarding(page):
+    page.route(
+        f"{PROD_ORIGIN}/api/miniapp/onboarding",
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "level": "hsk1",
+                "lesson": 1,
+                "tab": "course",
+                "placement": False,
+            },
+        ),
+    )
+
+
 def mock_course_lesson(page):
     questions = [
         {
@@ -217,6 +233,38 @@ def test_v2_home_course_voice_and_placement_flow(page):
     frame.locator("#page-tests .v2-row-card").first.click()
     expect(frame.locator("#page-quiz.active")).to_be_visible()
     expect(frame.locator("#quiz-box .quiz-meta")).to_contain_text("1/10")
+
+
+def test_course_onboarding_completes_four_steps_and_opens_lesson(page):
+    access = {
+        **ACTIVE_ACCESS,
+        "course_profile": {
+            "goal": "hsk_exam",
+            "daily_minutes": 10,
+            "start_mode": "continue",
+            "timezone_offset_minutes": 0,
+            "onboarding_completed": False,
+            "has_progress": False,
+        },
+    }
+    mock_study_access(page, access, fail_events=False)
+    mock_course_onboarding(page)
+
+    page.goto(app_url("/study.html?level=hsk1&lang=ru"))
+    frame = study_frame(page)
+    expect(frame.locator("#v2-onboarding")).to_be_visible()
+
+    frame.locator("#v2-onboarding .v2-primary").click()
+    expect(frame.locator("#v2-onboarding h1")).to_contain_text("Зачем")
+    frame.locator("#v2-onboarding .v2-primary").click()
+    expect(frame.locator("#v2-onboarding h1")).to_contain_text("Сколько минут")
+    frame.locator("#v2-onboarding .v2-primary").click()
+    expect(frame.locator("#v2-onboarding h1")).to_contain_text("Откуда")
+    frame.locator("#v2-onboarding .v2-primary").click()
+
+    expect(frame.locator("#v2-onboarding")).to_have_count(0)
+    expect(frame.locator("#page-course.active")).to_be_visible()
+    expect(frame.locator("#v2-sheet .v2-sheet")).to_be_visible()
 
 
 def test_study_quiz_score_and_event_localstorage_fallback(page):

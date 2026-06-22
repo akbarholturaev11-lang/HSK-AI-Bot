@@ -10,6 +10,7 @@ from app.db.base import Base
 COURSE_MINIAPP_EVENT_NAMES = (
     "miniapp_opened",
     "onboarding_started",
+    "onboarding_completed",
     "level_selected",
     "goal_selected",
     "daily_time_selected",

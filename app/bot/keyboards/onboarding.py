@@ -1,7 +1,8 @@
 import json
 
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from app.bot.utils.i18n import t
+from app.bot.utils.course_miniapp import course_study_miniapp_url
 
 
 def language_keyboard() -> InlineKeyboardMarkup:
@@ -12,6 +13,26 @@ def language_keyboard() -> InlineKeyboardMarkup:
                 InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang:ru"),
                 InlineKeyboardButton(text="🇺🇿 O'zbek", callback_data="lang:uz"),
             ]
+        ]
+    )
+
+
+def course_mode_entry_keyboard(lang: str) -> InlineKeyboardMarkup:
+    labels = {
+        "uz": ("📚 Kursni boshlash", "🤖 Oddiy rejimga o'tish"),
+        "ru": ("📚 Начать курс", "🤖 Перейти в обычный режим"),
+        "tj": ("📚 Оғози курс", "🤖 Гузаштан ба реҷаи оддӣ"),
+    }
+    course_label, qa_label = labels.get(lang, labels["ru"])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=course_label,
+                    web_app=WebAppInfo(url=course_study_miniapp_url(lang=lang)),
+                )
+            ],
+            [InlineKeyboardButton(text=qa_label, callback_data="mode:free_qa")],
         ]
     )
 
