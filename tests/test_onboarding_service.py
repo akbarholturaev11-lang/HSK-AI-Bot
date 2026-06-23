@@ -156,6 +156,40 @@ class OnboardingServiceTests(unittest.IsolatedAsyncioTestCase):
 
 
 class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
+    async def test_existing_pending_referral_activates_when_user_is_eligible(self):
+        session = SimpleNamespace(commit=AsyncMock())
+        service = ReferralService(session)
+        invited = SimpleNamespace(
+            telegram_id=123,
+            referred_by_telegram_id=777,
+            questions_used=2,
+        )
+        referrer = SimpleNamespace(telegram_id=777)
+        referral = SimpleNamespace(referrer_telegram_id=777, status="pending")
+        service.user_repo = SimpleNamespace(
+            get_by_telegram_id=AsyncMock(side_effect=[invited, referrer]),
+            get_by_referral_code=AsyncMock(return_value=referrer),
+            set_referred_by=AsyncMock(),
+        )
+        service.referral_repo = SimpleNamespace(
+            get_by_invited_user_telegram_id=AsyncMock(return_value=referral),
+            create=AsyncMock(),
+        )
+        service.activate_referral_if_eligible = AsyncMock()
+        bot = SimpleNamespace()
+
+        await service.attach_referral_if_needed(
+            invited_user_telegram_id=123,
+            referral_code="abc123",
+            bot=bot,
+        )
+
+        service.referral_repo.create.assert_not_awaited()
+        service.activate_referral_if_eligible.assert_awaited_once_with(
+            bot=bot,
+            invited_user_telegram_id=123,
+        )
+
     async def test_attach_referral_activates_immediately_when_user_already_eligible(self):
         session = SimpleNamespace(commit=AsyncMock())
         service = ReferralService(session)

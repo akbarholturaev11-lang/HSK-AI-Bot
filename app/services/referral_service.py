@@ -176,6 +176,18 @@ class ReferralService:
             return
 
         if invited_user.referred_by_telegram_id:
+            existing_referral = await self.referral_repo.get_by_invited_user_telegram_id(
+                invited_user_telegram_id
+            )
+            if (
+                existing_referral
+                and existing_referral.status != "active"
+                and int(getattr(invited_user, "questions_used", 0) or 0) >= 2
+            ):
+                await self.activate_referral_if_eligible(
+                    bot=bot,
+                    invited_user_telegram_id=invited_user_telegram_id,
+                )
             return
 
         referrer = await self.user_repo.get_by_referral_code(referral_code)
@@ -189,6 +201,15 @@ class ReferralService:
             invited_user_telegram_id
         )
         if existing_referral:
+            if (
+                existing_referral.referrer_telegram_id == referrer.telegram_id
+                and existing_referral.status != "active"
+                and int(getattr(invited_user, "questions_used", 0) or 0) >= 2
+            ):
+                await self.activate_referral_if_eligible(
+                    bot=bot,
+                    invited_user_telegram_id=invited_user_telegram_id,
+                )
             return
 
         await self.user_repo.set_referred_by(invited_user, referrer.telegram_id)
