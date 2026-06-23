@@ -1,0 +1,198 @@
+from datetime import date, datetime, timedelta, timezone
+
+from sqlalchemy import func, select
+
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.course_xp_event import CourseXpEvent
+from app.db.models.user import User
+from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+
+
+LEAGUES = (
+    ("Bronze", 0, 500),
+    ("Silver", 500, 1500),
+    ("Gold", 1500, 3000),
+    ("Diamond", 3000, 5000),
+    ("Sapphire", 5000, 8000),
+    ("Legend", 8000, None),
+)
+
+
+class CourseGamificationService:
+    def __init__(self, session):
+        self.session = session
+        self.profiles = CourseMiniAppProfileService(session)
+
+    @staticmethod
+    def league_for_xp(xp_total: int) -> str:
+        xp_total = max(0, int(xp_total or 0))
+        return next(name for name, low, high in reversed(LEAGUES) if xp_total >= low)
+
+    @staticmethod
+    def _league_range(xp_total: int) -> tuple[int, int | None]:
+        xp_total = max(0, int(xp_total or 0))
+        return next((low, high) for _, low, high in reversed(LEAGUES) if xp_total >= low)
+
+    @staticmethod
+    def _local_day(offset_minutes: int, now: datetime | None = None) -> date:
+        now = now or datetime.now(timezone.utc)
+        return (now + timedelta(minutes=max(-720, min(840, int(offset_minutes or 0))))).date()
+
+    @staticmethod
+    def _week_start(day: date) -> date:
+        return day - timedelta(days=day.weekday())
+
+    @staticmethod
+    def next_streak(last_activity_date: date | None, current_streak: int, day: date) -> tuple[int, bool]:
+        if last_activity_date == day:
+            return max(1, int(current_streak or 0)), False
+        if last_activity_date == day - timedelta(days=1):
+            return max(1, int(current_streak or 0) + 1), True
+        return 1, True
+
+    async def award(
+        self,
+        user,
+        *,
+        activity_type: str,
+        activity_ref: str,
+        base_xp: int,
+        level: str | None = None,
+    ) -> dict:
+        activity_type = str(activity_type or "").strip().lower()[:32]
+        activity_ref = str(activity_ref or "").strip()[:120]
+        if not activity_type or not activity_ref:
+            raise ValueError("Gamification activity type and ref are required")
+        profile = await self.profiles.get_or_create(user.id)
+        existing_result = await self.session.execute(
+            select(CourseXpEvent).where(
+                CourseXpEvent.user_id == user.id,
+                CourseXpEvent.activity_ref == activity_ref,
+            )
+        )
+        existing = existing_result.scalar_one_or_none()
+        if existing:
+            return await self.snapshot(user, profile=profile, awarded_xp=0, duplicate=True)
+
+        day = self._local_day(profile.timezone_offset_minutes)
+        streak, first_activity_today = self.next_streak(
+            profile.last_activity_date,
+            profile.current_streak,
+            day,
+        )
+        streak_bonus = 5 if first_activity_today else 0
+        awarded_xp = max(1, min(200, int(base_xp or 0))) + streak_bonus
+        profile.xp_total = int(profile.xp_total or 0) + awarded_xp
+        profile.current_streak = streak
+        profile.longest_streak = max(int(profile.longest_streak or 0), streak)
+        profile.last_activity_date = day
+        event = CourseXpEvent(
+            user_id=user.id,
+            activity_type=activity_type,
+            activity_ref=activity_ref,
+            xp=awarded_xp,
+            activity_date=day,
+            week_start=self._week_start(day),
+        )
+        self.session.add(event)
+        await self.session.flush()
+
+        analytics = CourseMiniAppAnalyticsService(self.session)
+        shared = {
+            "telegram_id": user.telegram_id,
+            "user_id": user.id,
+            "level": level,
+            "dedupe_key": activity_ref,
+        }
+        await analytics.record_server_event(
+            event_name="xp_earned",
+            payload={"activity_type": activity_type, "xp": awarded_xp, "streak_bonus": streak_bonus},
+            **shared,
+        )
+        await analytics.record_server_event(
+            event_name="league_points_earned",
+            payload={"activity_type": activity_type, "xp": awarded_xp},
+            **shared,
+        )
+        if first_activity_today:
+            await analytics.record_server_event(
+                event_name="streak_updated",
+                payload={"streak": streak, "activity_date": day.isoformat()},
+                **shared,
+            )
+        return await self.snapshot(user, profile=profile, awarded_xp=awarded_xp, duplicate=False)
+
+    async def snapshot(
+        self,
+        user,
+        *,
+        profile: CourseMiniAppProfile | None = None,
+        awarded_xp: int = 0,
+        duplicate: bool = False,
+    ) -> dict:
+        profile = profile or await self.profiles.get_or_create(user.id)
+        day = self._local_day(profile.timezone_offset_minutes)
+        week_start = self._week_start(day)
+        weekly_result = await self.session.execute(
+            select(func.coalesce(func.sum(CourseXpEvent.xp), 0)).where(
+                CourseXpEvent.user_id == user.id,
+                CourseXpEvent.week_start == week_start,
+            )
+        )
+        weekly_xp = int(weekly_result.scalar_one() or 0)
+        return {
+            "xp": int(profile.xp_total or 0),
+            "awarded_xp": int(awarded_xp or 0),
+            "duplicate": bool(duplicate),
+            "streak": int(profile.current_streak or 0),
+            "longest_streak": int(profile.longest_streak or 0),
+            "league": self.league_for_xp(profile.xp_total),
+            "weekly_xp": weekly_xp,
+        }
+
+    async def leaderboard(self, user, limit: int = 20) -> dict:
+        profile = await self.profiles.get_or_create(user.id)
+        snapshot = await self.snapshot(user, profile=profile)
+        day = self._local_day(profile.timezone_offset_minutes)
+        week_start = self._week_start(day)
+        weekly = (
+            select(
+                CourseXpEvent.user_id.label("user_id"),
+                func.sum(CourseXpEvent.xp).label("weekly_xp"),
+            )
+            .where(CourseXpEvent.week_start == week_start)
+            .group_by(CourseXpEvent.user_id)
+            .subquery()
+        )
+        low, high = self._league_range(profile.xp_total)
+        query = (
+            select(
+                User.id,
+                User.full_name,
+                CourseMiniAppProfile.xp_total,
+                func.coalesce(weekly.c.weekly_xp, 0),
+            )
+            .join(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
+            .outerjoin(weekly, weekly.c.user_id == User.id)
+            .where(CourseMiniAppProfile.xp_total >= low)
+            .order_by(func.coalesce(weekly.c.weekly_xp, 0).desc(), CourseMiniAppProfile.xp_total.desc())
+        )
+        if high is not None:
+            query = query.where(CourseMiniAppProfile.xp_total < high)
+        rows = (await self.session.execute(query)).all()
+        ranked = []
+        current_rank = 0
+        for index, (user_id, full_name, xp_total, weekly_xp) in enumerate(rows, 1):
+            if int(user_id) == int(user.id):
+                current_rank = index
+            if index <= max(1, min(50, int(limit or 20))) or int(user_id) == int(user.id):
+                ranked.append(
+                    {
+                        "rank": index,
+                        "name": str(full_name or "HSK Student").strip()[:40],
+                        "xp": int(weekly_xp or 0),
+                        "is_current_user": int(user_id) == int(user.id),
+                    }
+                )
+        return {**snapshot, "rank": current_rank or 1, "leaderboard": ranked}

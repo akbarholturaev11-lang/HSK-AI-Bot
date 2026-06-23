@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import BigInteger, DateTime, Integer, JSON, String
+from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, JSON, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -20,6 +20,12 @@ class VoicePracticeSession(Base):
     turn_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     history: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
     corrections: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
+    lesson_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("course_lessons.id", ondelete="SET NULL"),
+        index=True,
+        nullable=True,
+    )
+    target_words: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
     started_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

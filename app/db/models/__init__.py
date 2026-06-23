@@ -26,3 +26,4 @@ from .course_miniapp_profile import CourseMiniAppProfile
 from .course_feature_usage import CourseFeatureUsage
 from .course_miniapp_event import CourseMiniAppEvent
 from .course_mistake import CourseMistake
+from .course_xp_event import CourseXpEvent

@@ -12,6 +12,7 @@ from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
+from app.services.course_gamification_service import CourseGamificationService
 
 
 MISTAKE_REVIEW_VERSION = 1
@@ -22,6 +23,7 @@ class CourseMistakeService:
         self.session = session
         self.user_repo = UserRepository(session)
         self.access = CourseMiniAppAccessService(session)
+        self.gamification = CourseGamificationService(session)
 
     @staticmethod
     def _text(value, limit: int = 2000) -> str:
@@ -289,6 +291,13 @@ class CourseMistakeService:
         total = len(items)
         percent = round((score / total) * 100) if total else 0
         remaining = sum(self._weakness(item) for item in items)
+        reward = await self.gamification.award(
+            user,
+            activity_type="mistake_review",
+            activity_ref=f"{session_id}:xp",
+            base_xp=10,
+            level=getattr(user, "level", None),
+        )
         await CourseMiniAppAnalyticsService(self.session).record_server_event(
             event_name="mistake_review_completed",
             telegram_id=telegram_id,
@@ -309,4 +318,5 @@ class CourseMistakeService:
             "total": total,
             "percent": percent,
             "remaining": remaining,
+            "reward": reward,
         }

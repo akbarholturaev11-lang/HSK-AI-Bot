@@ -25,6 +25,7 @@ from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
 from app.services.conversion_funnel_service import ConversionFunnelService
+from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.portfolio_service import PortfolioService
 from app.services.payment_qr_code_service import (
     PaymentQrCodeService,
@@ -2260,6 +2261,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         select(func.count()).select_from(User).where(User.payment_status == "approved")
     )).scalar() or 0
     funnel_text = await ConversionFunnelService(session).admin_funnel_text(week_ago=week_ago)
+    course_miniapp_text = await CourseMiniAppAdminAnalyticsService(session).admin_text(week_ago=week_ago)
 
     conversion  = _pct(paid_user_cnt, total)
     qa_users    = (await session.execute(
@@ -2353,6 +2355,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Checkpoint → paid: <b>{checkpoint_paid_after}</b> (<b>{checkpoint_paid_rate}%</b>)\n"
         f"  Trialdan keyingi tushum: <b>{int(trial_revenue_after_start):,}</b> so'm\n\n"
         f"{funnel_text}\n\n"
+        f"{course_miniapp_text}\n\n"
 
         f"<b>🎁 REFERALLAR</b>\n"
         f"  Jami: <b>{ref_total}</b>   Faollashgan: <b>{ref_activated}</b>   Bonus: <b>{ref_bonus}</b>\n"

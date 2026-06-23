@@ -10,9 +10,13 @@ from sqlalchemy import func, select
 from app.config import settings
 from app.db.models.voice_practice_session import VoicePracticeSession
 from app.repositories.user_repo import UserRepository
+from app.repositories.course_lesson_repo import CourseLessonRepository
+from app.repositories.course_progress_repo import CourseProgressRepository
 from app.services.ai_service import AIService
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 
 
 logger = logging.getLogger(__name__)
@@ -23,6 +27,11 @@ MAX_TURNS_PER_SESSION = 20
 MAX_AUDIO_BYTES = 5 * 1024 * 1024
 
 ROLE_PROMPTS = {
+    "lily": "You are Lily, a cheerful and empathetic young Chinese friend. React warmly, laugh naturally, and keep beginners talking without sounding like a tutor.",
+    "chen": "You are Chen, a calm and practical Chinese travel companion. You are concise, observant, and help the learner handle realistic daily situations.",
+    "xiao_mei": "You are Xiao Mei, an energetic university student. You speak casually, show curiosity, and make natural friendly reactions.",
+    "teacher_li": "You are Teacher Li, a patient but precise Chinese teacher. Guide with short questions and correct only important mistakes without lecturing.",
+    "manager_wang": "You are Manager Wang, a professional Chinese manager. Use polite workplace Chinese, realistic business reactions, and a composed tone.",
     "friend": "You are a warm Chinese friend. Be curious, informal, and encouraging.",
     "roommate": "You are the learner's Chinese roommate. Discuss realistic home and daily-life situations.",
     "seller": "You are a lively Chinese shop seller. Practice prices, quantities, choices, and bargaining.",
@@ -45,6 +54,41 @@ class VoicePracticeService:
     def __init__(self, session):
         self.session = session
         self.user_repo = UserRepository(session)
+        self.progress_repo = CourseProgressRepository(session)
+        self.lesson_repo = CourseLessonRepository(session)
+
+    async def _course_context(self, user, language: str) -> dict:
+        progress = await self.progress_repo.get_by_user_id(user.id)
+        if not progress or not progress.current_lesson_id:
+            return {"lesson_id": None, "lesson_order": None, "title": "", "words": []}
+        lesson = await self.lesson_repo.get_by_id(progress.current_lesson_id)
+        if not lesson:
+            return {"lesson_id": None, "lesson_order": None, "title": "", "words": []}
+        payload = await CourseMiniAppLessonService(self.session).get_payload(
+            lesson_order=int(lesson.lesson_order),
+            lang=language,
+            level=str(lesson.level),
+        )
+        words = []
+        for item in (payload or {}).get("vocabulary", []):
+            if not isinstance(item, dict) or not item.get("zh"):
+                continue
+            words.append(
+                {
+                    "zh": str(item.get("zh") or "")[:40],
+                    "pinyin": str(item.get("pinyin") or "")[:80],
+                    "meaning": str(item.get("meaning") or "")[:160],
+                }
+            )
+            if len(words) == 4:
+                break
+        return {
+            "lesson_id": lesson.id,
+            "lesson_order": int(lesson.lesson_order),
+            "title": str(lesson.title or "")[:160],
+            "level": str(lesson.level or ""),
+            "words": words,
+        }
 
     @staticmethod
     def _day_start() -> datetime:
@@ -102,6 +146,10 @@ class VoicePracticeService:
         if status["remaining_voice_limit"] <= 0:
             raise VoicePracticeError("LIMIT_EXCEEDED", "Voice Practice limit reached.", 403)
 
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        course_context = await self._course_context(user, language) if user else {
+            "lesson_id": None, "lesson_order": None, "title": "", "words": []
+        }
         item = VoicePracticeSession(
             id=str(uuid.uuid4()),
             user_telegram_id=telegram_id,
@@ -111,6 +159,8 @@ class VoicePracticeService:
             voice=voice,
             history=[],
             corrections=[],
+            lesson_id=course_context.get("lesson_id"),
+            target_words=course_context.get("words") or [],
         )
         self.session.add(item)
         await self.session.commit()
@@ -120,6 +170,8 @@ class VoicePracticeService:
             "session_id": item.id,
             "user_status": {"is_paid": status["is_paid"], "plan": status["plan"]},
             "remaining_limit": next_status["remaining_voice_limit"],
+            "character": role,
+            "course_context": course_context,
         }
 
     async def _get_active_session(self, telegram_id: int, session_id: str) -> VoicePracticeSession:
@@ -154,11 +206,14 @@ class VoicePracticeService:
     async def _generate_reply(self, item: VoicePracticeSession, transcription: str) -> dict:
         target_language = LANGUAGE_NAMES.get(item.language, "Russian")
         recent = list(item.history or [])[-8:]
+        target_words = json.dumps(list(item.target_words or [])[:4], ensure_ascii=False)
         messages = [
             {
                 "role": "system",
                 "content": (
                     f"{ROLE_PROMPTS[item.role]} The learner level is {item.level}. "
+                    f"The current course target words are {target_words}. Use one naturally when relevant, "
+                    "but never force all words into one reply. "
                     "Continue a realistic spoken Chinese roleplay. Use short natural replies, usually one or two sentences. "
                     "Ask a useful follow-up question when natural. Do not switch out of character. "
                     f"Translate into {target_language}. Correct only meaningful learner errors, gently. "
@@ -271,10 +326,20 @@ class VoicePracticeService:
                 source="voice",
                 level=item.level,
             )
+            reward = await CourseGamificationService(self.session).award(
+                user,
+                activity_type="voice",
+                activity_ref=f"voice:{item.id}",
+                base_xp=15,
+                level=item.level,
+            )
+        else:
+            reward = None
         await self.session.commit()
         return {
             "ok": True,
             "duration_seconds": max(0, int((ended_at - started_at).total_seconds())),
             "message_count": item.turn_count,
             "corrections": list(item.corrections or []),
+            "reward": reward,
         }

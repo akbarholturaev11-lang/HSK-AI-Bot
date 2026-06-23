@@ -7,6 +7,7 @@ from app.services.course_miniapp_access_service import CourseMiniAppAccessServic
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_trial_service import CourseTrialService
 from app.services.study_miniapp_service import StudyMiniAppService
 
@@ -22,6 +23,7 @@ class CourseMiniAppLessonFlowService:
         self.lesson_repo = CourseLessonRepository(session)
         self.lesson_service = CourseMiniAppLessonService(session)
         self.mistakes = CourseMistakeService(session)
+        self.gamification = CourseGamificationService(session)
 
     @staticmethod
     def _content_level(level: str) -> str:
@@ -494,6 +496,14 @@ class CourseMiniAppLessonFlowService:
         if not result.get("ok"):
             return result
 
+        reward = await self.gamification.award(
+            user,
+            activity_type="lesson",
+            activity_ref=f"lesson:{lesson.id}:v{LESSON_FLOW_VERSION}",
+            base_xp=20 + round(percent / 10),
+            level=str(lesson.level),
+        )
+
         analytics = CourseMiniAppAnalyticsService(self.session)
         for card in required_cards:
             await analytics.record_server_event(
@@ -529,5 +539,5 @@ class CourseMiniAppLessonFlowService:
             "correct": correct_count,
             "total": len(graded),
             "wrong_items": wrong_items,
-            "reward": {"xp": 20 + round(percent / 10)},
+            "reward": reward,
         }

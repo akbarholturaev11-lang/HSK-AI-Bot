@@ -15,6 +15,7 @@ from app.db.models.user import User
 
 from app.repositories.user_repo import UserRepository
 from app.services.conversion_funnel_service import ConversionFunnelService
+from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.referral_service import ReferralService
 from app.bot.handlers.subscription import build_subscription_main_text_for_user
 from app.bot.keyboards.main_menu import main_menu_keyboard
@@ -715,6 +716,7 @@ async def admin_stats_handler(message: Message, session):
         select(func.count()).select_from(User).where(User.payment_status == "approved")
     )).scalar() or 0
     funnel_text = await ConversionFunnelService(session).admin_funnel_text(week_ago=week_ago)
+    course_miniapp_text = await CourseMiniAppAdminAnalyticsService(session).admin_text(week_ago=week_ago)
     trial_course_started = (await session.execute(
         select(func.count()).select_from(User).where(User.trial_course_started_at.is_not(None))
     )).scalar() or 0
@@ -937,6 +939,7 @@ async def admin_stats_handler(message: Message, session):
         f"  Checkpoint → paid: {checkpoint_paid_after} ({checkpoint_paid_rate}%)\n"
         f"  Trialdan keyingi tushum: {int(trial_revenue_after_start):,} so'm\n\n"
         f"{funnel_text}\n\n"
+        f"{course_miniapp_text}\n\n"
         f"<b>📈 Konversiya:</b>\n"
         f"  User → Paid: {conversion}%\n"
         f"  Savol berganlar: {active_users} ({engagement}%)\n"

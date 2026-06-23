@@ -37,6 +37,9 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
             end_date=None,
         )
         self.service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=self.user))
+        self.service.gamification = SimpleNamespace(
+            award=AsyncMock(return_value={"xp": 15, "awarded_xp": 15, "streak": 1, "league": "Bronze"})
+        )
 
     def test_category_detects_character_grammar_and_voice_sources(self):
         self.assertEqual(self.service._category({"subtype": "hanzi_to_meaning"}, "test"), "character")
@@ -95,6 +98,7 @@ class CourseMistakeServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(item.resolved_count, 1)
         self.assertEqual(item.review_count, 1)
         analytics.record_server_event.assert_awaited_once()
+        self.service.gamification.award.assert_awaited_once()
 
 
 if __name__ == "__main__":
