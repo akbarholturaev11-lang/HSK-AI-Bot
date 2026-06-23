@@ -17,31 +17,45 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 PROFILE_TABLE = "course_miniapp_profiles"
-DAILY_MINUTES_CONSTRAINT_NAMES = (
-    "ck_course_miniapp_profiles_daily_minutes",
-    "daily_minutes",
-    "course_miniapp_profiles_daily_minutes_check",
-)
+DAILY_MINUTES_CONSTRAINT = "ck_course_miniapp_profiles_daily_minutes"
+
+DROP_DAILY_MINUTES_CONSTRAINTS_SQL = f"""
+DO $$
+DECLARE
+    item record;
+BEGIN
+    FOR item IN
+        SELECT conname
+        FROM pg_constraint
+        WHERE conrelid = '{PROFILE_TABLE}'::regclass
+          AND contype = 'c'
+          AND pg_get_constraintdef(oid) ILIKE '%daily_minutes%'
+    LOOP
+        EXECUTE format('ALTER TABLE {PROFILE_TABLE} DROP CONSTRAINT IF EXISTS %I', item.conname);
+    END LOOP;
+END $$;
+"""
 
 
 def _drop_daily_minutes_constraint() -> None:
-    for name in DAILY_MINUTES_CONSTRAINT_NAMES:
-        op.execute(sa.text(f"ALTER TABLE {PROFILE_TABLE} DROP CONSTRAINT IF EXISTS {name}"))
+    op.execute(sa.text(DROP_DAILY_MINUTES_CONSTRAINTS_SQL))
+
+
+def _create_daily_minutes_constraint(allowed_minutes: str) -> None:
+    op.execute(
+        sa.text(
+            f"ALTER TABLE {PROFILE_TABLE} "
+            f"ADD CONSTRAINT {DAILY_MINUTES_CONSTRAINT} "
+            f"CHECK (daily_minutes IN ({allowed_minutes}))"
+        )
+    )
 
 
 def upgrade() -> None:
     _drop_daily_minutes_constraint()
-    op.create_check_constraint(
-        "ck_course_miniapp_profiles_daily_minutes",
-        PROFILE_TABLE,
-        "daily_minutes IN (5, 10, 15, 20, 30)",
-    )
+    _create_daily_minutes_constraint("5, 10, 15, 20, 30")
 
 
 def downgrade() -> None:
     _drop_daily_minutes_constraint()
-    op.create_check_constraint(
-        "ck_course_miniapp_profiles_daily_minutes",
-        PROFILE_TABLE,
-        "daily_minutes IN (5, 10, 15, 20)",
-    )
+    _create_daily_minutes_constraint("5, 10, 15, 20")

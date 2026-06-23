@@ -233,12 +233,12 @@ Follow-up:
 ### 2026-06-23 — Course Mini App migration deploy fix
 
 Changed:
-- `0052_course_miniapp_v3_preferences` now drops possible `daily_minutes` check constraint names with `IF EXISTS` before recreating the canonical constraint.
-- `CourseMiniAppProfile` constraint names now match the Alembic foundation migration.
+- `0052_course_miniapp_v3_preferences` now drops existing `daily_minutes` check constraints from the Postgres catalog before recreating the canonical constraint with raw SQL.
+- `CourseMiniAppProfile` uses naming-convention source names (`goal`, `daily_minutes`, `start_mode`) so SQLAlchemy does not double-prefix generated constraint names.
 - Bot help and Mini App profile support now use the configured admin contact URL.
 
 Why:
-- Railway deploy failed when production did not have the non-canonical `daily_minutes` constraint name expected by the migration.
+- Railway deploy failed when production had a naming-convention generated `daily_minutes` constraint name that did not match the migration's static drop list.
 
 Files touched:
 - `alembic/versions/0052_course_miniapp_v3_preferences.py`

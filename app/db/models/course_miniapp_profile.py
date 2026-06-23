@@ -12,15 +12,12 @@ class CourseMiniAppProfile(Base):
     __table_args__ = (
         CheckConstraint(
             "goal IN ('hsk_exam', 'study_china', 'work_china', 'daily_communication', 'travel')",
-            name="ck_course_miniapp_profiles_goal",
+            name="goal",
         ),
-        CheckConstraint(
-            "daily_minutes IN (5, 10, 15, 20, 30)",
-            name="ck_course_miniapp_profiles_daily_minutes",
-        ),
+        CheckConstraint("daily_minutes IN (5, 10, 15, 20, 30)", name="daily_minutes"),
         CheckConstraint(
             "start_mode IN ('lesson_1', 'continue', 'placement')",
-            name="ck_course_miniapp_profiles_start_mode",
+            name="start_mode",
         ),
     )
 
