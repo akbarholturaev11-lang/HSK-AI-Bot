@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#0A0B14">
 <meta name="color-scheme" content="dark">
-<title>HSK Voice Practice</title>
+	<title>HSK ovozli mashq</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -404,6 +404,9 @@
 	  html.embedded .stat-row{gap:8px;margin-bottom:12px;}
 	  html.embedded .stat-box{padding:12px 8px;}
 	  html.embedded .summary-actions{margin-top:10px;}
+	  #btn-settings,#btn-settings.show,.settings-overlay{display:none!important;}
+	  .call-role .lvl{display:none!important;}
+	  .level-pick-label,#level-row{display:none!important;}
 	</style>
 </head>
 <body>
@@ -423,10 +426,10 @@
         <div class="eyebrow">HSK AI · Ovozli mashq</div>
         <div class="hero-orb"></div>
         <h1 class="headline">Telefon qo'ng'irog'idek gaplash,<br>xitoy tilini his qil</h1>
-        <p class="sub">Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pinyin, tarjima va xatolarga tuzatish bo'ladi.</p>
+        <p class="sub">Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pin'in, tarjima va xatolarga tuzatish bo'ladi.</p>
         <div class="feature-row">
           <span class="feature-chip">🎙 Ovozli suhbat</span>
-          <span class="feature-chip">拼 Pinyin</span>
+          <span class="feature-chip">拼 Pin'in</span>
           <span class="feature-chip">✓ Tuzatish</span>
         </div>
       </div>
@@ -445,8 +448,8 @@
       <div class="section-label">Suhbatdosh</div>
       <div class="role-grid" id="role-grid"></div>
 
-      <div class="section-label">Daraja</div>
-      <div class="pill-row" id="level-row"></div>
+      <div class="section-label level-pick-label">Daraja</div>
+      <div class="pill-row" id="level-row" hidden></div>
 
       <div class="limit-badge" id="roles-limit-badge" style="margin-top:18px;">Bugungi limit: —</div>
     </div>
@@ -516,7 +519,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
       </div>
       <h2>Ovozli mashq limiti tugadi</h2>
-      <p>Obuna bilan AI Voice, pinyin, tarjima va talaffuz tuzatishlari ochiladi.</p>
+      <p>Obuna bilan ovozli suhbat, pin'in, tarjima va talaffuz tuzatishlari ochiladi.</p>
       <div class="paywall-meta" id="paywall-meta">Obuna bilan kengaytirilgan imkoniyatlar ochiladi</div>
     </div>
     <div class="paywall-actions">
@@ -586,7 +589,7 @@
       <div class="set-title">Obuna</div>
       <div class="set-row">
         <div>
-          <div class="set-row-label" id="settings-plan-label">Free</div>
+          <div class="set-row-label" id="settings-plan-label">Bepul</div>
           <div class="set-row-sub" id="settings-plan-sub">Bugungi limit: —</div>
         </div>
         <button class="chip-sm" id="btn-settings-upgrade">Obuna olish</button>
@@ -610,22 +613,16 @@ var PAID_SESSION_SECONDS = 25;
 var MIN_BLOB_BYTES = 600;      // below this we treat the recording as accidental/empty
 
 var ROLES = [
-  {id:"lily",emoji:"莉",name:"Lily",desc:"Iliq, do'stona, hissiyotli suhbat"},
-  {id:"chen",emoji:"陈",name:"Chen",desc:"Sokin, amaliy kundalik vaziyatlar"},
-  {id:"xiao_mei",emoji:"美",name:"Xiao Mei",desc:"Energetik student, tabiiy reaksiya"},
-  {id:"teacher_li",emoji:"李",name:"Teacher Li",desc:"Sabrli ustoz, aniq talaffuz"},
-  {id:"manager_wang",emoji:"王",name:"Manager Wang",desc:"Ish, uchrashuv va rasmiy muloqot"}
+  {id:"lily",emoji:"友",name:"Xitoylik do'st",desc:"Kundalik hayot haqida tabiiy suhbat"},
+  {id:"teacher_li",emoji:"李",name:"Li laoshi",desc:"Sabrli ustoz, talaffuz va gap tuzatish"}
 ];
 var LEVELS = [
-  {id:"beginner", label:"Beginner", sub:"Ko'proq tarjima"},
-  {id:"hsk1_2",   label:"HSK 1-2",  sub:"Pinyin + tarjima"},
-  {id:"hsk3_4",   label:"HSK 3-4",  sub:"Ko'proq xitoycha"}
+  {id:"hsk1_2", label:"HSK 1-2", sub:"Pin'in va tarjima"}
 ];
 var LANGS = [
   {id:"uz", label:"O'zbek"},
   {id:"ru", label:"Русский"},
-  {id:"tj", label:"Тоҷикӣ"},
-  {id:"en", label:"English"}
+  {id:"tj", label:"Тоҷикӣ"}
 ];
 var VOICES = [
   {id:"female", label:"Ayol ovozi"},
@@ -633,31 +630,25 @@ var VOICES = [
 ];
 
 var UI_COPY = {
-  uz:{dailyLimit:"Bugungi limit",limitEnded:"Bugungi bepul AI Voice limiti tugadi",paidAccess:"Obuna aktiv",unlimited:"Cheksiz",you:"Siz",empty:"Hali hech narsa aytilmadi. Mikrofonga bosib gapni boshlang.",startCall:"Qo'ng'iroqni boshlash",trialTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",freeTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",endConfirm:"Suhbatni tugatasizmi?",noCorrection:"Bu safar tuzatish bo'lmadi — ajoyib!",paidSession:"Sessiya: 25 soniya",goodbye:"很好，今天到这里。下次见！"},
-  ru:{dailyLimit:"Лимит на сегодня",limitEnded:"Бесплатный лимит AI Voice на сегодня закончился",paidAccess:"Подписка активна",unlimited:"Безлимитно",you:"Вы",empty:"Вы ещё ничего не сказали. Нажмите на микрофон и начните говорить.",startCall:"Начать звонок",trialTomorrow:"С подпиской откроются расширенные голосовые практики",freeTomorrow:"С подпиской откроются расширенные голосовые практики",endConfirm:"Завершить разговор?",noCorrection:"В этот раз без исправлений — отлично!",paidSession:"Сессия: 25 секунд",goodbye:"很好，今天到这里。下次见！"},
-  tj:{dailyLimit:"Лимити имрӯз",limitEnded:"Лимити ройгони AI Voice барои имрӯз тамом шуд",paidAccess:"Обуна фаъол аст",unlimited:"Бемаҳдуд",you:"Шумо",empty:"Ҳоло чизе нагуфтед. Микрофонро пахш карда оғоз кунед.",startCall:"Оғози занг",trialTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",freeTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",endConfirm:"Суҳбатро анҷом медиҳед?",noCorrection:"Ин дафъа ислоҳ лозим нашуд — аъло!",paidSession:"Сессия: 25 сония",goodbye:"很好，今天到这里。下次见！"}
+  uz:{dailyLimit:"Bugungi sinov",limitEnded:"Bepul ovozli sinov tugadi",paidAccess:"Obuna faol",freePlan:"Bepul",paidPlan:"Obuna",unlimited:"Obuna faol",you:"Siz",empty:"Hali hech narsa aytilmadi. Mikrofonga bosib gapni boshlang.",startCall:"Qo'ng'iroqni boshlash",trialTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",freeTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",endConfirm:"Suhbatni tugatasizmi?",noCorrection:"Bu safar tuzatish bo'lmadi, ajoyib!",goodbye:"很好，今天到这里。下次见！"},
+  ru:{dailyLimit:"Пробный доступ",limitEnded:"Бесплатная голосовая проба закончилась",paidAccess:"Подписка активна",freePlan:"Бесплатно",paidPlan:"Подписка",unlimited:"Подписка активна",you:"Вы",empty:"Вы ещё ничего не сказали. Нажмите на микрофон и начните говорить.",startCall:"Начать звонок",trialTomorrow:"С подпиской откроются расширенные голосовые практики",freeTomorrow:"С подпиской откроются расширенные голосовые практики",endConfirm:"Завершить разговор?",noCorrection:"В этот раз без исправлений, отлично!",goodbye:"很好，今天到这里。下次见！"},
+  tj:{dailyLimit:"Санҷиши ройгон",limitEnded:"Санҷиши ройгони овозӣ тамом шуд",paidAccess:"Обуна фаъол аст",freePlan:"Ройгон",paidPlan:"Обуна",unlimited:"Обуна фаъол аст",you:"Шумо",empty:"Ҳоло чизе нагуфтед. Микрофонро пахш карда оғоз кунед.",startCall:"Оғози занг",trialTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",freeTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",endConfirm:"Суҳбатро анҷом медиҳед?",noCorrection:"Ин дафъа ислоҳ лозим нашуд, аъло!",goodbye:"很好，今天到这里。下次见！"}
 };
 function ui(key){ return (UI_COPY[UI_LANG] && UI_COPY[UI_LANG][key]) || UI_COPY.ru[key] || key; }
 
 if (UI_LANG === "ru"){
   ROLES = [
-    {id:"lily",emoji:"莉",name:"Lily",desc:"Тёплая подруга с живыми реакциями"},
-    {id:"chen",emoji:"陈",name:"Chen",desc:"Спокойные практичные ситуации"},
-    {id:"xiao_mei",emoji:"美",name:"Xiao Mei",desc:"Энергичная студентка и дружеский стиль"},
-    {id:"teacher_li",emoji:"李",name:"Teacher Li",desc:"Терпеливый учитель и точная речь"},
-    {id:"manager_wang",emoji:"王",name:"Manager Wang",desc:"Работа, встречи и вежливый тон"}
+    {id:"lily",emoji:"友",name:"Китайский друг",desc:"Естественный разговор о повседневной жизни"},
+    {id:"teacher_li",emoji:"李",name:"Ли лаоши",desc:"Терпеливый учитель, произношение и исправления"}
   ];
-  LEVELS = [{id:"beginner",label:"Начальный",sub:"Больше перевода"},{id:"hsk1_2",label:"HSK 1-2",sub:"Pinyin + перевод"},{id:"hsk3_4",label:"HSK 3-4",sub:"Больше китайского"}];
+  LEVELS = [{id:"hsk1_2",label:"HSK 1-2",sub:"Пиньинь и перевод"}];
   VOICES = [{id:"female",label:"Женский голос"},{id:"male",label:"Мужской голос"}];
 } else if (UI_LANG === "tj"){
   ROLES = [
-    {id:"lily",emoji:"莉",name:"Lily",desc:"Дӯсти гарм бо эҳсос ва реаксия"},
-    {id:"chen",emoji:"陈",name:"Chen",desc:"Вазъиятҳои амалӣ ва ором"},
-    {id:"xiao_mei",emoji:"美",name:"Xiao Mei",desc:"Донишҷӯи фаъол ва дӯстона"},
-    {id:"teacher_li",emoji:"李",name:"Teacher Li",desc:"Устоди сабрнок ва талаффузи дақиқ"},
-    {id:"manager_wang",emoji:"王",name:"Manager Wang",desc:"Кор, вохӯрӣ ва оҳанги расмӣ"}
+    {id:"lily",emoji:"友",name:"Дӯсти чинӣ",desc:"Суҳбати табиӣ дар бораи зиндагии ҳаррӯза"},
+    {id:"teacher_li",emoji:"李",name:"Ли лаошӣ",desc:"Устоди сабрнок, талаффуз ва ислоҳ"}
   ];
-  LEVELS = [{id:"beginner",label:"Оғозӣ",sub:"Тарҷумаи бештар"},{id:"hsk1_2",label:"HSK 1-2",sub:"Pinyin + тарҷума"},{id:"hsk3_4",label:"HSK 3-4",sub:"Забони чинии бештар"}];
+  LEVELS = [{id:"hsk1_2",label:"HSK 1-2",sub:"Пинйин ва тарҷума"}];
   VOICES = [{id:"female",label:"Овози зан"},{id:"male",label:"Овози мард"}];
 }
 
@@ -751,9 +742,9 @@ function cacheDom(){
 
 var STATIC_LOCALE = {
   ru:{
-    "Mock rejim":"Демо-режим","HSK AI · Ovozli mashq":"HSK AI · Голосовая практика","Telefon qo'ng'irog'idek gaplash,":"Говорите как по телефону,","xitoy tilini his qil":"почувствуйте живой китайский","Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pinyin, tarjima va xatolarga tuzatish bo'ladi.":"Выберите собеседника и говорите голосом как во время настоящего звонка. Каждый ответ содержит pinyin, перевод и исправления.","🎙 Ovozli suhbat":"🎙 Голосовой диалог","✓ Tuzatish":"✓ Исправления","Boshlash":"Начать","Kim bilan gaplashasiz?":"С кем будете говорить?","Suhbatdosh":"Собеседник","Daraja":"Уровень","Qo'ng'iroqni boshlash":"Начать звонок","Tayyor — mikrofonga bosing":"Готово — нажмите на микрофон","Gapirish uchun bosing, tugatganda yana bosing":"Нажмите, чтобы говорить. Нажмите ещё раз, чтобы закончить","Transkript":"Транскрипт","Ovozli mashq limiti tugadi":"Лимит голосовой практики закончился","Obuna bilan AI Voice, pinyin, tarjima va talaffuz tuzatishlari ochiladi.":"С подпиской откроются AI Voice, pinyin, перевод и исправления произношения.","Obuna bilan kengaytirilgan imkoniyatlar ochiladi":"С подпиской откроются расширенные возможности","Obuna olish":"Оформить подписку","Keyinroq":"Позже","Suhbat yakunlandi":"Разговор завершён","Davomiyligi":"Время","Almashinuv":"Реплики","Tuzatish":"Исправления","Tuzatishlar":"Исправления","Yana mashq qilish":"Ещё раз","Yopish":"Закрыть","To'liq transkript":"Полный транскрипт","Sozlamalar":"Настройки","Til":"Язык","AI tushuntirish, tarjima va tuzatishlarni shu tilda beradi.":"AI будет давать объяснения, перевод и исправления на этом языке.","Bot ovozi":"Голос AI","Bot javob berganda qaysi ovozda gapirsin.":"Выберите голос для ответов AI.","Obuna":"Подписка"},
+    "Mock rejim":"Демо-режим","HSK AI · Ovozli mashq":"HSK AI · Голосовая практика","Telefon qo'ng'irog'idek gaplash,":"Говорите как по телефону,","xitoy tilini his qil":"почувствуйте живой китайский","Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pin'in, tarjima va xatolarga tuzatish bo'ladi.":"Выберите собеседника и говорите голосом как во время настоящего звонка. Каждый ответ содержит пиньинь, перевод и исправления.","🎙 Ovozli suhbat":"🎙 Голосовой диалог","拼 Pin'in":"拼 Пиньинь","✓ Tuzatish":"✓ Исправления","Boshlash":"Начать","Kim bilan gaplashasiz?":"С кем будете говорить?","Suhbatdosh":"Собеседник","Daraja":"Уровень","Qo'ng'iroqni boshlash":"Начать звонок","Tayyor — mikrofonga bosing":"Готово — нажмите на микрофон","Gapirish uchun bosing, tugatganda yana bosing":"Нажмите, чтобы говорить. Нажмите ещё раз, чтобы закончить","Transkript":"Транскрипт","Ovozli mashq limiti tugadi":"Лимит голосовой практики закончился","Obuna bilan ovozli suhbat, pin'in, tarjima va talaffuz tuzatishlari ochiladi.":"С подпиской откроются голосовой диалог, пиньинь, перевод и исправления произношения.","Obuna bilan kengaytirilgan imkoniyatlar ochiladi":"С подпиской откроются расширенные возможности","Obuna olish":"Оформить подписку","Keyinroq":"Позже","Suhbat yakunlandi":"Разговор завершён","Davomiyligi":"Время","Almashinuv":"Реплики","Tuzatish":"Исправления","Tuzatishlar":"Исправления","Yana mashq qilish":"Ещё раз","Yopish":"Закрыть","To'liq transkript":"Полный транскрипт","Sozlamalar":"Настройки","Til":"Язык","AI tushuntirish, tarjima va tuzatishlarni shu tilda beradi.":"Система будет давать объяснения, перевод и исправления на этом языке.","Bot ovozi":"Голос бота","Bot javob berganda qaysi ovozda gapirsin.":"Выберите голос для ответов.","Obuna":"Подписка"},
   tj:{
-    "Mock rejim":"Реҷаи санҷишӣ","HSK AI · Ovozli mashq":"HSK AI · Машқи овозӣ","Telefon qo'ng'irog'idek gaplash,":"Мисли занги телефон суҳбат кунед,","xitoy tilini his qil":"забони чиниро эҳсос кунед","Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pinyin, tarjima va xatolarga tuzatish bo'ladi.":"Ҳамсуҳбатро интихоб кунед ва мисли занги воқеӣ бо овоз суҳбат кунед. Ҳар ҷавоб pinyin, тарҷума ва ислоҳ дорад.","🎙 Ovozli suhbat":"🎙 Суҳбати овозӣ","✓ Tuzatish":"✓ Ислоҳ","Boshlash":"Оғоз","Kim bilan gaplashasiz?":"Бо кӣ суҳбат мекунед?","Suhbatdosh":"Ҳамсуҳбат","Daraja":"Сатҳ","Qo'ng'iroqni boshlash":"Оғози занг","Tayyor — mikrofonga bosing":"Омода — микрофонро пахш кунед","Gapirish uchun bosing, tugatganda yana bosing":"Барои гуфтан пахш кунед, барои анҷом боз пахш кунед","Transkript":"Матни суҳбат","Ovozli mashq limiti tugadi":"Лимити машқи овозӣ тамом шуд","Obuna bilan AI Voice, pinyin, tarjima va talaffuz tuzatishlari ochiladi.":"Бо обуна AI Voice, pinyin, тарҷума ва ислоҳи талаффуз кушода мешавад.","Obuna bilan kengaytirilgan imkoniyatlar ochiladi":"Бо обуна имкониятҳои васеъ кушода мешаванд","Obuna olish":"Обуна гирифтан","Keyinroq":"Баъдтар","Suhbat yakunlandi":"Суҳбат анҷом ёфт","Davomiyligi":"Давомнокӣ","Almashinuv":"Ҷумлаҳо","Tuzatish":"Ислоҳ","Tuzatishlar":"Ислоҳҳо","Yana mashq qilish":"Боз машқ кардан","Yopish":"Пӯшидан","To'liq transkript":"Матни пурра","Sozlamalar":"Танзимот","Til":"Забон","AI tushuntirish, tarjima va tuzatishlarni shu tilda beradi.":"AI шарҳ, тарҷума ва ислоҳро бо ҳамин забон медиҳад.","Bot ovozi":"Овози AI","Bot javob berganda qaysi ovozda gapirsin.":"Овози ҷавобҳои AI-ро интихоб кунед.","Obuna":"Обуна"}
+    "Mock rejim":"Реҷаи санҷишӣ","HSK AI · Ovozli mashq":"HSK AI · Машқи овозӣ","Telefon qo'ng'irog'idek gaplash,":"Мисли занги телефон суҳбат кунед,","xitoy tilini his qil":"забони чиниро эҳсос кунед","Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pin'in, tarjima va xatolarga tuzatish bo'ladi.":"Ҳамсуҳбатро интихоб кунед ва мисли занги воқеӣ бо овоз суҳбат кунед. Ҳар ҷавоб пинйин, тарҷума ва ислоҳ дорад.","🎙 Ovozli suhbat":"🎙 Суҳбати овозӣ","拼 Pin'in":"拼 Пинйин","✓ Tuzatish":"✓ Ислоҳ","Boshlash":"Оғоз","Kim bilan gaplashasiz?":"Бо кӣ суҳбат мекунед?","Suhbatdosh":"Ҳамсуҳбат","Daraja":"Сатҳ","Qo'ng'iroqni boshlash":"Оғози занг","Tayyor — mikrofonga bosing":"Омода — микрофонро пахш кунед","Gapirish uchun bosing, tugatganda yana bosing":"Барои гуфтан пахш кунед, барои анҷом боз пахш кунед","Transkript":"Матни суҳбат","Ovozli mashq limiti tugadi":"Лимити машқи овозӣ тамом шуд","Obuna bilan ovozli suhbat, pin'in, tarjima va talaffuz tuzatishlari ochiladi.":"Бо обуна суҳбати овозӣ, пинйин, тарҷума ва ислоҳи талаффуз кушода мешавад.","Obuna bilan kengaytirilgan imkoniyatlar ochiladi":"Бо обуна имкониятҳои васеъ кушода мешаванд","Obuna olish":"Обуна гирифтан","Keyinroq":"Баъдтар","Suhbat yakunlandi":"Суҳбат анҷом ёфт","Davomiyligi":"Давомнокӣ","Almashinuv":"Ҷумлаҳо","Tuzatish":"Ислоҳ","Tuzatishlar":"Ислоҳҳо","Yana mashq qilish":"Боз машқ кардан","Yopish":"Пӯшидан","To'liq transkript":"Матни пурра","Sozlamalar":"Танзимот","Til":"Забон","AI tushuntirish, tarjima va tuzatishlarni shu tilda beradi.":"Система шарҳ, тарҷума ва ислоҳро бо ҳамин забон медиҳад.","Bot ovozi":"Овози бот","Bot javob berganda qaysi ovozda gapirsin.":"Овози ҷавобҳоро интихоб кунед.","Obuna":"Обуна"}
 };
 function applyStaticLocale(){
   var map = STATIC_LOCALE[UI_LANG];
@@ -841,17 +832,16 @@ function showScreen(name){
 
 /* ============================== RENDER: limit badges ============================== */
 function updateLimitBadges(){
-  var paidHint = state.isPaid ? " · " + ui("paidSession") : "";
   if (state.isPaid){
-    el.welcomeLimitBadge.innerHTML = escapeHtml(ui("paidAccess")) + escapeHtml(paidHint);
+    el.welcomeLimitBadge.textContent = ui("paidAccess");
   } else if (isLimitExhausted(state.remainingLimit)){
     el.welcomeLimitBadge.textContent = ui("limitEnded");
   } else {
     el.welcomeLimitBadge.innerHTML = ui("dailyLimit") + ": <b>" + escapeHtml(formatLimit(state.remainingLimit)) + "</b>";
   }
   el.rolesLimitBadge.innerHTML = el.welcomeLimitBadge.innerHTML;
-  el.settingsPlanLabel.textContent = state.isPaid ? ("Premium · " + (state.plan||"paid")) : "Free";
-  el.settingsPlanSub.textContent = state.isPaid ? (ui("paidAccess") + paidHint) : (isLimitExhausted(state.remainingLimit) ? ui("limitEnded") : (ui("dailyLimit") + ": " + formatLimit(state.remainingLimit)));
+  el.settingsPlanLabel.textContent = state.isPaid ? ui("paidPlan") : ui("freePlan");
+  el.settingsPlanSub.textContent = state.isPaid ? ui("paidAccess") : (isLimitExhausted(state.remainingLimit) ? ui("limitEnded") : (ui("dailyLimit") + ": " + formatLimit(state.remainingLimit)));
   el.btnSettingsUpgrade.style.display = state.isPaid ? "none" : "inline-flex";
 }
 function updateMockBadge(){
@@ -896,8 +886,8 @@ function renderSettingsPanel(){
     b.addEventListener("click", function(){ state.voice = b.getAttribute("data-voice"); renderSettingsPanel(); });
   });
 
-  el.settingsPlanLabel.textContent = state.isPaid ? ("Premium · " + (state.plan||"paid")) : "Free";
-  el.settingsPlanSub.textContent = state.isPaid ? (ui("paidAccess") + " · " + ui("paidSession")) : (isLimitExhausted(state.remainingLimit) ? ui("limitEnded") : (ui("dailyLimit") + ": " + formatLimit(state.remainingLimit)));
+  el.settingsPlanLabel.textContent = state.isPaid ? ui("paidPlan") : ui("freePlan");
+  el.settingsPlanSub.textContent = state.isPaid ? ui("paidAccess") : (isLimitExhausted(state.remainingLimit) ? ui("limitEnded") : (ui("dailyLimit") + ": " + formatLimit(state.remainingLimit)));
   el.btnSettingsUpgrade.style.display = state.isPaid ? "none" : "inline-flex";
 }
 
@@ -976,7 +966,7 @@ function addGoodbyeAndFinish(){
     userText:"",
     botText:ui("goodbye"),
     pinyin:"hěn hǎo, jīntiān dào zhèlǐ. xià cì jiàn!",
-    translation:r.name + " goodbye",
+    translation:r.name,
     correction:null
   });
   renderTranscript();
@@ -1163,7 +1153,7 @@ function requestUpgrade(source){
       return;
     }
   }catch(_){}
-  alertNative("Obuna Mini App orqali ochiladi. HSK AI Mini App ichidan Obuna bo'limiga o'ting.");
+  alertNative(ui("freeTomorrow"));
 }
 
 	async function handleEndCall(){
@@ -1355,6 +1345,8 @@ function applyMe(me){
   state.isPaid = !!me.is_paid;
   state.plan = me.plan || state.plan;
   if (typeof me.remaining_voice_limit !== "undefined") state.remainingLimit = me.remaining_voice_limit;
+  if (me.level) state.level = String(me.level);
+  if (me.language && ["uz","ru","tj"].indexOf(me.language) > -1) state.language = me.language;
   updateLimitBadges();
 }
 

@@ -4,92 +4,96 @@
 const META_KEY="hsk_v2_meta_v1";
 const ONBOARDING_KEY="hsk_v2_onboarding_v1";
 const MISTAKES_KEY="hsk_v2_mistakes_v1";
+const AVATAR_KEY="hsk_v2_avatar_v1";
 const LEVELS=["hsk1","hsk2","hsk3","hsk4a","hsk4b"];
 const copy={
   ru:{
-    home:"Главная",course:"Уроки",voice:"AI Voice",tests:"Тесты",profile:"Профиль",
+    home:"Главная",course:"Уроки",voice:"Голос",tests:"Тесты",profile:"Профиль",
     welcome:"Продолжим китайский",today:"Сегодня",continue:"Продолжить урок",dailyGoal:"Дневная цель",minutes:"минут",
-    missions:"Задания на сегодня",lessonMission:"Завершить урок",wordMission:"Повторить 5 слов",voiceMission:"Поговорить с AI",
+    missions:"Задания на сегодня",lessonMission:"Завершить урок",wordMission:"Повторить 5 слов",voiceMission:"Голосовая практика",
     yourProgress:"Ваш прогресс",league:"Рейтинг",achievements:"Достижения",reward:"Награда",openChest:"Открыть сундук",
     path:"Учебный путь",pathSub:"Короткие интерактивные уроки по порядку HSK",completed:"завершено",lesson:"Урок",
     current:"Текущий урок",done:"Пройдено",locked:"Сначала завершите предыдущий урок",review:"Повторение",boss:"Контрольная",
     start:"Начать",words:"Слова",grammar:"Грамматика",practice:"Практика",lessonReady:"Выберите формат тренировки",
-    testCenter:"Test Center",testCenterSub:"Уровень, HSK-экзамен, произношение, иероглифы и pinyin",
-    testsSub:"Проверьте уровень и подготовьтесь к экзамену",placement:"Placement Test",placementSub:"10-20 вопросов и автоматическая рекомендация уровня",
-    hskExams:"HSK Exam Tests",pronunciationTest:"Pronunciation Test",characterTest:"Character Recognition Test",pinyinTest:"Pinyin Recognition Test",
+    testCenter:"Центр тестов",testCenterSub:"Уровень, экзамен HSK, произношение, иероглифы и пиньинь",
+    testsSub:"Проверьте уровень и подготовьтесь к экзамену",placement:"Тест уровня",placementSub:"10-20 вопросов и автоматическая рекомендация уровня",
+    hskExams:"Тесты HSK",pronunciationTest:"Тест произношения",characterTest:"Тест иероглифов",pinyinTest:"Тест пиньиня",
     mock:"Пробный экзамен",mockSub:"HSK-структура, балл 0-100, сильные и слабые стороны",startTest:"Начать тест",
     training:"Тренировка",trainingSub:"Отдельная работа над конкретным навыком",listening:"Аудирование",speaking:"Разговор",
     writing:"Письмо",characters:"Иероглифы",mistakes:"Мои ошибки",mistakesSub:"Слабые места из ваших последних квизов",
     settings:"Настройки",language:"Язык интерфейса",level:"Уровень курса",subscription:"Подписка",subscriptionSub:"Управление доступом в существующем разделе",
-    support:"Поддержка",supportSub:"Написать админу",notifications:"Уведомления",streak:"дней",xp:"XP",noMistakes:"Ошибок пока нет. Завершите квиз, и здесь появится персональная тренировка.",
-    mistakesCount:"ошибок",recommended:"Рекомендуемый уровень",rewardReady:"Сундук готов",rewardLocked:"Заработайте ещё XP",
-    energy:"Энергия",energySub:"Не блокирует уроки, только усиливает награды",leaguePoints:"League Points",weeklyReset:"Сброс в понедельник",leagueSize:"25 учеников в лиге",paidBadge:"Premium",
-    streakCalendar:"Календарь streak",streakFreeze:"Streak freeze",milestones:"3 / 7 / 30 дней",rewardChest:"Reward Chest",
-    freeLessonTitle:"Вы завершили бесплатный урок.",freeLessonText:"Продолжайте обучение с полным доступом ко всем урокам, AI Voice, тестам и анализу ошибок.",subscribeAction:"💳 Оформить подписку",
-    timeSpent:"Время",leagueMove:"Вы поднимаетесь в рейтинге",leaguePassed:"Вы обошли {name}!",leagueNeed:"Заработайте ещё {xp} XP, чтобы обойти {name}",leagueCta:"Я справлюсь",mistakesShort:"Ошибки",strengths:"Сильные стороны",weaknesses:"Слабые стороны",recommendedLessons:"Рекомендуемые уроки",
+    support:"Поддержка",supportSub:"Написать админу",notifications:"Уведомления",streak:"дней",xp:"очков",noMistakes:"Ошибок пока нет. Завершите квиз, и здесь появится персональная тренировка.",
+    mistakesCount:"ошибок",recommended:"Рекомендуемый уровень",rewardReady:"Сундук готов",rewardLocked:"Заработайте ещё очки",
+    energy:"Энергия",energySub:"Не блокирует уроки, только усиливает награды",leaguePoints:"очков рейтинга",weeklyReset:"Сброс в понедельник",leagueSize:"25 учеников в лиге",paidBadge:"Подписка",
+    streakCalendar:"Календарь занятий",streakFreeze:"защита серии",milestones:"3 / 7 / 30 дней",rewardChest:"Сундук",
+    freeLessonTitle:"Вы завершили бесплатный урок.",freeLessonText:"Продолжайте обучение с полным доступом ко всем урокам, голосовой практике, тестам и анализу ошибок.",subscribeAction:"💳 Оформить подписку",
+    timeSpent:"Время",leagueMove:"Вы поднимаетесь в рейтинге",leaguePassed:"Вы обошли {name}!",leagueNeed:"Заработайте ещё {xp} очков, чтобы обойти {name}",leagueCta:"Я справлюсь",mistakesShort:"Ошибки",strengths:"Сильные стороны",weaknesses:"Слабые стороны",recommendedLessons:"Рекомендуемые уроки",
     onboardingTitle:"Китайский для реального общения",onboardingSub:"Соберём короткий план и сразу откроем первый урок.",
     chooseGoal:"Зачем вы учите китайский?",chooseLevel:"Какой у вас уровень?",chooseTime:"Сколько минут в день?",chooseStart:"Откуда начать?",
     next:"Далее",back:"Назад",finish:"Начать обучение",saving:"Сохраняем...",onboardingError:"Не удалось сохранить настройки. Попробуйте ещё раз.",goalHsk:"Сдать HSK",goalStudy:"Учиться в Китае",goalWork:"Работать в Китае",goalTravel:"Путешествовать",goalDaily:"Общаться каждый день",startLesson1:"Начать с урока 1",continueProgress:"Продолжить текущий прогресс",takePlacement:"Пройти тест уровня",
     loadingLesson:"Готовим урок...",lessonLoadError:"Не удалось открыть урок",sayAloud:"Произнесите вслух",said:"Я произнёс",check:"Проверить",reset:"Сбросить",correct:"Верно",incorrect:"Нужно повторить",lessonComplete:"Урок завершён",submitLesson:"Завершить урок",retryLesson:"Повторить урок",continueCourse:"Продолжить курс",unlockMore:"Открыть следующие уроки",reviewNow:"Повторить ошибки",loadingMistakes:"Загружаем слабые места...",
-    sectionComplete:"Раздел завершён",chapterComplete:"Часть {chapter} завершена!",bookLessonComplete:"{level} Урок {lesson} завершён!",nextSection:"Следующий раздел",nextChapter:"Открыть следующую часть",claimXp:"Забрать XP",part:"часть",totalXp:"Всего XP",rewardTitle:"Отлично!",streakInRow:"{days} дней подряд",noMistakeTitle:"Без ошибок",keepGoing:"Продолжайте серию",
-    traceHint:"Проведите по направлению линий",traceDone:"Обвёл",micReady:"Нажмите и произнесите",
-    unitWords:"Слова",unitSound:"Звук",unitCharacter:"Иероглиф",unitDialog:"Диалог",unitBuild:"Сборка",unitSpeaking:"Произношение",unitReview:"Проверка"
+    sectionComplete:"Раздел завершён",chapterComplete:"Часть {chapter} завершена!",bookLessonComplete:"{level} Урок {lesson} завершён!",nextSection:"Следующий раздел",nextChapter:"Открыть следующую часть",claimXp:"Забрать очки",part:"часть",totalXp:"Всего очков",rewardTitle:"Отлично!",streakInRow:"{days} дней подряд",noMistakeTitle:"Без ошибок",keepGoing:"Продолжайте серию",
+    traceHint:"Посмотрите порядок написания",traceDone:"Понятно",micReady:"Нажмите и произнесите",
+    unitWords:"Слова",unitSound:"Звук",unitCharacter:"Иероглиф",unitDialog:"Диалог",unitBuild:"Сборка",unitSpeaking:"Произношение",unitReview:"Проверка",
+    levelMetric:"ступень",uploadAvatar:"Сменить фото",userProfile:"Профиль ученика",beginnerLevel:"Новичок"
   },
   uz:{
-    home:"Asosiy",course:"Darslar",voice:"AI Voice",tests:"Testlar",profile:"Profil",
+    home:"Asosiy",course:"Darslar",voice:"Ovoz",tests:"Testlar",profile:"Profil",
     welcome:"Xitoy tilini davom ettiramiz",today:"Bugun",continue:"Darsni davom ettirish",dailyGoal:"Kunlik maqsad",minutes:"daqiqa",
-    missions:"Bugungi vazifalar",lessonMission:"Darsni tugatish",wordMission:"5 ta so'zni takrorlash",voiceMission:"AI bilan gaplashish",
+    missions:"Bugungi vazifalar",lessonMission:"Darsni tugatish",wordMission:"5 ta so'zni takrorlash",voiceMission:"Ovozli mashq",
     yourProgress:"Progressingiz",league:"Reyting",achievements:"Yutuqlar",reward:"Mukofot",openChest:"Sandiqni ochish",
     path:"O'quv yo'li",pathSub:"HSK tartibidagi qisqa interaktiv darslar",completed:"tugallandi",lesson:"Dars",
     current:"Joriy dars",done:"Tugallangan",locked:"Avval oldingi darsni tugating",review:"Takrorlash",boss:"Nazorat",
     start:"Boshlash",words:"So'zlar",grammar:"Grammatika",practice:"Mashq",lessonReady:"Mashq turini tanlang",
-    testCenter:"Test Center",testCenterSub:"Level, HSK imtihon, talaffuz, ieroglif va pinyin",
-    testsSub:"Darajangizni tekshiring va imtihonga tayyorlaning",placement:"Placement Test",placementSub:"10-20 savol va avtomatik level tavsiyasi",
-    hskExams:"HSK Exam Tests",pronunciationTest:"Pronunciation Test",characterTest:"Character Recognition Test",pinyinTest:"Pinyin Recognition Test",
+    testCenter:"Test markazi",testCenterSub:"Daraja, HSK imtihon, talaffuz, iyeroglif va pin'in",
+    testsSub:"Darajangizni tekshiring va imtihonga tayyorlaning",placement:"Daraja testi",placementSub:"10-20 savol va avtomatik daraja tavsiyasi",
+    hskExams:"HSK testlari",pronunciationTest:"Talaffuz testi",characterTest:"Iyeroglif testi",pinyinTest:"Pin'in testi",
     mock:"Sinov imtihoni",mockSub:"HSK tuzilmasi, 0-100 ball, kuchli va zaif tomonlar",startTest:"Testni boshlash",
     training:"Mashqlar",trainingSub:"Alohida ko'nikmani mustaqil rivojlantirish",listening:"Tinglash",speaking:"Gapirish",writing:"Yozish",characters:"Ierogliflar",
     mistakes:"Xatolarim",mistakesSub:"Quizlarda aniqlangan zaif joylaringiz",settings:"Sozlamalar",language:"Interfeys tili",level:"Kurs darajasi",
-    subscription:"Obuna",subscriptionSub:"Mavjud bo'limda accessni boshqarish",support:"Yordam",supportSub:"Adminga yozish",notifications:"Bildirishnomalar",streak:"kun",xp:"XP",
+    subscription:"Obuna",subscriptionSub:"Mavjud bo'limda imkoniyatni boshqarish",support:"Yordam",supportSub:"Adminga yozish",notifications:"Bildirishnomalar",streak:"kun",xp:"ochko",
     noMistakes:"Hozircha xato yo'q. Quizni tugating, personal mashqlar shu yerda paydo bo'ladi.",mistakesCount:"xato",recommended:"Tavsiya etilgan daraja",
-    rewardReady:"Sandiq tayyor",rewardLocked:"Yana XP yig'ing",energy:"Energiya",energySub:"Darsni bloklamaydi, faqat mukofotni kuchaytiradi",leaguePoints:"League Points",weeklyReset:"Dushanba kuni reset",leagueSize:"Ligada 25 o'quvchi",paidBadge:"Premium",
-    streakCalendar:"Streak kalendar",streakFreeze:"Streak freeze",milestones:"3 / 7 / 30 kun",rewardChest:"Reward Chest",
-    freeLessonTitle:"Bepul darsingiz tugadi.",freeLessonText:"Barcha darslar, AI Voice, testlar va xatolar tahlili uchun to'liq access bilan davom eting.",subscribeAction:"💳 Obuna olish",
-    timeSpent:"Vaqt",leagueMove:"Reytingda yuqoriga chiqyapsiz",leaguePassed:"{name}dan o'tdingiz!",leagueNeed:"{name}dan o'tish uchun yana {xp} XP oling",leagueCta:"Eplayman",mistakesShort:"Xatolar",strengths:"Kuchli tomonlar",weaknesses:"Zaif tomonlar",recommendedLessons:"Tavsiya darslar",
+    rewardReady:"Sandiq tayyor",rewardLocked:"Yana ochko yig'ing",energy:"Energiya",energySub:"Darsni bloklamaydi, faqat mukofotni kuchaytiradi",leaguePoints:"reyting ochko",weeklyReset:"Dushanba kuni yangilanadi",leagueSize:"Ligada 25 o'quvchi",paidBadge:"Obuna",
+    streakCalendar:"Seriya kalendari",streakFreeze:"Seriya himoyasi",milestones:"3 / 7 / 30 kun",rewardChest:"Sandiq",
+    freeLessonTitle:"Bepul darsingiz tugadi.",freeLessonText:"Barcha darslar, ovozli mashq, testlar va xatolar tahlili uchun to'liq imkoniyat bilan davom eting.",subscribeAction:"💳 Obuna olish",
+    timeSpent:"Vaqt",leagueMove:"Reytingda yuqoriga chiqyapsiz",leaguePassed:"{name}dan o'tdingiz!",leagueNeed:"{name}dan o'tish uchun yana {xp} ochko oling",leagueCta:"Eplayman",mistakesShort:"Xatolar",strengths:"Kuchli tomonlar",weaknesses:"Zaif tomonlar",recommendedLessons:"Tavsiya darslar",
     onboardingTitle:"Real muloqot uchun xitoy tili",onboardingSub:"Qisqa reja tuzamiz va birinchi darsni darhol ochamiz.",
     chooseGoal:"Xitoy tilini nima uchun o'rganyapsiz?",chooseLevel:"Darajangiz qaysi?",chooseTime:"Kuniga necha daqiqa?",chooseStart:"Qayerdan boshlaysiz?",
     next:"Keyingi",back:"Orqaga",finish:"O'qishni boshlash",saving:"Saqlanmoqda...",onboardingError:"Sozlamalarni saqlab bo'lmadi. Qayta urinib ko'ring.",goalHsk:"HSK topshirish",goalStudy:"Xitoyda o'qish",goalWork:"Xitoyda ishlash",goalTravel:"Sayohat",goalDaily:"Har kuni gaplashish",startLesson1:"1-darsdan boshlash",continueProgress:"Joriy progressdan davom etish",takePlacement:"Daraja testini topshirish",
     loadingLesson:"Dars tayyorlanmoqda...",lessonLoadError:"Darsni ochib bo'lmadi",sayAloud:"Ovoz chiqarib ayting",said:"Aytdim",check:"Tekshirish",reset:"Tozalash",correct:"To'g'ri",incorrect:"Qayta mashq qiling",lessonComplete:"Dars tugallandi",submitLesson:"Darsni yakunlash",retryLesson:"Darsni qaytarish",continueCourse:"Kursni davom ettirish",unlockMore:"Keyingi darslarni ochish",reviewNow:"Xatolarni takrorlash",loadingMistakes:"Zaif joylar yuklanmoqda...",
-    sectionComplete:"Bosqich tugadi",chapterComplete:"{chapter} qism tugadi!",bookLessonComplete:"{level} {lesson}-dars tugadi!",nextSection:"Keyingi bosqich",nextChapter:"Keyingi qismni ochish",claimXp:"XP olish",part:"qism",totalXp:"Jami XP",rewardTitle:"Zo'r!",streakInRow:"{days} kun ketma-ket",noMistakeTitle:"Xatosiz",keepGoing:"Seriyani davom ettiring",
-    traceHint:"Chiziqlar yo'nalishi bo'yicha chizing",traceDone:"Chizdim",micReady:"Bosib talaffuz qiling",
-    unitWords:"So'zlar",unitSound:"Tovush",unitCharacter:"Iyeroglif",unitDialog:"Dialog",unitBuild:"Yig'ish",unitSpeaking:"Talaffuz",unitReview:"Tekshiruv"
+    sectionComplete:"Bosqich tugadi",chapterComplete:"{chapter} qism tugadi!",bookLessonComplete:"{level} {lesson}-dars tugadi!",nextSection:"Keyingi bosqich",nextChapter:"Keyingi qismni ochish",claimXp:"Ochko olish",part:"qism",totalXp:"Jami ochko",rewardTitle:"Zo'r!",streakInRow:"{days} kun ketma-ket",noMistakeTitle:"Xatosiz",keepGoing:"Seriyani davom ettiring",
+    traceHint:"Yozilish tartibini ko'ring",traceDone:"Tushundim",micReady:"Bosib talaffuz qiling",
+    unitWords:"So'zlar",unitSound:"Tovush",unitCharacter:"Iyeroglif",unitDialog:"Dialog",unitBuild:"Yig'ish",unitSpeaking:"Talaffuz",unitReview:"Tekshiruv",
+    levelMetric:"bosqich",uploadAvatar:"Rasmni almashtirish",userProfile:"O'quvchi profili",beginnerLevel:"Boshlovchi"
   },
   tj:{
-    home:"Асосӣ",course:"Дарсҳо",voice:"AI Voice",tests:"Тестҳо",profile:"Профил",
+    home:"Асосӣ",course:"Дарсҳо",voice:"Овоз",tests:"Тестҳо",profile:"Профил",
     welcome:"Омӯзиши чиниро идома медиҳем",today:"Имрӯз",continue:"Идомаи дарс",dailyGoal:"Ҳадафи рӯз",minutes:"дақиқа",
-    missions:"Вазифаҳои имрӯз",lessonMission:"Анҷоми дарс",wordMission:"Такрори 5 калима",voiceMission:"Сӯҳбат бо AI",
+    missions:"Вазифаҳои имрӯз",lessonMission:"Анҷоми дарс",wordMission:"Такрори 5 калима",voiceMission:"Машқи овозӣ",
     yourProgress:"Пешрафти шумо",league:"Рейтинг",achievements:"Дастовардҳо",reward:"Мукофот",openChest:"Кушодани сандуқ",
     path:"Роҳи омӯзиш",pathSub:"Дарсҳои кӯтоҳи интерактивӣ бо тартиби HSK",completed:"анҷом шуд",lesson:"Дарс",
     current:"Дарси ҷорӣ",done:"Анҷомшуда",locked:"Аввал дарси пешинаро анҷом диҳед",review:"Такрор",boss:"Санҷиш",
     start:"Оғоз",words:"Калимаҳо",grammar:"Грамматика",practice:"Машқ",lessonReady:"Навъи машқро интихоб кунед",
-    testCenter:"Test Center",testCenterSub:"Сатҳ, имтиҳони HSK, талаффуз, иероглиф ва pinyin",
-    testsSub:"Сатҳи худро санҷед ва ба имтиҳон омода шавед",placement:"Placement Test",placementSub:"10-20 савол ва тавсияи автоматии сатҳ",
-    hskExams:"HSK Exam Tests",pronunciationTest:"Pronunciation Test",characterTest:"Character Recognition Test",pinyinTest:"Pinyin Recognition Test",
+    testCenter:"Маркази тест",testCenterSub:"Сатҳ, имтиҳони HSK, талаффуз, иероглиф ва пинйин",
+    testsSub:"Сатҳи худро санҷед ва ба имтиҳон омода шавед",placement:"Тести сатҳ",placementSub:"10-20 савол ва тавсияи автоматии сатҳ",
+    hskExams:"Тестҳои HSK",pronunciationTest:"Тести талаффуз",characterTest:"Тести иероглиф",pinyinTest:"Тести пинйин",
     mock:"Имтиҳони санҷишӣ",mockSub:"Сохтори HSK, хол 0-100, ҷиҳатҳои қавӣ ва суст",startTest:"Оғози тест",
     training:"Машқҳо",trainingSub:"Кор бо малакаи алоҳида",listening:"Шунидан",speaking:"Гуфтугӯ",writing:"Навиштан",characters:"Иероглифҳо",
     mistakes:"Хатоҳои ман",mistakesSub:"Ҷойҳои суст аз квизҳои шумо",settings:"Танзимот",language:"Забони интерфейс",level:"Сатҳи курс",
-    subscription:"Обуна",subscriptionSub:"Идораи дастрасӣ дар бахши мавҷуда",support:"Дастгирӣ",supportSub:"Ба admin навиштан",notifications:"Огоҳиҳо",streak:"рӯз",xp:"XP",
+    subscription:"Обуна",subscriptionSub:"Идораи дастрасӣ дар бахши мавҷуда",support:"Дастгирӣ",supportSub:"Ба admin навиштан",notifications:"Огоҳиҳо",streak:"рӯз",xp:"хол",
     noMistakes:"Ҳоло хато нест. Квизро анҷом диҳед, машқи шахсӣ дар ин ҷо пайдо мешавад.",mistakesCount:"хато",recommended:"Сатҳи тавсияшуда",
-    rewardReady:"Сандуқ тайёр",rewardLocked:"Боз XP гиред",energy:"Энергия",energySub:"Омӯзишро намебандад, танҳо мукофотро зиёд мекунад",leaguePoints:"League Points",weeklyReset:"Рӯзи душанбе reset",leagueSize:"25 омӯзанда дар лига",paidBadge:"Premium",
-    streakCalendar:"Тақвими streak",streakFreeze:"Streak freeze",milestones:"3 / 7 / 30 рӯз",rewardChest:"Reward Chest",
-    freeLessonTitle:"Дарси ройгони шумо анҷом шуд.",freeLessonText:"Барои ҳамаи дарсҳо, AI Voice, тестҳо ва таҳлили хатоҳо бо дастрасии пурра идома диҳед.",subscribeAction:"💳 Обуна гирифтан",
-    timeSpent:"Вақт",leagueMove:"Дар рейтинг боло меравед",leaguePassed:"Аз {name} гузаштед!",leagueNeed:"Барои гузаштан аз {name} боз {xp} XP гиред",leagueCta:"Метавонам",mistakesShort:"Хатоҳо",strengths:"Ҷиҳатҳои қавӣ",weaknesses:"Ҷиҳатҳои суст",recommendedLessons:"Дарсҳои тавсияшуда",
+    rewardReady:"Сандуқ тайёр",rewardLocked:"Боз хол гиред",energy:"Энергия",energySub:"Омӯзишро намебандад, танҳо мукофотро зиёд мекунад",leaguePoints:"холи рейтинг",weeklyReset:"Рӯзи душанбе нав мешавад",leagueSize:"25 омӯзанда дар лига",paidBadge:"Обуна",
+    streakCalendar:"Тақвими силсила",streakFreeze:"Ҳимояи силсила",milestones:"3 / 7 / 30 рӯз",rewardChest:"Сандуқ",
+    freeLessonTitle:"Дарси ройгони шумо анҷом шуд.",freeLessonText:"Барои ҳамаи дарсҳо, машқи овозӣ, тестҳо ва таҳлили хатоҳо бо дастрасии пурра идома диҳед.",subscribeAction:"💳 Обуна гирифтан",
+    timeSpent:"Вақт",leagueMove:"Дар рейтинг боло меравед",leaguePassed:"Аз {name} гузаштед!",leagueNeed:"Барои гузаштан аз {name} боз {xp} хол гиред",leagueCta:"Метавонам",mistakesShort:"Хатоҳо",strengths:"Ҷиҳатҳои қавӣ",weaknesses:"Ҷиҳатҳои суст",recommendedLessons:"Дарсҳои тавсияшуда",
     onboardingTitle:"Забони чинӣ барои муоширати воқеӣ",onboardingSub:"Нақшаи кӯтоҳ месозем ва дарси аввалро мекушоем.",
     chooseGoal:"Барои чӣ забони чинӣ меомӯзед?",chooseLevel:"Сатҳи шумо кадом аст?",chooseTime:"Дар як рӯз чанд дақиқа?",chooseStart:"Аз куҷо оғоз мекунед?",
     next:"Баъдӣ",back:"Бозгашт",finish:"Оғози омӯзиш",saving:"Нигоҳ дошта мешавад...",onboardingError:"Танзимот нигоҳ дошта нашуд. Аз нав кӯшиш кунед.",goalHsk:"Супоридани HSK",goalStudy:"Таҳсил дар Чин",goalWork:"Кор дар Чин",goalTravel:"Саёҳат",goalDaily:"Ҳар рӯз гуфтугӯ кардан",startLesson1:"Аз дарси 1 оғоз кардан",continueProgress:"Идомаи пешрафти ҷорӣ",takePlacement:"Супоридани тести сатҳ",
     loadingLesson:"Дарс омода мешавад...",lessonLoadError:"Дарс кушода нашуд",sayAloud:"Бо овози баланд гӯед",said:"Гуфтам",check:"Санҷидан",reset:"Тоза кардан",correct:"Дуруст",incorrect:"Боз машқ кунед",lessonComplete:"Дарс анҷом шуд",submitLesson:"Анҷоми дарс",retryLesson:"Такрори дарс",continueCourse:"Идомаи курс",unlockMore:"Кушодани дарсҳои навбатӣ",reviewNow:"Такрори хатоҳо",loadingMistakes:"Ҷойҳои суст бор мешаванд...",
-    sectionComplete:"Қисм анҷом шуд",chapterComplete:"Қисми {chapter} анҷом шуд!",bookLessonComplete:"{level} дарси {lesson} анҷом шуд!",nextSection:"Қисми баъдӣ",nextChapter:"Кушодани қисми баъдӣ",claimXp:"Гирифтани XP",part:"қисм",totalXp:"Ҳамагӣ XP",rewardTitle:"Офарин!",streakInRow:"{days} рӯз пай дар пай",noMistakeTitle:"Бе хато",keepGoing:"Силсиларо давом диҳед",
-    traceHint:"Аз рӯи самти хатҳо кашед",traceDone:"Кашидам",micReady:"Пахш карда талаффуз кунед",
-    unitWords:"Калимаҳо",unitSound:"Овоз",unitCharacter:"Иероглиф",unitDialog:"Муколама",unitBuild:"Сохтан",unitSpeaking:"Талаффуз",unitReview:"Санҷиш"
+    sectionComplete:"Қисм анҷом шуд",chapterComplete:"Қисми {chapter} анҷом шуд!",bookLessonComplete:"{level} дарси {lesson} анҷом шуд!",nextSection:"Қисми баъдӣ",nextChapter:"Кушодани қисми баъдӣ",claimXp:"Гирифтани хол",part:"қисм",totalXp:"Ҳамагӣ хол",rewardTitle:"Офарин!",streakInRow:"{days} рӯз пай дар пай",noMistakeTitle:"Бе хато",keepGoing:"Силсиларо давом диҳед",
+    traceHint:"Тартиби навиштро бинед",traceDone:"Фаҳмо",micReady:"Пахш карда талаффуз кунед",
+    unitWords:"Калимаҳо",unitSound:"Овоз",unitCharacter:"Иероглиф",unitDialog:"Муколама",unitBuild:"Сохтан",unitSpeaking:"Талаффуз",unitReview:"Санҷиш",
+    levelMetric:"зина",uploadAvatar:"Иваз кардани сурат",userProfile:"Профили омӯзанда",beginnerLevel:"Навомӯз"
   }
 };
 
@@ -99,6 +103,11 @@ const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||JSO
 const write=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
 const tx=key=>(copy[lang]||copy.ru)[key]||copy.ru[key]||key;
 const labelLevel=value=>value==="hsk4a"?"HSK 4 上":value==="hsk4b"?"HSK 4 下":String(value||LEVEL_KEY).toUpperCase().replace("HSK","HSK ");
+function avatarMarkup(value,fallback="A"){
+  const raw=String(value||"").trim();
+  if(raw.startsWith("data:image/"))return `<img src="${esc(raw)}" alt="">`;
+  return esc((raw||fallback||"A").slice(0,2).toUpperCase());
+}
 const launchCurrent=Number(launchLesson)||0;
 const lessonByNumber=number=>LESSONS.find(item=>Number(item.n)===Number(number));
 const chapterLabel=index=>String.fromCharCode(65+Math.max(0,Math.min(25,Number(index)||0)));
@@ -136,6 +145,7 @@ function completedSectionCount(){return allCourseSections().filter(sectionIsDone
 function sectionProgress(){const all=allCourseSections();return Math.round(completedSectionCount()/Math.max(all.length,1)*100)}
 function completedCount(){return LESSONS.filter(item=>bookLessonIsDone(item.n)).length}
 function currentSection(){const all=allCourseSections();return all.find(section=>!sectionIsDone(section))||all[all.length-1]}
+function jumpToCurrentSection(){const section=currentSection();if(section)openLesson(section.lesson,section.key)}
 function currentLesson(){const section=currentSection();return lessonByNumber(section?.lesson)||LESSONS.find(item=>!bookLessonIsDone(item.n))||LESSONS[LESSONS.length-1]}
 function completedLessonSectionKeys(lesson){
   if(!lesson)return[];
@@ -148,6 +158,14 @@ function markSectionDone(sectionKey){
   meta.completedSections=meta.completedSections||{};
   meta.completedSections[`${LEVEL_KEY}:${sectionKey}`]=new Date().toISOString();
   write(META_KEY,meta);
+}
+function uploadAvatar(event){
+  const file=event?.target?.files?.[0];
+  if(!file)return;
+  if(!String(file.type||"").startsWith("image/")){toast(tx("lessonLoadError"));return}
+  const reader=new FileReader();
+  reader.onload=()=>{write(AVATAR_KEY,String(reader.result||""));renderProfile();renderLeague();toast(tx("uploadAvatar"))};
+  reader.readAsDataURL(file);
 }
 
 let meta=read(META_KEY,{xp:0,streak:0,lastActive:"",daily:{date:today(),xp:0,lesson:0,words:0,voice:0},chests:0,goal:"hsk_exam",minutes:10,completedSections:{}});
@@ -174,15 +192,15 @@ function normalizeMeta(){
 
 function appMarkup(){
   return `<div class="v2-app">
-    <header class="v2-topbar"><div class="v2-brand"><div class="v2-brand-mark">汉</div><div><strong>HSK AI</strong><small>${labelLevel(LEVEL_KEY)}</small></div></div><div class="v2-top-stats"><button class="v2-stat" data-tone="coral" onclick="V2.showPage('profile')" aria-label="Streak">◆ <span id="v2-streak">0</span></button><button class="v2-stat" data-tone="gold" onclick="V2.showPage('profile')" aria-label="XP">✦ <span id="v2-xp">0</span></button></div></header>
+    <header class="v2-topbar"><div class="v2-brand"><div class="v2-brand-mark">汉</div><div><strong>HSK AI</strong><small>${labelLevel(LEVEL_KEY)}</small></div></div><div class="v2-top-stats"><button class="v2-stat" data-tone="coral" onclick="V2.showPage('profile')" aria-label="${esc(tx("streak"))}">◆ <span id="v2-streak">0</span></button><button class="v2-stat" data-tone="gold" onclick="V2.showPage('profile')" aria-label="${esc(tx("xp"))}">✦ <span id="v2-xp">0</span></button></div></header>
     <main class="v2-pages">
       <section id="page-home" class="v2-page"></section>
       <section id="page-course" class="v2-page"></section>
       <section id="page-lesson" class="v2-page"></section>
-      <section id="page-flashcards" class="page v2-page"><header class="page-header"><button class="v2-back" onclick="V2.showPage('training')" aria-label="Back">‹</button><div class="eyebrow" id="fc-level-label"></div><h1 class="page-title" data-i18n="flashcards"></h1><p class="page-sub" data-i18n="flashcardSub"></p></header><div class="toolbar"><input id="search" class="search" data-placeholder="search" oninput="renderFlashcards()"></div><div class="filters" id="fc-filters"></div><main class="grid" id="fc-grid"></main></section>
-      <section id="page-grammar" class="page v2-page"><header class="page-header"><button class="v2-back" onclick="V2.showPage('training')" aria-label="Back">‹</button><div class="eyebrow" id="grammar-level-label"></div><h1 class="page-title" data-i18n="grammar"></h1><p class="page-sub" data-i18n="grammarSub"></p></header><div class="filters" id="grammar-filters"></div><main class="list" id="grammar-list"></main></section>
-      <section id="page-quiz" class="page v2-page"><header class="page-header quiz-header-compact"><button class="v2-back" onclick="V2.quizBack()" aria-label="Back">‹</button><div class="eyebrow" id="quiz-level-label"></div></header><div class="filters" id="quiz-filters"></div><main class="quiz-wrap"><div id="quiz-box" class="quiz-box"></div><div id="score-box" class="score-box" style="display:none"></div></main></section>
-      <section id="page-voice" class="page v2-page no-top-pad"><main class="voice-wrap"><iframe id="voice-frame" class="voice-frame" title="AI Voice" allow="microphone; autoplay"></iframe></main></section>
+      <section id="page-flashcards" class="page v2-page"><header class="page-header"><button class="v2-back" onclick="V2.showPage('training')" aria-label="${esc(tx("back"))}">‹</button><div class="eyebrow" id="fc-level-label"></div><h1 class="page-title" data-i18n="flashcards"></h1><p class="page-sub" data-i18n="flashcardSub"></p></header><div class="toolbar"><input id="search" class="search" data-placeholder="search" oninput="renderFlashcards()"></div><div class="filters" id="fc-filters"></div><main class="grid" id="fc-grid"></main></section>
+      <section id="page-grammar" class="page v2-page"><header class="page-header"><button class="v2-back" onclick="V2.showPage('training')" aria-label="${esc(tx("back"))}">‹</button><div class="eyebrow" id="grammar-level-label"></div><h1 class="page-title" data-i18n="grammar"></h1><p class="page-sub" data-i18n="grammarSub"></p></header><div class="filters" id="grammar-filters"></div><main class="list" id="grammar-list"></main></section>
+      <section id="page-quiz" class="page v2-page"><header class="page-header quiz-header-compact"><button class="v2-back" onclick="V2.quizBack()" aria-label="${esc(tx("back"))}">‹</button><div class="eyebrow" id="quiz-level-label"></div></header><div class="filters" id="quiz-filters"></div><main class="quiz-wrap"><div id="quiz-box" class="quiz-box"></div><div id="score-box" class="score-box" style="display:none"></div></main></section>
+      <section id="page-voice" class="page v2-page no-top-pad"><main class="voice-wrap"><iframe id="voice-frame" class="voice-frame" title="${esc(tx("voice"))}" allow="microphone; autoplay"></iframe></main></section>
       <section id="page-tests" class="v2-page"></section>
       <section id="page-profile" class="v2-page"></section>
       <section id="page-training" class="v2-page"></section>
@@ -201,7 +219,15 @@ function navButton(page,icon,label,extra=""){return `<button data-page="${page}"
 function progress(){return sectionProgress()}
 function xpLevel(){return Math.floor(meta.xp/250)+1}
 function leagueName(){return serverGamification?.league||["Bronze","Silver","Gold","Diamond","Sapphire","Legend"][Math.min(5,Math.floor(meta.xp/500))]}
-function syncGamification(value,notify=false){if(!value)return;serverGamification={...(serverGamification||{}),...value};meta.xp=Number(value.xp??meta.xp);meta.streak=Number(value.streak??meta.streak);write(META_KEY,meta);if(notify&&Number(value.awarded_xp||0)>0)toast(`+${Number(value.awarded_xp)} XP`)}
+function leagueLabel(value=leagueName()){
+  const labels={
+    ru:{Bronze:"Бронза",Silver:"Серебро",Gold:"Золото",Diamond:"Алмаз",Sapphire:"Сапфир",Legend:"Легенда"},
+    uz:{Bronze:"Bronza",Silver:"Kumush",Gold:"Oltin",Diamond:"Olmos",Sapphire:"Safir",Legend:"Afsona"},
+    tj:{Bronze:"Биринҷӣ",Silver:"Нуқра",Gold:"Тилло",Diamond:"Алмос",Sapphire:"Сафир",Legend:"Афсона"}
+  };
+  return labels[lang]?.[value]||labels.ru[value]||String(value||"");
+}
+function syncGamification(value,notify=false){if(!value)return;serverGamification={...(serverGamification||{}),...value};meta.xp=Number(value.xp??meta.xp);meta.streak=Number(value.streak??meta.streak);write(META_KEY,meta);if(notify&&Number(value.awarded_xp||0)>0)toast(`+${Number(value.awarded_xp)} ${tx("xp")}`)}
 window.addEventListener("message",event=>{const data=event?.data||{};if(data.type==="hsk_voice_completed"){meta.daily.voice=1;write(META_KEY,meta);syncGamification(data.reward,true);renderAll()}else if(data.type==="hsk_voice_close"){showPage("home")}else if(data.type==="hsk_voice_subscribe"){openSubscription(data.source||"voice_limit")}});
 async function loadServerGamification(){if(!bridge.hasAuth?.()||gamificationLoading)return;gamificationLoading=true;try{const result=await bridge.loadGamification?.();if(result?.ok){syncGamification(result);renderAll()}}catch(_){}finally{gamificationLoading=false}}
 function featureAllowed(key){const item=ACCESS.course_features?.[key];return ACCESS.status==="active"||item?.allowed!==false}
@@ -212,7 +238,7 @@ function energyState(){const energy=serverGamification?.energy||{};return{curren
 function chestState(){const chest=serverGamification?.reward_chest||{};const progress=Number(chest.progress??(meta.xp%100));return{ready:chest.ready??(meta.xp>0&&progress>=80),progress,nextXp:Number(chest.next_xp??Math.max(0,80-progress))}}
 function paidBadge(item){return item?.is_paid?`<em class="v2-paid-badge">${esc(tx("paidBadge"))}</em>`:""}
 function currentUserName(){return serverProfile?.user?.name||"Akbarshoh"}
-function currentUserAvatar(){const raw=serverProfile?.user?.avatar;return raw||String(currentUserName()).slice(0,1).toUpperCase()||"A"}
+function currentUserAvatar(){const uploaded=read(AVATAR_KEY,"");const raw=serverProfile?.user?.avatar;return uploaded||raw||String(currentUserName()).slice(0,1).toUpperCase()||"A"}
 function leagueEntries(){
   const mine=Number(serverGamification?.weekly_xp??serverGamification?.league_points??meta.xp%700);
   const source=Array.isArray(serverGamification?.leaderboard)&&serverGamification.leaderboard.length?serverGamification.leaderboard:[
@@ -246,13 +272,13 @@ function leaguePushHtml(reward){
     ? tx("leaguePassed").replace("{name}",passed.name||"")
     : tx("leagueNeed").replace("{name}",nextAhead?.name||rows[0]?.name||"").replace("{xp}",String(Math.max(1,Number(nextAhead?.league_points??nextAhead?.xp??0)-Number(me.league_points??me.xp??0)+1)));
   const focus=[nextAhead,me,passed].filter(Boolean).filter((item,index,array)=>array.findIndex(other=>other.name===item.name)===index).slice(0,3);
-  return `<section class="v2-reward-step v2-league-push"><div class="v2-mini-cup sapphire">◇</div><h3>${esc(tx("leagueMove"))}</h3><p>${esc(msg)}</p><div class="v2-league-mini">${focus.map(item=>`<div class="${item.is_current_user?"me":""}"><b>${Number(item.rank||0)}</b><span>${esc(item.name||"")}</span><strong>${Number(item.league_points??item.xp??0)} XP</strong></div>`).join("")}</div></section>`;
+  return `<section class="v2-reward-step v2-league-push"><div class="v2-mini-cup sapphire">◇</div><h3>${esc(tx("leagueMove"))}</h3><p>${esc(msg)}</p><div class="v2-league-mini">${focus.map(item=>`<div class="${item.is_current_user?"me":""}"><b>${Number(item.rank||0)}</b><span>${esc(item.name||"")}</span><strong>${Number(item.league_points??item.xp??0)} ${esc(tx("xp"))}</strong></div>`).join("")}</div></section>`;
 }
 function rewardSequenceHtml(result,reward,{title,xp,mistakes,action,actionLabel}){
   const streak=Number(reward?.streak||meta.streak||1);
   const days=streakDays();
   const percent=Number(result.percent||0);
-  return `<div class="v2-lesson-shell v2-reward-shell"><section class="v2-reward-step main ${result.book_lesson_completed?"book":result.chapter_completed?"chapter":"section"}">${hskMascot(result.book_lesson_completed?"book":"section")}<div class="v2-kicker">${esc(lessonFlow.section_key||"")}${result.chapter_completed?` · ${esc(result.chapter_label||lessonFlow.chapter_label||"")} ${esc(tx("part"))}`:""}</div><h2>${esc(title)}</h2><div class="v2-reward-grid"><span><b>+${xp}</b><small>XP</small></span><span><b>${percent}%</b><small>${esc(tx("correct"))}</small></span><span><b>${mistakes}</b><small>${esc(tx("mistakesShort"))}</small></span><span><b>${Math.max(1,Math.ceil((lessonFlow.cards?.length||8)*0.6))}m</b><small>${esc(tx("timeSpent"))}</small></span></div></section><section class="v2-reward-step v2-streak-reward">${hskMascot("streak")}<h3>${esc(tx("streakInRow").replace("{days}",String(streak)))}</h3><p>${esc(mistakes===0?tx("noMistakeTitle"):tx("keepGoing"))}</p><div class="v2-streak-week">${days.map(on=>`<i class="${on?"on":""}">✓</i>`).join("")}</div></section>${leaguePushHtml(reward)}<button class="v2-primary v2-claim-button" onclick="${action}">${esc(actionLabel)} ›</button></div>`;
+  return `<div class="v2-lesson-shell v2-reward-shell"><section class="v2-reward-step main ${result.book_lesson_completed?"book":result.chapter_completed?"chapter":"section"}">${hskMascot(result.book_lesson_completed?"book":"section")}<div class="v2-kicker">${esc(lessonFlow.section_key||"")}${result.chapter_completed?` · ${esc(result.chapter_label||lessonFlow.chapter_label||"")} ${esc(tx("part"))}`:""}</div><h2>${esc(title)}</h2><div class="v2-reward-grid"><span><b>+${xp}</b><small>${esc(tx("xp"))}</small></span><span><b>${percent}%</b><small>${esc(tx("correct"))}</small></span><span><b>${mistakes}</b><small>${esc(tx("mistakesShort"))}</small></span><span><b>${Math.max(1,Math.ceil((lessonFlow.cards?.length||8)*0.6))}</b><small>${esc(tx("minutes"))}</small></span></div></section><section class="v2-reward-step v2-streak-reward">${hskMascot("streak")}<h3>${esc(tx("streakInRow").replace("{days}",String(streak)))}</h3><p>${esc(mistakes===0?tx("noMistakeTitle"):tx("keepGoing"))}</p><div class="v2-streak-week">${days.map(on=>`<i class="${on?"on":""}">✓</i>`).join("")}</div></section>${leaguePushHtml(reward)}<button class="v2-primary v2-claim-button" onclick="${action}">${esc(actionLabel)} ›</button></div>`;
 }
 function showPaywall(source="course_locked"){
   closeSheet();
@@ -275,10 +301,10 @@ function renderHome(){
     <div class="v2-page-head"><div class="v2-kicker">${esc(tx("today"))}</div><h1 class="v2-title">${esc(tx("welcome"))}</h1></div>
     <section class="v2-hero"><div class="v2-hero-row"><div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${lesson?.n||1}</div><h1>${esc(tr(lesson?.t)||"")}</h1><p>${esc(tr(lesson?.sub)||"")}</p></div><div class="v2-progress-ring" style="--progress:${progress()}%" data-value="${progress()}%"></div></div><button class="v2-primary" onclick="V2.openLesson(${lesson?.n||1})">▶ ${esc(tx("continue"))}</button></section>
     <section class="v2-section"><div class="v2-action-grid"><button class="v2-feature wide" onclick="V2.showPage('tests')"><span class="v2-feature-icon">✓</span><b>${esc(tx("testCenter"))}</b><small>${esc(tx("testCenterSub"))}</small></button><button class="v2-feature" onclick="V2.showPage('training')"><span class="v2-feature-icon">◫</span><b>${esc(tx("training"))}</b><small>${esc(tx("trainingSub"))}</small></button><button class="v2-feature" onclick="V2.showPage('mistakes')"><span class="v2-feature-icon">!</span><b>${esc(tx("mistakes"))}</b><small>${esc(tx("mistakesSub"))}</small></button></div></section>
-    <section class="v2-section"><div class="v2-section-head"><h2 class="v2-section-title">${esc(tx("dailyGoal"))}</h2><span class="v2-link">${goal} ${esc(tx("minutes"))}</span></div><div class="v2-goal"><div class="v2-goal-top"><b>${meta.daily.xp||0} XP</b><span>${dailyProgress}%</span></div><div class="v2-bar"><i style="width:${dailyProgress}%"></i></div></div></section>
+    <section class="v2-section"><div class="v2-section-head"><h2 class="v2-section-title">${esc(tx("dailyGoal"))}</h2><span class="v2-link">${goal} ${esc(tx("minutes"))}</span></div><div class="v2-goal"><div class="v2-goal-top"><b>${meta.daily.xp||0} ${esc(tx("xp"))}</b><span>${dailyProgress}%</span></div><div class="v2-bar"><i style="width:${dailyProgress}%"></i></div></div></section>
     <section class="v2-section"><div class="v2-section-head"><h2 class="v2-section-title">${esc(tx("missions"))}</h2></div><div class="v2-missions">${missionRow("▦",tx("lessonMission"),meta.daily.lesson||0,1)}${missionRow("字",tx("wordMission"),meta.daily.words||0,5)}${missionRow("◌",tx("voiceMission"),meta.daily.voice||0,1)}</div></section>
-    <section class="v2-section"><div class="v2-section-head"><h2 class="v2-section-title">${esc(tx("yourProgress"))}</h2></div><div class="v2-metrics"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>${tx("xp")}</span></div><div class="v2-metric" data-tone="green"><strong>${meta.streak}</strong><span>${tx("streak")}</span></div><div class="v2-metric" data-tone="purple"><strong>${xpLevel()}</strong><span>Level</span></div></div></section>
-    <section class="v2-section"><div class="v2-split"><button class="v2-feature" onclick="V2.showPage('league')"><span class="v2-feature-icon">◇</span><b>${esc(tx("league"))}</b><small>${leagueName()} · ${Number(serverGamification?.league_points??meta.xp%500)} ${esc(tx("leaguePoints"))}</small></button><button class="v2-feature" onclick="V2.openChest()"><span class="v2-feature-icon">▣</span><b>${esc(chest.ready?tx("rewardReady"):tx("rewardChest"))}</b><small>${esc(chest.ready?tx("openChest"):`${chest.progress}/80 XP`)}</small></button></div><div class="v2-energy-strip"><b>${esc(tx("energy"))}: ${energy.current}/${energy.max}</b><span>${esc(tx("energySub"))}</span></div></section>`;
+    <section class="v2-section"><div class="v2-section-head"><h2 class="v2-section-title">${esc(tx("yourProgress"))}</h2></div><div class="v2-metrics"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>${tx("xp")}</span></div><div class="v2-metric" data-tone="green"><strong>${meta.streak}</strong><span>${tx("streak")}</span></div><div class="v2-metric" data-tone="purple"><strong>${xpLevel()}</strong><span>${esc(tx("levelMetric"))}</span></div></div></section>
+    <section class="v2-section"><button class="v2-feature wide" onclick="V2.openChest()"><span class="v2-feature-icon">▣</span><b>${esc(chest.ready?tx("rewardReady"):tx("rewardChest"))}</b><small>${esc(chest.ready?tx("openChest"):`${chest.progress}/80 ${tx("xp")}`)}</small></button><div class="v2-energy-strip"><b>${esc(tx("energy"))}: ${energy.current}/${energy.max}</b><span>${esc(tx("energySub"))}</span></div></section>`;
 }
 
 function sectionCurrent(section){const current=currentSection();return current&&current.key===section.key}
@@ -307,7 +333,7 @@ function renderCourse(){
       if(lesson.n%5===0)nodes.push(milestoneItem(lesson.n,"boss"));else if(lesson.n%3===0)nodes.push(milestoneItem(lesson.n,"review"));
     }
   });
-  document.getElementById("page-course").innerHTML=`<div class="v2-page-head"><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("path"))}</h1><p class="v2-subtitle">${esc(tx("pathSub"))}</p></div><div class="v2-path-summary"><div><b>${completedCount()}/${LESSONS.length} ${esc(tx("completed"))}</b><div class="v2-bar"><i style="width:${progress()}%"></i></div></div><span>${progress()}%</span></div><div class="v2-path">${nodes.join("")}</div>`;
+  document.getElementById("page-course").innerHTML=`<div class="v2-page-head"><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("path"))}</h1><p class="v2-subtitle">${esc(tx("pathSub"))}</p></div><div class="v2-path-summary"><div><b>${completedCount()}/${LESSONS.length} ${esc(tx("completed"))}</b><div class="v2-bar"><i style="width:${progress()}%"></i></div></div><span>${progress()}%</span></div><button class="v2-course-jump" onclick="V2.jumpToCurrentSection()">⌖ ${esc(tx("current"))}</button><div class="v2-path">${nodes.join("")}</div>`;
 }
 
 function renderTests(){
@@ -316,22 +342,22 @@ function renderTests(){
     `<div class="v2-test-group"><div class="v2-kicker">${esc(tx("hskExams"))}</div>${["hsk1","hsk2","hsk3","hsk4a"].map(level=>`<button class="v2-row-card" onclick="${lockAction("training_test",`V2.startMock('${level}')`)}"><span class="v2-row-icon">${level.replace(/[^0-9]/g,"")}</span><span><b>${labelLevel(level)} · ${esc(tx("mock"))}</b><small>${esc(lockSub("training_test",tx("mockSub")))}</small></span><span class="v2-arrow">›</span></button>`).join("")}</div>`,
     `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('pronunciation')")}"><span class="v2-row-icon">声</span><span><b>${esc(tx("pronunciationTest"))}</b><small>${esc(lockSub("training_test",tx("speaking")))}</small></span><span class="v2-arrow">›</span></button>`,
     `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('characters')")}"><span class="v2-row-icon">字</span><span><b>${esc(tx("characterTest"))}</b><small>${esc(lockSub("training_test",tx("characters")))}</small></span><span class="v2-arrow">›</span></button>`,
-    `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('pinyin')")}"><span class="v2-row-icon">拼</span><span><b>${esc(tx("pinyinTest"))}</b><small>${esc(lockSub("training_test","pinyin"))}</small></span><span class="v2-arrow">›</span></button>`
+    `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('pinyin')")}"><span class="v2-row-icon">拼</span><span><b>${esc(tx("pinyinTest"))}</b><small>${esc(lockSub("training_test",tx("pinyinTest")))}</small></span><span class="v2-arrow">›</span></button>`
   ];
-  document.getElementById("page-tests").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('home')" aria-label="Back">‹</button><div class="v2-kicker">HSK AI</div><h1 class="v2-title">${esc(tx("testCenter"))}</h1><p class="v2-subtitle">${esc(tx("testsSub"))}</p></div><div class="v2-test-list">${cards.join("")}</div>`;
+  document.getElementById("page-tests").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('home')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-kicker">HSK AI</div><h1 class="v2-title">${esc(tx("testCenter"))}</h1><p class="v2-subtitle">${esc(tx("testsSub"))}</p></div><div class="v2-test-list">${cards.join("")}</div>`;
 }
 
 function row(icon,title,sub,action){return `<button class="v2-row-card" onclick="${action}"><span class="v2-row-icon">${icon}</span><span><b>${esc(title)}</b><small>${esc(sub)}</small></span><span class="v2-arrow">›</span></button>`}
 function renderProfile(){
-  const stats=serverProfile?.stats||{};const user=serverProfile?.user||{};const subscription=serverProfile?.subscription||{};
+  const stats=serverProfile?.stats||{};const user=serverProfile?.user||{};
   const mistakeCount=stats.mistakes??serverMistakes?.summary?.total??read(MISTAKES_KEY,[]).reduce((s,m)=>s+m.count,0);
-  const doneCount=stats.completed_lessons??completedCount();const name=user.name||"HSK AI Student";const avatar=user.avatar||labelLevel(LEVEL_KEY).replace(/\D/g,"")||"1";
+  const doneCount=stats.completed_lessons??completedCount();const name=user.name||"HSK AI";const avatar=currentUserAvatar();
   const days=Array.from({length:7},(_,index)=>index<Math.min(7,Number(meta.streak||0)));
-  document.getElementById("page-profile").innerHTML=`<div class="v2-profile-head"><div class="v2-avatar">${esc(avatar)}</div><div><h1>${esc(name)}</h1><p>${meta.xp} XP · ${meta.streak} ${esc(tx("streak"))}</p><span class="v2-badge">${leagueName()} League ${isPaid()?`· ${esc(tx("paidBadge"))}`:""}</span></div></div><div class="v2-metrics v2-section"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>XP</span></div><div class="v2-metric" data-tone="green"><strong>${doneCount}</strong><span>${esc(tx("done"))}</span></div><div class="v2-metric" data-tone="purple"><strong>${mistakeCount}</strong><span>${esc(tx("mistakes"))}</span></div></div><section class="v2-section"><div class="v2-streak-card"><div><b>${esc(tx("streakCalendar"))}</b><small>${esc(tx("milestones"))} · ${esc(tx("streakFreeze"))}</small></div><div class="v2-calendar">${days.map(on=>`<i class="${on?"on":""}"></i>`).join("")}</div></div></section><div class="v2-profile-list">${row("◫",tx("training"),tx("trainingSub"),"V2.showPage('training')")}${row("!",tx("mistakes"),tx("mistakesSub"),"V2.showPage('mistakes')")}${row("◇",tx("league"),leagueName(),"V2.showPage('league')")}${row("★",tx("achievements"),`${doneCount} / ${LESSONS.length}`,"V2.showPage('achievements')")}${row("◆",tx("subscription"),subscription.status||tx("subscriptionSub"),"V2.openSubscription('profile_subscription')")}${row("?",tx("support"),tx("supportSub"),"V2.openSupport('profile_support')")}${row("⚙",tx("settings"),`${labelLevel(user.level||LEVEL_KEY)} · ${(user.language||lang).toUpperCase()}`,"V2.openSettings()")}</div>`;
+  document.getElementById("page-profile").innerHTML=`<div class="v2-profile-head"><button class="v2-avatar upload" onclick="document.getElementById('v2-avatar-input')?.click()" aria-label="${esc(tx("uploadAvatar"))}">${avatarMarkup(avatar,String(name).slice(0,1)||"A")}</button><input id="v2-avatar-input" type="file" accept="image/*" hidden onchange="V2.uploadAvatar(event)"><div><h1>${esc(name)}</h1><p>${meta.xp} ${esc(tx("xp"))} · ${meta.streak} ${esc(tx("streak"))}</p><span class="v2-badge">${leagueLabel()} ${isPaid()?`· ${esc(tx("paidBadge"))}`:""}</span></div></div><div class="v2-metrics v2-section"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>${esc(tx("xp"))}</span></div><div class="v2-metric" data-tone="green"><strong>${doneCount}</strong><span>${esc(tx("done"))}</span></div><div class="v2-metric" data-tone="purple"><strong>${mistakeCount}</strong><span>${esc(tx("mistakes"))}</span></div></div><section class="v2-section"><div class="v2-streak-card"><div><b>${esc(tx("streakCalendar"))}</b><small>${esc(tx("milestones"))} · ${esc(tx("streakFreeze"))}</small></div><div class="v2-calendar">${days.map(on=>`<i class="${on?"on":""}"></i>`).join("")}</div></div></section><div class="v2-profile-list">${row("◫",tx("training"),tx("trainingSub"),"V2.showPage('training')")}${row("!",tx("mistakes"),tx("mistakesSub"),"V2.showPage('mistakes')")}${row("★",tx("achievements"),`${doneCount} / ${LESSONS.length}`,"V2.showPage('achievements')")}${row("?",tx("support"),tx("supportSub"),"V2.openSupport('profile_support')")}</div>`;
 }
 
 function renderTraining(){
-  document.getElementById("page-training").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('profile')" aria-label="Back">‹</button><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("training"))}</h1><p class="v2-subtitle">${esc(tx("trainingSub"))}</p></div><div class="v2-profile-list">${row("◖",tx("listening"),lockSub("training_test",tx("words")),lockAction("training_test","V2.startTraining('listening')"))}${row("声",tx("pronunciationTest"),lockSub("training_test",tx("speaking")),lockAction("training_test","V2.startTraining('pronunciation')"))}${row("✎",tx("writing"),lockSub("training_test",tx("grammar")),lockAction("training_test","V2.startTraining('writing')"))}${row("字",tx("characters"),lockSub("training_test",tx("characterTest")),lockAction("training_test","V2.startTraining('characters')"))}${row("拼",tx("pinyinTest"),lockSub("training_test","pinyin"),lockAction("training_test","V2.startTraining('pinyin')"))}${row("◌",tx("speaking"),lockSub("voice",tx("voice")),lockAction("voice","V2.showPage('voice')"))}${row("!",tx("mistakes"),lockSub("training_test",tx("mistakesSub")),"V2.showPage('mistakes')")}</div>`;
+  document.getElementById("page-training").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('profile')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("training"))}</h1><p class="v2-subtitle">${esc(tx("trainingSub"))}</p></div><div class="v2-profile-list">${row("◖",tx("listening"),lockSub("training_test",tx("words")),lockAction("training_test","V2.startTraining('listening')"))}${row("声",tx("pronunciationTest"),lockSub("training_test",tx("speaking")),lockAction("training_test","V2.startTraining('pronunciation')"))}${row("✎",tx("writing"),lockSub("training_test",tx("grammar")),lockAction("training_test","V2.startTraining('writing')"))}${row("字",tx("characters"),lockSub("training_test",tx("characterTest")),lockAction("training_test","V2.startTraining('characters')"))}${row("拼",tx("pinyinTest"),lockSub("training_test",tx("pinyinTest")),lockAction("training_test","V2.startTraining('pinyin')"))}${row("◌",tx("speaking"),lockSub("voice",tx("voice")),lockAction("voice","V2.showPage('voice')"))}${row("!",tx("mistakes"),lockSub("training_test",tx("mistakesSub")),"V2.showPage('mistakes')")}</div>`;
 }
 
 function renderMistakes(){
@@ -339,7 +365,7 @@ function renderMistakes(){
   const items=serverMistakes?.items||localItems;
   const loading=mistakesLoading&&!serverMistakes;
   const content=loading?`<div class="v2-empty">${esc(tx("loadingMistakes"))}</div>`:items.length?`<div class="v2-section"><button class="v2-primary v2-review-button" onclick="${lockAction("training_test","V2.startMistakeReview()")}">↻ ${esc(featureAllowed("training_test")?tx("reviewNow"):tx("subscription"))}</button>${items.map(item=>`<div class="v2-mistake"><div><b>${esc(item.question)}</b><p>${esc(item.correct_answer||"")}</p><small>${esc(item.category||item.source||"")}</small></div><span class="v2-count">${item.count} ${esc(tx("mistakesCount"))}</span></div>`).join("")}</div>`:`<div class="v2-empty">${esc(tx("noMistakes"))}</div>`;
-  document.getElementById("page-mistakes").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('training')" aria-label="Back">‹</button><div class="v2-kicker">HSK AI</div><h1 class="v2-title">${esc(tx("mistakes"))}</h1><p class="v2-subtitle">${esc(tx("mistakesSub"))}</p></div>${content}`;
+  document.getElementById("page-mistakes").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('training')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-kicker">HSK AI</div><h1 class="v2-title">${esc(tx("mistakes"))}</h1><p class="v2-subtitle">${esc(tx("mistakesSub"))}</p></div>${content}`;
 }
 async function loadServerMistakes(){
   if(!bridge.hasAuth?.()||mistakesLoading)return;
@@ -351,12 +377,28 @@ function renderLeague(){
   const mine=rows.find(item=>item.is_current_user)||rows[0];
   const cupNames=["Bronze","Silver","Gold","Diamond","Sapphire","Legend"];
   const currentLeague=leagueName();
+  const currentIndex=Math.max(0,cupNames.indexOf(currentLeague));
+  const podiumNames=[
+    cupNames[currentIndex>0?currentIndex-1:Math.min(1,cupNames.length-1)],
+    currentLeague,
+    cupNames[currentIndex<cupNames.length-1?currentIndex+1:Math.max(0,currentIndex-1)]
+  ];
+  const cupIcon=name=>name==="Diamond"?"◆":name==="Sapphire"?"◇":name==="Legend"?"★":"♜";
   const medals=["🥇","🥈","🥉"];
-  document.getElementById("page-league").innerHTML=`<div class="v2-page-head"><div class="v2-kicker">${currentLeague} · ${esc(tx("weeklyReset"))}</div><h1 class="v2-title">${esc(tx("league"))}</h1><p class="v2-subtitle">${esc(tx("leagueSize"))} · ${Number(mine?.league_points??mine?.xp??0)} ${esc(tx("leaguePoints"))}</p></div><div class="v2-cup-track">${cupNames.map(name=>`<div class="v2-cup ${name===currentLeague?"active":""}"><span>${name==="Diamond"?"◆":name==="Sapphire"?"◇":name==="Legend"?"★":"♜"}</span><small>${esc(name)}</small></div>`).join("")}</div><section class="v2-section"><div class="v2-league-prize"><b>${esc(tx("reward"))}</b><span>+10 AI Voice sec · +1 ${esc(tx("energy"))}</span></div></section><div class="v2-league-list">${rows.map(item=>{const rank=Number(item.rank||1);const points=Number(item.league_points??item.xp??0);return `<div class="v2-league-row ${item.is_current_user?"current":""} ${rank<=3?"top":""}"><div class="v2-rank-medal">${rank<=3?medals[rank-1]:rank}</div><div class="v2-league-avatar">${esc(item.avatar||String(item.name||"?").slice(0,1).toUpperCase())}</div><div class="v2-league-user"><b>${esc(item.name||"")} ${paidBadge(item)}</b><small>${item.country?`${esc(item.country)} · `:""}${rank<=3?esc(tx("reward")):currentLeague}</small></div><strong>${points} XP</strong></div>`}).join("")}</div>`;
+  document.getElementById("page-league").innerHTML=`<div class="v2-page-head"><div class="v2-kicker">${leagueLabel(currentLeague)} · ${esc(tx("weeklyReset"))}</div><h1 class="v2-title">${esc(tx("league"))}</h1><p class="v2-subtitle">${esc(tx("leagueSize"))} · ${Number(mine?.league_points??mine?.xp??0)} ${esc(tx("leaguePoints"))}</p></div><div class="v2-cup-podium">${podiumNames.map((name,index)=>`<div class="v2-cup-stage ${index===1?"large":index===0?"medium":"small"} ${name===currentLeague?"active":""}"><span>${cupIcon(name)}</span><small>${esc(leagueLabel(name))}</small></div>`).join("")}</div><div class="v2-league-list">${rows.map((item,index)=>{const rank=Number(item.rank||1);const points=Number(item.league_points??item.xp??0);return `<button class="v2-league-row ${item.is_current_user?"current":""} ${rank<=3?"top":""}" onclick="V2.openLeagueUser(${index})"><div class="v2-rank-medal">${rank<=3?medals[rank-1]:rank}</div><div class="v2-league-avatar">${avatarMarkup(item.avatar,String(item.name||"?").slice(0,1))}</div><div class="v2-league-user"><b>${esc(item.name||"")} ${paidBadge(item)}</b><small>${item.country?`${esc(item.country)} · `:""}${rank<=3?esc(tx("reward")):leagueLabel(currentLeague)}</small></div><strong>${points} ${esc(tx("xp"))}</strong></button>`}).join("")}</div>`;
+}
+function openLeagueUser(index){
+  const item=leagueEntries()[Number(index)];
+  if(!item)return;
+  document.getElementById("v2-sheet")?.remove();
+  const points=Number(item.league_points??item.xp??0);
+  const root=document.createElement("div");root.id="v2-sheet";root.className="v2-sheet-backdrop";
+  root.innerHTML=`<div class="v2-sheet v2-user-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-league-avatar large">${avatarMarkup(item.avatar,String(item.name||"?").slice(0,1))}</div><h2>${esc(item.name||tx("userProfile"))}</h2><p>${esc(tx("league"))}: ${esc(leagueLabel())} · ${Number(item.rank||0)} · ${points} ${esc(tx("xp"))}</p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="document.getElementById('v2-sheet')?.remove()">${esc(tx("back"))}</button></div></div>`;
+  root.onclick=()=>root.remove();document.body.appendChild(root);
 }
 function renderAchievements(){
-  const data=[["▦",tx("lessonMission"),completedCount(),1],["✦","100 XP",meta.xp,100],["◆",`7 ${tx("streak")}`,meta.streak,7],["字",tx("wordMission"),meta.daily.words||0,5]];
-  document.getElementById("page-achievements").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('profile')" aria-label="Back">‹</button><div class="v2-kicker">HSK AI</div><h1 class="v2-title">${esc(tx("achievements"))}</h1></div><div class="v2-profile-list">${data.map(item=>`<div class="v2-row-card"><span class="v2-row-icon">${item[0]}</span><span><b>${esc(item[1])}</b><small>${Math.min(item[2],item[3])} / ${item[3]}</small></span><span class="v2-check ${item[2]>=item[3]?"":"pending"}">${item[2]>=item[3]?"✓":"○"}</span></div>`).join("")}</div>`;
+  const data=[["▦",tx("lessonMission"),completedCount(),1],["✦",`100 ${tx("xp")}`,meta.xp,100],["◆",`7 ${tx("streak")}`,meta.streak,7],["字",tx("wordMission"),meta.daily.words||0,5]];
+  document.getElementById("page-achievements").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('profile')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-kicker">HSK AI</div><h1 class="v2-title">${esc(tx("achievements"))}</h1></div><div class="v2-profile-list">${data.map(item=>`<div class="v2-row-card"><span class="v2-row-icon">${item[0]}</span><span><b>${esc(item[1])}</b><small>${Math.min(item[2],item[3])} / ${item[3]}</small></span><span class="v2-check ${item[2]>=item[3]?"":"pending"}">${item[2]>=item[3]?"✓":"○"}</span></div>`).join("")}</div>`;
 }
 
 function renderAll(){
@@ -366,6 +408,7 @@ function renderAll(){
 }
 
 function showPage(next){
+  document.querySelector(".v2-app")?.classList.toggle("voice-focus",next==="voice");
   document.querySelectorAll(".v2-page,.page").forEach(el=>el.classList.toggle("active",el.id===`page-${next}`));
   const root=next==="tests"||next==="quiz"&&["placement","mock"].includes(testMode)?"home":["training","mistakes","achievements"].includes(next)||next==="quiz"&&["training","mistakes"].includes(testMode)?"profile":["flashcards","grammar","quiz","lesson"].includes(next)?"course":next;
   document.querySelectorAll(".v2-nav button").forEach(el=>el.classList.toggle("active",el.dataset.page===root));
@@ -393,8 +436,8 @@ function openLesson(number,sectionKey=""){
   root.onclick=()=>root.remove();document.body.appendChild(root);
 }
 function closeSheet(){document.getElementById("v2-sheet")?.remove()}
-function renderLessonLoading(){const root=document.getElementById("page-lesson");root.innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="Back">‹</button><div class="v2-lesson-progress"><i></i></div><span></span></div><div class="v2-lesson-card v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div></div>`}
-function lessonError(error){const code=String(error?.code||"");const locked=code==="free_feature_limit_reached";document.getElementById("page-lesson").innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="Back">‹</button><div></div><span></span></div><div class="v2-lesson-card v2-lesson-result"><div class="v2-result-mark">${locked?"◆":"!"}</div><h2>${esc(locked?tx("freeLessonTitle"):tx("lessonLoadError"))}</h2><p>${esc(locked?tx("freeLessonText"):code||tx("onboardingError"))}</p><button class="v2-primary" onclick="${locked?"V2.showPaywall('lesson_server_locked')":"V2.showPage('course')"}">${esc(locked?tx("subscribeAction"):tx("back"))}</button></div></div>`}
+function renderLessonLoading(){const root=document.getElementById("page-lesson");root.innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-lesson-progress"><i></i></div><span></span></div><div class="v2-lesson-card v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div></div>`}
+function lessonError(error){const code=String(error?.code||"");const locked=code==="free_feature_limit_reached";document.getElementById("page-lesson").innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="${esc(tx("back"))}">‹</button><div></div><span></span></div><div class="v2-lesson-card v2-lesson-result"><div class="v2-result-mark">${locked?"◆":"!"}</div><h2>${esc(locked?tx("freeLessonTitle"):tx("lessonLoadError"))}</h2><p>${esc(locked?tx("freeLessonText"):code||tx("onboardingError"))}</p><button class="v2-primary" onclick="${locked?"V2.showPaywall('lesson_server_locked')":"V2.showPage('course')"}">${esc(locked?tx("subscribeAction"):tx("back"))}</button></div></div>`}
 async function startLesson(number,sectionKey=""){
   closeSheet();quizLesson=Number(number);testMode="lesson";lessonFlow=null;lessonCardIndex=0;lessonResponses={};lessonSubmitting=false;showPage("lesson");renderLessonLoading();
   try{
@@ -427,7 +470,7 @@ function renderLessonCard(){
   else if(card.type==="character_trace")body=`<button class="v2-trace-stage ${response?"done":""}" onclick="V2.completePassiveLessonCard()"><i></i><strong>${esc(card.character||card.word||"汉")}</strong><span>↘</span></button><div class="v2-trace-meta"><b>${esc(card.word||"")}</b><small>${esc(card.pinyin||"")} · ${esc(card.translation||"")}</small></div><p class="v2-pronunciation-hint">${esc(response?tx("traceDone"):tx("traceHint"))}</p>`;
   else if(card.type==="pronunciation")body=`<div class="v2-speech-card"><strong>${esc(card.translation||card.phrase)}</strong><small>${esc(card.phrase)} · ${esc(card.pinyin)}</small><div><button class="v2-mic-button" onclick="V2.completePassiveLessonCard()">🎙</button><button class="v2-audio-action compact" onclick="V2.playCurrentLessonAudio('phrase')">↻</button></div></div><p class="v2-pronunciation-hint">${esc(tx("micReady"))}</p>`;
   const canContinue=["active_word","pronunciation","character_trace"].includes(card.type)||Boolean(response);
-  root.innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="Back">‹</button><div class="v2-lesson-progress"><i style="width:${lessonProgress()}%"></i></div><span>${lessonCardIndex+1}/${lessonFlow.cards.length}</span></div><article class="v2-lesson-card"><div class="v2-lesson-unit"><span>${esc(card.unit||card.title||tx("lesson"))}</span><b>${esc(card.title||"")}</b></div><h2>${esc(card.prompt||card.title||"")}</h2>${body}${canContinue?`<button class="v2-primary v2-card-next" onclick="V2.continueLessonCard()">${esc(card.type==="pronunciation"?tx("said"):card.type==="character_trace"?tx("traceDone"):lessonCardIndex===lessonFlow.cards.length-1?tx("submitLesson"):tx("next"))} ›</button>`:""}</article></div>`;
+  root.innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-lesson-progress"><i style="width:${lessonProgress()}%"></i></div><span>${lessonCardIndex+1}/${lessonFlow.cards.length}</span></div><article class="v2-lesson-card"><div class="v2-lesson-unit"><span>${esc(card.unit||card.title||tx("lesson"))}</span><b>${esc(card.title||"")}</b></div><h2>${esc(card.prompt||card.title||"")}</h2>${body}${canContinue?`<button class="v2-primary v2-card-next" onclick="V2.continueLessonCard()">${esc(card.type==="pronunciation"?tx("said"):card.type==="character_trace"?tx("traceDone"):lessonCardIndex===lessonFlow.cards.length-1?tx("submitLesson"):tx("next"))} ›</button>`:""}</article></div>`;
   bridge.reportEvent?.("card_seen",{event_id:`${lessonFlow.id}:${card.id}`,lesson_id:lessonFlow.lesson_id,card_id:card.id,card_type:card.type});
 }
 function playLessonAudio(text){try{speechSynthesis.cancel();const item=new SpeechSynthesisUtterance(text);item.lang="zh-CN";item.rate=.82;speechSynthesis.speak(item)}catch(_){}}
@@ -519,7 +562,7 @@ function rememberMistakes(items){
 }
 function addXP(amount,kind){
   const value=Math.max(0,Math.round(amount));if(!value)return;
-  meta.xp+=value;meta.daily.xp+=value;if(kind==="lesson")meta.daily.lesson=1;write(META_KEY,meta);renderAll();toast(`+${value} XP`);
+  meta.xp+=value;meta.daily.xp+=value;if(kind==="lesson")meta.daily.lesson=1;write(META_KEY,meta);renderAll();toast(`+${value} ${tx("xp")}`);
 }
 async function openChest(){
   const chest=chestState();
@@ -527,10 +570,10 @@ async function openChest(){
   if(bridge.hasAuth?.()&&bridge.openRewardChest){
     try{
       const result=await bridge.openRewardChest();
-      if(result?.ok){syncGamification(result,true);renderAll();toast(`+${Number(result.reward_value||result.awarded_xp||0)} XP · ${tx("rewardChest")}`);return}
+      if(result?.ok){syncGamification(result,true);renderAll();toast(`+${Number(result.reward_value||result.awarded_xp||0)} ${tx("xp")} · ${tx("rewardChest")}`);return}
     }catch(_){toast(tx("rewardLocked"));return}
   }
-  meta.chests=Number(meta.chests||0)+1;meta.xp+=10;meta.daily.xp+=10;write(META_KEY,meta);renderAll();toast("+10 XP · Reward Chest")
+  meta.chests=Number(meta.chests||0)+1;meta.xp+=10;meta.daily.xp+=10;write(META_KEY,meta);renderAll();toast(`+10 ${tx("xp")} · ${tx("rewardChest")}`)
 }
 
 function openSettings(){
@@ -570,9 +613,9 @@ async function showOnboarding(){
 function renderOnboarding(){
   document.getElementById("v2-onboarding")?.remove();const root=document.createElement("div");root.id="v2-onboarding";root.className="v2-onboarding";
   const steps=[
-    {title:tx("chooseLevel"),sub:tx("pathSub"),values:[["beginner","Beginner"],["hsk1","HSK 1"],["hsk2","HSK 2"],["hsk3","HSK 3"],["hsk4","HSK 4"]],field:"level"},
+    {title:tx("chooseLevel"),sub:tx("pathSub"),values:[["beginner",tx("beginnerLevel")],["hsk1","HSK 1"],["hsk2","HSK 2"],["hsk3","HSK 3"],["hsk4","HSK 4"]],field:"level"},
     {title:tx("chooseGoal"),sub:tx("onboardingTitle"),values:[["hsk_exam",tx("goalHsk")],["study_china",tx("goalStudy")],["work_china",tx("goalWork")],["daily_communication",tx("goalDaily")]],field:"goal"},
-    {title:tx("chooseTime"),sub:tx("dailyGoal"),values:[[10,"10 min"],[15,"15 min"],[20,"20 min"],[30,"30 min"]],field:"minutes"},
+    {title:tx("chooseTime"),sub:tx("dailyGoal"),values:[[10,`10 ${tx("minutes")}`],[15,`15 ${tx("minutes")}`],[20,`20 ${tx("minutes")}`],[30,`30 ${tx("minutes")}`]],field:"minutes"},
     {title:tx("chooseStart"),sub:tx("onboardingSub"),values:[["lesson_1",tx("startLesson1")],["placement",tx("takePlacement")]],field:"startMode"}
   ];
   const step=steps[onboardingStep];
@@ -644,7 +687,7 @@ function applyLaunch(){
 
 function mount(){
   normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openSupport,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection};
+  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openSupport,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;syncGamification(ACCESS.gamification);renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
   syncGamification(ACCESS.gamification);setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();applyLaunch();showOnboarding();

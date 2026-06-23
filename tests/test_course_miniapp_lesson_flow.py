@@ -105,7 +105,7 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
         self.assertIn("这是爱情", " ".join(line["text"] for line in noun_card["dialog"]))
         self.assertNotIn("我去爱情", " ".join(line["text"] for line in noun_card["dialog"]))
 
-    def test_long_word_order_tasks_are_replaced_with_short_character_builds(self):
+    def test_long_word_order_tasks_are_replaced_with_short_sentence_builds(self):
         service = CourseMiniAppLessonFlowService(SimpleNamespace())
         payload = {
             "vocabulary": [
@@ -126,7 +126,18 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
 
         self.assertTrue(order_cards)
         self.assertTrue(all(len(card["answer_tokens"]) <= 6 for card in order_cards))
-        self.assertIn("以", order_cards[0]["answer_tokens"])
+        self.assertTrue(
+            any(
+                "以前" in card["answer_tokens"] or "更好" in card["answer_tokens"]
+                for card in order_cards
+            )
+        )
+        self.assertFalse(
+            any(
+                all(len(token) == 1 and "\u4e00" <= token <= "\u9fff" for token in card["answer_tokens"])
+                for card in order_cards
+            )
+        )
 
     def test_hsk_material_splits_into_small_sections_without_singletons(self):
         service = CourseMiniAppLessonFlowService(SimpleNamespace())

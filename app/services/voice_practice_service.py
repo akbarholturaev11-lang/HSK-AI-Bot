@@ -115,11 +115,11 @@ class VoicePracticeService:
 
         paid = self._is_paid(user)
         used = await self._session_count(telegram_id, today_only=paid)
-        limit = PAID_DAILY_SESSIONS if paid else FREE_TOTAL_SESSIONS
+        limit = None if paid else FREE_TOTAL_SESSIONS
         return {
             "is_paid": paid,
             "plan": "premium" if paid else "free",
-            "remaining_voice_limit": max(0, limit - used),
+            "remaining_voice_limit": -1 if paid else max(0, limit - used),
             "level": getattr(user, "level", None) or "hsk1",
             "language": getattr(user, "language", None) or "ru",
         }
@@ -143,7 +143,7 @@ class VoicePracticeService:
             voice = "female"
 
         status = await self.user_status(telegram_id)
-        if status["remaining_voice_limit"] <= 0:
+        if not status["is_paid"] and status["remaining_voice_limit"] <= 0:
             raise VoicePracticeError("LIMIT_EXCEEDED", "Voice Practice limit reached.", 403)
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)

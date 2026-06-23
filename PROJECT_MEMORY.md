@@ -207,6 +207,31 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Course lesson quality, AI Voice access, and duplicate UX cleanup
+
+Changed:
+- Course Mini App lesson generation no longer creates sentence-build tasks from single Hanzi fragments like `以` + `前`; fallback sentence tasks now use short natural Chinese phrases.
+- Character-writing cards became passive writing-order practice: users see the stroke/order hint and confirm completion instead of being forced to draw.
+- Fixed a lesson generation crash caused by an undefined `zh` variable in grammar fallback cards.
+- AI Voice paid users now receive subscription-based access (`remaining_voice_limit = -1`) instead of a hard daily session count; free users still keep the existing one-time trial gate.
+- AI Voice frontend now exposes only two roles: Chinese friend and Li Laoshi. Unsupported level/settings controls are hidden.
+- Profile removed duplicate subscription/league shortcuts and added local avatar upload. League rows are clickable and the League tab owns the main leaderboard/podium entry point.
+
+Why:
+- Users reported many lessons failing to open, unnatural dialogs, overly hard word-building tasks, and cluttered AI Voice/Profile/League UX.
+
+Files touched:
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/services/voice_practice_service.py`
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+- `app/static/voice-practice.html`
+- `tests/test_course_miniapp_lesson_flow.py`
+
+Risk:
+- Payment backend and subscription approval flow were not changed.
+- Real Telegram WebView should still be smoke-tested after deploy for voice paywall routing, avatar upload, and lesson card rendering.
+
 ### 2026-06-23 — Mode selection required-channel gate
 
 Changed:

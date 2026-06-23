@@ -60,7 +60,7 @@ class CourseMiniAppLessonFlowService:
                 "pronunciation": "Произнесите фразу вслух",
                 "quick_quiz": "Быстрая проверка",
                 "short_dialog": "Короткий диалог",
-                "character_trace": "Обведите иероглиф",
+                "character_trace": "Как пишется иероглиф",
                 "unit_words": "Слова",
                 "unit_sound": "Звук",
                 "unit_character": "Иероглиф",
@@ -80,7 +80,7 @@ class CourseMiniAppLessonFlowService:
                 "pronunciation": "Ибораро бо овози баланд гӯед",
                 "quick_quiz": "Санҷиши зуд",
                 "short_dialog": "Муколамаи кӯтоҳ",
-                "character_trace": "Иероглифро кашед",
+                "character_trace": "Навишти иероглиф",
                 "unit_words": "Калимаҳо",
                 "unit_sound": "Овоз",
                 "unit_character": "Иероглиф",
@@ -100,7 +100,7 @@ class CourseMiniAppLessonFlowService:
                 "pronunciation": "Iborani ovoz chiqarib ayting",
                 "quick_quiz": "Tezkor tekshiruv",
                 "short_dialog": "Qisqa dialog",
-                "character_trace": "Iyeroglifni chizing",
+                "character_trace": "Iyeroglif yozilishi",
                 "unit_words": "So'zlar",
                 "unit_sound": "Tovush",
                 "unit_character": "Iyeroglif",
@@ -406,6 +406,63 @@ class CourseMiniAppLessonFlowService:
             "required": True,
         }
 
+    @staticmethod
+    def _single_hanzi(value) -> bool:
+        text = str(value or "")
+        return len(text) == 1 and "\u4e00" <= text <= "\u9fff"
+
+    @classmethod
+    def _character_split_task(cls, tokens: list, answer: list) -> bool:
+        return (
+            len(answer) > 1
+            and all(cls._single_hanzi(item) for item in answer)
+            and all(cls._single_hanzi(item) for item in tokens)
+        )
+
+    @staticmethod
+    def _sentence_tokens_for_word(word: dict) -> list[str]:
+        zh = str(word.get("zh") or "").strip()
+        if not zh:
+            return []
+        pos = str(word.get("pos") or "").lower()
+        place_words = {
+            "银行",
+            "学校",
+            "大学",
+            "医院",
+            "商店",
+            "饭店",
+            "机场",
+            "车站",
+            "洗手间",
+            "公司",
+            "办公室",
+            "家",
+        }
+        if zh == "赚":
+            return ["我", "想", "赚钱"]
+        if pos.startswith(("v", "verb")):
+            return ["我", "需要" if len(zh) >= 2 else "想", zh]
+        if pos.startswith(("adj", "a")):
+            return ["很", zh]
+        if zh in place_words or "place" in pos:
+            return ["我", "去", zh]
+        return ["这是", zh]
+
+    def _sentence_task_for_word(self, word: dict, *, lang: str) -> dict | None:
+        tokens = self._sentence_tokens_for_word(word)
+        if len(tokens) < 2:
+            return None
+        sentence = "".join(tokens) + "。"
+        return {
+            "type": "build_chinese_sentence",
+            "prompt": self._copy(lang, "sentence_builder"),
+            "source": str(word.get("meaning") or sentence),
+            "tokens": [*tokens[1:], tokens[0]],
+            "answer": tokens,
+            "explanation": sentence,
+        }
+
     def _build_cards(self, payload: dict, *, lang: str, lesson_order: int) -> list[dict]:
         vocab = [item for item in payload.get("vocabulary", []) if isinstance(item, dict)]
         active_words = vocab[: 3 + (int(lesson_order) % 2)]
@@ -481,7 +538,7 @@ class CourseMiniAppLessonFlowService:
             answer = item.get("answer")
             if not isinstance(tokens, list) or not isinstance(answer, list):
                 continue
-            if 2 <= len(answer) <= 6 and len(tokens) <= 8:
+            if 2 <= len(answer) <= 6 and len(tokens) <= 8 and not self._character_split_task(tokens, answer):
                 order_tasks.append(item)
         grammar = [item for item in payload.get("grammar", []) if isinstance(item, dict)]
         for grammar_item in grammar:
@@ -489,30 +546,17 @@ class CourseMiniAppLessonFlowService:
             example = next((item for item in examples if isinstance(item, dict) and item.get("zh")), None)
             if not example:
                 continue
-            zh = str(example.get("zh") or "")
-            zh_tokens = [char for char in zh if "\u4e00" <= char <= "\u9fff"]
             translation_tokens = [
                 token.strip(".,!?;:")
                 for token in str(example.get("translation") or "").split()
                 if token.strip(".,!?;:")
             ]
-            if 2 <= len(zh_tokens) <= 8 and len(order_tasks) < 2:
-                order_tasks.append(
-                    {
-                        "type": "build_chinese_sentence",
-                        "prompt": self._copy(lang, "sentence_builder"),
-                        "source": str(example.get("translation") or ""),
-                        "tokens": [*zh_tokens[1:], zh_tokens[0]],
-                        "answer": zh_tokens,
-                        "explanation": zh,
-                    }
-                )
             if 2 <= len(translation_tokens) <= 6 and len(order_tasks) < 2:
                 order_tasks.append(
                     {
                         "type": "word_order",
                         "prompt": self._copy(lang, "word_order"),
-                        "source": zh,
+                        "source": str(example.get("zh") or ""),
                         "tokens": [*translation_tokens[1:], translation_tokens[0]],
                         "answer": translation_tokens,
                         "explanation": str(example.get("translation") or ""),
@@ -520,29 +564,20 @@ class CourseMiniAppLessonFlowService:
                 )
             if len(order_tasks) >= 2:
                 break
-        easy_words = [
-            str(item.get("zh") or "")
-            for item in active_words
-            if 2 <= len(str(item.get("zh") or "")) <= 4
-        ]
-        easy_index = 0
-        while len(order_tasks) < 2 and easy_index < len(easy_words):
-            zh = easy_words[easy_index]
-            easy_index += 1
-            chars = list(zh)
-            order_tasks.append(
-                {
-                    "type": "build_chinese_sentence",
-                    "prompt": self._copy(lang, "sentence_builder"),
-                    "source": zh,
-                    "tokens": [*chars[1:], chars[0]],
-                    "answer": chars,
-                    "explanation": zh,
-                }
-            )
+        word_task_index = 0
+        while len(order_tasks) < 2 and word_task_index < len(active_words):
+            task = self._sentence_task_for_word(active_words[word_task_index], lang=lang)
+            word_task_index += 1
+            if task:
+                order_tasks.append(task)
         if len(order_tasks) < 2 and len(active_words) >= 2:
-            fallback_tokens = [str(item.get("zh") or "") for item in active_words[:3] if item.get("zh")]
-            if len(fallback_tokens) < 2:
+            fallback_tokens = [
+                token
+                for item in active_words[:3]
+                for token in self._sentence_tokens_for_word(item)
+                if token
+            ]
+            if len(fallback_tokens) < 2 or all(self._single_hanzi(token) for token in fallback_tokens):
                 fallback_tokens = []
             while len(order_tasks) < 2:
                 if not fallback_tokens:
@@ -596,10 +631,10 @@ class CourseMiniAppLessonFlowService:
             trace_zh = str(trace_word.get("zh") or "")
             trace_char = next((char for char in trace_zh if "\u4e00" <= char <= "\u9fff"), trace_zh[:1])
             trace_prompt = {
-                "ru": f"Обведите символ для «{trace_word.get('meaning') or trace_zh}»",
-                "tj": f"Барои «{trace_word.get('meaning') or trace_zh}» иероглифро кашед",
-                "uz": f"«{trace_word.get('meaning') or trace_zh}» uchun iyeroglifni chizing",
-            }.get(lang, f"Обведите символ для «{trace_word.get('meaning') or trace_zh}»")
+                "ru": f"Посмотрите, как пишется «{trace_word.get('meaning') or trace_zh}»",
+                "tj": f"Бинед, «{trace_word.get('meaning') or trace_zh}» чӣ гуна навишта мешавад",
+                "uz": f"«{trace_word.get('meaning') or trace_zh}» qanday yozilishini ko'ring",
+            }.get(lang, f"Посмотрите, как пишется «{trace_word.get('meaning') or trace_zh}»")
             activities["trace"] = {
                 "id": "activity:trace",
                 "type": "character_trace",
