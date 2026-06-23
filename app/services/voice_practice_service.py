@@ -330,7 +330,7 @@ class VoicePracticeService:
                 user,
                 activity_type="voice",
                 activity_ref=f"voice:{item.id}",
-                base_xp=15,
+                base_xp=10,
                 level=item.level,
             )
         else:

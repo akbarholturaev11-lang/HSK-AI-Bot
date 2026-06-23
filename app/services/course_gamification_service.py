@@ -1,10 +1,12 @@
 from datetime import date, datetime, timedelta, timezone
+from types import SimpleNamespace
 
 from sqlalchemy import func, select
 
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
+from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 
@@ -13,9 +15,7 @@ LEAGUES = (
     ("Bronze", 0, 500),
     ("Silver", 500, 1500),
     ("Gold", 1500, 3000),
-    ("Diamond", 3000, 5000),
-    ("Sapphire", 5000, 8000),
-    ("Legend", 8000, None),
+    ("Sapphire", 3000, None),
 )
 
 
@@ -141,6 +141,8 @@ class CourseGamificationService:
             )
         )
         weekly_xp = int(weekly_result.scalar_one() or 0)
+        chest_progress = int(profile.xp_total or 0) % 100
+        energy_current = max(0, min(5, 3 + weekly_xp // 120))
         return {
             "xp": int(profile.xp_total or 0),
             "awarded_xp": int(awarded_xp or 0),
@@ -149,9 +151,21 @@ class CourseGamificationService:
             "longest_streak": int(profile.longest_streak or 0),
             "league": self.league_for_xp(profile.xp_total),
             "weekly_xp": weekly_xp,
+            "league_points": weekly_xp,
+            "weekly_reset_day": "monday",
+            "energy": {
+                "current": energy_current,
+                "max": 5,
+                "blocks_study": False,
+            },
+            "reward_chest": {
+                "ready": chest_progress >= 80 and int(profile.xp_total or 0) > 0,
+                "progress": chest_progress,
+                "next_xp": 0 if chest_progress >= 80 else 80 - chest_progress,
+            },
         }
 
-    async def leaderboard(self, user, limit: int = 20) -> dict:
+    async def leaderboard(self, user, limit: int = 25) -> dict:
         profile = await self.profiles.get_or_create(user.id)
         snapshot = await self.snapshot(user, profile=profile)
         day = self._local_day(profile.timezone_offset_minutes)
@@ -170,6 +184,9 @@ class CourseGamificationService:
             select(
                 User.id,
                 User.full_name,
+                User.status,
+                User.payment_status,
+                User.end_date,
                 CourseMiniAppProfile.xp_total,
                 func.coalesce(weekly.c.weekly_xp, 0),
             )
@@ -183,16 +200,34 @@ class CourseGamificationService:
         rows = (await self.session.execute(query)).all()
         ranked = []
         current_rank = 0
-        for index, (user_id, full_name, xp_total, weekly_xp) in enumerate(rows, 1):
+        for index, (user_id, full_name, status, payment_status, end_date, xp_total, weekly_xp) in enumerate(rows, 1):
             if int(user_id) == int(user.id):
                 current_rank = index
-            if index <= max(1, min(50, int(limit or 20))) or int(user_id) == int(user.id):
+            if index <= max(1, min(50, int(limit or 25))) or int(user_id) == int(user.id):
                 ranked.append(
                     {
                         "rank": index,
                         "name": str(full_name or "HSK Student").strip()[:40],
                         "xp": int(weekly_xp or 0),
+                        "league_points": int(weekly_xp or 0),
+                        "is_paid": CourseMiniAppAccessService.is_paid_user(
+                            SimpleNamespace(status=status, payment_status=payment_status, end_date=end_date)
+                        ),
                         "is_current_user": int(user_id) == int(user.id),
                     }
                 )
-        return {**snapshot, "rank": current_rank or 1, "leaderboard": ranked}
+        return {**snapshot, "rank": current_rank or 1, "league_size": 25, "leaderboard": ranked}
+
+    async def open_reward_chest(self, user) -> dict:
+        profile = await self.profiles.get_or_create(user.id)
+        snapshot = await self.snapshot(user, profile=profile)
+        if not snapshot["reward_chest"]["ready"]:
+            return {"ok": False, "error": "reward_chest_not_ready", **snapshot}
+        reward_xp = (5, 10, 20)[int(profile.xp_total or 0) % 3]
+        reward = await self.award(
+            user,
+            activity_type="reward_chest",
+            activity_ref=f"reward-chest:{user.id}:{profile.xp_total // 100}:{profile.xp_total}",
+            base_xp=reward_xp,
+        )
+        return {"ok": True, "reward_type": "xp", "reward_value": reward_xp, **reward}

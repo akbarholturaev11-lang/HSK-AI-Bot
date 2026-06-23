@@ -375,28 +375,23 @@ def profile_menu_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
     }
     l = labels.get(lang, labels["ru"])
     rows = [
-            [
-                subscription_miniapp_button(
-                    lang,
-                    source="profile_subscription",
-                    mode="subscription",
-                    text=l["subscription"],
-                ),
-                InlineKeyboardButton(text=l["language"], callback_data="profile_menu:language"),
-            ],
-            [
-                InlineKeyboardButton(text=l["level"], callback_data="profile_menu:level"),
-            ],
+        [
+            subscription_miniapp_button(
+                lang,
+                source="profile_subscription",
+                mode="subscription",
+                text=l["subscription"],
+            ),
+            InlineKeyboardButton(text=l["language"], callback_data="profile_menu:language"),
+        ],
+        [
+            InlineKeyboardButton(text=l["level"], callback_data="profile_menu:level"),
+            InlineKeyboardButton(text=t("menu_partner", lang), callback_data="partner:open"),
+        ],
+        [
+            InlineKeyboardButton(text=t("profile_to_course_button", lang), callback_data="profile_menu:course"),
+        ],
     ]
-    mode_button = (
-        InlineKeyboardButton(text=t("profile_to_qa_button", lang), callback_data="profile_menu:qa")
-        if getattr(user, "learning_mode", "qa") == "course"
-        else InlineKeyboardButton(text=t("profile_to_course_button", lang), callback_data="profile_menu:course")
-    )
-    rows.append([
-        InlineKeyboardButton(text=t("menu_partner", lang), callback_data="partner:open"),
-        mode_button,
-    ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -978,13 +973,15 @@ async def profile_menu_level(callback: CallbackQuery, state: FSMContext, session
 
 @router.callback_query(F.data == "profile_menu:course")
 async def profile_menu_course(callback: CallbackQuery, state: FSMContext, session):
-    from app.bot.handlers.course import run_course_entry_flow
-    await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
+    from app.bot.handlers.course import send_course_miniapp_entry
+
     await callback.answer()
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=callback.from_user.id,
         respond=callback.message.answer,
+        state=state,
+        source="profile_course",
     )
 
 @router.callback_query(F.data == "profile_menu:qa")

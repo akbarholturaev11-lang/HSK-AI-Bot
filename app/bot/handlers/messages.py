@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-import os
 from html import escape
 from datetime import datetime, timezone, time
 
@@ -14,7 +13,6 @@ from aiogram.types import (
     KeyboardButton,
     InlineKeyboardMarkup,
     InlineKeyboardButton,
-    FSInputFile,
 )
 
 from app.bot.fsm.admin_audio import AdminAudioStates
@@ -27,12 +25,12 @@ from app.bot.handlers.course import (
     get_course_keyboard_for_step,
     _keyboard_for_step,
     _ensure_active_course_access,
-    run_course_entry_flow,
     _resolve_lessons_for_user_level,
     filter_unlocked_lessons,
     send_course_completion_prompt,
     _send_trial_completed_offer,
     _ensure_trial_lesson_access,
+    send_course_miniapp_entry,
 )
 from app.bot.keyboards.course import (
     lesson_selection_keyboard,
@@ -49,12 +47,12 @@ from app.bot.keyboards.course_miniapp import (
     course_miniapp_continue_keyboard,
     course_miniapp_quiz_result_keyboard,
     course_quiz_miniapp_keyboard,
+    course_study_miniapp_button,
 )
 from app.bot.keyboards.checkout import checkout_keyboard
 from app.bot.keyboards.main_menu import main_menu_keyboard, course_menu_keyboard
 from app.bot.keyboards.referral import photo_limit_subscription_keyboard
 from app.bot.keyboards.referral import referral_daily_limit_keyboard
-from app.bot.keyboards.mode import course_promo_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_button, subscription_miniapp_keyboard
 from app.bot.middlewares.required_channel import (
     PENDING_FORCE_SUB_MESSAGE_ID,
@@ -137,6 +135,17 @@ def _response_seed(user, text: str | None = None) -> int:
     question_count = int(getattr(user, "questions_used", 0) or 0)
     text_score = sum(ord(char) for char in (text or "")[:80])
     return question_count + text_score
+
+
+async def _migrate_legacy_course_mode_to_qa(user, session, state: FSMContext | None = None) -> bool:
+    if not user or getattr(user, "learning_mode", "qa") != "course":
+        return False
+    user.learning_mode = "qa"
+    user.voice_mode = VOICE_MODE_NONE
+    if state:
+        await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
+    await session.commit()
+    return True
 
 
 _AI_DRAFT_PREVIEWS = {
@@ -478,13 +487,31 @@ async def _build_referral_limit_text(session, user, lang: str, key: str) -> str:
     )
 
 
-def _qa_limit_course_offer_keyboard(lang: str) -> InlineKeyboardMarkup:
+async def _has_used_course_trial(session, user) -> bool:
+    if not user:
+        return False
+    if getattr(user, "trial_course_started_at", None):
+        return True
+    if getattr(user, "trial_course_completed_at", None):
+        return True
+    if getattr(user, "trial_quiz_explanation_used_at", None):
+        return True
+    return await ConversionFunnelService(session).has_event(
+        telegram_id=int(getattr(user, "telegram_id", 0) or 0),
+        event_name="quiz_completed",
+    )
+
+
+def _qa_limit_course_offer_keyboard(lang: str, user=None) -> InlineKeyboardMarkup:
+    level = getattr(user, "level", None) if user else None
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
-                InlineKeyboardButton(
+                course_study_miniapp_button(
+                    lang,
                     text=t("qa_limit_course_start_button", lang),
-                    callback_data="daily_practice:course",
+                    level=level,
+                    lesson=1,
                 )
             ],
             [
@@ -953,6 +980,7 @@ async def handle_voice_message(message: Message, state: FSMContext, session):
 
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     user_lang = user.language if user and user.language else "ru"
+    await _migrate_legacy_course_mode_to_qa(user, session, state)
 
     if user and user.learning_mode == "course" and not await _ensure_active_course_access(
         session=session,
@@ -1412,6 +1440,7 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     user_lang = user.language if user and user.language else "ru"
+    await _migrate_legacy_course_mode_to_qa(user, session, state)
 
     if message.text and message.text.startswith("/"):
         return
@@ -1995,17 +2024,18 @@ async def handle_text_message(message: Message, state: FSMContext, session):
 
     if not can_use:
         if message_key == "access_daily_limit_reached":
-            if user:
+            if user and not await _has_used_course_trial(session, user):
                 await ConversionFunnelService().record(
                     event_name="course_cta_seen",
                     user=user,
                     source="qa_daily_limit",
                 )
-            await message.answer(
-                t("qa_limit_course_offer", user_lang),
-                reply_markup=_qa_limit_course_offer_keyboard(user_lang),
-                parse_mode="HTML",
-            )
+                await message.answer(
+                    t("qa_limit_course_offer", user_lang),
+                    reply_markup=_qa_limit_course_offer_keyboard(user_lang, user),
+                    parse_mode="HTML",
+                )
+                return
 
             if await _send_qa_limit_required_channel_if_needed(
                 message=message,
@@ -2078,47 +2108,20 @@ async def handle_text_message(message: Message, state: FSMContext, session):
     await _safe_answer_text(message, reply, user_lang)
     await _send_budget_notice(message.answer, qa_service.last_budget_record, user_lang)
 
-    # Show course promo after 3rd QA message (once per user)
     refreshed_user = await user_repo.get_by_telegram_id(message.from_user.id)
     await _queue_normal_photo_tip(session, refreshed_user, user_lang, bot=message.bot)
     await _queue_normal_voice_tip_if_near_limit(session, refreshed_user, user_lang, bot=message.bot)
-    if (
-        refreshed_user
-        and not refreshed_user.course_promo_sent
-        and refreshed_user.questions_used >= 3
-        and refreshed_user.learning_mode == "qa"
-    ):
-        refreshed_user.course_promo_sent = True
-        await session.commit()
-
-        lang_photo_map = {
-            "uz": "app/static/course_promo/uz.jpg",
-            "tj": "app/static/course_promo/tj.jpg",
-            "ru": "app/static/course_promo/ru.jpg",
-        }
-        photo_path = lang_photo_map.get(user_lang, "app/static/course_promo/ru.jpg")
-        if os.path.exists(photo_path):
-            await ConversionFunnelService().record(
-                event_name="course_cta_seen",
-                user=refreshed_user,
-                source="qa_course_promo",
-            )
-            await message.answer_photo(
-                FSInputFile(photo_path),
-                caption=t("course_promo_caption", user_lang),
-                reply_markup=course_promo_keyboard(user_lang),
-                parse_mode="HTML",
-            )
 
 
 @router.callback_query(F.data == "course_promo:start")
 async def handle_course_promo_start(callback: CallbackQuery, state: FSMContext, session):
-    await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
     await callback.answer()
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=callback.from_user.id,
         respond=callback.message.answer,
+        state=state,
+        source="course_promo",
     )
 
 
@@ -2134,6 +2137,7 @@ async def handle_image_message(message: Message, state: FSMContext, session):
 
     user = await user_repo.get_by_telegram_id(message.from_user.id)
     user_lang = user.language if user and user.language else "ru"
+    await _migrate_legacy_course_mode_to_qa(user, session, state)
 
     if user and user.learning_mode == "course" and not await _ensure_active_course_access(
         session=session,

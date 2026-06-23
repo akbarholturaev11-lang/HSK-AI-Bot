@@ -324,7 +324,7 @@ def test_v2_home_course_voice_and_placement_flow(page):
     voice = frame.frame_locator("#voice-frame")
     expect(voice.locator("#btn-welcome-start")).to_be_visible()
 
-    frame.locator('.v2-nav [data-page="tests"]').click()
+    frame.locator("#page-home .v2-feature").filter(has_text="Test Center").click()
     frame.locator("#page-tests .v2-row-card").first.click()
     expect(frame.locator("#page-quiz.active")).to_be_visible()
     expect(frame.locator("#quiz-box .quiz-meta")).to_contain_text("1/10")

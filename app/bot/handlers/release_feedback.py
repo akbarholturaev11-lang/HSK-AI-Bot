@@ -508,13 +508,14 @@ async def _route_try_feature(callback: CallbackQuery, state: FSMContext, session
     feature_key = getattr(campaign, "feature_key", None) or "general"
 
     if feature_key == "course":
-        from app.bot.handlers.course import run_course_entry_flow
+        from app.bot.handlers.course import send_course_miniapp_entry
 
-        await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
-        await run_course_entry_flow(
+        await send_course_miniapp_entry(
             session=session,
             telegram_id=callback.from_user.id,
             respond=callback.message.answer,
+            state=state,
+            source="release_feedback_course",
         )
         return
 

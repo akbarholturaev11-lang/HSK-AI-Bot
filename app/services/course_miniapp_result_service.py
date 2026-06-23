@@ -355,9 +355,6 @@ class CourseMiniAppResultService:
         if not user:
             return None, None, None, "access_start_first"
 
-        if getattr(user, "learning_mode", "qa") != "course":
-            return user, None, None, "course_choose_mode_first"
-
         await AccessService(self.session).ensure_active_course_access(user)
         trial_service = CourseTrialService(self.session)
         if not (trial_service.is_paid_user(user) or trial_service.is_free_user(user)):

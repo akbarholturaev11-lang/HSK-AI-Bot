@@ -7,7 +7,7 @@ from app.db.models.user import User
 
 
 COURSE_GOALS = {"hsk_exam", "study_china", "work_china", "daily_communication", "travel"}
-COURSE_DAILY_MINUTES = {5, 10, 15, 20}
+COURSE_DAILY_MINUTES = {5, 10, 15, 20, 30}
 COURSE_START_MODES = {"lesson_1", "continue", "placement"}
 
 
@@ -41,12 +41,12 @@ class CourseMiniAppProfileService:
         try:
             daily_minutes = int(daily_minutes)
         except (TypeError, ValueError) as error:
-            raise ValueError("daily_minutes must be one of 5, 10, 15, 20") from error
+            raise ValueError("daily_minutes must be one of 10, 15, 20, 30") from error
 
         if goal not in COURSE_GOALS:
             raise ValueError("Unknown course goal")
         if daily_minutes not in COURSE_DAILY_MINUTES:
-            raise ValueError("daily_minutes must be one of 5, 10, 15, 20")
+            raise ValueError("daily_minutes must be one of 10, 15, 20, 30")
         if start_mode not in COURSE_START_MODES:
             raise ValueError("Unknown course start mode")
         return goal, daily_minutes, start_mode

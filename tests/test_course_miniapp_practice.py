@@ -77,6 +77,23 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, {"ok": False, "error": "free_feature_limit_reached"})
         self.service.access.consume_free_use.assert_not_awaited()
 
+    async def test_v3_pinyin_training_skill_is_supported(self):
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+        with patch(
+            "app.services.course_miniapp_practice_service.CourseMiniAppAnalyticsService",
+            return_value=analytics,
+        ):
+            result = await self.service.start(
+                123,
+                mode="training",
+                level="hsk1",
+                lang="ru",
+                skill="pinyin",
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["session"]["skill"], "pinyin")
+
     async def test_completion_is_server_graded_and_preserves_payment(self):
         self.service._questions = AsyncMock(
             return_value=[question("q1", "hsk1", 0), question("q2", "hsk2", 1)]

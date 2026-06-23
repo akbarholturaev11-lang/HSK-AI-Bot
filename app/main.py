@@ -678,6 +678,23 @@ async def miniapp_gamification(request: Request):
     return {"ok": True, **result}
 
 
+@app.post("/api/miniapp/reward-chest/open")
+async def miniapp_reward_chest_open(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "access_start_first"})
+        result = await CourseGamificationService(session).open_reward_chest(user)
+        await session.commit()
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
+
+
 @app.get("/api/miniapp/profile")
 async def miniapp_profile(request: Request):
     telegram_id = extract_verified_webapp_user_id(

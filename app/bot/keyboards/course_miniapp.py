@@ -10,28 +10,46 @@ def course_study_miniapp_keyboard(
     level: str | None = None,
     lesson: int | None = None,
     tab: str | None = None,
+    text: str | None = None,
 ) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                course_study_miniapp_button(
+                    lang,
+                    level=level,
+                    lesson=lesson,
+                    tab=tab,
+                    text=text,
+                )
+            ],
+        ]
+    )
+
+
+def course_study_miniapp_button(
+    lang: str,
+    *,
+    level: str | None = None,
+    lesson: int | None = None,
+    tab: str | None = None,
+    text: str | None = None,
+) -> InlineKeyboardButton:
     labels = {
         "uz": "📚 Kursni Mini Appda ochish",
         "ru": "📚 Открыть курс в Mini App",
         "tj": "📚 Курсро дар Mini App кушодан",
     }
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=labels.get(lang, labels["ru"]),
-                    web_app=WebAppInfo(
-                        url=course_study_miniapp_url(
-                            lang=lang,
-                            level=level,
-                            lesson=lesson,
-                            tab=tab,
-                        )
-                    ),
-                )
-            ],
-        ]
+    return InlineKeyboardButton(
+        text=text or labels.get(lang, labels["ru"]),
+        web_app=WebAppInfo(
+            url=course_study_miniapp_url(
+                lang=lang,
+                level=level,
+                lesson=lesson,
+                tab=tab,
+            )
+        ),
     )
 
 

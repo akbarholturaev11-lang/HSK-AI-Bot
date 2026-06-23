@@ -7,7 +7,6 @@ from app.repositories.user_repo import UserRepository
 from app.services.onboarding_service import OnboardingService
 from app.services.access_service import AccessService
 from app.services.course_engine_service import CourseEngineService
-from app.services.course_trial_service import CourseTrialService
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.daily_practice_service import DailyPracticeService
 from app.bot.utils.i18n import t
@@ -177,7 +176,6 @@ async def _start_lesson_for_user(
 ) -> bool:
     user_repo = UserRepository(session)
     engine = CourseEngineService(session)
-    trial_service = CourseTrialService(session)
 
     user = await user_repo.get_by_telegram_id(telegram_id)
     if not user:
@@ -190,47 +188,23 @@ async def _start_lesson_for_user(
         await respond(t("course_lesson_not_unlocked", lang))
         return False
 
-    if not await trial_service.ensure_trial_lesson(user, lesson.id):
-        from app.bot.handlers.course import _send_course_access_offer
-
-        await _send_course_access_offer(
-            respond=respond,
-            lang=lang,
-            expired_from_course=False,
-        )
-        return False
-
-    user.learning_mode = "course"
     user.voice_mode = "none"
-    if user.payment_status != "approved":
-        user.status = "trial"
-        user.start_date = None
-        user.end_date = None
     user.expiry_reminder_sent_at = None
     await session.flush()
-
-    _, _, _, error_key = await engine.pick_lesson(telegram_id, lesson.id)
-    if error_key:
-        await respond(t(error_key, lang))
-        return False
-    await ConversionFunnelService().record(
-        event_name="lesson_started",
-        user=user,
-        source=source,
-        lesson_id=lesson.id,
-        payload={"lesson_order": getattr(lesson, "lesson_order", None), "level": getattr(lesson, "level", None)},
-    )
 
     if state:
         await state.clear()
 
-    from app.bot.handlers.course import run_course_entry_flow
+    from app.bot.handlers.course import send_course_miniapp_entry
 
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=telegram_id,
         respond=respond,
-        show_menu=show_menu,
+        state=state,
+        source=source,
+        level=getattr(lesson, "level", None),
+        lesson=getattr(lesson, "lesson_order", None),
     )
     return True
 
@@ -287,13 +261,14 @@ async def cmd_start(
 
     if not created and user.language and user.level:
         if getattr(user, "learning_mode", "qa") == "course":
-            from app.bot.handlers.course import run_course_entry_flow
+            from app.bot.handlers.course import send_course_miniapp_entry
 
-            await run_course_entry_flow(
+            await send_course_miniapp_entry(
                 session=session,
                 telegram_id=message.from_user.id,
                 respond=message.answer,
-                show_menu=False,
+                state=state,
+                source="start_course_migration",
             )
         else:
             await message.answer(
@@ -576,12 +551,8 @@ async def process_level(callback: CallbackQuery, state: FSMContext, session):
         username=callback.from_user.username if callback.from_user else None,
     )
     user.level = level
-    user.learning_mode = "course"
+    user.learning_mode = "qa"
     user.voice_mode = "none"
-    if user.payment_status != "approved":
-        user.status = "trial"
-        user.start_date = None
-        user.end_date = None
     user.expiry_reminder_sent_at = None
     await session.commit()
 

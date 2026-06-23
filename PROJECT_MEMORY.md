@@ -207,6 +207,65 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Course Mini App V3 navigation, rewards, and training
+
+Changed:
+- Course Mini App V3 uses exactly five bottom tabs: Home, Lessons, League, AI Voice, Profile. Test is available from Home as a Test Center, not as a sixth nav tab.
+- Free users see one-time access locks for lesson, AI Voice, placement, and training/test features through existing subscription checks; payment backend and entitlement logic were not changed.
+- Server gamification now returns non-blocking energy, weekly same-league leaderboard metadata, and reward chest state. Reward chest opens through `/api/miniapp/reward-chest/open` and awards XP only.
+- XP rules now match V3 product rules: lesson 20 XP, test 10 XP, training 8 XP, AI Voice 10 XP, mistake review 5 XP, with existing streak bonus.
+- Training/Test Center now includes HSK1-HSK4 tests, placement, listening, pronunciation, writing, characters, pinyin, speaking, and mistake review.
+- Onboarding daily time supports 10, 15, 20, and 30 minutes. Alembic head is `0052_course_miniapp_v3_preferences`.
+- AI Voice Mini App call UI auto-closes paid calls around 25 seconds with a short Chinese goodbye; voice payment/access backend remains unchanged.
+
+Why:
+- V3 product decision keeps Course Mode inside the Mini App with Duolingo-style navigation, rewards, and practice while preserving Telegram QA and payments.
+
+Key files:
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+- `app/static/study.html`
+- `app/static/voice-practice.html`
+- `app/services/course_gamification_service.py`
+- `app/services/course_miniapp_practice_service.py`
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/services/course_mistake_service.py`
+- `app/services/voice_practice_service.py`
+- `app/main.py`
+- `alembic/versions/0052_course_miniapp_v3_preferences.py`
+
+Risk:
+- Migration `0052` must be applied before users select 30-minute onboarding goals.
+- Browser E2E depends on Playwright/pytest availability in the runtime; local unit/syntax checks cover backend and script validity.
+
+### 2026-06-23 — Course Mini App entry stays in QA mode
+
+Changed:
+- Bot-side Course entry points now send a short Course Mini App message with a WebApp button and keep `users.learning_mode = "qa"`.
+- QA daily-limit messaging now shows exactly one block: first-lesson Mini App offer only before course trial usage; text/referral limit block after `trial_course_started_at`, `trial_course_completed_at`, `trial_quiz_explanation_used_at`, or a `quiz_completed` funnel event.
+- Automatic post-QA course promo image/text was disabled.
+- Course Mini App lesson flow no longer depends on `learning_mode = "course"`; it initializes `course_progress` and trial lesson access from the Mini App request.
+
+Why:
+- Course moved fully into Mini App, while Telegram chat should remain normal QA mode.
+
+Files touched:
+- `app/bot/handlers/messages.py`
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/start.py`
+- `app/bot/handlers/menu.py`
+- `app/bot/handlers/commands.py`
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/services/course_miniapp_onboarding_service.py`
+- `app/services/course_miniapp_result_service.py`
+- `app/repositories/course_lesson_repo.py`
+
+Risk:
+- Existing old Course callback messages may still reach legacy handlers, but all main visible entry points now route to Mini App.
+
+Follow-up:
+- In Telegram, smoke-test QA daily limit for users with and without course trial history, plus Course Mini App lesson open/complete from QA mode.
+
 ### 2026-06-23 — Course Mini App AI Voice, profile locks, and admin analytics
 
 Changed:

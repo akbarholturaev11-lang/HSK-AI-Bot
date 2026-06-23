@@ -14,7 +14,7 @@ from app.services.course_gamification_service import CourseGamificationService
 
 PRACTICE_VERSION = 1
 PRACTICE_MODES = {"placement", "mock", "training"}
-TRAINING_SKILLS = {"listening", "writing", "characters"}
+TRAINING_SKILLS = {"listening", "writing", "characters", "pronunciation", "pinyin"}
 
 
 class CourseMiniAppPracticeService:
@@ -92,6 +92,10 @@ class CourseMiniAppPracticeService:
             }
         if skill == "characters":
             return subtype in {"meaning_to_hanzi", "pinyin_to_hanzi", "hanzi_to_meaning"}
+        if skill == "pronunciation":
+            return bool(question.get("audio_text")) or subtype in {"hanzi_to_pinyin", "pinyin_to_hanzi"}
+        if skill == "pinyin":
+            return subtype in {"hanzi_to_pinyin", "pinyin_to_hanzi"} or question_type in {"pinyin_choice"}
         return True
 
     async def _level_questions(self, level: str, lang: str, limit: int, skill: str = "") -> list[dict]:
@@ -305,7 +309,7 @@ class CourseMiniAppPracticeService:
             user,
             activity_type="training" if mode == "training" else "test",
             activity_ref=f"{expected_session}:completed",
-            base_xp=12 if mode == "training" else 15,
+            base_xp=8 if mode == "training" else 10,
             level=level,
         )
         await self.session.commit()

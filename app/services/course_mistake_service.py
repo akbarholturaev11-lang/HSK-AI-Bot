@@ -295,7 +295,7 @@ class CourseMistakeService:
             user,
             activity_type="mistake_review",
             activity_ref=f"{session_id}:xp",
-            base_xp=10,
+            base_xp=5,
             level=getattr(user, "level", None),
         )
         await CourseMiniAppAnalyticsService(self.session).record_server_event(

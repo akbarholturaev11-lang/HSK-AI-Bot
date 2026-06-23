@@ -78,7 +78,7 @@ async def handle_promo_action_callback(callback: CallbackQuery, state: FSMContex
         return
 
     if action == "course":
-        from app.bot.handlers.course import run_course_entry_flow
+        from app.bot.handlers.course import send_course_miniapp_entry
 
         await callback.answer()
         if not COURSE_MODE_ENABLED:
@@ -89,11 +89,12 @@ async def handle_promo_action_callback(callback: CallbackQuery, state: FSMContex
             }
             await callback.message.answer(msg_map.get(lang, msg_map["ru"]))
             return
-        await run_course_entry_flow(
+        await send_course_miniapp_entry(
             session=session,
             telegram_id=callback.from_user.id,
             respond=callback.message.answer,
-            show_menu=True,
+            state=state,
+            source="menu_course",
         )
         return
 
@@ -265,7 +266,7 @@ async def handle_reminder_time_button(message: Message, state: FSMContext, sessi
     "📚 Kurs rejimi",
 ]))
 async def handle_course_mode_button(message: Message, state: FSMContext, session):
-    from app.bot.handlers.course import run_course_entry_flow
+    from app.bot.handlers.course import send_course_miniapp_entry
     from app.config import COURSE_MODE_ENABLED
     user_repo = UserRepository(session)
     user = await user_repo.get_by_telegram_id(message.from_user.id)
@@ -281,9 +282,10 @@ async def handle_course_mode_button(message: Message, state: FSMContext, session
         await message.answer(msg_map.get(lang, msg_map["ru"]))
         return
 
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=message.from_user.id,
         respond=message.answer,
-        show_menu=True,
+        state=state,
+        source="reply_menu_course",
     )

@@ -1126,7 +1126,7 @@ PARTNER_I18N = {
             "💰 Минимал маблағи гирифтани пул: {minimum}"
         ),
         "partner_apply_button": "✅ Ҳамкор шудан",
-        "profile_to_course_button": "📚 Курс",
+        "profile_to_course_button": "📚 Реҷаи курс",
         "profile_to_qa_button": "💬 Реҷаи одӣ",
         "partner_back_button": "⬅️ Бозгашт",
         "partner_pending_text": (
@@ -1191,7 +1191,7 @@ PARTNER_I18N = {
             "💰 Минимальная сумма вывода: {minimum}"
         ),
         "partner_apply_button": "✅ Стать партнёром",
-        "profile_to_course_button": "📚 Курс",
+        "profile_to_course_button": "📚 Режим курса",
         "profile_to_qa_button": "💬 Обычный режим",
         "partner_back_button": "⬅️ Назад",
         "partner_pending_text": (
@@ -1256,7 +1256,7 @@ PARTNER_I18N = {
             "💰 Minimal pul yechish summasi: {minimum}"
         ),
         "partner_apply_button": "✅ Hamkor bo'lish",
-        "profile_to_course_button": "📚 Kurs",
+        "profile_to_course_button": "📚 Kurs rejimi",
         "profile_to_qa_button": "💬 Oddiy rejim",
         "partner_back_button": "⬅️ Orqaga",
         "partner_pending_text": (

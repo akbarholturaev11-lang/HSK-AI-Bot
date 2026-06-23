@@ -31,6 +31,18 @@ class CourseMiniAppLessonFlowService:
         return "hsk4" if normalized in {"hsk4", "hsk4a", "hsk4b"} else normalized
 
     @staticmethod
+    def _allowed_level_candidates(level: str | None) -> tuple[str, ...]:
+        normalized = str(level or "").strip().lower()
+        fallback_map = {
+            "beginner": ("hsk1",),
+            "hsk1": ("hsk1",),
+            "hsk2": ("hsk2", "hsk1"),
+            "hsk3": ("hsk3", "hsk2", "hsk1"),
+            "hsk4": ("hsk4", "hsk3", "hsk2", "hsk1"),
+        }
+        return fallback_map.get(normalized, ("hsk1",))
+
+    @staticmethod
     def _copy(lang: str, key: str) -> str:
         copy = {
             "ru": {
@@ -70,30 +82,44 @@ class CourseMiniAppLessonFlowService:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return None, None, None, "access_start_first"
-        if getattr(user, "learning_mode", "qa") != "course":
-            return user, None, None, "course_choose_mode_first"
 
-        progress = await self.progress_repo.get_by_user_id(user.id, for_update=True)
-        if not progress or not progress.current_lesson_id:
-            return user, progress, None, "course_no_lesson_found"
-        lesson = await self.lesson_repo.get_by_id(progress.current_lesson_id)
+        content_level = self._content_level(level)
+        lesson = await self.lesson_repo.get_by_level_and_order(content_level, int(lesson_order or 0))
         if not lesson:
-            return user, progress, None, "course_no_lesson_found"
-
-        if self._content_level(level) != str(lesson.level or "").lower():
-            return user, progress, lesson, "course_miniapp_lesson_mismatch"
-        if int(lesson.lesson_order or 0) != int(lesson_order or 0):
-            return user, progress, lesson, "course_miniapp_lesson_mismatch"
+            return user, None, None, "course_no_lesson_found"
+        if str(getattr(lesson, "level", "") or "") not in self._allowed_level_candidates(getattr(user, "level", None)):
+            return user, None, lesson, "course_lesson_not_unlocked"
 
         access = CourseMiniAppAccessService(self.session)
         trial = CourseTrialService(self.session)
         paid = access.is_paid_user(user)
         entitlements = await access.get_entitlements(user)
-        if not paid and (
-            not entitlements.get("lesson", {}).get("allowed")
-            or not trial.can_access_lesson(user, lesson.id)
-        ):
-            return user, progress, lesson, "free_feature_limit_reached"
+        if not paid:
+            if not entitlements.get("lesson", {}).get("allowed"):
+                return user, None, lesson, "free_feature_limit_reached"
+            if not await trial.ensure_trial_lesson(user, lesson.id):
+                return user, None, lesson, "free_feature_limit_reached"
+
+        progress = await self.progress_repo.get_by_user_id(user.id, for_update=True)
+        if not progress:
+            progress = await self.progress_repo.create(
+                user_id=user.id,
+                level=str(lesson.level),
+                current_lesson_id=lesson.id,
+                current_step="intro",
+                waiting_for="none",
+            )
+        elif int(getattr(progress, "current_lesson_id", 0) or 0) != int(lesson.id):
+            progress.level = str(lesson.level)
+            progress.homework_status = "none"
+            progress.needs_review_prompt = False
+            progress.next_study_at = None
+            await self.progress_repo.set_current_lesson_and_step(
+                progress=progress,
+                lesson_id=lesson.id,
+                step="intro",
+                waiting_for="none",
+            )
         return user, progress, lesson, ""
 
     @staticmethod
@@ -500,7 +526,7 @@ class CourseMiniAppLessonFlowService:
             user,
             activity_type="lesson",
             activity_ref=f"lesson:{lesson.id}:v{LESSON_FLOW_VERSION}",
-            base_xp=20 + round(percent / 10),
+            base_xp=20,
             level=str(lesson.level),
         )
 

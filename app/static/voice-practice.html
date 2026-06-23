@@ -583,6 +583,7 @@ var QUERY = new URLSearchParams(location.search);
 var FORCE_MOCK = QUERY.get("mock");
 var UI_LANG = ["uz","ru","tj"].indexOf(QUERY.get("lang")) > -1 ? QUERY.get("lang") : "ru";
 var MAX_RECORD_MS = 30000;     // hard auto-stop, controls latency & backend cost
+var PAID_SESSION_SECONDS = 25;
 var MIN_BLOB_BYTES = 600;      // below this we treat the recording as accidental/empty
 
 var ROLES = [
@@ -609,9 +610,9 @@ var VOICES = [
 ];
 
 var UI_COPY = {
-  uz:{dailyLimit:"Bugungi limit",unlimited:"Cheksiz",you:"Siz",empty:"Hali hech narsa aytilmadi. Mikrofonga bosib gapni boshlang.",startCall:"Qo'ng'iroqni boshlash",trialTomorrow:"Trial limiti ertaga yangilanadi",freeTomorrow:"Bepul limit ertaga yangilanadi",endConfirm:"Suhbatni tugatasizmi?",noCorrection:"Bu safar tuzatish bo'lmadi — ajoyib!"},
-  ru:{dailyLimit:"Лимит на сегодня",unlimited:"Безлимитно",you:"Вы",empty:"Вы ещё ничего не сказали. Нажмите на микрофон и начните говорить.",startCall:"Начать звонок",trialTomorrow:"Пробный лимит обновится завтра",freeTomorrow:"Бесплатный лимит обновится завтра",endConfirm:"Завершить разговор?",noCorrection:"В этот раз без исправлений — отлично!"},
-  tj:{dailyLimit:"Лимити имрӯз",unlimited:"Бемаҳдуд",you:"Шумо",empty:"Ҳоло чизе нагуфтед. Микрофонро пахш карда оғоз кунед.",startCall:"Оғози занг",trialTomorrow:"Лимити санҷишӣ пагоҳ нав мешавад",freeTomorrow:"Лимити ройгон пагоҳ нав мешавад",endConfirm:"Суҳбатро анҷом медиҳед?",noCorrection:"Ин дафъа ислоҳ лозим нашуд — аъло!"}
+  uz:{dailyLimit:"Bugungi limit",unlimited:"Cheksiz",you:"Siz",empty:"Hali hech narsa aytilmadi. Mikrofonga bosib gapni boshlang.",startCall:"Qo'ng'iroqni boshlash",trialTomorrow:"Trial limiti ertaga yangilanadi",freeTomorrow:"Bepul limit ertaga yangilanadi",endConfirm:"Suhbatni tugatasizmi?",noCorrection:"Bu safar tuzatish bo'lmadi — ajoyib!",paidSession:"Paid sessiya: 25 soniya",goodbye:"很好，今天到这里。下次见！"},
+  ru:{dailyLimit:"Лимит на сегодня",unlimited:"Безлимитно",you:"Вы",empty:"Вы ещё ничего не сказали. Нажмите на микрофон и начните говорить.",startCall:"Начать звонок",trialTomorrow:"Пробный лимит обновится завтра",freeTomorrow:"Бесплатный лимит обновится завтра",endConfirm:"Завершить разговор?",noCorrection:"В этот раз без исправлений — отлично!",paidSession:"Paid-сессия: 25 секунд",goodbye:"很好，今天到这里。下次见！"},
+  tj:{dailyLimit:"Лимити имрӯз",unlimited:"Бемаҳдуд",you:"Шумо",empty:"Ҳоло чизе нагуфтед. Микрофонро пахш карда оғоз кунед.",startCall:"Оғози занг",trialTomorrow:"Лимити санҷишӣ пагоҳ нав мешавад",freeTomorrow:"Лимити ройгон пагоҳ нав мешавад",endConfirm:"Суҳбатро анҷом медиҳед?",noCorrection:"Ин дафъа ислоҳ лозим нашуд — аъло!",paidSession:"Сессияи paid: 25 сония",goodbye:"很好，今天到这里。下次见！"}
 };
 function ui(key){ return (UI_COPY[UI_LANG] && UI_COPY[UI_LANG][key]) || UI_COPY.ru[key] || key; }
 
@@ -653,7 +654,8 @@ var state = {
   courseContext:null,
   callStartedAt:null,
   timerHandle:null,
-  lastElapsedSec:0
+  lastElapsedSec:0,
+  autoEnding:false
 };
 
 var callState = "idle"; // idle | listening | thinking | speaking
@@ -817,11 +819,11 @@ function showScreen(name){
 
 /* ============================== RENDER: limit badges ============================== */
 function updateLimitBadges(){
-  var txt = ui("dailyLimit") + ": " + formatLimit(state.remainingLimit) + (state.isPaid ? " · " + (state.plan||"paid") : "");
-  el.welcomeLimitBadge.innerHTML = ui("dailyLimit") + ": <b>" + escapeHtml(formatLimit(state.remainingLimit)) + "</b>" + (state.isPaid ? " · " + escapeHtml(state.plan||"paid") : "");
+  var paidHint = state.isPaid ? " · " + ui("paidSession") : "";
+  el.welcomeLimitBadge.innerHTML = ui("dailyLimit") + ": <b>" + escapeHtml(formatLimit(state.remainingLimit)) + "</b>" + (state.isPaid ? " · " + escapeHtml(state.plan||"paid") : "") + escapeHtml(paidHint);
   el.rolesLimitBadge.innerHTML = el.welcomeLimitBadge.innerHTML;
   el.settingsPlanLabel.textContent = state.isPaid ? ("Premium · " + (state.plan||"paid")) : "Free";
-  el.settingsPlanSub.textContent = ui("dailyLimit") + ": " + formatLimit(state.remainingLimit);
+  el.settingsPlanSub.textContent = ui("dailyLimit") + ": " + formatLimit(state.remainingLimit) + paidHint;
   el.btnSettingsUpgrade.style.display = state.isPaid ? "none" : "inline-flex";
 }
 function updateMockBadge(){
@@ -921,6 +923,7 @@ function setCallState(next){
 /* ============================== TIMER ============================== */
 function startTimer(){
   state.callStartedAt = Date.now();
+  state.autoEnding = false;
   updateTimerDisplay();
   state.timerHandle = setInterval(updateTimerDisplay, 1000);
 }
@@ -932,6 +935,25 @@ function updateTimerDisplay(){
   var sec = Math.floor((Date.now() - state.callStartedAt) / 1000);
   state.lastElapsedSec = sec;
   el.callTimer.textContent = pad2(Math.floor(sec/60)) + ":" + pad2(sec%60);
+  if (state.isPaid && sec >= PAID_SESSION_SECONDS - 3 && !state.autoEnding){
+    state.autoEnding = true;
+    addGoodbyeAndFinish();
+  }
+}
+
+function addGoodbyeAndFinish(){
+  stopRecordingHard();
+  var r = roleById(state.role);
+  state.transcript.unshift({
+    userText:"",
+    botText:ui("goodbye"),
+    pinyin:"hěn hǎo, jīntiān dào zhèlǐ. xià cì jiàn!",
+    translation:r.name + " goodbye",
+    correction:null
+  });
+  renderTranscript();
+  setCallState("speaking");
+  setTimeout(function(){ finishCall(false); }, 3000);
 }
 
 /* ============================== AUDIO RECORDING ============================== */

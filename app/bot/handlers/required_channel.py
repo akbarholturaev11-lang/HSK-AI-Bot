@@ -77,11 +77,12 @@ async def force_sub_check(callback: CallbackQuery, state: FSMContext, session):
         return
 
     if user and getattr(user, "learning_mode", "qa") == "course" and callback.message:
-        from app.bot.handlers.course import run_course_entry_flow
+        from app.bot.handlers.course import send_course_miniapp_entry
 
-        await run_course_entry_flow(
+        await send_course_miniapp_entry(
             session=session,
             telegram_id=callback.from_user.id,
             respond=callback.message.answer,
-            show_menu=False,
+            state=state,
+            source="required_channel_course",
         )

@@ -75,6 +75,66 @@ from datetime import datetime, time, timezone
 logger = logging.getLogger(__name__)
 
 
+def course_miniapp_entry_text(lang: str) -> str:
+    texts = {
+        "uz": (
+            "📚 <b>HSK AI kursi Mini Appga ko‘chdi</b>\n\n"
+            "<blockquote>Darslar, so‘zlar, grammatika, quiz va AI Voice bitta joyda.</blockquote>"
+        ),
+        "ru": (
+            "📚 <b>Курс HSK AI переехал в Mini App</b>\n\n"
+            "<blockquote>Уроки, слова, грамматика, квиз и AI Voice теперь в одном месте.</blockquote>"
+        ),
+        "tj": (
+            "📚 <b>Курси HSK AI ба Mini App гузашт</b>\n\n"
+            "<blockquote>Дарсҳо, калимаҳо, грамматика, quiz ва AI Voice дар як ҷо.</blockquote>"
+        ),
+    }
+    return texts.get(lang, texts["ru"])
+
+
+async def send_course_miniapp_entry(
+    *,
+    session,
+    telegram_id: int,
+    respond,
+    state: FSMContext | None = None,
+    source: str = "course_miniapp_entry",
+    level: str | None = None,
+    lesson: int | None = None,
+    tab: str | None = None,
+) -> None:
+    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+    lang = user.language if user and user.language else "ru"
+
+    if user:
+        user.learning_mode = "qa"
+        user.voice_mode = "none"
+        await session.commit()
+
+    if state:
+        await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
+
+    await respond(
+        course_miniapp_entry_text(lang),
+        reply_markup=course_study_miniapp_keyboard(
+            lang,
+            level=level or (getattr(user, "level", None) if user else None),
+            lesson=lesson,
+            tab=tab,
+        ),
+        parse_mode="HTML",
+    )
+
+    if user:
+        await ConversionFunnelService().record(
+            event_name="course_cta_seen",
+            user=user,
+            source=source,
+            payload={"level": level or getattr(user, "level", None), "lesson": lesson, "tab": tab},
+        )
+
+
 async def _block_if_course_disabled(callback, session):
     if not COURSE_MODE_ENABLED:
         lang = "ru"
@@ -646,11 +706,13 @@ async def course_pick_lesson_handler(callback: CallbackQuery, session):
         await callback.message.delete()
     except Exception:
         pass
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=callback.from_user.id,
         respond=callback.message.answer,
-        show_menu=True,
+        source="course_pick_lesson",
+        level=getattr(lesson, "level", None),
+        lesson=getattr(lesson, "lesson_order", None),
     )
 
 
@@ -709,13 +771,13 @@ async def course_mode_open_handler(callback: CallbackQuery, state: FSMContext, s
     if await _block_if_course_disabled(callback, session):
         return
 
-    await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
     await callback.answer()
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=callback.from_user.id,
         respond=callback.message.answer,
-        show_menu=True,
+        state=state,
+        source="mode_course",
     )
 
 
@@ -961,11 +1023,12 @@ async def course_command_handler(message: Message, state: FSMContext, session):
         await message.answer(msg_map.get(lang, msg_map["ru"]))
         return
 
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=message.from_user.id,
         respond=message.answer,
-        show_menu=True,
+        state=state,
+        source="course_command",
     )
 
 
@@ -1000,12 +1063,13 @@ async def course_continue_handler(callback: CallbackQuery, state: FSMContext, se
     if await _block_if_course_disabled(callback, session):
         return
 
-    await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
     await callback.answer()
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=callback.from_user.id,
         respond=callback.message.answer,
+        state=state,
+        source="course_continue",
     )
 
 
@@ -1246,11 +1310,6 @@ async def course_review_last_handler(callback: CallbackQuery, state: FSMContext,
 
     lang = user.language if user.language else "ru"
 
-    user.learning_mode = "course"
-    user.voice_mode = "none"
-    await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
-    await session.commit()
-
     user, progress, lesson, error_key = await engine.get_current_lesson(callback.from_user.id)
     if error_key:
         await callback.answer()
@@ -1265,11 +1324,16 @@ async def course_review_last_handler(callback: CallbackQuery, state: FSMContext,
         await callback.answer()
         return
 
-    step = progress.current_step
-    text = format_step(lesson, lang, step) or ""
-
     await callback.answer()
-    await callback.message.answer(text, parse_mode="HTML")
+    await send_course_miniapp_entry(
+        session=session,
+        telegram_id=callback.from_user.id,
+        respond=callback.message.answer,
+        state=state,
+        source="course_review_last",
+        level=getattr(lesson, "level", None),
+        lesson=getattr(lesson, "lesson_order", None),
+    )
 
 
 
@@ -1559,10 +1623,13 @@ async def course_start_next_lesson_handler(callback: CallbackQuery, session):
         },
     )
     await callback.answer()
-    await run_course_entry_flow(
+    await send_course_miniapp_entry(
         session=session,
         telegram_id=callback.from_user.id,
         respond=callback.message.answer,
+        source="course_next_lesson",
+        level=getattr(next_lesson, "level", None),
+        lesson=getattr(next_lesson, "lesson_order", None),
     )
 
 

@@ -146,15 +146,15 @@ class CourseMiniAppProfileTests(unittest.TestCase):
         self.assertEqual(
             CourseMiniAppProfileService.validate_preferences(
                 goal="hsk_exam",
-                daily_minutes=10,
+                daily_minutes=30,
                 start_mode="continue",
             ),
-            ("hsk_exam", 10, "continue"),
+            ("hsk_exam", 30, "continue"),
         )
         with self.assertRaises(ValueError):
             CourseMiniAppProfileService.validate_preferences(
                 goal="hsk_exam",
-                daily_minutes=30,
+                daily_minutes=25,
                 start_mode="continue",
             )
 

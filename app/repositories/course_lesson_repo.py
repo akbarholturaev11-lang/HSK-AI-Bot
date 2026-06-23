@@ -37,6 +37,16 @@ class CourseLessonRepository:
         )
         return result.scalar_one_or_none()
 
+    async def get_by_level_and_order(self, level: str, lesson_order: int) -> Optional[CourseLesson]:
+        result = await self.session.execute(
+            select(CourseLesson)
+            .where(CourseLesson.level == level)
+            .where(CourseLesson.lesson_order == lesson_order)
+            .where(CourseLesson.is_active.is_(True))
+            .limit(1)
+        )
+        return result.scalar_one_or_none()
+
     async def list_by_level(self, level: str) -> List[CourseLesson]:
         result = await self.session.execute(
             select(CourseLesson)

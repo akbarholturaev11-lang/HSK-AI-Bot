@@ -8,8 +8,8 @@ class CourseGamificationServiceTests(unittest.TestCase):
     def test_league_thresholds(self):
         self.assertEqual(CourseGamificationService.league_for_xp(0), "Bronze")
         self.assertEqual(CourseGamificationService.league_for_xp(500), "Silver")
-        self.assertEqual(CourseGamificationService.league_for_xp(3000), "Diamond")
-        self.assertEqual(CourseGamificationService.league_for_xp(8000), "Legend")
+        self.assertEqual(CourseGamificationService.league_for_xp(1500), "Gold")
+        self.assertEqual(CourseGamificationService.league_for_xp(3000), "Sapphire")
 
     def test_streak_only_advances_once_per_day(self):
         day = date(2026, 6, 23)

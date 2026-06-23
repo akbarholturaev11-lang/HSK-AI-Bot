@@ -14,7 +14,7 @@ class CourseMiniAppProfile(Base):
             "goal IN ('hsk_exam', 'study_china', 'work_china', 'daily_communication', 'travel')",
             name="goal",
         ),
-        CheckConstraint("daily_minutes IN (5, 10, 15, 20)", name="daily_minutes"),
+        CheckConstraint("daily_minutes IN (5, 10, 15, 20, 30)", name="daily_minutes"),
         CheckConstraint(
             "start_mode IN ('lesson_1', 'continue', 'placement')",
             name="start_mode",
