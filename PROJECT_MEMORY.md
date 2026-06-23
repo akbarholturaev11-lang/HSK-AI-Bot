@@ -207,6 +207,31 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Course Mini App lesson variety and section unlock recovery
+
+Changed:
+- Course Mini App section lessons now include varied activity units inside the same path node: word intro, listening/audio choice, character trace, short dialog, sentence build, pronunciation, and review cards.
+- Long word-order tasks are filtered out and replaced with short Chinese character/word builds so users are not asked to assemble long RU/TJ translations.
+- Short dialog generation now uses natural templates by word type and special handling for awkward verbs like `赚`.
+- Lesson open/complete APIs accept same-lesson client-completed section keys as recovery input when server analytics events lag behind local progress.
+
+Why:
+- Users were seeing repetitive multiple-choice sections, overly hard word assembly, unnatural dialogs, and locked sections after local completion.
+
+Files touched:
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/main.py`
+- `app/static/study.html`
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+- `tests/test_course_miniapp_lesson_flow.py`
+
+Risk:
+- Client-completed recovery only counts valid previous sections in the same book lesson; payment/subscription/referral logic is unchanged.
+
+Follow-up:
+- Replace the current tap-to-confirm character trace MVP with real canvas stroke detection if higher accuracy is needed.
+
 ### 2026-06-23 — Mini App reward, league, and AI Voice paywall UX
 
 Changed:

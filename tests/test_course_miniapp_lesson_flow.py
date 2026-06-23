@@ -77,10 +77,56 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
                 "pronunciation",
                 "quick_quiz",
                 "dialog_context",
+                "character_trace",
             }.issubset({card["type"] for card in first})
         )
         self.assertNotEqual([card["type"] for card in first], [card["type"] for card in second])
         self.assertTrue(all(card["required"] for card in first))
+
+    def test_short_dialog_uses_natural_context_for_verbs_and_nouns(self):
+        service = CourseMiniAppLessonFlowService(SimpleNamespace())
+        verb_card = service._short_dialog_card(
+            [
+                {"zh": "赚", "pinyin": "zhuan", "meaning": "pul daromad qilish", "pos": "v"},
+                {"zh": "以前", "pinyin": "yiqian", "meaning": "avval", "pos": "n"},
+            ],
+            lang="ru",
+        )
+        noun_card = service._short_dialog_card(
+            [
+                {"zh": "爱情", "pinyin": "aiqing", "meaning": "love", "pos": "n"},
+                {"zh": "手机", "pinyin": "shouji", "meaning": "phone", "pos": "n"},
+            ],
+            lang="ru",
+        )
+
+        self.assertIn("赚钱", " ".join(line["text"] for line in verb_card["dialog"]))
+        self.assertNotIn("我去赚", " ".join(line["text"] for line in verb_card["dialog"]))
+        self.assertIn("这是爱情", " ".join(line["text"] for line in noun_card["dialog"]))
+        self.assertNotIn("我去爱情", " ".join(line["text"] for line in noun_card["dialog"]))
+
+    def test_long_word_order_tasks_are_replaced_with_short_character_builds(self):
+        service = CourseMiniAppLessonFlowService(SimpleNamespace())
+        payload = {
+            "vocabulary": [
+                {"zh": "以前", "pinyin": "yiqian", "meaning": "before"},
+                {"zh": "更好", "pinyin": "genghao", "meaning": "better"},
+            ],
+            "reinforcement_tasks": [
+                {
+                    "type": "word_order",
+                    "prompt": "Too long",
+                    "tokens": ["Ман", "фикр", "мекардам", "кори", "нав", "аз", "пешина", "беҳтар", "аст"],
+                    "answer": ["Ман", "фикр", "мекардам", "кори", "нав", "аз", "пешина", "беҳтар", "аст"],
+                }
+            ],
+        }
+        cards = service._build_cards(payload, lang="tj", lesson_order=1)
+        order_cards = [card for card in cards if card["type"] in {"sentence_builder", "word_order"}]
+
+        self.assertTrue(order_cards)
+        self.assertTrue(all(len(card["answer_tokens"]) <= 6 for card in order_cards))
+        self.assertIn("以", order_cards[0]["answer_tokens"])
 
     def test_hsk_material_splits_into_small_sections_without_singletons(self):
         service = CourseMiniAppLessonFlowService(SimpleNamespace())
@@ -135,7 +181,7 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
         )
         responses = []
         for card in cards:
-            if card["type"] in {"active_word", "pronunciation"}:
+            if card["type"] in {"active_word", "pronunciation", "character_trace"}:
                 response = {"card_id": card["id"], "completed": True}
             elif card["type"] in {
                 "meaning_guess",
@@ -159,7 +205,7 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
     async def test_server_grades_answers_and_preserves_payment_fields(self):
         cards, responses = self.responses(wrong_card_id="activity:translation")
         scored_count = sum(
-            card["type"] not in {"active_word", "pronunciation"} for card in cards
+            card["type"] not in {"active_word", "pronunciation", "character_trace"} for card in cards
         )
         expected_percent = round(((scored_count - 1) / scored_count) * 100)
         study = SimpleNamespace(
@@ -222,6 +268,50 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
             section_key="1.2",
         )
         self.assertEqual(result, {"ok": False, "error": "lesson_required_activities_incomplete"})
+
+    async def test_client_completed_sections_unlock_next_section_when_server_event_lags(self):
+        cards, responses = self.responses()
+        scored_count = sum(
+            card["type"] not in {"active_word", "pronunciation", "character_trace"} for card in cards
+        )
+        study = SimpleNamespace(
+            complete_v2_lesson=AsyncMock(
+                return_value={"ok": True, "completed_lesson": 1, "next_lesson": 2}
+            )
+        )
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+        access = SimpleNamespace(
+            consume_free_use=AsyncMock(return_value={"allowed": True, "recorded": True})
+        )
+
+        self.service._completed_section_keys = AsyncMock(return_value=set())
+        with (
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.StudyMiniAppService",
+                return_value=study,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAccessService",
+                return_value=access,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAnalyticsService",
+                return_value=analytics,
+            ),
+        ):
+            result = await self.service.complete_flow(
+                123,
+                level="hsk1",
+                lesson_order=1,
+                lang="ru",
+                responses=responses,
+                section_key="1.2",
+                client_completed_sections=["1.1"],
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["percent"], 100)
+        self.assertEqual(scored_count, result["total"])
 
 
 if __name__ == "__main__":

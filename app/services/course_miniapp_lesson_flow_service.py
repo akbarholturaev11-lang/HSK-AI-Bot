@@ -60,6 +60,15 @@ class CourseMiniAppLessonFlowService:
                 "pronunciation": "Произнесите фразу вслух",
                 "quick_quiz": "Быстрая проверка",
                 "short_dialog": "Короткий диалог",
+                "character_trace": "Обведите иероглиф",
+                "unit_words": "Слова",
+                "unit_sound": "Звук",
+                "unit_character": "Иероглиф",
+                "unit_dialog": "Диалог",
+                "unit_build": "Сборка",
+                "unit_speaking": "Произношение",
+                "unit_review": "Проверка",
+                "other_meaning": "Другое значение",
             },
             "tj": {
                 "active_word": "Калимаи нави фаъол",
@@ -71,6 +80,15 @@ class CourseMiniAppLessonFlowService:
                 "pronunciation": "Ибораро бо овози баланд гӯед",
                 "quick_quiz": "Санҷиши зуд",
                 "short_dialog": "Муколамаи кӯтоҳ",
+                "character_trace": "Иероглифро кашед",
+                "unit_words": "Калимаҳо",
+                "unit_sound": "Овоз",
+                "unit_character": "Иероглиф",
+                "unit_dialog": "Муколама",
+                "unit_build": "Сохтан",
+                "unit_speaking": "Талаффуз",
+                "unit_review": "Санҷиш",
+                "other_meaning": "Маънои дигар",
             },
             "uz": {
                 "active_word": "Yangi faol so'z",
@@ -82,6 +100,15 @@ class CourseMiniAppLessonFlowService:
                 "pronunciation": "Iborani ovoz chiqarib ayting",
                 "quick_quiz": "Tezkor tekshiruv",
                 "short_dialog": "Qisqa dialog",
+                "character_trace": "Iyeroglifni chizing",
+                "unit_words": "So'zlar",
+                "unit_sound": "Tovush",
+                "unit_character": "Iyeroglif",
+                "unit_dialog": "Dialog",
+                "unit_build": "Yig'ish",
+                "unit_speaking": "Talaffuz",
+                "unit_review": "Tekshiruv",
+                "other_meaning": "Boshqa ma'no",
             },
         }
         return copy.get(lang, copy["ru"]).get(key, key)
@@ -161,6 +188,33 @@ class CourseMiniAppLessonFlowService:
         key = cls._normalize_section_key(value, lesson_order=lesson_order)
         return next((item for item in sections if item["section_key"] == key), sections[0])
 
+    @staticmethod
+    def _client_completed_section_keys(sections: list[dict], values) -> set[str]:
+        if isinstance(values, str):
+            raw_values = values.split(",")
+        elif isinstance(values, (list, tuple, set)):
+            raw_values = values
+        else:
+            raw_values = []
+        valid_keys = {str(item.get("section_key") or "") for item in sections}
+        return {str(value).strip() for value in raw_values if str(value).strip() in valid_keys}
+
+    @staticmethod
+    def _section_keys_before(section: dict, keys: set[str]) -> set[str]:
+        try:
+            section_no = int(section.get("section_no") or 1)
+        except (TypeError, ValueError):
+            section_no = 1
+        previous = set()
+        for key in keys:
+            try:
+                key_no = int(str(key).split(".", 1)[1])
+            except (IndexError, TypeError, ValueError):
+                continue
+            if key_no < section_no:
+                previous.add(str(key))
+        return previous
+
     async def _completed_section_keys(self, *, telegram_id: int, lesson_id: int) -> set[str]:
         result = await self.session.execute(
             select(CourseMiniAppEvent.dedupe_key).where(
@@ -195,6 +249,50 @@ class CourseMiniAppLessonFlowService:
             "reinforcement_tasks": [],
         }
 
+    @staticmethod
+    def _dialog_lines_for_word(word: dict) -> list[dict]:
+        zh = str(word.get("zh") or "").strip()
+        pos = str(word.get("pos") or "").lower()
+        place_words = {
+            "银行",
+            "学校",
+            "大学",
+            "医院",
+            "商店",
+            "饭店",
+            "机场",
+            "车站",
+            "洗手间",
+            "公司",
+            "办公室",
+            "家",
+        }
+        if zh == "赚":
+            return [
+                {"speaker": "A", "text": "你为什么工作？"},
+                {"speaker": "B", "text": "我想赚钱。"},
+            ]
+        if pos.startswith(("v", "verb")):
+            prefix = "我需要" if len(zh) >= 2 else "我想"
+            return [
+                {"speaker": "A", "text": "你今天做什么？"},
+                {"speaker": "B", "text": f"{prefix}{zh}。"},
+            ]
+        if pos.startswith(("adj", "a")):
+            return [
+                {"speaker": "A", "text": "这个怎么样？"},
+                {"speaker": "B", "text": f"很{zh}。"},
+            ]
+        if zh in place_words or "place" in pos:
+            return [
+                {"speaker": "A", "text": "你去哪儿？"},
+                {"speaker": "B", "text": f"我去{zh}。"},
+            ]
+        return [
+            {"speaker": "A", "text": "这是什么？"},
+            {"speaker": "B", "text": f"这是{zh}。"},
+        ]
+
     def _short_dialog_card(self, active_words: list[dict], *, lang: str) -> dict | None:
         target = next((item for item in active_words if item.get("zh") and item.get("meaning")), None)
         if not target:
@@ -215,11 +313,9 @@ class CourseMiniAppLessonFlowService:
             "id": "activity:dialog",
             "type": "dialog_context",
             "title": self._copy(lang, "short_dialog"),
+            "unit": self._copy(lang, "unit_dialog"),
             "prompt": prompt,
-            "dialog": [
-                {"speaker": "A", "text": "你去哪儿？"},
-                {"speaker": "B", "text": f"我去{target['zh']}。"},
-            ],
+            "dialog": self._dialog_lines_for_word(target),
             "options": options,
             "correct_index": correct,
             "explanation": f"{target['zh']} = {target.get('meaning') or ''}",
@@ -320,6 +416,7 @@ class CourseMiniAppLessonFlowService:
                     "id": f"word:{index}",
                     "type": "active_word",
                     "title": self._copy(lang, "active_word"),
+                    "unit": self._copy(lang, "unit_words"),
                     "word": {
                         "zh": str(word.get("zh") or ""),
                         "pinyin": str(word.get("pinyin") or ""),
@@ -333,6 +430,18 @@ class CourseMiniAppLessonFlowService:
         questions = [item for item in payload.get("quiz_questions", []) if isinstance(item, dict)]
         tasks = [item for item in payload.get("reinforcement_tasks", []) if isinstance(item, dict)]
         choices = [item for item in questions if isinstance(item.get("opts") or item.get("options"), list)]
+        if not choices and len(active_words) == 1 and active_words[0].get("meaning"):
+            word = active_words[0]
+            choices.append(
+                {
+                    "type": "multiple_choice",
+                    "subtype": "hanzi_to_meaning",
+                    "q": f"{word.get('zh') or ''} — ?",
+                    "opts": [str(word.get("meaning") or ""), self._copy(lang, "other_meaning")],
+                    "ans": 0,
+                    "expl": f"{word.get('zh') or ''} = {word.get('meaning') or ''}",
+                }
+            )
         if len(choices) < 3 and len(active_words) >= 2:
             meaning_options = [str(item.get("meaning") or "") for item in active_words]
             for index, word in enumerate(active_words):
@@ -364,12 +473,16 @@ class CourseMiniAppLessonFlowService:
                 "ans": 0,
                 "expl": f"{active_words[0].get('zh') or ''} = {active_words[0].get('meaning') or ''}",
             }
-        order_tasks = [
-            item
-            for item in [*questions, *tasks]
-            if str(item.get("type") or "")
-            in {"word_order", "build_chinese_sentence", "build_sentence_chips"}
-        ]
+        order_tasks = []
+        for item in [*questions, *tasks]:
+            if str(item.get("type") or "") not in {"word_order", "build_chinese_sentence", "build_sentence_chips"}:
+                continue
+            tokens = item.get("tokens")
+            answer = item.get("answer")
+            if not isinstance(tokens, list) or not isinstance(answer, list):
+                continue
+            if 2 <= len(answer) <= 6 and len(tokens) <= 8:
+                order_tasks.append(item)
         grammar = [item for item in payload.get("grammar", []) if isinstance(item, dict)]
         for grammar_item in grammar:
             examples = grammar_item.get("examples") if isinstance(grammar_item.get("examples"), list) else []
@@ -383,7 +496,7 @@ class CourseMiniAppLessonFlowService:
                 for token in str(example.get("translation") or "").split()
                 if token.strip(".,!?;:")
             ]
-            if len(zh_tokens) >= 2 and len(order_tasks) < 2:
+            if 2 <= len(zh_tokens) <= 8 and len(order_tasks) < 2:
                 order_tasks.append(
                     {
                         "type": "build_chinese_sentence",
@@ -394,7 +507,7 @@ class CourseMiniAppLessonFlowService:
                         "explanation": zh,
                     }
                 )
-            if len(translation_tokens) >= 2 and len(order_tasks) < 2:
+            if 2 <= len(translation_tokens) <= 6 and len(order_tasks) < 2:
                 order_tasks.append(
                     {
                         "type": "word_order",
@@ -407,9 +520,33 @@ class CourseMiniAppLessonFlowService:
                 )
             if len(order_tasks) >= 2:
                 break
+        easy_words = [
+            str(item.get("zh") or "")
+            for item in active_words
+            if 2 <= len(str(item.get("zh") or "")) <= 4
+        ]
+        easy_index = 0
+        while len(order_tasks) < 2 and easy_index < len(easy_words):
+            zh = easy_words[easy_index]
+            easy_index += 1
+            chars = list(zh)
+            order_tasks.append(
+                {
+                    "type": "build_chinese_sentence",
+                    "prompt": self._copy(lang, "sentence_builder"),
+                    "source": zh,
+                    "tokens": [*chars[1:], chars[0]],
+                    "answer": chars,
+                    "explanation": zh,
+                }
+            )
         if len(order_tasks) < 2 and len(active_words) >= 2:
-            fallback_tokens = [str(item.get("zh") or "") for item in active_words if item.get("zh")]
+            fallback_tokens = [str(item.get("zh") or "") for item in active_words[:3] if item.get("zh")]
+            if len(fallback_tokens) < 2:
+                fallback_tokens = []
             while len(order_tasks) < 2:
+                if not fallback_tokens:
+                    break
                 order_tasks.append(
                     {
                         "type": "build_chinese_sentence",
@@ -433,6 +570,7 @@ class CourseMiniAppLessonFlowService:
                 title=self._copy(lang, "meaning_guess"),
             )
             if card:
+                card["unit"] = self._copy(lang, "unit_review")
                 activities["meaning"] = card
 
         if listening:
@@ -443,7 +581,37 @@ class CourseMiniAppLessonFlowService:
                 title=self._copy(lang, "listening_choice"),
             )
             if card:
+                card["unit"] = self._copy(lang, "unit_sound")
                 activities["listening"] = card
+
+        trace_word = next(
+            (
+                item
+                for item in active_words
+                if any("\u4e00" <= char <= "\u9fff" for char in str(item.get("zh") or ""))
+            ),
+            None,
+        )
+        if trace_word:
+            trace_zh = str(trace_word.get("zh") or "")
+            trace_char = next((char for char in trace_zh if "\u4e00" <= char <= "\u9fff"), trace_zh[:1])
+            trace_prompt = {
+                "ru": f"Обведите символ для «{trace_word.get('meaning') or trace_zh}»",
+                "tj": f"Барои «{trace_word.get('meaning') or trace_zh}» иероглифро кашед",
+                "uz": f"«{trace_word.get('meaning') or trace_zh}» uchun iyeroglifni chizing",
+            }.get(lang, f"Обведите символ для «{trace_word.get('meaning') or trace_zh}»")
+            activities["trace"] = {
+                "id": "activity:trace",
+                "type": "character_trace",
+                "title": self._copy(lang, "character_trace"),
+                "unit": self._copy(lang, "unit_character"),
+                "prompt": trace_prompt,
+                "character": trace_char,
+                "word": trace_zh,
+                "pinyin": str(trace_word.get("pinyin") or ""),
+                "translation": str(trace_word.get("meaning") or ""),
+                "required": True,
+            }
 
         if order_tasks:
             card = self._order_card(
@@ -453,6 +621,7 @@ class CourseMiniAppLessonFlowService:
                 title=self._copy(lang, "sentence_builder"),
             )
             if card:
+                card["unit"] = self._copy(lang, "unit_build")
                 activities["builder"] = card
             card = self._order_card(
                 order_tasks[1] if len(order_tasks) > 1 else order_tasks[0],
@@ -461,6 +630,7 @@ class CourseMiniAppLessonFlowService:
                 title=self._copy(lang, "word_order"),
             )
             if card:
+                card["unit"] = self._copy(lang, "unit_build")
                 activities["order"] = card
 
         used_choice_ids = {id(meaning_source), id(listening)}
@@ -473,6 +643,7 @@ class CourseMiniAppLessonFlowService:
                 title=self._copy(lang, "translation_choice"),
             )
             if card:
+                card["unit"] = self._copy(lang, "unit_review")
                 activities["translation"] = card
         if len(remaining_choices) > 1:
             card = self._choice_card(
@@ -482,6 +653,7 @@ class CourseMiniAppLessonFlowService:
                 title=self._copy(lang, "quick_quiz"),
             )
             if card:
+                card["unit"] = self._copy(lang, "unit_review")
                 activities["quiz"] = card
 
         pronunciation_word = active_words[0] if active_words else {}
@@ -490,6 +662,7 @@ class CourseMiniAppLessonFlowService:
                 "id": "activity:pronunciation",
                 "type": "pronunciation",
                 "title": self._copy(lang, "pronunciation"),
+                "unit": self._copy(lang, "unit_speaking"),
                 "phrase": str(pronunciation_word.get("zh") or ""),
                 "pinyin": str(pronunciation_word.get("pinyin") or ""),
                 "translation": str(pronunciation_word.get("meaning") or ""),
@@ -500,9 +673,9 @@ class CourseMiniAppLessonFlowService:
             activities["dialog"] = dialog_card
 
         patterns = (
-            ["word:1", "word:2", "meaning", "dialog", "word:3", "listening", "word:4", "builder", "pronunciation", "order", "translation", "quiz"],
-            ["word:1", "listening", "word:2", "dialog", "meaning", "word:3", "order", "word:4", "translation", "builder", "pronunciation", "quiz"],
-            ["word:1", "meaning", "word:2", "builder", "dialog", "word:3", "listening", "word:4", "pronunciation", "quiz", "order", "translation"],
+            ["word:1", "listening", "trace", "word:2", "meaning", "dialog", "word:3", "builder", "pronunciation", "word:4", "order", "translation", "quiz"],
+            ["word:1", "trace", "word:2", "listening", "dialog", "meaning", "word:3", "order", "word:4", "pronunciation", "translation", "builder", "quiz"],
+            ["word:1", "meaning", "word:2", "builder", "trace", "dialog", "word:3", "listening", "word:4", "pronunciation", "quiz", "order", "translation"],
         )
         pattern = patterns[(int(lesson_order) - 1) % len(patterns)]
         word_map = {card["id"]: card for card in words}
@@ -524,6 +697,7 @@ class CourseMiniAppLessonFlowService:
         lesson_order: int,
         lang: str,
         section_key: str | int | None = None,
+        client_completed_sections=None,
     ) -> dict:
         user, _, lesson, error = await self._context(
             telegram_id,
@@ -543,6 +717,10 @@ class CourseMiniAppLessonFlowService:
         sections = self._section_plan(payload, level=str(lesson.level), lesson_order=int(lesson.lesson_order))
         section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
         completed_sections = await self._completed_section_keys(telegram_id=telegram_id, lesson_id=lesson.id)
+        completed_sections |= self._section_keys_before(
+            section,
+            self._client_completed_section_keys(sections, client_completed_sections),
+        )
         if not self._section_unlocked(section, completed_sections):
             return {"ok": False, "error": "course_section_not_unlocked"}
         section_payload = self._section_payload(payload, section)
@@ -619,7 +797,7 @@ class CourseMiniAppLessonFlowService:
     @staticmethod
     def _response_is_correct(card: dict, response: dict) -> tuple[bool, bool]:
         card_type = str(card.get("type") or "")
-        if card_type in {"active_word", "pronunciation"}:
+        if card_type in {"active_word", "pronunciation", "character_trace"}:
             return bool(response.get("completed")), False
         if card_type in {"meaning_guess", "listening_choice", "translation_choice", "quick_quiz", "dialog_context"}:
             try:
@@ -642,6 +820,7 @@ class CourseMiniAppLessonFlowService:
         lang: str,
         responses: list,
         section_key: str | int | None = None,
+        client_completed_sections=None,
     ) -> dict:
         user, _, lesson, error = await self._context(
             telegram_id,
@@ -658,6 +837,10 @@ class CourseMiniAppLessonFlowService:
         sections = self._section_plan(payload or {}, level=str(lesson.level), lesson_order=int(lesson.lesson_order))
         section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
         completed_sections = await self._completed_section_keys(telegram_id=telegram_id, lesson_id=lesson.id)
+        completed_sections |= self._section_keys_before(
+            section,
+            self._client_completed_section_keys(sections, client_completed_sections),
+        )
         if not self._section_unlocked(section, completed_sections):
             return {"ok": False, "error": "course_section_not_unlocked"}
         cards = self._build_cards(
