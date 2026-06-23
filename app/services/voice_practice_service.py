@@ -4,7 +4,6 @@ import logging
 import uuid
 from datetime import datetime, time, timezone
 
-from openai import AsyncOpenAI
 from sqlalchemy import func, select
 
 from app.config import settings
@@ -12,7 +11,8 @@ from app.db.models.voice_practice_session import VoicePracticeSession
 from app.repositories.user_repo import UserRepository
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
-from app.services.ai_service import AIService
+from app.services.ai_service import AIService, AIUsageResult
+from app.services.ai_usage_budget_service import AIUsageBudgetService, BudgetRecordResult
 from app.services.study_miniapp_service import StudyMiniAppService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_gamification_service import CourseGamificationService
@@ -99,6 +99,36 @@ class VoicePracticeService:
     def _is_paid(user) -> bool:
         return StudyMiniAppService.is_paid_user(user)
 
+    async def _is_paid_telegram_user(self, telegram_id: int) -> bool:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        return self._is_paid(user)
+
+    async def _ensure_budget_available(self, telegram_id: int) -> None:
+        access = await AIUsageBudgetService(self.session).can_use_ai(telegram_id)
+        if access.allowed:
+            return
+        raise VoicePracticeError(
+            access.message_key or "ai_budget_cooldown",
+            "AI usage budget is temporarily unavailable.",
+            403,
+        )
+
+    @staticmethod
+    def _budget_notice_payload(*records: BudgetRecordResult | None) -> dict | None:
+        for record in records:
+            if not record:
+                continue
+            if record.cooldown_started or record.budget_depleted:
+                return {
+                    "code": record.message_key or (
+                        "ai_budget_depleted_notice" if record.budget_depleted else "ai_budget_cooldown_notice"
+                    ),
+                    "cooldown_started": bool(record.cooldown_started),
+                    "budget_depleted": bool(record.budget_depleted),
+                    "cooldown_hours": int(record.cooldown_hours),
+                }
+        return None
+
     async def _session_count(self, telegram_id: int, *, today_only: bool) -> int:
         query = select(func.count(VoicePracticeSession.id)).where(
             VoicePracticeSession.user_telegram_id == telegram_id
@@ -145,6 +175,8 @@ class VoicePracticeService:
         status = await self.user_status(telegram_id)
         if not status["is_paid"] and status["remaining_voice_limit"] <= 0:
             raise VoicePracticeError("LIMIT_EXCEEDED", "Voice Practice limit reached.", 403)
+        if status["is_paid"]:
+            await self._ensure_budget_available(telegram_id)
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         course_context = await self._course_context(user, language) if user else {
@@ -203,7 +235,7 @@ class VoicePracticeService:
             "correction": str(data.get("correction") or "").strip()[:700] or None,
         }
 
-    async def _generate_reply(self, item: VoicePracticeSession, transcription: str) -> dict:
+    async def _generate_reply(self, item: VoicePracticeSession, transcription: str) -> tuple[dict, AIUsageResult]:
         target_language = LANGUAGE_NAMES.get(item.language, "Russian")
         recent = list(item.history or [])[-8:]
         target_words = json.dumps(list(item.target_words or [])[:4], ensure_ascii=False)
@@ -233,15 +265,21 @@ class VoicePracticeService:
                 messages.append({"role": "assistant", "content": assistant_text[:700]})
         messages.append({"role": "user", "content": transcription[:1000]})
 
-        client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-        response = await client.chat.completions.create(
-            model="gpt-4o-mini",
+        model = "gpt-4o-mini"
+        ai = AIService()
+        response = await ai.client.chat.completions.create(
+            model=model,
             messages=messages,
             response_format={"type": "json_object"},
             max_completion_tokens=350,
             temperature=0.7,
         )
-        return self._clean_reply(response.choices[0].message.content or "")
+        usage_result = ai._result_from_response(
+            response=response,
+            model=model,
+            content=response.choices[0].message.content or "",
+        )
+        return self._clean_reply(usage_result.content), usage_result
 
     async def process_message(
         self,
@@ -261,7 +299,12 @@ class VoicePracticeService:
         item = await self._get_active_session(telegram_id, session_id)
         if item.turn_count >= MAX_TURNS_PER_SESSION:
             raise VoicePracticeError("TURN_LIMIT_EXCEEDED", "This voice session reached its turn limit.", 403)
+        paid = await self._is_paid_telegram_user(telegram_id)
+        if paid:
+            await self._ensure_budget_available(telegram_id)
 
+        transcribe_record = None
+        reply_record = None
         try:
             ai = AIService()
             transcription_result = await asyncio.wait_for(
@@ -276,7 +319,17 @@ class VoicePracticeService:
             transcription = transcription_result.content.strip()
             if not transcription:
                 raise VoicePracticeError("TRANSCRIPTION_EMPTY", "No speech was detected.")
-            reply = await asyncio.wait_for(self._generate_reply(item, transcription), timeout=30)
+            transcribe_record = await AIUsageBudgetService(self.session).record_usage(
+                telegram_id=telegram_id,
+                result=transcription_result,
+                source="voice_practice_transcribe",
+            )
+            reply, reply_usage = await asyncio.wait_for(self._generate_reply(item, transcription), timeout=30)
+            reply_record = await AIUsageBudgetService(self.session).record_usage(
+                telegram_id=telegram_id,
+                result=reply_usage,
+                source="voice_practice_reply",
+            )
         except VoicePracticeError:
             raise
         except asyncio.TimeoutError as error:
@@ -300,6 +353,7 @@ class VoicePracticeService:
             "audio_reply_url": None,
             "audio_reply_base64": None,
             "remaining_limit": status["remaining_voice_limit"],
+            "budget_notice": self._budget_notice_payload(transcribe_record, reply_record),
         }
 
     async def end_session(self, telegram_id: int, session_id: str) -> dict:

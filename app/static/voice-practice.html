@@ -630,9 +630,9 @@ var VOICES = [
 ];
 
 var UI_COPY = {
-  uz:{dailyLimit:"Bugungi sinov",limitEnded:"Bepul ovozli sinov tugadi",paidAccess:"Obuna faol",freePlan:"Bepul",paidPlan:"Obuna",unlimited:"Obuna faol",you:"Siz",empty:"Hali hech narsa aytilmadi. Mikrofonga bosib gapni boshlang.",startCall:"Qo'ng'iroqni boshlash",trialTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",freeTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",endConfirm:"Suhbatni tugatasizmi?",noCorrection:"Bu safar tuzatish bo'lmadi, ajoyib!",goodbye:"很好，今天到这里。下次见！"},
-  ru:{dailyLimit:"Пробный доступ",limitEnded:"Бесплатная голосовая проба закончилась",paidAccess:"Подписка активна",freePlan:"Бесплатно",paidPlan:"Подписка",unlimited:"Подписка активна",you:"Вы",empty:"Вы ещё ничего не сказали. Нажмите на микрофон и начните говорить.",startCall:"Начать звонок",trialTomorrow:"С подпиской откроются расширенные голосовые практики",freeTomorrow:"С подпиской откроются расширенные голосовые практики",endConfirm:"Завершить разговор?",noCorrection:"В этот раз без исправлений, отлично!",goodbye:"很好，今天到这里。下次见！"},
-  tj:{dailyLimit:"Санҷиши ройгон",limitEnded:"Санҷиши ройгони овозӣ тамом шуд",paidAccess:"Обуна фаъол аст",freePlan:"Ройгон",paidPlan:"Обуна",unlimited:"Обуна фаъол аст",you:"Шумо",empty:"Ҳоло чизе нагуфтед. Микрофонро пахш карда оғоз кунед.",startCall:"Оғози занг",trialTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",freeTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",endConfirm:"Суҳбатро анҷом медиҳед?",noCorrection:"Ин дафъа ислоҳ лозим нашуд, аъло!",goodbye:"很好，今天到这里。下次见！"}
+  uz:{dailyLimit:"Bugungi sinov",limitEnded:"Bepul ovozli sinov tugadi",paidAccess:"Obuna faol",freePlan:"Bepul",paidPlan:"Obuna",unlimited:"Obuna faol",you:"Siz",empty:"Hali hech narsa aytilmadi. Mikrofonga bosib gapni boshlang.",startCall:"Qo'ng'iroqni boshlash",trialTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",freeTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",budgetCooldown:"Bugungi AI xarajat tez ishlatildi. 6 soatdan keyin yana gaplashasiz.",budgetEnded:"AI limiti tugadi. Obuna bilan davom eting.",endConfirm:"Suhbatni tugatasizmi?",noCorrection:"Bu safar tuzatish bo'lmadi, ajoyib!",goodbye:"很好，今天到这里。下次见！"},
+  ru:{dailyLimit:"Пробный доступ",limitEnded:"Бесплатная голосовая проба закончилась",paidAccess:"Подписка активна",freePlan:"Бесплатно",paidPlan:"Подписка",unlimited:"Подписка активна",you:"Вы",empty:"Вы ещё ничего не сказали. Нажмите на микрофон и начните говорить.",startCall:"Начать звонок",trialTomorrow:"С подпиской откроются расширенные голосовые практики",freeTomorrow:"С подпиской откроются расширенные голосовые практики",budgetCooldown:"Сегодня AI-лимит расходуется слишком быстро. Разговор откроется через 6 часов.",budgetEnded:"AI-лимит закончился. Продолжите с подпиской.",endConfirm:"Завершить разговор?",noCorrection:"В этот раз без исправлений, отлично!",goodbye:"很好，今天到这里。下次见！"},
+  tj:{dailyLimit:"Санҷиши ройгон",limitEnded:"Санҷиши ройгони овозӣ тамом шуд",paidAccess:"Обуна фаъол аст",freePlan:"Ройгон",paidPlan:"Обуна",unlimited:"Обуна фаъол аст",you:"Шумо",empty:"Ҳоло чизе нагуфтед. Микрофонро пахш карда оғоз кунед.",startCall:"Оғози занг",trialTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",freeTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",budgetCooldown:"Имрӯз лимити AI хеле зуд сарф шуд. Пас аз 6 соат боз суҳбат мекунед.",budgetEnded:"Лимити AI тамом шуд. Бо обуна идома диҳед.",endConfirm:"Суҳбатро анҷом медиҳед?",noCorrection:"Ин дафъа ислоҳ лозим нашуд, аъло!",goodbye:"很好，今天到这里。下次见！"}
 };
 function ui(key){ return (UI_COPY[UI_LANG] && UI_COPY[UI_LANG][key]) || UI_COPY.ru[key] || key; }
 
@@ -1031,7 +1031,9 @@ async function onRecordingStopped(){
   }catch(err){
     console.error(err);
     setCallState("idle");
-    if (err && (err.status === 403 || err.code === "LIMIT_EXCEEDED")){ showPaywall(); }
+    if (handleBudgetBlock(err && err.code, true)){ return; }
+    if (err && err.code === "LIMIT_EXCEEDED"){ showPaywall(); }
+    else if (err && err.status === 403){ showToast(ui("freeTomorrow")); }
     else if (err && err.status === 404){ showToast("Sessiya topilmadi. Suhbat qayta boshlanadi."); finishCall(true); }
     else { showToast("Xabarni yuborishda xatolik. Qaytadan urinib ko'ring."); }
   }
@@ -1048,10 +1050,14 @@ function handleMessageResponse(res){
   });
   renderTranscript();
   if (typeof res.remaining_limit !== "undefined") state.remainingLimit = res.remaining_limit;
+  var budgetNotice = res.budget_notice && res.budget_notice.code;
   updateLimitBadges();
 
   setCallState("speaking");
   playBotAudio(res).then(function(){
+    if (budgetNotice && handleBudgetBlock(budgetNotice, true)){
+      return;
+    }
     if (isLimitExhausted(state.remainingLimit) && !state.isPaid){
       setTimeout(function(){ showPaywall(); }, 500);
     } else {
@@ -1131,7 +1137,9 @@ async function handleStartCallClick(){
     startTimer();
   }catch(err){
     console.error(err);
-    if (err && (err.status === 403 || err.code === "LIMIT_EXCEEDED")){ showScreen("paywall"); }
+    if (handleBudgetBlock(err && err.code, false)){ return; }
+    if (err && err.code === "LIMIT_EXCEEDED"){ showScreen("paywall"); }
+    else if (err && err.status === 403){ showToast(ui("freeTomorrow")); }
     else { showToast("Suhbatni boshlashda xatolik. Qaytadan urinib ko'ring."); }
   }finally{
     el.btnStartCall.disabled = false;
@@ -1144,6 +1152,25 @@ function showPaywall(){
   stopRecordingHard();
   el.paywallMeta.textContent = state.plan === "trial" ? ui("trialTomorrow") : ui("freeTomorrow");
   showScreen("paywall");
+}
+function isBudgetCooldownCode(code){
+  return code === "ai_budget_cooldown" || code === "ai_budget_cooldown_notice";
+}
+function isBudgetEndedCode(code){
+  return code === "ai_budget_depleted" || code === "ai_budget_depleted_notice";
+}
+function handleBudgetBlock(code, inCall){
+  if (isBudgetEndedCode(code)){
+    showToast(ui("budgetEnded"));
+    showPaywall();
+    return true;
+  }
+  if (isBudgetCooldownCode(code)){
+    showToast(ui("budgetCooldown"));
+    if (inCall) finishCall(true);
+    return true;
+  }
+  return false;
 }
 function requestUpgrade(source){
   source = source || "voice_limit";

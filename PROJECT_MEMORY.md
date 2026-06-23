@@ -207,6 +207,28 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-24 — AI Voice paid budget integration
+
+Changed:
+- Mini App AI Voice now uses the existing AI usage budget gate for paid users before starting a session and before processing each voice turn.
+- Voice transcription and AI reply costs are recorded into `ai_usage_events` with sources `voice_practice_transcribe` and `voice_practice_reply`.
+- Frontend handles existing budget cooldown/depleted codes with user-facing RU/TJ/UZ messages instead of treating every 403 as a generic paywall.
+
+Why:
+- Paid Voice Practice must share the same payment-derived AI budget rule as text/photo AI: roughly 50% of payment revenue is available for AI costs, with cooldown/depletion handling managed by `AIUsageBudgetService`.
+
+Files touched:
+- `app/services/voice_practice_service.py`
+- `app/static/voice-practice.html`
+- `tests/test_voice_practice_course_context.py`
+
+Risk:
+- Payment approval and subscription creation were not changed.
+- Existing paid users without an active budget remain allowed because `AIUsageBudgetService.can_use_ai()` already allows no-budget users; users with active budgets now have Voice Practice counted against that budget.
+
+Follow-up:
+- Smoke-test one paid Voice Practice call after deploy and verify `ai_usage_events.source` contains `voice_practice_transcribe` and `voice_practice_reply`.
+
 ### 2026-06-23 — Course lesson quality, AI Voice access, and duplicate UX cleanup
 
 Changed:
@@ -1771,11 +1793,13 @@ Changed:
 - `/start` resumes incomplete onboarding instead of treating default `language="tj"` and `level="beginner"` as a completed setup.
 - Referral payloads can attach for existing incomplete onboarding users, and duplicate referral rows are avoided by checking invited user first.
 - Referral payloads also attach for existing unpaid users who do not already have a referrer. If such a user already has `questions_used >= 2`, the referral is activated immediately after attach.
+- Existing pending referral rows are also recovered on `/start <referral_code>`: if the invited user has `questions_used >= 2`, the pending referral activates without waiting for another AI question.
 
 Why:
 - Referral links created/committed a user before onboarding finished, so later `/start` skipped language/mode selection and looked like the bot ignored the start command.
 - Users who opened the bot first and came back through a referral link could lose the referral attribution.
 - A user could enter via referral link and use the free QA limit, but still not count if their account looked like an already completed non-referred user before attach.
+- A referral row could exist as `pending`, but after the invited user hit the free limit there might be no next successful AI question to trigger activation.
 
 Files touched:
 - `app/services/onboarding_service.py`
