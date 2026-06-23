@@ -6,7 +6,11 @@ from aiogram.types import CallbackQuery
 
 from app.bot.utils.i18n import t
 from app.bot.middlewares.required_channel import (
+    FORCE_SUB_ACTION_OPEN_COURSE,
+    FORCE_SUB_ACTION_OPEN_FREE_QA,
+    PENDING_FORCE_SUB_ACTION,
     PENDING_FORCE_SUB_MESSAGE_ID,
+    PENDING_FORCE_SUB_PAYLOAD,
     PENDING_FORCE_SUB_TEXT,
 )
 from app.repositories.user_repo import UserRepository
@@ -52,10 +56,16 @@ async def force_sub_check(callback: CallbackQuery, state: FSMContext, session):
     data = await state.get_data()
     pending_text = (data.get(PENDING_FORCE_SUB_TEXT) or "").strip()
     pending_message_id = data.get(PENDING_FORCE_SUB_MESSAGE_ID)
+    pending_action = data.get(PENDING_FORCE_SUB_ACTION)
+    pending_payload = data.get(PENDING_FORCE_SUB_PAYLOAD) or {}
+    if not isinstance(pending_payload, dict):
+        pending_payload = {}
     await state.update_data(
         **{
             PENDING_FORCE_SUB_TEXT: None,
             PENDING_FORCE_SUB_MESSAGE_ID: None,
+            PENDING_FORCE_SUB_ACTION: None,
+            PENDING_FORCE_SUB_PAYLOAD: None,
         }
     )
 
@@ -75,6 +85,33 @@ async def force_sub_check(callback: CallbackQuery, state: FSMContext, session):
             session,
         )
         return
+
+    if pending_action and callback.message:
+        if pending_action == FORCE_SUB_ACTION_OPEN_COURSE:
+            from app.bot.handlers.course import send_course_miniapp_entry
+
+            await send_course_miniapp_entry(
+                session=session,
+                telegram_id=callback.from_user.id,
+                respond=callback.message.answer,
+                state=state,
+                source=str(pending_payload.get("source") or "required_channel_mode_course"),
+                level=pending_payload.get("level"),
+                lesson=pending_payload.get("lesson"),
+                tab=pending_payload.get("tab"),
+            )
+            return
+
+        if pending_action == FORCE_SUB_ACTION_OPEN_FREE_QA:
+            from app.bot.handlers.course import activate_free_qa_mode
+
+            await activate_free_qa_mode(
+                session=session,
+                telegram_id=callback.from_user.id,
+                respond=callback.message.answer,
+                state=state,
+            )
+            return
 
     if user and getattr(user, "learning_mode", "qa") == "course" and callback.message:
         from app.bot.handlers.course import send_course_miniapp_entry

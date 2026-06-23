@@ -3,20 +3,108 @@ from datetime import datetime, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
+from app.bot.handlers.required_channel import force_sub_check
 from app.bot.keyboards.onboarding import course_mode_entry_keyboard
+from app.bot.middlewares.required_channel import (
+    FORCE_SUB_ACTION_OPEN_COURSE,
+    FORCE_SUB_ACTION_OPEN_FREE_QA,
+    PENDING_FORCE_SUB_ACTION,
+    PENDING_FORCE_SUB_PAYLOAD,
+)
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 
 
 class CourseModeEntryKeyboardTests(unittest.TestCase):
-    def test_course_button_opens_study_miniapp_and_qa_button_stays_in_bot(self):
+    def test_course_button_uses_callback_so_force_sub_can_run_first(self):
         keyboard = course_mode_entry_keyboard("ru")
         course_button = keyboard.inline_keyboard[0][0]
         qa_button = keyboard.inline_keyboard[1][0]
 
-        self.assertIn("study.html", course_button.web_app.url)
-        self.assertIn("lang=ru", course_button.web_app.url)
+        self.assertEqual(course_button.callback_data, "mode:course")
+        self.assertIsNone(course_button.web_app)
         self.assertEqual(qa_button.callback_data, "mode:free_qa")
+
+
+class _FakeForceSubState:
+    def __init__(self, data):
+        self.data = dict(data)
+
+    async def get_data(self):
+        return dict(self.data)
+
+    async def update_data(self, **values):
+        self.data.update(values)
+
+
+class RequiredChannelResumeTests(unittest.IsolatedAsyncioTestCase):
+    @staticmethod
+    def _callback():
+        return SimpleNamespace(
+            from_user=SimpleNamespace(id=123),
+            bot=SimpleNamespace(),
+            answer=AsyncMock(),
+            message=SimpleNamespace(
+                message_id=10,
+                delete=AsyncMock(),
+                answer=AsyncMock(),
+            ),
+        )
+
+    async def test_force_sub_check_resumes_pending_course_mode(self):
+        callback = self._callback()
+        state = _FakeForceSubState(
+            {
+                PENDING_FORCE_SUB_ACTION: FORCE_SUB_ACTION_OPEN_COURSE,
+                PENDING_FORCE_SUB_PAYLOAD: {"source": "mode_course"},
+            }
+        )
+        session = SimpleNamespace(flush=AsyncMock())
+        user = SimpleNamespace(language="uz", last_active_at=None)
+
+        with (
+            patch("app.bot.handlers.required_channel.UserRepository") as user_repo_class,
+            patch("app.bot.handlers.required_channel.RequiredChannelService") as service_class,
+            patch("app.bot.handlers.course.send_course_miniapp_entry", new=AsyncMock()) as send_entry,
+        ):
+            user_repo_class.return_value.get_by_telegram_id = AsyncMock(return_value=user)
+            service_class.return_value.missing_channels = AsyncMock(return_value=[])
+
+            await force_sub_check(callback, state, session)
+
+        send_entry.assert_awaited_once()
+        kwargs = send_entry.await_args.kwargs
+        self.assertEqual(kwargs["telegram_id"], 123)
+        self.assertEqual(kwargs["source"], "mode_course")
+        self.assertIsNone(state.data[PENDING_FORCE_SUB_ACTION])
+        self.assertIsNone(state.data[PENDING_FORCE_SUB_PAYLOAD])
+
+    async def test_force_sub_check_resumes_pending_free_qa_mode(self):
+        callback = self._callback()
+        state = _FakeForceSubState(
+            {
+                PENDING_FORCE_SUB_ACTION: FORCE_SUB_ACTION_OPEN_FREE_QA,
+                PENDING_FORCE_SUB_PAYLOAD: {"source": "mode_free_qa"},
+            }
+        )
+        session = SimpleNamespace(flush=AsyncMock())
+        user = SimpleNamespace(language="uz", last_active_at=None)
+
+        with (
+            patch("app.bot.handlers.required_channel.UserRepository") as user_repo_class,
+            patch("app.bot.handlers.required_channel.RequiredChannelService") as service_class,
+            patch("app.bot.handlers.course.activate_free_qa_mode", new=AsyncMock()) as activate_qa,
+        ):
+            user_repo_class.return_value.get_by_telegram_id = AsyncMock(return_value=user)
+            service_class.return_value.missing_channels = AsyncMock(return_value=[])
+
+            await force_sub_check(callback, state, session)
+
+        activate_qa.assert_awaited_once()
+        kwargs = activate_qa.await_args.kwargs
+        self.assertEqual(kwargs["telegram_id"], 123)
+        self.assertIsNone(state.data[PENDING_FORCE_SUB_ACTION])
+        self.assertIsNone(state.data[PENDING_FORCE_SUB_PAYLOAD])
 
 
 class CourseMiniAppOnboardingValidationTests(unittest.TestCase):

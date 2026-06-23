@@ -207,6 +207,28 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Mode selection required-channel gate
+
+Changed:
+- Language selection now shows Course/Oddiy mode first, then required-channel subscription is checked when the user chooses either mode.
+- If the user is missing required channel subscription, the selected mode is stored in FSM data and resumed after `force_sub:check`: Course sends the Course Mini App entry, Oddiy mode activates QA mode.
+
+Why:
+- Forced channel subscription should start after the user chooses Course or Oddiy mode, not before the mode selection screen.
+
+Files touched:
+- `app/bot/keyboards/onboarding.py`
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/required_channel.py`
+- `app/bot/middlewares/required_channel.py`
+- `tests/test_course_miniapp_onboarding.py`
+
+Risk:
+- Telegram bots cannot truly auto-open a WebApp from a subscription check callback; the bot resumes the flow and sends the Course Mini App WebApp button automatically.
+
+Follow-up:
+- Smoke-test new `/start` users in Telegram for both Course and Oddiy mode with subscribed and unsubscribed channel states.
+
 ### 2026-06-23 — Course Mini App lesson variety and section unlock recovery
 
 Changed:

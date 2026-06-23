@@ -31,6 +31,10 @@ PARTNER_MENU_TEXTS = {
 }
 PENDING_FORCE_SUB_TEXT = "force_sub_pending_text"
 PENDING_FORCE_SUB_MESSAGE_ID = "force_sub_pending_message_id"
+PENDING_FORCE_SUB_ACTION = "force_sub_pending_action"
+PENDING_FORCE_SUB_PAYLOAD = "force_sub_pending_payload"
+FORCE_SUB_ACTION_OPEN_COURSE = "open_course_mode"
+FORCE_SUB_ACTION_OPEN_FREE_QA = "open_free_qa_mode"
 
 
 def _is_partner_entry_event(event: Any) -> bool:

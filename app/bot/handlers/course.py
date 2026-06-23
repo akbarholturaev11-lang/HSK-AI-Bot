@@ -64,6 +64,12 @@ from app.bot.utils.course_formatter import (
 )
 from app.bot.keyboards.main_menu import course_menu_keyboard, main_menu_keyboard
 from app.bot.keyboards.course import course_reminder_timezone_keyboard
+from app.bot.middlewares.required_channel import (
+    FORCE_SUB_ACTION_OPEN_COURSE,
+    FORCE_SUB_ACTION_OPEN_FREE_QA,
+    PENDING_FORCE_SUB_ACTION,
+    PENDING_FORCE_SUB_PAYLOAD,
+)
 from app.bot.utils.workflow_message import (
     REMINDER_PANEL_CHAT_ID,
     REMINDER_PANEL_MSG_ID,
@@ -320,6 +326,42 @@ async def _maybe_show_force_sub_checkpoint(*, callback: CallbackQuery, session, 
         return False
 
     lang = user.language if user and user.language else "ru"
+    await callback.answer(t("force_sub_required_alert", lang), show_alert=True)
+    await callback.message.answer(
+        required_service.build_required_text(missing, lang),
+        reply_markup=required_service.build_required_keyboard(missing, lang),
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+    )
+    return True
+
+
+async def _show_required_channel_for_pending_action(
+    *,
+    callback: CallbackQuery,
+    state: FSMContext,
+    session,
+    user,
+    lang: str,
+    action: str,
+    payload: dict | None = None,
+) -> bool:
+    required_service = RequiredChannelService(session)
+    missing = await required_service.missing_channels(callback.bot, callback.from_user.id)
+    if not missing:
+        return False
+
+    if user and getattr(user, "force_sub_required_at", None) is None:
+        user.force_sub_required_at = datetime.now(timezone.utc)
+        await session.flush()
+
+    await state.update_data(
+        **{
+            PENDING_FORCE_SUB_ACTION: action,
+            PENDING_FORCE_SUB_PAYLOAD: payload or {},
+        }
+    )
+    await session.commit()
     await callback.answer(t("force_sub_required_alert", lang), show_alert=True)
     await callback.message.answer(
         required_service.build_required_text(missing, lang),
@@ -753,22 +795,42 @@ async def mode_free_qa_handler(callback: CallbackQuery, state: FSMContext, sessi
         return
 
     lang = user.language if user.language else "ru"
-    user.learning_mode = "qa"
-    user.voice_mode = "none"
-    await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
-    await session.commit()
+    if await _show_required_channel_for_pending_action(
+        callback=callback,
+        state=state,
+        session=session,
+        user=user,
+        lang=lang,
+        action=FORCE_SUB_ACTION_OPEN_FREE_QA,
+        payload={"source": "mode_free_qa"},
+    ):
+        return
 
     await callback.answer()
-    await callback.message.answer(
-        t("free_mode_info", lang),
-        reply_markup=main_menu_keyboard(lang),
-        parse_mode="HTML",
+    await activate_free_qa_mode(
+        session=session,
+        telegram_id=callback.from_user.id,
+        respond=callback.message.answer,
+        state=state,
     )
 
 
 @router.callback_query(F.data == "mode:course")
 async def course_mode_open_handler(callback: CallbackQuery, state: FSMContext, session):
     if await _block_if_course_disabled(callback, session):
+        return
+
+    user = await UserRepository(session).get_by_telegram_id(callback.from_user.id)
+    lang = user.language if user and user.language else "ru"
+    if await _show_required_channel_for_pending_action(
+        callback=callback,
+        state=state,
+        session=session,
+        user=user,
+        lang=lang,
+        action=FORCE_SUB_ACTION_OPEN_COURSE,
+        payload={"source": "mode_course"},
+    ):
         return
 
     await callback.answer()
@@ -779,6 +841,32 @@ async def course_mode_open_handler(callback: CallbackQuery, state: FSMContext, s
         state=state,
         source="mode_course",
     )
+
+
+async def activate_free_qa_mode(
+    *,
+    session,
+    telegram_id: int,
+    respond,
+    state: FSMContext | None = None,
+) -> bool:
+    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+    if not user:
+        await respond(t("user_not_found", "ru"))
+        return False
+
+    lang = user.language if user.language else "ru"
+    user.learning_mode = "qa"
+    user.voice_mode = "none"
+    if state:
+        await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
+    await session.commit()
+    await respond(
+        t("free_mode_info", lang),
+        reply_markup=main_menu_keyboard(lang),
+        parse_mode="HTML",
+    )
+    return True
 
 
 
