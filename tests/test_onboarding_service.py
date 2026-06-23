@@ -8,8 +8,10 @@ from app.services.onboarding_service import (
     ONBOARDING_LANGUAGE_MODE,
     ONBOARDING_MODE_CHOICE_MODE,
     OnboardingService,
+    can_attach_start_referral,
     onboarding_stage,
 )
+from app.services.referral_service import ReferralService
 
 
 class OnboardingServiceTests(unittest.IsolatedAsyncioTestCase):
@@ -80,6 +82,40 @@ class OnboardingServiceTests(unittest.IsolatedAsyncioTestCase):
         )
         session.commit.assert_awaited_once()
 
+    async def test_existing_unreferred_free_user_can_attach_start_referral(self):
+        session = SimpleNamespace(flush=AsyncMock(), commit=AsyncMock())
+        service = OnboardingService(session)
+        user = SimpleNamespace(
+            telegram_id=123,
+            full_name="Ali",
+            username="ali",
+            learning_mode="qa",
+            referred_by_telegram_id=None,
+            payment_status="none",
+        )
+        service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=user))
+        service.referral_service = SimpleNamespace(
+            attach_referral_if_needed=AsyncMock(),
+        )
+        bot = SimpleNamespace()
+
+        result, created = await service.get_or_create_user(
+            telegram_id=123,
+            full_name="Ali",
+            username="ali",
+            referral_code="abc123",
+            bot=bot,
+        )
+
+        self.assertIs(result, user)
+        self.assertFalse(created)
+        service.referral_service.attach_referral_if_needed.assert_awaited_once_with(
+            invited_user_telegram_id=123,
+            referral_code="abc123",
+            bot=bot,
+        )
+        session.commit.assert_awaited_once()
+
     def test_onboarding_stage_uses_learning_mode_marker(self):
         self.assertEqual(
             onboarding_stage(SimpleNamespace(learning_mode=ONBOARDING_LANGUAGE_MODE)),
@@ -94,6 +130,67 @@ class OnboardingServiceTests(unittest.IsolatedAsyncioTestCase):
     def test_onboarding_markers_fit_user_learning_mode_column(self):
         self.assertLessEqual(len(ONBOARDING_LANGUAGE_MODE), 16)
         self.assertLessEqual(len(ONBOARDING_MODE_CHOICE_MODE), 16)
+
+    def test_start_referral_attach_guard_blocks_paid_or_referred_users(self):
+        self.assertTrue(can_attach_start_referral(
+            SimpleNamespace(
+                learning_mode="qa",
+                referred_by_telegram_id=None,
+                payment_status="none",
+            )
+        ))
+        self.assertFalse(can_attach_start_referral(
+            SimpleNamespace(
+                learning_mode="qa",
+                referred_by_telegram_id=777,
+                payment_status="none",
+            )
+        ))
+        self.assertFalse(can_attach_start_referral(
+            SimpleNamespace(
+                learning_mode="qa",
+                referred_by_telegram_id=None,
+                payment_status="approved",
+            )
+        ))
+
+
+class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
+    async def test_attach_referral_activates_immediately_when_user_already_eligible(self):
+        session = SimpleNamespace(commit=AsyncMock())
+        service = ReferralService(session)
+        invited = SimpleNamespace(
+            telegram_id=123,
+            referred_by_telegram_id=None,
+            questions_used=2,
+        )
+        referrer = SimpleNamespace(telegram_id=777)
+        service.user_repo = SimpleNamespace(
+            get_by_telegram_id=AsyncMock(side_effect=[invited, referrer]),
+            get_by_referral_code=AsyncMock(return_value=referrer),
+            set_referred_by=AsyncMock(),
+        )
+        service.referral_repo = SimpleNamespace(
+            get_by_invited_user_telegram_id=AsyncMock(return_value=None),
+            create=AsyncMock(),
+        )
+        service.activate_referral_if_eligible = AsyncMock()
+        bot = SimpleNamespace()
+
+        await service.attach_referral_if_needed(
+            invited_user_telegram_id=123,
+            referral_code="abc123",
+            bot=bot,
+        )
+
+        service.referral_repo.create.assert_awaited_once_with(
+            referrer_telegram_id=777,
+            invited_user_telegram_id=123,
+        )
+        service.activate_referral_if_eligible.assert_awaited_once_with(
+            bot=bot,
+            invited_user_telegram_id=123,
+        )
 
 
 class StartHandlerOnboardingTests(unittest.IsolatedAsyncioTestCase):

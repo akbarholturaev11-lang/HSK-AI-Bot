@@ -197,12 +197,18 @@ class ReferralService:
             invited_user_telegram_id=invited_user_telegram_id,
         )
         await self.session.commit()
+        if int(getattr(invited_user, "questions_used", 0) or 0) >= 2:
+            await self.activate_referral_if_eligible(
+                bot=bot,
+                invited_user_telegram_id=invited_user_telegram_id,
+            )
+            return
         if bot:
             await self.update_trial_progress_message(bot, referrer)
 
     async def activate_referral_if_eligible(
         self,
-        bot: Bot,
+        bot: Optional[Bot],
         invited_user_telegram_id: int,
     ) -> None:
         referral = await self.referral_repo.get_by_invited_user_telegram_id(
@@ -254,6 +260,9 @@ class ReferralService:
         )
 
         await self.session.commit()
+        if not bot:
+            return
+
         await self.update_trial_progress_message(bot, referrer)
 
         if bonus_given_now and not referrer.discount_progress_message_id:

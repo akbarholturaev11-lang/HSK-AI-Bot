@@ -24,6 +24,18 @@ def onboarding_stage(user: User | None) -> Optional[str]:
     return None
 
 
+def can_attach_start_referral(user: User | None) -> bool:
+    if not user:
+        return False
+    if onboarding_stage(user):
+        return True
+    if getattr(user, "referred_by_telegram_id", None):
+        return False
+    if getattr(user, "payment_status", None) == "approved":
+        return False
+    return True
+
+
 class OnboardingService:
     def __init__(self, session):
         self.session = session
@@ -69,7 +81,7 @@ class OnboardingService:
                 changed = True
             if changed:
                 await self.session.flush()
-            if referral_code and onboarding_stage(user):
+            if referral_code and can_attach_start_referral(user):
                 await self._attach_referral_if_needed(
                     telegram_id=telegram_id,
                     referral_code=referral_code,

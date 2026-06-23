@@ -1770,10 +1770,12 @@ Changed:
 - New users are now persisted with `learning_mode="onboard_lang"` until they choose language, then `learning_mode="onboard_mode"` until they choose Course/Oddiy mode.
 - `/start` resumes incomplete onboarding instead of treating default `language="tj"` and `level="beginner"` as a completed setup.
 - Referral payloads can attach for existing incomplete onboarding users, and duplicate referral rows are avoided by checking invited user first.
+- Referral payloads also attach for existing unpaid users who do not already have a referrer. If such a user already has `questions_used >= 2`, the referral is activated immediately after attach.
 
 Why:
 - Referral links created/committed a user before onboarding finished, so later `/start` skipped language/mode selection and looked like the bot ignored the start command.
 - Users who opened the bot first and came back through a referral link could lose the referral attribution.
+- A user could enter via referral link and use the free QA limit, but still not count if their account looked like an already completed non-referred user before attach.
 
 Files touched:
 - `app/services/onboarding_service.py`
