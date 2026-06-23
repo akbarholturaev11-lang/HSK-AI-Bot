@@ -12,6 +12,9 @@ from app.services.course_engine_service import CourseEngineService
 from app.services.course_trial_service import CourseTrialService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
+from app.services.course_gamification_service import CourseGamificationService
+from app.db.models.course_mistake import CourseMistake
+from sqlalchemy import func, select
 
 
 TRIAL_LIMITS = {
@@ -85,6 +88,7 @@ class StudyMiniAppService:
         features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
         profile = await CourseMiniAppProfileService(self.session).get_or_create(user.id)
         progress = await self.progress_repo.get_by_user_id(user.id)
+        gamification = await CourseGamificationService(self.session).snapshot(user, profile=profile)
         return {
             "status": "active" if paid else "trial",
             "language": getattr(user, "language", None) or "uz",
@@ -99,6 +103,54 @@ class StudyMiniAppService:
                 "onboarding_completed": profile.onboarding_completed_at is not None,
                 "has_progress": bool(progress and progress.current_lesson_id),
             },
+            "gamification": gamification,
+        }
+
+    async def get_profile_payload(self, telegram_id: int) -> dict:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return {"ok": False, "error": "access_start_first"}
+        paid = self.is_paid_user(user)
+        profile = await CourseMiniAppProfileService(self.session).get_or_create(user.id)
+        gamification = await CourseGamificationService(self.session).snapshot(user, profile=profile)
+        features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
+        progress = await self.progress_repo.get_by_user_id(user.id)
+        mistakes_result = await self.session.execute(
+            select(func.coalesce(func.sum(CourseMistake.wrong_count - CourseMistake.resolved_count), 0)).where(
+                CourseMistake.user_id == user.id,
+                CourseMistake.wrong_count > CourseMistake.resolved_count,
+            )
+        )
+        display_name = str(getattr(user, "full_name", None) or getattr(user, "username", None) or "HSK Student").strip()
+        initials = "".join(part[:1] for part in display_name.split()[:2]).upper() or "HSK"
+        return {
+            "ok": True,
+            "user": {
+                "name": display_name[:80],
+                "avatar": initials[:3],
+                "level": await self._resolve_level(user),
+                "language": getattr(user, "language", None) or "ru",
+            },
+            "stats": {
+                "xp": gamification["xp"],
+                "streak": gamification["streak"],
+                "league": gamification["league"],
+                "weekly_xp": gamification["weekly_xp"],
+                "completed_lessons": int(getattr(progress, "completed_lessons_count", 0) or 0),
+                "mistakes": int(mistakes_result.scalar_one() or 0),
+            },
+            "subscription": {
+                "status": "active" if paid else "trial",
+                "is_paid": paid,
+                "until": self._as_utc(getattr(user, "end_date", None)).isoformat() if getattr(user, "end_date", None) else None,
+            },
+            "course_features": features,
+            "course_profile": {
+                "goal": profile.goal,
+                "daily_minutes": profile.daily_minutes,
+                "onboarding_completed": profile.onboarding_completed_at is not None,
+            },
+            "gamification": gamification,
         }
 
     async def send_subscription_menu(self, bot, telegram_id: int) -> bool:

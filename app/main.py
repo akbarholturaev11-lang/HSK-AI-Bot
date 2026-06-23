@@ -34,6 +34,7 @@ from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonF
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_gamification_service import CourseGamificationService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
@@ -342,7 +343,10 @@ async def voice_practice_start(request: Request):
                 level=str(payload.get("level") or "") or None,
                 session_id=str(result.get("session_id") or "") or None,
                 dedupe_key=str(result.get("session_id") or "") or None,
-                payload={"role": str(payload.get("role") or "")},
+                payload={
+                    "role": str(payload.get("role") or ""),
+                    "course_context": result.get("course_context"),
+                },
             )
             await session.commit()
             return result
@@ -654,6 +658,37 @@ async def miniapp_mistakes(request: Request):
         return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
     async with async_session_maker() as session:
         result = await CourseMistakeService(session).overview(telegram_id)
+    return JSONResponse(status_code=200 if result.get("ok") else 404, content=result)
+
+
+@app.get("/api/miniapp/gamification")
+async def miniapp_gamification(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "access_start_first"})
+        result = await CourseGamificationService(session).leaderboard(user)
+        await session.commit()
+    return {"ok": True, **result}
+
+
+@app.get("/api/miniapp/profile")
+async def miniapp_profile(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    async with async_session_maker() as session:
+        result = await StudyMiniAppService(session).get_profile_payload(telegram_id)
+        await session.commit()
     return JSONResponse(status_code=200 if result.get("ok") else 404, content=result)
 
 

@@ -207,6 +207,49 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Course Mini App AI Voice, profile locks, and admin analytics
+
+Changed:
+- AI Voice characters now use the current Course Mini App lesson context. `voice_practice_sessions` stores `lesson_id` and `target_words`, and voice prompts receive lesson vocabulary for Lily, Chen, Xiao Mei, Teacher Li, and Manager Wang.
+- Course Mini App Profile is server-backed via `/api/miniapp/profile`, including user info, level, subscription status, XP/streak/league, completed lessons, mistakes count, and feature lock state.
+- Mini App lock UI now follows server `course_features` for lesson, voice, placement, and training/test access. Payment/subscription entitlement remains in the existing access services.
+- Admin stats now include Course Mini App funnel, lesson drop-off, test/training completion, AI Voice usage, mistake review, XP/streak activity, and Mini App paid conversion.
+- Payment approval records an idempotent `subscription_approved` Course Mini App analytics event after the existing subscription activation succeeds; payment backend behavior was not changed.
+- Alembic head is `0051_connect_voice_to_course`.
+
+Key files:
+- `app/services/voice_practice_service.py`
+- `app/services/study_miniapp_service.py`
+- `app/services/course_miniapp_admin_analytics_service.py`
+- `app/bot/handlers/admin.py`
+- `app/bot/handlers/commands.py`
+- `app/bot/handlers/admin_payments.py`
+- `app/static/study-v2.js`
+- `app/static/voice-practice.html`
+- `alembic/versions/0051_connect_voice_to_course.py`
+
+Risk:
+- Migration `0051` must run before course-connected AI Voice traffic reaches production.
+- Admin stats depend on `course_miniapp_events` being populated; missing historic events will show as zero rather than inferred.
+
+### 2026-06-23 — Server XP, streak, and weekly league
+
+Changed:
+- Added idempotent `course_xp_events` and server-owned XP/streak fields on `course_miniapp_profiles`.
+- Server-confirmed lesson, test, training, AI Voice, and mistake review completions now award XP; the first meaningful activity of a local day also awards a streak bonus.
+- Added weekly leaderboard data for users in the same XP league and exposed gamification through access and Mini App APIs.
+- Alembic head is `0050_add_course_gamification`.
+
+Why:
+- XP, streak, and league progression must not be granted by editable browser state.
+
+Risk:
+- Migration `0050` must run before the new gamification code receives production traffic.
+- Existing payment and subscription approval logic was not changed.
+
+Follow-up:
+- Phase 8 connects AI Voice characters to the current course lesson vocabulary.
+
 ### 2026-06-23 — Server-backed Course Mistake Engine
 
 Changed:

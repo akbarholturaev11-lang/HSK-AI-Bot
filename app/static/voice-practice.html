@@ -272,6 +272,9 @@
   @keyframes blink{50%{opacity:.25;}}
 
   .mic-hint{font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .course-words{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;min-height:28px;max-width:320px}
+  .course-words span{border:1px solid rgba(212,168,87,.32);background:rgba(212,168,87,.08);color:var(--paper);border-radius:12px;padding:5px 8px;font-size:15px;font-weight:700}
+  .course-words small{display:block;color:var(--gold);font-size:9px;font-weight:600;margin-top:1px}
 
   /* transcript */
   .transcript-wrap{flex-shrink:0; margin-top:10px;}
@@ -445,6 +448,7 @@
         <span class="status-dot"></span>
         <span id="status-text">Tayyor — mikrofonga bosing</span>
       </div>
+      <div class="course-words" id="course-words"></div>
       <div class="mic-hint">Gapirish uchun bosing, tugatganda yana bosing</div>
     </div>
 
@@ -582,11 +586,11 @@ var MAX_RECORD_MS = 30000;     // hard auto-stop, controls latency & backend cos
 var MIN_BLOB_BYTES = 600;      // below this we treat the recording as accidental/empty
 
 var ROLES = [
-  {id:"friend",    emoji:"🇨🇳", name:"Xitoylik Do'st", desc:"Erkin, do'stona suhbat"},
-  {id:"roommate",  emoji:"🏠", name:"Xonadosh",        desc:"Kundalik uy mavzulari"},
-  {id:"seller",    emoji:"🛒", name:"Sotuvchi",        desc:"Bozor / do'kon dialogi"},
-  {id:"classmate", emoji:"🎓", name:"Klassdosh",       desc:"Universitet hayoti"},
-  {id:"social",    emoji:"💬", name:"Erkin Suhbat",    desc:"Har xil mavzular"}
+  {id:"lily",emoji:"莉",name:"Lily",desc:"Iliq, do'stona, hissiyotli suhbat"},
+  {id:"chen",emoji:"陈",name:"Chen",desc:"Sokin, amaliy kundalik vaziyatlar"},
+  {id:"xiao_mei",emoji:"美",name:"Xiao Mei",desc:"Energetik student, tabiiy reaksiya"},
+  {id:"teacher_li",emoji:"李",name:"Teacher Li",desc:"Sabrli ustoz, aniq talaffuz"},
+  {id:"manager_wang",emoji:"王",name:"Manager Wang",desc:"Ish, uchrashuv va rasmiy muloqot"}
 ];
 var LEVELS = [
   {id:"beginner", label:"Beginner", sub:"Ko'proq tarjima"},
@@ -613,21 +617,21 @@ function ui(key){ return (UI_COPY[UI_LANG] && UI_COPY[UI_LANG][key]) || UI_COPY.
 
 if (UI_LANG === "ru"){
   ROLES = [
-    {id:"friend",emoji:"🇨🇳",name:"Друг из Китая",desc:"Свободный дружеский разговор"},
-    {id:"roommate",emoji:"🏠",name:"Сосед по комнате",desc:"Повседневные домашние темы"},
-    {id:"seller",emoji:"🛒",name:"Продавец",desc:"Диалог в магазине или на рынке"},
-    {id:"classmate",emoji:"🎓",name:"Одногруппник",desc:"Учёба и жизнь в университете"},
-    {id:"social",emoji:"💬",name:"Свободный разговор",desc:"Разные жизненные темы"}
+    {id:"lily",emoji:"莉",name:"Lily",desc:"Тёплая подруга с живыми реакциями"},
+    {id:"chen",emoji:"陈",name:"Chen",desc:"Спокойные практичные ситуации"},
+    {id:"xiao_mei",emoji:"美",name:"Xiao Mei",desc:"Энергичная студентка и дружеский стиль"},
+    {id:"teacher_li",emoji:"李",name:"Teacher Li",desc:"Терпеливый учитель и точная речь"},
+    {id:"manager_wang",emoji:"王",name:"Manager Wang",desc:"Работа, встречи и вежливый тон"}
   ];
   LEVELS = [{id:"beginner",label:"Начальный",sub:"Больше перевода"},{id:"hsk1_2",label:"HSK 1-2",sub:"Pinyin + перевод"},{id:"hsk3_4",label:"HSK 3-4",sub:"Больше китайского"}];
   VOICES = [{id:"female",label:"Женский голос"},{id:"male",label:"Мужской голос"}];
 } else if (UI_LANG === "tj"){
   ROLES = [
-    {id:"friend",emoji:"🇨🇳",name:"Дӯсти чинӣ",desc:"Суҳбати озоду дӯстона"},
-    {id:"roommate",emoji:"🏠",name:"Ҳамхона",desc:"Мавзуъҳои ҳаррӯзаи хона"},
-    {id:"seller",emoji:"🛒",name:"Фурӯшанда",desc:"Муколама дар бозор ё мағоза"},
-    {id:"classmate",emoji:"🎓",name:"Ҳамсабақ",desc:"Таҳсил ва ҳаёти донишгоҳ"},
-    {id:"social",emoji:"💬",name:"Суҳбати озод",desc:"Мавзуъҳои гуногун"}
+    {id:"lily",emoji:"莉",name:"Lily",desc:"Дӯсти гарм бо эҳсос ва реаксия"},
+    {id:"chen",emoji:"陈",name:"Chen",desc:"Вазъиятҳои амалӣ ва ором"},
+    {id:"xiao_mei",emoji:"美",name:"Xiao Mei",desc:"Донишҷӯи фаъол ва дӯстона"},
+    {id:"teacher_li",emoji:"李",name:"Teacher Li",desc:"Устоди сабрнок ва талаффузи дақиқ"},
+    {id:"manager_wang",emoji:"王",name:"Manager Wang",desc:"Кор, вохӯрӣ ва оҳанги расмӣ"}
   ];
   LEVELS = [{id:"beginner",label:"Оғозӣ",sub:"Тарҷумаи бештар"},{id:"hsk1_2",label:"HSK 1-2",sub:"Pinyin + тарҷума"},{id:"hsk3_4",label:"HSK 3-4",sub:"Забони чинии бештар"}];
   VOICES = [{id:"female",label:"Овози зан"},{id:"male",label:"Овози мард"}];
@@ -640,12 +644,13 @@ var state = {
   isPaid:false,
   plan:"free",
   remainingLimit:3,
-  role:"friend",
+  role:"lily",
   level:"hsk1_2",
   language:UI_LANG,
   voice:"female",
   sessionId:null,
   transcript:[],     // newest first: {userText, botText, pinyin, translation, correction}
+  courseContext:null,
   callStartedAt:null,
   timerHandle:null,
   lastElapsedSec:0
@@ -697,6 +702,7 @@ function cacheDom(){
   el.callRoleNameBig = document.getElementById("call-role-name-big");
   el.statusMeta = document.getElementById("status-meta");
   el.statusText = document.getElementById("status-text");
+  el.courseWords = document.getElementById("course-words");
   el.transcriptCollapsedBody = document.getElementById("transcript-collapsed-body");
   el.btnExpandTranscript = document.getElementById("btn-expand-transcript");
   el.btnMic = document.getElementById("btn-mic");
@@ -1069,6 +1075,7 @@ async function handleStartCallClick(){
       state.isPaid = !!res.user_status.is_paid;
       state.plan = res.user_status.plan || state.plan;
     }
+    state.courseContext = res.course_context || null;
     updateLimitBadges();
     state.transcript = [];
     renderTranscript();
@@ -1078,6 +1085,7 @@ async function handleStartCallClick(){
     el.callRoleNameBig.textContent = r.name;
     el.avatarEmoji.textContent = r.emoji;
     el.callLevelBadge.textContent = levelLabel(state.level);
+    renderCourseWords();
 
     showScreen("call");
     setCallState("idle");
@@ -1121,6 +1129,9 @@ async function finishCall(silent){
       summary.duration_seconds = (typeof res.duration_seconds !== "undefined") ? res.duration_seconds : summary.duration_seconds;
       summary.message_count = (typeof res.message_count !== "undefined") ? res.message_count : summary.message_count;
       summary.corrections = res.corrections || summary.corrections;
+      if (res.reward){
+        try{ window.parent && window.parent.postMessage({type:"hsk_voice_completed",reward:res.reward}, "*"); }catch(_){ }
+      }
     }
   }catch(e){ console.warn("endSession failed, local summary ishlatiladi:", e); }
 
@@ -1140,6 +1151,14 @@ function renderSummary(s){
       return '<div class="corr-chip">💡 ' + escapeHtml(c) + '</div>';
     }).join("");
   }
+}
+function renderCourseWords(){
+  if (!el.courseWords) return;
+  var words = (state.courseContext && state.courseContext.words) || [];
+  if (!words.length){ el.courseWords.innerHTML = ""; return; }
+  el.courseWords.innerHTML = words.slice(0,4).map(function(w){
+    return '<span>'+escapeHtml(w.zh||"")+'<small>'+escapeHtml(w.pinyin||"")+'</small></span>';
+  }).join("");
 }
 
 /* ============================== MOCK API ============================== */

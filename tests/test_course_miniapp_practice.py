@@ -40,6 +40,9 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
         self.service._is_completed = AsyncMock(return_value=False)
         self.service._questions = AsyncMock(return_value=[question("q1")])
         self.service.mistakes = SimpleNamespace(record_items=AsyncMock(return_value=0))
+        self.service.gamification = SimpleNamespace(
+            award=AsyncMock(return_value={"xp": 20, "awarded_xp": 20, "streak": 1, "league": "Bronze"})
+        )
 
     async def test_mock_start_consumes_shared_training_test_entitlement(self):
         analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
@@ -102,6 +105,7 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.user.payment_status, "none")
         analytics.record_server_event.assert_awaited_once()
         self.service.mistakes.record_items.assert_awaited_once()
+        self.service.gamification.award.assert_awaited_once()
 
 
 if __name__ == "__main__":

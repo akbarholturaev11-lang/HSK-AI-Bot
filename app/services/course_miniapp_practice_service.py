@@ -9,6 +9,7 @@ from app.services.course_miniapp_access_service import CourseMiniAppAccessServic
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
 from app.services.course_mistake_service import CourseMistakeService
+from app.services.course_gamification_service import CourseGamificationService
 
 
 PRACTICE_VERSION = 1
@@ -24,6 +25,7 @@ class CourseMiniAppPracticeService:
         self.lesson_service = CourseMiniAppLessonService(session)
         self.access = CourseMiniAppAccessService(session)
         self.mistakes = CourseMistakeService(session)
+        self.gamification = CourseGamificationService(session)
 
     @staticmethod
     def _level(value: str) -> str:
@@ -299,6 +301,13 @@ class CourseMiniAppPracticeService:
                 "wrong": json.dumps(wrong, ensure_ascii=False)[:4000],
             },
         )
+        reward = await self.gamification.award(
+            user,
+            activity_type="training" if mode == "training" else "test",
+            activity_ref=f"{expected_session}:completed",
+            base_xp=12 if mode == "training" else 15,
+            level=level,
+        )
         await self.session.commit()
         return {
             "ok": True,
@@ -307,4 +316,5 @@ class CourseMiniAppPracticeService:
             "percent": percent,
             "recommendation": recommendation,
             "wrong_items": wrong,
+            "reward": reward,
         }

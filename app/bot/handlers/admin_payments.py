@@ -7,6 +7,7 @@ from app.services.subscription_service import SubscriptionService
 from app.services.payment_notify_service import PaymentNotifyService
 from app.services.partner_service import PartnerService
 from app.services.conversion_funnel_service import ConversionFunnelService
+from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.bot.keyboards.admin_review import admin_reject_reason_keyboard
 from app.config import settings
 
@@ -71,6 +72,16 @@ async def admin_payment_approve_handler(callback: CallbackQuery, session):
         payment_id=payment.id,
         payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
     )
+    course_event = await CourseMiniAppAnalyticsService(session).record_server_event(
+        event_name="subscription_approved",
+        telegram_id=payment.user_telegram_id,
+        user_id=getattr(user, "id", None),
+        source="admin_payment_approve",
+        dedupe_key=f"payment:{payment.id}",
+        payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+    )
+    if course_event.get("recorded"):
+        await session.commit()
 
     await callback.answer("✅ Tasdiqlandi!", show_alert=True)
     await callback.message.edit_reply_markup(reply_markup=None)

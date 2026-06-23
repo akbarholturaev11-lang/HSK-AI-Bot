@@ -1,7 +1,7 @@
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Optional
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, Integer, String
+from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -32,6 +32,10 @@ class CourseMiniAppProfile(Base):
     daily_minutes: Mapped[int] = mapped_column(Integer, default=10, nullable=False)
     start_mode: Mapped[str] = mapped_column(String(24), default="continue", nullable=False)
     timezone_offset_minutes: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    xp_total: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    current_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    longest_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    last_activity_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     onboarding_completed_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
