@@ -13,6 +13,7 @@ from app.services.course_trial_service import CourseTrialService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.support_contact_service import get_admin_contact_url
 from app.db.models.course_mistake import CourseMistake
 from sqlalchemy import func, select
 
@@ -89,10 +90,12 @@ class StudyMiniAppService:
         profile = await CourseMiniAppProfileService(self.session).get_or_create(user.id)
         progress = await self.progress_repo.get_by_user_id(user.id)
         gamification = await CourseGamificationService(self.session).snapshot(user, profile=profile)
+        support_url = await get_admin_contact_url(self.session)
         return {
             "status": "active" if paid else "trial",
             "language": getattr(user, "language", None) or "uz",
             "level": await self._resolve_level(user),
+            "support_url": support_url,
             "limits": limits,
             "course_features": features,
             "course_profile": {
@@ -115,6 +118,7 @@ class StudyMiniAppService:
         gamification = await CourseGamificationService(self.session).snapshot(user, profile=profile)
         features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
         progress = await self.progress_repo.get_by_user_id(user.id)
+        support_url = await get_admin_contact_url(self.session)
         mistakes_result = await self.session.execute(
             select(func.coalesce(func.sum(CourseMistake.wrong_count - CourseMistake.resolved_count), 0)).where(
                 CourseMistake.user_id == user.id,
@@ -125,6 +129,7 @@ class StudyMiniAppService:
         initials = "".join(part[:1] for part in display_name.split()[:2]).upper() or "HSK"
         return {
             "ok": True,
+            "support_url": support_url,
             "user": {
                 "name": display_name[:80],
                 "avatar": initials[:3],

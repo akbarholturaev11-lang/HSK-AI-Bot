@@ -21,7 +21,7 @@ const copy={
     training:"Тренировка",trainingSub:"Отдельная работа над конкретным навыком",listening:"Аудирование",speaking:"Разговор",
     writing:"Письмо",characters:"Иероглифы",mistakes:"Мои ошибки",mistakesSub:"Слабые места из ваших последних квизов",
     settings:"Настройки",language:"Язык интерфейса",level:"Уровень курса",subscription:"Подписка",subscriptionSub:"Управление доступом в существующем разделе",
-    support:"Поддержка",notifications:"Уведомления",streak:"дней",xp:"XP",noMistakes:"Ошибок пока нет. Завершите квиз, и здесь появится персональная тренировка.",
+    support:"Поддержка",supportSub:"Написать админу",notifications:"Уведомления",streak:"дней",xp:"XP",noMistakes:"Ошибок пока нет. Завершите квиз, и здесь появится персональная тренировка.",
     mistakesCount:"ошибок",recommended:"Рекомендуемый уровень",rewardReady:"Сундук готов",rewardLocked:"Заработайте ещё XP",
     energy:"Энергия",energySub:"Не блокирует уроки, только усиливает награды",leaguePoints:"League Points",weeklyReset:"Сброс в понедельник",leagueSize:"25 учеников в лиге",paidBadge:"Premium",
     streakCalendar:"Календарь streak",streakFreeze:"Streak freeze",milestones:"3 / 7 / 30 дней",rewardChest:"Reward Chest",
@@ -47,7 +47,7 @@ const copy={
     mock:"Sinov imtihoni",mockSub:"HSK tuzilmasi, 0-100 ball, kuchli va zaif tomonlar",startTest:"Testni boshlash",
     training:"Mashqlar",trainingSub:"Alohida ko'nikmani mustaqil rivojlantirish",listening:"Tinglash",speaking:"Gapirish",writing:"Yozish",characters:"Ierogliflar",
     mistakes:"Xatolarim",mistakesSub:"Quizlarda aniqlangan zaif joylaringiz",settings:"Sozlamalar",language:"Interfeys tili",level:"Kurs darajasi",
-    subscription:"Obuna",subscriptionSub:"Mavjud bo'limda accessni boshqarish",support:"Yordam",notifications:"Bildirishnomalar",streak:"kun",xp:"XP",
+    subscription:"Obuna",subscriptionSub:"Mavjud bo'limda accessni boshqarish",support:"Yordam",supportSub:"Adminga yozish",notifications:"Bildirishnomalar",streak:"kun",xp:"XP",
     noMistakes:"Hozircha xato yo'q. Quizni tugating, personal mashqlar shu yerda paydo bo'ladi.",mistakesCount:"xato",recommended:"Tavsiya etilgan daraja",
     rewardReady:"Sandiq tayyor",rewardLocked:"Yana XP yig'ing",energy:"Energiya",energySub:"Darsni bloklamaydi, faqat mukofotni kuchaytiradi",leaguePoints:"League Points",weeklyReset:"Dushanba kuni reset",leagueSize:"Ligada 25 o'quvchi",paidBadge:"Premium",
     streakCalendar:"Streak kalendar",streakFreeze:"Streak freeze",milestones:"3 / 7 / 30 kun",rewardChest:"Reward Chest",
@@ -73,7 +73,7 @@ const copy={
     mock:"Имтиҳони санҷишӣ",mockSub:"Сохтори HSK, хол 0-100, ҷиҳатҳои қавӣ ва суст",startTest:"Оғози тест",
     training:"Машқҳо",trainingSub:"Кор бо малакаи алоҳида",listening:"Шунидан",speaking:"Гуфтугӯ",writing:"Навиштан",characters:"Иероглифҳо",
     mistakes:"Хатоҳои ман",mistakesSub:"Ҷойҳои суст аз квизҳои шумо",settings:"Танзимот",language:"Забони интерфейс",level:"Сатҳи курс",
-    subscription:"Обуна",subscriptionSub:"Идораи дастрасӣ дар бахши мавҷуда",support:"Дастгирӣ",notifications:"Огоҳиҳо",streak:"рӯз",xp:"XP",
+    subscription:"Обуна",subscriptionSub:"Идораи дастрасӣ дар бахши мавҷуда",support:"Дастгирӣ",supportSub:"Ба admin навиштан",notifications:"Огоҳиҳо",streak:"рӯз",xp:"XP",
     noMistakes:"Ҳоло хато нест. Квизро анҷом диҳед, машқи шахсӣ дар ин ҷо пайдо мешавад.",mistakesCount:"хато",recommended:"Сатҳи тавсияшуда",
     rewardReady:"Сандуқ тайёр",rewardLocked:"Боз XP гиред",energy:"Энергия",energySub:"Омӯзишро намебандад, танҳо мукофотро зиёд мекунад",leaguePoints:"League Points",weeklyReset:"Рӯзи душанбе reset",leagueSize:"25 омӯзанда дар лига",paidBadge:"Premium",
     streakCalendar:"Тақвими streak",streakFreeze:"Streak freeze",milestones:"3 / 7 / 30 рӯз",rewardChest:"Reward Chest",
@@ -315,7 +315,7 @@ function renderProfile(){
   const mistakeCount=stats.mistakes??serverMistakes?.summary?.total??read(MISTAKES_KEY,[]).reduce((s,m)=>s+m.count,0);
   const doneCount=stats.completed_lessons??completedCount();const name=user.name||"HSK AI Student";const avatar=user.avatar||labelLevel(LEVEL_KEY).replace(/\D/g,"")||"1";
   const days=Array.from({length:7},(_,index)=>index<Math.min(7,Number(meta.streak||0)));
-  document.getElementById("page-profile").innerHTML=`<div class="v2-profile-head"><div class="v2-avatar">${esc(avatar)}</div><div><h1>${esc(name)}</h1><p>${meta.xp} XP · ${meta.streak} ${esc(tx("streak"))}</p><span class="v2-badge">${leagueName()} League ${isPaid()?`· ${esc(tx("paidBadge"))}`:""}</span></div></div><div class="v2-metrics v2-section"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>XP</span></div><div class="v2-metric" data-tone="green"><strong>${doneCount}</strong><span>${esc(tx("done"))}</span></div><div class="v2-metric" data-tone="purple"><strong>${mistakeCount}</strong><span>${esc(tx("mistakes"))}</span></div></div><section class="v2-section"><div class="v2-streak-card"><div><b>${esc(tx("streakCalendar"))}</b><small>${esc(tx("milestones"))} · ${esc(tx("streakFreeze"))}</small></div><div class="v2-calendar">${days.map(on=>`<i class="${on?"on":""}"></i>`).join("")}</div></div></section><div class="v2-profile-list">${row("◫",tx("training"),tx("trainingSub"),"V2.showPage('training')")}${row("!",tx("mistakes"),tx("mistakesSub"),"V2.showPage('mistakes')")}${row("◇",tx("league"),leagueName(),"V2.showPage('league')")}${row("★",tx("achievements"),`${doneCount} / ${LESSONS.length}`,"V2.showPage('achievements')")}${row("◆",tx("subscription"),subscription.status||tx("subscriptionSub"),"V2.openSubscription('profile_subscription')")}${row("⚙",tx("settings"),`${labelLevel(user.level||LEVEL_KEY)} · ${(user.language||lang).toUpperCase()}`,"V2.openSettings()")}</div>`;
+  document.getElementById("page-profile").innerHTML=`<div class="v2-profile-head"><div class="v2-avatar">${esc(avatar)}</div><div><h1>${esc(name)}</h1><p>${meta.xp} XP · ${meta.streak} ${esc(tx("streak"))}</p><span class="v2-badge">${leagueName()} League ${isPaid()?`· ${esc(tx("paidBadge"))}`:""}</span></div></div><div class="v2-metrics v2-section"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>XP</span></div><div class="v2-metric" data-tone="green"><strong>${doneCount}</strong><span>${esc(tx("done"))}</span></div><div class="v2-metric" data-tone="purple"><strong>${mistakeCount}</strong><span>${esc(tx("mistakes"))}</span></div></div><section class="v2-section"><div class="v2-streak-card"><div><b>${esc(tx("streakCalendar"))}</b><small>${esc(tx("milestones"))} · ${esc(tx("streakFreeze"))}</small></div><div class="v2-calendar">${days.map(on=>`<i class="${on?"on":""}"></i>`).join("")}</div></div></section><div class="v2-profile-list">${row("◫",tx("training"),tx("trainingSub"),"V2.showPage('training')")}${row("!",tx("mistakes"),tx("mistakesSub"),"V2.showPage('mistakes')")}${row("◇",tx("league"),leagueName(),"V2.showPage('league')")}${row("★",tx("achievements"),`${doneCount} / ${LESSONS.length}`,"V2.showPage('achievements')")}${row("◆",tx("subscription"),subscription.status||tx("subscriptionSub"),"V2.openSubscription('profile_subscription')")}${row("?",tx("support"),tx("supportSub"),"V2.openSupport('profile_support')")}${row("⚙",tx("settings"),`${labelLevel(user.level||LEVEL_KEY)} · ${(user.language||lang).toUpperCase()}`,"V2.openSettings()")}</div>`;
 }
 
 function renderTraining(){
@@ -525,6 +525,19 @@ function openSettings(){
 function changeLanguage(value){localStorage.setItem("hsk_all_current_lang_v3",value);bridge.openRoute?.({lang:value,level:LEVEL_KEY,tab:"profile"})}
 function changeLevel(value){bridge.openRoute?.({level:value,lang,tab:"course"})}
 function openSubscription(source="v3_profile"){bridge.reportEvent?.("checkout_opened",{source,level:LEVEL_KEY,status:ACCESS.status});bridge.openSubscribe?.(source)}
+function openExternalUrl(url){
+  const target=String(url||"").trim();
+  if(!target)return false;
+  const tg=window.Telegram?.WebApp;
+  if((target.includes("t.me/")||target.startsWith("tg://"))&&typeof tg?.openTelegramLink==="function"){tg.openTelegramLink(target);return true}
+  if(typeof tg?.openLink==="function"){tg.openLink(target);return true}
+  window.location.href=target;return true;
+}
+function openSupport(source="profile_support"){
+  bridge.reportEvent?.("support_opened",{source,level:LEVEL_KEY});
+  const url=serverProfile?.support_url||ACCESS.support_url||"";
+  if(!openExternalUrl(url))toast(tx("supportSub"));
+}
 
 function toast(message){document.querySelector(".v2-toast")?.remove();const item=document.createElement("div");item.className="v2-toast";item.textContent=message;document.body.appendChild(item);setTimeout(()=>item.remove(),2200)}
 
@@ -616,7 +629,7 @@ function applyLaunch(){
 
 function mount(){
   normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,openChest,openSettings,changeLanguage,changeLevel,openSubscription,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection};
+  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openSupport,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;syncGamification(ACCESS.gamification);renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
   syncGamification(ACCESS.gamification);setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();applyLaunch();showOnboarding();

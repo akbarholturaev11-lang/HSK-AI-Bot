@@ -230,6 +230,27 @@ Risk:
 Follow-up:
 - Add browser/E2E screenshot coverage once local Playwright/Chrome runtime is available.
 
+### 2026-06-23 — Course Mini App migration deploy fix
+
+Changed:
+- `0052_course_miniapp_v3_preferences` now drops possible `daily_minutes` check constraint names with `IF EXISTS` before recreating the canonical constraint.
+- `CourseMiniAppProfile` constraint names now match the Alembic foundation migration.
+- Bot help and Mini App profile support now use the configured admin contact URL.
+
+Why:
+- Railway deploy failed when production did not have the non-canonical `daily_minutes` constraint name expected by the migration.
+
+Files touched:
+- `alembic/versions/0052_course_miniapp_v3_preferences.py`
+- `app/db/models/course_miniapp_profile.py`
+- `app/services/help_settings_service.py`
+- `app/services/study_miniapp_service.py`
+- `app/static/study.html`
+- `app/static/study-v2.js`
+
+Risk:
+- Low. Migration is Postgres-focused and only changes the Course Mini App profile check constraint; payment/subscription logic is untouched.
+
 ### 2026-06-23 — Course Mini App section/chapter/book lesson progression
 
 Changed:

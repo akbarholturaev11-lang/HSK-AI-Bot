@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from html import escape
 
 from app.repositories.bot_setting_repo import BotSettingRepository
+from app.services.support_contact_service import get_admin_contact_html
 
 
 HELP_LANGS = ("tj", "ru", "uz")
@@ -97,6 +98,6 @@ async def build_help_text(session, lang: str) -> str:
         lines.append(f"{field.icon} {label} — <a href=\"{href}\">{click}</a>")
         lines.append("")
 
-    admin_label = escape(text["admin"])
-    lines.append(text["admin_line"].format(admin=admin_label))
+    admin_link = await get_admin_contact_html(session, text["admin"])
+    lines.append(text["admin_line"].format(admin=admin_link))
     return "\n".join(lines).strip()
