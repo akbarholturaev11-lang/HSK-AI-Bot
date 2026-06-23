@@ -4,7 +4,11 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from app.repositories.user_repo import UserRepository
-from app.services.onboarding_service import OnboardingService
+from app.services.onboarding_service import (
+    ONBOARDING_MODE_CHOICE_MODE,
+    OnboardingService,
+    onboarding_stage,
+)
 from app.services.access_service import AccessService
 from app.services.course_engine_service import CourseEngineService
 from app.services.conversion_funnel_service import ConversionFunnelService
@@ -46,6 +50,27 @@ def _menu_keyboard_for_user(user):
     if getattr(user, "learning_mode", "qa") == "course":
         return course_menu_keyboard(lang)
     return main_menu_keyboard(lang)
+
+
+def _mode_choice_text(lang: str) -> str:
+    texts = {
+        "uz": (
+            "<b>Qanday o‘rganishni xohlaysiz?</b>\n\n"
+            "📚 <b>Kurs rejimi</b> — tartibli HSK darslari Mini App ichida.\n"
+            "🤖 <b>Oddiy rejim</b> — Telegram chatda xitoy tili bo‘yicha savollar."
+        ),
+        "ru": (
+            "<b>Как вы хотите учиться?</b>\n\n"
+            "📚 <b>Режим курса</b> — последовательные уроки HSK внутри Mini App.\n"
+            "🤖 <b>Обычный режим</b> — вопросы по китайскому языку прямо в Telegram."
+        ),
+        "tj": (
+            "<b>Чӣ тавр мехоҳед омӯзед?</b>\n\n"
+            "📚 <b>Реҷаи курс</b> — дарсҳои пайдарпайи HSK дар Mini App.\n"
+            "🤖 <b>Реҷаи оддӣ</b> — саволҳои забони чинӣ дар Telegram."
+        ),
+    }
+    return texts.get(lang, texts["ru"])
 
 
 def _course_level_candidates(level: str | None) -> tuple[str, ...]:
@@ -247,7 +272,7 @@ async def cmd_start(
     service = OnboardingService(session)
     first_name = message.from_user.first_name if message.from_user and message.from_user.first_name else "Friend"
 
-    referral_code = command.args if command and command.args else None
+    referral_code = command.args.strip() if command and command.args else None
 
     user, created = await service.get_or_create_user(
         telegram_id=message.from_user.id,
@@ -259,7 +284,17 @@ async def cmd_start(
 
     await state.clear()
 
-    if not created and user.language and user.level:
+    stage = onboarding_stage(user)
+    if not created and stage == "mode":
+        lang = user.language if user and user.language else "ru"
+        await message.answer(
+            _mode_choice_text(lang),
+            reply_markup=course_mode_entry_keyboard(lang),
+            parse_mode="HTML",
+        )
+        return
+
+    if not created and not stage and user.language and user.level:
         if getattr(user, "learning_mode", "qa") == "course":
             from app.bot.handlers.course import send_course_miniapp_entry
 
@@ -300,6 +335,7 @@ async def process_language(callback: CallbackQuery, state: FSMContext, session):
         username=callback.from_user.username if callback.from_user else None,
     )
     user.language = lang
+    user.learning_mode = ONBOARDING_MODE_CHOICE_MODE
     await session.commit()
 
     await callback.answer()
@@ -307,36 +343,18 @@ async def process_language(callback: CallbackQuery, state: FSMContext, session):
     data = await state.get_data()
     onboarding_message_id = data.get("onboarding_message_id")
 
-    mode_text = {
-        "uz": (
-            "<b>Qanday o‘rganishni xohlaysiz?</b>\n\n"
-            "📚 <b>Kurs rejimi</b> — tartibli HSK darslari Mini App ichida.\n"
-            "🤖 <b>Oddiy rejim</b> — Telegram chatda xitoy tili bo‘yicha savollar."
-        ),
-        "ru": (
-            "<b>Как вы хотите учиться?</b>\n\n"
-            "📚 <b>Режим курса</b> — последовательные уроки HSK внутри Mini App.\n"
-            "🤖 <b>Обычный режим</b> — вопросы по китайскому языку прямо в Telegram."
-        ),
-        "tj": (
-            "<b>Чӣ тавр мехоҳед омӯзед?</b>\n\n"
-            "📚 <b>Реҷаи курс</b> — дарсҳои пайдарпайи HSK дар Mini App.\n"
-            "🤖 <b>Реҷаи оддӣ</b> — саволҳои забони чинӣ дар Telegram."
-        ),
-    }
-
     try:
         if onboarding_message_id:
             await callback.bot.edit_message_text(
                 chat_id=callback.message.chat.id,
                 message_id=onboarding_message_id,
-                text=mode_text.get(lang, mode_text["ru"]),
+                text=_mode_choice_text(lang),
                 reply_markup=course_mode_entry_keyboard(lang),
                 parse_mode="HTML",
             )
     except Exception:
         await callback.message.answer(
-            mode_text.get(lang, mode_text["ru"]),
+            _mode_choice_text(lang),
             reply_markup=course_mode_entry_keyboard(lang),
             parse_mode="HTML",
         )

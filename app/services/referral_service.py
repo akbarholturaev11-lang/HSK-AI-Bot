@@ -185,9 +185,8 @@ class ReferralService:
         if referrer.telegram_id == invited_user_telegram_id:
             return
 
-        existing_referral = await self.referral_repo.get_by_pair(
-            referrer_telegram_id=referrer.telegram_id,
-            invited_user_telegram_id=invited_user_telegram_id,
+        existing_referral = await self.referral_repo.get_by_invited_user_telegram_id(
+            invited_user_telegram_id
         )
         if existing_referral:
             return

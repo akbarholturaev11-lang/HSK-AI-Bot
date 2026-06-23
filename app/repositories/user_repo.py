@@ -75,6 +75,7 @@ class UserRepository:
         username: Optional[str] = None,
         language: str = "tj",
         level: str = "beginner",
+        learning_mode: str = "qa",
     ) -> User:
         now = datetime.now(timezone.utc)
 
@@ -84,7 +85,7 @@ class UserRepository:
             username=username,
             language=language,
             level=level,
-            learning_mode="qa",
+            learning_mode=learning_mode,
             voice_mode="none",
             status="trial",
             payment_status="none",

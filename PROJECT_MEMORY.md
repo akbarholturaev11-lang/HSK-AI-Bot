@@ -1764,6 +1764,32 @@ Key file:
 
 ---
 
+### 2026-06-24 — Referral `/start` onboarding resume fix
+
+Changed:
+- New users are now persisted with `learning_mode="onboard_lang"` until they choose language, then `learning_mode="onboard_mode"` until they choose Course/Oddiy mode.
+- `/start` resumes incomplete onboarding instead of treating default `language="tj"` and `level="beginner"` as a completed setup.
+- Referral payloads can attach for existing incomplete onboarding users, and duplicate referral rows are avoided by checking invited user first.
+
+Why:
+- Referral links created/committed a user before onboarding finished, so later `/start` skipped language/mode selection and looked like the bot ignored the start command.
+- Users who opened the bot first and came back through a referral link could lose the referral attribution.
+
+Files touched:
+- `app/services/onboarding_service.py`
+- `app/bot/handlers/start.py`
+- `app/repositories/user_repo.py`
+- `app/services/referral_service.py`
+- `tests/test_onboarding_service.py`
+
+Risk:
+- No database schema, payment, subscription, or access rule changes. Existing completed users keep `learning_mode="qa"` or normal course entry behavior.
+
+Follow-up:
+- Smoke test with a clean Telegram user: open `https://t.me/<bot>?start=<referral_code>`, confirm language selection appears, then choose mode and verify the referral row is stored.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
