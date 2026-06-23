@@ -207,6 +207,26 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Mini App AI Voice embedded UX fix
+
+Changed:
+- Course Mini App V3 AI Voice iframe now uses parent page height instead of subtracting the top/nav chrome twice, so start/call controls stay visible inside Telegram.
+- Embedded AI Voice mode uses compact sizing, reduced background motion, direct end-call behavior, and posts `hsk_voice_close` back to the V3 shell instead of trying to close the whole Telegram Mini App from inside the iframe.
+- The V3 quiz page no longer shows the visible `Quiz/Квиз` title header; lesson/test quiz routes and filters remain available.
+
+Why:
+- On iPhone Telegram WebView, AI Voice entry/call/summary controls could fall below the visible area or sit under the bottom nav, and the summary close action did not reliably return users to the Mini App shell.
+
+Files touched:
+- `app/static/study.html`
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+- `app/static/voice-practice.html`
+- `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- Browser E2E could not run locally because Playwright/pytest/Chrome are not installed in the available environments; JS syntax and Python compile checks passed.
+
 ### 2026-06-23 — Course Mini App V3 navigation, rewards, and training
 
 Changed:

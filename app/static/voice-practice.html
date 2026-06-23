@@ -124,9 +124,10 @@
     max-width:480px; margin:0 auto; height:var(--vh); position:relative;
     display:flex; flex-direction:column;
   }
-  .screen{display:none; flex-direction:column; height:100%; padding:calc(var(--sat) + 18px) calc(var(--sal) + 20px) calc(var(--sab) + 18px) calc(var(--sar) + 20px);}
-  .screen.active{display:flex; animation:screenIn .42s cubic-bezier(.22,1,.36,1) both;}
-  @keyframes screenIn{from{opacity:0; transform:translateY(10px) scale(.99);} to{opacity:1; transform:translateY(0) scale(1);}}
+	  .screen{display:none; flex-direction:column; height:100%; padding:calc(var(--sat) + 18px) calc(var(--sal) + 20px) calc(var(--sab) + 18px) calc(var(--sar) + 20px);}
+	  .screen.active{display:flex; animation:screenIn .42s cubic-bezier(.22,1,.36,1) both;}
+	  @keyframes screenIn{from{opacity:0; transform:translateY(10px) scale(.99);} to{opacity:1; transform:translateY(0) scale(1);}}
+	  .welcome-wrap,.roles-scroll,.summary-wrap{min-height:0;}
 
   .back-btn{
     width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);
@@ -196,7 +197,7 @@
   .lang-row{display:flex; gap:8px;}
   .chip-sm{padding:7px 13px; border-radius:30px; font-size:12.5px; font-weight:600; background:rgba(255,255,255,.05); color:var(--paper-dim); border:1px solid rgba(255,255,255,.06); transition:background .3s cubic-bezier(.4,0,.2,1), color .3s cubic-bezier(.4,0,.2,1), border-color .3s cubic-bezier(.4,0,.2,1), transform .22s cubic-bezier(.34,1.56,.64,1);}
   .chip-sm.selected{background:var(--gold-soft); color:var(--gold); border-color:var(--gold);}
-  .roles-cta{margin-top:14px;}
+	  .roles-cta{margin-top:14px; flex-shrink:0;}
 
   /* ---------- Call screen ---------- */
   #screen-call{position:relative; overflow:hidden;}
@@ -311,7 +312,7 @@
   .overlay-body{flex:1; overflow-y:auto;}
 
   /* controls */
-  .call-controls{display:flex; align-items:center; justify-content:center; gap:26px; margin-top:14px;}
+	  .call-controls{display:flex; align-items:center; justify-content:center; gap:26px; margin-top:14px; flex-shrink:0;}
   .mic-btn{
     width:74px;height:74px;border-radius:50%; background:linear-gradient(135deg,var(--gold),#c79a4d);
     display:flex; align-items:center; justify-content:center; color:#1a1305;
@@ -351,7 +352,7 @@
   .summary-scroll{flex:1; overflow-y:auto;}
   .corr-chip{background:rgba(255,255,255,.05); border-radius:12px; padding:10px 12px; font-size:13px; color:var(--paper-dim); margin-bottom:8px; line-height:1.4;}
   .corr-chip b{color:var(--gold);}
-  .summary-actions{display:flex; gap:10px; margin-top:14px;}
+	  .summary-actions{display:flex; gap:10px; margin-top:14px; flex-shrink:0;}
 
   /* ---------- Toast ---------- */
   #toast{
@@ -365,13 +366,45 @@
   /* scrollbars (webkit) */
   ::-webkit-scrollbar{width:0px; height:0px;}
 
-  @media (prefers-reduced-motion: reduce){
-    .call-ambient{animation:none;}
-    .ring-breathe, .sonar, .think-dots, .wave{animation:none !important;}
-    button{transition:opacity .15s ease;}
-    button:active{transform:none; filter:none; opacity:.75;}
-  }
-</style>
+	  @media (prefers-reduced-motion: reduce){
+	    .call-ambient{animation:none;}
+	    .ring-breathe, .sonar, .think-dots, .wave{animation:none !important;}
+	    button{transition:opacity .15s ease;}
+	    button:active{transform:none; filter:none; opacity:.75;}
+	  }
+	  html.embedded .screen{padding:12px calc(var(--sal) + 20px) 14px calc(var(--sar) + 20px);}
+	  html.embedded .welcome-wrap{gap:10px;}
+	  html.embedded .hero-orb{width:92px;height:92px;margin:12px 0 14px;}
+	  html.embedded .hero-orb::after{font-size:40px;}
+	  html.embedded .headline{font-size:25px;line-height:1.16;}
+	  html.embedded .sub{font-size:13.5px;line-height:1.45;margin-top:10px;}
+	  html.embedded .feature-row{margin-top:16px;}
+	  html.embedded .welcome-bottom{margin-top:10px;}
+	  html.embedded .roles-scroll{padding-bottom:10px;}
+	  html.embedded .section-label{margin:14px 0 8px;}
+	  html.embedded .role-card{padding:13px 12px;gap:4px;}
+	  html.embedded .role-card .emoji{font-size:24px;}
+	  html.embedded .role-card .desc{font-size:11.5px;}
+	  html.embedded .pill{padding:8px 12px;}
+	  html.embedded .roles-cta{margin-top:10px;}
+	  html.embedded .avatar-wrap{width:128px;height:128px;margin-bottom:10px;}
+	  html.embedded .avatar-core{width:88px;height:88px;font-size:42px;}
+	  html.embedded .role-name{font-size:18px;}
+	  html.embedded .course-words{margin-top:8px;}
+	  html.embedded .course-words span{font-size:13px;padding:4px 7px;}
+	  html.embedded .call-ambient{animation:none;filter:blur(48px);opacity:.34;}
+	  html.embedded .transcript-wrap{margin-top:8px;}
+	  html.embedded .transcript-card{max-height:22vh;padding:10px 12px;}
+	  html.embedded .t-scroll{max-height:16vh;}
+	  html.embedded .call-controls{gap:22px;margin-top:10px;}
+	  html.embedded .mic-btn{width:66px;height:66px;}
+	  html.embedded .end-btn{width:50px;height:50px;}
+	  html.embedded .summary-head{margin:2px 0 12px;}
+	  html.embedded .summary-head .check{width:48px;height:48px;margin-bottom:10px;}
+	  html.embedded .stat-row{gap:8px;margin-bottom:12px;}
+	  html.embedded .stat-box{padding:12px 8px;}
+	  html.embedded .summary-actions{margin-top:10px;}
+	</style>
 </head>
 <body>
 <div id="bg"></div>
@@ -580,7 +613,8 @@
 /* ============================== CONFIG ============================== */
 var API_BASE = (window.HSK_API_BASE_URL || "");
 var QUERY = new URLSearchParams(location.search);
-var FORCE_MOCK = QUERY.get("mock");
+	var FORCE_MOCK = QUERY.get("mock");
+	var IS_EMBEDDED = QUERY.get("embedded") === "1";
 var UI_LANG = ["uz","ru","tj"].indexOf(QUERY.get("lang")) > -1 ? QUERY.get("lang") : "ru";
 var MAX_RECORD_MS = 30000;     // hard auto-stop, controls latency & backend cost
 var PAID_SESSION_SECONDS = 25;
@@ -766,11 +800,11 @@ function setupTelegram(){
   applyViewportHeight();
   if (w.onEvent) w.onEvent("viewportChanged", applyViewportHeight);
 }
-function applyViewportHeight(){
-  var w = tg();
-  var h = (w && w.viewportStableHeight) ? w.viewportStableHeight : window.innerHeight;
-  document.documentElement.style.setProperty("--vh", h + "px");
-}
+	function applyViewportHeight(){
+	  var w = tg();
+	  var h = (!IS_EMBEDDED && w && w.viewportStableHeight) ? w.viewportStableHeight : window.innerHeight;
+	  document.documentElement.style.setProperty("--vh", h + "px");
+	}
 function confirmNative(msg){
   return new Promise(function(resolve){
     var w = tg();
@@ -1129,11 +1163,15 @@ function showPaywall(){
   showScreen("paywall");
 }
 
-async function handleEndCall(){
-  var ok = await confirmNative(ui("endConfirm"));
-  if (!ok) return;
-  await finishCall(false);
-}
+	async function handleEndCall(){
+	  if (IS_EMBEDDED){
+	    await finishCall(false);
+	    return;
+	  }
+	  var ok = await confirmNative(ui("endConfirm"));
+	  if (!ok) return;
+	  await finishCall(false);
+	}
 
 async function finishCall(silent){
   stopTimer();
@@ -1375,20 +1413,27 @@ function bindEvents(){
   el.btnPaywallLater.addEventListener("click", function(){ showScreen("roles"); });
 
   el.btnSummaryAgain.addEventListener("click", function(){ showScreen("roles"); });
-  el.btnSummaryClose.addEventListener("click", function(){
-    var w = tg();
-    if (w && w.close) w.close(); else showScreen("welcome");
-  });
+	  el.btnSummaryClose.addEventListener("click", function(){
+	    if (IS_EMBEDDED){
+	      try{ window.parent && window.parent.postMessage({type:"hsk_voice_close"}, "*"); }catch(_){}
+	      showScreen("roles");
+	      return;
+	    }
+	    var w = tg();
+	    if (w && w.close) w.close(); else showScreen("welcome");
+	  });
 
   window.addEventListener("beforeunload", stopRecordingHard);
 }
 
 /* ============================== INIT ============================== */
-async function init(){
-  cacheDom();
-  applyStaticLocale();
-  setupTelegram();
-  renderPickers();
+	async function init(){
+	  document.documentElement.classList.toggle("embedded", IS_EMBEDDED);
+	  cacheDom();
+	  applyStaticLocale();
+	  setupTelegram();
+	  window.addEventListener("resize", applyViewportHeight);
+	  renderPickers();
   bindEvents();
   showScreen("welcome");
   setCallState("idle");
