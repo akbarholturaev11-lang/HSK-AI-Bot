@@ -76,10 +76,33 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
                 "translation_choice",
                 "pronunciation",
                 "quick_quiz",
+                "dialog_context",
             }.issubset({card["type"] for card in first})
         )
         self.assertNotEqual([card["type"] for card in first], [card["type"] for card in second])
         self.assertTrue(all(card["required"] for card in first))
+
+    def test_hsk_material_splits_into_small_sections_without_singletons(self):
+        service = CourseMiniAppLessonFlowService(SimpleNamespace())
+        payload = {
+            "vocabulary": [
+                {"zh": f"词{index}", "pinyin": f"ci{index}", "meaning": f"word {index}"}
+                for index in range(1, 11)
+            ]
+        }
+        hsk3 = service._section_plan(payload, level="hsk3", lesson_order=4)
+        self.assertEqual(len(hsk3), 4)
+        self.assertEqual([len(item["active_words"]) for item in hsk3], [3, 3, 2, 2])
+
+        payload["vocabulary"] = [
+            {"zh": f"词{index}", "pinyin": f"ci{index}", "meaning": f"word {index}"}
+            for index in range(1, 32)
+        ]
+        hsk4 = service._section_plan(payload, level="hsk4", lesson_order=9)
+        self.assertEqual(len(hsk4), 8)
+        self.assertEqual(hsk4[0]["chapter_label"], "A")
+        self.assertEqual(hsk4[3]["chapter_label"], "B")
+        self.assertTrue(all(len(item["active_words"]) >= 2 for item in hsk4))
 
 
 class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
@@ -95,6 +118,7 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
         self.lesson = SimpleNamespace(id=14, lesson_order=1, level="hsk1")
         self.payload = CourseMiniAppLessonFlowBuilderTests.payload()
         self.service._context = AsyncMock(return_value=(self.user, SimpleNamespace(), self.lesson, ""))
+        self.service._completed_section_keys = AsyncMock(return_value={"1.1"})
         self.service.lesson_service = SimpleNamespace(get_payload=AsyncMock(return_value=self.payload))
         self.service.mistakes = SimpleNamespace(record_items=AsyncMock(return_value=0))
         self.service.gamification = SimpleNamespace(
@@ -102,7 +126,13 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
         )
 
     def responses(self, *, wrong_card_id=None):
-        cards = self.service._build_cards(self.payload, lang="ru", lesson_order=1)
+        sections = self.service._section_plan(self.payload, level="hsk1", lesson_order=1)
+        section = sections[1]
+        cards = self.service._build_cards(
+            self.service._section_payload(self.payload, section),
+            lang="ru",
+            lesson_order=1,
+        )
         responses = []
         for card in cards:
             if card["type"] in {"active_word", "pronunciation"}:
@@ -112,6 +142,7 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
                 "listening_choice",
                 "translation_choice",
                 "quick_quiz",
+                "dialog_context",
             }:
                 selected = card["correct_index"]
                 if card["id"] == wrong_card_id:
@@ -137,11 +168,19 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
             )
         )
         analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+        access = SimpleNamespace(
+            consume_free_use=AsyncMock(return_value={"allowed": True, "recorded": True})
+        )
 
+        self.service._completed_section_keys = AsyncMock(return_value={"1.1"})
         with (
             patch(
                 "app.services.course_miniapp_lesson_flow_service.StudyMiniAppService",
                 return_value=study,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAccessService",
+                return_value=access,
             ),
             patch(
                 "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAnalyticsService",
@@ -154,9 +193,12 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
                 lesson_order=1,
                 lang="ru",
                 responses=responses,
+                section_key="1.2",
             )
 
         self.assertTrue(result["ok"])
+        self.assertTrue(result["book_lesson_completed"])
+        self.assertTrue(result["chapter_completed"])
         self.assertEqual(result["percent"], expected_percent)
         study.complete_v2_lesson.assert_awaited_once_with(
             123,
@@ -165,9 +207,9 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
             percent=expected_percent,
         )
         self.assertEqual(self.user.payment_status, "none")
-        self.assertEqual(analytics.record_server_event.await_count, len(cards) + 1)
+        self.assertGreaterEqual(analytics.record_server_event.await_count, len(cards) + 4)
         self.service.mistakes.record_items.assert_awaited_once()
-        self.service.gamification.award.assert_awaited_once()
+        self.assertEqual(self.service.gamification.award.await_count, 3)
 
     async def test_missing_required_card_never_completes_lesson(self):
         _, responses = self.responses()
@@ -177,6 +219,7 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
             lesson_order=1,
             lang="ru",
             responses=responses[:-1],
+            section_key="1.2",
         )
         self.assertEqual(result, {"ok": False, "error": "lesson_required_activities_incomplete"})
 

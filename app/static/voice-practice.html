@@ -515,9 +515,9 @@
       <div class="lock-orb">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
       </div>
-      <h2>Bugungi bepul limit tugadi</h2>
-      <p>Voice Practice davom ettirish uchun obuna kerak.</p>
-      <div class="paywall-meta" id="paywall-meta">Limit ertaga yangilanadi</div>
+      <h2>Ovozli mashq limiti tugadi</h2>
+      <p>Obuna bilan AI Voice, pinyin, tarjima va talaffuz tuzatishlari ochiladi.</p>
+      <div class="paywall-meta" id="paywall-meta">Obuna bilan kengaytirilgan imkoniyatlar ochiladi</div>
     </div>
     <div class="paywall-actions">
       <button class="btn-primary" id="btn-upgrade">Obuna olish</button>
@@ -572,7 +572,7 @@
 
     <div class="set-section">
       <div class="set-title">Til</div>
-      <div class="set-hint">Botning tushuntirish va tarjima tili. Ilova interfeysi o'zbek tilida qoladi.</div>
+      <div class="set-hint">AI tushuntirish, tarjima va tuzatishlarni shu tilda beradi.</div>
       <div class="lang-row" id="settings-lang-row"></div>
     </div>
 
@@ -590,17 +590,6 @@
           <div class="set-row-sub" id="settings-plan-sub">Bugungi limit: —</div>
         </div>
         <button class="chip-sm" id="btn-settings-upgrade">Obuna olish</button>
-      </div>
-    </div>
-
-    <div class="set-section">
-      <div class="set-title">Yordam</div>
-      <div class="set-row">
-        <div>
-          <div class="set-row-label">Savol bormi?</div>
-          <div class="set-row-sub">Mikrofon, limit yoki xato haqida yordam</div>
-        </div>
-        <button class="chip-sm" id="btn-settings-help">Yordam</button>
       </div>
     </div>
   </div>
@@ -644,9 +633,9 @@ var VOICES = [
 ];
 
 var UI_COPY = {
-  uz:{dailyLimit:"Bugungi limit",unlimited:"Cheksiz",you:"Siz",empty:"Hali hech narsa aytilmadi. Mikrofonga bosib gapni boshlang.",startCall:"Qo'ng'iroqni boshlash",trialTomorrow:"Trial limiti ertaga yangilanadi",freeTomorrow:"Bepul limit ertaga yangilanadi",endConfirm:"Suhbatni tugatasizmi?",noCorrection:"Bu safar tuzatish bo'lmadi — ajoyib!",paidSession:"Paid sessiya: 25 soniya",goodbye:"很好，今天到这里。下次见！"},
-  ru:{dailyLimit:"Лимит на сегодня",unlimited:"Безлимитно",you:"Вы",empty:"Вы ещё ничего не сказали. Нажмите на микрофон и начните говорить.",startCall:"Начать звонок",trialTomorrow:"Пробный лимит обновится завтра",freeTomorrow:"Бесплатный лимит обновится завтра",endConfirm:"Завершить разговор?",noCorrection:"В этот раз без исправлений — отлично!",paidSession:"Paid-сессия: 25 секунд",goodbye:"很好，今天到这里。下次见！"},
-  tj:{dailyLimit:"Лимити имрӯз",unlimited:"Бемаҳдуд",you:"Шумо",empty:"Ҳоло чизе нагуфтед. Микрофонро пахш карда оғоз кунед.",startCall:"Оғози занг",trialTomorrow:"Лимити санҷишӣ пагоҳ нав мешавад",freeTomorrow:"Лимити ройгон пагоҳ нав мешавад",endConfirm:"Суҳбатро анҷом медиҳед?",noCorrection:"Ин дафъа ислоҳ лозим нашуд — аъло!",paidSession:"Сессияи paid: 25 сония",goodbye:"很好，今天到这里。下次见！"}
+  uz:{dailyLimit:"Bugungi limit",limitEnded:"Bugungi bepul AI Voice limiti tugadi",paidAccess:"Obuna aktiv",unlimited:"Cheksiz",you:"Siz",empty:"Hali hech narsa aytilmadi. Mikrofonga bosib gapni boshlang.",startCall:"Qo'ng'iroqni boshlash",trialTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",freeTomorrow:"Obuna bilan kengaytirilgan ovozli mashqlar ochiladi",endConfirm:"Suhbatni tugatasizmi?",noCorrection:"Bu safar tuzatish bo'lmadi — ajoyib!",paidSession:"Sessiya: 25 soniya",goodbye:"很好，今天到这里。下次见！"},
+  ru:{dailyLimit:"Лимит на сегодня",limitEnded:"Бесплатный лимит AI Voice на сегодня закончился",paidAccess:"Подписка активна",unlimited:"Безлимитно",you:"Вы",empty:"Вы ещё ничего не сказали. Нажмите на микрофон и начните говорить.",startCall:"Начать звонок",trialTomorrow:"С подпиской откроются расширенные голосовые практики",freeTomorrow:"С подпиской откроются расширенные голосовые практики",endConfirm:"Завершить разговор?",noCorrection:"В этот раз без исправлений — отлично!",paidSession:"Сессия: 25 секунд",goodbye:"很好，今天到这里。下次见！"},
+  tj:{dailyLimit:"Лимити имрӯз",limitEnded:"Лимити ройгони AI Voice барои имрӯз тамом шуд",paidAccess:"Обуна фаъол аст",unlimited:"Бемаҳдуд",you:"Шумо",empty:"Ҳоло чизе нагуфтед. Микрофонро пахш карда оғоз кунед.",startCall:"Оғози занг",trialTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",freeTomorrow:"Бо обуна машқҳои овозии васеъ кушода мешаванд",endConfirm:"Суҳбатро анҷом медиҳед?",noCorrection:"Ин дафъа ислоҳ лозим нашуд — аъло!",paidSession:"Сессия: 25 сония",goodbye:"很好，今天到这里。下次见！"}
 };
 function ui(key){ return (UI_COPY[UI_LANG] && UI_COPY[UI_LANG][key]) || UI_COPY.ru[key] || key; }
 
@@ -719,7 +708,6 @@ function cacheDom(){
   el.settingsPlanLabel = document.getElementById("settings-plan-label");
   el.settingsPlanSub = document.getElementById("settings-plan-sub");
   el.btnSettingsUpgrade = document.getElementById("btn-settings-upgrade");
-  el.btnSettingsHelp = document.getElementById("btn-settings-help");
 
   el.welcomeLimitBadge = document.getElementById("welcome-limit-badge");
   el.btnWelcomeStart = document.getElementById("btn-welcome-start");
@@ -763,9 +751,9 @@ function cacheDom(){
 
 var STATIC_LOCALE = {
   ru:{
-    "Mock rejim":"Демо-режим","HSK AI · Ovozli mashq":"HSK AI · Голосовая практика","Telefon qo'ng'irog'idek gaplash,":"Говорите как по телефону,","xitoy tilini his qil":"почувствуйте живой китайский","Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pinyin, tarjima va xatolarga tuzatish bo'ladi.":"Выберите собеседника и говорите голосом как во время настоящего звонка. Каждый ответ содержит pinyin, перевод и исправления.","🎙 Ovozli suhbat":"🎙 Голосовой диалог","✓ Tuzatish":"✓ Исправления","Boshlash":"Начать","Kim bilan gaplashasiz?":"С кем будете говорить?","Suhbatdosh":"Собеседник","Daraja":"Уровень","Qo'ng'iroqni boshlash":"Начать звонок","Tayyor — mikrofonga bosing":"Готово — нажмите на микрофон","Gapirish uchun bosing, tugatganda yana bosing":"Нажмите, чтобы говорить. Нажмите ещё раз, чтобы закончить","Transkript":"Транскрипт","Bugungi bepul limit tugadi":"Бесплатный лимит на сегодня закончился","Voice Practice davom ettirish uchun obuna kerak.":"Для продолжения Voice Practice нужна подписка.","Limit ertaga yangilanadi":"Лимит обновится завтра","Obuna olish":"Оформить подписку","Keyinroq":"Позже","Suhbat yakunlandi":"Разговор завершён","Davomiyligi":"Время","Almashinuv":"Реплики","Tuzatish":"Исправления","Tuzatishlar":"Исправления","Yana mashq qilish":"Ещё раз","Yopish":"Закрыть","To'liq transkript":"Полный транскрипт","Sozlamalar":"Настройки","Til":"Язык","Botning tushuntirish va tarjima tili. Ilova interfeysi o'zbek tilida qoladi.":"Язык объяснений, перевода и интерфейса.","Bot ovozi":"Голос AI","Bot javob berganda qaysi ovozda gapirsin.":"Выберите голос для ответов AI.","Obuna":"Подписка","Yordam":"Помощь","Savol bormi?":"Нужна помощь?","Mikrofon, limit yoki xato haqida yordam":"Микрофон, лимиты и ошибки"},
+    "Mock rejim":"Демо-режим","HSK AI · Ovozli mashq":"HSK AI · Голосовая практика","Telefon qo'ng'irog'idek gaplash,":"Говорите как по телефону,","xitoy tilini his qil":"почувствуйте живой китайский","Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pinyin, tarjima va xatolarga tuzatish bo'ladi.":"Выберите собеседника и говорите голосом как во время настоящего звонка. Каждый ответ содержит pinyin, перевод и исправления.","🎙 Ovozli suhbat":"🎙 Голосовой диалог","✓ Tuzatish":"✓ Исправления","Boshlash":"Начать","Kim bilan gaplashasiz?":"С кем будете говорить?","Suhbatdosh":"Собеседник","Daraja":"Уровень","Qo'ng'iroqni boshlash":"Начать звонок","Tayyor — mikrofonga bosing":"Готово — нажмите на микрофон","Gapirish uchun bosing, tugatganda yana bosing":"Нажмите, чтобы говорить. Нажмите ещё раз, чтобы закончить","Transkript":"Транскрипт","Ovozli mashq limiti tugadi":"Лимит голосовой практики закончился","Obuna bilan AI Voice, pinyin, tarjima va talaffuz tuzatishlari ochiladi.":"С подпиской откроются AI Voice, pinyin, перевод и исправления произношения.","Obuna bilan kengaytirilgan imkoniyatlar ochiladi":"С подпиской откроются расширенные возможности","Obuna olish":"Оформить подписку","Keyinroq":"Позже","Suhbat yakunlandi":"Разговор завершён","Davomiyligi":"Время","Almashinuv":"Реплики","Tuzatish":"Исправления","Tuzatishlar":"Исправления","Yana mashq qilish":"Ещё раз","Yopish":"Закрыть","To'liq transkript":"Полный транскрипт","Sozlamalar":"Настройки","Til":"Язык","AI tushuntirish, tarjima va tuzatishlarni shu tilda beradi.":"AI будет давать объяснения, перевод и исправления на этом языке.","Bot ovozi":"Голос AI","Bot javob berganda qaysi ovozda gapirsin.":"Выберите голос для ответов AI.","Obuna":"Подписка"},
   tj:{
-    "Mock rejim":"Реҷаи санҷишӣ","HSK AI · Ovozli mashq":"HSK AI · Машқи овозӣ","Telefon qo'ng'irog'idek gaplash,":"Мисли занги телефон суҳбат кунед,","xitoy tilini his qil":"забони чиниро эҳсос кунед","Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pinyin, tarjima va xatolarga tuzatish bo'ladi.":"Ҳамсуҳбатро интихоб кунед ва мисли занги воқеӣ бо овоз суҳбат кунед. Ҳар ҷавоб pinyin, тарҷума ва ислоҳ дорад.","🎙 Ovozli suhbat":"🎙 Суҳбати овозӣ","✓ Tuzatish":"✓ Ислоҳ","Boshlash":"Оғоз","Kim bilan gaplashasiz?":"Бо кӣ суҳбат мекунед?","Suhbatdosh":"Ҳамсуҳбат","Daraja":"Сатҳ","Qo'ng'iroqni boshlash":"Оғози занг","Tayyor — mikrofonga bosing":"Омода — микрофонро пахш кунед","Gapirish uchun bosing, tugatganda yana bosing":"Барои гуфтан пахш кунед, барои анҷом боз пахш кунед","Transkript":"Матни суҳбат","Bugungi bepul limit tugadi":"Лимити ройгони имрӯз тамом шуд","Voice Practice davom ettirish uchun obuna kerak.":"Барои идомаи Voice Practice обуна лозим аст.","Limit ertaga yangilanadi":"Лимит пагоҳ нав мешавад","Obuna olish":"Обуна гирифтан","Keyinroq":"Баъдтар","Suhbat yakunlandi":"Суҳбат анҷом ёфт","Davomiyligi":"Давомнокӣ","Almashinuv":"Ҷумлаҳо","Tuzatish":"Ислоҳ","Tuzatishlar":"Ислоҳҳо","Yana mashq qilish":"Боз машқ кардан","Yopish":"Пӯшидан","To'liq transkript":"Матни пурра","Sozlamalar":"Танзимот","Til":"Забон","Botning tushuntirish va tarjima tili. Ilova interfeysi o'zbek tilida qoladi.":"Забони шарҳ, тарҷума ва интерфейс.","Bot ovozi":"Овози AI","Bot javob berganda qaysi ovozda gapirsin.":"Овози ҷавобҳои AI-ро интихоб кунед.","Obuna":"Обуна","Yordam":"Кӯмак","Savol bormi?":"Савол доред?","Mikrofon, limit yoki xato haqida yordam":"Кӯмак барои микрофон, лимит ё хато"}
+    "Mock rejim":"Реҷаи санҷишӣ","HSK AI · Ovozli mashq":"HSK AI · Машқи овозӣ","Telefon qo'ng'irog'idek gaplash,":"Мисли занги телефон суҳбат кунед,","xitoy tilini his qil":"забони чиниро эҳсос кунед","Rolni tanlang — bot bilan haqiqiy qo'ng'iroqdek ovozli suhbat qilasiz. Har javobda pinyin, tarjima va xatolarga tuzatish bo'ladi.":"Ҳамсуҳбатро интихоб кунед ва мисли занги воқеӣ бо овоз суҳбат кунед. Ҳар ҷавоб pinyin, тарҷума ва ислоҳ дорад.","🎙 Ovozli suhbat":"🎙 Суҳбати овозӣ","✓ Tuzatish":"✓ Ислоҳ","Boshlash":"Оғоз","Kim bilan gaplashasiz?":"Бо кӣ суҳбат мекунед?","Suhbatdosh":"Ҳамсуҳбат","Daraja":"Сатҳ","Qo'ng'iroqni boshlash":"Оғози занг","Tayyor — mikrofonga bosing":"Омода — микрофонро пахш кунед","Gapirish uchun bosing, tugatganda yana bosing":"Барои гуфтан пахш кунед, барои анҷом боз пахш кунед","Transkript":"Матни суҳбат","Ovozli mashq limiti tugadi":"Лимити машқи овозӣ тамом шуд","Obuna bilan AI Voice, pinyin, tarjima va talaffuz tuzatishlari ochiladi.":"Бо обуна AI Voice, pinyin, тарҷума ва ислоҳи талаффуз кушода мешавад.","Obuna bilan kengaytirilgan imkoniyatlar ochiladi":"Бо обуна имкониятҳои васеъ кушода мешаванд","Obuna olish":"Обуна гирифтан","Keyinroq":"Баъдтар","Suhbat yakunlandi":"Суҳбат анҷом ёфт","Davomiyligi":"Давомнокӣ","Almashinuv":"Ҷумлаҳо","Tuzatish":"Ислоҳ","Tuzatishlar":"Ислоҳҳо","Yana mashq qilish":"Боз машқ кардан","Yopish":"Пӯшидан","To'liq transkript":"Матни пурра","Sozlamalar":"Танзимот","Til":"Забон","AI tushuntirish, tarjima va tuzatishlarni shu tilda beradi.":"AI шарҳ, тарҷума ва ислоҳро бо ҳамин забон медиҳад.","Bot ovozi":"Овози AI","Bot javob berganda qaysi ovozda gapirsin.":"Овози ҷавобҳои AI-ро интихоб кунед.","Obuna":"Обуна"}
 };
 function applyStaticLocale(){
   var map = STATIC_LOCALE[UI_LANG];
@@ -854,10 +842,16 @@ function showScreen(name){
 /* ============================== RENDER: limit badges ============================== */
 function updateLimitBadges(){
   var paidHint = state.isPaid ? " · " + ui("paidSession") : "";
-  el.welcomeLimitBadge.innerHTML = ui("dailyLimit") + ": <b>" + escapeHtml(formatLimit(state.remainingLimit)) + "</b>" + (state.isPaid ? " · " + escapeHtml(state.plan||"paid") : "") + escapeHtml(paidHint);
+  if (state.isPaid){
+    el.welcomeLimitBadge.innerHTML = escapeHtml(ui("paidAccess")) + escapeHtml(paidHint);
+  } else if (isLimitExhausted(state.remainingLimit)){
+    el.welcomeLimitBadge.textContent = ui("limitEnded");
+  } else {
+    el.welcomeLimitBadge.innerHTML = ui("dailyLimit") + ": <b>" + escapeHtml(formatLimit(state.remainingLimit)) + "</b>";
+  }
   el.rolesLimitBadge.innerHTML = el.welcomeLimitBadge.innerHTML;
   el.settingsPlanLabel.textContent = state.isPaid ? ("Premium · " + (state.plan||"paid")) : "Free";
-  el.settingsPlanSub.textContent = ui("dailyLimit") + ": " + formatLimit(state.remainingLimit) + paidHint;
+  el.settingsPlanSub.textContent = state.isPaid ? (ui("paidAccess") + paidHint) : (isLimitExhausted(state.remainingLimit) ? ui("limitEnded") : (ui("dailyLimit") + ": " + formatLimit(state.remainingLimit)));
   el.btnSettingsUpgrade.style.display = state.isPaid ? "none" : "inline-flex";
 }
 function updateMockBadge(){
@@ -886,7 +880,7 @@ function renderPickers(){
   });
 }
 
-/* ============================== RENDER: settings panel (til / ovoz / obuna / yordam) ============================== */
+/* ============================== RENDER: settings panel (til / ovoz / obuna) ============================== */
 function renderSettingsPanel(){
   el.settingsLangRow.innerHTML = LANGS.map(function(l){
     return '<button class="chip-sm'+(state.language===l.id?" selected":"")+'" data-lang="'+l.id+'">'+escapeHtml(l.label)+'</button>';
@@ -903,7 +897,7 @@ function renderSettingsPanel(){
   });
 
   el.settingsPlanLabel.textContent = state.isPaid ? ("Premium · " + (state.plan||"paid")) : "Free";
-  el.settingsPlanSub.textContent = ui("dailyLimit") + ": " + formatLimit(state.remainingLimit);
+  el.settingsPlanSub.textContent = state.isPaid ? (ui("paidAccess") + " · " + ui("paidSession")) : (isLimitExhausted(state.remainingLimit) ? ui("limitEnded") : (ui("dailyLimit") + ": " + formatLimit(state.remainingLimit)));
   el.btnSettingsUpgrade.style.display = state.isPaid ? "none" : "inline-flex";
 }
 
@@ -1119,7 +1113,6 @@ function playBotAudio(res){
 /* ============================== CALL LIFECYCLE ============================== */
 async function handleStartCallClick(){
   if (!state.role){ showToast("Avval suhbatdoshni tanlang."); return; }
-  if (isLimitExhausted(state.remainingLimit) && !state.isPaid){ showScreen("paywall"); return; }
 
   el.btnStartCall.disabled = true;
   el.startCallLabel.innerHTML = '<span class="spinner"></span>';
@@ -1161,6 +1154,16 @@ function showPaywall(){
   stopRecordingHard();
   el.paywallMeta.textContent = state.plan === "trial" ? ui("trialTomorrow") : ui("freeTomorrow");
   showScreen("paywall");
+}
+function requestUpgrade(source){
+  source = source || "voice_limit";
+  try{
+    if (window.parent && window.parent !== window){
+      window.parent.postMessage({type:"hsk_voice_subscribe",source:source}, "*");
+      return;
+    }
+  }catch(_){}
+  alertNative("Obuna Mini App orqali ochiladi. HSK AI Mini App ichidan Obuna bo'limiga o'ting.");
 }
 
 	async function handleEndCall(){
@@ -1401,14 +1404,11 @@ function bindEvents(){
   el.btnCloseSettings.addEventListener("click", function(){ el.settingsOverlay.classList.remove("show"); });
   el.btnSettingsUpgrade.addEventListener("click", function(){
     el.settingsOverlay.classList.remove("show");
-    showScreen("paywall");
-  });
-  el.btnSettingsHelp.addEventListener("click", function(){
-    alertNative("Yordam: mikrofon ishlamasa Telegram ruxsatlarini tekshiring. Limit haqida savol bo'lsa — Obuna bo'limiga qarang. (Real qo'llab-quvvatlash havolasi backend tayyor bo'lganda shu joyga ulanadi.)");
+    requestUpgrade("voice_settings");
   });
 
   el.btnUpgrade.addEventListener("click", function(){
-    alertNative("Obuna oqimi tez orada ulanadi. Hozircha bu joy backend to'lov integratsiyasi uchun ajratilgan.");
+    requestUpgrade("voice_paywall");
   });
   el.btnPaywallLater.addEventListener("click", function(){ showScreen("roles"); });
 

@@ -548,6 +548,7 @@ async def miniapp_course_lesson(
     lesson: int,
     level: str,
     lang: str = "ru",
+    section: str | None = None,
 ):
     telegram_id = extract_verified_webapp_user_id(
         request.headers.get("X-Telegram-Init-Data", ""),
@@ -564,6 +565,7 @@ async def miniapp_course_lesson(
             level=level,
             lesson_order=lesson,
             lang=normalize_miniapp_lang(lang),
+            section_key=section,
         )
     status_code = 200 if result.get("ok") else 403
     return JSONResponse(status_code=status_code, content=result)
@@ -595,6 +597,7 @@ async def miniapp_course_lesson_complete(request: Request):
             lesson_order=lesson_order,
             lang=normalize_miniapp_lang(str(payload.get("lang") or "ru")),
             responses=payload.get("responses") if isinstance(payload.get("responses"), list) else [],
+            section_key=payload.get("section_key") or payload.get("section"),
         )
     status_code = 200 if result.get("ok") else 400
     return JSONResponse(status_code=status_code, content=result)

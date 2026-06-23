@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
 
+from sqlalchemy import select
+
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
@@ -12,7 +15,9 @@ from app.services.course_trial_service import CourseTrialService
 from app.services.study_miniapp_service import StudyMiniAppService
 
 
-LESSON_FLOW_VERSION = 1
+LESSON_FLOW_VERSION = 2
+CHAPTER_LABELS = ("A", "B", "C", "D")
+SECTION_GROUP_SIZE = 3
 
 
 class CourseMiniAppLessonFlowService:
@@ -54,6 +59,7 @@ class CourseMiniAppLessonFlowService:
                 "translation_choice": "Выберите правильный перевод",
                 "pronunciation": "Произнесите фразу вслух",
                 "quick_quiz": "Быстрая проверка",
+                "short_dialog": "Короткий диалог",
             },
             "tj": {
                 "active_word": "Калимаи нави фаъол",
@@ -64,6 +70,7 @@ class CourseMiniAppLessonFlowService:
                 "translation_choice": "Тарҷумаи дурустро интихоб кунед",
                 "pronunciation": "Ибораро бо овози баланд гӯед",
                 "quick_quiz": "Санҷиши зуд",
+                "short_dialog": "Муколамаи кӯтоҳ",
             },
             "uz": {
                 "active_word": "Yangi faol so'z",
@@ -74,9 +81,150 @@ class CourseMiniAppLessonFlowService:
                 "translation_choice": "To'g'ri tarjimani tanlang",
                 "pronunciation": "Iborani ovoz chiqarib ayting",
                 "quick_quiz": "Tezkor tekshiruv",
+                "short_dialog": "Qisqa dialog",
             },
         }
         return copy.get(lang, copy["ru"]).get(key, key)
+
+    @staticmethod
+    def _section_size(level: str) -> int:
+        normalized = str(level or "").lower()
+        if normalized in {"hsk1", "hsk2"}:
+            return 2
+        if normalized == "hsk3":
+            return 3
+        return 4
+
+    @classmethod
+    def _split_words(cls, vocab: list[dict], *, level: str) -> list[list[dict]]:
+        words = [item for item in vocab if isinstance(item, dict) and item.get("zh")]
+        if not words:
+            return [[]]
+        max_size = cls._section_size(level)
+        section_count = max(1, (len(words) + max_size - 1) // max_size)
+        while section_count > 1 and len(words) // section_count < 2:
+            section_count -= 1
+        base = len(words) // section_count
+        extra = len(words) % section_count
+        chunks = []
+        cursor = 0
+        for index in range(section_count):
+            size = base + (1 if index < extra else 0)
+            chunks.append(words[cursor : cursor + size])
+            cursor += size
+        return chunks or [words]
+
+    @staticmethod
+    def _chapter_for_section(section_no: int) -> dict:
+        chapter_index = max(0, (int(section_no) - 1) // SECTION_GROUP_SIZE)
+        label = CHAPTER_LABELS[min(chapter_index, len(CHAPTER_LABELS) - 1)]
+        start = chapter_index * SECTION_GROUP_SIZE + 1
+        end = start + SECTION_GROUP_SIZE - 1
+        return {"index": chapter_index + 1, "key": label.lower(), "label": label, "start": start, "end": end}
+
+    @classmethod
+    def _section_plan(cls, payload: dict, *, level: str, lesson_order: int) -> list[dict]:
+        sections = []
+        chunks = cls._split_words(
+            [item for item in payload.get("vocabulary", []) if isinstance(item, dict)],
+            level=level,
+        )
+        total = len(chunks)
+        for index, words in enumerate(chunks, 1):
+            chapter = cls._chapter_for_section(index)
+            sections.append(
+                {
+                    "section_key": f"{lesson_order}.{index}",
+                    "section_no": index,
+                    "section_count": total,
+                    "chapter_key": chapter["key"],
+                    "chapter_label": chapter["label"],
+                    "chapter_no": chapter["index"],
+                    "chapter_start": chapter["start"],
+                    "chapter_end": min(chapter["end"], total),
+                    "active_words": words,
+                }
+            )
+        return sections
+
+    @classmethod
+    def _normalize_section_key(cls, value: str | int | None, *, lesson_order: int) -> str:
+        raw = str(value or "").strip()
+        if raw.startswith(f"{lesson_order}."):
+            return raw
+        if raw.isdigit():
+            return f"{lesson_order}.{int(raw)}"
+        return f"{lesson_order}.1"
+
+    @classmethod
+    def _section_by_key(cls, sections: list[dict], value: str | int | None, *, lesson_order: int) -> dict:
+        key = cls._normalize_section_key(value, lesson_order=lesson_order)
+        return next((item for item in sections if item["section_key"] == key), sections[0])
+
+    async def _completed_section_keys(self, *, telegram_id: int, lesson_id: int) -> set[str]:
+        result = await self.session.execute(
+            select(CourseMiniAppEvent.dedupe_key).where(
+                CourseMiniAppEvent.telegram_id == int(telegram_id),
+                CourseMiniAppEvent.lesson_id == int(lesson_id),
+                CourseMiniAppEvent.event_name == "section_completed",
+            )
+        )
+        keys = set()
+        prefix = f"section:{lesson_id}:"
+        for raw in result.scalars().all():
+            text = str(raw or "")
+            if text.startswith(prefix):
+                keys.add(text.removeprefix(prefix).split(":", 1)[0])
+        return keys
+
+    @staticmethod
+    def _section_unlocked(section: dict, completed: set[str]) -> bool:
+        section_no = int(section.get("section_no") or 1)
+        if section_no <= 1:
+            return True
+        previous_key = f"{str(section.get('section_key')).split('.', 1)[0]}.{section_no - 1}"
+        return previous_key in completed
+
+    @staticmethod
+    def _section_payload(payload: dict, section: dict) -> dict:
+        active_words = [item for item in section.get("active_words", []) if isinstance(item, dict)]
+        return {
+            **payload,
+            "vocabulary": active_words,
+            "quiz_questions": [],
+            "reinforcement_tasks": [],
+        }
+
+    def _short_dialog_card(self, active_words: list[dict], *, lang: str) -> dict | None:
+        target = next((item for item in active_words if item.get("zh") and item.get("meaning")), None)
+        if not target:
+            return None
+        options = [str(item.get("meaning") or "") for item in active_words if item.get("meaning")]
+        if str(target.get("meaning") or "") not in options:
+            options.insert(0, str(target.get("meaning") or ""))
+        options = list(dict.fromkeys([item for item in options if item]))[:4]
+        if len(options) < 2:
+            return None
+        correct = options.index(str(target.get("meaning") or ""))
+        prompt = {
+            "ru": f"Что означает «{target['zh']}» в диалоге?",
+            "tj": f"«{target['zh']}» дар муколама чӣ маъно дорад?",
+            "uz": f"Dialogda «{target['zh']}» nimani anglatadi?",
+        }.get(lang, f"Что означает «{target['zh']}» в диалоге?")
+        return {
+            "id": "activity:dialog",
+            "type": "dialog_context",
+            "title": self._copy(lang, "short_dialog"),
+            "prompt": prompt,
+            "dialog": [
+                {"speaker": "A", "text": "你去哪儿？"},
+                {"speaker": "B", "text": f"我去{target['zh']}。"},
+            ],
+            "options": options,
+            "correct_index": correct,
+            "explanation": f"{target['zh']} = {target.get('meaning') or ''}",
+            "required": True,
+        }
 
     async def _context(self, telegram_id: int, *, level: str, lesson_order: int):
         user = await self.user_repo.get_by_telegram_id(telegram_id)
@@ -347,11 +495,14 @@ class CourseMiniAppLessonFlowService:
                 "translation": str(pronunciation_word.get("meaning") or ""),
                 "required": True,
             }
+        dialog_card = self._short_dialog_card(active_words, lang=lang)
+        if dialog_card:
+            activities["dialog"] = dialog_card
 
         patterns = (
-            ["word:1", "word:2", "meaning", "word:3", "listening", "word:4", "builder", "pronunciation", "order", "translation", "quiz"],
-            ["word:1", "listening", "word:2", "meaning", "word:3", "order", "word:4", "translation", "builder", "pronunciation", "quiz"],
-            ["word:1", "meaning", "word:2", "builder", "word:3", "listening", "word:4", "pronunciation", "quiz", "order", "translation"],
+            ["word:1", "word:2", "meaning", "dialog", "word:3", "listening", "word:4", "builder", "pronunciation", "order", "translation", "quiz"],
+            ["word:1", "listening", "word:2", "dialog", "meaning", "word:3", "order", "word:4", "translation", "builder", "pronunciation", "quiz"],
+            ["word:1", "meaning", "word:2", "builder", "dialog", "word:3", "listening", "word:4", "pronunciation", "quiz", "order", "translation"],
         )
         pattern = patterns[(int(lesson_order) - 1) % len(patterns)]
         word_map = {card["id"]: card for card in words}
@@ -365,7 +516,15 @@ class CourseMiniAppLessonFlowService:
                 cards.append(card)
         return cards
 
-    async def get_flow(self, telegram_id: int, *, level: str, lesson_order: int, lang: str) -> dict:
+    async def get_flow(
+        self,
+        telegram_id: int,
+        *,
+        level: str,
+        lesson_order: int,
+        lang: str,
+        section_key: str | int | None = None,
+    ) -> dict:
         user, _, lesson, error = await self._context(
             telegram_id,
             level=level,
@@ -381,11 +540,50 @@ class CourseMiniAppLessonFlowService:
         )
         if not payload:
             return {"ok": False, "error": "lesson_not_found"}
-        cards = self._build_cards(payload, lang=lang, lesson_order=lesson.lesson_order)
+        sections = self._section_plan(payload, level=str(lesson.level), lesson_order=int(lesson.lesson_order))
+        section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
+        completed_sections = await self._completed_section_keys(telegram_id=telegram_id, lesson_id=lesson.id)
+        if not self._section_unlocked(section, completed_sections):
+            return {"ok": False, "error": "course_section_not_unlocked"}
+        section_payload = self._section_payload(payload, section)
+        cards = self._build_cards(section_payload, lang=lang, lesson_order=lesson.lesson_order)
         if not cards:
             return {"ok": False, "error": "course_lesson_has_no_activities"}
 
         analytics = CourseMiniAppAnalyticsService(self.session)
+        chapter_key = str(section["chapter_key"])
+        await analytics.record_server_event(
+            event_name="chapter_started",
+            telegram_id=telegram_id,
+            user_id=user.id,
+            level=str(lesson.level),
+            lesson_id=lesson.id,
+            lesson_order=lesson.lesson_order,
+            dedupe_key=f"chapter:{lesson.id}:{chapter_key}:started",
+            payload={
+                "chapter_key": chapter_key,
+                "chapter_label": section["chapter_label"],
+                "flow_version": LESSON_FLOW_VERSION,
+            },
+        )
+        await analytics.record_server_event(
+            event_name="section_started",
+            telegram_id=telegram_id,
+            user_id=user.id,
+            level=str(lesson.level),
+            lesson_id=lesson.id,
+            lesson_order=lesson.lesson_order,
+            dedupe_key=f"section:{lesson.id}:{section['section_key']}:started",
+            payload={
+                "section_key": section["section_key"],
+                "section_no": section["section_no"],
+                "section_count": section["section_count"],
+                "chapter_key": chapter_key,
+                "chapter_label": section["chapter_label"],
+                "flow_version": LESSON_FLOW_VERSION,
+                "card_count": len(cards),
+            },
+        )
         await analytics.record_server_event(
             event_name="lesson_started",
             telegram_id=telegram_id,
@@ -394,16 +592,25 @@ class CourseMiniAppLessonFlowService:
             lesson_id=lesson.id,
             lesson_order=lesson.lesson_order,
             dedupe_key=f"lesson:{lesson.id}:started",
-            payload={"flow_version": LESSON_FLOW_VERSION, "card_count": len(cards)},
+            payload={"flow_version": LESSON_FLOW_VERSION, "card_count": len(cards), "section_key": section["section_key"]},
         )
         await self.session.commit()
         return {
             "ok": True,
             "flow": {
-                "id": f"lesson:{lesson.id}:v{LESSON_FLOW_VERSION}",
+                "id": f"lesson:{lesson.id}:{section['section_key']}:v{LESSON_FLOW_VERSION}",
                 "version": LESSON_FLOW_VERSION,
                 "level": str(lesson.level),
                 "lesson_id": int(lesson.lesson_order),
+                "book_lesson_order": int(lesson.lesson_order),
+                "section_key": section["section_key"],
+                "section_no": section["section_no"],
+                "section_count": section["section_count"],
+                "chapter_key": chapter_key,
+                "chapter_label": section["chapter_label"],
+                "chapter_no": section["chapter_no"],
+                "chapter_start": section["chapter_start"],
+                "chapter_end": section["chapter_end"],
                 "title": str(payload.get("title") or ""),
                 "cards": cards,
             },
@@ -414,7 +621,7 @@ class CourseMiniAppLessonFlowService:
         card_type = str(card.get("type") or "")
         if card_type in {"active_word", "pronunciation"}:
             return bool(response.get("completed")), False
-        if card_type in {"meaning_guess", "listening_choice", "translation_choice", "quick_quiz"}:
+        if card_type in {"meaning_guess", "listening_choice", "translation_choice", "quick_quiz", "dialog_context"}:
             try:
                 selected = int(response.get("selected_index"))
             except (TypeError, ValueError):
@@ -434,6 +641,7 @@ class CourseMiniAppLessonFlowService:
         lesson_order: int,
         lang: str,
         responses: list,
+        section_key: str | int | None = None,
     ) -> dict:
         user, _, lesson, error = await self._context(
             telegram_id,
@@ -447,7 +655,16 @@ class CourseMiniAppLessonFlowService:
             lang=lang,
             level=str(lesson.level),
         )
-        cards = self._build_cards(payload or {}, lang=lang, lesson_order=lesson.lesson_order)
+        sections = self._section_plan(payload or {}, level=str(lesson.level), lesson_order=int(lesson.lesson_order))
+        section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
+        completed_sections = await self._completed_section_keys(telegram_id=telegram_id, lesson_id=lesson.id)
+        if not self._section_unlocked(section, completed_sections):
+            return {"ok": False, "error": "course_section_not_unlocked"}
+        cards = self._build_cards(
+            self._section_payload(payload or {}, section),
+            lang=lang,
+            lesson_order=lesson.lesson_order,
+        )
         required_cards = [card for card in cards if card.get("required")]
 
         response_map = {}
@@ -513,22 +730,61 @@ class CourseMiniAppLessonFlowService:
                 "total": len(graded),
             }
 
-        result = await StudyMiniAppService(self.session).complete_v2_lesson(
-            telegram_id,
-            level=self._content_level(level),
-            lesson_order=int(lesson.lesson_order),
-            percent=percent,
-        )
-        if not result.get("ok"):
-            return result
-
-        reward = await self.gamification.award(
+        access_result = await CourseMiniAppAccessService(self.session).consume_free_use(
             user,
-            activity_type="lesson",
-            activity_ref=f"lesson:{lesson.id}:v{LESSON_FLOW_VERSION}",
-            base_xp=20,
+            feature_key="lesson",
+            usage_ref=f"section:{lesson.id}:{section['section_key']}:v{LESSON_FLOW_VERSION}",
+        )
+        if not access_result.get("allowed"):
+            return {"ok": False, "error": access_result.get("error") or "free_feature_limit_reached"}
+
+        section_reward = await self.gamification.award(
+            user,
+            activity_type="section",
+            activity_ref=f"section:{lesson.id}:{section['section_key']}:v{LESSON_FLOW_VERSION}",
+            base_xp=8,
             level=str(lesson.level),
         )
+        completed_after = {section["section_key"], *completed_sections}
+        chapter_sections = [
+            item["section_key"]
+            for item in sections
+            if item["chapter_key"] == section["chapter_key"]
+        ]
+        chapter_completed = all(item in completed_after for item in chapter_sections)
+        book_lesson_completed = all(item["section_key"] in completed_after for item in sections)
+        chapter_reward = None
+        book_reward = None
+        result = {
+            "ok": True,
+            "completed_lesson": None,
+            "next_lesson": None,
+            "completed_lessons_count": None,
+        }
+        if chapter_completed:
+            chapter_reward = await self.gamification.award(
+                user,
+                activity_type="chapter",
+                activity_ref=f"chapter:{lesson.id}:{section['chapter_key']}:v{LESSON_FLOW_VERSION}",
+                base_xp=12,
+                level=str(lesson.level),
+            )
+        if book_lesson_completed:
+            result = await StudyMiniAppService(self.session).complete_v2_lesson(
+                telegram_id,
+                level=self._content_level(level),
+                lesson_order=int(lesson.lesson_order),
+                percent=percent,
+            )
+            if not result.get("ok"):
+                return result
+            book_reward = await self.gamification.award(
+                user,
+                activity_type="book_lesson",
+                activity_ref=f"book-lesson:{lesson.id}:v{LESSON_FLOW_VERSION}",
+                base_xp=20,
+                level=str(lesson.level),
+            )
 
         analytics = CourseMiniAppAnalyticsService(self.session)
         for card in required_cards:
@@ -539,18 +795,28 @@ class CourseMiniAppLessonFlowService:
                 level=str(lesson.level),
                 lesson_id=lesson.id,
                 lesson_order=lesson.lesson_order,
-                dedupe_key=f"lesson:{lesson.id}:card:{card['id']}",
-                payload={"card_id": card["id"], "card_type": card["type"]},
+                dedupe_key=f"section:{lesson.id}:{section['section_key']}:card:{card['id']}",
+                payload={
+                    "section_key": section["section_key"],
+                    "chapter_key": section["chapter_key"],
+                    "card_id": card["id"],
+                    "card_type": card["type"],
+                },
             )
         await analytics.record_server_event(
-            event_name="lesson_completed",
+            event_name="section_completed",
             telegram_id=telegram_id,
             user_id=user.id,
             level=str(lesson.level),
             lesson_id=lesson.id,
             lesson_order=lesson.lesson_order,
-            dedupe_key=f"lesson:{lesson.id}:completed",
+            dedupe_key=f"section:{lesson.id}:{section['section_key']}:completed",
             payload={
+                "section_key": section["section_key"],
+                "section_no": section["section_no"],
+                "section_count": section["section_count"],
+                "chapter_key": section["chapter_key"],
+                "chapter_label": section["chapter_label"],
                 "percent": percent,
                 "correct": correct_count,
                 "total": len(graded),
@@ -558,12 +824,72 @@ class CourseMiniAppLessonFlowService:
                 "completed_at": datetime.now(timezone.utc).isoformat(),
             },
         )
+        if chapter_completed:
+            await analytics.record_server_event(
+                event_name="chapter_completed",
+                telegram_id=telegram_id,
+                user_id=user.id,
+                level=str(lesson.level),
+                lesson_id=lesson.id,
+                lesson_order=lesson.lesson_order,
+                dedupe_key=f"chapter:{lesson.id}:{section['chapter_key']}:completed",
+                payload={
+                    "chapter_key": section["chapter_key"],
+                    "chapter_label": section["chapter_label"],
+                    "section_count": len(chapter_sections),
+                    "completed_at": datetime.now(timezone.utc).isoformat(),
+                },
+            )
+        if book_lesson_completed:
+            book_payload = {
+                "section_count": len(sections),
+                "percent": percent,
+                "correct": correct_count,
+                "total": len(graded),
+                "flow_version": LESSON_FLOW_VERSION,
+                "completed_at": datetime.now(timezone.utc).isoformat(),
+            }
+            await analytics.record_server_event(
+                event_name="book_lesson_completed",
+                telegram_id=telegram_id,
+                user_id=user.id,
+                level=str(lesson.level),
+                lesson_id=lesson.id,
+                lesson_order=lesson.lesson_order,
+                dedupe_key=f"book-lesson:{lesson.id}:completed",
+                payload=book_payload,
+            )
+            await analytics.record_server_event(
+                event_name="lesson_completed",
+                telegram_id=telegram_id,
+                user_id=user.id,
+                level=str(lesson.level),
+                lesson_id=lesson.id,
+                lesson_order=lesson.lesson_order,
+                dedupe_key=f"lesson:{lesson.id}:completed",
+                payload=book_payload,
+            )
         await self.session.commit()
+        next_section = next(
+            (item for item in sections if int(item["section_no"]) == int(section["section_no"]) + 1),
+            None,
+        )
         return {
             **result,
             "percent": percent,
             "correct": correct_count,
             "total": len(graded),
             "wrong_items": wrong_items,
-            "reward": reward,
+            "reward": book_reward or chapter_reward or section_reward,
+            "section_reward": section_reward,
+            "chapter_reward": chapter_reward,
+            "book_lesson_reward": book_reward,
+            "section_key": section["section_key"],
+            "section_no": section["section_no"],
+            "section_count": section["section_count"],
+            "chapter_key": section["chapter_key"],
+            "chapter_label": section["chapter_label"],
+            "chapter_completed": chapter_completed,
+            "book_lesson_completed": book_lesson_completed,
+            "next_section": next_section["section_key"] if next_section else None,
         }

@@ -100,7 +100,7 @@ class CourseMiniAppAdminAnalyticsService:
             .select_from(CourseMiniAppEvent)
             .where(
                 CourseMiniAppEvent.created_at >= since,
-                CourseMiniAppEvent.event_name.in_(("lesson_started", "lesson_completed")),
+                CourseMiniAppEvent.event_name.in_(("section_started", "section_completed")),
                 CourseMiniAppEvent.level.is_not(None),
                 CourseMiniAppEvent.lesson_order.is_not(None),
             )
@@ -114,18 +114,18 @@ class CourseMiniAppAdminAnalyticsService:
         rows = (await self.session.execute(stmt)).fetchall()
         for row in rows:
             key = (str(row.level or "unknown").lower(), int(row.lesson_order or 0))
-            grouped.setdefault(key, {"lesson_started": 0, "lesson_completed": 0})
+            grouped.setdefault(key, {"section_started": 0, "section_completed": 0})
             grouped[key][str(row.event_name)] = int(row.cnt or 0)
 
         return [
             LessonDropoffRow(
                 level=level,
                 lesson_order=lesson_order,
-                started=counts.get("lesson_started", 0),
-                completed=counts.get("lesson_completed", 0),
+                started=counts.get("section_started", 0),
+                completed=counts.get("section_completed", 0),
             )
             for (level, lesson_order), counts in grouped.items()
-            if counts.get("lesson_started", 0) > 0
+            if counts.get("section_started", 0) > 0
         ]
 
     async def admin_text(self, *, week_ago: datetime) -> str:
@@ -135,8 +135,10 @@ class CourseMiniAppAdminAnalyticsService:
         weekly_xp = await self._weekly_xp(since=week_ago)
         lesson_dropoff = await self._lesson_dropoff(since=week_ago)
 
-        lesson_start = self._event(week_counts, "lesson_started")
-        lesson_completed = self._event(week_counts, "lesson_completed")
+        section_start = self._event(week_counts, "section_started")
+        section_completed = self._event(week_counts, "section_completed")
+        chapter_completed = self._event(week_counts, "chapter_completed")
+        book_completed = self._event(week_counts, "book_lesson_completed")
         test_started = self._event(week_counts, "test_started")
         training_started = self._event(week_counts, "training_started")
         voice_started = self._event(week_counts, "voice_started")
@@ -159,9 +161,11 @@ class CourseMiniAppAdminAnalyticsService:
                 f"Start point <b>{self._event(week_counts, 'start_point_selected')}</b>"
             ),
             (
-                "  Lessons 7d: "
-                f"Start <b>{lesson_start}</b> · Complete <b>{lesson_completed}</b> "
-                f"(<b>{self._pct(lesson_completed, lesson_start)}%</b>) · "
+                "  Course path 7d: "
+                f"Section <b>{section_start}</b>→<b>{section_completed}</b> "
+                f"(<b>{self._pct(section_completed, section_start)}%</b>) · "
+                f"Chapter <b>{chapter_completed}</b> · "
+                f"Book lesson <b>{book_completed}</b> · "
                 f"Cards <b>{self._event(week_counts, 'card_seen')}</b> · "
                 f"Interactions <b>{self._event(week_counts, 'interaction_completed')}</b>"
             ),
@@ -197,6 +201,6 @@ class CourseMiniAppAdminAnalyticsService:
                 f"Approved <b>{self._event(week_counts, 'subscription_approved')}</b> "
                 f"(<b>{self._rate(week_counts, 'subscription_approved', 'checkout_opened')}%</b>)"
             ),
-            f"  Lesson drop-off 7d: {self.format_lesson_dropoff(lesson_dropoff)}",
+            f"  Section drop-off 7d: {self.format_lesson_dropoff(lesson_dropoff)}",
         ]
         return "\n".join(lines)

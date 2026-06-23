@@ -207,6 +207,56 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-23 — Mini App reward, league, and AI Voice paywall UX
+
+Changed:
+- Course Mini App lesson completion now shows a sequential reward experience: result, streak progress, and league movement using an HSK AI-owned `汉` mascot instead of copied Duolingo-style characters.
+- League tab now renders a trophy track and ranked rows with special top-3 medals, while still using existing gamification data/fallback rows.
+- AI Voice tab opens even when voice access is exhausted; the paywall appears at call/session start instead of blocking the tab. Voice paywall/subscription buttons route back to the existing Mini App subscription flow through the parent shell.
+- AI Voice settings removed the unsupported help/support block and no longer claims limits refresh daily.
+
+Why:
+- Course rewards and league movement need Duolingo-like dopamine UX while keeping HSK AI visual identity and preserving existing subscription/payment logic.
+
+Files touched:
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+- `app/static/voice-practice.html`
+
+Risk:
+- Changes are frontend UX only; payment/subscription backend logic was not changed.
+- Real Telegram WebView should be smoke-tested for AI Voice paywall routing and reward screen layout.
+
+Follow-up:
+- Add browser/E2E screenshot coverage once local Playwright/Chrome runtime is available.
+
+### 2026-06-23 — Course Mini App section/chapter/book lesson progression
+
+Changed:
+- Course Mini App lessons now have three progress levels: section, chapter, and book lesson.
+- HSK book material remains in `course_lessons`; Mini App splits each book lesson into deterministic section nodes by vocabulary count, grouped visually into A/B/C chapters.
+- Darslar/Course page keeps the Duolingo-style road/path and renders sections as path nodes inside chapter groups instead of converting to a list/table.
+- Every section includes a short context dialog card; long textbook dialogue screens are not restored.
+- Completion now records `section_completed`, `chapter_completed`, and `book_lesson_completed`; legacy `lesson_completed` is still recorded only when the whole book lesson is complete for admin compatibility.
+- XP is server-side at all three levels: section small XP, chapter bonus XP, book lesson bonus XP. Payment/subscription/referral logic was not changed.
+
+Why:
+- Large HSK book lessons must feel like small learning steps while preserving HSK material order and the existing Course path UX.
+
+Files touched:
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/db/models/course_miniapp_event.py`
+- `app/services/course_miniapp_admin_analytics_service.py`
+- `app/main.py`
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+- `app/static/study.html`
+- `tests/test_course_miniapp_lesson_flow.py`
+
+Risk:
+- Completed section state is stored server-side through analytics/dedupe events, while the current frontend also mirrors section completion in local storage for immediate path rendering.
+- Browser E2E still depends on Playwright/pytest availability in the local runtime.
+
 ### 2026-06-23 — Mini App AI Voice embedded UX fix
 
 Changed:
