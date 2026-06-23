@@ -8,6 +8,7 @@ from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_miniapp_analytics_service import CourseMiniAppAnalyticsService
 from app.services.course_miniapp_lesson_service import CourseMiniAppLessonService
+from app.services.course_mistake_service import CourseMistakeService
 
 
 PRACTICE_VERSION = 1
@@ -22,6 +23,7 @@ class CourseMiniAppPracticeService:
         self.lesson_repo = CourseLessonRepository(session)
         self.lesson_service = CourseMiniAppLessonService(session)
         self.access = CourseMiniAppAccessService(session)
+        self.mistakes = CourseMistakeService(session)
 
     @staticmethod
     def _level(value: str) -> str:
@@ -250,6 +252,15 @@ class CourseMiniAppPracticeService:
                         "correct_answer": question["options"][question["answer_index"]],
                         "explanation": question["explanation"],
                         "level": question["level"],
+                        "type": question["type"],
+                        "subtype": question["subtype"],
+                        "category": (
+                            "grammar"
+                            if mode == "training" and skill == "writing"
+                            else "character"
+                            if mode == "training" and skill == "characters"
+                            else "word"
+                        ),
                     }
                 )
         total = len(questions)
@@ -264,6 +275,12 @@ class CourseMiniAppPracticeService:
                     recommendation = item_level.upper().replace("HSK", "HSK ")
 
         event_name = "training_completed" if mode == "training" else "test_completed"
+        await self.mistakes.record_items(
+            user,
+            wrong,
+            source="training" if mode == "training" else "test",
+            level=level,
+        )
         analytics = CourseMiniAppAnalyticsService(self.session)
         await analytics.record_server_event(
             event_name=event_name,

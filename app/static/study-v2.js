@@ -24,7 +24,7 @@ const copy={
     onboardingTitle:"Китайский для реального общения",onboardingSub:"Соберём короткий план и сразу откроем первый урок.",
     chooseGoal:"Зачем вы учите китайский?",chooseLevel:"Какой у вас уровень?",chooseTime:"Сколько минут в день?",chooseStart:"Откуда начать?",
     next:"Далее",back:"Назад",finish:"Начать обучение",saving:"Сохраняем...",onboardingError:"Не удалось сохранить настройки. Попробуйте ещё раз.",goalHsk:"Сдать HSK",goalStudy:"Учиться в Китае",goalWork:"Работать в Китае",goalTravel:"Путешествовать",goalDaily:"Общаться каждый день",startLesson1:"Начать с урока 1",continueProgress:"Продолжить текущий прогресс",takePlacement:"Пройти тест уровня",
-    loadingLesson:"Готовим урок...",lessonLoadError:"Не удалось открыть урок",sayAloud:"Произнесите вслух",said:"Я произнёс",check:"Проверить",reset:"Сбросить",correct:"Верно",incorrect:"Нужно повторить",lessonComplete:"Урок завершён",submitLesson:"Завершить урок",retryLesson:"Повторить урок",continueCourse:"Продолжить курс",unlockMore:"Открыть следующие уроки"
+    loadingLesson:"Готовим урок...",lessonLoadError:"Не удалось открыть урок",sayAloud:"Произнесите вслух",said:"Я произнёс",check:"Проверить",reset:"Сбросить",correct:"Верно",incorrect:"Нужно повторить",lessonComplete:"Урок завершён",submitLesson:"Завершить урок",retryLesson:"Повторить урок",continueCourse:"Продолжить курс",unlockMore:"Открыть следующие уроки",reviewNow:"Повторить ошибки",loadingMistakes:"Загружаем слабые места..."
   },
   uz:{
     home:"Asosiy",course:"Kurs",voice:"AI Voice",tests:"Testlar",profile:"Profil",
@@ -43,7 +43,7 @@ const copy={
     rewardReady:"Sandiq tayyor",rewardLocked:"Yana XP yig'ing",onboardingTitle:"Real muloqot uchun xitoy tili",onboardingSub:"Qisqa reja tuzamiz va birinchi darsni darhol ochamiz.",
     chooseGoal:"Xitoy tilini nima uchun o'rganyapsiz?",chooseLevel:"Darajangiz qaysi?",chooseTime:"Kuniga necha daqiqa?",chooseStart:"Qayerdan boshlaysiz?",
     next:"Keyingi",back:"Orqaga",finish:"O'qishni boshlash",saving:"Saqlanmoqda...",onboardingError:"Sozlamalarni saqlab bo'lmadi. Qayta urinib ko'ring.",goalHsk:"HSK topshirish",goalStudy:"Xitoyda o'qish",goalWork:"Xitoyda ishlash",goalTravel:"Sayohat",goalDaily:"Har kuni gaplashish",startLesson1:"1-darsdan boshlash",continueProgress:"Joriy progressdan davom etish",takePlacement:"Daraja testini topshirish",
-    loadingLesson:"Dars tayyorlanmoqda...",lessonLoadError:"Darsni ochib bo'lmadi",sayAloud:"Ovoz chiqarib ayting",said:"Aytdim",check:"Tekshirish",reset:"Tozalash",correct:"To'g'ri",incorrect:"Qayta mashq qiling",lessonComplete:"Dars tugallandi",submitLesson:"Darsni yakunlash",retryLesson:"Darsni qaytarish",continueCourse:"Kursni davom ettirish",unlockMore:"Keyingi darslarni ochish"
+    loadingLesson:"Dars tayyorlanmoqda...",lessonLoadError:"Darsni ochib bo'lmadi",sayAloud:"Ovoz chiqarib ayting",said:"Aytdim",check:"Tekshirish",reset:"Tozalash",correct:"To'g'ri",incorrect:"Qayta mashq qiling",lessonComplete:"Dars tugallandi",submitLesson:"Darsni yakunlash",retryLesson:"Darsni qaytarish",continueCourse:"Kursni davom ettirish",unlockMore:"Keyingi darslarni ochish",reviewNow:"Xatolarni takrorlash",loadingMistakes:"Zaif joylar yuklanmoqda..."
   },
   tj:{
     home:"Асосӣ",course:"Курс",voice:"AI Voice",tests:"Тестҳо",profile:"Профил",
@@ -62,7 +62,7 @@ const copy={
     rewardReady:"Сандуқ тайёр",rewardLocked:"Боз XP гиред",onboardingTitle:"Забони чинӣ барои муоширати воқеӣ",onboardingSub:"Нақшаи кӯтоҳ месозем ва дарси аввалро мекушоем.",
     chooseGoal:"Барои чӣ забони чинӣ меомӯзед?",chooseLevel:"Сатҳи шумо кадом аст?",chooseTime:"Дар як рӯз чанд дақиқа?",chooseStart:"Аз куҷо оғоз мекунед?",
     next:"Баъдӣ",back:"Бозгашт",finish:"Оғози омӯзиш",saving:"Нигоҳ дошта мешавад...",onboardingError:"Танзимот нигоҳ дошта нашуд. Аз нав кӯшиш кунед.",goalHsk:"Супоридани HSK",goalStudy:"Таҳсил дар Чин",goalWork:"Кор дар Чин",goalTravel:"Саёҳат",goalDaily:"Ҳар рӯз гуфтугӯ кардан",startLesson1:"Аз дарси 1 оғоз кардан",continueProgress:"Идомаи пешрафти ҷорӣ",takePlacement:"Супоридани тести сатҳ",
-    loadingLesson:"Дарс омода мешавад...",lessonLoadError:"Дарс кушода нашуд",sayAloud:"Бо овози баланд гӯед",said:"Гуфтам",check:"Санҷидан",reset:"Тоза кардан",correct:"Дуруст",incorrect:"Боз машқ кунед",lessonComplete:"Дарс анҷом шуд",submitLesson:"Анҷоми дарс",retryLesson:"Такрори дарс",continueCourse:"Идомаи курс",unlockMore:"Кушодани дарсҳои навбатӣ"
+    loadingLesson:"Дарс омода мешавад...",lessonLoadError:"Дарс кушода нашуд",sayAloud:"Бо овози баланд гӯед",said:"Гуфтам",check:"Санҷидан",reset:"Тоза кардан",correct:"Дуруст",incorrect:"Боз машқ кунед",lessonComplete:"Дарс анҷом шуд",submitLesson:"Анҷоми дарс",retryLesson:"Такрори дарс",continueCourse:"Идомаи курс",unlockMore:"Кушодани дарсҳои навбатӣ",reviewNow:"Такрори хатоҳо",loadingMistakes:"Ҷойҳои суст бор мешаванд..."
   }
 };
 
@@ -83,7 +83,7 @@ let onboardingStep=0;
 let onboardingSubmitting=false;
 let onboarding={goal:["hsk_exam","study_china","work_china","daily_communication","travel"].includes(meta.goal)?meta.goal:"hsk_exam",level:LEVEL_KEY.startsWith("hsk4")?"hsk4":LEVEL_KEY,minutes:meta.minutes||10,startMode:"continue"};
 let lessonFlow=null,lessonCardIndex=0,lessonResponses={},lessonSubmitting=false,lessonOrderRemaining=[],lessonOrderSelected=[];
-let practiceSession=null;
+let practiceSession=null,mistakeReviewSession=null,serverMistakes=null,mistakesLoading=false;
 
 function normalizeMeta(){
   if(meta.lastActive!==today()){
@@ -106,7 +106,7 @@ function appMarkup(){
       <section id="page-lesson" class="v2-page"></section>
       <section id="page-flashcards" class="page v2-page"><header class="page-header"><button class="v2-back" onclick="V2.showPage('training')" aria-label="Back">‹</button><div class="eyebrow" id="fc-level-label"></div><h1 class="page-title" data-i18n="flashcards"></h1><p class="page-sub" data-i18n="flashcardSub"></p></header><div class="toolbar"><input id="search" class="search" data-placeholder="search" oninput="renderFlashcards()"></div><div class="filters" id="fc-filters"></div><main class="grid" id="fc-grid"></main></section>
       <section id="page-grammar" class="page v2-page"><header class="page-header"><button class="v2-back" onclick="V2.showPage('training')" aria-label="Back">‹</button><div class="eyebrow" id="grammar-level-label"></div><h1 class="page-title" data-i18n="grammar"></h1><p class="page-sub" data-i18n="grammarSub"></p></header><div class="filters" id="grammar-filters"></div><main class="list" id="grammar-list"></main></section>
-      <section id="page-quiz" class="page v2-page"><header class="page-header"><button class="v2-back" onclick="V2.showPage('tests')" aria-label="Back">‹</button><div class="eyebrow" id="quiz-level-label"></div><h1 class="page-title" data-i18n="quiz"></h1><p class="page-sub" data-i18n="quizSub"></p></header><div class="filters" id="quiz-filters"></div><main class="quiz-wrap"><div id="quiz-box" class="quiz-box"></div><div id="score-box" class="score-box" style="display:none"></div></main></section>
+      <section id="page-quiz" class="page v2-page"><header class="page-header"><button class="v2-back" onclick="V2.quizBack()" aria-label="Back">‹</button><div class="eyebrow" id="quiz-level-label"></div><h1 class="page-title" data-i18n="quiz"></h1><p class="page-sub" data-i18n="quizSub"></p></header><div class="filters" id="quiz-filters"></div><main class="quiz-wrap"><div id="quiz-box" class="quiz-box"></div><div id="score-box" class="score-box" style="display:none"></div></main></section>
       <section id="page-voice" class="page v2-page no-top-pad"><main class="voice-wrap"><iframe id="voice-frame" class="voice-frame" title="AI Voice" allow="microphone; autoplay"></iframe></main></section>
       <section id="page-tests" class="v2-page"></section>
       <section id="page-profile" class="v2-page"></section>
@@ -164,7 +164,8 @@ function renderTests(){
 
 function row(icon,title,sub,action){return `<button class="v2-row-card" onclick="${action}"><span class="v2-row-icon">${icon}</span><span><b>${esc(title)}</b><small>${esc(sub)}</small></span><span class="v2-arrow">›</span></button>`}
 function renderProfile(){
-  document.getElementById("page-profile").innerHTML=`<div class="v2-profile-head"><div class="v2-avatar">${labelLevel(LEVEL_KEY).replace(/\D/g,"")||"1"}</div><div><h1>HSK AI Student</h1><p>${meta.xp} XP · ${meta.streak} ${esc(tx("streak"))}</p><span class="v2-badge">${leagueName()} League</span></div></div><div class="v2-metrics v2-section"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>XP</span></div><div class="v2-metric" data-tone="green"><strong>${completedCount()}</strong><span>${esc(tx("done"))}</span></div><div class="v2-metric" data-tone="purple"><strong>${read(MISTAKES_KEY,[]).reduce((s,m)=>s+m.count,0)}</strong><span>${esc(tx("mistakes"))}</span></div></div><div class="v2-profile-list">${row("◫",tx("training"),tx("trainingSub"),"V2.showPage('training')")}${row("◇",tx("league"),leagueName(),"V2.showPage('league')")}${row("★",tx("achievements"),`${completedCount()} / ${LESSONS.length}`,"V2.showPage('achievements')")}${row("◆",tx("subscription"),tx("subscriptionSub"),"V2.openSubscription()")}${row("⚙",tx("settings"),`${labelLevel(LEVEL_KEY)} · ${lang.toUpperCase()}`,"V2.openSettings()")}${row("?",tx("support"),"HSK AI", "V2.toast('Telegram: @hsk_ai_support')")}</div>`;
+  const mistakeCount=serverMistakes?.summary?.total??read(MISTAKES_KEY,[]).reduce((s,m)=>s+m.count,0);
+  document.getElementById("page-profile").innerHTML=`<div class="v2-profile-head"><div class="v2-avatar">${labelLevel(LEVEL_KEY).replace(/\D/g,"")||"1"}</div><div><h1>HSK AI Student</h1><p>${meta.xp} XP · ${meta.streak} ${esc(tx("streak"))}</p><span class="v2-badge">${leagueName()} League</span></div></div><div class="v2-metrics v2-section"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>XP</span></div><div class="v2-metric" data-tone="green"><strong>${completedCount()}</strong><span>${esc(tx("done"))}</span></div><div class="v2-metric" data-tone="purple"><strong>${mistakeCount}</strong><span>${esc(tx("mistakes"))}</span></div></div><div class="v2-profile-list">${row("◫",tx("training"),tx("trainingSub"),"V2.showPage('training')")}${row("◇",tx("league"),leagueName(),"V2.showPage('league')")}${row("★",tx("achievements"),`${completedCount()} / ${LESSONS.length}`,"V2.showPage('achievements')")}${row("◆",tx("subscription"),tx("subscriptionSub"),"V2.openSubscription()")}${row("⚙",tx("settings"),`${labelLevel(LEVEL_KEY)} · ${lang.toUpperCase()}`,"V2.openSettings()")}${row("?",tx("support"),"HSK AI", "V2.toast('Telegram: @hsk_ai_support')")}</div>`;
 }
 
 function renderTraining(){
@@ -172,9 +173,16 @@ function renderTraining(){
 }
 
 function renderMistakes(){
-  const items=read(MISTAKES_KEY,[]).sort((a,b)=>b.count-a.count);
-  const content=items.length?`<div class="v2-section">${items.map(item=>`<div class="v2-mistake"><div><b>${esc(item.question)}</b><p>${esc(item.correct||"")}</p></div><span class="v2-count">${item.count} ${esc(tx("mistakesCount"))}</span></div>`).join("")}</div>`:`<div class="v2-empty">${esc(tx("noMistakes"))}</div>`;
+  const localItems=read(MISTAKES_KEY,[]).sort((a,b)=>b.count-a.count).map(item=>({...item,correct_answer:item.correct}));
+  const items=serverMistakes?.items||localItems;
+  const loading=mistakesLoading&&!serverMistakes;
+  const content=loading?`<div class="v2-empty">${esc(tx("loadingMistakes"))}</div>`:items.length?`<div class="v2-section"><button class="v2-primary v2-review-button" onclick="V2.startMistakeReview()">↻ ${esc(tx("reviewNow"))}</button>${items.map(item=>`<div class="v2-mistake"><div><b>${esc(item.question)}</b><p>${esc(item.correct_answer||"")}</p><small>${esc(item.category||item.source||"")}</small></div><span class="v2-count">${item.count} ${esc(tx("mistakesCount"))}</span></div>`).join("")}</div>`:`<div class="v2-empty">${esc(tx("noMistakes"))}</div>`;
   document.getElementById("page-mistakes").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('training')" aria-label="Back">‹</button><div class="v2-kicker">HSK AI</div><h1 class="v2-title">${esc(tx("mistakes"))}</h1><p class="v2-subtitle">${esc(tx("mistakesSub"))}</p></div>${content}`;
+}
+async function loadServerMistakes(){
+  if(!bridge.hasAuth?.()||mistakesLoading)return;
+  mistakesLoading=true;renderMistakes();
+  try{serverMistakes=await bridge.loadMistakes?.();renderProfile()}catch(_){serverMistakes=null}finally{mistakesLoading=false;renderMistakes()}
 }
 function renderLeague(){
   const names=["Artem","Madina","Rustam","Dilnoza","Farid","Kamila","Akmal","Zarina"];
@@ -195,15 +203,17 @@ function renderAll(){
 
 function showPage(next){
   document.querySelectorAll(".v2-page,.page").forEach(el=>el.classList.toggle("active",el.id===`page-${next}`));
-  const root=next==="quiz"&&["placement","mock"].includes(testMode)?"tests":next==="quiz"&&testMode==="training"?"profile":["flashcards","grammar","quiz","lesson"].includes(next)?"course":next;
+  const root=next==="quiz"&&["placement","mock"].includes(testMode)?"tests":next==="quiz"&&["training","mistakes"].includes(testMode)?"profile":["flashcards","grammar","quiz","lesson"].includes(next)?"course":next;
   document.querySelectorAll(".v2-nav button").forEach(el=>el.classList.toggle("active",el.dataset.page===root));
   if(next==="flashcards")renderFlashcards();
   if(next==="grammar")renderGrammar();
   if(next==="quiz")renderQuizFilters();
+  if(next==="mistakes")loadServerMistakes();
   if(next==="voice"){meta.daily.voice=1;write(META_KEY,meta);renderVoiceFrame();renderHome()}
   document.getElementById(`page-${next}`)?.scrollTo(0,0);
   bridge.reportEvent?.("v2_screen_opened",{screen:next,level:LEVEL_KEY});
 }
+function quizBack(){showPage(testMode==="mistakes"?"mistakes":testMode==="training"?"training":"tests")}
 
 function openLesson(number){
   const lesson=LESSONS.find(item=>item.n===Number(number));if(!lesson)return;
@@ -262,12 +272,13 @@ async function submitLessonFlow(){
   try{
     const result=await bridge.completeCourseLesson?.({level:lessonFlow.level,lesson_id:lessonFlow.lesson_id,lang,responses:Object.values(lessonResponses)});
     if(!result?.ok)throw Object.assign(new Error(result?.error||"course_lesson_complete_failed"),{code:result?.error,result});
+    serverMistakes=null;
     if(!state.done.includes(lessonFlow.lesson_id)){state.done.push(lessonFlow.lesson_id);saveState()}
     addXP(Number(result.reward?.xp||20),"lesson");renderAll();
     const paid=ACCESS.status==="active",next=result.next_lesson;
     document.getElementById("page-lesson").innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-card v2-lesson-result"><div class="v2-result-mark">✓</div><div class="v2-kicker">${esc(tx("lessonComplete"))}</div><h2>${result.percent}%</h2><p>${result.correct} / ${result.total} · +${Number(result.reward?.xp||20)} XP</p><button class="v2-primary" onclick="${next&&paid?`V2.openNextLesson(${Number(next)})`:paid?"V2.showPage('course')":"V2.openSubscription()"}">${esc(next&&paid?tx("continueCourse"):paid?tx("course"):tx("unlockMore"))}</button></div></div>`;
   }catch(error){
-    lessonSubmitting=false;const result=error?.result||{};
+    lessonSubmitting=false;const result=error?.result||{};if(result.wrong_items?.length)serverMistakes=null;
     document.getElementById("page-lesson").innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-card v2-lesson-result"><div class="v2-result-mark">↻</div><h2>${esc(error?.code==="lesson_score_too_low"?tx("incorrect"):tx("lessonLoadError"))}</h2><p>${result.percent!==undefined?`${result.percent}% · ${result.correct||0}/${result.total||0}`:esc(error?.code||"")}</p><button class="v2-primary" onclick="V2.retryLessonFlow()">${esc(tx("retryLesson"))}</button></div></div>`;
   }
 }
@@ -297,6 +308,15 @@ async function beginCustomTest(mode,requestedLevel=LEVEL_KEY,skill=""){
 function startPlacement(){beginCustomTest("placement",LEVEL_KEY)}
 function startMock(level){beginCustomTest("mock",level||LEVEL_KEY)}
 function startTraining(skill){beginCustomTest("training",LEVEL_KEY,skill)}
+async function startMistakeReview(){
+  testMode="mistakes";practiceSession=null;mistakeReviewSession=null;showPage("quiz");document.getElementById("score-box").style.display="none";const box=document.getElementById("quiz-box");box.style.display="block";box.innerHTML=`<div class="v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div>`;
+  try{
+    const result=await bridge.startMistakeReview?.();if(!result?.session)throw Object.assign(new Error("mistake_review_failed"),{code:"mistake_review_failed"});
+    mistakeReviewSession=result.session;questions=result.session.questions.map(item=>({serverId:item.id,q:item.prompt,opts:item.options,a:Number(item.answer_index),explanation:item.explanation||""}));answers=Array(questions.length).fill(null);qIndex=0;renderQuizQuestion();
+  }catch(error){
+    const locked=error?.code==="free_feature_limit_reached";box.innerHTML=`<div class="v2-lesson-result"><div class="v2-result-mark">${locked?"◆":"!"}</div><h2>${esc(locked?tx("unlockMore"):tx("lessonLoadError"))}</h2><button class="v2-primary" onclick="${locked?"V2.openSubscription()":"V2.showPage('mistakes')"}">${esc(locked?tx("subscription"):tx("back"))}</button></div>`;
+  }
+}
 
 function recommendedLevel(percent){
   const base=LEVEL_KEY.startsWith("hsk4")?3:Math.max(0,["hsk1","hsk2","hsk3"].indexOf(LEVEL_KEY));
@@ -371,22 +391,30 @@ async function onboardingNext(){
 const legacyFinishQuiz=finishQuiz;
 const legacyFlipFC=flipFC;
 finishQuiz=function(){
-  const mode=testMode,session=practiceSession;legacyFinishQuiz();rememberMistakes(lastWrongItems);
+  const mode=testMode,session=practiceSession,reviewSession=mistakeReviewSession;legacyFinishQuiz();if(mode!=="mistakes")rememberMistakes(lastWrongItems);
   if(mode==="lesson"&&lastQuizPercent>=60&&ACCESS.status!=="active"){meta.trialCourseCompleted=true;write(META_KEY,meta)}
   if(mode==="lesson"&&lastQuizPercent>=60&&!state.done.includes(quizLesson)){state.done.push(quizLesson);saveState();addXP(20+Math.round(lastQuizPercent/10),"lesson")}else addXP(Math.max(5,Math.round(lastQuizPercent/10)),"quiz");
   if(mode==="lesson"&&lastQuizPercent>=60){
     bridge.reportEvent?.("v2_lesson_completed",{lesson_id:quizLesson,percent:lastQuizPercent,score:lastQuizScore,total:lastQuizTotal});
   }
   if(session&&["placement","mock","training"].includes(mode))submitPracticeResult(session);
+  if(reviewSession&&mode==="mistakes")submitMistakeReview(reviewSession);
   renderAll();testMode="";
 };
 async function submitPracticeResult(session){
   try{
     const result=await bridge.completePractice?.({session_id:session.id,mode:session.mode,skill:session.skill||"",level:session.level,lang,answers:questions.map((question,index)=>({question_id:question.serverId,selected_index:answers[index]}))});
     if(!result?.ok)return;
+    serverMistakes=null;
     rememberMistakes(result.wrong_items||[]);
     if(session.mode==="placement"){write("hsk_v2_placement",{percent:result.percent,recommended:result.recommendation,createdAt:new Date().toISOString()});document.getElementById("score-box")?.insertAdjacentHTML("beforeend",`<div class="v2-goal" style="margin-top:12px"><div class="v2-kicker">${esc(tx("recommended"))}</div><h2 style="margin-top:6px">${esc(result.recommendation)}</h2></div>`)}
   }catch(error){const locked=error?.code==="free_feature_limit_reached";document.getElementById("score-box")?.insertAdjacentHTML("beforeend",`<div class="v2-goal" style="margin-top:12px"><b>${esc(locked?tx("unlockMore"):tx("lessonLoadError"))}</b></div>`)}
+}
+async function submitMistakeReview(session){
+  try{
+    const result=await bridge.completeMistakeReview?.({session_id:session.id,answers:questions.map((question,index)=>({question_id:question.serverId,selected_index:answers[index]}))});
+    if(!result?.ok)return;serverMistakes=null;await loadServerMistakes();document.getElementById("score-box")?.insertAdjacentHTML("beforeend",`<div class="v2-goal" style="margin-top:12px"><b>${result.remaining} ${esc(tx("mistakesCount"))}</b></div>`);
+  }catch(_){document.getElementById("score-box")?.insertAdjacentHTML("beforeend",`<div class="v2-goal" style="margin-top:12px"><b>${esc(tx("lessonLoadError"))}</b></div>`)}
 }
 flipFC=function(index){const card=document.querySelector(`[data-card="${index}"]`),was=card?.classList.contains("flipped");legacyFlipFC(index);setTimeout(()=>{const now=document.querySelector(`[data-card="${index}"]`)?.classList.contains("flipped");if(!was&&now){meta.daily.words=Math.min(5,Number(meta.daily.words||0)+1);write(META_KEY,meta);renderHome()}},80)};
 renderKPIs=function(){renderHome()};
@@ -404,7 +432,7 @@ function applyLaunch(){
 
 function mount(){
   normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,openChest,openSettings,changeLanguage,changeLevel,openSubscription,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,continueLessonCard,retryLessonFlow,openNextLesson};
+  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,openChest,openSettings,changeLanguage,changeLevel,openSubscription,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,continueLessonCard,retryLessonFlow,openNextLesson};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
   setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();applyLaunch();showOnboarding();

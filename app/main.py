@@ -33,6 +33,7 @@ from app.services.course_miniapp_analytics_service import CourseMiniAppAnalytics
 from app.services.course_miniapp_lesson_flow_service import CourseMiniAppLessonFlowService
 from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardingService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
+from app.services.course_mistake_service import CourseMistakeService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
@@ -640,6 +641,54 @@ async def miniapp_practice_complete(request: Request):
             )
     except ValueError as error:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_practice_payload", "message": str(error)})
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
+
+
+@app.get("/api/miniapp/mistakes")
+async def miniapp_mistakes(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    async with async_session_maker() as session:
+        result = await CourseMistakeService(session).overview(telegram_id)
+    return JSONResponse(status_code=200 if result.get("ok") else 404, content=result)
+
+
+@app.post("/api/miniapp/mistakes/review/start")
+async def miniapp_mistake_review_start(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    async with async_session_maker() as session:
+        result = await CourseMistakeService(session).start_review(telegram_id)
+    status_code = 200 if result.get("ok") else 403 if result.get("error") == "free_feature_limit_reached" else 400
+    return JSONResponse(status_code=status_code, content=result)
+
+
+@app.post("/api/miniapp/mistakes/review/complete")
+async def miniapp_mistake_review_complete(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+    except ValueError:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_mistake_review_payload"})
+    async with async_session_maker() as session:
+        result = await CourseMistakeService(session).complete_review(
+            telegram_id,
+            session_id=str(payload.get("session_id") or ""),
+            answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+        )
     return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
 

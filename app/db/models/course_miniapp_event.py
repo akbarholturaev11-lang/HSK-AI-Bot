@@ -26,6 +26,7 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "voice_started",
     "voice_completed",
     "mistake_review_started",
+    "mistake_review_completed",
     "paywall_seen",
     "checkout_opened",
     "subscription_approved",

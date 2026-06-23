@@ -12,6 +12,7 @@ from app.db.models.voice_practice_session import VoicePracticeSession
 from app.repositories.user_repo import UserRepository
 from app.services.ai_service import AIService
 from app.services.study_miniapp_service import StudyMiniAppService
+from app.services.course_mistake_service import CourseMistakeService
 
 
 logger = logging.getLogger(__name__)
@@ -254,6 +255,22 @@ class VoicePracticeService:
             started_at = started_at.replace(tzinfo=timezone.utc)
         item.status = "completed"
         item.ended_at = ended_at
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if user:
+            await CourseMistakeService(self.session).record_items(
+                user,
+                [
+                    {
+                        "question": str(correction),
+                        "correction": str(correction),
+                        "category": "pronunciation",
+                    }
+                    for correction in list(item.corrections or [])
+                    if str(correction or "").strip()
+                ],
+                source="voice",
+                level=item.level,
+            )
         await self.session.commit()
         return {
             "ok": True,

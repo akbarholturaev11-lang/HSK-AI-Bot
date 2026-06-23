@@ -96,6 +96,7 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
         self.payload = CourseMiniAppLessonFlowBuilderTests.payload()
         self.service._context = AsyncMock(return_value=(self.user, SimpleNamespace(), self.lesson, ""))
         self.service.lesson_service = SimpleNamespace(get_payload=AsyncMock(return_value=self.payload))
+        self.service.mistakes = SimpleNamespace(record_items=AsyncMock(return_value=0))
 
     def responses(self, *, wrong_card_id=None):
         cards = self.service._build_cards(self.payload, lang="ru", lesson_order=1)
@@ -162,6 +163,7 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(self.user.payment_status, "none")
         self.assertEqual(analytics.record_server_event.await_count, len(cards) + 1)
+        self.service.mistakes.record_items.assert_awaited_once()
 
     async def test_missing_required_card_never_completes_lesson(self):
         _, responses = self.responses()
