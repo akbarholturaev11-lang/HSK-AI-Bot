@@ -15,9 +15,9 @@ const copy={
     path:"Учебный путь",pathSub:"Короткие интерактивные уроки по порядку HSK",completed:"завершено",lesson:"Урок",
     current:"Текущий урок",done:"Пройдено",locked:"Сначала завершите предыдущий урок",review:"Повторение",boss:"Контрольная",
     start:"Начать",words:"Слова",grammar:"Грамматика",practice:"Практика",lessonReady:"Выберите формат тренировки",
-    testCenter:"Центр тестов",testCenterSub:"Уровень, экзамен HSK, произношение, иероглифы и пиньинь",
+    testCenter:"Центр тестов",testCenterSub:"Уровень, экзамен HSK, произношение и иероглифы",
     testsSub:"Проверьте уровень и подготовьтесь к экзамену",placement:"Тест уровня",placementSub:"10-20 вопросов и автоматическая рекомендация уровня",
-    hskExams:"Тесты HSK",pronunciationTest:"Тест произношения",characterTest:"Тест иероглифов",pinyinTest:"Тест пиньиня",
+    hskExams:"Тесты HSK",pronunciationTest:"Тест произношения",characterTest:"Тест иероглифов",pinyinTest:"Тест пиньиня",characterDictionarySub:"Словарь HSK 1-4 и порядок написания",
     mock:"Пробный экзамен",mockSub:"HSK-структура, балл 0-100, сильные и слабые стороны",startTest:"Начать тест",
     training:"Тренировка",trainingSub:"Отдельная работа над конкретным навыком",listening:"Аудирование",speaking:"Разговор",
     writing:"Письмо",characters:"Иероглифы",mistakes:"Мои ошибки",mistakesSub:"Слабые места из ваших последних квизов",
@@ -45,9 +45,9 @@ const copy={
     path:"O'quv yo'li",pathSub:"HSK tartibidagi qisqa interaktiv darslar",completed:"tugallandi",lesson:"Dars",
     current:"Joriy dars",done:"Tugallangan",locked:"Avval oldingi darsni tugating",review:"Takrorlash",boss:"Nazorat",
     start:"Boshlash",words:"So'zlar",grammar:"Grammatika",practice:"Mashq",lessonReady:"Mashq turini tanlang",
-    testCenter:"Test markazi",testCenterSub:"Daraja, HSK imtihon, talaffuz, iyeroglif va pin'in",
+    testCenter:"Test markazi",testCenterSub:"Daraja, HSK imtihon, talaffuz va iyeroglif",
     testsSub:"Darajangizni tekshiring va imtihonga tayyorlaning",placement:"Daraja testi",placementSub:"10-20 savol va avtomatik daraja tavsiyasi",
-    hskExams:"HSK testlari",pronunciationTest:"Talaffuz testi",characterTest:"Iyeroglif testi",pinyinTest:"Pin'in testi",
+    hskExams:"HSK testlari",pronunciationTest:"Talaffuz testi",characterTest:"Iyeroglif testi",pinyinTest:"Pin'in testi",characterDictionarySub:"HSK 1-4 lug'at va yozilish tartibi",
     mock:"Sinov imtihoni",mockSub:"HSK tuzilmasi, 0-100 ball, kuchli va zaif tomonlar",startTest:"Testni boshlash",
     training:"Mashqlar",trainingSub:"Alohida ko'nikmani mustaqil rivojlantirish",listening:"Tinglash",speaking:"Gapirish",writing:"Yozish",characters:"Ierogliflar",
     mistakes:"Xatolarim",mistakesSub:"Quizlarda aniqlangan zaif joylaringiz",settings:"Sozlamalar",language:"Interfeys tili",level:"Kurs darajasi",
@@ -74,9 +74,9 @@ const copy={
     path:"Роҳи омӯзиш",pathSub:"Дарсҳои кӯтоҳи интерактивӣ бо тартиби HSK",completed:"анҷом шуд",lesson:"Дарс",
     current:"Дарси ҷорӣ",done:"Анҷомшуда",locked:"Аввал дарси пешинаро анҷом диҳед",review:"Такрор",boss:"Санҷиш",
     start:"Оғоз",words:"Калимаҳо",grammar:"Грамматика",practice:"Машқ",lessonReady:"Навъи машқро интихоб кунед",
-    testCenter:"Маркази тест",testCenterSub:"Сатҳ, имтиҳони HSK, талаффуз, иероглиф ва пинйин",
+    testCenter:"Маркази тест",testCenterSub:"Сатҳ, имтиҳони HSK, талаффуз ва иероглиф",
     testsSub:"Сатҳи худро санҷед ва ба имтиҳон омода шавед",placement:"Тести сатҳ",placementSub:"10-20 савол ва тавсияи автоматии сатҳ",
-    hskExams:"Тестҳои HSK",pronunciationTest:"Тести талаффуз",characterTest:"Тести иероглиф",pinyinTest:"Тести пинйин",
+    hskExams:"Тестҳои HSK",pronunciationTest:"Тести талаффуз",characterTest:"Тести иероглиф",pinyinTest:"Тести пинйин",characterDictionarySub:"Луғати HSK 1-4 ва тартиби навишт",
     mock:"Имтиҳони санҷишӣ",mockSub:"Сохтори HSK, хол 0-100, ҷиҳатҳои қавӣ ва суст",startTest:"Оғози тест",
     training:"Машқҳо",trainingSub:"Кор бо малакаи алоҳида",listening:"Шунидан",speaking:"Гуфтугӯ",writing:"Навиштан",characters:"Иероглифҳо",
     mistakes:"Хатоҳои ман",mistakesSub:"Ҷойҳои суст аз квизҳои шумо",settings:"Танзимот",language:"Забони интерфейс",level:"Сатҳи курс",
@@ -366,9 +366,8 @@ function renderTests(){
   const cards=[
     `<button class="v2-row-card" onclick="${lockAction("placement","V2.startPlacement()")}"><span class="v2-row-icon">◎</span><span><b>${esc(tx("placement"))}</b><small>${esc(lockSub("placement",tx("placementSub")))}</small></span><span class="v2-arrow">›</span></button>`,
     `<div class="v2-test-group"><div class="v2-kicker">${esc(tx("hskExams"))}</div>${["hsk1","hsk2","hsk3","hsk4a"].map(level=>`<button class="v2-row-card" onclick="${lockAction("training_test",`V2.startMock('${level}')`)}"><span class="v2-row-icon">${level.replace(/[^0-9]/g,"")}</span><span><b>${labelLevel(level)} · ${esc(tx("mock"))}</b><small>${esc(lockSub("training_test",tx("mockSub")))}</small></span><span class="v2-arrow">›</span></button>`).join("")}</div>`,
-    `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('pronunciation')")}"><span class="v2-row-icon">声</span><span><b>${esc(tx("pronunciationTest"))}</b><small>${esc(lockSub("training_test",tx("speaking")))}</small></span><span class="v2-arrow">›</span></button>`,
-    `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('characters')")}"><span class="v2-row-icon">字</span><span><b>${esc(tx("characterTest"))}</b><small>${esc(lockSub("training_test",tx("characters")))}</small></span><span class="v2-arrow">›</span></button>`,
-    `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('pinyin')")}"><span class="v2-row-icon">拼</span><span><b>${esc(tx("pinyinTest"))}</b><small>${esc(lockSub("training_test",tx("pinyinTest")))}</small></span><span class="v2-arrow">›</span></button>`
+    `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('pronunciation')")}"><span class="v2-row-icon">声</span><span><b>${esc(tx("pronunciationTest"))}</b><small>${esc(lockSub("training_test",tx("unitSpeaking")))}</small></span><span class="v2-arrow">›</span></button>`,
+    `<button class="v2-row-card" onclick="${lockAction("training_test","V2.startTraining('characters')")}"><span class="v2-row-icon">字</span><span><b>${esc(tx("characterTest"))}</b><small>${esc(lockSub("training_test",tx("characters")))}</small></span><span class="v2-arrow">›</span></button>`
   ];
   document.getElementById("page-tests").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('home')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-kicker">HSK AI</div><h1 class="v2-title">${esc(tx("testCenter"))}</h1><p class="v2-subtitle">${esc(tx("testsSub"))}</p></div><div class="v2-test-list">${cards.join("")}</div>`;
 }
@@ -383,7 +382,7 @@ function renderProfile(){
 }
 
 function renderTraining(){
-  document.getElementById("page-training").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('profile')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("training"))}</h1><p class="v2-subtitle">${esc(tx("trainingSub"))}</p></div><div class="v2-profile-list">${row("◖",tx("listening"),lockSub("training_test",tx("words")),lockAction("training_test","V2.startTraining('listening')"))}${row("声",tx("pronunciationTest"),lockSub("training_test",tx("speaking")),lockAction("training_test","V2.startTraining('pronunciation')"))}${row("✎",tx("writing"),lockSub("training_test",tx("grammar")),lockAction("training_test","V2.startTraining('writing')"))}${row("字",tx("characters"),lockSub("training_test",tx("characterTest")),lockAction("training_test","V2.startTraining('characters')"))}${row("拼",tx("pinyinTest"),lockSub("training_test",tx("pinyinTest")),lockAction("training_test","V2.startTraining('pinyin')"))}${row("◌",tx("speaking"),lockSub("voice",tx("voice")),lockAction("voice","V2.showPage('voice')"))}${row("!",tx("mistakes"),lockSub("training_test",tx("mistakesSub")),"V2.showPage('mistakes')")}</div>`;
+  document.getElementById("page-training").innerHTML=`<div class="v2-page-head"><button class="v2-back" onclick="V2.showPage('profile')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("training"))}</h1><p class="v2-subtitle">${esc(tx("trainingSub"))}</p></div><div class="v2-profile-list">${row("◖",tx("listening"),lockSub("training_test",tx("words")),lockAction("training_test","V2.startTraining('listening')"))}${row("声",tx("pronunciationTest"),lockSub("training_test",tx("unitSpeaking")),lockAction("training_test","V2.startTraining('pronunciation')"))}${row("字",tx("characters"),lockSub("training_test",tx("characterDictionarySub")),lockAction("training_test","V2.openCharacterDictionary()"))}${row("!",tx("mistakes"),lockSub("training_test",tx("mistakesSub")),"V2.showPage('mistakes')")}</div>`;
 }
 
 function renderMistakes(){
@@ -610,6 +609,14 @@ function openSettings(){
 function changeLanguage(value){localStorage.setItem("hsk_all_current_lang_v3",value);bridge.openRoute?.({lang:value,level:LEVEL_KEY,tab:"profile"})}
 function changeLevel(value){bridge.openRoute?.({level:value,lang,tab:"course"})}
 function openSubscription(source="v3_profile"){bridge.reportEvent?.("checkout_opened",{source,level:LEVEL_KEY,status:ACCESS.status});bridge.openSubscribe?.(source)}
+function openCharacterDictionary(){
+  bridge.reportEvent?.("character_dictionary_opened",{level:LEVEL_KEY,status:ACCESS.status});
+  const url=new URL("/hsk-lugat.html",parent.location.origin);
+  url.searchParams.set("level",LEVEL_KEY);
+  url.searchParams.set("lang",lang);
+  try{parent.location.href=url.toString();return}catch(_){}
+  window.location.href=url.toString();
+}
 function openExternalUrl(url){
   const target=String(url||"").trim();
   if(!target)return false;
@@ -709,12 +716,12 @@ function applyLaunch(){
   else if(params.exam==="placement")setTimeout(()=>startPlacement(),0);
   else if(params.mode==="quiz"){quizLesson=Number(params.lesson)||quizLesson;showPage("quiz");startQuiz()}
   else if(target){if(params.lesson){if(target==="flashcards")fcFilter=Number(params.lesson);if(target==="grammar")grammarFilter=Number(params.lesson);if(target==="quiz")quizLesson=Number(params.lesson)}showPage(target);if(target==="course"&&params.lesson)setTimeout(()=>openLesson(Number(params.lesson),params.section||""),0)}
-  else {const page=["home","course","league","voice","tests","profile"].includes(params.tab)?params.tab:"home";showPage(page);if(page==="course"&&params.lesson)setTimeout(()=>openLesson(Number(params.lesson),params.section||""),0)}
+  else {const page=["home","course","league","voice","tests","profile","training"].includes(params.tab)?params.tab:"home";showPage(page);if(page==="course"&&params.lesson)setTimeout(()=>openLesson(Number(params.lesson),params.section||""),0)}
 }
 
 function mount(){
   normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openSupport,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
+  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;syncGamification(ACCESS.gamification);renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
   syncGamification(ACCESS.gamification);setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();applyLaunch();showOnboarding();

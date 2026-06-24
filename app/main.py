@@ -265,6 +265,11 @@ async def hsk2_miniapp():
     return miniapp_file_response("app/static/hsk2.html")
 
 
+@app.get("/hsk-lugat.html")
+async def hsk_lugat_miniapp():
+    return miniapp_file_response("app/static/hsk-lugat.html")
+
+
 @app.get("/duo-lesson.html")
 async def duo_lesson_miniapp():
     return miniapp_file_response("app/static/study.html")

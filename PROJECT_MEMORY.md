@@ -207,6 +207,28 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-24 — Mini App tests and character dictionary cleanup
+
+Changed:
+- Test Center HSK 1-4 mock exams are visually grouped into one bordered HSK tests block.
+- The Pinyin test entry was removed from Test Center; Training no longer shows Writing, Pinyin, or separate Speaking entries.
+- Training → Characters now opens `/hsk-lugat.html`, a standalone HSK 1-4 character dictionary with stroke animation, back routing to `study.html?tab=training`, and UZ/RU/TJ meanings sourced from existing course data.
+
+Why:
+- The training/test menu needed to be simplified and the user-provided character dictionary needed to be connected to the Mini App flow.
+
+Files touched:
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+- `app/static/hsk-lugat.html`
+- `app/main.py`
+
+Risk:
+- Payment/subscription logic was not changed; the Characters dictionary entry still uses the existing `training_test` feature lock.
+
+Follow-up:
+- After deploy, smoke-test in Telegram WebView: Tests tab, Training → Characters dictionary, RU/TJ language switch, and back button to Training.
+
 ### 2026-06-24 — AI Voice dialog-count session flow
 
 Changed:
