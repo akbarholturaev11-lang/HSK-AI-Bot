@@ -609,7 +609,7 @@ var QUERY = new URLSearchParams(location.search);
 	var IS_EMBEDDED = QUERY.get("embedded") === "1";
 var UI_LANG = ["uz","ru","tj"].indexOf(QUERY.get("lang")) > -1 ? QUERY.get("lang") : "ru";
 var MAX_RECORD_MS = 30000;     // hard auto-stop, controls latency & backend cost
-var PAID_SESSION_SECONDS = 25;
+var MAX_DIALOGS_PER_SESSION = 7;
 var MIN_BLOB_BYTES = 600;      // below this we treat the recording as accidental/empty
 
 var ROLES = [
@@ -666,6 +666,7 @@ var state = {
   sessionId:null,
   transcript:[],     // newest first: {userText, botText, pinyin, translation, correction}
   courseContext:null,
+  maxDialogs:MAX_DIALOGS_PER_SESSION,
   callStartedAt:null,
   timerHandle:null,
   lastElapsedSec:0,
@@ -953,10 +954,6 @@ function updateTimerDisplay(){
   var sec = Math.floor((Date.now() - state.callStartedAt) / 1000);
   state.lastElapsedSec = sec;
   el.callTimer.textContent = pad2(Math.floor(sec/60)) + ":" + pad2(sec%60);
-  if (state.isPaid && sec >= PAID_SESSION_SECONDS - 3 && !state.autoEnding){
-    state.autoEnding = true;
-    addGoodbyeAndFinish();
-  }
 }
 
 function addGoodbyeAndFinish(){
@@ -994,10 +991,16 @@ async function startRecording(){
     }
     var mime = getSupportedMimeType();
     recordedChunks = [];
-    mediaRecorder = mime ? new MediaRecorder(mediaStream, {mimeType:mime}) : new MediaRecorder(mediaStream);
+    var recorderOptions = {audioBitsPerSecond:32000};
+    if (mime) recorderOptions.mimeType = mime;
+    try{
+      mediaRecorder = new MediaRecorder(mediaStream, recorderOptions);
+    }catch(_){
+      mediaRecorder = mime ? new MediaRecorder(mediaStream, {mimeType:mime}) : new MediaRecorder(mediaStream);
+    }
     mediaRecorder.ondataavailable = function(e){ if (e.data && e.data.size>0) recordedChunks.push(e.data); };
     mediaRecorder.onstop = onRecordingStopped;
-    mediaRecorder.start();
+    mediaRecorder.start(250);
     setCallState("listening");
     clearTimeout(autoStopHandle);
     autoStopHandle = setTimeout(function(){ stopRecording(); }, MAX_RECORD_MS);
@@ -1008,7 +1011,10 @@ async function startRecording(){
 }
 function stopRecording(){
   clearTimeout(autoStopHandle);
-  if (mediaRecorder && mediaRecorder.state !== "inactive"){ mediaRecorder.stop(); }
+  if (mediaRecorder && mediaRecorder.state !== "inactive"){
+    setCallState("thinking");
+    mediaRecorder.stop();
+  }
 }
 function stopRecordingHard(){
   clearTimeout(autoStopHandle);
@@ -1050,12 +1056,21 @@ function handleMessageResponse(res){
   });
   renderTranscript();
   if (typeof res.remaining_limit !== "undefined") state.remainingLimit = res.remaining_limit;
+  if (typeof res.max_dialogs !== "undefined") state.maxDialogs = Number(res.max_dialogs) || state.maxDialogs;
   var budgetNotice = res.budget_notice && res.budget_notice.code;
+  var sessionShouldEnd = !!res.session_should_end;
+  if (!sessionShouldEnd && typeof res.turn_count !== "undefined"){
+    sessionShouldEnd = Number(res.turn_count) >= Number(state.maxDialogs || MAX_DIALOGS_PER_SESSION);
+  }
   updateLimitBadges();
 
   setCallState("speaking");
   playBotAudio(res).then(function(){
     if (budgetNotice && handleBudgetBlock(budgetNotice, true)){
+      return;
+    }
+    if (sessionShouldEnd){
+      setTimeout(function(){ finishCall(false); }, 400);
       return;
     }
     if (isLimitExhausted(state.remainingLimit) && !state.isPaid){
@@ -1121,8 +1136,18 @@ async function handleStartCallClick(){
       state.plan = res.user_status.plan || state.plan;
     }
     state.courseContext = res.course_context || null;
+    state.maxDialogs = Number(res.max_dialogs || state.maxDialogs || MAX_DIALOGS_PER_SESSION);
     updateLimitBadges();
     state.transcript = [];
+    if (res.opening_message && res.opening_message.chinese_reply){
+      state.transcript.unshift({
+        userText:"",
+        botText:res.opening_message.chinese_reply || "",
+        pinyin:res.opening_message.pinyin || "",
+        translation:res.opening_message.translation || "",
+        correction:null
+      });
+    }
     renderTranscript();
 
     var r = roleById(state.role);
@@ -1133,8 +1158,15 @@ async function handleStartCallClick(){
     renderCourseWords();
 
     showScreen("call");
-    setCallState("idle");
     startTimer();
+    if (res.opening_message && res.opening_message.chinese_reply){
+      setCallState("speaking");
+      playBotAudio(res.opening_message).then(function(){
+        if (callState === "speaking") setCallState("idle");
+      });
+    } else {
+      setCallState("idle");
+    }
   }catch(err){
     console.error(err);
     if (handleBudgetBlock(err && err.code, false)){ return; }

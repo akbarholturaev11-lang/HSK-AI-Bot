@@ -23,8 +23,9 @@ logger = logging.getLogger(__name__)
 
 FREE_TOTAL_SESSIONS = 1
 PAID_DAILY_SESSIONS = 5
-MAX_TURNS_PER_SESSION = 20
+MAX_DIALOGS_PER_SESSION = 7
 MAX_AUDIO_BYTES = 5 * 1024 * 1024
+VOICE_REPLY_MAX_TOKENS = 220
 
 ROLE_PROMPTS = {
     "lily": "You are Lily, a cheerful and empathetic young Chinese friend. React warmly, laugh naturally, and keep beginners talking without sounding like a tutor.",
@@ -40,6 +41,27 @@ ROLE_PROMPTS = {
 }
 
 LANGUAGE_NAMES = {"ru": "Russian", "tj": "Tajik", "uz": "Uzbek"}
+
+OPENING_MESSAGES = {
+    "lily": {
+        "chinese_reply": "你好！我来了，别害羞，先跟我说一句中文吧。",
+        "pinyin": "Nǐ hǎo! Wǒ lái le, bié hàixiū, xiān gēn wǒ shuō yí jù Zhōngwén ba.",
+        "translations": {
+            "uz": "Ni hao! Keldim, uyalmang, avval menga xitoycha bitta gap ayting.",
+            "ru": "Нихао! Я здесь, не стесняйтесь, скажите мне сначала одну фразу по-китайски.",
+            "tj": "Ниҳао! Ман омадам, шарм накунед, аввал ба ман як ҷумлаи чинӣ гӯед.",
+        },
+    },
+    "teacher_li": {
+        "chinese_reply": "嗨，上课了。今天偷懒的话，我会听出来的。",
+        "pinyin": "Hāi, shàngkè le. Jīntiān tōulǎn de huà, wǒ huì tīng chūlái de.",
+        "translations": {
+            "uz": "Hai, dars boshlandi. Bugun dangasalik qilsangiz, eshitib qo'yaman.",
+            "ru": "Хай, урок начался. Если сегодня будете лениться, я это услышу.",
+            "tj": "Ҳай, дарс сар шуд. Агар имрӯз танбалӣ кунед, ман аз овоз мефаҳмам.",
+        },
+    },
+}
 
 
 class VoicePracticeError(Exception):
@@ -204,6 +226,8 @@ class VoicePracticeService:
             "remaining_limit": next_status["remaining_voice_limit"],
             "character": role,
             "course_context": course_context,
+            "opening_message": self._opening_message(role, language),
+            "max_dialogs": MAX_DIALOGS_PER_SESSION,
         }
 
     async def _get_active_session(self, telegram_id: int, session_id: str) -> VoicePracticeSession:
@@ -235,22 +259,41 @@ class VoicePracticeService:
             "correction": str(data.get("correction") or "").strip()[:700] or None,
         }
 
+    @staticmethod
+    def _opening_message(role: str, language: str) -> dict:
+        message = OPENING_MESSAGES.get(role) or OPENING_MESSAGES["lily"]
+        translations = message.get("translations") or {}
+        return {
+            "chinese_reply": str(message.get("chinese_reply") or ""),
+            "pinyin": str(message.get("pinyin") or ""),
+            "translation": str(translations.get(language) or translations.get("ru") or ""),
+            "correction": None,
+        }
+
     async def _generate_reply(self, item: VoicePracticeSession, transcription: str) -> tuple[dict, AIUsageResult]:
         target_language = LANGUAGE_NAMES.get(item.language, "Russian")
-        recent = list(item.history or [])[-8:]
-        target_words = json.dumps(list(item.target_words or [])[:4], ensure_ascii=False)
+        recent = list(item.history or [])[-4:]
+        target_words = json.dumps(list(item.target_words or [])[:3], ensure_ascii=False)
+        next_dialog_no = int(item.turn_count or 0) + 1
+        is_closing_dialog = next_dialog_no >= MAX_DIALOGS_PER_SESSION
+        closing_instruction = (
+            "Final exchange: make a sudden natural excuse, say goodbye in Chinese, no follow-up question."
+            if is_closing_dialog
+            else "End with one short playful follow-up question when natural."
+        )
         messages = [
             {
                 "role": "system",
                 "content": (
-                    f"{ROLE_PROMPTS[item.role]} The learner level is {item.level}. "
-                    f"The current course target words are {target_words}. Use one naturally when relevant, "
-                    "but never force all words into one reply. "
-                    "Continue a realistic spoken Chinese roleplay. Use short natural replies, usually one or two sentences. "
-                    "Ask a useful follow-up question when natural. Do not switch out of character. "
-                    f"Translate into {target_language}. Correct only meaningful learner errors, gently. "
-                    "Return valid JSON only with keys chinese_reply, pinyin, translation, correction. "
-                    "correction must be null when the learner's phrase is acceptable."
+                    f"{ROLE_PROMPTS[item.role]} Level: {item.level}. Target words: {target_words}. "
+                    "Fast voice roleplay. Reply in 1 short Chinese sentence, rarely 2. "
+                    "Use one target word only if natural. Be playful: joke, laugh, lightly tease weak answers; "
+                    "never humiliate. Open dopamine topics: food cravings, travel, friends, funny mistakes, wins, "
+                    "shopping, money goals, and sometimes respectfully ask if the learner has a girlfriend/boyfriend; "
+                    "switch topic if uncomfortable. "
+                    f"{closing_instruction} Translate into {target_language}. "
+                    "Correct only important errors. JSON only: chinese_reply, pinyin, translation, correction. "
+                    "Use null correction when OK."
                 ),
             }
         ]
@@ -260,10 +303,10 @@ class VoicePracticeService:
             user_text = str(entry.get("user") or "").strip()
             assistant_text = str(entry.get("assistant") or "").strip()
             if user_text:
-                messages.append({"role": "user", "content": user_text[:700]})
+                messages.append({"role": "user", "content": user_text[:360]})
             if assistant_text:
-                messages.append({"role": "assistant", "content": assistant_text[:700]})
-        messages.append({"role": "user", "content": transcription[:1000]})
+                messages.append({"role": "assistant", "content": assistant_text[:360]})
+        messages.append({"role": "user", "content": transcription[:500]})
 
         model = "gpt-4o-mini"
         ai = AIService()
@@ -271,7 +314,7 @@ class VoicePracticeService:
             model=model,
             messages=messages,
             response_format={"type": "json_object"},
-            max_completion_tokens=350,
+            max_completion_tokens=VOICE_REPLY_MAX_TOKENS,
             temperature=0.7,
         )
         usage_result = ai._result_from_response(
@@ -297,7 +340,7 @@ class VoicePracticeService:
             raise VoicePracticeError("AUDIO_TOO_LARGE", "Audio is too large.", 413)
 
         item = await self._get_active_session(telegram_id, session_id)
-        if item.turn_count >= MAX_TURNS_PER_SESSION:
+        if item.turn_count >= MAX_DIALOGS_PER_SESSION:
             raise VoicePracticeError("TURN_LIMIT_EXCEEDED", "This voice session reached its turn limit.", 403)
         paid = await self._is_paid_telegram_user(telegram_id)
         if paid:
@@ -344,6 +387,7 @@ class VoicePracticeService:
         if reply["correction"]:
             item.corrections = [*list(item.corrections or []), reply["correction"]][-20:]
         item.turn_count += 1
+        session_should_end = item.turn_count >= MAX_DIALOGS_PER_SESSION
         await self.session.commit()
 
         status = await self.user_status(telegram_id)
@@ -353,6 +397,9 @@ class VoicePracticeService:
             "audio_reply_url": None,
             "audio_reply_base64": None,
             "remaining_limit": status["remaining_voice_limit"],
+            "turn_count": item.turn_count,
+            "max_dialogs": MAX_DIALOGS_PER_SESSION,
+            "session_should_end": session_should_end,
             "budget_notice": self._budget_notice_payload(transcribe_record, reply_record),
         }
 

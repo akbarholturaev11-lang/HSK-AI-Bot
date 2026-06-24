@@ -207,6 +207,31 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-24 — AI Voice dialog-count session flow
+
+Changed:
+- AI Voice paid call UX no longer auto-closes by a 25-second frontend timer.
+- Voice sessions now use a 7-dialog backend limit, where one user voice message plus one bot answer counts as one dialog.
+- Session start returns a localized Chinese opening message (`你好`/`嗨`) that the frontend speaks before the user starts.
+- The final AI reply is instructed to make a natural excuse and say goodbye; the backend returns `session_should_end` so the frontend ends after playing that reply.
+- Voice reply latency was reduced by shortening the transcription prompt, limiting recent chat history, lowering AI reply token budget, and recording audio in smaller lower-bitrate chunks.
+
+Why:
+- Users need a longer-feeling practice than 25 seconds, but the product still needs a clear cost/session cap and faster turn response.
+
+Files touched:
+- `app/services/voice_practice_service.py`
+- `app/services/ai_service.py`
+- `app/static/voice-practice.html`
+- `tests/test_voice_practice_course_context.py`
+
+Risk:
+- Payment/subscription/access logic was not changed.
+- Real Telegram WebView should still be smoke-tested for microphone latency, opening speech playback, and automatic final summary after the 7th dialog.
+
+Follow-up:
+- If latency remains high in production, the next real improvement is streaming/realtime voice instead of the current transcribe-then-chat pipeline.
+
 ### 2026-06-24 — Course section sequence and next-section routing fix
 
 Changed:
