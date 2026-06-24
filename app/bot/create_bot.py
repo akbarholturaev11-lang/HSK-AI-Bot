@@ -27,6 +27,7 @@ from app.bot.handlers.admin import router as admin_router
 from app.bot.handlers.admin_audio import router as admin_audio_router
 from app.bot.handlers.partner import router as partner_router
 from app.bot.handlers.admin_partner import router as admin_partner_router
+from app.bot.handlers.challenge import router as challenge_router
 
 
 def create_bot(settings):
@@ -53,6 +54,7 @@ def create_bot(settings):
     dp.include_router(admin_partner_router)
     dp.include_router(feedback_router)
     dp.include_router(partner_router)
+    dp.include_router(challenge_router)
     dp.include_router(referral_router)
     dp.include_router(subscription_router)
     dp.include_router(menu_router)

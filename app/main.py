@@ -35,6 +35,7 @@ from app.services.course_miniapp_onboarding_service import CourseMiniAppOnboardi
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_challenge_service import CourseChallengeService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
@@ -780,6 +781,107 @@ async def miniapp_profile(request: Request):
         result = await StudyMiniAppService(session).get_profile_payload(telegram_id)
         await session.commit()
     return JSONResponse(status_code=200 if result.get("ok") else 404, content=result)
+
+
+@app.get("/api/miniapp/challenges")
+async def miniapp_challenges(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    async with async_session_maker() as session:
+        result = await CourseChallengeService(session).list_for_user(telegram_id)
+    return JSONResponse(status_code=200 if result.get("ok") else 404, content=result)
+
+
+@app.post("/api/miniapp/challenges")
+async def miniapp_challenge_create(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+    except ValueError:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_challenge_payload"})
+    opponent_telegram_id = _positive_int(payload.get("opponent_telegram_id"))
+    if not opponent_telegram_id:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_challenge_opponent"})
+    async with async_session_maker() as session:
+        result = await CourseChallengeService(session).create(
+            telegram_id,
+            opponent_telegram_id=opponent_telegram_id,
+            level=str(payload.get("level") or ""),
+            lang=str(payload.get("lang") or ""),
+            bot=bot,
+        )
+        await session.commit()
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
+
+
+@app.post("/api/miniapp/challenges/{challenge_id}/respond")
+async def miniapp_challenge_respond(challenge_id: int, request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    async with async_session_maker() as session:
+        result = await CourseChallengeService(session).respond(
+            telegram_id,
+            int(challenge_id),
+            str(payload.get("action") or ""),
+            bot=bot,
+        )
+        await session.commit()
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
+
+
+@app.post("/api/miniapp/challenges/{challenge_id}/start")
+async def miniapp_challenge_start(challenge_id: int, request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    async with async_session_maker() as session:
+        result = await CourseChallengeService(session).start(telegram_id, int(challenge_id))
+        await session.commit()
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
+
+
+@app.post("/api/miniapp/challenges/{challenge_id}/submit")
+async def miniapp_challenge_submit(challenge_id: int, request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+    except ValueError:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_challenge_payload"})
+    async with async_session_maker() as session:
+        result = await CourseChallengeService(session).submit(
+            telegram_id,
+            int(challenge_id),
+            payload.get("answers") if isinstance(payload.get("answers"), list) else [],
+            duration_seconds=_positive_int(payload.get("duration_seconds")) or 0,
+            bot=bot,
+        )
+        await session.commit()
+    return JSONResponse(status_code=200 if result.get("ok") else 400, content=result)
 
 
 @app.post("/api/miniapp/mistakes/review/start")

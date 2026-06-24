@@ -10,16 +10,16 @@
 <style>
 :root{color-scheme:dark;--bg:#090b10;--bg2:#111722;--bg3:#182131;--border:rgba(148,163,184,.16);--border2:rgba(148,163,184,.28);--text:#f4f7fb;--text2:#aab4c5;--accent:#5b8cff;--accent-dim:rgba(91,140,255,.16);--bar:0px;--font:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;min-height:100dvh;background:radial-gradient(circle at 12% -8%,rgba(91,140,255,.18),transparent 34%),linear-gradient(180deg,#0b0e15 0%,var(--bg) 48%,#07090d 100%);color:var(--text);font-family:var(--font);overflow:hidden}
+html,body{width:100%;height:var(--miniapp-height,100dvh);min-height:var(--miniapp-height,100dvh);background:radial-gradient(circle at 12% -8%,rgba(91,140,255,.18),transparent 34%),linear-gradient(180deg,#0b0e15 0%,var(--bg) 48%,#07090d 100%);color:var(--text);font-family:var(--font);overflow:hidden}
 button{font:inherit;touch-action:manipulation;transition:all .18s ease}
 button:active{transform:scale(.96)}
 .top{display:none}
 .title{font-size:13px;font-weight:800;letter-spacing:.2px}
 .settings{width:36px;height:36px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-size:16px}
 .settings:active{transform:scale(.97)}
-.frame{position:fixed;top:0;left:0;right:0;bottom:0;background:transparent;transition:opacity .18s ease}
+.frame{position:fixed;top:0;left:0;right:0;height:var(--miniapp-height,100dvh);bottom:auto;background:transparent;transition:opacity .18s ease}
 .frame.loading{opacity:.28}
-iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
+iframe{display:block;width:100%;height:var(--miniapp-height,100dvh);border:0;background:var(--bg)}
 .loader{position:fixed;inset:calc(var(--bar) + env(safe-area-inset-top,0px)) 0 0;display:grid;place-items:center;background:var(--bg);z-index:4;transition:opacity .18s ease}
 .loader.hide{display:none}
 .skeleton{width:min(88%,360px)}
@@ -253,7 +253,15 @@ setLabels();renderLessons();renderFlashcards();renderGrammar();renderQuizFilters
 </template>
 <script>
 const tg=window.Telegram?.WebApp;
-try{tg?.ready();tg?.expand();tg?.setHeaderColor?.("#090b10");tg?.setBackgroundColor?.("#090b10")}catch(e){}
+function miniAppViewportHeight(){return Math.floor(Number(tg?.viewportHeight||tg?.viewportStableHeight||0)||window.innerHeight||document.documentElement.clientHeight||0)}
+function syncMiniAppViewport(){
+  const height=miniAppViewportHeight();
+  if(height>0)document.documentElement.style.setProperty("--miniapp-height",`${height}px`);
+  try{document.getElementById("level-frame")?.contentWindow?.syncV2ViewportHeight?.()}catch(e){}
+}
+try{tg?.ready();tg?.expand();tg?.setHeaderColor?.("#090b10");tg?.setBackgroundColor?.("#090b10");tg?.onEvent?.("viewportChanged",syncMiniAppViewport)}catch(e){}
+window.addEventListener("resize",syncMiniAppViewport);
+syncMiniAppViewport();
 const COURSE_DATA=JSON.parse(document.getElementById("course-data").textContent);
 const LEVEL_SHELL=document.getElementById("level-shell").innerHTML;
 const LEVEL_KEY="hsk_all_current_level_v3",LANG_KEY="hsk_all_current_lang_v3",ACCESS_CACHE_KEY="hsk_all_access_cache_v1",ACCESS_CACHE_TTL=600000;
@@ -280,20 +288,25 @@ async function completeMistakeReview(payload){const data=await practiceRequest("
 async function loadGamification(){const res=await fetch("https://telegram-chinese-bot-production.up.railway.app/api/miniapp/gamification",{headers:{"X-Telegram-Init-Data":tg?.initData||""}});const data=await res.json().catch(()=>({ok:false,error:"invalid_response"}));if(!res.ok||!data.ok){const error=new Error(data.error||`gamification ${res.status}`);error.code=data.error||"gamification_failed";throw error}return data}
 async function openRewardChest(){const data=await practiceRequest("/api/miniapp/reward-chest/open",{});ACCESS=await requestAccess().catch(()=>ACCESS);saveAccess(ACCESS);syncFrameAccess();return data}
 async function loadProfile(){const res=await fetch("https://telegram-chinese-bot-production.up.railway.app/api/miniapp/profile",{headers:{"X-Telegram-Init-Data":tg?.initData||""}});const data=await res.json().catch(()=>({ok:false,error:"invalid_response"}));if(!res.ok||!data.ok){const error=new Error(data.error||`profile ${res.status}`);error.code=data.error||"profile_failed";throw error}return data}
+async function loadChallenges(){const res=await fetch("https://telegram-chinese-bot-production.up.railway.app/api/miniapp/challenges",{headers:{"X-Telegram-Init-Data":tg?.initData||""}});const data=await res.json().catch(()=>({ok:false,error:"invalid_response"}));if(!res.ok||!data.ok){const error=new Error(data.error||`challenges ${res.status}`);error.code=data.error||"challenges_failed";throw error}return data}
+async function createChallenge(payload){return practiceRequest("/api/miniapp/challenges",payload)}
+async function respondChallenge(payload){const id=Number(payload?.challenge_id||0);return practiceRequest(`/api/miniapp/challenges/${id}/respond`,{action:payload?.action||""})}
+async function startChallenge(payload){const id=Number(payload?.challenge_id||0);return practiceRequest(`/api/miniapp/challenges/${id}/start`,{})}
+async function submitChallenge(payload){const id=Number(payload?.challenge_id||0);return practiceRequest(`/api/miniapp/challenges/${id}/submit`,payload||{})}
 async function openSubscribeFromMiniApp(source){const next=new URL("subscription.html",window.location.href);next.searchParams.set("lang",currentLang||"uz");next.searchParams.set("source",source||"study");next.searchParams.set("level",currentLevel||"");window.location.href=next.toString();}
 async function discussQuizFromMiniApp(payload){const data={level:currentLevel,status:ACCESS.status,...payload};const reported=await reportEvent("quiz_ai_discuss_clicked",data);try{if(!reported)tg?.sendData?.(JSON.stringify({action:"discuss_quiz_with_ai",...data}));setTimeout(()=>tg?.close?.(),150)}catch(e){}}
 function syncFrameAccess(){try{const child=document.getElementById("level-frame").contentWindow;child.setAppAccess?.(ACCESS);child.setAppLanguage?.(currentLang)}catch(e){}}
 function applyAccess(next){ACCESS=normalizeAccess(next)||normalizeAccess(ACCESS_FALLBACK);accessReady=true;const previousLevel=currentLevel;resolveInitial(true);refreshOuter();if(currentLevel!==previousLevel)loadLevel(currentLevel);else syncFrameAccess();return ACCESS}
 function ensureAccess(){if(accessReady)return Promise.resolve(ACCESS);if(!accessPromise)accessPromise=loadAccess().then(applyAccess).finally(()=>{accessPromise=null});return accessPromise}
 function openRoute(changes={}){const next=new URL(location.href);Object.entries(changes).forEach(([key,value])=>{if(value===null||value===undefined||value==="")next.searchParams.delete(key);else next.searchParams.set(key,String(value))});location.href=next.toString()}
-window.MiniAppBridge={getAccess:()=>ACCESS,ensureAccess,getLevel:()=>currentLevel,getLanguage:()=>currentLang,getLaunchParams:()=>Object.fromEntries(params()),hasAuth:()=>Boolean(tg?.initData),reportEvent,completeOnboarding,loadCourseSectionPlan,loadCourseLesson,completeCourseLesson,jumpCourseLesson,startPractice,completePractice,loadMistakes,startMistakeReview,completeMistakeReview,loadGamification,openRewardChest,loadProfile,openSubscribe:openSubscribeFromMiniApp,discussQuiz:discussQuizFromMiniApp,openRoute};
+window.MiniAppBridge={getAccess:()=>ACCESS,ensureAccess,getLevel:()=>currentLevel,getLanguage:()=>currentLang,getViewportHeight:miniAppViewportHeight,getLaunchParams:()=>Object.fromEntries(params()),hasAuth:()=>Boolean(tg?.initData),reportEvent,completeOnboarding,loadCourseSectionPlan,loadCourseLesson,completeCourseLesson,jumpCourseLesson,startPractice,completePractice,loadMistakes,startMistakeReview,completeMistakeReview,loadGamification,openRewardChest,loadProfile,loadChallenges,createChallenge,respondChallenge,startChallenge,submitChallenge,openSubscribe:openSubscribeFromMiniApp,discussQuiz:discussQuizFromMiniApp,openRoute};
 function params(){return new URLSearchParams(location.search)}
 function normalizeLevel(level,lesson){if(level==="hsk4")return Number(lesson)>10?"hsk4b":"hsk4a";return level}
 function resolveInitial(useAccess=false){const query=params(),backendLevel=useAccess?ACCESS.level:"",backendLang=useAccess?ACCESS.language:"";currentLevel=normalizeLevel(query.get("level")||backendLevel||localStorage.getItem(LEVEL_KEY)||"hsk1",query.get("lesson"));currentLang=query.get("lang")||backendLang||localStorage.getItem(LANG_KEY)||"ru";if(!COURSE_DATA[currentLevel])currentLevel="hsk1";if(!["uz","ru","tj"].includes(currentLang))currentLang="ru";localStorage.setItem(LEVEL_KEY,currentLevel);localStorage.setItem(LANG_KEY,currentLang)}
 function settingsText(){return{uz:{settings:"Sozlamalar",lang:"Til",level:"Level"},ru:{settings:"Настройки",lang:"Язык",level:"Уровень"},tj:{settings:"Танзимот",lang:"Забон",level:"Сатҳ"}}[currentLang]}
 function refreshOuter(){const text=settingsText();document.documentElement.lang=currentLang;document.getElementById("settings-title").textContent=text.settings;document.getElementById("lang-label").textContent=text.lang;document.getElementById("level-label").textContent=text.level;document.getElementById("app-title").textContent=`${COURSE_DATA[currentLevel].label} · ${currentLang.toUpperCase()}`;document.querySelectorAll("[data-level]").forEach(btn=>btn.classList.toggle("active",btn.dataset.level===currentLevel));document.querySelectorAll("[data-lang]").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===currentLang))}
 function buildLevelHTML(){const data=JSON.stringify(COURSE_DATA[currentLevel]).replace(/</g,"\\u003c");return LEVEL_SHELL.replace("__LEVEL_KEY__",currentLevel).replace("__LEVEL_DATA__",data)}
-function loadLevel(level){if(!COURSE_DATA[level])return;currentLevel=level;localStorage.setItem(LEVEL_KEY,level);refreshOuter();const frame=document.getElementById("level-frame"),wrap=document.getElementById("frame-wrap"),loader=document.getElementById("loader");loader.classList.remove("hide");wrap.classList.add("loading");frame.onload=()=>{wrap.classList.remove("loading");loader.classList.add("hide")};frame.srcdoc=buildLevelHTML()}
+function loadLevel(level){if(!COURSE_DATA[level])return;currentLevel=level;localStorage.setItem(LEVEL_KEY,level);refreshOuter();const frame=document.getElementById("level-frame"),wrap=document.getElementById("frame-wrap"),loader=document.getElementById("loader");loader.classList.remove("hide");wrap.classList.add("loading");frame.onload=()=>{syncMiniAppViewport();wrap.classList.remove("loading");loader.classList.add("hide")};frame.srcdoc=buildLevelHTML()}
 function setLanguage(next){if(!["uz","ru","tj"].includes(next))return;currentLang=next;localStorage.setItem(LANG_KEY,next);refreshOuter();try{document.getElementById("level-frame").contentWindow.setAppLanguage(next)}catch(e){}reportEvent("language_changed",{language:next,level:currentLevel,status:ACCESS.status})}
 function openSettings(){document.getElementById("settings-backdrop").classList.add("show")}
 function closeSettings(){document.getElementById("settings-backdrop").classList.remove("show")}

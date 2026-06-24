@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from sqlalchemy import func, select
 
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.course_progress import CourseProgress
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
@@ -165,7 +166,7 @@ class CourseGamificationService:
             },
         }
 
-    async def leaderboard(self, user, limit: int = 25) -> dict:
+    async def leaderboard(self, user, limit: int | None = None) -> dict:
         profile = await self.profiles.get_or_create(user.id)
         snapshot = await self.snapshot(user, profile=profile)
         day = self._local_day(profile.timezone_offset_minutes)
@@ -190,9 +191,12 @@ class CourseGamificationService:
                 User.payment_status,
                 User.end_date,
                 CourseMiniAppProfile.xp_total,
+                CourseProgress.level,
+                CourseProgress.completed_lessons_count,
                 func.coalesce(weekly.c.weekly_xp, 0),
             )
             .join(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
+            .outerjoin(CourseProgress, CourseProgress.user_id == User.id)
             .outerjoin(weekly, weekly.c.user_id == User.id)
             .where(CourseMiniAppProfile.xp_total >= low)
             .order_by(func.coalesce(weekly.c.weekly_xp, 0).desc(), CourseMiniAppProfile.xp_total.desc())
@@ -202,10 +206,23 @@ class CourseGamificationService:
         rows = (await self.session.execute(query)).all()
         ranked = []
         current_rank = 0
-        for index, (user_id, telegram_id, full_name, username, status, payment_status, end_date, xp_total, weekly_xp) in enumerate(rows, 1):
+        max_items = max(1, min(500, int(limit))) if limit else None
+        for index, (
+            user_id,
+            telegram_id,
+            full_name,
+            username,
+            status,
+            payment_status,
+            end_date,
+            xp_total,
+            course_level,
+            completed_lessons_count,
+            weekly_xp,
+        ) in enumerate(rows, 1):
             if int(user_id) == int(user.id):
                 current_rank = index
-            if index <= max(1, min(50, int(limit or 25))) or int(user_id) == int(user.id):
+            if max_items is None or index <= max_items or int(user_id) == int(user.id):
                 ranked.append(
                     {
                         "rank": index,
@@ -214,13 +231,16 @@ class CourseGamificationService:
                         "username": str(username or "").strip().lstrip("@")[:32],
                         "xp": int(weekly_xp or 0),
                         "league_points": int(weekly_xp or 0),
+                        "total_xp": int(xp_total or 0),
+                        "course_level": str(course_level or "").strip()[:32],
+                        "completed_lessons": int(completed_lessons_count or 0),
                         "is_paid": CourseMiniAppAccessService.is_paid_user(
                             SimpleNamespace(status=status, payment_status=payment_status, end_date=end_date)
                         ),
                         "is_current_user": int(user_id) == int(user.id),
                     }
                 )
-        return {**snapshot, "rank": current_rank or 1, "league_size": 25, "leaderboard": ranked}
+        return {**snapshot, "rank": current_rank or 1, "league_size": len(rows), "leaderboard": ranked}
 
     async def open_reward_chest(self, user) -> dict:
         profile = await self.profiles.get_or_create(user.id)

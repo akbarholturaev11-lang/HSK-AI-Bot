@@ -212,6 +212,9 @@ Risk: Unknown / needs inspection
 Changed:
 - Mini App leaderboard API now includes safe `username` and `telegram_id` fields for ranked users, so the rating profile sheet can open the user's existing Telegram chat instead of creating an in-app chat.
 - Rating UI now shows paid users with a custom premium mark before the nickname and uses CSS-drawn medals for the top ranking positions instead of emoji badges.
+- Leaderboard is no longer capped to 25 by default; `CourseGamificationService.leaderboard()` returns all same-league users unless an explicit limit is passed, and `league_size` reflects the real row count.
+- Leaderboard rows also include safe course progress summary fields (`course_level`, `completed_lessons`, `total_xp`) for the rating profile sheet.
+- Telegram Mini App viewport height is synced from `Telegram.WebApp.viewportHeight/stableHeight` through `study.html` into `study-v2.js`, so the fixed bottom nav stays inside the visible Mini App viewport.
 
 Why:
 - User-to-user contact from rating profiles should stay inside Telegram chat UX, and subscription status should be visible without using plain emoji/checkmark text.
@@ -227,6 +230,23 @@ Risk:
 
 Follow-up:
 - After deploy, test a real Telegram Mini App rating profile for a user with username and one without username.
+- Also test on Telegram iOS after opening the Mini App fresh: bottom nav should be visible without scrolling.
+
+### 2026-06-25 — Mini App user challenge flow
+
+Changed:
+- Added `course_challenges` for Mini App user-to-user belashuv/challenge state. A challenge stores a frozen JSON question payload so both users get identical questions even if they complete at different times.
+- Challenge lifecycle: `pending` invite, opponent `accept`/`reject`, each user completes once, then winner is calculated by score and tie-broken by faster duration.
+- Mini App endpoints: list/create/respond/start/submit under `/api/miniapp/challenges`.
+- Bot sends opponent an inline accept/reject notification and also exposes the same incoming challenges in the Mini App profile notification block.
+- Rating profile can start a challenge from a ranked user; profile notifications show pending/active/completed challenges.
+
+Risk:
+- `Base.metadata.create_all()` creates the new table on startup, but existing DBs should still be tested after deploy for table creation.
+- Challenge submit is one-shot per user; there is no rematch button yet.
+
+Follow-up:
+- Test with two real Telegram users: start from rating profile, accept from bot and Mini App profile, complete both sides, verify result/winner.
 
 ### 2026-06-25 — Mini App lesson material journey
 

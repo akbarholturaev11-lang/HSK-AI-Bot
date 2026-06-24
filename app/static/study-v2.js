@@ -104,6 +104,15 @@ const write=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
 Object.assign(copy.ru,{chooseAnswer:"Выберите ответ",continueAnswer:"Продолжить",testComplete:"Тест завершён",youGot:"Ваш результат",correctAnswer:"Правильный ответ",listenAndAnswer:"Прослушайте и выберите ответ",tapToListen:"Нажмите, чтобы слушать",repeat:"Нужно повторить",good:"Хороший результат",excellent:"Отличный результат",noErrors:"Ошибок нет"});
 Object.assign(copy.uz,{chooseAnswer:"Javobni tanlang",continueAnswer:"Davom etish",testComplete:"Test tugadi",youGot:"Natijangiz",correctAnswer:"To'g'ri javob",listenAndAnswer:"Tinglang va javobni tanlang",tapToListen:"Tinglash uchun bosing",repeat:"Qayta takrorlash kerak",good:"Yaxshi natija",excellent:"A'lo natija",noErrors:"Xato yo'q"});
 Object.assign(copy.tj,{chooseAnswer:"Ҷавобро интихоб кунед",continueAnswer:"Идома",testComplete:"Тест анҷом шуд",youGot:"Натиҷаи шумо",correctAnswer:"Ҷавоби дуруст",listenAndAnswer:"Гӯш кунед ва ҷавобро интихоб кунед",tapToListen:"Барои шунидан пахш кунед",repeat:"Бояд такрор кард",good:"Натиҷаи хуб",excellent:"Натиҷаи аъло",noErrors:"Хато нест"});
+function syncV2ViewportHeight(){
+  let height=0;
+  try{height=Number(bridge?.getViewportHeight?.()||parent.Telegram?.WebApp?.viewportHeight||parent.Telegram?.WebApp?.viewportStableHeight||0)}catch(_){}
+  height=Math.floor(height||window.innerHeight||document.documentElement.clientHeight||0);
+  if(height>0)document.documentElement.style.setProperty("--v2-viewport-height",`${height}px`);
+}
+window.syncV2ViewportHeight=syncV2ViewportHeight;
+window.addEventListener("resize",syncV2ViewportHeight);
+try{parent.Telegram?.WebApp?.onEvent?.("viewportChanged",syncV2ViewportHeight)}catch(_){}
 const tx=key=>(copy[lang]||copy.ru)[key]||copy.ru[key]||key;
 const labelLevel=value=>value==="hsk4a"?"HSK 4 上":value==="hsk4b"?"HSK 4 下":String(value||LEVEL_KEY).toUpperCase().replace("HSK","HSK ");
 function avatarMarkup(value,fallback="A"){
@@ -211,6 +220,7 @@ const LESSON_CHOICE_TYPES=["meaning_guess","pinyin_choice","hanzi_choice","liste
 const LESSON_ORDER_TYPES=["sentence_builder","word_order"];
 const LESSON_PASSIVE_TYPES=["active_word","match_pairs"];
 let practiceSession=null,mistakeReviewSession=null,serverMistakes=null,mistakesLoading=false,serverGamification=ACCESS.gamification||null,gamificationLoading=false,serverProfile=null,profileLoading=false;
+let serverChallenges=null,challengesLoading=false,activeChallenge=null,challengeStartedAt=0;
 
 function normalizeMeta(){
   if(!meta.completedSections||typeof meta.completedSections!=="object")meta.completedSections={};
@@ -304,9 +314,16 @@ function leagueEntries(){
     {name:"卫会坤",xp:Math.max(mine-20,120)},
     {name:"manso",xp:Math.max(mine-60,85)}
   ];
-  const rows=source.map(item=>({...item,xp:Number(item.xp??item.league_points??0),league_points:Number(item.league_points??item.xp??0)}));
+  const rows=source.map(item=>({
+    ...item,
+    xp:Number(item.xp??item.league_points??0),
+    league_points:Number(item.league_points??item.xp??0),
+    total_xp:Number(item.total_xp??item.xp??item.league_points??0),
+    course_level:String(item.course_level||""),
+    completed_lessons:Number(item.completed_lessons??0)
+  }));
   const hasMe=rows.some(item=>item.is_current_user);
-  if(!hasMe)rows.push({name:currentUserName(),avatar:currentUserAvatar(),xp:mine,league_points:mine,is_current_user:true});
+  if(!hasMe)rows.push({name:currentUserName(),avatar:currentUserAvatar(),xp:mine,league_points:mine,total_xp:Number(serverGamification?.xp??mine),course_level:LEVEL_KEY,completed_lessons:completedCount(),is_current_user:true});
   return rows.sort((a,b)=>Number(b.league_points??b.xp)-Number(a.league_points??a.xp)).map((item,index)=>({...item,rank:index+1}));
 }
 function hskMascot(type="default"){
@@ -343,6 +360,48 @@ function showPaywall(source="course_locked"){
   root.onclick=()=>root.remove();document.body.appendChild(root);
 }
 async function loadServerProfile(){if(!bridge.hasAuth?.()||profileLoading)return;profileLoading=true;try{const result=await bridge.loadProfile?.();if(result?.ok){serverProfile=result;ACCESS={...ACCESS,course_features:result.course_features||ACCESS.course_features,gamification:result.gamification||ACCESS.gamification};syncGamification(result.gamification);renderProfile();renderTests();renderTraining()}}catch(_){}finally{profileLoading=false}}
+async function loadServerChallenges(force=false){
+  if(!bridge.hasAuth?.()||challengesLoading&& !force)return;
+  challengesLoading=true;
+  try{const result=await bridge.loadChallenges?.();if(result?.ok){serverChallenges=result;renderProfile()}}catch(_){serverChallenges=null}finally{challengesLoading=false}
+}
+function challengeText(key,params={}){
+  const text={
+    ru:{notifications:"Уведомления",duels:"Беллашув",duelStart:"Беллашув",duelSent:"Вызов отправлен",duelIncoming:"Вас вызвали на беллашув",duelAccepted:"Беллашув принят",duelDone:"Беллашув завершён",duelEmpty:"Пока нет беллашувов",accept:"Принять",reject:"Отклонить",start:"Начать",continue:"Продолжить",waiting:"Ждём второго участника",win:"Победа",lose:"Поражение",draw:"Ничья",score:"{a} / {b}",started:"Беллашув начался",cannotStart:"Беллашув недоступен"},
+    uz:{notifications:"Bildirishnomalar",duels:"Belashuvlar",duelStart:"Belashuv",duelSent:"Belashuv yuborildi",duelIncoming:"Siz bilan belashuvchilar paydo bo'ldi",duelAccepted:"Belashuv qabul qilindi",duelDone:"Belashuv tugadi",duelEmpty:"Hozircha belashuv yo'q",accept:"Qabul qilish",reject:"Rad qilish",start:"Boshlash",continue:"Davom etish",waiting:"Ikkinchi userni kutyapmiz",win:"G'alaba",lose:"Mag'lubiyat",draw:"Durrang",score:"{a} / {b}",started:"Belashuv boshlandi",cannotStart:"Belashuv ochilmadi"},
+    tj:{notifications:"Огоҳиномаҳо",duels:"Белашувҳо",duelStart:"Белашув",duelSent:"Белашув фиристода шуд",duelIncoming:"Бо шумо белашув пайдо шуд",duelAccepted:"Белашув қабул шуд",duelDone:"Белашув анҷом шуд",duelEmpty:"Ҳоло белашув нест",accept:"Қабул",reject:"Рад",start:"Оғоз",continue:"Идома",waiting:"Иштирокчии дуюмро интизорем",win:"Ғалаба",lose:"Бохт",draw:"Баробар",score:"{a} / {b}",started:"Белашув оғоз шуд",cannotStart:"Белашув кушода нашуд"}
+  };
+  return String((text[lang]||text.uz)[key]||key).replace(/\{(\w+)\}/g,(_,name)=>params[name]??"");
+}
+function challengeResultLabel(item){
+  if(item.status==="pending")return item.viewer_role==="opponent"?challengeText("duelIncoming"):challengeText("waiting");
+  if(item.status!=="completed")return item.viewer_done?challengeText("waiting"):challengeText("duelAccepted");
+  const winner=Number(item.winner_user_id||0);
+  const me=item.viewer_role==="challenger"?Number(item.challenger?.id||0):Number(item.opponent?.id||0);
+  if(!winner)return challengeText("draw");
+  return winner===me?challengeText("win"):challengeText("lose");
+}
+function challengeRows(){
+  const items=Array.isArray(serverChallenges?.items)?serverChallenges.items:[];
+  if(!items.length)return `<div class="v2-empty compact">${esc(challengeText("duelEmpty"))}</div>`;
+  return items.slice(0,6).map(item=>{
+    const other=item.other_user||{};
+    const incoming=item.status==="pending"&&item.viewer_role==="opponent";
+    const scoreA=item.viewer_role==="challenger"?item.challenger_score:item.opponent_score;
+    const scoreB=item.viewer_role==="challenger"?item.opponent_score:item.challenger_score;
+    const score=scoreA!==null&&scoreA!==undefined?challengeText("score",{a:scoreA,b:scoreB??"-"}):challengeResultLabel(item);
+    const actions=incoming
+      ? `<div class="v2-challenge-actions"><button class="v2-template-chip" onclick="V2.respondChallenge(${Number(item.id)},'accept')">${esc(challengeText("accept"))}</button><button class="v2-template-chip" onclick="V2.respondChallenge(${Number(item.id)},'reject')">${esc(challengeText("reject"))}</button></div>`
+      : item.status==="accepted"&&!item.viewer_done
+        ? `<div class="v2-challenge-actions"><button class="v2-template-chip primary" onclick="V2.startChallenge(${Number(item.id)})">${esc(challengeText("start"))}</button></div>`
+        : "";
+    return `<div class="v2-challenge-row"><div><b>${esc(other.name||"HSK Student")}</b><small>${esc(item.level||LEVEL_KEY)} · ${esc(score)}</small></div>${actions}</div>`;
+  }).join("");
+}
+function challengeProfileSection(){
+  const badge=Number(serverChallenges?.pending_count||0)+Number(serverChallenges?.active_count||0);
+  return `<section class="v2-section"><div class="v2-section-head"><h2 class="v2-section-title">${esc(challengeText("notifications"))}${badge?` · ${badge}`:""}</h2><span class="v2-link">${esc(challengeText("duels"))}</span></div><div class="v2-challenge-list">${challengesLoading&&!serverChallenges?`<div class="v2-empty compact">${esc(tx("loadingLesson"))}</div>`:challengeRows()}</div></section>`;
+}
 function missionDone(name,target){return Number(meta.daily?.[name]||0)>=target}
 function missionRow(icon,title,current,target){const done=current>=target;return `<div class="v2-mission"><div class="v2-mission-icon">${icon}</div><div><b>${esc(title)}</b><small>${Math.min(current,target)} / ${target}</small></div><span class="v2-check ${done?"":"pending"}">${done?"✓":"○"}</span></div>`}
 
@@ -419,7 +478,7 @@ function renderProfile(){
   const mistakeCount=stats.mistakes??serverMistakes?.summary?.total??read(MISTAKES_KEY,[]).reduce((s,m)=>s+m.count,0);
   const doneCount=stats.completed_lessons??completedCount();const name=user.name||"HSK AI";const avatar=currentUserAvatar();
   const days=Array.from({length:7},(_,index)=>index<Math.min(7,Number(meta.streak||0)));
-  document.getElementById("page-profile").innerHTML=`<div class="v2-profile-head"><button class="v2-avatar upload" onclick="document.getElementById('v2-avatar-input')?.click()" aria-label="${esc(tx("uploadAvatar"))}">${avatarMarkup(avatar,String(name).slice(0,1)||"A")}</button><input id="v2-avatar-input" type="file" accept="image/*" hidden onchange="V2.uploadAvatar(event)"><div><h1>${premiumMark(isPaid())}${esc(name)}</h1><p>${meta.xp} ${esc(tx("xp"))} · ${meta.streak} ${esc(tx("streak"))}</p><span class="v2-badge">${leagueLabel()} ${isPaid()?`· ${esc(tx("paidBadge"))}`:""}</span></div></div><div class="v2-metrics v2-section"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>${esc(tx("xp"))}</span></div><div class="v2-metric" data-tone="green"><strong>${doneCount}</strong><span>${esc(tx("done"))}</span></div><div class="v2-metric" data-tone="purple"><strong>${mistakeCount}</strong><span>${esc(tx("mistakes"))}</span></div></div><section class="v2-section"><div class="v2-streak-card"><div><b>${esc(tx("streakCalendar"))}</b><small>${esc(tx("milestones"))} · ${esc(tx("streakFreeze"))}</small></div><div class="v2-calendar">${days.map(on=>`<i class="${on?"on":""}"></i>`).join("")}</div></div></section><div class="v2-profile-list">${row("◫",tx("training"),tx("trainingSub"),"V2.showPage('training')")}${row("!",tx("mistakes"),tx("mistakesSub"),"V2.showPage('mistakes')")}${row("★",tx("achievements"),`${doneCount} / ${LESSONS.length}`,"V2.showPage('achievements')")}${row("?",tx("support"),tx("supportSub"),"V2.openSupport('profile_support')")}</div>`;
+  document.getElementById("page-profile").innerHTML=`<div class="v2-profile-head"><button class="v2-avatar upload" onclick="document.getElementById('v2-avatar-input')?.click()" aria-label="${esc(tx("uploadAvatar"))}">${avatarMarkup(avatar,String(name).slice(0,1)||"A")}</button><input id="v2-avatar-input" type="file" accept="image/*" hidden onchange="V2.uploadAvatar(event)"><div><h1>${premiumMark(isPaid())}${esc(name)}</h1><p>${meta.xp} ${esc(tx("xp"))} · ${meta.streak} ${esc(tx("streak"))}</p><span class="v2-badge">${leagueLabel()} ${isPaid()?`· ${esc(tx("paidBadge"))}`:""}</span></div></div><div class="v2-metrics v2-section"><div class="v2-metric" data-tone="gold"><strong>${meta.xp}</strong><span>${esc(tx("xp"))}</span></div><div class="v2-metric" data-tone="green"><strong>${doneCount}</strong><span>${esc(tx("done"))}</span></div><div class="v2-metric" data-tone="purple"><strong>${mistakeCount}</strong><span>${esc(tx("mistakes"))}</span></div></div>${challengeProfileSection()}<section class="v2-section"><div class="v2-streak-card"><div><b>${esc(tx("streakCalendar"))}</b><small>${esc(tx("milestones"))} · ${esc(tx("streakFreeze"))}</small></div><div class="v2-calendar">${days.map(on=>`<i class="${on?"on":""}"></i>`).join("")}</div></div></section><div class="v2-profile-list">${row("◫",tx("training"),tx("trainingSub"),"V2.showPage('training')")}${row("!",tx("mistakes"),tx("mistakesSub"),"V2.showPage('mistakes')")}${row("★",tx("achievements"),`${doneCount} / ${LESSONS.length}`,"V2.showPage('achievements')")}${row("?",tx("support"),tx("supportSub"),"V2.openSupport('profile_support')")}</div>`;
 }
 
 function renderTraining(){
@@ -438,6 +497,75 @@ async function loadServerMistakes(){
   mistakesLoading=true;renderMistakes();
   try{serverMistakes=await bridge.loadMistakes?.();renderProfile()}catch(_){serverMistakes=null}finally{mistakesLoading=false;renderMistakes()}
 }
+function leagueSizeLabel(count){
+  const total=Number(count||0);
+  if(lang==="uz")return `Ligada ${total} o'quvchi`;
+  if(lang==="tj")return `${total} омӯзанда дар лига`;
+  return `${total} учеников в лиге`;
+}
+function leagueProfileText(key,params={}){
+  const text={
+    ru:{rank:"Место",weekly:"Неделя",total:"Всего",lessons:"Уроки",course:"Курс",activity:"Активность",status:"Статус",progress:"Прогресс",readyTexts:"Быстрый текст",currentUser:"Это вы",topStudent:"Топ-{rank}",sameLeague:"Одна лига",ahead:"На {xp} очков впереди вас",behind:"На {xp} очков позади вас",even:"Одинаковые очки",weeklyBar:"Очки недели",totalBar:"Общий XP",noProgress:"Пока без прогресса",variant:"Вариант {n}",copied:"Текст скопирован. Откройте чат и вставьте.",messagePlaceholder:"Выберите текст или напишите свой"},
+    uz:{rank:"O'rin",weekly:"Hafta",total:"Jami",lessons:"Darslar",course:"Kurs",activity:"Faollik",status:"Status",progress:"Progress",readyTexts:"Tayyor matn",currentUser:"Bu siz",topStudent:"Top-{rank}",sameLeague:"Bitta liga",ahead:"Sizdan {xp} ochko oldinda",behind:"Sizdan {xp} ochko ortda",even:"Ochkolar teng",weeklyBar:"Haftalik ochko",totalBar:"Umumiy XP",noProgress:"Hali progress yo'q",variant:"Variant {n}",copied:"Matn nusxalandi. Chatni ochib yuboring.",messagePlaceholder:"Matn tanlang yoki o'zingiz yozing"},
+    tj:{rank:"Ҷой",weekly:"Ҳафта",total:"Ҳамагӣ",lessons:"Дарсҳо",course:"Курс",activity:"Фаъолият",status:"Статус",progress:"Пешрафт",readyTexts:"Матни тайёр",currentUser:"Ин шумо",topStudent:"Top-{rank}",sameLeague:"Як лига",ahead:"Аз шумо {xp} хол пеш",behind:"Аз шумо {xp} хол қафо",even:"Холҳо баробар",weeklyBar:"Холи ҳафта",totalBar:"XP умумӣ",noProgress:"Ҳоло пешрафт нест",variant:"Вариант {n}",copied:"Матн нусха шуд. Chat-ро кушода фиристед.",messagePlaceholder:"Матн интихоб кунед ё худ нависед"}
+  };
+  return String((text[lang]||text.ru)[key]||key).replace(/\{(\w+)\}/g,(_,name)=>params[name]??"");
+}
+function leagueMessageTemplates(item){
+  const name=String(item?.name||tx("userProfile")).trim();
+  if(lang==="uz")return[
+    `Salom, ${name}. HSK AI reytingida ko'rdim, birga xitoy tili mashq qilamizmi?`,
+    `${name}, reytingda yaxshi ketyapsiz. Bugun qaysi darsni o'rganyapsiz?`,
+    `Assalomu alaykum, HSK AI reytingidan yozdim. Xitoy tili bo'yicha tajriba almashamizmi?`
+  ];
+  if(lang==="tj")return[
+    `Салом, ${name}. Дар рейтинги HSK AI дидам, якҷоя чинӣ машқ мекунем?`,
+    `${name}, дар рейтинг хуб пеш меравед. Имрӯз кадом дарсро меомӯзед?`,
+    `Салом, аз рейтинги HSK AI навиштам. Дар бораи омӯзиши чинӣ таҷриба иваз мекунем?`
+  ];
+  return[
+    `Привет, ${name}. Увидел вас в рейтинге HSK AI, потренируем китайский вместе?`,
+    `${name}, вы хорошо идёте в рейтинге. Какой урок проходите сегодня?`,
+    `Здравствуйте, пишу из рейтинга HSK AI. Давайте обменяемся опытом по китайскому?`
+  ];
+}
+function selectLeagueTemplate(index,templateIndex){
+  const item=leagueEntries()[Number(index)];
+  const text=leagueMessageTemplates(item)[Number(templateIndex)]||"";
+  const field=document.getElementById(`v2-league-message-${Number(index)}`);
+  if(field){field.value=text;field.focus()}
+}
+async function copyLeagueMessage(text){
+  const value=String(text||"").trim();
+  if(!value)return false;
+  if(!navigator.clipboard?.writeText)return false;
+  try{await navigator.clipboard.writeText(value);toast(leagueProfileText("copied"));return true}catch(_){return false}
+}
+function leagueProgressLine(label,value,max){
+  const pct=max>0?Math.max(0,Math.min(100,Math.round(Number(value||0)/max*100))):0;
+  return `<div class="v2-user-bar-row"><div class="v2-user-bar-top"><b>${esc(label)}</b><span>${Number(value||0)}</span></div><div class="v2-user-bar"><i style="width:${pct}%"></i></div></div>`;
+}
+function leagueProfileSections(index,item){
+  const rows=leagueEntries();
+  const me=rows.find(row=>row.is_current_user);
+  const rank=Number(item.rank||0);
+  const points=Number(item.league_points??item.xp??0);
+  const total=Number(item.total_xp??points);
+  const completed=Number(item.completed_lessons||0);
+  const courseLevel=String(item.course_level||"").trim();
+  const maxWeekly=Math.max(1,...rows.map(row=>Number(row.league_points??row.xp??0)));
+  const maxTotal=Math.max(1,...rows.map(row=>Number(row.total_xp??row.league_points??row.xp??0)));
+  const delta=me&&!item.is_current_user?points-Number(me.league_points??me.xp??0):0;
+  const compare=item.is_current_user?leagueProfileText("currentUser"):delta>0?leagueProfileText("ahead",{xp:Math.abs(delta)}):delta<0?leagueProfileText("behind",{xp:Math.abs(delta)}):leagueProfileText("even");
+  const badges=[leagueLabel()];
+  if(rank>0&&rank<=3)badges.push(leagueProfileText("topStudent",{rank}));
+  if(item.is_paid)badges.push(tx("paidBadge"));
+  if(item.is_current_user)badges.push(leagueProfileText("currentUser"));
+  const templates=leagueMessageTemplates(item);
+  const messageId=`v2-league-message-${Number(index)}`;
+  const messageBlock=item.is_current_user?"":`<section class="v2-user-section"><div class="v2-user-section-title">${esc(leagueProfileText("readyTexts"))}</div><div class="v2-template-chips">${templates.map((text,templateIndex)=>`<button class="v2-template-chip" onclick="V2.selectLeagueTemplate(${Number(index)},${templateIndex})">${esc(leagueProfileText("variant",{n:templateIndex+1}))}</button>`).join("")}</div><textarea id="${messageId}" class="v2-message-preview" placeholder="${esc(leagueProfileText("messagePlaceholder"))}">${esc(templates[0]||"")}</textarea></section>`;
+  return `<div class="v2-user-profile"><section class="v2-user-section"><div class="v2-user-section-title">${esc(leagueProfileText("activity"))}</div><div class="v2-league-compare ${delta>0?"ahead":delta<0?"behind":"even"}">${esc(compare)}</div><div class="v2-user-stats"><span><b>${rank||"-"}</b><small>${esc(leagueProfileText("rank"))}</small></span><span><b>${points}</b><small>${esc(leagueProfileText("weekly"))}</small></span><span><b>${total}</b><small>${esc(leagueProfileText("total"))}</small></span><span><b>${completed}</b><small>${esc(leagueProfileText("lessons"))}</small></span></div></section><section class="v2-user-section"><div class="v2-user-section-title">${esc(leagueProfileText("status"))}</div><div class="v2-user-badges">${badges.map(badge=>`<span>${esc(badge)}</span>`).join("")}</div></section><section class="v2-user-section"><div class="v2-user-section-title">${esc(leagueProfileText("progress"))}</div><div class="v2-user-bars">${leagueProgressLine(leagueProfileText("weeklyBar"),points,maxWeekly)}${leagueProgressLine(leagueProfileText("totalBar"),total,maxTotal)}</div><p>${esc(courseLevel?`${leagueProfileText("course")}: ${labelLevel(courseLevel)} · ${completed} ${leagueProfileText("lessons")}`:leagueProfileText("noProgress"))}</p></section>${messageBlock}</div>`;
+}
 function renderLeague(){
   const rows=leagueEntries();
   const mine=rows.find(item=>item.is_current_user)||rows[0];
@@ -451,7 +579,8 @@ function renderLeague(){
   ];
   const podiumRanks=[2,1,3];
   const medalHtml=rank=>`<span class="v2-medal-icon v2-medal-${rank}" aria-hidden="true"><i></i></span>`;
-  document.getElementById("page-league").innerHTML=`<div class="v2-page-head v2-league-head"><h1 class="v2-title">${esc(tx("league"))}</h1><p class="v2-subtitle">${esc(tx("leagueSize"))} · ${Number(mine?.league_points??mine?.xp??0)} ${esc(tx("leaguePoints"))}</p></div><div class="v2-cup-podium">${podiumNames.map((name,index)=>`<div class="v2-cup-stage ${index===1?"large":index===0?"medium":"small"} ${name===currentLeague?"active":""}"><span>${medalHtml(podiumRanks[index])}</span><small>${esc(leagueLabel(name))}</small></div>`).join("")}</div><div class="v2-league-list">${rows.map((item,index)=>{const rank=Number(item.rank||1);const points=Number(item.league_points??item.xp??0);return `<button class="v2-league-row ${item.is_current_user?"current":""} ${rank<=3?"top":""}" onclick="V2.openLeagueUser(${index})"><div class="v2-rank-medal ${rank<=3?`v2-rank-medal-${rank}`:""}">${rank<=3?medalHtml(rank):rank}</div><div class="v2-league-avatar">${avatarMarkup(item.avatar,String(item.name||"?").slice(0,1))}</div><div class="v2-league-user"><b>${premiumMark(item)}${esc(item.name||"")}</b><small>${item.country?`${esc(item.country)} · `:""}${rank<=3?esc(tx("reward")):leagueLabel(currentLeague)}</small></div><strong>${points} ${esc(tx("xp"))}</strong></button>`}).join("")}</div>`;
+  const size=Number(serverGamification?.league_size||rows.length);
+  document.getElementById("page-league").innerHTML=`<div class="v2-page-head v2-league-head"><h1 class="v2-title">${esc(tx("league"))}</h1><p class="v2-subtitle">${esc(leagueSizeLabel(size))} · ${Number(mine?.league_points??mine?.xp??0)} ${esc(tx("leaguePoints"))}</p></div><div class="v2-cup-podium">${podiumNames.map((name,index)=>`<div class="v2-cup-stage ${index===1?"large":index===0?"medium":"small"} ${name===currentLeague?"active":""}"><span>${medalHtml(podiumRanks[index])}</span><small>${esc(leagueLabel(name))}</small></div>`).join("")}</div><div class="v2-league-list">${rows.map((item,index)=>{const rank=Number(item.rank||1);const points=Number(item.league_points??item.xp??0);return `<button class="v2-league-row ${item.is_current_user?"current":""} ${rank<=3?"top":""}" onclick="V2.openLeagueUser(${index})"><div class="v2-rank-medal ${rank<=3?`v2-rank-medal-${rank}`:""}">${rank<=3?medalHtml(rank):rank}</div><div class="v2-league-avatar">${avatarMarkup(item.avatar,String(item.name||"?").slice(0,1))}</div><div class="v2-league-user"><b>${premiumMark(item)}${esc(item.name||"")}</b><small>${item.country?`${esc(item.country)} · `:""}${rank<=3?esc(tx("reward")):leagueLabel(currentLeague)}</small></div><strong>${points} ${esc(tx("xp"))}</strong></button>`}).join("")}</div>`;
 }
 function telegramUserUrl(item){
   const username=String(item?.username||"").trim().replace(/^@/,"");
@@ -460,12 +589,62 @@ function telegramUserUrl(item){
   if(/^\d{5,}$/.test(telegramId))return `tg://user?id=${encodeURIComponent(telegramId)}`;
   return "";
 }
-function openLeagueUserChat(index){
+async function openLeagueUserChat(index){
   const item=leagueEntries()[Number(index)];
   const url=telegramUserUrl(item);
   if(!url){toast(tx("telegramChatUnavailable"));return}
+  const message=document.getElementById(`v2-league-message-${Number(index)}`)?.value||"";
+  if(message)await copyLeagueMessage(message);
   bridge.reportEvent?.("league_user_chat_opened",{rank:Number(item.rank||0),has_username:Boolean(item.username),level:LEVEL_KEY});
   openExternalUrl(url);
+}
+async function createChallengeFromLeague(index){
+  const item=leagueEntries()[Number(index)];
+  const telegramId=Number(item?.telegram_id||0);
+  if(!telegramId||!bridge.createChallenge){toast(challengeText("cannotStart"));return}
+  try{
+    const result=await bridge.createChallenge({opponent_telegram_id:telegramId,level:LEVEL_KEY,lang});
+    if(!result?.ok)throw Object.assign(new Error(result?.error||"challenge_failed"),{code:result?.error});
+    await loadServerChallenges(true);
+    toast(challengeText("duelSent"));
+    document.getElementById("v2-sheet")?.remove();
+  }catch(error){toast(error?.code||challengeText("cannotStart"))}
+}
+async function respondChallenge(challengeId,action){
+  if(!bridge.respondChallenge)return;
+  try{
+    const result=await bridge.respondChallenge({challenge_id:Number(challengeId),action});
+    if(!result?.ok)throw Object.assign(new Error(result?.error||"challenge_failed"),{code:result?.error});
+    await loadServerChallenges(true);
+    toast(action==="accept"?challengeText("duelAccepted"):challengeText("reject"));
+  }catch(error){toast(error?.code||challengeText("cannotStart"))}
+}
+async function startChallenge(challengeId){
+  if(!bridge.startChallenge)return;
+  testMode="challenge";activeChallenge=null;challengeStartedAt=Date.now();practiceSession=null;mistakeReviewSession=null;
+  showPage("quiz");renderDuoQuizLoading(challengeText("duelStart"));
+  try{
+    const result=await bridge.startChallenge({challenge_id:Number(challengeId)});
+    if(!result?.session)throw Object.assign(new Error(result?.error||"challenge_failed"),{code:result?.error});
+    activeChallenge=result.session;
+    questions=(result.session.questions||[]).map(item=>({serverId:item.id,q:item.prompt,opts:item.options,a:Number(item.answer_index),audioText:item.audio_text||"",sentence:item.sentence||"",explanation:item.explanation||""}));
+    answers=Array(questions.length).fill(null);qIndex=0;duoQuizChecked=false;renderQuizQuestion();
+  }catch(error){toast(error?.code||challengeText("cannotStart"));showPage("profile")}
+}
+async function submitChallengeResult(){
+  if(!activeChallenge?.challenge_id||!bridge.submitChallenge)return;
+  const duration=Math.round((Date.now()-Number(challengeStartedAt||Date.now()))/1000);
+  try{
+    const result=await bridge.submitChallenge({
+      challenge_id:Number(activeChallenge.challenge_id),
+      answers:questions.map((question,index)=>({question_id:question.serverId,selected_index:answers[index]})),
+      duration_seconds:duration
+    });
+    if(result?.ok){
+      await loadServerChallenges(true);
+      document.getElementById("score-box")?.insertAdjacentHTML("beforeend",`<div class="v2-result-analysis"><div><b>${esc(challengeText("duels"))}</b><small>${esc(challengeResultLabel(result.challenge||{}))}</small></div><div><b>${Number(result.score||0)}</b><small>${Number(result.total||0)} ${esc(tx("correct"))}</small></div></div>`);
+    }
+  }catch(error){toast(error?.code||challengeText("cannotStart"))}
 }
 function openLeagueUser(index){
   const item=leagueEntries()[Number(index)];
@@ -473,7 +652,7 @@ function openLeagueUser(index){
   document.getElementById("v2-sheet")?.remove();
   const points=Number(item.league_points??item.xp??0);
   const root=document.createElement("div");root.id="v2-sheet";root.className="v2-sheet-backdrop";
-  root.innerHTML=`<div class="v2-sheet v2-user-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-league-avatar large">${avatarMarkup(item.avatar,String(item.name||"?").slice(0,1))}</div><h2>${premiumMark(item)}${esc(item.name||tx("userProfile"))}</h2><p>${esc(tx("league"))}: ${esc(leagueLabel())} · ${Number(item.rank||0)} · ${points} ${esc(tx("xp"))}</p><div class="v2-sheet-actions single">${item.is_current_user?"":`<button class="v2-primary" onclick="V2.openLeagueUserChat(${Number(index)})">${esc(tx("telegramChat"))}</button>`}<button class="v2-secondary" onclick="document.getElementById('v2-sheet')?.remove()">${esc(tx("back"))}</button></div></div>`;
+  root.innerHTML=`<div class="v2-sheet v2-user-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-league-avatar large">${avatarMarkup(item.avatar,String(item.name||"?").slice(0,1))}</div><h2>${premiumMark(item)}${esc(item.name||tx("userProfile"))}</h2><p>${esc(tx("league"))}: ${esc(leagueLabel())} · ${Number(item.rank||0)} · ${points} ${esc(tx("xp"))}</p>${leagueProfileSections(Number(index),item)}<div class="v2-sheet-actions">${item.is_current_user?"":`<button class="v2-secondary" onclick="V2.createChallengeFromLeague(${Number(index)})">${esc(challengeText("duelStart"))}</button><button class="v2-primary" onclick="V2.openLeagueUserChat(${Number(index)})">${esc(tx("telegramChat"))}</button>`}<button class="v2-secondary" onclick="document.getElementById('v2-sheet')?.remove()">${esc(tx("back"))}</button></div></div>`;
   root.onclick=()=>root.remove();document.body.appendChild(root);
 }
 function renderAchievements(){
@@ -499,6 +678,7 @@ function showPage(next){
   if(next==="quiz")renderQuizFilters();
   if(next==="mistakes")loadServerMistakes();
   if(next==="profile")loadServerProfile();
+  if(next==="profile")loadServerChallenges();
   if(["home","profile","league"].includes(next))loadServerGamification();
   if(next==="voice"){renderVoiceFrame();renderHome()}
   document.getElementById(`page-${next}`)?.scrollTo(0,0);
@@ -695,6 +875,7 @@ function quizModeTitle(mode=testMode){
   if(mode==="training")return tx("training");
   if(mode==="mistakes")return tx("mistakes");
   if(mode==="jump")return tx("jumpTestTitle");
+  if(mode==="challenge")return challengeText("duelStart");
   return `${tx("lesson")} ${quizLesson}`;
 }
 function quizProgressPercent(){
@@ -765,7 +946,10 @@ function renderDuoQuizResult({mode,score,total,percent,wrong,session}){
   const box=document.getElementById("score-box");box.style.display="block";
   const status=percent>=90?tx("excellent"):percent>=60?tx("good"):tx("repeat");
   const wrongHtml=wrong.length?`<div class="v2-duo-wrong-list">${wrong.slice(0,4).map(item=>`<div><b>${esc(item.question)}</b><small>${esc(tx("correctAnswer"))}: ${esc(item.correct_answer||"")}</small></div>`).join("")}</div>`:`<p class="v2-duo-sub">${esc(tx("noErrors"))}</p>`;
-  box.innerHTML=`<div class="v2-duo-shell v2-duo-result-shell"><div class="v2-duo-top"><button class="v2-duo-close" onclick="V2.quizBack()" aria-label="${esc(tx("back"))}">‹</button><div class="v2-duo-progress"><i style="width:100%"></i></div><span></span></div><main class="v2-duo-main v2-duo-center"><div class="v2-duo-result-ring">${percent}%</div><div class="v2-duo-kicker">${esc(tx("testComplete"))}</div><h1 class="v2-duo-question">${esc(status||tx("youGot"))}</h1><div class="v2-duo-stats"><span><b>${score}</b><small>${esc(tx("correct"))}</small></span><span><b>${total-score}</b><small>${esc(tx("mistakesShort"))}</small></span></div>${wrongHtml}</main><footer class="v2-duo-footer two"><button class="v2-duo-secondary" onclick="V2.quizBack()">${esc(tx("back"))}</button><button class="v2-duo-check active" onclick="V2.restartQuizFlow()">${esc(tx("retryLesson"))}</button></footer></div>`;
+  const footer=mode==="challenge"
+    ? `<footer class="v2-duo-footer"><button class="v2-duo-check active" onclick="V2.quizBack()">${esc(tx("back"))}</button></footer>`
+    : `<footer class="v2-duo-footer two"><button class="v2-duo-secondary" onclick="V2.quizBack()">${esc(tx("back"))}</button><button class="v2-duo-check active" onclick="V2.restartQuizFlow()">${esc(tx("retryLesson"))}</button></footer>`;
+  box.innerHTML=`<div class="v2-duo-shell v2-duo-result-shell"><div class="v2-duo-top"><button class="v2-duo-close" onclick="V2.quizBack()" aria-label="${esc(tx("back"))}">‹</button><div class="v2-duo-progress"><i style="width:100%"></i></div><span></span></div><main class="v2-duo-main v2-duo-center"><div class="v2-duo-result-ring">${percent}%</div><div class="v2-duo-kicker">${esc(tx("testComplete"))}</div><h1 class="v2-duo-question">${esc(status||tx("youGot"))}</h1><div class="v2-duo-stats"><span><b>${score}</b><small>${esc(tx("correct"))}</small></span><span><b>${total-score}</b><small>${esc(tx("mistakesShort"))}</small></span></div>${wrongHtml}</main>${footer}</div>`;
 }
 function restartQuizFlow(){
   const mode=lastDuoRestart?.mode;
@@ -773,6 +957,7 @@ function restartQuizFlow(){
   if(mode==="mock"){startMock(lastDuoRestart.level||LEVEL_KEY);return}
   if(mode==="training"){startTraining(lastDuoRestart.skill||"listening");return}
   if(mode==="mistakes"){startMistakeReview();return}
+  if(mode==="challenge"&&activeChallenge?.challenge_id){startChallenge(activeChallenge.challenge_id);return}
   startQuiz();
 }
 renderQuizStart=renderDuoQuizStart;
@@ -859,7 +1044,7 @@ function openCharacterDictionary(){
 function openExternalUrl(url){
   const target=String(url||"").trim();
   if(!target)return false;
-  const tg=window.Telegram?.WebApp;
+  const tg=window.Telegram?.WebApp||parent.Telegram?.WebApp;
   if(target.startsWith("tg://")){window.location.href=target;return true}
   if(target.includes("t.me/")&&typeof tg?.openTelegramLink==="function"){tg.openTelegramLink(target);return true}
   if(typeof tg?.openLink==="function"){tg.openLink(target);return true}
@@ -931,6 +1116,14 @@ finishQuiz=function(){
     testMode="";
     return;
   }
+  if(mode==="challenge"){
+    rememberMistakes(lastWrongItems);
+    renderDuoQuizResult({mode,score,total,percent,wrong,session:null});
+    submitChallengeResult();
+    renderProfile();
+    testMode="";
+    return;
+  }
   saveQuizAttempt(quizLesson,score,total,percent);
   state.quizScores[quizLesson]={score,total,percent};
   saveState();
@@ -979,8 +1172,8 @@ function applyLaunch(){
 }
 
 function mount(){
-  normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,startLessonJumpTest,confirmLessonJump,selectQuizAnswer,checkQuizAnswer,continueQuizQuestion,restartQuizFlow,playQuizAudio,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,reloadCoursePath,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser,openLeagueUserChat};
+  syncV2ViewportHeight();normalizeMeta();document.body.innerHTML=appMarkup();
+  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,startLessonJumpTest,confirmLessonJump,selectQuizAnswer,checkQuizAnswer,continueQuizQuestion,restartQuizFlow,playQuizAudio,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,reloadCoursePath,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser,openLeagueUserChat,selectLeagueTemplate,createChallengeFromLeague,respondChallenge,startChallenge};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;syncGamification(ACCESS.gamification);renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
   syncGamification(ACCESS.gamification);setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();loadServerSectionPlan().catch(()=>{});applyLaunch();showOnboarding();
