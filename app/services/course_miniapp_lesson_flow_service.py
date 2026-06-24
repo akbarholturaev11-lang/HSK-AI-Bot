@@ -215,6 +215,90 @@ class CourseMiniAppLessonFlowService:
                 previous.add(str(key))
         return previous
 
+    @staticmethod
+    def _required_previous_section_keys(section: dict) -> set[str]:
+        try:
+            section_no = int(section.get("section_no") or 1)
+        except (TypeError, ValueError):
+            section_no = 1
+        if section_no <= 1:
+            return set()
+        prefix = str(section.get("section_key") or "").split(".", 1)[0]
+        return {f"{prefix}.{index}" for index in range(1, section_no)}
+
+    @staticmethod
+    def _progress_completed_count(progress) -> int:
+        try:
+            return int(getattr(progress, "completed_lessons_count", 0) or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    @classmethod
+    def _book_lesson_unlocked(cls, lesson, progress) -> bool:
+        try:
+            lesson_order = int(getattr(lesson, "lesson_order", 0) or 0)
+        except (TypeError, ValueError):
+            lesson_order = 0
+        if lesson_order <= 1:
+            return True
+        if not progress:
+            return False
+        progress_level = str(getattr(progress, "level", "") or "").lower()
+        lesson_level = str(getattr(lesson, "level", "") or "").lower()
+        if progress_level and lesson_level and progress_level != lesson_level:
+            return False
+        return lesson_order <= cls._progress_completed_count(progress) + 1
+
+    @classmethod
+    def _book_lesson_already_completed(cls, lesson, progress) -> bool:
+        try:
+            lesson_order = int(getattr(lesson, "lesson_order", 0) or 0)
+        except (TypeError, ValueError):
+            return False
+        if lesson_order <= 0 or not progress:
+            return False
+        progress_level = str(getattr(progress, "level", "") or "").lower()
+        lesson_level = str(getattr(lesson, "level", "") or "").lower()
+        if progress_level and lesson_level and progress_level != lesson_level:
+            return False
+        return lesson_order <= cls._progress_completed_count(progress)
+
+    @staticmethod
+    def _section_ref(section: dict | None, *, lesson_order: int | None = None) -> dict | None:
+        if not section:
+            return None
+        try:
+            section_no = int(section.get("section_no") or 1)
+        except (TypeError, ValueError):
+            section_no = 1
+        raw_key = str(section.get("section_key") or "").strip()
+        if not raw_key and lesson_order:
+            raw_key = f"{lesson_order}.{section_no}"
+        try:
+            book_lesson_order = int(str(raw_key).split(".", 1)[0])
+        except (TypeError, ValueError):
+            book_lesson_order = int(lesson_order or 0)
+        return {
+            "section_key": raw_key,
+            "section_no": section_no,
+            "book_lesson_order": book_lesson_order,
+        }
+
+    @staticmethod
+    def _book_lesson_ref(lesson_order: int | str | None) -> dict | None:
+        try:
+            order = int(lesson_order or 0)
+        except (TypeError, ValueError):
+            return None
+        if order <= 0:
+            return None
+        return {
+            "book_lesson_order": order,
+            "lesson_id": order,
+            "section_key": f"{order}.1",
+            "section_no": 1,
+        }
+
     async def _completed_section_keys(self, *, telegram_id: int, lesson_id: int) -> set[str]:
         result = await self.session.execute(
             select(CourseMiniAppEvent.dedupe_key).where(
@@ -233,11 +317,7 @@ class CourseMiniAppLessonFlowService:
 
     @staticmethod
     def _section_unlocked(section: dict, completed: set[str]) -> bool:
-        section_no = int(section.get("section_no") or 1)
-        if section_no <= 1:
-            return True
-        previous_key = f"{str(section.get('section_key')).split('.', 1)[0]}.{section_no - 1}"
-        return previous_key in completed
+        return CourseMiniAppLessonFlowService._required_previous_section_keys(section).issubset(completed)
 
     @staticmethod
     def _section_payload(payload: dict, section: dict) -> dict:
@@ -334,6 +414,10 @@ class CourseMiniAppLessonFlowService:
         if str(getattr(lesson, "level", "") or "") not in self._allowed_level_candidates(getattr(user, "level", None)):
             return user, None, lesson, "course_lesson_not_unlocked"
 
+        progress = await self.progress_repo.get_by_user_id(user.id, for_update=True)
+        if not self._book_lesson_unlocked(lesson, progress):
+            return user, progress, lesson, "course_lesson_not_unlocked"
+
         access = CourseMiniAppAccessService(self.session)
         trial = CourseTrialService(self.session)
         paid = access.is_paid_user(user)
@@ -344,7 +428,6 @@ class CourseMiniAppLessonFlowService:
             if not await trial.ensure_trial_lesson(user, lesson.id):
                 return user, None, lesson, "free_feature_limit_reached"
 
-        progress = await self.progress_repo.get_by_user_id(user.id, for_update=True)
         if not progress:
             progress = await self.progress_repo.create(
                 user_id=user.id,
@@ -353,7 +436,10 @@ class CourseMiniAppLessonFlowService:
                 current_step="intro",
                 waiting_for="none",
             )
-        elif int(getattr(progress, "current_lesson_id", 0) or 0) != int(lesson.id):
+        elif (
+            int(getattr(progress, "current_lesson_id", 0) or 0) != int(lesson.id)
+            and not self._book_lesson_already_completed(lesson, progress)
+        ):
             progress.level = str(lesson.level)
             progress.homework_status = "none"
             progress.needs_review_prompt = False
@@ -734,7 +820,7 @@ class CourseMiniAppLessonFlowService:
         section_key: str | int | None = None,
         client_completed_sections=None,
     ) -> dict:
-        user, _, lesson, error = await self._context(
+        user, _progress, lesson, error = await self._context(
             telegram_id,
             level=level,
             lesson_order=lesson_order,
@@ -857,7 +943,7 @@ class CourseMiniAppLessonFlowService:
         section_key: str | int | None = None,
         client_completed_sections=None,
     ) -> dict:
-        user, _, lesson, error = await self._context(
+        user, progress, lesson, error = await self._context(
             telegram_id,
             level=level,
             lesson_order=lesson_order,
@@ -988,14 +1074,26 @@ class CourseMiniAppLessonFlowService:
                 level=str(lesson.level),
             )
         if book_lesson_completed:
-            result = await StudyMiniAppService(self.session).complete_v2_lesson(
-                telegram_id,
-                level=self._content_level(level),
-                lesson_order=int(lesson.lesson_order),
-                percent=percent,
-            )
-            if not result.get("ok"):
-                return result
+            if self._book_lesson_already_completed(lesson, progress):
+                next_lesson = await self.lesson_repo.get_next_lesson(
+                    level=str(lesson.level),
+                    lesson_order=int(lesson.lesson_order),
+                )
+                result = {
+                    "ok": True,
+                    "completed_lesson": int(lesson.lesson_order),
+                    "next_lesson": getattr(next_lesson, "lesson_order", None),
+                    "completed_lessons_count": self._progress_completed_count(progress),
+                }
+            else:
+                result = await StudyMiniAppService(self.session).complete_v2_lesson(
+                    telegram_id,
+                    level=self._content_level(level),
+                    lesson_order=int(lesson.lesson_order),
+                    percent=percent,
+                )
+                if not result.get("ok"):
+                    return result
             book_reward = await self.gamification.award(
                 user,
                 activity_type="book_lesson",
@@ -1092,6 +1190,8 @@ class CourseMiniAppLessonFlowService:
             (item for item in sections if int(item["section_no"]) == int(section["section_no"]) + 1),
             None,
         )
+        next_section_ref = self._section_ref(next_section, lesson_order=int(lesson.lesson_order))
+        next_book_lesson_ref = self._book_lesson_ref(result.get("next_lesson")) if book_lesson_completed else None
         return {
             **result,
             "percent": percent,
@@ -1109,5 +1209,7 @@ class CourseMiniAppLessonFlowService:
             "chapter_label": section["chapter_label"],
             "chapter_completed": chapter_completed,
             "book_lesson_completed": book_lesson_completed,
-            "next_section": next_section["section_key"] if next_section else None,
+            "next_section": next_section_ref,
+            "next_section_key": next_section_ref["section_key"] if next_section_ref else None,
+            "next_book_lesson": next_book_lesson_ref,
         }

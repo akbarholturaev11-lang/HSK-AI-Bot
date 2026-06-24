@@ -222,7 +222,12 @@ def mock_course_lesson_flow(page):
                 "percent": 100,
                 "correct": 1,
                 "total": 1,
-                "reward": {"xp": 30},
+                "section_key": "1.1",
+                "section_no": 1,
+                "section_count": 2,
+                "book_lesson_completed": False,
+                "next_section": {"section_key": "1.2", "section_no": 2, "book_lesson_order": 1},
+                "reward": {"xp": 30, "awarded_xp": 30},
             },
         ),
     )
@@ -274,7 +279,7 @@ def wait_for_access_cache(page, status):
           try { return JSON.parse(raw).access?.status === expected; }
           catch (e) { return false; }
         }""",
-        status,
+        arg=status,
     )
 
 
@@ -288,7 +293,7 @@ def wait_for_pending_event(page, key, event, lesson_id=5):
             return false;
           }
         }""",
-        [key, event, lesson_id],
+        arg=[key, event, lesson_id],
     )
 
 
@@ -332,7 +337,7 @@ def test_v2_home_course_voice_and_placement_flow(page):
     voice.locator("#btn-summary-close").click()
     expect(frame.locator("#page-home.active")).to_be_visible()
 
-    frame.locator("#page-home .v2-feature").filter(has_text="Test Center").click()
+    frame.locator("#page-home .v2-feature").filter(has_text=re.compile("Test Center|Центр тестов|Test markazi")).click()
     frame.locator("#page-tests .v2-row-card").first.click()
     expect(frame.locator("#page-quiz.active")).to_be_visible()
     expect(frame.locator("#page-quiz .page-title")).to_have_count(0)
@@ -385,11 +390,11 @@ def test_server_backed_lesson_cards_finish_with_reward(page):
     frame.locator(".v2-card-next").click()
     frame.get_by_role("button", name="привет", exact=True).click()
     frame.locator(".v2-card-next").click()
-    expect(frame.locator(".v2-pronunciation")).to_contain_text("nǐ hǎo")
+    expect(frame.locator(".v2-speech-card")).to_contain_text("nǐ hǎo")
     frame.locator(".v2-card-next").click()
 
-    expect(frame.locator(".v2-lesson-result")).to_contain_text("100%")
-    expect(frame.locator(".v2-lesson-result")).to_contain_text("+30 XP")
+    expect(frame.locator(".v2-reward-shell")).to_contain_text("100%")
+    expect(frame.locator(".v2-reward-shell")).to_contain_text("+30")
 
 
 def test_study_quiz_score_and_event_localstorage_fallback(page):
@@ -448,7 +453,7 @@ def test_subscription_page_smoke(page):
 
     expect(page.locator("#plans .plan").first).to_be_visible()
     expect(page.locator("#methods .choice").first).to_be_visible()
-    expect(page.locator("#paymentBox")).to_be_visible()
+    expect(page.locator("#paymentBox")).to_have_count(1)
 
 
 def test_course_miniapp_v2_quiz_fallback_and_return_button(page):

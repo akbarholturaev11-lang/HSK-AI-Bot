@@ -60,6 +60,15 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
             "reinforcement_tasks": tasks,
         }
 
+    @classmethod
+    def payload_with_word_count(cls, count: int):
+        payload = cls.payload()
+        payload["vocabulary"] = [
+            {"zh": f"词{index}", "pinyin": f"ci{index}", "meaning": f"word {index}"}
+            for index in range(1, count + 1)
+        ]
+        return payload
+
     def test_flow_has_three_or_four_active_words_and_required_activity_types(self):
         service = CourseMiniAppLessonFlowService(SimpleNamespace())
         first = service._build_cards(self.payload(), lang="ru", lesson_order=1)
@@ -161,6 +170,29 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
         self.assertEqual(hsk4[3]["chapter_label"], "B")
         self.assertTrue(all(len(item["active_words"]) >= 2 for item in hsk4))
 
+    def test_book_lesson_unlock_follows_completed_lesson_count(self):
+        service = CourseMiniAppLessonFlowService(SimpleNamespace())
+        progress = SimpleNamespace(level="hsk1", completed_lessons_count=1)
+
+        self.assertTrue(
+            service._book_lesson_unlocked(
+                SimpleNamespace(level="hsk1", lesson_order=2),
+                progress,
+            )
+        )
+        self.assertFalse(
+            service._book_lesson_unlocked(
+                SimpleNamespace(level="hsk1", lesson_order=3),
+                progress,
+            )
+        )
+        self.assertFalse(
+            service._book_lesson_unlocked(
+                SimpleNamespace(level="hsk2", lesson_order=2),
+                progress,
+            )
+        )
+
 
 class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
@@ -182,11 +214,12 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
             award=AsyncMock(return_value={"xp": 30, "awarded_xp": 30, "streak": 1, "league": "Bronze"})
         )
 
-    def responses(self, *, wrong_card_id=None):
-        sections = self.service._section_plan(self.payload, level="hsk1", lesson_order=1)
-        section = sections[1]
+    def responses(self, *, wrong_card_id=None, section_key="1.2", payload=None):
+        payload = payload or self.payload
+        sections = self.service._section_plan(payload, level="hsk1", lesson_order=1)
+        section = next(item for item in sections if item["section_key"] == section_key)
         cards = self.service._build_cards(
-            self.service._section_payload(self.payload, section),
+            self.service._section_payload(payload, section),
             lang="ru",
             lesson_order=1,
         )
@@ -323,6 +356,166 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(result["ok"])
         self.assertEqual(result["percent"], 100)
         self.assertEqual(scored_count, result["total"])
+
+    async def test_section_1_1_completion_returns_next_section_1_2(self):
+        payload = CourseMiniAppLessonFlowBuilderTests.payload_with_word_count(6)
+        _, responses = self.responses(section_key="1.1", payload=payload)
+        self.service.lesson_service = SimpleNamespace(get_payload=AsyncMock(return_value=payload))
+        self.service._completed_section_keys = AsyncMock(return_value=set())
+        study = SimpleNamespace(complete_v2_lesson=AsyncMock())
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+        access = SimpleNamespace(
+            consume_free_use=AsyncMock(return_value={"allowed": True, "recorded": True})
+        )
+
+        with (
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.StudyMiniAppService",
+                return_value=study,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAccessService",
+                return_value=access,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAnalyticsService",
+                return_value=analytics,
+            ),
+        ):
+            result = await self.service.complete_flow(
+                123,
+                level="hsk1",
+                lesson_order=1,
+                lang="ru",
+                responses=responses,
+                section_key="1.1",
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertFalse(result["book_lesson_completed"])
+        self.assertEqual(result["next_section"]["section_key"], "1.2")
+        self.assertEqual(result["next_section"]["section_no"], 2)
+        study.complete_v2_lesson.assert_not_called()
+
+    async def test_section_1_2_completion_returns_next_section_1_3_without_book_completion(self):
+        payload = CourseMiniAppLessonFlowBuilderTests.payload_with_word_count(6)
+        _, responses = self.responses(section_key="1.2", payload=payload)
+        self.service.lesson_service = SimpleNamespace(get_payload=AsyncMock(return_value=payload))
+        self.service._completed_section_keys = AsyncMock(return_value={"1.1"})
+        study = SimpleNamespace(complete_v2_lesson=AsyncMock())
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+        access = SimpleNamespace(
+            consume_free_use=AsyncMock(return_value={"allowed": True, "recorded": True})
+        )
+
+        with (
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.StudyMiniAppService",
+                return_value=study,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAccessService",
+                return_value=access,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAnalyticsService",
+                return_value=analytics,
+            ),
+        ):
+            result = await self.service.complete_flow(
+                123,
+                level="hsk1",
+                lesson_order=1,
+                lang="ru",
+                responses=responses,
+                section_key="1.2",
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertFalse(result["book_lesson_completed"])
+        self.assertEqual(result["next_section"]["section_key"], "1.3")
+        self.assertEqual(result["next_section_key"], "1.3")
+        study.complete_v2_lesson.assert_not_called()
+
+    async def test_last_section_completion_unlocks_next_book_lesson_section_2_1(self):
+        payload = CourseMiniAppLessonFlowBuilderTests.payload_with_word_count(6)
+        _, responses = self.responses(section_key="1.3", payload=payload)
+        self.service.lesson_service = SimpleNamespace(get_payload=AsyncMock(return_value=payload))
+        self.service._completed_section_keys = AsyncMock(return_value={"1.1", "1.2"})
+        study = SimpleNamespace(
+            complete_v2_lesson=AsyncMock(
+                return_value={"ok": True, "completed_lesson": 1, "next_lesson": 2}
+            )
+        )
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+        access = SimpleNamespace(
+            consume_free_use=AsyncMock(return_value={"allowed": True, "recorded": True})
+        )
+
+        with (
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.StudyMiniAppService",
+                return_value=study,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAccessService",
+                return_value=access,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAnalyticsService",
+                return_value=analytics,
+            ),
+        ):
+            result = await self.service.complete_flow(
+                123,
+                level="hsk1",
+                lesson_order=1,
+                lang="ru",
+                responses=responses,
+                section_key="1.3",
+            )
+
+        self.assertTrue(result["book_lesson_completed"])
+        self.assertIsNone(result["next_section"])
+        self.assertEqual(result["next_book_lesson"]["section_key"], "2.1")
+        self.assertEqual(result["next_book_lesson"]["section_no"], 1)
+        study.complete_v2_lesson.assert_awaited_once()
+
+    async def test_locked_section_1_4_requires_all_previous_sections(self):
+        payload = CourseMiniAppLessonFlowBuilderTests.payload_with_word_count(8)
+        self.service.lesson_service = SimpleNamespace(get_payload=AsyncMock(return_value=payload))
+        self.service._completed_section_keys = AsyncMock(return_value={"1.1", "1.2"})
+
+        result = await self.service.get_flow(
+            123,
+            level="hsk1",
+            lesson_order=1,
+            lang="ru",
+            section_key="1.4",
+        )
+
+        self.assertEqual(result, {"ok": False, "error": "course_section_not_unlocked"})
+
+    async def test_completed_section_1_1_can_be_reopened(self):
+        payload = CourseMiniAppLessonFlowBuilderTests.payload_with_word_count(6)
+        self.service.lesson_service = SimpleNamespace(get_payload=AsyncMock(return_value=payload))
+        self.service._completed_section_keys = AsyncMock(return_value={"1.1"})
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+
+        with patch(
+            "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAnalyticsService",
+            return_value=analytics,
+        ):
+            result = await self.service.get_flow(
+                123,
+                level="hsk1",
+                lesson_order=1,
+                lang="ru",
+                section_key="1.1",
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["flow"]["section_key"], "1.1")
 
 
 if __name__ == "__main__":

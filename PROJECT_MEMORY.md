@@ -207,6 +207,29 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-24 — Course section sequence and next-section routing fix
+
+Changed:
+- Course Mini App book lesson sections now unlock only when all previous sections in the same book lesson are completed.
+- Book lesson access now follows `course_progress.completed_lessons_count`, so manual requests cannot jump to later book lessons before prior book lessons are complete.
+- Section completion response now returns structured `next_section` and `next_book_lesson` refs; the frontend next button uses those server refs and only falls back within the current book lesson.
+
+Why:
+- Users could finish `1.1` and jump to `1.3`/another section because frontend next/current logic relied too much on local calculation and backend section unlock only checked the immediate previous key.
+
+Files touched:
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/static/study-v2.js`
+- `tests/test_course_miniapp_lesson_flow.py`
+- `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- Payment/subscription approval logic was not changed.
+- Existing corrupted local section completion can still be rejected server-side with `course_section_not_unlocked`; users may need to reopen the first incomplete section.
+
+Follow-up:
+- After deploy, smoke-test in Telegram WebView: complete `1.1`, press next to `1.2`, then verify locked manual taps show the previous-section message/paywall.
+
 ### 2026-06-24 — AI Voice paid budget integration
 
 Changed:

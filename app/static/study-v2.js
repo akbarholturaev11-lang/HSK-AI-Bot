@@ -153,6 +153,32 @@ function completedLessonSectionKeys(lesson){
   if(bookLessonIsDone(lesson.n))return sections.map(section=>section.key);
   return sections.filter(localSectionDone).map(section=>section.key);
 }
+function sectionRef(value,fallbackLesson=quizLesson){
+  if(!value)return null;
+  if(typeof value==="object"){
+    const key=String(value.section_key||"").trim();
+    const lesson=Number(value.book_lesson_order||value.lesson_id||key.split(".")[0]||fallbackLesson||1);
+    const no=Number(value.section_no||key.split(".")[1]||1);
+    return{lesson,section_no:no||1,section_key:key||`${lesson}.${no||1}`};
+  }
+  const raw=String(value||"").trim();if(!raw)return null;
+  const parts=raw.split(".");
+  const lesson=Number(parts[0]||fallbackLesson||1);
+  const no=Number(parts[1]||1);
+  return{lesson,section_no:no||1,section_key:raw.includes(".")?raw:`${lesson}.${no||1}`};
+}
+function safeSectionKey(value){return String(value||"").replace(/[^0-9.]/g,"")}
+function completionNextSection(result){
+  const serverNext=sectionRef(result?.next_section,lessonFlow?.lesson_id||quizLesson);
+  if(serverNext)return serverNext;
+  if(result?.book_lesson_completed)return sectionRef(result?.next_book_lesson||result?.next_lesson,Number(result?.next_lesson||lessonFlow?.lesson_id||quizLesson)+1);
+  const currentKey=String(result?.section_key||lessonFlow?.section_key||"");
+  const lessonNo=Number(currentKey.split(".")[0]||lessonFlow?.lesson_id||quizLesson||1);
+  const sectionNo=Number(result?.section_no||currentKey.split(".")[1]||lessonFlow?.section_no||1);
+  const sections=lessonSections(lessonByNumber(lessonNo));
+  if(sectionNo&&sectionNo<sections.length)return sectionRef(`${lessonNo}.${sectionNo+1}`,lessonNo);
+  return sectionRef(result?.next_book_lesson||result?.next_lesson,lessonNo+1);
+}
 function markSectionDone(sectionKey){
   if(!sectionKey)return;
   meta.completedSections=meta.completedSections||{};
@@ -492,7 +518,8 @@ async function submitLessonFlow(){
     if(result.book_lesson_completed&&!state.done.includes(lessonFlow.lesson_id)){state.done.push(lessonFlow.lesson_id);saveState()}
     if(ACCESS.status!=="active"){meta.trialCourseCompleted=true;write(META_KEY,meta)}
     syncGamification(result.reward,true);renderAll();
-    const paid=ACCESS.status==="active",next=result.next_lesson,nextSection=result.next_section;
+    const paid=ACCESS.status==="active",nextSection=completionNextSection(result);
+    const nextAction=nextSection?`V2.openNextSection('${safeSectionKey(nextSection.section_key)}')`:"V2.showPage('course')";
     const mistakes=Math.max(0,Number(result.total||0)-Number(result.correct||0));
     const reward=result.book_lesson_reward||result.chapter_reward||result.section_reward||result.reward||{};
     const xp=Number(reward.awarded_xp||0);
@@ -502,10 +529,10 @@ async function submitLessonFlow(){
         ? tx("chapterComplete").replace("{chapter}",result.chapter_label||lessonFlow.chapter_label||"A")
         : tx("sectionComplete");
     const action=result.book_lesson_completed
-      ? (next&&paid?`V2.openNextLesson(${Number(next)})`:"V2.showPage('course')")
-      : (nextSection?(featureAllowed("lesson")?`V2.openNextSection('${nextSection}')`:"V2.showPaywall('section_completed')"):"V2.showPage('course')");
+      ? (nextSection&&paid?nextAction:"V2.showPage('course')")
+      : (nextSection?(featureAllowed("lesson")?nextAction:"V2.showPaywall('section_completed')"):"V2.showPage('course')");
     const actionLabel=result.book_lesson_completed
-      ? (next&&paid?tx("continueCourse"):tx("course"))
+      ? (nextSection&&paid?tx("continueCourse"):tx("course"))
       : (nextSection&&!featureAllowed("lesson")?tx("unlockMore"):result.chapter_completed?tx("nextChapter"):tx("nextSection"));
     document.getElementById("page-lesson").innerHTML=rewardSequenceHtml(result,reward,{title,xp,mistakes,action,actionLabel});
   }catch(error){
@@ -514,7 +541,7 @@ async function submitLessonFlow(){
   }
 }
 function retryLessonFlow(){lessonCardIndex=0;lessonResponses={};lessonOrderRemaining=[];lessonOrderSelected=[];lessonSubmitting=false;renderLessonCard()}
-function openNextLesson(number){bridge.openRoute?.({level:LEVEL_KEY,lang,tab:"course",lesson:number})}
+function openNextLesson(number){openNextSection(`${Number(number)||1}.1`)}
 function openNextSection(sectionKey){const lesson=Number(String(sectionKey||"").split(".")[0]||quizLesson||1);openLesson(lesson,sectionKey)}
 function openWords(listen=false,lesson){closeSheet();fcFilter=lesson?Number(lesson):"all";showPage("flashcards");if(listen)toast(tx("listening"))}
 function openGrammar(lesson){closeSheet();grammarFilter=lesson?Number(lesson):"all";showPage("grammar")}
