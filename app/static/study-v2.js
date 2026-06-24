@@ -101,6 +101,9 @@ const today=()=>new Date().toLocaleDateString("en-CA");
 const yesterday=()=>{const d=new Date();d.setDate(d.getDate()-1);return d.toLocaleDateString("en-CA")};
 const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch(_){return fallback}};
 const write=(key,value)=>localStorage.setItem(key,JSON.stringify(value));
+Object.assign(copy.ru,{chooseAnswer:"Выберите ответ",continueAnswer:"Продолжить",testComplete:"Тест завершён",youGot:"Ваш результат",correctAnswer:"Правильный ответ",listenAndAnswer:"Прослушайте и выберите ответ",tapToListen:"Нажмите, чтобы слушать",repeat:"Нужно повторить",good:"Хороший результат",excellent:"Отличный результат",noErrors:"Ошибок нет"});
+Object.assign(copy.uz,{chooseAnswer:"Javobni tanlang",continueAnswer:"Davom etish",testComplete:"Test tugadi",youGot:"Natijangiz",correctAnswer:"To'g'ri javob",listenAndAnswer:"Tinglang va javobni tanlang",tapToListen:"Tinglash uchun bosing",repeat:"Qayta takrorlash kerak",good:"Yaxshi natija",excellent:"A'lo natija",noErrors:"Xato yo'q"});
+Object.assign(copy.tj,{chooseAnswer:"Ҷавобро интихоб кунед",continueAnswer:"Идома",testComplete:"Тест анҷом шуд",youGot:"Натиҷаи шумо",correctAnswer:"Ҷавоби дуруст",listenAndAnswer:"Гӯш кунед ва ҷавобро интихоб кунед",tapToListen:"Барои шунидан пахш кунед",repeat:"Бояд такрор кард",good:"Натиҷаи хуб",excellent:"Натиҷаи аъло",noErrors:"Хато нест"});
 const tx=key=>(copy[lang]||copy.ru)[key]||copy.ru[key]||key;
 const labelLevel=value=>value==="hsk4a"?"HSK 4 上":value==="hsk4b"?"HSK 4 下":String(value||LEVEL_KEY).toUpperCase().replace("HSK","HSK ");
 function avatarMarkup(value,fallback="A"){
@@ -468,6 +471,7 @@ function renderAll(){
 }
 
 function showPage(next){
+  setDuoQuizMode(next==="quiz");
   document.querySelector(".v2-app")?.classList.toggle("voice-focus",next==="voice");
   document.querySelectorAll(".v2-page,.page").forEach(el=>el.classList.toggle("active",el.id===`page-${next}`));
   const root=next==="tests"||next==="quiz"&&["placement","mock"].includes(testMode)?"home":["training","mistakes","achievements"].includes(next)||next==="quiz"&&["training","mistakes"].includes(testMode)?"profile":["flashcards","grammar","quiz","lesson"].includes(next)?"course":next;
@@ -661,6 +665,100 @@ function renderJumpAssessmentResult(){
   const box=document.getElementById("score-box");box.style.display="block";
   box.innerHTML=`<div class="v2-lesson-result"><div class="v2-result-mark">${passed?"✓":"!"}</div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${esc(section.section_key)}</div><h2>${lastQuizPercent}%</h2><p>${esc(passed?tx("jumpReady"):tx("jumpHard"))}</p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="V2.confirmLessonJump()">${esc(tx("continueSelected"))}</button><button class="v2-secondary" onclick="V2.showPage('course')">${esc(tx("backToPath"))}</button></div></div>`;
 }
+let duoQuizChecked=false,lastDuoRestart={mode:"lesson",level:LEVEL_KEY,skill:""};
+function setDuoQuizMode(active){
+  document.querySelector(".v2-app")?.classList.toggle("v2-duo-quiz-active",Boolean(active));
+}
+function quizModeTitle(mode=testMode){
+  if(mode==="placement")return tx("placement");
+  if(mode==="mock")return tx("mock");
+  if(mode==="training")return tx("training");
+  if(mode==="mistakes")return tx("mistakes");
+  if(mode==="jump")return tx("jumpTestTitle");
+  return `${tx("lesson")} ${quizLesson}`;
+}
+function quizProgressPercent(){
+  const total=Math.max(Number(questions?.length||0),1);
+  return Math.round(((Number(qIndex||0)+(duoQuizChecked?1:0))/total)*100);
+}
+function questionAnswerSelected(index=qIndex){return answers?.[index]!==null&&answers?.[index]!==undefined}
+function quizPrompt(question){
+  if(question?.audioText)return tx("listenAndAnswer");
+  return tr(question?.q)||tx("chooseAnswer");
+}
+function quizCorrectText(question){
+  const options=question?.opts||[];
+  return options[Number(question?.a)]||"";
+}
+function renderDuoQuizLoading(message=tx("loadingLesson")){
+  setDuoQuizMode(true);
+  document.getElementById("score-box").style.display="none";
+  const box=document.getElementById("quiz-box");box.style.display="block";
+  box.innerHTML=`<div class="v2-duo-shell"><div class="v2-duo-top"><button class="v2-duo-close" onclick="V2.quizBack()" aria-label="${esc(tx("back"))}">‹</button><div class="v2-duo-progress"><i style="width:12%"></i></div><span></span></div><main class="v2-duo-main v2-duo-center"><div class="v2-loader-dot"></div><h2>${esc(message)}</h2></main></div>`;
+}
+function renderDuoQuizStart(){
+  setDuoQuizMode(true);duoQuizChecked=false;
+  document.getElementById("score-box").style.display="none";
+  const box=document.getElementById("quiz-box");box.style.display="block";
+  const lesson=lessonByNumber(quizLesson)||currentLesson();
+  box.innerHTML=`<div class="v2-duo-shell"><div class="v2-duo-top"><button class="v2-duo-close" onclick="V2.quizBack()" aria-label="${esc(tx("back"))}">‹</button><div class="v2-duo-progress"><i style="width:0%"></i></div><span></span></div><main class="v2-duo-main v2-duo-center"><div class="v2-duo-badge">HSK</div><div class="v2-duo-kicker">${esc(quizModeTitle())}</div><h1 class="v2-duo-question">${esc(lessonTitle(lesson)||tx("testCenter"))}</h1><p class="v2-duo-sub">${esc(tx("chooseAnswer"))}</p></main><footer class="v2-duo-footer"><button class="v2-duo-check active" onclick="startQuiz()">${esc(tx("startTest"))}</button></footer></div>`;
+}
+function renderDuoQuestion(){
+  setDuoQuizMode(true);
+  const question=questions?.[qIndex];if(!question){renderDuoQuizStart();return}
+  document.getElementById("score-box").style.display="none";
+  const box=document.getElementById("quiz-box");box.style.display="block";
+  const selected=answers[qIndex],checked=duoQuizChecked&&questionAnswerSelected(),correct=Number(question.a);
+  const isCorrect=checked&&Number(selected)===correct;
+  const optionClass=index=>{
+    const selectedClass=Number(selected)===index?" selected":"";
+    if(!checked)return selectedClass;
+    if(index===correct)return `${selectedClass} correct`;
+    if(Number(selected)===index)return `${selectedClass} incorrect`;
+    return selectedClass;
+  };
+  const optionButtons=(question.opts||[]).map((option,index)=>`<button class="v2-duo-option${optionClass(index)}" ${checked?"disabled":""} onclick="V2.selectQuizAnswer(${index})"><span>${esc(option)}</span></button>`).join("");
+  const audioCard=question.audioText?`<button class="v2-duo-audio-card" onclick="V2.playQuizAudio()" aria-label="${esc(tx("tapToListen"))}"><span class="v2-duo-speaker">🔊</span><span class="v2-duo-wave">${[18,30,44,24,36,20,40,28].map(height=>`<i style="height:${height}px"></i>`).join("")}</span><small>${esc(tx("tapToListen"))}</small></button>`:"";
+  const sentence=question.sentence?`<div class="v2-duo-sentence">${esc(question.sentence)}</div>`:"";
+  const buttonLabel=checked?tx("continueAnswer"):tx("check");
+  const buttonAction=checked?"V2.continueQuizQuestion()":"V2.checkQuizAnswer()";
+  const feedback=checked?`<aside class="v2-duo-feedback ${isCorrect?"correct":"incorrect"}"><div><b>${esc(tx(isCorrect?"correct":"incorrect"))}</b>${isCorrect?"":`<p>${esc(tx("correctAnswer"))}: <strong>${esc(quizCorrectText(question))}</strong></p>`}</div><button onclick="V2.continueQuizQuestion()">${esc(tx("continueAnswer"))}</button></aside>`:"";
+  box.innerHTML=`<div class="v2-duo-shell ${checked?"has-feedback":""}"><div class="v2-duo-top"><button class="v2-duo-close" onclick="V2.quizBack()" aria-label="${esc(tx("back"))}">‹</button><div class="v2-duo-progress"><i style="width:${quizProgressPercent()}%"></i></div><span>${qIndex+1}/${questions.length}</span></div><main class="v2-duo-main"><div class="v2-duo-kicker">${esc(quizModeTitle())}</div><h1 class="v2-duo-question">${esc(quizPrompt(question))}</h1>${audioCard}${sentence}<div class="v2-duo-options">${optionButtons}</div></main><footer class="v2-duo-footer"><button class="v2-duo-check ${questionAnswerSelected()?"active":""}" ${questionAnswerSelected()?"":"disabled"} onclick="${buttonAction}">${esc(buttonLabel)}</button></footer>${feedback}</div>`;
+}
+function selectQuizAnswer(index){if(duoQuizChecked)return;answers[qIndex]=Number(index);renderDuoQuestion()}
+function checkQuizAnswer(){if(!questionAnswerSelected())return;duoQuizChecked=true;renderDuoQuestion()}
+function continueQuizQuestion(){
+  if(!questionAnswerSelected())return;
+  if(!duoQuizChecked){checkQuizAnswer();return}
+  if(qIndex<questions.length-1){qIndex+=1;duoQuizChecked=false;renderDuoQuestion();return}
+  finishQuiz();
+}
+function nextQuestionDuo(){continueQuizQuestion()}
+function playQuizAudio(){
+  const question=questions?.[qIndex]||{};
+  playLessonAudio(String(question.audioText||question.audio_text||question.sentence||tr(question.q)||""));
+}
+function renderDuoQuizResult({mode,score,total,percent,wrong,session}){
+  setDuoQuizMode(true);duoQuizChecked=false;
+  lastDuoRestart={mode:mode||"lesson",level:session?.level||LEVEL_KEY,skill:session?.skill||""};
+  document.getElementById("quiz-box").style.display="none";
+  const box=document.getElementById("score-box");box.style.display="block";
+  const status=percent>=90?tx("excellent"):percent>=60?tx("good"):tx("repeat");
+  const wrongHtml=wrong.length?`<div class="v2-duo-wrong-list">${wrong.slice(0,4).map(item=>`<div><b>${esc(item.question)}</b><small>${esc(tx("correctAnswer"))}: ${esc(item.correct_answer||"")}</small></div>`).join("")}</div>`:`<p class="v2-duo-sub">${esc(tx("noErrors"))}</p>`;
+  box.innerHTML=`<div class="v2-duo-shell v2-duo-result-shell"><div class="v2-duo-top"><button class="v2-duo-close" onclick="V2.quizBack()" aria-label="${esc(tx("back"))}">‹</button><div class="v2-duo-progress"><i style="width:100%"></i></div><span></span></div><main class="v2-duo-main v2-duo-center"><div class="v2-duo-result-ring">${percent}%</div><div class="v2-duo-kicker">${esc(tx("testComplete"))}</div><h1 class="v2-duo-question">${esc(status||tx("youGot"))}</h1><div class="v2-duo-stats"><span><b>${score}</b><small>${esc(tx("correct"))}</small></span><span><b>${total-score}</b><small>${esc(tx("mistakesShort"))}</small></span></div>${wrongHtml}</main><footer class="v2-duo-footer two"><button class="v2-duo-secondary" onclick="V2.quizBack()">${esc(tx("back"))}</button><button class="v2-duo-check active" onclick="V2.restartQuizFlow()">${esc(tx("retryLesson"))}</button></footer></div>`;
+}
+function restartQuizFlow(){
+  const mode=lastDuoRestart?.mode;
+  if(mode==="placement"){startPlacement();return}
+  if(mode==="mock"){startMock(lastDuoRestart.level||LEVEL_KEY);return}
+  if(mode==="training"){startTraining(lastDuoRestart.skill||"listening");return}
+  if(mode==="mistakes"){startMistakeReview();return}
+  startQuiz();
+}
+renderQuizStart=renderDuoQuizStart;
+renderQuizQuestion=renderDuoQuestion;
+selectAnswer=selectQuizAnswer;
+nextQuestion=nextQuestionDuo;
 async function confirmLessonJump(){
   const section=jumpTarget;if(!section)return;
   const passed=Number(lastQuizPercent||0)>=70;
@@ -674,7 +772,7 @@ async function confirmLessonJump(){
   }catch(error){toast(error?.code||tx("lessonLoadError"))}
 }
 async function beginCustomTest(mode,requestedLevel=LEVEL_KEY,skill=""){
-  testMode=mode;quizLesson=currentLesson()?.n||1;practiceSession=null;showPage("quiz");document.getElementById("score-box").style.display="none";const box=document.getElementById("quiz-box");box.style.display="block";box.innerHTML=`<div class="v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div>`;
+  testMode=mode;quizLesson=currentLesson()?.n||1;practiceSession=null;showPage("quiz");renderDuoQuizLoading();const box=document.getElementById("quiz-box");
   try{
     const result=await bridge.startPractice?.({mode,level:requestedLevel,lang,skill});
     if(!result?.session)throw Object.assign(new Error("practice_failed"),{code:"practice_failed"});
@@ -688,7 +786,7 @@ function startPlacement(){beginCustomTest("placement",LEVEL_KEY)}
 function startMock(level){beginCustomTest("mock",level||LEVEL_KEY)}
 function startTraining(skill){beginCustomTest("training",LEVEL_KEY,skill)}
 async function startMistakeReview(){
-  testMode="mistakes";practiceSession=null;mistakeReviewSession=null;showPage("quiz");document.getElementById("score-box").style.display="none";const box=document.getElementById("quiz-box");box.style.display="block";box.innerHTML=`<div class="v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div>`;
+  testMode="mistakes";practiceSession=null;mistakeReviewSession=null;showPage("quiz");renderDuoQuizLoading(tx("loadingMistakes"));const box=document.getElementById("quiz-box");
   try{
     const result=await bridge.startMistakeReview?.();if(!result?.session)throw Object.assign(new Error("mistake_review_failed"),{code:"mistake_review_failed"});
     mistakeReviewSession=result.session;questions=result.session.questions.map(item=>({serverId:item.id,q:item.prompt,opts:item.options,a:Number(item.answer_index),explanation:item.explanation||""}));answers=Array(questions.length).fill(null);qIndex=0;renderQuizQuestion();
@@ -796,23 +894,27 @@ async function onboardingNext(){
   }catch(_){onboardingSubmitting=false;renderOnboarding();toast(tx("onboardingError"))}
 }
 
-const legacyFinishQuiz=finishQuiz;
 const legacyFlipFC=flipFC;
 finishQuiz=function(){
   const mode=testMode,session=practiceSession,reviewSession=mistakeReviewSession;
+  const wrong=[];let score=0;
+  questions.forEach((question,index)=>{
+    if(answers[index]===question.a)score+=1;
+    else wrong.push({question:tr(question.q),user_answer:question.opts?.[answers[index]]||"-",correct_answer:question.opts?.[question.a]||"",explanation:tr(question.explanation)||`${tx("correctAnswer")}: ${question.opts?.[question.a]||""}`});
+  });
+  const total=questions.length,percent=Math.round(score/Math.max(total,1)*100);
+  lastWrongItems=wrong;lastQuizScore=score;lastQuizTotal=total;lastQuizPercent=percent;
   if(mode==="jump"){
-    const wrong=[];let score=0;
-    questions.forEach((question,index)=>{
-      if(answers[index]===question.a)score+=1;
-      else wrong.push({question:tr(question.q),user_answer:question.opts?.[answers[index]]||"-",correct_answer:question.opts?.[question.a]||"",explanation:tr(question.explanation)||""});
-    });
-    lastWrongItems=wrong;lastQuizScore=score;lastQuizTotal=questions.length;lastQuizPercent=Math.round(score/Math.max(questions.length,1)*100);
     rememberMistakes(lastWrongItems);
     renderJumpAssessmentResult();
     testMode="";
     return;
   }
-  legacyFinishQuiz();
+  saveQuizAttempt(quizLesson,score,total,percent);
+  state.quizScores[quizLesson]={score,total,percent};
+  saveState();
+  reportEvent("study_quiz_completed",{lesson_id:quizLesson,score,total,percent,answers,wrong_items:wrong});
+  renderDuoQuizResult({mode,score,total,percent,wrong,session});
   if(mode!=="mistakes")rememberMistakes(lastWrongItems);
   if(mode==="lesson"&&lastQuizPercent>=60&&ACCESS.status!=="active"){meta.trialCourseCompleted=true;write(META_KEY,meta)}
   if(!session&&!reviewSession){if(mode==="lesson"&&lastQuizPercent>=60&&!state.done.includes(quizLesson)){state.done.push(quizLesson);saveState();addXP(20+Math.round(lastQuizPercent/10),"lesson")}else addXP(Math.max(5,Math.round(lastQuizPercent/10)),"quiz")}
@@ -857,7 +959,7 @@ function applyLaunch(){
 
 function mount(){
   normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,startLessonJumpTest,confirmLessonJump,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,reloadCoursePath,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
+  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,startLessonJumpTest,confirmLessonJump,selectQuizAnswer,checkQuizAnswer,continueQuizQuestion,restartQuizFlow,playQuizAudio,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,reloadCoursePath,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;syncGamification(ACCESS.gamification);renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
   syncGamification(ACCESS.gamification);setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();loadServerSectionPlan().catch(()=>{});applyLaunch();showOnboarding();
