@@ -13,7 +13,7 @@ const copy={
     missions:"Задания на сегодня",lessonMission:"Завершить урок",wordMission:"Повторить 5 слов",voiceMission:"Голосовая практика",
     yourProgress:"Ваш прогресс",league:"Рейтинг",achievements:"Достижения",reward:"Награда",openChest:"Открыть сундук",
     path:"Учебный путь",pathSub:"Короткие интерактивные уроки по порядку HSK",completed:"завершено",lesson:"Урок",
-    current:"Текущий урок",done:"Пройдено",locked:"Сначала завершите предыдущий урок",review:"Повторение",boss:"Контрольная",
+    current:"Текущий урок",done:"Пройдено",locked:"Сначала завершите предыдущий урок",previousSectionRequired:"Сначала завершите предыдущий раздел.",review:"Повторение",boss:"Контрольная",
     start:"Начать",words:"Слова",grammar:"Грамматика",practice:"Практика",lessonReady:"Выберите формат тренировки",
     testCenter:"Центр тестов",testCenterSub:"Уровень, экзамен HSK, произношение и иероглифы",
     testsSub:"Проверьте уровень и подготовьтесь к экзамену",placement:"Тест уровня",placementSub:"10-20 вопросов и автоматическая рекомендация уровня",
@@ -43,7 +43,7 @@ const copy={
     missions:"Bugungi vazifalar",lessonMission:"Darsni tugatish",wordMission:"5 ta so'zni takrorlash",voiceMission:"Ovozli mashq",
     yourProgress:"Progressingiz",league:"Reyting",achievements:"Yutuqlar",reward:"Mukofot",openChest:"Sandiqni ochish",
     path:"O'quv yo'li",pathSub:"HSK tartibidagi qisqa interaktiv darslar",completed:"tugallandi",lesson:"Dars",
-    current:"Joriy dars",done:"Tugallangan",locked:"Avval oldingi darsni tugating",review:"Takrorlash",boss:"Nazorat",
+    current:"Joriy dars",done:"Tugallangan",locked:"Avval oldingi darsni tugating",previousSectionRequired:"Avval oldingi qismni tugating.",review:"Takrorlash",boss:"Nazorat",
     start:"Boshlash",words:"So'zlar",grammar:"Grammatika",practice:"Mashq",lessonReady:"Mashq turini tanlang",
     testCenter:"Test markazi",testCenterSub:"Daraja, HSK imtihon, talaffuz va iyeroglif",
     testsSub:"Darajangizni tekshiring va imtihonga tayyorlaning",placement:"Daraja testi",placementSub:"10-20 savol va avtomatik daraja tavsiyasi",
@@ -72,7 +72,7 @@ const copy={
     missions:"Вазифаҳои имрӯз",lessonMission:"Анҷоми дарс",wordMission:"Такрори 5 калима",voiceMission:"Машқи овозӣ",
     yourProgress:"Пешрафти шумо",league:"Рейтинг",achievements:"Дастовардҳо",reward:"Мукофот",openChest:"Кушодани сандуқ",
     path:"Роҳи омӯзиш",pathSub:"Дарсҳои кӯтоҳи интерактивӣ бо тартиби HSK",completed:"анҷом шуд",lesson:"Дарс",
-    current:"Дарси ҷорӣ",done:"Анҷомшуда",locked:"Аввал дарси пешинаро анҷом диҳед",review:"Такрор",boss:"Санҷиш",
+    current:"Дарси ҷорӣ",done:"Анҷомшуда",locked:"Аввал дарси пешинаро анҷом диҳед",previousSectionRequired:"Аввал қисми пешинаро анҷом диҳед.",review:"Такрор",boss:"Санҷиш",
     start:"Оғоз",words:"Калимаҳо",grammar:"Грамматика",practice:"Машқ",lessonReady:"Навъи машқро интихоб кунед",
     testCenter:"Маркази тест",testCenterSub:"Сатҳ, имтиҳони HSK, талаффуз ва иероглиф",
     testsSub:"Сатҳи худро санҷед ва ба имтиҳон омода шавед",placement:"Тести сатҳ",placementSub:"10-20 савол ва тавсияи автоматии сатҳ",
@@ -200,6 +200,9 @@ let onboardingStep=0;
 let onboardingSubmitting=false;
 let onboarding={goal:["hsk_exam","study_china","work_china","daily_communication","travel"].includes(meta.goal)?meta.goal:"hsk_exam",level:LEVEL_KEY.startsWith("hsk4")?"hsk4":LEVEL_KEY,minutes:meta.minutes||10,startMode:"lesson_1"};
 let lessonFlow=null,lessonCardIndex=0,lessonResponses={},lessonSubmitting=false,lessonOrderRemaining=[],lessonOrderSelected=[];
+const LESSON_CHOICE_TYPES=["meaning_guess","pinyin_choice","hanzi_choice","listening_choice","gap_fill","character_recognition","translation_choice","quick_quiz"];
+const LESSON_ORDER_TYPES=["sentence_builder","word_order"];
+const LESSON_PASSIVE_TYPES=["active_word","match_pairs"];
 let practiceSession=null,mistakeReviewSession=null,serverMistakes=null,mistakesLoading=false,serverGamification=ACCESS.gamification||null,gamificationLoading=false,serverProfile=null,profileLoading=false;
 
 function normalizeMeta(){
@@ -449,12 +452,21 @@ function showPage(next){
 }
 function quizBack(){showPage(testMode==="mistakes"?"mistakes":testMode==="training"?"training":"tests")}
 
+function sectionFromKey(lesson,sectionKey){
+  const sections=lessonSections(lesson),key=String(sectionKey||"").trim();
+  if(!key)return sections.find(item=>!sectionIsDone(item))||sections[0];
+  const found=sections.find(item=>item.key===key);
+  if(found)return found;
+  const no=Number(key.split(".")[1]||1),chapterIndex=Math.floor((Math.max(1,no)-1)/3),chapter=chapterLabel(chapterIndex);
+  return{lesson:lesson.n,key,no:no||1,count:sections.length||1,chapter,chapterIndex,chapterStart:chapterIndex*3+1,chapterEnd:chapterIndex*3+3,words:[]};
+}
 function openLesson(number,sectionKey=""){
   const lesson=LESSONS.find(item=>item.n===Number(number));if(!lesson)return;
-  const section=lessonSections(lesson).find(item=>item.key===sectionKey)||lessonSections(lesson).find(item=>!sectionIsDone(item))||lessonSections(lesson)[0];
+  const explicitSection=String(sectionKey||"").trim();
+  const section=sectionFromKey(lesson,explicitSection);
   if(ACCESS.status!=="active"&&meta.trialCourseCompleted&&!sectionIsDone(section)){showPaywall("course_trial_completed");return}
   if(!sectionIsDone(section)&&!featureAllowed("lesson")){showPaywall("lesson_locked");return}
-  if(!sectionIsDone(section)&&section.key!==currentSection()?.key){toast(tx("locked"));return}
+  if(!explicitSection&&!sectionIsDone(section)&&section.key!==currentSection()?.key){toast(tx("locked"));return}
   document.getElementById("v2-sheet")?.remove();
   const root=document.createElement("div");root.id="v2-sheet";root.className="v2-sheet-backdrop";
   root.innerHTML=`<div class="v2-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${section.key} · ${section.chapter} ${esc(tx("part"))}</div><h2>${esc(tr(lesson.t))}</h2><p>${esc(tr(lesson.sub))}</p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="V2.startLesson(${lesson.n},'${section.key}')">▶ ${esc(tx("start"))}</button></div></div>`;
@@ -462,13 +474,15 @@ function openLesson(number,sectionKey=""){
 }
 function closeSheet(){document.getElementById("v2-sheet")?.remove()}
 function renderLessonLoading(){const root=document.getElementById("page-lesson");root.innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-lesson-progress"><i></i></div><span></span></div><div class="v2-lesson-card v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div></div>`}
-function lessonError(error){const code=String(error?.code||"");const locked=code==="free_feature_limit_reached";document.getElementById("page-lesson").innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="${esc(tx("back"))}">‹</button><div></div><span></span></div><div class="v2-lesson-card v2-lesson-result"><div class="v2-result-mark">${locked?"◆":"!"}</div><h2>${esc(locked?tx("freeLessonTitle"):tx("lessonLoadError"))}</h2><p>${esc(locked?tx("freeLessonText"):code||tx("onboardingError"))}</p><button class="v2-primary" onclick="${locked?"V2.showPaywall('lesson_server_locked')":"V2.showPage('course')"}">${esc(locked?tx("subscribeAction"):tx("back"))}</button></div></div>`}
+function lessonError(error){const code=String(error?.code||"");const locked=code==="free_feature_limit_reached";const sectionBlocked=["course_section_not_unlocked","course_section_not_found"].includes(code);document.getElementById("page-lesson").innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="${esc(tx("back"))}">‹</button><div></div><span></span></div><div class="v2-lesson-card v2-lesson-result"><div class="v2-result-mark">${locked?"◆":"!"}</div><h2>${esc(locked?tx("freeLessonTitle"):sectionBlocked?tx("locked"):tx("lessonLoadError"))}</h2><p>${esc(locked?tx("freeLessonText"):sectionBlocked?tx("previousSectionRequired"):code||tx("onboardingError"))}</p><button class="v2-primary" onclick="${locked?"V2.showPaywall('lesson_server_locked')":"V2.showPage('course')"}">${esc(locked?tx("subscribeAction"):tx("back"))}</button></div></div>`}
 async function startLesson(number,sectionKey=""){
   closeSheet();quizLesson=Number(number);testMode="lesson";lessonFlow=null;lessonCardIndex=0;lessonResponses={};lessonSubmitting=false;showPage("lesson");renderLessonLoading();
   try{
     const result=await bridge.loadCourseLesson?.({level:LEVEL_KEY,lesson:quizLesson,section:sectionKey,lang,completed_sections:completedLessonSectionKeys(lessonByNumber(quizLesson))});
     if(!result?.flow)throw Object.assign(new Error("course_lesson_failed"),{code:"course_lesson_failed"});
-    lessonFlow=result.flow;renderLessonCard();
+    lessonFlow=result.flow;
+    console.info("[MiniApp lesson flow]",{level:lessonFlow.level,lesson_order:lessonFlow.book_lesson_order||lessonFlow.lesson_id,section_key:lessonFlow.section_key,section_no:lessonFlow.section_no,book_lesson_order:lessonFlow.book_lesson_order,active_words:lessonFlow.active_words});
+    renderLessonCard();
   }catch(error){
     if(!bridge.hasAuth?.()){showPage("quiz");startQuiz();return}
     lessonError(error);
@@ -478,23 +492,24 @@ function lessonProgress(){return lessonFlow?.cards?.length?Math.round((lessonCar
 function lessonFeedback(card,response){
   if(!response)return"";
   let correct=true;
-  if(["meaning_guess","listening_choice","translation_choice","quick_quiz","dialog_context"].includes(card.type))correct=Number(response.selected_index)===Number(card.correct_index);
-  if(["sentence_builder","word_order"].includes(card.type))correct=JSON.stringify(response.answer_tokens||[])===JSON.stringify(card.answer_tokens||[]);
+  if(LESSON_CHOICE_TYPES.includes(card.type)||card.type==="dialog_context")correct=Number(response.selected_index)===Number(card.correct_index);
+  if(LESSON_ORDER_TYPES.includes(card.type))correct=JSON.stringify(response.answer_tokens||[])===JSON.stringify(card.answer_tokens||[]);
   return `<div class="v2-answer-feedback ${correct?"correct":"incorrect"}"><b>${esc(tx(correct?"correct":"incorrect"))}</b>${card.explanation?`<p>${esc(card.explanation)}</p>`:""}</div>`;
 }
 function renderLessonCard(){
   const card=lessonFlow?.cards?.[lessonCardIndex],root=document.getElementById("page-lesson");if(!card){submitLessonFlow();return}
   const response=lessonResponses[card.id];
-  if(["sentence_builder","word_order"].includes(card.type)&&!response&&lessonOrderRemaining.length+lessonOrderSelected.length===0){lessonOrderRemaining=[...(card.tokens||[])];lessonOrderSelected=[]}
+  if(LESSON_ORDER_TYPES.includes(card.type)&&!response&&lessonOrderRemaining.length+lessonOrderSelected.length===0){lessonOrderRemaining=[...(card.tokens||[])];lessonOrderSelected=[]}
   let body="";
   if(card.type==="active_word")body=`<div class="v2-word-hero">${esc(card.word.zh)}</div><div class="v2-word-pinyin">${esc(card.word.pinyin)}</div><div class="v2-word-meaning">${esc(card.word.meaning)}</div><button class="v2-audio-action" onclick="V2.playCurrentLessonAudio('word')">🔊</button>`;
   else if(card.type==="listening_choice")body=`<button class="v2-sound-tile" onclick="V2.playCurrentLessonAudio('audio')"><strong>${esc(card.audio_text||"声")}</strong><span>🔊</span></button>${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-choice-grid">${card.options.map((option,index)=>`<button class="v2-card-choice ${response&&Number(response.selected_index)===index?"selected":""}" ${response?"disabled":""} onclick="V2.answerLessonChoice(${index})">${esc(option)}</button>`).join("")}</div>${lessonFeedback(card,response)}`;
-  else if(["meaning_guess","translation_choice","quick_quiz"].includes(card.type))body=`${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-choice-grid">${card.options.map((option,index)=>`<button class="v2-card-choice ${response&&Number(response.selected_index)===index?"selected":""}" ${response?"disabled":""} onclick="V2.answerLessonChoice(${index})">${esc(option)}</button>`).join("")}</div>${lessonFeedback(card,response)}`;
+  else if(LESSON_CHOICE_TYPES.includes(card.type))body=`${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-choice-grid">${card.options.map((option,index)=>`<button class="v2-card-choice ${response&&Number(response.selected_index)===index?"selected":""}" ${response?"disabled":""} onclick="V2.answerLessonChoice(${index})">${esc(option)}</button>`).join("")}</div>${lessonFeedback(card,response)}`;
   else if(card.type==="dialog_context")body=`<div class="v2-dialog-card">${(card.dialog||[]).map(line=>`<p><b>${esc(line.speaker||"")}</b><span>${esc(line.text||"")}</span></p>`).join("")}</div><div class="v2-choice-grid">${card.options.map((option,index)=>`<button class="v2-card-choice ${response&&Number(response.selected_index)===index?"selected":""}" ${response?"disabled":""} onclick="V2.answerLessonChoice(${index})">${esc(option)}</button>`).join("")}</div>${lessonFeedback(card,response)}`;
-  else if(["sentence_builder","word_order"].includes(card.type))body=`${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-order-answer">${lessonOrderSelected.map((token,index)=>`<button onclick="V2.returnLessonToken(${index})">${esc(token)}</button>`).join("")||"<span>…</span>"}</div><div class="v2-token-bank">${lessonOrderRemaining.map((token,index)=>`<button onclick="V2.pickLessonToken(${index})">${esc(token)}</button>`).join("")}</div>${lessonFeedback(card,response)}${response?"":`<div class="v2-inline-actions"><button class="v2-secondary" onclick="V2.resetLessonOrder()">${esc(tx("reset"))}</button><button class="v2-primary" ${lessonOrderRemaining.length?"disabled":""} onclick="V2.checkLessonOrder()">${esc(tx("check"))}</button></div>`}`;
-  else if(card.type==="character_trace")body=`<button class="v2-trace-stage ${response?"done":""}" onclick="V2.completePassiveLessonCard()"><i></i><strong>${esc(card.character||card.word||"汉")}</strong><span>↘</span></button><div class="v2-trace-meta"><b>${esc(card.word||"")}</b><small>${esc(card.pinyin||"")} · ${esc(card.translation||"")}</small></div><p class="v2-pronunciation-hint">${esc(response?tx("traceDone"):tx("traceHint"))}</p>`;
-  else if(card.type==="pronunciation")body=`<div class="v2-speech-card"><strong>${esc(card.translation||card.phrase)}</strong><small>${esc(card.phrase)} · ${esc(card.pinyin)}</small><div><button class="v2-mic-button" onclick="V2.completePassiveLessonCard()">🎙</button><button class="v2-audio-action compact" onclick="V2.playCurrentLessonAudio('phrase')">↻</button></div></div><p class="v2-pronunciation-hint">${esc(tx("micReady"))}</p>`;
-  const canContinue=["active_word","pronunciation","character_trace"].includes(card.type)||Boolean(response);
+  else if(LESSON_ORDER_TYPES.includes(card.type))body=`${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-order-answer">${lessonOrderSelected.map((token,index)=>`<button onclick="V2.returnLessonToken(${index})">${esc(token)}</button>`).join("")||"<span>…</span>"}</div><div class="v2-token-bank">${lessonOrderRemaining.map((token,index)=>`<button onclick="V2.pickLessonToken(${index})">${esc(token)}</button>`).join("")}</div>${lessonFeedback(card,response)}${response?"":`<div class="v2-inline-actions"><button class="v2-secondary" onclick="V2.resetLessonOrder()">${esc(tx("reset"))}</button><button class="v2-primary" ${lessonOrderRemaining.length?"disabled":""} onclick="V2.checkLessonOrder()">${esc(tx("check"))}</button></div>`}`;
+  else if(card.type==="match_pairs")body=`<div class="v2-dialog-card">${(card.pairs||[]).map(pair=>`<p><b>${esc(pair[0]||"")}</b><span>${esc(pair[1]||"")}</span></p>`).join("")}</div><p class="v2-pronunciation-hint">${esc(card.prompt||card.title||"")}</p>`;
+  else if(card.type==="character_trace")body=`<div class="v2-trace-meta"><b>${esc(card.word||card.character||"")}</b><small>${esc(card.pinyin||"")} · ${esc(card.translation||"")}</small></div><p class="v2-pronunciation-hint">${esc("Stroke preview mavjud emas")}</p>`;
+  else if(card.type==="pronunciation")body=`<div class="v2-speech-card"><strong>${esc(card.translation||card.phrase)}</strong><small>${esc(card.phrase)} · ${esc(card.pinyin)}</small><div><button class="v2-primary" onclick="V2.showPage('voice')">${esc(tx("voice"))}</button><button class="v2-audio-action compact" onclick="V2.playCurrentLessonAudio('phrase')">↻</button></div></div>`;
+  const canContinue=LESSON_PASSIVE_TYPES.includes(card.type)||["pronunciation","character_trace"].includes(card.type)||Boolean(response);
   root.innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-lesson-progress"><i style="width:${lessonProgress()}%"></i></div><span>${lessonCardIndex+1}/${lessonFlow.cards.length}</span></div><article class="v2-lesson-card"><div class="v2-lesson-unit"><span>${esc(card.unit||card.title||tx("lesson"))}</span><b>${esc(card.title||"")}</b></div><h2>${esc(card.prompt||card.title||"")}</h2>${body}${canContinue?`<button class="v2-primary v2-card-next" onclick="V2.continueLessonCard()">${esc(card.type==="pronunciation"?tx("said"):card.type==="character_trace"?tx("traceDone"):lessonCardIndex===lessonFlow.cards.length-1?tx("submitLesson"):tx("next"))} ›</button>`:""}</article></div>`;
   bridge.reportEvent?.("card_seen",{event_id:`${lessonFlow.id}:${card.id}`,lesson_id:lessonFlow.lesson_id,card_id:card.id,card_type:card.type});
 }
@@ -506,7 +521,7 @@ function returnLessonToken(index){lessonOrderRemaining.push(lessonOrderSelected.
 function resetLessonOrder(){const card=lessonFlow.cards[lessonCardIndex];lessonOrderRemaining=[...(card.tokens||[])];lessonOrderSelected=[];renderLessonCard()}
 function checkLessonOrder(){const card=lessonFlow.cards[lessonCardIndex];if(lessonOrderRemaining.length)return;lessonResponses[card.id]={card_id:card.id,answer_tokens:[...lessonOrderSelected]};renderLessonCard()}
 function completePassiveLessonCard(){const card=lessonFlow.cards[lessonCardIndex];lessonResponses[card.id]={card_id:card.id,completed:true};renderLessonCard()}
-function continueLessonCard(){const card=lessonFlow.cards[lessonCardIndex];if(["active_word","pronunciation","character_trace"].includes(card.type))lessonResponses[card.id]={card_id:card.id,completed:true};lessonCardIndex+=1;lessonOrderRemaining=[];lessonOrderSelected=[];renderLessonCard()}
+function continueLessonCard(){const card=lessonFlow.cards[lessonCardIndex];if(LESSON_PASSIVE_TYPES.includes(card.type)||["pronunciation","character_trace"].includes(card.type))lessonResponses[card.id]={card_id:card.id,completed:true};lessonCardIndex+=1;lessonOrderRemaining=[];lessonOrderSelected=[];renderLessonCard()}
 async function submitLessonFlow(){
   if(lessonSubmitting)return;lessonSubmitting=true;renderLessonLoading();
   try{
@@ -541,7 +556,7 @@ async function submitLessonFlow(){
 }
 function retryLessonFlow(){lessonCardIndex=0;lessonResponses={};lessonOrderRemaining=[];lessonOrderSelected=[];lessonSubmitting=false;renderLessonCard()}
 function openNextLesson(number){openNextSection(`${Number(number)||1}.1`)}
-function openNextSection(sectionKey){const lesson=Number(String(sectionKey||"").split(".")[0]||quizLesson||1);openLesson(lesson,sectionKey)}
+function openNextSection(sectionKey){const ref=sectionRef(sectionKey,quizLesson);if(ref)startLesson(ref.lesson,ref.section_key)}
 function openWords(listen=false,lesson){closeSheet();fcFilter=lesson?Number(lesson):"all";showPage("flashcards");if(listen)toast(tx("listening"))}
 function openGrammar(lesson){closeSheet();grammarFilter=lesson?Number(lesson):"all";showPage("grammar")}
 

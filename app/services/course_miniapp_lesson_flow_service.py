@@ -54,19 +54,21 @@ class CourseMiniAppLessonFlowService:
                 "active_word": "Новое активное слово",
                 "meaning_guess": "Выберите правильное значение",
                 "listening_choice": "Послушайте и выберите ответ",
+                "pinyin_choice": "Выберите правильный pinyin",
+                "hanzi_choice": "Выберите иероглиф",
+                "gap_fill": "Заполните пропуск",
+                "character_recognition": "Узнайте иероглиф",
+                "match_pairs": "Соедините пары",
                 "sentence_builder": "Соберите предложение",
                 "word_order": "Расставьте слова по порядку",
                 "translation_choice": "Выберите правильный перевод",
-                "pronunciation": "Произнесите фразу вслух",
                 "quick_quiz": "Быстрая проверка",
                 "short_dialog": "Короткий диалог",
-                "character_trace": "Как пишется иероглиф",
                 "unit_words": "Слова",
                 "unit_sound": "Звук",
                 "unit_character": "Иероглиф",
                 "unit_dialog": "Диалог",
                 "unit_build": "Сборка",
-                "unit_speaking": "Произношение",
                 "unit_review": "Проверка",
                 "other_meaning": "Другое значение",
             },
@@ -74,19 +76,21 @@ class CourseMiniAppLessonFlowService:
                 "active_word": "Калимаи нави фаъол",
                 "meaning_guess": "Маънои дурустро интихоб кунед",
                 "listening_choice": "Гӯш кунед ва ҷавобро интихоб кунед",
+                "pinyin_choice": "Pinyin-и дурустро интихоб кунед",
+                "hanzi_choice": "Иероглифи дурустро интихоб кунед",
+                "gap_fill": "Ҷои холиро пур кунед",
+                "character_recognition": "Иероглифро шиносед",
+                "match_pairs": "Ҷуфтҳоро мувофиқ кунед",
                 "sentence_builder": "Ҷумларо созед",
                 "word_order": "Калимаҳоро бо тартиб гузоред",
                 "translation_choice": "Тарҷумаи дурустро интихоб кунед",
-                "pronunciation": "Ибораро бо овози баланд гӯед",
                 "quick_quiz": "Санҷиши зуд",
                 "short_dialog": "Муколамаи кӯтоҳ",
-                "character_trace": "Навишти иероглиф",
                 "unit_words": "Калимаҳо",
                 "unit_sound": "Овоз",
                 "unit_character": "Иероглиф",
                 "unit_dialog": "Муколама",
                 "unit_build": "Сохтан",
-                "unit_speaking": "Талаффуз",
                 "unit_review": "Санҷиш",
                 "other_meaning": "Маънои дигар",
             },
@@ -94,19 +98,21 @@ class CourseMiniAppLessonFlowService:
                 "active_word": "Yangi faol so'z",
                 "meaning_guess": "To'g'ri ma'noni tanlang",
                 "listening_choice": "Tinglang va javobni tanlang",
+                "pinyin_choice": "To'g'ri pinyin tanlang",
+                "hanzi_choice": "To'g'ri iyeroglifni tanlang",
+                "gap_fill": "Bo'sh joyni to'ldiring",
+                "character_recognition": "Iyeroglifni taning",
+                "match_pairs": "Juftliklarni moslang",
                 "sentence_builder": "Gapni tuzing",
                 "word_order": "So'zlarni tartibga qo'ying",
                 "translation_choice": "To'g'ri tarjimani tanlang",
-                "pronunciation": "Iborani ovoz chiqarib ayting",
                 "quick_quiz": "Tezkor tekshiruv",
                 "short_dialog": "Qisqa dialog",
-                "character_trace": "Iyeroglif yozilishi",
                 "unit_words": "So'zlar",
                 "unit_sound": "Tovush",
                 "unit_character": "Iyeroglif",
                 "unit_dialog": "Dialog",
                 "unit_build": "Yig'ish",
-                "unit_speaking": "Talaffuz",
                 "unit_review": "Tekshiruv",
                 "other_meaning": "Boshqa ma'no",
             },
@@ -177,16 +183,18 @@ class CourseMiniAppLessonFlowService:
     @classmethod
     def _normalize_section_key(cls, value: str | int | None, *, lesson_order: int) -> str:
         raw = str(value or "").strip()
+        if not raw:
+            return f"{lesson_order}.1"
         if raw.startswith(f"{lesson_order}."):
             return raw
         if raw.isdigit():
             return f"{lesson_order}.{int(raw)}"
-        return f"{lesson_order}.1"
+        return raw
 
     @classmethod
-    def _section_by_key(cls, sections: list[dict], value: str | int | None, *, lesson_order: int) -> dict:
+    def _section_by_key(cls, sections: list[dict], value: str | int | None, *, lesson_order: int) -> dict | None:
         key = cls._normalize_section_key(value, lesson_order=lesson_order)
-        return next((item for item in sections if item["section_key"] == key), sections[0])
+        return next((item for item in sections if item["section_key"] == key), None)
 
     @staticmethod
     def _client_completed_section_keys(sections: list[dict], values) -> set[str]:
@@ -322,9 +330,19 @@ class CourseMiniAppLessonFlowService:
     @staticmethod
     def _section_payload(payload: dict, section: dict) -> dict:
         active_words = [item for item in section.get("active_words", []) if isinstance(item, dict)]
+        section_key = str(section.get("section_key") or "")
+        try:
+            book_lesson_order = int(section_key.split(".", 1)[0])
+        except (TypeError, ValueError):
+            book_lesson_order = 0
         return {
             **payload,
             "vocabulary": active_words,
+            "active_words": active_words,
+            "section_key": section_key,
+            "section_no": int(section.get("section_no") or 1),
+            "section_count": int(section.get("section_count") or 1),
+            "book_lesson_order": book_lesson_order,
             "quiz_questions": [],
             "reinforcement_tasks": [],
         }
@@ -399,6 +417,7 @@ class CourseMiniAppLessonFlowService:
             "options": options,
             "correct_index": correct,
             "explanation": f"{target['zh']} = {target.get('meaning') or ''}",
+            "source_words": [str(target.get("zh") or "")],
             "required": True,
         }
 
@@ -461,6 +480,9 @@ class CourseMiniAppLessonFlowService:
             return None
         if not isinstance(options, list) or len(options) < 2 or not 0 <= correct_index < len(options):
             return None
+        clean_options = [str(option) for option in options if str(option or "").strip()]
+        if len(clean_options) != len(options):
+            return None
         return {
             "id": card_id,
             "type": card_type,
@@ -468,9 +490,10 @@ class CourseMiniAppLessonFlowService:
             "prompt": str(question.get("q") or question.get("prompt") or title),
             "sentence": str(question.get("sentence") or question.get("source") or ""),
             "audio_text": str(question.get("audioText") or ""),
-            "options": [str(option) for option in options],
+            "options": clean_options,
             "correct_index": correct_index,
             "explanation": str(question.get("expl") or question.get("explanation") or ""),
+            "source_words": [str(item) for item in question.get("source_words", []) if str(item or "").strip()],
             "required": True,
         }
 
@@ -489,8 +512,75 @@ class CourseMiniAppLessonFlowService:
             "tokens": [str(token) for token in tokens],
             "answer_tokens": [str(token) for token in answer],
             "explanation": str(task.get("expl") or task.get("explanation") or ""),
+            "source_words": [str(item) for item in task.get("source_words", []) if str(item or "").strip()],
             "required": True,
         }
+
+    @staticmethod
+    def _word_value(word: dict, key: str) -> str:
+        return str(word.get(key) or "").strip()
+
+    @classmethod
+    def _word_options(cls, active_words: list[dict], key: str, answer: str, *, fallback: str = "") -> list[str]:
+        options = [answer]
+        for word in active_words:
+            value = cls._word_value(word, key)
+            if value and value not in options:
+                options.append(value)
+            if len(options) >= 4:
+                break
+        if len(options) < 2 and fallback and fallback not in options:
+            options.append(fallback)
+        return options
+
+    @classmethod
+    def _word_choice_question(
+        cls,
+        *,
+        word: dict,
+        active_words: list[dict],
+        option_key: str,
+        prompt: str,
+        answer: str,
+        explanation: str,
+        fallback_option: str = "",
+        sentence: str = "",
+        audio_text: str = "",
+    ) -> dict | None:
+        answer = str(answer or "").strip()
+        if not answer:
+            return None
+        options = cls._word_options(active_words, option_key, answer, fallback=fallback_option)
+        if len(options) < 2:
+            return None
+        return {
+            "q": prompt,
+            "sentence": sentence,
+            "audioText": audio_text,
+            "opts": options,
+            "ans": options.index(answer),
+            "expl": explanation,
+            "source_words": [cls._word_value(word, "zh")],
+        }
+
+    @staticmethod
+    def _word_refs(words: list[dict]) -> list[dict]:
+        refs = []
+        for word in words:
+            if not isinstance(word, dict):
+                continue
+            zh = str(word.get("zh") or "").strip()
+            if not zh:
+                continue
+            refs.append(
+                {
+                    "zh": zh,
+                    "pinyin": str(word.get("pinyin") or "").strip(),
+                    "meaning": str(word.get("meaning") or "").strip(),
+                    "pos": str(word.get("pos") or "").strip(),
+                }
+            )
+        return refs
 
     @staticmethod
     def _single_hanzi(value) -> bool:
@@ -547,11 +637,117 @@ class CourseMiniAppLessonFlowService:
             "tokens": [*tokens[1:], tokens[0]],
             "answer": tokens,
             "explanation": sentence,
+            "source_words": [str(word.get("zh") or "").strip()],
         }
+
+    @staticmethod
+    def _card_has_undefined(card: dict) -> bool:
+        stack = [card]
+        while stack:
+            value = stack.pop()
+            if isinstance(value, dict):
+                stack.extend(value.values())
+            elif isinstance(value, list):
+                stack.extend(value)
+            elif "undefined" in str(value).lower():
+                return True
+        return False
+
+    @classmethod
+    def _card_source_valid(cls, card: dict, active_zh: set[str]) -> bool:
+        source_words = {str(item).strip() for item in card.get("source_words", []) if str(item).strip()}
+        if card.get("type") == "active_word":
+            zh = str((card.get("word") or {}).get("zh") or "").strip()
+            source_words.add(zh)
+        if not source_words:
+            return True
+        return source_words <= active_zh
+
+    @staticmethod
+    def _card_shape_valid(card: dict) -> bool:
+        card_type = str(card.get("type") or "")
+        if card_type in {"character_trace", "pronunciation", "stroke_preview"}:
+            return False
+        if card_type == "active_word":
+            return bool((card.get("word") or {}).get("zh"))
+        if card_type in {
+            "meaning_guess",
+            "pinyin_choice",
+            "hanzi_choice",
+            "listening_choice",
+            "gap_fill",
+            "character_recognition",
+            "translation_choice",
+            "quick_quiz",
+            "dialog_context",
+        }:
+            options = card.get("options")
+            try:
+                correct_index = int(card.get("correct_index"))
+            except (TypeError, ValueError):
+                return False
+            return isinstance(options, list) and len(options) >= 2 and 0 <= correct_index < len(options)
+        if card_type in {"sentence_builder", "word_order"}:
+            return len(card.get("answer_tokens") or []) >= 2 and len(card.get("tokens") or []) >= 2
+        if card_type == "match_pairs":
+            return len(card.get("pairs") or []) >= 2
+        return False
+
+    @classmethod
+    def _limit_consecutive_card_types(cls, cards: list[dict]) -> list[dict]:
+        result: list[dict] = []
+        delayed: list[dict] = []
+        for card in cards:
+            if len(result) >= 2 and result[-1].get("type") == result[-2].get("type") == card.get("type"):
+                delayed.append(card)
+            else:
+                result.append(card)
+        for card in delayed:
+            inserted = False
+            for index in range(1, len(result)):
+                previous_type = result[index - 1].get("type")
+                next_type = result[index].get("type")
+                if previous_type != card.get("type") and next_type != card.get("type"):
+                    result.insert(index, card)
+                    inserted = True
+                    break
+            if not inserted and not (
+                len(result) >= 2 and result[-1].get("type") == result[-2].get("type") == card.get("type")
+            ):
+                result.append(card)
+        return result
+
+    @classmethod
+    def _validate_cards(cls, cards: list[dict], active_words: list[dict]) -> list[dict]:
+        active_zh = {str(word.get("zh") or "").strip() for word in active_words if str(word.get("zh") or "").strip()}
+        validated: list[dict] = []
+        seen_ids: set[str] = set()
+        sentence_cards = 0
+        for card in cards:
+            if not isinstance(card, dict):
+                continue
+            card_id = str(card.get("id") or "").strip()
+            if not card_id or card_id in seen_ids:
+                continue
+            if cls._card_has_undefined(card):
+                continue
+            if not cls._card_shape_valid(card):
+                continue
+            if not cls._card_source_valid(card, active_zh):
+                continue
+            if card.get("type") in {"sentence_builder", "word_order"}:
+                sentence_cards += 1
+                if sentence_cards > 2:
+                    continue
+            seen_ids.add(card_id)
+            validated.append(card)
+        return cls._limit_consecutive_card_types(validated)[:12]
 
     def _build_cards(self, payload: dict, *, lang: str, lesson_order: int) -> list[dict]:
         vocab = [item for item in payload.get("vocabulary", []) if isinstance(item, dict)]
-        active_words = vocab[: 3 + (int(lesson_order) % 2)]
+        active_words = self._word_refs(vocab)
+        if not active_words:
+            return []
         words = []
         for index, word in enumerate(active_words, 1):
             words.append(
@@ -573,49 +769,6 @@ class CourseMiniAppLessonFlowService:
         questions = [item for item in payload.get("quiz_questions", []) if isinstance(item, dict)]
         tasks = [item for item in payload.get("reinforcement_tasks", []) if isinstance(item, dict)]
         choices = [item for item in questions if isinstance(item.get("opts") or item.get("options"), list)]
-        if not choices and len(active_words) == 1 and active_words[0].get("meaning"):
-            word = active_words[0]
-            choices.append(
-                {
-                    "type": "multiple_choice",
-                    "subtype": "hanzi_to_meaning",
-                    "q": f"{word.get('zh') or ''} — ?",
-                    "opts": [str(word.get("meaning") or ""), self._copy(lang, "other_meaning")],
-                    "ans": 0,
-                    "expl": f"{word.get('zh') or ''} = {word.get('meaning') or ''}",
-                }
-            )
-        if len(choices) < 3 and len(active_words) >= 2:
-            meaning_options = [str(item.get("meaning") or "") for item in active_words]
-            for index, word in enumerate(active_words):
-                if not word.get("zh") or not meaning_options[index]:
-                    continue
-                choices.append(
-                    {
-                        "type": "multiple_choice",
-                        "subtype": "hanzi_to_meaning",
-                        "q": f"{word['zh']} — ?",
-                        "opts": meaning_options,
-                        "ans": index,
-                        "expl": f"{word['zh']} = {meaning_options[index]}",
-                    }
-                )
-                if len(choices) >= 3:
-                    break
-        listening = next(
-            (item for item in [*questions, *tasks] if str(item.get("type") or "") in {"listening_choice", "listen_and_fill"}),
-            None,
-        )
-        if not listening and len(active_words) >= 2:
-            options = [str(item.get("zh") or "") for item in active_words if item.get("zh")]
-            listening = {
-                "type": "listening_choice",
-                "q": self._copy(lang, "listening_choice"),
-                "audioText": options[0],
-                "opts": options,
-                "ans": 0,
-                "expl": f"{active_words[0].get('zh') or ''} = {active_words[0].get('meaning') or ''}",
-            }
         order_tasks = []
         for item in [*questions, *tasks]:
             if str(item.get("type") or "") not in {"word_order", "build_chinese_sentence", "build_sentence_chips"}:
@@ -626,62 +779,23 @@ class CourseMiniAppLessonFlowService:
                 continue
             if 2 <= len(answer) <= 6 and len(tokens) <= 8 and not self._character_split_task(tokens, answer):
                 order_tasks.append(item)
-        grammar = [item for item in payload.get("grammar", []) if isinstance(item, dict)]
-        for grammar_item in grammar:
-            examples = grammar_item.get("examples") if isinstance(grammar_item.get("examples"), list) else []
-            example = next((item for item in examples if isinstance(item, dict) and item.get("zh")), None)
-            if not example:
-                continue
-            translation_tokens = [
-                token.strip(".,!?;:")
-                for token in str(example.get("translation") or "").split()
-                if token.strip(".,!?;:")
-            ]
-            if 2 <= len(translation_tokens) <= 6 and len(order_tasks) < 2:
-                order_tasks.append(
-                    {
-                        "type": "word_order",
-                        "prompt": self._copy(lang, "word_order"),
-                        "source": str(example.get("zh") or ""),
-                        "tokens": [*translation_tokens[1:], translation_tokens[0]],
-                        "answer": translation_tokens,
-                        "explanation": str(example.get("translation") or ""),
-                    }
-                )
-            if len(order_tasks) >= 2:
-                break
         word_task_index = 0
         while len(order_tasks) < 2 and word_task_index < len(active_words):
             task = self._sentence_task_for_word(active_words[word_task_index], lang=lang)
             word_task_index += 1
             if task:
                 order_tasks.append(task)
-        if len(order_tasks) < 2 and len(active_words) >= 2:
-            fallback_tokens = [
-                token
-                for item in active_words[:3]
-                for token in self._sentence_tokens_for_word(item)
-                if token
-            ]
-            if len(fallback_tokens) < 2 or all(self._single_hanzi(token) for token in fallback_tokens):
-                fallback_tokens = []
-            while len(order_tasks) < 2:
-                if not fallback_tokens:
-                    break
-                order_tasks.append(
-                    {
-                        "type": "build_chinese_sentence",
-                        "prompt": self._copy(lang, "sentence_builder"),
-                        "tokens": [*fallback_tokens[1:], fallback_tokens[0]],
-                        "answer": fallback_tokens,
-                        "explanation": " · ".join(fallback_tokens),
-                    }
-                )
 
         activities: dict[str, dict] = {}
-        meaning_source = next(
-            (item for item in choices if str(item.get("subtype") or item.get("type") or "") in {"hanzi_to_meaning", "choose_meaning_in_context"}),
-            choices[0] if choices else None,
+        meaning_word = next((item for item in active_words if item.get("meaning")), active_words[0])
+        meaning_source = self._word_choice_question(
+            word=meaning_word,
+            active_words=active_words,
+            option_key="meaning",
+            prompt=f"{meaning_word['zh']} — ?",
+            answer=meaning_word.get("meaning") or "",
+            explanation=f"{meaning_word['zh']} = {meaning_word.get('meaning') or ''}",
+            fallback_option=self._copy(lang, "other_meaning"),
         )
         if meaning_source:
             card = self._choice_card(
@@ -694,6 +808,56 @@ class CourseMiniAppLessonFlowService:
                 card["unit"] = self._copy(lang, "unit_review")
                 activities["meaning"] = card
 
+        pinyin_word = next((item for item in active_words if item.get("pinyin")), None)
+        if pinyin_word:
+            source = self._word_choice_question(
+                word=pinyin_word,
+                active_words=active_words,
+                option_key="pinyin",
+                prompt=f"{pinyin_word['zh']} — pinyin?",
+                answer=pinyin_word.get("pinyin") or "",
+                explanation=f"{pinyin_word['zh']} · {pinyin_word.get('pinyin') or ''}",
+            )
+            card = self._choice_card(
+                source or {},
+                card_id="activity:pinyin",
+                card_type="pinyin_choice",
+                title=self._copy(lang, "pinyin_choice"),
+            )
+            if card:
+                card["unit"] = self._copy(lang, "unit_sound")
+                activities["pinyin"] = card
+
+        hanzi_word = active_words[min(1, len(active_words) - 1)]
+        hanzi_source = self._word_choice_question(
+            word=hanzi_word,
+            active_words=active_words,
+            option_key="zh",
+            prompt=f"{hanzi_word.get('meaning') or hanzi_word.get('pinyin') or hanzi_word['zh']} — ?",
+            answer=hanzi_word["zh"],
+            explanation=f"{hanzi_word['zh']} = {hanzi_word.get('meaning') or hanzi_word.get('pinyin') or ''}",
+        )
+        if hanzi_source:
+            card = self._choice_card(
+                hanzi_source,
+                card_id="activity:hanzi",
+                card_type="hanzi_choice",
+                title=self._copy(lang, "hanzi_choice"),
+            )
+            if card:
+                card["unit"] = self._copy(lang, "unit_character")
+                activities["hanzi"] = card
+
+        listening_word = active_words[0]
+        listening = self._word_choice_question(
+            word=listening_word,
+            active_words=active_words,
+            option_key="zh",
+            prompt=self._copy(lang, "listening_choice"),
+            answer=listening_word["zh"],
+            explanation=f"{listening_word['zh']} = {listening_word.get('meaning') or listening_word.get('pinyin') or ''}",
+            audio_text=listening_word["zh"],
+        )
         if listening:
             card = self._choice_card(
                 listening,
@@ -705,34 +869,51 @@ class CourseMiniAppLessonFlowService:
                 card["unit"] = self._copy(lang, "unit_sound")
                 activities["listening"] = card
 
-        trace_word = next(
-            (
-                item
-                for item in active_words
-                if any("\u4e00" <= char <= "\u9fff" for char in str(item.get("zh") or ""))
-            ),
+        gap_word = active_words[min(2, len(active_words) - 1)]
+        gap_source = self._word_choice_question(
+            word=gap_word,
+            active_words=active_words,
+            option_key="zh",
+            prompt=self._copy(lang, "gap_fill"),
+            sentence="我今天学习 ____。",
+            answer=gap_word["zh"],
+            explanation=f"我今天学习{gap_word['zh']}。",
+        )
+        if gap_source:
+            card = self._choice_card(
+                gap_source,
+                card_id="activity:gap",
+                card_type="gap_fill",
+                title=self._copy(lang, "gap_fill"),
+            )
+            if card:
+                card["unit"] = self._copy(lang, "unit_review")
+                activities["gap"] = card
+
+        recognition_word = next(
+            (item for item in active_words if any("\u4e00" <= char <= "\u9fff" for char in item["zh"]) and item.get("meaning")),
             None,
         )
-        if trace_word:
-            trace_zh = str(trace_word.get("zh") or "")
-            trace_char = next((char for char in trace_zh if "\u4e00" <= char <= "\u9fff"), trace_zh[:1])
-            trace_prompt = {
-                "ru": f"Посмотрите, как пишется «{trace_word.get('meaning') or trace_zh}»",
-                "tj": f"Бинед, «{trace_word.get('meaning') or trace_zh}» чӣ гуна навишта мешавад",
-                "uz": f"«{trace_word.get('meaning') or trace_zh}» qanday yozilishini ko'ring",
-            }.get(lang, f"Посмотрите, как пишется «{trace_word.get('meaning') or trace_zh}»")
-            activities["trace"] = {
-                "id": "activity:trace",
-                "type": "character_trace",
-                "title": self._copy(lang, "character_trace"),
-                "unit": self._copy(lang, "unit_character"),
-                "prompt": trace_prompt,
-                "character": trace_char,
-                "word": trace_zh,
-                "pinyin": str(trace_word.get("pinyin") or ""),
-                "translation": str(trace_word.get("meaning") or ""),
-                "required": True,
-            }
+        if recognition_word:
+            character = next((char for char in recognition_word["zh"] if "\u4e00" <= char <= "\u9fff"), recognition_word["zh"][:1])
+            source = self._word_choice_question(
+                word=recognition_word,
+                active_words=active_words,
+                option_key="meaning",
+                prompt=f"{character} — ?",
+                answer=recognition_word.get("meaning") or "",
+                explanation=f"{recognition_word['zh']} = {recognition_word.get('meaning') or ''}",
+                fallback_option=self._copy(lang, "other_meaning"),
+            )
+            card = self._choice_card(
+                source or {},
+                card_id="activity:recognition",
+                card_type="character_recognition",
+                title=self._copy(lang, "character_recognition"),
+            )
+            if card:
+                card["unit"] = self._copy(lang, "unit_character")
+                activities["recognition"] = card
 
         if order_tasks:
             card = self._order_card(
@@ -754,11 +935,18 @@ class CourseMiniAppLessonFlowService:
                 card["unit"] = self._copy(lang, "unit_build")
                 activities["order"] = card
 
-        used_choice_ids = {id(meaning_source), id(listening)}
-        remaining_choices = [item for item in choices if id(item) not in used_choice_ids]
-        if remaining_choices:
+        translation_word = active_words[-1]
+        translation_source = self._word_choice_question(
+            word=translation_word,
+            active_words=active_words,
+            option_key="zh",
+            prompt=f"{translation_word.get('meaning') or translation_word.get('pinyin') or translation_word['zh']} — ?",
+            answer=translation_word["zh"],
+            explanation=f"{translation_word['zh']} = {translation_word.get('meaning') or translation_word.get('pinyin') or ''}",
+        )
+        if translation_source:
             card = self._choice_card(
-                remaining_choices[0],
+                translation_source,
                 card_id="activity:translation",
                 card_type="translation_choice",
                 title=self._copy(lang, "translation_choice"),
@@ -766,9 +954,22 @@ class CourseMiniAppLessonFlowService:
             if card:
                 card["unit"] = self._copy(lang, "unit_review")
                 activities["translation"] = card
-        if len(remaining_choices) > 1:
+
+        quiz_source = choices[0] if choices else None
+        if not quiz_source and len(active_words) >= 2:
+            quiz_word = active_words[-1]
+            quiz_source = self._word_choice_question(
+                word=quiz_word,
+                active_words=active_words,
+                option_key="meaning",
+                prompt=f"{quiz_word['zh']} ({quiz_word.get('pinyin') or ''}) — ?",
+                answer=quiz_word.get("meaning") or "",
+                explanation=f"{quiz_word['zh']} = {quiz_word.get('meaning') or quiz_word.get('pinyin') or ''}",
+                fallback_option=self._copy(lang, "other_meaning"),
+            )
+        if quiz_source:
             card = self._choice_card(
-                remaining_choices[-1],
+                quiz_source,
                 card_id="activity:quiz",
                 card_type="quick_quiz",
                 title=self._copy(lang, "quick_quiz"),
@@ -777,16 +978,20 @@ class CourseMiniAppLessonFlowService:
                 card["unit"] = self._copy(lang, "unit_review")
                 activities["quiz"] = card
 
-        pronunciation_word = active_words[0] if active_words else {}
-        if pronunciation_word.get("zh"):
-            activities["pronunciation"] = {
-                "id": "activity:pronunciation",
-                "type": "pronunciation",
-                "title": self._copy(lang, "pronunciation"),
-                "unit": self._copy(lang, "unit_speaking"),
-                "phrase": str(pronunciation_word.get("zh") or ""),
-                "pinyin": str(pronunciation_word.get("pinyin") or ""),
-                "translation": str(pronunciation_word.get("meaning") or ""),
+        pairs = [
+            [word["zh"], word.get("meaning") or word.get("pinyin") or ""]
+            for word in active_words
+            if word.get("zh") and (word.get("meaning") or word.get("pinyin"))
+        ][:4]
+        if len(pairs) >= 2:
+            activities["match"] = {
+                "id": "activity:match",
+                "type": "match_pairs",
+                "title": self._copy(lang, "match_pairs"),
+                "unit": self._copy(lang, "unit_review"),
+                "prompt": self._copy(lang, "match_pairs"),
+                "pairs": pairs,
+                "source_words": [pair[0] for pair in pairs],
                 "required": True,
             }
         dialog_card = self._short_dialog_card(active_words, lang=lang)
@@ -794,9 +999,9 @@ class CourseMiniAppLessonFlowService:
             activities["dialog"] = dialog_card
 
         patterns = (
-            ["word:1", "listening", "trace", "word:2", "meaning", "dialog", "word:3", "builder", "pronunciation", "word:4", "order", "translation", "quiz"],
-            ["word:1", "trace", "word:2", "listening", "dialog", "meaning", "word:3", "order", "word:4", "pronunciation", "translation", "builder", "quiz"],
-            ["word:1", "meaning", "word:2", "builder", "trace", "dialog", "word:3", "listening", "word:4", "pronunciation", "quiz", "order", "translation"],
+            ["word:1", "meaning", "word:2", "pinyin", "listening", "dialog", "hanzi", "gap", "word:3", "recognition", "builder", "match", "word:4", "order", "translation", "quiz"],
+            ["word:1", "pinyin", "word:2", "listening", "hanzi", "dialog", "meaning", "word:3", "gap", "match", "order", "recognition", "word:4", "translation", "quiz", "builder"],
+            ["word:1", "hanzi", "word:2", "meaning", "gap", "listening", "dialog", "word:3", "pinyin", "recognition", "builder", "match", "word:4", "translation", "quiz", "order"],
         )
         pattern = patterns[(int(lesson_order) - 1) % len(patterns)]
         word_map = {card["id"]: card for card in words}
@@ -808,7 +1013,7 @@ class CourseMiniAppLessonFlowService:
         for card in [*words, *activities.values()]:
             if card not in cards:
                 cards.append(card)
-        return cards
+        return self._validate_cards(cards, active_words)
 
     async def get_flow(
         self,
@@ -837,6 +1042,8 @@ class CourseMiniAppLessonFlowService:
             return {"ok": False, "error": "lesson_not_found"}
         sections = self._section_plan(payload, level=str(lesson.level), lesson_order=int(lesson.lesson_order))
         section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
+        if not section:
+            return {"ok": False, "error": "course_section_not_found"}
         completed_sections = await self._completed_section_keys(telegram_id=telegram_id, lesson_id=lesson.id)
         completed_sections |= self._section_keys_before(
             section,
@@ -905,6 +1112,7 @@ class CourseMiniAppLessonFlowService:
                 "section_key": section["section_key"],
                 "section_no": section["section_no"],
                 "section_count": section["section_count"],
+                "active_words": self._word_refs(section.get("active_words", [])),
                 "chapter_key": chapter_key,
                 "chapter_label": section["chapter_label"],
                 "chapter_no": section["chapter_no"],
@@ -918,9 +1126,19 @@ class CourseMiniAppLessonFlowService:
     @staticmethod
     def _response_is_correct(card: dict, response: dict) -> tuple[bool, bool]:
         card_type = str(card.get("type") or "")
-        if card_type in {"active_word", "pronunciation", "character_trace"}:
+        if card_type in {"active_word", "match_pairs"}:
             return bool(response.get("completed")), False
-        if card_type in {"meaning_guess", "listening_choice", "translation_choice", "quick_quiz", "dialog_context"}:
+        if card_type in {
+            "meaning_guess",
+            "pinyin_choice",
+            "hanzi_choice",
+            "listening_choice",
+            "gap_fill",
+            "character_recognition",
+            "translation_choice",
+            "quick_quiz",
+            "dialog_context",
+        }:
             try:
                 selected = int(response.get("selected_index"))
             except (TypeError, ValueError):
@@ -957,6 +1175,8 @@ class CourseMiniAppLessonFlowService:
         )
         sections = self._section_plan(payload or {}, level=str(lesson.level), lesson_order=int(lesson.lesson_order))
         section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
+        if not section:
+            return {"ok": False, "error": "course_section_not_found"}
         completed_sections = await self._completed_section_keys(telegram_id=telegram_id, lesson_id=lesson.id)
         completed_sections |= self._section_keys_before(
             section,

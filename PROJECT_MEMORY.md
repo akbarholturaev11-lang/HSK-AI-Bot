@@ -207,6 +207,29 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-24 — Mini App lesson section source-of-truth fix
+
+Changed:
+- Course lesson flow no longer falls back from an unknown requested `section_key` to section `1`; server now returns `course_section_not_found`.
+- Lesson flow response includes server `active_words`; frontend logs `level`, `lesson_order`, `section_key`, `section_no`, `book_lesson_order`, and `active_words` at lesson start.
+- Broken lesson-flow microphone and fake stroke-order cards were removed from generated flows; activity generation now validates card count, source words, broken types, and diversity.
+
+Why:
+- Path nodes could show one section while the opened lesson used another section's content because local frontend section guesses and server fallback hid section mismatches.
+
+Files touched:
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/static/study-v2.js`
+- `tests/test_course_miniapp_lesson_flow.py`
+- `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- Payment/subscription/QA logic was not changed.
+- Real stroke order remains available in character dictionary/stroke pages, not inside lesson flow.
+
+Follow-up:
+- After deploy, test Telegram WebView path node `1.2`, next `1.2 -> 1.3`, and verify console debug active words match the opened section.
+
 ### 2026-06-24 — Mini App tests and character dictionary cleanup
 
 Changed:

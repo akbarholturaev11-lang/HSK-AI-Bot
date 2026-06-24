@@ -179,7 +179,12 @@ def mock_course_lesson_flow(page):
                     "version": 1,
                     "level": "hsk1",
                     "lesson_id": 1,
+                    "book_lesson_order": 1,
+                    "section_key": "1.1",
+                    "section_no": 1,
+                    "section_count": 2,
                     "title": "你好",
+                    "active_words": [{"zh": "你好", "pinyin": "nǐ hǎo", "meaning": "привет"}],
                     "cards": [
                         {
                             "id": "word:1",
@@ -198,12 +203,11 @@ def mock_course_lesson_flow(page):
                             "required": True,
                         },
                         {
-                            "id": "activity:pronunciation",
-                            "type": "pronunciation",
-                            "title": "Произнесите фразу вслух",
-                            "phrase": "你好",
-                            "pinyin": "nǐ hǎo",
-                            "translation": "привет",
+                            "id": "activity:match",
+                            "type": "match_pairs",
+                            "title": "Соедините пары",
+                            "prompt": "Соедините пары",
+                            "pairs": [["你好", "привет"], ["谢谢", "спасибо"]],
                             "required": True,
                         },
                     ],
@@ -390,7 +394,7 @@ def test_server_backed_lesson_cards_finish_with_reward(page):
     frame.locator(".v2-card-next").click()
     frame.get_by_role("button", name="привет", exact=True).click()
     frame.locator(".v2-card-next").click()
-    expect(frame.locator(".v2-speech-card")).to_contain_text("nǐ hǎo")
+    expect(frame.locator(".v2-dialog-card")).to_contain_text("你好")
     frame.locator(".v2-card-next").click()
 
     expect(frame.locator(".v2-reward-shell")).to_contain_text("100%")
