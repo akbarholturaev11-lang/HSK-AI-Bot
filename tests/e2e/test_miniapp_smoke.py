@@ -168,36 +168,106 @@ def mock_course_lesson(page):
 
 
 def mock_course_lesson_flow(page):
-    page.route(
-        re.compile(r".*/api/miniapp/course-lesson\?.*"),
-        lambda route: json_response(
+    def handle_section_plan(route):
+        json_response(
+            route,
+            {
+                "ok": True,
+                "level": "hsk1",
+                "content_level": "hsk1",
+                "completed_book_lessons_count": 0,
+                "completed_sections_count": 0,
+                "total_sections": 2,
+                "current_section": {"section_key": "1.1", "section_no": 1, "book_lesson_order": 1},
+                "lessons": [
+                    {
+                        "level": "hsk1",
+                        "content_level": "hsk1",
+                        "lesson_id": 1,
+                        "book_lesson_order": 1,
+                        "lesson_title": "你好",
+                        "section_count": 2,
+                        "is_completed": False,
+                        "is_locked": False,
+                        "sections": [
+                            {
+                                "level": "hsk1",
+                                "book_lesson_order": 1,
+                                "lesson_id": 1,
+                                "lesson_title": "你好",
+                                "section_key": "1.1",
+                                "section_no": 1,
+                                "section_count": 2,
+                                "section_purpose": "intro",
+                                "section_title": "Новые слова",
+                                "section_group": {"key": "a", "label": "A", "no": 1, "section_start": 1, "section_end": 2},
+                                "active_words": [{"zh": "你好", "pinyin": "nǐ hǎo", "meaning": "привет"}],
+                                "node_status": "current",
+                                "is_current": True,
+                                "is_locked": False,
+                                "is_completed": False,
+                                "next_section": {"section_key": "1.2", "section_no": 2, "book_lesson_order": 1},
+                            },
+                            {
+                                "level": "hsk1",
+                                "book_lesson_order": 1,
+                                "lesson_id": 1,
+                                "lesson_title": "你好",
+                                "section_key": "1.2",
+                                "section_no": 2,
+                                "section_count": 2,
+                                "section_purpose": "review",
+                                "section_title": "Review",
+                                "section_group": {"key": "a", "label": "A", "no": 1, "section_start": 1, "section_end": 2},
+                                "active_words": [{"zh": "谢谢", "pinyin": "xiè xie", "meaning": "спасибо"}],
+                                "node_status": "locked",
+                                "is_current": False,
+                                "is_locked": True,
+                                "is_completed": False,
+                                "next_section": None,
+                            },
+                        ],
+                    }
+                ],
+                "sections": [],
+            },
+        )
+
+    def handle_lesson_flow(route):
+        query = parse_qs(urlparse(route.request.url).query)
+        section_key = query.get("section", ["1.1"])[0]
+        section_no = int(section_key.split(".")[1])
+        word = "谢谢" if section_key == "1.2" else "你好"
+        json_response(
             route,
             {
                 "ok": True,
                 "flow": {
-                    "id": "lesson:1:v1",
+                    "id": f"lesson:1:{section_key}:v1",
                     "version": 1,
                     "level": "hsk1",
                     "lesson_id": 1,
                     "book_lesson_order": 1,
-                    "section_key": "1.1",
-                    "section_no": 1,
+                    "section_key": section_key,
+                    "section_no": section_no,
                     "section_count": 2,
-                    "title": "你好",
-                    "active_words": [{"zh": "你好", "pinyin": "nǐ hǎo", "meaning": "привет"}],
+                    "section_purpose": "intro" if section_key == "1.1" else "review",
+                    "section_title": "Новые слова" if section_key == "1.1" else "Review",
+                    "title": word,
+                    "active_words": [{"zh": word, "pinyin": "nǐ hǎo", "meaning": "привет"}],
                     "cards": [
                         {
                             "id": "word:1",
                             "type": "active_word",
                             "title": "Новое активное слово",
-                            "word": {"zh": "你好", "pinyin": "nǐ hǎo", "meaning": "привет"},
+                            "word": {"zh": word, "pinyin": "nǐ hǎo", "meaning": "привет"},
                             "required": True,
                         },
                         {
                             "id": "activity:meaning",
                             "type": "meaning_guess",
                             "title": "Выберите правильное значение",
-                            "prompt": "Что означает 你好?",
+                            "prompt": f"Что означает {word}?",
                             "options": ["привет", "спасибо"],
                             "correct_index": 0,
                             "required": True,
@@ -213,7 +283,12 @@ def mock_course_lesson_flow(page):
                     ],
                 },
             },
-        ),
+        )
+
+    page.route(re.compile(r".*/api/miniapp/course-section-plan\?.*"), handle_section_plan)
+    page.route(
+        re.compile(r".*/api/miniapp/course-lesson\?.*"),
+        handle_lesson_flow,
     )
     page.route(
         f"{PROD_ORIGIN}/api/miniapp/course-lesson/complete",
@@ -408,21 +483,24 @@ def test_locked_path_node_readiness_test_opens_selected_section(page):
     def handle_lesson_flow(route):
         query = parse_qs(urlparse(route.request.url).query)
         section_key = query.get("section", ["1.1"])[0]
+        lesson_order = int(section_key.split(".")[0])
         section_no = int(section_key.split(".")[1])
-        word = "再见" if section_key == "1.2" else "你好"
+        word = "再见" if section_key == "2.1" else "你好"
         json_response(
             route,
             {
                 "ok": True,
                 "flow": {
-                    "id": f"lesson:1:{section_key}:v1",
+                    "id": f"lesson:{lesson_order}:{section_key}:v1",
                     "version": 1,
                     "level": "hsk1",
-                    "lesson_id": 1,
-                    "book_lesson_order": 1,
+                    "lesson_id": lesson_order,
+                    "book_lesson_order": lesson_order,
                     "section_key": section_key,
                     "section_no": section_no,
-                    "section_count": 2,
+                    "section_count": 1,
+                    "section_purpose": "intro",
+                    "section_title": "Yangi so'zlar",
                     "title": word,
                     "active_words": [{"zh": word, "pinyin": "pinyin", "meaning": "meaning"}],
                     "cards": [
@@ -446,15 +524,91 @@ def test_locked_path_node_readiness_test_opens_selected_section(page):
             {
                 "ok": True,
                 "level": "hsk1",
-                "lesson_id": 1,
-                "book_lesson_order": 1,
-                "section_key": "1.2",
-                "completed_lessons_count": 0,
+                "lesson_id": 2,
+                "book_lesson_order": 2,
+                "section_key": "2.1",
+                "completed_lessons_count": 1,
                 "percent": 25,
                 "passed": False,
             },
         )
 
+    page.route(
+        re.compile(r".*/api/miniapp/course-section-plan\?.*"),
+        lambda route: json_response(
+            route,
+            {
+                "ok": True,
+                "level": "hsk1",
+                "content_level": "hsk1",
+                "completed_book_lessons_count": 0,
+                "completed_sections_count": 0,
+                "total_sections": 2,
+                "current_section": {"section_key": "1.1", "section_no": 1, "book_lesson_order": 1},
+                "lessons": [
+                    {
+                        "level": "hsk1",
+                        "lesson_id": 1,
+                        "book_lesson_order": 1,
+                        "lesson_title": "Salom",
+                        "section_count": 1,
+                        "is_completed": False,
+                        "is_locked": False,
+                        "sections": [
+                            {
+                                "level": "hsk1",
+                                "book_lesson_order": 1,
+                                "lesson_id": 1,
+                                "lesson_title": "Salom",
+                                "section_key": "1.1",
+                                "section_no": 1,
+                                "section_count": 1,
+                                "section_purpose": "intro",
+                                "section_title": "Yangi so'zlar",
+                                "section_group": {"key": "a", "label": "A", "no": 1, "section_start": 1, "section_end": 1},
+                                "active_words": [{"zh": "你好", "pinyin": "pinyin", "meaning": "meaning"}],
+                                "node_status": "current",
+                                "is_current": True,
+                                "is_locked": False,
+                                "is_completed": False,
+                                "next_section": {"section_key": "2.1", "section_no": 1, "book_lesson_order": 2},
+                            }
+                        ],
+                    },
+                    {
+                        "level": "hsk1",
+                        "lesson_id": 2,
+                        "book_lesson_order": 2,
+                        "lesson_title": "Xayr",
+                        "section_count": 1,
+                        "is_completed": False,
+                        "is_locked": True,
+                        "sections": [
+                            {
+                                "level": "hsk1",
+                                "book_lesson_order": 2,
+                                "lesson_id": 2,
+                                "lesson_title": "Xayr",
+                                "section_key": "2.1",
+                                "section_no": 1,
+                                "section_count": 1,
+                                "section_purpose": "intro",
+                                "section_title": "Yangi so'zlar",
+                                "section_group": {"key": "a", "label": "A", "no": 1, "section_start": 1, "section_end": 1},
+                                "active_words": [{"zh": "再见", "pinyin": "pinyin", "meaning": "meaning"}],
+                                "node_status": "locked",
+                                "is_current": False,
+                                "is_locked": True,
+                                "is_completed": False,
+                                "next_section": None,
+                            }
+                        ],
+                    },
+                ],
+                "sections": [],
+            },
+        ),
+    )
     page.route(re.compile(r".*/api/miniapp/course-lesson\?.*"), handle_lesson_flow)
     page.route(f"{PROD_ORIGIN}/api/miniapp/course-lesson/jump", handle_jump)
     page.add_init_script(
@@ -464,7 +618,7 @@ def test_locked_path_node_readiness_test_opens_selected_section(page):
     page.goto(app_url("/study.html?level=hsk1&tab=course&lang=uz"))
     frame = study_frame(page)
     page.evaluate("window.MiniAppBridge.hasAuth=()=>true")
-    frame.get_by_role("button", name=re.compile(r"^Dars 1\.2$")).click()
+    frame.get_by_role("button", name=re.compile(r"^Dars 2\.1$")).click()
     expect(frame.locator("#v2-sheet")).to_contain_text("Qisqa tekshiruv")
     frame.get_by_role("button", name="Testni boshlash").click()
 
@@ -481,7 +635,7 @@ def test_locked_path_node_readiness_test_opens_selected_section(page):
     expect(frame.locator("#page-lesson.active")).to_be_visible()
     expect(frame.locator(".v2-word-hero")).to_contain_text("再见")
     assert jump_requests
-    assert jump_requests[0]["section_key"] == "1.2"
+    assert jump_requests[0]["section_key"] == "2.1"
 
 
 def test_study_quiz_score_and_event_localstorage_fallback(page):

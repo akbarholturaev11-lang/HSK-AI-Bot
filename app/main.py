@@ -578,6 +578,31 @@ async def miniapp_course_lesson(
     return JSONResponse(status_code=status_code, content=result)
 
 
+@app.get("/api/miniapp/course-section-plan")
+async def miniapp_course_section_plan(
+    request: Request,
+    level: str,
+    lang: str = "ru",
+):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+        )
+    async with async_session_maker() as session:
+        result = await CourseMiniAppLessonFlowService(session).get_section_plan(
+            telegram_id,
+            level=level,
+            lang=normalize_miniapp_lang(lang),
+        )
+    status_code = 200 if result.get("ok") else 403
+    return JSONResponse(status_code=status_code, content=result)
+
+
 @app.post("/api/miniapp/course-lesson/complete")
 async def miniapp_course_lesson_complete(request: Request):
     telegram_id = extract_verified_webapp_user_id(

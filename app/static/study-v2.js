@@ -33,7 +33,7 @@ const copy={
     next:"Далее",back:"Назад",finish:"Начать обучение",saving:"Сохраняем...",onboardingError:"Не удалось сохранить настройки. Попробуйте ещё раз.",goalHsk:"Сдать HSK",goalStudy:"Учиться в Китае",goalWork:"Работать в Китае",goalTravel:"Путешествовать",goalDaily:"Общаться каждый день",startLesson1:"Начать с урока 1",continueProgress:"Продолжить текущий прогресс",takePlacement:"Пройти тест уровня",
     loadingLesson:"Готовим урок...",lessonLoadError:"Не удалось открыть урок",sayAloud:"Произнесите вслух",said:"Я произнёс",check:"Проверить",reset:"Сбросить",correct:"Верно",incorrect:"Нужно повторить",lessonComplete:"Урок завершён",submitLesson:"Завершить урок",retryLesson:"Повторить урок",continueCourse:"Продолжить курс",unlockMore:"Открыть следующие уроки",reviewNow:"Повторить ошибки",loadingMistakes:"Загружаем слабые места...",
     sectionComplete:"Раздел завершён",chapterComplete:"Часть {chapter} завершена!",bookLessonComplete:"{level} Урок {lesson} завершён!",nextSection:"Следующий раздел",nextChapter:"Открыть следующую часть",claimXp:"Забрать очки",part:"часть",totalXp:"Всего очков",rewardTitle:"Отлично!",streakInRow:"{days} дней подряд",noMistakeTitle:"Без ошибок",keepGoing:"Продолжайте серию",
-    traceHint:"Посмотрите порядок написания",traceDone:"Понятно",micReady:"Нажмите и произнесите",
+    traceHint:"Посмотрите порядок написания",traceDone:"Понятно",micReady:"Нажмите и произнесите",aiVoiceCta:"Практика в AI Voice",
     unitWords:"Слова",unitSound:"Звук",unitCharacter:"Иероглиф",unitDialog:"Диалог",unitBuild:"Сборка",unitSpeaking:"Произношение",unitReview:"Проверка",
     levelMetric:"ступень",uploadAvatar:"Сменить фото",userProfile:"Профиль ученика",beginnerLevel:"Новичок"
   },
@@ -62,7 +62,7 @@ const copy={
     next:"Keyingi",back:"Orqaga",finish:"O'qishni boshlash",saving:"Saqlanmoqda...",onboardingError:"Sozlamalarni saqlab bo'lmadi. Qayta urinib ko'ring.",goalHsk:"HSK topshirish",goalStudy:"Xitoyda o'qish",goalWork:"Xitoyda ishlash",goalTravel:"Sayohat",goalDaily:"Har kuni gaplashish",startLesson1:"1-darsdan boshlash",continueProgress:"Joriy progressdan davom etish",takePlacement:"Daraja testini topshirish",
     loadingLesson:"Dars tayyorlanmoqda...",lessonLoadError:"Darsni ochib bo'lmadi",sayAloud:"Ovoz chiqarib ayting",said:"Aytdim",check:"Tekshirish",reset:"Tozalash",correct:"To'g'ri",incorrect:"Qayta mashq qiling",lessonComplete:"Dars tugallandi",submitLesson:"Darsni yakunlash",retryLesson:"Darsni qaytarish",continueCourse:"Kursni davom ettirish",unlockMore:"Keyingi darslarni ochish",reviewNow:"Xatolarni takrorlash",loadingMistakes:"Zaif joylar yuklanmoqda...",
     sectionComplete:"Bosqich tugadi",chapterComplete:"{chapter} qism tugadi!",bookLessonComplete:"{level} {lesson}-dars tugadi!",nextSection:"Keyingi bosqich",nextChapter:"Keyingi qismni ochish",claimXp:"Ochko olish",part:"qism",totalXp:"Jami ochko",rewardTitle:"Zo'r!",streakInRow:"{days} kun ketma-ket",noMistakeTitle:"Xatosiz",keepGoing:"Seriyani davom ettiring",
-    traceHint:"Yozilish tartibini ko'ring",traceDone:"Tushundim",micReady:"Bosib talaffuz qiling",
+    traceHint:"Yozilish tartibini ko'ring",traceDone:"Tushundim",micReady:"Bosib talaffuz qiling",aiVoiceCta:"AI Voice'da mashq",
     unitWords:"So'zlar",unitSound:"Tovush",unitCharacter:"Iyeroglif",unitDialog:"Dialog",unitBuild:"Yig'ish",unitSpeaking:"Talaffuz",unitReview:"Tekshiruv",
     levelMetric:"bosqich",uploadAvatar:"Rasmni almashtirish",userProfile:"O'quvchi profili",beginnerLevel:"Boshlovchi"
   },
@@ -91,7 +91,7 @@ const copy={
     next:"Баъдӣ",back:"Бозгашт",finish:"Оғози омӯзиш",saving:"Нигоҳ дошта мешавад...",onboardingError:"Танзимот нигоҳ дошта нашуд. Аз нав кӯшиш кунед.",goalHsk:"Супоридани HSK",goalStudy:"Таҳсил дар Чин",goalWork:"Кор дар Чин",goalTravel:"Саёҳат",goalDaily:"Ҳар рӯз гуфтугӯ кардан",startLesson1:"Аз дарси 1 оғоз кардан",continueProgress:"Идомаи пешрафти ҷорӣ",takePlacement:"Супоридани тести сатҳ",
     loadingLesson:"Дарс омода мешавад...",lessonLoadError:"Дарс кушода нашуд",sayAloud:"Бо овози баланд гӯед",said:"Гуфтам",check:"Санҷидан",reset:"Тоза кардан",correct:"Дуруст",incorrect:"Боз машқ кунед",lessonComplete:"Дарс анҷом шуд",submitLesson:"Анҷоми дарс",retryLesson:"Такрори дарс",continueCourse:"Идомаи курс",unlockMore:"Кушодани дарсҳои навбатӣ",reviewNow:"Такрори хатоҳо",loadingMistakes:"Ҷойҳои суст бор мешаванд...",
     sectionComplete:"Қисм анҷом шуд",chapterComplete:"Қисми {chapter} анҷом шуд!",bookLessonComplete:"{level} дарси {lesson} анҷом шуд!",nextSection:"Қисми баъдӣ",nextChapter:"Кушодани қисми баъдӣ",claimXp:"Гирифтани хол",part:"қисм",totalXp:"Ҳамагӣ хол",rewardTitle:"Офарин!",streakInRow:"{days} рӯз пай дар пай",noMistakeTitle:"Бе хато",keepGoing:"Силсиларо давом диҳед",
-    traceHint:"Тартиби навиштро бинед",traceDone:"Фаҳмо",micReady:"Пахш карда талаффуз кунед",
+    traceHint:"Тартиби навиштро бинед",traceDone:"Фаҳмо",micReady:"Пахш карда талаффуз кунед",aiVoiceCta:"Машқ дар AI Voice",
     unitWords:"Калимаҳо",unitSound:"Овоз",unitCharacter:"Иероглиф",unitDialog:"Муколама",unitBuild:"Сохтан",unitSpeaking:"Талаффуз",unitReview:"Санҷиш",
     levelMetric:"зина",uploadAvatar:"Иваз кардани сурат",userProfile:"Профили омӯзанда",beginnerLevel:"Навомӯз"
   }
@@ -111,47 +111,46 @@ function avatarMarkup(value,fallback="A"){
 const launchCurrent=Number(launchLesson)||0;
 const lessonByNumber=number=>LESSONS.find(item=>Number(item.n)===Number(number));
 const chapterLabel=index=>String.fromCharCode(65+Math.max(0,Math.min(25,Number(index)||0)));
-function sectionSize(){if(LEVEL_KEY==="hsk1"||LEVEL_KEY==="hsk2")return 2;if(LEVEL_KEY==="hsk3")return 3;return 4}
-function lessonWords(number){return VOCAB.filter(word=>Number(word.l)===Number(number))}
-function splitWords(words){
-  const maxSize=sectionSize(),chunks=[];
-  if(!words.length)return[[]];
-  let count=Math.max(1,Math.ceil(words.length/maxSize));
-  while(count>1&&Math.floor(words.length/count)<2)count-=1;
-  const base=Math.floor(words.length/count),extra=words.length%count;
-  let cursor=0;
-  for(let index=0;index<count;index++){const size=base+(index<extra?1:0);chunks.push(words.slice(cursor,cursor+size));cursor+=size}
-  return chunks.length?chunks:[[]];
+function planSection(item){
+  if(!item)return null;
+  const key=String(item.section_key||item.key||"").trim();
+  const group=item.section_group||{};
+  const lesson=Number(item.book_lesson_order||item.lesson_id||item.lesson||key.split(".")[0]||0);
+  const no=Number(item.section_no||item.no||key.split(".")[1]||1);
+  const count=Number(item.section_count||item.count||1);
+  const chapter=String(group.label||item.chapter_label||item.chapter||chapterLabel(Math.floor((Math.max(1,no)-1)/3)));
+  const purpose=String(item.section_purpose||"");
+  const title=String(item.section_title||"");
+  return{...item,lesson,key,no,count,chapter,purpose,title,chapterIndex:Number(group.no||item.chapter_no||1)-1,chapterStart:Number(group.section_start||item.chapter_start||1),chapterEnd:Number(group.section_end||item.chapter_end||count),words:Array.isArray(item.active_words)?item.active_words:[],server:true};
 }
-function lessonSections(lesson){
-  if(!lesson)return[];
-  const chunks=splitWords(lessonWords(lesson.n));
-  return chunks.map((words,index)=>{
-    const no=index+1,chapterIndex=Math.floor(index/3),chapter=chapterLabel(chapterIndex);
-    return{lesson:lesson.n,key:`${lesson.n}.${no}`,no,count:chunks.length,chapter,chapterIndex,chapterStart:chapterIndex*3+1,chapterEnd:Math.min(chapterIndex*3+3,chunks.length),words};
-  });
+function serverLessons(){return Array.isArray(serverSectionPlan?.lessons)?serverSectionPlan.lessons:[]}
+function serverSections(){
+  const raw=Array.isArray(serverSectionPlan?.sections)&&serverSectionPlan.sections.length
+    ?serverSectionPlan.sections
+    :serverLessons().flatMap(lesson=>Array.isArray(lesson.sections)?lesson.sections:[]);
+  return raw.map(planSection).filter(Boolean);
 }
-function allCourseSections(){return LESSONS.flatMap(lesson=>lessonSections(lesson))}
-function sectionStoreKey(section){return `${LEVEL_KEY}:${section.key}`}
-function localSectionDone(section){return Boolean(meta.completedSections&&meta.completedSections[sectionStoreKey(section)])}
+function serverLessonByNumber(number){return serverLessons().find(item=>Number(item.book_lesson_order||item.lesson_id)===Number(number))}
+function allCourseSections(){return serverSections()}
 function bookLessonIsDone(number){
-  if(state.done.includes(Number(number))||(launchCurrent>1&&Number(number)<launchCurrent))return true;
-  const sections=lessonSections(lessonByNumber(number));
-  return Boolean(sections.length&&sections.every(localSectionDone));
+  const planned=serverLessonByNumber(number);
+  if(planned)return Boolean(planned.is_completed);
+  return false;
 }
 const lessonIsDone=number=>bookLessonIsDone(number);
-function sectionIsDone(section){return bookLessonIsDone(section.lesson)||localSectionDone(section)}
+function sectionIsDone(section){return Boolean(section?.is_completed)}
 function completedSectionCount(){return allCourseSections().filter(sectionIsDone).length}
 function sectionProgress(){const all=allCourseSections();return Math.round(completedSectionCount()/Math.max(all.length,1)*100)}
-function completedCount(){return LESSONS.filter(item=>bookLessonIsDone(item.n)).length}
-function currentSection(){const all=allCourseSections();return all.find(section=>!sectionIsDone(section))||all[all.length-1]}
+function completedCount(){return serverLessons().filter(item=>item.is_completed).length}
+function currentSection(){const all=allCourseSections(),current=sectionRef(serverSectionPlan?.current_section);if(current){const found=all.find(section=>section.key===current.section_key);if(found)return found}return all.find(section=>section.is_current)||all.find(section=>!section.is_completed&&!section.is_locked)||all[all.length-1]}
 function jumpToCurrentSection(){const section=currentSection();if(section)openLesson(section.lesson,section.key)}
-function currentLesson(){const section=currentSection();return lessonByNumber(section?.lesson)||LESSONS.find(item=>!bookLessonIsDone(item.n))||LESSONS[LESSONS.length-1]}
+function currentLesson(){const section=currentSection();return serverLessonByNumber(section?.lesson)||lessonByNumber(section?.lesson)||LESSONS[0]}
+function lessonTitle(value){return String(value?.lesson_title||tr(value?.t)||"")}
+function lessonSubtitle(value){return String(tr(value?.sub)||"")}
 function completedLessonSectionKeys(lesson){
   if(!lesson)return[];
-  const sections=lessonSections(lesson);
-  if(bookLessonIsDone(lesson.n))return sections.map(section=>section.key);
-  return sections.filter(localSectionDone).map(section=>section.key);
+  const lessonNo=Number(lesson.book_lesson_order||lesson.lesson_id||lesson.n);
+  return serverSections().filter(section=>Number(section.lesson)===lessonNo&&section.is_completed).map(section=>section.key);
 }
 function sectionRef(value,fallbackLesson=quizLesson){
   if(!value)return null;
@@ -175,9 +174,9 @@ function completionNextSection(result){
   const currentKey=String(result?.section_key||lessonFlow?.section_key||"");
   const lessonNo=Number(currentKey.split(".")[0]||lessonFlow?.lesson_id||quizLesson||1);
   const sectionNo=Number(result?.section_no||currentKey.split(".")[1]||lessonFlow?.section_no||1);
-  const sections=lessonSections(lessonByNumber(lessonNo));
-  if(sectionNo&&sectionNo<sections.length)return sectionRef(`${lessonNo}.${sectionNo+1}`,lessonNo);
-  return sectionRef(result?.next_book_lesson||result?.next_lesson,lessonNo+1);
+  const sections=serverSections().filter(section=>Number(section.lesson)===lessonNo);
+  const next=sections.find(section=>Number(section.no)===sectionNo+1);
+  return next?sectionRef(next,lessonNo):null;
 }
 function markSectionDone(sectionKey){
   if(!sectionKey)return;
@@ -201,6 +200,7 @@ let onboardingSubmitting=false;
 let onboarding={goal:["hsk_exam","study_china","work_china","daily_communication","travel"].includes(meta.goal)?meta.goal:"hsk_exam",level:LEVEL_KEY.startsWith("hsk4")?"hsk4":LEVEL_KEY,minutes:meta.minutes||10,startMode:"lesson_1"};
 let lessonFlow=null,lessonCardIndex=0,lessonResponses={},lessonSubmitting=false,lessonOrderRemaining=[],lessonOrderSelected=[];
 let jumpTarget=null;
+let serverSectionPlan=null,sectionPlanLoading=false,sectionPlanPromise=null,sectionPlanError="";
 const LESSON_CHOICE_TYPES=["meaning_guess","pinyin_choice","hanzi_choice","listening_choice","gap_fill","character_recognition","translation_choice","quick_quiz"];
 const LESSON_ORDER_TYPES=["sentence_builder","word_order"];
 const LESSON_PASSIVE_TYPES=["active_word","match_pairs"];
@@ -260,6 +260,25 @@ function leagueLabel(value=leagueName()){
 function syncGamification(value,notify=false){if(!value)return;serverGamification={...(serverGamification||{}),...value};meta.xp=Number(value.xp??meta.xp);meta.streak=Number(value.streak??meta.streak);write(META_KEY,meta);if(notify&&Number(value.awarded_xp||0)>0)toast(`+${Number(value.awarded_xp)} ${tx("xp")}`)}
 window.addEventListener("message",event=>{const data=event?.data||{};if(data.type==="hsk_voice_completed"){meta.daily.voice=1;write(META_KEY,meta);syncGamification(data.reward,true);renderAll()}else if(data.type==="hsk_voice_close"){showPage("home")}else if(data.type==="hsk_voice_subscribe"){openSubscription(data.source||"voice_limit")}});
 async function loadServerGamification(){if(!bridge.hasAuth?.()||gamificationLoading)return;gamificationLoading=true;try{const result=await bridge.loadGamification?.();if(result?.ok){syncGamification(result);renderAll()}}catch(_){}finally{gamificationLoading=false}}
+async function loadServerSectionPlan(force=false){
+  if(!bridge.loadCourseSectionPlan){sectionPlanError="course_section_plan_unavailable";return null}
+  if(sectionPlanPromise&&!force)return sectionPlanPromise;
+  sectionPlanLoading=true;sectionPlanError="";
+  sectionPlanPromise=bridge.loadCourseSectionPlan({level:LEVEL_KEY,lang}).then(result=>{
+    if(!result?.ok)throw Object.assign(new Error(result?.error||"course_section_plan_failed"),{code:result?.error});
+    serverSectionPlan=result;
+    return result;
+  }).catch(error=>{
+    sectionPlanError=error?.code||"course_section_plan_failed";
+    serverSectionPlan=null;
+    throw error;
+  }).finally(()=>{
+    sectionPlanLoading=false;sectionPlanPromise=null;
+    if(document.getElementById("page-course"))renderAll();
+  });
+  return sectionPlanPromise;
+}
+function ensureServerSectionPlan(){if(!serverSectionPlan&&!sectionPlanLoading&&!sectionPlanError)loadServerSectionPlan().catch(()=>{})}
 function featureAllowed(key){const item=ACCESS.course_features?.[key];return ACCESS.status==="active"||item?.allowed!==false}
 function lockAction(key,action){return featureAllowed(key)?action:`V2.showPaywall('${key}_locked')`}
 function lockSub(key,sub){return featureAllowed(key)?sub:tx("unlockMore")}
@@ -329,7 +348,7 @@ function renderHome(){
   const energy=energyState();
   document.getElementById("page-home").innerHTML=`
     <div class="v2-page-head"><div class="v2-kicker">${esc(tx("today"))}</div><h1 class="v2-title">${esc(tx("welcome"))}</h1></div>
-    <section class="v2-hero"><div class="v2-hero-row"><div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${lesson?.n||1}</div><h1>${esc(tr(lesson?.t)||"")}</h1><p>${esc(tr(lesson?.sub)||"")}</p></div><div class="v2-progress-ring" style="--progress:${progress()}%" data-value="${progress()}%"></div></div><button class="v2-primary" onclick="V2.openLesson(${lesson?.n||1})">▶ ${esc(tx("continue"))}</button></section>
+    <section class="v2-hero"><div class="v2-hero-row"><div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${lesson?.book_lesson_order||lesson?.lesson_id||lesson?.n||1}</div><h1>${esc(lessonTitle(lesson))}</h1><p>${esc(lessonSubtitle(lesson))}</p></div><div class="v2-progress-ring" style="--progress:${progress()}%" data-value="${progress()}%"></div></div><button class="v2-primary" onclick="V2.openLesson(${lesson?.book_lesson_order||lesson?.lesson_id||lesson?.n||1},'${esc(currentSection()?.key||"")}')">▶ ${esc(tx("continue"))}</button></section>
     <section class="v2-section"><div class="v2-action-grid"><button class="v2-feature wide" onclick="V2.showPage('tests')"><span class="v2-feature-icon">✓</span><b>${esc(tx("testCenter"))}</b><small>${esc(tx("testCenterSub"))}</small></button><button class="v2-feature" onclick="V2.showPage('training')"><span class="v2-feature-icon">◫</span><b>${esc(tx("training"))}</b><small>${esc(tx("trainingSub"))}</small></button><button class="v2-feature" onclick="V2.showPage('mistakes')"><span class="v2-feature-icon">!</span><b>${esc(tx("mistakes"))}</b><small>${esc(tx("mistakesSub"))}</small></button></div></section>
     <section class="v2-section"><div class="v2-section-head"><h2 class="v2-section-title">${esc(tx("dailyGoal"))}</h2><span class="v2-link">${goal} ${esc(tx("minutes"))}</span></div><div class="v2-goal"><div class="v2-goal-top"><b>${meta.daily.xp||0} ${esc(tx("xp"))}</b><span>${dailyProgress}%</span></div><div class="v2-bar"><i style="width:${dailyProgress}%"></i></div></div></section>
     <section class="v2-section"><div class="v2-section-head"><h2 class="v2-section-title">${esc(tx("missions"))}</h2></div><div class="v2-missions">${missionRow("▦",tx("lessonMission"),meta.daily.lesson||0,1)}${missionRow("字",tx("wordMission"),meta.daily.words||0,5)}${missionRow("◌",tx("voiceMission"),meta.daily.voice||0,1)}</div></section>
@@ -337,21 +356,32 @@ function renderHome(){
     <section class="v2-section"><button class="v2-feature wide" onclick="V2.openChest()"><span class="v2-feature-icon">▣</span><b>${esc(chest.ready?tx("rewardReady"):tx("rewardChest"))}</b><small>${esc(chest.ready?tx("openChest"):`${chest.progress}/80 ${tx("xp")}`)}</small></button><div class="v2-energy-strip"><b>${esc(tx("energy"))}: ${energy.current}/${energy.max}</b><span>${esc(tx("energySub"))}</span></div></section>`;
 }
 
-function sectionCurrent(section){const current=currentSection();return current&&current.key===section.key}
-function sectionLocked(section){return !sectionIsDone(section)&&!sectionCurrent(section)}
+function sectionCurrent(section){return Boolean(section?.is_current)}
+function sectionLocked(section){return Boolean(section?.is_locked)}
 function pathItem(section,index){
-  const lesson=lessonByNumber(section.lesson),done=sectionIsDone(section),current=sectionCurrent(section),locked=sectionLocked(section);
+  const lesson=serverLessonByNumber(section.lesson)||lessonByNumber(section.lesson),done=sectionIsDone(section),current=sectionCurrent(section),locked=sectionLocked(section);
   const premiumLocked=!done&&!featureAllowed("lesson")&&!(ACCESS.status==="active");
   const cls=done?"done":current&&!premiumLocked?"current":premiumLocked?"premium":"";
   const status=done?tx("done"):premiumLocked?tx("unlockMore"):current?tx("current"):tx("locked");
-  return `<div class="v2-path-item"><div class="v2-node-copy"><b>${esc(tx("lesson"))} ${section.key}</b><small>${esc(tr(lesson?.t)||"")} · ${esc(status)}</small></div><button class="v2-node ${cls}" onclick="V2.openLesson(${section.lesson},'${section.key}')" aria-label="${esc(tx("lesson"))} ${section.key}">${done?"✓":premiumLocked?"◆":section.no}</button></div>`;
+  const nodeTitle=section.title||lessonTitle(lesson);
+  return `<div class="v2-path-item"><div class="v2-node-copy"><b>${esc(tx("lesson"))} ${section.key}</b><small>${esc(nodeTitle)} · ${esc(status)}</small></div><button class="v2-node ${cls}" onclick="V2.openLesson(${section.lesson},'${section.key}')" aria-label="${esc(tx("lesson"))} ${section.key}">${done?"✓":premiumLocked?"◆":section.no}</button></div>`;
 }
 function milestoneItem(after,type){const boss=type==="boss";return `<div class="v2-path-item"><div class="v2-node-copy"><b>${esc(tx(type))}</b><small>${esc(tx("lesson"))} 1-${after}</small></div><button class="v2-node ${boss?"boss":"review"}" onclick="V2.startMock()" aria-label="${esc(tx(type))}">${boss?"★":"↻"}</button></div>`}
 function renderCourse(){
+  ensureServerSectionPlan();
+  if(sectionPlanLoading&&!serverSectionPlan){
+    document.getElementById("page-course").innerHTML=`<div class="v2-page-head"><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("path"))}</h1><p class="v2-subtitle">${esc(tx("pathSub"))}</p></div><div class="v2-path"><div class="v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div></div>`;
+    return;
+  }
+  if(sectionPlanError&&!serverSectionPlan){
+    document.getElementById("page-course").innerHTML=`<div class="v2-page-head"><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("path"))}</h1><p class="v2-subtitle">${esc(tx("pathSub"))}</p></div><div class="v2-empty"><b>${esc(tx("lessonLoadError"))}</b><p>${esc(sectionPlanError)}</p><button class="v2-primary" onclick="V2.reloadCoursePath()">${esc(tx("retryLesson"))}</button></div>`;
+    return;
+  }
   const nodes=[];
-  LESSONS.forEach((lesson)=>{
-    const sections=lessonSections(lesson);
-    nodes.push(`<div class="v2-path-book"><b>${labelLevel(LEVEL_KEY).replace(" 上","").replace(" 下","")} ${esc(tx("lesson"))} ${lesson.n}</b><small>${esc(tr(lesson.t)||"")}</small></div>`);
+  serverLessons().forEach((lesson)=>{
+    const sections=(Array.isArray(lesson.sections)?lesson.sections:[]).map(planSection).filter(Boolean);
+    const lessonNo=Number(lesson.book_lesson_order||lesson.lesson_id||0);
+    nodes.push(`<div class="v2-path-book"><b>${labelLevel(LEVEL_KEY).replace(" 上","").replace(" 下","")} ${esc(tx("lesson"))} ${lessonNo}</b><small>${esc(lessonTitle(lesson))}</small></div>`);
     const groups={};
     sections.forEach(section=>{if(!groups[section.chapter])groups[section.chapter]=[];groups[section.chapter].push(section)});
     Object.entries(groups).forEach(([chapter,items])=>{
@@ -359,11 +389,12 @@ function renderCourse(){
       nodes.push(`<div class="v2-path-chapter"><span>${chapter} ${esc(tx("part"))}</span><b>${done}/${items.length}</b></div>`);
       items.forEach((section)=>nodes.push(pathItem(section,nodes.length)));
     });
-    if(lessonIsDone(lesson.n)){
-      if(lesson.n%5===0)nodes.push(milestoneItem(lesson.n,"boss"));else if(lesson.n%3===0)nodes.push(milestoneItem(lesson.n,"review"));
+    if(lessonIsDone(lessonNo)){
+      if(lessonNo%5===0)nodes.push(milestoneItem(lessonNo,"boss"));else if(lessonNo%3===0)nodes.push(milestoneItem(lessonNo,"review"));
     }
   });
-  document.getElementById("page-course").innerHTML=`<div class="v2-page-head"><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("path"))}</h1><p class="v2-subtitle">${esc(tx("pathSub"))}</p></div><div class="v2-path-summary"><div><b>${completedCount()}/${LESSONS.length} ${esc(tx("completed"))}</b><div class="v2-bar"><i style="width:${progress()}%"></i></div></div><span>${progress()}%</span></div><button class="v2-course-jump" onclick="V2.jumpToCurrentSection()">⌖ ${esc(tx("current"))}</button><div class="v2-path">${nodes.join("")}</div>`;
+  const lessonTotal=serverLessons().length||LESSONS.length;
+  document.getElementById("page-course").innerHTML=`<div class="v2-page-head"><div class="v2-kicker">${labelLevel(LEVEL_KEY)}</div><h1 class="v2-title">${esc(tx("path"))}</h1><p class="v2-subtitle">${esc(tx("pathSub"))}</p></div><div class="v2-path-summary"><div><b>${completedCount()}/${lessonTotal} ${esc(tx("completed"))}</b><div class="v2-bar"><i style="width:${progress()}%"></i></div></div><span>${progress()}%</span></div><button class="v2-course-jump" onclick="V2.jumpToCurrentSection()">⌖ ${esc(tx("current"))}</button><div class="v2-path">${nodes.join("")}</div>`;
 }
 
 function renderTests(){
@@ -454,24 +485,30 @@ function showPage(next){
 function quizBack(){showPage(testMode==="mistakes"?"mistakes":testMode==="training"?"training":"tests")}
 
 function sectionFromKey(lesson,sectionKey){
-  const sections=lessonSections(lesson),key=String(sectionKey||"").trim();
-  if(!key)return sections.find(item=>!sectionIsDone(item))||sections[0];
-  const found=sections.find(item=>item.key===key);
-  if(found)return found;
-  const no=Number(key.split(".")[1]||1),chapterIndex=Math.floor((Math.max(1,no)-1)/3),chapter=chapterLabel(chapterIndex);
-  return{lesson:lesson.n,key,no:no||1,count:sections.length||1,chapter,chapterIndex,chapterStart:chapterIndex*3+1,chapterEnd:chapterIndex*3+3,words:[]};
+  const lessonNo=Number(lesson?.book_lesson_order||lesson?.lesson_id||lesson?.n||lesson||0);
+  const sections=serverSections().filter(item=>Number(item.lesson)===lessonNo);
+  const key=String(sectionKey||"").trim();
+  if(!key)return sections.find(item=>item.is_current&&!item.is_locked)||sections.find(item=>!item.is_completed&&!item.is_locked)||null;
+  return sections.find(item=>item.key===key)||null;
 }
-function openLesson(number,sectionKey=""){
-  const lesson=LESSONS.find(item=>item.n===Number(number));if(!lesson)return;
+async function openLesson(number,sectionKey=""){
+  if(!serverSectionPlan){
+    try{await loadServerSectionPlan()}catch(error){toast(error?.code||tx("lessonLoadError"));return}
+  }
+  const lesson=serverLessonByNumber(number)||lessonByNumber(number);if(!lesson)return;
   const explicitSection=String(sectionKey||"").trim();
   const section=sectionFromKey(lesson,explicitSection);
+  if(!section){toast("course_section_not_found");return}
   if(ACCESS.status!=="active"&&meta.trialCourseCompleted&&!sectionIsDone(section)){showPaywall("course_trial_completed");return}
   if(!sectionIsDone(section)&&!featureAllowed("lesson")){showPaywall("lesson_locked");return}
-  if(explicitSection&&!sectionIsDone(section)&&section.key!==currentSection()?.key){showLessonJumpIntro(section);return}
-  if(!explicitSection&&!sectionIsDone(section)&&section.key!==currentSection()?.key){toast(tx("locked"));return}
+  if(section.is_locked){
+    const completedBooks=Number(serverSectionPlan?.completed_book_lessons_count||0);
+    if(explicitSection&&Number(section.lesson)>completedBooks+1){showLessonJumpIntro(section);return}
+    toast(tx("previousSectionRequired"));return;
+  }
   document.getElementById("v2-sheet")?.remove();
   const root=document.createElement("div");root.id="v2-sheet";root.className="v2-sheet-backdrop";
-  root.innerHTML=`<div class="v2-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${section.key} · ${section.chapter} ${esc(tx("part"))}</div><h2>${esc(tr(lesson.t))}</h2><p>${esc(tr(lesson.sub))}</p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="V2.startLesson(${lesson.n},'${section.key}')">▶ ${esc(tx("start"))}</button></div></div>`;
+  root.innerHTML=`<div class="v2-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${section.key} · ${esc(section.title||section.chapter+" "+tx("part"))}</div><h2>${esc(lessonTitle(lesson))}</h2><p>${esc(lessonSubtitle(lesson))}</p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="V2.startLesson(${section.lesson},'${section.key}')">▶ ${esc(tx("start"))}</button></div></div>`;
   root.onclick=()=>root.remove();document.body.appendChild(root);
 }
 function closeSheet(){document.getElementById("v2-sheet")?.remove()}
@@ -480,13 +517,19 @@ function lessonError(error){const code=String(error?.code||"");const locked=code
 async function startLesson(number,sectionKey=""){
   closeSheet();quizLesson=Number(number);testMode="lesson";lessonFlow=null;lessonCardIndex=0;lessonResponses={};lessonSubmitting=false;showPage("lesson");renderLessonLoading();
   try{
+    const requested=String(sectionKey||"").trim();
+    if(!requested)throw Object.assign(new Error("course_section_not_found"),{code:"course_section_not_found"});
     const result=await bridge.loadCourseLesson?.({level:LEVEL_KEY,lesson:quizLesson,section:sectionKey,lang,completed_sections:completedLessonSectionKeys(lessonByNumber(quizLesson))});
     if(!result?.flow)throw Object.assign(new Error("course_lesson_failed"),{code:"course_lesson_failed"});
     lessonFlow=result.flow;
+    if(String(lessonFlow.section_key||"")!==requested){
+      console.error("[MiniApp lesson flow mismatch]",{requested_section_key:requested,returned_section_key:lessonFlow.section_key,level:LEVEL_KEY,lesson:quizLesson,active_words:lessonFlow.active_words});
+      lessonFlow=null;
+      throw Object.assign(new Error("course_section_mismatch"),{code:"course_section_mismatch"});
+    }
     console.info("[MiniApp lesson flow]",{level:lessonFlow.level,lesson_order:lessonFlow.book_lesson_order||lessonFlow.lesson_id,section_key:lessonFlow.section_key,section_no:lessonFlow.section_no,book_lesson_order:lessonFlow.book_lesson_order,active_words:lessonFlow.active_words});
     renderLessonCard();
   }catch(error){
-    if(!bridge.hasAuth?.()){showPage("quiz");startQuiz();return}
     lessonError(error);
   }
 }
@@ -510,7 +553,7 @@ function renderLessonCard(){
   else if(LESSON_ORDER_TYPES.includes(card.type))body=`${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-order-answer">${lessonOrderSelected.map((token,index)=>`<button onclick="V2.returnLessonToken(${index})">${esc(token)}</button>`).join("")||"<span>…</span>"}</div><div class="v2-token-bank">${lessonOrderRemaining.map((token,index)=>`<button onclick="V2.pickLessonToken(${index})">${esc(token)}</button>`).join("")}</div>${lessonFeedback(card,response)}${response?"":`<div class="v2-inline-actions"><button class="v2-secondary" onclick="V2.resetLessonOrder()">${esc(tx("reset"))}</button><button class="v2-primary" ${lessonOrderRemaining.length?"disabled":""} onclick="V2.checkLessonOrder()">${esc(tx("check"))}</button></div>`}`;
   else if(card.type==="match_pairs")body=`<div class="v2-dialog-card">${(card.pairs||[]).map(pair=>`<p><b>${esc(pair[0]||"")}</b><span>${esc(pair[1]||"")}</span></p>`).join("")}</div><p class="v2-pronunciation-hint">${esc(card.prompt||card.title||"")}</p>`;
   else if(card.type==="character_trace")body=`<div class="v2-trace-meta"><b>${esc(card.word||card.character||"")}</b><small>${esc(card.pinyin||"")} · ${esc(card.translation||"")}</small></div><p class="v2-pronunciation-hint">${esc("Stroke preview mavjud emas")}</p>`;
-  else if(card.type==="pronunciation")body=`<div class="v2-speech-card"><strong>${esc(card.translation||card.phrase)}</strong><small>${esc(card.phrase)} · ${esc(card.pinyin)}</small><div><button class="v2-primary" onclick="V2.showPage('voice')">${esc(tx("voice"))}</button><button class="v2-audio-action compact" onclick="V2.playCurrentLessonAudio('phrase')">↻</button></div></div>`;
+  else if(card.type==="pronunciation")body=`<div class="v2-speech-card"><strong>${esc(card.translation||card.phrase)}</strong><small>${esc(card.phrase)} · ${esc(card.pinyin)}</small><div><button class="v2-primary" onclick="V2.showPage('voice')">${esc(tx("aiVoiceCta"))}</button><button class="v2-audio-action compact" onclick="V2.playCurrentLessonAudio('phrase')">↻</button></div></div>`;
   const canContinue=LESSON_PASSIVE_TYPES.includes(card.type)||["pronunciation","character_trace"].includes(card.type)||Boolean(response);
   root.innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-top"><button class="v2-back" onclick="V2.showPage('course')" aria-label="${esc(tx("back"))}">‹</button><div class="v2-lesson-progress"><i style="width:${lessonProgress()}%"></i></div><span>${lessonCardIndex+1}/${lessonFlow.cards.length}</span></div><article class="v2-lesson-card"><div class="v2-lesson-unit"><span>${esc(card.unit||card.title||tx("lesson"))}</span><b>${esc(card.title||"")}</b></div><h2>${esc(card.prompt||card.title||"")}</h2>${body}${canContinue?`<button class="v2-primary v2-card-next" onclick="V2.continueLessonCard()">${esc(card.type==="pronunciation"?tx("said"):card.type==="character_trace"?tx("traceDone"):lessonCardIndex===lessonFlow.cards.length-1?tx("submitLesson"):tx("next"))} ›</button>`:""}</article></div>`;
   bridge.reportEvent?.("card_seen",{event_id:`${lessonFlow.id}:${card.id}`,lesson_id:lessonFlow.lesson_id,card_id:card.id,card_type:card.type});
@@ -533,6 +576,7 @@ async function submitLessonFlow(){
     markSectionDone(result.section_key||lessonFlow.section_key);
     if(result.book_lesson_completed&&!state.done.includes(lessonFlow.lesson_id)){state.done.push(lessonFlow.lesson_id);saveState()}
     if(ACCESS.status!=="active"){meta.trialCourseCompleted=true;write(META_KEY,meta)}
+    await loadServerSectionPlan(true).catch(()=>{});
     syncGamification(result.reward,true);renderAll();
     const paid=ACCESS.status==="active",nextSection=completionNextSection(result);
     const nextAction=nextSection?`V2.openNextSection('${safeSectionKey(nextSection.section_key)}')`:"V2.showPage('course')";
@@ -596,24 +640,19 @@ function buildJumpAssessmentQuestions(lessonNumber){
 function showLessonJumpIntro(section){
   closeSheet();
   bridge.reportEvent?.("lesson_jump_prompt_seen",{level:LEVEL_KEY,lesson_id:section.lesson,section_key:section.key});
-  const lesson=lessonByNumber(section.lesson);
+  const lesson=serverLessonByNumber(section.lesson)||lessonByNumber(section.lesson);
   const root=document.createElement("div");root.id="v2-sheet";root.className="v2-sheet-backdrop";
-  root.innerHTML=`<div class="v2-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${esc(section.key)}</div><h2>${esc(tx("jumpTestTitle"))}</h2><p>${esc(tx("jumpTestText"))}</p><p><b>${esc(tr(lesson?.t)||"")}</b></p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="V2.startLessonJumpTest(${section.lesson},'${section.key}')">${esc(tx("jumpTestStart"))}</button><button class="v2-secondary" onclick="document.getElementById('v2-sheet')?.remove()">${esc(tx("back"))}</button></div></div>`;
+  root.innerHTML=`<div class="v2-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${esc(section.key)}</div><h2>${esc(tx("jumpTestTitle"))}</h2><p>${esc(tx("jumpTestText"))}</p><p><b>${esc(lessonTitle(lesson))}</b></p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="V2.startLessonJumpTest(${section.lesson},'${section.key}')">${esc(tx("jumpTestStart"))}</button><button class="v2-secondary" onclick="document.getElementById('v2-sheet')?.remove()">${esc(tx("back"))}</button></div></div>`;
   root.onclick=()=>root.remove();document.body.appendChild(root);
 }
 function startLessonJumpTest(number,sectionKey){
   const lesson=lessonByNumber(number);if(!lesson)return;
   const section=sectionFromKey(lesson,sectionKey);
+  if(!section){toast("course_section_not_found");return}
   jumpTarget={lesson:section.lesson,section_key:section.key,section_no:section.no};
   testMode="jump";quizLesson=Number(section.lesson);practiceSession=null;mistakeReviewSession=null;
   questions=buildJumpAssessmentQuestions(section.lesson);answers=Array(questions.length).fill(null);qIndex=0;
   closeSheet();showPage("quiz");document.getElementById("score-box").style.display="none";document.getElementById("quiz-box").style.display="block";renderQuizQuestion();
-}
-function unlockJumpLocally(section){
-  for(let lesson=1;lesson<Number(section.lesson||1);lesson++){if(!state.done.includes(lesson))state.done.push(lesson)}
-  const lesson=lessonByNumber(section.lesson);
-  lessonSections(lesson).filter(item=>Number(item.no)<Number(section.section_no||1)).forEach(markSectionDone);
-  saveState();write(META_KEY,meta);renderAll();
 }
 function renderJumpAssessmentResult(){
   const section=jumpTarget;if(!section)return;
@@ -629,7 +668,7 @@ async function confirmLessonJump(){
     if(bridge.hasAuth?.()&&bridge.jumpCourseLesson){
       await bridge.jumpCourseLesson({level:LEVEL_KEY,lesson_id:section.lesson,section_key:section.section_key,score:lastQuizScore,total:lastQuizTotal,percent:lastQuizPercent,passed});
     }
-    unlockJumpLocally(section);
+    await loadServerSectionPlan(true).catch(()=>{});
     jumpTarget=null;
     startLesson(section.lesson,section.section_key);
   }catch(error){toast(error?.code||tx("lessonLoadError"))}
@@ -714,6 +753,7 @@ function openSupport(source="profile_support"){
 }
 
 function toast(message){document.querySelector(".v2-toast")?.remove();const item=document.createElement("div");item.className="v2-toast";item.textContent=message;document.body.appendChild(item);setTimeout(()=>item.remove(),2200)}
+function reloadCoursePath(){sectionPlanError="";loadServerSectionPlan(true).catch(()=>{})}
 
 async function showOnboarding(){
   const query=new URLSearchParams(parent.location.search||location.search);if(query.get("tab")||query.get("lesson"))return;
@@ -817,10 +857,10 @@ function applyLaunch(){
 
 function mount(){
   normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,startLessonJumpTest,confirmLessonJump,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
+  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,startLessonJumpTest,confirmLessonJump,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,reloadCoursePath,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;syncGamification(ACCESS.gamification);renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
-  syncGamification(ACCESS.gamification);setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();applyLaunch();showOnboarding();
+  syncGamification(ACCESS.gamification);setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();loadServerSectionPlan().catch(()=>{});applyLaunch();showOnboarding();
 }
 
 mount();

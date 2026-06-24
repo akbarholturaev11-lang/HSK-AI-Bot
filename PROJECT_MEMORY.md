@@ -207,6 +207,31 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-24 — Mini App server section plan source-of-truth
+
+Changed:
+- Mini App course path now loads a server-backed `course-section-plan` instead of building visible path nodes from static `COURSE_DATA.VOCAB`.
+- Section plan and lesson flow share `CourseMiniAppLessonFlowService._section_plan()`, so path nodes and lesson cards use the same `section_key`, `section_no`, `active_words`, lock/completion status, and next section refs.
+- Every book lesson now has six fixed learning-stage sections regardless of vocabulary count: intro, reinforcement, listening/pronunciation CTA, usage, short dialog, and review. Short lessons reuse the same lesson words across stages instead of jumping from `1.2` to `2.1`.
+
+Why:
+- Path node labels and opened lesson content previously came from different runtime sources, which could show one section in the path but open different material in the lesson.
+
+Files touched:
+- `app/main.py`
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/static/study.html`
+- `app/static/study-v2.js`
+- `tests/test_course_miniapp_lesson_flow.py`
+- `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- Payment/subscription/QA logic was not changed.
+- Graphify update refused to overwrite because the rebuilt graph had fewer nodes than the existing graph; do not force update without checking graph inputs.
+
+Follow-up:
+- After deploy, verify a real Telegram Mini App user opens path node `1.2` and lesson header/cards show the same `section_key` and `active_words` from server logs.
+
 ### 2026-06-24 — Mini App locked lesson readiness jump
 
 Changed:

@@ -44,6 +44,8 @@ class CourseMiniAppLessonFlowService:
             "hsk2": ("hsk2", "hsk1"),
             "hsk3": ("hsk3", "hsk2", "hsk1"),
             "hsk4": ("hsk4", "hsk3", "hsk2", "hsk1"),
+            "hsk4a": ("hsk4", "hsk3", "hsk2", "hsk1"),
+            "hsk4b": ("hsk4", "hsk3", "hsk2", "hsk1"),
         }
         return fallback_map.get(normalized, ("hsk1",))
 
@@ -69,8 +71,15 @@ class CourseMiniAppLessonFlowService:
                 "unit_character": "Иероглиф",
                 "unit_dialog": "Диалог",
                 "unit_build": "Сборка",
+                "unit_speaking": "Произношение",
                 "unit_review": "Проверка",
                 "other_meaning": "Другое значение",
+                "purpose_intro": "Новые слова",
+                "purpose_reinforcement": "Закрепление",
+                "purpose_listening": "Аудирование",
+                "purpose_usage": "В речи",
+                "purpose_dialog": "Короткий диалог",
+                "purpose_review": "Review",
             },
             "tj": {
                 "active_word": "Калимаи нави фаъол",
@@ -91,8 +100,15 @@ class CourseMiniAppLessonFlowService:
                 "unit_character": "Иероглиф",
                 "unit_dialog": "Муколама",
                 "unit_build": "Сохтан",
+                "unit_speaking": "Талаффуз",
                 "unit_review": "Санҷиш",
                 "other_meaning": "Маънои дигар",
+                "purpose_intro": "Калимаҳои нав",
+                "purpose_reinforcement": "Мустаҳкамкунӣ",
+                "purpose_listening": "Шунидан",
+                "purpose_usage": "Дар ҷумла",
+                "purpose_dialog": "Муколамаи кӯтоҳ",
+                "purpose_review": "Review",
             },
             "uz": {
                 "active_word": "Yangi faol so'z",
@@ -113,8 +129,15 @@ class CourseMiniAppLessonFlowService:
                 "unit_character": "Iyeroglif",
                 "unit_dialog": "Dialog",
                 "unit_build": "Yig'ish",
+                "unit_speaking": "Talaffuz",
                 "unit_review": "Tekshiruv",
                 "other_meaning": "Boshqa ma'no",
+                "purpose_intro": "Yangi so'zlar",
+                "purpose_reinforcement": "Mustahkamlash",
+                "purpose_listening": "Tinglash",
+                "purpose_usage": "Gapda ishlatish",
+                "purpose_dialog": "Qisqa dialog",
+                "purpose_review": "Review",
             },
         }
         return copy.get(lang, copy["ru"]).get(key, key)
@@ -155,21 +178,27 @@ class CourseMiniAppLessonFlowService:
         end = start + SECTION_GROUP_SIZE - 1
         return {"index": chapter_index + 1, "key": label.lower(), "label": label, "start": start, "end": end}
 
+    @staticmethod
+    def _section_purpose(section_no: int, section_count: int) -> str:
+        section_no = max(1, int(section_no or 1))
+        sequence = ("intro", "reinforcement", "listening", "usage", "dialog", "review")
+        return sequence[min(section_no, len(sequence)) - 1]
+
     @classmethod
-    def _section_plan(cls, payload: dict, *, level: str, lesson_order: int) -> list[dict]:
+    def _section_plan(cls, payload: dict, *, level: str, lesson_order: int, lang: str = "ru") -> list[dict]:
         sections = []
-        chunks = cls._split_words(
-            [item for item in payload.get("vocabulary", []) if isinstance(item, dict)],
-            level=level,
-        )
-        total = len(chunks)
-        for index, words in enumerate(chunks, 1):
+        words = [item for item in payload.get("vocabulary", []) if isinstance(item, dict) and item.get("zh")]
+        total = 6
+        for index in range(1, total + 1):
             chapter = cls._chapter_for_section(index)
+            purpose = cls._section_purpose(index, total)
             sections.append(
                 {
                     "section_key": f"{lesson_order}.{index}",
                     "section_no": index,
                     "section_count": total,
+                    "section_purpose": purpose,
+                    "section_title": cls._copy(lang, f"purpose_{purpose}"),
                     "chapter_key": chapter["key"],
                     "chapter_label": chapter["label"],
                     "chapter_no": chapter["index"],
@@ -307,6 +336,19 @@ class CourseMiniAppLessonFlowService:
             "section_no": 1,
         }
 
+    @staticmethod
+    def _lesson_in_requested_scope(lesson, requested_level: str) -> bool:
+        normalized = str(requested_level or "").strip().lower()
+        try:
+            order = int(getattr(lesson, "lesson_order", 0) or 0)
+        except (TypeError, ValueError):
+            order = 0
+        if normalized == "hsk4a":
+            return 1 <= order <= 10
+        if normalized == "hsk4b":
+            return order >= 11
+        return True
+
     async def _completed_section_keys(self, *, telegram_id: int, lesson_id: int) -> set[str]:
         result = await self.session.execute(
             select(CourseMiniAppEvent.dedupe_key).where(
@@ -322,6 +364,26 @@ class CourseMiniAppLessonFlowService:
             if text.startswith(prefix):
                 keys.add(text.removeprefix(prefix).split(":", 1)[0])
         return keys
+
+    async def _completed_section_keys_by_lesson(self, *, telegram_id: int, lesson_ids: list[int]) -> dict[int, set[str]]:
+        if not lesson_ids:
+            return {}
+        result = await self.session.execute(
+            select(CourseMiniAppEvent.lesson_id, CourseMiniAppEvent.dedupe_key).where(
+                CourseMiniAppEvent.telegram_id == int(telegram_id),
+                CourseMiniAppEvent.lesson_id.in_([int(item) for item in lesson_ids]),
+                CourseMiniAppEvent.event_name == "section_completed",
+            )
+        )
+        completed: dict[int, set[str]] = {}
+        for lesson_id, raw in result.all():
+            if lesson_id is None:
+                continue
+            text = str(raw or "")
+            prefix = f"section:{int(lesson_id)}:"
+            if text.startswith(prefix):
+                completed.setdefault(int(lesson_id), set()).add(text.removeprefix(prefix).split(":", 1)[0])
+        return completed
 
     @staticmethod
     def _section_unlocked(section: dict, completed: set[str]) -> bool:
@@ -342,9 +404,161 @@ class CourseMiniAppLessonFlowService:
             "section_key": section_key,
             "section_no": int(section.get("section_no") or 1),
             "section_count": int(section.get("section_count") or 1),
+            "section_purpose": str(section.get("section_purpose") or ""),
+            "section_title": str(section.get("section_title") or ""),
             "book_lesson_order": book_lesson_order,
             "quiz_questions": [],
             "reinforcement_tasks": [],
+        }
+
+    async def get_section_plan(
+        self,
+        telegram_id: int,
+        *,
+        level: str,
+        lang: str,
+    ) -> dict:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return {"ok": False, "error": "access_start_first"}
+
+        requested_level = str(level or "").strip().lower() or "hsk1"
+        content_level = self._content_level(requested_level)
+        if content_level not in self._allowed_level_candidates(getattr(user, "level", None)):
+            return {"ok": False, "error": "course_lesson_not_unlocked"}
+
+        all_lessons = await self.lesson_repo.list_by_level(content_level)
+        lessons = [
+            lesson
+            for lesson in all_lessons
+            if self._lesson_in_requested_scope(lesson, requested_level)
+        ]
+        if not lessons:
+            return {"ok": False, "error": "course_no_lesson_found"}
+
+        progress = await self.progress_repo.get_by_user_id(user.id)
+        progress_level = str(getattr(progress, "level", "") or "").strip().lower()
+        progress_matches_level = bool(progress and progress_level == content_level)
+        completed_count = self._progress_completed_count(progress) if progress_matches_level else 0
+
+        current_lesson_order = 0
+        if progress_matches_level and getattr(progress, "current_lesson_id", None):
+            current_lesson = await self.lesson_repo.get_by_id(int(progress.current_lesson_id))
+            if current_lesson and str(getattr(current_lesson, "level", "") or "").strip().lower() == content_level:
+                current_lesson_order = int(getattr(current_lesson, "lesson_order", 0) or 0)
+        if current_lesson_order <= 0:
+            current_lesson_order = completed_count + 1
+
+        completed_by_lesson = await self._completed_section_keys_by_lesson(
+            telegram_id=telegram_id,
+            lesson_ids=[int(lesson.id) for lesson in lessons],
+        )
+
+        planned_lessons = []
+        flat_sections = []
+        for lesson in lessons:
+            lesson_order = int(lesson.lesson_order)
+            payload = await self.lesson_service.get_payload(
+                lesson_order=lesson_order,
+                lang=lang,
+                level=str(lesson.level),
+            )
+            if not payload:
+                continue
+
+            raw_sections = self._section_plan(payload, level=str(lesson.level), lesson_order=lesson_order, lang=lang)
+            book_completed = lesson_order <= completed_count
+            completed_keys = set(completed_by_lesson.get(int(lesson.id), set()))
+            if book_completed:
+                completed_keys |= {str(item["section_key"]) for item in raw_sections}
+
+            lesson_sections = []
+            for index, section in enumerate(raw_sections):
+                next_section = raw_sections[index + 1] if index + 1 < len(raw_sections) else None
+                if not next_section:
+                    next_lesson = next((item for item in lessons if int(item.lesson_order) > lesson_order), None)
+                    next_section_ref = self._book_lesson_ref(getattr(next_lesson, "lesson_order", None))
+                else:
+                    next_section_ref = self._section_ref(next_section, lesson_order=lesson_order)
+
+                section_completed = str(section["section_key"]) in completed_keys
+                book_unlocked = self._book_lesson_unlocked(lesson, progress if progress_matches_level else None)
+                section_unlocked = book_unlocked and self._section_unlocked(section, completed_keys)
+                node = {
+                    "level": requested_level,
+                    "content_level": str(lesson.level),
+                    "book_lesson_order": lesson_order,
+                    "lesson_id": lesson_order,
+                    "lesson_title": str(payload.get("title") or getattr(lesson, "title", "") or ""),
+                    "section_key": section["section_key"],
+                    "section_no": int(section["section_no"]),
+                    "section_count": int(section["section_count"]),
+                    "section_purpose": section["section_purpose"],
+                    "section_title": section["section_title"],
+                    "section_group": {
+                        "key": section["chapter_key"],
+                        "label": section["chapter_label"],
+                        "no": section["chapter_no"],
+                        "section_start": section["chapter_start"],
+                        "section_end": section["chapter_end"],
+                    },
+                    "chapter_key": section["chapter_key"],
+                    "chapter_label": section["chapter_label"],
+                    "chapter_no": section["chapter_no"],
+                    "chapter_start": section["chapter_start"],
+                    "chapter_end": section["chapter_end"],
+                    "active_words": self._word_refs(section.get("active_words", [])),
+                    "is_completed": bool(section_completed),
+                    "is_locked": not section_completed and not section_unlocked,
+                    "is_current": False,
+                    "node_status": "completed" if section_completed else "locked",
+                    "next_section": next_section_ref,
+                }
+                lesson_sections.append(node)
+                flat_sections.append(node)
+
+            planned_lessons.append(
+                {
+                    "level": requested_level,
+                    "content_level": str(lesson.level),
+                    "lesson_id": lesson_order,
+                    "book_lesson_order": lesson_order,
+                    "lesson_title": str(payload.get("title") or getattr(lesson, "title", "") or ""),
+                    "section_count": len(lesson_sections),
+                    "is_completed": book_completed or all(item["is_completed"] for item in lesson_sections),
+                    "is_locked": not self._book_lesson_unlocked(lesson, progress if progress_matches_level else None),
+                    "sections": lesson_sections,
+                }
+            )
+
+        current_section = next(
+            (
+                section
+                for section in flat_sections
+                if not section["is_completed"]
+                and not section["is_locked"]
+                and int(section["book_lesson_order"]) == int(current_lesson_order)
+            ),
+            None,
+        ) or next(
+            (section for section in flat_sections if not section["is_completed"] and not section["is_locked"]),
+            None,
+        )
+        if current_section:
+            current_section["is_current"] = True
+            current_section["node_status"] = "current"
+
+        fallback_current = current_section or (flat_sections[-1] if flat_sections else None)
+        return {
+            "ok": True,
+            "level": requested_level,
+            "content_level": content_level,
+            "completed_book_lessons_count": completed_count,
+            "completed_sections_count": sum(1 for item in flat_sections if item["is_completed"]),
+            "total_sections": len(flat_sections),
+            "current_section": self._section_ref(fallback_current, lesson_order=fallback_current["book_lesson_order"]) if fallback_current else None,
+            "lessons": planned_lessons,
+            "sections": flat_sections,
         }
 
     @staticmethod
@@ -744,8 +958,10 @@ class CourseMiniAppLessonFlowService:
     @staticmethod
     def _card_shape_valid(card: dict) -> bool:
         card_type = str(card.get("type") or "")
-        if card_type in {"character_trace", "pronunciation", "stroke_preview"}:
+        if card_type in {"character_trace", "stroke_preview"}:
             return False
+        if card_type == "pronunciation":
+            return bool(str(card.get("phrase") or "").strip())
         if card_type == "active_word":
             return bool((card.get("word") or {}).get("zh"))
         if card_type in {
@@ -782,7 +998,7 @@ class CourseMiniAppLessonFlowService:
                 result.append(card)
         for card in delayed:
             inserted = False
-            for index in range(1, len(result)):
+            for index in range(len(result) - 1, 0, -1):
                 previous_type = result[index - 1].get("type")
                 next_type = result[index].get("type")
                 if previous_type != card.get("type") and next_type != card.get("type"):
@@ -820,6 +1036,87 @@ class CourseMiniAppLessonFlowService:
             seen_ids.add(card_id)
             validated.append(card)
         return cls._limit_consecutive_card_types(validated)[:12]
+
+    @staticmethod
+    def _section_purpose_pattern(purpose: str) -> list[str]:
+        patterns = {
+            "intro": [
+                "word:1",
+                "meaning",
+                "word:2",
+                "pinyin",
+                "hanzi",
+                "word:3",
+                "match",
+                "recognition",
+                "quiz",
+                "translation",
+                "listening",
+            ],
+            "reinforcement": [
+                "match",
+                "pinyin",
+                "hanzi",
+                "meaning",
+                "word:1",
+                "recognition",
+                "translation",
+                "quiz",
+                "listening",
+                "word:2",
+            ],
+            "listening": [
+                "listening",
+                "pinyin",
+                "pronunciation",
+                "meaning",
+                "word:1",
+                "hanzi",
+                "quiz",
+                "match",
+                "translation",
+                "dialog",
+            ],
+            "usage": [
+                "gap",
+                "builder",
+                "meaning",
+                "word:1",
+                "order",
+                "translation",
+                "quiz",
+                "match",
+                "hanzi",
+                "dialog",
+            ],
+            "dialog": [
+                "dialog",
+                "meaning",
+                "listening",
+                "gap",
+                "translation",
+                "quiz",
+                "word:1",
+                "match",
+                "pinyin",
+                "recognition",
+            ],
+            "review": [
+                "quiz",
+                "translation",
+                "meaning",
+                "pinyin",
+                "listening",
+                "hanzi",
+                "recognition",
+                "gap",
+                "match",
+                "builder",
+                "word:1",
+                "order",
+            ],
+        }
+        return patterns.get(str(purpose or "").strip(), patterns["review"])
 
     def _build_cards(self, payload: dict, *, lang: str, lesson_order: int) -> list[dict]:
         vocab = [item for item in payload.get("vocabulary", []) if isinstance(item, dict)]
@@ -946,6 +1243,20 @@ class CourseMiniAppLessonFlowService:
             if card:
                 card["unit"] = self._copy(lang, "unit_sound")
                 activities["listening"] = card
+
+        pronunciation_word = next((item for item in active_words if item.get("zh")), active_words[0])
+        activities["pronunciation"] = {
+            "id": "activity:pronunciation",
+            "type": "pronunciation",
+            "title": self._copy(lang, "unit_speaking"),
+            "unit": self._copy(lang, "unit_sound"),
+            "prompt": self._copy(lang, "unit_speaking"),
+            "phrase": pronunciation_word["zh"],
+            "pinyin": str(pronunciation_word.get("pinyin") or ""),
+            "translation": str(pronunciation_word.get("meaning") or ""),
+            "source_words": [pronunciation_word["zh"]],
+            "required": True,
+        }
 
         gap_word = active_words[min(2, len(active_words) - 1)]
         gap_source = self._word_choice_question(
@@ -1076,19 +1387,16 @@ class CourseMiniAppLessonFlowService:
         if dialog_card:
             activities["dialog"] = dialog_card
 
-        patterns = (
-            ["word:1", "meaning", "word:2", "pinyin", "listening", "dialog", "hanzi", "gap", "word:3", "recognition", "builder", "match", "word:4", "order", "translation", "quiz"],
-            ["word:1", "pinyin", "word:2", "listening", "hanzi", "dialog", "meaning", "word:3", "gap", "match", "order", "recognition", "word:4", "translation", "quiz", "builder"],
-            ["word:1", "hanzi", "word:2", "meaning", "gap", "listening", "dialog", "word:3", "pinyin", "recognition", "builder", "match", "word:4", "translation", "quiz", "order"],
-        )
-        pattern = patterns[(int(lesson_order) - 1) % len(patterns)]
+        purpose = str(payload.get("section_purpose") or self._section_purpose(payload.get("section_no") or 1, payload.get("section_count") or 1))
+        pattern = self._section_purpose_pattern(purpose)
         word_map = {card["id"]: card for card in words}
         cards = []
         for key in pattern:
             card = word_map.get(key) or activities.get(key)
             if card and card not in cards:
                 cards.append(card)
-        for card in [*words, *activities.values()]:
+        fallback = [*words, *activities.values()]
+        for card in fallback:
             if card not in cards:
                 cards.append(card)
         return self._validate_cards(cards, active_words)
@@ -1118,7 +1426,7 @@ class CourseMiniAppLessonFlowService:
         )
         if not payload:
             return {"ok": False, "error": "lesson_not_found"}
-        sections = self._section_plan(payload, level=str(lesson.level), lesson_order=int(lesson.lesson_order))
+        sections = self._section_plan(payload, level=str(lesson.level), lesson_order=int(lesson.lesson_order), lang=lang)
         section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
         if not section:
             return {"ok": False, "error": "course_section_not_found"}
@@ -1190,6 +1498,8 @@ class CourseMiniAppLessonFlowService:
                 "section_key": section["section_key"],
                 "section_no": section["section_no"],
                 "section_count": section["section_count"],
+                "section_purpose": section["section_purpose"],
+                "section_title": section["section_title"],
                 "active_words": self._word_refs(section.get("active_words", [])),
                 "chapter_key": chapter_key,
                 "chapter_label": section["chapter_label"],
@@ -1204,7 +1514,7 @@ class CourseMiniAppLessonFlowService:
     @staticmethod
     def _response_is_correct(card: dict, response: dict) -> tuple[bool, bool]:
         card_type = str(card.get("type") or "")
-        if card_type in {"active_word", "match_pairs"}:
+        if card_type in {"active_word", "match_pairs", "pronunciation"}:
             return bool(response.get("completed")), False
         if card_type in {
             "meaning_guess",
@@ -1251,7 +1561,7 @@ class CourseMiniAppLessonFlowService:
             lang=lang,
             level=str(lesson.level),
         )
-        sections = self._section_plan(payload or {}, level=str(lesson.level), lesson_order=int(lesson.lesson_order))
+        sections = self._section_plan(payload or {}, level=str(lesson.level), lesson_order=int(lesson.lesson_order), lang=lang)
         section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
         if not section:
             return {"ok": False, "error": "course_section_not_found"}
@@ -1503,6 +1813,8 @@ class CourseMiniAppLessonFlowService:
             "section_key": section["section_key"],
             "section_no": section["section_no"],
             "section_count": section["section_count"],
+            "section_purpose": section["section_purpose"],
+            "section_title": section["section_title"],
             "chapter_key": section["chapter_key"],
             "chapter_label": section["chapter_label"],
             "chapter_completed": chapter_completed,
