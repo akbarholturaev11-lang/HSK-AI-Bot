@@ -207,6 +207,27 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-25 — Mini App rating profile Telegram chat
+
+Changed:
+- Mini App leaderboard API now includes safe `username` and `telegram_id` fields for ranked users, so the rating profile sheet can open the user's existing Telegram chat instead of creating an in-app chat.
+- Rating UI now shows paid users with a custom premium mark before the nickname and uses CSS-drawn medals for the top ranking positions instead of emoji badges.
+
+Why:
+- User-to-user contact from rating profiles should stay inside Telegram chat UX, and subscription status should be visible without using plain emoji/checkmark text.
+
+Files touched:
+- `app/services/course_gamification_service.py`
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+
+Risk:
+- No subscription/payment/access rules changed.
+- Direct Telegram chat opens only when Telegram username or user deep-link id is available.
+
+Follow-up:
+- After deploy, test a real Telegram Mini App rating profile for a user with username and one without username.
+
 ### 2026-06-25 — Mini App lesson material journey
 
 Changed:

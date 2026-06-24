@@ -183,7 +183,9 @@ class CourseGamificationService:
         query = (
             select(
                 User.id,
+                User.telegram_id,
                 User.full_name,
+                User.username,
                 User.status,
                 User.payment_status,
                 User.end_date,
@@ -200,7 +202,7 @@ class CourseGamificationService:
         rows = (await self.session.execute(query)).all()
         ranked = []
         current_rank = 0
-        for index, (user_id, full_name, status, payment_status, end_date, xp_total, weekly_xp) in enumerate(rows, 1):
+        for index, (user_id, telegram_id, full_name, username, status, payment_status, end_date, xp_total, weekly_xp) in enumerate(rows, 1):
             if int(user_id) == int(user.id):
                 current_rank = index
             if index <= max(1, min(50, int(limit or 25))) or int(user_id) == int(user.id):
@@ -208,6 +210,8 @@ class CourseGamificationService:
                     {
                         "rank": index,
                         "name": str(full_name or "HSK Student").strip()[:40],
+                        "telegram_id": int(telegram_id) if telegram_id else None,
+                        "username": str(username or "").strip().lstrip("@")[:32],
                         "xp": int(weekly_xp or 0),
                         "league_points": int(weekly_xp or 0),
                         "is_paid": CourseMiniAppAccessService.is_paid_user(
