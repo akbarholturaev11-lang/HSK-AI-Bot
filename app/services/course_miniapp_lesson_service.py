@@ -17,7 +17,11 @@ _QUIZ_TEXT = {
         "hanzi_to_pinyin": "“{zh}” pinyin qaysi?",
         "listening_choice": "Eshiting va to'g'ri javobni tanlang",
         "fill_blank": "Bo'sh joyni to'ldiring",
-        "fill_blank_sentence": "Men bugun ____ so'zini o'rgandim.",
+        "fill_blank_choice": "Gapdagi bo'sh joyga mos so'zni tanlang",
+        "choose_meaning_in_context": "Gapdagi so'z ma'nosini tanlang",
+        "grammar_in_context": "Gapdagi grammatikani tanlang",
+        "listen_and_fill": "Eshiting va bo'sh joyni to'ldiring",
+        "build_sentence_chips": "Xitoycha gapni tuzing",
         "meaning_hint": "ma'nosi: {meaning}",
         "correct": "To'g'ri javob: {zh} — {meaning}.",
         "grammar_cat": "Grammatika",
@@ -36,7 +40,11 @@ _QUIZ_TEXT = {
         "hanzi_to_pinyin": "Какой pinyin у “{zh}”?",
         "listening_choice": "Послушайте и выберите правильный ответ",
         "fill_blank": "Заполните пропуск",
-        "fill_blank_sentence": "Сегодня я выучил слово ____.",
+        "fill_blank_choice": "Выберите слово для пропуска в предложении",
+        "choose_meaning_in_context": "Выберите значение слова в предложении",
+        "grammar_in_context": "Выберите грамматику в предложении",
+        "listen_and_fill": "Послушайте и заполните пропуск",
+        "build_sentence_chips": "Соберите китайское предложение",
         "meaning_hint": "значение: {meaning}",
         "correct": "Правильный ответ: {zh} — {meaning}.",
         "grammar_cat": "Грамматика",
@@ -55,7 +63,11 @@ _QUIZ_TEXT = {
         "hanzi_to_pinyin": "Pinyin-и “{zh}” кадом аст?",
         "listening_choice": "Гӯш кунед ва ҷавоби дурустро интихоб кунед",
         "fill_blank": "Ҷои холиро пур кунед",
-        "fill_blank_sentence": "Ман имрӯз калимаи ____-ро омӯхтам.",
+        "fill_blank_choice": "Калимаи мувофиқро барои ҷои холии ҷумла интихоб кунед",
+        "choose_meaning_in_context": "Маънои калимаро дар ҷумла интихоб кунед",
+        "grammar_in_context": "Грамматикаро дар ҷумла интихоб кунед",
+        "listen_and_fill": "Гӯш кунед ва ҷои холиро пур кунед",
+        "build_sentence_chips": "Ҷумлаи чиниро созед",
         "meaning_hint": "маъно: {meaning}",
         "correct": "Ҷавоби дуруст: {zh} — {meaning}.",
         "grammar_cat": "Грамматика",
@@ -354,6 +366,123 @@ class CourseMiniAppLessonService:
         options = self._option_values(answer, candidates, count=count - 1)
         return self._shuffle_options(options, answer, seed)
 
+    def _sentence_pairs(self, grammar: list[dict]) -> list[tuple[str, str]]:
+        pairs: list[tuple[str, str]] = []
+        for item in grammar:
+            if not isinstance(item, dict):
+                continue
+            for example in item.get("examples") if isinstance(item.get("examples"), list) else []:
+                if not isinstance(example, dict):
+                    continue
+                sentence = str(example.get("zh") or "").strip()
+                translation = str(example.get("translation") or "").strip()
+                if sentence and translation:
+                    pairs.append((sentence, translation))
+        return pairs
+
+    @staticmethod
+    def _blank_sentence(sentence: str, target: str) -> str:
+        sentence = str(sentence or "").strip()
+        target = str(target or "").strip()
+        if len(target) < 2 or not sentence or sentence.count(target) != 1:
+            return ""
+        blanked = sentence.replace(target, "____", 1)
+        return blanked if blanked != sentence and "____" in blanked else ""
+
+    @staticmethod
+    def _highlight_sentence(sentence: str, target: str) -> str:
+        sentence = str(sentence or "").strip()
+        target = str(target or "").strip()
+        if not sentence or not target or target not in sentence:
+            return sentence
+        return sentence.replace(target, f"【{target}】", 1)
+
+    def _sentence_word_candidates(
+        self,
+        vocab: list[dict],
+        sentence_pairs: list[tuple[str, str]],
+    ) -> list[tuple[dict, str, str]]:
+        candidates: list[tuple[dict, str, str]] = []
+        for sentence, translation in sentence_pairs:
+            for word in vocab:
+                zh = str(word.get("zh") or "").strip()
+                if len(zh) >= 2 and zh in sentence:
+                    candidates.append((word, sentence, translation))
+        return candidates
+
+    def _chinese_sentence_chips(self, sentence: str, vocab: list[dict]) -> list[str]:
+        sentence = str(sentence or "").strip()
+        if not sentence:
+            return []
+        remaining = sentence
+        tokens: list[str] = []
+        vocab_words = sorted(
+            [str(item.get("zh") or "").strip() for item in vocab if str(item.get("zh") or "").strip()],
+            key=len,
+            reverse=True,
+        )
+        while remaining:
+            if remaining[0] in "，。！？,.!?;；:：":
+                remaining = remaining[1:]
+                continue
+            match = next((word for word in vocab_words if remaining.startswith(word)), "")
+            if match:
+                tokens.append(match)
+                remaining = remaining[len(match) :]
+                continue
+            char = remaining[0]
+            if "\u4e00" <= char <= "\u9fff":
+                tokens.append(char)
+            remaining = remaining[1:]
+        return tokens
+
+    def _choice_payload(
+        self,
+        *,
+        question_type: str,
+        lesson_order: int,
+        block_no: int | None,
+        prompt: str,
+        answer: str,
+        options: list[str],
+        seed: str,
+        explanation: str,
+        cat: str,
+        sentence: str = "",
+        target: str = "",
+        word: str = "",
+        source: str = "",
+        audioText: str = "",
+    ) -> dict | None:
+        answer = str(answer or "").strip()
+        if not answer:
+            return None
+        option_values = [str(item or "").strip() for item in options if str(item or "").strip()]
+        option_values = list(dict.fromkeys(option_values))
+        if answer not in option_values:
+            option_values.insert(0, answer)
+        if len(option_values) < 2:
+            return None
+        shuffled, answer_index = self._shuffle_options(option_values[:4], answer, seed)
+        return {
+            "lesson": lesson_order,
+            "block_no": block_no,
+            "type": question_type,
+            "subtype": question_type,
+            "q": prompt,
+            "prompt": prompt,
+            "cat": cat,
+            "opts": shuffled,
+            "ans": answer_index,
+            "expl": explanation,
+            "explanation": explanation,
+            "sentence": sentence,
+            "target": target,
+            "word": word,
+            "source": source,
+            "audioText": audioText,
+        }
+
     def _pilot_experience(self, *, lesson: CourseLesson, lang: str, title: str) -> dict:
         lesson_order = int(getattr(lesson, "lesson_order", 0) or 0)
         variant = {
@@ -616,12 +745,6 @@ class CourseMiniAppLessonService:
                 answer = pinyin
                 options = [answer] + self._distractors(pinyins, answer)
                 question = text[question_type].format(zh=zh, meaning=meaning, pinyin=pinyin)
-            elif question_type == "fill_blank":
-                answer = zh
-                options = [answer] + self._distractors(hanzis, answer)
-                question = text["fill_blank"]
-                sentence = text["fill_blank_sentence"]
-                ui_type = "fill_blank"
             else:
                 return None
 
@@ -646,7 +769,6 @@ class CourseMiniAppLessonService:
                 "sentence": sentence,
             }
 
-        types = (*types, "fill_blank")
         for pass_index in range(len(types)):
             for word_index, word in enumerate(vocab):
                 question_type = types[(word_index + pass_index) % len(types)]
@@ -907,7 +1029,7 @@ class CourseMiniAppLessonService:
                     result.append(question)
                     return
 
-        take(("fill_blank_choice", "tap_missing_word", "fill_blank"))
+        take(("fill_blank_choice", "tap_missing_word"))
         take(("choose_meaning_in_context", "grammar_in_context"))
         take(("listen_and_fill", "listening_choice"))
         take(("build_sentence_chips", "build_chinese_sentence", "word_order"))

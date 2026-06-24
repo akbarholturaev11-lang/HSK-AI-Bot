@@ -9,7 +9,12 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
     @staticmethod
     def payload():
         vocab = [
-            {"zh": f"词{index}", "pinyin": f"ci{index}", "meaning": f"word {index}"}
+            {
+                "zh": f"词{index}",
+                "pinyin": f"ci{index}",
+                "meaning": f"word {index}",
+                "sentence": f"我喜欢词{index}。",
+            }
             for index in range(1, 6)
         ]
         questions = [
@@ -64,7 +69,12 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
     def payload_with_word_count(cls, count: int):
         payload = cls.payload()
         payload["vocabulary"] = [
-            {"zh": f"词{index}", "pinyin": f"ci{index}", "meaning": f"word {index}"}
+            {
+                "zh": f"词{index}",
+                "pinyin": f"ci{index}",
+                "meaning": f"word {index}",
+                "sentence": f"我喜欢词{index}。",
+            }
             for index in range(1, count + 1)
         ]
         return payload
@@ -83,7 +93,7 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
         self.assertEqual(intro[0]["type"], "active_word")
         self.assertIn("meaning_guess", {card["type"] for card in intro[:4]})
         self.assertIn("listening_choice", {card["type"] for card in listening[:3]})
-        self.assertIn("pronunciation", {card["type"] for card in listening[:4]})
+        self.assertIn("pronunciation", {card["type"] for card in listening[:5]})
         self.assertIn("gap_fill", {card["type"] for card in usage[:3]})
         self.assertTrue({"sentence_builder", "word_order"} & {card["type"] for card in usage[:5]})
         self.assertNotIn("character_trace", {card["type"] for card in intro + listening + usage})
@@ -98,6 +108,100 @@ class CourseMiniAppLessonFlowBuilderTests(unittest.TestCase):
             self.assertFalse(
                 usage[index]["type"] == usage[index - 1]["type"] == usage[index - 2]["type"]
             )
+
+    def test_payload_quiz_questions_without_section_sources_are_ignored(self):
+        service = CourseMiniAppLessonFlowService(SimpleNamespace())
+        payload = {
+            **self.payload(),
+            "section_no": 6,
+            "section_count": 6,
+            "section_purpose": "review",
+            "quiz_questions": [
+                {
+                    "type": "multiple_choice",
+                    "q": "UNRELATED PAYLOAD QUESTION",
+                    "opts": ["random A", "random B", "random C"],
+                    "ans": 0,
+                }
+            ],
+        }
+        cards = service._build_cards(payload, lang="uz", lesson_order=1)
+        flattened = str(cards)
+
+        self.assertTrue(cards)
+        self.assertNotIn("UNRELATED PAYLOAD QUESTION", flattened)
+        self.assertNotIn("random A", flattened)
+        self.assertTrue(
+            all(
+                card["type"] == "active_word" or card.get("source_words")
+                for card in cards
+            )
+        )
+
+    def test_gap_fill_requires_real_context_sentence(self):
+        service = CourseMiniAppLessonFlowService(SimpleNamespace())
+        generic_payload = {
+            "vocabulary": [
+                {"zh": "对不起", "pinyin": "duibuqi", "meaning": "sorry"},
+                {"zh": "你好", "pinyin": "nihao", "meaning": "hello"},
+                {"zh": "谢谢", "pinyin": "xiexie", "meaning": "thanks"},
+            ],
+            "section_no": 4,
+            "section_count": 6,
+            "section_purpose": "usage",
+        }
+        contextual_payload = {
+            **generic_payload,
+            "vocabulary": [
+                {"zh": "对不起", "pinyin": "duibuqi", "meaning": "sorry", "sentence": "我说对不起。"},
+                {"zh": "你好", "pinyin": "nihao", "meaning": "hello", "sentence": "他说你好。"},
+                {"zh": "谢谢", "pinyin": "xiexie", "meaning": "thanks", "sentence": "我说谢谢。"},
+            ],
+        }
+
+        generic_cards = service._build_cards(generic_payload, lang="uz", lesson_order=1)
+        contextual_cards = service._build_cards(contextual_payload, lang="uz", lesson_order=1)
+
+        self.assertNotIn("gap_fill", {card["type"] for card in generic_cards})
+        gap_cards = [card for card in contextual_cards if card["type"] == "gap_fill"]
+        self.assertTrue(gap_cards)
+        self.assertTrue(all("____" in card["sentence"] for card in gap_cards))
+        self.assertFalse(any("o'rgandim" in str(card) or "我今天学习" in str(card) for card in contextual_cards))
+
+    def test_long_lessons_rotate_focus_words_across_learning_stages(self):
+        service = CourseMiniAppLessonFlowService(SimpleNamespace())
+        base_payload = {
+            "vocabulary": [
+                {
+                    "zh": f"词{index}",
+                    "pinyin": f"ci{index}",
+                    "meaning": f"word {index}",
+                    "sentence": f"我喜欢词{index}。",
+                }
+                for index in range(1, 31)
+            ],
+            "section_count": 6,
+        }
+        seen_by_section = {}
+        for section_no, purpose in enumerate(
+            ["intro", "reinforcement", "listening", "usage", "dialog", "review"],
+            1,
+        ):
+            payload = {**base_payload, "section_no": section_no, "section_purpose": purpose}
+            cards = service._build_cards(payload, lang="uz", lesson_order=1)
+            sources = set()
+            for card in cards:
+                sources.update(str(item) for item in card.get("source_words", []))
+                if card["type"] == "active_word":
+                    sources.add(card["word"]["zh"])
+            seen_by_section[section_no] = sources
+
+        self.assertTrue({"词1", "词2", "词3"} <= seen_by_section[1])
+        self.assertTrue({"词7", "词8"} <= seen_by_section[3])
+        self.assertTrue({"词13", "词14"} <= seen_by_section[4])
+        self.assertTrue({"词19", "词20"} <= seen_by_section[5])
+        self.assertTrue({"词25", "词26"} <= seen_by_section[6])
+        self.assertGreaterEqual(len(set().union(*seen_by_section.values())), 24)
 
     def test_short_dialog_uses_natural_context_for_verbs_and_nouns(self):
         service = CourseMiniAppLessonFlowService(SimpleNamespace())
@@ -275,12 +379,16 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
 
     def responses(self, *, wrong_card_id=None, section_key="1.2", payload=None):
         payload = payload or self.payload
-        sections = self.service._section_plan(payload, level="hsk1", lesson_order=1)
+        try:
+            lesson_order = int(str(section_key).split(".", 1)[0])
+        except (TypeError, ValueError):
+            lesson_order = 1
+        sections = self.service._section_plan(payload, level="hsk1", lesson_order=lesson_order)
         section = next(item for item in sections if item["section_key"] == section_key)
         cards = self.service._build_cards(
             self.service._section_payload(payload, section),
             lang="ru",
-            lesson_order=1,
+            lesson_order=lesson_order,
         )
         responses = []
         for card in cards:
@@ -310,7 +418,7 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
         return cards, responses
 
     async def test_server_grades_answers_and_preserves_payment_fields(self):
-        cards, responses = self.responses(wrong_card_id="activity:meaning", section_key="1.6")
+        cards, responses = self.responses(wrong_card_id="activity:meaning:2", section_key="1.6")
         scored_count = sum(
             card["type"] not in {"active_word", "match_pairs", "pronunciation"} for card in cards
         )
@@ -543,6 +651,80 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["next_book_lesson"]["section_key"], "2.1")
         self.assertEqual(result["next_book_lesson"]["section_no"], 1)
         study.complete_v2_lesson.assert_awaited_once()
+
+    async def test_level_completion_promotes_to_next_level_first_section_with_praise(self):
+        self.lesson = SimpleNamespace(id=140, lesson_order=10, level="hsk1")
+        self.service._context = AsyncMock(return_value=(self.user, SimpleNamespace(), self.lesson, ""))
+        payload = CourseMiniAppLessonFlowBuilderTests.payload_with_word_count(6)
+        _, responses = self.responses(section_key="10.6", payload=payload)
+        self.service.lesson_service = SimpleNamespace(get_payload=AsyncMock(return_value=payload))
+        self.service._completed_section_keys = AsyncMock(
+            return_value={"10.1", "10.2", "10.3", "10.4", "10.5"}
+        )
+        study = SimpleNamespace(
+            complete_v2_lesson=AsyncMock(
+                return_value={
+                    "ok": True,
+                    "completed_lesson": 10,
+                    "next_lesson": None,
+                    "completed_lessons_count": 10,
+                }
+            )
+        )
+        next_lesson = SimpleNamespace(id=220, lesson_order=1, level="hsk2")
+        engine = SimpleNamespace(
+            advance_to_next_level=AsyncMock(
+                return_value=(
+                    self.user,
+                    SimpleNamespace(level="hsk2", completed_lessons_count=0, current_lesson_id=220),
+                    self.lesson,
+                    next_lesson,
+                    "",
+                )
+            )
+        )
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+        access = SimpleNamespace(
+            consume_free_use=AsyncMock(return_value={"allowed": True, "recorded": True})
+        )
+
+        with (
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.StudyMiniAppService",
+                return_value=study,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseEngineService",
+                return_value=engine,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAccessService",
+                return_value=access,
+            ),
+            patch(
+                "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAnalyticsService",
+                return_value=analytics,
+            ),
+        ):
+            result = await self.service.complete_flow(
+                123,
+                level="hsk1",
+                lesson_order=10,
+                lang="uz",
+                responses=responses,
+                section_key="10.6",
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["book_lesson_completed"])
+        self.assertTrue(result["level_completed"])
+        self.assertEqual(result["completed_level"], "hsk1")
+        self.assertEqual(result["next_level"], "hsk2")
+        self.assertEqual(result["next_book_lesson"]["level"], "hsk2")
+        self.assertEqual(result["next_book_lesson"]["section_key"], "1.1")
+        self.assertIn("HSK 1", result["completion_praise"]["title"])
+        self.assertIn("HSK 2", result["completion_praise"]["text"])
+        engine.advance_to_next_level.assert_awaited_once_with(123)
 
     async def test_locked_section_1_4_requires_all_previous_sections(self):
         payload = CourseMiniAppLessonFlowBuilderTests.payload_with_word_count(8)

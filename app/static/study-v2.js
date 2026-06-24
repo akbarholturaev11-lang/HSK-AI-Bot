@@ -161,7 +161,9 @@ function sectionRef(value,fallbackLesson=quizLesson){
     const key=String(value.section_key||"").trim();
     const lesson=Number(value.book_lesson_order||value.lesson_id||key.split(".")[0]||fallbackLesson||1);
     const no=Number(value.section_no||key.split(".")[1]||1);
-    return{lesson,section_no:no||1,section_key:key||`${lesson}.${no||1}`};
+    const level=String(value.level||value.requested_level||"").trim();
+    const contentLevel=String(value.content_level||"").trim();
+    return{lesson,section_no:no||1,section_key:key||`${lesson}.${no||1}`,level,content_level:contentLevel};
   }
   const raw=String(value||"").trim();if(!raw)return null;
   const parts=raw.split(".");
@@ -170,6 +172,7 @@ function sectionRef(value,fallbackLesson=quizLesson){
   return{lesson,section_no:no||1,section_key:raw.includes(".")?raw:`${lesson}.${no||1}`};
 }
 function safeSectionKey(value){return String(value||"").replace(/[^0-9.]/g,"")}
+function safeLevelKey(value){const key=String(value||"").toLowerCase().replace(/[^a-z0-9]/g,"");return LEVELS.includes(key)?key:""}
 function completionNextSection(result){
   const serverNext=sectionRef(result?.next_section,lessonFlow?.lesson_id||quizLesson);
   if(serverNext)return serverNext;
@@ -326,11 +329,11 @@ function leaguePushHtml(reward){
   const focus=[nextAhead,me,passed].filter(Boolean).filter((item,index,array)=>array.findIndex(other=>other.name===item.name)===index).slice(0,3);
   return `<section class="v2-reward-step v2-league-push"><div class="v2-mini-cup sapphire">◇</div><h3>${esc(tx("leagueMove"))}</h3><p>${esc(msg)}</p><div class="v2-league-mini">${focus.map(item=>`<div class="${item.is_current_user?"me":""}"><b>${Number(item.rank||0)}</b><span>${esc(item.name||"")}</span><strong>${Number(item.league_points??item.xp??0)} ${esc(tx("xp"))}</strong></div>`).join("")}</div></section>`;
 }
-function rewardSequenceHtml(result,reward,{title,xp,mistakes,action,actionLabel}){
+function rewardSequenceHtml(result,reward,{title,xp,mistakes,action,actionLabel,praiseText}){
   const streak=Number(reward?.streak||meta.streak||1);
   const days=streakDays();
   const percent=Number(result.percent||0);
-  return `<div class="v2-lesson-shell v2-reward-shell"><section class="v2-reward-step main ${result.book_lesson_completed?"book":result.chapter_completed?"chapter":"section"}">${hskMascot(result.book_lesson_completed?"book":"section")}<div class="v2-kicker">${esc(lessonFlow.section_key||"")}${result.chapter_completed?` · ${esc(result.chapter_label||lessonFlow.chapter_label||"")} ${esc(tx("part"))}`:""}</div><h2>${esc(title)}</h2><div class="v2-reward-grid"><span><b>+${xp}</b><small>${esc(tx("xp"))}</small></span><span><b>${percent}%</b><small>${esc(tx("correct"))}</small></span><span><b>${mistakes}</b><small>${esc(tx("mistakesShort"))}</small></span><span><b>${Math.max(1,Math.ceil((lessonFlow.cards?.length||8)*0.6))}</b><small>${esc(tx("minutes"))}</small></span></div></section><section class="v2-reward-step v2-streak-reward">${hskMascot("streak")}<h3>${esc(tx("streakInRow").replace("{days}",String(streak)))}</h3><p>${esc(mistakes===0?tx("noMistakeTitle"):tx("keepGoing"))}</p><div class="v2-streak-week">${days.map(on=>`<i class="${on?"on":""}">✓</i>`).join("")}</div></section>${leaguePushHtml(reward)}<button class="v2-primary v2-claim-button" onclick="${action}">${esc(actionLabel)} ›</button></div>`;
+  return `<div class="v2-lesson-shell v2-reward-shell"><section class="v2-reward-step main ${result.book_lesson_completed?"book":result.chapter_completed?"chapter":"section"}">${hskMascot(result.book_lesson_completed?"book":"section")}<div class="v2-kicker">${esc(lessonFlow.section_key||"")}${result.chapter_completed?` · ${esc(result.chapter_label||lessonFlow.chapter_label||"")} ${esc(tx("part"))}`:""}</div><h2>${esc(title)}</h2>${praiseText?`<p>${esc(praiseText)}</p>`:""}<div class="v2-reward-grid"><span><b>+${xp}</b><small>${esc(tx("xp"))}</small></span><span><b>${percent}%</b><small>${esc(tx("correct"))}</small></span><span><b>${mistakes}</b><small>${esc(tx("mistakesShort"))}</small></span><span><b>${Math.max(1,Math.ceil((lessonFlow.cards?.length||8)*0.6))}</b><small>${esc(tx("minutes"))}</small></span></div></section><section class="v2-reward-step v2-streak-reward">${hskMascot("streak")}<h3>${esc(tx("streakInRow").replace("{days}",String(streak)))}</h3><p>${esc(mistakes===0?tx("noMistakeTitle"):tx("keepGoing"))}</p><div class="v2-streak-week">${days.map(on=>`<i class="${on?"on":""}">✓</i>`).join("")}</div></section>${leaguePushHtml(reward)}<button class="v2-primary v2-claim-button" onclick="${action}">${esc(actionLabel)} ›</button></div>`;
 }
 function showPaywall(source="course_locked"){
   closeSheet();
@@ -551,7 +554,7 @@ function renderLessonCard(){
   if(LESSON_ORDER_TYPES.includes(card.type)&&!response&&lessonOrderRemaining.length+lessonOrderSelected.length===0){lessonOrderRemaining=[...(card.tokens||[])];lessonOrderSelected=[]}
   let body="";
   if(card.type==="active_word")body=`<div class="v2-word-hero">${esc(card.word.zh)}</div><div class="v2-word-pinyin">${esc(card.word.pinyin)}</div><div class="v2-word-meaning">${esc(card.word.meaning)}</div><button class="v2-audio-action" onclick="V2.playCurrentLessonAudio('word')">🔊</button>`;
-  else if(card.type==="listening_choice")body=`<button class="v2-sound-tile" onclick="V2.playCurrentLessonAudio('audio')"><strong>${esc(card.audio_text||"声")}</strong><span>🔊</span></button>${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-choice-grid">${card.options.map((option,index)=>`<button class="v2-card-choice ${response&&Number(response.selected_index)===index?"selected":""}" ${response?"disabled":""} onclick="V2.answerLessonChoice(${index})">${esc(option)}</button>`).join("")}</div>${lessonFeedback(card,response)}`;
+  else if(card.type==="listening_choice")body=`<button class="v2-sound-tile v2-sound-wave" onclick="V2.playCurrentLessonAudio('audio')" aria-label="${esc(tx("listening"))}">${[18,34,48,30,42,22,38,26].map(height=>`<i class="v2-wave-bar" style="height:${height}px"></i>`).join("")}<em class="v2-speaker-mark">🔊</em></button>${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-choice-grid">${card.options.map((option,index)=>`<button class="v2-card-choice ${response&&Number(response.selected_index)===index?"selected":""}" ${response?"disabled":""} onclick="V2.answerLessonChoice(${index})">${esc(option)}</button>`).join("")}</div>${lessonFeedback(card,response)}`;
   else if(LESSON_CHOICE_TYPES.includes(card.type))body=`${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-choice-grid">${card.options.map((option,index)=>`<button class="v2-card-choice ${response&&Number(response.selected_index)===index?"selected":""}" ${response?"disabled":""} onclick="V2.answerLessonChoice(${index})">${esc(option)}</button>`).join("")}</div>${lessonFeedback(card,response)}`;
   else if(card.type==="dialog_context")body=`<div class="v2-dialog-card">${(card.dialog||[]).map(line=>`<p><b>${esc(line.speaker||"")}</b><span>${esc(line.text||"")}</span></p>`).join("")}</div><div class="v2-choice-grid">${card.options.map((option,index)=>`<button class="v2-card-choice ${response&&Number(response.selected_index)===index?"selected":""}" ${response?"disabled":""} onclick="V2.answerLessonChoice(${index})">${esc(option)}</button>`).join("")}</div>${lessonFeedback(card,response)}`;
   else if(LESSON_ORDER_TYPES.includes(card.type))body=`${card.sentence?`<div class="v2-card-sentence">${esc(card.sentence)}</div>`:""}<div class="v2-order-answer">${lessonOrderSelected.map((token,index)=>`<button onclick="V2.returnLessonToken(${index})">${esc(token)}</button>`).join("")||"<span>…</span>"}</div><div class="v2-token-bank">${lessonOrderRemaining.map((token,index)=>`<button onclick="V2.pickLessonToken(${index})">${esc(token)}</button>`).join("")}</div>${lessonFeedback(card,response)}${response?"":`<div class="v2-inline-actions"><button class="v2-secondary" onclick="V2.resetLessonOrder()">${esc(tx("reset"))}</button><button class="v2-primary" ${lessonOrderRemaining.length?"disabled":""} onclick="V2.checkLessonOrder()">${esc(tx("check"))}</button></div>`}`;
@@ -583,22 +586,24 @@ async function submitLessonFlow(){
     await loadServerSectionPlan(true).catch(()=>{});
     syncGamification(result.reward,true);renderAll();
     const paid=ACCESS.status==="active",nextSection=completionNextSection(result);
-    const nextAction=nextSection?`V2.openNextSection('${safeSectionKey(nextSection.section_key)}')`:"V2.showPage('course')";
+    const nextLevel=safeLevelKey(nextSection?.level||result.next_level||"");
+    const nextAction=nextSection?`V2.openNextSection('${safeSectionKey(nextSection.section_key)}','${nextLevel}')`:"V2.showPage('course')";
     const mistakes=Math.max(0,Number(result.total||0)-Number(result.correct||0));
     const reward=result.book_lesson_reward||result.chapter_reward||result.section_reward||result.reward||{};
     const xp=Number(reward.awarded_xp||0);
-    const title=result.book_lesson_completed
+    const praise=result.completion_praise||{};
+    const title=praise.title||(result.book_lesson_completed
       ? tx("bookLessonComplete").replace("{level}",labelLevel(lessonFlow.level)).replace("{lesson}",String(lessonFlow.lesson_id))
       : result.chapter_completed
         ? tx("chapterComplete").replace("{chapter}",result.chapter_label||lessonFlow.chapter_label||"A")
-        : tx("sectionComplete");
+        : tx("sectionComplete"));
     const action=result.book_lesson_completed
       ? (nextSection&&paid?nextAction:"V2.showPage('course')")
       : (nextSection?(featureAllowed("lesson")?nextAction:"V2.showPaywall('section_completed')"):"V2.showPage('course')");
     const actionLabel=result.book_lesson_completed
-      ? (nextSection&&paid?tx("continueCourse"):tx("course"))
+      ? (nextSection&&paid?(praise.action_label||tx("continueCourse")):tx("course"))
       : (nextSection&&!featureAllowed("lesson")?tx("unlockMore"):result.chapter_completed?tx("nextChapter"):tx("nextSection"));
-    document.getElementById("page-lesson").innerHTML=rewardSequenceHtml(result,reward,{title,xp,mistakes,action,actionLabel});
+    document.getElementById("page-lesson").innerHTML=rewardSequenceHtml(result,reward,{title,xp,mistakes,action,actionLabel,praiseText:praise.text||""});
   }catch(error){
     lessonSubmitting=false;const result=error?.result||{};if(result.wrong_items?.length)serverMistakes=null;
     document.getElementById("page-lesson").innerHTML=`<div class="v2-lesson-shell"><div class="v2-lesson-card v2-lesson-result"><div class="v2-result-mark">↻</div><h2>${esc(error?.code==="lesson_score_too_low"?tx("incorrect"):tx("lessonLoadError"))}</h2><p>${result.percent!==undefined?`${result.percent}% · ${result.correct||0}/${result.total||0}`:esc(error?.code||"")}</p><button class="v2-primary" onclick="V2.retryLessonFlow()">${esc(tx("retryLesson"))}</button></div></div>`;
@@ -606,7 +611,7 @@ async function submitLessonFlow(){
 }
 function retryLessonFlow(){lessonCardIndex=0;lessonResponses={};lessonOrderRemaining=[];lessonOrderSelected=[];lessonSubmitting=false;renderLessonCard()}
 function openNextLesson(number){openNextSection(`${Number(number)||1}.1`)}
-function openNextSection(sectionKey){const ref=sectionRef(sectionKey,quizLesson);if(ref)startLesson(ref.lesson,ref.section_key)}
+function openNextSection(sectionKey,levelKey=""){const targetLevel=safeLevelKey(levelKey);const ref=sectionRef(sectionKey,quizLesson);if(!ref)return;if(targetLevel&&targetLevel!==LEVEL_KEY){bridge.openRoute?.({level:targetLevel,lang,tab:"course",lesson:ref.lesson,section:ref.section_key});return}startLesson(ref.lesson,ref.section_key)}
 function openWords(listen=false,lesson){closeSheet();fcFilter=lesson?Number(lesson):"all";showPage("flashcards");if(listen)toast(tx("listening"))}
 function openGrammar(lesson){closeSheet();grammarFilter=lesson?Number(lesson):"all";showPage("grammar")}
 

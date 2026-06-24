@@ -207,6 +207,33 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-25 — Mini App lesson material journey
+
+Changed:
+- Mini App lesson card generation now builds deterministic section-purpose material from the selected section `active_words` instead of accepting unscoped payload quiz fallbacks.
+- Generated cards use indexed source-backed activities such as `activity:meaning:1`, `activity:listening:2`, `activity:gap:1`, so review/listening/usage sections do not all collapse into the same generic question.
+- Listening cards keep `audio_text` only for playback; the frontend no longer displays the answer text inside the listening prompt and shows an audio waveform-style button instead.
+- Generic fill-blank questions such as “Men bugun ____ so'zini o'rgandim” were removed from Mini App quiz generation; gap-fill cards now require a real lesson/example sentence containing the target word.
+- Completing the final book lesson of a level in the Mini App now advances course progress to the next level and returns a server `next_book_lesson` ref plus concrete localized praise text.
+
+Why:
+- The previous generated cards could feel random/quiz-like, could produce fake blank prompts where every option fit, and the listening UI could reveal the heard word visually, which made the lesson flow poor despite correct section routing.
+
+Files touched:
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/static/study-v2.js`
+- `app/static/study-v2.css`
+- `app/static/study.html`
+- `tests/test_course_miniapp_lesson_flow.py`
+- `tests/test_course_miniapp_lesson_service.py`
+
+Risk:
+- Payment/subscription/QA/voice access logic was not changed.
+- Graphify code graph was updated after the Mini App lesson logic changes.
+
+Follow-up:
+- After deploy, test a real Telegram Mini App lesson `1.3 Tinglash` and confirm the listening card plays audio while hiding the answer text.
+
 ### 2026-06-24 — Mini App server section plan source-of-truth
 
 Changed:
