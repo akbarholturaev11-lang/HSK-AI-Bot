@@ -611,6 +611,43 @@ async def miniapp_course_lesson_complete(request: Request):
     return JSONResponse(status_code=status_code, content=result)
 
 
+@app.post("/api/miniapp/course-lesson/jump")
+async def miniapp_course_lesson_jump(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+        )
+    try:
+        payload = await request.json()
+        lesson_order = int(payload.get("lesson_id") or payload.get("lesson") or 0)
+        percent = int(payload.get("percent") or 0)
+        score = int(payload.get("score") or 0)
+        total = int(payload.get("total") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "error": "invalid_lesson_jump_payload"},
+        )
+    async with async_session_maker() as session:
+        result = await CourseMiniAppLessonFlowService(session).jump_to_lesson(
+            telegram_id,
+            level=str(payload.get("level") or ""),
+            lesson_order=lesson_order,
+            section_key=payload.get("section_key") or payload.get("section"),
+            percent=percent,
+            score=score,
+            total=total,
+            passed=bool(payload.get("passed")),
+        )
+    status_code = 200 if result.get("ok") else 400
+    return JSONResponse(status_code=status_code, content=result)
+
+
 @app.post("/api/miniapp/practice/start")
 async def miniapp_practice_start(request: Request):
     telegram_id = extract_verified_webapp_user_id(

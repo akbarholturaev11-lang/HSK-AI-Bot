@@ -13,7 +13,7 @@ const copy={
     missions:"Задания на сегодня",lessonMission:"Завершить урок",wordMission:"Повторить 5 слов",voiceMission:"Голосовая практика",
     yourProgress:"Ваш прогресс",league:"Рейтинг",achievements:"Достижения",reward:"Награда",openChest:"Открыть сундук",
     path:"Учебный путь",pathSub:"Короткие интерактивные уроки по порядку HSK",completed:"завершено",lesson:"Урок",
-    current:"Текущий урок",done:"Пройдено",locked:"Сначала завершите предыдущий урок",previousSectionRequired:"Сначала завершите предыдущий раздел.",review:"Повторение",boss:"Контрольная",
+    current:"Текущий урок",done:"Пройдено",locked:"Сначала завершите предыдущий урок",previousSectionRequired:"Сначала завершите предыдущий раздел.",jumpTestTitle:"Короткая проверка",jumpTestText:"Проверим слова до выбранного урока. После теста можно продолжить отсюда.",jumpTestStart:"Пройти проверку",jumpReady:"Результат хороший. Можно продолжать с выбранного урока.",jumpHard:"Результат показывает: урок может быть сложным. Можно всё равно продолжить.",continueSelected:"Продолжить с этого урока",backToPath:"Вернуться к пути",review:"Повторение",boss:"Контрольная",
     start:"Начать",words:"Слова",grammar:"Грамматика",practice:"Практика",lessonReady:"Выберите формат тренировки",
     testCenter:"Центр тестов",testCenterSub:"Уровень, экзамен HSK, произношение и иероглифы",
     testsSub:"Проверьте уровень и подготовьтесь к экзамену",placement:"Тест уровня",placementSub:"10-20 вопросов и автоматическая рекомендация уровня",
@@ -43,7 +43,7 @@ const copy={
     missions:"Bugungi vazifalar",lessonMission:"Darsni tugatish",wordMission:"5 ta so'zni takrorlash",voiceMission:"Ovozli mashq",
     yourProgress:"Progressingiz",league:"Reyting",achievements:"Yutuqlar",reward:"Mukofot",openChest:"Sandiqni ochish",
     path:"O'quv yo'li",pathSub:"HSK tartibidagi qisqa interaktiv darslar",completed:"tugallandi",lesson:"Dars",
-    current:"Joriy dars",done:"Tugallangan",locked:"Avval oldingi darsni tugating",previousSectionRequired:"Avval oldingi qismni tugating.",review:"Takrorlash",boss:"Nazorat",
+    current:"Joriy dars",done:"Tugallangan",locked:"Avval oldingi darsni tugating",previousSectionRequired:"Avval oldingi qismni tugating.",jumpTestTitle:"Qisqa tekshiruv",jumpTestText:"Tanlangan darsgacha bo'lgan so'zlardan test. Keyin shu darsdan davom etish mumkin.",jumpTestStart:"Testni boshlash",jumpReady:"Natija yaxshi. Tanlangan darsdan davom etsangiz bo'ladi.",jumpHard:"Natija ko'rsatdi: bu dars og'ir bo'lishi mumkin. Baribir davom etishingiz mumkin.",continueSelected:"Shu darsdan davom etish",backToPath:"Yo'lga qaytish",review:"Takrorlash",boss:"Nazorat",
     start:"Boshlash",words:"So'zlar",grammar:"Grammatika",practice:"Mashq",lessonReady:"Mashq turini tanlang",
     testCenter:"Test markazi",testCenterSub:"Daraja, HSK imtihon, talaffuz va iyeroglif",
     testsSub:"Darajangizni tekshiring va imtihonga tayyorlaning",placement:"Daraja testi",placementSub:"10-20 savol va avtomatik daraja tavsiyasi",
@@ -72,7 +72,7 @@ const copy={
     missions:"Вазифаҳои имрӯз",lessonMission:"Анҷоми дарс",wordMission:"Такрори 5 калима",voiceMission:"Машқи овозӣ",
     yourProgress:"Пешрафти шумо",league:"Рейтинг",achievements:"Дастовардҳо",reward:"Мукофот",openChest:"Кушодани сандуқ",
     path:"Роҳи омӯзиш",pathSub:"Дарсҳои кӯтоҳи интерактивӣ бо тартиби HSK",completed:"анҷом шуд",lesson:"Дарс",
-    current:"Дарси ҷорӣ",done:"Анҷомшуда",locked:"Аввал дарси пешинаро анҷом диҳед",previousSectionRequired:"Аввал қисми пешинаро анҷом диҳед.",review:"Такрор",boss:"Санҷиш",
+    current:"Дарси ҷорӣ",done:"Анҷомшуда",locked:"Аввал дарси пешинаро анҷом диҳед",previousSectionRequired:"Аввал қисми пешинаро анҷом диҳед.",jumpTestTitle:"Санҷиши кӯтоҳ",jumpTestText:"Аз калимаҳои то дарси интихобшуда тест мегирем. Баъд аз ҳамин ҷо давом додан мумкин.",jumpTestStart:"Оғози тест",jumpReady:"Натиҷа хуб аст. Аз дарси интихобшуда давом диҳед.",jumpHard:"Натиҷа нишон медиҳад: ин дарс метавонад душвор бошад. Бо хоҳишатон давом диҳед.",continueSelected:"Аз ҳамин дарс давом додан",backToPath:"Бозгашт ба роҳ",review:"Такрор",boss:"Санҷиш",
     start:"Оғоз",words:"Калимаҳо",grammar:"Грамматика",practice:"Машқ",lessonReady:"Навъи машқро интихоб кунед",
     testCenter:"Маркази тест",testCenterSub:"Сатҳ, имтиҳони HSK, талаффуз ва иероглиф",
     testsSub:"Сатҳи худро санҷед ва ба имтиҳон омода шавед",placement:"Тести сатҳ",placementSub:"10-20 савол ва тавсияи автоматии сатҳ",
@@ -200,6 +200,7 @@ let onboardingStep=0;
 let onboardingSubmitting=false;
 let onboarding={goal:["hsk_exam","study_china","work_china","daily_communication","travel"].includes(meta.goal)?meta.goal:"hsk_exam",level:LEVEL_KEY.startsWith("hsk4")?"hsk4":LEVEL_KEY,minutes:meta.minutes||10,startMode:"lesson_1"};
 let lessonFlow=null,lessonCardIndex=0,lessonResponses={},lessonSubmitting=false,lessonOrderRemaining=[],lessonOrderSelected=[];
+let jumpTarget=null;
 const LESSON_CHOICE_TYPES=["meaning_guess","pinyin_choice","hanzi_choice","listening_choice","gap_fill","character_recognition","translation_choice","quick_quiz"];
 const LESSON_ORDER_TYPES=["sentence_builder","word_order"];
 const LESSON_PASSIVE_TYPES=["active_word","match_pairs"];
@@ -466,6 +467,7 @@ function openLesson(number,sectionKey=""){
   const section=sectionFromKey(lesson,explicitSection);
   if(ACCESS.status!=="active"&&meta.trialCourseCompleted&&!sectionIsDone(section)){showPaywall("course_trial_completed");return}
   if(!sectionIsDone(section)&&!featureAllowed("lesson")){showPaywall("lesson_locked");return}
+  if(explicitSection&&!sectionIsDone(section)&&section.key!==currentSection()?.key){showLessonJumpIntro(section);return}
   if(!explicitSection&&!sectionIsDone(section)&&section.key!==currentSection()?.key){toast(tx("locked"));return}
   document.getElementById("v2-sheet")?.remove();
   const root=document.createElement("div");root.id="v2-sheet";root.className="v2-sheet-backdrop";
@@ -566,6 +568,71 @@ function buildExamQuestions(count){
   for(let index=0;index<VOCAB.length&&pool.length<count;index+=step){const word=VOCAB[index];pool.push(vocabQuestion(word,["meaning","hanzi","pinyin"][pool.length%3]))}
   for(const lesson of LESSONS){if(pool.length>=count)break;const question=grammarQuestion(lesson.n);if(question)pool.push(question)}
   return pool.slice(0,count);
+}
+function compactQuestionPool(pool,limit){
+  const clean=pool.filter(Boolean),result=[],seen=new Set();
+  if(clean.length<=limit)return clean;
+  const step=(clean.length-1)/Math.max(limit-1,1);
+  for(let index=0;index<limit;index++){
+    const item=clean[Math.round(index*step)];
+    const key=JSON.stringify([item.q,item.opts]);
+    if(!seen.has(key)){seen.add(key);result.push(item)}
+  }
+  for(const item of clean){
+    if(result.length>=limit)break;
+    const key=JSON.stringify([item.q,item.opts]);
+    if(!seen.has(key)){seen.add(key);result.push(item)}
+  }
+  return result;
+}
+function buildJumpAssessmentQuestions(lessonNumber){
+  const target=Math.max(1,Number(lessonNumber)||1),pool=[];
+  const words=VOCAB.filter(word=>Number(word.l||0)>0&&Number(word.l)<=target);
+  words.forEach((word,index)=>pool.push(vocabQuestion(word,["meaning","hanzi","pinyin"][index%3])));
+  for(let lesson=1;lesson<=target;lesson++){const question=grammarQuestion(lesson);if(question)pool.push(question)}
+  const limit=Math.min(12,Math.max(8,target>=5?10:8));
+  return compactQuestionPool(pool,limit);
+}
+function showLessonJumpIntro(section){
+  closeSheet();
+  bridge.reportEvent?.("lesson_jump_prompt_seen",{level:LEVEL_KEY,lesson_id:section.lesson,section_key:section.key});
+  const lesson=lessonByNumber(section.lesson);
+  const root=document.createElement("div");root.id="v2-sheet";root.className="v2-sheet-backdrop";
+  root.innerHTML=`<div class="v2-sheet" onclick="event.stopPropagation()"><div class="v2-sheet-handle"></div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${esc(section.key)}</div><h2>${esc(tx("jumpTestTitle"))}</h2><p>${esc(tx("jumpTestText"))}</p><p><b>${esc(tr(lesson?.t)||"")}</b></p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="V2.startLessonJumpTest(${section.lesson},'${section.key}')">${esc(tx("jumpTestStart"))}</button><button class="v2-secondary" onclick="document.getElementById('v2-sheet')?.remove()">${esc(tx("back"))}</button></div></div>`;
+  root.onclick=()=>root.remove();document.body.appendChild(root);
+}
+function startLessonJumpTest(number,sectionKey){
+  const lesson=lessonByNumber(number);if(!lesson)return;
+  const section=sectionFromKey(lesson,sectionKey);
+  jumpTarget={lesson:section.lesson,section_key:section.key,section_no:section.no};
+  testMode="jump";quizLesson=Number(section.lesson);practiceSession=null;mistakeReviewSession=null;
+  questions=buildJumpAssessmentQuestions(section.lesson);answers=Array(questions.length).fill(null);qIndex=0;
+  closeSheet();showPage("quiz");document.getElementById("score-box").style.display="none";document.getElementById("quiz-box").style.display="block";renderQuizQuestion();
+}
+function unlockJumpLocally(section){
+  for(let lesson=1;lesson<Number(section.lesson||1);lesson++){if(!state.done.includes(lesson))state.done.push(lesson)}
+  const lesson=lessonByNumber(section.lesson);
+  lessonSections(lesson).filter(item=>Number(item.no)<Number(section.section_no||1)).forEach(markSectionDone);
+  saveState();write(META_KEY,meta);renderAll();
+}
+function renderJumpAssessmentResult(){
+  const section=jumpTarget;if(!section)return;
+  const passed=Number(lastQuizPercent||0)>=70;
+  document.getElementById("quiz-box").style.display="none";
+  const box=document.getElementById("score-box");box.style.display="block";
+  box.innerHTML=`<div class="v2-lesson-result"><div class="v2-result-mark">${passed?"✓":"!"}</div><div class="v2-kicker">${labelLevel(LEVEL_KEY)} · ${esc(tx("lesson"))} ${esc(section.section_key)}</div><h2>${lastQuizPercent}%</h2><p>${esc(passed?tx("jumpReady"):tx("jumpHard"))}</p><div class="v2-sheet-actions single"><button class="v2-primary" onclick="V2.confirmLessonJump()">${esc(tx("continueSelected"))}</button><button class="v2-secondary" onclick="V2.showPage('course')">${esc(tx("backToPath"))}</button></div></div>`;
+}
+async function confirmLessonJump(){
+  const section=jumpTarget;if(!section)return;
+  const passed=Number(lastQuizPercent||0)>=70;
+  try{
+    if(bridge.hasAuth?.()&&bridge.jumpCourseLesson){
+      await bridge.jumpCourseLesson({level:LEVEL_KEY,lesson_id:section.lesson,section_key:section.section_key,score:lastQuizScore,total:lastQuizTotal,percent:lastQuizPercent,passed});
+    }
+    unlockJumpLocally(section);
+    jumpTarget=null;
+    startLesson(section.lesson,section.section_key);
+  }catch(error){toast(error?.code||tx("lessonLoadError"))}
 }
 async function beginCustomTest(mode,requestedLevel=LEVEL_KEY,skill=""){
   testMode=mode;quizLesson=currentLesson()?.n||1;practiceSession=null;showPage("quiz");document.getElementById("score-box").style.display="none";const box=document.getElementById("quiz-box");box.style.display="block";box.innerHTML=`<div class="v2-lesson-loading"><div class="v2-loader-dot"></div><h2>${esc(tx("loadingLesson"))}</h2></div>`;
@@ -692,7 +759,21 @@ async function onboardingNext(){
 const legacyFinishQuiz=finishQuiz;
 const legacyFlipFC=flipFC;
 finishQuiz=function(){
-  const mode=testMode,session=practiceSession,reviewSession=mistakeReviewSession;legacyFinishQuiz();if(mode!=="mistakes")rememberMistakes(lastWrongItems);
+  const mode=testMode,session=practiceSession,reviewSession=mistakeReviewSession;
+  if(mode==="jump"){
+    const wrong=[];let score=0;
+    questions.forEach((question,index)=>{
+      if(answers[index]===question.a)score+=1;
+      else wrong.push({question:tr(question.q),user_answer:question.opts?.[answers[index]]||"-",correct_answer:question.opts?.[question.a]||"",explanation:tr(question.explanation)||""});
+    });
+    lastWrongItems=wrong;lastQuizScore=score;lastQuizTotal=questions.length;lastQuizPercent=Math.round(score/Math.max(questions.length,1)*100);
+    rememberMistakes(lastWrongItems);
+    renderJumpAssessmentResult();
+    testMode="";
+    return;
+  }
+  legacyFinishQuiz();
+  if(mode!=="mistakes")rememberMistakes(lastWrongItems);
   if(mode==="lesson"&&lastQuizPercent>=60&&ACCESS.status!=="active"){meta.trialCourseCompleted=true;write(META_KEY,meta)}
   if(!session&&!reviewSession){if(mode==="lesson"&&lastQuizPercent>=60&&!state.done.includes(quizLesson)){state.done.push(quizLesson);saveState();addXP(20+Math.round(lastQuizPercent/10),"lesson")}else addXP(Math.max(5,Math.round(lastQuizPercent/10)),"quiz")}
   if(mode==="lesson"&&lastQuizPercent>=60){
@@ -736,7 +817,7 @@ function applyLaunch(){
 
 function mount(){
   normalizeMeta();document.body.innerHTML=appMarkup();
-  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
+  window.V2={showPage,quizBack,openLesson,startLesson,openWords,openGrammar,startPlacement,startMock,startTraining,startMistakeReview,startLessonJumpTest,confirmLessonJump,openChest,openSettings,changeLanguage,changeLevel,openSubscription,openCharacterDictionary,openSupport,showPaywall,toast,pickOnboarding,onboardingBack,onboardingNext,playCurrentLessonAudio,answerLessonChoice,pickLessonToken,returnLessonToken,resetLessonOrder,checkLessonOrder,completePassiveLessonCard,continueLessonCard,retryLessonFlow,openNextLesson,openNextSection,jumpToCurrentSection,uploadAvatar,openLeagueUser};
   window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;syncGamification(ACCESS.gamification);renderAll()};
   window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:lang;setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll()};
   syncGamification(ACCESS.gamification);setLabels();renderFlashcards();renderGrammar();renderQuizFilters();renderAll();applyLaunch();showOnboarding();

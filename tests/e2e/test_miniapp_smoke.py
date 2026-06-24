@@ -2,7 +2,7 @@ import json
 import os
 import re
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -399,6 +399,89 @@ def test_server_backed_lesson_cards_finish_with_reward(page):
 
     expect(frame.locator(".v2-reward-shell")).to_contain_text("100%")
     expect(frame.locator(".v2-reward-shell")).to_contain_text("+30")
+
+
+def test_locked_path_node_readiness_test_opens_selected_section(page):
+    mock_study_access(page, ACTIVE_ACCESS, fail_events=False)
+    jump_requests = []
+
+    def handle_lesson_flow(route):
+        query = parse_qs(urlparse(route.request.url).query)
+        section_key = query.get("section", ["1.1"])[0]
+        section_no = int(section_key.split(".")[1])
+        word = "再见" if section_key == "1.2" else "你好"
+        json_response(
+            route,
+            {
+                "ok": True,
+                "flow": {
+                    "id": f"lesson:1:{section_key}:v1",
+                    "version": 1,
+                    "level": "hsk1",
+                    "lesson_id": 1,
+                    "book_lesson_order": 1,
+                    "section_key": section_key,
+                    "section_no": section_no,
+                    "section_count": 2,
+                    "title": word,
+                    "active_words": [{"zh": word, "pinyin": "pinyin", "meaning": "meaning"}],
+                    "cards": [
+                        {
+                            "id": f"word:{section_key}",
+                            "type": "active_word",
+                            "title": "Yangi faol so'z",
+                            "word": {"zh": word, "pinyin": "pinyin", "meaning": "meaning"},
+                            "required": True,
+                        }
+                    ],
+                },
+            },
+        )
+
+    def handle_jump(route):
+        payload = route.request.post_data_json
+        jump_requests.append(payload() if callable(payload) else payload)
+        json_response(
+            route,
+            {
+                "ok": True,
+                "level": "hsk1",
+                "lesson_id": 1,
+                "book_lesson_order": 1,
+                "section_key": "1.2",
+                "completed_lessons_count": 0,
+                "percent": 25,
+                "passed": False,
+            },
+        )
+
+    page.route(re.compile(r".*/api/miniapp/course-lesson\?.*"), handle_lesson_flow)
+    page.route(f"{PROD_ORIGIN}/api/miniapp/course-lesson/jump", handle_jump)
+    page.add_init_script(
+        """window.Telegram={WebApp:{initData:"miniapp-e2e",ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){}}};"""
+    )
+
+    page.goto(app_url("/study.html?level=hsk1&tab=course&lang=uz"))
+    frame = study_frame(page)
+    page.evaluate("window.MiniAppBridge.hasAuth=()=>true")
+    frame.get_by_role("button", name=re.compile(r"^Dars 1\.2$")).click()
+    expect(frame.locator("#v2-sheet")).to_contain_text("Qisqa tekshiruv")
+    frame.get_by_role("button", name="Testni boshlash").click()
+
+    for _ in range(12):
+        if frame.get_by_role("button", name="Shu darsdan davom etish").count():
+            break
+        expect(frame.locator("#quiz-box .option").first).to_be_visible()
+        frame.locator("#quiz-box .option").first.click()
+        frame.locator("#quiz-box .btn.primary").click()
+
+    expect(frame.get_by_role("button", name="Shu darsdan davom etish")).to_be_visible()
+    frame.get_by_role("button", name="Shu darsdan davom etish").click()
+
+    expect(frame.locator("#page-lesson.active")).to_be_visible()
+    expect(frame.locator(".v2-word-hero")).to_contain_text("再见")
+    assert jump_requests
+    assert jump_requests[0]["section_key"] == "1.2"
 
 
 def test_study_quiz_score_and_event_localstorage_fallback(page):

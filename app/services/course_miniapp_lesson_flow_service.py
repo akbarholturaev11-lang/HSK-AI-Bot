@@ -421,6 +421,84 @@ class CourseMiniAppLessonFlowService:
             "required": True,
         }
 
+    async def jump_to_lesson(
+        self,
+        telegram_id: int,
+        *,
+        level: str,
+        lesson_order: int,
+        section_key: str | int | None = None,
+        percent: int = 0,
+        score: int = 0,
+        total: int = 0,
+        passed: bool = False,
+    ) -> dict:
+        user = await self.user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return {"ok": False, "error": "access_start_first"}
+
+        content_level = self._content_level(level)
+        lesson = await self.lesson_repo.get_by_level_and_order(content_level, int(lesson_order or 0))
+        if not lesson:
+            return {"ok": False, "error": "course_no_lesson_found"}
+
+        progress = await self.progress_repo.get_by_user_id(user.id, for_update=True)
+        if not progress:
+            progress = await self.progress_repo.create(
+                user_id=user.id,
+                level=str(lesson.level),
+                current_lesson_id=lesson.id,
+                current_step="intro",
+                waiting_for="none",
+            )
+        progress.level = str(lesson.level)
+        progress.completed_lessons_count = max(
+            int(getattr(progress, "completed_lessons_count", 0) or 0),
+            max(0, int(lesson.lesson_order) - 1),
+        )
+        progress.homework_status = "none"
+        progress.needs_review_prompt = False
+        progress.next_study_at = None
+        await self.progress_repo.set_current_lesson_and_step(
+            progress=progress,
+            lesson_id=lesson.id,
+            step="intro",
+            waiting_for="none",
+        )
+        user.level = str(lesson.level)
+
+        safe_percent = max(0, min(100, int(percent or 0)))
+        safe_total = max(0, int(total or 0))
+        safe_score = max(0, min(safe_total, int(score or 0))) if safe_total else max(0, int(score or 0))
+        await CourseMiniAppAnalyticsService(self.session).record_server_event(
+            event_name="lesson_jump_selected",
+            telegram_id=telegram_id,
+            user_id=user.id,
+            level=str(lesson.level),
+            lesson_id=lesson.id,
+            lesson_order=int(lesson.lesson_order),
+            dedupe_key=f"lesson-jump:{user.id}:{lesson.id}:{section_key or '1'}",
+            payload={
+                "section_key": str(section_key or f"{lesson.lesson_order}.1"),
+                "percent": safe_percent,
+                "score": safe_score,
+                "total": safe_total,
+                "passed": bool(passed),
+                "flow_version": LESSON_FLOW_VERSION,
+            },
+        )
+        await self.session.commit()
+        return {
+            "ok": True,
+            "level": str(lesson.level),
+            "lesson_id": int(lesson.lesson_order),
+            "book_lesson_order": int(lesson.lesson_order),
+            "section_key": str(section_key or f"{lesson.lesson_order}.1"),
+            "completed_lessons_count": int(progress.completed_lessons_count or 0),
+            "percent": safe_percent,
+            "passed": bool(passed),
+        }
+
     async def _context(self, telegram_id: int, *, level: str, lesson_order: int):
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:

@@ -207,6 +207,30 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-24 — Mini App locked lesson readiness jump
+
+Changed:
+- Locked/future course path nodes are no longer ignored in the Mini App; explicit node taps open a short readiness test built from lessons up to the selected lesson.
+- After the test, users can continue from the selected section even with a low score, with a short warning that the chosen lesson may be difficult.
+- Confirming the jump calls a server endpoint that moves `course_progress.current_lesson_id` to the selected book lesson and records the test result in Mini App analytics.
+
+Why:
+- Users who intentionally choose a later lesson need a guided override instead of a dead locked tap, while server progress must still become the source of truth before lesson content opens.
+
+Files touched:
+- `app/main.py`
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/static/study.html`
+- `app/static/study-v2.js`
+- `tests/test_course_miniapp_lesson_flow.py`
+
+Risk:
+- Payment/subscription logic was not changed.
+- The readiness test uses existing Mini App course quiz material; lesson content itself is still loaded from the server after confirmation.
+
+Follow-up:
+- After deploy, test a locked path node such as `1.4`: complete the readiness test, continue despite low score, and verify the opened section header/content match the selected node.
+
 ### 2026-06-24 — Mini App lesson section source-of-truth fix
 
 Changed:

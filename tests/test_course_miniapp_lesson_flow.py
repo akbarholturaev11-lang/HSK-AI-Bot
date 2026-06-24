@@ -610,6 +610,67 @@ class CourseMiniAppLessonFlowCompletionTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(result, {"ok": False, "error": "course_section_not_found"})
 
+    async def test_jump_to_lesson_sets_server_progress_to_selected_lesson(self):
+        selected_lesson = SimpleNamespace(id=50, lesson_order=5, level="hsk2")
+        progress = SimpleNamespace(
+            level="hsk1",
+            completed_lessons_count=1,
+            homework_status="pending",
+            needs_review_prompt=True,
+            next_study_at=object(),
+        )
+        self.service.user_repo = SimpleNamespace(
+            get_by_telegram_id=AsyncMock(return_value=self.user)
+        )
+        self.service.lesson_repo = SimpleNamespace(
+            get_by_level_and_order=AsyncMock(return_value=selected_lesson)
+        )
+        self.service.progress_repo = SimpleNamespace(
+            get_by_user_id=AsyncMock(return_value=progress),
+            create=AsyncMock(),
+            set_current_lesson_and_step=AsyncMock(),
+        )
+        analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
+
+        with patch(
+            "app.services.course_miniapp_lesson_flow_service.CourseMiniAppAnalyticsService",
+            return_value=analytics,
+        ):
+            result = await self.service.jump_to_lesson(
+                123,
+                level="hsk2",
+                lesson_order=5,
+                section_key="5.2",
+                percent=42,
+                score=4,
+                total=10,
+                passed=False,
+            )
+
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["lesson_id"], 5)
+        self.assertEqual(result["section_key"], "5.2")
+        self.assertEqual(result["completed_lessons_count"], 4)
+        self.assertEqual(result["percent"], 42)
+        self.assertFalse(result["passed"])
+        self.assertEqual(progress.level, "hsk2")
+        self.assertEqual(progress.completed_lessons_count, 4)
+        self.assertEqual(progress.homework_status, "none")
+        self.assertFalse(progress.needs_review_prompt)
+        self.assertIsNone(progress.next_study_at)
+        self.service.progress_repo.set_current_lesson_and_step.assert_awaited_once_with(
+            progress=progress,
+            lesson_id=50,
+            step="intro",
+            waiting_for="none",
+        )
+        analytics.record_server_event.assert_awaited_once()
+        payload = analytics.record_server_event.await_args.kwargs["payload"]
+        self.assertEqual(payload["section_key"], "5.2")
+        self.assertEqual(payload["percent"], 42)
+        self.assertFalse(payload["passed"])
+        self.session.commit.assert_awaited_once()
+
 
 if __name__ == "__main__":
     unittest.main()
