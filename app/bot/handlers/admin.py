@@ -20,12 +20,10 @@ from app.repositories.course_audio_repo import CourseAudioRepository
 from app.db.models.user import User
 from app.db.models.payment import Payment
 from app.db.models.course_progress import CourseProgress
-from app.db.models.course_pilot_event import CoursePilotEvent
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
 from app.services.admin_stats_service import miniapp_course_stats
-from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.portfolio_service import PortfolioService
 from app.services.payment_qr_code_service import (
@@ -1946,13 +1944,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
             select(User.level, func.count().label("cnt")).group_by(User.level)
         )).fetchall()
     }
-    mode_counts = {
-        r.learning_mode: r.cnt
-        for r in (await session.execute(
-            select(User.learning_mode, func.count().label("cnt")).group_by(User.learning_mode)
-        )).fetchall()
-    }
-
     # --- Faollik ---
     new_today = (await session.execute(
         select(func.count()).select_from(User).where(User.created_at >= today_start)
@@ -1992,227 +1983,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
 
     # --- Kurs Mini App ---
     miniapp_course = await miniapp_course_stats(session)
-    course_reminders = (await session.execute(
-        select(func.count()).select_from(CourseProgress)
-        .where(CourseProgress.reminder_enabled == True)  # noqa: E712
-    )).scalar() or 0
-    trial_course_started = (await session.execute(
-        select(func.count()).select_from(User).where(User.trial_course_started_at.is_not(None))
-    )).scalar() or 0
-    trial_course_completed = (await session.execute(
-        select(func.count()).select_from(User).where(User.trial_course_completed_at.is_not(None))
-    )).scalar() or 0
-    trial_quiz_explained = (await session.execute(
-        select(func.count()).select_from(User).where(User.trial_quiz_explanation_used_at.is_not(None))
-    )).scalar() or 0
-    force_sub_checkpoint = (await session.execute(
-        select(func.count()).select_from(User).where(User.force_sub_required_at.is_not(None))
-    )).scalar() or 0
-    checkpoint_completed = (await session.execute(
-        select(func.count()).select_from(User).where(
-            User.force_sub_required_at.is_not(None),
-            User.trial_course_completed_at.is_not(None),
-            User.trial_course_completed_at >= User.force_sub_required_at,
-        )
-    )).scalar() or 0
-    trial_paid_after_start = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
-        .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
-        .where(
-            Payment.payment_status == "approved",
-            Payment.reviewed_at.is_not(None),
-            User.trial_course_started_at.is_not(None),
-            Payment.reviewed_at >= User.trial_course_started_at,
-        )
-    )).scalar() or 0
-    trial_revenue_after_start = (await session.execute(
-        select(func.sum(Payment.amount))
-        .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
-        .where(
-            Payment.payment_status == "approved",
-            Payment.reviewed_at.is_not(None),
-            User.trial_course_started_at.is_not(None),
-            Payment.reviewed_at >= User.trial_course_started_at,
-        )
-    )).scalar() or 0
-    checkpoint_paid_after = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
-        .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
-        .where(
-            Payment.payment_status == "approved",
-            Payment.reviewed_at.is_not(None),
-            User.force_sub_required_at.is_not(None),
-            Payment.reviewed_at >= User.force_sub_required_at,
-        )
-    )).scalar() or 0
-    completed_paid_after = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
-        .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
-        .where(
-            Payment.payment_status == "approved",
-            Payment.reviewed_at.is_not(None),
-            User.trial_course_completed_at.is_not(None),
-            Payment.reviewed_at >= User.trial_course_completed_at,
-        )
-    )).scalar() or 0
-    trial_started_today = (await session.execute(
-        select(func.count()).select_from(User).where(User.trial_course_started_at >= today_start)
-    )).scalar() or 0
-    trial_started_week = (await session.execute(
-        select(func.count()).select_from(User).where(User.trial_course_started_at >= week_ago)
-    )).scalar() or 0
-    trial_completed_week = (await session.execute(
-        select(func.count()).select_from(User).where(User.trial_course_completed_at >= week_ago)
-    )).scalar() or 0
-    trial_paid_week = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
-        .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
-        .where(
-            Payment.payment_status == "approved",
-            Payment.reviewed_at >= week_ago,
-            User.trial_course_started_at.is_not(None),
-            Payment.reviewed_at >= User.trial_course_started_at,
-        )
-    )).scalar() or 0
-    daily_started = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_started_at.is_not(None))
-    )).scalar() or 0
-    daily_started_today = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_started_at >= today_start)
-    )).scalar() or 0
-    daily_started_week = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_started_at >= week_ago)
-    )).scalar() or 0
-    daily_completed = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_completed_at.is_not(None))
-    )).scalar() or 0
-    daily_completed_today = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_last_day == now.date())
-    )).scalar() or 0
-    daily_completed_week = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_completed_at >= week_ago)
-    )).scalar() or 0
-    daily_d2_return = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_streak >= 2)
-    )).scalar() or 0
-    daily_completed_course_opened = (await session.execute(
-        select(func.count()).select_from(User).where(
-            User.daily_practice_completed_at.is_not(None),
-            User.trial_course_started_at.is_not(None),
-            User.trial_course_started_at >= User.daily_practice_completed_at,
-        )
-    )).scalar() or 0
-    daily_completed_paid = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
-        .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
-        .where(
-            Payment.payment_status == "approved",
-            Payment.reviewed_at.is_not(None),
-            User.daily_practice_completed_at.is_not(None),
-            Payment.reviewed_at >= User.daily_practice_completed_at,
-        )
-    )).scalar() or 0
-    qa_limit_channel_joined = (await session.execute(
-        select(func.count()).select_from(User).where(
-            User.force_sub_required_at.is_not(None),
-            User.last_active_at >= User.force_sub_required_at,
-        )
-    )).scalar() or 0
-    pilot_opened = (await session.execute(
-        select(func.count(func.distinct(CoursePilotEvent.telegram_id))).where(
-            CoursePilotEvent.event_type == "opened"
-        )
-    )).scalar() or 0
-    pilot_quiz_completed = (await session.execute(
-        select(func.count(func.distinct(CoursePilotEvent.telegram_id))).where(
-            CoursePilotEvent.event_type == "completed",
-            CoursePilotEvent.mode == "quiz",
-        )
-    )).scalar() or 0
-    pilot_reinforced = (await session.execute(
-        select(func.count(func.distinct(CoursePilotEvent.telegram_id))).where(
-            CoursePilotEvent.event_type == "completed",
-            CoursePilotEvent.mode == "homework",
-        )
-    )).scalar() or 0
-    pilot_returned = (await session.execute(
-        select(func.count()).select_from(CoursePilotEvent).where(
-            CoursePilotEvent.event_type == "returned"
-        )
-    )).scalar() or 0
-    pilot_drop_rows = (await session.execute(
-        select(CoursePilotEvent.step_name, func.count().label("cnt"))
-        .where(CoursePilotEvent.event_type == "returned")
-        .group_by(CoursePilotEvent.step_name)
-        .order_by(func.count().desc())
-        .limit(4)
-    )).fetchall()
-    pilot_lesson_rows = (await session.execute(
-        select(
-            CoursePilotEvent.level,
-            CoursePilotEvent.lesson_order,
-            func.count(func.distinct(CoursePilotEvent.telegram_id)).filter(
-                CoursePilotEvent.event_type == "opened"
-            ).label("opened"),
-            func.count(func.distinct(CoursePilotEvent.telegram_id)).filter(
-                CoursePilotEvent.event_type == "completed"
-            ).label("completed"),
-        )
-        .group_by(CoursePilotEvent.level, CoursePilotEvent.lesson_order)
-        .order_by(CoursePilotEvent.level, CoursePilotEvent.lesson_order)
-    )).fetchall()
-
-    daily_started = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_started_at.is_not(None))
-    )).scalar() or 0
-    daily_started_today = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_started_at >= today_start)
-    )).scalar() or 0
-    daily_started_week = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_started_at >= week_ago)
-    )).scalar() or 0
-    daily_completed = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_completed_at.is_not(None))
-    )).scalar() or 0
-    daily_completed_today = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_last_day == now.date())
-    )).scalar() or 0
-    daily_completed_week = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_completed_at >= week_ago)
-    )).scalar() or 0
-    daily_d2_return = (await session.execute(
-        select(func.count()).select_from(User).where(User.daily_practice_streak >= 2)
-    )).scalar() or 0
-    daily_completed_course_opened = (await session.execute(
-        select(func.count()).select_from(User).where(
-            User.daily_practice_completed_at.is_not(None),
-            User.trial_course_started_at.is_not(None),
-            User.trial_course_started_at >= User.daily_practice_completed_at,
-        )
-    )).scalar() or 0
-    daily_completed_paid = (await session.execute(
-        select(func.count(func.distinct(Payment.user_telegram_id)))
-        .select_from(Payment)
-        .join(User, User.telegram_id == Payment.user_telegram_id)
-        .where(
-            Payment.payment_status == "approved",
-            Payment.reviewed_at.is_not(None),
-            User.daily_practice_completed_at.is_not(None),
-            Payment.reviewed_at >= User.daily_practice_completed_at,
-        )
-    )).scalar() or 0
-    qa_limit_channel_joined = (await session.execute(
-        select(func.count()).select_from(User).where(
-            User.force_sub_required_at.is_not(None),
-            User.last_active_at >= User.force_sub_required_at,
-        )
-    )).scalar() or 0
 
     # --- Referallar ---
     ref_total = (await session.execute(
@@ -2252,7 +2022,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     historical_approved_users = (await session.execute(
         select(func.count()).select_from(User).where(User.payment_status == "approved")
     )).scalar() or 0
-    funnel_text = await ConversionFunnelService(session).admin_funnel_text(week_ago=week_ago)
     course_miniapp_text = await CourseMiniAppAdminAnalyticsService(session).admin_text(week_ago=week_ago)
 
     conversion  = _pct(paid_user_cnt, total)
@@ -2265,25 +2034,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         if miniapp_course.completed_users > 0
         else 0
     )
-    trial_complete_rate = _pct(trial_course_completed, trial_course_started)
-    trial_ai_rate = _pct(trial_quiz_explained, trial_course_started)
-    trial_paid_rate = _pct(trial_paid_after_start, trial_course_started)
-    completed_paid_rate = _pct(completed_paid_after, trial_course_completed)
-    checkpoint_complete_rate = _pct(checkpoint_completed, force_sub_checkpoint)
-    checkpoint_paid_rate = _pct(checkpoint_paid_after, force_sub_checkpoint)
-    daily_complete_rate = _pct(daily_completed, daily_started)
-    daily_return_rate = _pct(daily_d2_return, daily_completed)
-    daily_course_rate = _pct(daily_completed_course_opened, daily_completed)
-    daily_paid_rate = _pct(daily_completed_paid, daily_completed)
-    qa_channel_join_rate = _pct(qa_limit_channel_joined, force_sub_checkpoint)
-    pilot_quiz_rate = _pct(pilot_quiz_completed, pilot_opened)
-    pilot_reinforce_rate = _pct(pilot_reinforced, pilot_opened)
-    pilot_drop_str = " | ".join(f"{row.step_name}: {row.cnt}" for row in pilot_drop_rows) or "hali yo'q"
-    pilot_lesson_str = " | ".join(
-        f"{str(row.level).upper()}-{row.lesson_order}: {int(row.opened or 0)}/{int(row.completed or 0)}"
-        for row in pilot_lesson_rows[:12]
-    ) or "hali yo'q"
-
     level_order = ["beginner", "hsk1", "hsk2", "hsk3", "hsk4"]
     level_str   = "  " + "   ".join(
         f"{l.upper()}: {level_counts.get(l, 0)}" for l in level_order
@@ -2311,9 +2061,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"<b>🌐 TIL</b>\n"
         f"{lang_str}\n\n"
 
-        f"<b>🎯 O'QISH REJIMI</b>\n"
-        f"  QA: <b>{mode_counts.get('qa', 0)}</b>   Kurs: <b>{mode_counts.get('course', 0)}</b>\n\n"
-
         f"<b>💳 TO'LOVLAR</b>\n"
         f"  Kutilmoqda: <b>{pending_cnt}</b>   Tasdiqlangan: <b>{approved_cnt}</b>   Rad: <b>{rejected_cnt}</b>\n"
         f"  10 kun: <b>{pay_by_plan.get('10_days', 0)}</b>   1 oy: <b>{pay_by_plan.get('1_month', 0)}</b>\n"
@@ -2322,36 +2069,8 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"<b>📚 KURS</b>\n"
         f"  Mini App ochgan: <b>{miniapp_course.opened_users}</b>   Dars boshlaganlar: <b>{miniapp_course.lesson_users}</b>\n"
         f"  Dars tugatganlar: <b>{miniapp_course.completed_users}</b>   Tugatilgan qismlar: <b>{miniapp_course.completed_sections}</b>\n"
-        f"  Tugatilgan kitob darslari: <b>{miniapp_course.completed_book_lessons}</b>   O'rtacha qism: <b>{avg_lessons}</b>\n"
-        f"  Eslatma yoqilgan: <b>{course_reminders}</b>\n\n"
+        f"  Tugatilgan kitob darslari: <b>{miniapp_course.completed_book_lessons}</b>   O'rtacha qism: <b>{avg_lessons}</b>\n\n"
 
-        f"<b>⚡ DAILY 3-MIN</b>\n"
-        f"  Boshladi: <b>{daily_started}</b>   Bugun: <b>+{daily_started_today}</b>   7 kun: <b>+{daily_started_week}</b>\n"
-        f"  Tugatdi: <b>{daily_completed}</b> (<b>{daily_complete_rate}%</b>)   Bugun: <b>+{daily_completed_today}</b>   7 kun: <b>+{daily_completed_week}</b>\n"
-        f"  D1 → D2 qaytdi: <b>{daily_d2_return}</b> (<b>{daily_return_rate}%</b>)\n"
-        f"  Daily → Kurs: <b>{daily_completed_course_opened}</b> (<b>{daily_course_rate}%</b>)\n"
-        f"  Daily → Paid: <b>{daily_completed_paid}</b> (<b>{daily_paid_rate}%</b>)\n"
-        f"  QA limit → kanal: <b>{force_sub_checkpoint}</b>   Joined/continued: <b>{qa_limit_channel_joined}</b> (<b>{qa_channel_join_rate}%</b>)\n\n"
-
-        f"<b>🧪 COURSE PILOT 1-3</b>\n"
-        f"  Ochdi: <b>{pilot_opened}</b>   Quiz: <b>{pilot_quiz_completed}</b> (<b>{pilot_quiz_rate}%</b>)   Mustahkamlash: <b>{pilot_reinforced}</b> (<b>{pilot_reinforce_rate}%</b>)\n"
-        f"  Botga qaytish/drop signal: <b>{pilot_returned}</b>\n"
-        f"  Drop step: <b>{escape(pilot_drop_str)}</b>\n"
-        f"  Dars ochish/tugatish: <b>{escape(pilot_lesson_str)}</b>\n\n"
-
-        f"<b>🧪 TRIAL FUNNEL</b>\n"
-        f"  Boshladi: <b>{trial_course_started}</b>   Bugun: <b>+{trial_started_today}</b>   7 kun: <b>+{trial_started_week}</b>\n"
-        f"  Tugatdi: <b>{trial_course_completed}</b> (<b>{trial_complete_rate}%</b>)   7 kun: <b>+{trial_completed_week}</b>\n"
-        f"  AI xato tahlili: <b>{trial_quiz_explained}</b> (<b>{trial_ai_rate}%</b>)\n"
-        f"  Kanal checkpoint: <b>{force_sub_checkpoint}</b>\n"
-        f"  Checkpoint → tugatdi: <b>{checkpoint_completed}</b> (<b>{checkpoint_complete_rate}%</b>)\n\n"
-
-        f"<b>💰 TRIAL → PAYMENT</b>\n"
-        f"  Trialdan keyin paid: <b>{trial_paid_after_start}</b> (<b>{trial_paid_rate}%</b>)   7 kun: <b>+{trial_paid_week}</b>\n"
-        f"  Completed → paid: <b>{completed_paid_after}</b> (<b>{completed_paid_rate}%</b>)\n"
-        f"  Checkpoint → paid: <b>{checkpoint_paid_after}</b> (<b>{checkpoint_paid_rate}%</b>)\n"
-        f"  Trialdan keyingi tushum: <b>{int(trial_revenue_after_start):,}</b> so'm\n\n"
-        f"{funnel_text}\n\n"
         f"{course_miniapp_text}\n\n"
 
         f"<b>🎁 REFERALLAR</b>\n"

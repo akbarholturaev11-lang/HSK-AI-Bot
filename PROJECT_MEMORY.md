@@ -207,6 +207,21 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-25 — Admin stats legacy blocks removed
+
+Changed:
+- Admin `Statistika` panel no longer shows legacy `DAILY 3-MIN`, `COURSE PILOT 1-3`, `TRIAL FUNNEL`, `TRIAL -> PAYMENT`, old `FUNNEL unique`, `O'QISH REJIMI`, or `course_progress` reminder counts.
+- Current course analytics are limited to `course_miniapp_events` based `KURS` and `KURS MINI APP` sections plus general real user/payment/referral stats.
+
+Why:
+- Legacy course/trial/daily/pilot tables mixed old-version users with current Mini App activity and made admin stats misleading.
+
+Files touched:
+- `app/bot/handlers/admin.py`
+
+Risk:
+- Historical legacy funnel data is still stored in the database and other services, but it is intentionally hidden from the main admin stats report.
+
 ### 2026-06-25 — Admin course statistics Mini App source fix and Uzbek label cleanup
 
 Changed:
