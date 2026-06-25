@@ -37,6 +37,7 @@ from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
+from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.repositories.user_repo import UserRepository
@@ -963,6 +964,16 @@ async def subscription_miniapp_overview(request: Request):
         )
         if result.get("ok"):
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            await SubscriptionEntryAnalyticsService(session).record_entry(
+                telegram_id=telegram_id,
+                user=user,
+                source=str(payload.get("source") or payload.get("mode") or "subscription_miniapp"),
+                mode=str(payload.get("mode") or ""),
+                plan_type=str(payload.get("plan") or "") or None,
+                payment_method=str(payload.get("method") or "") or None,
+                campaign_id=_positive_int(payload.get("campaign_id")),
+                feedback_id=_positive_int(payload.get("feedback_id")),
+            )
             await ConversionFunnelService().record(
                 event_name="checkout_opened",
                 user=user,

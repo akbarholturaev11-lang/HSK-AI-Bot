@@ -207,6 +207,26 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-25 — Subscription entry source analytics
+
+Changed:
+- Added `subscription_entry_events` to track which source brought a user into the Subscription Mini App.
+- `/api/subscription-miniapp/overview` records the source from the Mini App URL payload only after the user actually opens the subscription Mini App.
+- Admin `Statistika` now shows `OBUNA MANBALARI` with all-time and 7-day unique users/open counts by source.
+
+Why:
+- Admin needs to see which bot/Mini App branches drive the most interest toward subscription.
+
+Files touched:
+- `app/db/models/subscription_entry_event.py`
+- `alembic/versions/0053_add_subscription_entry_events.py`
+- `app/services/subscription_entry_analytics_service.py`
+- `app/main.py`
+- `app/bot/handlers/admin.py`
+
+Risk:
+- Requires Alembic migration `0053_add_subscription_entry_events`; payment and access rules were not changed.
+
 ### 2026-06-25 — Admin stats legacy blocks removed
 
 Changed:

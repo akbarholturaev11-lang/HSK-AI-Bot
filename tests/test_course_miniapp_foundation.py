@@ -79,6 +79,7 @@ class CourseMiniAppModelTests(unittest.TestCase):
         self.assertIn("course_miniapp_events", table_names)
         self.assertIn("course_mistakes", table_names)
         self.assertIn("course_xp_events", table_names)
+        self.assertIn("subscription_entry_events", table_names)
 
 
 class CourseMiniAppAccessTests(unittest.TestCase):

@@ -25,6 +25,7 @@ from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
 from app.services.admin_stats_service import miniapp_course_stats
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
+from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.portfolio_service import PortfolioService
 from app.services.payment_qr_code_service import (
     PaymentQrCodeService,
@@ -2022,6 +2023,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     historical_approved_users = (await session.execute(
         select(func.count()).select_from(User).where(User.payment_status == "approved")
     )).scalar() or 0
+    subscription_sources_text = await SubscriptionEntryAnalyticsService(session).admin_text(week_ago=week_ago)
     course_miniapp_text = await CourseMiniAppAdminAnalyticsService(session).admin_text(week_ago=week_ago)
 
     conversion  = _pct(paid_user_cnt, total)
@@ -2065,6 +2067,8 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Kutilmoqda: <b>{pending_cnt}</b>   Tasdiqlangan: <b>{approved_cnt}</b>   Rad: <b>{rejected_cnt}</b>\n"
         f"  10 kun: <b>{pay_by_plan.get('10_days', 0)}</b>   1 oy: <b>{pay_by_plan.get('1_month', 0)}</b>\n"
         f"  Jami daromad: <b>{approved_sum:,}</b> so'm\n\n"
+
+        f"{subscription_sources_text}\n\n"
 
         f"<b>📚 KURS</b>\n"
         f"  Mini App ochgan: <b>{miniapp_course.opened_users}</b>   Dars boshlaganlar: <b>{miniapp_course.lesson_users}</b>\n"
