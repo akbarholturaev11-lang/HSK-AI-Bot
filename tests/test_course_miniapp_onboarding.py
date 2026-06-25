@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
+from app.bot.handlers.course import _show_required_channel_for_pending_action
 from app.bot.handlers.required_channel import force_sub_check
 from app.bot.keyboards.onboarding import course_mode_entry_keyboard
 from app.bot.middlewares.required_channel import (
@@ -93,18 +94,56 @@ class RequiredChannelResumeTests(unittest.IsolatedAsyncioTestCase):
         with (
             patch("app.bot.handlers.required_channel.UserRepository") as user_repo_class,
             patch("app.bot.handlers.required_channel.RequiredChannelService") as service_class,
-            patch("app.bot.handlers.course.activate_free_qa_mode", new=AsyncMock()) as activate_qa,
+            patch("app.bot.handlers.course.show_free_qa_level_choice", new=AsyncMock()) as show_level,
         ):
             user_repo_class.return_value.get_by_telegram_id = AsyncMock(return_value=user)
             service_class.return_value.missing_channels = AsyncMock(return_value=[])
 
             await force_sub_check(callback, state, session)
 
-        activate_qa.assert_awaited_once()
-        kwargs = activate_qa.await_args.kwargs
-        self.assertEqual(kwargs["telegram_id"], 123)
+        show_level.assert_awaited_once()
+        kwargs = show_level.await_args.kwargs
+        self.assertEqual(kwargs["lang"], "uz")
         self.assertIsNone(state.data[PENDING_FORCE_SUB_ACTION])
         self.assertIsNone(state.data[PENDING_FORCE_SUB_PAYLOAD])
+
+
+class RequiredChannelPromptTests(unittest.IsolatedAsyncioTestCase):
+    async def test_pending_mode_required_channels_edit_current_message(self):
+        callback = SimpleNamespace(
+            from_user=SimpleNamespace(id=123),
+            bot=SimpleNamespace(),
+            answer=AsyncMock(),
+            message=SimpleNamespace(
+                message_id=10,
+                edit_text=AsyncMock(),
+                answer=AsyncMock(),
+            ),
+        )
+        state = _FakeForceSubState({})
+        session = SimpleNamespace(commit=AsyncMock(), flush=AsyncMock())
+        user = SimpleNamespace(force_sub_required_at=None)
+
+        with patch("app.bot.handlers.course.RequiredChannelService") as service_class:
+            service = service_class.return_value
+            service.missing_channels = AsyncMock(return_value=[SimpleNamespace()])
+            service.build_required_text.return_value = "join channels"
+            service.build_required_keyboard.return_value = None
+
+            blocked = await _show_required_channel_for_pending_action(
+                callback=callback,
+                state=state,
+                session=session,
+                user=user,
+                lang="uz",
+                action=FORCE_SUB_ACTION_OPEN_COURSE,
+                payload={"source": "mode_course"},
+            )
+
+        self.assertTrue(blocked)
+        callback.message.edit_text.assert_awaited_once()
+        callback.message.answer.assert_not_awaited()
+        self.assertEqual(state.data[PENDING_FORCE_SUB_ACTION], FORCE_SUB_ACTION_OPEN_COURSE)
 
 
 class CourseMiniAppOnboardingValidationTests(unittest.TestCase):

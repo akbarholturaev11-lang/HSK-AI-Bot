@@ -207,6 +207,26 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-26 — Mode selection required-channel edit resume
+
+Changed:
+- Start mode selection forced-channel gate now edits the existing mode message into the channel list instead of sending a separate block.
+- After channel subscription is confirmed, the same message is edited into the selected path: Course shows the Course Mini App entry button; QA shows level selection first.
+- QA level selection from this path marks the user as QA mode, then sends the normal first-message prompt with the main reply keyboard.
+
+Why:
+- New users should not get duplicate stacked bot blocks during mode selection and required-channel verification.
+
+Files touched:
+- `app/bot/handlers/course.py`
+- `app/bot/handlers/required_channel.py`
+- `app/bot/handlers/start.py`
+- `app/bot/fsm/onboarding.py`
+- `tests/test_course_miniapp_onboarding.py`
+
+Risk:
+- Required-channel/payment rules were not changed; this only changes message edit/resume behavior in the mode-selection path.
+
 ### 2026-06-25 — Subscription entry source analytics
 
 Changed:

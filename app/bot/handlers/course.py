@@ -70,6 +70,8 @@ from app.bot.middlewares.required_channel import (
     PENDING_FORCE_SUB_ACTION,
     PENDING_FORCE_SUB_PAYLOAD,
 )
+from app.bot.fsm.onboarding import OnboardingStates, QA_MODE_LEVEL_CHOICE_KEY
+from app.bot.keyboards.onboarding import level_keyboard
 from app.bot.utils.workflow_message import (
     REMINDER_PANEL_CHAT_ID,
     REMINDER_PANEL_MSG_ID,
@@ -79,6 +81,41 @@ from datetime import datetime, time, timezone
 
 
 logger = logging.getLogger(__name__)
+
+
+class _MessageEditResponder:
+    def __init__(self, message):
+        self._message = message
+        self._used_edit = False
+
+    async def __call__(self, text: str, **kwargs):
+        if self._message and not self._used_edit:
+            self._used_edit = True
+            try:
+                return await self._message.edit_text(text, **kwargs)
+            except Exception:
+                logger.exception("Failed to edit workflow message; falling back to answer")
+        return await self._message.answer(text, **kwargs)
+
+
+async def show_free_qa_level_choice(
+    *,
+    respond,
+    state: FSMContext,
+    lang: str,
+) -> None:
+    await state.update_data(
+        **{
+            QA_MODE_LEVEL_CHOICE_KEY: True,
+            "pending_voice_transcript": None,
+            "pending_voice_message_id": None,
+        }
+    )
+    await state.set_state(OnboardingStates.choosing_level)
+    await respond(
+        t("choose_level", lang),
+        reply_markup=level_keyboard(lang),
+    )
 
 
 def course_miniapp_entry_text(lang: str) -> str:
@@ -363,7 +400,9 @@ async def _show_required_channel_for_pending_action(
     )
     await session.commit()
     await callback.answer(t("force_sub_required_alert", lang), show_alert=True)
-    await callback.message.answer(
+
+    respond = _MessageEditResponder(callback.message)
+    await respond(
         required_service.build_required_text(missing, lang),
         reply_markup=required_service.build_required_keyboard(missing, lang),
         parse_mode="HTML",
@@ -807,11 +846,10 @@ async def mode_free_qa_handler(callback: CallbackQuery, state: FSMContext, sessi
         return
 
     await callback.answer()
-    await activate_free_qa_mode(
-        session=session,
-        telegram_id=callback.from_user.id,
-        respond=callback.message.answer,
+    await show_free_qa_level_choice(
+        respond=_MessageEditResponder(callback.message),
         state=state,
+        lang=lang,
     )
 
 
@@ -837,7 +875,7 @@ async def course_mode_open_handler(callback: CallbackQuery, state: FSMContext, s
     await send_course_miniapp_entry(
         session=session,
         telegram_id=callback.from_user.id,
-        respond=callback.message.answer,
+        respond=_MessageEditResponder(callback.message),
         state=state,
         source="mode_course",
     )

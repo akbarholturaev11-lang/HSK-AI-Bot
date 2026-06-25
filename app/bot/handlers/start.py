@@ -25,7 +25,7 @@ from app.bot.keyboards.onboarding import (
     trial_lesson_choice_keyboard,
     trial_lesson_selection_keyboard,
 )
-from app.bot.fsm.onboarding import OnboardingStates
+from app.bot.fsm.onboarding import OnboardingStates, QA_MODE_LEVEL_CHOICE_KEY
 
 
 router = Router()
@@ -560,6 +560,8 @@ def _get_demo_lesson(level: str, lang: str) -> tuple:
 @router.callback_query(OnboardingStates.choosing_level)
 async def process_level(callback: CallbackQuery, state: FSMContext, session):
     level = callback.data.split(":")[1]
+    data = await state.get_data()
+    is_qa_mode_level_choice = bool(data.get(QA_MODE_LEVEL_CHOICE_KEY))
 
     service = OnboardingService(session)
 
@@ -575,6 +577,25 @@ async def process_level(callback: CallbackQuery, state: FSMContext, session):
     await session.commit()
 
     await callback.answer()
+    if is_qa_mode_level_choice:
+        lang = user.language if user.language else "ru"
+        await state.clear()
+        try:
+            await callback.message.edit_text(
+                t("free_mode_info", lang),
+                parse_mode="HTML",
+            )
+        except Exception:
+            await callback.message.answer(
+                t("free_mode_info", lang),
+                parse_mode="HTML",
+            )
+        await callback.message.answer(
+            t("send_first_message", lang),
+            reply_markup=main_menu_keyboard(lang),
+        )
+        return
+
     try:
         await callback.message.delete()
     except Exception:
