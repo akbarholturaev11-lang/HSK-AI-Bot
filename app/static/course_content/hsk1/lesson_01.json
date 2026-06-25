@@ -1,0 +1,1591 @@
+{
+  "schema_version": 1,
+  "source": "static_hsk1_pilot",
+  "level": "hsk1",
+  "lesson_id": 1,
+  "book_lesson_order": 1,
+  "lesson_code": "HSK1-L01",
+  "title": "你好",
+  "subtitle": {
+    "uz": "Xitoycha salomlashish va uzr so'rashni o'rganing",
+    "ru": "Научитесь здороваться и извиняться по-китайски",
+    "tj": "Омӯзед, ки чӣ тавр ба забони чинӣ салом гӯед ва узр пурсед"
+  },
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "你",
+      "pinyin": "nǐ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "sen (birlik)",
+        "ru": "ты (единственное число)",
+        "tj": "ту (яккашумора)"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "好",
+      "pinyin": "hǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yaxshi, ajoyib",
+        "ru": "хорошо, хороший",
+        "tj": "хуб, олӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "您",
+      "pinyin": "nín",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "siz (rasmiy/hurmat)",
+        "ru": "вы (вежливая форма)",
+        "tj": "шумо (расмӣ/эҳтиромона)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "你们",
+      "pinyin": "nǐmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "sizlar (ko'plik)",
+        "ru": "вы (множественное число)",
+        "tj": "шумоён (ҷамъшумора)"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "对不起",
+      "pinyin": "duìbuqǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kechirasiz, uzr",
+        "ru": "извините, прости",
+        "tj": "бубахшед, узр"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "没关系",
+      "pinyin": "méi guānxi",
+      "pos": "expr.",
+      "meaning": {
+        "uz": "hech gap emas, muammo yo'q",
+        "ru": "ничего страшного, всё в порядке",
+        "tj": "майлаш, мушкиле нест"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "To'rt ton",
+        "ru": "Четыре тона",
+        "tj": "Чор садо"
+      },
+      "title_zh": "四声",
+      "rule": {
+        "uz": "Xitoy tilida har bir bo'g'in 4 xil tonda aytiladi:\n1-ton (—): baland va tekis — mā (ona)\n2-ton (ˊ): ko'tariluvchi — má (kanop o'simligi)\n3-ton (ˇ): tushib ko'tariluvchi — mǎ (ot)\n4-ton (ˋ): tushuvchi — mà (so'kishmoq)\n\nTon ma'noni o'zgartiradi!",
+        "ru": "В китайском языке каждый слог произносится в одном из 4 тонов:\nТон 1 (—): ровный и высокий — mā (мама)\nТон 2 (ˊ): восходящий — má (конопля)\nТон 3 (ˇ): нисходяще-восходящий — mǎ (лошадь)\nТон 4 (ˋ): нисходящий — mà (ругать)\n\nТон меняет смысл слова!",
+        "tj": "Дар забони чинӣ ҳар як ҳиҷо бо яке аз 4 садо гуфта мешавад:\nСадои 1 (—): баланд ва ҳамвор — mā (модар)\nСадои 2 (ˊ): боравандаи — má (канабис)\nСадои 3 (ˇ): поинравандаю боравандаи — mǎ (асп)\nСадои 4 (ˋ): поинравандаи — mà (дашном додан)\n\nСадо маъноро тағйир медиҳад!"
+      },
+      "examples": [
+        {
+          "zh": "妈",
+          "pinyin": "mā",
+          "translation": {
+            "uz": "ona (1-ton)",
+            "ru": "мама (1-й тон)",
+            "tj": "модар (садои 1)"
+          }
+        },
+        {
+          "zh": "马",
+          "pinyin": "mǎ",
+          "translation": {
+            "uz": "ot (3-ton)",
+            "ru": "лошадь (3-й тон)",
+            "tj": "асп (садои 3)"
+          }
+        },
+        {
+          "zh": "骂",
+          "pinyin": "mà",
+          "translation": {
+            "uz": "so'kmoq (4-ton)",
+            "ru": "ругать (4-й тон)",
+            "tj": "дашном додан (садои 4)"
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Ton o'zgarishi (3+3)",
+        "ru": "Изменение тона (3+3)",
+        "tj": "Тағйири садо (3+3)"
+      },
+      "title_zh": "变调 (3+3)",
+      "rule": {
+        "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: 你(nǐ) + 好(hǎo) → nī hǎo (lekin yoziladi: nǐ hǎo)",
+        "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: 你(nǐ) + 好(hǎo) → nī hǎo (но пишется: nǐ hǎo)",
+        "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: 你(nǐ) + 好(hǎo) → nī hǎo (аммо навишта мешавад: nǐ hǎo)"
+      },
+      "examples": [
+        {
+          "zh": "你好",
+          "pinyin": "nī hǎo → nǐ hǎo",
+          "translation": {
+            "uz": "salom (nǐ hǎo deb yoziladi)",
+            "ru": "привет (пишется nǐ hǎo)",
+            "tj": "салом (навишта мешавад nǐ hǎo)"
+          }
+        },
+        {
+          "zh": "可以",
+          "pinyin": "ké yǐ → kě yǐ",
+          "translation": {
+            "uz": "mumkin, bo'ladi",
+            "ru": "можно, разрешено",
+            "tj": "мумкин, иҷозат"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "block_no": 1,
+      "section_label": "课文 1",
+      "scene": {
+        "uz": "Tanishlar uchrashadi",
+        "ru": "Знакомые встречаются",
+        "tj": "Шиносон вомехӯранд"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你好！",
+          "pinyin": "Nǐ hǎo!",
+          "text": {
+            "uz": "Salom!",
+            "ru": "Привет!",
+            "tj": "Салом!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你好！",
+          "pinyin": "Nǐ hǎo!",
+          "text": {
+            "uz": "Salom!",
+            "ru": "Привет!",
+            "tj": "Салом!"
+          }
+        }
+      ]
+    },
+    {
+      "block_no": 2,
+      "section_label": "课文 2",
+      "scene": {
+        "uz": "Hurmatli salomlashuv",
+        "ru": "Официальное приветствие",
+        "tj": "Салому алейки расмӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "您好！",
+          "pinyin": "Nín hǎo!",
+          "text": {
+            "uz": "Salom (rasmiy)!",
+            "ru": "Здравствуйте!",
+            "tj": "Салом (расмӣ)!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你们好！",
+          "pinyin": "Nǐmen hǎo!",
+          "text": {
+            "uz": "Hammangizga salom!",
+            "ru": "Здравствуйте все!",
+            "tj": "Ба ҳамаи шумо салом!"
+          }
+        }
+      ]
+    },
+    {
+      "block_no": 3,
+      "section_label": "课文 3",
+      "scene": {
+        "uz": "Kechirim so'rash",
+        "ru": "Извинение",
+        "tj": "Узрпурсӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "对不起！",
+          "pinyin": "Duìbuqǐ!",
+          "text": {
+            "uz": "Kechirasiz!",
+            "ru": "Извините!",
+            "tj": "Бубахшед!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "没关系！",
+          "pinyin": "Méi guānxi!",
+          "text": {
+            "uz": "Hech gap emas!",
+            "ru": "Ничего страшного!",
+            "tj": "Майлаш!"
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_key": "1.1",
+      "section_no": 1,
+      "section_count": 6,
+      "section_purpose": "intro",
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "chapter_key": "a",
+      "chapter_label": "A",
+      "chapter_no": 1,
+      "chapter_start": 1,
+      "chapter_end": 3,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "你",
+          "pinyin": "nǐ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (яккашумора)"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "好",
+          "pinyin": "hǎo",
+          "pos": "adj.",
+          "meaning": {
+            "uz": "yaxshi, ajoyib",
+            "ru": "хорошо, хороший",
+            "tj": "хуб, олӣ"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "您",
+          "pinyin": "nín",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/эҳтиромона)"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "你们",
+          "pinyin": "nǐmen",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sizlar (ko'plik)",
+            "ru": "вы (множественное число)",
+            "tj": "шумоён (ҷамъшумора)"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "对不起",
+          "pinyin": "duìbuqǐ",
+          "pos": "v.",
+          "meaning": {
+            "uz": "kechirasiz, uzr",
+            "ru": "извините, прости",
+            "tj": "бубахшед, узр"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "没关系",
+          "pinyin": "méi guānxi",
+          "pos": "expr.",
+          "meaning": {
+            "uz": "hech gap emas, muammo yo'q",
+            "ru": "ничего страшного, всё в порядке",
+            "tj": "майлаш, мушкиле нест"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:1.1:word:1",
+          "type": "active_word",
+          "title": {
+            "uz": "Yangi faol so'z",
+            "ru": "Новое активное слово",
+            "tj": "Калимаи нави фаъол"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "word": {
+            "zh": "你",
+            "pinyin": "nǐ",
+            "meaning": {
+              "uz": "sen (birlik)",
+              "ru": "ты (единственное число)",
+              "tj": "ту (яккашумора)"
+            },
+            "pos": "pron."
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.1:word:2",
+          "type": "active_word",
+          "title": {
+            "uz": "Yangi faol so'z",
+            "ru": "Новое активное слово",
+            "tj": "Калимаи нави фаъол"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "word": {
+            "zh": "好",
+            "pinyin": "hǎo",
+            "meaning": {
+              "uz": "yaxshi, ajoyib",
+              "ru": "хорошо, хороший",
+              "tj": "хуб, олӣ"
+            },
+            "pos": "adj."
+          },
+          "source_words": [
+            "好"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.1:word:3",
+          "type": "active_word",
+          "title": {
+            "uz": "Yangi faol so'z",
+            "ru": "Новое активное слово",
+            "tj": "Калимаи нави фаъол"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "word": {
+            "zh": "您",
+            "pinyin": "nín",
+            "meaning": {
+              "uz": "siz (rasmiy/hurmat)",
+              "ru": "вы (вежливая форма)",
+              "tj": "шумо (расмӣ/эҳтиромона)"
+            },
+            "pos": "pron."
+          },
+          "source_words": [
+            "您"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.1:word:4",
+          "type": "active_word",
+          "title": {
+            "uz": "Yangi faol so'z",
+            "ru": "Новое активное слово",
+            "tj": "Калимаи нави фаъол"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "word": {
+            "zh": "你们",
+            "pinyin": "nǐmen",
+            "meaning": {
+              "uz": "sizlar (ko'plik)",
+              "ru": "вы (множественное число)",
+              "tj": "шумоён (ҷамъшумора)"
+            },
+            "pos": "pron."
+          },
+          "source_words": [
+            "你们"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.1:meaning-1",
+          "type": "meaning_guess",
+          "title": {
+            "uz": "To'g'ri ma'noni tanlang",
+            "ru": "Выберите правильное значение",
+            "tj": "Маънои дурустро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "你 — ?",
+            "ru": "你 — ?",
+            "tj": "你 — ?"
+          },
+          "options": [
+            {
+              "uz": "sen (birlik)",
+              "ru": "ты (единственное число)",
+              "tj": "ту (яккашумора)"
+            },
+            {
+              "uz": "yaxshi, ajoyib",
+              "ru": "хорошо, хороший",
+              "tj": "хуб, олӣ"
+            },
+            {
+              "uz": "siz (rasmiy/hurmat)",
+              "ru": "вы (вежливая форма)",
+              "tj": "шумо (расмӣ/эҳтиромона)"
+            },
+            {
+              "uz": "sizlar (ko'plik)",
+              "ru": "вы (множественное число)",
+              "tj": "шумоён (ҷамъшумора)"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你 = sen (birlik)",
+            "ru": "你 = ты (единственное число)",
+            "tj": "你 = ту (яккашумора)"
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_key": "1.2",
+      "section_no": 2,
+      "section_count": 6,
+      "section_purpose": "reinforcement",
+      "section_title": {
+        "uz": "Mustahkamlash",
+        "ru": "Закрепление",
+        "tj": "Мустаҳкамкунӣ"
+      },
+      "chapter_key": "a",
+      "chapter_label": "A",
+      "chapter_no": 1,
+      "chapter_start": 1,
+      "chapter_end": 3,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "你",
+          "pinyin": "nǐ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (яккашумора)"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "好",
+          "pinyin": "hǎo",
+          "pos": "adj.",
+          "meaning": {
+            "uz": "yaxshi, ajoyib",
+            "ru": "хорошо, хороший",
+            "tj": "хуб, олӣ"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "您",
+          "pinyin": "nín",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/эҳтиромона)"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "你们",
+          "pinyin": "nǐmen",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sizlar (ko'plik)",
+            "ru": "вы (множественное число)",
+            "tj": "шумоён (ҷамъшумора)"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "对不起",
+          "pinyin": "duìbuqǐ",
+          "pos": "v.",
+          "meaning": {
+            "uz": "kechirasiz, uzr",
+            "ru": "извините, прости",
+            "tj": "бубахшед, узр"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "没关系",
+          "pinyin": "méi guānxi",
+          "pos": "expr.",
+          "meaning": {
+            "uz": "hech gap emas, muammo yo'q",
+            "ru": "ничего страшного, всё в порядке",
+            "tj": "майлаш, мушкиле нест"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:1.2:match",
+          "type": "match_pairs",
+          "title": {
+            "uz": "Juftliklarni moslang",
+            "ru": "Соедините пары",
+            "tj": "Ҷуфтҳоро мувофиқ кунед"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "Juftliklarni moslang",
+            "ru": "Соедините пары",
+            "tj": "Ҷуфтҳоро мувофиқ кунед"
+          },
+          "pairs": [
+            [
+              "你",
+              {
+                "uz": "sen (birlik)",
+                "ru": "ты (единственное число)",
+                "tj": "ту (яккашумора)"
+              }
+            ],
+            [
+              "好",
+              {
+                "uz": "yaxshi, ajoyib",
+                "ru": "хорошо, хороший",
+                "tj": "хуб, олӣ"
+              }
+            ],
+            [
+              "您",
+              {
+                "uz": "siz (rasmiy/hurmat)",
+                "ru": "вы (вежливая форма)",
+                "tj": "шумо (расмӣ/эҳтиромона)"
+              }
+            ],
+            [
+              "你们",
+              {
+                "uz": "sizlar (ko'plik)",
+                "ru": "вы (множественное число)",
+                "tj": "шумоён (ҷамъшумора)"
+              }
+            ]
+          ],
+          "source_words": [
+            "你",
+            "好",
+            "您",
+            "你们"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.2:pinyin-1",
+          "type": "pinyin_choice",
+          "title": {
+            "uz": "To'g'ri pinyin tanlang",
+            "ru": "Выберите правильный pinyin",
+            "tj": "Pinyin-и дурустро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "好 — pinyin?",
+            "ru": "好 — pinyin?",
+            "tj": "好 — pinyin?"
+          },
+          "options": [
+            "hǎo",
+            "nǐ",
+            "nín",
+            "nǐmen"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "好 · hǎo",
+            "ru": "好 · hǎo",
+            "tj": "好 · hǎo"
+          },
+          "source_words": [
+            "好"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.2:hanzi-1",
+          "type": "hanzi_choice",
+          "title": {
+            "uz": "To'g'ri iyeroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "prompt": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/эҳтиромона)"
+          },
+          "options": [
+            "您",
+            "你",
+            "好",
+            "你们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "您 = siz (rasmiy/hurmat)",
+            "ru": "您 = вы (вежливая форма)",
+            "tj": "您 = шумо (расмӣ/эҳтиромона)"
+          },
+          "source_words": [
+            "您"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_key": "1.3",
+      "section_no": 3,
+      "section_count": 6,
+      "section_purpose": "listening",
+      "section_title": {
+        "uz": "Tinglash",
+        "ru": "Аудирование",
+        "tj": "Шунидан"
+      },
+      "chapter_key": "a",
+      "chapter_label": "A",
+      "chapter_no": 1,
+      "chapter_start": 1,
+      "chapter_end": 3,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "你",
+          "pinyin": "nǐ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (яккашумора)"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "好",
+          "pinyin": "hǎo",
+          "pos": "adj.",
+          "meaning": {
+            "uz": "yaxshi, ajoyib",
+            "ru": "хорошо, хороший",
+            "tj": "хуб, олӣ"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "您",
+          "pinyin": "nín",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/эҳтиромона)"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "你们",
+          "pinyin": "nǐmen",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sizlar (ko'plik)",
+            "ru": "вы (множественное число)",
+            "tj": "шумоён (ҷамъшумора)"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "对不起",
+          "pinyin": "duìbuqǐ",
+          "pos": "v.",
+          "meaning": {
+            "uz": "kechirasiz, uzr",
+            "ru": "извините, прости",
+            "tj": "бубахшед, узр"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "没关系",
+          "pinyin": "méi guānxi",
+          "pos": "expr.",
+          "meaning": {
+            "uz": "hech gap emas, muammo yo'q",
+            "ru": "ничего страшного, всё в порядке",
+            "tj": "майлаш, мушкиле нест"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:1.3:listen-1",
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "options": [
+            "你",
+            "好",
+            "您",
+            "你们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你 = sen (birlik)",
+            "ru": "你 = ты (единственное число)",
+            "tj": "你 = ту (яккашумора)"
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true,
+          "audio_text": "你"
+        },
+        {
+          "id": "static:1.3:listen-2",
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "options": [
+            "好",
+            "你",
+            "您",
+            "你们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "好 = yaxshi, ajoyib",
+            "ru": "好 = хорошо, хороший",
+            "tj": "好 = хуб, олӣ"
+          },
+          "source_words": [
+            "好"
+          ],
+          "required": true,
+          "audio_text": "好"
+        },
+        {
+          "id": "static:1.3:listen-3",
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "options": [
+            "您",
+            "你",
+            "好",
+            "你们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "您 = siz (rasmiy/hurmat)",
+            "ru": "您 = вы (вежливая форма)",
+            "tj": "您 = шумо (расмӣ/эҳтиромона)"
+          },
+          "source_words": [
+            "您"
+          ],
+          "required": true,
+          "audio_text": "您"
+        },
+        {
+          "id": "static:1.3:pronunciation",
+          "type": "pronunciation",
+          "title": {
+            "uz": "Talaffuz",
+            "ru": "Произношение",
+            "tj": "Талаффуз"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Talaffuz",
+            "ru": "Произношение",
+            "tj": "Талаффуз"
+          },
+          "phrase": "你",
+          "pinyin": "nǐ",
+          "translation": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (яккашумора)"
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_key": "1.4",
+      "section_no": 4,
+      "section_count": 6,
+      "section_purpose": "usage",
+      "section_title": {
+        "uz": "Gapda ishlatish",
+        "ru": "В речи",
+        "tj": "Дар ҷумла"
+      },
+      "chapter_key": "b",
+      "chapter_label": "B",
+      "chapter_no": 2,
+      "chapter_start": 4,
+      "chapter_end": 6,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "你",
+          "pinyin": "nǐ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (яккашумора)"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "好",
+          "pinyin": "hǎo",
+          "pos": "adj.",
+          "meaning": {
+            "uz": "yaxshi, ajoyib",
+            "ru": "хорошо, хороший",
+            "tj": "хуб, олӣ"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "您",
+          "pinyin": "nín",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/эҳтиромона)"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "你们",
+          "pinyin": "nǐmen",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sizlar (ko'plik)",
+            "ru": "вы (множественное число)",
+            "tj": "шумоён (ҷамъшумора)"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "对不起",
+          "pinyin": "duìbuqǐ",
+          "pos": "v.",
+          "meaning": {
+            "uz": "kechirasiz, uzr",
+            "ru": "извините, прости",
+            "tj": "бубахшед, узр"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "没关系",
+          "pinyin": "méi guānxi",
+          "pos": "expr.",
+          "meaning": {
+            "uz": "hech gap emas, muammo yo'q",
+            "ru": "ничего страшного, всё в порядке",
+            "tj": "майлаш, мушкиле нест"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:1.4:gap-1",
+          "type": "gap_fill",
+          "title": {
+            "uz": "Bo'sh joyni to'ldiring",
+            "ru": "Заполните пропуск",
+            "tj": "Ҷои холиро пур кунед"
+          },
+          "unit": {
+            "uz": "Yig'ish",
+            "ru": "Сборка",
+            "tj": "Сохтан"
+          },
+          "prompt": {
+            "uz": "Bo'sh joyni to'ldiring",
+            "ru": "Заполните пропуск",
+            "tj": "Ҷои холиро пур кунед"
+          },
+          "options": [
+            "你",
+            "好",
+            "您",
+            "你们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你好！ = Salom!",
+            "ru": "你好！ = Привет!",
+            "tj": "你好！ = Салом!"
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true,
+          "sentence": "____好！"
+        },
+        {
+          "id": "static:1.4:builder",
+          "type": "sentence_builder",
+          "title": {
+            "uz": "Gapni tuzing",
+            "ru": "Соберите предложение",
+            "tj": "Ҷумларо созед"
+          },
+          "unit": {
+            "uz": "Yig'ish",
+            "ru": "Сборка",
+            "tj": "Сохтан"
+          },
+          "prompt": {
+            "uz": "Gapni tuzing",
+            "ru": "Соберите предложение",
+            "tj": "Ҷумларо созед"
+          },
+          "sentence": {
+            "uz": "Salom!",
+            "ru": "Привет!",
+            "tj": "Салом!"
+          },
+          "tokens": [
+            "好",
+            "你"
+          ],
+          "answer_tokens": [
+            "你",
+            "好"
+          ],
+          "explanation": {
+            "uz": "你好！ = Salom!",
+            "ru": "你好！ = Привет!",
+            "tj": "你好！ = Салом!"
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.4:translation-1",
+          "type": "translation_choice",
+          "title": {
+            "uz": "To'g'ri tarjimani tanlang",
+            "ru": "Выберите правильный перевод",
+            "tj": "Тарҷумаи дурустро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (яккашумора)"
+          },
+          "options": [
+            "你",
+            "好",
+            "您",
+            "你们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你 = sen (birlik)",
+            "ru": "你 = ты (единственное число)",
+            "tj": "你 = ту (яккашумора)"
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_key": "1.5",
+      "section_no": 5,
+      "section_count": 6,
+      "section_purpose": "dialog",
+      "section_title": {
+        "uz": "Qisqa dialog",
+        "ru": "Короткий диалог",
+        "tj": "Муколамаи кӯтоҳ"
+      },
+      "chapter_key": "b",
+      "chapter_label": "B",
+      "chapter_no": 2,
+      "chapter_start": 4,
+      "chapter_end": 6,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "你",
+          "pinyin": "nǐ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (яккашумора)"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "好",
+          "pinyin": "hǎo",
+          "pos": "adj.",
+          "meaning": {
+            "uz": "yaxshi, ajoyib",
+            "ru": "хорошо, хороший",
+            "tj": "хуб, олӣ"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "您",
+          "pinyin": "nín",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/эҳтиромона)"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "你们",
+          "pinyin": "nǐmen",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sizlar (ko'plik)",
+            "ru": "вы (множественное число)",
+            "tj": "шумоён (ҷамъшумора)"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "对不起",
+          "pinyin": "duìbuqǐ",
+          "pos": "v.",
+          "meaning": {
+            "uz": "kechirasiz, uzr",
+            "ru": "извините, прости",
+            "tj": "бубахшед, узр"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "没关系",
+          "pinyin": "méi guānxi",
+          "pos": "expr.",
+          "meaning": {
+            "uz": "hech gap emas, muammo yo'q",
+            "ru": "ничего страшного, всё в порядке",
+            "tj": "майлаш, мушкиле нест"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:1.5:dialog",
+          "type": "dialog_context",
+          "title": {
+            "uz": "Dialog mazmunini tanlang",
+            "ru": "Выберите смысл диалога",
+            "tj": "Маънои муколамаро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Dialog",
+            "ru": "Диалог",
+            "tj": "Муколама"
+          },
+          "prompt": {
+            "uz": "Dialog mazmunini tanlang",
+            "ru": "Выберите смысл диалога",
+            "tj": "Маънои муколамаро интихоб кунед"
+          },
+          "options": [
+            {
+              "uz": "Tanishlar uchrashadi",
+              "ru": "Знакомые встречаются",
+              "tj": "Шиносон вомехӯранд"
+            },
+            {
+              "uz": "Hurmatli salomlashuv",
+              "ru": "Официальное приветствие",
+              "tj": "Салому алейки расмӣ"
+            },
+            {
+              "uz": "Kechirim so'rash",
+              "ru": "Извинение",
+              "tj": "Узрпурсӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "Tanishlar uchrashadi",
+            "ru": "Знакомые встречаются",
+            "tj": "Шиносон вомехӯранд"
+          },
+          "source_words": [
+            "你",
+            "好"
+          ],
+          "required": true,
+          "dialog": [
+            {
+              "speaker": "A",
+              "text": "你好！"
+            },
+            {
+              "speaker": "B",
+              "text": "你好！"
+            }
+          ]
+        },
+        {
+          "id": "static:1.5:listen-dialog",
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "options": [
+            "你",
+            "好",
+            "您",
+            "你们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你 = sen (birlik)",
+            "ru": "你 = ты (единственное число)",
+            "tj": "你 = ту (яккашумора)"
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true,
+          "audio_text": "你"
+        }
+      ]
+    },
+    {
+      "section_key": "1.6",
+      "section_no": 6,
+      "section_count": 6,
+      "section_purpose": "review",
+      "section_title": {
+        "uz": "Review",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "chapter_key": "b",
+      "chapter_label": "B",
+      "chapter_no": 2,
+      "chapter_start": 4,
+      "chapter_end": 6,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "你",
+          "pinyin": "nǐ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (яккашумора)"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "好",
+          "pinyin": "hǎo",
+          "pos": "adj.",
+          "meaning": {
+            "uz": "yaxshi, ajoyib",
+            "ru": "хорошо, хороший",
+            "tj": "хуб, олӣ"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "您",
+          "pinyin": "nín",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/эҳтиромона)"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "你们",
+          "pinyin": "nǐmen",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "sizlar (ko'plik)",
+            "ru": "вы (множественное число)",
+            "tj": "шумоён (ҷамъшумора)"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "对不起",
+          "pinyin": "duìbuqǐ",
+          "pos": "v.",
+          "meaning": {
+            "uz": "kechirasiz, uzr",
+            "ru": "извините, прости",
+            "tj": "бубахшед, узр"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "没关系",
+          "pinyin": "méi guānxi",
+          "pos": "expr.",
+          "meaning": {
+            "uz": "hech gap emas, muammo yo'q",
+            "ru": "ничего страшного, всё в порядке",
+            "tj": "майлаш, мушкиле нест"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:1.6:quiz-1",
+          "type": "quick_quiz",
+          "title": {
+            "uz": "Tezkor tekshiruv",
+            "ru": "Быстрая проверка",
+            "tj": "Санҷиши зуд"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "你 — ?",
+            "ru": "你 — ?",
+            "tj": "你 — ?"
+          },
+          "options": [
+            {
+              "uz": "sen (birlik)",
+              "ru": "ты (единственное число)",
+              "tj": "ту (яккашумора)"
+            },
+            {
+              "uz": "yaxshi, ajoyib",
+              "ru": "хорошо, хороший",
+              "tj": "хуб, олӣ"
+            },
+            {
+              "uz": "siz (rasmiy/hurmat)",
+              "ru": "вы (вежливая форма)",
+              "tj": "шумо (расмӣ/эҳтиромона)"
+            },
+            {
+              "uz": "sizlar (ko'plik)",
+              "ru": "вы (множественное число)",
+              "tj": "шумоён (ҷамъшумора)"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你 = sen (birlik)",
+            "ru": "你 = ты (единственное число)",
+            "tj": "你 = ту (яккашумора)"
+          },
+          "source_words": [
+            "你"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.6:quiz-2",
+          "type": "hanzi_choice",
+          "title": {
+            "uz": "To'g'ri iyeroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "prompt": {
+            "uz": "yaxshi, ajoyib",
+            "ru": "хорошо, хороший",
+            "tj": "хуб, олӣ"
+          },
+          "options": [
+            "好",
+            "你",
+            "您",
+            "你们"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "好 = yaxshi, ajoyib",
+            "ru": "好 = хорошо, хороший",
+            "tj": "好 = хуб, олӣ"
+          },
+          "source_words": [
+            "好"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.6:quiz-3",
+          "type": "pinyin_choice",
+          "title": {
+            "uz": "To'g'ri pinyin tanlang",
+            "ru": "Выберите правильный pinyin",
+            "tj": "Pinyin-и дурустро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "您 — pinyin?",
+            "ru": "您 — pinyin?",
+            "tj": "您 — pinyin?"
+          },
+          "options": [
+            "nín",
+            "nǐ",
+            "hǎo",
+            "nǐmen"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "您 · nín",
+            "ru": "您 · nín",
+            "tj": "您 · nín"
+          },
+          "source_words": [
+            "您"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:1.6:match",
+          "type": "match_pairs",
+          "title": {
+            "uz": "Juftliklarni moslang",
+            "ru": "Соедините пары",
+            "tj": "Ҷуфтҳоро мувофиқ кунед"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "Juftliklarni moslang",
+            "ru": "Соедините пары",
+            "tj": "Ҷуфтҳоро мувофиқ кунед"
+          },
+          "pairs": [
+            [
+              "你",
+              {
+                "uz": "sen (birlik)",
+                "ru": "ты (единственное число)",
+                "tj": "ту (яккашумора)"
+              }
+            ],
+            [
+              "好",
+              {
+                "uz": "yaxshi, ajoyib",
+                "ru": "хорошо, хороший",
+                "tj": "хуб, олӣ"
+              }
+            ],
+            [
+              "您",
+              {
+                "uz": "siz (rasmiy/hurmat)",
+                "ru": "вы (вежливая форма)",
+                "tj": "шумо (расмӣ/эҳтиромона)"
+              }
+            ],
+            [
+              "你们",
+              {
+                "uz": "sizlar (ko'plik)",
+                "ru": "вы (множественное число)",
+                "tj": "шумоён (ҷамъшумора)"
+              }
+            ]
+          ],
+          "source_words": [
+            "你",
+            "好",
+            "您",
+            "你们"
+          ],
+          "required": true
+        }
+      ]
+    }
+  ]
+}

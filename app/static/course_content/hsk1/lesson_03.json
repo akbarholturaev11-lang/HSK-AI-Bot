@@ -1,0 +1,2106 @@
+{
+  "schema_version": 1,
+  "source": "static_hsk1_pilot",
+  "level": "hsk1",
+  "lesson_id": 3,
+  "book_lesson_order": 3,
+  "lesson_code": "HSK1-L03",
+  "title": "你叫什么名字",
+  "subtitle": {
+    "uz": "Xitoycha ismingizni, millatingizni va kasbingizni aytishni o'rganing",
+    "ru": "Научитесь называть своё имя, национальность и профессию по-китайски",
+    "tj": "Омӯзед, ки чӣ тавр исм, миллат ва касби худро ба забони чинӣ гӯед"
+  },
+  "active_words": [
+    {
+      "no": 1,
+      "zh": "叫",
+      "pinyin": "jiào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "nomlanmoq, chaqirmoq",
+        "ru": "называться, звать",
+        "tj": "номида шудан, даъват кардан"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "什么",
+      "pinyin": "shénme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "nima, qaysi",
+        "ru": "что, какой",
+        "tj": "чӣ, кадом"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "名字",
+      "pinyin": "míngzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ism",
+        "ru": "имя",
+        "tj": "ном, исм"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "我",
+      "pinyin": "wǒ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "men",
+        "ru": "я, меня",
+        "tj": "ман"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "是",
+      "pinyin": "shì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bo'lmoq (=)",
+        "ru": "быть, являться (=)",
+        "tj": "будан (=)"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "老师",
+      "pinyin": "lǎoshī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'qituvchi, muallim",
+        "ru": "учитель, преподаватель",
+        "tj": "муаллим, омӯзгор"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "吗",
+      "pinyin": "ma",
+      "pos": "part.",
+      "meaning": {
+        "uz": "so'roq yuklamasi",
+        "ru": "вопросительная частица",
+        "tj": "ҳарфи саволӣ"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "学生",
+      "pinyin": "xuésheng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'quvchi, talaba",
+        "ru": "ученик, студент",
+        "tj": "хонанда, донишҷӯ"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "人",
+      "pinyin": "rén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "inson, odam",
+        "ru": "человек, люди",
+        "tj": "одам, инсон"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "李月",
+      "pinyin": "Lǐ Yuè",
+      "pos": "pn.",
+      "meaning": {
+        "uz": "Li Yue (ism)",
+        "ru": "Ли Юэ (имя)",
+        "tj": "Ли Юэ (ном)"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "中国",
+      "pinyin": "Zhōngguó",
+      "pos": "pn.",
+      "meaning": {
+        "uz": "Xitoy",
+        "ru": "Китай",
+        "tj": "Чин"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "美国",
+      "pinyin": "Měiguó",
+      "pos": "pn.",
+      "meaning": {
+        "uz": "Amerika, AQSH",
+        "ru": "Америка, США",
+        "tj": "Амрико, ИМА"
+      }
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "是 bilan tuzilgan gap",
+        "ru": "Предложения с 是",
+        "tj": "Ҷумлаҳо бо 是"
+      },
+      "title_zh": "是字句",
+      "rule": {
+        "uz": "是(shì) — tenglikni ifodalaydi (= bo'lmoq).\nTuzilma: Ega + 是 + Ot/Ot birikmasi\nInkor: Ega + 不是 + Ot/Ot birikmasi\n\nMisol:\n我是老师。— Men o'qituvchiman.\n我不是老师。— Men o'qituvchi emasman.\n李月是中国人。— Li Yue xitoylik.",
+        "ru": "是(shì) — выражает равенство (= являться).\nСтруктура: Подлежащее + 是 + Существительное/Именная группа\nОтрицание: Подлежащее + 不是 + Существительное/Именная группа\n\nПример:\n我是老师。— Я учитель.\n我不是老师。— Я не учитель.\n李月是中国人。— Ли Юэ китаянка.",
+        "tj": "是(shì) — баробариро ифода мекунад (= будан).\nСохтор: Мубтадо + 是 + Исм/Гурӯҳи исмӣ\nИнкор: Мубтадо + 不是 + Исм/Гурӯҳи исмӣ\n\nМисол:\n我是老师。— Ман муаллим ҳастам.\n我不是老师。— Ман муаллим нестам.\n李月是中国人。— Ли Юэ хитоӣ аст."
+      },
+      "examples": [
+        {
+          "zh": "我是学生。",
+          "pinyin": "Wǒ shì xuésheng.",
+          "translation": {
+            "uz": "Men talabaman.",
+            "ru": "Я студент.",
+            "tj": "Ман донишҷӯ ҳастам."
+          }
+        },
+        {
+          "zh": "我不是老师。",
+          "pinyin": "Wǒ bú shì lǎoshī.",
+          "translation": {
+            "uz": "Men o'qituvchi emasman.",
+            "ru": "Я не учитель.",
+            "tj": "Ман муаллим нестам."
+          }
+        },
+        {
+          "zh": "她是中国人。",
+          "pinyin": "Tā shì Zhōngguó rén.",
+          "translation": {
+            "uz": "U xitoylik (ayol).",
+            "ru": "Она китаянка.",
+            "tj": "Вай хитоӣ аст (зан)."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "吗 — so'roq yuklamasi",
+        "ru": "吗 — вопросительная частица",
+        "tj": "吗 — ҳарфи саволӣ"
+      },
+      "title_zh": "吗 — so'roq gapi",
+      "rule": {
+        "uz": "吗(ma) — gap oxiriga qo'yilsa, uni ha/yo'q savoliga aylantiradi.\nTuzilma: Gap + 吗？\n\nMisol:\n你是老师。→ 你是老师吗？\nSiz o'qituvchisiz. → Siz o'qituvchimisiz?\n\nJavob: 是 (ha) yoki 不是 (yo'q)",
+        "ru": "吗(ma) — ставится в конце предложения, превращая его в вопрос «да/нет».\nСтруктура: Утверждение + 吗？\n\nПример:\n你是老师。→ 你是老师吗？\nТы учитель. → Ты учитель?\n\nОтвет: 是 (да) или 不是 (нет)",
+        "tj": "吗(ma) — дар охири ҷумла гузошта, онро ба савол «бале/не» табдил медиҳад.\nСохтор: Изҳор + 吗？\n\nМисол:\n你是老师。→ 你是老师吗？\nШумо муаллим ҳастед. → Оё шумо муаллим ҳастед?\n\nҶавоб: 是 (бале) ё 不是 (не)"
+      },
+      "examples": [
+        {
+          "zh": "你是学生吗？",
+          "pinyin": "Nǐ shì xuésheng ma?",
+          "translation": {
+            "uz": "Siz talabamisisz?",
+            "ru": "Вы студент?",
+            "tj": "Оё шумо донишҷӯ ҳастед?"
+          }
+        },
+        {
+          "zh": "你是美国人吗？",
+          "pinyin": "Nǐ shì Měiguó rén ma?",
+          "translation": {
+            "uz": "Siz amerikalikmisiniz?",
+            "ru": "Вы американец?",
+            "tj": "Оё шумо амрикоӣ ҳастед?"
+          }
+        },
+        {
+          "zh": "你叫李月吗？",
+          "pinyin": "Nǐ jiào Lǐ Yuè ma?",
+          "translation": {
+            "uz": "Ismingiz Li Yuemi?",
+            "ru": "Вас зовут Ли Юэ?",
+            "tj": "Оё номи шумо Ли Юэ аст?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "什么 — so'roq olmoshi",
+        "ru": "什么 — вопросительное местоимение",
+        "tj": "什么 — ҷонишини саволӣ"
+      },
+      "title_zh": "什么 — so'roq olmoshi",
+      "rule": {
+        "uz": "什么(shénme) — 'nima', 'qaysi' ma'nosini bildiradi.\nOxiriga 吗 qo'shmang — 什么 o'zi savolni ifodalaydi.\n\nMisol:\n你叫什么名字？— Ismingiz nima?\n这是什么？— Bu nima?\n你是什么人？— Siz kimsiz?",
+        "ru": "什么(shénme) — означает «что», «какой».\nНе добавляйте 吗 в конце — 什么 само делает предложение вопросительным.\n\nПример:\n你叫什么名字？— Как вас зовут?\n这是什么？— Что это?\n你是什么人？— Кто вы?",
+        "tj": "什么(shénme) — маънои «чӣ», «кадом» дорад.\n吗 -ро дар охир илова накунед — 什么 худ ҷумларо саволӣ мекунад.\n\nМисол:\n你叫什么名字？— Номи шумо чист?\n这是什么？— Ин чист?\n你是什么人？— Шумо кӣ ҳастед?"
+      },
+      "examples": [
+        {
+          "zh": "你叫什么名字？",
+          "pinyin": "Nǐ jiào shénme míngzi?",
+          "translation": {
+            "uz": "Ismingiz nima?",
+            "ru": "Как вас зовут?",
+            "tj": "Номи шумо чист?"
+          }
+        },
+        {
+          "zh": "这是什么？",
+          "pinyin": "Zhè shì shénme?",
+          "translation": {
+            "uz": "Bu nima?",
+            "ru": "Что это?",
+            "tj": "Ин чист?"
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "block_no": 1,
+      "section_label": "课文 1",
+      "scene": {
+        "uz": "Maktabda — ism so'rash",
+        "ru": "В школе — спрашиваем имя",
+        "tj": "Дар мактаб — пурсидани ном"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你叫什么名字？",
+          "pinyin": "Nǐ jiào shénme míngzi?",
+          "text": {
+            "uz": "Ismingiz nima?",
+            "ru": "Как вас зовут?",
+            "tj": "Номи шумо чист?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我叫李月。",
+          "pinyin": "Wǒ jiào Lǐ Yuè.",
+          "text": {
+            "uz": "Mening ismim Li Yue.",
+            "ru": "Меня зовут Ли Юэ.",
+            "tj": "Номи ман Ли Юэ аст."
+          }
+        }
+      ]
+    },
+    {
+      "block_no": 2,
+      "section_label": "课文 2",
+      "scene": {
+        "uz": "Sinfda — kasb so'rash",
+        "ru": "В классе — спрашиваем профессию",
+        "tj": "Дар синф — пурсидани касб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你是老师吗？",
+          "pinyin": "Nǐ shì lǎoshī ma?",
+          "text": {
+            "uz": "Siz o'qituvchimisiz?",
+            "ru": "Вы учитель?",
+            "tj": "Оё шумо муаллим ҳастед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我不是老师，我是学生。",
+          "pinyin": "Wǒ bú shì lǎoshī, wǒ shì xuésheng.",
+          "text": {
+            "uz": "Men o'qituvchi emasman, men talabaman.",
+            "ru": "Я не учитель, я студент.",
+            "tj": "Ман муаллим нестам, ман донишҷӯ ҳастам."
+          }
+        }
+      ]
+    },
+    {
+      "block_no": 3,
+      "section_label": "课文 3",
+      "scene": {
+        "uz": "Maktabda — millat so'rash",
+        "ru": "В школе — спрашиваем национальность",
+        "tj": "Дар мактаб — пурсидани миллат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你是中国人吗？",
+          "pinyin": "Nǐ shì Zhōngguó rén ma?",
+          "text": {
+            "uz": "Siz xitoylikmisiz?",
+            "ru": "Вы китаец/китаянка?",
+            "tj": "Оё шумо хитоӣ ҳастед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我不是中国人，我是美国人。",
+          "pinyin": "Wǒ bú shì Zhōngguó rén, wǒ shì Měiguó rén.",
+          "text": {
+            "uz": "Men xitoylik emasman, men amerikalikman.",
+            "ru": "Я не китаец, я американец.",
+            "tj": "Ман хитоӣ нестам, ман амрикоӣ ҳастам."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_key": "3.1",
+      "section_no": 1,
+      "section_count": 6,
+      "section_purpose": "intro",
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "chapter_key": "a",
+      "chapter_label": "A",
+      "chapter_no": 1,
+      "chapter_start": 1,
+      "chapter_end": 3,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "叫",
+          "pinyin": "jiào",
+          "pos": "v.",
+          "meaning": {
+            "uz": "nomlanmoq, chaqirmoq",
+            "ru": "называться, звать",
+            "tj": "номида шудан, даъват кардан"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "什么",
+          "pinyin": "shénme",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "nima, qaysi",
+            "ru": "что, какой",
+            "tj": "чӣ, кадом"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "名字",
+          "pinyin": "míngzi",
+          "pos": "n.",
+          "meaning": {
+            "uz": "ism",
+            "ru": "имя",
+            "tj": "ном, исм"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "我",
+          "pinyin": "wǒ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "men",
+            "ru": "я, меня",
+            "tj": "ман"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "是",
+          "pinyin": "shì",
+          "pos": "v.",
+          "meaning": {
+            "uz": "bo'lmoq (=)",
+            "ru": "быть, являться (=)",
+            "tj": "будан (=)"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "老师",
+          "pinyin": "lǎoshī",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'qituvchi, muallim",
+            "ru": "учитель, преподаватель",
+            "tj": "муаллим, омӯзгор"
+          }
+        },
+        {
+          "no": 7,
+          "zh": "吗",
+          "pinyin": "ma",
+          "pos": "part.",
+          "meaning": {
+            "uz": "so'roq yuklamasi",
+            "ru": "вопросительная частица",
+            "tj": "ҳарфи саволӣ"
+          }
+        },
+        {
+          "no": 8,
+          "zh": "学生",
+          "pinyin": "xuésheng",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'quvchi, talaba",
+            "ru": "ученик, студент",
+            "tj": "хонанда, донишҷӯ"
+          }
+        },
+        {
+          "no": 9,
+          "zh": "人",
+          "pinyin": "rén",
+          "pos": "n.",
+          "meaning": {
+            "uz": "inson, odam",
+            "ru": "человек, люди",
+            "tj": "одам, инсон"
+          }
+        },
+        {
+          "no": 10,
+          "zh": "李月",
+          "pinyin": "Lǐ Yuè",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Li Yue (ism)",
+            "ru": "Ли Юэ (имя)",
+            "tj": "Ли Юэ (ном)"
+          }
+        },
+        {
+          "no": 11,
+          "zh": "中国",
+          "pinyin": "Zhōngguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Xitoy",
+            "ru": "Китай",
+            "tj": "Чин"
+          }
+        },
+        {
+          "no": 12,
+          "zh": "美国",
+          "pinyin": "Měiguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Amerika, AQSH",
+            "ru": "Америка, США",
+            "tj": "Амрико, ИМА"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:3.1:word:1",
+          "type": "active_word",
+          "title": {
+            "uz": "Yangi faol so'z",
+            "ru": "Новое активное слово",
+            "tj": "Калимаи нави фаъол"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "word": {
+            "zh": "叫",
+            "pinyin": "jiào",
+            "meaning": {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номида шудан, даъват кардан"
+            },
+            "pos": "v."
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.1:word:2",
+          "type": "active_word",
+          "title": {
+            "uz": "Yangi faol so'z",
+            "ru": "Новое активное слово",
+            "tj": "Калимаи нави фаъол"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "word": {
+            "zh": "什么",
+            "pinyin": "shénme",
+            "meaning": {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            },
+            "pos": "pron."
+          },
+          "source_words": [
+            "什么"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.1:word:3",
+          "type": "active_word",
+          "title": {
+            "uz": "Yangi faol so'z",
+            "ru": "Новое активное слово",
+            "tj": "Калимаи нави фаъол"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "word": {
+            "zh": "名字",
+            "pinyin": "míngzi",
+            "meaning": {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            },
+            "pos": "n."
+          },
+          "source_words": [
+            "名字"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.1:word:4",
+          "type": "active_word",
+          "title": {
+            "uz": "Yangi faol so'z",
+            "ru": "Новое активное слово",
+            "tj": "Калимаи нави фаъол"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "word": {
+            "zh": "我",
+            "pinyin": "wǒ",
+            "meaning": {
+              "uz": "men",
+              "ru": "я, меня",
+              "tj": "ман"
+            },
+            "pos": "pron."
+          },
+          "source_words": [
+            "我"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.1:meaning-1",
+          "type": "meaning_guess",
+          "title": {
+            "uz": "To'g'ri ma'noni tanlang",
+            "ru": "Выберите правильное значение",
+            "tj": "Маънои дурустро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "叫 — ?",
+            "ru": "叫 — ?",
+            "tj": "叫 — ?"
+          },
+          "options": [
+            {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номида шудан, даъват кардан"
+            },
+            {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            },
+            {
+              "uz": "men",
+              "ru": "я, меня",
+              "tj": "ман"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "叫 = nomlanmoq, chaqirmoq",
+            "ru": "叫 = называться, звать",
+            "tj": "叫 = номида шудан, даъват кардан"
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_key": "3.2",
+      "section_no": 2,
+      "section_count": 6,
+      "section_purpose": "reinforcement",
+      "section_title": {
+        "uz": "Mustahkamlash",
+        "ru": "Закрепление",
+        "tj": "Мустаҳкамкунӣ"
+      },
+      "chapter_key": "a",
+      "chapter_label": "A",
+      "chapter_no": 1,
+      "chapter_start": 1,
+      "chapter_end": 3,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "叫",
+          "pinyin": "jiào",
+          "pos": "v.",
+          "meaning": {
+            "uz": "nomlanmoq, chaqirmoq",
+            "ru": "называться, звать",
+            "tj": "номида шудан, даъват кардан"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "什么",
+          "pinyin": "shénme",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "nima, qaysi",
+            "ru": "что, какой",
+            "tj": "чӣ, кадом"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "名字",
+          "pinyin": "míngzi",
+          "pos": "n.",
+          "meaning": {
+            "uz": "ism",
+            "ru": "имя",
+            "tj": "ном, исм"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "我",
+          "pinyin": "wǒ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "men",
+            "ru": "я, меня",
+            "tj": "ман"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "是",
+          "pinyin": "shì",
+          "pos": "v.",
+          "meaning": {
+            "uz": "bo'lmoq (=)",
+            "ru": "быть, являться (=)",
+            "tj": "будан (=)"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "老师",
+          "pinyin": "lǎoshī",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'qituvchi, muallim",
+            "ru": "учитель, преподаватель",
+            "tj": "муаллим, омӯзгор"
+          }
+        },
+        {
+          "no": 7,
+          "zh": "吗",
+          "pinyin": "ma",
+          "pos": "part.",
+          "meaning": {
+            "uz": "so'roq yuklamasi",
+            "ru": "вопросительная частица",
+            "tj": "ҳарфи саволӣ"
+          }
+        },
+        {
+          "no": 8,
+          "zh": "学生",
+          "pinyin": "xuésheng",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'quvchi, talaba",
+            "ru": "ученик, студент",
+            "tj": "хонанда, донишҷӯ"
+          }
+        },
+        {
+          "no": 9,
+          "zh": "人",
+          "pinyin": "rén",
+          "pos": "n.",
+          "meaning": {
+            "uz": "inson, odam",
+            "ru": "человек, люди",
+            "tj": "одам, инсон"
+          }
+        },
+        {
+          "no": 10,
+          "zh": "李月",
+          "pinyin": "Lǐ Yuè",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Li Yue (ism)",
+            "ru": "Ли Юэ (имя)",
+            "tj": "Ли Юэ (ном)"
+          }
+        },
+        {
+          "no": 11,
+          "zh": "中国",
+          "pinyin": "Zhōngguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Xitoy",
+            "ru": "Китай",
+            "tj": "Чин"
+          }
+        },
+        {
+          "no": 12,
+          "zh": "美国",
+          "pinyin": "Měiguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Amerika, AQSH",
+            "ru": "Америка, США",
+            "tj": "Амрико, ИМА"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:3.2:match",
+          "type": "match_pairs",
+          "title": {
+            "uz": "Juftliklarni moslang",
+            "ru": "Соедините пары",
+            "tj": "Ҷуфтҳоро мувофиқ кунед"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "Juftliklarni moslang",
+            "ru": "Соедините пары",
+            "tj": "Ҷуфтҳоро мувофиқ кунед"
+          },
+          "pairs": [
+            [
+              "叫",
+              {
+                "uz": "nomlanmoq, chaqirmoq",
+                "ru": "называться, звать",
+                "tj": "номида шудан, даъват кардан"
+              }
+            ],
+            [
+              "什么",
+              {
+                "uz": "nima, qaysi",
+                "ru": "что, какой",
+                "tj": "чӣ, кадом"
+              }
+            ],
+            [
+              "名字",
+              {
+                "uz": "ism",
+                "ru": "имя",
+                "tj": "ном, исм"
+              }
+            ],
+            [
+              "我",
+              {
+                "uz": "men",
+                "ru": "я, меня",
+                "tj": "ман"
+              }
+            ]
+          ],
+          "source_words": [
+            "叫",
+            "什么",
+            "名字",
+            "我"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.2:pinyin-1",
+          "type": "pinyin_choice",
+          "title": {
+            "uz": "To'g'ri pinyin tanlang",
+            "ru": "Выберите правильный pinyin",
+            "tj": "Pinyin-и дурустро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "什么 — pinyin?",
+            "ru": "什么 — pinyin?",
+            "tj": "什么 — pinyin?"
+          },
+          "options": [
+            "shénme",
+            "jiào",
+            "míngzi",
+            "wǒ"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "什么 · shénme",
+            "ru": "什么 · shénme",
+            "tj": "什么 · shénme"
+          },
+          "source_words": [
+            "什么"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.2:hanzi-1",
+          "type": "hanzi_choice",
+          "title": {
+            "uz": "To'g'ri iyeroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "prompt": {
+            "uz": "ism",
+            "ru": "имя",
+            "tj": "ном, исм"
+          },
+          "options": [
+            "名字",
+            "叫",
+            "什么",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "名字 = ism",
+            "ru": "名字 = имя",
+            "tj": "名字 = ном, исм"
+          },
+          "source_words": [
+            "名字"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_key": "3.3",
+      "section_no": 3,
+      "section_count": 6,
+      "section_purpose": "listening",
+      "section_title": {
+        "uz": "Tinglash",
+        "ru": "Аудирование",
+        "tj": "Шунидан"
+      },
+      "chapter_key": "a",
+      "chapter_label": "A",
+      "chapter_no": 1,
+      "chapter_start": 1,
+      "chapter_end": 3,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "叫",
+          "pinyin": "jiào",
+          "pos": "v.",
+          "meaning": {
+            "uz": "nomlanmoq, chaqirmoq",
+            "ru": "называться, звать",
+            "tj": "номида шудан, даъват кардан"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "什么",
+          "pinyin": "shénme",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "nima, qaysi",
+            "ru": "что, какой",
+            "tj": "чӣ, кадом"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "名字",
+          "pinyin": "míngzi",
+          "pos": "n.",
+          "meaning": {
+            "uz": "ism",
+            "ru": "имя",
+            "tj": "ном, исм"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "我",
+          "pinyin": "wǒ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "men",
+            "ru": "я, меня",
+            "tj": "ман"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "是",
+          "pinyin": "shì",
+          "pos": "v.",
+          "meaning": {
+            "uz": "bo'lmoq (=)",
+            "ru": "быть, являться (=)",
+            "tj": "будан (=)"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "老师",
+          "pinyin": "lǎoshī",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'qituvchi, muallim",
+            "ru": "учитель, преподаватель",
+            "tj": "муаллим, омӯзгор"
+          }
+        },
+        {
+          "no": 7,
+          "zh": "吗",
+          "pinyin": "ma",
+          "pos": "part.",
+          "meaning": {
+            "uz": "so'roq yuklamasi",
+            "ru": "вопросительная частица",
+            "tj": "ҳарфи саволӣ"
+          }
+        },
+        {
+          "no": 8,
+          "zh": "学生",
+          "pinyin": "xuésheng",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'quvchi, talaba",
+            "ru": "ученик, студент",
+            "tj": "хонанда, донишҷӯ"
+          }
+        },
+        {
+          "no": 9,
+          "zh": "人",
+          "pinyin": "rén",
+          "pos": "n.",
+          "meaning": {
+            "uz": "inson, odam",
+            "ru": "человек, люди",
+            "tj": "одам, инсон"
+          }
+        },
+        {
+          "no": 10,
+          "zh": "李月",
+          "pinyin": "Lǐ Yuè",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Li Yue (ism)",
+            "ru": "Ли Юэ (имя)",
+            "tj": "Ли Юэ (ном)"
+          }
+        },
+        {
+          "no": 11,
+          "zh": "中国",
+          "pinyin": "Zhōngguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Xitoy",
+            "ru": "Китай",
+            "tj": "Чин"
+          }
+        },
+        {
+          "no": 12,
+          "zh": "美国",
+          "pinyin": "Měiguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Amerika, AQSH",
+            "ru": "Америка, США",
+            "tj": "Амрико, ИМА"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:3.3:listen-1",
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "options": [
+            "叫",
+            "什么",
+            "名字",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "叫 = nomlanmoq, chaqirmoq",
+            "ru": "叫 = называться, звать",
+            "tj": "叫 = номида шудан, даъват кардан"
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true,
+          "audio_text": "叫"
+        },
+        {
+          "id": "static:3.3:listen-2",
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "options": [
+            "什么",
+            "叫",
+            "名字",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "什么 = nima, qaysi",
+            "ru": "什么 = что, какой",
+            "tj": "什么 = чӣ, кадом"
+          },
+          "source_words": [
+            "什么"
+          ],
+          "required": true,
+          "audio_text": "什么"
+        },
+        {
+          "id": "static:3.3:listen-3",
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "options": [
+            "名字",
+            "叫",
+            "什么",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "名字 = ism",
+            "ru": "名字 = имя",
+            "tj": "名字 = ном, исм"
+          },
+          "source_words": [
+            "名字"
+          ],
+          "required": true,
+          "audio_text": "名字"
+        },
+        {
+          "id": "static:3.3:pronunciation",
+          "type": "pronunciation",
+          "title": {
+            "uz": "Talaffuz",
+            "ru": "Произношение",
+            "tj": "Талаффуз"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Talaffuz",
+            "ru": "Произношение",
+            "tj": "Талаффуз"
+          },
+          "phrase": "叫",
+          "pinyin": "jiào",
+          "translation": {
+            "uz": "nomlanmoq, chaqirmoq",
+            "ru": "называться, звать",
+            "tj": "номида шудан, даъват кардан"
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_key": "3.4",
+      "section_no": 4,
+      "section_count": 6,
+      "section_purpose": "usage",
+      "section_title": {
+        "uz": "Gapda ishlatish",
+        "ru": "В речи",
+        "tj": "Дар ҷумла"
+      },
+      "chapter_key": "b",
+      "chapter_label": "B",
+      "chapter_no": 2,
+      "chapter_start": 4,
+      "chapter_end": 6,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "叫",
+          "pinyin": "jiào",
+          "pos": "v.",
+          "meaning": {
+            "uz": "nomlanmoq, chaqirmoq",
+            "ru": "называться, звать",
+            "tj": "номида шудан, даъват кардан"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "什么",
+          "pinyin": "shénme",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "nima, qaysi",
+            "ru": "что, какой",
+            "tj": "чӣ, кадом"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "名字",
+          "pinyin": "míngzi",
+          "pos": "n.",
+          "meaning": {
+            "uz": "ism",
+            "ru": "имя",
+            "tj": "ном, исм"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "我",
+          "pinyin": "wǒ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "men",
+            "ru": "я, меня",
+            "tj": "ман"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "是",
+          "pinyin": "shì",
+          "pos": "v.",
+          "meaning": {
+            "uz": "bo'lmoq (=)",
+            "ru": "быть, являться (=)",
+            "tj": "будан (=)"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "老师",
+          "pinyin": "lǎoshī",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'qituvchi, muallim",
+            "ru": "учитель, преподаватель",
+            "tj": "муаллим, омӯзгор"
+          }
+        },
+        {
+          "no": 7,
+          "zh": "吗",
+          "pinyin": "ma",
+          "pos": "part.",
+          "meaning": {
+            "uz": "so'roq yuklamasi",
+            "ru": "вопросительная частица",
+            "tj": "ҳарфи саволӣ"
+          }
+        },
+        {
+          "no": 8,
+          "zh": "学生",
+          "pinyin": "xuésheng",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'quvchi, talaba",
+            "ru": "ученик, студент",
+            "tj": "хонанда, донишҷӯ"
+          }
+        },
+        {
+          "no": 9,
+          "zh": "人",
+          "pinyin": "rén",
+          "pos": "n.",
+          "meaning": {
+            "uz": "inson, odam",
+            "ru": "человек, люди",
+            "tj": "одам, инсон"
+          }
+        },
+        {
+          "no": 10,
+          "zh": "李月",
+          "pinyin": "Lǐ Yuè",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Li Yue (ism)",
+            "ru": "Ли Юэ (имя)",
+            "tj": "Ли Юэ (ном)"
+          }
+        },
+        {
+          "no": 11,
+          "zh": "中国",
+          "pinyin": "Zhōngguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Xitoy",
+            "ru": "Китай",
+            "tj": "Чин"
+          }
+        },
+        {
+          "no": 12,
+          "zh": "美国",
+          "pinyin": "Měiguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Amerika, AQSH",
+            "ru": "Америка, США",
+            "tj": "Амрико, ИМА"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:3.4:gap-1",
+          "type": "gap_fill",
+          "title": {
+            "uz": "Bo'sh joyni to'ldiring",
+            "ru": "Заполните пропуск",
+            "tj": "Ҷои холиро пур кунед"
+          },
+          "unit": {
+            "uz": "Yig'ish",
+            "ru": "Сборка",
+            "tj": "Сохтан"
+          },
+          "prompt": {
+            "uz": "Bo'sh joyni to'ldiring",
+            "ru": "Заполните пропуск",
+            "tj": "Ҷои холиро пур кунед"
+          },
+          "options": [
+            "叫",
+            "什么",
+            "名字",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你叫什么名字？ = Ismingiz nima?",
+            "ru": "你叫什么名字？ = Как вас зовут?",
+            "tj": "你叫什么名字？ = Номи шумо чист?"
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true,
+          "sentence": "你____什么名字？"
+        },
+        {
+          "id": "static:3.4:builder",
+          "type": "sentence_builder",
+          "title": {
+            "uz": "Gapni tuzing",
+            "ru": "Соберите предложение",
+            "tj": "Ҷумларо созед"
+          },
+          "unit": {
+            "uz": "Yig'ish",
+            "ru": "Сборка",
+            "tj": "Сохтан"
+          },
+          "prompt": {
+            "uz": "Gapni tuzing",
+            "ru": "Соберите предложение",
+            "tj": "Ҷумларо созед"
+          },
+          "sentence": {
+            "uz": "Ismingiz nima?",
+            "ru": "Как вас зовут?",
+            "tj": "Номи шумо чист?"
+          },
+          "tokens": [
+            "叫",
+            "什",
+            "么",
+            "名",
+            "字",
+            "你"
+          ],
+          "answer_tokens": [
+            "你",
+            "叫",
+            "什",
+            "么",
+            "名",
+            "字"
+          ],
+          "explanation": {
+            "uz": "你叫什么名字？ = Ismingiz nima?",
+            "ru": "你叫什么名字？ = Как вас зовут?",
+            "tj": "你叫什么名字？ = Номи шумо чист?"
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.4:translation-1",
+          "type": "translation_choice",
+          "title": {
+            "uz": "To'g'ri tarjimani tanlang",
+            "ru": "Выберите правильный перевод",
+            "tj": "Тарҷумаи дурустро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "nomlanmoq, chaqirmoq",
+            "ru": "называться, звать",
+            "tj": "номида шудан, даъват кардан"
+          },
+          "options": [
+            "叫",
+            "什么",
+            "名字",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "叫 = nomlanmoq, chaqirmoq",
+            "ru": "叫 = называться, звать",
+            "tj": "叫 = номида шудан, даъват кардан"
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "section_key": "3.5",
+      "section_no": 5,
+      "section_count": 6,
+      "section_purpose": "dialog",
+      "section_title": {
+        "uz": "Qisqa dialog",
+        "ru": "Короткий диалог",
+        "tj": "Муколамаи кӯтоҳ"
+      },
+      "chapter_key": "b",
+      "chapter_label": "B",
+      "chapter_no": 2,
+      "chapter_start": 4,
+      "chapter_end": 6,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "叫",
+          "pinyin": "jiào",
+          "pos": "v.",
+          "meaning": {
+            "uz": "nomlanmoq, chaqirmoq",
+            "ru": "называться, звать",
+            "tj": "номида шудан, даъват кардан"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "什么",
+          "pinyin": "shénme",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "nima, qaysi",
+            "ru": "что, какой",
+            "tj": "чӣ, кадом"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "名字",
+          "pinyin": "míngzi",
+          "pos": "n.",
+          "meaning": {
+            "uz": "ism",
+            "ru": "имя",
+            "tj": "ном, исм"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "我",
+          "pinyin": "wǒ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "men",
+            "ru": "я, меня",
+            "tj": "ман"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "是",
+          "pinyin": "shì",
+          "pos": "v.",
+          "meaning": {
+            "uz": "bo'lmoq (=)",
+            "ru": "быть, являться (=)",
+            "tj": "будан (=)"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "老师",
+          "pinyin": "lǎoshī",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'qituvchi, muallim",
+            "ru": "учитель, преподаватель",
+            "tj": "муаллим, омӯзгор"
+          }
+        },
+        {
+          "no": 7,
+          "zh": "吗",
+          "pinyin": "ma",
+          "pos": "part.",
+          "meaning": {
+            "uz": "so'roq yuklamasi",
+            "ru": "вопросительная частица",
+            "tj": "ҳарфи саволӣ"
+          }
+        },
+        {
+          "no": 8,
+          "zh": "学生",
+          "pinyin": "xuésheng",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'quvchi, talaba",
+            "ru": "ученик, студент",
+            "tj": "хонанда, донишҷӯ"
+          }
+        },
+        {
+          "no": 9,
+          "zh": "人",
+          "pinyin": "rén",
+          "pos": "n.",
+          "meaning": {
+            "uz": "inson, odam",
+            "ru": "человек, люди",
+            "tj": "одам, инсон"
+          }
+        },
+        {
+          "no": 10,
+          "zh": "李月",
+          "pinyin": "Lǐ Yuè",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Li Yue (ism)",
+            "ru": "Ли Юэ (имя)",
+            "tj": "Ли Юэ (ном)"
+          }
+        },
+        {
+          "no": 11,
+          "zh": "中国",
+          "pinyin": "Zhōngguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Xitoy",
+            "ru": "Китай",
+            "tj": "Чин"
+          }
+        },
+        {
+          "no": 12,
+          "zh": "美国",
+          "pinyin": "Měiguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Amerika, AQSH",
+            "ru": "Америка, США",
+            "tj": "Амрико, ИМА"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:3.5:dialog",
+          "type": "dialog_context",
+          "title": {
+            "uz": "Dialog mazmunini tanlang",
+            "ru": "Выберите смысл диалога",
+            "tj": "Маънои муколамаро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Dialog",
+            "ru": "Диалог",
+            "tj": "Муколама"
+          },
+          "prompt": {
+            "uz": "Dialog mazmunini tanlang",
+            "ru": "Выберите смысл диалога",
+            "tj": "Маънои муколамаро интихоб кунед"
+          },
+          "options": [
+            {
+              "uz": "Maktabda — ism so'rash",
+              "ru": "В школе — спрашиваем имя",
+              "tj": "Дар мактаб — пурсидани ном"
+            },
+            {
+              "uz": "Sinfda — kasb so'rash",
+              "ru": "В классе — спрашиваем профессию",
+              "tj": "Дар синф — пурсидани касб"
+            },
+            {
+              "uz": "Maktabda — millat so'rash",
+              "ru": "В школе — спрашиваем национальность",
+              "tj": "Дар мактаб — пурсидани миллат"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "Maktabda — ism so'rash",
+            "ru": "В школе — спрашиваем имя",
+            "tj": "Дар мактаб — пурсидани ном"
+          },
+          "source_words": [
+            "叫",
+            "什么",
+            "名字",
+            "我"
+          ],
+          "required": true,
+          "dialog": [
+            {
+              "speaker": "A",
+              "text": "你叫什么名字？"
+            },
+            {
+              "speaker": "B",
+              "text": "我叫李月。"
+            }
+          ]
+        },
+        {
+          "id": "static:3.5:listen-dialog",
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "Tinglang va javobni tanlang",
+            "ru": "Послушайте и выберите ответ",
+            "tj": "Гӯш кунед ва ҷавобро интихоб кунед"
+          },
+          "options": [
+            "叫",
+            "什么",
+            "名字",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "叫 = nomlanmoq, chaqirmoq",
+            "ru": "叫 = называться, звать",
+            "tj": "叫 = номида шудан, даъват кардан"
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true,
+          "audio_text": "叫"
+        }
+      ]
+    },
+    {
+      "section_key": "3.6",
+      "section_no": 6,
+      "section_count": 6,
+      "section_purpose": "review",
+      "section_title": {
+        "uz": "Review",
+        "ru": "Повторение",
+        "tj": "Такрор"
+      },
+      "chapter_key": "b",
+      "chapter_label": "B",
+      "chapter_no": 2,
+      "chapter_start": 4,
+      "chapter_end": 6,
+      "active_words": [
+        {
+          "no": 1,
+          "zh": "叫",
+          "pinyin": "jiào",
+          "pos": "v.",
+          "meaning": {
+            "uz": "nomlanmoq, chaqirmoq",
+            "ru": "называться, звать",
+            "tj": "номида шудан, даъват кардан"
+          }
+        },
+        {
+          "no": 2,
+          "zh": "什么",
+          "pinyin": "shénme",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "nima, qaysi",
+            "ru": "что, какой",
+            "tj": "чӣ, кадом"
+          }
+        },
+        {
+          "no": 3,
+          "zh": "名字",
+          "pinyin": "míngzi",
+          "pos": "n.",
+          "meaning": {
+            "uz": "ism",
+            "ru": "имя",
+            "tj": "ном, исм"
+          }
+        },
+        {
+          "no": 4,
+          "zh": "我",
+          "pinyin": "wǒ",
+          "pos": "pron.",
+          "meaning": {
+            "uz": "men",
+            "ru": "я, меня",
+            "tj": "ман"
+          }
+        },
+        {
+          "no": 5,
+          "zh": "是",
+          "pinyin": "shì",
+          "pos": "v.",
+          "meaning": {
+            "uz": "bo'lmoq (=)",
+            "ru": "быть, являться (=)",
+            "tj": "будан (=)"
+          }
+        },
+        {
+          "no": 6,
+          "zh": "老师",
+          "pinyin": "lǎoshī",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'qituvchi, muallim",
+            "ru": "учитель, преподаватель",
+            "tj": "муаллим, омӯзгор"
+          }
+        },
+        {
+          "no": 7,
+          "zh": "吗",
+          "pinyin": "ma",
+          "pos": "part.",
+          "meaning": {
+            "uz": "so'roq yuklamasi",
+            "ru": "вопросительная частица",
+            "tj": "ҳарфи саволӣ"
+          }
+        },
+        {
+          "no": 8,
+          "zh": "学生",
+          "pinyin": "xuésheng",
+          "pos": "n.",
+          "meaning": {
+            "uz": "o'quvchi, talaba",
+            "ru": "ученик, студент",
+            "tj": "хонанда, донишҷӯ"
+          }
+        },
+        {
+          "no": 9,
+          "zh": "人",
+          "pinyin": "rén",
+          "pos": "n.",
+          "meaning": {
+            "uz": "inson, odam",
+            "ru": "человек, люди",
+            "tj": "одам, инсон"
+          }
+        },
+        {
+          "no": 10,
+          "zh": "李月",
+          "pinyin": "Lǐ Yuè",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Li Yue (ism)",
+            "ru": "Ли Юэ (имя)",
+            "tj": "Ли Юэ (ном)"
+          }
+        },
+        {
+          "no": 11,
+          "zh": "中国",
+          "pinyin": "Zhōngguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Xitoy",
+            "ru": "Китай",
+            "tj": "Чин"
+          }
+        },
+        {
+          "no": 12,
+          "zh": "美国",
+          "pinyin": "Měiguó",
+          "pos": "pn.",
+          "meaning": {
+            "uz": "Amerika, AQSH",
+            "ru": "Америка, США",
+            "tj": "Амрико, ИМА"
+          }
+        }
+      ],
+      "cards": [
+        {
+          "id": "static:3.6:quiz-1",
+          "type": "quick_quiz",
+          "title": {
+            "uz": "Tezkor tekshiruv",
+            "ru": "Быстрая проверка",
+            "tj": "Санҷиши зуд"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "叫 — ?",
+            "ru": "叫 — ?",
+            "tj": "叫 — ?"
+          },
+          "options": [
+            {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номида шудан, даъват кардан"
+            },
+            {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            },
+            {
+              "uz": "men",
+              "ru": "я, меня",
+              "tj": "ман"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "叫 = nomlanmoq, chaqirmoq",
+            "ru": "叫 = называться, звать",
+            "tj": "叫 = номида шудан, даъват кардан"
+          },
+          "source_words": [
+            "叫"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.6:quiz-2",
+          "type": "hanzi_choice",
+          "title": {
+            "uz": "To'g'ri iyeroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "unit": {
+            "uz": "So'zlar",
+            "ru": "Слова",
+            "tj": "Калимаҳо"
+          },
+          "prompt": {
+            "uz": "nima, qaysi",
+            "ru": "что, какой",
+            "tj": "чӣ, кадом"
+          },
+          "options": [
+            "什么",
+            "叫",
+            "名字",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "什么 = nima, qaysi",
+            "ru": "什么 = что, какой",
+            "tj": "什么 = чӣ, кадом"
+          },
+          "source_words": [
+            "什么"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.6:quiz-3",
+          "type": "pinyin_choice",
+          "title": {
+            "uz": "To'g'ri pinyin tanlang",
+            "ru": "Выберите правильный pinyin",
+            "tj": "Pinyin-и дурустро интихоб кунед"
+          },
+          "unit": {
+            "uz": "Tovush",
+            "ru": "Звук",
+            "tj": "Овоз"
+          },
+          "prompt": {
+            "uz": "名字 — pinyin?",
+            "ru": "名字 — pinyin?",
+            "tj": "名字 — pinyin?"
+          },
+          "options": [
+            "míngzi",
+            "jiào",
+            "shénme",
+            "wǒ"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "名字 · míngzi",
+            "ru": "名字 · míngzi",
+            "tj": "名字 · míngzi"
+          },
+          "source_words": [
+            "名字"
+          ],
+          "required": true
+        },
+        {
+          "id": "static:3.6:match",
+          "type": "match_pairs",
+          "title": {
+            "uz": "Juftliklarni moslang",
+            "ru": "Соедините пары",
+            "tj": "Ҷуфтҳоро мувофиқ кунед"
+          },
+          "unit": {
+            "uz": "Tekshiruv",
+            "ru": "Проверка",
+            "tj": "Санҷиш"
+          },
+          "prompt": {
+            "uz": "Juftliklarni moslang",
+            "ru": "Соедините пары",
+            "tj": "Ҷуфтҳоро мувофиқ кунед"
+          },
+          "pairs": [
+            [
+              "叫",
+              {
+                "uz": "nomlanmoq, chaqirmoq",
+                "ru": "называться, звать",
+                "tj": "номида шудан, даъват кардан"
+              }
+            ],
+            [
+              "什么",
+              {
+                "uz": "nima, qaysi",
+                "ru": "что, какой",
+                "tj": "чӣ, кадом"
+              }
+            ],
+            [
+              "名字",
+              {
+                "uz": "ism",
+                "ru": "имя",
+                "tj": "ном, исм"
+              }
+            ],
+            [
+              "我",
+              {
+                "uz": "men",
+                "ru": "я, меня",
+                "tj": "ман"
+              }
+            ]
+          ],
+          "source_words": [
+            "叫",
+            "什么",
+            "名字",
+            "我"
+          ],
+          "required": true
+        }
+      ]
+    }
+  ]
+}

@@ -235,10 +235,21 @@ MINIAPP_HTML_HEADERS = {
     "Pragma": "no-cache",
     "Expires": "0",
 }
+COURSE_DATA_FILES = {
+    "hsk1": "app/static/course_data/hsk1.json",
+    "hsk2": "app/static/course_data/hsk2.json",
+    "hsk3": "app/static/course_data/hsk3.json",
+    "hsk4a": "app/static/course_data/hsk4a.json",
+    "hsk4b": "app/static/course_data/hsk4b.json",
+}
 
 
 def miniapp_file_response(path: str) -> FileResponse:
     return FileResponse(path, headers=MINIAPP_HTML_HEADERS)
+
+
+def static_json_response(path: str) -> FileResponse:
+    return FileResponse(path, media_type="application/json")
 
 
 @app.get("/health")
@@ -269,6 +280,19 @@ async def hsk2_miniapp():
 @app.get("/hsk-lugat.html")
 async def hsk_lugat_miniapp():
     return miniapp_file_response("app/static/hsk-lugat.html")
+
+
+@app.get("/hsk-data.js")
+async def hsk_data_script():
+    return miniapp_file_response("app/static/hsk-data.js")
+
+
+@app.get("/course_data/{level}.json")
+async def course_data_file(level: str):
+    path = COURSE_DATA_FILES.get(str(level or "").strip().lower())
+    if not path:
+        return JSONResponse(status_code=404, content={"ok": False, "error": "course_data_not_found"})
+    return static_json_response(path)
 
 
 @app.get("/duo-lesson.html")

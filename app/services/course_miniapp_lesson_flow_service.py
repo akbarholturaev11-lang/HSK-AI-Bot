@@ -1,4 +1,6 @@
+import json
 from datetime import datetime, timezone
+from pathlib import Path
 
 from sqlalchemy import select
 
@@ -19,6 +21,8 @@ from app.services.study_miniapp_service import StudyMiniAppService
 LESSON_FLOW_VERSION = 3
 CHAPTER_LABELS = ("A", "B", "C", "D")
 SECTION_GROUP_SIZE = 3
+STATIC_COURSE_CONTENT_DIR = Path(__file__).resolve().parents[1] / "static" / "course_content"
+STATIC_LOCALE_KEYS = {"uz", "ru", "tj"}
 
 
 class CourseMiniAppLessonFlowService:
@@ -35,6 +39,31 @@ class CourseMiniAppLessonFlowService:
     def _content_level(level: str) -> str:
         normalized = str(level or "").strip().lower()
         return "hsk4" if normalized in {"hsk4", "hsk4a", "hsk4b"} else normalized
+
+    @classmethod
+    def _localized_static_value(cls, value, *, lang: str):
+        if isinstance(value, dict):
+            keys = set(value)
+            if keys and keys <= STATIC_LOCALE_KEYS:
+                return str(value.get(lang) or value.get("uz") or value.get("ru") or value.get("tj") or "")
+            return {key: cls._localized_static_value(item, lang=lang) for key, item in value.items()}
+        if isinstance(value, list):
+            return [cls._localized_static_value(item, lang=lang) for item in value]
+        return value
+
+    @classmethod
+    def _static_lesson_payload(cls, *, level: str, lesson_order: int, lang: str) -> dict | None:
+        content_level = cls._content_level(level)
+        path = STATIC_COURSE_CONTENT_DIR / content_level / f"lesson_{int(lesson_order):02d}.json"
+        if not path.exists():
+            return None
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return None
+        if not isinstance(payload, dict):
+            return None
+        return cls._localized_static_value(payload, lang=lang)
 
     @staticmethod
     def _allowed_level_candidates(level: str | None) -> tuple[str, ...]:
@@ -203,6 +232,43 @@ class CourseMiniAppLessonFlowService:
 
     @classmethod
     def _section_plan(cls, payload: dict, *, level: str, lesson_order: int, lang: str = "ru") -> list[dict]:
+        static_sections = payload.get("sections") if isinstance(payload, dict) else None
+        if isinstance(static_sections, list) and static_sections:
+            fallback_words = [item for item in payload.get("active_words", []) if isinstance(item, dict) and item.get("zh")]
+            sections = []
+            total = len(static_sections)
+            for index, section in enumerate(static_sections, 1):
+                if not isinstance(section, dict):
+                    continue
+                chapter = cls._chapter_for_section(index)
+                try:
+                    section_no = int(section.get("section_no") or index)
+                except (TypeError, ValueError):
+                    section_no = index
+                active_words = [
+                    item
+                    for item in section.get("active_words", fallback_words)
+                    if isinstance(item, dict) and item.get("zh")
+                ]
+                sections.append(
+                    {
+                        **section,
+                        "section_key": str(section.get("section_key") or f"{lesson_order}.{section_no}"),
+                        "section_no": section_no,
+                        "section_count": int(section.get("section_count") or total or 1),
+                        "section_purpose": str(section.get("section_purpose") or cls._section_purpose(section_no, total)),
+                        "section_title": str(section.get("section_title") or cls._copy(lang, f"purpose_{cls._section_purpose(section_no, total)}")),
+                        "chapter_key": str(section.get("chapter_key") or chapter["key"]),
+                        "chapter_label": str(section.get("chapter_label") or chapter["label"]),
+                        "chapter_no": int(section.get("chapter_no") or chapter["index"]),
+                        "chapter_start": int(section.get("chapter_start") or chapter["start"]),
+                        "chapter_end": int(section.get("chapter_end") or min(chapter["end"], total)),
+                        "active_words": active_words,
+                        "cards": [card for card in section.get("cards", []) if isinstance(card, dict)],
+                    }
+                )
+            return sections
+
         sections = []
         words = [item for item in payload.get("vocabulary", []) if isinstance(item, dict) and item.get("zh")]
         total = 6
@@ -521,6 +587,7 @@ class CourseMiniAppLessonFlowService:
             "book_lesson_order": book_lesson_order,
             "quiz_questions": [],
             "reinforcement_tasks": [],
+            "cards": [item for item in section.get("cards", []) if isinstance(item, dict)],
         }
 
     async def get_section_plan(
@@ -575,6 +642,11 @@ class CourseMiniAppLessonFlowService:
                 lang=lang,
                 level=str(lesson.level),
             )
+            payload = self._static_lesson_payload(
+                level=str(lesson.level),
+                lesson_order=lesson_order,
+                lang=lang,
+            ) or payload
             if not payload:
                 continue
 
@@ -1275,6 +1347,9 @@ class CourseMiniAppLessonFlowService:
         active_words = self._word_refs(vocab)
         if not active_words:
             return []
+        static_cards = [item for item in payload.get("cards", []) if isinstance(item, dict)]
+        if static_cards:
+            return self._validate_cards(static_cards, active_words)
         try:
             section_no = int(payload.get("section_no") or 1)
         except (TypeError, ValueError):
@@ -1550,6 +1625,11 @@ class CourseMiniAppLessonFlowService:
             lang=lang,
             level=str(lesson.level),
         )
+        payload = self._static_lesson_payload(
+            level=str(lesson.level),
+            lesson_order=int(lesson.lesson_order),
+            lang=lang,
+        ) or payload
         if not payload:
             return {"ok": False, "error": "lesson_not_found"}
         sections = self._section_plan(payload, level=str(lesson.level), lesson_order=int(lesson.lesson_order), lang=lang)
@@ -1687,6 +1767,11 @@ class CourseMiniAppLessonFlowService:
             lang=lang,
             level=str(lesson.level),
         )
+        payload = self._static_lesson_payload(
+            level=str(lesson.level),
+            lesson_order=int(lesson.lesson_order),
+            lang=lang,
+        ) or payload
         sections = self._section_plan(payload or {}, level=str(lesson.level), lesson_order=int(lesson.lesson_order), lang=lang)
         section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
         if not section:

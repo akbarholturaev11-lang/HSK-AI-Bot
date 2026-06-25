@@ -207,6 +207,49 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-25 — Course Mini App static data split and HSK1 static lesson pilot
+
+Changed:
+- `study.html` no longer embeds the full HSK1-4 course data blob; it lazy-loads whitelisted `/course_data/{level}.json` files.
+- `CourseMiniAppLessonFlowService` checks `app/static/course_content/{level}/lesson_XX.json` first and falls back to the existing generated/server payload when no static lesson exists.
+- HSK1 lessons 1-3 now have static 6-section JSON pilots; HSK2-HSK4 still use the legacy backend flow.
+
+Why:
+- Keep Mini App UI files lightweight and separate render/navigation code from course material and lesson card content.
+
+Files touched:
+- `app/main.py`
+- `app/static/study.html`
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `app/static/course_data/*.json`
+- `app/static/course_content/hsk1/lesson_01.json` through `lesson_03.json`
+
+Risk:
+- Legacy generated lesson/card fallback remains active for non-static lessons.
+- Graphify AST update was attempted but refused to overwrite because the rebuilt graph had fewer nodes than the existing graph.
+
+### 2026-06-25 — Mini App HSK character dictionary data split
+
+Changed:
+- `Training -> Ierogliflar` dictionary flow now has the lightweight `hsk-lugat.html` shell backed by separate `/hsk-data.js`.
+- HSK dictionary data includes HSK1-4 words/strokes, 157 HSK4 example sentences from the provided generator, and 100 HSK4 grammar explanations sourced from `hsk4.html`.
+- The dictionary supports `?level=` filtering for HSK1/2/3/HSK4 上/下 and `?lang=` for UZ/RU/TJ, with a visible language switch and return to Training.
+
+Why:
+- The previous route existed but the static dictionary file/data needed to be connected and HSK4 entries needed examples plus understandable grammar context.
+
+Files touched:
+- `app/main.py`
+- `app/static/hsk-lugat.html`
+- `app/static/hsk-data.js`
+
+Risk:
+- Payment/subscription/access rules were not changed.
+- HSK4 examples are available for 157 entries; remaining HSK4 entries still show word meaning and may show grammar only when matching an HSK4 grammar rule.
+
+Follow-up:
+- After deploy, smoke-test Telegram Mini App `Training -> Ierogliflar` in UZ/RU/TJ and check HSK4 上/下 filtering.
+
 ### 2026-06-25 — Mini App rating profile Telegram chat
 
 Changed:
