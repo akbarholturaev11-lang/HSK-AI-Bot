@@ -19,27 +19,27 @@ class ConversionFunnelService:
     EVENT_NAMES = CONVERSION_FUNNEL_EVENT_NAMES
     EVENT_LABELS = {
         "course_cta_seen": "CTA",
-        "course_started": "Course",
-        "lesson_started": "Lesson",
-        "quiz_completed": "Quiz",
+        "course_started": "Kurs",
+        "lesson_started": "Dars",
+        "quiz_completed": "Test",
         "ai_explanation_seen": "AI",
-        "homework_completed": "HW",
-        "paywall_seen": "Paywall",
-        "checkout_opened": "Checkout",
-        "payment_screenshot_submitted": "Shot",
-        "payment_approved": "Approved",
-        "payment_rejected": "Rejected",
+        "homework_completed": "Uy vazifa",
+        "paywall_seen": "To'lov oynasi",
+        "checkout_opened": "To'lov ochildi",
+        "payment_screenshot_submitted": "Skrinshot",
+        "payment_approved": "Tasdiq",
+        "payment_rejected": "Rad",
     }
     RATE_PAIRS = (
-        ("CTA → Course", "course_started", "course_cta_seen"),
-        ("Course → Lesson", "lesson_started", "course_started"),
-        ("Lesson → Quiz", "quiz_completed", "lesson_started"),
-        ("Quiz → AI", "ai_explanation_seen", "quiz_completed"),
-        ("AI → HW", "homework_completed", "ai_explanation_seen"),
-        ("Paywall → Checkout", "checkout_opened", "paywall_seen"),
-        ("Checkout → Shot", "payment_screenshot_submitted", "checkout_opened"),
-        ("Shot → Approved", "payment_approved", "payment_screenshot_submitted"),
-        ("Shot → Rejected", "payment_rejected", "payment_screenshot_submitted"),
+        ("CTA → Kurs", "course_started", "course_cta_seen"),
+        ("Kurs → Dars", "lesson_started", "course_started"),
+        ("Dars → Test", "quiz_completed", "lesson_started"),
+        ("Test → AI", "ai_explanation_seen", "quiz_completed"),
+        ("AI → Uy vazifa", "homework_completed", "ai_explanation_seen"),
+        ("To'lov oynasi → To'lov", "checkout_opened", "paywall_seen"),
+        ("To'lov → Skrinshot", "payment_screenshot_submitted", "checkout_opened"),
+        ("Skrinshot → Tasdiq", "payment_approved", "payment_screenshot_submitted"),
+        ("Skrinshot → Rad", "payment_rejected", "payment_screenshot_submitted"),
     )
 
     def __init__(self, session=None):
@@ -173,7 +173,7 @@ class ConversionFunnelService:
             ("paywall_seen", "checkout_opened", "payment_screenshot_submitted"),
             ("payment_approved", "payment_rejected"),
         ]
-        lines = ["<b>🧭 FUNNEL unique (all/7d)</b>"]
+        lines = ["<b>🧭 FUNNEL unique (all/7 kun)</b>"]
         for row in compact_rows:
             lines.append(
                 "  "
@@ -187,7 +187,7 @@ class ConversionFunnelService:
             f"{label}: <b>{self._pct(all_unique[numerator], all_unique[denominator])}%</b>"
             for label, numerator, denominator in self.RATE_PAIRS
         ]
-        lines.append("  Rates: " + " · ".join(rate_parts[:3]))
-        lines.append("  Paywall: " + " · ".join(rate_parts[5:]))
-        lines.append("  Rejected = admin reject event, checkout abandonment emas.")
+        lines.append("  Ko'rsatkichlar: " + " · ".join(rate_parts[:3]))
+        lines.append("  To'lov: " + " · ".join(rate_parts[5:]))
+        lines.append("  Rad = admin rad qilgan to'lov, checkout tashlab ketish emas.")
         return "\n".join(lines)

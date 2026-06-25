@@ -130,7 +130,7 @@ class RichMessageService:
             f"<b>📊 Quiz natijasi</b>\n\n"
             f"<blockquote expandable>"
             f"Natija: <b>{score}/{total}</b>\n"
-            f"Status: {status}\n\n"
+            f"Holat: {status}\n\n"
             f"🔍 <b>Kuchsiz tomonlar:</b>\n"
             f"{points_text}\n\n"
             f"❌ <b>Xato javoblar:</b> {len(wrong_answers)}"

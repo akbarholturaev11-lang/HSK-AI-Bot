@@ -207,6 +207,33 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-25 — Admin statistics reset and visible Uzbek label cleanup
+
+Changed:
+- Admin `Statistika` panel and `/admin_stats` now show only the count of users whose `users.learning_mode` is `course`.
+- The old detailed admin statistics report is bypassed, and the stats panel no longer links to feedback stats.
+- Remaining visible admin/user labels found in bot handlers, admin keyboards, release feedback, help settings, Mini App pilot skeleton, funnel analytics, rich quiz message, and Voice Practice errors were aligned to Uzbek/current wording.
+
+Why:
+- Admin requested the old statistics view to be reset and replaced with the current Mini App course-mode user count only.
+
+Files touched:
+- `app/services/admin_stats_service.py`
+- `app/bot/handlers/admin.py`
+- `app/bot/handlers/commands.py`
+- `app/bot/keyboards/admin_broadcast.py`
+- `app/bot/keyboards/release_feedback.py`
+- `app/services/conversion_funnel_service.py`
+- `app/services/course_miniapp_admin_analytics_service.py`
+- `app/services/course_miniapp_lesson_service.py`
+- `app/services/help_settings_service.py`
+- `app/services/rich_message_service.py`
+- `app/services/voice_practice_service.py`
+- `tests/test_admin_stats_service.py`
+
+Risk:
+- Existing detailed stats code remains in place but is no longer reachable from the admin stats entry points.
+
 ### 2026-06-25 — Course Mini App static data split and HSK1 static lesson pilot
 
 Changed:

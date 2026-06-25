@@ -21,9 +21,9 @@ class HelpVideoField:
 
 
 HELP_VIDEO_FIELDS = (
-    HelpVideoField("course_hsk", "Course HSK video link", "📚"),
+    HelpVideoField("course_hsk", "HSK kurs video linki", "📚"),
     HelpVideoField("qa_mode", "Oddiy rejim video link", "💬"),
-    HelpVideoField("voice_translator", "Voice / tarjimon video link", "🎙"),
+    HelpVideoField("voice_translator", "Ovoz / tarjimon video linki", "🎙"),
     HelpVideoField("subscription", "Obuna imkoniyatlari video link", "💳"),
 )
 HELP_VIDEO_FIELD_BY_KEY = {field.key: field for field in HELP_VIDEO_FIELDS}

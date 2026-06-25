@@ -24,6 +24,7 @@ from app.db.models.course_pilot_event import CoursePilotEvent
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
+from app.services.admin_stats_service import miniapp_course_mode_stats_text
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.portfolio_service import PortfolioService
@@ -89,12 +90,12 @@ def admin_menu_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="💳 Obuna narxlari", callback_data="adm:prices")],
         [InlineKeyboardButton(text="📣 Majburiy kanal obunasi", callback_data="adm:channels")],
         [InlineKeyboardButton(text="🗑 Foydalanuvchini o'chirish", callback_data="adm:deleteuser_info")],
-        [InlineKeyboardButton(text="📢 Broadcast xabar", callback_data="adm:broadcast_info")],
+        [InlineKeyboardButton(text="📢 Ommaviy xabar", callback_data="adm:broadcast_info")],
         [InlineKeyboardButton(text="📣 Reklama kampaniyasi", callback_data="adm:ads_panel")],
         [InlineKeyboardButton(text="🆕 Yangilik otzivi", callback_data="adm:release_feedback")],
         [InlineKeyboardButton(text="🎁 Chegirma boshqaruv", callback_data="adm:discount_panel")],
         [InlineKeyboardButton(text="🤝 Hamkorlar", callback_data="adm:partners")],
-        [InlineKeyboardButton(text="🆘 Help sozlamalari", callback_data="adm:help_settings")],
+        [InlineKeyboardButton(text="🆘 Yordam sozlamalari", callback_data="adm:help_settings")],
         [InlineKeyboardButton(text="✅ Obuna berish", callback_data="adm:giveaccess_info")],
         [InlineKeyboardButton(text="🎵 Audio boshqaruv", callback_data="adm:audio_panel")],
     ])
@@ -108,14 +109,13 @@ def admin_back_keyboard() -> InlineKeyboardMarkup:
 
 def admin_stats_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📝 Otziv statistikasi", callback_data="adm:feedback_stats")],
         [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
     ])
 
 
 def help_settings_back_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="⬅️ Help sozlamalari", callback_data="adm:help_settings")],
+        [InlineKeyboardButton(text="⬅️ Yordam sozlamalari", callback_data="adm:help_settings")],
         [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
     ])
 
@@ -143,7 +143,7 @@ def help_settings_keyboard() -> InlineKeyboardMarkup:
                 )
             ],
         ])
-    rows.append([InlineKeyboardButton(text="🆘 Admin contact link", callback_data="adm:help_link:admin_contact")])
+    rows.append([InlineKeyboardButton(text="🆘 Admin aloqa linki", callback_data="adm:help_link:admin_contact")])
     rows.append([InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -155,9 +155,9 @@ def _help_lang_label(lang: str | None) -> str:
 async def help_settings_text(session) -> str:
     repo = BotSettingRepository(session)
     lines = [
-        "🆘 <b>Help sozlamalari</b>",
+        "🆘 <b>Yordam sozlamalari</b>",
         "",
-        "Video linklar 3 tilda alohida boshqariladi. Bo'sh link help matnida ko'rsatilmaydi.",
+        "Video linklar 3 tilda alohida boshqariladi. Bo'sh link yordam matnida ko'rsatilmaydi.",
         "",
     ]
     for field in HELP_VIDEO_FIELDS:
@@ -170,7 +170,7 @@ async def help_settings_text(session) -> str:
     contact = await get_admin_contact(session)
     contact_url = admin_contact_url(contact)
     lines.extend([
-        "🆘 <b>Admin contact link</b>",
+        "🆘 <b>Admin aloqa linki</b>",
         f"<code>{escape(contact_url or contact or '—')}</code>",
         "",
         "Tahrirlashda linkni tozalash uchun <code>-</code> yuboring.",
@@ -180,7 +180,7 @@ async def help_settings_text(session) -> str:
 
 def portfolio_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📜 History", callback_data="adm:portfolio_history")],
+        [InlineKeyboardButton(text="📜 Tarix", callback_data="adm:portfolio_history")],
         [
             InlineKeyboardButton(text="➕ Foyda qo'shish", callback_data="adm:portfolio_profit_info"),
             InlineKeyboardButton(text="➖ Rasxod qo'shish", callback_data="adm:portfolio_expense_info"),
@@ -440,7 +440,7 @@ async def _prices_text(session) -> str:
     currency_service = SubscriptionCurrencyService(session)
     auto_rates = await currency_service.is_auto_rate_enabled()
     rates, rate_source = await currency_service.effective_rates()
-    rate_mode = "AUTO real kurs" if auto_rates and rate_source == "auto" else "AUTO fallback: MANUAL kurs" if auto_rates else "MANUAL admin kurs"
+    rate_mode = "Avto real kurs" if auto_rates and rate_source == "auto" else "Avto fallback: qo'lbola kurs" if auto_rates else "Qo'lbola admin kurs"
     lines = ["💳 <b>Obuna narxlari</b>", ""]
     for price in prices:
         lines.append(
@@ -495,8 +495,8 @@ def prices_keyboard() -> InlineKeyboardMarkup:
         InlineKeyboardButton(text="💴 CNY kurs", callback_data="adm:visa_rate_set:cny"),
     ])
     rows.append([
-        InlineKeyboardButton(text="🔄 AUTO kurs ON", callback_data="adm:visa_rate_auto:on"),
-        InlineKeyboardButton(text="✋ AUTO kurs OFF", callback_data="adm:visa_rate_auto:off"),
+        InlineKeyboardButton(text="🔄 Avto kursni yoqish", callback_data="adm:visa_rate_auto:on"),
+        InlineKeyboardButton(text="✋ Avto kursni o'chirish", callback_data="adm:visa_rate_auto:off"),
     ])
     rows.append([InlineKeyboardButton(text="💳 Karta rekviziti", callback_data="adm:payment_details")])
     rows.append([InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")])
@@ -506,11 +506,11 @@ def prices_keyboard() -> InlineKeyboardMarkup:
 def channel_panel_keyboard(enabled: bool, channels) -> InlineKeyboardMarkup:
     rows = [[
         InlineKeyboardButton(
-            text="🟢 ON" if enabled else "⚪ ON",
+            text="🟢 Yoqilgan" if enabled else "⚪ Yoqish",
             callback_data="adm:channels_mode:on",
         ),
         InlineKeyboardButton(
-            text="🔴 OFF" if not enabled else "⚪ OFF",
+            text="🔴 O'chirilgan" if not enabled else "⚪ O'chirish",
             callback_data="adm:channels_mode:off",
         ),
     ]]
@@ -539,7 +539,7 @@ async def _channel_panel_text(session) -> tuple[str, InlineKeyboardMarkup]:
     lines = [
         "📣 <b>Majburiy kanal obunasi</b>",
         "",
-        f"Rejim: <b>{'ON' if enabled else 'OFF'}</b>",
+        f"Rejim: <b>{_enabled_label(enabled)}</b>",
         f"Aktiv kanallar: <b>{active_count}</b>",
         "Ishlash joyi: <b>course 2-qism yangi so'zlar checkpointidan keyin</b>",
         "",
@@ -550,7 +550,7 @@ async def _channel_panel_text(session) -> tuple[str, InlineKeyboardMarkup]:
     if channels:
         lines.extend(["", "<b>Kanallar:</b>"])
         for channel in channels[:20]:
-            status = "ON" if channel.is_active else "OFF"
+            status = "Yoqilgan" if channel.is_active else "O'chirilgan"
             lines.append(
                 f"#{channel.id} [{status}] <code>{escape(channel.chat_id)}</code> — {escape(channel.title)}"
             )
@@ -792,10 +792,10 @@ async def _admin_user_info_text(session, user: User) -> str:
         f"Daily practice tugadi: <code>{_fmt_dt(user.daily_practice_completed_at)}</code>",
         f"Daily streak: <b>{user.daily_practice_streak or 0}</b>",
         f"Daily oxirgi kun: <code>{user.daily_practice_last_day or '—'}</code>",
-        f"Trial dars ID: <b>{user.trial_course_lesson_id or '—'}</b>",
-        f"Trial dars boshlandi: <code>{_fmt_dt(user.trial_course_started_at)}</code>",
-        f"Trial dars tugadi: <code>{_fmt_dt(user.trial_course_completed_at)}</code>",
-        f"Trial AI xato tahlili: <code>{_fmt_dt(user.trial_quiz_explanation_used_at)}</code>",
+        f"Sinov darsi ID: <b>{user.trial_course_lesson_id or '—'}</b>",
+        f"Sinov darsi boshlandi: <code>{_fmt_dt(user.trial_course_started_at)}</code>",
+        f"Sinov darsi tugadi: <code>{_fmt_dt(user.trial_course_completed_at)}</code>",
+        f"Sinov AI xato tahlili: <code>{_fmt_dt(user.trial_quiz_explanation_used_at)}</code>",
         f"Kanal checkpoint: <code>{_fmt_dt(user.force_sub_required_at)}</code>",
         "",
         "🎁 <b>Referallar va chegirma</b>",
@@ -957,7 +957,7 @@ def _portfolio_summary_text(summary) -> str:
         f"  Jami rasxod: <b>{_usd(summary.total_expense_usd)}</b>\n\n"
         f"<b>📊 Holat</b>\n"
         f"  Net: <b>{_signed_usd(summary.net_usd)}</b>\n"
-        f"  Status: <b>{status}</b>\n\n"
+        f"  Holat: <b>{status}</b>\n\n"
         f"<i>OpenAI, Railway, reklama va boshqa tushum/rasxodlar tokenlardan avtomatik olinmaydi. Ularni o'zingiz +/- qilib kiritasiz.</i>"
     )
 
@@ -1258,7 +1258,7 @@ async def admin_visa_rate_auto_callback(callback: CallbackQuery, state: FSMConte
     await SubscriptionCurrencyService(session).set_auto_rate_enabled(enabled)
     await session.commit()
     await state.clear()
-    await callback.answer("AUTO kurs yoqildi" if enabled else "AUTO kurs o'chirildi", show_alert=True)
+    await callback.answer("Avto kurs yoqildi" if enabled else "Avto kurs o'chirildi", show_alert=True)
     await _edit_callback_message(
         callback,
         await _prices_text(session),
@@ -1406,7 +1406,7 @@ async def admin_help_link_prompt(callback: CallbackQuery, state: FSMContext, ses
 
     if target == "admin_contact":
         current = await get_admin_contact(session)
-        title = "Admin contact link"
+        title = "Admin aloqa linki"
         current_display = admin_contact_url(current) or current
     else:
         field = HELP_VIDEO_FIELD_BY_KEY.get(target)
@@ -1423,7 +1423,7 @@ async def admin_help_link_prompt(callback: CallbackQuery, state: FSMContext, ses
     await _edit_admin_flow_callback(
         callback,
         state,
-        "🆘 <b>Help link tahriri</b>\n\n"
+        "🆘 <b>Yordam linki tahriri</b>\n\n"
         f"Maydon: <b>{escape(title)}</b>\n\n"
         f"Joriy:\n<code>{escape(current_display or '—')}</code>\n\n"
         "Yangi link yuboring.\n"
@@ -1465,7 +1465,7 @@ async def admin_help_link_handler(message: Message, state: FSMContext, session):
             await _edit_admin_flow_message(
                 message,
                 state,
-                "❌ Sozlama topilmadi. Help sozlamalaridan qayta tanlang.",
+                "❌ Sozlama topilmadi. Yordam sozlamalaridan qayta tanlang.",
                 reply_markup=help_settings_keyboard(),
             )
             await state.clear()
@@ -1918,6 +1918,16 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         await callback.answer()
         return
 
+    text = await miniapp_course_mode_stats_text(session)
+    await callback.answer()
+    await _edit_callback_message(
+        callback,
+        text,
+        reply_markup=admin_stats_keyboard(),
+        parse_mode="HTML",
+    )
+    return
+
     now = datetime.now(timezone.utc)
     today_start = now.astimezone(ADMIN_STATS_TZ).replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
     last_24h = now - timedelta(hours=24)
@@ -2300,9 +2310,9 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"{'─' * 32}\n\n"
 
         f"<b>👥 FOYDALANUVCHILAR  [{total}]</b>\n"
-        f"  Free: <b>{free_cnt}</b>   Trial: <b>{trial_cnt}</b>\n"
-        f"  Active status: <b>{active_cnt}</b>   Paid: <b>{paid_user_cnt}</b>\n"
-        f"  Historical approved: <b>{historical_approved_users}</b>\n"
+        f"  Bepul: <b>{free_cnt}</b>   Sinov: <b>{trial_cnt}</b>\n"
+        f"  Faol status: <b>{active_cnt}</b>   To'lovli: <b>{paid_user_cnt}</b>\n"
+        f"  Tarixiy tasdiqlangan: <b>{historical_approved_users}</b>\n"
         f"  Tugagan: <b>{expired_cnt}</b>   Bloklangan: <b>{blocked_cnt}</b>\n\n"
 
         f"<b>📅 FAOLLIK</b>\n"
@@ -2329,7 +2339,7 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Eslatma yoqilgan: <b>{course_reminders}</b>\n\n"
 
         f"<b>⚡ DAILY 3-MIN</b>\n"
-        f"  Start: <b>{daily_started}</b>   Bugun: <b>+{daily_started_today}</b>   7 kun: <b>+{daily_started_week}</b>\n"
+        f"  Boshladi: <b>{daily_started}</b>   Bugun: <b>+{daily_started_today}</b>   7 kun: <b>+{daily_started_week}</b>\n"
         f"  Tugatdi: <b>{daily_completed}</b> (<b>{daily_complete_rate}%</b>)   Bugun: <b>+{daily_completed_today}</b>   7 kun: <b>+{daily_completed_week}</b>\n"
         f"  D1 → D2 qaytdi: <b>{daily_d2_return}</b> (<b>{daily_return_rate}%</b>)\n"
         f"  Daily → Kurs: <b>{daily_completed_course_opened}</b> (<b>{daily_course_rate}%</b>)\n"
@@ -2340,10 +2350,10 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Ochdi: <b>{pilot_opened}</b>   Quiz: <b>{pilot_quiz_completed}</b> (<b>{pilot_quiz_rate}%</b>)   Mustahkamlash: <b>{pilot_reinforced}</b> (<b>{pilot_reinforce_rate}%</b>)\n"
         f"  Botga qaytish/drop signal: <b>{pilot_returned}</b>\n"
         f"  Drop step: <b>{escape(pilot_drop_str)}</b>\n"
-        f"  Lesson open/complete: <b>{escape(pilot_lesson_str)}</b>\n\n"
+        f"  Dars ochish/tugatish: <b>{escape(pilot_lesson_str)}</b>\n\n"
 
         f"<b>🧪 TRIAL FUNNEL</b>\n"
-        f"  Start: <b>{trial_course_started}</b>   Bugun: <b>+{trial_started_today}</b>   7 kun: <b>+{trial_started_week}</b>\n"
+        f"  Boshladi: <b>{trial_course_started}</b>   Bugun: <b>+{trial_started_today}</b>   7 kun: <b>+{trial_started_week}</b>\n"
         f"  Tugatdi: <b>{trial_course_completed}</b> (<b>{trial_complete_rate}%</b>)   7 kun: <b>+{trial_completed_week}</b>\n"
         f"  AI xato tahlili: <b>{trial_quiz_explained}</b> (<b>{trial_ai_rate}%</b>)\n"
         f"  Kanal checkpoint: <b>{force_sub_checkpoint}</b>\n"

@@ -14,6 +14,7 @@ from sqlalchemy import select, func
 from app.db.models.user import User
 
 from app.repositories.user_repo import UserRepository
+from app.services.admin_stats_service import miniapp_course_mode_stats_text
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.referral_service import ReferralService
@@ -68,16 +69,32 @@ def _pct(part: int, total: int) -> float:
 
 def _status_label(status: str, lang: str) -> str:
     return {
-        "free": "Free",
-        "trial": "Free",
-        "active": "Active",
-        "expired": "Free",
+        "free": {
+            "tj": "Ройгон",
+            "uz": "Bepul",
+            "ru": "Бесплатно",
+        }.get(lang, "Bepul"),
+        "trial": {
+            "tj": "Санҷишӣ",
+            "uz": "Sinov rejimi",
+            "ru": "Пробный режим",
+        }.get(lang, "Sinov rejimi"),
+        "active": {
+            "tj": "Фаъол",
+            "uz": "Faol",
+            "ru": "Активный",
+        }.get(lang, "Faol"),
+        "expired": {
+            "tj": "Муддат гузаштааст",
+            "uz": "Muddati tugagan",
+            "ru": "Срок истек",
+        }.get(lang, "Muddati tugagan"),
         "blocked": {
             "tj": "Баста",
             "uz": "Bloklangan",
             "ru": "Заблокирован",
         }.get(lang, "Заблокирован"),
-    }.get(status, "Free")
+    }.get(status, {"tj": "Ройгон", "uz": "Bepul", "ru": "Бесплатно"}.get(lang, "Bepul"))
 
 
 def _profile_status_label(user, lang: str) -> str:
@@ -85,14 +102,18 @@ def _profile_status_label(user, lang: str) -> str:
     is_paid = getattr(user, "payment_status", "") == "approved"
 
     if status == "active" and is_paid:
-        return "Active"
+        return {
+            "tj": "Пардохт фаъол",
+            "uz": "To'lov faol",
+            "ru": "Оплата активна",
+        }.get(lang, "To'lov faol")
 
     if status == "active":
         return {
             "tj": "Дастрасии тестӣ",
-            "uz": "Bepul test access",
+            "uz": "Bepul test ruxsati",
             "ru": "Тестовый доступ",
-        }.get(lang, "Bepul test access")
+        }.get(lang, "Bepul test ruxsati")
 
     return _status_label(status, lang)
 
@@ -654,6 +675,9 @@ async def admin_stats_handler(message: Message, session):
     if message.from_user.id not in admin_ids:
         return
 
+    await message.answer(await miniapp_course_mode_stats_text(session), parse_mode="HTML")
+    return
+
     # Count users by status
     result = await session.execute(
         select(User.status, func.count().label("cnt")).group_by(User.status)
@@ -694,7 +718,7 @@ async def admin_stats_handler(message: Message, session):
     )
     pending_payments = result.scalar() or 0
 
-    # Approved payments total
+    # Tasdiqlangan to'lovlar jami
     result = await session.execute(
         select(func.count()).select_from(Payment).where(Payment.payment_status == "approved")
     )
@@ -909,26 +933,26 @@ async def admin_stats_handler(message: Message, session):
         f"📊 <b>Admin statistika</b>\n\n"
         f"<b>👥 Foydalanuvchilar:</b>\n"
         f"  Jami: {total}\n"
-        f"  Trial: {trial}\n"
-        f"  Active status: {active}\n"
-        f"  Paid user: {paid_users}\n"
-        f"  Historical approved: {historical_approved_users}\n"
+        f"  Sinov: {trial}\n"
+        f"  Faol status: {active}\n"
+        f"  To'lovli user: {paid_users}\n"
+        f"  Tarixiy tasdiqlangan: {historical_approved_users}\n"
         f"  Tugagan: {expired}\n"
         f"  Bloklangan: {blocked}\n\n"
         f"<b>⚡ Daily 3-min retention:</b>\n"
-        f"  Start: {daily_started} | bugun: +{daily_started_today} | 7 kun: +{daily_started_week}\n"
+        f"  Boshladi: {daily_started} | bugun: +{daily_started_today} | 7 kun: +{daily_started_week}\n"
         f"  Tugatdi: {daily_completed} ({daily_complete_rate}%) | bugun: +{daily_completed_today} | 7 kun: +{daily_completed_week}\n"
         f"  D1 → D2 qaytdi: {daily_d2_return} ({daily_return_rate}%)\n"
         f"  Daily → Kurs: {daily_completed_course_opened} ({daily_course_rate}%)\n"
         f"  Daily → Paid: {daily_completed_paid} ({daily_paid_rate}%)\n"
         f"  QA limit → kanal: {force_sub_checkpoint} | joined/continued: {qa_limit_channel_joined} ({qa_channel_join_rate}%)\n\n"
-        f"<b>📚 Trial course funnel:</b>\n"
+        f"<b>📚 Sinov kurs funnel:</b>\n"
         f"  Dars boshlagan: {trial_course_started} | 7 kun: +{trial_started_week}\n"
         f"  Dars tugatgan: {trial_course_completed} ({trial_complete_rate}%) | 7 kun: +{trial_completed_week}\n"
         f"  AI xato tahlili: {trial_quiz_explained} ({trial_ai_rate}%)\n"
         f"  Kanal checkpoint: {force_sub_checkpoint}\n"
         f"  Checkpoint → tugatdi: {checkpoint_completed} ({checkpoint_complete_rate}%)\n\n"
-        f"<b>💰 Trial → Payment:</b>\n"
+        f"<b>💰 Sinov → To'lov:</b>\n"
         f"  Trialdan keyin paid: {trial_paid_after_start} ({trial_paid_rate}%) | 7 kun: +{trial_paid_week}\n"
         f"  Completed → paid: {completed_paid_after} ({completed_paid_rate}%)\n"
         f"  Checkpoint → paid: {checkpoint_paid_after} ({checkpoint_paid_rate}%)\n"

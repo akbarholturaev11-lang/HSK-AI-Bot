@@ -163,7 +163,7 @@ class VoicePracticeService:
     async def user_status(self, telegram_id: int) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
-            raise VoicePracticeError("USER_NOT_FOUND", "Start the bot before opening Voice Practice.", 404)
+            raise VoicePracticeError("USER_NOT_FOUND", "Voice Practice'ni ochishdan oldin botni /start qiling.", 404)
 
         paid = self._is_paid(user)
         used = await self._session_count(telegram_id, today_only=paid)
@@ -333,15 +333,15 @@ class VoicePracticeService:
         filename: str,
     ) -> dict:
         if not settings.OPENAI_API_KEY:
-            raise VoicePracticeError("AI_UNAVAILABLE", "Voice AI is not configured.", 503)
+            raise VoicePracticeError("AI_UNAVAILABLE", "Voice AI sozlanmagan.", 503)
         if not audio_bytes:
-            raise VoicePracticeError("EMPTY_AUDIO", "Audio is empty.")
+            raise VoicePracticeError("EMPTY_AUDIO", "Audio bo'sh.")
         if len(audio_bytes) > MAX_AUDIO_BYTES:
-            raise VoicePracticeError("AUDIO_TOO_LARGE", "Audio is too large.", 413)
+            raise VoicePracticeError("AUDIO_TOO_LARGE", "Audio hajmi juda katta.", 413)
 
         item = await self._get_active_session(telegram_id, session_id)
         if item.turn_count >= MAX_DIALOGS_PER_SESSION:
-            raise VoicePracticeError("TURN_LIMIT_EXCEEDED", "This voice session reached its turn limit.", 403)
+            raise VoicePracticeError("TURN_LIMIT_EXCEEDED", "Bu voice sessiya dialog limitiga yetdi.", 403)
         paid = await self._is_paid_telegram_user(telegram_id)
         if paid:
             await self._ensure_budget_available(telegram_id)

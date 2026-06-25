@@ -146,61 +146,61 @@ class CourseMiniAppAdminAnalyticsService:
         checkout_opened = self._event(week_counts, "checkout_opened")
 
         lines = [
-            "<b>📱 COURSE MINI APP</b>",
+            "<b>📱 KURS MINI APP</b>",
             (
-                "  Funnel users all/7d: "
-                f"Open <b>{self._event(all_unique, 'miniapp_opened')}</b>/<b>+{self._event(week_unique, 'miniapp_opened')}</b> · "
-                f"Onboard <b>{self._event(all_unique, 'onboarding_started')}</b>/<b>+{self._event(week_unique, 'onboarding_started')}</b> · "
-                f"Done <b>{self._event(all_unique, 'onboarding_completed')}</b>/<b>+{self._event(week_unique, 'onboarding_completed')}</b>"
+                "  Foydalanuvchi funnel all/7 kun: "
+                f"Ochdi <b>{self._event(all_unique, 'miniapp_opened')}</b>/<b>+{self._event(week_unique, 'miniapp_opened')}</b> · "
+                f"Onboarding <b>{self._event(all_unique, 'onboarding_started')}</b>/<b>+{self._event(week_unique, 'onboarding_started')}</b> · "
+                f"Tugatdi <b>{self._event(all_unique, 'onboarding_completed')}</b>/<b>+{self._event(week_unique, 'onboarding_completed')}</b>"
             ),
             (
-                "  Selection 7d: "
-                f"Level <b>{self._event(week_counts, 'level_selected')}</b> · "
-                f"Goal <b>{self._event(week_counts, 'goal_selected')}</b> · "
-                f"Time <b>{self._event(week_counts, 'daily_time_selected')}</b> · "
-                f"Start point <b>{self._event(week_counts, 'start_point_selected')}</b>"
+                "  Tanlovlar 7 kun: "
+                f"Daraja <b>{self._event(week_counts, 'level_selected')}</b> · "
+                f"Maqsad <b>{self._event(week_counts, 'goal_selected')}</b> · "
+                f"Vaqt <b>{self._event(week_counts, 'daily_time_selected')}</b> · "
+                f"Boshlash nuqtasi <b>{self._event(week_counts, 'start_point_selected')}</b>"
             ),
             (
-                "  Course path 7d: "
-                f"Section <b>{section_start}</b>→<b>{section_completed}</b> "
+                "  Kurs yo'li 7 kun: "
+                f"Qism <b>{section_start}</b>→<b>{section_completed}</b> "
                 f"(<b>{self._pct(section_completed, section_start)}%</b>) · "
-                f"Chapter <b>{chapter_completed}</b> · "
-                f"Book lesson <b>{book_completed}</b> · "
-                f"Cards <b>{self._event(week_counts, 'card_seen')}</b> · "
-                f"Interactions <b>{self._event(week_counts, 'interaction_completed')}</b>"
+                f"Bob <b>{chapter_completed}</b> · "
+                f"Kitob darsi <b>{book_completed}</b> · "
+                f"Kartalar <b>{self._event(week_counts, 'card_seen')}</b> · "
+                f"Interaksiyalar <b>{self._event(week_counts, 'interaction_completed')}</b>"
             ),
             (
-                "  Test/Training 7d: "
+                "  Test/Mashq 7 kun: "
                 f"Test <b>{test_started}</b>→<b>{self._event(week_counts, 'test_completed')}</b> "
                 f"(<b>{self._rate(week_counts, 'test_completed', 'test_started')}%</b>) · "
-                f"Training <b>{training_started}</b>→<b>{self._event(week_counts, 'training_completed')}</b> "
+                f"Mashq <b>{training_started}</b>→<b>{self._event(week_counts, 'training_completed')}</b> "
                 f"(<b>{self._rate(week_counts, 'training_completed', 'training_started')}%</b>)"
             ),
             (
-                "  AI Voice 7d: "
-                f"Start <b>{voice_started}</b> · Complete <b>{self._event(week_counts, 'voice_completed')}</b> "
+                "  AI Voice 7 kun: "
+                f"Boshladi <b>{voice_started}</b> · Tugatdi <b>{self._event(week_counts, 'voice_completed')}</b> "
                 f"(<b>{self._rate(week_counts, 'voice_completed', 'voice_started')}%</b>)"
             ),
             (
-                "  Mistakes 7d: "
-                f"Review <b>{self._event(week_counts, 'mistake_review_started')}</b>→"
+                "  Xatolar 7 kun: "
+                f"Takrorlash <b>{self._event(week_counts, 'mistake_review_started')}</b>→"
                 f"<b>{self._event(week_counts, 'mistake_review_completed')}</b> "
                 f"(<b>{self._rate(week_counts, 'mistake_review_completed', 'mistake_review_started')}%</b>)"
             ),
             (
-                "  XP/Streak 7d: "
-                f"XP events <b>{self._event(week_counts, 'xp_earned')}</b> · "
-                f"XP sum <b>{weekly_xp}</b> · "
+                "  XP/Streak 7 kun: "
+                f"XP eventlar <b>{self._event(week_counts, 'xp_earned')}</b> · "
+                f"XP jami <b>{weekly_xp}</b> · "
                 f"Streak <b>{self._event(week_counts, 'streak_updated')}</b> · "
-                f"League <b>{self._event(week_counts, 'league_points_earned')}</b>"
+                f"Liga <b>{self._event(week_counts, 'league_points_earned')}</b>"
             ),
             (
-                "  Paid conversion 7d: "
-                f"Paywall <b>{paywall_seen}</b> · Checkout <b>{checkout_opened}</b> "
+                "  To'lov konversiyasi 7 kun: "
+                f"To'lov oynasi <b>{paywall_seen}</b> · To'lov ochildi <b>{checkout_opened}</b> "
                 f"(<b>{self._pct(checkout_opened, paywall_seen)}%</b>) · "
-                f"Approved <b>{self._event(week_counts, 'subscription_approved')}</b> "
+                f"Tasdiq <b>{self._event(week_counts, 'subscription_approved')}</b> "
                 f"(<b>{self._rate(week_counts, 'subscription_approved', 'checkout_opened')}%</b>)"
             ),
-            f"  Section drop-off 7d: {self.format_lesson_dropoff(lesson_dropoff)}",
+            f"  Qism drop-off 7 kun: {self.format_lesson_dropoff(lesson_dropoff)}",
         ]
         return "\n".join(lines)
