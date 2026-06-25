@@ -24,7 +24,7 @@ from app.db.models.course_pilot_event import CoursePilotEvent
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
-from app.services.admin_stats_service import miniapp_course_mode_stats_text
+from app.services.admin_stats_service import miniapp_course_stats
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.portfolio_service import PortfolioService
@@ -109,6 +109,7 @@ def admin_back_keyboard() -> InlineKeyboardMarkup:
 
 def admin_stats_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="📝 Otziv statistikasi", callback_data="adm:feedback_stats")],
         [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
     ])
 
@@ -1918,16 +1919,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         await callback.answer()
         return
 
-    text = await miniapp_course_mode_stats_text(session)
-    await callback.answer()
-    await _edit_callback_message(
-        callback,
-        text,
-        reply_markup=admin_stats_keyboard(),
-        parse_mode="HTML",
-    )
-    return
-
     now = datetime.now(timezone.utc)
     today_start = now.astimezone(ADMIN_STATS_TZ).replace(hour=0, minute=0, second=0, microsecond=0).astimezone(timezone.utc)
     last_24h = now - timedelta(hours=24)
@@ -1999,17 +1990,8 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     )).fetchall()
     pay_by_plan = {r.plan_type: r.cnt for r in pay_plan_rows}
 
-    # --- Kurs ---
-    course_total = (await session.execute(
-        select(func.count()).select_from(CourseProgress)
-    )).scalar() or 0
-    course_with_lessons = (await session.execute(
-        select(func.count()).select_from(CourseProgress)
-        .where(CourseProgress.completed_lessons_count > 0)
-    )).scalar() or 0
-    course_lessons_sum = (await session.execute(
-        select(func.sum(CourseProgress.completed_lessons_count)).select_from(CourseProgress)
-    )).scalar() or 0
+    # --- Kurs Mini App ---
+    miniapp_course = await miniapp_course_stats(session)
     course_reminders = (await session.execute(
         select(func.count()).select_from(CourseProgress)
         .where(CourseProgress.reminder_enabled == True)  # noqa: E712
@@ -2278,7 +2260,11 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         select(func.count()).select_from(User).where(User.questions_used > 0)
     )).scalar() or 0
     engagement  = _pct(qa_users, total)
-    avg_lessons = round(course_lessons_sum / course_with_lessons, 1) if course_with_lessons > 0 else 0
+    avg_lessons = (
+        round(miniapp_course.completed_sections / miniapp_course.completed_users, 1)
+        if miniapp_course.completed_users > 0
+        else 0
+    )
     trial_complete_rate = _pct(trial_course_completed, trial_course_started)
     trial_ai_rate = _pct(trial_quiz_explained, trial_course_started)
     trial_paid_rate = _pct(trial_paid_after_start, trial_course_started)
@@ -2334,8 +2320,9 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Jami daromad: <b>{approved_sum:,}</b> so'm\n\n"
 
         f"<b>📚 KURS</b>\n"
-        f"  Yozilgan: <b>{course_total}</b>   Dars tugatganlar: <b>{course_with_lessons}</b>\n"
-        f"  Jami tugatilgan darslar: <b>{course_lessons_sum}</b>   O'rtacha: <b>{avg_lessons}</b>\n"
+        f"  Mini App ochgan: <b>{miniapp_course.opened_users}</b>   Dars boshlaganlar: <b>{miniapp_course.lesson_users}</b>\n"
+        f"  Dars tugatganlar: <b>{miniapp_course.completed_users}</b>   Tugatilgan qismlar: <b>{miniapp_course.completed_sections}</b>\n"
+        f"  Tugatilgan kitob darslari: <b>{miniapp_course.completed_book_lessons}</b>   O'rtacha qism: <b>{avg_lessons}</b>\n"
         f"  Eslatma yoqilgan: <b>{course_reminders}</b>\n\n"
 
         f"<b>⚡ DAILY 3-MIN</b>\n"

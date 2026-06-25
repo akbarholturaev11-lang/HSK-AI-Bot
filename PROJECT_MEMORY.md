@@ -207,15 +207,15 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
-### 2026-06-25 — Admin statistics reset and visible Uzbek label cleanup
+### 2026-06-25 — Admin course statistics Mini App source fix and Uzbek label cleanup
 
 Changed:
-- Admin `Statistika` panel and `/admin_stats` now show only the count of users whose `users.learning_mode` is `course`.
-- The old detailed admin statistics report is bypassed, and the stats panel no longer links to feedback stats.
+- Admin `Statistika` panel keeps the detailed report, but the `KURS` block no longer counts legacy `course_progress` users as current course signups.
+- `KURS` block now uses `course_miniapp_events` distinct `telegram_id` counts for Mini App opened, lesson started, and lesson completed users.
 - Remaining visible admin/user labels found in bot handlers, admin keyboards, release feedback, help settings, Mini App pilot skeleton, funnel analytics, rich quiz message, and Voice Practice errors were aligned to Uzbek/current wording.
 
 Why:
-- Admin requested the old statistics view to be reset and replaced with the current Mini App course-mode user count only.
+- Course stats were showing old-version course users together with users who moved to the Mini App; the current report must reflect post-Mini App activity.
 
 Files touched:
 - `app/services/admin_stats_service.py`
@@ -232,7 +232,7 @@ Files touched:
 - `tests/test_admin_stats_service.py`
 
 Risk:
-- Existing detailed stats code remains in place but is no longer reachable from the admin stats entry points.
+- Users who used legacy course only and never opened the Mini App are intentionally excluded from the `KURS` Mini App counts.
 
 ### 2026-06-25 — Course Mini App static data split and HSK1 static lesson pilot
 

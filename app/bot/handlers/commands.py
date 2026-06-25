@@ -14,7 +14,6 @@ from sqlalchemy import select, func
 from app.db.models.user import User
 
 from app.repositories.user_repo import UserRepository
-from app.services.admin_stats_service import miniapp_course_mode_stats_text
 from app.services.conversion_funnel_service import ConversionFunnelService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.referral_service import ReferralService
@@ -674,9 +673,6 @@ async def admin_stats_handler(message: Message, session):
     admin_ids = [int(x.strip()) for x in settings.ADMIN_IDS.split(",") if x.strip()]
     if message.from_user.id not in admin_ids:
         return
-
-    await message.answer(await miniapp_course_mode_stats_text(session), parse_mode="HTML")
-    return
 
     # Count users by status
     result = await session.execute(

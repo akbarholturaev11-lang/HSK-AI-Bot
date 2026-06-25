@@ -1,6 +1,6 @@
 import unittest
 
-from app.services.admin_stats_service import miniapp_course_mode_stats_text
+from app.services.admin_stats_service import miniapp_course_stats
 
 
 class _ScalarResult:
@@ -12,19 +12,27 @@ class _ScalarResult:
 
 
 class _Session:
-    def __init__(self, value: int):
-        self.value = value
+    def __init__(self, values: list[int]):
+        self.values = list(values)
+        self.execute_count = 0
 
     async def execute(self, _stmt):
-        return _ScalarResult(self.value)
+        self.execute_count += 1
+        return _ScalarResult(self.values.pop(0))
 
 
 class AdminStatsServiceTests(unittest.IsolatedAsyncioTestCase):
-    async def test_miniapp_course_mode_stats_text_shows_only_course_mode_count(self):
-        text = await miniapp_course_mode_stats_text(_Session(12))
+    async def test_miniapp_course_stats_uses_event_based_counts(self):
+        session = _Session([12, 9, 5, 24, 4])
 
-        self.assertIn("Mini App kurs rejimidagi foydalanuvchilar", text)
-        self.assertIn("<b>12</b>", text)
+        stats = await miniapp_course_stats(session)
+
+        self.assertEqual(stats.opened_users, 12)
+        self.assertEqual(stats.lesson_users, 9)
+        self.assertEqual(stats.completed_users, 5)
+        self.assertEqual(stats.completed_sections, 24)
+        self.assertEqual(stats.completed_book_lessons, 4)
+        self.assertEqual(session.execute_count, 5)
 
 
 if __name__ == "__main__":
