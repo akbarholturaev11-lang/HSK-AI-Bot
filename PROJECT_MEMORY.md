@@ -269,6 +269,26 @@ Files touched:
 Risk:
 - Users who used legacy course only and never opened the Mini App are intentionally excluded from the `KURS` Mini App counts.
 
+### 2026-06-26 — Admin control Mini App
+
+Changed:
+- Added an admin-only Telegram Mini App at `/admin-control.html`.
+- Added `/api/admin-miniapp/overview` for read-only admin dashboard data and `/api/admin-miniapp/open-section` to send existing Telegram admin section buttons back to the admin chat.
+- `/admin` and admin `Statistika` now include a WebApp button for the admin Mini App.
+
+Why:
+- Admin needs a Mac/iPhone friendly control center without replacing existing Telegram admin FSM flows for payments, QR upload, channels, ads, discounts, and access actions.
+
+Files touched:
+- `app/static/admin-control.html`
+- `app/services/admin_miniapp_service.py`
+- `app/main.py`
+- `app/bot/handlers/admin.py`
+- `app/bot/utils/course_miniapp.py`
+
+Risk:
+- Read-only dashboard data plus Telegram admin section shortcuts; no payment, subscription, access, or course write logic was changed.
+
 ### 2026-06-25 — Course Mini App static data split and HSK1 static lesson pilot
 
 Changed:

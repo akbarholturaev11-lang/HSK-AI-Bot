@@ -4,6 +4,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from aiogram import Bot
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy import select
@@ -38,6 +39,7 @@ from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
+from app.services.admin_miniapp_service import AdminMiniAppService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.repositories.user_repo import UserRepository
@@ -243,6 +245,22 @@ COURSE_DATA_FILES = {
     "hsk4a": "app/static/course_data/hsk4a.json",
     "hsk4b": "app/static/course_data/hsk4b.json",
 }
+ADMIN_MINIAPP_SECTIONS = {
+    "stats": ("📊 Statistika", "adm:stats"),
+    "user_search": ("🔎 Foydalanuvchi qidirish", "adm:user_search_info"),
+    "portfolio": ("💼 Portfel", "adm:portfolio"),
+    "prices": ("💳 Obuna narxlari", "adm:prices"),
+    "channels": ("📣 Majburiy kanal obunasi", "adm:channels"),
+    "delete_user": ("🗑 Foydalanuvchini o'chirish", "adm:deleteuser_info"),
+    "broadcast": ("📢 Ommaviy xabar", "adm:broadcast_info"),
+    "ads": ("📣 Reklama kampaniyasi", "adm:ads_panel"),
+    "release_feedback": ("🆕 Yangilik fikri", "adm:release_feedback"),
+    "discount": ("🎁 Chegirma boshqaruv", "adm:discount_panel"),
+    "partners": ("🤝 Hamkorlar", "adm:partners"),
+    "help": ("🆘 Yordam sozlamalari", "adm:help_settings"),
+    "give_access": ("✅ Obuna berish", "adm:giveaccess_info"),
+    "audio": ("🎵 Audio boshqaruv", "adm:audio_panel"),
+}
 
 
 def miniapp_file_response(path: str) -> FileResponse:
@@ -251,6 +269,25 @@ def miniapp_file_response(path: str) -> FileResponse:
 
 def static_json_response(path: str) -> FileResponse:
     return FileResponse(path, media_type="application/json")
+
+
+def _admin_miniapp_user_id(request: Request) -> int | None:
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    return extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN)
+
+
+def _is_admin_id(telegram_id: int | None) -> bool:
+    return bool(telegram_id and telegram_id in settings.admin_id_list)
+
+
+def _admin_miniapp_section_keyboard(section: str) -> InlineKeyboardMarkup:
+    title, callback_data = ADMIN_MINIAPP_SECTIONS.get(section, ADMIN_MINIAPP_SECTIONS["stats"])
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text=title, callback_data=callback_data)],
+            [InlineKeyboardButton(text="🛠 Admin panel", callback_data="adm:menu")],
+        ]
+    )
 
 
 @app.get("/health")
@@ -286,6 +323,11 @@ async def hsk_lugat_miniapp():
 @app.get("/hsk-data.js")
 async def hsk_data_script():
     return miniapp_file_response("app/static/hsk-data.js")
+
+
+@app.get("/admin-control.html")
+async def admin_control_miniapp():
+    return miniapp_file_response("app/static/admin-control.html")
 
 
 @app.get("/course_data/{level}.json")
@@ -467,6 +509,58 @@ async def stroke_order_miniapp():
 @app.get("/course-miniapp-v2.js")
 async def course_miniapp_v2_script():
     return miniapp_file_response("app/static/course-miniapp-v2.js")
+
+
+@app.post("/api/admin-miniapp/overview")
+async def admin_miniapp_overview(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+        )
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(
+            status_code=403,
+            content={"ok": False, "error": "admin_only"},
+        )
+
+    async with async_session_maker() as session:
+        payload = await AdminMiniAppService(session).overview()
+    return JSONResponse(content=payload)
+
+
+@app.post("/api/admin-miniapp/open-section")
+async def admin_miniapp_open_section(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "error": "invalid_telegram_init_data"},
+        )
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(
+            status_code=403,
+            content={"ok": False, "error": "admin_only"},
+        )
+
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    section = str(payload.get("section") or "stats").strip()
+    title, _ = ADMIN_MINIAPP_SECTIONS.get(section, ADMIN_MINIAPP_SECTIONS["stats"])
+    await bot.send_message(
+        chat_id=telegram_id,
+        text=(
+            "🧭 <b>Admin mini ilova</b>\n\n"
+            f"Tanlangan bo'lim: <b>{title}</b>\n"
+            "Davom etish uchun pastdagi tugmani bosing."
+        ),
+        reply_markup=_admin_miniapp_section_keyboard(section),
+        parse_mode="HTML",
+    )
+    return {"ok": True}
 
 
 @app.post("/api/miniapp/access")

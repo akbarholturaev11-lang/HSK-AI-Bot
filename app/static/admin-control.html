@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>HSK AI admin boshqaruv</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{
+      --bg:#f6f7f9;
+      --surface:#fff;
+      --surface-2:#eef2f6;
+      --ink:#151922;
+      --muted:#626b7a;
+      --line:#dce1e8;
+      --green:#146a52;
+      --green-soft:#dff3ec;
+      --blue:#285ca8;
+      --blue-soft:#e2ecfb;
+      --red:#a33d3a;
+      --red-soft:#fae5e3;
+      --amber:#8a630f;
+      --amber-soft:#f6ecd2;
+      --violet:#5b4a99;
+      --violet-soft:#ebe7fb;
+      --shadow:0 18px 48px rgba(21,25,34,.12);
+      --radius:8px;
+      --safe-top:env(safe-area-inset-top,0px);
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+      color-scheme:light;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;letter-spacing:0}
+    html,body{margin:0;min-height:100%;width:100%;overflow-x:hidden;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    body{padding:var(--safe-top) 0 var(--safe-bottom)}
+    body.locked{overflow:hidden}
+    button,input{font:inherit}
+    button{border:0;background:none;color:inherit;cursor:pointer}
+    .app{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(246,247,249,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .topbar-inner{display:grid;grid-template-columns:1fr;gap:10px;padding:10px 12px 8px}
+    .brand-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .brand-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#142033,#285ca8 55%,#146a52);display:grid;place-items:center;color:#fff;font-weight:900;font-size:12px}
+    .brand h1{font-size:16px;line-height:1.1;margin:0;font-weight:850}
+    .brand p{margin:3px 0 0;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .top-actions{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+    .status-pill{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 9px;box-shadow:0 4px 16px rgba(21,25,34,.05);font-size:11px;font-weight:850;white-space:nowrap}
+    .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(20,106,82,.12)}
+    .monitor-link{height:34px;border-radius:999px;background:#111927;color:#fff;padding:0 12px;font-size:11px;font-weight:900;white-space:nowrap;box-shadow:0 8px 22px rgba(17,25,39,.18)}
+    .mac-label{display:none}
+    .tabs{position:fixed;left:10px;right:10px;bottom:calc(8px + var(--safe-bottom));z-index:42;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;padding:6px;background:rgba(255,255,255,.94);backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:8px;box-shadow:0 12px 36px rgba(21,25,34,.16)}
+    .tab{height:42px;border-radius:7px;color:var(--muted);font-size:10px;font-weight:850;background:transparent}
+    .tab.active{background:var(--ink);color:#fff}
+    main{padding:12px 12px calc(120px + var(--safe-bottom))}
+    .view{display:none}
+    .view.active{display:block}
+    .section{margin:0 0 14px}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 2px 9px}
+    .section-title{margin:0;font-size:15px;line-height:1.2;font-weight:850}
+    .section-note{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .section-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+    .mini-link{font-size:12px;color:var(--blue);font-weight:850;white-space:nowrap}
+    .grid{display:grid;gap:10px}
+    .stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;min-height:104px;display:flex;flex-direction:column;justify-content:space-between}
+    .stat .label{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:850}
+    .stat .value{font-size:26px;line-height:1;margin:12px 0 7px;font-weight:950}
+    .stat .delta{font-size:12px;color:var(--muted);font-weight:750}
+    .stat.good{border-color:rgba(20,106,82,.26);background:linear-gradient(180deg,#fff,var(--green-soft))}
+    .stat.warn{border-color:rgba(138,99,15,.3);background:linear-gradient(180deg,#fff,var(--amber-soft))}
+    .stat.danger{border-color:rgba(163,61,58,.28);background:linear-gradient(180deg,#fff,var(--red-soft))}
+    .stat.info{border-color:rgba(40,92,168,.25);background:linear-gradient(180deg,#fff,var(--blue-soft))}
+    .segment-strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(146px,1fr);gap:9px;overflow:auto;padding-bottom:2px;scroll-snap-type:x proximity}
+    .segment{scroll-snap-align:start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;min-height:88px}
+    .segment.active{outline:2px solid var(--ink);outline-offset:-2px}
+    .segment strong{display:block;font-size:22px;line-height:1;margin-bottom:7px}
+    .segment span{display:block;color:var(--muted);font-size:12px;font-weight:750}
+    .queue{display:grid;gap:8px}
+    .queue-item{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px;text-align:left}
+    .rank{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;background:var(--surface-2);font-weight:950;font-size:12px}
+    .queue-title{font-size:13px;font-weight:900}
+    .queue-meta{font-size:12px;color:var(--muted);margin-top:2px}
+    .score{font-size:12px;font-weight:850;border-radius:999px;padding:6px 8px;background:var(--green-soft);color:var(--green)}
+    .toolbar{display:grid;gap:9px;margin-bottom:10px}
+    .search-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+    .input{width:100%;height:42px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 12px;color:var(--ink);outline:none}
+    .input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,92,168,.12)}
+    .icon-btn{width:42px;height:42px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:950}
+    .filters{display:flex;gap:7px;overflow:auto;padding-bottom:2px}
+    .chip{height:34px;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:0 12px;color:var(--muted);font-size:12px;font-weight:850;white-space:nowrap}
+    .chip.active{background:var(--ink);border-color:var(--ink);color:#fff}
+    .user-list{display:grid;gap:9px}
+    .user-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;text-align:left;display:grid;gap:10px}
+    .user-main{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+    .user-name{font-size:15px;font-weight:950;margin:0 0 3px}
+    .user-sub{font-size:12px;color:var(--muted);line-height:1.35}
+    .tag-row{display:flex;gap:6px;flex-wrap:wrap}
+    .tag{display:inline-flex;align-items:center;height:25px;border-radius:999px;padding:0 8px;font-size:11px;font-weight:850;background:var(--surface-2);color:var(--muted)}
+    .tag.green{background:var(--green-soft);color:var(--green)}
+    .tag.blue{background:var(--blue-soft);color:var(--blue)}
+    .tag.red{background:var(--red-soft);color:var(--red)}
+    .tag.amber{background:var(--amber-soft);color:var(--amber)}
+    .tag.violet{background:var(--violet-soft);color:var(--violet)}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .small-metric{background:var(--surface-2);border-radius:8px;padding:9px}
+    .small-metric b{display:block;font-size:15px}
+    .small-metric span{display:block;margin-top:2px;color:var(--muted);font-size:11px;font-weight:750}
+    .payment-board{display:grid;gap:10px}
+    .payment-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;display:grid;gap:10px}
+    .pay-head{display:grid;grid-template-columns:1fr auto;gap:10px}
+    .amount{font-size:20px;font-weight:950}
+    .btn{height:40px;border-radius:8px;background:var(--ink);color:#fff;font-size:13px;font-weight:850;padding:0 12px}
+    .btn.secondary{background:var(--surface-2);color:var(--ink)}
+    .report-layout{display:grid;gap:12px}
+    .report-card{background:#463243;color:#f7eef7;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:16px;box-shadow:var(--shadow);user-select:text}
+    .report-top{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:0 0 10px}
+    .report-title{font-size:14px;font-weight:950;margin:0}
+    .report-copy{height:32px;border-radius:999px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.24);color:#fff;padding:0 12px;font-size:12px;font-weight:900;white-space:nowrap}
+    .report-text{white-space:pre-wrap;margin:0;color:#f2e6f2;font-size:13px;line-height:1.45}
+    .report-side{display:grid;gap:10px}
+    .insight-card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:13px}
+    .insight-card h3{margin:0 0 8px;font-size:14px}
+    .bar-row{display:grid;grid-template-columns:86px 1fr 42px;gap:8px;align-items:center;margin:8px 0;font-size:12px;color:var(--muted)}
+    .bar-track{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+    .bar-track span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--green))}
+    .settings-grid{display:grid;gap:10px}
+    .setting-row{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left}
+    .setting-row h3{margin:0;font-size:14px}
+    .setting-row p{margin:3px 0 0;color:var(--muted);font-size:12px;line-height:1.35}
+    .detail-section{border-bottom:1px solid var(--line);padding:0 0 13px;margin:0 0 13px}
+    .detail-section:last-child{border-bottom:0}
+    .detail-title{font-size:12px;text-transform:uppercase;color:var(--muted);font-weight:950;margin:0 0 9px}
+    .kv{display:grid;grid-template-columns:minmax(110px,.8fr) 1fr;gap:7px 10px;font-size:13px}
+    .kv span{color:var(--muted)}
+    .kv b{font-weight:850;min-width:0;overflow-wrap:anywhere}
+    .drawer{position:fixed;inset:auto 0 0 0;z-index:50;background:var(--surface);border-top:1px solid var(--line);border-radius:14px 14px 0 0;box-shadow:var(--shadow);transform:translateY(105%);transition:transform .22s ease;max-height:92dvh;display:grid;grid-template-rows:auto 1fr}
+    .drawer.open{transform:translateY(0)}
+    .drawer-head{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;padding:16px 16px 10px;border-bottom:1px solid var(--line)}
+    .drawer-title{margin:0;font-size:18px;font-weight:950}
+    .drawer-sub{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .close{width:38px;height:38px;border-radius:8px;background:var(--surface-2);font-weight:950}
+    .drawer-body{overflow:auto;padding:12px 16px calc(16px + var(--safe-bottom))}
+    .monitor{position:fixed;inset:0;z-index:90;display:none;background:#05070b;color:#eff7f2;overflow:auto}
+    .monitor.open{display:block}
+    .monitor-shell{min-height:100dvh;padding:calc(16px + var(--safe-top)) 14px calc(18px + var(--safe-bottom));display:grid;gap:14px;background:radial-gradient(circle at 14% 0%,rgba(42,120,255,.2),transparent 32%),radial-gradient(circle at 88% 14%,rgba(34,197,94,.16),transparent 34%),linear-gradient(135deg,#05070b 0%,#09111c 48%,#07140f 100%)}
+    .monitor-top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:12px}
+    .monitor-kicker{display:flex;align-items:center;gap:8px;color:#9be7c0;font-size:11px;font-weight:950;text-transform:uppercase}
+    .monitor-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 7px rgba(34,197,94,.14)}
+    .monitor-title{margin:6px 0 5px;font-size:clamp(26px,6vw,68px);line-height:.95;font-weight:1000}
+    .monitor-sub{margin:0;color:#c5d1df;font-size:13px;font-weight:750}
+    .ticker-mask{overflow:hidden;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:8px}
+    .ticker-track{display:flex;gap:12px;width:max-content;padding:9px 10px;animation:tickerMove 32s linear infinite}
+    .ticker-item{display:flex;align-items:center;gap:8px;min-width:max-content;font-size:12px;font-weight:900;color:#dce8f3}
+    .ticker-item b{font-size:15px;color:#fff}
+    .up{color:#4ade80}.risk{color:#fb7185}.flat{color:#fbbf24}.warn{color:#60a5fa}
+    .monitor-grid{display:grid;gap:12px}
+    .monitor-card{border:1px solid rgba(255,255,255,.14);background:rgba(9,17,28,.76);border-radius:8px;padding:13px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+    .monitor-card h3{margin:0 0 10px;font-size:13px;color:#cbd7e4;text-transform:uppercase}
+    .big-number{font-size:clamp(36px,11vw,88px);line-height:.9;font-weight:1000;margin:0;color:#fff}
+    .monitor-note{margin:9px 0 0;color:#9daabb;font-size:12px;font-weight:750}
+    .candle-chart{height:220px;display:grid;grid-template-columns:repeat(18,1fr);gap:8px;align-items:end;padding:12px;border-radius:8px;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));border:1px solid rgba(255,255,255,.08)}
+    .candle{height:var(--h);min-height:16px;border-radius:5px;background:linear-gradient(180deg,#36d399,#13795b)}
+    .candle.risk{background:linear-gradient(180deg,#fb7185,#9f1239)}
+    .heat-map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+    .heat-cell{min-height:82px;border-radius:8px;padding:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+    .heat-cell strong{display:block;font-size:20px;color:#fff}
+    .heat-cell span{display:block;margin-top:5px;font-size:11px;color:#aebbc9;font-weight:800}
+    .heat-cell.hot{background:linear-gradient(135deg,rgba(34,197,94,.28),rgba(96,165,250,.12))}
+    .heat-cell.warn{background:linear-gradient(135deg,rgba(251,191,36,.25),rgba(255,255,255,.04))}
+    .heat-cell.risk{background:linear-gradient(135deg,rgba(251,113,133,.24),rgba(255,255,255,.04))}
+    .screen-state{min-height:70dvh;display:grid;place-items:center;padding:22px}
+    .state-card{max-width:420px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;box-shadow:var(--shadow)}
+    .state-card h2{margin:0 0 8px;font-size:20px}
+    .state-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+    .toast{position:fixed;left:12px;right:12px;bottom:calc(74px + var(--safe-bottom));z-index:100;background:#151922;color:#fff;border-radius:8px;padding:12px 14px;font-size:13px;font-weight:850;box-shadow:var(--shadow);transform:translateY(140%);transition:transform .2s ease}
+    .toast.show{transform:translateY(0)}
+    .bottom-safe{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-bottom));background:linear-gradient(180deg,rgba(246,247,249,0),var(--bg) 28%)}
+    @media (min-width:820px){
+      body{padding:0;overflow:hidden}
+      .app{grid-template-columns:300px minmax(0,1fr);grid-template-rows:1fr;height:100dvh;overflow:hidden}
+      .topbar{height:100dvh;border-bottom:0;border-right:1px solid var(--line);display:grid;grid-template-rows:auto 1fr}
+      .topbar-inner{padding:20px}
+      .brand-row{grid-template-columns:1fr}
+      .brand{align-items:flex-start}
+      .brand-mark{width:44px;height:44px;font-size:13px}
+      .brand h1{font-size:20px}
+      .brand p{white-space:normal;font-size:13px;line-height:1.35}
+      .top-actions{display:grid;gap:10px;margin-top:18px}
+      .status-pill{justify-content:center;padding:10px 12px;font-size:12px}
+      .monitor-link{height:42px;font-size:13px}
+      .phone-label{display:none}
+      .mac-label{display:inline}
+      .tabs{position:static;align-self:start;grid-template-columns:1fr;padding:12px 14px;gap:8px;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none}
+      .tab{height:48px;text-align:left;padding:0 14px;font-size:13px;border:1px solid transparent}
+      .tab.active{box-shadow:0 10px 24px rgba(21,25,34,.16)}
+      main{height:100dvh;overflow:auto;padding:28px 30px 38px;max-width:none;width:100%;margin:0}
+      .section{margin-bottom:22px}
+      .section-title{font-size:19px}
+      .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .stat{min-height:132px;padding:20px}
+      .stat .value{font-size:38px}
+      .dashboard-wide{grid-template-columns:minmax(0,1.55fr) minmax(360px,.75fr);align-items:start;gap:18px}
+      .segment-strip{grid-auto-flow:initial;grid-auto-columns:auto;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:10px}
+      .segment{min-height:112px;padding:16px}
+      .segment strong{font-size:30px}
+      .toolbar{grid-template-columns:1fr auto;align-items:center}
+      .search-row{min-width:430px}
+      .user-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+      .payment-board{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}
+      .settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .report-layout{grid-template-columns:minmax(520px,.82fr) minmax(360px,.5fr);align-items:start}
+      .report-card{padding:22px}
+      .report-text{font-size:15px}
+      .drawer{left:auto;top:0;right:0;bottom:0;width:min(520px,38vw);max-height:none;border-top:0;border-left:1px solid var(--line);border-radius:0;transform:translateX(105%)}
+      .drawer.open{transform:translateX(0)}
+      .monitor-shell{padding:24px}
+      .monitor-grid{grid-template-columns:minmax(310px,.9fr) minmax(520px,1.35fr) minmax(320px,.85fr);align-items:stretch}
+      .monitor-card.span-2{grid-column:span 2}
+      .toast{left:auto;right:30px;bottom:30px;width:max-content;max-width:520px}
+      .bottom-safe{display:none}
+    }
+    @media (min-width:1440px){
+      .user-list{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .settings-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .monitor-grid{grid-template-columns:minmax(360px,.82fr) minmax(680px,1.45fr) minmax(380px,.82fr)}
+    }
+    @media (max-width:520px){
+      .section-head{align-items:start;flex-direction:column}
+      .section-actions{justify-content:flex-start}
+      .report-top{grid-template-columns:1fr}
+      .report-copy{justify-self:start}
+      .heat-map{grid-template-columns:1fr}
+    }
+    @media (prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+    @keyframes tickerMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  </style>
+</head>
+<body>
+  <div id="loadingState" class="screen-state">
+    <div class="state-card">
+      <h2>Kirish tekshirilyapti</h2>
+      <p>Admin mini ilova Telegram ichidan ochilganda haqiqiy ma'lumotlar yuklanadi.</p>
+    </div>
+  </div>
+
+  <div id="app" class="app" hidden>
+    <aside class="topbar">
+      <div class="topbar-inner">
+        <div class="brand-row">
+          <div class="brand">
+            <div class="brand-mark">HSK</div>
+            <div>
+              <h1>Admin boshqaruv</h1>
+              <p>Bot, foydalanuvchi, obuna va to'lov markazi</p>
+            </div>
+          </div>
+          <div class="top-actions">
+            <div class="status-pill">
+              <span class="pulse"></span>
+              <span>Jonli ma'lumot</span>
+              <strong class="phone-label">Telefon ko'rinishi</strong>
+              <strong class="mac-label">Kompyuter ko'rinishi</strong>
+            </div>
+            <button class="monitor-link" data-action="open-monitor">Katta ekran</button>
+          </div>
+        </div>
+      </div>
+      <nav class="tabs" aria-label="Admin oynalari">
+        <button class="tab active" data-tab="dashboard">Bosh</button>
+        <button class="tab" data-tab="statistics">Statistika</button>
+        <button class="tab" data-tab="users">Odamlar</button>
+        <button class="tab" data-tab="payments">To'lovlar</button>
+        <button class="tab" data-tab="settings">Sozlash</button>
+      </nav>
+    </aside>
+
+    <main>
+      <section id="dashboard" class="view active">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Bugungi boshqaruv</h2>
+              <p id="generatedAt" class="section-note">Yangilanmoqda...</p>
+            </div>
+            <button class="mini-link" data-action="reload">Yangilash</button>
+          </div>
+          <div id="statsGrid" class="grid stats-grid"></div>
+        </div>
+
+        <div class="grid dashboard-wide">
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h2 class="section-title">Foydalanuvchi segmentlari</h2>
+                <p class="section-note">Obuna, to'lov va faollik bo'yicha kesim.</p>
+              </div>
+              <button class="mini-link" data-open-tab="users">Odamlarga o'tish</button>
+            </div>
+            <div id="segments" class="segment-strip"></div>
+          </div>
+
+          <div class="section">
+            <div class="section-head">
+              <div>
+                <h2 class="section-title">Aqlli navbat</h2>
+                <p class="section-note">Admin birinchi ko'rishi kerak bo'lgan ishlar.</p>
+              </div>
+            </div>
+            <div id="queue" class="queue"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="statistics" class="view">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Umumiy statistika</h2>
+              <p class="section-note">Botdagi admin hisobot, mini ilova, to'lov, reklama va kanal signallari.</p>
+            </div>
+            <div class="section-actions">
+              <button class="mini-link" data-action="copy-stats">Hisobotni nusxalash</button>
+              <button class="mini-link" data-action="open-monitor">Katta ekran</button>
+            </div>
+          </div>
+          <div class="report-layout">
+            <article class="report-card">
+              <div class="report-top">
+                <div class="report-title">📊 Statistika</div>
+                <button class="report-copy" data-action="copy-stats">Nusxa olish</button>
+              </div>
+              <pre id="reportText" class="report-text"></pre>
+            </article>
+            <aside class="report-side">
+              <div class="insight-card">
+                <h3>Konversiya yo'li</h3>
+                <div id="conversionBars"></div>
+              </div>
+              <div class="insight-card">
+                <h3>Admin fokusi</h3>
+                <div id="focusList" class="queue"></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section id="users" class="view">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Foydalanuvchilar</h2>
+              <p class="section-note">Oxirgi aktivlar, obunachilar, olmoqchi bo'lganlar va bloklanganlar.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <div class="search-row">
+              <input id="search" class="input" placeholder="ID, telegram nomi, ism yoki tarif bo'yicha qidirish">
+              <button class="icon-btn" data-action="clear-search">X</button>
+            </div>
+            <div id="filters" class="filters"></div>
+          </div>
+          <div id="userList" class="user-list"></div>
+        </div>
+      </section>
+
+      <section id="payments" class="view">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">To'lov navbati</h2>
+              <p class="section-note">Oxirgi to'lov arizalari va tekshiruvdagi to'lovlar.</p>
+            </div>
+            <button class="mini-link" data-admin-section="stats">Botda statistika ochish</button>
+          </div>
+          <div id="paymentBoard" class="payment-board"></div>
+        </div>
+      </section>
+
+      <section id="settings" class="view">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Boshqaruv bo'limlari</h2>
+              <p class="section-note">Har bir tugma botdagi mavjud real admin bo'limini ochadi.</p>
+            </div>
+          </div>
+          <div id="adminModules" class="settings-grid"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">Joriy sozlamalar</h2>
+              <p class="section-note">Narxlar, kanal, reklama va fikr yig'ish holati.</p>
+            </div>
+          </div>
+          <div id="settingsSummary" class="settings-grid"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="bottom-safe"></div>
+
+  <section id="marketMonitor" class="monitor" aria-hidden="true">
+    <div class="monitor-shell">
+      <header class="monitor-top">
+        <div>
+          <div class="monitor-kicker"><span class="monitor-dot"></span><span>Jonli admin oynasi</span></div>
+          <h2 class="monitor-title">Katta ekran</h2>
+          <p class="monitor-sub">Bozor paneli uslubida: foydalanuvchi oqimi, obuna, to'lov, kurs va reklama signallari.</p>
+        </div>
+        <button class="btn secondary" data-action="close-monitor">Yopish</button>
+      </header>
+      <div class="ticker-mask"><div id="tickerTrack" class="ticker-track"></div></div>
+      <div class="monitor-grid">
+        <article class="monitor-card">
+          <h3>Haftalik oqim</h3>
+          <p id="monitorActive" class="big-number">0</p>
+          <p id="monitorNote" class="monitor-note">Yuklanmoqda...</p>
+        </article>
+        <article class="monitor-card span-2">
+          <h3>Kurs va to'lov harakati</h3>
+          <div id="candleChart" class="candle-chart"></div>
+        </article>
+        <article class="monitor-card span-2">
+          <h3>Qizigan bo'limlar</h3>
+          <div id="heatMap" class="heat-map"></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <h2 id="drawerTitle" class="drawer-title">Foydalanuvchi</h2>
+        <p id="drawerSub" class="drawer-sub"></p>
+      </div>
+      <button id="closeDrawer" class="close">X</button>
+    </div>
+    <div id="drawerBody" class="drawer-body"></div>
+  </aside>
+
+  <div id="toast" class="toast">Amal bajarildi</div>
+
+  <script>
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    try{ tg && tg.ready(); tg && tg.expand(); }catch(error){}
+
+    const $ = (id) => document.getElementById(id);
+    const state = {data:null, tab:"dashboard", filter:"all", search:""};
+    const segmentLabels = {
+      all:["Barcha foydalanuvchilar","To'liq baza"],
+      paid:["Obuna olgan","Hozir aktiv"],
+      pending:["To'lov rasmi yuborgan","Tasdiq kutyapti"],
+      wants_pay:["Obuna olmoqchi","Issiq mijoz"],
+      trial:["Sinov","Bepul sinovdagi"],
+      expired:["Muddati tugagan","Qayta sotish"],
+      blocked:["Bloklangan","Admin qarori kerak"]
+    };
+
+    function showToast(text){
+      const toast = $("toast");
+      toast.textContent = text;
+      toast.classList.add("show");
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function setError(title, text){
+      $("loadingState").innerHTML = `<div class="state-card"><h2>${title}</h2><p>${text}</p></div>`;
+      $("loadingState").hidden = false;
+      $("app").hidden = true;
+    }
+
+    async function apiPost(url, payload){
+      const response = await fetch(url, {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "X-Telegram-Init-Data":tg && tg.initData ? tg.initData : ""
+        },
+        body:JSON.stringify(payload || {})
+      });
+      const data = await response.json().catch(() => ({}));
+      if(!response.ok || !data.ok) throw {status:response.status, data};
+      return data;
+    }
+
+    async function loadData(){
+      $("loadingState").hidden = false;
+      try{
+        const data = await apiPost("/api/admin-miniapp/overview", {});
+        state.data = data;
+        $("loadingState").hidden = true;
+        $("app").hidden = false;
+        renderAll();
+      }catch(error){
+        const code = error && error.status;
+        if(code === 401) setError("Kirish rad etildi", "Mini ilovani Telegram ichidan admin tugmasi orqali oching.");
+        else if(code === 403) setError("Admin ruxsati yo'q", "Bu mini ilova faqat adminlar uchun.");
+        else setError("Ulanish xatosi", "Serverdan ma'lumot olib bo'lmadi. Keyinroq qayta oching.");
+      }
+    }
+
+    function tag(label, color){
+      return `<span class="tag ${color || ""}">${escapeHtml(label)}</span>`;
+    }
+
+    function escapeHtml(value){
+      return String(value == null ? "" : value).replace(/[&<>"']/g, (char) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+      }[char]));
+    }
+
+    function statusTone(user){
+      if(user.payment_status === "approved" && user.status === "active") return ["Obunachi","green"];
+      if(user.payment_status === "pending") return ["To'lov tekshiruvda","amber"];
+      if(user.status === "expired") return ["Muddati tugagan","red"];
+      if(user.status === "blocked") return ["Bloklangan","red"];
+      return [user.status_label || "Holat yo'q","violet"];
+    }
+
+    function renderStats(){
+      $("generatedAt").textContent = `Oxirgi yangilanish: ${state.data.generated_at || "—"}`;
+      $("statsGrid").innerHTML = (state.data.summary || []).map(item => `
+        <article class="stat ${item.tone || ""}">
+          <div class="label">${escapeHtml(item.label)}</div>
+          <div>
+            <div class="value">${escapeHtml(item.value)}</div>
+            <div class="delta">${escapeHtml(item.note)}</div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderSegments(){
+      const counts = state.data.segments || {};
+      $("segments").innerHTML = Object.keys(segmentLabels).map(key => {
+        const item = segmentLabels[key];
+        return `<button class="segment ${state.filter === key ? "active" : ""}" data-filter="${key}">
+          <strong>${counts[key] || 0}</strong>
+          <span>${item[0]}</span>
+          <span>${item[1]}</span>
+        </button>`;
+      }).join("");
+    }
+
+    function renderQueue(){
+      $("queue").innerHTML = (state.data.queue || []).map((item,index) => `
+        <button class="queue-item" data-open-tab="${item.section === "payments" ? "payments" : item.section === "ads" ? "settings" : "users"}">
+          <span class="rank">${index + 1}</span>
+          <span><span class="queue-title">${escapeHtml(item.title)}</span><span class="queue-meta">${escapeHtml(item.note)}</span></span>
+          <span class="score">${escapeHtml(item.priority)}</span>
+        </button>
+      `).join("");
+      $("focusList").innerHTML = $("queue").innerHTML;
+    }
+
+    function renderReport(){
+      $("reportText").textContent = state.data.report_text || "";
+      const course = state.data.course || {};
+      const payments = state.data.counts || {};
+      const opened = Math.max(Number(course.opened_users || 0), 1);
+      const rows = [
+        ["Ochildi", course.opened_users || 0, 100],
+        ["Dars", course.lesson_users || 0, Math.round((course.lesson_users || 0) / opened * 100)],
+        ["Tugatdi", course.completed_users || 0, Math.round((course.completed_users || 0) / opened * 100)],
+        ["To'lovli", payments.paid_users || 0, Math.round((payments.paid_users || 0) / opened * 100)]
+      ];
+      $("conversionBars").innerHTML = rows.map(row => `
+        <div class="bar-row"><span>${row[0]}</span><div class="bar-track"><span style="width:${Math.min(row[2],100)}%"></span></div><b>${row[1]}</b></div>
+      `).join("");
+    }
+
+    function filterUsers(){
+      const q = state.search.trim().toLowerCase();
+      return (state.data.users || []).filter(user => {
+        const byFilter =
+          state.filter === "all" ||
+          (state.filter === "paid" && user.payment_status === "approved" && user.status === "active") ||
+          (state.filter === "pending" && user.payment_status === "pending") ||
+          (state.filter === "wants_pay" && ["none","draft","rejected"].includes(user.payment_status) && user.status !== "blocked") ||
+          (state.filter === "trial" && user.status === "trial") ||
+          (state.filter === "expired" && user.status === "expired") ||
+          (state.filter === "blocked" && user.status === "blocked");
+        const hay = `${user.id} ${user.name} ${user.username || ""} ${user.language} ${user.level} ${user.status_label} ${user.payment_label} ${user.plan} ${user.method}`.toLowerCase();
+        return byFilter && (!q || hay.includes(q));
+      });
+    }
+
+    function renderFilters(){
+      const counts = state.data.segments || {};
+      $("filters").innerHTML = Object.keys(segmentLabels).map(key => `
+        <button class="chip ${state.filter === key ? "active" : ""}" data-filter="${key}">
+          ${segmentLabels[key][0]} ${counts[key] || 0}
+        </button>
+      `).join("");
+    }
+
+    function renderUsers(){
+      const rows = filterUsers();
+      $("userList").innerHTML = rows.length ? rows.map(user => {
+        const tone = statusTone(user);
+        return `<button class="user-card" data-user="${user.id}">
+          <div class="user-main">
+            <div>
+              <p class="user-name">${escapeHtml(user.name)}</p>
+              <div class="user-sub">${user.username ? "@" + escapeHtml(user.username) + " · " : ""}${user.id}<br>${escapeHtml(user.language)} · ${escapeHtml(user.level)} · ${escapeHtml(user.last_active)}</div>
+            </div>
+            ${tag(tone[0], tone[1])}
+          </div>
+          <div class="tag-row">
+            ${tag(user.plan, "blue")}
+            ${tag(user.method, "")}
+            ${tag(user.end_date ? "tugaydi " + user.end_date : "aktiv obuna yo'q", user.end_date ? "green" : "red")}
+          </div>
+          <div class="split">
+            <div class="small-metric"><b>${escapeHtml(user.questions)}</b><span>AI savollar</span></div>
+            <div class="small-metric"><b>${escapeHtml(user.streak)}</b><span>o'qish seriyasi</span></div>
+          </div>
+        </button>`;
+      }).join("") : `<div class="payment-card">Bu saralash bo'yicha foydalanuvchi topilmadi.</div>`;
+    }
+
+    function renderPayments(){
+      const groups = [
+        ["Tekshiruvdagi to'lovlar", (state.data.payments.latest || []).filter(item => item.status === "pending")],
+        ["Oxirgi tasdiqlanganlar", (state.data.payments.latest || []).filter(item => item.status === "approved")],
+        ["Rad etilganlar", (state.data.payments.latest || []).filter(item => item.status === "rejected")]
+      ];
+      $("paymentBoard").innerHTML = groups.map(group => `
+        <div>
+          <div class="section-head"><h2 class="section-title">${group[0]}</h2></div>
+          <div class="grid">
+            ${group[1].map(payment => `
+              <article class="payment-card">
+                <div class="pay-head">
+                  <div>
+                    <p class="user-name">${escapeHtml(payment.name)}</p>
+                    <div class="user-sub">${payment.username ? "@" + escapeHtml(payment.username) + " · " : ""}${payment.telegram_id}<br>${escapeHtml(payment.plan)} · ${escapeHtml(payment.method)} · ${escapeHtml(payment.submitted_at || "—")}</div>
+                  </div>
+                  <div class="amount">${escapeHtml(payment.amount)}</div>
+                </div>
+                <div class="tag-row">${tag(payment.status_label, payment.status === "approved" ? "green" : payment.status === "pending" ? "amber" : "red")}${tag(payment.has_screenshot ? "rasm bor" : "rasm yo'q","")}</div>
+              </article>
+            `).join("") || `<article class="payment-card"><div class="user-sub">Hozircha bo'sh.</div></article>`}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderModules(){
+      $("adminModules").innerHTML = (state.data.modules || []).map(item => `
+        <button class="setting-row" data-admin-section="${item.key}">
+          <div><h3>${item.icon} ${escapeHtml(item.title)}</h3><p>${escapeHtml(item.note)}</p></div>
+          <span class="tag green">botda ochish</span>
+        </button>
+      `).join("");
+      const channels = state.data.channels || {};
+      const ads = state.data.ads || {};
+      const feedback = state.data.feedback || {};
+      const prices = state.data.prices || [];
+      $("settingsSummary").innerHTML = [
+        ["💳 Narxlar", prices.map(item => `${item.method} ${item.plan}: ${item.amount}`).join(" · ") || "Narx topilmadi", "prices"],
+        ["📣 Majburiy kanal", `${channels.enabled ? "Yoqilgan" : "O'chirilgan"} · aktiv kanal: ${channels.active_count || 0}`, "channels"],
+        ["📢 Reklama", `kampaniya: ${ads.total || 0} · faol: ${ads.active || 0} · xato: ${ads.failed || 0}`, "ads"],
+        ["🆕 Yangilik fikri", `kutilmoqda: ${feedback.pending || 0} · tugagan: ${feedback.completed || 0}`, "release_feedback"]
+      ].map(item => `
+        <button class="setting-row" data-admin-section="${item[2]}">
+          <div><h3>${item[0]}</h3><p>${escapeHtml(item[1])}</p></div>
+          <span class="tag blue">boshqarish</span>
+        </button>
+      `).join("");
+    }
+
+    function renderMonitor(){
+      const monitor = state.data.monitor || {};
+      const counts = state.data.counts || {};
+      const ticker = (monitor.ticker || []).concat(monitor.ticker || []);
+      $("tickerTrack").innerHTML = ticker.map(item => `
+        <span class="ticker-item"><span class="${item.tone || "flat"}">●</span>${escapeHtml(item.label)} <b>${escapeHtml(item.value)}</b></span>
+      `).join("");
+      $("monitorActive").textContent = counts.active_week || 0;
+      $("monitorNote").textContent = `${counts.active_24h || 0} foydalanuvchi 24 soatda aktiv. Tekshiruvdagi to'lov: ${counts.pending_payments || 0}.`;
+      const values = [34,46,28,62,75,38,83,69,92,44,58,88,71,31,67,78,96,49];
+      $("candleChart").innerHTML = values.map((value,index) => `<span class="candle ${index % 5 === 2 ? "risk" : ""}" style="--h:${value}%"></span>`).join("");
+      $("heatMap").innerHTML = (monitor.heat || []).map(item => `
+        <div class="heat-cell ${item.tone || ""}"><strong>${escapeHtml(item.value)}</strong><span>${escapeHtml(item.label)}</span></div>
+      `).join("");
+    }
+
+    function openUser(id){
+      const user = (state.data.users || []).find(item => String(item.id) === String(id));
+      if(!user) return;
+      $("drawerTitle").textContent = user.name;
+      $("drawerSub").textContent = `${user.username ? "@" + user.username + " · " : ""}${user.id} · ${user.last_active}`;
+      $("drawerBody").innerHTML = `
+        <section class="detail-section">
+          <h3 class="detail-title">Ruxsat va obuna</h3>
+          <div class="kv">
+            <span>Holat</span><b>${escapeHtml(user.status_label)}</b>
+            <span>To'lov</span><b>${escapeHtml(user.payment_label)}</b>
+            <span>Tarif</span><b>${escapeHtml(user.plan)}</b>
+            <span>Usul</span><b>${escapeHtml(user.method)}</b>
+            <span>Tugash sanasi</span><b>${escapeHtml(user.end_date || "yo'q")}</b>
+          </div>
+        </section>
+        <section class="detail-section">
+          <h3 class="detail-title">O'qish</h3>
+          <div class="kv">
+            <span>Til</span><b>${escapeHtml(user.language)}</b>
+            <span>Daraja</span><b>${escapeHtml(user.level)}</b>
+            <span>Rejim</span><b>${escapeHtml(user.mode)}</b>
+            <span>Savollar</span><b>${escapeHtml(user.questions)}</b>
+            <span>Bonus</span><b>${escapeHtml(user.bonus_left)}</b>
+            <span>Seriya</span><b>${escapeHtml(user.streak)} kun</b>
+          </div>
+        </section>
+        <section class="detail-section">
+          <h3 class="detail-title">Admin amali</h3>
+          <button class="btn" data-admin-section="user_search">Botda foydalanuvchi qidirishni ochish</button>
+        </section>
+      `;
+      $("drawer").classList.add("open");
+      $("drawer").setAttribute("aria-hidden","false");
+    }
+
+    function closeDrawer(){
+      $("drawer").classList.remove("open");
+      $("drawer").setAttribute("aria-hidden","true");
+    }
+
+    function switchTab(tab){
+      state.tab = tab;
+      document.querySelectorAll(".tab").forEach(btn => btn.classList.toggle("active", btn.dataset.tab === tab));
+      document.querySelectorAll(".view").forEach(view => view.classList.toggle("active", view.id === tab));
+      window.scrollTo({top:0,behavior:"smooth"});
+    }
+
+    function openMonitor(){
+      closeDrawer();
+      $("marketMonitor").classList.add("open");
+      $("marketMonitor").setAttribute("aria-hidden","false");
+      document.body.classList.add("locked");
+    }
+
+    function closeMonitor(){
+      $("marketMonitor").classList.remove("open");
+      $("marketMonitor").setAttribute("aria-hidden","true");
+      document.body.classList.remove("locked");
+    }
+
+    async function copyText(text){
+      try{
+        if(navigator.clipboard){ await navigator.clipboard.writeText(text); return true; }
+      }catch(error){}
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly","");
+      area.style.position = "fixed";
+      area.style.left = "-9999px";
+      document.body.appendChild(area);
+      area.select();
+      let ok = false;
+      try{ ok = document.execCommand("copy"); }catch(error){ ok = false; }
+      area.remove();
+      return ok;
+    }
+
+    async function openAdminSection(section){
+      try{
+        await apiPost("/api/admin-miniapp/open-section", {section});
+        showToast("Botga bo'lim tugmasi yuborildi");
+        try{ tg && tg.close(); }catch(error){}
+      }catch(error){
+        showToast("Bo'limni ochib bo'lmadi");
+      }
+    }
+
+    function renderAll(){
+      renderStats();
+      renderSegments();
+      renderQueue();
+      renderReport();
+      renderFilters();
+      renderUsers();
+      renderPayments();
+      renderModules();
+      renderMonitor();
+    }
+
+    document.addEventListener("click", (event) => {
+      const tab = event.target.closest("[data-tab]");
+      if(tab){ switchTab(tab.dataset.tab); return; }
+      const openTab = event.target.closest("[data-open-tab]");
+      if(openTab){ switchTab(openTab.dataset.openTab); return; }
+      const filter = event.target.closest("[data-filter]");
+      if(filter){
+        state.filter = filter.dataset.filter;
+        renderSegments(); renderFilters(); renderUsers();
+        switchTab("users");
+        return;
+      }
+      const user = event.target.closest("[data-user]");
+      if(user){ openUser(user.dataset.user); return; }
+      const section = event.target.closest("[data-admin-section]");
+      if(section){ openAdminSection(section.dataset.adminSection); return; }
+      const action = event.target.closest("[data-action]");
+      if(!action) return;
+      const name = action.dataset.action;
+      if(name === "reload"){ loadData(); return; }
+      if(name === "clear-search"){ $("search").value = ""; state.search = ""; renderUsers(); return; }
+      if(name === "copy-stats"){
+        copyText(state.data && state.data.report_text ? state.data.report_text : "");
+        showToast("Hisobot nusxalandi");
+        return;
+      }
+      if(name === "open-monitor"){ openMonitor(); return; }
+      if(name === "close-monitor"){ closeMonitor(); return; }
+    });
+
+    $("search").addEventListener("input", (event) => {
+      state.search = event.target.value;
+      renderUsers();
+    });
+    $("closeDrawer").addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", (event) => {
+      if(event.key === "Escape"){ closeDrawer(); closeMonitor(); }
+    });
+
+    loadData();
+  </script>
+</body>
+</html>

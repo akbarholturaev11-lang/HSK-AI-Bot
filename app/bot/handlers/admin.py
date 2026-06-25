@@ -3,7 +3,7 @@ from aiogram.dispatcher.event.bases import SkipHandler
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from sqlalchemy import select, func
 from datetime import datetime, timezone, timedelta
 from decimal import Decimal, InvalidOperation
@@ -63,6 +63,7 @@ from app.bot.utils.workflow_message import (
     edit_callback_workflow_message,
     edit_stored_workflow_message,
 )
+from app.bot.utils.course_miniapp import admin_miniapp_url
 
 router = Router()
 
@@ -83,6 +84,7 @@ def _pct(part: int, total: int) -> float:
 
 def admin_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🧭 Admin mini ilova", web_app=WebAppInfo(url=admin_miniapp_url()))],
         [InlineKeyboardButton(text="📊 Statistika", callback_data="adm:stats")],
         [InlineKeyboardButton(text="🔎 Foydalanuvchi qidirish", callback_data="adm:user_search_info")],
         [InlineKeyboardButton(text="💼 Portfel", callback_data="adm:portfolio")],
@@ -108,6 +110,7 @@ def admin_back_keyboard() -> InlineKeyboardMarkup:
 
 def admin_stats_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🧭 Admin mini ilovada ochish", web_app=WebAppInfo(url=admin_miniapp_url()))],
         [InlineKeyboardButton(text="📝 Otziv statistikasi", callback_data="adm:feedback_stats")],
         [InlineKeyboardButton(text="⬅️ Admin panel", callback_data="adm:menu")],
     ])

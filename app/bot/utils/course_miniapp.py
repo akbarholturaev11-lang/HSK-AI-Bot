@@ -151,6 +151,12 @@ def subscription_miniapp_url(
     return f"{base_url}{separator}{urlencode(params)}"
 
 
+def admin_miniapp_url() -> str:
+    base_url = _miniapp_base_url_for_file("admin-control.html")
+    separator = "&" if "?" in base_url else "?"
+    return f"{base_url}{separator}{urlencode({'v': MINIAPP_ASSET_VERSION})}"
+
+
 def format_miniapp_quiz_intro(lang: str, lesson, block_no: int | None = None) -> str:
     text = t("course_miniapp_quiz_intro", lang, lesson_id=course_miniapp_lesson_id(lesson))
     if not block_no:
