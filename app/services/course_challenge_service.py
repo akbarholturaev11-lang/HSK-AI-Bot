@@ -304,9 +304,9 @@ class CourseChallengeService:
     @staticmethod
     def _invite_keyboard(challenge_id: int, lang: str) -> InlineKeyboardMarkup:
         labels = {
-            "uz": ("Qabul qilish", "Rad qilish", "Mini Appni ochish"),
-            "ru": ("Принять", "Отклонить", "Открыть Mini App"),
-            "tj": ("Қабул", "Рад", "Кушодани Mini App"),
+            "uz": ("Vizovni qabul qilish", "Rad qilish", "Mini Appni ochish"),
+            "ru": ("Принять вызов", "Отклонить", "Открыть Mini App"),
+            "tj": ("Қабул кардани даъват", "Рад кардан", "Кушодани Mini App"),
         }
         accept, reject, open_app = labels.get(lang, labels["uz"])
         return InlineKeyboardMarkup(
@@ -344,12 +344,18 @@ class CourseChallengeService:
 
     async def notify_invite(self, bot, challenge: CourseChallenge, challenger: User, opponent: User) -> None:
         lang = normalize_miniapp_lang(opponent.language)
+        name = challenger.full_name or challenger.username or "HSK Student"
         title = {
-            "uz": "Siz bilan belashuv boshlashmoqchi.",
-            "ru": "Вас вызвали на учебный поединок.",
-            "tj": "Шуморо ба белашув даъват карданд.",
+            "uz": f"{name} sizga belashuv tashladi.",
+            "ru": f"{name} бросил вам вызов.",
+            "tj": f"{name} ба шумо рақобат фиристод.",
         }.get(lang)
-        text = f"{title}\n\n👤 {challenger.full_name or challenger.username or 'HSK Student'}\n📚 {challenge.level.upper()}\n\nMini App profilida ham qabul/rad qilishingiz mumkin."
+        body = {
+            "uz": "10 ta bir xil savol, bir xil sharoit. Qabul qilsangiz raund ochiladi va natija profilga tushadi.",
+            "ru": "10 одинаковых вопросов, равные условия. Примите вызов, закройте раунд и заберите результат в профиле.",
+            "tj": "10 саволи якхела, шароити баробар. Қабул кунед, раундро анҷом диҳед ва натиҷаро дар профил бинед.",
+        }.get(lang)
+        text = f"{title}\n\n{body}\n\nLevel: {challenge.level.upper()}"
         try:
             await bot.send_message(
                 chat_id=int(opponent.telegram_id),
@@ -365,11 +371,19 @@ class CourseChallengeService:
         if not challenger or not opponent:
             return
         lang = normalize_miniapp_lang(challenger.language)
-        text = (
-            f"{opponent.full_name or opponent.username or 'User'} belashuvni qabul qildi. Mini App profilidan boshlang."
-            if accepted
-            else f"{opponent.full_name or opponent.username or 'User'} belashuvni rad qildi."
-        )
+        name = opponent.full_name or opponent.username or "User"
+        if accepted:
+            text = {
+                "uz": f"{name} vizovni qabul qildi. Duel ochiq, Mini App profilidan boshlang.",
+                "ru": f"{name} принял вызов. Дуэль открыта, стартуйте из профиля Mini App.",
+                "tj": f"{name} даъватро қабул кард. Дуэл кушода аст, аз профили Mini App оғоз кунед.",
+            }.get(lang)
+        else:
+            text = {
+                "uz": f"{name} vizovni rad qildi.",
+                "ru": f"{name} отклонил вызов.",
+                "tj": f"{name} даъватро рад кард.",
+            }.get(lang)
         try:
             await bot.send_message(
                 chat_id=int(challenger.telegram_id),
@@ -384,11 +398,22 @@ class CourseChallengeService:
         other = users.get(other_id)
         if not other:
             return
+        lang = normalize_miniapp_lang(other.language)
+        role = "challenger" if int(user.id) == int(challenge.challenger_user_id) else "opponent"
+        score = challenge.challenger_score if role == "challenger" else challenge.opponent_score
+        total = challenge.challenger_total if role == "challenger" else challenge.opponent_total
+        name = user.full_name or user.username or "User"
+        score_text = f"{score}/{total}" if score is not None and total else ""
+        text = {
+            "uz": f"{name} testni yopdi{f' — {score_text}' if score_text else ''}. Endi navbat sizda: profilni ochib raundni yakunlang.",
+            "ru": f"{name} уже закрыл тест{f' — {score_text}' if score_text else ''}. Теперь ваш ход: откройте профиль и завершите раунд.",
+            "tj": f"{name} тестро анҷом дод{f' — {score_text}' if score_text else ''}. Акнун навбати шумо: профилро кушоед ва раундро анҷом диҳед.",
+        }.get(lang)
         try:
             await bot.send_message(
                 chat_id=int(other.telegram_id),
-                text=f"{user.full_name or user.username or 'User'} belashuvni tugatdi. Natijani Mini App profilida ko'ring.",
-                reply_markup=self._invite_keyboard(int(challenge.id), normalize_miniapp_lang(other.language)),
+                text=text,
+                reply_markup=self._open_keyboard(lang),
             )
         except Exception:
             return

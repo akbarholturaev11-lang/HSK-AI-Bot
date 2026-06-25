@@ -39,7 +39,7 @@ iframe{display:block;width:100%;height:var(--miniapp-height,100dvh);border:0;bac
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 </style>
-<link rel="stylesheet" href="/study-v2.css?v=20260625-duo-test-1">
+<link rel="stylesheet" href="/study-v2.css?v=20260625-challenge-nav-2">
 </head>
 <body>
 <header class="top"><div class="title" id="app-title">HSK Study</div><button class="settings" id="settings-btn" aria-label="Settings">⚙</button></header>
@@ -148,7 +148,7 @@ button:active{transform:scale(.97)}
 @keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}
 </style>
-<link rel="stylesheet" href="/study-v2.css">
+<link rel="stylesheet" href="/study-v2.css?v=20260625-challenge-nav-2">
 </head>
 <body>
 <section id="page-lessons" class="page active"><header class="page-header"><div class="eyebrow" id="level-label"></div><h1 class="page-title" data-i18n="lessons"></h1><p class="page-sub" data-i18n="lessonSub"></p></header><div class="kpis" id="kpis"></div><main class="list" id="lesson-list"></main></section>
@@ -247,13 +247,18 @@ window.setAppAccess=function(next){ACCESS=next||bridge.getAccess?.()||ACCESS;ren
 window.setAppLanguage=function(next){lang=["uz","ru","tj"].includes(next)?next:"uz";ACCESS=bridge.getAccess?.()||ACCESS;setLabels();renderLessons();renderFlashcards();renderGrammar();questions=[];renderQuizFilters();if(page==="voice")renderVoiceFrame(true)};
 setLabels();renderLessons();renderFlashcards();renderGrammar();renderQuizFilters();applyLaunchRoute()
 </script>
-<script src="/study-v2.js?v=20260625-duo-test-1"></script>
+<script src="/study-v2.js?v=20260625-challenge-nav-2"></script>
 </body>
 </html>
 </template>
 <script>
 const tg=window.Telegram?.WebApp;
-function miniAppViewportHeight(){return Math.floor(Number(tg?.viewportHeight||tg?.viewportStableHeight||0)||window.innerHeight||document.documentElement.clientHeight||0)}
+function miniAppViewportHeight(){
+  const values=[];
+  const add=value=>{const number=Math.floor(Number(value)||0);if(number>320)values.push(number)};
+  add(tg?.viewportHeight);add(tg?.viewportStableHeight);add(window.innerHeight);add(document.documentElement.clientHeight);
+  return values.length?Math.min(...values):Math.floor(window.innerHeight||document.documentElement.clientHeight||0);
+}
 function syncMiniAppViewport(){
   const height=miniAppViewportHeight();
   if(height>0)document.documentElement.style.setProperty("--miniapp-height",`${height}px`);

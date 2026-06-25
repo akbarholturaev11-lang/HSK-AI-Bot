@@ -105,9 +105,12 @@ Object.assign(copy.ru,{chooseAnswer:"Выберите ответ",continueAnswer
 Object.assign(copy.uz,{chooseAnswer:"Javobni tanlang",continueAnswer:"Davom etish",testComplete:"Test tugadi",youGot:"Natijangiz",correctAnswer:"To'g'ri javob",listenAndAnswer:"Tinglang va javobni tanlang",tapToListen:"Tinglash uchun bosing",repeat:"Qayta takrorlash kerak",good:"Yaxshi natija",excellent:"A'lo natija",noErrors:"Xato yo'q"});
 Object.assign(copy.tj,{chooseAnswer:"Ҷавобро интихоб кунед",continueAnswer:"Идома",testComplete:"Тест анҷом шуд",youGot:"Натиҷаи шумо",correctAnswer:"Ҷавоби дуруст",listenAndAnswer:"Гӯш кунед ва ҷавобро интихоб кунед",tapToListen:"Барои шунидан пахш кунед",repeat:"Бояд такрор кард",good:"Натиҷаи хуб",excellent:"Натиҷаи аъло",noErrors:"Хато нест"});
 function syncV2ViewportHeight(){
-  let height=0;
-  try{height=Number(bridge?.getViewportHeight?.()||parent.Telegram?.WebApp?.viewportHeight||parent.Telegram?.WebApp?.viewportStableHeight||0)}catch(_){}
-  height=Math.floor(height||window.innerHeight||document.documentElement.clientHeight||0);
+  const values=[];
+  const add=value=>{const number=Math.floor(Number(value)||0);if(number>320)values.push(number)};
+  try{add(bridge?.getViewportHeight?.())}catch(_){}
+  try{add(parent.Telegram?.WebApp?.viewportHeight);add(parent.Telegram?.WebApp?.viewportStableHeight)}catch(_){}
+  add(window.innerHeight);add(document.documentElement.clientHeight);
+  const height=values.length?Math.min(...values):Math.floor(window.innerHeight||document.documentElement.clientHeight||0);
   if(height>0)document.documentElement.style.setProperty("--v2-viewport-height",`${height}px`);
 }
 window.syncV2ViewportHeight=syncV2ViewportHeight;
@@ -367,9 +370,9 @@ async function loadServerChallenges(force=false){
 }
 function challengeText(key,params={}){
   const text={
-    ru:{notifications:"Уведомления",duels:"Беллашув",duelStart:"Беллашув",duelSent:"Вызов отправлен",duelIncoming:"Вас вызвали на беллашув",duelAccepted:"Беллашув принят",duelDone:"Беллашув завершён",duelEmpty:"Пока нет беллашувов",accept:"Принять",reject:"Отклонить",start:"Начать",continue:"Продолжить",waiting:"Ждём второго участника",win:"Победа",lose:"Поражение",draw:"Ничья",score:"{a} / {b}",started:"Беллашув начался",cannotStart:"Беллашув недоступен"},
-    uz:{notifications:"Bildirishnomalar",duels:"Belashuvlar",duelStart:"Belashuv",duelSent:"Belashuv yuborildi",duelIncoming:"Siz bilan belashuvchilar paydo bo'ldi",duelAccepted:"Belashuv qabul qilindi",duelDone:"Belashuv tugadi",duelEmpty:"Hozircha belashuv yo'q",accept:"Qabul qilish",reject:"Rad qilish",start:"Boshlash",continue:"Davom etish",waiting:"Ikkinchi userni kutyapmiz",win:"G'alaba",lose:"Mag'lubiyat",draw:"Durrang",score:"{a} / {b}",started:"Belashuv boshlandi",cannotStart:"Belashuv ochilmadi"},
-    tj:{notifications:"Огоҳиномаҳо",duels:"Белашувҳо",duelStart:"Белашув",duelSent:"Белашув фиристода шуд",duelIncoming:"Бо шумо белашув пайдо шуд",duelAccepted:"Белашув қабул шуд",duelDone:"Белашув анҷом шуд",duelEmpty:"Ҳоло белашув нест",accept:"Қабул",reject:"Рад",start:"Оғоз",continue:"Идома",waiting:"Иштирокчии дуюмро интизорем",win:"Ғалаба",lose:"Бохт",draw:"Баробар",score:"{a} / {b}",started:"Белашув оғоз шуд",cannotStart:"Белашув кушода нашуд"}
+    ru:{notifications:"Уведомления",duels:"Поединки",duelStart:"Вызвать на батл",duelSent:"Вызов отправлен. Соперник получил сигнал, раунд ждёт ответа.",duelIncoming:"Вам бросили вызов: 10 одинаковых вопросов, чистая дуэль, счёт решает.",duelAccepted:"Вызов принят. Пора закрыть тест и забрать раунд.",duelDone:"Поединок завершён",duelEmpty:"Пока нет поединков",accept:"Принять вызов",reject:"Отклонить",start:"Начать дуэль",continue:"Продолжить",waiting:"Соперник ещё не закрыл тест",win:"Победа. Раунд ваш.",lose:"Поражение. Реванш можно взять позже.",draw:"Ничья. Решила скорость.",score:"{a} / {b}",started:"Дуэль началась",cannotStart:"Дуэль недоступна"},
+    uz:{notifications:"Bildirishnomalar",duels:"Belashuvlar",duelStart:"Belashuvga chaqirish",duelSent:"Vizov yuborildi. Raqib signal oldi, raund javob kutyapti.",duelIncoming:"Sizga belashuv tashlandi: 10 ta bir xil savol, toza duel, hisob hal qiladi.",duelAccepted:"Vizov qabul qilindi. Testni yopib raundni oling.",duelDone:"Belashuv tugadi",duelEmpty:"Hozircha belashuv yo'q",accept:"Vizovni qabul qilish",reject:"Rad qilish",start:"Duelni boshlash",continue:"Davom etish",waiting:"Raqib hali testni yopmadi",win:"G'alaba. Raund sizniki.",lose:"Yutqazdingiz. Keyin revansh olish mumkin.",draw:"Durrang. Tezlik hal qildi.",score:"{a} / {b}",started:"Duel boshlandi",cannotStart:"Duel ochilmadi"},
+    tj:{notifications:"Огоҳиномаҳо",duels:"Рақобатҳо",duelStart:"Ба рақобат даъват кардан",duelSent:"Даъват фиристода шуд. Рақиб сигнал гирифт, раунд ҷавобро интизор аст.",duelIncoming:"Ба шумо даъвати рақобат омад: 10 саволи якхела, дуэли тоза, ҳисоб ҳал мекунад.",duelAccepted:"Даъват қабул шуд. Тестро анҷом диҳед ва раундро гиред.",duelDone:"Рақобат анҷом шуд",duelEmpty:"Ҳоло рақобат нест",accept:"Қабул кардани даъват",reject:"Рад кардан",start:"Оғози дуэл",continue:"Идома",waiting:"Рақиб ҳоло тестро анҷом надод",win:"Ғалаба. Раунд аз они шумо.",lose:"Бохт. Баъд реванш гирифтан мумкин.",draw:"Баробар. Суръат ҳал кард.",score:"{a} / {b}",started:"Дуэл оғоз шуд",cannotStart:"Дуэл кушода нашуд"}
   };
   return String((text[lang]||text.uz)[key]||key).replace(/\{(\w+)\}/g,(_,name)=>params[name]??"");
 }
@@ -649,6 +652,7 @@ async function submitChallengeResult(){
 function openLeagueUser(index){
   const item=leagueEntries()[Number(index)];
   if(!item)return;
+  syncV2ViewportHeight();
   document.getElementById("v2-sheet")?.remove();
   const points=Number(item.league_points??item.xp??0);
   const root=document.createElement("div");root.id="v2-sheet";root.className="v2-sheet-backdrop";
@@ -964,6 +968,11 @@ renderQuizStart=renderDuoQuizStart;
 renderQuizQuestion=renderDuoQuestion;
 selectAnswer=selectQuizAnswer;
 nextQuestion=nextQuestionDuo;
+const legacyRenderQuizFilters=renderQuizFilters;
+renderQuizFilters=function(){
+  legacyRenderQuizFilters();
+  if(!document.getElementById("page-quiz")?.classList.contains("active"))setDuoQuizMode(false);
+};
 async function confirmLessonJump(){
   const section=jumpTarget;if(!section)return;
   const passed=Number(lastQuizPercent||0)>=70;
