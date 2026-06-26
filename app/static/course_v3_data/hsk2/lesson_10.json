@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 10,
+  "title": "快点儿",
+  "subtitle": {
+    "uz": "Mavzu: Tezlik, intensivlik, 一点儿. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Скорость и 一点儿. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Суръат ва 一点儿. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "快",
+      "pinyin": "kuài",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "tez",
+        "ru": "быстрый",
+        "tj": "тез"
+      },
+      "no": 1
+    },
+    {
+      "zh": "点儿",
+      "pinyin": "diǎnr",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "biroz, -roq",
+        "ru": "немного",
+        "tj": "каме"
+      },
+      "no": 2
+    },
+    {
+      "zh": "慢点儿",
+      "pinyin": "màn diǎnr",
+      "pos": "expr.",
+      "meaning": {
+        "uz": "sekinroq",
+        "ru": "помедленнее",
+        "tj": "сусттар"
+      },
+      "no": 3
+    },
+    {
+      "zh": "早",
+      "pinyin": "zǎo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "erta",
+        "ru": "рано",
+        "tj": "барвақт"
+      },
+      "no": 4
+    },
+    {
+      "zh": "晚",
+      "pinyin": "wǎn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "kech",
+        "ru": "поздно",
+        "tj": "дер"
+      },
+      "no": 5
+    },
+    {
+      "zh": "马上",
+      "pinyin": "mǎshàng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hoziroq",
+        "ru": "сразу",
+        "tj": "ҳозир"
+      },
+      "no": 6
+    },
+    {
+      "zh": "等",
+      "pinyin": "děng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutmoq",
+        "ru": "ждать",
+        "tj": "интизор шудан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 快点儿. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“快点儿”。",
+        "ru": "Ключевая фраза урока: 快点儿. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“快点儿”。",
+        "tj": "Ибораи асосии дарс: 快点儿. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“快点儿”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“快点儿”。",
+          "pinyin": "Jīntiān wǒmen xuéxí kuài diǎnr.",
+          "translation": {
+            "uz": "Biz Tezlik, intensivlik, 一点儿 mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Скорость и 一点儿.",
+            "tj": "Мо мавзӯи Суръат ва 一点儿-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是快。",
+          "pinyin": "Zhège cí shì kuài.",
+          "translation": {
+            "uz": "Bu so'z: tez.",
+            "ru": "Это слово: быстрый.",
+            "tj": "Ин калима: тез."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "快。",
+          "pinyin": "kuài.",
+          "translation": {
+            "uz": "快 — kuài deb o'qiladi.",
+            "ru": "快 читается как kuài.",
+            "tj": "快 ҳамчун kuài хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Tezlik, intensivlik, 一点儿",
+        "ru": "Скорость и 一点儿",
+        "tj": "Суръат ва 一点儿"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“快点儿”。",
+          "pinyin": "Jīntiān wǒmen xuéxí kuài diǎnr.",
+          "text": {
+            "uz": "Bugun Tezlik, intensivlik, 一点儿 mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Скорость и 一点儿.",
+            "tj": "Имрӯз мавзӯи Суръат ва 一点儿-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "快。",
+          "pinyin": "kuài.",
+          "text": {
+            "uz": "快 — kuài deb o'qiladi.",
+            "ru": "快 читается как kuài.",
+            "tj": "快 ҳамчун kuài хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "快",
+            "pinyin": "kuài",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "tez",
+              "ru": "быстрый",
+              "tj": "тез"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "点儿",
+            "pinyin": "diǎnr",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "biroz, -roq",
+              "ru": "немного",
+              "tj": "каме"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "慢点儿",
+            "pinyin": "màn diǎnr",
+            "pos": "expr.",
+            "meaning": {
+              "uz": "sekinroq",
+              "ru": "помедленнее",
+              "tj": "сусттар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "早",
+            "pinyin": "zǎo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "erta",
+              "ru": "рано",
+              "tj": "барвақт"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "晚",
+            "pinyin": "wǎn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "kech",
+              "ru": "поздно",
+              "tj": "дер"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "马上",
+            "pinyin": "mǎshàng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "hoziroq",
+              "ru": "сразу",
+              "tj": "ҳозир"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "等",
+            "pinyin": "děng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kutmoq",
+              "ru": "ждать",
+              "tj": "интизор шудан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "快 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 快:",
+            "tj": "Маънои калимаи 快-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tez",
+              "ru": "быстрый",
+              "tj": "тез"
+            },
+            {
+              "uz": "biroz, -roq",
+              "ru": "немного",
+              "tj": "каме"
+            },
+            {
+              "uz": "sekinroq",
+              "ru": "помедленнее",
+              "tj": "сусттар"
+            },
+            {
+              "uz": "erta",
+              "ru": "рано",
+              "tj": "барвақт"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "快 = tez (kuài)",
+            "ru": "快 = быстрый (kuài)",
+            "tj": "快 = тез (kuài)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "快 talaffuzini tanlang:",
+            "ru": "Выберите произношение 快:",
+            "tj": "Талаффузи 快-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "kuài",
+            "diǎnr",
+            "màn diǎnr",
+            "zǎo"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "快 — kuài",
+            "ru": "快 — kuài",
+            "tj": "快 — kuài"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tez' xitoycha nima?",
+            "ru": "'быстрый' по-китайски?",
+            "tj": "'тез' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "快",
+            "点儿",
+            "慢点儿",
+            "早"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "快 = tez (kuài)",
+            "ru": "快 = быстрый (kuài)",
+            "tj": "快 = тез (kuài)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "diǎnr qaysi ieroglif?",
+            "ru": "Какой иероглиф читается diǎnr?",
+            "tj": "diǎnr кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "点儿",
+            "快",
+            "慢点儿",
+            "早"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "点儿 = biroz, -roq (diǎnr)",
+            "ru": "点儿 = немного (diǎnr)",
+            "tj": "点儿 = каме (diǎnr)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'快点儿' iborasini tuzing",
+            "ru": "Соберите фразу '快点儿'",
+            "tj": "Ибораи '快点儿'-ро созед"
+          },
+          "tokens": [
+            "快",
+            "点儿",
+            "慢点儿",
+            "早"
+          ],
+          "answer_tokens": [
+            "快",
+            "点儿"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 快 点儿",
+            "ru": "Правильный порядок: 快 点儿",
+            "tj": "Тартиби дуруст: 快 点儿"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "快",
+              {
+                "uz": "tez",
+                "ru": "быстрый",
+                "tj": "тез"
+              }
+            ],
+            [
+              "点儿",
+              {
+                "uz": "biroz, -roq",
+                "ru": "немного",
+                "tj": "каме"
+              }
+            ],
+            [
+              "慢点儿",
+              {
+                "uz": "sekinroq",
+                "ru": "помедленнее",
+                "tj": "сусттар"
+              }
+            ],
+            [
+              "早",
+              {
+                "uz": "erta",
+                "ru": "рано",
+                "tj": "барвақт"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "快点儿",
+          "pinyin": "kuài diǎnr",
+          "translation": {
+            "uz": "Tezlik, intensivlik, 一点儿",
+            "ru": "Скорость и 一点儿",
+            "tj": "Суръат ва 一点儿"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "快。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 快。",
+            "ru": "Ответ B: 快。",
+            "tj": "Ҷавоби B: 快。"
+          }
+        }
+      ]
+    }
+  ]
+}

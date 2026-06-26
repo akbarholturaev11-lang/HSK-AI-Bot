@@ -1,0 +1,582 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 5,
+  "title": "我会说中文",
+  "subtitle": {
+    "uz": "Mavzu: Mahorat, 会 / 能 / 可以. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Умения, 会 / 能 / 可以. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Маҳорат, 会 / 能 / 可以. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "会",
+      "pinyin": "huì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qila olmoq",
+        "ru": "уметь",
+        "tj": "тавонистан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "能",
+      "pinyin": "néng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qodir bo‘lmoq, mumkin",
+        "ru": "мочь, быть способным",
+        "tj": "тавонистан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "可以",
+      "pinyin": "kěyǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "mumkin, ruxsat",
+        "ru": "можно, разрешено",
+        "tj": "мумкин, иҷозат"
+      },
+      "no": 3
+    },
+    {
+      "zh": "说",
+      "pinyin": "shuō",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gapirmoq",
+        "ru": "говорить",
+        "tj": "гуфтан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "中文",
+      "pinyin": "Zhōngwén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xitoy tili",
+        "ru": "китайский язык",
+        "tj": "забони чинӣ"
+      },
+      "no": 5
+    },
+    {
+      "zh": "写",
+      "pinyin": "xiě",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yozmoq",
+        "ru": "писать",
+        "tj": "навиштан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "听懂",
+      "pinyin": "tīngdǒng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "eshitib tushunmoq",
+        "ru": "понимать на слух",
+        "tj": "шунида фаҳмидан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 我会说中文. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“我会说中文”。",
+        "ru": "Ключевая фраза урока: 我会说中文. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“我会说中文”。",
+        "tj": "Ибораи асосии дарс: 我会说中文. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“我会说中文”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“我会说中文”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wǒ huì shuō Zhōngwén.",
+          "translation": {
+            "uz": "Biz Mahorat, 会 / 能 / 可以 mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Умения, 会 / 能 / 可以.",
+            "tj": "Мо мавзӯи Маҳорат, 会 / 能 / 可以-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是会。",
+          "pinyin": "Zhège cí shì huì.",
+          "translation": {
+            "uz": "Bu so'z: qila olmoq.",
+            "ru": "Это слово: уметь.",
+            "tj": "Ин калима: тавонистан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "会。",
+          "pinyin": "huì.",
+          "translation": {
+            "uz": "会 — huì deb o'qiladi.",
+            "ru": "会 читается как huì.",
+            "tj": "会 ҳамчун huì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mahorat, 会 / 能 / 可以",
+        "ru": "Умения, 会 / 能 / 可以",
+        "tj": "Маҳорат, 会 / 能 / 可以"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“我会说中文”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wǒ huì shuō Zhōngwén.",
+          "text": {
+            "uz": "Bugun Mahorat, 会 / 能 / 可以 mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Умения, 会 / 能 / 可以.",
+            "tj": "Имрӯз мавзӯи Маҳорат, 会 / 能 / 可以-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "会。",
+          "pinyin": "huì.",
+          "text": {
+            "uz": "会 — huì deb o'qiladi.",
+            "ru": "会 читается как huì.",
+            "tj": "会 ҳамчун huì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "会",
+            "pinyin": "huì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qila olmoq",
+              "ru": "уметь",
+              "tj": "тавонистан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "能",
+            "pinyin": "néng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qodir bo‘lmoq, mumkin",
+              "ru": "мочь, быть способным",
+              "tj": "тавонистан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "可以",
+            "pinyin": "kěyǐ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "mumkin, ruxsat",
+              "ru": "можно, разрешено",
+              "tj": "мумкин, иҷозат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "说",
+            "pinyin": "shuō",
+            "pos": "v.",
+            "meaning": {
+              "uz": "gapirmoq",
+              "ru": "говорить",
+              "tj": "гуфтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "中文",
+            "pinyin": "Zhōngwén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "写",
+            "pinyin": "xiě",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yozmoq",
+              "ru": "писать",
+              "tj": "навиштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "听懂",
+            "pinyin": "tīngdǒng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "eshitib tushunmoq",
+              "ru": "понимать на слух",
+              "tj": "шунида фаҳмидан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "会 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 会:",
+            "tj": "Маънои калимаи 会-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qila olmoq",
+              "ru": "уметь",
+              "tj": "тавонистан"
+            },
+            {
+              "uz": "qodir bo‘lmoq, mumkin",
+              "ru": "мочь, быть способным",
+              "tj": "тавонистан"
+            },
+            {
+              "uz": "mumkin, ruxsat",
+              "ru": "можно, разрешено",
+              "tj": "мумкин, иҷозат"
+            },
+            {
+              "uz": "gapirmoq",
+              "ru": "говорить",
+              "tj": "гуфтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "会 = qila olmoq (huì)",
+            "ru": "会 = уметь (huì)",
+            "tj": "会 = тавонистан (huì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "会 talaffuzini tanlang:",
+            "ru": "Выберите произношение 会:",
+            "tj": "Талаффузи 会-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huì",
+            "néng",
+            "kěyǐ",
+            "shuō"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "会 — huì",
+            "ru": "会 — huì",
+            "tj": "会 — huì"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qila olmoq' xitoycha nima?",
+            "ru": "'уметь' по-китайски?",
+            "tj": "'тавонистан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "会",
+            "能",
+            "可以",
+            "说"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "会 = qila olmoq (huì)",
+            "ru": "会 = уметь (huì)",
+            "tj": "会 = тавонистан (huì)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "néng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается néng?",
+            "tj": "néng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "能",
+            "会",
+            "可以",
+            "说"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "能 = qodir bo‘lmoq, mumkin (néng)",
+            "ru": "能 = мочь, быть способным (néng)",
+            "tj": "能 = тавонистан (néng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'我会说中文' iborasini tuzing",
+            "ru": "Соберите фразу '我会说中文'",
+            "tj": "Ибораи '我会说中文'-ро созед"
+          },
+          "tokens": [
+            "我",
+            "会",
+            "说",
+            "中文",
+            "能",
+            "可以"
+          ],
+          "answer_tokens": [
+            "我",
+            "会",
+            "说",
+            "中文"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 我 会 说 中文",
+            "ru": "Правильный порядок: 我 会 说 中文",
+            "tj": "Тартиби дуруст: 我 会 说 中文"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "会",
+              {
+                "uz": "qila olmoq",
+                "ru": "уметь",
+                "tj": "тавонистан"
+              }
+            ],
+            [
+              "能",
+              {
+                "uz": "qodir bo‘lmoq, mumkin",
+                "ru": "мочь, быть способным",
+                "tj": "тавонистан"
+              }
+            ],
+            [
+              "可以",
+              {
+                "uz": "mumkin, ruxsat",
+                "ru": "можно, разрешено",
+                "tj": "мумкин, иҷозат"
+              }
+            ],
+            [
+              "说",
+              {
+                "uz": "gapirmoq",
+                "ru": "говорить",
+                "tj": "гуфтан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我会说中文",
+          "pinyin": "wǒ huì shuō Zhōngwén",
+          "translation": {
+            "uz": "Mahorat, 会 / 能 / 可以",
+            "ru": "Умения, 会 / 能 / 可以",
+            "tj": "Маҳорат, 会 / 能 / 可以"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "会。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 会。",
+            "ru": "Ответ B: 会。",
+            "tj": "Ҷавоби B: 会。"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 8,
+  "title": "今天星期几",
+  "subtitle": {
+    "uz": "Mavzu: Hafta kunlari va sana. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Дни недели и дата. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Рӯзҳои ҳафта ва сана. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "今天",
+      "pinyin": "jīntiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bugun",
+        "ru": "сегодня",
+        "tj": "имрӯз"
+      },
+      "no": 1
+    },
+    {
+      "zh": "星期",
+      "pinyin": "xīngqī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hafta, hafta kuni",
+        "ru": "неделя; день недели",
+        "tj": "ҳафта, рӯзи ҳафта"
+      },
+      "no": 2
+    },
+    {
+      "zh": "星期一",
+      "pinyin": "xīngqīyī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dushanba",
+        "ru": "понедельник",
+        "tj": "душанбе"
+      },
+      "no": 3
+    },
+    {
+      "zh": "星期天",
+      "pinyin": "xīngqītiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yakshanba",
+        "ru": "воскресенье",
+        "tj": "якшанбе"
+      },
+      "no": 4
+    },
+    {
+      "zh": "日",
+      "pinyin": "rì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kun, sana",
+        "ru": "день, число",
+        "tj": "рӯз, сана"
+      },
+      "no": 5
+    },
+    {
+      "zh": "月",
+      "pinyin": "yuè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oy",
+        "ru": "месяц",
+        "tj": "моҳ"
+      },
+      "no": 6
+    },
+    {
+      "zh": "号",
+      "pinyin": "hào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sana raqami",
+        "ru": "число месяца",
+        "tj": "рақами сана"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 今天星期几. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“今天星期几”。",
+        "ru": "Ключевая фраза урока: 今天星期几. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“今天星期几”。",
+        "tj": "Ибораи асосии дарс: 今天星期几. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“今天星期几”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“今天星期几”。",
+          "pinyin": "Jīntiān wǒmen xuéxí jīntiān xīngqī jǐ.",
+          "translation": {
+            "uz": "Biz Hafta kunlari va sana mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Дни недели и дата.",
+            "tj": "Мо мавзӯи Рӯзҳои ҳафта ва сана-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是今天。",
+          "pinyin": "Zhège cí shì jīntiān.",
+          "translation": {
+            "uz": "Bu so'z: bugun.",
+            "ru": "Это слово: сегодня.",
+            "tj": "Ин калима: имрӯз."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "今天。",
+          "pinyin": "jīntiān.",
+          "translation": {
+            "uz": "今天 — jīntiān deb o'qiladi.",
+            "ru": "今天 читается как jīntiān.",
+            "tj": "今天 ҳамчун jīntiān хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Hafta kunlari va sana",
+        "ru": "Дни недели и дата",
+        "tj": "Рӯзҳои ҳафта ва сана"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“今天星期几”。",
+          "pinyin": "Jīntiān wǒmen xuéxí jīntiān xīngqī jǐ.",
+          "text": {
+            "uz": "Bugun Hafta kunlari va sana mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Дни недели и дата.",
+            "tj": "Имрӯз мавзӯи Рӯзҳои ҳафта ва сана-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "今天。",
+          "pinyin": "jīntiān.",
+          "text": {
+            "uz": "今天 — jīntiān deb o'qiladi.",
+            "ru": "今天 читается как jīntiān.",
+            "tj": "今天 ҳамчун jīntiān хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "今天",
+            "pinyin": "jīntiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "星期",
+            "pinyin": "xīngqī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hafta, hafta kuni",
+              "ru": "неделя; день недели",
+              "tj": "ҳафта, рӯзи ҳафта"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "星期一",
+            "pinyin": "xīngqīyī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dushanba",
+              "ru": "понедельник",
+              "tj": "душанбе"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "星期天",
+            "pinyin": "xīngqītiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "日",
+            "pinyin": "rì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kun, sana",
+              "ru": "день, число",
+              "tj": "рӯз, сана"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "月",
+            "pinyin": "yuè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oy",
+              "ru": "месяц",
+              "tj": "моҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "号",
+            "pinyin": "hào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sana raqami",
+              "ru": "число месяца",
+              "tj": "рақами сана"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "今天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 今天:",
+            "tj": "Маънои калимаи 今天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
+            },
+            {
+              "uz": "hafta, hafta kuni",
+              "ru": "неделя; день недели",
+              "tj": "ҳафта, рӯзи ҳафта"
+            },
+            {
+              "uz": "dushanba",
+              "ru": "понедельник",
+              "tj": "душанбе"
+            },
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "今天 = bugun (jīntiān)",
+            "ru": "今天 = сегодня (jīntiān)",
+            "tj": "今天 = имрӯз (jīntiān)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "今天 talaffuzini tanlang:",
+            "ru": "Выберите произношение 今天:",
+            "tj": "Талаффузи 今天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jīntiān",
+            "xīngqī",
+            "xīngqīyī",
+            "xīngqītiān"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "今天 — jīntiān",
+            "ru": "今天 — jīntiān",
+            "tj": "今天 — jīntiān"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bugun' xitoycha nima?",
+            "ru": "'сегодня' по-китайски?",
+            "tj": "'имрӯз' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "今天",
+            "星期",
+            "星期一",
+            "星期天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "今天 = bugun (jīntiān)",
+            "ru": "今天 = сегодня (jīntiān)",
+            "tj": "今天 = имрӯз (jīntiān)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xīngqī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xīngqī?",
+            "tj": "xīngqī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "星期",
+            "今天",
+            "星期一",
+            "星期天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "星期 = hafta, hafta kuni (xīngqī)",
+            "ru": "星期 = неделя; день недели (xīngqī)",
+            "tj": "星期 = ҳафта, рӯзи ҳафта (xīngqī)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'今天星期几' iborasini tuzing",
+            "ru": "Соберите фразу '今天星期几'",
+            "tj": "Ибораи '今天星期几'-ро созед"
+          },
+          "tokens": [
+            "今天",
+            "星期",
+            "几",
+            "星期一",
+            "星期天"
+          ],
+          "answer_tokens": [
+            "今天",
+            "星期",
+            "几"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 今天 星期 几",
+            "ru": "Правильный порядок: 今天 星期 几",
+            "tj": "Тартиби дуруст: 今天 星期 几"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "今天",
+              {
+                "uz": "bugun",
+                "ru": "сегодня",
+                "tj": "имрӯз"
+              }
+            ],
+            [
+              "星期",
+              {
+                "uz": "hafta, hafta kuni",
+                "ru": "неделя; день недели",
+                "tj": "ҳафта, рӯзи ҳафта"
+              }
+            ],
+            [
+              "星期一",
+              {
+                "uz": "dushanba",
+                "ru": "понедельник",
+                "tj": "душанбе"
+              }
+            ],
+            [
+              "星期天",
+              {
+                "uz": "yakshanba",
+                "ru": "воскресенье",
+                "tj": "якшанбе"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "今天星期几",
+          "pinyin": "jīntiān xīngqī jǐ",
+          "translation": {
+            "uz": "Hafta kunlari va sana",
+            "ru": "Дни недели и дата",
+            "tj": "Рӯзҳои ҳафта ва сана"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "今天。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 今天。",
+            "ru": "Ответ B: 今天。",
+            "tj": "Ҷавоби B: 今天。"
+          }
+        }
+      ]
+    }
+  ]
+}

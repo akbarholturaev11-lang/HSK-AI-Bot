@@ -37,13 +37,18 @@ from app.services.course_miniapp_practice_service import CourseMiniAppPracticeSe
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
+from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.referral_service import ReferralService
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.admin_miniapp_service import AdminMiniAppService
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
 from app.repositories.user_repo import UserRepository
+from app.repositories.course_lesson_repo import CourseLessonRepository
+from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.course_pilot_event_repo import CoursePilotEventRepository
+from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.bot.keyboards.main_menu import main_menu_keyboard
 from app.bot.keyboards.course import homework_retry_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
@@ -295,26 +300,6 @@ async def health():
     return {"status": "ok"}
 
 
-@app.get("/hsk3.html")
-async def hsk3_miniapp():
-    return miniapp_file_response("app/static/hsk3.html")
-
-
-@app.get("/hsk4.html")
-async def hsk4_miniapp():
-    return miniapp_file_response("app/static/hsk4.html")
-
-
-@app.get("/hsk1.html")
-async def hsk1_miniapp():
-    return miniapp_file_response("app/static/hsk1.html")
-
-
-@app.get("/hsk2.html")
-async def hsk2_miniapp():
-    return miniapp_file_response("app/static/hsk2.html")
-
-
 @app.get("/hsk-lugat.html")
 async def hsk_lugat_miniapp():
     return miniapp_file_response("app/static/hsk-lugat.html")
@@ -330,6 +315,11 @@ async def admin_control_miniapp():
     return miniapp_file_response("app/static/admin-control.html")
 
 
+@app.get("/subscription.html")
+async def subscription_miniapp():
+    return miniapp_file_response("app/static/subscription.html")
+
+
 @app.get("/course_data/{level}.json")
 async def course_data_file(level: str):
     path = COURSE_DATA_FILES.get(str(level or "").strip().lower())
@@ -338,29 +328,308 @@ async def course_data_file(level: str):
     return static_json_response(path)
 
 
-@app.get("/duo-lesson.html")
-async def duo_lesson_miniapp():
-    return miniapp_file_response("app/static/study.html")
+# ── Course v3 Mini App ──────────────────────────────────────────────────────
+
+_COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice"}
+_COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4"}
 
 
-@app.get("/study.html")
-async def study_miniapp():
-    return miniapp_file_response("app/static/study.html")
+def _course_v3_level(value: str | None) -> str:
+    normalized = str(value or "").strip().lower()
+    return normalized if normalized in _COURSE_V3_LEVELS else "hsk1"
 
 
-@app.get("/voice-practice.html")
-async def voice_practice_miniapp():
-    return miniapp_file_response("app/static/voice-practice.html")
+@app.get("/course-v3.html")
+@app.get("/course-v3")
+async def course_v3_miniapp():
+    return miniapp_file_response("app/static/course-v3.html")
 
 
-@app.get("/study-v2.css")
-async def study_v2_styles():
-    return miniapp_file_response("app/static/study-v2.css")
+@app.get("/course_v3_{page}.html")
+async def course_v3_sub_page(page: str):
+    if page not in _COURSE_V3_PAGES:
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return miniapp_file_response(f"app/static/course_v3_{page}.html")
 
 
-@app.get("/study-v2.js")
-async def study_v2_script():
-    return miniapp_file_response("app/static/study-v2.js")
+@app.get("/course_v3_data/{filename}")
+async def course_v3_data_file(filename: str):
+    import re
+    if not re.fullmatch(r"[a-z0-9_\-]+\.json", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_json_response(f"app/static/course_v3_data/{filename}")
+
+
+@app.get("/course_v3_data/{level}/{filename}")
+async def course_v3_lesson_file(level: str, filename: str):
+    import re
+    if not re.fullmatch(r"hsk[1-4]", level):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    if not re.fullmatch(r"lesson_\d+\.json", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_json_response(f"app/static/course_v3_data/{level}/{filename}")
+
+
+@app.get("/api/v3/map")
+async def v3_course_map(request: Request, lang: str = "uz", level: str | None = None):
+    import json as _json
+    from pathlib import Path
+
+    resolved_lang = normalize_miniapp_lang(lang)
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id) if telegram_id else None
+
+        if not user:
+            preview_level = _course_v3_level(level or "hsk1")
+            map_path = Path(f"app/static/course_v3_data/{preview_level}.json")
+            if not map_path.exists():
+                map_path = Path("app/static/course_v3_data/hsk1.json")
+            try:
+                data = _json.loads(map_path.read_text())
+            except Exception:
+                return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
+            data["authenticated"] = False
+            data["level"] = preview_level
+            return JSONResponse(content=data)
+
+        progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+        profile_svc = CourseMiniAppProfileService(session)
+        profile = await profile_svc.get_or_create(user.id)
+        gamification = await CourseGamificationService(session).snapshot(user, profile=profile)
+        is_paid = StudyMiniAppService.is_paid_user(user)
+
+        resolved_level = _course_v3_level(level or getattr(progress, "level", "") or "hsk1")
+
+        map_path = Path(f"app/static/course_v3_data/{resolved_level}.json")
+        if not map_path.exists():
+            map_path = Path("app/static/course_v3_data/hsk1.json")
+        try:
+            data = _json.loads(map_path.read_text())
+        except Exception:
+            return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
+
+        completed = int(getattr(progress, "completed_lessons_count", 0) or 0)
+        display_name = str(
+            getattr(user, "full_name", None) or getattr(user, "username", None) or "HSK Student"
+        ).strip()[:60]
+        initials = "".join(p[:1].upper() for p in display_name.split()[:2]) or "阿"
+
+        data["authenticated"] = True
+        data["level"] = resolved_level
+        data["progress"] = {
+            "xp": gamification["xp"],
+            "streak": gamification["streak"],
+            "weekly_xp": gamification["weekly_xp"],
+            "league": gamification["league"],
+            "completed": completed,
+        }
+        data["user"] = {
+            "name": display_name,
+            "avatar": initials[:2],
+            "language": getattr(user, "language", None) or "uz",
+            "is_paid": is_paid,
+            "referral_code": getattr(user, "referral_code", None) or "",
+        }
+
+        for unit in data.get("units", []):
+            unit_unlocked = False
+            for lesson in unit.get("lessons", []):
+                n = int(lesson.get("n", 0))
+                if n <= completed:
+                    lesson["status"] = "done"
+                    lesson.setdefault("stars", 2)
+                    unit_unlocked = True
+                elif n == completed + 1:
+                    lesson["status"] = "current"
+                    lesson.pop("stars", None)
+                    unit_unlocked = True
+                else:
+                    lesson["status"] = "locked"
+                    lesson.pop("stars", None)
+                if n > 3 and not is_paid and n > completed:
+                    lesson["status"] = "locked"
+                    lesson["locked_premium"] = True
+            if not unit_unlocked:
+                unit["status"] = "locked"
+            else:
+                unit.pop("status", None)
+
+        return JSONResponse(content=data)
+
+
+@app.get("/api/v3/invite")
+async def v3_invite_payload(request: Request, lang: str = "uz"):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+
+    resolved_lang = normalize_miniapp_lang(lang)
+    async with async_session_maker() as session:
+        user_repo = UserRepository(session)
+        user = await user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+
+        service = ReferralService(session)
+        await user_repo.ensure_referral_code(user)
+        active_count = await service.get_trial_activation_progress(user)
+        joined_count = await service.referral_repo.count_by_referrer(user.telegram_id)
+        bot_username = (settings.BOT_USERNAME or "hsk_ai_bot").strip().lstrip("@") or "hsk_ai_bot"
+        link = f"https://t.me/{bot_username}?start={user.referral_code}"
+        full_lang, full_text = await service.build_trial_progress_text(user)
+
+        share = {
+            "ru": "Привет! Я учу китайский в HSK AI. Заходи, тебе тоже будет полезно:",
+            "uz": "Salom! Men HSK AI bilan xitoy tilini o'rganyapman. Kirib ko'r, senga ham foydali bo'ladi:",
+            "tj": "Салом! Ман бо HSK AI чинӣ меомӯзам. Дароед, барои шумо ҳам муфид мешавад:",
+        }.get(resolved_lang, "Salom! Men HSK AI bilan xitoy tilini o'rganyapman. Kirib ko'r:")
+
+        await session.commit()
+        return JSONResponse(content={
+            "ok": True,
+            "link": link,
+            "share_text": share,
+            "full_text": full_text,
+            "language": full_lang,
+            "joined_count": int(joined_count),
+            "active_count": int(active_count),
+            "required": 10,
+        })
+
+
+@app.post("/api/v3/notify")
+async def v3_notify_toggle(request: Request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False})
+    payload = await request.json()
+    enabled = bool(payload.get("enabled", True))
+    return JSONResponse(content={"ok": True, "notifications": enabled})
+
+
+@app.post("/api/v3/lesson/complete")
+async def v3_course_lesson_complete(request: Request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+
+    try:
+        payload = await request.json()
+        lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
+    if lesson_order <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
+
+    resolved_level = _course_v3_level(str(payload.get("level") or "hsk1"))
+    async with async_session_maker() as session:
+        user_repo = UserRepository(session)
+        user = await user_repo.get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
+
+        lesson_repo = CourseLessonRepository(session)
+        lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
+        if not lesson:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
+
+        access = CourseMiniAppAccessService(session)
+        is_paid = access.is_paid_user(user)
+        if not is_paid and lesson_order > 3:
+            return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
+
+        progress_repo = CourseProgressRepository(session)
+        progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+        if not progress:
+            progress = await progress_repo.create(
+                user_id=user.id,
+                level=resolved_level,
+                current_lesson_id=lesson.id,
+                current_step="intro",
+                waiting_for="none",
+            )
+        progress.level = resolved_level
+
+        completed = int(getattr(progress, "completed_lessons_count", 0) or 0)
+        gamification = CourseGamificationService(session)
+        if lesson_order <= completed:
+            snapshot = await gamification.snapshot(user)
+            await session.commit()
+            return JSONResponse(
+                content={
+                    "ok": True,
+                    "duplicate": True,
+                    "completed_lesson": lesson_order,
+                    "completed_lessons_count": completed,
+                    "gamification": snapshot,
+                }
+            )
+        if lesson_order != completed + 1:
+            return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
+
+        await progress_repo.set_current_lesson_and_step(
+            progress=progress,
+            lesson_id=lesson.id,
+            step="intro",
+            waiting_for="none",
+        )
+        await progress_repo.mark_lesson_completed(progress)
+        snapshot = await gamification.award(
+            user,
+            activity_type="lesson",
+            activity_ref=f"v3-lesson:{lesson.id}:complete",
+            base_xp=20,
+            level=resolved_level,
+        )
+
+        next_lesson = await lesson_repo.get_next_lesson(resolved_level, lesson_order)
+        if next_lesson and (is_paid or int(next_lesson.lesson_order or 0) <= 3):
+            await progress_repo.set_current_lesson_and_step(
+                progress=progress,
+                lesson_id=next_lesson.id,
+                step="intro",
+                waiting_for="none",
+            )
+            await progress_repo.set_homework_status(progress, "none")
+        else:
+            await progress_repo.set_current_lesson_and_step(
+                progress=progress,
+                lesson_id=lesson.id,
+                step="completed",
+                waiting_for="none",
+            )
+
+        await CourseMiniAppAnalyticsService(session).record_server_event(
+            event_name="lesson_completed",
+            telegram_id=telegram_id,
+            user_id=getattr(user, "id", None),
+            source="course_v3",
+            level=resolved_level,
+            lesson_id=getattr(lesson, "id", None),
+            lesson_order=lesson_order,
+            dedupe_key=f"v3-lesson:{lesson.id}:completed",
+            payload={
+                "lesson_order": lesson_order,
+                "is_paid": is_paid,
+                "next_lesson": getattr(next_lesson, "lesson_order", None),
+            },
+        )
+        await session.commit()
+        return JSONResponse(
+            content={
+                "ok": True,
+                "completed_lesson": lesson_order,
+                "next_lesson": getattr(next_lesson, "lesson_order", None),
+                "completed_lessons_count": int(getattr(progress, "completed_lessons_count", 0) or 0),
+                "gamification": snapshot,
+            }
+        )
 
 
 def _voice_practice_user_id(init_data: str) -> int | None:
@@ -491,26 +760,6 @@ async def voice_practice_end(request: Request):
         return _voice_practice_error(error)
 
 
-@app.get("/subscription.html")
-async def subscription_miniapp():
-    return miniapp_file_response("app/static/subscription.html")
-
-
-@app.get("/subscription-preview.html")
-async def subscription_preview_miniapp():
-    return miniapp_file_response("app/static/subscription.html")
-
-
-@app.get("/stroke-order.html")
-async def stroke_order_miniapp():
-    return miniapp_file_response("app/static/stroke-order.html")
-
-
-@app.get("/course-miniapp-v2.js")
-async def course_miniapp_v2_script():
-    return miniapp_file_response("app/static/course-miniapp-v2.js")
-
-
 @app.post("/api/admin-miniapp/overview")
 async def admin_miniapp_overview(request: Request):
     telegram_id = _admin_miniapp_user_id(request)
@@ -528,6 +777,33 @@ async def admin_miniapp_overview(request: Request):
     async with async_session_maker() as session:
         payload = await AdminMiniAppService(session).overview()
     return JSONResponse(content=payload)
+
+
+@app.post("/api/admin-miniapp/sub-entry-stats")
+async def admin_miniapp_sub_entry_stats(request: Request):
+    from datetime import datetime, timedelta, timezone
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    week_ago = datetime.now(timezone.utc) - timedelta(days=7)
+    async with async_session_maker() as session:
+        rows = await SubscriptionEntryAnalyticsService(session).source_stats(week_ago=week_ago, limit=12)
+    return JSONResponse(content={
+        "ok": True,
+        "rows": [
+            {
+                "source": r.source,
+                "label": r.label,
+                "total_all": r.total_all,
+                "unique_all": r.unique_all,
+                "total_week": r.total_week,
+                "unique_week": r.unique_week,
+            }
+            for r in rows
+        ],
+    })
 
 
 @app.post("/api/admin-miniapp/open-section")

@@ -642,11 +642,11 @@ class CourseMiniAppLessonFlowService:
                 lang=lang,
                 level=str(lesson.level),
             )
-            payload = self._static_lesson_payload(
+            payload = payload or self._static_lesson_payload(
                 level=str(lesson.level),
                 lesson_order=lesson_order,
                 lang=lang,
-            ) or payload
+            )
             if not payload:
                 continue
 
@@ -1625,11 +1625,11 @@ class CourseMiniAppLessonFlowService:
             lang=lang,
             level=str(lesson.level),
         )
-        payload = self._static_lesson_payload(
+        payload = payload or self._static_lesson_payload(
             level=str(lesson.level),
             lesson_order=int(lesson.lesson_order),
             lang=lang,
-        ) or payload
+        )
         if not payload:
             return {"ok": False, "error": "lesson_not_found"}
         sections = self._section_plan(payload, level=str(lesson.level), lesson_order=int(lesson.lesson_order), lang=lang)
@@ -1767,11 +1767,11 @@ class CourseMiniAppLessonFlowService:
             lang=lang,
             level=str(lesson.level),
         )
-        payload = self._static_lesson_payload(
+        payload = payload or self._static_lesson_payload(
             level=str(lesson.level),
             lesson_order=int(lesson.lesson_order),
             lang=lang,
-        ) or payload
+        )
         sections = self._section_plan(payload or {}, level=str(lesson.level), lesson_order=int(lesson.lesson_order), lang=lang)
         section = self._section_by_key(sections, section_key, lesson_order=int(lesson.lesson_order))
         if not section:

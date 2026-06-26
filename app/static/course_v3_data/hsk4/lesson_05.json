@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 5,
+  "title": "政治社会",
+  "subtitle": {
+    "uz": "Mavzu: Jamiyat va siyosat. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Общество и политика. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Ҷомеа ва сиёсат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "政治",
+      "pinyin": "zhèngzhì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "siyosat",
+        "ru": "политика",
+        "tj": "сиёсат"
+      },
+      "no": 1
+    },
+    {
+      "zh": "社会",
+      "pinyin": "shèhuì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "jamiyat",
+        "ru": "общество",
+        "tj": "ҷомеа"
+      },
+      "no": 2
+    },
+    {
+      "zh": "公民",
+      "pinyin": "gōngmín",
+      "pos": "n.",
+      "meaning": {
+        "uz": "fuqaro",
+        "ru": "гражданин",
+        "tj": "шаҳрванд"
+      },
+      "no": 3
+    },
+    {
+      "zh": "责任",
+      "pinyin": "zérèn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mas’uliyat",
+        "ru": "ответственность",
+        "tj": "масъулият"
+      },
+      "no": 4
+    },
+    {
+      "zh": "政策",
+      "pinyin": "zhèngcè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "siyosat, siyosiy chora",
+        "ru": "политика, мера",
+        "tj": "сиёсат, чора"
+      },
+      "no": 5
+    },
+    {
+      "zh": "参与",
+      "pinyin": "cānyù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishtirok etmoq",
+        "ru": "участвовать",
+        "tj": "иштирок кардан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "稳定",
+      "pinyin": "wěndìng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "barqaror",
+        "ru": "стабильный",
+        "tj": "устувор"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 政治社会. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“政治社会”。",
+        "ru": "Ключевая фраза урока: 政治社会. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“政治社会”。",
+        "tj": "Ибораи асосии дарс: 政治社会. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“政治社会”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“政治社会”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zhèngzhì shèhuì.",
+          "translation": {
+            "uz": "Biz Jamiyat va siyosat mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Общество и политика.",
+            "tj": "Мо мавзӯи Ҷомеа ва сиёсат-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是政治。",
+          "pinyin": "Zhège cí shì zhèngzhì.",
+          "translation": {
+            "uz": "Bu so'z: siyosat.",
+            "ru": "Это слово: политика.",
+            "tj": "Ин калима: сиёсат."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "政治。",
+          "pinyin": "zhèngzhì.",
+          "translation": {
+            "uz": "政治 — zhèngzhì deb o'qiladi.",
+            "ru": "政治 читается как zhèngzhì.",
+            "tj": "政治 ҳамчун zhèngzhì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Jamiyat va siyosat",
+        "ru": "Общество и политика",
+        "tj": "Ҷомеа ва сиёсат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“政治社会”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zhèngzhì shèhuì.",
+          "text": {
+            "uz": "Bugun Jamiyat va siyosat mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Общество и политика.",
+            "tj": "Имрӯз мавзӯи Ҷомеа ва сиёсат-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "政治。",
+          "pinyin": "zhèngzhì.",
+          "text": {
+            "uz": "政治 — zhèngzhì deb o'qiladi.",
+            "ru": "政治 читается как zhèngzhì.",
+            "tj": "政治 ҳамчун zhèngzhì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "政治",
+            "pinyin": "zhèngzhì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "siyosat",
+              "ru": "политика",
+              "tj": "сиёсат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "社会",
+            "pinyin": "shèhuì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "jamiyat",
+              "ru": "общество",
+              "tj": "ҷомеа"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "公民",
+            "pinyin": "gōngmín",
+            "pos": "n.",
+            "meaning": {
+              "uz": "fuqaro",
+              "ru": "гражданин",
+              "tj": "шаҳрванд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "责任",
+            "pinyin": "zérèn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mas’uliyat",
+              "ru": "ответственность",
+              "tj": "масъулият"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "政策",
+            "pinyin": "zhèngcè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "siyosat, siyosiy chora",
+              "ru": "политика, мера",
+              "tj": "сиёсат, чора"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "参与",
+            "pinyin": "cānyù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ishtirok etmoq",
+              "ru": "участвовать",
+              "tj": "иштирок кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "稳定",
+            "pinyin": "wěndìng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "barqaror",
+              "ru": "стабильный",
+              "tj": "устувор"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "政治 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 政治:",
+            "tj": "Маънои калимаи 政治-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "siyosat",
+              "ru": "политика",
+              "tj": "сиёсат"
+            },
+            {
+              "uz": "jamiyat",
+              "ru": "общество",
+              "tj": "ҷомеа"
+            },
+            {
+              "uz": "fuqaro",
+              "ru": "гражданин",
+              "tj": "шаҳрванд"
+            },
+            {
+              "uz": "mas’uliyat",
+              "ru": "ответственность",
+              "tj": "масъулият"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "政治 = siyosat (zhèngzhì)",
+            "ru": "政治 = политика (zhèngzhì)",
+            "tj": "政治 = сиёсат (zhèngzhì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "政治 talaffuzini tanlang:",
+            "ru": "Выберите произношение 政治:",
+            "tj": "Талаффузи 政治-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhèngzhì",
+            "shèhuì",
+            "gōngmín",
+            "zérèn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "政治 — zhèngzhì",
+            "ru": "政治 — zhèngzhì",
+            "tj": "政治 — zhèngzhì"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'siyosat' xitoycha nima?",
+            "ru": "'политика' по-китайски?",
+            "tj": "'сиёсат' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "政治",
+            "社会",
+            "公民",
+            "责任"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "政治 = siyosat (zhèngzhì)",
+            "ru": "政治 = политика (zhèngzhì)",
+            "tj": "政治 = сиёсат (zhèngzhì)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shèhuì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shèhuì?",
+            "tj": "shèhuì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "社会",
+            "政治",
+            "公民",
+            "责任"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "社会 = jamiyat (shèhuì)",
+            "ru": "社会 = общество (shèhuì)",
+            "tj": "社会 = ҷомеа (shèhuì)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'政治社会' iborasini tuzing",
+            "ru": "Соберите фразу '政治社会'",
+            "tj": "Ибораи '政治社会'-ро созед"
+          },
+          "tokens": [
+            "政治",
+            "社会",
+            "公民",
+            "责任"
+          ],
+          "answer_tokens": [
+            "政治",
+            "社会"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 政治 社会",
+            "ru": "Правильный порядок: 政治 社会",
+            "tj": "Тартиби дуруст: 政治 社会"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "政治",
+              {
+                "uz": "siyosat",
+                "ru": "политика",
+                "tj": "сиёсат"
+              }
+            ],
+            [
+              "社会",
+              {
+                "uz": "jamiyat",
+                "ru": "общество",
+                "tj": "ҷомеа"
+              }
+            ],
+            [
+              "公民",
+              {
+                "uz": "fuqaro",
+                "ru": "гражданин",
+                "tj": "шаҳрванд"
+              }
+            ],
+            [
+              "责任",
+              {
+                "uz": "mas’uliyat",
+                "ru": "ответственность",
+                "tj": "масъулият"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "政治社会",
+          "pinyin": "zhèngzhì shèhuì",
+          "translation": {
+            "uz": "Jamiyat va siyosat",
+            "ru": "Общество и политика",
+            "tj": "Ҷомеа ва сиёсат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "政治。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 政治。",
+            "ru": "Ответ B: 政治。",
+            "tj": "Ҷавоби B: 政治。"
+          }
+        }
+      ]
+    }
+  ]
+}

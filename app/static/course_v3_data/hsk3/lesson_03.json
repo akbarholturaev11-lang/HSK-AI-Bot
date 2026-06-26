@@ -1,0 +1,577 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 3,
+  "title": "打电话",
+  "subtitle": {
+    "uz": "Mavzu: Telefon suhbati. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Телефонный разговор. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Сӯҳбати телефонӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "打电话",
+      "pinyin": "dǎ diànhuà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "telefon qilmoq",
+        "ru": "звонить",
+        "tj": "занг задан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "手机",
+      "pinyin": "shǒujī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mobil telefon",
+        "ru": "мобильный телефон",
+        "tj": "телефон"
+      },
+      "no": 2
+    },
+    {
+      "zh": "号码",
+      "pinyin": "hàomǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "raqam",
+        "ru": "номер",
+        "tj": "рақам"
+      },
+      "no": 3
+    },
+    {
+      "zh": "接",
+      "pinyin": "jiē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "javob bermoq, olmoq",
+        "ru": "отвечать, принимать",
+        "tj": "ҷавоб додан, гирифтан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "关机",
+      "pinyin": "guānjī",
+      "pos": "v.",
+      "meaning": {
+        "uz": "telefon o‘chiq bo‘lmoq",
+        "ru": "быть выключенным",
+        "tj": "хомӯш будан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "留言",
+      "pinyin": "liúyán",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xabar qoldirmoq",
+        "ru": "оставлять сообщение",
+        "tj": "паём гузоштан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "稍等",
+      "pinyin": "shāo děng",
+      "pos": "expr.",
+      "meaning": {
+        "uz": "biroz kuting",
+        "ru": "подождите немного",
+        "tj": "каме интизор шавед"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 打电话. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“打电话”。",
+        "ru": "Ключевая фраза урока: 打电话. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“打电话”。",
+        "tj": "Ибораи асосии дарс: 打电话. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“打电话”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“打电话”。",
+          "pinyin": "Jīntiān wǒmen xuéxí dǎ diànhuà.",
+          "translation": {
+            "uz": "Biz Telefon suhbati mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Телефонный разговор.",
+            "tj": "Мо мавзӯи Сӯҳбати телефонӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是打电话。",
+          "pinyin": "Zhège cí shì dǎ diànhuà.",
+          "translation": {
+            "uz": "Bu so'z: telefon qilmoq.",
+            "ru": "Это слово: звонить.",
+            "tj": "Ин калима: занг задан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "打电话。",
+          "pinyin": "dǎ diànhuà.",
+          "translation": {
+            "uz": "打电话 — dǎ diànhuà deb o'qiladi.",
+            "ru": "打电话 читается как dǎ diànhuà.",
+            "tj": "打电话 ҳамчун dǎ diànhuà хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Telefon suhbati",
+        "ru": "Телефонный разговор",
+        "tj": "Сӯҳбати телефонӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“打电话”。",
+          "pinyin": "Jīntiān wǒmen xuéxí dǎ diànhuà.",
+          "text": {
+            "uz": "Bugun Telefon suhbati mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Телефонный разговор.",
+            "tj": "Имрӯз мавзӯи Сӯҳбати телефонӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "打电话。",
+          "pinyin": "dǎ diànhuà.",
+          "text": {
+            "uz": "打电话 — dǎ diànhuà deb o'qiladi.",
+            "ru": "打电话 читается как dǎ diànhuà.",
+            "tj": "打电话 ҳамчун dǎ diànhuà хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "打电话",
+            "pinyin": "dǎ diànhuà",
+            "pos": "v.",
+            "meaning": {
+              "uz": "telefon qilmoq",
+              "ru": "звонить",
+              "tj": "занг задан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "手机",
+            "pinyin": "shǒujī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "号码",
+            "pinyin": "hàomǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "接",
+            "pinyin": "jiē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "javob bermoq, olmoq",
+              "ru": "отвечать, принимать",
+              "tj": "ҷавоб додан, гирифтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "关机",
+            "pinyin": "guānjī",
+            "pos": "v.",
+            "meaning": {
+              "uz": "telefon o‘chiq bo‘lmoq",
+              "ru": "быть выключенным",
+              "tj": "хомӯш будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "留言",
+            "pinyin": "liúyán",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xabar qoldirmoq",
+              "ru": "оставлять сообщение",
+              "tj": "паём гузоштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "稍等",
+            "pinyin": "shāo děng",
+            "pos": "expr.",
+            "meaning": {
+              "uz": "biroz kuting",
+              "ru": "подождите немного",
+              "tj": "каме интизор шавед"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "打电话 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 打电话:",
+            "tj": "Маънои калимаи 打电话-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "telefon qilmoq",
+              "ru": "звонить",
+              "tj": "занг задан"
+            },
+            {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефон"
+            },
+            {
+              "uz": "raqam",
+              "ru": "номер",
+              "tj": "рақам"
+            },
+            {
+              "uz": "javob bermoq, olmoq",
+              "ru": "отвечать, принимать",
+              "tj": "ҷавоб додан, гирифтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "打电话 = telefon qilmoq (dǎ diànhuà)",
+            "ru": "打电话 = звонить (dǎ diànhuà)",
+            "tj": "打电话 = занг задан (dǎ diànhuà)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "打电话 talaffuzini tanlang:",
+            "ru": "Выберите произношение 打电话:",
+            "tj": "Талаффузи 打电话-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dǎ diànhuà",
+            "shǒujī",
+            "hàomǎ",
+            "jiē"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "打电话 — dǎ diànhuà",
+            "ru": "打电话 — dǎ diànhuà",
+            "tj": "打电话 — dǎ diànhuà"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'telefon qilmoq' xitoycha nima?",
+            "ru": "'звонить' по-китайски?",
+            "tj": "'занг задан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "打电话",
+            "手机",
+            "号码",
+            "接"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "打电话 = telefon qilmoq (dǎ diànhuà)",
+            "ru": "打电话 = звонить (dǎ diànhuà)",
+            "tj": "打电话 = занг задан (dǎ diànhuà)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shǒujī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shǒujī?",
+            "tj": "shǒujī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "手机",
+            "打电话",
+            "号码",
+            "接"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "手机 = mobil telefon (shǒujī)",
+            "ru": "手机 = мобильный телефон (shǒujī)",
+            "tj": "手机 = телефон (shǒujī)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'打电话' iborasini tuzing",
+            "ru": "Соберите фразу '打电话'",
+            "tj": "Ибораи '打电话'-ро созед"
+          },
+          "tokens": [
+            "打电话",
+            "手机",
+            "号码",
+            "接"
+          ],
+          "answer_tokens": [
+            "打电话"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 打电话",
+            "ru": "Правильный порядок: 打电话",
+            "tj": "Тартиби дуруст: 打电话"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "打电话",
+              {
+                "uz": "telefon qilmoq",
+                "ru": "звонить",
+                "tj": "занг задан"
+              }
+            ],
+            [
+              "手机",
+              {
+                "uz": "mobil telefon",
+                "ru": "мобильный телефон",
+                "tj": "телефон"
+              }
+            ],
+            [
+              "号码",
+              {
+                "uz": "raqam",
+                "ru": "номер",
+                "tj": "рақам"
+              }
+            ],
+            [
+              "接",
+              {
+                "uz": "javob bermoq, olmoq",
+                "ru": "отвечать, принимать",
+                "tj": "ҷавоб додан, гирифтан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "打电话",
+          "pinyin": "dǎ diànhuà",
+          "translation": {
+            "uz": "Telefon suhbati",
+            "ru": "Телефонный разговор",
+            "tj": "Сӯҳбати телефонӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "打电话。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 打电话。",
+            "ru": "Ответ B: 打电话。",
+            "tj": "Ҷавоби B: 打电话。"
+          }
+        }
+      ]
+    }
+  ]
+}

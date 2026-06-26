@@ -1,0 +1,577 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 18,
+  "title": "传统医学",
+  "subtitle": {
+    "uz": "Mavzu: An’anaviy tibbiyot va akupunktura. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Традиционная медицина и иглоукалывание. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Тиби анъанавӣ ва сӯзандорӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "传统医学",
+      "pinyin": "chuántǒng yīxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "an’anaviy tibbiyot",
+        "ru": "традиционная медицина",
+        "tj": "тиби анъанавӣ"
+      },
+      "no": 1
+    },
+    {
+      "zh": "中医",
+      "pinyin": "zhōngyī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xitoy tabobati",
+        "ru": "китайская медицина",
+        "tj": "тиби чинӣ"
+      },
+      "no": 2
+    },
+    {
+      "zh": "针灸",
+      "pinyin": "zhēnjiǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "akupunktura",
+        "ru": "иглоукалывание",
+        "tj": "сӯзандорӣ"
+      },
+      "no": 3
+    },
+    {
+      "zh": "草药",
+      "pinyin": "cǎoyào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dorivor o‘t",
+        "ru": "лечебная трава",
+        "tj": "гиёҳи шифобахш"
+      },
+      "no": 4
+    },
+    {
+      "zh": "经络",
+      "pinyin": "jīngluò",
+      "pos": "n.",
+      "meaning": {
+        "uz": "meridian kanallari",
+        "ru": "меридианы",
+        "tj": "каналҳои меридиан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "疗效",
+      "pinyin": "liáoxiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "davolash samarasi",
+        "ru": "лечебный эффект",
+        "tj": "самари табобат"
+      },
+      "no": 6
+    },
+    {
+      "zh": "调理",
+      "pinyin": "tiáolǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "muvozanatga keltirmoq",
+        "ru": "регулировать здоровье",
+        "tj": "танзим кардан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 传统医学. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“传统医学”。",
+        "ru": "Ключевая фраза урока: 传统医学. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“传统医学”。",
+        "tj": "Ибораи асосии дарс: 传统医学. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“传统医学”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“传统医学”。",
+          "pinyin": "Jīntiān wǒmen xuéxí chuántǒng yīxué.",
+          "translation": {
+            "uz": "Biz An’anaviy tibbiyot va akupunktura mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Традиционная медицина и иглоукалывание.",
+            "tj": "Мо мавзӯи Тиби анъанавӣ ва сӯзандорӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是传统医学。",
+          "pinyin": "Zhège cí shì chuántǒng yīxué.",
+          "translation": {
+            "uz": "Bu so'z: an’anaviy tibbiyot.",
+            "ru": "Это слово: традиционная медицина.",
+            "tj": "Ин калима: тиби анъанавӣ."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "传统医学。",
+          "pinyin": "chuántǒng yīxué.",
+          "translation": {
+            "uz": "传统医学 — chuántǒng yīxué deb o'qiladi.",
+            "ru": "传统医学 читается как chuántǒng yīxué.",
+            "tj": "传统医学 ҳамчун chuántǒng yīxué хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "An’anaviy tibbiyot va akupunktura",
+        "ru": "Традиционная медицина и иглоукалывание",
+        "tj": "Тиби анъанавӣ ва сӯзандорӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“传统医学”。",
+          "pinyin": "Jīntiān wǒmen xuéxí chuántǒng yīxué.",
+          "text": {
+            "uz": "Bugun An’anaviy tibbiyot va akupunktura mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Традиционная медицина и иглоукалывание.",
+            "tj": "Имрӯз мавзӯи Тиби анъанавӣ ва сӯзандорӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "传统医学。",
+          "pinyin": "chuántǒng yīxué.",
+          "text": {
+            "uz": "传统医学 — chuántǒng yīxué deb o'qiladi.",
+            "ru": "传统医学 читается как chuántǒng yīxué.",
+            "tj": "传统医学 ҳамчун chuántǒng yīxué хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "传统医学",
+            "pinyin": "chuántǒng yīxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "an’anaviy tibbiyot",
+              "ru": "традиционная медицина",
+              "tj": "тиби анъанавӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "中医",
+            "pinyin": "zhōngyī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xitoy tabobati",
+              "ru": "китайская медицина",
+              "tj": "тиби чинӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "针灸",
+            "pinyin": "zhēnjiǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "akupunktura",
+              "ru": "иглоукалывание",
+              "tj": "сӯзандорӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "草药",
+            "pinyin": "cǎoyào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dorivor o‘t",
+              "ru": "лечебная трава",
+              "tj": "гиёҳи шифобахш"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "经络",
+            "pinyin": "jīngluò",
+            "pos": "n.",
+            "meaning": {
+              "uz": "meridian kanallari",
+              "ru": "меридианы",
+              "tj": "каналҳои меридиан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "疗效",
+            "pinyin": "liáoxiào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "davolash samarasi",
+              "ru": "лечебный эффект",
+              "tj": "самари табобат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "调理",
+            "pinyin": "tiáolǐ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "muvozanatga keltirmoq",
+              "ru": "регулировать здоровье",
+              "tj": "танзим кардан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "传统医学 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 传统医学:",
+            "tj": "Маънои калимаи 传统医学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "an’anaviy tibbiyot",
+              "ru": "традиционная медицина",
+              "tj": "тиби анъанавӣ"
+            },
+            {
+              "uz": "xitoy tabobati",
+              "ru": "китайская медицина",
+              "tj": "тиби чинӣ"
+            },
+            {
+              "uz": "akupunktura",
+              "ru": "иглоукалывание",
+              "tj": "сӯзандорӣ"
+            },
+            {
+              "uz": "dorivor o‘t",
+              "ru": "лечебная трава",
+              "tj": "гиёҳи шифобахш"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "传统医学 = an’anaviy tibbiyot (chuántǒng yīxué)",
+            "ru": "传统医学 = традиционная медицина (chuántǒng yīxué)",
+            "tj": "传统医学 = тиби анъанавӣ (chuántǒng yīxué)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "传统医学 talaffuzini tanlang:",
+            "ru": "Выберите произношение 传统医学:",
+            "tj": "Талаффузи 传统医学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chuántǒng yīxué",
+            "zhōngyī",
+            "zhēnjiǔ",
+            "cǎoyào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "传统医学 — chuántǒng yīxué",
+            "ru": "传统医学 — chuántǒng yīxué",
+            "tj": "传统医学 — chuántǒng yīxué"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'an’anaviy tibbiyot' xitoycha nima?",
+            "ru": "'традиционная медицина' по-китайски?",
+            "tj": "'тиби анъанавӣ' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "传统医学",
+            "中医",
+            "针灸",
+            "草药"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "传统医学 = an’anaviy tibbiyot (chuántǒng yīxué)",
+            "ru": "传统医学 = традиционная медицина (chuántǒng yīxué)",
+            "tj": "传统医学 = тиби анъанавӣ (chuántǒng yīxué)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhōngyī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhōngyī?",
+            "tj": "zhōngyī кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "中医",
+            "传统医学",
+            "针灸",
+            "草药"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "中医 = xitoy tabobati (zhōngyī)",
+            "ru": "中医 = китайская медицина (zhōngyī)",
+            "tj": "中医 = тиби чинӣ (zhōngyī)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'传统医学' iborasini tuzing",
+            "ru": "Соберите фразу '传统医学'",
+            "tj": "Ибораи '传统医学'-ро созед"
+          },
+          "tokens": [
+            "传统医学",
+            "中医",
+            "针灸",
+            "草药"
+          ],
+          "answer_tokens": [
+            "传统医学"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 传统医学",
+            "ru": "Правильный порядок: 传统医学",
+            "tj": "Тартиби дуруст: 传统医学"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "传统医学",
+              {
+                "uz": "an’anaviy tibbiyot",
+                "ru": "традиционная медицина",
+                "tj": "тиби анъанавӣ"
+              }
+            ],
+            [
+              "中医",
+              {
+                "uz": "xitoy tabobati",
+                "ru": "китайская медицина",
+                "tj": "тиби чинӣ"
+              }
+            ],
+            [
+              "针灸",
+              {
+                "uz": "akupunktura",
+                "ru": "иглоукалывание",
+                "tj": "сӯзандорӣ"
+              }
+            ],
+            [
+              "草药",
+              {
+                "uz": "dorivor o‘t",
+                "ru": "лечебная трава",
+                "tj": "гиёҳи шифобахш"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "传统医学",
+          "pinyin": "chuántǒng yīxué",
+          "translation": {
+            "uz": "An’anaviy tibbiyot va akupunktura",
+            "ru": "Традиционная медицина и иглоукалывание",
+            "tj": "Тиби анъанавӣ ва сӯзандорӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "传统医学。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 传统医学。",
+            "ru": "Ответ B: 传统医学。",
+            "tj": "Ҷавоби B: 传统医学。"
+          }
+        }
+      ]
+    }
+  ]
+}

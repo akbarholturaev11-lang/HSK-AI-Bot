@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 19,
+  "title": "旅游景点",
+  "subtitle": {
+    "uz": "Mavzu: Turistik joylar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Туристические места. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Ҷойҳои сайёҳӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "景点",
+      "pinyin": "jǐngdiǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "diqqatga sazovor joy",
+        "ru": "достопримечательность",
+        "tj": "ҷои диданӣ"
+      },
+      "no": 1
+    },
+    {
+      "zh": "门票",
+      "pinyin": "ménpiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kirish chiptasi",
+        "ru": "входной билет",
+        "tj": "чиптаи даромад"
+      },
+      "no": 2
+    },
+    {
+      "zh": "导游",
+      "pinyin": "dǎoyóu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "gid",
+        "ru": "гид",
+        "tj": "роҳбалад"
+      },
+      "no": 3
+    },
+    {
+      "zh": "拍照",
+      "pinyin": "pāizhào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "suratga olmoq",
+        "ru": "фотографировать",
+        "tj": "акс гирифтан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "风景",
+      "pinyin": "fēngjǐng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "manzara",
+        "ru": "пейзаж",
+        "tj": "манзара"
+      },
+      "no": 5
+    },
+    {
+      "zh": "地图",
+      "pinyin": "dìtú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xarita",
+        "ru": "карта",
+        "tj": "харита"
+      },
+      "no": 6
+    },
+    {
+      "zh": "纪念品",
+      "pinyin": "jìniànpǐn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "esdalik sovg‘a",
+        "ru": "сувенир",
+        "tj": "ёдгорӣ"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 旅游景点. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“旅游景点”。",
+        "ru": "Ключевая фраза урока: 旅游景点. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“旅游景点”。",
+        "tj": "Ибораи асосии дарс: 旅游景点. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“旅游景点”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“旅游景点”。",
+          "pinyin": "Jīntiān wǒmen xuéxí lǚyóu jǐngdiǎn.",
+          "translation": {
+            "uz": "Biz Turistik joylar mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Туристические места.",
+            "tj": "Мо мавзӯи Ҷойҳои сайёҳӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是景点。",
+          "pinyin": "Zhège cí shì jǐngdiǎn.",
+          "translation": {
+            "uz": "Bu so'z: diqqatga sazovor joy.",
+            "ru": "Это слово: достопримечательность.",
+            "tj": "Ин калима: ҷои диданӣ."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "景点。",
+          "pinyin": "jǐngdiǎn.",
+          "translation": {
+            "uz": "景点 — jǐngdiǎn deb o'qiladi.",
+            "ru": "景点 читается как jǐngdiǎn.",
+            "tj": "景点 ҳамчун jǐngdiǎn хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Turistik joylar",
+        "ru": "Туристические места",
+        "tj": "Ҷойҳои сайёҳӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“旅游景点”。",
+          "pinyin": "Jīntiān wǒmen xuéxí lǚyóu jǐngdiǎn.",
+          "text": {
+            "uz": "Bugun Turistik joylar mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Туристические места.",
+            "tj": "Имрӯз мавзӯи Ҷойҳои сайёҳӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "景点。",
+          "pinyin": "jǐngdiǎn.",
+          "text": {
+            "uz": "景点 — jǐngdiǎn deb o'qiladi.",
+            "ru": "景点 читается как jǐngdiǎn.",
+            "tj": "景点 ҳамчун jǐngdiǎn хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "景点",
+            "pinyin": "jǐngdiǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "diqqatga sazovor joy",
+              "ru": "достопримечательность",
+              "tj": "ҷои диданӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "门票",
+            "pinyin": "ménpiào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "导游",
+            "pinyin": "dǎoyóu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "gid",
+              "ru": "гид",
+              "tj": "роҳбалад"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "拍照",
+            "pinyin": "pāizhào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "suratga olmoq",
+              "ru": "фотографировать",
+              "tj": "акс гирифтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "风景",
+            "pinyin": "fēngjǐng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "manzara",
+              "ru": "пейзаж",
+              "tj": "манзара"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "地图",
+            "pinyin": "dìtú",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xarita",
+              "ru": "карта",
+              "tj": "харита"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "纪念品",
+            "pinyin": "jìniànpǐn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "esdalik sovg‘a",
+              "ru": "сувенир",
+              "tj": "ёдгорӣ"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "景点 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 景点:",
+            "tj": "Маънои калимаи 景点-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "diqqatga sazovor joy",
+              "ru": "достопримечательность",
+              "tj": "ҷои диданӣ"
+            },
+            {
+              "uz": "kirish chiptasi",
+              "ru": "входной билет",
+              "tj": "чиптаи даромад"
+            },
+            {
+              "uz": "gid",
+              "ru": "гид",
+              "tj": "роҳбалад"
+            },
+            {
+              "uz": "suratga olmoq",
+              "ru": "фотографировать",
+              "tj": "акс гирифтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "景点 = diqqatga sazovor joy (jǐngdiǎn)",
+            "ru": "景点 = достопримечательность (jǐngdiǎn)",
+            "tj": "景点 = ҷои диданӣ (jǐngdiǎn)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "景点 talaffuzini tanlang:",
+            "ru": "Выберите произношение 景点:",
+            "tj": "Талаффузи 景点-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jǐngdiǎn",
+            "ménpiào",
+            "dǎoyóu",
+            "pāizhào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "景点 — jǐngdiǎn",
+            "ru": "景点 — jǐngdiǎn",
+            "tj": "景点 — jǐngdiǎn"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'diqqatga sazovor joy' xitoycha nima?",
+            "ru": "'достопримечательность' по-китайски?",
+            "tj": "'ҷои диданӣ' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "景点",
+            "门票",
+            "导游",
+            "拍照"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "景点 = diqqatga sazovor joy (jǐngdiǎn)",
+            "ru": "景点 = достопримечательность (jǐngdiǎn)",
+            "tj": "景点 = ҷои диданӣ (jǐngdiǎn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "ménpiào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ménpiào?",
+            "tj": "ménpiào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "门票",
+            "景点",
+            "导游",
+            "拍照"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "门票 = kirish chiptasi (ménpiào)",
+            "ru": "门票 = входной билет (ménpiào)",
+            "tj": "门票 = чиптаи даромад (ménpiào)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'旅游景点' iborasini tuzing",
+            "ru": "Соберите фразу '旅游景点'",
+            "tj": "Ибораи '旅游景点'-ро созед"
+          },
+          "tokens": [
+            "旅",
+            "游",
+            "景点",
+            "门票",
+            "导游"
+          ],
+          "answer_tokens": [
+            "旅",
+            "游",
+            "景点"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 旅 游 景点",
+            "ru": "Правильный порядок: 旅 游 景点",
+            "tj": "Тартиби дуруст: 旅 游 景点"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "景点",
+              {
+                "uz": "diqqatga sazovor joy",
+                "ru": "достопримечательность",
+                "tj": "ҷои диданӣ"
+              }
+            ],
+            [
+              "门票",
+              {
+                "uz": "kirish chiptasi",
+                "ru": "входной билет",
+                "tj": "чиптаи даромад"
+              }
+            ],
+            [
+              "导游",
+              {
+                "uz": "gid",
+                "ru": "гид",
+                "tj": "роҳбалад"
+              }
+            ],
+            [
+              "拍照",
+              {
+                "uz": "suratga olmoq",
+                "ru": "фотографировать",
+                "tj": "акс гирифтан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "旅游景点",
+          "pinyin": "lǚyóu jǐngdiǎn",
+          "translation": {
+            "uz": "Turistik joylar",
+            "ru": "Туристические места",
+            "tj": "Ҷойҳои сайёҳӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "景点。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 景点。",
+            "ru": "Ответ B: 景点。",
+            "tj": "Ҷавоби B: 景点。"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -207,6 +207,61 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-26 — Course v3 static lesson data files
+
+Changed:
+- Added schema v2 static lesson JSON files under `app/static/course_v3_data/{hsk1,hsk2,hsk3,hsk4}/`.
+- Coverage now includes HSK1 lessons 1-15, HSK2 lessons 1-15, HSK3 lessons 1-20, and HSK4 lessons 1-20.
+- Each lesson includes multilingual UZ/RU/TJ subtitles, active words, grammar, dialogue, intro/practice/dialog sections, and frontend-supported card types.
+
+Why:
+- `course-v3.html` loads lesson flow content from `/course_v3_data/{level}/lesson_XX.json` and needs complete standalone lesson files for HSK1-HSK4.
+
+Files touched:
+- `app/static/course_v3_data/hsk1/lesson_01.json` through `lesson_15.json`
+- `app/static/course_v3_data/hsk2/lesson_01.json` through `lesson_15.json`
+- `app/static/course_v3_data/hsk3/lesson_01.json` through `lesson_20.json`
+- `app/static/course_v3_data/hsk4/lesson_01.json` through `lesson_20.json`
+
+Risk:
+- Data-only change; no subscription, payment, backend result, or progress logic changed.
+
+Follow-up:
+- After deploy, test HSK level switching once v3 maps expose HSK2-HSK4 paths in the UI.
+
+### 2026-06-26 — Course v3 access and progress hardening
+
+Changed:
+- Course v3 map files now expose real HSK1-HSK4 lesson counts with zeroed preview progress, not fake/demo XP.
+- `/api/v3/map` keeps unpaid users limited to lessons 1-3 and marks lesson 4+ as premium-locked even when lesson progression would otherwise make the next node current.
+- Added `/api/v3/lesson/complete` so Telegram users complete v3 lessons through the backend, with initData auth, sequential progress checks, gamification award, and the same free lesson limit.
+- `course-v3.html` now waits for server completion before locally unlocking the next lesson for authenticated Telegram users.
+- Fixed static lesson fallback ordering in `CourseMiniAppLessonFlowService` so DB/test payload content is not overwritten by static fallback files.
+- Course v3 now respects `?level=` and `localStorage.hsk_v3_level`; onboarding passes the selected level into the main course URL so HSK4 opens HSK4 map and lesson JSON.
+- Added Course v3 level picker from the HSK pill.
+- Course v3 invite share now uses `/api/v3/invite`, which reuses `ReferralService` and the same referral link format as `/invite`; frontend opens Telegram share with ready text instead of making copy the main flow.
+- Lesson intro cards were reshaped into a more Duolingo-like flow: word flash, listening pick, meaning pick, hanzi pick, then grammar.
+
+Why:
+- Prevent unpaid users from bypassing the Course v3 paywall by completing lessons locally.
+- Remove demo progress data from the user-facing course map.
+- Make v3 lesson progress server-authoritative for real Telegram users.
+- Preserve selected HSK level across onboarding, reload, and lesson fetches.
+- Avoid broken hardcoded referral links and reduce invite friction.
+
+Files touched:
+- `app/main.py`
+- `app/static/course-v3.html`
+- `app/static/course_v3_onboarding.html`
+- `app/static/course_v3_data/{hsk1,hsk2,hsk3,hsk4}.json`
+- `app/services/course_miniapp_lesson_flow_service.py`
+- `tests/test_course_v3_static_data.py`
+
+Risk:
+- The v3 completion endpoint assumes course lessons are seeded in the database with level and order matching the static maps.
+- Voice/rating/pronunciation demo text is outside this patch and still needs a separate real-backend audit.
+- `/api/v3/invite` requires valid Telegram initData; local browser preview falls back to a plain bot link without referral attribution.
+
 ### 2026-06-26 — Mode selection required-channel edit resume
 
 Changed:

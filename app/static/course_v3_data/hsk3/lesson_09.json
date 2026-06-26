@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 9,
+  "title": "租房子",
+  "subtitle": {
+    "uz": "Mavzu: Uy ijarasi va ko‘chish. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Аренда жилья и переезд. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Иҷораи хона ва кӯчидан. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "租",
+      "pinyin": "zū",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ijaraga olmoq",
+        "ru": "арендовать",
+        "tj": "иҷора гирифтан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "房子",
+      "pinyin": "fángzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "uy",
+        "ru": "дом, жильё",
+        "tj": "хона"
+      },
+      "no": 2
+    },
+    {
+      "zh": "房租",
+      "pinyin": "fángzū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ijara haqi",
+        "ru": "арендная плата",
+        "tj": "пули иҷора"
+      },
+      "no": 3
+    },
+    {
+      "zh": "合同",
+      "pinyin": "hétong",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shartnoma",
+        "ru": "договор",
+        "tj": "шартнома"
+      },
+      "no": 4
+    },
+    {
+      "zh": "搬家",
+      "pinyin": "bānjiā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ko‘chmoq",
+        "ru": "переезжать",
+        "tj": "кӯчидан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "安静",
+      "pinyin": "ānjìng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "tinch",
+        "ru": "тихий",
+        "tj": "ором"
+      },
+      "no": 6
+    },
+    {
+      "zh": "附近",
+      "pinyin": "fùjìn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yaqin atrofi",
+        "ru": "поблизости",
+        "tj": "наздикӣ"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 租房子. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“租房子”。",
+        "ru": "Ключевая фраза урока: 租房子. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“租房子”。",
+        "tj": "Ибораи асосии дарс: 租房子. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“租房子”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“租房子”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zū fángzi.",
+          "translation": {
+            "uz": "Biz Uy ijarasi va ko‘chish mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Аренда жилья и переезд.",
+            "tj": "Мо мавзӯи Иҷораи хона ва кӯчидан-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是租。",
+          "pinyin": "Zhège cí shì zū.",
+          "translation": {
+            "uz": "Bu so'z: ijaraga olmoq.",
+            "ru": "Это слово: арендовать.",
+            "tj": "Ин калима: иҷора гирифтан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "租。",
+          "pinyin": "zū.",
+          "translation": {
+            "uz": "租 — zū deb o'qiladi.",
+            "ru": "租 читается как zū.",
+            "tj": "租 ҳамчун zū хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Uy ijarasi va ko‘chish",
+        "ru": "Аренда жилья и переезд",
+        "tj": "Иҷораи хона ва кӯчидан"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“租房子”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zū fángzi.",
+          "text": {
+            "uz": "Bugun Uy ijarasi va ko‘chish mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Аренда жилья и переезд.",
+            "tj": "Имрӯз мавзӯи Иҷораи хона ва кӯчидан-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "租。",
+          "pinyin": "zū.",
+          "text": {
+            "uz": "租 — zū deb o'qiladi.",
+            "ru": "租 читается как zū.",
+            "tj": "租 ҳамчун zū хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "租",
+            "pinyin": "zū",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ijaraga olmoq",
+              "ru": "арендовать",
+              "tj": "иҷора гирифтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "房子",
+            "pinyin": "fángzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "uy",
+              "ru": "дом, жильё",
+              "tj": "хона"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "房租",
+            "pinyin": "fángzū",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ijara haqi",
+              "ru": "арендная плата",
+              "tj": "пули иҷора"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "合同",
+            "pinyin": "hétong",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shartnoma",
+              "ru": "договор",
+              "tj": "шартнома"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "搬家",
+            "pinyin": "bānjiā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ko‘chmoq",
+              "ru": "переезжать",
+              "tj": "кӯчидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "安静",
+            "pinyin": "ānjìng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "tinch",
+              "ru": "тихий",
+              "tj": "ором"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "附近",
+            "pinyin": "fùjìn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yaqin atrofi",
+              "ru": "поблизости",
+              "tj": "наздикӣ"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "租 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 租:",
+            "tj": "Маънои калимаи 租-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ijaraga olmoq",
+              "ru": "арендовать",
+              "tj": "иҷора гирифтан"
+            },
+            {
+              "uz": "uy",
+              "ru": "дом, жильё",
+              "tj": "хона"
+            },
+            {
+              "uz": "ijara haqi",
+              "ru": "арендная плата",
+              "tj": "пули иҷора"
+            },
+            {
+              "uz": "shartnoma",
+              "ru": "договор",
+              "tj": "шартнома"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "租 = ijaraga olmoq (zū)",
+            "ru": "租 = арендовать (zū)",
+            "tj": "租 = иҷора гирифтан (zū)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "租 talaffuzini tanlang:",
+            "ru": "Выберите произношение 租:",
+            "tj": "Талаффузи 租-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zū",
+            "fángzi",
+            "fángzū",
+            "hétong"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "租 — zū",
+            "ru": "租 — zū",
+            "tj": "租 — zū"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ijaraga olmoq' xitoycha nima?",
+            "ru": "'арендовать' по-китайски?",
+            "tj": "'иҷора гирифтан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "租",
+            "房子",
+            "房租",
+            "合同"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "租 = ijaraga olmoq (zū)",
+            "ru": "租 = арендовать (zū)",
+            "tj": "租 = иҷора гирифтан (zū)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fángzi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fángzi?",
+            "tj": "fángzi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "房子",
+            "租",
+            "房租",
+            "合同"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "房子 = uy (fángzi)",
+            "ru": "房子 = дом, жильё (fángzi)",
+            "tj": "房子 = хона (fángzi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'租房子' iborasini tuzing",
+            "ru": "Соберите фразу '租房子'",
+            "tj": "Ибораи '租房子'-ро созед"
+          },
+          "tokens": [
+            "租",
+            "房子",
+            "房租",
+            "合同"
+          ],
+          "answer_tokens": [
+            "租",
+            "房子"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 租 房子",
+            "ru": "Правильный порядок: 租 房子",
+            "tj": "Тартиби дуруст: 租 房子"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "租",
+              {
+                "uz": "ijaraga olmoq",
+                "ru": "арендовать",
+                "tj": "иҷора гирифтан"
+              }
+            ],
+            [
+              "房子",
+              {
+                "uz": "uy",
+                "ru": "дом, жильё",
+                "tj": "хона"
+              }
+            ],
+            [
+              "房租",
+              {
+                "uz": "ijara haqi",
+                "ru": "арендная плата",
+                "tj": "пули иҷора"
+              }
+            ],
+            [
+              "合同",
+              {
+                "uz": "shartnoma",
+                "ru": "договор",
+                "tj": "шартнома"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "租房子",
+          "pinyin": "zū fángzi",
+          "translation": {
+            "uz": "Uy ijarasi va ko‘chish",
+            "ru": "Аренда жилья и переезд",
+            "tj": "Иҷораи хона ва кӯчидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "租。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 租。",
+            "ru": "Ответ B: 租。",
+            "tj": "Ҷавоби B: 租。"
+          }
+        }
+      ]
+    }
+  ]
+}

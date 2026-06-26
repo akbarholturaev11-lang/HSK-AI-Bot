@@ -1,0 +1,602 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 1,
+  "title": "预订房间",
+  "subtitle": {
+    "uz": "Mavzu: Mehmonxona va bron qilish. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Гостиница и бронирование. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Меҳмонхона ва брон кардан. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "预订",
+      "pinyin": "yùdìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bron qilmoq",
+        "ru": "бронировать",
+        "tj": "брон кардан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "房间",
+      "pinyin": "fángjiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xona",
+        "ru": "комната",
+        "tj": "ҳуҷра"
+      },
+      "no": 2
+    },
+    {
+      "zh": "酒店",
+      "pinyin": "jiǔdiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mehmonxona",
+        "ru": "отель",
+        "tj": "меҳмонхона"
+      },
+      "no": 3
+    },
+    {
+      "zh": "单人间",
+      "pinyin": "dānrénjiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bir kishilik xona",
+        "ru": "одноместный номер",
+        "tj": "ҳуҷраи якнафара"
+      },
+      "no": 4
+    },
+    {
+      "zh": "双人间",
+      "pinyin": "shuāngrénjiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ikki kishilik xona",
+        "ru": "двухместный номер",
+        "tj": "ҳуҷраи дунафара"
+      },
+      "no": 5
+    },
+    {
+      "zh": "入住",
+      "pinyin": "rùzhù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "joylashmoq",
+        "ru": "заселяться",
+        "tj": "ҷойгир шудан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "护照",
+      "pinyin": "hùzhào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "pasport",
+        "ru": "паспорт",
+        "tj": "шиноснома"
+      },
+      "no": 7
+    },
+    {
+      "zh": "前台",
+      "pinyin": "qiántái",
+      "pos": "n.",
+      "meaning": {
+        "uz": "resepshn",
+        "ru": "стойка регистрации",
+        "tj": "қабулгоҳ"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 预订房间. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“预订房间”。",
+        "ru": "Ключевая фраза урока: 预订房间. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“预订房间”。",
+        "tj": "Ибораи асосии дарс: 预订房间. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“预订房间”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“预订房间”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yùdìng fángjiān.",
+          "translation": {
+            "uz": "Biz Mehmonxona va bron qilish mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Гостиница и бронирование.",
+            "tj": "Мо мавзӯи Меҳмонхона ва брон кардан-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是预订。",
+          "pinyin": "Zhège cí shì yùdìng.",
+          "translation": {
+            "uz": "Bu so'z: bron qilmoq.",
+            "ru": "Это слово: бронировать.",
+            "tj": "Ин калима: брон кардан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "预订。",
+          "pinyin": "yùdìng.",
+          "translation": {
+            "uz": "预订 — yùdìng deb o'qiladi.",
+            "ru": "预订 читается как yùdìng.",
+            "tj": "预订 ҳамчун yùdìng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mehmonxona va bron qilish",
+        "ru": "Гостиница и бронирование",
+        "tj": "Меҳмонхона ва брон кардан"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“预订房间”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yùdìng fángjiān.",
+          "text": {
+            "uz": "Bugun Mehmonxona va bron qilish mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Гостиница и бронирование.",
+            "tj": "Имрӯз мавзӯи Меҳмонхона ва брон кардан-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "预订。",
+          "pinyin": "yùdìng.",
+          "text": {
+            "uz": "预订 — yùdìng deb o'qiladi.",
+            "ru": "预订 читается как yùdìng.",
+            "tj": "预订 ҳамчун yùdìng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "预订",
+            "pinyin": "yùdìng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bron qilmoq",
+              "ru": "бронировать",
+              "tj": "брон кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "房间",
+            "pinyin": "fángjiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "酒店",
+            "pinyin": "jiǔdiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mehmonxona",
+              "ru": "отель",
+              "tj": "меҳмонхона"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "单人间",
+            "pinyin": "dānrénjiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bir kishilik xona",
+              "ru": "одноместный номер",
+              "tj": "ҳуҷраи якнафара"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "双人间",
+            "pinyin": "shuāngrénjiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ikki kishilik xona",
+              "ru": "двухместный номер",
+              "tj": "ҳуҷраи дунафара"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "入住",
+            "pinyin": "rùzhù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "joylashmoq",
+              "ru": "заселяться",
+              "tj": "ҷойгир шудан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "护照",
+            "pinyin": "hùzhào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "pasport",
+              "ru": "паспорт",
+              "tj": "шиноснома"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "前台",
+            "pinyin": "qiántái",
+            "pos": "n.",
+            "meaning": {
+              "uz": "resepshn",
+              "ru": "стойка регистрации",
+              "tj": "қабулгоҳ"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "预订 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 预订:",
+            "tj": "Маънои калимаи 预订-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bron qilmoq",
+              "ru": "бронировать",
+              "tj": "брон кардан"
+            },
+            {
+              "uz": "xona",
+              "ru": "комната",
+              "tj": "ҳуҷра"
+            },
+            {
+              "uz": "mehmonxona",
+              "ru": "отель",
+              "tj": "меҳмонхона"
+            },
+            {
+              "uz": "bir kishilik xona",
+              "ru": "одноместный номер",
+              "tj": "ҳуҷраи якнафара"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "预订 = bron qilmoq (yùdìng)",
+            "ru": "预订 = бронировать (yùdìng)",
+            "tj": "预订 = брон кардан (yùdìng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "预订 talaffuzini tanlang:",
+            "ru": "Выберите произношение 预订:",
+            "tj": "Талаффузи 预订-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yùdìng",
+            "fángjiān",
+            "jiǔdiàn",
+            "dānrénjiān"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "预订 — yùdìng",
+            "ru": "预订 — yùdìng",
+            "tj": "预订 — yùdìng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bron qilmoq' xitoycha nima?",
+            "ru": "'бронировать' по-китайски?",
+            "tj": "'брон кардан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "预订",
+            "房间",
+            "酒店",
+            "单人间"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "预订 = bron qilmoq (yùdìng)",
+            "ru": "预订 = бронировать (yùdìng)",
+            "tj": "预订 = брон кардан (yùdìng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fángjiān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fángjiān?",
+            "tj": "fángjiān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "房间",
+            "预订",
+            "酒店",
+            "单人间"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "房间 = xona (fángjiān)",
+            "ru": "房间 = комната (fángjiān)",
+            "tj": "房间 = ҳуҷра (fángjiān)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'预订房间' iborasini tuzing",
+            "ru": "Соберите фразу '预订房间'",
+            "tj": "Ибораи '预订房间'-ро созед"
+          },
+          "tokens": [
+            "预订",
+            "房间",
+            "酒店",
+            "单人间"
+          ],
+          "answer_tokens": [
+            "预订",
+            "房间"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 预订 房间",
+            "ru": "Правильный порядок: 预订 房间",
+            "tj": "Тартиби дуруст: 预订 房间"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "预订",
+              {
+                "uz": "bron qilmoq",
+                "ru": "бронировать",
+                "tj": "брон кардан"
+              }
+            ],
+            [
+              "房间",
+              {
+                "uz": "xona",
+                "ru": "комната",
+                "tj": "ҳуҷра"
+              }
+            ],
+            [
+              "酒店",
+              {
+                "uz": "mehmonxona",
+                "ru": "отель",
+                "tj": "меҳмонхона"
+              }
+            ],
+            [
+              "单人间",
+              {
+                "uz": "bir kishilik xona",
+                "ru": "одноместный номер",
+                "tj": "ҳуҷраи якнафара"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "预订房间",
+          "pinyin": "yùdìng fángjiān",
+          "translation": {
+            "uz": "Mehmonxona va bron qilish",
+            "ru": "Гостиница и бронирование",
+            "tj": "Меҳмонхона ва брон кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "预订。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 预订。",
+            "ru": "Ответ B: 预订。",
+            "tj": "Ҷавоби B: 预订。"
+          }
+        }
+      ]
+    }
+  ]
+}

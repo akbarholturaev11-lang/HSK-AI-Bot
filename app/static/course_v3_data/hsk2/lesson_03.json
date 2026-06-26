@@ -1,0 +1,604 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 3,
+  "title": "我想买",
+  "subtitle": {
+    "uz": "Mavzu: Xarid qilish, ranglar va o'lcham. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Покупки, цвета и размер. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Харид, рангҳо ва андоза. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "想",
+      "pinyin": "xiǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xohlamoq, o‘ylamoq",
+        "ru": "хотеть, думать",
+        "tj": "хостан, фикр кардан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "买",
+      "pinyin": "mǎi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sotib olmoq",
+        "ru": "покупать",
+        "tj": "харидан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "颜色",
+      "pinyin": "yánsè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "rang",
+        "ru": "цвет",
+        "tj": "ранг"
+      },
+      "no": 3
+    },
+    {
+      "zh": "红",
+      "pinyin": "hóng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qizil",
+        "ru": "красный",
+        "tj": "сурх"
+      },
+      "no": 4
+    },
+    {
+      "zh": "蓝",
+      "pinyin": "lán",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ko‘k",
+        "ru": "синий",
+        "tj": "кабуд"
+      },
+      "no": 5
+    },
+    {
+      "zh": "大号",
+      "pinyin": "dà hào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "katta o‘lcham",
+        "ru": "большой размер",
+        "tj": "андозаи калон"
+      },
+      "no": 6
+    },
+    {
+      "zh": "小号",
+      "pinyin": "xiǎo hào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kichik o‘lcham",
+        "ru": "маленький размер",
+        "tj": "андозаи хурд"
+      },
+      "no": 7
+    },
+    {
+      "zh": "试",
+      "pinyin": "shì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sinab ko‘rmoq",
+        "ru": "примерять, пробовать",
+        "tj": "санҷидан"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 我想买. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“我想买”。",
+        "ru": "Ключевая фраза урока: 我想买. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“我想买”。",
+        "tj": "Ибораи асосии дарс: 我想买. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“我想买”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“我想买”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wǒ xiǎng mǎi.",
+          "translation": {
+            "uz": "Biz Xarid qilish, ranglar va o'lcham mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Покупки, цвета и размер.",
+            "tj": "Мо мавзӯи Харид, рангҳо ва андоза-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是想。",
+          "pinyin": "Zhège cí shì xiǎng.",
+          "translation": {
+            "uz": "Bu so'z: xohlamoq, o‘ylamoq.",
+            "ru": "Это слово: хотеть, думать.",
+            "tj": "Ин калима: хостан, фикр кардан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "想。",
+          "pinyin": "xiǎng.",
+          "translation": {
+            "uz": "想 — xiǎng deb o'qiladi.",
+            "ru": "想 читается как xiǎng.",
+            "tj": "想 ҳамчун xiǎng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Xarid qilish, ranglar va o'lcham",
+        "ru": "Покупки, цвета и размер",
+        "tj": "Харид, рангҳо ва андоза"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“我想买”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wǒ xiǎng mǎi.",
+          "text": {
+            "uz": "Bugun Xarid qilish, ranglar va o'lcham mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Покупки, цвета и размер.",
+            "tj": "Имрӯз мавзӯи Харид, рангҳо ва андоза-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "想。",
+          "pinyin": "xiǎng.",
+          "text": {
+            "uz": "想 — xiǎng deb o'qiladi.",
+            "ru": "想 читается как xiǎng.",
+            "tj": "想 ҳамчун xiǎng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "想",
+            "pinyin": "xiǎng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xohlamoq, o‘ylamoq",
+              "ru": "хотеть, думать",
+              "tj": "хостан, фикр кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "买",
+            "pinyin": "mǎi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sotib olmoq",
+              "ru": "покупать",
+              "tj": "харидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "颜色",
+            "pinyin": "yánsè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "rang",
+              "ru": "цвет",
+              "tj": "ранг"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "红",
+            "pinyin": "hóng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qizil",
+              "ru": "красный",
+              "tj": "сурх"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "蓝",
+            "pinyin": "lán",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ko‘k",
+              "ru": "синий",
+              "tj": "кабуд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "大号",
+            "pinyin": "dà hào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "katta o‘lcham",
+              "ru": "большой размер",
+              "tj": "андозаи калон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "小号",
+            "pinyin": "xiǎo hào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kichik o‘lcham",
+              "ru": "маленький размер",
+              "tj": "андозаи хурд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "试",
+            "pinyin": "shì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sinab ko‘rmoq",
+              "ru": "примерять, пробовать",
+              "tj": "санҷидан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "想 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 想:",
+            "tj": "Маънои калимаи 想-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xohlamoq, o‘ylamoq",
+              "ru": "хотеть, думать",
+              "tj": "хостан, фикр кардан"
+            },
+            {
+              "uz": "sotib olmoq",
+              "ru": "покупать",
+              "tj": "харидан"
+            },
+            {
+              "uz": "rang",
+              "ru": "цвет",
+              "tj": "ранг"
+            },
+            {
+              "uz": "qizil",
+              "ru": "красный",
+              "tj": "сурх"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "想 = xohlamoq, o‘ylamoq (xiǎng)",
+            "ru": "想 = хотеть, думать (xiǎng)",
+            "tj": "想 = хостан, фикр кардан (xiǎng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "想 talaffuzini tanlang:",
+            "ru": "Выберите произношение 想:",
+            "tj": "Талаффузи 想-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiǎng",
+            "mǎi",
+            "yánsè",
+            "hóng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "想 — xiǎng",
+            "ru": "想 — xiǎng",
+            "tj": "想 — xiǎng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'xohlamoq, o‘ylamoq' xitoycha nima?",
+            "ru": "'хотеть, думать' по-китайски?",
+            "tj": "'хостан, фикр кардан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "想",
+            "买",
+            "颜色",
+            "红"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "想 = xohlamoq, o‘ylamoq (xiǎng)",
+            "ru": "想 = хотеть, думать (xiǎng)",
+            "tj": "想 = хостан, фикр кардан (xiǎng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "mǎi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается mǎi?",
+            "tj": "mǎi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "买",
+            "想",
+            "颜色",
+            "红"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "买 = sotib olmoq (mǎi)",
+            "ru": "买 = покупать (mǎi)",
+            "tj": "买 = харидан (mǎi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'我想买' iborasini tuzing",
+            "ru": "Соберите фразу '我想买'",
+            "tj": "Ибораи '我想买'-ро созед"
+          },
+          "tokens": [
+            "我",
+            "想",
+            "买",
+            "颜色",
+            "红"
+          ],
+          "answer_tokens": [
+            "我",
+            "想",
+            "买"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 我 想 买",
+            "ru": "Правильный порядок: 我 想 买",
+            "tj": "Тартиби дуруст: 我 想 买"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "想",
+              {
+                "uz": "xohlamoq, o‘ylamoq",
+                "ru": "хотеть, думать",
+                "tj": "хостан, фикр кардан"
+              }
+            ],
+            [
+              "买",
+              {
+                "uz": "sotib olmoq",
+                "ru": "покупать",
+                "tj": "харидан"
+              }
+            ],
+            [
+              "颜色",
+              {
+                "uz": "rang",
+                "ru": "цвет",
+                "tj": "ранг"
+              }
+            ],
+            [
+              "红",
+              {
+                "uz": "qizil",
+                "ru": "красный",
+                "tj": "сурх"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我想买",
+          "pinyin": "wǒ xiǎng mǎi",
+          "translation": {
+            "uz": "Xarid qilish, ranglar va o'lcham",
+            "ru": "Покупки, цвета и размер",
+            "tj": "Харид, рангҳо ва андоза"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "想。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 想。",
+            "ru": "Ответ B: 想。",
+            "tj": "Ҷавоби B: 想。"
+          }
+        }
+      ]
+    }
+  ]
+}

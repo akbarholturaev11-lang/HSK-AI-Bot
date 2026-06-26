@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>Мои ошибки</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{--ink:#211D17;--ink2:#6E665B;--ink3:#A89E8E;--paper:#FBF7EF;--card:#FFFFFF;--line:#EAE2D4;--cin:#C2403A;--cin2:#9A2F2B;--cinbg:#FBEDEA;--gold:#C2962F;--jade:#2F7D5E;--jadebg:#E7F1EA;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;padding:calc(14px + var(--safe-t)) 16px calc(20px + var(--safe-b))}
+.top{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+.ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
+h1{font-size:23px}
+.sub{font-size:13px;color:var(--ink2);margin:2px 0 14px}
+.cta{background:var(--ink);color:#fff;border-radius:18px;padding:17px;position:relative;overflow:hidden;margin-bottom:14px}
+.cta .gw{position:absolute;right:-6px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
+.cta b{font-size:16px;font-weight:500;display:flex;align-items:center;gap:8px}
+.cta p{margin:5px 0 13px;font-size:13px;color:rgba(255,255,255,.72)}
+.cta button{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px}
+.chips{display:flex;gap:7px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px}
+.chips button{flex-shrink:0;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:7px 13px;font-family:inherit;font-size:12px;font-weight:500;color:var(--ink2)}
+.chips button.on{background:var(--cin);border-color:var(--cin);color:#fff}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:10px}
+.item .tl{width:44px;height:44px;border-radius:12px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.item .mid{flex:1;min-width:0}
+.item .mid .w{display:flex;align-items:baseline;gap:7px}.item .mid .w b{font-size:17px}.item .mid .w .py{font-size:12px;color:var(--cin2);font-weight:500}
+.item .mid .err{font-size:12px;margin-top:3px}.item .mid .err .x{color:var(--cin2)}.item .mid .err .c{color:var(--jade)}
+.item .cnt{font-size:11px;font-weight:600;color:var(--cin);background:var(--cinbg);border-radius:9px;padding:2px 7px;flex-shrink:0}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;min-height:55vh}
+.empty .ic{width:84px;height:84px;border-radius:22px;background:var(--jadebg);color:var(--jade);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:16px}
+.empty h3{font-size:19px;font-weight:500;margin:0 0 6px}
+.empty p{font-size:14px;color:var(--ink2);margin:0 0 22px;line-height:1.5}
+.empty button{background:var(--cin);color:#fff;border:none;border-radius:13px;padding:13px 22px;font-family:inherit;font-size:14px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><button class="ix" onclick="goBack()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1 id="m-title"></h1></div>
+  <div class="sub" id="m-sub"></div>
+  <div id="content"></div>
+</div>
+<script>
+var params=new URLSearchParams(location.search||"");
+var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
+var L={ru:{title:"Мои ошибки",sub:"Собираются автоматически из уроков, тестов и экзаменов",emptyTitle:"Пока ошибок нет",emptySub:"Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.",toCourse:"К урокам",review:"Работа над ошибками",reviewSub:"Исправьте слабые места",start:"Начать"},
+  uz:{title:"Xatolarim",sub:"Darslar, testlar va imtihonlardan avtomatik yig'iladi",emptyTitle:"Hozircha xato yo'q",emptySub:"Darslar va testlardan o'ting — xatolar shu yerda paydo bo'ladi va ularni mashq qila olasiz.",toCourse:"Darslarga",review:"Xatolar ustida ishlash",reviewSub:"Zaif joylarni tuzating",start:"Boshlash"},
+  tj:{title:"Хатоҳои ман",sub:"Аз дарсҳо, тестҳо ва имтиҳонҳо худкор ҷамъ мешаванд",emptyTitle:"Ҳоло хато нест",emptySub:"Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.",toCourse:"Ба дарсҳо",review:"Кор бар хатоҳо",reviewSub:"Ҷойҳои заифро ислоҳ кунед",start:"Оғоз"}}[LANG];
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
+function $(id){return document.getElementById(id)}
+function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
+$("m-title").textContent=L.title;$("m-sub").textContent=L.sub;
+// Mistakes are user data from the server (Mistake Engine). Render list when present; otherwise the empty state.
+function renderList(items){
+  var chips='<div class="chips"><button class="on">'+L.title+'</button></div>';
+  var cta='<div class="cta"><span class="gw han">错</span><b><i class="ti ti-refresh"></i> '+L.review+'</b><p>'+items.length+' · '+L.reviewSub+'</p><button><i class="ti ti-player-play"></i> '+L.start+'</button></div>';
+  var list=items.map(function(it){return '<div class="item"><span class="tl"><i class="ti ti-book"></i></span><span class="mid"><span class="w"><b class="han">'+tr(it.zh)+'</b><span class="py">'+tr(it.py)+'</span></span><span class="err"><span class="x">✗ '+tr(it.wrong)+'</span> <span class="c">✓ '+tr(it.correct)+'</span></span></span><span class="cnt">'+(it.count||1)+'×</span></div>'}).join("");
+  $("content").innerHTML=cta+chips+list;
+}
+function renderEmpty(){
+  $("content").innerHTML='<div class="empty"><div class="ic"><i class="ti ti-circle-check"></i></div><h3>'+L.emptyTitle+'</h3><p>'+L.emptySub+'</p><button onclick="location.href=\'/course-v3.html?lang='+LANG+'&tab=course\'"><i class="ti ti-arrow-right"></i> '+L.toCourse+'</button></div>';
+}
+fetch("/api/miniapp/mistakes").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+  var items=(d&&d.items)||[];if(items.length)renderList(items);else renderEmpty();
+}).catch(function(){renderEmpty()});
+</script>
+</body>
+</html>

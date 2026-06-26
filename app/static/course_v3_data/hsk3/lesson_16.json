@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 16,
+  "title": "银行业务",
+  "subtitle": {
+    "uz": "Mavzu: Bank va pul o‘tkazma. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Банк и перевод денег. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Бонк ва интиқоли пул. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "银行",
+      "pinyin": "yínháng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bank",
+        "ru": "банк",
+        "tj": "бонк"
+      },
+      "no": 1
+    },
+    {
+      "zh": "账户",
+      "pinyin": "zhànghù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hisob raqami",
+        "ru": "счёт",
+        "tj": "ҳисоб"
+      },
+      "no": 2
+    },
+    {
+      "zh": "存钱",
+      "pinyin": "cúnqián",
+      "pos": "v.",
+      "meaning": {
+        "uz": "pul qo‘ymoq",
+        "ru": "класть деньги",
+        "tj": "пул гузоштан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "取钱",
+      "pinyin": "qǔqián",
+      "pos": "v.",
+      "meaning": {
+        "uz": "pul yechmoq",
+        "ru": "снимать деньги",
+        "tj": "пул гирифтан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "转账",
+      "pinyin": "zhuǎnzhàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "pul o‘tkazmoq",
+        "ru": "переводить деньги",
+        "tj": "пул интиқол додан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "密码",
+      "pinyin": "mìmǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "parol",
+        "ru": "пароль",
+        "tj": "рамз"
+      },
+      "no": 6
+    },
+    {
+      "zh": "手续费",
+      "pinyin": "shǒuxùfèi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "komissiya to‘lovi",
+        "ru": "комиссия",
+        "tj": "ҳаққи хизмат"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 银行业务. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“银行业务”。",
+        "ru": "Ключевая фраза урока: 银行业务. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“银行业务”。",
+        "tj": "Ибораи асосии дарс: 银行业务. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“银行业务”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“银行业务”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yínháng yèwù.",
+          "translation": {
+            "uz": "Biz Bank va pul o‘tkazma mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Банк и перевод денег.",
+            "tj": "Мо мавзӯи Бонк ва интиқоли пул-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是银行。",
+          "pinyin": "Zhège cí shì yínháng.",
+          "translation": {
+            "uz": "Bu so'z: bank.",
+            "ru": "Это слово: банк.",
+            "tj": "Ин калима: бонк."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "银行。",
+          "pinyin": "yínháng.",
+          "translation": {
+            "uz": "银行 — yínháng deb o'qiladi.",
+            "ru": "银行 читается как yínháng.",
+            "tj": "银行 ҳамчун yínháng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Bank va pul o‘tkazma",
+        "ru": "Банк и перевод денег",
+        "tj": "Бонк ва интиқоли пул"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“银行业务”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yínháng yèwù.",
+          "text": {
+            "uz": "Bugun Bank va pul o‘tkazma mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Банк и перевод денег.",
+            "tj": "Имрӯз мавзӯи Бонк ва интиқоли пул-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "银行。",
+          "pinyin": "yínháng.",
+          "text": {
+            "uz": "银行 — yínháng deb o'qiladi.",
+            "ru": "银行 читается как yínháng.",
+            "tj": "银行 ҳамчун yínháng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "银行",
+            "pinyin": "yínháng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "账户",
+            "pinyin": "zhànghù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hisob raqami",
+              "ru": "счёт",
+              "tj": "ҳисоб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "存钱",
+            "pinyin": "cúnqián",
+            "pos": "v.",
+            "meaning": {
+              "uz": "pul qo‘ymoq",
+              "ru": "класть деньги",
+              "tj": "пул гузоштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "取钱",
+            "pinyin": "qǔqián",
+            "pos": "v.",
+            "meaning": {
+              "uz": "pul yechmoq",
+              "ru": "снимать деньги",
+              "tj": "пул гирифтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "转账",
+            "pinyin": "zhuǎnzhàng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "pul o‘tkazmoq",
+              "ru": "переводить деньги",
+              "tj": "пул интиқол додан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "密码",
+            "pinyin": "mìmǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "parol",
+              "ru": "пароль",
+              "tj": "рамз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "手续费",
+            "pinyin": "shǒuxùfèi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "komissiya to‘lovi",
+              "ru": "комиссия",
+              "tj": "ҳаққи хизмат"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "银行 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 银行:",
+            "tj": "Маънои калимаи 银行-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            },
+            {
+              "uz": "hisob raqami",
+              "ru": "счёт",
+              "tj": "ҳисоб"
+            },
+            {
+              "uz": "pul qo‘ymoq",
+              "ru": "класть деньги",
+              "tj": "пул гузоштан"
+            },
+            {
+              "uz": "pul yechmoq",
+              "ru": "снимать деньги",
+              "tj": "пул гирифтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "银行 = bank (yínháng)",
+            "ru": "银行 = банк (yínháng)",
+            "tj": "银行 = бонк (yínháng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "银行 talaffuzini tanlang:",
+            "ru": "Выберите произношение 银行:",
+            "tj": "Талаффузи 银行-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yínháng",
+            "zhànghù",
+            "cúnqián",
+            "qǔqián"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "银行 — yínháng",
+            "ru": "银行 — yínháng",
+            "tj": "银行 — yínháng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bank' xitoycha nima?",
+            "ru": "'банк' по-китайски?",
+            "tj": "'бонк' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "银行",
+            "账户",
+            "存钱",
+            "取钱"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "银行 = bank (yínháng)",
+            "ru": "银行 = банк (yínháng)",
+            "tj": "银行 = бонк (yínháng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhànghù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhànghù?",
+            "tj": "zhànghù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "账户",
+            "银行",
+            "存钱",
+            "取钱"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "账户 = hisob raqami (zhànghù)",
+            "ru": "账户 = счёт (zhànghù)",
+            "tj": "账户 = ҳисоб (zhànghù)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'银行业务' iborasini tuzing",
+            "ru": "Соберите фразу '银行业务'",
+            "tj": "Ибораи '银行业务'-ро созед"
+          },
+          "tokens": [
+            "银行",
+            "业",
+            "务",
+            "账户",
+            "存钱"
+          ],
+          "answer_tokens": [
+            "银行",
+            "业",
+            "务"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 银行 业 务",
+            "ru": "Правильный порядок: 银行 业 务",
+            "tj": "Тартиби дуруст: 银行 业 务"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "银行",
+              {
+                "uz": "bank",
+                "ru": "банк",
+                "tj": "бонк"
+              }
+            ],
+            [
+              "账户",
+              {
+                "uz": "hisob raqami",
+                "ru": "счёт",
+                "tj": "ҳисоб"
+              }
+            ],
+            [
+              "存钱",
+              {
+                "uz": "pul qo‘ymoq",
+                "ru": "класть деньги",
+                "tj": "пул гузоштан"
+              }
+            ],
+            [
+              "取钱",
+              {
+                "uz": "pul yechmoq",
+                "ru": "снимать деньги",
+                "tj": "пул гирифтан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "银行业务",
+          "pinyin": "yínháng yèwù",
+          "translation": {
+            "uz": "Bank va pul o‘tkazma",
+            "ru": "Банк и перевод денег",
+            "tj": "Бонк ва интиқоли пул"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "银行。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 银行。",
+            "ru": "Ответ B: 银行。",
+            "tj": "Ҷавоби B: 银行。"
+          }
+        }
+      ]
+    }
+  ]
+}

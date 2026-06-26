@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 8,
+  "title": "餐厅点菜",
+  "subtitle": {
+    "uz": "Mavzu: Restoran va ovqat buyurtma. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Ресторан и заказ еды. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Тарабхона ва фармоиши хӯрок. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "点菜",
+      "pinyin": "diǎn cài",
+      "pos": "v.",
+      "meaning": {
+        "uz": "taom buyurtma qilmoq",
+        "ru": "заказывать блюда",
+        "tj": "таом фармоиш додан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "菜单",
+      "pinyin": "càidān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "menyu",
+        "ru": "меню",
+        "tj": "меню"
+      },
+      "no": 2
+    },
+    {
+      "zh": "服务员",
+      "pinyin": "fúwùyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ofitsiant",
+        "ru": "официант",
+        "tj": "хизматрасон"
+      },
+      "no": 3
+    },
+    {
+      "zh": "味道",
+      "pinyin": "wèidào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ta’m",
+        "ru": "вкус",
+        "tj": "мазза"
+      },
+      "no": 4
+    },
+    {
+      "zh": "辣",
+      "pinyin": "là",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "achchiq",
+        "ru": "острый",
+        "tj": "тунд"
+      },
+      "no": 5
+    },
+    {
+      "zh": "推荐",
+      "pinyin": "tuījiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tavsiya qilmoq",
+        "ru": "рекомендовать",
+        "tj": "тавсия кардан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "买单",
+      "pinyin": "mǎidān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "hisob to‘lamoq",
+        "ru": "оплачивать счёт",
+        "tj": "ҳисобро пардохт кардан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 餐厅点菜. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“餐厅点菜”。",
+        "ru": "Ключевая фраза урока: 餐厅点菜. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“餐厅点菜”。",
+        "tj": "Ибораи асосии дарс: 餐厅点菜. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“餐厅点菜”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“餐厅点菜”。",
+          "pinyin": "Jīntiān wǒmen xuéxí cāntīng diǎn cài.",
+          "translation": {
+            "uz": "Biz Restoran va ovqat buyurtma mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Ресторан и заказ еды.",
+            "tj": "Мо мавзӯи Тарабхона ва фармоиши хӯрок-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是点菜。",
+          "pinyin": "Zhège cí shì diǎn cài.",
+          "translation": {
+            "uz": "Bu so'z: taom buyurtma qilmoq.",
+            "ru": "Это слово: заказывать блюда.",
+            "tj": "Ин калима: таом фармоиш додан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "点菜。",
+          "pinyin": "diǎn cài.",
+          "translation": {
+            "uz": "点菜 — diǎn cài deb o'qiladi.",
+            "ru": "点菜 читается как diǎn cài.",
+            "tj": "点菜 ҳамчун diǎn cài хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Restoran va ovqat buyurtma",
+        "ru": "Ресторан и заказ еды",
+        "tj": "Тарабхона ва фармоиши хӯрок"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“餐厅点菜”。",
+          "pinyin": "Jīntiān wǒmen xuéxí cāntīng diǎn cài.",
+          "text": {
+            "uz": "Bugun Restoran va ovqat buyurtma mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Ресторан и заказ еды.",
+            "tj": "Имрӯз мавзӯи Тарабхона ва фармоиши хӯрок-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "点菜。",
+          "pinyin": "diǎn cài.",
+          "text": {
+            "uz": "点菜 — diǎn cài deb o'qiladi.",
+            "ru": "点菜 читается как diǎn cài.",
+            "tj": "点菜 ҳамчун diǎn cài хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "点菜",
+            "pinyin": "diǎn cài",
+            "pos": "v.",
+            "meaning": {
+              "uz": "taom buyurtma qilmoq",
+              "ru": "заказывать блюда",
+              "tj": "таом фармоиш додан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "菜单",
+            "pinyin": "càidān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "menyu",
+              "ru": "меню",
+              "tj": "меню"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "服务员",
+            "pinyin": "fúwùyuán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ofitsiant",
+              "ru": "официант",
+              "tj": "хизматрасон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "味道",
+            "pinyin": "wèidào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ta’m",
+              "ru": "вкус",
+              "tj": "мазза"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "辣",
+            "pinyin": "là",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "achchiq",
+              "ru": "острый",
+              "tj": "тунд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "推荐",
+            "pinyin": "tuījiàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tavsiya qilmoq",
+              "ru": "рекомендовать",
+              "tj": "тавсия кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "买单",
+            "pinyin": "mǎidān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "hisob to‘lamoq",
+              "ru": "оплачивать счёт",
+              "tj": "ҳисобро пардохт кардан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "点菜 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 点菜:",
+            "tj": "Маънои калимаи 点菜-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "taom buyurtma qilmoq",
+              "ru": "заказывать блюда",
+              "tj": "таом фармоиш додан"
+            },
+            {
+              "uz": "menyu",
+              "ru": "меню",
+              "tj": "меню"
+            },
+            {
+              "uz": "ofitsiant",
+              "ru": "официант",
+              "tj": "хизматрасон"
+            },
+            {
+              "uz": "ta’m",
+              "ru": "вкус",
+              "tj": "мазза"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "点菜 = taom buyurtma qilmoq (diǎn cài)",
+            "ru": "点菜 = заказывать блюда (diǎn cài)",
+            "tj": "点菜 = таом фармоиш додан (diǎn cài)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "点菜 talaffuzini tanlang:",
+            "ru": "Выберите произношение 点菜:",
+            "tj": "Талаффузи 点菜-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "diǎn cài",
+            "càidān",
+            "fúwùyuán",
+            "wèidào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "点菜 — diǎn cài",
+            "ru": "点菜 — diǎn cài",
+            "tj": "点菜 — diǎn cài"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'taom buyurtma qilmoq' xitoycha nima?",
+            "ru": "'заказывать блюда' по-китайски?",
+            "tj": "'таом фармоиш додан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "点菜",
+            "菜单",
+            "服务员",
+            "味道"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "点菜 = taom buyurtma qilmoq (diǎn cài)",
+            "ru": "点菜 = заказывать блюда (diǎn cài)",
+            "tj": "点菜 = таом фармоиш додан (diǎn cài)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "càidān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается càidān?",
+            "tj": "càidān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "菜单",
+            "点菜",
+            "服务员",
+            "味道"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "菜单 = menyu (càidān)",
+            "ru": "菜单 = меню (càidān)",
+            "tj": "菜单 = меню (càidān)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'餐厅点菜' iborasini tuzing",
+            "ru": "Соберите фразу '餐厅点菜'",
+            "tj": "Ибораи '餐厅点菜'-ро созед"
+          },
+          "tokens": [
+            "餐",
+            "厅",
+            "点菜",
+            "菜单",
+            "服务员"
+          ],
+          "answer_tokens": [
+            "餐",
+            "厅",
+            "点菜"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 餐 厅 点菜",
+            "ru": "Правильный порядок: 餐 厅 点菜",
+            "tj": "Тартиби дуруст: 餐 厅 点菜"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "点菜",
+              {
+                "uz": "taom buyurtma qilmoq",
+                "ru": "заказывать блюда",
+                "tj": "таом фармоиш додан"
+              }
+            ],
+            [
+              "菜单",
+              {
+                "uz": "menyu",
+                "ru": "меню",
+                "tj": "меню"
+              }
+            ],
+            [
+              "服务员",
+              {
+                "uz": "ofitsiant",
+                "ru": "официант",
+                "tj": "хизматрасон"
+              }
+            ],
+            [
+              "味道",
+              {
+                "uz": "ta’m",
+                "ru": "вкус",
+                "tj": "мазза"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "餐厅点菜",
+          "pinyin": "cāntīng diǎn cài",
+          "translation": {
+            "uz": "Restoran va ovqat buyurtma",
+            "ru": "Ресторан и заказ еды",
+            "tj": "Тарабхона ва фармоиши хӯрок"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "点菜。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 点菜。",
+            "ru": "Ответ B: 点菜。",
+            "tj": "Ҷавоби B: 点菜。"
+          }
+        }
+      ]
+    }
+  ]
+}

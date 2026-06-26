@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 14,
+  "title": "我的爱好",
+  "subtitle": {
+    "uz": "Mavzu: Mashg‘ulotlar va sport. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Хобби и спорт. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Шавқҳо ва варзиш. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "爱好",
+      "pinyin": "àihào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hobbi, qiziqish",
+        "ru": "хобби",
+        "tj": "шавқ, ҳавас"
+      },
+      "no": 1
+    },
+    {
+      "zh": "运动",
+      "pinyin": "yùndòng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sport qilmoq",
+        "ru": "заниматься спортом",
+        "tj": "варзиш кардан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "游泳",
+      "pinyin": "yóuyǒng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "suzmoq",
+        "ru": "плавать",
+        "tj": "шино кардан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "跑步",
+      "pinyin": "pǎobù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yugurmoq",
+        "ru": "бегать",
+        "tj": "давидан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "唱歌",
+      "pinyin": "chànggē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qo‘shiq aytmoq",
+        "ru": "петь",
+        "tj": "суруд хондан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "跳舞",
+      "pinyin": "tiàowǔ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "raqs tushmoq",
+        "ru": "танцевать",
+        "tj": "рақсидан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "每天",
+      "pinyin": "měitiān",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "har kuni",
+        "ru": "каждый день",
+        "tj": "ҳар рӯз"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 我的爱好. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“我的爱好”。",
+        "ru": "Ключевая фраза урока: 我的爱好. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“我的爱好”。",
+        "tj": "Ибораи асосии дарс: 我的爱好. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“我的爱好”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“我的爱好”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wǒ de àihào.",
+          "translation": {
+            "uz": "Biz Mashg‘ulotlar va sport mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Хобби и спорт.",
+            "tj": "Мо мавзӯи Шавқҳо ва варзиш-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是爱好。",
+          "pinyin": "Zhège cí shì àihào.",
+          "translation": {
+            "uz": "Bu so'z: hobbi, qiziqish.",
+            "ru": "Это слово: хобби.",
+            "tj": "Ин калима: шавқ, ҳавас."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "爱好。",
+          "pinyin": "àihào.",
+          "translation": {
+            "uz": "爱好 — àihào deb o'qiladi.",
+            "ru": "爱好 читается как àihào.",
+            "tj": "爱好 ҳамчун àihào хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Mashg‘ulotlar va sport",
+        "ru": "Хобби и спорт",
+        "tj": "Шавқҳо ва варзиш"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“我的爱好”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wǒ de àihào.",
+          "text": {
+            "uz": "Bugun Mashg‘ulotlar va sport mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Хобби и спорт.",
+            "tj": "Имрӯз мавзӯи Шавқҳо ва варзиш-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "爱好。",
+          "pinyin": "àihào.",
+          "text": {
+            "uz": "爱好 — àihào deb o'qiladi.",
+            "ru": "爱好 читается как àihào.",
+            "tj": "爱好 ҳамчун àihào хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "爱好",
+            "pinyin": "àihào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hobbi, qiziqish",
+              "ru": "хобби",
+              "tj": "шавқ, ҳавас"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "运动",
+            "pinyin": "yùndòng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sport qilmoq",
+              "ru": "заниматься спортом",
+              "tj": "варзиш кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "游泳",
+            "pinyin": "yóuyǒng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "suzmoq",
+              "ru": "плавать",
+              "tj": "шино кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "跑步",
+            "pinyin": "pǎobù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yugurmoq",
+              "ru": "бегать",
+              "tj": "давидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "唱歌",
+            "pinyin": "chànggē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qo‘shiq aytmoq",
+              "ru": "петь",
+              "tj": "суруд хондан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "跳舞",
+            "pinyin": "tiàowǔ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "raqs tushmoq",
+              "ru": "танцевать",
+              "tj": "рақсидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "每天",
+            "pinyin": "měitiān",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "har kuni",
+              "ru": "каждый день",
+              "tj": "ҳар рӯз"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "爱好 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 爱好:",
+            "tj": "Маънои калимаи 爱好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hobbi, qiziqish",
+              "ru": "хобби",
+              "tj": "шавқ, ҳавас"
+            },
+            {
+              "uz": "sport qilmoq",
+              "ru": "заниматься спортом",
+              "tj": "варзиш кардан"
+            },
+            {
+              "uz": "suzmoq",
+              "ru": "плавать",
+              "tj": "шино кардан"
+            },
+            {
+              "uz": "yugurmoq",
+              "ru": "бегать",
+              "tj": "давидан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "爱好 = hobbi, qiziqish (àihào)",
+            "ru": "爱好 = хобби (àihào)",
+            "tj": "爱好 = шавқ, ҳавас (àihào)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "爱好 talaffuzini tanlang:",
+            "ru": "Выберите произношение 爱好:",
+            "tj": "Талаффузи 爱好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "àihào",
+            "yùndòng",
+            "yóuyǒng",
+            "pǎobù"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "爱好 — àihào",
+            "ru": "爱好 — àihào",
+            "tj": "爱好 — àihào"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hobbi, qiziqish' xitoycha nima?",
+            "ru": "'хобби' по-китайски?",
+            "tj": "'шавқ, ҳавас' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "爱好",
+            "运动",
+            "游泳",
+            "跑步"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "爱好 = hobbi, qiziqish (àihào)",
+            "ru": "爱好 = хобби (àihào)",
+            "tj": "爱好 = шавқ, ҳавас (àihào)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yùndòng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yùndòng?",
+            "tj": "yùndòng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "运动",
+            "爱好",
+            "游泳",
+            "跑步"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "运动 = sport qilmoq (yùndòng)",
+            "ru": "运动 = заниматься спортом (yùndòng)",
+            "tj": "运动 = варзиш кардан (yùndòng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'我的爱好' iborasini tuzing",
+            "ru": "Соберите фразу '我的爱好'",
+            "tj": "Ибораи '我的爱好'-ро созед"
+          },
+          "tokens": [
+            "我",
+            "的",
+            "爱好",
+            "运动",
+            "游泳"
+          ],
+          "answer_tokens": [
+            "我",
+            "的",
+            "爱好"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 我 的 爱好",
+            "ru": "Правильный порядок: 我 的 爱好",
+            "tj": "Тартиби дуруст: 我 的 爱好"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "爱好",
+              {
+                "uz": "hobbi, qiziqish",
+                "ru": "хобби",
+                "tj": "шавқ, ҳавас"
+              }
+            ],
+            [
+              "运动",
+              {
+                "uz": "sport qilmoq",
+                "ru": "заниматься спортом",
+                "tj": "варзиш кардан"
+              }
+            ],
+            [
+              "游泳",
+              {
+                "uz": "suzmoq",
+                "ru": "плавать",
+                "tj": "шино кардан"
+              }
+            ],
+            [
+              "跑步",
+              {
+                "uz": "yugurmoq",
+                "ru": "бегать",
+                "tj": "давидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我的爱好",
+          "pinyin": "wǒ de àihào",
+          "translation": {
+            "uz": "Mashg‘ulotlar va sport",
+            "ru": "Хобби и спорт",
+            "tj": "Шавқҳо ва варзиш"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "爱好。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 爱好。",
+            "ru": "Ответ B: 爱好。",
+            "tj": "Ҷавоби B: 爱好。"
+          }
+        }
+      ]
+    }
+  ]
+}

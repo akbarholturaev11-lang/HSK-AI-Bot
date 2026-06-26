@@ -1,0 +1,582 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 1,
+  "title": "你去哪儿",
+  "subtitle": {
+    "uz": "Mavzu: Transport va yo'nalish. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Транспорт и направление. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Нақлиёт ва самт. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "去",
+      "pinyin": "qù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bormoq",
+        "ru": "идти, ехать",
+        "tj": "рафтан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "车站",
+      "pinyin": "chēzhàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bekat, vokzal",
+        "ru": "станция, вокзал",
+        "tj": "истгоҳ"
+      },
+      "no": 2
+    },
+    {
+      "zh": "坐",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "minmoq, o‘tirmoq",
+        "ru": "сидеть, ехать на транспорте",
+        "tj": "нишастан, савор шудан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "公共汽车",
+      "pinyin": "gōnggòng qìchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "avtobus",
+        "ru": "автобус",
+        "tj": "автобус"
+      },
+      "no": 4
+    },
+    {
+      "zh": "地铁",
+      "pinyin": "dìtiě",
+      "pos": "n.",
+      "meaning": {
+        "uz": "metro",
+        "ru": "метро",
+        "tj": "метро"
+      },
+      "no": 5
+    },
+    {
+      "zh": "出租车",
+      "pinyin": "chūzūchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "taksi",
+        "ru": "такси",
+        "tj": "таксӣ"
+      },
+      "no": 6
+    },
+    {
+      "zh": "机场",
+      "pinyin": "jīchǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aeroport",
+        "ru": "аэропорт",
+        "tj": "фурудгоҳ"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 你去哪儿. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你去哪儿”。",
+        "ru": "Ключевая фраза урока: 你去哪儿. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你去哪儿”。",
+        "tj": "Ибораи асосии дарс: 你去哪儿. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你去哪儿”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“你去哪儿”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ qù nǎr.",
+          "translation": {
+            "uz": "Biz Transport va yo'nalish mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Транспорт и направление.",
+            "tj": "Мо мавзӯи Нақлиёт ва самт-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是去。",
+          "pinyin": "Zhège cí shì qù.",
+          "translation": {
+            "uz": "Bu so'z: bormoq.",
+            "ru": "Это слово: идти, ехать.",
+            "tj": "Ин калима: рафтан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "去。",
+          "pinyin": "qù.",
+          "translation": {
+            "uz": "去 — qù deb o'qiladi.",
+            "ru": "去 читается как qù.",
+            "tj": "去 ҳамчун qù хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Transport va yo'nalish",
+        "ru": "Транспорт и направление",
+        "tj": "Нақлиёт ва самт"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“你去哪儿”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ qù nǎr.",
+          "text": {
+            "uz": "Bugun Transport va yo'nalish mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Транспорт и направление.",
+            "tj": "Имрӯз мавзӯи Нақлиёт ва самт-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "去。",
+          "pinyin": "qù.",
+          "text": {
+            "uz": "去 — qù deb o'qiladi.",
+            "ru": "去 читается как qù.",
+            "tj": "去 ҳамчун qù хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "去",
+            "pinyin": "qù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bormoq",
+              "ru": "идти, ехать",
+              "tj": "рафтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "车站",
+            "pinyin": "chēzhàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bekat, vokzal",
+              "ru": "станция, вокзал",
+              "tj": "истгоҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "坐",
+            "pinyin": "zuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "minmoq, o‘tirmoq",
+              "ru": "сидеть, ехать на транспорте",
+              "tj": "нишастан, савор шудан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "公共汽车",
+            "pinyin": "gōnggòng qìchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "地铁",
+            "pinyin": "dìtiě",
+            "pos": "n.",
+            "meaning": {
+              "uz": "metro",
+              "ru": "метро",
+              "tj": "метро"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "出租车",
+            "pinyin": "chūzūchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "taksi",
+              "ru": "такси",
+              "tj": "таксӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "机场",
+            "pinyin": "jīchǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "aeroport",
+              "ru": "аэропорт",
+              "tj": "фурудгоҳ"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "去 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 去:",
+            "tj": "Маънои калимаи 去-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bormoq",
+              "ru": "идти, ехать",
+              "tj": "рафтан"
+            },
+            {
+              "uz": "bekat, vokzal",
+              "ru": "станция, вокзал",
+              "tj": "истгоҳ"
+            },
+            {
+              "uz": "minmoq, o‘tirmoq",
+              "ru": "сидеть, ехать на транспорте",
+              "tj": "нишастан, савор шудан"
+            },
+            {
+              "uz": "avtobus",
+              "ru": "автобус",
+              "tj": "автобус"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "去 = bormoq (qù)",
+            "ru": "去 = идти, ехать (qù)",
+            "tj": "去 = рафтан (qù)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "去 talaffuzini tanlang:",
+            "ru": "Выберите произношение 去:",
+            "tj": "Талаффузи 去-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qù",
+            "chēzhàn",
+            "zuò",
+            "gōnggòng qìchē"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "去 — qù",
+            "ru": "去 — qù",
+            "tj": "去 — qù"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bormoq' xitoycha nima?",
+            "ru": "'идти, ехать' по-китайски?",
+            "tj": "'рафтан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "去",
+            "车站",
+            "坐",
+            "公共汽车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "去 = bormoq (qù)",
+            "ru": "去 = идти, ехать (qù)",
+            "tj": "去 = рафтан (qù)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chēzhàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chēzhàn?",
+            "tj": "chēzhàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "车站",
+            "去",
+            "坐",
+            "公共汽车"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "车站 = bekat, vokzal (chēzhàn)",
+            "ru": "车站 = станция, вокзал (chēzhàn)",
+            "tj": "车站 = истгоҳ (chēzhàn)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'你去哪儿' iborasini tuzing",
+            "ru": "Соберите фразу '你去哪儿'",
+            "tj": "Ибораи '你去哪儿'-ро созед"
+          },
+          "tokens": [
+            "你",
+            "去",
+            "哪",
+            "儿",
+            "车站",
+            "坐"
+          ],
+          "answer_tokens": [
+            "你",
+            "去",
+            "哪",
+            "儿"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 你 去 哪 儿",
+            "ru": "Правильный порядок: 你 去 哪 儿",
+            "tj": "Тартиби дуруст: 你 去 哪 儿"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "去",
+              {
+                "uz": "bormoq",
+                "ru": "идти, ехать",
+                "tj": "рафтан"
+              }
+            ],
+            [
+              "车站",
+              {
+                "uz": "bekat, vokzal",
+                "ru": "станция, вокзал",
+                "tj": "истгоҳ"
+              }
+            ],
+            [
+              "坐",
+              {
+                "uz": "minmoq, o‘tirmoq",
+                "ru": "сидеть, ехать на транспорте",
+                "tj": "нишастан, савор шудан"
+              }
+            ],
+            [
+              "公共汽车",
+              {
+                "uz": "avtobus",
+                "ru": "автобус",
+                "tj": "автобус"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你去哪儿",
+          "pinyin": "nǐ qù nǎr",
+          "translation": {
+            "uz": "Transport va yo'nalish",
+            "ru": "Транспорт и направление",
+            "tj": "Нақлиёт ва самт"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "去。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 去。",
+            "ru": "Ответ B: 去。",
+            "tj": "Ҷавоби B: 去。"
+          }
+        }
+      ]
+    }
+  ]
+}

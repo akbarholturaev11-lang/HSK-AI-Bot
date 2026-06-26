@@ -1,0 +1,602 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 13,
+  "title": "天气怎么样",
+  "subtitle": {
+    "uz": "Mavzu: Ob-havo va fasllar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Погода и времена года. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Обу ҳаво ва фаслҳо. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "天气",
+      "pinyin": "tiānqì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ob-havo",
+        "ru": "погода",
+        "tj": "обу ҳаво"
+      },
+      "no": 1
+    },
+    {
+      "zh": "怎么样",
+      "pinyin": "zěnmeyàng",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday",
+        "ru": "как, какой",
+        "tj": "чӣ гуна"
+      },
+      "no": 2
+    },
+    {
+      "zh": "热",
+      "pinyin": "rè",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "issiq",
+        "ru": "жарко, горячий",
+        "tj": "гарм"
+      },
+      "no": 3
+    },
+    {
+      "zh": "冷",
+      "pinyin": "lěng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "sovuq",
+        "ru": "холодно, холодный",
+        "tj": "сард"
+      },
+      "no": 4
+    },
+    {
+      "zh": "下雨",
+      "pinyin": "xià yǔ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yomg'ir yog'moq",
+        "ru": "идёт дождь",
+        "tj": "борон боридан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "下雪",
+      "pinyin": "xià xuě",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qor yog‘moq",
+        "ru": "идёт снег",
+        "tj": "барф боридан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "春天",
+      "pinyin": "chūntiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bahor",
+        "ru": "весна",
+        "tj": "баҳор"
+      },
+      "no": 7
+    },
+    {
+      "zh": "夏天",
+      "pinyin": "xiàtiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yoz",
+        "ru": "лето",
+        "tj": "тобистон"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 天气怎么样. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“天气怎么样”。",
+        "ru": "Ключевая фраза урока: 天气怎么样. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“天气怎么样”。",
+        "tj": "Ибораи асосии дарс: 天气怎么样. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“天气怎么样”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“天气怎么样”。",
+          "pinyin": "Jīntiān wǒmen xuéxí tiānqì zěnmeyàng.",
+          "translation": {
+            "uz": "Biz Ob-havo va fasllar mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Погода и времена года.",
+            "tj": "Мо мавзӯи Обу ҳаво ва фаслҳо-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是天气。",
+          "pinyin": "Zhège cí shì tiānqì.",
+          "translation": {
+            "uz": "Bu so'z: ob-havo.",
+            "ru": "Это слово: погода.",
+            "tj": "Ин калима: обу ҳаво."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "天气。",
+          "pinyin": "tiānqì.",
+          "translation": {
+            "uz": "天气 — tiānqì deb o'qiladi.",
+            "ru": "天气 читается как tiānqì.",
+            "tj": "天气 ҳамчун tiānqì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ob-havo va fasllar",
+        "ru": "Погода и времена года",
+        "tj": "Обу ҳаво ва фаслҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“天气怎么样”。",
+          "pinyin": "Jīntiān wǒmen xuéxí tiānqì zěnmeyàng.",
+          "text": {
+            "uz": "Bugun Ob-havo va fasllar mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Погода и времена года.",
+            "tj": "Имрӯз мавзӯи Обу ҳаво ва фаслҳо-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "天气。",
+          "pinyin": "tiānqì.",
+          "text": {
+            "uz": "天气 — tiānqì deb o'qiladi.",
+            "ru": "天气 читается как tiānqì.",
+            "tj": "天气 ҳамчун tiānqì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "天气",
+            "pinyin": "tiānqì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "怎么样",
+            "pinyin": "zěnmeyàng",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qanday",
+              "ru": "как, какой",
+              "tj": "чӣ гуна"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "热",
+            "pinyin": "rè",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "issiq",
+              "ru": "жарко, горячий",
+              "tj": "гарм"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "冷",
+            "pinyin": "lěng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "sovuq",
+              "ru": "холодно, холодный",
+              "tj": "сард"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "下雨",
+            "pinyin": "xià yǔ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yomg'ir yog'moq",
+              "ru": "идёт дождь",
+              "tj": "борон боридан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "下雪",
+            "pinyin": "xià xuě",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qor yog‘moq",
+              "ru": "идёт снег",
+              "tj": "барф боридан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "春天",
+            "pinyin": "chūntiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bahor",
+              "ru": "весна",
+              "tj": "баҳор"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "夏天",
+            "pinyin": "xiàtiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yoz",
+              "ru": "лето",
+              "tj": "тобистон"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "天气 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 天气:",
+            "tj": "Маънои калимаи 天气-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            },
+            {
+              "uz": "qanday",
+              "ru": "как, какой",
+              "tj": "чӣ гуна"
+            },
+            {
+              "uz": "issiq",
+              "ru": "жарко, горячий",
+              "tj": "гарм"
+            },
+            {
+              "uz": "sovuq",
+              "ru": "холодно, холодный",
+              "tj": "сард"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "天气 = ob-havo (tiānqì)",
+            "ru": "天气 = погода (tiānqì)",
+            "tj": "天气 = обу ҳаво (tiānqì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "天气 talaffuzini tanlang:",
+            "ru": "Выберите произношение 天气:",
+            "tj": "Талаффузи 天气-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tiānqì",
+            "zěnmeyàng",
+            "rè",
+            "lěng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "天气 — tiānqì",
+            "ru": "天气 — tiānqì",
+            "tj": "天气 — tiānqì"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ob-havo' xitoycha nima?",
+            "ru": "'погода' по-китайски?",
+            "tj": "'обу ҳаво' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "天气",
+            "怎么样",
+            "热",
+            "冷"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "天气 = ob-havo (tiānqì)",
+            "ru": "天气 = погода (tiānqì)",
+            "tj": "天气 = обу ҳаво (tiānqì)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zěnmeyàng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zěnmeyàng?",
+            "tj": "zěnmeyàng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "怎么样",
+            "天气",
+            "热",
+            "冷"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "怎么样 = qanday (zěnmeyàng)",
+            "ru": "怎么样 = как, какой (zěnmeyàng)",
+            "tj": "怎么样 = чӣ гуна (zěnmeyàng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'天气怎么样' iborasini tuzing",
+            "ru": "Соберите фразу '天气怎么样'",
+            "tj": "Ибораи '天气怎么样'-ро созед"
+          },
+          "tokens": [
+            "天气",
+            "怎么样",
+            "热",
+            "冷"
+          ],
+          "answer_tokens": [
+            "天气",
+            "怎么样"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 天气 怎么样",
+            "ru": "Правильный порядок: 天气 怎么样",
+            "tj": "Тартиби дуруст: 天气 怎么样"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "天气",
+              {
+                "uz": "ob-havo",
+                "ru": "погода",
+                "tj": "обу ҳаво"
+              }
+            ],
+            [
+              "怎么样",
+              {
+                "uz": "qanday",
+                "ru": "как, какой",
+                "tj": "чӣ гуна"
+              }
+            ],
+            [
+              "热",
+              {
+                "uz": "issiq",
+                "ru": "жарко, горячий",
+                "tj": "гарм"
+              }
+            ],
+            [
+              "冷",
+              {
+                "uz": "sovuq",
+                "ru": "холодно, холодный",
+                "tj": "сард"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "天气怎么样",
+          "pinyin": "tiānqì zěnmeyàng",
+          "translation": {
+            "uz": "Ob-havo va fasllar",
+            "ru": "Погода и времена года",
+            "tj": "Обу ҳаво ва фаслҳо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "天气。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 天气。",
+            "ru": "Ответ B: 天气。",
+            "tj": "Ҷавоби B: 天气。"
+          }
+        }
+      ]
+    }
+  ]
+}

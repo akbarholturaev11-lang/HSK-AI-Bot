@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 13,
+  "title": "运动健康",
+  "subtitle": {
+    "uz": "Mavzu: Sport va salomatlik. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Спорт и здоровье. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Варзиш ва саломатӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "运动",
+      "pinyin": "yùndòng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sport, harakat",
+        "ru": "спорт, движение",
+        "tj": "варзиш, ҳаракат"
+      },
+      "no": 1
+    },
+    {
+      "zh": "健康",
+      "pinyin": "jiànkāng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "salomatlik",
+        "ru": "здоровье",
+        "tj": "саломатӣ"
+      },
+      "no": 2
+    },
+    {
+      "zh": "锻炼",
+      "pinyin": "duànliàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "mashq qilmoq",
+        "ru": "тренироваться",
+        "tj": "машқ кардан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "跑步",
+      "pinyin": "pǎobù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yugurmoq",
+        "ru": "бегать",
+        "tj": "давидан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "游泳",
+      "pinyin": "yóuyǒng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "suzmoq",
+        "ru": "плавать",
+        "tj": "шино кардан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "习惯",
+      "pinyin": "xíguàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "odat",
+        "ru": "привычка",
+        "tj": "одат"
+      },
+      "no": 6
+    },
+    {
+      "zh": "放松",
+      "pinyin": "fàngsōng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bo‘shashmoq, dam olmoq",
+        "ru": "расслабляться",
+        "tj": "ором шудан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 运动健康. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“运动健康”。",
+        "ru": "Ключевая фраза урока: 运动健康. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“运动健康”。",
+        "tj": "Ибораи асосии дарс: 运动健康. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“运动健康”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“运动健康”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yùndòng jiànkāng.",
+          "translation": {
+            "uz": "Biz Sport va salomatlik mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Спорт и здоровье.",
+            "tj": "Мо мавзӯи Варзиш ва саломатӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是运动。",
+          "pinyin": "Zhège cí shì yùndòng.",
+          "translation": {
+            "uz": "Bu so'z: sport, harakat.",
+            "ru": "Это слово: спорт, движение.",
+            "tj": "Ин калима: варзиш, ҳаракат."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "运动。",
+          "pinyin": "yùndòng.",
+          "translation": {
+            "uz": "运动 — yùndòng deb o'qiladi.",
+            "ru": "运动 читается как yùndòng.",
+            "tj": "运动 ҳамчун yùndòng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sport va salomatlik",
+        "ru": "Спорт и здоровье",
+        "tj": "Варзиш ва саломатӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“运动健康”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yùndòng jiànkāng.",
+          "text": {
+            "uz": "Bugun Sport va salomatlik mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Спорт и здоровье.",
+            "tj": "Имрӯз мавзӯи Варзиш ва саломатӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "运动。",
+          "pinyin": "yùndòng.",
+          "text": {
+            "uz": "运动 — yùndòng deb o'qiladi.",
+            "ru": "运动 читается как yùndòng.",
+            "tj": "运动 ҳамчун yùndòng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "运动",
+            "pinyin": "yùndòng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sport, harakat",
+              "ru": "спорт, движение",
+              "tj": "варзиш, ҳаракат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "健康",
+            "pinyin": "jiànkāng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "salomatlik",
+              "ru": "здоровье",
+              "tj": "саломатӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "锻炼",
+            "pinyin": "duànliàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "mashq qilmoq",
+              "ru": "тренироваться",
+              "tj": "машқ кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "跑步",
+            "pinyin": "pǎobù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yugurmoq",
+              "ru": "бегать",
+              "tj": "давидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "游泳",
+            "pinyin": "yóuyǒng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "suzmoq",
+              "ru": "плавать",
+              "tj": "шино кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "习惯",
+            "pinyin": "xíguàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "odat",
+              "ru": "привычка",
+              "tj": "одат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "放松",
+            "pinyin": "fàngsōng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bo‘shashmoq, dam olmoq",
+              "ru": "расслабляться",
+              "tj": "ором шудан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "运动 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 运动:",
+            "tj": "Маънои калимаи 运动-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sport, harakat",
+              "ru": "спорт, движение",
+              "tj": "варзиш, ҳаракат"
+            },
+            {
+              "uz": "salomatlik",
+              "ru": "здоровье",
+              "tj": "саломатӣ"
+            },
+            {
+              "uz": "mashq qilmoq",
+              "ru": "тренироваться",
+              "tj": "машқ кардан"
+            },
+            {
+              "uz": "yugurmoq",
+              "ru": "бегать",
+              "tj": "давидан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "运动 = sport, harakat (yùndòng)",
+            "ru": "运动 = спорт, движение (yùndòng)",
+            "tj": "运动 = варзиш, ҳаракат (yùndòng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "运动 talaffuzini tanlang:",
+            "ru": "Выберите произношение 运动:",
+            "tj": "Талаффузи 运动-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yùndòng",
+            "jiànkāng",
+            "duànliàn",
+            "pǎobù"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "运动 — yùndòng",
+            "ru": "运动 — yùndòng",
+            "tj": "运动 — yùndòng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sport, harakat' xitoycha nima?",
+            "ru": "'спорт, движение' по-китайски?",
+            "tj": "'варзиш, ҳаракат' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "运动",
+            "健康",
+            "锻炼",
+            "跑步"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "运动 = sport, harakat (yùndòng)",
+            "ru": "运动 = спорт, движение (yùndòng)",
+            "tj": "运动 = варзиш, ҳаракат (yùndòng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiànkāng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiànkāng?",
+            "tj": "jiànkāng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "健康",
+            "运动",
+            "锻炼",
+            "跑步"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "健康 = salomatlik (jiànkāng)",
+            "ru": "健康 = здоровье (jiànkāng)",
+            "tj": "健康 = саломатӣ (jiànkāng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'运动健康' iborasini tuzing",
+            "ru": "Соберите фразу '运动健康'",
+            "tj": "Ибораи '运动健康'-ро созед"
+          },
+          "tokens": [
+            "运动",
+            "健康",
+            "锻炼",
+            "跑步"
+          ],
+          "answer_tokens": [
+            "运动",
+            "健康"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 运动 健康",
+            "ru": "Правильный порядок: 运动 健康",
+            "tj": "Тартиби дуруст: 运动 健康"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "运动",
+              {
+                "uz": "sport, harakat",
+                "ru": "спорт, движение",
+                "tj": "варзиш, ҳаракат"
+              }
+            ],
+            [
+              "健康",
+              {
+                "uz": "salomatlik",
+                "ru": "здоровье",
+                "tj": "саломатӣ"
+              }
+            ],
+            [
+              "锻炼",
+              {
+                "uz": "mashq qilmoq",
+                "ru": "тренироваться",
+                "tj": "машқ кардан"
+              }
+            ],
+            [
+              "跑步",
+              {
+                "uz": "yugurmoq",
+                "ru": "бегать",
+                "tj": "давидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "运动健康",
+          "pinyin": "yùndòng jiànkāng",
+          "translation": {
+            "uz": "Sport va salomatlik",
+            "ru": "Спорт и здоровье",
+            "tj": "Варзиш ва саломатӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "运动。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 运动。",
+            "ru": "Ответ B: 运动。",
+            "tj": "Ҷавоби B: 运动。"
+          }
+        }
+      ]
+    }
+  ]
+}

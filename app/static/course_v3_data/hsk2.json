@@ -1,0 +1,262 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "label": "HSK 2",
+  "authenticated": false,
+  "progress": {
+    "streak": 0,
+    "xp": 0,
+    "completed": 0,
+    "league": "Bronze"
+  },
+  "units": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Yo‘l va xarid",
+        "ru": "Дорога и покупки",
+        "tj": "Роҳ ва харид"
+      },
+      "lessons": [
+        {
+          "n": 1,
+          "zh": "你去哪儿",
+          "py": "nǐ qù nǎr",
+          "tr": {
+            "uz": "Transport va yo'nalish",
+            "ru": "Транспорт и направление",
+            "tj": "Нақлиёт ва самт"
+          },
+          "status": "current",
+          "content": "lesson_01"
+        },
+        {
+          "n": 2,
+          "zh": "怎么走",
+          "py": "zěnme zǒu",
+          "tr": {
+            "uz": "Yo'l ko'rsatish, chapga va o'ngga",
+            "ru": "Как пройти, налево и направо",
+            "tj": "Роҳ нишон додан, чап ва рост"
+          },
+          "status": "locked",
+          "content": "lesson_02"
+        },
+        {
+          "n": 3,
+          "zh": "我想买",
+          "py": "wǒ xiǎng mǎi",
+          "tr": {
+            "uz": "Xarid qilish, ranglar va o'lcham",
+            "ru": "Покупки, цвета и размер",
+            "tj": "Харид, рангҳо ва андоза"
+          },
+          "status": "locked",
+          "content": "lesson_03"
+        },
+        {
+          "n": 4,
+          "zh": "你喜欢什么",
+          "py": "nǐ xǐhuan shénme",
+          "tr": {
+            "uz": "Sevimli narsalar va dam olish",
+            "ru": "Любимые вещи и отдых",
+            "tj": "Чизҳои дӯстдошта ва истироҳат"
+          },
+          "status": "locked",
+          "content": "lesson_04",
+          "locked_premium": true
+        },
+        {
+          "n": 5,
+          "zh": "我会说中文",
+          "py": "wǒ huì shuō Zhōngwén",
+          "tr": {
+            "uz": "Mahorat, 会 / 能 / 可以",
+            "ru": "Умения, 会 / 能 / 可以",
+            "tj": "Маҳорат, 会 / 能 / 可以"
+          },
+          "status": "locked",
+          "content": "lesson_05",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "1-bo‘lim takrori",
+          "ru": "Повторение раздела 1",
+          "tj": "Такрори фасли 1"
+        },
+        "status": "locked"
+      }
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Harakat va tajriba",
+        "ru": "Действия и опыт",
+        "tj": "Амал ва таҷриба"
+      },
+      "lessons": [
+        {
+          "n": 6,
+          "zh": "你在做什么",
+          "py": "nǐ zài zuò shénme",
+          "tr": {
+            "uz": "Hozirgi harakatlar, 在 + fe’l",
+            "ru": "Текущие действия, 在 + глагол",
+            "tj": "Амалҳои ҳозира, 在 + феъл"
+          },
+          "status": "locked",
+          "content": "lesson_06",
+          "locked_premium": true
+        },
+        {
+          "n": 7,
+          "zh": "昨天你做了什么",
+          "py": "zuótiān nǐ zuò le shénme",
+          "tr": {
+            "uz": "O‘tgan zamon, 了 yuklamasi",
+            "ru": "Прошедшее действие, частица 了",
+            "tj": "Замони гузашта, ҳиссачаи 了"
+          },
+          "status": "locked",
+          "content": "lesson_07",
+          "locked_premium": true
+        },
+        {
+          "n": 8,
+          "zh": "我比你高",
+          "py": "wǒ bǐ nǐ gāo",
+          "tr": {
+            "uz": "Taqqoslash, 比",
+            "ru": "Сравнение, 比",
+            "tj": "Муқоиса, 比"
+          },
+          "status": "locked",
+          "content": "lesson_08",
+          "locked_premium": true
+        },
+        {
+          "n": 9,
+          "zh": "你看过吗",
+          "py": "nǐ kàn guò ma",
+          "tr": {
+            "uz": "Tajriba, 过 yuklamasi",
+            "ru": "Опыт, частица 过",
+            "tj": "Таҷриба, ҳиссачаи 过"
+          },
+          "status": "locked",
+          "content": "lesson_09",
+          "locked_premium": true
+        },
+        {
+          "n": 10,
+          "zh": "快点儿",
+          "py": "kuài diǎnr",
+          "tr": {
+            "uz": "Tezlik, intensivlik, 一点儿",
+            "ru": "Скорость и 一点儿",
+            "tj": "Суръат ва 一点儿"
+          },
+          "status": "locked",
+          "content": "lesson_10",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "2-bo‘lim takrori",
+          "ru": "Повторение раздела 2",
+          "tj": "Такрори фасли 2"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Ish, oila va qiziqish",
+        "ru": "Работа, семья и интересы",
+        "tj": "Кор, оила ва шавқ"
+      },
+      "lessons": [
+        {
+          "n": 11,
+          "zh": "工作和学习",
+          "py": "gōngzuò hé xuéxí",
+          "tr": {
+            "uz": "Ish, maktab va kasblar",
+            "ru": "Работа, учёба и профессии",
+            "tj": "Кор, мактаб ва касбҳо"
+          },
+          "status": "locked",
+          "content": "lesson_11",
+          "locked_premium": true
+        },
+        {
+          "n": 12,
+          "zh": "家庭成员",
+          "py": "jiātíng chéngyuán",
+          "tr": {
+            "uz": "Oila a’zolari",
+            "ru": "Члены семьи",
+            "tj": "Аъзои оила"
+          },
+          "status": "locked",
+          "content": "lesson_12",
+          "locked_premium": true
+        },
+        {
+          "n": 13,
+          "zh": "身体部位",
+          "py": "shēntǐ bùwèi",
+          "tr": {
+            "uz": "Tananing a’zolari",
+            "ru": "Части тела",
+            "tj": "Узвҳои бадан"
+          },
+          "status": "locked",
+          "content": "lesson_13",
+          "locked_premium": true
+        },
+        {
+          "n": 14,
+          "zh": "我的爱好",
+          "py": "wǒ de àihào",
+          "tr": {
+            "uz": "Mashg‘ulotlar va sport",
+            "ru": "Хобби и спорт",
+            "tj": "Шавқҳо ва варзиш"
+          },
+          "status": "locked",
+          "content": "lesson_14",
+          "locked_premium": true
+        },
+        {
+          "n": 15,
+          "zh": "复习 — HSK 2",
+          "py": "fùxí HSK èr",
+          "tr": {
+            "uz": "HSK 2 takrori va umumiy test",
+            "ru": "Повторение HSK 2 и общий тест",
+            "tj": "Такрори HSK 2 ва санҷиши умумӣ"
+          },
+          "status": "locked",
+          "content": "lesson_15",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "3-bo‘lim takrori",
+          "ru": "Повторение раздела 3",
+          "tj": "Такрори фасли 3"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    }
+  ]
+}

@@ -1,0 +1,601 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 2,
+  "title": "看病",
+  "subtitle": {
+    "uz": "Mavzu: Shifokor va kasallik. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Врач и болезнь. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Духтур ва беморӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "看病",
+      "pinyin": "kànbìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "shifokorga ko‘rinmoq",
+        "ru": "обращаться к врачу",
+        "tj": "ба духтур рафтан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "发烧",
+      "pinyin": "fāshāo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "isitma chiqmoq",
+        "ru": "температурить",
+        "tj": "таб кардан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "咳嗽",
+      "pinyin": "késou",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo‘talmoq",
+        "ru": "кашлять",
+        "tj": "сулфа кардан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "感冒",
+      "pinyin": "gǎnmào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shamollash",
+        "ru": "простуда",
+        "tj": "шамолхӯрӣ"
+      },
+      "no": 4
+    },
+    {
+      "zh": "医生",
+      "pinyin": "yīshēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shifokor",
+        "ru": "врач",
+        "tj": "духтур"
+      },
+      "no": 5
+    },
+    {
+      "zh": "药房",
+      "pinyin": "yàofáng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dorixona",
+        "ru": "аптека",
+        "tj": "дорухона"
+      },
+      "no": 6
+    },
+    {
+      "zh": "检查",
+      "pinyin": "jiǎnchá",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tekshirmoq",
+        "ru": "проверять, обследовать",
+        "tj": "санҷидан"
+      },
+      "no": 7
+    },
+    {
+      "zh": "休息",
+      "pinyin": "xiūxi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "dam olmoq",
+        "ru": "отдыхать",
+        "tj": "истироҳат кардан"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 看病. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“看病”。",
+        "ru": "Ключевая фраза урока: 看病. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“看病”。",
+        "tj": "Ибораи асосии дарс: 看病. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“看病”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“看病”。",
+          "pinyin": "Jīntiān wǒmen xuéxí kànbìng.",
+          "translation": {
+            "uz": "Biz Shifokor va kasallik mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Врач и болезнь.",
+            "tj": "Мо мавзӯи Духтур ва беморӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是看病。",
+          "pinyin": "Zhège cí shì kànbìng.",
+          "translation": {
+            "uz": "Bu so'z: shifokorga ko‘rinmoq.",
+            "ru": "Это слово: обращаться к врачу.",
+            "tj": "Ин калима: ба духтур рафтан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "看病。",
+          "pinyin": "kànbìng.",
+          "translation": {
+            "uz": "看病 — kànbìng deb o'qiladi.",
+            "ru": "看病 читается как kànbìng.",
+            "tj": "看病 ҳамчун kànbìng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Shifokor va kasallik",
+        "ru": "Врач и болезнь",
+        "tj": "Духтур ва беморӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“看病”。",
+          "pinyin": "Jīntiān wǒmen xuéxí kànbìng.",
+          "text": {
+            "uz": "Bugun Shifokor va kasallik mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Врач и болезнь.",
+            "tj": "Имрӯз мавзӯи Духтур ва беморӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "看病。",
+          "pinyin": "kànbìng.",
+          "text": {
+            "uz": "看病 — kànbìng deb o'qiladi.",
+            "ru": "看病 читается как kànbìng.",
+            "tj": "看病 ҳамчун kànbìng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "看病",
+            "pinyin": "kànbìng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "shifokorga ko‘rinmoq",
+              "ru": "обращаться к врачу",
+              "tj": "ба духтур рафтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "发烧",
+            "pinyin": "fāshāo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "isitma chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "咳嗽",
+            "pinyin": "késou",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yo‘talmoq",
+              "ru": "кашлять",
+              "tj": "сулфа кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "感冒",
+            "pinyin": "gǎnmào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shamollash",
+              "ru": "простуда",
+              "tj": "шамолхӯрӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "医生",
+            "pinyin": "yīshēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shifokor",
+              "ru": "врач",
+              "tj": "духтур"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "药房",
+            "pinyin": "yàofáng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dorixona",
+              "ru": "аптека",
+              "tj": "дорухона"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "检查",
+            "pinyin": "jiǎnchá",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tekshirmoq",
+              "ru": "проверять, обследовать",
+              "tj": "санҷидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "休息",
+            "pinyin": "xiūxi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "dam olmoq",
+              "ru": "отдыхать",
+              "tj": "истироҳат кардан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "看病 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 看病:",
+            "tj": "Маънои калимаи 看病-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "shifokorga ko‘rinmoq",
+              "ru": "обращаться к врачу",
+              "tj": "ба духтур рафтан"
+            },
+            {
+              "uz": "isitma chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            },
+            {
+              "uz": "yo‘talmoq",
+              "ru": "кашлять",
+              "tj": "сулфа кардан"
+            },
+            {
+              "uz": "shamollash",
+              "ru": "простуда",
+              "tj": "шамолхӯрӣ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "看病 = shifokorga ko‘rinmoq (kànbìng)",
+            "ru": "看病 = обращаться к врачу (kànbìng)",
+            "tj": "看病 = ба духтур рафтан (kànbìng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "看病 talaffuzini tanlang:",
+            "ru": "Выберите произношение 看病:",
+            "tj": "Талаффузи 看病-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "kànbìng",
+            "fāshāo",
+            "késou",
+            "gǎnmào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "看病 — kànbìng",
+            "ru": "看病 — kànbìng",
+            "tj": "看病 — kànbìng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'shifokorga ko‘rinmoq' xitoycha nima?",
+            "ru": "'обращаться к врачу' по-китайски?",
+            "tj": "'ба духтур рафтан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "看病",
+            "发烧",
+            "咳嗽",
+            "感冒"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "看病 = shifokorga ko‘rinmoq (kànbìng)",
+            "ru": "看病 = обращаться к врачу (kànbìng)",
+            "tj": "看病 = ба духтур рафтан (kànbìng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fāshāo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fāshāo?",
+            "tj": "fāshāo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "发烧",
+            "看病",
+            "咳嗽",
+            "感冒"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "发烧 = isitma chiqmoq (fāshāo)",
+            "ru": "发烧 = температурить (fāshāo)",
+            "tj": "发烧 = таб кардан (fāshāo)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'看病' iborasini tuzing",
+            "ru": "Соберите фразу '看病'",
+            "tj": "Ибораи '看病'-ро созед"
+          },
+          "tokens": [
+            "看病",
+            "发烧",
+            "咳嗽",
+            "感冒"
+          ],
+          "answer_tokens": [
+            "看病"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 看病",
+            "ru": "Правильный порядок: 看病",
+            "tj": "Тартиби дуруст: 看病"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "看病",
+              {
+                "uz": "shifokorga ko‘rinmoq",
+                "ru": "обращаться к врачу",
+                "tj": "ба духтур рафтан"
+              }
+            ],
+            [
+              "发烧",
+              {
+                "uz": "isitma chiqmoq",
+                "ru": "температурить",
+                "tj": "таб кардан"
+              }
+            ],
+            [
+              "咳嗽",
+              {
+                "uz": "yo‘talmoq",
+                "ru": "кашлять",
+                "tj": "сулфа кардан"
+              }
+            ],
+            [
+              "感冒",
+              {
+                "uz": "shamollash",
+                "ru": "простуда",
+                "tj": "шамолхӯрӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "看病",
+          "pinyin": "kànbìng",
+          "translation": {
+            "uz": "Shifokor va kasallik",
+            "ru": "Врач и болезнь",
+            "tj": "Духтур ва беморӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "看病。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 看病。",
+            "ru": "Ответ B: 看病。",
+            "tj": "Ҷавоби B: 看病。"
+          }
+        }
+      ]
+    }
+  ]
+}

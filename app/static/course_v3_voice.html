@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>AI Voice</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{--ink:#211D17;--ink2:#6E665B;--ink3:#A89E8E;--paper:#FBF7EF;--card:#FFFFFF;--line:#EAE2D4;--cin:#C2403A;--cin2:#9A2F2B;--cinbg:#FBEDEA;--gold:#C2962F;--jade:#2F7D5E;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif;color:var(--ink)}
+.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600;letter-spacing:1px}
+.wrap{max-width:480px;margin:0 auto;height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column;padding-top:var(--safe-t)}
+.bg{position:absolute;inset:0;z-index:0}
+.bg svg{width:100%;height:100%}
+.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 4px}
+.ic{width:36px;height:36px;border-radius:50%;background:rgba(251,247,239,.82);border:1px solid rgba(120,95,60,.3);color:#5b4a33;display:flex;align-items:center;justify-content:center;font-size:18px}
+.cnt{font-size:13px;color:#4a3c28;font-weight:500;background:rgba(251,247,239,.74);padding:5px 12px;border-radius:14px}
+.stage{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;padding:0 24px 4px}
+.charwrap{width:214px;height:214px;display:flex;align-items:center;justify-content:center}
+.charwrap svg{width:100%;height:100%;filter:drop-shadow(0 6px 10px rgba(60,44,20,.25))}
+.mouth{transform-box:fill-box;transform-origin:center}
+.speaking .mouth{animation:talk .34s ease-in-out infinite}
+@keyframes talk{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1.05)}}
+.nm{font-size:16px;font-weight:500;color:#3c2f1d;text-shadow:0 1px 0 rgba(255,250,240,.5)}
+.st{font-size:13px;color:#5b4a33;height:18px}
+.sub{position:relative;z-index:2;margin:8px 16px 0;background:rgba(251,247,239,.88);backdrop-filter:blur(8px);border:1px solid rgba(120,95,60,.22);border-radius:18px;padding:14px 16px;text-align:center;min-height:104px}
+.sub .zh{font-size:23px;line-height:1.35;color:var(--ink)}
+.sub .py{font-size:15px;color:var(--cin2);font-weight:500;margin:6px 0 5px}
+.sub .tr{font-size:14px;color:var(--ink2)}
+.dots{display:flex;justify-content:center;gap:5px;height:13px;margin-top:6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:#b3a382;opacity:.4}
+.dots.rec i{background:var(--cin);animation:bl .9s ease-in-out infinite}
+.dots.rec i:nth-child(2){animation-delay:.15s}.dots.rec i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+.ctrl{position:relative;z-index:2;display:flex;justify-content:center;align-items:center;padding:14px 0 calc(28px + var(--safe-b))}
+.ctrlw{position:relative;width:100%;display:flex;justify-content:center}
+.mic{width:80px;height:80px;border-radius:50%;background:var(--cin);color:#fff;border:3px solid rgba(251,247,239,.7);font-size:32px;display:flex;align-items:center;justify-content:center}
+.mic.rec{background:var(--cin2)}
+.mic.rec:after{content:"";position:absolute;width:80px;height:80px;border-radius:50%;border:3px solid var(--cin);animation:pr 1.2s ease-out infinite}
+@keyframes pr{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+.end{position:absolute;right:40px;top:14px;width:52px;height:52px;border-radius:50%;background:rgba(251,247,239,.85);border:1px solid rgba(120,95,60,.3);color:var(--cin);font-size:23px}
+.done{position:absolute;inset:0;background:rgba(33,25,15,.55);backdrop-filter:blur(3px);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;z-index:10}
+.done.on{display:flex}
+.dcard{background:var(--paper);border-radius:22px;padding:26px 22px;width:100%}
+.done .b{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;margin-top:18px}
+.done .b2{width:100%;background:none;border:none;color:var(--ink2);font-family:inherit;font-size:14px;padding:12px 0 2px}
+.done p{font-size:14px;color:var(--ink2);margin:6px 0 0}
+.done h3{font-size:21px;font-weight:500;margin:6px 0 0}
+.dchar{width:130px;height:130px;margin:0 auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bg" id="bg"></div>
+  <div class="top">
+    <button class="ic" onclick="swap()" aria-label="personaj"><i class="ti ti-refresh"></i></button>
+    <span class="cnt" id="cnt">对话 1 / 7</span>
+    <button class="ic" onclick="goBack()" aria-label="yopish"><i class="ti ti-chevron-down"></i></button>
+  </div>
+  <div class="stage">
+    <div class="charwrap speaking" id="char"></div>
+    <div class="nm" id="nm">阿宝 · Aobao</div>
+    <div class="st" id="status"></div>
+  </div>
+  <div class="sub">
+    <div class="zh han" id="zh"></div>
+    <div class="py" id="py"></div>
+    <div class="tr" id="tr"></div>
+    <div class="dots" id="dots"><i></i><i></i><i></i></div>
+  </div>
+  <div class="ctrl"><div class="ctrlw">
+    <button class="mic" id="mic" onclick="talk()" aria-label="gapirish"><i class="ti ti-microphone"></i></button>
+    <button class="end" onclick="endCall()" aria-label="tugatish"><i class="ti ti-phone-off"></i></button>
+  </div></div>
+  <div class="done" id="done"><div class="dcard">
+    <div class="dchar" id="dchar"></div>
+    <h3 id="dh"></h3><p id="dp"></p>
+    <button class="b" onclick="reset()"><i class="ti ti-refresh"></i> <span id="db"></span></button>
+    <button class="b2" onclick="goBack()" id="db2"></button>
+  </div></div>
+</div>
+<script>
+var params=new URLSearchParams(location.search||"");
+var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
+var L={ru:{speaking:"Говорит…",listening:"Слушает…",analyzing:"Анализирует…",hint:"",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",doneSub:"7 реплик · новые слова · +40 XP",again:"Ещё разговор",exit:"Выйти"},
+  uz:{speaking:"Gapiryapti…",listening:"Tinglayapti…",analyzing:"Tahlil…",hint:"",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",doneSub:"7 javob · yangi so'zlar · +40 XP",again:"Yana suhbat",exit:"Chiqish"},
+  tj:{speaking:"Сухан мегӯяд…",listening:"Гӯш мекунад…",analyzing:"Таҳлил…",hint:"",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",doneSub:"7 ҷавоб · калимаҳои нав · +40 XP",again:"Боз сӯҳбат",exit:"Баромадан"}}[LANG];
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=voice"}
+function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
+function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.85;window.speechSynthesis.speak(u)}catch(e){}}
+var ac;function ring(s){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;s.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);var st=t+k*0.08;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(0.1,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+0.15);o.start(st);o.stop(st+0.17)})}catch(e){}}
+
+/* ---- sepia bamboo forest background ---- */
+function forest(){
+  var W=200,H=440,s='<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice">';
+  s+='<rect width="'+W+'" height="'+H+'" fill="#CDB792"/><rect width="'+W+'" height="170" fill="#D8C8A8" opacity="0.55"/>';
+  var st=[{x:24,w:11,t:"#B3A684",o:.5},{x:158,w:10,t:"#B3A684",o:.5},{x:44,w:9,t:"#B3A684",o:.4},{x:70,w:15,t:"#8E7A55",o:.7},{x:124,w:16,t:"#8E7A55",o:.7},{x:-10,w:26,t:"#5E4A30",o:.92},{x:188,w:28,t:"#5E4A30",o:.92},{x:172,w:13,t:"#6E5A3C",o:.8}];
+  st.forEach(function(b){s+='<g opacity="'+b.o+'"><rect x="'+b.x+'" y="-10" width="'+b.w+'" height="'+(H+10)+'" rx="'+(b.w/2)+'" fill="'+b.t+'"/>';for(var y=20;y<H;y+=54){s+='<rect x="'+(b.x-2)+'" y="'+y+'" width="'+(b.w+4)+'" height="4" rx="2" fill="rgba(40,28,12,0.22)"/><rect x="'+(b.x-2)+'" y="'+(y+3)+'" width="'+(b.w+4)+'" height="2" rx="1" fill="rgba(255,245,225,0.18)"/>'}s+='</g>'});
+  [[30,40,-35],[170,54,30],[150,30,20],[56,26,-25],[110,20,15]].forEach(function(l){s+='<g transform="translate('+l[0]+','+l[1]+') rotate('+l[2]+')" opacity="0.55"><path d="M0 0 q22 -7 40 4 q-20 9 -40 -4 z" fill="#6f6536"/></g>'});
+  s+='<rect width="'+W+'" height="150" y="'+(H-150)+'" fill="#CDB792" opacity="0.45"/><rect width="'+W+'" height="'+H+'" fill="#E9DcC0" opacity="0.12"/></svg>';
+  return s;
+}
+document.getElementById("bg").innerHTML=forest();
+
+/* ---- panda persona ---- */
+function chr(mood,p){
+  var scarf=p==="li"?"#2C3A4A":"#C2403A",scarf2=p==="li"?"#1f2b38":"#9A2F2B",eyes,mouth,glass="";
+  if(mood==="happy"){eyes='<path d="M70 96 q9 -9 18 0" fill="none" stroke="#211D17" stroke-width="3.4" stroke-linecap="round"/><path d="M112 96 q9 -9 18 0" fill="none" stroke="#211D17" stroke-width="3.4" stroke-linecap="round"/>';mouth='<path d="M86 118 q14 14 28 0 z" fill="#9A2F2B"/>';}
+  else if(mood==="listen"){eyes='<circle cx="79" cy="95" r="9" fill="#fff"/><circle cx="121" cy="95" r="9" fill="#fff"/><circle cx="79" cy="91" r="5" fill="#211D17"/><circle cx="121" cy="91" r="5" fill="#211D17"/><path d="M68 80 q11 -6 22 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/><path d="M110 80 q11 -6 22 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/>';mouth='<circle class="mouth" cx="100" cy="120" r="4" fill="#9A2F2B"/>';}
+  else{eyes='<circle cx="79" cy="95" r="9" fill="#fff"/><circle cx="121" cy="95" r="9" fill="#fff"/><circle cx="79" cy="95" r="5" fill="#211D17"/><circle cx="121" cy="95" r="5" fill="#211D17"/>';mouth='<ellipse class="mouth" cx="100" cy="121" rx="9" ry="8" fill="#9A2F2B"/>';}
+  if(p==="li"){glass='<circle cx="79" cy="95" r="15" fill="none" stroke="#2C3A4A" stroke-width="2.6"/><circle cx="121" cy="95" r="15" fill="none" stroke="#2C3A4A" stroke-width="2.6"/><path d="M94 95 h12" stroke="#2C3A4A" stroke-width="2.6"/>';}
+  return '<svg viewBox="0 0 200 210"><path d="M52 205 q-6 -60 18 -84 h60 q24 24 18 84 z" fill="#fff" stroke="#211D17" stroke-width="2.5"/><path d="M60 132 q40 20 80 0 l-6 20 q-34 16 -68 0 z" fill="'+scarf+'"/><path d="M128 150 l14 26 -16 -4 -4 -16 z" fill="'+scarf2+'"/><circle cx="64" cy="58" r="22" fill="#211D17"/><circle cx="136" cy="58" r="22" fill="#211D17"/><circle cx="64" cy="58" r="10" fill="#3a352f"/><circle cx="136" cy="58" r="10" fill="#3a352f"/><circle cx="100" cy="86" r="54" fill="#fff" stroke="#211D17" stroke-width="2.5"/><ellipse cx="79" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(-12 79 92)"/><ellipse cx="121" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(12 121 92)"/>'+eyes+glass+'<ellipse cx="100" cy="110" rx="8" ry="5.5" fill="#211D17"/>'+mouth+'</svg>';
+}
+var LINES=[
+  {zh:"你好！你叫什么名字？",py:"nǐ hǎo! nǐ jiào shénme míngzi?",tr:{uz:"Salom! Isming nima?",ru:"Привет! Как тебя зовут?",tj:"Салом! Номат чист?"}},
+  {zh:"很高兴认识你！你是哪国人？",py:"hěn gāoxìng rènshi nǐ! nǐ shì nǎ guó rén?",tr:{uz:"Tanishganimdan xursandman! Qaysi millatdansan?",ru:"Рад знакомству! Из какой ты страны?",tj:"Аз шиносоӣ шодам! Аз кадом кишварӣ?"}},
+  {zh:"你的中文很好！你学了多久了？",py:"nǐ de zhōngwén hěn hǎo! nǐ xué le duōjiǔ le?",tr:{uz:"Xitoy tiling zo'r! Qancha vaqtdan beri o'rganyapsan?",ru:"Твой китайский отличный! Как давно учишь?",tj:"Хитоии ту хуб аст! Чанд вақт боз меомӯзӣ?"}},
+  {zh:"太棒了！你为什么学中文？",py:"tài bàng le! nǐ wèishénme xué zhōngwén?",tr:{uz:"Ajoyib! Nega xitoy tilini o'rganyapsan?",ru:"Здорово! Почему учишь китайский?",tj:"Олӣ! Чаро хитоиро меомӯзӣ?"}},
+  {zh:"明白了。你喜欢中国吗？",py:"míngbai le. nǐ xǐhuan zhōngguó ma?",tr:{uz:"Tushundim. Xitoyni yoqtirasanmi?",ru:"Понятно. Тебе нравится Китай?",tj:"Фаҳмидам. Чин ба ту маъқул аст?"}},
+  {zh:"好的！今天到这里，下次见！",py:"hǎo de! jīntiān dào zhèlǐ, xià cì jiàn!",tr:{uz:"Yaxshi! Bugun shu yerda, keyingi safargacha!",ru:"Хорошо! На сегодня всё, до встречи!",tj:"Хуб! Имрӯз ҳамин, то дидор!"}}
+];
+var i=0,persona="bao";
+function setChar(m){document.getElementById("char").innerHTML=chr(m,persona);document.getElementById("char").className="charwrap"+(m==="talk"?" speaking":"")}
+function line(n){var Ln=LINES[n];document.getElementById("zh").textContent=Ln.zh;document.getElementById("py").textContent=Ln.py;document.getElementById("tr").textContent=tr(Ln.tr);document.getElementById("cnt").textContent="对话 "+(n+1)+" / 7"}
+// NOTE: voice is demo — AI speaks via browser zh-CN TTS, mic is simulated. Real STT/AI/TTS connects from server later.
+function aiTalk(){setChar("talk");document.getElementById("status").textContent=L.speaking;document.getElementById("dots").className="dots";document.getElementById("mic").classList.remove("rec");ring(persona==="li"?[523,659]:[587,740]);}
+function talk(){
+  setChar("listen");document.getElementById("status").textContent=L.listening;document.getElementById("mic").classList.add("rec");document.getElementById("dots").className="dots rec";
+  try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
+  setTimeout(function(){document.getElementById("mic").classList.remove("rec");document.getElementById("dots").className="dots";document.getElementById("status").textContent=L.analyzing;
+    setTimeout(function(){if(i>=LINES.length-1){endCall();return}i++;line(i);aiTalk()},650)},1500);
+}
+function swap(){persona=(persona==="bao"?"li":"bao");document.getElementById("nm").textContent=persona==="bao"?L.baoName:L.liName;aiTalk()}
+function endCall(){document.getElementById("dchar").innerHTML=chr("happy",persona);document.getElementById("dh").textContent=L.doneTitle;document.getElementById("dp").textContent=L.doneSub;document.getElementById("db").textContent=L.again;document.getElementById("db2").textContent=L.exit;document.getElementById("done").classList.add("on");ring([659,784,988]);}
+function reset(){i=0;document.getElementById("done").classList.remove("on");line(0);aiTalk()}
+line(0);aiTalk();
+</script>
+</body>
+</html>

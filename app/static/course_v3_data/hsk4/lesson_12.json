@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 12,
+  "title": "心理健康",
+  "subtitle": {
+    "uz": "Mavzu: Psixologiya va ruhiy salomatlik. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Психология и психическое здоровье. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Психология ва саломатии рӯҳӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "心理",
+      "pinyin": "xīnlǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "psixologiya, ruhiyat",
+        "ru": "психика, психология",
+        "tj": "равоншиносӣ"
+      },
+      "no": 1
+    },
+    {
+      "zh": "健康",
+      "pinyin": "jiànkāng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "salomatlik",
+        "ru": "здоровье",
+        "tj": "саломатӣ"
+      },
+      "no": 2
+    },
+    {
+      "zh": "压力",
+      "pinyin": "yālì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bosim, stress",
+        "ru": "давление, стресс",
+        "tj": "фишор, стресс"
+      },
+      "no": 3
+    },
+    {
+      "zh": "情绪",
+      "pinyin": "qíngxù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kayfiyat, hissiyot",
+        "ru": "эмоции, настроение",
+        "tj": "эҳсосот"
+      },
+      "no": 4
+    },
+    {
+      "zh": "焦虑",
+      "pinyin": "jiāolǜ",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "xavotirli",
+        "ru": "тревожный",
+        "tj": "изтиробнок"
+      },
+      "no": 5
+    },
+    {
+      "zh": "沟通",
+      "pinyin": "gōutōng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "muloqot qilmoq",
+        "ru": "общаться",
+        "tj": "муошират кардан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "平衡",
+      "pinyin": "pínghéng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "muvozanat",
+        "ru": "баланс",
+        "tj": "мувозинат"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 心理健康. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“心理健康”。",
+        "ru": "Ключевая фраза урока: 心理健康. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“心理健康”。",
+        "tj": "Ибораи асосии дарс: 心理健康. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“心理健康”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“心理健康”。",
+          "pinyin": "Jīntiān wǒmen xuéxí xīnlǐ jiànkāng.",
+          "translation": {
+            "uz": "Biz Psixologiya va ruhiy salomatlik mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Психология и психическое здоровье.",
+            "tj": "Мо мавзӯи Психология ва саломатии рӯҳӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是心理。",
+          "pinyin": "Zhège cí shì xīnlǐ.",
+          "translation": {
+            "uz": "Bu so'z: psixologiya, ruhiyat.",
+            "ru": "Это слово: психика, психология.",
+            "tj": "Ин калима: равоншиносӣ."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "心理。",
+          "pinyin": "xīnlǐ.",
+          "translation": {
+            "uz": "心理 — xīnlǐ deb o'qiladi.",
+            "ru": "心理 читается как xīnlǐ.",
+            "tj": "心理 ҳамчун xīnlǐ хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Psixologiya va ruhiy salomatlik",
+        "ru": "Психология и психическое здоровье",
+        "tj": "Психология ва саломатии рӯҳӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“心理健康”。",
+          "pinyin": "Jīntiān wǒmen xuéxí xīnlǐ jiànkāng.",
+          "text": {
+            "uz": "Bugun Psixologiya va ruhiy salomatlik mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Психология и психическое здоровье.",
+            "tj": "Имрӯз мавзӯи Психология ва саломатии рӯҳӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "心理。",
+          "pinyin": "xīnlǐ.",
+          "text": {
+            "uz": "心理 — xīnlǐ deb o'qiladi.",
+            "ru": "心理 читается как xīnlǐ.",
+            "tj": "心理 ҳамчун xīnlǐ хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "心理",
+            "pinyin": "xīnlǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "psixologiya, ruhiyat",
+              "ru": "психика, психология",
+              "tj": "равоншиносӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "健康",
+            "pinyin": "jiànkāng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "salomatlik",
+              "ru": "здоровье",
+              "tj": "саломатӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "压力",
+            "pinyin": "yālì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bosim, stress",
+              "ru": "давление, стресс",
+              "tj": "фишор, стресс"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "情绪",
+            "pinyin": "qíngxù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kayfiyat, hissiyot",
+              "ru": "эмоции, настроение",
+              "tj": "эҳсосот"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "焦虑",
+            "pinyin": "jiāolǜ",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "xavotirli",
+              "ru": "тревожный",
+              "tj": "изтиробнок"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "沟通",
+            "pinyin": "gōutōng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "muloqot qilmoq",
+              "ru": "общаться",
+              "tj": "муошират кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "平衡",
+            "pinyin": "pínghéng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "muvozanat",
+              "ru": "баланс",
+              "tj": "мувозинат"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "心理 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 心理:",
+            "tj": "Маънои калимаи 心理-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "psixologiya, ruhiyat",
+              "ru": "психика, психология",
+              "tj": "равоншиносӣ"
+            },
+            {
+              "uz": "salomatlik",
+              "ru": "здоровье",
+              "tj": "саломатӣ"
+            },
+            {
+              "uz": "bosim, stress",
+              "ru": "давление, стресс",
+              "tj": "фишор, стресс"
+            },
+            {
+              "uz": "kayfiyat, hissiyot",
+              "ru": "эмоции, настроение",
+              "tj": "эҳсосот"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "心理 = psixologiya, ruhiyat (xīnlǐ)",
+            "ru": "心理 = психика, психология (xīnlǐ)",
+            "tj": "心理 = равоншиносӣ (xīnlǐ)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "心理 talaffuzini tanlang:",
+            "ru": "Выберите произношение 心理:",
+            "tj": "Талаффузи 心理-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xīnlǐ",
+            "jiànkāng",
+            "yālì",
+            "qíngxù"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "心理 — xīnlǐ",
+            "ru": "心理 — xīnlǐ",
+            "tj": "心理 — xīnlǐ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'psixologiya, ruhiyat' xitoycha nima?",
+            "ru": "'психика, психология' по-китайски?",
+            "tj": "'равоншиносӣ' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "心理",
+            "健康",
+            "压力",
+            "情绪"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "心理 = psixologiya, ruhiyat (xīnlǐ)",
+            "ru": "心理 = психика, психология (xīnlǐ)",
+            "tj": "心理 = равоншиносӣ (xīnlǐ)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiànkāng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiànkāng?",
+            "tj": "jiànkāng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "健康",
+            "心理",
+            "压力",
+            "情绪"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "健康 = salomatlik (jiànkāng)",
+            "ru": "健康 = здоровье (jiànkāng)",
+            "tj": "健康 = саломатӣ (jiànkāng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'心理健康' iborasini tuzing",
+            "ru": "Соберите фразу '心理健康'",
+            "tj": "Ибораи '心理健康'-ро созед"
+          },
+          "tokens": [
+            "心理",
+            "健康",
+            "压力",
+            "情绪"
+          ],
+          "answer_tokens": [
+            "心理",
+            "健康"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 心理 健康",
+            "ru": "Правильный порядок: 心理 健康",
+            "tj": "Тартиби дуруст: 心理 健康"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "心理",
+              {
+                "uz": "psixologiya, ruhiyat",
+                "ru": "психика, психология",
+                "tj": "равоншиносӣ"
+              }
+            ],
+            [
+              "健康",
+              {
+                "uz": "salomatlik",
+                "ru": "здоровье",
+                "tj": "саломатӣ"
+              }
+            ],
+            [
+              "压力",
+              {
+                "uz": "bosim, stress",
+                "ru": "давление, стресс",
+                "tj": "фишор, стресс"
+              }
+            ],
+            [
+              "情绪",
+              {
+                "uz": "kayfiyat, hissiyot",
+                "ru": "эмоции, настроение",
+                "tj": "эҳсосот"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "心理健康",
+          "pinyin": "xīnlǐ jiànkāng",
+          "translation": {
+            "uz": "Psixologiya va ruhiy salomatlik",
+            "ru": "Психология и психическое здоровье",
+            "tj": "Психология ва саломатии рӯҳӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "心理。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 心理。",
+            "ru": "Ответ B: 心理。",
+            "tj": "Ҷавоби B: 心理。"
+          }
+        }
+      ]
+    }
+  ]
+}

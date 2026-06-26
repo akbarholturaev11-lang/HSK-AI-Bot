@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 13,
+  "title": "体育竞技",
+  "subtitle": {
+    "uz": "Mavzu: Musobaqa sporti. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Соревновательный спорт. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Варзиши мусобиқаӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "体育",
+      "pinyin": "tǐyù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sport",
+        "ru": "спорт",
+        "tj": "варзиш"
+      },
+      "no": 1
+    },
+    {
+      "zh": "竞技",
+      "pinyin": "jìngjì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "musobaqa",
+        "ru": "соревнование",
+        "tj": "мусобиқа"
+      },
+      "no": 2
+    },
+    {
+      "zh": "比赛",
+      "pinyin": "bǐsài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bellashuv, musobaqa",
+        "ru": "соревнование, матч",
+        "tj": "мусобиқа"
+      },
+      "no": 3
+    },
+    {
+      "zh": "冠军",
+      "pinyin": "guànjūn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chempion",
+        "ru": "чемпион",
+        "tj": "қаҳрамон"
+      },
+      "no": 4
+    },
+    {
+      "zh": "训练",
+      "pinyin": "xùnliàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "mashq qildirmoq",
+        "ru": "тренироваться",
+        "tj": "тамрин кардан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "团队",
+      "pinyin": "tuánduì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "jamoa",
+        "ru": "команда",
+        "tj": "даста"
+      },
+      "no": 6
+    },
+    {
+      "zh": "纪录",
+      "pinyin": "jìlù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "rekord",
+        "ru": "рекорд",
+        "tj": "рекорд"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 体育竞技. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“体育竞技”。",
+        "ru": "Ключевая фраза урока: 体育竞技. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“体育竞技”。",
+        "tj": "Ибораи асосии дарс: 体育竞技. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“体育竞技”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“体育竞技”。",
+          "pinyin": "Jīntiān wǒmen xuéxí tǐyù jìngjì.",
+          "translation": {
+            "uz": "Biz Musobaqa sporti mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Соревновательный спорт.",
+            "tj": "Мо мавзӯи Варзиши мусобиқаӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是体育。",
+          "pinyin": "Zhège cí shì tǐyù.",
+          "translation": {
+            "uz": "Bu so'z: sport.",
+            "ru": "Это слово: спорт.",
+            "tj": "Ин калима: варзиш."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "体育。",
+          "pinyin": "tǐyù.",
+          "translation": {
+            "uz": "体育 — tǐyù deb o'qiladi.",
+            "ru": "体育 читается как tǐyù.",
+            "tj": "体育 ҳамчун tǐyù хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Musobaqa sporti",
+        "ru": "Соревновательный спорт",
+        "tj": "Варзиши мусобиқаӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“体育竞技”。",
+          "pinyin": "Jīntiān wǒmen xuéxí tǐyù jìngjì.",
+          "text": {
+            "uz": "Bugun Musobaqa sporti mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Соревновательный спорт.",
+            "tj": "Имрӯз мавзӯи Варзиши мусобиқаӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "体育。",
+          "pinyin": "tǐyù.",
+          "text": {
+            "uz": "体育 — tǐyù deb o'qiladi.",
+            "ru": "体育 читается как tǐyù.",
+            "tj": "体育 ҳамчун tǐyù хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "体育",
+            "pinyin": "tǐyù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sport",
+              "ru": "спорт",
+              "tj": "варзиш"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "竞技",
+            "pinyin": "jìngjì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "比赛",
+            "pinyin": "bǐsài",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bellashuv, musobaqa",
+              "ru": "соревнование, матч",
+              "tj": "мусобиқа"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "冠军",
+            "pinyin": "guànjūn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chempion",
+              "ru": "чемпион",
+              "tj": "қаҳрамон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "训练",
+            "pinyin": "xùnliàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "mashq qildirmoq",
+              "ru": "тренироваться",
+              "tj": "тамрин кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "团队",
+            "pinyin": "tuánduì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "jamoa",
+              "ru": "команда",
+              "tj": "даста"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "纪录",
+            "pinyin": "jìlù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "rekord",
+              "ru": "рекорд",
+              "tj": "рекорд"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "体育 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 体育:",
+            "tj": "Маънои калимаи 体育-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sport",
+              "ru": "спорт",
+              "tj": "варзиш"
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            },
+            {
+              "uz": "bellashuv, musobaqa",
+              "ru": "соревнование, матч",
+              "tj": "мусобиқа"
+            },
+            {
+              "uz": "chempion",
+              "ru": "чемпион",
+              "tj": "қаҳрамон"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "体育 = sport (tǐyù)",
+            "ru": "体育 = спорт (tǐyù)",
+            "tj": "体育 = варзиш (tǐyù)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "体育 talaffuzini tanlang:",
+            "ru": "Выберите произношение 体育:",
+            "tj": "Талаффузи 体育-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tǐyù",
+            "jìngjì",
+            "bǐsài",
+            "guànjūn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "体育 — tǐyù",
+            "ru": "体育 — tǐyù",
+            "tj": "体育 — tǐyù"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'sport' xitoycha nima?",
+            "ru": "'спорт' по-китайски?",
+            "tj": "'варзиш' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "体育",
+            "竞技",
+            "比赛",
+            "冠军"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "体育 = sport (tǐyù)",
+            "ru": "体育 = спорт (tǐyù)",
+            "tj": "体育 = варзиш (tǐyù)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jìngjì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jìngjì?",
+            "tj": "jìngjì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "竞技",
+            "体育",
+            "比赛",
+            "冠军"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "竞技 = musobaqa (jìngjì)",
+            "ru": "竞技 = соревнование (jìngjì)",
+            "tj": "竞技 = мусобиқа (jìngjì)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'体育竞技' iborasini tuzing",
+            "ru": "Соберите фразу '体育竞技'",
+            "tj": "Ибораи '体育竞技'-ро созед"
+          },
+          "tokens": [
+            "体育",
+            "竞技",
+            "比赛",
+            "冠军"
+          ],
+          "answer_tokens": [
+            "体育",
+            "竞技"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 体育 竞技",
+            "ru": "Правильный порядок: 体育 竞技",
+            "tj": "Тартиби дуруст: 体育 竞技"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "体育",
+              {
+                "uz": "sport",
+                "ru": "спорт",
+                "tj": "варзиш"
+              }
+            ],
+            [
+              "竞技",
+              {
+                "uz": "musobaqa",
+                "ru": "соревнование",
+                "tj": "мусобиқа"
+              }
+            ],
+            [
+              "比赛",
+              {
+                "uz": "bellashuv, musobaqa",
+                "ru": "соревнование, матч",
+                "tj": "мусобиқа"
+              }
+            ],
+            [
+              "冠军",
+              {
+                "uz": "chempion",
+                "ru": "чемпион",
+                "tj": "қаҳрамон"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "体育竞技",
+          "pinyin": "tǐyù jìngjì",
+          "translation": {
+            "uz": "Musobaqa sporti",
+            "ru": "Соревновательный спорт",
+            "tj": "Варзиши мусобиқаӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "体育。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 体育。",
+            "ru": "Ответ B: 体育。",
+            "tj": "Ҷавоби B: 体育。"
+          }
+        }
+      ]
+    }
+  ]
+}

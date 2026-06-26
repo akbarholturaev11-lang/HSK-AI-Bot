@@ -1,0 +1,582 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 11,
+  "title": "你喝什么",
+  "subtitle": {
+    "uz": "Mavzu: Ichimliklar va buyurtma. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Напитки и заказ. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Нӯшокиҳо ва фармоиш. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "喝",
+      "pinyin": "hē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ichmoq",
+        "ru": "пить",
+        "tj": "нӯшидан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "水",
+      "pinyin": "shuǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "suv",
+        "ru": "вода",
+        "tj": "об"
+      },
+      "no": 2
+    },
+    {
+      "zh": "茶",
+      "pinyin": "chá",
+      "pos": "n.",
+      "meaning": {
+        "uz": "choy",
+        "ru": "чай",
+        "tj": "чой"
+      },
+      "no": 3
+    },
+    {
+      "zh": "咖啡",
+      "pinyin": "kāfēi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qahva",
+        "ru": "кофе",
+        "tj": "қаҳва"
+      },
+      "no": 4
+    },
+    {
+      "zh": "牛奶",
+      "pinyin": "niúnǎi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sut",
+        "ru": "молоко",
+        "tj": "шир"
+      },
+      "no": 5
+    },
+    {
+      "zh": "杯",
+      "pinyin": "bēi",
+      "pos": "mw.",
+      "meaning": {
+        "uz": "stakan, piyola",
+        "ru": "стакан, чашка",
+        "tj": "пиёла, стакан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "要",
+      "pinyin": "yào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xohlamoq, olmoq",
+        "ru": "хотеть, брать",
+        "tj": "хостан, гирифтан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 你喝什么. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你喝什么”。",
+        "ru": "Ключевая фраза урока: 你喝什么. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你喝什么”。",
+        "tj": "Ибораи асосии дарс: 你喝什么. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你喝什么”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“你喝什么”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ hē shénme.",
+          "translation": {
+            "uz": "Biz Ichimliklar va buyurtma mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Напитки и заказ.",
+            "tj": "Мо мавзӯи Нӯшокиҳо ва фармоиш-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是喝。",
+          "pinyin": "Zhège cí shì hē.",
+          "translation": {
+            "uz": "Bu so'z: ichmoq.",
+            "ru": "Это слово: пить.",
+            "tj": "Ин калима: нӯшидан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "喝。",
+          "pinyin": "hē.",
+          "translation": {
+            "uz": "喝 — hē deb o'qiladi.",
+            "ru": "喝 читается как hē.",
+            "tj": "喝 ҳамчун hē хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ichimliklar va buyurtma",
+        "ru": "Напитки и заказ",
+        "tj": "Нӯшокиҳо ва фармоиш"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“你喝什么”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ hē shénme.",
+          "text": {
+            "uz": "Bugun Ichimliklar va buyurtma mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Напитки и заказ.",
+            "tj": "Имрӯз мавзӯи Нӯшокиҳо ва фармоиш-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "喝。",
+          "pinyin": "hē.",
+          "text": {
+            "uz": "喝 — hē deb o'qiladi.",
+            "ru": "喝 читается как hē.",
+            "tj": "喝 ҳамчун hē хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "喝",
+            "pinyin": "hē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "水",
+            "pinyin": "shuǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "suv",
+              "ru": "вода",
+              "tj": "об"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "茶",
+            "pinyin": "chá",
+            "pos": "n.",
+            "meaning": {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "咖啡",
+            "pinyin": "kāfēi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qahva",
+              "ru": "кофе",
+              "tj": "қаҳва"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "牛奶",
+            "pinyin": "niúnǎi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sut",
+              "ru": "молоко",
+              "tj": "шир"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "杯",
+            "pinyin": "bēi",
+            "pos": "mw.",
+            "meaning": {
+              "uz": "stakan, piyola",
+              "ru": "стакан, чашка",
+              "tj": "пиёла, стакан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "要",
+            "pinyin": "yào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xohlamoq, olmoq",
+              "ru": "хотеть, брать",
+              "tj": "хостан, гирифтан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "喝 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 喝:",
+            "tj": "Маънои калимаи 喝-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            },
+            {
+              "uz": "suv",
+              "ru": "вода",
+              "tj": "об"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "qahva",
+              "ru": "кофе",
+              "tj": "қаҳва"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "喝 = ichmoq (hē)",
+            "ru": "喝 = пить (hē)",
+            "tj": "喝 = нӯшидан (hē)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "喝 talaffuzini tanlang:",
+            "ru": "Выберите произношение 喝:",
+            "tj": "Талаффузи 喝-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hē",
+            "shuǐ",
+            "chá",
+            "kāfēi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "喝 — hē",
+            "ru": "喝 — hē",
+            "tj": "喝 — hē"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ichmoq' xitoycha nima?",
+            "ru": "'пить' по-китайски?",
+            "tj": "'нӯшидан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "喝",
+            "水",
+            "茶",
+            "咖啡"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "喝 = ichmoq (hē)",
+            "ru": "喝 = пить (hē)",
+            "tj": "喝 = нӯшидан (hē)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shuǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shuǐ?",
+            "tj": "shuǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "水",
+            "喝",
+            "茶",
+            "咖啡"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "水 = suv (shuǐ)",
+            "ru": "水 = вода (shuǐ)",
+            "tj": "水 = об (shuǐ)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'你喝什么' iborasini tuzing",
+            "ru": "Соберите фразу '你喝什么'",
+            "tj": "Ибораи '你喝什么'-ро созед"
+          },
+          "tokens": [
+            "你",
+            "喝",
+            "什",
+            "么",
+            "水",
+            "茶"
+          ],
+          "answer_tokens": [
+            "你",
+            "喝",
+            "什",
+            "么"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 你 喝 什 么",
+            "ru": "Правильный порядок: 你 喝 什 么",
+            "tj": "Тартиби дуруст: 你 喝 什 么"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "喝",
+              {
+                "uz": "ichmoq",
+                "ru": "пить",
+                "tj": "нӯшидан"
+              }
+            ],
+            [
+              "水",
+              {
+                "uz": "suv",
+                "ru": "вода",
+                "tj": "об"
+              }
+            ],
+            [
+              "茶",
+              {
+                "uz": "choy",
+                "ru": "чай",
+                "tj": "чой"
+              }
+            ],
+            [
+              "咖啡",
+              {
+                "uz": "qahva",
+                "ru": "кофе",
+                "tj": "қаҳва"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你喝什么",
+          "pinyin": "nǐ hē shénme",
+          "translation": {
+            "uz": "Ichimliklar va buyurtma",
+            "ru": "Напитки и заказ",
+            "tj": "Нӯшокиҳо ва фармоиш"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "喝。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 喝。",
+            "ru": "Ответ B: 喝。",
+            "tj": "Ҷавоби B: 喝。"
+          }
+        }
+      ]
+    }
+  ]
+}

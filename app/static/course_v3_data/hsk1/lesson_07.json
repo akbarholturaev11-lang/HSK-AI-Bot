@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 7,
+  "title": "现在几点",
+  "subtitle": {
+    "uz": "Mavzu: Vaqt va soat. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Время и часы. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Вақт ва соат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "现在",
+      "pinyin": "xiànzài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hozir",
+        "ru": "сейчас",
+        "tj": "ҳозир"
+      },
+      "no": 1
+    },
+    {
+      "zh": "几",
+      "pinyin": "jǐ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "necha",
+        "ru": "сколько",
+        "tj": "чанд"
+      },
+      "no": 2
+    },
+    {
+      "zh": "点",
+      "pinyin": "diǎn",
+      "pos": "mw.",
+      "meaning": {
+        "uz": "soat",
+        "ru": "час (время)",
+        "tj": "соат"
+      },
+      "no": 3
+    },
+    {
+      "zh": "分",
+      "pinyin": "fēn",
+      "pos": "mw.",
+      "meaning": {
+        "uz": "daqiqa",
+        "ru": "минута",
+        "tj": "дақиқа"
+      },
+      "no": 4
+    },
+    {
+      "zh": "上午",
+      "pinyin": "shàngwǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ertalab, tushgacha",
+        "ru": "утро, до полудня",
+        "tj": "субҳ, пеш аз нисфирӯзӣ"
+      },
+      "no": 5
+    },
+    {
+      "zh": "下午",
+      "pinyin": "xiàwǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tushdan keyin",
+        "ru": "после полудня",
+        "tj": "баъд аз нисфирӯзӣ"
+      },
+      "no": 6
+    },
+    {
+      "zh": "半",
+      "pinyin": "bàn",
+      "pos": "num.",
+      "meaning": {
+        "uz": "yarim",
+        "ru": "половина",
+        "tj": "ним"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 现在几点. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“现在几点”。",
+        "ru": "Ключевая фраза урока: 现在几点. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“现在几点”。",
+        "tj": "Ибораи асосии дарс: 现在几点. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“现在几点”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“现在几点”。",
+          "pinyin": "Jīntiān wǒmen xuéxí xiànzài jǐ diǎn.",
+          "translation": {
+            "uz": "Biz Vaqt va soat mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Время и часы.",
+            "tj": "Мо мавзӯи Вақт ва соат-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是现在。",
+          "pinyin": "Zhège cí shì xiànzài.",
+          "translation": {
+            "uz": "Bu so'z: hozir.",
+            "ru": "Это слово: сейчас.",
+            "tj": "Ин калима: ҳозир."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "现在。",
+          "pinyin": "xiànzài.",
+          "translation": {
+            "uz": "现在 — xiànzài deb o'qiladi.",
+            "ru": "现在 читается как xiànzài.",
+            "tj": "现在 ҳамчун xiànzài хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Vaqt va soat",
+        "ru": "Время и часы",
+        "tj": "Вақт ва соат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“现在几点”。",
+          "pinyin": "Jīntiān wǒmen xuéxí xiànzài jǐ diǎn.",
+          "text": {
+            "uz": "Bugun Vaqt va soat mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Время и часы.",
+            "tj": "Имрӯз мавзӯи Вақт ва соат-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "现在。",
+          "pinyin": "xiànzài.",
+          "text": {
+            "uz": "现在 — xiànzài deb o'qiladi.",
+            "ru": "现在 читается как xiànzài.",
+            "tj": "现在 ҳамчун xiànzài хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "现在",
+            "pinyin": "xiànzài",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "几",
+            "pinyin": "jǐ",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "necha",
+              "ru": "сколько",
+              "tj": "чанд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "点",
+            "pinyin": "diǎn",
+            "pos": "mw.",
+            "meaning": {
+              "uz": "soat",
+              "ru": "час (время)",
+              "tj": "соат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "分",
+            "pinyin": "fēn",
+            "pos": "mw.",
+            "meaning": {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "上午",
+            "pinyin": "shàngwǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ertalab, tushgacha",
+              "ru": "утро, до полудня",
+              "tj": "субҳ, пеш аз нисфирӯзӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "下午",
+            "pinyin": "xiàwǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tushdan keyin",
+              "ru": "после полудня",
+              "tj": "баъд аз нисфирӯзӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "半",
+            "pinyin": "bàn",
+            "pos": "num.",
+            "meaning": {
+              "uz": "yarim",
+              "ru": "половина",
+              "tj": "ним"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "现在 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 现在:",
+            "tj": "Маънои калимаи 现在-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "hozir",
+              "ru": "сейчас",
+              "tj": "ҳозир"
+            },
+            {
+              "uz": "necha",
+              "ru": "сколько",
+              "tj": "чанд"
+            },
+            {
+              "uz": "soat",
+              "ru": "час (время)",
+              "tj": "соат"
+            },
+            {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "现在 = hozir (xiànzài)",
+            "ru": "现在 = сейчас (xiànzài)",
+            "tj": "现在 = ҳозир (xiànzài)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "现在 talaffuzini tanlang:",
+            "ru": "Выберите произношение 现在:",
+            "tj": "Талаффузи 现在-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xiànzài",
+            "jǐ",
+            "diǎn",
+            "fēn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "现在 — xiànzài",
+            "ru": "现在 — xiànzài",
+            "tj": "现在 — xiànzài"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'hozir' xitoycha nima?",
+            "ru": "'сейчас' по-китайски?",
+            "tj": "'ҳозир' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "现在",
+            "几",
+            "点",
+            "分"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "现在 = hozir (xiànzài)",
+            "ru": "现在 = сейчас (xiànzài)",
+            "tj": "现在 = ҳозир (xiànzài)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jǐ?",
+            "tj": "jǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "几",
+            "现在",
+            "点",
+            "分"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "几 = necha (jǐ)",
+            "ru": "几 = сколько (jǐ)",
+            "tj": "几 = чанд (jǐ)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'现在几点' iborasini tuzing",
+            "ru": "Соберите фразу '现在几点'",
+            "tj": "Ибораи '现在几点'-ро созед"
+          },
+          "tokens": [
+            "现在",
+            "几",
+            "点",
+            "分",
+            "上午"
+          ],
+          "answer_tokens": [
+            "现在",
+            "几",
+            "点"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 现在 几 点",
+            "ru": "Правильный порядок: 现在 几 点",
+            "tj": "Тартиби дуруст: 现在 几 点"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "现在",
+              {
+                "uz": "hozir",
+                "ru": "сейчас",
+                "tj": "ҳозир"
+              }
+            ],
+            [
+              "几",
+              {
+                "uz": "necha",
+                "ru": "сколько",
+                "tj": "чанд"
+              }
+            ],
+            [
+              "点",
+              {
+                "uz": "soat",
+                "ru": "час (время)",
+                "tj": "соат"
+              }
+            ],
+            [
+              "分",
+              {
+                "uz": "daqiqa",
+                "ru": "минута",
+                "tj": "дақиқа"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "现在几点",
+          "pinyin": "xiànzài jǐ diǎn",
+          "translation": {
+            "uz": "Vaqt va soat",
+            "ru": "Время и часы",
+            "tj": "Вақт ва соат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "现在。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 现在。",
+            "ru": "Ответ B: 现在。",
+            "tj": "Ҷавоби B: 现在。"
+          }
+        }
+      ]
+    }
+  ]
+}

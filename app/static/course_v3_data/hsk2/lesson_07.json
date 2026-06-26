@@ -1,0 +1,586 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 7,
+  "title": "昨天你做了什么",
+  "subtitle": {
+    "uz": "Mavzu: O‘tgan zamon, 了 yuklamasi. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Прошедшее действие, частица 了. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Замони гузашта, ҳиссачаи 了. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "昨天",
+      "pinyin": "zuótiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kecha",
+        "ru": "вчера",
+        "tj": "дирӯз"
+      },
+      "no": 1
+    },
+    {
+      "zh": "了",
+      "pinyin": "le",
+      "pos": "expr.",
+      "meaning": {
+        "uz": "tugallangan ish belgisi",
+        "ru": "частица завершения",
+        "tj": "нишонаи анҷоми амал"
+      },
+      "no": 2
+    },
+    {
+      "zh": "做饭",
+      "pinyin": "zuòfàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ovqat pishirmoq",
+        "ru": "готовить еду",
+        "tj": "хӯрок пухтан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "看电影",
+      "pinyin": "kàn diànyǐng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kino ko‘rmoq",
+        "ru": "смотреть фильм",
+        "tj": "филм дидан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "买东西",
+      "pinyin": "mǎi dōngxi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xarid qilmoq",
+        "ru": "покупать вещи",
+        "tj": "харид кардан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "回家",
+      "pinyin": "huí jiā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "uyga qaytmoq",
+        "ru": "возвращаться домой",
+        "tj": "ба хона баргаштан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "晚上",
+      "pinyin": "wǎnshang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kechqurun",
+        "ru": "вечер",
+        "tj": "бегоҳ"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 昨天你做了什么. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“昨天你做了什么”。",
+        "ru": "Ключевая фраза урока: 昨天你做了什么. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“昨天你做了什么”。",
+        "tj": "Ибораи асосии дарс: 昨天你做了什么. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“昨天你做了什么”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“昨天你做了什么”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zuótiān nǐ zuò le shénme.",
+          "translation": {
+            "uz": "Biz O‘tgan zamon, 了 yuklamasi mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Прошедшее действие, частица 了.",
+            "tj": "Мо мавзӯи Замони гузашта, ҳиссачаи 了-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是昨天。",
+          "pinyin": "Zhège cí shì zuótiān.",
+          "translation": {
+            "uz": "Bu so'z: kecha.",
+            "ru": "Это слово: вчера.",
+            "tj": "Ин калима: дирӯз."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "昨天。",
+          "pinyin": "zuótiān.",
+          "translation": {
+            "uz": "昨天 — zuótiān deb o'qiladi.",
+            "ru": "昨天 читается как zuótiān.",
+            "tj": "昨天 ҳамчун zuótiān хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "O‘tgan zamon, 了 yuklamasi",
+        "ru": "Прошедшее действие, частица 了",
+        "tj": "Замони гузашта, ҳиссачаи 了"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“昨天你做了什么”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zuótiān nǐ zuò le shénme.",
+          "text": {
+            "uz": "Bugun O‘tgan zamon, 了 yuklamasi mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Прошедшее действие, частица 了.",
+            "tj": "Имрӯз мавзӯи Замони гузашта, ҳиссачаи 了-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "昨天。",
+          "pinyin": "zuótiān.",
+          "text": {
+            "uz": "昨天 — zuótiān deb o'qiladi.",
+            "ru": "昨天 читается как zuótiān.",
+            "tj": "昨天 ҳамчун zuótiān хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "昨天",
+            "pinyin": "zuótiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kecha",
+              "ru": "вчера",
+              "tj": "дирӯз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "了",
+            "pinyin": "le",
+            "pos": "expr.",
+            "meaning": {
+              "uz": "tugallangan ish belgisi",
+              "ru": "частица завершения",
+              "tj": "нишонаи анҷоми амал"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "做饭",
+            "pinyin": "zuòfàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ovqat pishirmoq",
+              "ru": "готовить еду",
+              "tj": "хӯрок пухтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "看电影",
+            "pinyin": "kàn diànyǐng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kino ko‘rmoq",
+              "ru": "смотреть фильм",
+              "tj": "филм дидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "买东西",
+            "pinyin": "mǎi dōngxi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xarid qilmoq",
+              "ru": "покупать вещи",
+              "tj": "харид кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "回家",
+            "pinyin": "huí jiā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "uyga qaytmoq",
+              "ru": "возвращаться домой",
+              "tj": "ба хона баргаштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "晚上",
+            "pinyin": "wǎnshang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kechqurun",
+              "ru": "вечер",
+              "tj": "бегоҳ"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "昨天 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 昨天:",
+            "tj": "Маънои калимаи 昨天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kecha",
+              "ru": "вчера",
+              "tj": "дирӯз"
+            },
+            {
+              "uz": "tugallangan ish belgisi",
+              "ru": "частица завершения",
+              "tj": "нишонаи анҷоми амал"
+            },
+            {
+              "uz": "ovqat pishirmoq",
+              "ru": "готовить еду",
+              "tj": "хӯрок пухтан"
+            },
+            {
+              "uz": "kino ko‘rmoq",
+              "ru": "смотреть фильм",
+              "tj": "филм дидан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "昨天 = kecha (zuótiān)",
+            "ru": "昨天 = вчера (zuótiān)",
+            "tj": "昨天 = дирӯз (zuótiān)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "昨天 talaffuzini tanlang:",
+            "ru": "Выберите произношение 昨天:",
+            "tj": "Талаффузи 昨天-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zuótiān",
+            "le",
+            "zuòfàn",
+            "kàn diànyǐng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "昨天 — zuótiān",
+            "ru": "昨天 — zuótiān",
+            "tj": "昨天 — zuótiān"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kecha' xitoycha nima?",
+            "ru": "'вчера' по-китайски?",
+            "tj": "'дирӯз' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "昨天",
+            "了",
+            "做饭",
+            "看电影"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "昨天 = kecha (zuótiān)",
+            "ru": "昨天 = вчера (zuótiān)",
+            "tj": "昨天 = дирӯз (zuótiān)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "le qaysi ieroglif?",
+            "ru": "Какой иероглиф читается le?",
+            "tj": "le кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "了",
+            "昨天",
+            "做饭",
+            "看电影"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "了 = tugallangan ish belgisi (le)",
+            "ru": "了 = частица завершения (le)",
+            "tj": "了 = нишонаи анҷоми амал (le)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'昨天你做了什么' iborasini tuzing",
+            "ru": "Соберите фразу '昨天你做了什么'",
+            "tj": "Ибораи '昨天你做了什么'-ро созед"
+          },
+          "tokens": [
+            "昨天",
+            "你",
+            "做",
+            "了",
+            "什",
+            "么",
+            "做饭",
+            "看电影"
+          ],
+          "answer_tokens": [
+            "昨天",
+            "你",
+            "做",
+            "了",
+            "什",
+            "么"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 昨天 你 做 了 什 么",
+            "ru": "Правильный порядок: 昨天 你 做 了 什 么",
+            "tj": "Тартиби дуруст: 昨天 你 做 了 什 么"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "昨天",
+              {
+                "uz": "kecha",
+                "ru": "вчера",
+                "tj": "дирӯз"
+              }
+            ],
+            [
+              "了",
+              {
+                "uz": "tugallangan ish belgisi",
+                "ru": "частица завершения",
+                "tj": "нишонаи анҷоми амал"
+              }
+            ],
+            [
+              "做饭",
+              {
+                "uz": "ovqat pishirmoq",
+                "ru": "готовить еду",
+                "tj": "хӯрок пухтан"
+              }
+            ],
+            [
+              "看电影",
+              {
+                "uz": "kino ko‘rmoq",
+                "ru": "смотреть фильм",
+                "tj": "филм дидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "昨天你做了什么",
+          "pinyin": "zuótiān nǐ zuò le shénme",
+          "translation": {
+            "uz": "O‘tgan zamon, 了 yuklamasi",
+            "ru": "Прошедшее действие, частица 了",
+            "tj": "Замони гузашта, ҳиссачаи 了"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "昨天。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 昨天。",
+            "ru": "Ответ B: 昨天。",
+            "tj": "Ҷавоби B: 昨天。"
+          }
+        }
+      ]
+    }
+  ]
+}

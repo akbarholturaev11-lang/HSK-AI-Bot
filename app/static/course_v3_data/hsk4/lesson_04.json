@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 4,
+  "title": "文学艺术",
+  "subtitle": {
+    "uz": "Mavzu: Adabiyot va san’at. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Литература и искусство. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Адабиёт ва санъат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "文学",
+      "pinyin": "wénxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "adabiyot",
+        "ru": "литература",
+        "tj": "адабиёт"
+      },
+      "no": 1
+    },
+    {
+      "zh": "艺术",
+      "pinyin": "yìshù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "san’at",
+        "ru": "искусство",
+        "tj": "санъат"
+      },
+      "no": 2
+    },
+    {
+      "zh": "作品",
+      "pinyin": "zuòpǐn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "asar",
+        "ru": "произведение",
+        "tj": "асар"
+      },
+      "no": 3
+    },
+    {
+      "zh": "小说",
+      "pinyin": "xiǎoshuō",
+      "pos": "n.",
+      "meaning": {
+        "uz": "roman, hikoya",
+        "ru": "роман, рассказ",
+        "tj": "роман, ҳикоя"
+      },
+      "no": 4
+    },
+    {
+      "zh": "诗歌",
+      "pinyin": "shīgē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "she’riyat",
+        "ru": "поэзия",
+        "tj": "шеър"
+      },
+      "no": 5
+    },
+    {
+      "zh": "表达",
+      "pinyin": "biǎodá",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ifodalamoq",
+        "ru": "выражать",
+        "tj": "ифода кардан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "灵感",
+      "pinyin": "línggǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ilhom",
+        "ru": "вдохновение",
+        "tj": "илҳом"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 文学艺术. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“文学艺术”。",
+        "ru": "Ключевая фраза урока: 文学艺术. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“文学艺术”。",
+        "tj": "Ибораи асосии дарс: 文学艺术. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“文学艺术”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“文学艺术”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wénxué yìshù.",
+          "translation": {
+            "uz": "Biz Adabiyot va san’at mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Литература и искусство.",
+            "tj": "Мо мавзӯи Адабиёт ва санъат-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是文学。",
+          "pinyin": "Zhège cí shì wénxué.",
+          "translation": {
+            "uz": "Bu so'z: adabiyot.",
+            "ru": "Это слово: литература.",
+            "tj": "Ин калима: адабиёт."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "文学。",
+          "pinyin": "wénxué.",
+          "translation": {
+            "uz": "文学 — wénxué deb o'qiladi.",
+            "ru": "文学 читается как wénxué.",
+            "tj": "文学 ҳамчун wénxué хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Adabiyot va san’at",
+        "ru": "Литература и искусство",
+        "tj": "Адабиёт ва санъат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“文学艺术”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wénxué yìshù.",
+          "text": {
+            "uz": "Bugun Adabiyot va san’at mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Литература и искусство.",
+            "tj": "Имрӯз мавзӯи Адабиёт ва санъат-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "文学。",
+          "pinyin": "wénxué.",
+          "text": {
+            "uz": "文学 — wénxué deb o'qiladi.",
+            "ru": "文学 читается как wénxué.",
+            "tj": "文学 ҳамчун wénxué хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "文学",
+            "pinyin": "wénxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "adabiyot",
+              "ru": "литература",
+              "tj": "адабиёт"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "艺术",
+            "pinyin": "yìshù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "san’at",
+              "ru": "искусство",
+              "tj": "санъат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "作品",
+            "pinyin": "zuòpǐn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "asar",
+              "ru": "произведение",
+              "tj": "асар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "小说",
+            "pinyin": "xiǎoshuō",
+            "pos": "n.",
+            "meaning": {
+              "uz": "roman, hikoya",
+              "ru": "роман, рассказ",
+              "tj": "роман, ҳикоя"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "诗歌",
+            "pinyin": "shīgē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "she’riyat",
+              "ru": "поэзия",
+              "tj": "шеър"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "表达",
+            "pinyin": "biǎodá",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ifodalamoq",
+              "ru": "выражать",
+              "tj": "ифода кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "灵感",
+            "pinyin": "línggǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ilhom",
+              "ru": "вдохновение",
+              "tj": "илҳом"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "文学 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 文学:",
+            "tj": "Маънои калимаи 文学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "adabiyot",
+              "ru": "литература",
+              "tj": "адабиёт"
+            },
+            {
+              "uz": "san’at",
+              "ru": "искусство",
+              "tj": "санъат"
+            },
+            {
+              "uz": "asar",
+              "ru": "произведение",
+              "tj": "асар"
+            },
+            {
+              "uz": "roman, hikoya",
+              "ru": "роман, рассказ",
+              "tj": "роман, ҳикоя"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "文学 = adabiyot (wénxué)",
+            "ru": "文学 = литература (wénxué)",
+            "tj": "文学 = адабиёт (wénxué)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "文学 talaffuzini tanlang:",
+            "ru": "Выберите произношение 文学:",
+            "tj": "Талаффузи 文学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wénxué",
+            "yìshù",
+            "zuòpǐn",
+            "xiǎoshuō"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "文学 — wénxué",
+            "ru": "文学 — wénxué",
+            "tj": "文学 — wénxué"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'adabiyot' xitoycha nima?",
+            "ru": "'литература' по-китайски?",
+            "tj": "'адабиёт' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "文学",
+            "艺术",
+            "作品",
+            "小说"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "文学 = adabiyot (wénxué)",
+            "ru": "文学 = литература (wénxué)",
+            "tj": "文学 = адабиёт (wénxué)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yìshù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yìshù?",
+            "tj": "yìshù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "艺术",
+            "文学",
+            "作品",
+            "小说"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "艺术 = san’at (yìshù)",
+            "ru": "艺术 = искусство (yìshù)",
+            "tj": "艺术 = санъат (yìshù)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'文学艺术' iborasini tuzing",
+            "ru": "Соберите фразу '文学艺术'",
+            "tj": "Ибораи '文学艺术'-ро созед"
+          },
+          "tokens": [
+            "文学",
+            "艺术",
+            "作品",
+            "小说"
+          ],
+          "answer_tokens": [
+            "文学",
+            "艺术"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 文学 艺术",
+            "ru": "Правильный порядок: 文学 艺术",
+            "tj": "Тартиби дуруст: 文学 艺术"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "文学",
+              {
+                "uz": "adabiyot",
+                "ru": "литература",
+                "tj": "адабиёт"
+              }
+            ],
+            [
+              "艺术",
+              {
+                "uz": "san’at",
+                "ru": "искусство",
+                "tj": "санъат"
+              }
+            ],
+            [
+              "作品",
+              {
+                "uz": "asar",
+                "ru": "произведение",
+                "tj": "асар"
+              }
+            ],
+            [
+              "小说",
+              {
+                "uz": "roman, hikoya",
+                "ru": "роман, рассказ",
+                "tj": "роман, ҳикоя"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "文学艺术",
+          "pinyin": "wénxué yìshù",
+          "translation": {
+            "uz": "Adabiyot va san’at",
+            "ru": "Литература и искусство",
+            "tj": "Адабиёт ва санъат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "文学。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 文学。",
+            "ru": "Ответ B: 文学。",
+            "tj": "Ҷавоби B: 文学。"
+          }
+        }
+      ]
+    }
+  ]
+}

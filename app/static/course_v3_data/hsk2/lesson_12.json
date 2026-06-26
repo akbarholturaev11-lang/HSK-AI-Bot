@@ -1,0 +1,604 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 12,
+  "title": "家庭成员",
+  "subtitle": {
+    "uz": "Mavzu: Oila a’zolari. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Члены семьи. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Аъзои оила. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "家庭",
+      "pinyin": "jiātíng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oila",
+        "ru": "семья",
+        "tj": "оила"
+      },
+      "no": 1
+    },
+    {
+      "zh": "爸爸",
+      "pinyin": "bàba",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ota",
+        "ru": "папа",
+        "tj": "падар"
+      },
+      "no": 2
+    },
+    {
+      "zh": "妈妈",
+      "pinyin": "māma",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ona",
+        "ru": "мама",
+        "tj": "модар"
+      },
+      "no": 3
+    },
+    {
+      "zh": "哥哥",
+      "pinyin": "gēge",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aka",
+        "ru": "старший брат",
+        "tj": "бародари калон"
+      },
+      "no": 4
+    },
+    {
+      "zh": "妹妹",
+      "pinyin": "mèimei",
+      "pos": "n.",
+      "meaning": {
+        "uz": "singil",
+        "ru": "младшая сестра",
+        "tj": "хоҳари хурд"
+      },
+      "no": 5
+    },
+    {
+      "zh": "丈夫",
+      "pinyin": "zhàngfu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "er",
+        "ru": "муж",
+        "tj": "шавҳар"
+      },
+      "no": 6
+    },
+    {
+      "zh": "妻子",
+      "pinyin": "qīzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xotin",
+        "ru": "жена",
+        "tj": "зан"
+      },
+      "no": 7
+    },
+    {
+      "zh": "父母",
+      "pinyin": "fùmǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ota-ona",
+        "ru": "родители",
+        "tj": "падару модар"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 家庭成员. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“家庭成员”。",
+        "ru": "Ключевая фраза урока: 家庭成员. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“家庭成员”。",
+        "tj": "Ибораи асосии дарс: 家庭成员. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“家庭成员”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“家庭成员”。",
+          "pinyin": "Jīntiān wǒmen xuéxí jiātíng chéngyuán.",
+          "translation": {
+            "uz": "Biz Oila a’zolari mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Члены семьи.",
+            "tj": "Мо мавзӯи Аъзои оила-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是家庭。",
+          "pinyin": "Zhège cí shì jiātíng.",
+          "translation": {
+            "uz": "Bu so'z: oila.",
+            "ru": "Это слово: семья.",
+            "tj": "Ин калима: оила."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "家庭。",
+          "pinyin": "jiātíng.",
+          "translation": {
+            "uz": "家庭 — jiātíng deb o'qiladi.",
+            "ru": "家庭 читается как jiātíng.",
+            "tj": "家庭 ҳамчун jiātíng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Oila a’zolari",
+        "ru": "Члены семьи",
+        "tj": "Аъзои оила"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“家庭成员”。",
+          "pinyin": "Jīntiān wǒmen xuéxí jiātíng chéngyuán.",
+          "text": {
+            "uz": "Bugun Oila a’zolari mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Члены семьи.",
+            "tj": "Имрӯз мавзӯи Аъзои оила-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "家庭。",
+          "pinyin": "jiātíng.",
+          "text": {
+            "uz": "家庭 — jiātíng deb o'qiladi.",
+            "ru": "家庭 читается как jiātíng.",
+            "tj": "家庭 ҳамчун jiātíng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "家庭",
+            "pinyin": "jiātíng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oila",
+              "ru": "семья",
+              "tj": "оила"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "爸爸",
+            "pinyin": "bàba",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ota",
+              "ru": "папа",
+              "tj": "падар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "妈妈",
+            "pinyin": "māma",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ona",
+              "ru": "мама",
+              "tj": "модар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "哥哥",
+            "pinyin": "gēge",
+            "pos": "n.",
+            "meaning": {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "妹妹",
+            "pinyin": "mèimei",
+            "pos": "n.",
+            "meaning": {
+              "uz": "singil",
+              "ru": "младшая сестра",
+              "tj": "хоҳари хурд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "丈夫",
+            "pinyin": "zhàngfu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "er",
+              "ru": "муж",
+              "tj": "шавҳар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "妻子",
+            "pinyin": "qīzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xotin",
+              "ru": "жена",
+              "tj": "зан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "父母",
+            "pinyin": "fùmǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ota-ona",
+              "ru": "родители",
+              "tj": "падару модар"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "家庭 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 家庭:",
+            "tj": "Маънои калимаи 家庭-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "oila",
+              "ru": "семья",
+              "tj": "оила"
+            },
+            {
+              "uz": "ota",
+              "ru": "папа",
+              "tj": "падар"
+            },
+            {
+              "uz": "ona",
+              "ru": "мама",
+              "tj": "модар"
+            },
+            {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калон"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "家庭 = oila (jiātíng)",
+            "ru": "家庭 = семья (jiātíng)",
+            "tj": "家庭 = оила (jiātíng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "家庭 talaffuzini tanlang:",
+            "ru": "Выберите произношение 家庭:",
+            "tj": "Талаффузи 家庭-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiātíng",
+            "bàba",
+            "māma",
+            "gēge"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "家庭 — jiātíng",
+            "ru": "家庭 — jiātíng",
+            "tj": "家庭 — jiātíng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'oila' xitoycha nima?",
+            "ru": "'семья' по-китайски?",
+            "tj": "'оила' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "家庭",
+            "爸爸",
+            "妈妈",
+            "哥哥"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "家庭 = oila (jiātíng)",
+            "ru": "家庭 = семья (jiātíng)",
+            "tj": "家庭 = оила (jiātíng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bàba qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bàba?",
+            "tj": "bàba кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "爸爸",
+            "家庭",
+            "妈妈",
+            "哥哥"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "爸爸 = ota (bàba)",
+            "ru": "爸爸 = папа (bàba)",
+            "tj": "爸爸 = падар (bàba)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'家庭成员' iborasini tuzing",
+            "ru": "Соберите фразу '家庭成员'",
+            "tj": "Ибораи '家庭成员'-ро созед"
+          },
+          "tokens": [
+            "家庭",
+            "成",
+            "员",
+            "爸爸",
+            "妈妈"
+          ],
+          "answer_tokens": [
+            "家庭",
+            "成",
+            "员"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 家庭 成 员",
+            "ru": "Правильный порядок: 家庭 成 员",
+            "tj": "Тартиби дуруст: 家庭 成 员"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "家庭",
+              {
+                "uz": "oila",
+                "ru": "семья",
+                "tj": "оила"
+              }
+            ],
+            [
+              "爸爸",
+              {
+                "uz": "ota",
+                "ru": "папа",
+                "tj": "падар"
+              }
+            ],
+            [
+              "妈妈",
+              {
+                "uz": "ona",
+                "ru": "мама",
+                "tj": "модар"
+              }
+            ],
+            [
+              "哥哥",
+              {
+                "uz": "aka",
+                "ru": "старший брат",
+                "tj": "бародари калон"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "家庭成员",
+          "pinyin": "jiātíng chéngyuán",
+          "translation": {
+            "uz": "Oila a’zolari",
+            "ru": "Члены семьи",
+            "tj": "Аъзои оила"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "家庭。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 家庭。",
+            "ru": "Ответ B: 家庭。",
+            "tj": "Ҷавоби B: 家庭。"
+          }
+        }
+      ]
+    }
+  ]
+}

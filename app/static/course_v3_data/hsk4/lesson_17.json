@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 17,
+  "title": "哲学思想",
+  "subtitle": {
+    "uz": "Mavzu: Falsafa va tafakkur. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Философия и мышление. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Фалсафа ва тафаккур. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "哲学",
+      "pinyin": "zhéxué",
+      "pos": "n.",
+      "meaning": {
+        "uz": "falsafa",
+        "ru": "философия",
+        "tj": "фалсафа"
+      },
+      "no": 1
+    },
+    {
+      "zh": "思想",
+      "pinyin": "sīxiǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "fikr, tafakkur",
+        "ru": "мысль, идеология",
+        "tj": "андеша, тафаккур"
+      },
+      "no": 2
+    },
+    {
+      "zh": "价值",
+      "pinyin": "jiàzhí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qadriyat, qiymat",
+        "ru": "ценность",
+        "tj": "арзиш"
+      },
+      "no": 3
+    },
+    {
+      "zh": "观点",
+      "pinyin": "guāndiǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "nuqtayi nazar",
+        "ru": "точка зрения",
+        "tj": "нуқтаи назар"
+      },
+      "no": 4
+    },
+    {
+      "zh": "逻辑",
+      "pinyin": "luóji",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mantiq",
+        "ru": "логика",
+        "tj": "мантиқ"
+      },
+      "no": 5
+    },
+    {
+      "zh": "智慧",
+      "pinyin": "zhìhuì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "donolik",
+        "ru": "мудрость",
+        "tj": "ҳикмат"
+      },
+      "no": 6
+    },
+    {
+      "zh": "追求",
+      "pinyin": "zhuīqiú",
+      "pos": "v.",
+      "meaning": {
+        "uz": "intilmoq",
+        "ru": "стремиться",
+        "tj": "пайгирӣ кардан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 哲学思想. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“哲学思想”。",
+        "ru": "Ключевая фраза урока: 哲学思想. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“哲学思想”。",
+        "tj": "Ибораи асосии дарс: 哲学思想. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“哲学思想”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“哲学思想”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zhéxué sīxiǎng.",
+          "translation": {
+            "uz": "Biz Falsafa va tafakkur mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Философия и мышление.",
+            "tj": "Мо мавзӯи Фалсафа ва тафаккур-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是哲学。",
+          "pinyin": "Zhège cí shì zhéxué.",
+          "translation": {
+            "uz": "Bu so'z: falsafa.",
+            "ru": "Это слово: философия.",
+            "tj": "Ин калима: фалсафа."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "哲学。",
+          "pinyin": "zhéxué.",
+          "translation": {
+            "uz": "哲学 — zhéxué deb o'qiladi.",
+            "ru": "哲学 читается как zhéxué.",
+            "tj": "哲学 ҳамчун zhéxué хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Falsafa va tafakkur",
+        "ru": "Философия и мышление",
+        "tj": "Фалсафа ва тафаккур"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“哲学思想”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zhéxué sīxiǎng.",
+          "text": {
+            "uz": "Bugun Falsafa va tafakkur mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Философия и мышление.",
+            "tj": "Имрӯз мавзӯи Фалсафа ва тафаккур-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "哲学。",
+          "pinyin": "zhéxué.",
+          "text": {
+            "uz": "哲学 — zhéxué deb o'qiladi.",
+            "ru": "哲学 читается как zhéxué.",
+            "tj": "哲学 ҳамчун zhéxué хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "哲学",
+            "pinyin": "zhéxué",
+            "pos": "n.",
+            "meaning": {
+              "uz": "falsafa",
+              "ru": "философия",
+              "tj": "фалсафа"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "思想",
+            "pinyin": "sīxiǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "fikr, tafakkur",
+              "ru": "мысль, идеология",
+              "tj": "андеша, тафаккур"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "价值",
+            "pinyin": "jiàzhí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qadriyat, qiymat",
+              "ru": "ценность",
+              "tj": "арзиш"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "观点",
+            "pinyin": "guāndiǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "nuqtayi nazar",
+              "ru": "точка зрения",
+              "tj": "нуқтаи назар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "逻辑",
+            "pinyin": "luóji",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mantiq",
+              "ru": "логика",
+              "tj": "мантиқ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "智慧",
+            "pinyin": "zhìhuì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "donolik",
+              "ru": "мудрость",
+              "tj": "ҳикмат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "追求",
+            "pinyin": "zhuīqiú",
+            "pos": "v.",
+            "meaning": {
+              "uz": "intilmoq",
+              "ru": "стремиться",
+              "tj": "пайгирӣ кардан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "哲学 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 哲学:",
+            "tj": "Маънои калимаи 哲学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "falsafa",
+              "ru": "философия",
+              "tj": "фалсафа"
+            },
+            {
+              "uz": "fikr, tafakkur",
+              "ru": "мысль, идеология",
+              "tj": "андеша, тафаккур"
+            },
+            {
+              "uz": "qadriyat, qiymat",
+              "ru": "ценность",
+              "tj": "арзиш"
+            },
+            {
+              "uz": "nuqtayi nazar",
+              "ru": "точка зрения",
+              "tj": "нуқтаи назар"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "哲学 = falsafa (zhéxué)",
+            "ru": "哲学 = философия (zhéxué)",
+            "tj": "哲学 = фалсафа (zhéxué)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "哲学 talaffuzini tanlang:",
+            "ru": "Выберите произношение 哲学:",
+            "tj": "Талаффузи 哲学-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhéxué",
+            "sīxiǎng",
+            "jiàzhí",
+            "guāndiǎn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "哲学 — zhéxué",
+            "ru": "哲学 — zhéxué",
+            "tj": "哲学 — zhéxué"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'falsafa' xitoycha nima?",
+            "ru": "'философия' по-китайски?",
+            "tj": "'фалсафа' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "哲学",
+            "思想",
+            "价值",
+            "观点"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "哲学 = falsafa (zhéxué)",
+            "ru": "哲学 = философия (zhéxué)",
+            "tj": "哲学 = фалсафа (zhéxué)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "sīxiǎng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается sīxiǎng?",
+            "tj": "sīxiǎng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "思想",
+            "哲学",
+            "价值",
+            "观点"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "思想 = fikr, tafakkur (sīxiǎng)",
+            "ru": "思想 = мысль, идеология (sīxiǎng)",
+            "tj": "思想 = андеша, тафаккур (sīxiǎng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'哲学思想' iborasini tuzing",
+            "ru": "Соберите фразу '哲学思想'",
+            "tj": "Ибораи '哲学思想'-ро созед"
+          },
+          "tokens": [
+            "哲学",
+            "思想",
+            "价值",
+            "观点"
+          ],
+          "answer_tokens": [
+            "哲学",
+            "思想"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 哲学 思想",
+            "ru": "Правильный порядок: 哲学 思想",
+            "tj": "Тартиби дуруст: 哲学 思想"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "哲学",
+              {
+                "uz": "falsafa",
+                "ru": "философия",
+                "tj": "фалсафа"
+              }
+            ],
+            [
+              "思想",
+              {
+                "uz": "fikr, tafakkur",
+                "ru": "мысль, идеология",
+                "tj": "андеша, тафаккур"
+              }
+            ],
+            [
+              "价值",
+              {
+                "uz": "qadriyat, qiymat",
+                "ru": "ценность",
+                "tj": "арзиш"
+              }
+            ],
+            [
+              "观点",
+              {
+                "uz": "nuqtayi nazar",
+                "ru": "точка зрения",
+                "tj": "нуқтаи назар"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "哲学思想",
+          "pinyin": "zhéxué sīxiǎng",
+          "translation": {
+            "uz": "Falsafa va tafakkur",
+            "ru": "Философия и мышление",
+            "tj": "Фалсафа ва тафаккур"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "哲学。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 哲学。",
+            "ru": "Ответ B: 哲学。",
+            "tj": "Ҷавоби B: 哲学。"
+          }
+        }
+      ]
+    }
+  ]
+}

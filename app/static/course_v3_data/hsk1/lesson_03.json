@@ -1,0 +1,606 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 3,
+  "title": "你叫什么名字",
+  "subtitle": {
+    "uz": "Mavzu: Ismni so'rash va tanishish. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Как спросить имя и познакомиться. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Пурсидани ном ва шиносоӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "叫",
+      "pinyin": "jiào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "nomlanmoq, chaqirmoq",
+        "ru": "называться, звать",
+        "tj": "номидан, даъват кардан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "什么",
+      "pinyin": "shénme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "nima, qanday",
+        "ru": "что, какой",
+        "tj": "чӣ, кадом"
+      },
+      "no": 2
+    },
+    {
+      "zh": "名字",
+      "pinyin": "míngzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ism",
+        "ru": "имя",
+        "tj": "ном, исм"
+      },
+      "no": 3
+    },
+    {
+      "zh": "我",
+      "pinyin": "wǒ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "men",
+        "ru": "я",
+        "tj": "ман"
+      },
+      "no": 4
+    },
+    {
+      "zh": "是",
+      "pinyin": "shì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bo'lmoq, hisoblanmoq",
+        "ru": "быть, являться",
+        "tj": "будан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "学生",
+      "pinyin": "xuésheng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'quvchi, talaba",
+        "ru": "ученик, студент",
+        "tj": "хонанда, донишҷӯ"
+      },
+      "no": 6
+    },
+    {
+      "zh": "老师",
+      "pinyin": "lǎoshī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'qituvchi",
+        "ru": "учитель",
+        "tj": "муаллим"
+      },
+      "no": 7
+    },
+    {
+      "zh": "中国人",
+      "pinyin": "Zhōngguó rén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xitoylik",
+        "ru": "китаец, китаянка",
+        "tj": "хитоӣ"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 你叫什么名字. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你叫什么名字”。",
+        "ru": "Ключевая фраза урока: 你叫什么名字. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你叫什么名字”。",
+        "tj": "Ибораи асосии дарс: 你叫什么名字. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你叫什么名字”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“你叫什么名字”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ jiào shénme míngzi.",
+          "translation": {
+            "uz": "Biz Ismni so'rash va tanishish mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Как спросить имя и познакомиться.",
+            "tj": "Мо мавзӯи Пурсидани ном ва шиносоӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是叫。",
+          "pinyin": "Zhège cí shì jiào.",
+          "translation": {
+            "uz": "Bu so'z: nomlanmoq, chaqirmoq.",
+            "ru": "Это слово: называться, звать.",
+            "tj": "Ин калима: номидан, даъват кардан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "叫。",
+          "pinyin": "jiào.",
+          "translation": {
+            "uz": "叫 — jiào deb o'qiladi.",
+            "ru": "叫 читается как jiào.",
+            "tj": "叫 ҳамчун jiào хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ismni so'rash va tanishish",
+        "ru": "Как спросить имя и познакомиться",
+        "tj": "Пурсидани ном ва шиносоӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“你叫什么名字”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ jiào shénme míngzi.",
+          "text": {
+            "uz": "Bugun Ismni so'rash va tanishish mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Как спросить имя и познакомиться.",
+            "tj": "Имрӯз мавзӯи Пурсидани ном ва шиносоӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "叫。",
+          "pinyin": "jiào.",
+          "text": {
+            "uz": "叫 — jiào deb o'qiladi.",
+            "ru": "叫 читается как jiào.",
+            "tj": "叫 ҳамчун jiào хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "叫",
+            "pinyin": "jiào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номидан, даъват кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "什么",
+            "pinyin": "shénme",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "nima, qanday",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "名字",
+            "pinyin": "míngzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "我",
+            "pinyin": "wǒ",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "men",
+              "ru": "я",
+              "tj": "ман"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "是",
+            "pinyin": "shì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bo'lmoq, hisoblanmoq",
+              "ru": "быть, являться",
+              "tj": "будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "学生",
+            "pinyin": "xuésheng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'quvchi, talaba",
+              "ru": "ученик, студент",
+              "tj": "хонанда, донишҷӯ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "老师",
+            "pinyin": "lǎoshī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'qituvchi",
+              "ru": "учитель",
+              "tj": "муаллим"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "中国人",
+            "pinyin": "Zhōngguó rén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xitoylik",
+              "ru": "китаец, китаянка",
+              "tj": "хитоӣ"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "叫 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 叫:",
+            "tj": "Маънои калимаи 叫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номидан, даъват кардан"
+            },
+            {
+              "uz": "nima, qanday",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            },
+            {
+              "uz": "men",
+              "ru": "я",
+              "tj": "ман"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "叫 = nomlanmoq, chaqirmoq (jiào)",
+            "ru": "叫 = называться, звать (jiào)",
+            "tj": "叫 = номидан, даъват кардан (jiào)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "叫 talaffuzini tanlang:",
+            "ru": "Выберите произношение 叫:",
+            "tj": "Талаффузи 叫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiào",
+            "shénme",
+            "míngzi",
+            "wǒ"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "叫 — jiào",
+            "ru": "叫 — jiào",
+            "tj": "叫 — jiào"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'nomlanmoq, chaqirmoq' xitoycha nima?",
+            "ru": "'называться, звать' по-китайски?",
+            "tj": "'номидан, даъват кардан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "叫",
+            "什么",
+            "名字",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "叫 = nomlanmoq, chaqirmoq (jiào)",
+            "ru": "叫 = называться, звать (jiào)",
+            "tj": "叫 = номидан, даъват кардан (jiào)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shénme qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shénme?",
+            "tj": "shénme кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "什么",
+            "叫",
+            "名字",
+            "我"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "什么 = nima, qanday (shénme)",
+            "ru": "什么 = что, какой (shénme)",
+            "tj": "什么 = чӣ, кадом (shénme)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'你叫什么名字' iborasini tuzing",
+            "ru": "Соберите фразу '你叫什么名字'",
+            "tj": "Ибораи '你叫什么名字'-ро созед"
+          },
+          "tokens": [
+            "你",
+            "叫",
+            "什么",
+            "名字",
+            "我",
+            "是"
+          ],
+          "answer_tokens": [
+            "你",
+            "叫",
+            "什么",
+            "名字"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 你 叫 什么 名字",
+            "ru": "Правильный порядок: 你 叫 什么 名字",
+            "tj": "Тартиби дуруст: 你 叫 什么 名字"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "叫",
+              {
+                "uz": "nomlanmoq, chaqirmoq",
+                "ru": "называться, звать",
+                "tj": "номидан, даъват кардан"
+              }
+            ],
+            [
+              "什么",
+              {
+                "uz": "nima, qanday",
+                "ru": "что, какой",
+                "tj": "чӣ, кадом"
+              }
+            ],
+            [
+              "名字",
+              {
+                "uz": "ism",
+                "ru": "имя",
+                "tj": "ном, исм"
+              }
+            ],
+            [
+              "我",
+              {
+                "uz": "men",
+                "ru": "я",
+                "tj": "ман"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你叫什么名字",
+          "pinyin": "nǐ jiào shénme míngzi",
+          "translation": {
+            "uz": "Ismni so'rash va tanishish",
+            "ru": "Как спросить имя и познакомиться",
+            "tj": "Пурсидани ном ва шиносоӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "叫。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 叫。",
+            "ru": "Ответ B: 叫。",
+            "tj": "Ҷавоби B: 叫。"
+          }
+        }
+      ]
+    }
+  ]
+}

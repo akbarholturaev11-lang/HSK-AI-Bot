@@ -1,0 +1,262 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "label": "HSK 1",
+  "authenticated": false,
+  "progress": {
+    "streak": 0,
+    "xp": 0,
+    "completed": 0,
+    "league": "Bronze"
+  },
+  "units": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Boshlang'ich muloqot",
+        "ru": "Базовое общение",
+        "tj": "Муоширати аввалия"
+      },
+      "lessons": [
+        {
+          "n": 1,
+          "zh": "你好",
+          "py": "nǐ hǎo",
+          "tr": {
+            "uz": "Salomlashish va uzr so'rash",
+            "ru": "Приветствие и извинение",
+            "tj": "Салом ва узрхоҳӣ"
+          },
+          "status": "current",
+          "content": "lesson_01"
+        },
+        {
+          "n": 2,
+          "zh": "谢谢你",
+          "py": "xièxie nǐ",
+          "tr": {
+            "uz": "Minnatdorchilik va xayrlashuv",
+            "ru": "Благодарность и прощание",
+            "tj": "Сипосгузорӣ ва хайрухуш"
+          },
+          "status": "locked",
+          "content": "lesson_02"
+        },
+        {
+          "n": 3,
+          "zh": "你叫什么名字",
+          "py": "nǐ jiào shénme míngzi",
+          "tr": {
+            "uz": "Ismni so'rash va tanishish",
+            "ru": "Как спросить имя и познакомиться",
+            "tj": "Пурсидани ном ва шиносоӣ"
+          },
+          "status": "locked",
+          "content": "lesson_03"
+        },
+        {
+          "n": 4,
+          "zh": "你是哪国人",
+          "py": "nǐ shì nǎ guó rén",
+          "tr": {
+            "uz": "Millat, davlat va kasb",
+            "ru": "Национальность, страна и профессия",
+            "tj": "Миллат, давлат ва касб"
+          },
+          "status": "locked",
+          "content": "lesson_04",
+          "locked_premium": true
+        },
+        {
+          "n": 5,
+          "zh": "这是什么",
+          "py": "zhè shì shénme",
+          "tr": {
+            "uz": "Narsalarni nomlash, 这 va 那",
+            "ru": "Названия предметов, 这 и 那",
+            "tj": "Номи ашё, 这 ва 那"
+          },
+          "status": "locked",
+          "content": "lesson_05",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "1-bo‘lim takrori",
+          "ru": "Повторение раздела 1",
+          "tj": "Такрори фасли 1"
+        },
+        "status": "locked"
+      }
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Kundalik hayot",
+        "ru": "Повседневная жизнь",
+        "tj": "Ҳаёти ҳаррӯза"
+      },
+      "lessons": [
+        {
+          "n": 6,
+          "zh": "多少钱",
+          "py": "duōshao qián",
+          "tr": {
+            "uz": "Narx va sonlar 1-100",
+            "ru": "Цена и числа 1-100",
+            "tj": "Нарх ва рақамҳои 1-100"
+          },
+          "status": "locked",
+          "content": "lesson_06",
+          "locked_premium": true
+        },
+        {
+          "n": 7,
+          "zh": "现在几点",
+          "py": "xiànzài jǐ diǎn",
+          "tr": {
+            "uz": "Vaqt va soat",
+            "ru": "Время и часы",
+            "tj": "Вақт ва соат"
+          },
+          "status": "locked",
+          "content": "lesson_07",
+          "locked_premium": true
+        },
+        {
+          "n": 8,
+          "zh": "今天星期几",
+          "py": "jīntiān xīngqī jǐ",
+          "tr": {
+            "uz": "Hafta kunlari va sana",
+            "ru": "Дни недели и дата",
+            "tj": "Рӯзҳои ҳафта ва сана"
+          },
+          "status": "locked",
+          "content": "lesson_08",
+          "locked_premium": true
+        },
+        {
+          "n": 9,
+          "zh": "你家在哪儿",
+          "py": "nǐ jiā zài nǎr",
+          "tr": {
+            "uz": "Manzil va yo'l ko'rsatish",
+            "ru": "Адрес и направление",
+            "tj": "Суроға ва роҳ нишон додан"
+          },
+          "status": "locked",
+          "content": "lesson_09",
+          "locked_premium": true
+        },
+        {
+          "n": 10,
+          "zh": "你吃什么",
+          "py": "nǐ chī shénme",
+          "tr": {
+            "uz": "Taom va ovqatlanish",
+            "ru": "Еда и питание",
+            "tj": "Хӯрок ва таомхӯрӣ"
+          },
+          "status": "locked",
+          "content": "lesson_10",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "2-bo‘lim takrori",
+          "ru": "Повторение раздела 2",
+          "tj": "Такрори фасли 2"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Miqdor, tabiat va takror",
+        "ru": "Количество, природа и повторение",
+        "tj": "Миқдор, табиат ва такрор"
+      },
+      "lessons": [
+        {
+          "n": 11,
+          "zh": "你喝什么",
+          "py": "nǐ hē shénme",
+          "tr": {
+            "uz": "Ichimliklar va buyurtma",
+            "ru": "Напитки и заказ",
+            "tj": "Нӯшокиҳо ва фармоиш"
+          },
+          "status": "locked",
+          "content": "lesson_11",
+          "locked_premium": true
+        },
+        {
+          "n": 12,
+          "zh": "你有几个",
+          "py": "nǐ yǒu jǐ gè",
+          "tr": {
+            "uz": "Miqdor, 有 va 没有",
+            "ru": "Количество, 有 и 没有",
+            "tj": "Миқдор, 有 ва 没有"
+          },
+          "status": "locked",
+          "content": "lesson_12",
+          "locked_premium": true
+        },
+        {
+          "n": 13,
+          "zh": "天气怎么样",
+          "py": "tiānqì zěnmeyàng",
+          "tr": {
+            "uz": "Ob-havo va fasllar",
+            "ru": "Погода и времена года",
+            "tj": "Обу ҳаво ва фаслҳо"
+          },
+          "status": "locked",
+          "content": "lesson_13",
+          "locked_premium": true
+        },
+        {
+          "n": 14,
+          "zh": "你身体好吗",
+          "py": "nǐ shēntǐ hǎo ma",
+          "tr": {
+            "uz": "Salomatlik va his-tuyg‘ular",
+            "ru": "Здоровье и самочувствие",
+            "tj": "Саломатӣ ва эҳсосот"
+          },
+          "status": "locked",
+          "content": "lesson_14",
+          "locked_premium": true
+        },
+        {
+          "n": 15,
+          "zh": "复习 — HSK 1",
+          "py": "fùxí HSK yī",
+          "tr": {
+            "uz": "HSK 1 takrori va umumiy test",
+            "ru": "Повторение HSK 1 и общий тест",
+            "tj": "Такрори HSK 1 ва санҷиши умумӣ"
+          },
+          "status": "locked",
+          "content": "lesson_15",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "3-bo‘lim takrori",
+          "ru": "Повторение раздела 3",
+          "tj": "Такрори фасли 3"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    }
+  ]
+}

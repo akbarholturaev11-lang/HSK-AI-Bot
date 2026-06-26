@@ -1,0 +1,577 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 18,
+  "title": "社交媒体",
+  "subtitle": {
+    "uz": "Mavzu: Ijtimoiy tarmoqlar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Социальные сети. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Шабакаҳои иҷтимоӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "社交媒体",
+      "pinyin": "shèjiāo méitǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ijtimoiy tarmoq",
+        "ru": "социальные сети",
+        "tj": "шабакаҳои иҷтимоӣ"
+      },
+      "no": 1
+    },
+    {
+      "zh": "发布",
+      "pinyin": "fābù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "e’lon qilmoq",
+        "ru": "публиковать",
+        "tj": "нашр кардан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "评论",
+      "pinyin": "pínglùn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "izoh",
+        "ru": "комментарий",
+        "tj": "шарҳ"
+      },
+      "no": 3
+    },
+    {
+      "zh": "点赞",
+      "pinyin": "diǎnzàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "layk bosmoq",
+        "ru": "ставить лайк",
+        "tj": "лайк мондан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "粉丝",
+      "pinyin": "fěnsī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "obunachi, muxlis",
+        "ru": "подписчик, фанат",
+        "tj": "обуначӣ, мухлис"
+      },
+      "no": 5
+    },
+    {
+      "zh": "分享",
+      "pinyin": "fēnxiǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ulashmoq",
+        "ru": "делиться",
+        "tj": "мубодила кардан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "隐私",
+      "pinyin": "yǐnsī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maxfiylik",
+        "ru": "приватность",
+        "tj": "махфият"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 社交媒体. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“社交媒体”。",
+        "ru": "Ключевая фраза урока: 社交媒体. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“社交媒体”。",
+        "tj": "Ибораи асосии дарс: 社交媒体. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“社交媒体”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“社交媒体”。",
+          "pinyin": "Jīntiān wǒmen xuéxí shèjiāo méitǐ.",
+          "translation": {
+            "uz": "Biz Ijtimoiy tarmoqlar mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Социальные сети.",
+            "tj": "Мо мавзӯи Шабакаҳои иҷтимоӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是社交媒体。",
+          "pinyin": "Zhège cí shì shèjiāo méitǐ.",
+          "translation": {
+            "uz": "Bu so'z: ijtimoiy tarmoq.",
+            "ru": "Это слово: социальные сети.",
+            "tj": "Ин калима: шабакаҳои иҷтимоӣ."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "社交媒体。",
+          "pinyin": "shèjiāo méitǐ.",
+          "translation": {
+            "uz": "社交媒体 — shèjiāo méitǐ deb o'qiladi.",
+            "ru": "社交媒体 читается как shèjiāo méitǐ.",
+            "tj": "社交媒体 ҳамчун shèjiāo méitǐ хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ijtimoiy tarmoqlar",
+        "ru": "Социальные сети",
+        "tj": "Шабакаҳои иҷтимоӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“社交媒体”。",
+          "pinyin": "Jīntiān wǒmen xuéxí shèjiāo méitǐ.",
+          "text": {
+            "uz": "Bugun Ijtimoiy tarmoqlar mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Социальные сети.",
+            "tj": "Имрӯз мавзӯи Шабакаҳои иҷтимоӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "社交媒体。",
+          "pinyin": "shèjiāo méitǐ.",
+          "text": {
+            "uz": "社交媒体 — shèjiāo méitǐ deb o'qiladi.",
+            "ru": "社交媒体 читается как shèjiāo méitǐ.",
+            "tj": "社交媒体 ҳамчун shèjiāo méitǐ хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "社交媒体",
+            "pinyin": "shèjiāo méitǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ijtimoiy tarmoq",
+              "ru": "социальные сети",
+              "tj": "шабакаҳои иҷтимоӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "发布",
+            "pinyin": "fābù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "e’lon qilmoq",
+              "ru": "публиковать",
+              "tj": "нашр кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "评论",
+            "pinyin": "pínglùn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "izoh",
+              "ru": "комментарий",
+              "tj": "шарҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "点赞",
+            "pinyin": "diǎnzàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "layk bosmoq",
+              "ru": "ставить лайк",
+              "tj": "лайк мондан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "粉丝",
+            "pinyin": "fěnsī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "obunachi, muxlis",
+              "ru": "подписчик, фанат",
+              "tj": "обуначӣ, мухлис"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "分享",
+            "pinyin": "fēnxiǎng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ulashmoq",
+              "ru": "делиться",
+              "tj": "мубодила кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "隐私",
+            "pinyin": "yǐnsī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maxfiylik",
+              "ru": "приватность",
+              "tj": "махфият"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "社交媒体 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 社交媒体:",
+            "tj": "Маънои калимаи 社交媒体-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ijtimoiy tarmoq",
+              "ru": "социальные сети",
+              "tj": "шабакаҳои иҷтимоӣ"
+            },
+            {
+              "uz": "e’lon qilmoq",
+              "ru": "публиковать",
+              "tj": "нашр кардан"
+            },
+            {
+              "uz": "izoh",
+              "ru": "комментарий",
+              "tj": "шарҳ"
+            },
+            {
+              "uz": "layk bosmoq",
+              "ru": "ставить лайк",
+              "tj": "лайк мондан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "社交媒体 = ijtimoiy tarmoq (shèjiāo méitǐ)",
+            "ru": "社交媒体 = социальные сети (shèjiāo méitǐ)",
+            "tj": "社交媒体 = шабакаҳои иҷтимоӣ (shèjiāo méitǐ)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "社交媒体 talaffuzini tanlang:",
+            "ru": "Выберите произношение 社交媒体:",
+            "tj": "Талаффузи 社交媒体-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shèjiāo méitǐ",
+            "fābù",
+            "pínglùn",
+            "diǎnzàn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "社交媒体 — shèjiāo méitǐ",
+            "ru": "社交媒体 — shèjiāo méitǐ",
+            "tj": "社交媒体 — shèjiāo méitǐ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ijtimoiy tarmoq' xitoycha nima?",
+            "ru": "'социальные сети' по-китайски?",
+            "tj": "'шабакаҳои иҷтимоӣ' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "社交媒体",
+            "发布",
+            "评论",
+            "点赞"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "社交媒体 = ijtimoiy tarmoq (shèjiāo méitǐ)",
+            "ru": "社交媒体 = социальные сети (shèjiāo méitǐ)",
+            "tj": "社交媒体 = шабакаҳои иҷтимоӣ (shèjiāo méitǐ)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fābù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fābù?",
+            "tj": "fābù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "发布",
+            "社交媒体",
+            "评论",
+            "点赞"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "发布 = e’lon qilmoq (fābù)",
+            "ru": "发布 = публиковать (fābù)",
+            "tj": "发布 = нашр кардан (fābù)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'社交媒体' iborasini tuzing",
+            "ru": "Соберите фразу '社交媒体'",
+            "tj": "Ибораи '社交媒体'-ро созед"
+          },
+          "tokens": [
+            "社交媒体",
+            "发布",
+            "评论",
+            "点赞"
+          ],
+          "answer_tokens": [
+            "社交媒体"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 社交媒体",
+            "ru": "Правильный порядок: 社交媒体",
+            "tj": "Тартиби дуруст: 社交媒体"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "社交媒体",
+              {
+                "uz": "ijtimoiy tarmoq",
+                "ru": "социальные сети",
+                "tj": "шабакаҳои иҷтимоӣ"
+              }
+            ],
+            [
+              "发布",
+              {
+                "uz": "e’lon qilmoq",
+                "ru": "публиковать",
+                "tj": "нашр кардан"
+              }
+            ],
+            [
+              "评论",
+              {
+                "uz": "izoh",
+                "ru": "комментарий",
+                "tj": "шарҳ"
+              }
+            ],
+            [
+              "点赞",
+              {
+                "uz": "layk bosmoq",
+                "ru": "ставить лайк",
+                "tj": "лайк мондан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "社交媒体",
+          "pinyin": "shèjiāo méitǐ",
+          "translation": {
+            "uz": "Ijtimoiy tarmoqlar",
+            "ru": "Социальные сети",
+            "tj": "Шабакаҳои иҷтимоӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "社交媒体。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 社交媒体。",
+            "ru": "Ответ B: 社交媒体。",
+            "tj": "Ҷавоби B: 社交媒体。"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,602 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 6,
+  "title": "多少钱",
+  "subtitle": {
+    "uz": "Mavzu: Narx va sonlar 1-100. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Цена и числа 1-100. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Нарх ва рақамҳои 1-100. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "钱",
+      "pinyin": "qián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "pul",
+        "ru": "деньги",
+        "tj": "пул"
+      },
+      "no": 1
+    },
+    {
+      "zh": "多少",
+      "pinyin": "duōshao",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qancha, nechta",
+        "ru": "сколько",
+        "tj": "чанд, чӣ қадар"
+      },
+      "no": 2
+    },
+    {
+      "zh": "块",
+      "pinyin": "kuài",
+      "pos": "mw.",
+      "meaning": {
+        "uz": "yuan uchun hisob so‘zi",
+        "ru": "счётное слово для юаней",
+        "tj": "ҳисобкалима барои юан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "一",
+      "pinyin": "yī",
+      "pos": "num.",
+      "meaning": {
+        "uz": "bir",
+        "ru": "один",
+        "tj": "як"
+      },
+      "no": 4
+    },
+    {
+      "zh": "十",
+      "pinyin": "shí",
+      "pos": "num.",
+      "meaning": {
+        "uz": "o'n",
+        "ru": "десять",
+        "tj": "даҳ"
+      },
+      "no": 5
+    },
+    {
+      "zh": "百",
+      "pinyin": "bǎi",
+      "pos": "num.",
+      "meaning": {
+        "uz": "yuz",
+        "ru": "сто",
+        "tj": "сад"
+      },
+      "no": 6
+    },
+    {
+      "zh": "买",
+      "pinyin": "mǎi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sotib olmoq",
+        "ru": "покупать",
+        "tj": "харидан"
+      },
+      "no": 7
+    },
+    {
+      "zh": "贵",
+      "pinyin": "guì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qimmat",
+        "ru": "дорогой",
+        "tj": "қимат"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 多少钱. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“多少钱”。",
+        "ru": "Ключевая фраза урока: 多少钱. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“多少钱”。",
+        "tj": "Ибораи асосии дарс: 多少钱. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“多少钱”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“多少钱”。",
+          "pinyin": "Jīntiān wǒmen xuéxí duōshao qián.",
+          "translation": {
+            "uz": "Biz Narx va sonlar 1-100 mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Цена и числа 1-100.",
+            "tj": "Мо мавзӯи Нарх ва рақамҳои 1-100-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是钱。",
+          "pinyin": "Zhège cí shì qián.",
+          "translation": {
+            "uz": "Bu so'z: pul.",
+            "ru": "Это слово: деньги.",
+            "tj": "Ин калима: пул."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "钱。",
+          "pinyin": "qián.",
+          "translation": {
+            "uz": "钱 — qián deb o'qiladi.",
+            "ru": "钱 читается как qián.",
+            "tj": "钱 ҳамчун qián хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Narx va sonlar 1-100",
+        "ru": "Цена и числа 1-100",
+        "tj": "Нарх ва рақамҳои 1-100"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“多少钱”。",
+          "pinyin": "Jīntiān wǒmen xuéxí duōshao qián.",
+          "text": {
+            "uz": "Bugun Narx va sonlar 1-100 mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Цена и числа 1-100.",
+            "tj": "Имрӯз мавзӯи Нарх ва рақамҳои 1-100-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "钱。",
+          "pinyin": "qián.",
+          "text": {
+            "uz": "钱 — qián deb o'qiladi.",
+            "ru": "钱 читается как qián.",
+            "tj": "钱 ҳамчун qián хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "钱",
+            "pinyin": "qián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "pul",
+              "ru": "деньги",
+              "tj": "пул"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "多少",
+            "pinyin": "duōshao",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qancha, nechta",
+              "ru": "сколько",
+              "tj": "чанд, чӣ қадар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "块",
+            "pinyin": "kuài",
+            "pos": "mw.",
+            "meaning": {
+              "uz": "yuan uchun hisob so‘zi",
+              "ru": "счётное слово для юаней",
+              "tj": "ҳисобкалима барои юан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "一",
+            "pinyin": "yī",
+            "pos": "num.",
+            "meaning": {
+              "uz": "bir",
+              "ru": "один",
+              "tj": "як"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "十",
+            "pinyin": "shí",
+            "pos": "num.",
+            "meaning": {
+              "uz": "o'n",
+              "ru": "десять",
+              "tj": "даҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "百",
+            "pinyin": "bǎi",
+            "pos": "num.",
+            "meaning": {
+              "uz": "yuz",
+              "ru": "сто",
+              "tj": "сад"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "买",
+            "pinyin": "mǎi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sotib olmoq",
+              "ru": "покупать",
+              "tj": "харидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "贵",
+            "pinyin": "guì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qimmat",
+              "ru": "дорогой",
+              "tj": "қимат"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "钱 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 钱:",
+            "tj": "Маънои калимаи 钱-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "pul",
+              "ru": "деньги",
+              "tj": "пул"
+            },
+            {
+              "uz": "qancha, nechta",
+              "ru": "сколько",
+              "tj": "чанд, чӣ қадар"
+            },
+            {
+              "uz": "yuan uchun hisob so‘zi",
+              "ru": "счётное слово для юаней",
+              "tj": "ҳисобкалима барои юан"
+            },
+            {
+              "uz": "bir",
+              "ru": "один",
+              "tj": "як"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "钱 = pul (qián)",
+            "ru": "钱 = деньги (qián)",
+            "tj": "钱 = пул (qián)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "钱 talaffuzini tanlang:",
+            "ru": "Выберите произношение 钱:",
+            "tj": "Талаффузи 钱-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qián",
+            "duōshao",
+            "kuài",
+            "yī"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "钱 — qián",
+            "ru": "钱 — qián",
+            "tj": "钱 — qián"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'pul' xitoycha nima?",
+            "ru": "'деньги' по-китайски?",
+            "tj": "'пул' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "钱",
+            "多少",
+            "块",
+            "一"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "钱 = pul (qián)",
+            "ru": "钱 = деньги (qián)",
+            "tj": "钱 = пул (qián)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "duōshao qaysi ieroglif?",
+            "ru": "Какой иероглиф читается duōshao?",
+            "tj": "duōshao кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "多少",
+            "钱",
+            "块",
+            "一"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "多少 = qancha, nechta (duōshao)",
+            "ru": "多少 = сколько (duōshao)",
+            "tj": "多少 = чанд, чӣ қадар (duōshao)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'多少钱' iborasini tuzing",
+            "ru": "Соберите фразу '多少钱'",
+            "tj": "Ибораи '多少钱'-ро созед"
+          },
+          "tokens": [
+            "多少",
+            "钱",
+            "块",
+            "一"
+          ],
+          "answer_tokens": [
+            "多少",
+            "钱"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 多少 钱",
+            "ru": "Правильный порядок: 多少 钱",
+            "tj": "Тартиби дуруст: 多少 钱"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "钱",
+              {
+                "uz": "pul",
+                "ru": "деньги",
+                "tj": "пул"
+              }
+            ],
+            [
+              "多少",
+              {
+                "uz": "qancha, nechta",
+                "ru": "сколько",
+                "tj": "чанд, чӣ қадар"
+              }
+            ],
+            [
+              "块",
+              {
+                "uz": "yuan uchun hisob so‘zi",
+                "ru": "счётное слово для юаней",
+                "tj": "ҳисобкалима барои юан"
+              }
+            ],
+            [
+              "一",
+              {
+                "uz": "bir",
+                "ru": "один",
+                "tj": "як"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "多少钱",
+          "pinyin": "duōshao qián",
+          "translation": {
+            "uz": "Narx va sonlar 1-100",
+            "ru": "Цена и числа 1-100",
+            "tj": "Нарх ва рақамҳои 1-100"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "钱。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 钱。",
+            "ru": "Ответ B: 钱。",
+            "tj": "Ҷавоби B: 钱。"
+          }
+        }
+      ]
+    }
+  ]
+}

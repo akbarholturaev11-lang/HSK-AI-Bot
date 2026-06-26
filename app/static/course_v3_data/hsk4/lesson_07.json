@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 7,
+  "title": "医疗卫生",
+  "subtitle": {
+    "uz": "Mavzu: Tibbiyot va sog‘liqni saqlash. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Медицина и здравоохранение. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Тиб ва ҳифзи саломатӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "医疗",
+      "pinyin": "yīliáo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tibbiyot",
+        "ru": "медицина",
+        "tj": "тиб"
+      },
+      "no": 1
+    },
+    {
+      "zh": "卫生",
+      "pinyin": "wèishēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sanitariya, gigiyena",
+        "ru": "санитария, гигиена",
+        "tj": "беҳдошт"
+      },
+      "no": 2
+    },
+    {
+      "zh": "保险",
+      "pinyin": "bǎoxiǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sug‘urta",
+        "ru": "страхование",
+        "tj": "суғурта"
+      },
+      "no": 3
+    },
+    {
+      "zh": "病人",
+      "pinyin": "bìngrén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bemor",
+        "ru": "пациент",
+        "tj": "бемор"
+      },
+      "no": 4
+    },
+    {
+      "zh": "治疗",
+      "pinyin": "zhìliáo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "davolamoq",
+        "ru": "лечить",
+        "tj": "табобат кардан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "预防",
+      "pinyin": "yùfáng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "oldini olmoq",
+        "ru": "предотвращать",
+        "tj": "пешгирӣ кардан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "费用",
+      "pinyin": "fèiyòng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xarajat",
+        "ru": "расходы",
+        "tj": "хароҷот"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 医疗卫生. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“医疗卫生”。",
+        "ru": "Ключевая фраза урока: 医疗卫生. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“医疗卫生”。",
+        "tj": "Ибораи асосии дарс: 医疗卫生. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“医疗卫生”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“医疗卫生”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yīliáo wèishēng.",
+          "translation": {
+            "uz": "Biz Tibbiyot va sog‘liqni saqlash mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Медицина и здравоохранение.",
+            "tj": "Мо мавзӯи Тиб ва ҳифзи саломатӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是医疗。",
+          "pinyin": "Zhège cí shì yīliáo.",
+          "translation": {
+            "uz": "Bu so'z: tibbiyot.",
+            "ru": "Это слово: медицина.",
+            "tj": "Ин калима: тиб."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "医疗。",
+          "pinyin": "yīliáo.",
+          "translation": {
+            "uz": "医疗 — yīliáo deb o'qiladi.",
+            "ru": "医疗 читается как yīliáo.",
+            "tj": "医疗 ҳамчун yīliáo хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Tibbiyot va sog‘liqni saqlash",
+        "ru": "Медицина и здравоохранение",
+        "tj": "Тиб ва ҳифзи саломатӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“医疗卫生”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yīliáo wèishēng.",
+          "text": {
+            "uz": "Bugun Tibbiyot va sog‘liqni saqlash mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Медицина и здравоохранение.",
+            "tj": "Имрӯз мавзӯи Тиб ва ҳифзи саломатӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "医疗。",
+          "pinyin": "yīliáo.",
+          "text": {
+            "uz": "医疗 — yīliáo deb o'qiladi.",
+            "ru": "医疗 читается как yīliáo.",
+            "tj": "医疗 ҳамчун yīliáo хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "医疗",
+            "pinyin": "yīliáo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tibbiyot",
+              "ru": "медицина",
+              "tj": "тиб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "卫生",
+            "pinyin": "wèishēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sanitariya, gigiyena",
+              "ru": "санитария, гигиена",
+              "tj": "беҳдошт"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "保险",
+            "pinyin": "bǎoxiǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sug‘urta",
+              "ru": "страхование",
+              "tj": "суғурта"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "病人",
+            "pinyin": "bìngrén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bemor",
+              "ru": "пациент",
+              "tj": "бемор"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "治疗",
+            "pinyin": "zhìliáo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "davolamoq",
+              "ru": "лечить",
+              "tj": "табобат кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "预防",
+            "pinyin": "yùfáng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "oldini olmoq",
+              "ru": "предотвращать",
+              "tj": "пешгирӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "费用",
+            "pinyin": "fèiyòng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xarajat",
+              "ru": "расходы",
+              "tj": "хароҷот"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "医疗 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 医疗:",
+            "tj": "Маънои калимаи 医疗-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tibbiyot",
+              "ru": "медицина",
+              "tj": "тиб"
+            },
+            {
+              "uz": "sanitariya, gigiyena",
+              "ru": "санитария, гигиена",
+              "tj": "беҳдошт"
+            },
+            {
+              "uz": "sug‘urta",
+              "ru": "страхование",
+              "tj": "суғурта"
+            },
+            {
+              "uz": "bemor",
+              "ru": "пациент",
+              "tj": "бемор"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "医疗 = tibbiyot (yīliáo)",
+            "ru": "医疗 = медицина (yīliáo)",
+            "tj": "医疗 = тиб (yīliáo)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "医疗 talaffuzini tanlang:",
+            "ru": "Выберите произношение 医疗:",
+            "tj": "Талаффузи 医疗-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yīliáo",
+            "wèishēng",
+            "bǎoxiǎn",
+            "bìngrén"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "医疗 — yīliáo",
+            "ru": "医疗 — yīliáo",
+            "tj": "医疗 — yīliáo"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tibbiyot' xitoycha nima?",
+            "ru": "'медицина' по-китайски?",
+            "tj": "'тиб' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "医疗",
+            "卫生",
+            "保险",
+            "病人"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "医疗 = tibbiyot (yīliáo)",
+            "ru": "医疗 = медицина (yīliáo)",
+            "tj": "医疗 = тиб (yīliáo)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wèishēng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wèishēng?",
+            "tj": "wèishēng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "卫生",
+            "医疗",
+            "保险",
+            "病人"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "卫生 = sanitariya, gigiyena (wèishēng)",
+            "ru": "卫生 = санитария, гигиена (wèishēng)",
+            "tj": "卫生 = беҳдошт (wèishēng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'医疗卫生' iborasini tuzing",
+            "ru": "Соберите фразу '医疗卫生'",
+            "tj": "Ибораи '医疗卫生'-ро созед"
+          },
+          "tokens": [
+            "医疗",
+            "卫生",
+            "保险",
+            "病人"
+          ],
+          "answer_tokens": [
+            "医疗",
+            "卫生"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 医疗 卫生",
+            "ru": "Правильный порядок: 医疗 卫生",
+            "tj": "Тартиби дуруст: 医疗 卫生"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "医疗",
+              {
+                "uz": "tibbiyot",
+                "ru": "медицина",
+                "tj": "тиб"
+              }
+            ],
+            [
+              "卫生",
+              {
+                "uz": "sanitariya, gigiyena",
+                "ru": "санитария, гигиена",
+                "tj": "беҳдошт"
+              }
+            ],
+            [
+              "保险",
+              {
+                "uz": "sug‘urta",
+                "ru": "страхование",
+                "tj": "суғурта"
+              }
+            ],
+            [
+              "病人",
+              {
+                "uz": "bemor",
+                "ru": "пациент",
+                "tj": "бемор"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "医疗卫生",
+          "pinyin": "yīliáo wèishēng",
+          "translation": {
+            "uz": "Tibbiyot va sog‘liqni saqlash",
+            "ru": "Медицина и здравоохранение",
+            "tj": "Тиб ва ҳифзи саломатӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "医疗。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 医疗。",
+            "ru": "Ответ B: 医疗。",
+            "tj": "Ҷавоби B: 医疗。"
+          }
+        }
+      ]
+    }
+  ]
+}

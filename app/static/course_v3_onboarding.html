@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>HSK AI</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{--ink:#211D17;--ink2:#6E665B;--ink3:#A89E8E;--paper:#FBF7EF;--card:#FFFFFF;--line:#EAE2D4;--cin:#C2403A;--cin2:#9A2F2B;--cinbg:#FBEDEA;--gold:#C2962F;--goldbg:#F8F0DA;--jade:#2F7D5E;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;padding-top:var(--safe-t);display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:11px;padding:16px 16px 4px}
+.bk{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1;flex-shrink:0}
+.pbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
+.pbar>i{display:block;height:100%;background:var(--cin);border-radius:6px;width:50%;transition:width .35s}
+.guide{display:flex;align-items:flex-end;gap:10px;padding:14px 18px 2px}
+.panda{width:60px;height:60px;flex-shrink:0}
+.bub{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;border-bottom-left-radius:3px;padding:11px 14px;font-size:14px;line-height:1.4}
+.body{flex:1;overflow-y:auto;padding:14px 16px 0}
+.lv{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:15px;padding:14px;margin-bottom:11px;font-family:inherit;color:var(--ink)}
+.lv .glyph{width:46px;height:46px;border-radius:12px;background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.lv .ot{flex:1}.lv .ot .hd{font-size:15px;font-weight:500;display:flex;align-items:center;gap:7px}.lv .ot small{font-size:12px;color:var(--ink2)}
+.lv .chk{width:24px;height:24px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;flex-shrink:0}
+.lv.sel{border-color:var(--cin);background:var(--cinbg)}.lv.sel .glyph{background:#fff}.lv.sel .chk{background:var(--cin);border-color:var(--cin)}
+.tag{background:var(--gold);color:#3a2c08;font-size:10px;font-weight:500;padding:2px 8px;border-radius:9px}
+.hint{text-align:center;font-size:12px;color:var(--ink3);margin:4px 6px 12px}.hint a{color:var(--cin);font-weight:500}
+.cta{margin:10px 16px calc(12px + var(--safe-b));padding:15px;background:var(--cin);color:#fff;border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 28px}
+.welcome .big{width:140px;height:140px;margin-bottom:8px}
+.welcome h1{font-size:27px;margin:6px 0 6px}.welcome p{font-size:15px;color:var(--ink2);margin:0;line-height:1.5}
+.recap{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px;width:100%;margin-top:12px;display:flex;align-items:center;gap:12px}
+.recap .glyph{width:46px;height:46px;border-radius:12px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:22px}
+.recap b{font-size:16px;font-weight:500;display:block}.recap small{font-size:12px;color:var(--ink2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top" id="top" style="display:none"><button class="bk" onclick="back()" aria-label="orqaga"><i class="ti ti-arrow-left"></i></button><div class="pbar"><i id="prog"></i></div></div>
+  <div id="stage"></div>
+  <button class="cta" id="cta" onclick="nextBtn()">Boshlash</button>
+</div>
+<script>
+var params=new URLSearchParams(location.search||"");
+var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
+var L={ru:{boot:"HSK 1 с нуля — учите китайский каждый день по несколько минут с пандой 阿宝.",ask:"С какого уровня начнём? Не знаешь — начни с HSK 1.",placement:"Не знаете уровень? Короткий тест",start:"Начать",cont:"Продолжить",ready:"Готово!",readySub:"Начнём с первого урока.",first:"Начать первый урок",rec:"Рекомендуем"},
+  uz:{boot:"HSK 1 noldan — har kuni bir necha daqiqada panda 阿宝 bilan xitoy tilini o'rganing.",ask:"Qaysi darajadan boshlaymiz? Bilmasang — HSK 1 dan ket.",placement:"Darajangni bilmaysanmi? Qisqa test",start:"Boshlash",cont:"Davom etish",ready:"Tayyor!",readySub:"Birinchi darsdan boshlaymiz.",first:"Birinchi darsni boshlash",rec:"Tavsiya"},
+  tj:{boot:"HSK 1 аз сифр — ҳар рӯз чанд дақиқа бо панда 阿宝 хитоиро омӯзед.",ask:"Аз кадом сатҳ оғоз кунем? Намедонӣ — аз HSK 1.",placement:"Сатҳро намедонед? Тести кӯтоҳ",start:"Оғоз",cont:"Идома",ready:"Тайёр!",readySub:"Аз дарси аввал оғоз мекунем.",first:"Оғози дарси аввал",rec:"Тавсия"}}[LANG];
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+function panda(m){var eyes,mouth;
+  if(m==="cheer"){eyes='<path d="M22 31 q5 -5 10 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/><path d="M40 31 q5 -5 10 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/>';mouth='<path d="M27 42 q9 10 18 0 z" fill="#9A2F2B"/>';}
+  else{eyes='<circle cx="27" cy="32" r="3.4" fill="#fff"/><circle cx="45" cy="32" r="3.4" fill="#fff"/><circle cx="27" cy="32" r="2" fill="#211D17"/><circle cx="45" cy="32" r="2" fill="#211D17"/>';mouth='<path d="M30 43 q6 5 12 0" fill="none" stroke="#211D17" stroke-width="2.2" stroke-linecap="round"/>';}
+  return '<svg viewBox="0 0 72 72" width="100%" height="100%"><circle cx="16" cy="15" r="10" fill="#211D17"/><circle cx="56" cy="15" r="10" fill="#211D17"/><path d="M22 60 q-3 -22 6 -30 h16 q9 8 6 30 z" fill="#fff" stroke="#211D17" stroke-width="2"/><path d="M24 40 q12 7 24 0 l-2 7 q-10 5 -20 0 z" fill="#C2403A"/><circle cx="36" cy="30" r="22" fill="#fff" stroke="#211D17" stroke-width="2"/><ellipse cx="27" cy="30" rx="6.5" ry="9" fill="#211D17"/><ellipse cx="45" cy="30" rx="6.5" ry="9" fill="#211D17"/>'+eyes+'<ellipse cx="36" cy="38" rx="3.4" ry="2.4" fill="#211D17"/>'+mouth+'</svg>';
+}
+var LV=[{k:"hsk1",g:"你好",hd:"HSK 1",s:{ru:"С нуля · самый лёгкий",uz:"Noldan · eng oson",tj:"Аз сифр · осонтарин"},rec:1},
+  {k:"hsk2",g:"谢谢",hd:"HSK 2",s:{ru:"Базовое общение",uz:"Asosiy suhbat",tj:"Муоширати асосӣ"}},
+  {k:"hsk3",g:"明白",hd:"HSK 3",s:{ru:"Повседневное общение",uz:"Kundalik muloqot",tj:"Муоширати ҳаррӯза"}},
+  {k:"hsk4",g:"流利",hd:"HSK 4",s:{ru:"Свободное общение",uz:"Erkin muloqot",tj:"Муоширати озод"}}];
+var step=0,sel="hsk1";
+function trv(o){return typeof o==="string"?o:(o[LANG]||o.ru)}
+function render(){
+  var st=document.getElementById("stage"),cta=document.getElementById("cta");
+  document.getElementById("top").style.display=step===0?"none":"flex";
+  if(step===0){st.innerHTML='<div class="welcome"><div class="big">'+panda("cheer")+'</div><h1 class="han">HSK AI</h1><p>'+L.boot+'</p></div>';cta.textContent=L.start;return;}
+  if(step===1){document.getElementById("prog").style.width="50%";
+    var rows=LV.map(function(l){return '<button class="lv'+(sel===l.k?" sel":"")+'" onclick="pick(\''+l.k+'\')"><span class="glyph han">'+l.g+'</span><span class="ot"><span class="hd">'+l.hd+(l.rec?' <span class="tag">'+L.rec+'</span>':"")+'</span><small>'+trv(l.s)+'</small></span><span class="chk"><i class="ti ti-check"></i></span></button>'}).join("");
+    st.innerHTML='<div class="guide"><div class="panda">'+panda("happy")+'</div><div class="bub">'+L.ask+'</div></div><div class="body">'+rows+'<div class="hint"><a>'+L.placement+'</a></div></div>';cta.textContent=L.cont;return;}
+  document.getElementById("prog").style.width="100%";
+  var Lvl=LV.filter(function(x){return x.k===sel})[0];
+  st.innerHTML='<div class="welcome"><div class="big">'+panda("cheer")+'</div><h1>'+L.ready+'</h1><p>'+L.readySub+'</p><div class="recap"><span class="glyph han">'+Lvl.g+'</span><div><b>'+Lvl.hd+'</b><small>'+trv(Lvl.s)+'</small></div></div></div>';
+  cta.innerHTML='<i class="ti ti-player-play"></i> '+L.first;
+}
+function pick(k){sel=k;render()}
+function nextBtn(){if(step<2){step++;render()}else{finish()}}
+function back(){if(step>0){step--;render()}}
+function finish(){
+  try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_level",sel)}catch(e){}
+  location.href="/course-v3.html?lang="+LANG+"&level="+sel+"&onboarded=1&tour=1";
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,601 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 15,
+  "title": "复习 — HSK 1",
+  "subtitle": {
+    "uz": "Mavzu: HSK 1 takrori va umumiy test. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Повторение HSK 1 и общий тест. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Такрори HSK 1 ва санҷиши умумӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "复习",
+      "pinyin": "fùxí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "takrorlamoq",
+        "ru": "повторять",
+        "tj": "такрор кардан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "你好",
+      "pinyin": "nǐ hǎo",
+      "pos": "expr.",
+      "meaning": {
+        "uz": "salom",
+        "ru": "привет",
+        "tj": "салом"
+      },
+      "no": 2
+    },
+    {
+      "zh": "谢谢",
+      "pinyin": "xièxie",
+      "pos": "expr.",
+      "meaning": {
+        "uz": "rahmat",
+        "ru": "спасибо",
+        "tj": "раҳмат"
+      },
+      "no": 3
+    },
+    {
+      "zh": "名字",
+      "pinyin": "míngzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ism",
+        "ru": "имя",
+        "tj": "ном"
+      },
+      "no": 4
+    },
+    {
+      "zh": "多少钱",
+      "pinyin": "duōshao qián",
+      "pos": "expr.",
+      "meaning": {
+        "uz": "qancha pul",
+        "ru": "сколько стоит",
+        "tj": "чанд пул"
+      },
+      "no": 5
+    },
+    {
+      "zh": "星期",
+      "pinyin": "xīngqī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hafta kuni",
+        "ru": "день недели",
+        "tj": "рӯзи ҳафта"
+      },
+      "no": 6
+    },
+    {
+      "zh": "天气",
+      "pinyin": "tiānqì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ob-havo",
+        "ru": "погода",
+        "tj": "обу ҳаво"
+      },
+      "no": 7
+    },
+    {
+      "zh": "身体",
+      "pinyin": "shēntǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "salomatlik",
+        "ru": "здоровье",
+        "tj": "саломатӣ"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 复习 — HSK 1. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们复习HSK 1。",
+        "ru": "Ключевая фраза урока: 复习 — HSK 1. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们复习HSK 1。",
+        "tj": "Ибораи асосии дарс: 复习 — HSK 1. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们复习HSK 1。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们复习HSK 1。",
+          "pinyin": "Jīntiān wǒmen fùxí HSK yī.",
+          "translation": {
+            "uz": "Biz HSK 1 takrori va umumiy test mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Повторение HSK 1 и общий тест.",
+            "tj": "Мо мавзӯи Такрори HSK 1 ва санҷиши умумӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是复习。",
+          "pinyin": "Zhège cí shì fùxí.",
+          "translation": {
+            "uz": "Bu so'z: takrorlamoq.",
+            "ru": "Это слово: повторять.",
+            "tj": "Ин калима: такрор кардан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "复习。",
+          "pinyin": "fùxí.",
+          "translation": {
+            "uz": "复习 — fùxí deb o'qiladi.",
+            "ru": "复习 читается как fùxí.",
+            "tj": "复习 ҳамчун fùxí хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "HSK 1 takrori va umumiy test",
+        "ru": "Повторение HSK 1 и общий тест",
+        "tj": "Такрори HSK 1 ва санҷиши умумӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们复习HSK 1。",
+          "pinyin": "Jīntiān wǒmen fùxí HSK yī.",
+          "text": {
+            "uz": "Bugun HSK 1 takrori va umumiy test mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Повторение HSK 1 и общий тест.",
+            "tj": "Имрӯз мавзӯи Такрори HSK 1 ва санҷиши умумӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "复习。",
+          "pinyin": "fùxí.",
+          "text": {
+            "uz": "复习 — fùxí deb o'qiladi.",
+            "ru": "复习 читается как fùxí.",
+            "tj": "复习 ҳамчун fùxí хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "复习",
+            "pinyin": "fùxí",
+            "pos": "v.",
+            "meaning": {
+              "uz": "takrorlamoq",
+              "ru": "повторять",
+              "tj": "такрор кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "你好",
+            "pinyin": "nǐ hǎo",
+            "pos": "expr.",
+            "meaning": {
+              "uz": "salom",
+              "ru": "привет",
+              "tj": "салом"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "谢谢",
+            "pinyin": "xièxie",
+            "pos": "expr.",
+            "meaning": {
+              "uz": "rahmat",
+              "ru": "спасибо",
+              "tj": "раҳмат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "名字",
+            "pinyin": "míngzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "多少钱",
+            "pinyin": "duōshao qián",
+            "pos": "expr.",
+            "meaning": {
+              "uz": "qancha pul",
+              "ru": "сколько стоит",
+              "tj": "чанд пул"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "星期",
+            "pinyin": "xīngqī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hafta kuni",
+              "ru": "день недели",
+              "tj": "рӯзи ҳафта"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "天气",
+            "pinyin": "tiānqì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ob-havo",
+              "ru": "погода",
+              "tj": "обу ҳаво"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "身体",
+            "pinyin": "shēntǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "salomatlik",
+              "ru": "здоровье",
+              "tj": "саломатӣ"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "复习 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 复习:",
+            "tj": "Маънои калимаи 复习-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "takrorlamoq",
+              "ru": "повторять",
+              "tj": "такрор кардан"
+            },
+            {
+              "uz": "salom",
+              "ru": "привет",
+              "tj": "салом"
+            },
+            {
+              "uz": "rahmat",
+              "ru": "спасибо",
+              "tj": "раҳмат"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "复习 = takrorlamoq (fùxí)",
+            "ru": "复习 = повторять (fùxí)",
+            "tj": "复习 = такрор кардан (fùxí)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "复习 talaffuzini tanlang:",
+            "ru": "Выберите произношение 复习:",
+            "tj": "Талаффузи 复习-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "fùxí",
+            "nǐ hǎo",
+            "xièxie",
+            "míngzi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "复习 — fùxí",
+            "ru": "复习 — fùxí",
+            "tj": "复习 — fùxí"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'takrorlamoq' xitoycha nima?",
+            "ru": "'повторять' по-китайски?",
+            "tj": "'такрор кардан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "复习",
+            "你好",
+            "谢谢",
+            "名字"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "复习 = takrorlamoq (fùxí)",
+            "ru": "复习 = повторять (fùxí)",
+            "tj": "复习 = такрор кардан (fùxí)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "nǐ hǎo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǐ hǎo?",
+            "tj": "nǐ hǎo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "你好",
+            "复习",
+            "谢谢",
+            "名字"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你好 = salom (nǐ hǎo)",
+            "ru": "你好 = привет (nǐ hǎo)",
+            "tj": "你好 = салом (nǐ hǎo)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'复习' iborasini tuzing",
+            "ru": "Соберите фразу '复习'",
+            "tj": "Ибораи '复习'-ро созед"
+          },
+          "tokens": [
+            "复习",
+            "你好",
+            "谢谢",
+            "名字"
+          ],
+          "answer_tokens": [
+            "复习"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 复习",
+            "ru": "Правильный порядок: 复习",
+            "tj": "Тартиби дуруст: 复习"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "复习",
+              {
+                "uz": "takrorlamoq",
+                "ru": "повторять",
+                "tj": "такрор кардан"
+              }
+            ],
+            [
+              "你好",
+              {
+                "uz": "salom",
+                "ru": "привет",
+                "tj": "салом"
+              }
+            ],
+            [
+              "谢谢",
+              {
+                "uz": "rahmat",
+                "ru": "спасибо",
+                "tj": "раҳмат"
+              }
+            ],
+            [
+              "名字",
+              {
+                "uz": "ism",
+                "ru": "имя",
+                "tj": "ном"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "复习",
+          "pinyin": "fùxí HSK yī",
+          "translation": {
+            "uz": "HSK 1 takrori va umumiy test",
+            "ru": "Повторение HSK 1 и общий тест",
+            "tj": "Такрори HSK 1 ва санҷиши умумӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "复习。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 复习。",
+            "ru": "Ответ B: 复习。",
+            "tj": "Ҷавоби B: 复习。"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,346 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "label": "HSK 3",
+  "authenticated": false,
+  "progress": {
+    "streak": 0,
+    "xp": 0,
+    "completed": 0,
+    "league": "Bronze"
+  },
+  "units": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Xizmatlar va shahar",
+        "ru": "Услуги и город",
+        "tj": "Хизматҳо ва шаҳр"
+      },
+      "lessons": [
+        {
+          "n": 1,
+          "zh": "预订房间",
+          "py": "yùdìng fángjiān",
+          "tr": {
+            "uz": "Mehmonxona va bron qilish",
+            "ru": "Гостиница и бронирование",
+            "tj": "Меҳмонхона ва брон кардан"
+          },
+          "status": "current",
+          "content": "lesson_01"
+        },
+        {
+          "n": 2,
+          "zh": "看病",
+          "py": "kànbìng",
+          "tr": {
+            "uz": "Shifokor va kasallik",
+            "ru": "Врач и болезнь",
+            "tj": "Духтур ва беморӣ"
+          },
+          "status": "locked",
+          "content": "lesson_02"
+        },
+        {
+          "n": 3,
+          "zh": "打电话",
+          "py": "dǎ diànhuà",
+          "tr": {
+            "uz": "Telefon suhbati",
+            "ru": "Телефонный разговор",
+            "tj": "Сӯҳбати телефонӣ"
+          },
+          "status": "locked",
+          "content": "lesson_03"
+        },
+        {
+          "n": 4,
+          "zh": "购物中心",
+          "py": "gòuwù zhōngxīn",
+          "tr": {
+            "uz": "Savdo markazi va chegirmalar",
+            "ru": "Торговый центр и скидки",
+            "tj": "Маркази савдо ва тахфифҳо"
+          },
+          "status": "locked",
+          "content": "lesson_04",
+          "locked_premium": true
+        },
+        {
+          "n": 5,
+          "zh": "中国文化",
+          "py": "Zhōngguó wénhuà",
+          "tr": {
+            "uz": "Xitoy madaniyati va bayramlar",
+            "ru": "Китайская культура и праздники",
+            "tj": "Фарҳанги чинӣ ва идҳо"
+          },
+          "status": "locked",
+          "content": "lesson_05",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "1-bo‘lim takrori",
+          "ru": "Повторение раздела 1",
+          "tj": "Такрори фасли 1"
+        },
+        "status": "locked"
+      }
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "O‘qish, sayohat va ish",
+        "ru": "Учёба, поездки и работа",
+        "tj": "Таҳсил, сафар ва кор"
+      },
+      "lessons": [
+        {
+          "n": 6,
+          "zh": "学习汉字",
+          "py": "xuéxí hànzì",
+          "tr": {
+            "uz": "Ieroglif yozish qoidalari",
+            "ru": "Правила написания иероглифов",
+            "tj": "Қоидаҳои навиштани иероглиф"
+          },
+          "status": "locked",
+          "content": "lesson_06",
+          "locked_premium": true
+        },
+        {
+          "n": 7,
+          "zh": "出行计划",
+          "py": "chūxíng jìhuà",
+          "tr": {
+            "uz": "Sayohat rejasi",
+            "ru": "План поездки",
+            "tj": "Нақшаи сафар"
+          },
+          "status": "locked",
+          "content": "lesson_07",
+          "locked_premium": true
+        },
+        {
+          "n": 8,
+          "zh": "餐厅点菜",
+          "py": "cāntīng diǎn cài",
+          "tr": {
+            "uz": "Restoran va ovqat buyurtma",
+            "ru": "Ресторан и заказ еды",
+            "tj": "Тарабхона ва фармоиши хӯрок"
+          },
+          "status": "locked",
+          "content": "lesson_08",
+          "locked_premium": true
+        },
+        {
+          "n": 9,
+          "zh": "租房子",
+          "py": "zū fángzi",
+          "tr": {
+            "uz": "Uy ijarasi va ko‘chish",
+            "ru": "Аренда жилья и переезд",
+            "tj": "Иҷораи хона ва кӯчидан"
+          },
+          "status": "locked",
+          "content": "lesson_09",
+          "locked_premium": true
+        },
+        {
+          "n": 10,
+          "zh": "工作面试",
+          "py": "gōngzuò miànshì",
+          "tr": {
+            "uz": "Ish intervyusi",
+            "ru": "Собеседование",
+            "tj": "Мусоҳибаи корӣ"
+          },
+          "status": "locked",
+          "content": "lesson_10",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "2-bo‘lim takrori",
+          "ru": "Повторение раздела 2",
+          "tj": "Такрори фасли 2"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Jamiyat va hayot",
+        "ru": "Общество и жизнь",
+        "tj": "Ҷомеа ва зиндагӣ"
+      },
+      "lessons": [
+        {
+          "n": 11,
+          "zh": "网络购物",
+          "py": "wǎngluò gòuwù",
+          "tr": {
+            "uz": "Onlayn xarid",
+            "ru": "Интернет-покупки",
+            "tj": "Хариди онлайн"
+          },
+          "status": "locked",
+          "content": "lesson_11",
+          "locked_premium": true
+        },
+        {
+          "n": 12,
+          "zh": "环境保护",
+          "py": "huánjìng bǎohù",
+          "tr": {
+            "uz": "Ekologiya va tabiat",
+            "ru": "Экология и природа",
+            "tj": "Экология ва табиат"
+          },
+          "status": "locked",
+          "content": "lesson_12",
+          "locked_premium": true
+        },
+        {
+          "n": 13,
+          "zh": "运动健康",
+          "py": "yùndòng jiànkāng",
+          "tr": {
+            "uz": "Sport va salomatlik",
+            "ru": "Спорт и здоровье",
+            "tj": "Варзиш ва саломатӣ"
+          },
+          "status": "locked",
+          "content": "lesson_13",
+          "locked_premium": true
+        },
+        {
+          "n": 14,
+          "zh": "节日习俗",
+          "py": "jiérì xísú",
+          "tr": {
+            "uz": "Bayram odatlari",
+            "ru": "Праздничные обычаи",
+            "tj": "Одатҳои идона"
+          },
+          "status": "locked",
+          "content": "lesson_14",
+          "locked_premium": true
+        },
+        {
+          "n": 15,
+          "zh": "交通出行",
+          "py": "jiāotōng chūxíng",
+          "tr": {
+            "uz": "Transport va yo‘l qoidalari",
+            "ru": "Транспорт и правила движения",
+            "tj": "Нақлиёт ва қоидаҳои роҳ"
+          },
+          "status": "locked",
+          "content": "lesson_15",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "3-bo‘lim takrori",
+          "ru": "Повторение раздела 3",
+          "tj": "Такрори фасли 3"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "Media, bank va turizm",
+        "ru": "Медиа, банк и туризм",
+        "tj": "Расона, бонк ва сайёҳӣ"
+      },
+      "lessons": [
+        {
+          "n": 16,
+          "zh": "银行业务",
+          "py": "yínháng yèwù",
+          "tr": {
+            "uz": "Bank va pul o‘tkazma",
+            "ru": "Банк и перевод денег",
+            "tj": "Бонк ва интиқоли пул"
+          },
+          "status": "locked",
+          "content": "lesson_16",
+          "locked_premium": true
+        },
+        {
+          "n": 17,
+          "zh": "新闻资讯",
+          "py": "xīnwén zīxùn",
+          "tr": {
+            "uz": "Yangiliklar va OAV",
+            "ru": "Новости и СМИ",
+            "tj": "Хабарҳо ва ВАО"
+          },
+          "status": "locked",
+          "content": "lesson_17",
+          "locked_premium": true
+        },
+        {
+          "n": 18,
+          "zh": "社交媒体",
+          "py": "shèjiāo méitǐ",
+          "tr": {
+            "uz": "Ijtimoiy tarmoqlar",
+            "ru": "Социальные сети",
+            "tj": "Шабакаҳои иҷтимоӣ"
+          },
+          "status": "locked",
+          "content": "lesson_18",
+          "locked_premium": true
+        },
+        {
+          "n": 19,
+          "zh": "旅游景点",
+          "py": "lǚyóu jǐngdiǎn",
+          "tr": {
+            "uz": "Turistik joylar",
+            "ru": "Туристические места",
+            "tj": "Ҷойҳои сайёҳӣ"
+          },
+          "status": "locked",
+          "content": "lesson_19",
+          "locked_premium": true
+        },
+        {
+          "n": 20,
+          "zh": "复习 — HSK 3",
+          "py": "fùxí HSK sān",
+          "tr": {
+            "uz": "HSK 3 takrori va umumiy test",
+            "ru": "Повторение HSK 3 и общий тест",
+            "tj": "Такрори HSK 3 ва санҷиши умумӣ"
+          },
+          "status": "locked",
+          "content": "lesson_20",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "4-bo‘lim takrori",
+          "ru": "Повторение раздела 4",
+          "tj": "Такрори фасли 4"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    }
+  ]
+}

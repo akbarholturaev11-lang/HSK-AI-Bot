@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 9,
+  "title": "你看过吗",
+  "subtitle": {
+    "uz": "Mavzu: Tajriba, 过 yuklamasi. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Опыт, частица 过. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Таҷриба, ҳиссачаи 过. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "过",
+      "pinyin": "guò",
+      "pos": "expr.",
+      "meaning": {
+        "uz": "tajriba bildiruvchi yuklama",
+        "ru": "частица опыта",
+        "tj": "ҳиссачаи таҷриба"
+      },
+      "no": 1
+    },
+    {
+      "zh": "看过",
+      "pinyin": "kàn guò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ko‘rgan bo‘lmoq",
+        "ru": "видел когда-либо",
+        "tj": "дида будан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "去过",
+      "pinyin": "qù guò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "borgan bo‘lmoq",
+        "ru": "бывал",
+        "tj": "рафта будан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "吃过",
+      "pinyin": "chī guò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yegan bo‘lmoq",
+        "ru": "ел когда-либо",
+        "tj": "хӯрда будан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "北京",
+      "pinyin": "Běijīng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "Pekin",
+        "ru": "Пекин",
+        "tj": "Пекин"
+      },
+      "no": 5
+    },
+    {
+      "zh": "以前",
+      "pinyin": "yǐqián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ilgari, oldin",
+        "ru": "раньше",
+        "tj": "пештар"
+      },
+      "no": 6
+    },
+    {
+      "zh": "从来",
+      "pinyin": "cónglái",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hech qachon",
+        "ru": "никогда",
+        "tj": "ҳеҷ гоҳ"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 你看过吗. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你看过吗”。",
+        "ru": "Ключевая фраза урока: 你看过吗. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你看过吗”。",
+        "tj": "Ибораи асосии дарс: 你看过吗. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你看过吗”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“你看过吗”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ kàn guò ma.",
+          "translation": {
+            "uz": "Biz Tajriba, 过 yuklamasi mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Опыт, частица 过.",
+            "tj": "Мо мавзӯи Таҷриба, ҳиссачаи 过-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是过。",
+          "pinyin": "Zhège cí shì guò.",
+          "translation": {
+            "uz": "Bu so'z: tajriba bildiruvchi yuklama.",
+            "ru": "Это слово: частица опыта.",
+            "tj": "Ин калима: ҳиссачаи таҷриба."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "过。",
+          "pinyin": "guò.",
+          "translation": {
+            "uz": "过 — guò deb o'qiladi.",
+            "ru": "过 читается как guò.",
+            "tj": "过 ҳамчун guò хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Tajriba, 过 yuklamasi",
+        "ru": "Опыт, частица 过",
+        "tj": "Таҷриба, ҳиссачаи 过"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“你看过吗”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ kàn guò ma.",
+          "text": {
+            "uz": "Bugun Tajriba, 过 yuklamasi mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Опыт, частица 过.",
+            "tj": "Имрӯз мавзӯи Таҷриба, ҳиссачаи 过-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "过。",
+          "pinyin": "guò.",
+          "text": {
+            "uz": "过 — guò deb o'qiladi.",
+            "ru": "过 читается как guò.",
+            "tj": "过 ҳамчун guò хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "过",
+            "pinyin": "guò",
+            "pos": "expr.",
+            "meaning": {
+              "uz": "tajriba bildiruvchi yuklama",
+              "ru": "частица опыта",
+              "tj": "ҳиссачаи таҷриба"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "看过",
+            "pinyin": "kàn guò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ko‘rgan bo‘lmoq",
+              "ru": "видел когда-либо",
+              "tj": "дида будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "去过",
+            "pinyin": "qù guò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "borgan bo‘lmoq",
+              "ru": "бывал",
+              "tj": "рафта будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "吃过",
+            "pinyin": "chī guò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yegan bo‘lmoq",
+              "ru": "ел когда-либо",
+              "tj": "хӯрда будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "北京",
+            "pinyin": "Běijīng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "Pekin",
+              "ru": "Пекин",
+              "tj": "Пекин"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "以前",
+            "pinyin": "yǐqián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ilgari, oldin",
+              "ru": "раньше",
+              "tj": "пештар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "从来",
+            "pinyin": "cónglái",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "hech qachon",
+              "ru": "никогда",
+              "tj": "ҳеҷ гоҳ"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "过 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 过:",
+            "tj": "Маънои калимаи 过-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tajriba bildiruvchi yuklama",
+              "ru": "частица опыта",
+              "tj": "ҳиссачаи таҷриба"
+            },
+            {
+              "uz": "ko‘rgan bo‘lmoq",
+              "ru": "видел когда-либо",
+              "tj": "дида будан"
+            },
+            {
+              "uz": "borgan bo‘lmoq",
+              "ru": "бывал",
+              "tj": "рафта будан"
+            },
+            {
+              "uz": "yegan bo‘lmoq",
+              "ru": "ел когда-либо",
+              "tj": "хӯрда будан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "过 = tajriba bildiruvchi yuklama (guò)",
+            "ru": "过 = частица опыта (guò)",
+            "tj": "过 = ҳиссачаи таҷриба (guò)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "过 talaffuzini tanlang:",
+            "ru": "Выберите произношение 过:",
+            "tj": "Талаффузи 过-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "guò",
+            "kàn guò",
+            "qù guò",
+            "chī guò"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "过 — guò",
+            "ru": "过 — guò",
+            "tj": "过 — guò"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tajriba bildiruvchi yuklama' xitoycha nima?",
+            "ru": "'частица опыта' по-китайски?",
+            "tj": "'ҳиссачаи таҷриба' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "过",
+            "看过",
+            "去过",
+            "吃过"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "过 = tajriba bildiruvchi yuklama (guò)",
+            "ru": "过 = частица опыта (guò)",
+            "tj": "过 = ҳиссачаи таҷриба (guò)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kàn guò qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kàn guò?",
+            "tj": "kàn guò кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "看过",
+            "过",
+            "去过",
+            "吃过"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "看过 = ko‘rgan bo‘lmoq (kàn guò)",
+            "ru": "看过 = видел когда-либо (kàn guò)",
+            "tj": "看过 = дида будан (kàn guò)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'你看过吗' iborasini tuzing",
+            "ru": "Соберите фразу '你看过吗'",
+            "tj": "Ибораи '你看过吗'-ро созед"
+          },
+          "tokens": [
+            "你",
+            "看过",
+            "吗",
+            "过",
+            "去过"
+          ],
+          "answer_tokens": [
+            "你",
+            "看过",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 你 看过 吗",
+            "ru": "Правильный порядок: 你 看过 吗",
+            "tj": "Тартиби дуруст: 你 看过 吗"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "过",
+              {
+                "uz": "tajriba bildiruvchi yuklama",
+                "ru": "частица опыта",
+                "tj": "ҳиссачаи таҷриба"
+              }
+            ],
+            [
+              "看过",
+              {
+                "uz": "ko‘rgan bo‘lmoq",
+                "ru": "видел когда-либо",
+                "tj": "дида будан"
+              }
+            ],
+            [
+              "去过",
+              {
+                "uz": "borgan bo‘lmoq",
+                "ru": "бывал",
+                "tj": "рафта будан"
+              }
+            ],
+            [
+              "吃过",
+              {
+                "uz": "yegan bo‘lmoq",
+                "ru": "ел когда-либо",
+                "tj": "хӯрда будан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你看过吗",
+          "pinyin": "nǐ kàn guò ma",
+          "translation": {
+            "uz": "Tajriba, 过 yuklamasi",
+            "ru": "Опыт, частица 过",
+            "tj": "Таҷриба, ҳиссачаи 过"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "过。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 过。",
+            "ru": "Ответ B: 过。",
+            "tj": "Ҷавоби B: 过。"
+          }
+        }
+      ]
+    }
+  ]
+}

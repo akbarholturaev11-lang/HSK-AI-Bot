@@ -1,0 +1,602 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 2,
+  "title": "怎么走",
+  "subtitle": {
+    "uz": "Mavzu: Yo'l ko'rsatish, chapga va o'ngga. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Как пройти, налево и направо. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Роҳ нишон додан, чап ва рост. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "怎么",
+      "pinyin": "zěnme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday",
+        "ru": "как",
+        "tj": "чӣ тавр"
+      },
+      "no": 1
+    },
+    {
+      "zh": "走",
+      "pinyin": "zǒu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yurmoq",
+        "ru": "идти",
+        "tj": "роҳ рафтан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "左边",
+      "pinyin": "zuǒbiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chap tomon",
+        "ru": "левая сторона",
+        "tj": "тарафи чап"
+      },
+      "no": 3
+    },
+    {
+      "zh": "右边",
+      "pinyin": "yòubiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o‘ng tomon",
+        "ru": "правая сторона",
+        "tj": "тарафи рост"
+      },
+      "no": 4
+    },
+    {
+      "zh": "一直",
+      "pinyin": "yìzhí",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "to‘g‘ri, davomli",
+        "ru": "прямо, всё время",
+        "tj": "рост, пайваста"
+      },
+      "no": 5
+    },
+    {
+      "zh": "往",
+      "pinyin": "wǎng",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "tomonga",
+        "ru": "в сторону",
+        "tj": "ба самти"
+      },
+      "no": 6
+    },
+    {
+      "zh": "路",
+      "pinyin": "lù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yo‘l",
+        "ru": "дорога",
+        "tj": "роҳ"
+      },
+      "no": 7
+    },
+    {
+      "zh": "到",
+      "pinyin": "dào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yetib bormoq",
+        "ru": "прибывать",
+        "tj": "расидан"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 怎么走. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“怎么走”。",
+        "ru": "Ключевая фраза урока: 怎么走. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“怎么走”。",
+        "tj": "Ибораи асосии дарс: 怎么走. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“怎么走”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“怎么走”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zěnme zǒu.",
+          "translation": {
+            "uz": "Biz Yo'l ko'rsatish, chapga va o'ngga mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Как пройти, налево и направо.",
+            "tj": "Мо мавзӯи Роҳ нишон додан, чап ва рост-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是怎么。",
+          "pinyin": "Zhège cí shì zěnme.",
+          "translation": {
+            "uz": "Bu so'z: qanday.",
+            "ru": "Это слово: как.",
+            "tj": "Ин калима: чӣ тавр."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "怎么。",
+          "pinyin": "zěnme.",
+          "translation": {
+            "uz": "怎么 — zěnme deb o'qiladi.",
+            "ru": "怎么 читается как zěnme.",
+            "tj": "怎么 ҳамчун zěnme хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Yo'l ko'rsatish, chapga va o'ngga",
+        "ru": "Как пройти, налево и направо",
+        "tj": "Роҳ нишон додан, чап ва рост"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“怎么走”。",
+          "pinyin": "Jīntiān wǒmen xuéxí zěnme zǒu.",
+          "text": {
+            "uz": "Bugun Yo'l ko'rsatish, chapga va o'ngga mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Как пройти, налево и направо.",
+            "tj": "Имрӯз мавзӯи Роҳ нишон додан, чап ва рост-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "怎么。",
+          "pinyin": "zěnme.",
+          "text": {
+            "uz": "怎么 — zěnme deb o'qiladi.",
+            "ru": "怎么 читается как zěnme.",
+            "tj": "怎么 ҳамчун zěnme хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "怎么",
+            "pinyin": "zěnme",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qanday",
+              "ru": "как",
+              "tj": "чӣ тавр"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "走",
+            "pinyin": "zǒu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yurmoq",
+              "ru": "идти",
+              "tj": "роҳ рафтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "左边",
+            "pinyin": "zuǒbiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "右边",
+            "pinyin": "yòubiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o‘ng tomon",
+              "ru": "правая сторона",
+              "tj": "тарафи рост"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "一直",
+            "pinyin": "yìzhí",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "to‘g‘ri, davomli",
+              "ru": "прямо, всё время",
+              "tj": "рост, пайваста"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "往",
+            "pinyin": "wǎng",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "tomonga",
+              "ru": "в сторону",
+              "tj": "ба самти"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "路",
+            "pinyin": "lù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yo‘l",
+              "ru": "дорога",
+              "tj": "роҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "到",
+            "pinyin": "dào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yetib bormoq",
+              "ru": "прибывать",
+              "tj": "расидан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "怎么 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 怎么:",
+            "tj": "Маънои калимаи 怎么-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qanday",
+              "ru": "как",
+              "tj": "чӣ тавр"
+            },
+            {
+              "uz": "yurmoq",
+              "ru": "идти",
+              "tj": "роҳ рафтан"
+            },
+            {
+              "uz": "chap tomon",
+              "ru": "левая сторона",
+              "tj": "тарафи чап"
+            },
+            {
+              "uz": "o‘ng tomon",
+              "ru": "правая сторона",
+              "tj": "тарафи рост"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "怎么 = qanday (zěnme)",
+            "ru": "怎么 = как (zěnme)",
+            "tj": "怎么 = чӣ тавр (zěnme)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "怎么 talaffuzini tanlang:",
+            "ru": "Выберите произношение 怎么:",
+            "tj": "Талаффузи 怎么-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zěnme",
+            "zǒu",
+            "zuǒbiān",
+            "yòubiān"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "怎么 — zěnme",
+            "ru": "怎么 — zěnme",
+            "tj": "怎么 — zěnme"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qanday' xitoycha nima?",
+            "ru": "'как' по-китайски?",
+            "tj": "'чӣ тавр' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "怎么",
+            "走",
+            "左边",
+            "右边"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "怎么 = qanday (zěnme)",
+            "ru": "怎么 = как (zěnme)",
+            "tj": "怎么 = чӣ тавр (zěnme)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zǒu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zǒu?",
+            "tj": "zǒu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "走",
+            "怎么",
+            "左边",
+            "右边"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "走 = yurmoq (zǒu)",
+            "ru": "走 = идти (zǒu)",
+            "tj": "走 = роҳ рафтан (zǒu)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'怎么走' iborasini tuzing",
+            "ru": "Соберите фразу '怎么走'",
+            "tj": "Ибораи '怎么走'-ро созед"
+          },
+          "tokens": [
+            "怎么",
+            "走",
+            "左边",
+            "右边"
+          ],
+          "answer_tokens": [
+            "怎么",
+            "走"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 怎么 走",
+            "ru": "Правильный порядок: 怎么 走",
+            "tj": "Тартиби дуруст: 怎么 走"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "怎么",
+              {
+                "uz": "qanday",
+                "ru": "как",
+                "tj": "чӣ тавр"
+              }
+            ],
+            [
+              "走",
+              {
+                "uz": "yurmoq",
+                "ru": "идти",
+                "tj": "роҳ рафтан"
+              }
+            ],
+            [
+              "左边",
+              {
+                "uz": "chap tomon",
+                "ru": "левая сторона",
+                "tj": "тарафи чап"
+              }
+            ],
+            [
+              "右边",
+              {
+                "uz": "o‘ng tomon",
+                "ru": "правая сторона",
+                "tj": "тарафи рост"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "怎么走",
+          "pinyin": "zěnme zǒu",
+          "translation": {
+            "uz": "Yo'l ko'rsatish, chapga va o'ngga",
+            "ru": "Как пройти, налево и направо",
+            "tj": "Роҳ нишон додан, чап ва рост"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "怎么。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 怎么。",
+            "ru": "Ответ B: 怎么。",
+            "tj": "Ҷавоби B: 怎么。"
+          }
+        }
+      ]
+    }
+  ]
+}

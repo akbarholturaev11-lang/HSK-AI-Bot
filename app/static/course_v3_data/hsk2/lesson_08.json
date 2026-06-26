@@ -1,0 +1,582 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 8,
+  "title": "我比你高",
+  "subtitle": {
+    "uz": "Mavzu: Taqqoslash, 比. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Сравнение, 比. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Муқоиса, 比. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "比",
+      "pinyin": "bǐ",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "nisbatan",
+        "ru": "чем, по сравнению",
+        "tj": "нисбат ба"
+      },
+      "no": 1
+    },
+    {
+      "zh": "高",
+      "pinyin": "gāo",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "baland, bo‘yi uzun",
+        "ru": "высокий",
+        "tj": "баланд"
+      },
+      "no": 2
+    },
+    {
+      "zh": "矮",
+      "pinyin": "ǎi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "past, bo‘yi qisqa",
+        "ru": "низкий",
+        "tj": "паст"
+      },
+      "no": 3
+    },
+    {
+      "zh": "快",
+      "pinyin": "kuài",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "tez",
+        "ru": "быстрый",
+        "tj": "тез"
+      },
+      "no": 4
+    },
+    {
+      "zh": "慢",
+      "pinyin": "màn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "sekin",
+        "ru": "медленный",
+        "tj": "суст"
+      },
+      "no": 5
+    },
+    {
+      "zh": "更",
+      "pinyin": "gèng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "yanada",
+        "ru": "ещё более",
+        "tj": "боз ҳам"
+      },
+      "no": 6
+    },
+    {
+      "zh": "一样",
+      "pinyin": "yíyàng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "bir xil",
+        "ru": "одинаковый",
+        "tj": "якхела"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 我比你高. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“我比你高”。",
+        "ru": "Ключевая фраза урока: 我比你高. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“我比你高”。",
+        "tj": "Ибораи асосии дарс: 我比你高. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“我比你高”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“我比你高”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wǒ bǐ nǐ gāo.",
+          "translation": {
+            "uz": "Biz Taqqoslash, 比 mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Сравнение, 比.",
+            "tj": "Мо мавзӯи Муқоиса, 比-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是比。",
+          "pinyin": "Zhège cí shì bǐ.",
+          "translation": {
+            "uz": "Bu so'z: nisbatan.",
+            "ru": "Это слово: чем, по сравнению.",
+            "tj": "Ин калима: нисбат ба."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "比。",
+          "pinyin": "bǐ.",
+          "translation": {
+            "uz": "比 — bǐ deb o'qiladi.",
+            "ru": "比 читается как bǐ.",
+            "tj": "比 ҳамчун bǐ хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Taqqoslash, 比",
+        "ru": "Сравнение, 比",
+        "tj": "Муқоиса, 比"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“我比你高”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wǒ bǐ nǐ gāo.",
+          "text": {
+            "uz": "Bugun Taqqoslash, 比 mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Сравнение, 比.",
+            "tj": "Имрӯз мавзӯи Муқоиса, 比-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "比。",
+          "pinyin": "bǐ.",
+          "text": {
+            "uz": "比 — bǐ deb o'qiladi.",
+            "ru": "比 читается как bǐ.",
+            "tj": "比 ҳамчун bǐ хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "比",
+            "pinyin": "bǐ",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "nisbatan",
+              "ru": "чем, по сравнению",
+              "tj": "нисбат ба"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "高",
+            "pinyin": "gāo",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "baland, bo‘yi uzun",
+              "ru": "высокий",
+              "tj": "баланд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "矮",
+            "pinyin": "ǎi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "past, bo‘yi qisqa",
+              "ru": "низкий",
+              "tj": "паст"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "快",
+            "pinyin": "kuài",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "tez",
+              "ru": "быстрый",
+              "tj": "тез"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "慢",
+            "pinyin": "màn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "sekin",
+              "ru": "медленный",
+              "tj": "суст"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "更",
+            "pinyin": "gèng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "yanada",
+              "ru": "ещё более",
+              "tj": "боз ҳам"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "一样",
+            "pinyin": "yíyàng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "bir xil",
+              "ru": "одинаковый",
+              "tj": "якхела"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "比 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 比:",
+            "tj": "Маънои калимаи 比-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "nisbatan",
+              "ru": "чем, по сравнению",
+              "tj": "нисбат ба"
+            },
+            {
+              "uz": "baland, bo‘yi uzun",
+              "ru": "высокий",
+              "tj": "баланд"
+            },
+            {
+              "uz": "past, bo‘yi qisqa",
+              "ru": "низкий",
+              "tj": "паст"
+            },
+            {
+              "uz": "tez",
+              "ru": "быстрый",
+              "tj": "тез"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "比 = nisbatan (bǐ)",
+            "ru": "比 = чем, по сравнению (bǐ)",
+            "tj": "比 = нисбат ба (bǐ)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "比 talaffuzini tanlang:",
+            "ru": "Выберите произношение 比:",
+            "tj": "Талаффузи 比-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bǐ",
+            "gāo",
+            "ǎi",
+            "kuài"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "比 — bǐ",
+            "ru": "比 — bǐ",
+            "tj": "比 — bǐ"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'nisbatan' xitoycha nima?",
+            "ru": "'чем, по сравнению' по-китайски?",
+            "tj": "'нисбат ба' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "比",
+            "高",
+            "矮",
+            "快"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "比 = nisbatan (bǐ)",
+            "ru": "比 = чем, по сравнению (bǐ)",
+            "tj": "比 = нисбат ба (bǐ)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "gāo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gāo?",
+            "tj": "gāo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "高",
+            "比",
+            "矮",
+            "快"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "高 = baland, bo‘yi uzun (gāo)",
+            "ru": "高 = высокий (gāo)",
+            "tj": "高 = баланд (gāo)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'我比你高' iborasini tuzing",
+            "ru": "Соберите фразу '我比你高'",
+            "tj": "Ибораи '我比你高'-ро созед"
+          },
+          "tokens": [
+            "我",
+            "比",
+            "你",
+            "高",
+            "矮",
+            "快"
+          ],
+          "answer_tokens": [
+            "我",
+            "比",
+            "你",
+            "高"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 我 比 你 高",
+            "ru": "Правильный порядок: 我 比 你 高",
+            "tj": "Тартиби дуруст: 我 比 你 高"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "比",
+              {
+                "uz": "nisbatan",
+                "ru": "чем, по сравнению",
+                "tj": "нисбат ба"
+              }
+            ],
+            [
+              "高",
+              {
+                "uz": "baland, bo‘yi uzun",
+                "ru": "высокий",
+                "tj": "баланд"
+              }
+            ],
+            [
+              "矮",
+              {
+                "uz": "past, bo‘yi qisqa",
+                "ru": "низкий",
+                "tj": "паст"
+              }
+            ],
+            [
+              "快",
+              {
+                "uz": "tez",
+                "ru": "быстрый",
+                "tj": "тез"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我比你高",
+          "pinyin": "wǒ bǐ nǐ gāo",
+          "translation": {
+            "uz": "Taqqoslash, 比",
+            "ru": "Сравнение, 比",
+            "tj": "Муқоиса, 比"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "比。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 比。",
+            "ru": "Ответ B: 比。",
+            "tj": "Ҷавоби B: 比。"
+          }
+        }
+      ]
+    }
+  ]
+}

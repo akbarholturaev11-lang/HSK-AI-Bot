@@ -1,0 +1,602 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 1,
+  "title": "经济全球化",
+  "subtitle": {
+    "uz": "Mavzu: Globallashuv va iqtisodiyot. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Глобализация и экономика. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Ҷаҳонишавӣ ва иқтисод. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "经济",
+      "pinyin": "jīngjì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "iqtisodiyot",
+        "ru": "экономика",
+        "tj": "иқтисод"
+      },
+      "no": 1
+    },
+    {
+      "zh": "全球化",
+      "pinyin": "quánqiúhuà",
+      "pos": "n.",
+      "meaning": {
+        "uz": "globallashuv",
+        "ru": "глобализация",
+        "tj": "ҷаҳонишавӣ"
+      },
+      "no": 2
+    },
+    {
+      "zh": "市场",
+      "pinyin": "shìchǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bozor",
+        "ru": "рынок",
+        "tj": "бозор"
+      },
+      "no": 3
+    },
+    {
+      "zh": "贸易",
+      "pinyin": "màoyì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "savdo",
+        "ru": "торговля",
+        "tj": "тиҷорат"
+      },
+      "no": 4
+    },
+    {
+      "zh": "发展",
+      "pinyin": "fāzhǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "rivojlanmoq",
+        "ru": "развиваться",
+        "tj": "рушд кардан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "影响",
+      "pinyin": "yǐngxiǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ta’sir qilmoq",
+        "ru": "влиять",
+        "tj": "таъсир кардан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "竞争",
+      "pinyin": "jìngzhēng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "raqobat",
+        "ru": "конкуренция",
+        "tj": "рақобат"
+      },
+      "no": 7
+    },
+    {
+      "zh": "合作",
+      "pinyin": "hézuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "hamkorlik qilmoq",
+        "ru": "сотрудничать",
+        "tj": "ҳамкорӣ кардан"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 经济全球化. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“经济全球化”。",
+        "ru": "Ключевая фраза урока: 经济全球化. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“经济全球化”。",
+        "tj": "Ибораи асосии дарс: 经济全球化. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“经济全球化”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“经济全球化”。",
+          "pinyin": "Jīntiān wǒmen xuéxí jīngjì quánqiúhuà.",
+          "translation": {
+            "uz": "Biz Globallashuv va iqtisodiyot mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Глобализация и экономика.",
+            "tj": "Мо мавзӯи Ҷаҳонишавӣ ва иқтисод-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是经济。",
+          "pinyin": "Zhège cí shì jīngjì.",
+          "translation": {
+            "uz": "Bu so'z: iqtisodiyot.",
+            "ru": "Это слово: экономика.",
+            "tj": "Ин калима: иқтисод."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "经济。",
+          "pinyin": "jīngjì.",
+          "translation": {
+            "uz": "经济 — jīngjì deb o'qiladi.",
+            "ru": "经济 читается как jīngjì.",
+            "tj": "经济 ҳамчун jīngjì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Globallashuv va iqtisodiyot",
+        "ru": "Глобализация и экономика",
+        "tj": "Ҷаҳонишавӣ ва иқтисод"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“经济全球化”。",
+          "pinyin": "Jīntiān wǒmen xuéxí jīngjì quánqiúhuà.",
+          "text": {
+            "uz": "Bugun Globallashuv va iqtisodiyot mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Глобализация и экономика.",
+            "tj": "Имрӯз мавзӯи Ҷаҳонишавӣ ва иқтисод-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "经济。",
+          "pinyin": "jīngjì.",
+          "text": {
+            "uz": "经济 — jīngjì deb o'qiladi.",
+            "ru": "经济 читается как jīngjì.",
+            "tj": "经济 ҳамчун jīngjì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "经济",
+            "pinyin": "jīngjì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "iqtisodiyot",
+              "ru": "экономика",
+              "tj": "иқтисод"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "全球化",
+            "pinyin": "quánqiúhuà",
+            "pos": "n.",
+            "meaning": {
+              "uz": "globallashuv",
+              "ru": "глобализация",
+              "tj": "ҷаҳонишавӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "市场",
+            "pinyin": "shìchǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bozor",
+              "ru": "рынок",
+              "tj": "бозор"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "贸易",
+            "pinyin": "màoyì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "savdo",
+              "ru": "торговля",
+              "tj": "тиҷорат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "发展",
+            "pinyin": "fāzhǎn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "rivojlanmoq",
+              "ru": "развиваться",
+              "tj": "рушд кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "影响",
+            "pinyin": "yǐngxiǎng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ta’sir qilmoq",
+              "ru": "влиять",
+              "tj": "таъсир кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "竞争",
+            "pinyin": "jìngzhēng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "raqobat",
+              "ru": "конкуренция",
+              "tj": "рақобат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "合作",
+            "pinyin": "hézuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "hamkorlik qilmoq",
+              "ru": "сотрудничать",
+              "tj": "ҳамкорӣ кардан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "经济 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 经济:",
+            "tj": "Маънои калимаи 经济-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "iqtisodiyot",
+              "ru": "экономика",
+              "tj": "иқтисод"
+            },
+            {
+              "uz": "globallashuv",
+              "ru": "глобализация",
+              "tj": "ҷаҳонишавӣ"
+            },
+            {
+              "uz": "bozor",
+              "ru": "рынок",
+              "tj": "бозор"
+            },
+            {
+              "uz": "savdo",
+              "ru": "торговля",
+              "tj": "тиҷорат"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "经济 = iqtisodiyot (jīngjì)",
+            "ru": "经济 = экономика (jīngjì)",
+            "tj": "经济 = иқтисод (jīngjì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "经济 talaffuzini tanlang:",
+            "ru": "Выберите произношение 经济:",
+            "tj": "Талаффузи 经济-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jīngjì",
+            "quánqiúhuà",
+            "shìchǎng",
+            "màoyì"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "经济 — jīngjì",
+            "ru": "经济 — jīngjì",
+            "tj": "经济 — jīngjì"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'iqtisodiyot' xitoycha nima?",
+            "ru": "'экономика' по-китайски?",
+            "tj": "'иқтисод' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "经济",
+            "全球化",
+            "市场",
+            "贸易"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "经济 = iqtisodiyot (jīngjì)",
+            "ru": "经济 = экономика (jīngjì)",
+            "tj": "经济 = иқтисод (jīngjì)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "quánqiúhuà qaysi ieroglif?",
+            "ru": "Какой иероглиф читается quánqiúhuà?",
+            "tj": "quánqiúhuà кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "全球化",
+            "经济",
+            "市场",
+            "贸易"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "全球化 = globallashuv (quánqiúhuà)",
+            "ru": "全球化 = глобализация (quánqiúhuà)",
+            "tj": "全球化 = ҷаҳонишавӣ (quánqiúhuà)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'经济全球化' iborasini tuzing",
+            "ru": "Соберите фразу '经济全球化'",
+            "tj": "Ибораи '经济全球化'-ро созед"
+          },
+          "tokens": [
+            "经济",
+            "全球化",
+            "市场",
+            "贸易"
+          ],
+          "answer_tokens": [
+            "经济",
+            "全球化"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 经济 全球化",
+            "ru": "Правильный порядок: 经济 全球化",
+            "tj": "Тартиби дуруст: 经济 全球化"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "经济",
+              {
+                "uz": "iqtisodiyot",
+                "ru": "экономика",
+                "tj": "иқтисод"
+              }
+            ],
+            [
+              "全球化",
+              {
+                "uz": "globallashuv",
+                "ru": "глобализация",
+                "tj": "ҷаҳонишавӣ"
+              }
+            ],
+            [
+              "市场",
+              {
+                "uz": "bozor",
+                "ru": "рынок",
+                "tj": "бозор"
+              }
+            ],
+            [
+              "贸易",
+              {
+                "uz": "savdo",
+                "ru": "торговля",
+                "tj": "тиҷорат"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "经济全球化",
+          "pinyin": "jīngjì quánqiúhuà",
+          "translation": {
+            "uz": "Globallashuv va iqtisodiyot",
+            "ru": "Глобализация и экономика",
+            "tj": "Ҷаҳонишавӣ ва иқтисод"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "经济。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 经济。",
+            "ru": "Ответ B: 经济。",
+            "tj": "Ҷавоби B: 经济。"
+          }
+        }
+      ]
+    }
+  ]
+}

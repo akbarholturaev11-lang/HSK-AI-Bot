@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 10,
+  "title": "工作面试",
+  "subtitle": {
+    "uz": "Mavzu: Ish intervyusi. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Собеседование. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Мусоҳибаи корӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "面试",
+      "pinyin": "miànshì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "intervyu",
+        "ru": "собеседование",
+        "tj": "мусоҳиба"
+      },
+      "no": 1
+    },
+    {
+      "zh": "简历",
+      "pinyin": "jiǎnlì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "rezyume",
+        "ru": "резюме",
+        "tj": "резюме"
+      },
+      "no": 2
+    },
+    {
+      "zh": "经验",
+      "pinyin": "jīngyàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tajriba",
+        "ru": "опыт",
+        "tj": "таҷриба"
+      },
+      "no": 3
+    },
+    {
+      "zh": "职位",
+      "pinyin": "zhíwèi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "lavozim",
+        "ru": "должность",
+        "tj": "вазифа"
+      },
+      "no": 4
+    },
+    {
+      "zh": "工资",
+      "pinyin": "gōngzī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maosh",
+        "ru": "зарплата",
+        "tj": "маош"
+      },
+      "no": 5
+    },
+    {
+      "zh": "优点",
+      "pinyin": "yōudiǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ustunlik",
+        "ru": "сильная сторона",
+        "tj": "бартарӣ"
+      },
+      "no": 6
+    },
+    {
+      "zh": "机会",
+      "pinyin": "jīhuì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "imkoniyat",
+        "ru": "возможность",
+        "tj": "имконият"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 工作面试. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“工作面试”。",
+        "ru": "Ключевая фраза урока: 工作面试. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“工作面试”。",
+        "tj": "Ибораи асосии дарс: 工作面试. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“工作面试”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“工作面试”。",
+          "pinyin": "Jīntiān wǒmen xuéxí gōngzuò miànshì.",
+          "translation": {
+            "uz": "Biz Ish intervyusi mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Собеседование.",
+            "tj": "Мо мавзӯи Мусоҳибаи корӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是面试。",
+          "pinyin": "Zhège cí shì miànshì.",
+          "translation": {
+            "uz": "Bu so'z: intervyu.",
+            "ru": "Это слово: собеседование.",
+            "tj": "Ин калима: мусоҳиба."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "面试。",
+          "pinyin": "miànshì.",
+          "translation": {
+            "uz": "面试 — miànshì deb o'qiladi.",
+            "ru": "面试 читается как miànshì.",
+            "tj": "面试 ҳамчун miànshì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ish intervyusi",
+        "ru": "Собеседование",
+        "tj": "Мусоҳибаи корӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“工作面试”。",
+          "pinyin": "Jīntiān wǒmen xuéxí gōngzuò miànshì.",
+          "text": {
+            "uz": "Bugun Ish intervyusi mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Собеседование.",
+            "tj": "Имрӯз мавзӯи Мусоҳибаи корӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "面试。",
+          "pinyin": "miànshì.",
+          "text": {
+            "uz": "面试 — miànshì deb o'qiladi.",
+            "ru": "面试 читается как miànshì.",
+            "tj": "面试 ҳамчун miànshì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "面试",
+            "pinyin": "miànshì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "intervyu",
+              "ru": "собеседование",
+              "tj": "мусоҳиба"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "简历",
+            "pinyin": "jiǎnlì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "rezyume",
+              "ru": "резюме",
+              "tj": "резюме"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "经验",
+            "pinyin": "jīngyàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tajriba",
+              "ru": "опыт",
+              "tj": "таҷриба"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "职位",
+            "pinyin": "zhíwèi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "lavozim",
+              "ru": "должность",
+              "tj": "вазифа"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "工资",
+            "pinyin": "gōngzī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maosh",
+              "ru": "зарплата",
+              "tj": "маош"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "优点",
+            "pinyin": "yōudiǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ustunlik",
+              "ru": "сильная сторона",
+              "tj": "бартарӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "机会",
+            "pinyin": "jīhuì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "imkoniyat",
+              "ru": "возможность",
+              "tj": "имконият"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "面试 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 面试:",
+            "tj": "Маънои калимаи 面试-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "intervyu",
+              "ru": "собеседование",
+              "tj": "мусоҳиба"
+            },
+            {
+              "uz": "rezyume",
+              "ru": "резюме",
+              "tj": "резюме"
+            },
+            {
+              "uz": "tajriba",
+              "ru": "опыт",
+              "tj": "таҷриба"
+            },
+            {
+              "uz": "lavozim",
+              "ru": "должность",
+              "tj": "вазифа"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "面试 = intervyu (miànshì)",
+            "ru": "面试 = собеседование (miànshì)",
+            "tj": "面试 = мусоҳиба (miànshì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "面试 talaffuzini tanlang:",
+            "ru": "Выберите произношение 面试:",
+            "tj": "Талаффузи 面试-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "miànshì",
+            "jiǎnlì",
+            "jīngyàn",
+            "zhíwèi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "面试 — miànshì",
+            "ru": "面试 — miànshì",
+            "tj": "面试 — miànshì"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'intervyu' xitoycha nima?",
+            "ru": "'собеседование' по-китайски?",
+            "tj": "'мусоҳиба' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "面试",
+            "简历",
+            "经验",
+            "职位"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "面试 = intervyu (miànshì)",
+            "ru": "面试 = собеседование (miànshì)",
+            "tj": "面试 = мусоҳиба (miànshì)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiǎnlì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiǎnlì?",
+            "tj": "jiǎnlì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "简历",
+            "面试",
+            "经验",
+            "职位"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "简历 = rezyume (jiǎnlì)",
+            "ru": "简历 = резюме (jiǎnlì)",
+            "tj": "简历 = резюме (jiǎnlì)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'工作面试' iborasini tuzing",
+            "ru": "Соберите фразу '工作面试'",
+            "tj": "Ибораи '工作面试'-ро созед"
+          },
+          "tokens": [
+            "工",
+            "作",
+            "面试",
+            "简历",
+            "经验"
+          ],
+          "answer_tokens": [
+            "工",
+            "作",
+            "面试"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 工 作 面试",
+            "ru": "Правильный порядок: 工 作 面试",
+            "tj": "Тартиби дуруст: 工 作 面试"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "面试",
+              {
+                "uz": "intervyu",
+                "ru": "собеседование",
+                "tj": "мусоҳиба"
+              }
+            ],
+            [
+              "简历",
+              {
+                "uz": "rezyume",
+                "ru": "резюме",
+                "tj": "резюме"
+              }
+            ],
+            [
+              "经验",
+              {
+                "uz": "tajriba",
+                "ru": "опыт",
+                "tj": "таҷриба"
+              }
+            ],
+            [
+              "职位",
+              {
+                "uz": "lavozim",
+                "ru": "должность",
+                "tj": "вазифа"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "工作面试",
+          "pinyin": "gōngzuò miànshì",
+          "translation": {
+            "uz": "Ish intervyusi",
+            "ru": "Собеседование",
+            "tj": "Мусоҳибаи корӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "面试。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 面试。",
+            "ru": "Ответ B: 面试。",
+            "tj": "Ҷавоби B: 面试。"
+          }
+        }
+      ]
+    }
+  ]
+}

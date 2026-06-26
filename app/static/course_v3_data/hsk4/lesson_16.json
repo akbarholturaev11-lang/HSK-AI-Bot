@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 16,
+  "title": "人际关系",
+  "subtitle": {
+    "uz": "Mavzu: Shaxslararo munosabatlar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Межличностные отношения. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Муносибатҳои байни одамон. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "人际",
+      "pinyin": "rénjì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "insonlararo",
+        "ru": "межличностный",
+        "tj": "байни одамон"
+      },
+      "no": 1
+    },
+    {
+      "zh": "关系",
+      "pinyin": "guānxi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "munosabat",
+        "ru": "отношение",
+        "tj": "муносибат"
+      },
+      "no": 2
+    },
+    {
+      "zh": "信任",
+      "pinyin": "xìnrèn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishonmoq",
+        "ru": "доверять",
+        "tj": "бовар кардан"
+      },
+      "no": 3
+    },
+    {
+      "zh": "尊重",
+      "pinyin": "zūnzhòng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "hurmat qilmoq",
+        "ru": "уважать",
+        "tj": "эҳтиром кардан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "冲突",
+      "pinyin": "chōngtū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ziddiyat",
+        "ru": "конфликт",
+        "tj": "низоъ"
+      },
+      "no": 5
+    },
+    {
+      "zh": "合作",
+      "pinyin": "hézuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "hamkorlik qilmoq",
+        "ru": "сотрудничать",
+        "tj": "ҳамкорӣ кардан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "沟通",
+      "pinyin": "gōutōng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "muloqot qilmoq",
+        "ru": "общаться",
+        "tj": "муошират кардан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 人际关系. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“人际关系”。",
+        "ru": "Ключевая фраза урока: 人际关系. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“人际关系”。",
+        "tj": "Ибораи асосии дарс: 人际关系. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“人际关系”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“人际关系”。",
+          "pinyin": "Jīntiān wǒmen xuéxí rénjì guānxi.",
+          "translation": {
+            "uz": "Biz Shaxslararo munosabatlar mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Межличностные отношения.",
+            "tj": "Мо мавзӯи Муносибатҳои байни одамон-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是人际。",
+          "pinyin": "Zhège cí shì rénjì.",
+          "translation": {
+            "uz": "Bu so'z: insonlararo.",
+            "ru": "Это слово: межличностный.",
+            "tj": "Ин калима: байни одамон."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "人际。",
+          "pinyin": "rénjì.",
+          "translation": {
+            "uz": "人际 — rénjì deb o'qiladi.",
+            "ru": "人际 читается как rénjì.",
+            "tj": "人际 ҳамчун rénjì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Shaxslararo munosabatlar",
+        "ru": "Межличностные отношения",
+        "tj": "Муносибатҳои байни одамон"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“人际关系”。",
+          "pinyin": "Jīntiān wǒmen xuéxí rénjì guānxi.",
+          "text": {
+            "uz": "Bugun Shaxslararo munosabatlar mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Межличностные отношения.",
+            "tj": "Имрӯз мавзӯи Муносибатҳои байни одамон-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "人际。",
+          "pinyin": "rénjì.",
+          "text": {
+            "uz": "人际 — rénjì deb o'qiladi.",
+            "ru": "人际 читается как rénjì.",
+            "tj": "人际 ҳамчун rénjì хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "人际",
+            "pinyin": "rénjì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "insonlararo",
+              "ru": "межличностный",
+              "tj": "байни одамон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "关系",
+            "pinyin": "guānxi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "munosabat",
+              "ru": "отношение",
+              "tj": "муносибат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "信任",
+            "pinyin": "xìnrèn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ishonmoq",
+              "ru": "доверять",
+              "tj": "бовар кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "尊重",
+            "pinyin": "zūnzhòng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "hurmat qilmoq",
+              "ru": "уважать",
+              "tj": "эҳтиром кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "冲突",
+            "pinyin": "chōngtū",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ziddiyat",
+              "ru": "конфликт",
+              "tj": "низоъ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "合作",
+            "pinyin": "hézuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "hamkorlik qilmoq",
+              "ru": "сотрудничать",
+              "tj": "ҳамкорӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "沟通",
+            "pinyin": "gōutōng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "muloqot qilmoq",
+              "ru": "общаться",
+              "tj": "муошират кардан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "人际 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 人际:",
+            "tj": "Маънои калимаи 人际-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "insonlararo",
+              "ru": "межличностный",
+              "tj": "байни одамон"
+            },
+            {
+              "uz": "munosabat",
+              "ru": "отношение",
+              "tj": "муносибат"
+            },
+            {
+              "uz": "ishonmoq",
+              "ru": "доверять",
+              "tj": "бовар кардан"
+            },
+            {
+              "uz": "hurmat qilmoq",
+              "ru": "уважать",
+              "tj": "эҳтиром кардан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "人际 = insonlararo (rénjì)",
+            "ru": "人际 = межличностный (rénjì)",
+            "tj": "人际 = байни одамон (rénjì)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "人际 talaffuzini tanlang:",
+            "ru": "Выберите произношение 人际:",
+            "tj": "Талаффузи 人际-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "rénjì",
+            "guānxi",
+            "xìnrèn",
+            "zūnzhòng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "人际 — rénjì",
+            "ru": "人际 — rénjì",
+            "tj": "人际 — rénjì"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'insonlararo' xitoycha nima?",
+            "ru": "'межличностный' по-китайски?",
+            "tj": "'байни одамон' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "人际",
+            "关系",
+            "信任",
+            "尊重"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "人际 = insonlararo (rénjì)",
+            "ru": "人际 = межличностный (rénjì)",
+            "tj": "人际 = байни одамон (rénjì)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "guānxi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается guānxi?",
+            "tj": "guānxi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "关系",
+            "人际",
+            "信任",
+            "尊重"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "关系 = munosabat (guānxi)",
+            "ru": "关系 = отношение (guānxi)",
+            "tj": "关系 = муносибат (guānxi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'人际关系' iborasini tuzing",
+            "ru": "Соберите фразу '人际关系'",
+            "tj": "Ибораи '人际关系'-ро созед"
+          },
+          "tokens": [
+            "人际",
+            "关系",
+            "信任",
+            "尊重"
+          ],
+          "answer_tokens": [
+            "人际",
+            "关系"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 人际 关系",
+            "ru": "Правильный порядок: 人际 关系",
+            "tj": "Тартиби дуруст: 人际 关系"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "人际",
+              {
+                "uz": "insonlararo",
+                "ru": "межличностный",
+                "tj": "байни одамон"
+              }
+            ],
+            [
+              "关系",
+              {
+                "uz": "munosabat",
+                "ru": "отношение",
+                "tj": "муносибат"
+              }
+            ],
+            [
+              "信任",
+              {
+                "uz": "ishonmoq",
+                "ru": "доверять",
+                "tj": "бовар кардан"
+              }
+            ],
+            [
+              "尊重",
+              {
+                "uz": "hurmat qilmoq",
+                "ru": "уважать",
+                "tj": "эҳтиром кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "人际关系",
+          "pinyin": "rénjì guānxi",
+          "translation": {
+            "uz": "Shaxslararo munosabatlar",
+            "ru": "Межличностные отношения",
+            "tj": "Муносибатҳои байни одамон"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "人际。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 人际。",
+            "ru": "Ответ B: 人际。",
+            "tj": "Ҷавоби B: 人际。"
+          }
+        }
+      ]
+    }
+  ]
+}

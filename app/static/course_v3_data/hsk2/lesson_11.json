@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 11,
+  "title": "工作和学习",
+  "subtitle": {
+    "uz": "Mavzu: Ish, maktab va kasblar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Работа, учёба и профессии. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Кор, мактаб ва касбҳо. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "工作",
+      "pinyin": "gōngzuò",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ish",
+        "ru": "работа",
+        "tj": "кор"
+      },
+      "no": 1
+    },
+    {
+      "zh": "学习",
+      "pinyin": "xuéxí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o‘qimoq, o‘rganmoq",
+        "ru": "учиться",
+        "tj": "омӯхтан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "公司",
+      "pinyin": "gōngsī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kompaniya",
+        "ru": "компания",
+        "tj": "ширкат"
+      },
+      "no": 3
+    },
+    {
+      "zh": "学校",
+      "pinyin": "xuéxiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maktab",
+        "ru": "школа",
+        "tj": "мактаб"
+      },
+      "no": 4
+    },
+    {
+      "zh": "同事",
+      "pinyin": "tóngshì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hamkasb",
+        "ru": "коллега",
+        "tj": "ҳамкор"
+      },
+      "no": 5
+    },
+    {
+      "zh": "经理",
+      "pinyin": "jīnglǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "menejer",
+        "ru": "менеджер",
+        "tj": "мудир"
+      },
+      "no": 6
+    },
+    {
+      "zh": "认真",
+      "pinyin": "rènzhēn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "jiddiy, mas’uliyatli",
+        "ru": "серьёзный, старательный",
+        "tj": "ҷиддӣ, масъул"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 工作和学习. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“工作和学习”。",
+        "ru": "Ключевая фраза урока: 工作和学习. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“工作和学习”。",
+        "tj": "Ибораи асосии дарс: 工作和学习. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“工作和学习”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“工作和学习”。",
+          "pinyin": "Jīntiān wǒmen xuéxí gōngzuò hé xuéxí.",
+          "translation": {
+            "uz": "Biz Ish, maktab va kasblar mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Работа, учёба и профессии.",
+            "tj": "Мо мавзӯи Кор, мактаб ва касбҳо-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是工作。",
+          "pinyin": "Zhège cí shì gōngzuò.",
+          "translation": {
+            "uz": "Bu so'z: ish.",
+            "ru": "Это слово: работа.",
+            "tj": "Ин калима: кор."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "工作。",
+          "pinyin": "gōngzuò.",
+          "translation": {
+            "uz": "工作 — gōngzuò deb o'qiladi.",
+            "ru": "工作 читается как gōngzuò.",
+            "tj": "工作 ҳамчун gōngzuò хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ish, maktab va kasblar",
+        "ru": "Работа, учёба и профессии",
+        "tj": "Кор, мактаб ва касбҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“工作和学习”。",
+          "pinyin": "Jīntiān wǒmen xuéxí gōngzuò hé xuéxí.",
+          "text": {
+            "uz": "Bugun Ish, maktab va kasblar mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Работа, учёба и профессии.",
+            "tj": "Имрӯз мавзӯи Кор, мактаб ва касбҳо-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "工作。",
+          "pinyin": "gōngzuò.",
+          "text": {
+            "uz": "工作 — gōngzuò deb o'qiladi.",
+            "ru": "工作 читается как gōngzuò.",
+            "tj": "工作 ҳамчун gōngzuò хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "工作",
+            "pinyin": "gōngzuò",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ish",
+              "ru": "работа",
+              "tj": "кор"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "学习",
+            "pinyin": "xuéxí",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o‘qimoq, o‘rganmoq",
+              "ru": "учиться",
+              "tj": "омӯхтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "公司",
+            "pinyin": "gōngsī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kompaniya",
+              "ru": "компания",
+              "tj": "ширкат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "学校",
+            "pinyin": "xuéxiào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maktab",
+              "ru": "школа",
+              "tj": "мактаб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "同事",
+            "pinyin": "tóngshì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hamkasb",
+              "ru": "коллега",
+              "tj": "ҳамкор"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "经理",
+            "pinyin": "jīnglǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "menejer",
+              "ru": "менеджер",
+              "tj": "мудир"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "认真",
+            "pinyin": "rènzhēn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "jiddiy, mas’uliyatli",
+              "ru": "серьёзный, старательный",
+              "tj": "ҷиддӣ, масъул"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "工作 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 工作:",
+            "tj": "Маънои калимаи 工作-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ish",
+              "ru": "работа",
+              "tj": "кор"
+            },
+            {
+              "uz": "o‘qimoq, o‘rganmoq",
+              "ru": "учиться",
+              "tj": "омӯхтан"
+            },
+            {
+              "uz": "kompaniya",
+              "ru": "компания",
+              "tj": "ширкат"
+            },
+            {
+              "uz": "maktab",
+              "ru": "школа",
+              "tj": "мактаб"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "工作 = ish (gōngzuò)",
+            "ru": "工作 = работа (gōngzuò)",
+            "tj": "工作 = кор (gōngzuò)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "工作 talaffuzini tanlang:",
+            "ru": "Выберите произношение 工作:",
+            "tj": "Талаффузи 工作-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gōngzuò",
+            "xuéxí",
+            "gōngsī",
+            "xuéxiào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "工作 — gōngzuò",
+            "ru": "工作 — gōngzuò",
+            "tj": "工作 — gōngzuò"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ish' xitoycha nima?",
+            "ru": "'работа' по-китайски?",
+            "tj": "'кор' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "工作",
+            "学习",
+            "公司",
+            "学校"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "工作 = ish (gōngzuò)",
+            "ru": "工作 = работа (gōngzuò)",
+            "tj": "工作 = кор (gōngzuò)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xuéxí qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xuéxí?",
+            "tj": "xuéxí кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "学习",
+            "工作",
+            "公司",
+            "学校"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "学习 = o‘qimoq, o‘rganmoq (xuéxí)",
+            "ru": "学习 = учиться (xuéxí)",
+            "tj": "学习 = омӯхтан (xuéxí)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'工作和学习' iborasini tuzing",
+            "ru": "Соберите фразу '工作和学习'",
+            "tj": "Ибораи '工作和学习'-ро созед"
+          },
+          "tokens": [
+            "工作",
+            "和",
+            "学习",
+            "公司",
+            "学校"
+          ],
+          "answer_tokens": [
+            "工作",
+            "和",
+            "学习"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 工作 和 学习",
+            "ru": "Правильный порядок: 工作 和 学习",
+            "tj": "Тартиби дуруст: 工作 和 学习"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "工作",
+              {
+                "uz": "ish",
+                "ru": "работа",
+                "tj": "кор"
+              }
+            ],
+            [
+              "学习",
+              {
+                "uz": "o‘qimoq, o‘rganmoq",
+                "ru": "учиться",
+                "tj": "омӯхтан"
+              }
+            ],
+            [
+              "公司",
+              {
+                "uz": "kompaniya",
+                "ru": "компания",
+                "tj": "ширкат"
+              }
+            ],
+            [
+              "学校",
+              {
+                "uz": "maktab",
+                "ru": "школа",
+                "tj": "мактаб"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "工作和学习",
+          "pinyin": "gōngzuò hé xuéxí",
+          "translation": {
+            "uz": "Ish, maktab va kasblar",
+            "ru": "Работа, учёба и профессии",
+            "tj": "Кор, мактаб ва касбҳо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "工作。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 工作。",
+            "ru": "Ответ B: 工作。",
+            "tj": "Ҷавоби B: 工作。"
+          }
+        }
+      ]
+    }
+  ]
+}

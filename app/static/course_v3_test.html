@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>Тест-центр</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{--ink:#211D17;--ink2:#6E665B;--ink3:#A89E8E;--paper:#FBF7EF;--card:#FFFFFF;--line:#EAE2D4;--cin:#C2403A;--cin2:#9A2F2B;--cinbg:#FBEDEA;--gold:#C2962F;--goldbg:#F8F0DA;--jade:#2F7D5E;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;padding:calc(14px + var(--safe-t)) 16px calc(20px + var(--safe-b))}
+.top{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+.ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
+h1{font-size:23px}
+.sub{font-size:13px;color:var(--ink2);margin:2px 0 14px}
+.place{background:var(--ink);color:#fff;border-radius:18px;padding:17px;position:relative;overflow:hidden;margin-bottom:16px}
+.place .gw{position:absolute;right:-8px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
+.place b{font-size:16px;font-weight:500;display:flex;align-items:center;gap:8px}
+.place p{margin:6px 0 13px;font-size:13px;color:rgba(255,255,255,.72);line-height:1.45}
+.place button{background:var(--gold);color:#3a2c08;border:none;border-radius:12px;padding:12px 18px;font-family:inherit;font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px}
+.sech{font-size:13px;color:var(--ink2);font-weight:500;margin:8px 2px 9px}
+.ex{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:11px;font-family:inherit;color:var(--ink)}
+.ex .lvl{width:52px;height:52px;border-radius:14px;background:var(--cin);border:2px solid var(--cin2);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;line-height:1}
+.ex .lvl b{font-size:11px;opacity:.85}.ex .lvl span{font-size:20px;font-weight:600}
+.ex .et{flex:1}.ex .et b{font-size:15px;font-weight:500}.ex .et small{font-size:12px;color:var(--ink2);display:block;margin-top:2px}
+.ex .et .tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.ex .et .tags span{font-size:10px;background:var(--paper);border:1px solid var(--line);border-radius:7px;padding:2px 7px;color:var(--ink2)}
+.ex .go{background:var(--cinbg);color:var(--cin2);border:none;border-radius:11px;padding:9px 13px;font-family:inherit;font-size:13px;font-weight:500;flex-shrink:0}
+.empty{display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:70px 24px;min-height:60vh}
+.empty.on{display:flex}
+.empty .ic{width:84px;height:84px;border-radius:22px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:38px;margin-bottom:16px}
+.empty h3{font-size:19px;font-weight:500;margin:0 0 6px}
+.empty p{font-size:14px;color:var(--ink2);margin:0 0 22px;line-height:1.5}
+.empty button{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:13px;padding:12px 22px;font-family:inherit;font-size:14px;font-weight:500}
+.pl{display:none}.pl.on{display:block}
+.pl .ptop{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.pl .ix2{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
+.pl .pbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}.pl .pbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .35s}
+.pl .lvtag{font-size:11px;font-weight:500;color:var(--cin2);background:var(--cinbg);border-radius:12px;padding:5px 10px}
+.pl .qlead{font-size:13px;color:var(--ink2);font-weight:500;margin:4px 2px 12px}
+.pl .qcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 18px;text-align:center;margin-bottom:16px}
+.pl .qcard .h{font-size:46px;line-height:1}.pl .qcard .py{font-size:16px;color:var(--cin2);font-weight:500;margin-top:6px}
+.pl .opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:13px;padding:14px 15px;margin-bottom:10px;font-family:inherit;font-size:15px;color:var(--ink)}
+.pl .opt .k{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink3)}
+.pl .opt.sel{border-color:var(--cin);background:var(--cinbg)}
+.pl .res{text-align:center;padding:14px 6px 0}
+.pl .res .lvl{width:108px;height:108px;border-radius:28px;background:var(--cin);border:3px solid var(--gold);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px}
+.pl .res .lvl small{font-size:13px;opacity:.85}.pl .res .lvl b{font-size:34px;font-weight:600;line-height:1}
+.pl .res h3{font-size:20px;font-weight:500;margin:0 0 4px}.pl .res p{font-size:13px;color:var(--ink2);margin:0 0 16px;line-height:1.5}
+.pl .meter{margin-bottom:18px}.pl .mrow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.pl .mrow .ml{width:54px;font-size:12px;color:var(--ink2);text-align:left}.pl .mrow .mb{flex:1;height:8px;background:var(--line);border-radius:5px;overflow:hidden}.pl .mrow .mb>i{display:block;height:100%;border-radius:5px;background:var(--jade)}.pl .mrow .mv{width:36px;font-size:12px;color:var(--ink2);text-align:right}
+.pl .mrow.rec .ml{color:var(--cin2);font-weight:500}
+.pl .cta{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+.pl .ghost{width:100%;background:none;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:13px;font-family:inherit;font-size:14px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="hub">
+    <div class="top"><button class="ix" onclick="goBack()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><h1 id="t-title"></h1></div>
+    <div class="sub" id="t-sub"></div>
+    <div class="place"><span class="gw han">级</span><b><i class="ti ti-target"></i> <span id="p-title"></span></b><p id="p-sub"></p><button onclick="openExam('placement')"><i class="ti ti-player-play"></i> <span id="p-btn"></span></button></div>
+    <div class="sech" id="ex-head"></div>
+    <div id="ex-list"></div>
+  </div>
+  <div class="empty" id="empty">
+    <div class="ic"><i class="ti ti-clock-hour-4"></i></div>
+    <h3 id="e-title"></h3>
+    <p id="e-sub"></p>
+    <button onclick="showHub()"><i class="ti ti-arrow-left"></i> <span id="e-back"></span></button>
+  </div>
+  <div class="pl" id="placement"></div>
+</div>
+<script>
+var params=new URLSearchParams(location.search||"");
+var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
+var L={ru:{title:"Тест-центр",sub:"Проверьте себя в формате реального HSK",pTitle:"Не знаете свой уровень?",pSub:"Пройдите короткий тест — мы определим подходящий уровень HSK.",pBtn:"Тест на уровень · ~10 мин",exHead:"Экзамены HSK",eTitle:"Материал готовится",eSub:"Экзаменационные вопросы будут добавлены позже и подгружены из заданного источника.",eBack:"К списку",listen:"听力 Аудир.",read:"阅读 Чтение",write:"书写 Письмо",q:"вопросов",min:"мин",start:"Начать"},
+  uz:{title:"Test markazi",sub:"O'zingizni haqiqiy HSK formatida sinang",pTitle:"Darajangizni bilmaysizmi?",pSub:"Qisqa testdan o'ting — sizga mos HSK darajasini aytamiz.",pBtn:"Daraja aniqlash testi · ~10 daq",exHead:"HSK imtihonlari",eTitle:"Material tayyorlanmoqda",eSub:"Imtihon savollari keyinroq qo'shiladi va belgilangan manbadan yuklanadi.",eBack:"Ro'yxatga",listen:"听力 Tinglash",read:"阅读 O'qish",write:"书写 Yozish",q:"savol",min:"daq",start:"Boshlash"},
+  tj:{title:"Маркази тест",sub:"Худро дар формати HSK санҷед",pTitle:"Сатҳи худро намедонед?",pSub:"Тести кӯтоҳро гузаред — сатҳи мувофиқи HSK-ро муайян мекунем.",pBtn:"Тести муайянкунии сатҳ",exHead:"Имтиҳонҳои HSK",eTitle:"Мавод омода мешавад",eSub:"Саволҳои имтиҳон баъдтар илова ва аз манбаи муайян бор карда мешаванд.",eBack:"Ба рӯйхат",listen:"听力 Шунидан",read:"阅读 Хондан",write:"书写 Навиштан",q:"савол",min:"дақ",start:"Оғоз"}}[LANG];
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
+function $(id){return document.getElementById(id)}
+var EXAMS=[
+  {lvl:"1",q:40,min:40,tags:["listen","read"]},
+  {lvl:"2",q:60,min:55,tags:["listen","read"]},
+  {lvl:"3",q:80,min:90,tags:["listen","read","write"]},
+  {lvl:"4",q:100,min:105,tags:["listen","read","write"]}
+];
+function renderHub(){
+  $("t-title").textContent=L.title;$("t-sub").textContent=L.sub;
+  $("p-title").textContent=L.pTitle;$("p-sub").textContent=L.pSub;$("p-btn").textContent=L.pBtn;
+  $("ex-head").textContent=L.exHead;
+  $("ex-list").innerHTML=EXAMS.map(function(e){
+    var tags=e.tags.map(function(t){return '<span>'+L[t]+'</span>'}).join("");
+    return '<div class="ex" onclick="openExam(\'hsk'+e.lvl+'\')"><div class="lvl"><b>HSK</b><span>'+e.lvl+'</span></div><div class="et"><b>HSK '+e.lvl+'</b><small>'+e.q+' '+L.q+' · '+e.min+' '+L.min+'</small><div class="tags">'+tags+'</div></div><span class="go">'+L.start+'</span></div>';
+  }).join("");
+  $("e-title").textContent=L.eTitle;$("e-sub").textContent=L.eSub;$("e-back").textContent=L.eBack;
+}
+function showHub(){$("hub").style.display="block";$("empty").classList.remove("on");$("placement").classList.remove("on")}
+// Exam/placement material is loaded from a defined source (e.g. /course_v3_data/exams/{level}.json).
+// Until that material exists, show the prepared empty state. Interface is complete; content plugs in later.
+function openExam(which){
+  if(which==="placement"){return runPlacement();}
+  fetch("/course_v3_data/exams/"+which+".json").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(data){
+    // TODO: run exam with `data` when material is added
+    showEmpty();
+  }).catch(function(){showEmpty()});
+}
+function showEmpty(){$("hub").style.display="none";$("empty").classList.add("on")}
+
+/* ---- Placement test (sample questions; real adaptive bank from a defined source later) ---- */
+var PT={ru:{lead:"Выберите значение",rec:"Рекомендуем",recSub:"Вы хорошо освоили нижние уровни. Лучше начать с HSK ",start:"Начать курс HSK ",retake:"Пройти заново",lvl:"HSK"},
+  uz:{lead:"Ma'noni tanlang",rec:"Tavsiya",recSub:"Quyi darajalarni yaxshi egallagansiz. Boshlash uchun eng maqbul — HSK ",start:"HSK ",startEnd:" kursini boshlash",retake:"Qayta test",lvl:"HSK"},
+  tj:{lead:"Маъноро интихоб кунед",rec:"Тавсия",recSub:"Сатҳҳои поёнро хуб азхуд кардаед. Аз HSK ",start:"Курси HSK ",retake:"Аз нав",lvl:"HSK"}}[LANG];
+var QP=[
+  {lvl:1,h:"谢谢",py:"xièxie",o:[{ru:"спасибо",uz:"rahmat",tj:"ташаккур",ok:1},{ru:"привет",uz:"salom",tj:"салом"},{ru:"пока",uz:"xayr",tj:"хайр"}]},
+  {lvl:1,h:"再见",py:"zàijiàn",o:[{ru:"до свидания",uz:"xayr",tj:"хайр",ok:1},{ru:"спасибо",uz:"rahmat",tj:"ташаккур"},{ru:"да",uz:"ha",tj:"ҳа"}]},
+  {lvl:2,h:"已经",py:"yǐjīng",o:[{ru:"уже",uz:"allaqachon",tj:"аллакай",ok:1},{ru:"ещё",uz:"hali",tj:"ҳоло"},{ru:"снова",uz:"yana",tj:"боз"}]},
+  {lvl:2,h:"因为",py:"yīnwèi",o:[{ru:"потому что",uz:"chunki",tj:"зеро",ok:1},{ru:"но",uz:"lekin",tj:"аммо"},{ru:"поэтому",uz:"shuning uchun",tj:"барои ҳамин"}]},
+  {lvl:3,h:"虽然",py:"suīrán",o:[{ru:"хотя",uz:"garchi",tj:"ҳарчанд",ok:1},{ru:"если",uz:"agar",tj:"агар"},{ru:"потому что",uz:"chunki",tj:"зеро"}]},
+  {lvl:4,h:"表示",py:"biǎoshì",o:[{ru:"выражать",uz:"ifodalamoq",tj:"ифода кардан",ok:1},{ru:"заканчивать",uz:"tugatmoq",tj:"тамом кардан"},{ru:"начинать",uz:"boshlamoq",tj:"оғоз кардан"}]}
+];
+var pi=0,pans=[];
+function olang(o){return o[LANG]||o.ru}
+function runPlacement(){pi=0;pans=[];$("hub").style.display="none";$("placement").classList.add("on");pRender();}
+function pRender(){
+  var q=QP[pi];
+  $("placement").innerHTML='<div class="ptop"><button class="ix2" onclick="showHub()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(pi/QP.length*100)+'%"></i></div><span class="lvtag">'+PT.lvl+" "+q.lvl+'</span></div>'
+    +'<div class="qlead">'+PT.lead+'</div><div class="qcard"><div class="h han">'+q.h+'</div><div class="py">'+q.py+'</div></div>'
+    +q.o.map(function(o,k){return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="pPick('+k+',this)"><span class="k">'+"ABC"[k]+'</span>'+olang(o)+'</button>'}).join("");
+}
+function pPick(k,el){
+  document.querySelectorAll("#placement .opt").forEach(function(o){o.style.pointerEvents="none"});el.classList.add("sel");
+  pans[pi]=el.getAttribute("data-ok")==="1";
+  setTimeout(function(){pi++;if(pi>=QP.length){pResult()}else{pRender()}},380);
+}
+function pResult(){
+  var per={1:[0,0],2:[0,0],3:[0,0],4:[0,0]};
+  QP.forEach(function(q,k){per[q.lvl][1]++;if(pans[k])per[q.lvl][0]++});
+  var rec=1;for(var Lv=1;Lv<=4;Lv++){var p=per[Lv][1]?per[Lv][0]/per[Lv][1]:0;if(p>=0.5)rec=Lv;else break;}
+  var meter="";[1,2,3,4].forEach(function(Lv){var p=per[Lv][1]?Math.round(per[Lv][0]/per[Lv][1]*100):0;meter+='<div class="mrow '+(Lv===rec?"rec":"")+'"><span class="ml">'+PT.lvl+" "+Lv+'</span><span class="mb"><i style="width:'+p+'%"></i></span><span class="mv">'+p+'%</span></div>'});
+  var startTxt=LANG==="uz"?(PT.start+rec+PT.startEnd):(PT.start+rec);
+  $("placement").innerHTML='<div class="res"><div class="lvl"><small>'+PT.rec+'</small><b>'+PT.lvl+" "+rec+'</b></div><h3>'+PT.rec+": "+PT.lvl+" "+rec+'</h3><p>'+PT.recSub+rec+'.</p><div class="meter">'+meter+'</div><button class="cta" onclick="startLevel('+rec+')"><i class="ti ti-player-play"></i> '+startTxt+'</button><button class="ghost" onclick="runPlacement()"><i class="ti ti-refresh"></i> '+PT.retake+'</button></div>';
+}
+function startLevel(lv){location.href="/course-v3.html?lang="+LANG+"&tab=course"}
+
+renderHub();
+</script>
+</body>
+</html>

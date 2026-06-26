@@ -1,0 +1,580 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 14,
+  "title": "饮食文化",
+  "subtitle": {
+    "uz": "Mavzu: Ovqat madaniyati. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Культура питания. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Фарҳанги ғизо. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "饮食",
+      "pinyin": "yǐnshí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ovqatlanish",
+        "ru": "питание",
+        "tj": "ғизо"
+      },
+      "no": 1
+    },
+    {
+      "zh": "口味",
+      "pinyin": "kǒuwèi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ta’m didi",
+        "ru": "вкус",
+        "tj": "табъ"
+      },
+      "no": 2
+    },
+    {
+      "zh": "营养",
+      "pinyin": "yíngyǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oziqlilik",
+        "ru": "питание, питательность",
+        "tj": "ғизонокӣ"
+      },
+      "no": 3
+    },
+    {
+      "zh": "餐桌",
+      "pinyin": "cānzhuō",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dasturxon, ovqat stoli",
+        "ru": "обеденный стол",
+        "tj": "дастархон"
+      },
+      "no": 4
+    },
+    {
+      "zh": "礼仪",
+      "pinyin": "lǐyí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "odob, etiket",
+        "ru": "этикет",
+        "tj": "одоб"
+      },
+      "no": 5
+    },
+    {
+      "zh": "菜系",
+      "pinyin": "càixì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oshxona turi",
+        "ru": "кулинарная школа",
+        "tj": "навъи ошхона"
+      },
+      "no": 6
+    },
+    {
+      "zh": "健康",
+      "pinyin": "jiànkāng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "sog‘lom",
+        "ru": "здоровый",
+        "tj": "солим"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 饮食文化. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“饮食文化”。",
+        "ru": "Ключевая фраза урока: 饮食文化. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“饮食文化”。",
+        "tj": "Ибораи асосии дарс: 饮食文化. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“饮食文化”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“饮食文化”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yǐnshí wénhuà.",
+          "translation": {
+            "uz": "Biz Ovqat madaniyati mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Культура питания.",
+            "tj": "Мо мавзӯи Фарҳанги ғизо-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是饮食。",
+          "pinyin": "Zhège cí shì yǐnshí.",
+          "translation": {
+            "uz": "Bu so'z: ovqatlanish.",
+            "ru": "Это слово: питание.",
+            "tj": "Ин калима: ғизо."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "饮食。",
+          "pinyin": "yǐnshí.",
+          "translation": {
+            "uz": "饮食 — yǐnshí deb o'qiladi.",
+            "ru": "饮食 читается как yǐnshí.",
+            "tj": "饮食 ҳамчун yǐnshí хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ovqat madaniyati",
+        "ru": "Культура питания",
+        "tj": "Фарҳанги ғизо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“饮食文化”。",
+          "pinyin": "Jīntiān wǒmen xuéxí yǐnshí wénhuà.",
+          "text": {
+            "uz": "Bugun Ovqat madaniyati mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Культура питания.",
+            "tj": "Имрӯз мавзӯи Фарҳанги ғизо-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "饮食。",
+          "pinyin": "yǐnshí.",
+          "text": {
+            "uz": "饮食 — yǐnshí deb o'qiladi.",
+            "ru": "饮食 читается как yǐnshí.",
+            "tj": "饮食 ҳамчун yǐnshí хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "饮食",
+            "pinyin": "yǐnshí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ovqatlanish",
+              "ru": "питание",
+              "tj": "ғизо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "口味",
+            "pinyin": "kǒuwèi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ta’m didi",
+              "ru": "вкус",
+              "tj": "табъ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "营养",
+            "pinyin": "yíngyǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oziqlilik",
+              "ru": "питание, питательность",
+              "tj": "ғизонокӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "餐桌",
+            "pinyin": "cānzhuō",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dasturxon, ovqat stoli",
+              "ru": "обеденный стол",
+              "tj": "дастархон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "礼仪",
+            "pinyin": "lǐyí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "odob, etiket",
+              "ru": "этикет",
+              "tj": "одоб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "菜系",
+            "pinyin": "càixì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oshxona turi",
+              "ru": "кулинарная школа",
+              "tj": "навъи ошхона"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "健康",
+            "pinyin": "jiànkāng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "sog‘lom",
+              "ru": "здоровый",
+              "tj": "солим"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "饮食 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 饮食:",
+            "tj": "Маънои калимаи 饮食-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ovqatlanish",
+              "ru": "питание",
+              "tj": "ғизо"
+            },
+            {
+              "uz": "ta’m didi",
+              "ru": "вкус",
+              "tj": "табъ"
+            },
+            {
+              "uz": "oziqlilik",
+              "ru": "питание, питательность",
+              "tj": "ғизонокӣ"
+            },
+            {
+              "uz": "dasturxon, ovqat stoli",
+              "ru": "обеденный стол",
+              "tj": "дастархон"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "饮食 = ovqatlanish (yǐnshí)",
+            "ru": "饮食 = питание (yǐnshí)",
+            "tj": "饮食 = ғизо (yǐnshí)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "饮食 talaffuzini tanlang:",
+            "ru": "Выберите произношение 饮食:",
+            "tj": "Талаффузи 饮食-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yǐnshí",
+            "kǒuwèi",
+            "yíngyǎng",
+            "cānzhuō"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "饮食 — yǐnshí",
+            "ru": "饮食 — yǐnshí",
+            "tj": "饮食 — yǐnshí"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ovqatlanish' xitoycha nima?",
+            "ru": "'питание' по-китайски?",
+            "tj": "'ғизо' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "饮食",
+            "口味",
+            "营养",
+            "餐桌"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "饮食 = ovqatlanish (yǐnshí)",
+            "ru": "饮食 = питание (yǐnshí)",
+            "tj": "饮食 = ғизо (yǐnshí)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kǒuwèi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kǒuwèi?",
+            "tj": "kǒuwèi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "口味",
+            "饮食",
+            "营养",
+            "餐桌"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "口味 = ta’m didi (kǒuwèi)",
+            "ru": "口味 = вкус (kǒuwèi)",
+            "tj": "口味 = табъ (kǒuwèi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'饮食文化' iborasini tuzing",
+            "ru": "Соберите фразу '饮食文化'",
+            "tj": "Ибораи '饮食文化'-ро созед"
+          },
+          "tokens": [
+            "饮食",
+            "文",
+            "化",
+            "口味",
+            "营养"
+          ],
+          "answer_tokens": [
+            "饮食",
+            "文",
+            "化"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 饮食 文 化",
+            "ru": "Правильный порядок: 饮食 文 化",
+            "tj": "Тартиби дуруст: 饮食 文 化"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "饮食",
+              {
+                "uz": "ovqatlanish",
+                "ru": "питание",
+                "tj": "ғизо"
+              }
+            ],
+            [
+              "口味",
+              {
+                "uz": "ta’m didi",
+                "ru": "вкус",
+                "tj": "табъ"
+              }
+            ],
+            [
+              "营养",
+              {
+                "uz": "oziqlilik",
+                "ru": "питание, питательность",
+                "tj": "ғизонокӣ"
+              }
+            ],
+            [
+              "餐桌",
+              {
+                "uz": "dasturxon, ovqat stoli",
+                "ru": "обеденный стол",
+                "tj": "дастархон"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "饮食文化",
+          "pinyin": "yǐnshí wénhuà",
+          "translation": {
+            "uz": "Ovqat madaniyati",
+            "ru": "Культура питания",
+            "tj": "Фарҳанги ғизо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "饮食。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 饮食。",
+            "ru": "Ответ B: 饮食。",
+            "tj": "Ҷавоби B: 饮食。"
+          }
+        }
+      ]
+    }
+  ]
+}

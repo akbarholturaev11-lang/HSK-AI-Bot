@@ -1,0 +1,601 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 4,
+  "title": "购物中心",
+  "subtitle": {
+    "uz": "Mavzu: Savdo markazi va chegirmalar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Торговый центр и скидки. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Маркази савдо ва тахфифҳо. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "购物中心",
+      "pinyin": "gòuwù zhōngxīn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "savdo markazi",
+        "ru": "торговый центр",
+        "tj": "маркази савдо"
+      },
+      "no": 1
+    },
+    {
+      "zh": "打折",
+      "pinyin": "dǎzhé",
+      "pos": "v.",
+      "meaning": {
+        "uz": "chegirma qilmoq",
+        "ru": "делать скидку",
+        "tj": "тахфиф кардан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "价格",
+      "pinyin": "jiàgé",
+      "pos": "n.",
+      "meaning": {
+        "uz": "narx",
+        "ru": "цена",
+        "tj": "нарх"
+      },
+      "no": 3
+    },
+    {
+      "zh": "质量",
+      "pinyin": "zhìliàng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sifat",
+        "ru": "качество",
+        "tj": "сифат"
+      },
+      "no": 4
+    },
+    {
+      "zh": "便宜",
+      "pinyin": "piányi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "arzon",
+        "ru": "дешёвый",
+        "tj": "арзон"
+      },
+      "no": 5
+    },
+    {
+      "zh": "贵",
+      "pinyin": "guì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qimmat",
+        "ru": "дорогой",
+        "tj": "қимат"
+      },
+      "no": 6
+    },
+    {
+      "zh": "付款",
+      "pinyin": "fùkuǎn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "to‘lamoq",
+        "ru": "оплачивать",
+        "tj": "пардохт кардан"
+      },
+      "no": 7
+    },
+    {
+      "zh": "收据",
+      "pinyin": "shōujù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chek, kvitansiya",
+        "ru": "квитанция",
+        "tj": "расид"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 购物中心. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“购物中心”。",
+        "ru": "Ключевая фраза урока: 购物中心. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“购物中心”。",
+        "tj": "Ибораи асосии дарс: 购物中心. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“购物中心”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“购物中心”。",
+          "pinyin": "Jīntiān wǒmen xuéxí gòuwù zhōngxīn.",
+          "translation": {
+            "uz": "Biz Savdo markazi va chegirmalar mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Торговый центр и скидки.",
+            "tj": "Мо мавзӯи Маркази савдо ва тахфифҳо-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是购物中心。",
+          "pinyin": "Zhège cí shì gòuwù zhōngxīn.",
+          "translation": {
+            "uz": "Bu so'z: savdo markazi.",
+            "ru": "Это слово: торговый центр.",
+            "tj": "Ин калима: маркази савдо."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "购物中心。",
+          "pinyin": "gòuwù zhōngxīn.",
+          "translation": {
+            "uz": "购物中心 — gòuwù zhōngxīn deb o'qiladi.",
+            "ru": "购物中心 читается как gòuwù zhōngxīn.",
+            "tj": "购物中心 ҳамчун gòuwù zhōngxīn хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Savdo markazi va chegirmalar",
+        "ru": "Торговый центр и скидки",
+        "tj": "Маркази савдо ва тахфифҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“购物中心”。",
+          "pinyin": "Jīntiān wǒmen xuéxí gòuwù zhōngxīn.",
+          "text": {
+            "uz": "Bugun Savdo markazi va chegirmalar mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Торговый центр и скидки.",
+            "tj": "Имрӯз мавзӯи Маркази савдо ва тахфифҳо-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "购物中心。",
+          "pinyin": "gòuwù zhōngxīn.",
+          "text": {
+            "uz": "购物中心 — gòuwù zhōngxīn deb o'qiladi.",
+            "ru": "购物中心 читается как gòuwù zhōngxīn.",
+            "tj": "购物中心 ҳамчун gòuwù zhōngxīn хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "购物中心",
+            "pinyin": "gòuwù zhōngxīn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "savdo markazi",
+              "ru": "торговый центр",
+              "tj": "маркази савдо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "打折",
+            "pinyin": "dǎzhé",
+            "pos": "v.",
+            "meaning": {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "价格",
+            "pinyin": "jiàgé",
+            "pos": "n.",
+            "meaning": {
+              "uz": "narx",
+              "ru": "цена",
+              "tj": "нарх"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "质量",
+            "pinyin": "zhìliàng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sifat",
+              "ru": "качество",
+              "tj": "сифат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "便宜",
+            "pinyin": "piányi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "arzon",
+              "ru": "дешёвый",
+              "tj": "арзон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "贵",
+            "pinyin": "guì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qimmat",
+              "ru": "дорогой",
+              "tj": "қимат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "付款",
+            "pinyin": "fùkuǎn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "to‘lamoq",
+              "ru": "оплачивать",
+              "tj": "пардохт кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "收据",
+            "pinyin": "shōujù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chek, kvitansiya",
+              "ru": "квитанция",
+              "tj": "расид"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "购物中心 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 购物中心:",
+            "tj": "Маънои калимаи 购物中心-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "savdo markazi",
+              "ru": "торговый центр",
+              "tj": "маркази савдо"
+            },
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "narx",
+              "ru": "цена",
+              "tj": "нарх"
+            },
+            {
+              "uz": "sifat",
+              "ru": "качество",
+              "tj": "сифат"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "购物中心 = savdo markazi (gòuwù zhōngxīn)",
+            "ru": "购物中心 = торговый центр (gòuwù zhōngxīn)",
+            "tj": "购物中心 = маркази савдо (gòuwù zhōngxīn)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "购物中心 talaffuzini tanlang:",
+            "ru": "Выберите произношение 购物中心:",
+            "tj": "Талаффузи 购物中心-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gòuwù zhōngxīn",
+            "dǎzhé",
+            "jiàgé",
+            "zhìliàng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "购物中心 — gòuwù zhōngxīn",
+            "ru": "购物中心 — gòuwù zhōngxīn",
+            "tj": "购物中心 — gòuwù zhōngxīn"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'savdo markazi' xitoycha nima?",
+            "ru": "'торговый центр' по-китайски?",
+            "tj": "'маркази савдо' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "购物中心",
+            "打折",
+            "价格",
+            "质量"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "购物中心 = savdo markazi (gòuwù zhōngxīn)",
+            "ru": "购物中心 = торговый центр (gòuwù zhōngxīn)",
+            "tj": "购物中心 = маркази савдо (gòuwù zhōngxīn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dǎzhé qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dǎzhé?",
+            "tj": "dǎzhé кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "打折",
+            "购物中心",
+            "价格",
+            "质量"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "打折 = chegirma qilmoq (dǎzhé)",
+            "ru": "打折 = делать скидку (dǎzhé)",
+            "tj": "打折 = тахфиф кардан (dǎzhé)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'购物中心' iborasini tuzing",
+            "ru": "Соберите фразу '购物中心'",
+            "tj": "Ибораи '购物中心'-ро созед"
+          },
+          "tokens": [
+            "购物中心",
+            "打折",
+            "价格",
+            "质量"
+          ],
+          "answer_tokens": [
+            "购物中心"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 购物中心",
+            "ru": "Правильный порядок: 购物中心",
+            "tj": "Тартиби дуруст: 购物中心"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "购物中心",
+              {
+                "uz": "savdo markazi",
+                "ru": "торговый центр",
+                "tj": "маркази савдо"
+              }
+            ],
+            [
+              "打折",
+              {
+                "uz": "chegirma qilmoq",
+                "ru": "делать скидку",
+                "tj": "тахфиф кардан"
+              }
+            ],
+            [
+              "价格",
+              {
+                "uz": "narx",
+                "ru": "цена",
+                "tj": "нарх"
+              }
+            ],
+            [
+              "质量",
+              {
+                "uz": "sifat",
+                "ru": "качество",
+                "tj": "сифат"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "购物中心",
+          "pinyin": "gòuwù zhōngxīn",
+          "translation": {
+            "uz": "Savdo markazi va chegirmalar",
+            "ru": "Торговый центр и скидки",
+            "tj": "Маркази савдо ва тахфифҳо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "购物中心。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 购物中心。",
+            "ru": "Ответ B: 购物中心。",
+            "tj": "Ҷавоби B: 购物中心。"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 9,
+  "title": "商业谈判",
+  "subtitle": {
+    "uz": "Mavzu: Biznes muzokaralar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Деловые переговоры. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Музокироти тиҷорӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "商业",
+      "pinyin": "shāngyè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "biznes, tijorat",
+        "ru": "бизнес, коммерция",
+        "tj": "тиҷорат"
+      },
+      "no": 1
+    },
+    {
+      "zh": "谈判",
+      "pinyin": "tánpàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "muzokara",
+        "ru": "переговоры",
+        "tj": "музокира"
+      },
+      "no": 2
+    },
+    {
+      "zh": "合同",
+      "pinyin": "hétong",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shartnoma",
+        "ru": "договор",
+        "tj": "шартнома"
+      },
+      "no": 3
+    },
+    {
+      "zh": "条件",
+      "pinyin": "tiáojiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "shart",
+        "ru": "условие",
+        "tj": "шарт"
+      },
+      "no": 4
+    },
+    {
+      "zh": "利益",
+      "pinyin": "lìyì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "manfaat",
+        "ru": "выгода, интерес",
+        "tj": "манфиат"
+      },
+      "no": 5
+    },
+    {
+      "zh": "方案",
+      "pinyin": "fāng’àn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "reja, yechim",
+        "ru": "план, решение",
+        "tj": "нақша, роҳҳал"
+      },
+      "no": 6
+    },
+    {
+      "zh": "达成",
+      "pinyin": "dáchéng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "erishmoq",
+        "ru": "достигать",
+        "tj": "ба даст овардан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 商业谈判. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“商业谈判”。",
+        "ru": "Ключевая фраза урока: 商业谈判. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“商业谈判”。",
+        "tj": "Ибораи асосии дарс: 商业谈判. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“商业谈判”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“商业谈判”。",
+          "pinyin": "Jīntiān wǒmen xuéxí shāngyè tánpàn.",
+          "translation": {
+            "uz": "Biz Biznes muzokaralar mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Деловые переговоры.",
+            "tj": "Мо мавзӯи Музокироти тиҷорӣ-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是商业。",
+          "pinyin": "Zhège cí shì shāngyè.",
+          "translation": {
+            "uz": "Bu so'z: biznes, tijorat.",
+            "ru": "Это слово: бизнес, коммерция.",
+            "tj": "Ин калима: тиҷорат."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "商业。",
+          "pinyin": "shāngyè.",
+          "translation": {
+            "uz": "商业 — shāngyè deb o'qiladi.",
+            "ru": "商业 читается как shāngyè.",
+            "tj": "商业 ҳамчун shāngyè хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Biznes muzokaralar",
+        "ru": "Деловые переговоры",
+        "tj": "Музокироти тиҷорӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“商业谈判”。",
+          "pinyin": "Jīntiān wǒmen xuéxí shāngyè tánpàn.",
+          "text": {
+            "uz": "Bugun Biznes muzokaralar mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Деловые переговоры.",
+            "tj": "Имрӯз мавзӯи Музокироти тиҷорӣ-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "商业。",
+          "pinyin": "shāngyè.",
+          "text": {
+            "uz": "商业 — shāngyè deb o'qiladi.",
+            "ru": "商业 читается как shāngyè.",
+            "tj": "商业 ҳамчун shāngyè хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "商业",
+            "pinyin": "shāngyè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "biznes, tijorat",
+              "ru": "бизнес, коммерция",
+              "tj": "тиҷорат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "谈判",
+            "pinyin": "tánpàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "muzokara",
+              "ru": "переговоры",
+              "tj": "музокира"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "合同",
+            "pinyin": "hétong",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shartnoma",
+              "ru": "договор",
+              "tj": "шартнома"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "条件",
+            "pinyin": "tiáojiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "shart",
+              "ru": "условие",
+              "tj": "шарт"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "利益",
+            "pinyin": "lìyì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "manfaat",
+              "ru": "выгода, интерес",
+              "tj": "манфиат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "方案",
+            "pinyin": "fāng’àn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "reja, yechim",
+              "ru": "план, решение",
+              "tj": "нақша, роҳҳал"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "达成",
+            "pinyin": "dáchéng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "erishmoq",
+              "ru": "достигать",
+              "tj": "ба даст овардан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "商业 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 商业:",
+            "tj": "Маънои калимаи 商业-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "biznes, tijorat",
+              "ru": "бизнес, коммерция",
+              "tj": "тиҷорат"
+            },
+            {
+              "uz": "muzokara",
+              "ru": "переговоры",
+              "tj": "музокира"
+            },
+            {
+              "uz": "shartnoma",
+              "ru": "договор",
+              "tj": "шартнома"
+            },
+            {
+              "uz": "shart",
+              "ru": "условие",
+              "tj": "шарт"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "商业 = biznes, tijorat (shāngyè)",
+            "ru": "商业 = бизнес, коммерция (shāngyè)",
+            "tj": "商业 = тиҷорат (shāngyè)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "商业 talaffuzini tanlang:",
+            "ru": "Выберите произношение 商业:",
+            "tj": "Талаффузи 商业-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shāngyè",
+            "tánpàn",
+            "hétong",
+            "tiáojiàn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "商业 — shāngyè",
+            "ru": "商业 — shāngyè",
+            "tj": "商业 — shāngyè"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'biznes, tijorat' xitoycha nima?",
+            "ru": "'бизнес, коммерция' по-китайски?",
+            "tj": "'тиҷорат' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "商业",
+            "谈判",
+            "合同",
+            "条件"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "商业 = biznes, tijorat (shāngyè)",
+            "ru": "商业 = бизнес, коммерция (shāngyè)",
+            "tj": "商业 = тиҷорат (shāngyè)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tánpàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tánpàn?",
+            "tj": "tánpàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "谈判",
+            "商业",
+            "合同",
+            "条件"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "谈判 = muzokara (tánpàn)",
+            "ru": "谈判 = переговоры (tánpàn)",
+            "tj": "谈判 = музокира (tánpàn)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'商业谈判' iborasini tuzing",
+            "ru": "Соберите фразу '商业谈判'",
+            "tj": "Ибораи '商业谈判'-ро созед"
+          },
+          "tokens": [
+            "商业",
+            "谈判",
+            "合同",
+            "条件"
+          ],
+          "answer_tokens": [
+            "商业",
+            "谈判"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 商业 谈判",
+            "ru": "Правильный порядок: 商业 谈判",
+            "tj": "Тартиби дуруст: 商业 谈判"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "商业",
+              {
+                "uz": "biznes, tijorat",
+                "ru": "бизнес, коммерция",
+                "tj": "тиҷорат"
+              }
+            ],
+            [
+              "谈判",
+              {
+                "uz": "muzokara",
+                "ru": "переговоры",
+                "tj": "музокира"
+              }
+            ],
+            [
+              "合同",
+              {
+                "uz": "shartnoma",
+                "ru": "договор",
+                "tj": "шартнома"
+              }
+            ],
+            [
+              "条件",
+              {
+                "uz": "shart",
+                "ru": "условие",
+                "tj": "шарт"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "商业谈判",
+          "pinyin": "shāngyè tánpàn",
+          "translation": {
+            "uz": "Biznes muzokaralar",
+            "ru": "Деловые переговоры",
+            "tj": "Музокироти тиҷорӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "商业。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 商业。",
+            "ru": "Ответ B: 商业。",
+            "tj": "Ҷавоби B: 商业。"
+          }
+        }
+      ]
+    }
+  ]
+}

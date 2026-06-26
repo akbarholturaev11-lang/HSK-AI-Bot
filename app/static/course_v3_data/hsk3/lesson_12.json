@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 12,
+  "title": "环境保护",
+  "subtitle": {
+    "uz": "Mavzu: Ekologiya va tabiat. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Экология и природа. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Экология ва табиат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "环境",
+      "pinyin": "huánjìng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "atrof-muhit",
+        "ru": "окружающая среда",
+        "tj": "муҳити зист"
+      },
+      "no": 1
+    },
+    {
+      "zh": "保护",
+      "pinyin": "bǎohù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "himoya qilmoq",
+        "ru": "защищать",
+        "tj": "ҳифз кардан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "垃圾",
+      "pinyin": "lājī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chiqindi",
+        "ru": "мусор",
+        "tj": "партов"
+      },
+      "no": 3
+    },
+    {
+      "zh": "分类",
+      "pinyin": "fēnlèi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "saralamoq",
+        "ru": "сортировать",
+        "tj": "ҷудо кардан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "节约",
+      "pinyin": "jiéyuē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tejamoq",
+        "ru": "экономить",
+        "tj": "сарфа кардан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "污染",
+      "pinyin": "wūrǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ifloslanish",
+        "ru": "загрязнение",
+        "tj": "ифлосшавӣ"
+      },
+      "no": 6
+    },
+    {
+      "zh": "自然",
+      "pinyin": "zìrán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tabiat",
+        "ru": "природа",
+        "tj": "табиат"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 环境保护. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“环境保护”。",
+        "ru": "Ключевая фраза урока: 环境保护. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“环境保护”。",
+        "tj": "Ибораи асосии дарс: 环境保护. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“环境保护”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“环境保护”。",
+          "pinyin": "Jīntiān wǒmen xuéxí huánjìng bǎohù.",
+          "translation": {
+            "uz": "Biz Ekologiya va tabiat mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Экология и природа.",
+            "tj": "Мо мавзӯи Экология ва табиат-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是环境。",
+          "pinyin": "Zhège cí shì huánjìng.",
+          "translation": {
+            "uz": "Bu so'z: atrof-muhit.",
+            "ru": "Это слово: окружающая среда.",
+            "tj": "Ин калима: муҳити зист."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "环境。",
+          "pinyin": "huánjìng.",
+          "translation": {
+            "uz": "环境 — huánjìng deb o'qiladi.",
+            "ru": "环境 читается как huánjìng.",
+            "tj": "环境 ҳамчун huánjìng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Ekologiya va tabiat",
+        "ru": "Экология и природа",
+        "tj": "Экология ва табиат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“环境保护”。",
+          "pinyin": "Jīntiān wǒmen xuéxí huánjìng bǎohù.",
+          "text": {
+            "uz": "Bugun Ekologiya va tabiat mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Экология и природа.",
+            "tj": "Имрӯз мавзӯи Экология ва табиат-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "环境。",
+          "pinyin": "huánjìng.",
+          "text": {
+            "uz": "环境 — huánjìng deb o'qiladi.",
+            "ru": "环境 читается как huánjìng.",
+            "tj": "环境 ҳамчун huánjìng хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "环境",
+            "pinyin": "huánjìng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "atrof-muhit",
+              "ru": "окружающая среда",
+              "tj": "муҳити зист"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "保护",
+            "pinyin": "bǎohù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "himoya qilmoq",
+              "ru": "защищать",
+              "tj": "ҳифз кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "垃圾",
+            "pinyin": "lājī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chiqindi",
+              "ru": "мусор",
+              "tj": "партов"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "分类",
+            "pinyin": "fēnlèi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "saralamoq",
+              "ru": "сортировать",
+              "tj": "ҷудо кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "节约",
+            "pinyin": "jiéyuē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tejamoq",
+              "ru": "экономить",
+              "tj": "сарфа кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "污染",
+            "pinyin": "wūrǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ifloslanish",
+              "ru": "загрязнение",
+              "tj": "ифлосшавӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "自然",
+            "pinyin": "zìrán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tabiat",
+              "ru": "природа",
+              "tj": "табиат"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "环境 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 环境:",
+            "tj": "Маънои калимаи 环境-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "atrof-muhit",
+              "ru": "окружающая среда",
+              "tj": "муҳити зист"
+            },
+            {
+              "uz": "himoya qilmoq",
+              "ru": "защищать",
+              "tj": "ҳифз кардан"
+            },
+            {
+              "uz": "chiqindi",
+              "ru": "мусор",
+              "tj": "партов"
+            },
+            {
+              "uz": "saralamoq",
+              "ru": "сортировать",
+              "tj": "ҷудо кардан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "环境 = atrof-muhit (huánjìng)",
+            "ru": "环境 = окружающая среда (huánjìng)",
+            "tj": "环境 = муҳити зист (huánjìng)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "环境 talaffuzini tanlang:",
+            "ru": "Выберите произношение 环境:",
+            "tj": "Талаффузи 环境-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "huánjìng",
+            "bǎohù",
+            "lājī",
+            "fēnlèi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "环境 — huánjìng",
+            "ru": "环境 — huánjìng",
+            "tj": "环境 — huánjìng"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'atrof-muhit' xitoycha nima?",
+            "ru": "'окружающая среда' по-китайски?",
+            "tj": "'муҳити зист' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "环境",
+            "保护",
+            "垃圾",
+            "分类"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "环境 = atrof-muhit (huánjìng)",
+            "ru": "环境 = окружающая среда (huánjìng)",
+            "tj": "环境 = муҳити зист (huánjìng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bǎohù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bǎohù?",
+            "tj": "bǎohù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "保护",
+            "环境",
+            "垃圾",
+            "分类"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "保护 = himoya qilmoq (bǎohù)",
+            "ru": "保护 = защищать (bǎohù)",
+            "tj": "保护 = ҳифз кардан (bǎohù)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'环境保护' iborasini tuzing",
+            "ru": "Соберите фразу '环境保护'",
+            "tj": "Ибораи '环境保护'-ро созед"
+          },
+          "tokens": [
+            "环境",
+            "保护",
+            "垃圾",
+            "分类"
+          ],
+          "answer_tokens": [
+            "环境",
+            "保护"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 环境 保护",
+            "ru": "Правильный порядок: 环境 保护",
+            "tj": "Тартиби дуруст: 环境 保护"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "环境",
+              {
+                "uz": "atrof-muhit",
+                "ru": "окружающая среда",
+                "tj": "муҳити зист"
+              }
+            ],
+            [
+              "保护",
+              {
+                "uz": "himoya qilmoq",
+                "ru": "защищать",
+                "tj": "ҳифз кардан"
+              }
+            ],
+            [
+              "垃圾",
+              {
+                "uz": "chiqindi",
+                "ru": "мусор",
+                "tj": "партов"
+              }
+            ],
+            [
+              "分类",
+              {
+                "uz": "saralamoq",
+                "ru": "сортировать",
+                "tj": "ҷудо кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "环境保护",
+          "pinyin": "huánjìng bǎohù",
+          "translation": {
+            "uz": "Ekologiya va tabiat",
+            "ru": "Экология и природа",
+            "tj": "Экология ва табиат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "环境。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 环境。",
+            "ru": "Ответ B: 环境。",
+            "tj": "Ҷавоби B: 环境。"
+          }
+        }
+      ]
+    }
+  ]
+}

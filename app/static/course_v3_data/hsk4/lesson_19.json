@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "lesson_id": 19,
+  "title": "未来展望",
+  "subtitle": {
+    "uz": "Mavzu: Kelajak rejalar va orzular. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Планы на будущее и мечты. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Нақшаҳои оянда ва орзуҳо. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "未来",
+      "pinyin": "wèilái",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kelajak",
+        "ru": "будущее",
+        "tj": "оянда"
+      },
+      "no": 1
+    },
+    {
+      "zh": "展望",
+      "pinyin": "zhǎnwàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "istiqbolga qaramoq",
+        "ru": "смотреть в будущее",
+        "tj": "ба оянда назар кардан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "目标",
+      "pinyin": "mùbiāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maqsad",
+        "ru": "цель",
+        "tj": "ҳадаф"
+      },
+      "no": 3
+    },
+    {
+      "zh": "梦想",
+      "pinyin": "mèngxiǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "orzu",
+        "ru": "мечта",
+        "tj": "орзу"
+      },
+      "no": 4
+    },
+    {
+      "zh": "机会",
+      "pinyin": "jīhuì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "imkoniyat",
+        "ru": "возможность",
+        "tj": "имконият"
+      },
+      "no": 5
+    },
+    {
+      "zh": "挑战",
+      "pinyin": "tiǎozhàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chaqiriq, sinov",
+        "ru": "вызов, испытание",
+        "tj": "чолиш, санҷиш"
+      },
+      "no": 6
+    },
+    {
+      "zh": "实现",
+      "pinyin": "shíxiàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "amalga oshirmoq",
+        "ru": "осуществлять",
+        "tj": "амалӣ кардан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 未来展望. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“未来展望”。",
+        "ru": "Ключевая фраза урока: 未来展望. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“未来展望”。",
+        "tj": "Ибораи асосии дарс: 未来展望. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“未来展望”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“未来展望”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wèilái zhǎnwàng.",
+          "translation": {
+            "uz": "Biz Kelajak rejalar va orzular mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Планы на будущее и мечты.",
+            "tj": "Мо мавзӯи Нақшаҳои оянда ва орзуҳо-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是未来。",
+          "pinyin": "Zhège cí shì wèilái.",
+          "translation": {
+            "uz": "Bu so'z: kelajak.",
+            "ru": "Это слово: будущее.",
+            "tj": "Ин калима: оянда."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "未来。",
+          "pinyin": "wèilái.",
+          "translation": {
+            "uz": "未来 — wèilái deb o'qiladi.",
+            "ru": "未来 читается как wèilái.",
+            "tj": "未来 ҳамчун wèilái хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Kelajak rejalar va orzular",
+        "ru": "Планы на будущее и мечты",
+        "tj": "Нақшаҳои оянда ва орзуҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“未来展望”。",
+          "pinyin": "Jīntiān wǒmen xuéxí wèilái zhǎnwàng.",
+          "text": {
+            "uz": "Bugun Kelajak rejalar va orzular mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Планы на будущее и мечты.",
+            "tj": "Имрӯз мавзӯи Нақшаҳои оянда ва орзуҳо-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "未来。",
+          "pinyin": "wèilái.",
+          "text": {
+            "uz": "未来 — wèilái deb o'qiladi.",
+            "ru": "未来 читается как wèilái.",
+            "tj": "未来 ҳамчун wèilái хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "未来",
+            "pinyin": "wèilái",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kelajak",
+              "ru": "будущее",
+              "tj": "оянда"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "展望",
+            "pinyin": "zhǎnwàng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "istiqbolga qaramoq",
+              "ru": "смотреть в будущее",
+              "tj": "ба оянда назар кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "目标",
+            "pinyin": "mùbiāo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maqsad",
+              "ru": "цель",
+              "tj": "ҳадаф"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "梦想",
+            "pinyin": "mèngxiǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "orzu",
+              "ru": "мечта",
+              "tj": "орзу"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "机会",
+            "pinyin": "jīhuì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "imkoniyat",
+              "ru": "возможность",
+              "tj": "имконият"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "挑战",
+            "pinyin": "tiǎozhàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chaqiriq, sinov",
+              "ru": "вызов, испытание",
+              "tj": "чолиш, санҷиш"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "实现",
+            "pinyin": "shíxiàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "amalga oshirmoq",
+              "ru": "осуществлять",
+              "tj": "амалӣ кардан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "未来 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 未来:",
+            "tj": "Маънои калимаи 未来-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kelajak",
+              "ru": "будущее",
+              "tj": "оянда"
+            },
+            {
+              "uz": "istiqbolga qaramoq",
+              "ru": "смотреть в будущее",
+              "tj": "ба оянда назар кардан"
+            },
+            {
+              "uz": "maqsad",
+              "ru": "цель",
+              "tj": "ҳадаф"
+            },
+            {
+              "uz": "orzu",
+              "ru": "мечта",
+              "tj": "орзу"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "未来 = kelajak (wèilái)",
+            "ru": "未来 = будущее (wèilái)",
+            "tj": "未来 = оянда (wèilái)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "未来 talaffuzini tanlang:",
+            "ru": "Выберите произношение 未来:",
+            "tj": "Талаффузи 未来-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wèilái",
+            "zhǎnwàng",
+            "mùbiāo",
+            "mèngxiǎng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "未来 — wèilái",
+            "ru": "未来 — wèilái",
+            "tj": "未来 — wèilái"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'kelajak' xitoycha nima?",
+            "ru": "'будущее' по-китайски?",
+            "tj": "'оянда' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "未来",
+            "展望",
+            "目标",
+            "梦想"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "未来 = kelajak (wèilái)",
+            "ru": "未来 = будущее (wèilái)",
+            "tj": "未来 = оянда (wèilái)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhǎnwàng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhǎnwàng?",
+            "tj": "zhǎnwàng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "展望",
+            "未来",
+            "目标",
+            "梦想"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "展望 = istiqbolga qaramoq (zhǎnwàng)",
+            "ru": "展望 = смотреть в будущее (zhǎnwàng)",
+            "tj": "展望 = ба оянда назар кардан (zhǎnwàng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'未来展望' iborasini tuzing",
+            "ru": "Соберите фразу '未来展望'",
+            "tj": "Ибораи '未来展望'-ро созед"
+          },
+          "tokens": [
+            "未来",
+            "展望",
+            "目标",
+            "梦想"
+          ],
+          "answer_tokens": [
+            "未来",
+            "展望"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 未来 展望",
+            "ru": "Правильный порядок: 未来 展望",
+            "tj": "Тартиби дуруст: 未来 展望"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "未来",
+              {
+                "uz": "kelajak",
+                "ru": "будущее",
+                "tj": "оянда"
+              }
+            ],
+            [
+              "展望",
+              {
+                "uz": "istiqbolga qaramoq",
+                "ru": "смотреть в будущее",
+                "tj": "ба оянда назар кардан"
+              }
+            ],
+            [
+              "目标",
+              {
+                "uz": "maqsad",
+                "ru": "цель",
+                "tj": "ҳадаф"
+              }
+            ],
+            [
+              "梦想",
+              {
+                "uz": "orzu",
+                "ru": "мечта",
+                "tj": "орзу"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "未来展望",
+          "pinyin": "wèilái zhǎnwàng",
+          "translation": {
+            "uz": "Kelajak rejalar va orzular",
+            "ru": "Планы на будущее и мечты",
+            "tj": "Нақшаҳои оянда ва орзуҳо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "未来。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 未来。",
+            "ru": "Ответ B: 未来。",
+            "tj": "Ҷавоби B: 未来。"
+          }
+        }
+      ]
+    }
+  ]
+}

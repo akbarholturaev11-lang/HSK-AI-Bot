@@ -1,0 +1,346 @@
+{
+  "schema_version": 2,
+  "level": "hsk4",
+  "label": "HSK 4",
+  "authenticated": false,
+  "progress": {
+    "streak": 0,
+    "xp": 0,
+    "completed": 0,
+    "league": "Bronze"
+  },
+  "units": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Iqtisod va texnologiya",
+        "ru": "Экономика и технологии",
+        "tj": "Иқтисод ва технология"
+      },
+      "lessons": [
+        {
+          "n": 1,
+          "zh": "经济全球化",
+          "py": "jīngjì quánqiúhuà",
+          "tr": {
+            "uz": "Globallashuv va iqtisodiyot",
+            "ru": "Глобализация и экономика",
+            "tj": "Ҷаҳонишавӣ ва иқтисод"
+          },
+          "status": "current",
+          "content": "lesson_01"
+        },
+        {
+          "n": 2,
+          "zh": "科技发展",
+          "py": "kējì fāzhǎn",
+          "tr": {
+            "uz": "Texnologiya va innovatsiya",
+            "ru": "Технологии и инновации",
+            "tj": "Технология ва навоварӣ"
+          },
+          "status": "locked",
+          "content": "lesson_02"
+        },
+        {
+          "n": 3,
+          "zh": "教育制度",
+          "py": "jiàoyù zhìdù",
+          "tr": {
+            "uz": "Ta’lim tizimi",
+            "ru": "Система образования",
+            "tj": "Низоми таълим"
+          },
+          "status": "locked",
+          "content": "lesson_03"
+        },
+        {
+          "n": 4,
+          "zh": "文学艺术",
+          "py": "wénxué yìshù",
+          "tr": {
+            "uz": "Adabiyot va san’at",
+            "ru": "Литература и искусство",
+            "tj": "Адабиёт ва санъат"
+          },
+          "status": "locked",
+          "content": "lesson_04",
+          "locked_premium": true
+        },
+        {
+          "n": 5,
+          "zh": "政治社会",
+          "py": "zhèngzhì shèhuì",
+          "tr": {
+            "uz": "Jamiyat va siyosat",
+            "ru": "Общество и политика",
+            "tj": "Ҷомеа ва сиёсат"
+          },
+          "status": "locked",
+          "content": "lesson_05",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "1-bo‘lim takrori",
+          "ru": "Повторение раздела 1",
+          "tj": "Такрори фасли 1"
+        },
+        "status": "locked"
+      }
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Jamiyat va qonun",
+        "ru": "Общество и право",
+        "tj": "Ҷомеа ва қонун"
+      },
+      "lessons": [
+        {
+          "n": 6,
+          "zh": "环境问题",
+          "py": "huánjìng wèntí",
+          "tr": {
+            "uz": "Ekologik muammolar",
+            "ru": "Экологические проблемы",
+            "tj": "Мушкилоти экологӣ"
+          },
+          "status": "locked",
+          "content": "lesson_06",
+          "locked_premium": true
+        },
+        {
+          "n": 7,
+          "zh": "医疗卫生",
+          "py": "yīliáo wèishēng",
+          "tr": {
+            "uz": "Tibbiyot va sog‘liqni saqlash",
+            "ru": "Медицина и здравоохранение",
+            "tj": "Тиб ва ҳифзи саломатӣ"
+          },
+          "status": "locked",
+          "content": "lesson_07",
+          "locked_premium": true
+        },
+        {
+          "n": 8,
+          "zh": "法律法规",
+          "py": "fǎlǜ fǎguī",
+          "tr": {
+            "uz": "Qonun va huquq",
+            "ru": "Закон и право",
+            "tj": "Қонун ва ҳуқуқ"
+          },
+          "status": "locked",
+          "content": "lesson_08",
+          "locked_premium": true
+        },
+        {
+          "n": 9,
+          "zh": "商业谈判",
+          "py": "shāngyè tánpàn",
+          "tr": {
+            "uz": "Biznes muzokaralar",
+            "ru": "Деловые переговоры",
+            "tj": "Музокироти тиҷорӣ"
+          },
+          "status": "locked",
+          "content": "lesson_09",
+          "locked_premium": true
+        },
+        {
+          "n": 10,
+          "zh": "文化交流",
+          "py": "wénhuà jiāoliú",
+          "tr": {
+            "uz": "Madaniy almashinuv",
+            "ru": "Культурный обмен",
+            "tj": "Мубодилаи фарҳангӣ"
+          },
+          "status": "locked",
+          "content": "lesson_10",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "2-bo‘lim takrori",
+          "ru": "Повторение раздела 2",
+          "tj": "Такрори фасли 2"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Madaniyat va salomatlik",
+        "ru": "Культура и здоровье",
+        "tj": "Фарҳанг ва саломатӣ"
+      },
+      "lessons": [
+        {
+          "n": 11,
+          "zh": "历史传统",
+          "py": "lìshǐ chuántǒng",
+          "tr": {
+            "uz": "Tarix va an’analar",
+            "ru": "История и традиции",
+            "tj": "Таърих ва анъанаҳо"
+          },
+          "status": "locked",
+          "content": "lesson_11",
+          "locked_premium": true
+        },
+        {
+          "n": 12,
+          "zh": "心理健康",
+          "py": "xīnlǐ jiànkāng",
+          "tr": {
+            "uz": "Psixologiya va ruhiy salomatlik",
+            "ru": "Психология и психическое здоровье",
+            "tj": "Психология ва саломатии рӯҳӣ"
+          },
+          "status": "locked",
+          "content": "lesson_12",
+          "locked_premium": true
+        },
+        {
+          "n": 13,
+          "zh": "体育竞技",
+          "py": "tǐyù jìngjì",
+          "tr": {
+            "uz": "Musobaqa sporti",
+            "ru": "Соревновательный спорт",
+            "tj": "Варзиши мусобиқаӣ"
+          },
+          "status": "locked",
+          "content": "lesson_13",
+          "locked_premium": true
+        },
+        {
+          "n": 14,
+          "zh": "饮食文化",
+          "py": "yǐnshí wénhuà",
+          "tr": {
+            "uz": "Ovqat madaniyati",
+            "ru": "Культура питания",
+            "tj": "Фарҳанги ғизо"
+          },
+          "status": "locked",
+          "content": "lesson_14",
+          "locked_premium": true
+        },
+        {
+          "n": 15,
+          "zh": "城乡发展",
+          "py": "chéngxiāng fāzhǎn",
+          "tr": {
+            "uz": "Shahar va qishloq rivojlanishi",
+            "ru": "Развитие города и села",
+            "tj": "Рушди шаҳр ва деҳот"
+          },
+          "status": "locked",
+          "content": "lesson_15",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "3-bo‘lim takrori",
+          "ru": "Повторение раздела 3",
+          "tj": "Такрори фасли 3"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "An’analar va kelajak",
+        "ru": "Традиции и будущее",
+        "tj": "Анъанаҳо ва оянда"
+      },
+      "lessons": [
+        {
+          "n": 16,
+          "zh": "人际关系",
+          "py": "rénjì guānxi",
+          "tr": {
+            "uz": "Shaxslararo munosabatlar",
+            "ru": "Межличностные отношения",
+            "tj": "Муносибатҳои байни одамон"
+          },
+          "status": "locked",
+          "content": "lesson_16",
+          "locked_premium": true
+        },
+        {
+          "n": 17,
+          "zh": "哲学思想",
+          "py": "zhéxué sīxiǎng",
+          "tr": {
+            "uz": "Falsafa va tafakkur",
+            "ru": "Философия и мышление",
+            "tj": "Фалсафа ва тафаккур"
+          },
+          "status": "locked",
+          "content": "lesson_17",
+          "locked_premium": true
+        },
+        {
+          "n": 18,
+          "zh": "传统医学",
+          "py": "chuántǒng yīxué",
+          "tr": {
+            "uz": "An’anaviy tibbiyot va akupunktura",
+            "ru": "Традиционная медицина и иглоукалывание",
+            "tj": "Тиби анъанавӣ ва сӯзандорӣ"
+          },
+          "status": "locked",
+          "content": "lesson_18",
+          "locked_premium": true
+        },
+        {
+          "n": 19,
+          "zh": "未来展望",
+          "py": "wèilái zhǎnwàng",
+          "tr": {
+            "uz": "Kelajak rejalar va orzular",
+            "ru": "Планы на будущее и мечты",
+            "tj": "Нақшаҳои оянда ва орзуҳо"
+          },
+          "status": "locked",
+          "content": "lesson_19",
+          "locked_premium": true
+        },
+        {
+          "n": 20,
+          "zh": "复习 — HSK 4",
+          "py": "fùxí HSK sì",
+          "tr": {
+            "uz": "HSK 4 takrori va umumiy test",
+            "ru": "Повторение HSK 4 и общий тест",
+            "tj": "Такрори HSK 4 ва санҷиши умумӣ"
+          },
+          "status": "locked",
+          "content": "lesson_20",
+          "locked_premium": true
+        }
+      ],
+      "milestone": {
+        "title": {
+          "uz": "4-bo‘lim takrori",
+          "ru": "Повторение раздела 4",
+          "tj": "Такрори фасли 4"
+        },
+        "status": "locked"
+      },
+      "status": "locked"
+    }
+  ]
+}

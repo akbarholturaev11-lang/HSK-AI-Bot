@@ -1,0 +1,578 @@
+{
+  "schema_version": 2,
+  "level": "hsk3",
+  "lesson_id": 7,
+  "title": "出行计划",
+  "subtitle": {
+    "uz": "Mavzu: Sayohat rejasi. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: План поездки. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Нақшаи сафар. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "计划",
+      "pinyin": "jìhuà",
+      "pos": "n.",
+      "meaning": {
+        "uz": "reja",
+        "ru": "план",
+        "tj": "нақша"
+      },
+      "no": 1
+    },
+    {
+      "zh": "出行",
+      "pinyin": "chūxíng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo‘lga chiqmoq",
+        "ru": "отправляться в поездку",
+        "tj": "ба сафар баромадан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "火车",
+      "pinyin": "huǒchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "poyezd",
+        "ru": "поезд",
+        "tj": "қатора"
+      },
+      "no": 3
+    },
+    {
+      "zh": "机票",
+      "pinyin": "jīpiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aviachipta",
+        "ru": "авиабилет",
+        "tj": "чиптаи ҳавопаймо"
+      },
+      "no": 4
+    },
+    {
+      "zh": "行李",
+      "pinyin": "xíngli",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yuk",
+        "ru": "багаж",
+        "tj": "бор"
+      },
+      "no": 5
+    },
+    {
+      "zh": "出发",
+      "pinyin": "chūfā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "jo‘namoq",
+        "ru": "отправляться",
+        "tj": "равона шудан"
+      },
+      "no": 6
+    },
+    {
+      "zh": "到达",
+      "pinyin": "dàodá",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yetib kelmoq",
+        "ru": "прибывать",
+        "tj": "расидан"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 出行计划. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“出行计划”。",
+        "ru": "Ключевая фраза урока: 出行计划. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“出行计划”。",
+        "tj": "Ибораи асосии дарс: 出行计划. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“出行计划”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“出行计划”。",
+          "pinyin": "Jīntiān wǒmen xuéxí chūxíng jìhuà.",
+          "translation": {
+            "uz": "Biz Sayohat rejasi mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: План поездки.",
+            "tj": "Мо мавзӯи Нақшаи сафар-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是计划。",
+          "pinyin": "Zhège cí shì jìhuà.",
+          "translation": {
+            "uz": "Bu so'z: reja.",
+            "ru": "Это слово: план.",
+            "tj": "Ин калима: нақша."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "计划。",
+          "pinyin": "jìhuà.",
+          "translation": {
+            "uz": "计划 — jìhuà deb o'qiladi.",
+            "ru": "计划 читается как jìhuà.",
+            "tj": "计划 ҳамчун jìhuà хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sayohat rejasi",
+        "ru": "План поездки",
+        "tj": "Нақшаи сафар"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“出行计划”。",
+          "pinyin": "Jīntiān wǒmen xuéxí chūxíng jìhuà.",
+          "text": {
+            "uz": "Bugun Sayohat rejasi mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: План поездки.",
+            "tj": "Имрӯз мавзӯи Нақшаи сафар-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "计划。",
+          "pinyin": "jìhuà.",
+          "text": {
+            "uz": "计划 — jìhuà deb o'qiladi.",
+            "ru": "计划 читается как jìhuà.",
+            "tj": "计划 ҳамчун jìhuà хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "计划",
+            "pinyin": "jìhuà",
+            "pos": "n.",
+            "meaning": {
+              "uz": "reja",
+              "ru": "план",
+              "tj": "нақша"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "出行",
+            "pinyin": "chūxíng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yo‘lga chiqmoq",
+              "ru": "отправляться в поездку",
+              "tj": "ба сафар баромадан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "火车",
+            "pinyin": "huǒchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатора"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "机票",
+            "pinyin": "jīpiào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "aviachipta",
+              "ru": "авиабилет",
+              "tj": "чиптаи ҳавопаймо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "行李",
+            "pinyin": "xíngli",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yuk",
+              "ru": "багаж",
+              "tj": "бор"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "出发",
+            "pinyin": "chūfā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "jo‘namoq",
+              "ru": "отправляться",
+              "tj": "равона шудан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "到达",
+            "pinyin": "dàodá",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yetib kelmoq",
+              "ru": "прибывать",
+              "tj": "расидан"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "计划 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 计划:",
+            "tj": "Маънои калимаи 计划-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "reja",
+              "ru": "план",
+              "tj": "нақша"
+            },
+            {
+              "uz": "yo‘lga chiqmoq",
+              "ru": "отправляться в поездку",
+              "tj": "ба сафар баромадан"
+            },
+            {
+              "uz": "poyezd",
+              "ru": "поезд",
+              "tj": "қатора"
+            },
+            {
+              "uz": "aviachipta",
+              "ru": "авиабилет",
+              "tj": "чиптаи ҳавопаймо"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "计划 = reja (jìhuà)",
+            "ru": "计划 = план (jìhuà)",
+            "tj": "计划 = нақша (jìhuà)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "计划 talaffuzini tanlang:",
+            "ru": "Выберите произношение 计划:",
+            "tj": "Талаффузи 计划-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jìhuà",
+            "chūxíng",
+            "huǒchē",
+            "jīpiào"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "计划 — jìhuà",
+            "ru": "计划 — jìhuà",
+            "tj": "计划 — jìhuà"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'reja' xitoycha nima?",
+            "ru": "'план' по-китайски?",
+            "tj": "'нақша' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "计划",
+            "出行",
+            "火车",
+            "机票"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "计划 = reja (jìhuà)",
+            "ru": "计划 = план (jìhuà)",
+            "tj": "计划 = нақша (jìhuà)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chūxíng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chūxíng?",
+            "tj": "chūxíng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "出行",
+            "计划",
+            "火车",
+            "机票"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "出行 = yo‘lga chiqmoq (chūxíng)",
+            "ru": "出行 = отправляться в поездку (chūxíng)",
+            "tj": "出行 = ба сафар баромадан (chūxíng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'出行计划' iborasini tuzing",
+            "ru": "Соберите фразу '出行计划'",
+            "tj": "Ибораи '出行计划'-ро созед"
+          },
+          "tokens": [
+            "出行",
+            "计划",
+            "火车",
+            "机票"
+          ],
+          "answer_tokens": [
+            "出行",
+            "计划"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 出行 计划",
+            "ru": "Правильный порядок: 出行 计划",
+            "tj": "Тартиби дуруст: 出行 计划"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "计划",
+              {
+                "uz": "reja",
+                "ru": "план",
+                "tj": "нақша"
+              }
+            ],
+            [
+              "出行",
+              {
+                "uz": "yo‘lga chiqmoq",
+                "ru": "отправляться в поездку",
+                "tj": "ба сафар баромадан"
+              }
+            ],
+            [
+              "火车",
+              {
+                "uz": "poyezd",
+                "ru": "поезд",
+                "tj": "қатора"
+              }
+            ],
+            [
+              "机票",
+              {
+                "uz": "aviachipta",
+                "ru": "авиабилет",
+                "tj": "чиптаи ҳавопаймо"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "出行计划",
+          "pinyin": "chūxíng jìhuà",
+          "translation": {
+            "uz": "Sayohat rejasi",
+            "ru": "План поездки",
+            "tj": "Нақшаи сафар"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "计划。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 计划。",
+            "ru": "Ответ B: 计划。",
+            "tj": "Ҷавоби B: 计划。"
+          }
+        }
+      ]
+    }
+  ]
+}

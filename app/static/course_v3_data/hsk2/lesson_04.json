@@ -1,0 +1,582 @@
+{
+  "schema_version": 2,
+  "level": "hsk2",
+  "lesson_id": 4,
+  "title": "你喜欢什么",
+  "subtitle": {
+    "uz": "Mavzu: Sevimli narsalar va dam olish. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Любимые вещи и отдых. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Чизҳои дӯстдошта ва истироҳат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "喜欢",
+      "pinyin": "xǐhuan",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yoqtirmoq",
+        "ru": "любить, нравиться",
+        "tj": "дӯст доштан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "电影",
+      "pinyin": "diànyǐng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kino",
+        "ru": "фильм",
+        "tj": "филм"
+      },
+      "no": 2
+    },
+    {
+      "zh": "音乐",
+      "pinyin": "yīnyuè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "musiqa",
+        "ru": "музыка",
+        "tj": "мусиқӣ"
+      },
+      "no": 3
+    },
+    {
+      "zh": "旅游",
+      "pinyin": "lǚyóu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sayohat qilmoq",
+        "ru": "путешествовать",
+        "tj": "сафар кардан"
+      },
+      "no": 4
+    },
+    {
+      "zh": "休息",
+      "pinyin": "xiūxi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "dam olmoq",
+        "ru": "отдыхать",
+        "tj": "истироҳат кардан"
+      },
+      "no": 5
+    },
+    {
+      "zh": "周末",
+      "pinyin": "zhōumò",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dam olish kunlari",
+        "ru": "выходные",
+        "tj": "рӯзҳои истироҳат"
+      },
+      "no": 6
+    },
+    {
+      "zh": "有意思",
+      "pinyin": "yǒu yìsi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qiziqarli",
+        "ru": "интересный",
+        "tj": "шавқовар"
+      },
+      "no": 7
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 你喜欢什么. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你喜欢什么”。",
+        "ru": "Ключевая фраза урока: 你喜欢什么. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你喜欢什么”。",
+        "tj": "Ибораи асосии дарс: 你喜欢什么. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你喜欢什么”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“你喜欢什么”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ xǐhuan shénme.",
+          "translation": {
+            "uz": "Biz Sevimli narsalar va dam olish mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Любимые вещи и отдых.",
+            "tj": "Мо мавзӯи Чизҳои дӯстдошта ва истироҳат-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是喜欢。",
+          "pinyin": "Zhège cí shì xǐhuan.",
+          "translation": {
+            "uz": "Bu so'z: yoqtirmoq.",
+            "ru": "Это слово: любить, нравиться.",
+            "tj": "Ин калима: дӯст доштан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "喜欢。",
+          "pinyin": "xǐhuan.",
+          "translation": {
+            "uz": "喜欢 — xǐhuan deb o'qiladi.",
+            "ru": "喜欢 читается как xǐhuan.",
+            "tj": "喜欢 ҳамчун xǐhuan хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Sevimli narsalar va dam olish",
+        "ru": "Любимые вещи и отдых",
+        "tj": "Чизҳои дӯстдошта ва истироҳат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“你喜欢什么”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ xǐhuan shénme.",
+          "text": {
+            "uz": "Bugun Sevimli narsalar va dam olish mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Любимые вещи и отдых.",
+            "tj": "Имрӯз мавзӯи Чизҳои дӯстдошта ва истироҳат-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "喜欢。",
+          "pinyin": "xǐhuan.",
+          "text": {
+            "uz": "喜欢 — xǐhuan deb o'qiladi.",
+            "ru": "喜欢 читается как xǐhuan.",
+            "tj": "喜欢 ҳамчун xǐhuan хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "喜欢",
+            "pinyin": "xǐhuan",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yoqtirmoq",
+              "ru": "любить, нравиться",
+              "tj": "дӯст доштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "电影",
+            "pinyin": "diànyǐng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kino",
+              "ru": "фильм",
+              "tj": "филм"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "音乐",
+            "pinyin": "yīnyuè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "musiqa",
+              "ru": "музыка",
+              "tj": "мусиқӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "旅游",
+            "pinyin": "lǚyóu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "休息",
+            "pinyin": "xiūxi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "dam olmoq",
+              "ru": "отдыхать",
+              "tj": "истироҳат кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "周末",
+            "pinyin": "zhōumò",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dam olish kunlari",
+              "ru": "выходные",
+              "tj": "рӯзҳои истироҳат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "有意思",
+            "pinyin": "yǒu yìsi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qiziqarli",
+              "ru": "интересный",
+              "tj": "шавқовар"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "喜欢 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 喜欢:",
+            "tj": "Маънои калимаи 喜欢-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yoqtirmoq",
+              "ru": "любить, нравиться",
+              "tj": "дӯст доштан"
+            },
+            {
+              "uz": "kino",
+              "ru": "фильм",
+              "tj": "филм"
+            },
+            {
+              "uz": "musiqa",
+              "ru": "музыка",
+              "tj": "мусиқӣ"
+            },
+            {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "喜欢 = yoqtirmoq (xǐhuan)",
+            "ru": "喜欢 = любить, нравиться (xǐhuan)",
+            "tj": "喜欢 = дӯст доштан (xǐhuan)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "喜欢 talaffuzini tanlang:",
+            "ru": "Выберите произношение 喜欢:",
+            "tj": "Талаффузи 喜欢-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xǐhuan",
+            "diànyǐng",
+            "yīnyuè",
+            "lǚyóu"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "喜欢 — xǐhuan",
+            "ru": "喜欢 — xǐhuan",
+            "tj": "喜欢 — xǐhuan"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'yoqtirmoq' xitoycha nima?",
+            "ru": "'любить, нравиться' по-китайски?",
+            "tj": "'дӯст доштан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "喜欢",
+            "电影",
+            "音乐",
+            "旅游"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "喜欢 = yoqtirmoq (xǐhuan)",
+            "ru": "喜欢 = любить, нравиться (xǐhuan)",
+            "tj": "喜欢 = дӯст доштан (xǐhuan)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "diànyǐng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается diànyǐng?",
+            "tj": "diànyǐng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "电影",
+            "喜欢",
+            "音乐",
+            "旅游"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "电影 = kino (diànyǐng)",
+            "ru": "电影 = фильм (diànyǐng)",
+            "tj": "电影 = филм (diànyǐng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'你喜欢什么' iborasini tuzing",
+            "ru": "Соберите фразу '你喜欢什么'",
+            "tj": "Ибораи '你喜欢什么'-ро созед"
+          },
+          "tokens": [
+            "你",
+            "喜欢",
+            "什",
+            "么",
+            "电影",
+            "音乐"
+          ],
+          "answer_tokens": [
+            "你",
+            "喜欢",
+            "什",
+            "么"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 你 喜欢 什 么",
+            "ru": "Правильный порядок: 你 喜欢 什 么",
+            "tj": "Тартиби дуруст: 你 喜欢 什 么"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "喜欢",
+              {
+                "uz": "yoqtirmoq",
+                "ru": "любить, нравиться",
+                "tj": "дӯст доштан"
+              }
+            ],
+            [
+              "电影",
+              {
+                "uz": "kino",
+                "ru": "фильм",
+                "tj": "филм"
+              }
+            ],
+            [
+              "音乐",
+              {
+                "uz": "musiqa",
+                "ru": "музыка",
+                "tj": "мусиқӣ"
+              }
+            ],
+            [
+              "旅游",
+              {
+                "uz": "sayohat qilmoq",
+                "ru": "путешествовать",
+                "tj": "сафар кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你喜欢什么",
+          "pinyin": "nǐ xǐhuan shénme",
+          "translation": {
+            "uz": "Sevimli narsalar va dam olish",
+            "ru": "Любимые вещи и отдых",
+            "tj": "Чизҳои дӯстдошта ва истироҳат"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "喜欢。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 喜欢。",
+            "ru": "Ответ B: 喜欢。",
+            "tj": "Ҷавоби B: 喜欢。"
+          }
+        }
+      ]
+    }
+  ]
+}

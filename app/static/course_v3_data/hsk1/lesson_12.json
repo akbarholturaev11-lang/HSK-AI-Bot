@@ -1,0 +1,604 @@
+{
+  "schema_version": 2,
+  "level": "hsk1",
+  "lesson_id": 12,
+  "title": "你有几个",
+  "subtitle": {
+    "uz": "Mavzu: Miqdor, 有 va 没有. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
+    "ru": "Тема: Количество, 有 и 没有. Изучайте через ключевые слова, грамматику и диалог.",
+    "tj": "Мавзуъ: Миқдор, 有 ва 没有. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+  },
+  "active_words": [
+    {
+      "zh": "有",
+      "pinyin": "yǒu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bor bo‘lmoq, ega bo‘lmoq",
+        "ru": "иметь, быть",
+        "tj": "доштан, вуҷуд доштан"
+      },
+      "no": 1
+    },
+    {
+      "zh": "没有",
+      "pinyin": "méi yǒu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yo'q, ega emas",
+        "ru": "нет, не иметь",
+        "tj": "нест, надоштан"
+      },
+      "no": 2
+    },
+    {
+      "zh": "个",
+      "pinyin": "gè",
+      "pos": "mw.",
+      "meaning": {
+        "uz": "dona, ta",
+        "ru": "универсальное счётное слово",
+        "tj": "ҳисобкалимаи умумӣ"
+      },
+      "no": 3
+    },
+    {
+      "zh": "几个",
+      "pinyin": "jǐ gè",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "nechta",
+        "ru": "сколько штук",
+        "tj": "чандто"
+      },
+      "no": 4
+    },
+    {
+      "zh": "本",
+      "pinyin": "běn",
+      "pos": "mw.",
+      "meaning": {
+        "uz": "kitob uchun hisob so‘zi",
+        "ru": "счётное слово для книг",
+        "tj": "ҳисобкалима барои китоб"
+      },
+      "no": 5
+    },
+    {
+      "zh": "张",
+      "pinyin": "zhāng",
+      "pos": "mw.",
+      "meaning": {
+        "uz": "yassi narsa uchun hisob so‘zi",
+        "ru": "счётное слово для плоских предметов",
+        "tj": "ҳисобкалима барои ашёи ҳамвор"
+      },
+      "no": 6
+    },
+    {
+      "zh": "孩子",
+      "pinyin": "háizi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bola",
+        "ru": "ребёнок",
+        "tj": "кӯдак"
+      },
+      "no": 7
+    },
+    {
+      "zh": "照片",
+      "pinyin": "zhàopiàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "rasm, surat",
+        "ru": "фотография",
+        "tj": "акс"
+      },
+      "no": 8
+    }
+  ],
+  "grammar": [
+    {
+      "no": 1,
+      "title": {
+        "uz": "Asosiy mavzu iborasi",
+        "ru": "Ключевая фраза темы",
+        "tj": "Ибораи асосии мавзуъ"
+      },
+      "title_zh": "主题词语",
+      "rule": {
+        "uz": "Darsdagi asosiy ibora: 你有几个. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你有几个”。",
+        "ru": "Ключевая фраза урока: 你有几个. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你有几个”。",
+        "tj": "Ибораи асосии дарс: 你有几个. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你有几个”。"
+      },
+      "examples": [
+        {
+          "zh": "今天我们学习“你有几个”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ yǒu jǐ gè.",
+          "translation": {
+            "uz": "Biz Miqdor, 有 va 没有 mavzusini o'rganamiz.",
+            "ru": "Мы изучаем тему: Количество, 有 и 没有.",
+            "tj": "Мо мавзӯи Миқдор, 有 ва 没有-ро меомӯзем."
+          }
+        },
+        {
+          "zh": "这个词是有。",
+          "pinyin": "Zhège cí shì yǒu.",
+          "translation": {
+            "uz": "Bu so'z: bor bo‘lmoq, ega bo‘lmoq.",
+            "ru": "Это слово: иметь, быть.",
+            "tj": "Ин калима: доштан, вуҷуд доштан."
+          }
+        }
+      ]
+    },
+    {
+      "no": 2,
+      "title": {
+        "uz": "Savol-javob qolipi",
+        "ru": "Модель вопрос-ответ",
+        "tj": "Қолаби саволу ҷавоб"
+      },
+      "title_zh": "问答结构",
+      "rule": {
+        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
+        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
+        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+      },
+      "examples": [
+        {
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "translation": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "zh": "有。",
+          "pinyin": "yǒu.",
+          "translation": {
+            "uz": "有 — yǒu deb o'qiladi.",
+            "ru": "有 читается как yǒu.",
+            "tj": "有 ҳамчун yǒu хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "dialogues": [
+    {
+      "scene": {
+        "uz": "Miqdor, 有 va 没有",
+        "ru": "Количество, 有 и 没有",
+        "tj": "Миқдор, 有 ва 没有"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天我们学习“你有几个”。",
+          "pinyin": "Jīntiān wǒmen xuéxí nǐ yǒu jǐ gè.",
+          "text": {
+            "uz": "Bugun Miqdor, 有 va 没有 mavzusini o'rganamiz.",
+            "ru": "Сегодня изучаем тему: Количество, 有 и 没有.",
+            "tj": "Имрӯз мавзӯи Миқдор, 有 ва 没有-ро меомӯзем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，这个话题很有用。",
+          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "text": {
+            "uz": "Yaxshi, bu mavzu juda foydali.",
+            "ru": "Хорошо, эта тема очень полезна.",
+            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个词怎么读？",
+          "pinyin": "Zhège cí zěnme dú?",
+          "text": {
+            "uz": "Bu so‘z qanday o‘qiladi?",
+            "ru": "Как читается это слово?",
+            "tj": "Ин калима чӣ хел хонда мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "有。",
+          "pinyin": "yǒu.",
+          "text": {
+            "uz": "有 — yǒu deb o'qiladi.",
+            "ru": "有 читается как yǒu.",
+            "tj": "有 ҳамчун yǒu хонда мешавад."
+          }
+        }
+      ]
+    }
+  ],
+  "sections": [
+    {
+      "section_no": 1,
+      "section_title": {
+        "uz": "Yangi so'zlar",
+        "ru": "Новые слова",
+        "tj": "Калимаҳои нав"
+      },
+      "section_purpose": "intro",
+      "cards": [
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "有",
+            "pinyin": "yǒu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bor bo‘lmoq, ega bo‘lmoq",
+              "ru": "иметь, быть",
+              "tj": "доштан, вуҷуд доштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "没有",
+            "pinyin": "méi yǒu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yo'q, ega emas",
+              "ru": "нет, не иметь",
+              "tj": "нест, надоштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "个",
+            "pinyin": "gè",
+            "pos": "mw.",
+            "meaning": {
+              "uz": "dona, ta",
+              "ru": "универсальное счётное слово",
+              "tj": "ҳисобкалимаи умумӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "几个",
+            "pinyin": "jǐ gè",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "nechta",
+              "ru": "сколько штук",
+              "tj": "чандто"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "本",
+            "pinyin": "běn",
+            "pos": "mw.",
+            "meaning": {
+              "uz": "kitob uchun hisob so‘zi",
+              "ru": "счётное слово для книг",
+              "tj": "ҳисобкалима барои китоб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "张",
+            "pinyin": "zhāng",
+            "pos": "mw.",
+            "meaning": {
+              "uz": "yassi narsa uchun hisob so‘zi",
+              "ru": "счётное слово для плоских предметов",
+              "tj": "ҳисобкалима барои ашёи ҳамвор"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "孩子",
+            "pinyin": "háizi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "zh": "照片",
+            "pinyin": "zhàopiàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "rasm, surat",
+              "ru": "фотография",
+              "tj": "акс"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "有 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 有:",
+            "tj": "Маънои калимаи 有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bor bo‘lmoq, ega bo‘lmoq",
+              "ru": "иметь, быть",
+              "tj": "доштан, вуҷуд доштан"
+            },
+            {
+              "uz": "yo'q, ega emas",
+              "ru": "нет, не иметь",
+              "tj": "нест, надоштан"
+            },
+            {
+              "uz": "dona, ta",
+              "ru": "универсальное счётное слово",
+              "tj": "ҳисобкалимаи умумӣ"
+            },
+            {
+              "uz": "nechta",
+              "ru": "сколько штук",
+              "tj": "чандто"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "有 = bor bo‘lmoq, ega bo‘lmoq (yǒu)",
+            "ru": "有 = иметь, быть (yǒu)",
+            "tj": "有 = доштан, вуҷуд доштан (yǒu)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "有 talaffuzini tanlang:",
+            "ru": "Выберите произношение 有:",
+            "tj": "Талаффузи 有-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yǒu",
+            "méi yǒu",
+            "gè",
+            "jǐ gè"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "有 — yǒu",
+            "ru": "有 — yǒu",
+            "tj": "有 — yǒu"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'bor bo‘lmoq, ega bo‘lmoq' xitoycha nima?",
+            "ru": "'иметь, быть' по-китайски?",
+            "tj": "'доштан, вуҷуд доштан' ба чинӣ чист?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба чинӣ чӣ тавр?"
+          },
+          "options": [
+            "有",
+            "没有",
+            "个",
+            "几个"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "有 = bor bo‘lmoq, ega bo‘lmoq (yǒu)",
+            "ru": "有 = иметь, быть (yǒu)",
+            "tj": "有 = доштан, вуҷуд доштан (yǒu)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "méi yǒu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается méi yǒu?",
+            "tj": "méi yǒu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "没有",
+            "有",
+            "个",
+            "几个"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "没有 = yo'q, ega emas (méi yǒu)",
+            "ru": "没有 = нет, не иметь (méi yǒu)",
+            "tj": "没有 = нест, надоштан (méi yǒu)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "'你有几个' iborasini tuzing",
+            "ru": "Соберите фразу '你有几个'",
+            "tj": "Ибораи '你有几个'-ро созед"
+          },
+          "tokens": [
+            "你",
+            "有",
+            "几个",
+            "没有",
+            "个"
+          ],
+          "answer_tokens": [
+            "你",
+            "有",
+            "几个"
+          ],
+          "explanation": {
+            "uz": "To'g'ri tartib: 你 有 几个",
+            "ru": "Правильный порядок: 你 有 几个",
+            "tj": "Тартиби дуруст: 你 有 几个"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "有",
+              {
+                "uz": "bor bo‘lmoq, ega bo‘lmoq",
+                "ru": "иметь, быть",
+                "tj": "доштан, вуҷуд доштан"
+              }
+            ],
+            [
+              "没有",
+              {
+                "uz": "yo'q, ega emas",
+                "ru": "нет, не иметь",
+                "tj": "нест, надоштан"
+              }
+            ],
+            [
+              "个",
+              {
+                "uz": "dona, ta",
+                "ru": "универсальное счётное слово",
+                "tj": "ҳисобкалимаи умумӣ"
+              }
+            ],
+            [
+              "几个",
+              {
+                "uz": "nechta",
+                "ru": "сколько штук",
+                "tj": "чандто"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
+            "ru": "Пары взяты из ключевых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你有几个",
+          "pinyin": "nǐ yǒu jǐ gè",
+          "translation": {
+            "uz": "Miqdor, 有 va 没有",
+            "ru": "Количество, 有 и 没有",
+            "tj": "Миқдор, 有 ва 没有"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Dialog",
+        "ru": "Диалог",
+        "tj": "Муколама"
+      },
+      "section_purpose": "dialog",
+      "cards": [
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A qaysi savolni beradi?",
+            "ru": "Какой вопрос задаёт A в диалоге?",
+            "tj": "Дар муколама A кадом саволро медиҳад?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这个词怎么读？",
+            "你叫什么名字？",
+            "现在几点？",
+            "你去哪儿？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "A savoli: 这个词怎么读？",
+            "ru": "Вопрос A: 这个词怎么读？",
+            "tj": "Саволи A: 这个词怎么读？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "B qanday javob beradi?",
+            "ru": "Как отвечает B?",
+            "tj": "B чӣ ҷавоб медиҳад?"
+          },
+          "title": {
+            "uz": "Dialog javobi:",
+            "ru": "Ответ из диалога:",
+            "tj": "Ҷавоб аз муколама:"
+          },
+          "options": [
+            "有。",
+            "不客气！",
+            "我不知道。",
+            "再见！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "B javobi: 有。",
+            "ru": "Ответ B: 有。",
+            "tj": "Ҷавоби B: 有。"
+          }
+        }
+      ]
+    }
+  ]
+}

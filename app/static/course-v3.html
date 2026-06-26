@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>HSK AI</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{
+  --ink:#211D17;--ink2:#6E665B;--ink3:#A89E8E;--paper:#FBF7EF;--card:#FFFFFF;--line:#EAE2D4;
+  --cin:#C2403A;--cin2:#9A2F2B;--cinbg:#FBEDEA;--gold:#C2962F;--goldbg:#F8F0DA;--jade:#2F7D5E;--jadebg:#E7F1EA;
+  --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600;letter-spacing:1px}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;position:relative;padding-top:var(--safe-t)}
+.scr{display:none;padding-bottom:calc(82px + var(--safe-b))}
+.scr.on{display:block}
+button{cursor:pointer}
+/* top */
+.htop{display:flex;align-items:center;gap:8px;padding:14px 16px 10px;position:sticky;top:var(--safe-t);background:var(--paper);z-index:4}
+.lvpill{display:flex;align-items:center;gap:6px;background:var(--cin);color:#fff;font-size:13px;font-weight:500;padding:7px 13px;border-radius:20px;border:none;font-family:inherit}
+.chip{display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:500}
+.langsw{margin-left:auto;display:flex;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.langsw button{background:none;border:none;font:inherit;font-size:12px;padding:6px 9px;color:var(--ink2)}
+.langsw button.on{background:var(--cin);color:#fff;font-weight:500}
+.pwrap{display:flex;align-items:center;gap:10px;padding:0 16px 6px}
+.pbar{flex:1;height:8px;background:var(--line);border-radius:6px;overflow:hidden}
+.pbar>i{display:block;height:100%;background:var(--cin);border-radius:6px;transition:width .4s}
+.pwrap small{font-size:12px;color:var(--ink2);font-weight:500}
+/* unit + path */
+.uban{display:flex;align-items:center;gap:10px;margin:8px 16px 0;background:var(--ink);color:#fff;border-radius:14px;padding:11px 14px}
+.uban.lock{background:var(--card);border:1px solid var(--line);color:var(--ink2)}
+.uban .un{font-size:11px;letter-spacing:1.5px;opacity:.7;text-transform:uppercase}
+.uban .utt{font-size:14px;font-weight:500}.uban .ic{margin-left:auto;font-size:18px;opacity:.85}
+.path{position:relative;padding:8px 0 2px}
+.prow{position:relative;height:84px;display:flex;justify-content:center}
+.nodewrap{position:absolute;display:flex;flex-direction:column;align-items:center;gap:4px}
+.node{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:23px;border:none;position:relative;font-family:inherit;color:#fff}
+.node .ring{position:absolute;inset:-6px;border-radius:50%;border:3px solid transparent}
+.node.done{background:var(--jade);box-shadow:0 4px 0 #245f47}
+.node.current{background:var(--cin);box-shadow:0 4px 0 var(--cin2)}
+.node.current .ring{border-color:var(--cin);animation:pl 1.6s ease-out infinite}
+@keyframes pl{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.25);opacity:0}}
+.node.locked{background:var(--line);color:var(--ink3);box-shadow:0 4px 0 #d8d2c4}
+.node.chest{background:var(--goldbg);color:var(--gold);box-shadow:0 4px 0 #d8c79a;border:2px solid var(--gold)}
+.node.boss{background:var(--cinbg);color:var(--cin);box-shadow:0 4px 0 #e8cfc9;border:2px solid var(--cin)}
+.nlabel{font-size:12px;font-weight:500;color:var(--ink2)}.nlabel.mut{color:var(--ink3)}
+.bubble{position:absolute;top:-42px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--cin);color:var(--cin2);font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;white-space:nowrap}
+.bubble:after{content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#fff;border-right:1px solid var(--cin);border-bottom:1px solid var(--cin)}
+/* nav */
+.nav{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-b));padding-bottom:var(--safe-b);background:var(--card);border-top:1px solid var(--line);display:flex;align-items:flex-start;padding-top:8px;max-width:480px;margin:0 auto;z-index:8}
+.nav button{flex:1;background:none;border:none;font-family:inherit;color:var(--ink3);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.nav button.on{color:var(--cin)}
+.nav button i{font-size:21px}
+.nav .center{position:relative;top:-20px}
+.nav .center .fab{width:58px;height:58px;border-radius:50%;background:var(--cin);border:4px solid var(--card);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px}
+.nav .center .lbl{margin-top:4px;color:var(--cin);font-weight:500}
+/* sheet */
+.sheet{position:fixed;inset:0;background:rgba(20,17,13,.5);display:none;align-items:flex-end;z-index:50;max-width:480px;margin:0 auto}
+.sheet.on{display:flex}
+.si{background:var(--paper);border-radius:24px 24px 0 0;padding:8px 18px calc(22px + var(--safe-b));width:100%;position:relative;max-height:88vh;overflow-y:auto}
+.grip{width:40px;height:4px;border-radius:3px;background:var(--line);margin:8px auto 14px}
+.sx{position:absolute;right:14px;top:14px;background:none;border:none;color:var(--ink2);font-size:22px}
+.shead{text-align:center;margin-bottom:14px}
+.shead .zh{font-size:34px;line-height:1}
+.shead .py{font-size:15px;color:var(--cin2);font-weight:500;margin-top:5px}
+.shead .tr{font-size:13px;color:var(--ink2);margin-top:2px}
+.shead .stars{color:var(--gold);font-size:15px;margin-top:6px;letter-spacing:2px}
+.pmeta{font-size:12px;color:var(--ink2);font-weight:500;margin:0 2px 8px;display:flex;justify-content:space-between}
+.secs{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.sec{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px}
+.sec .si2{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sec.done .si2{background:var(--jadebg);color:var(--jade)}
+.sec.cur{border-color:var(--cin);background:var(--cinbg)}.sec.cur .si2{background:var(--cin);color:#fff}
+.sec.lock{color:var(--ink3)}.sec.lock .si2{background:var(--paper);color:var(--ink3)}
+.sec b{flex:1;font-weight:400}.sec.cur b{font-weight:500;color:var(--cin2)}
+.scta{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.scta.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+/* lesson overlay flow */
+.flow{position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:480px;margin:0 auto}
+.flow.on{display:flex}
+.ftop{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
+.fx{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
+.fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
+.fpbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .3s}
+.fheart{display:flex;align-items:center;gap:3px;color:var(--cin);font-size:15px;font-weight:500}
+.fstage{padding:4px 18px 0;font-size:11px;color:var(--cin2);font-weight:600;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.fstage b{font-size:12px;color:var(--ink);font-weight:600;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fbody{flex:1;overflow-y:auto;padding:10px 18px 0}
+.kicker{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:5px 11px;border-radius:12px;margin:4px 0 14px}
+.k-word{background:var(--cinbg);color:var(--cin2)}.k-gram{background:#E7F0F8;color:#2F6F9E}.k-dia{background:var(--jadebg);color:var(--jade)}.k-check{background:var(--goldbg);color:var(--gold)}
+.qq{font-size:14px;color:var(--ink2);font-weight:500;margin:6px 2px 12px}
+.qcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 18px;text-align:center;margin-bottom:16px;box-shadow:0 6px 0 rgba(194,64,58,.08)}
+.qcard .qh{font-size:50px;line-height:1}
+.qcard .qpy{font-size:17px;color:var(--cin2);font-weight:500;margin-top:8px}
+.qcard .gap{font-size:30px;line-height:1.4}.qcard .gap u{text-decoration:none;color:var(--cin);border-bottom:3px solid var(--cin);padding:0 16px}
+.audio{margin:14px auto 0;width:48px;height:48px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:22px;display:flex;align-items:center;justify-content:center}
+.opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:13px;padding:14px 15px;margin-bottom:10px;font-family:inherit;font-size:15px;color:var(--ink);box-shadow:0 4px 0 #E6DDCF;transition:transform .12s,box-shadow .12s}
+.opt:active{transform:translateY(2px);box-shadow:0 2px 0 #E6DDCF}
+.opt .k{width:23px;height:23px;border-radius:7px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--ink3)}
+.opt.sel{border-color:var(--jade);background:var(--jadebg);color:var(--jade)}
+.opt.bad{border-color:var(--cin);background:var(--cinbg);color:var(--cin2)}
+.opt small{display:block;color:var(--ink3);font-size:12px;margin-top:2px}
+/* teaching word */
+.wc{text-align:center;padding:8px 0}
+.wc .big{font-size:92px;line-height:1}
+.wc .py{font-size:26px;color:var(--cin2);font-weight:500;margin-top:8px;display:inline-flex;align-items:center;gap:10px}
+.wc .pos{display:inline-block;font-size:12px;color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:3px 11px;margin-top:12px}
+.wc .mn{font-size:18px;margin-top:12px}
+.duo-mini{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+.duo-mini span{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center;font-size:12px;color:var(--ink2)}
+.duo-mini b{display:block;font-size:15px;color:var(--ink);margin-top:2px}
+.gc h3{font-size:20px;margin:0 0 3px;display:flex;align-items:center;gap:9px}.gc .zh{color:var(--cin2)}
+.gc .rule{font-size:14px;line-height:1.6;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;white-space:pre-line;margin:12px 0 14px}
+.gc .exrow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:8px}
+.gc .exrow .z2{font-size:26px;width:40px;text-align:center}.gc .exrow .p2{font-size:14px;color:var(--cin2);font-weight:500}.gc .exrow .t2{font-size:12px;color:var(--ink2)}
+.gc .exrow .au{margin-left:auto;width:32px;height:32px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:15px}
+.dia .scene{font-size:13px;color:var(--ink2);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.dia .line{display:flex;gap:9px;margin-bottom:13px;align-items:flex-end}
+.dia .line.B{flex-direction:row-reverse}
+.dia .ava{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;color:#fff}
+.dia .line.A .ava{background:var(--cin)}.dia .line.B .ava{background:var(--jade)}
+.dia .bub{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:10px 13px;max-width:78%}
+.dia .line.B .bub{background:var(--jadebg);border-color:var(--jadebg)}
+.dia .bub .z3{font-size:20px}.dia .bub .p3{font-size:12px;color:var(--cin2);font-weight:500;margin-top:2px}.dia .bub .t3{font-size:12px;color:var(--ink2);margin-top:1px}
+.dia .bub .au{background:none;border:none;color:var(--ink3);font-size:14px;float:right}
+.tokens{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:46px;border-bottom:2px dashed var(--line);padding-bottom:12px;margin-bottom:14px}
+.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tok{background:var(--card);border:1.5px solid var(--line);border-radius:11px;padding:9px 15px;font-family:inherit;font-size:18px;color:var(--ink)}
+.tok.han{font-family:"Songti SC",serif;font-weight:600}
+.pairs{display:flex;gap:10px}
+.pairs .col{flex:1;display:flex;flex-direction:column;gap:8px}
+.pcell{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:13px;text-align:center;font-family:inherit;font-size:16px;color:var(--ink)}
+.pcell.sel{border-color:var(--cin);background:var(--cinbg)}
+.pcell.ok{border-color:var(--jade);background:var(--jadebg);color:var(--jade);opacity:.7}
+.pcell.sm{font-size:13px}
+.fbar{padding:14px 16px calc(18px + var(--safe-b));background:var(--card);border-top:1px solid var(--line);transform:translateY(110%);transition:transform .26s}
+.fbar.show{transform:translateY(0)}
+.fbar.ok{background:var(--jadebg)}.fbar.no{background:var(--cinbg)}
+.fmsg{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:500;margin-bottom:10px}
+.fbar.ok .fmsg{color:var(--jade)}.fbar.no .fmsg{color:var(--cin2)}
+.fmsg small{display:block;font-size:12px;font-weight:400;color:var(--ink2)}
+.fbtn{width:100%;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:16px;font-weight:500;color:#fff;background:var(--cin)}
+.fbar.ok .fbtn{background:var(--jade)}
+.fcta{margin:0 16px calc(16px + var(--safe-b));padding:15px;background:var(--cin);color:#fff;border:none;border-radius:14px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.fdone{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
+.fdone .st{width:88px;height:88px;border-radius:24px;background:var(--jade);border:3px solid #fff;color:#fff;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:16px}
+.fdone h3{font-size:22px;font-weight:500;margin:0 0 4px}.fdone p{font-size:14px;color:var(--ink2);margin:0 0 20px}
+/* generic screens */
+.phead{padding:4px 16px 0}
+.phead h1{font-size:24px;margin:6px 0 2px}.phead .sub{font-size:13px;color:var(--ink2);margin:0 0 12px}
+.row-card{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 16px 11px;width:calc(100% - 32px);font-family:inherit;color:var(--ink)}
+.row-card .ti2{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.row-card .rt{flex:1;min-width:0}.row-card .rt b{font-size:15px;font-weight:500;display:block}.row-card .rt small{font-size:12px;color:var(--ink2)}
+.row-card .ar{color:var(--ink3);font-size:20px}
+.t-amber{background:#F8EFD9;color:#B07A1E}.t-blue{background:#E7F0F8;color:#2F6F9E}.t-jade{background:var(--jadebg);color:var(--jade)}.t-cin{background:var(--cinbg);color:var(--cin)}
+.sech{font-size:13px;color:var(--ink2);font-weight:500;margin:18px 18px 9px}
+/* profile */
+.phero{display:flex;align-items:center;gap:14px;padding:10px 16px 2px}
+.pav{width:70px;height:70px;border-radius:18px;background:var(--cin);border:2px solid var(--cin2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;position:relative;flex-shrink:0}
+.pav .ed{position:absolute;right:-5px;bottom:-5px;width:24px;height:24px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:12px;display:flex;align-items:center;justify-content:center}
+.pname{font-size:19px;font-weight:500}.pun{font-size:13px;color:var(--ink3)}
+.lvb{display:inline-flex;align-items:center;gap:5px;margin-top:7px;background:var(--cinbg);color:var(--cin2);font-size:11px;font-weight:500;padding:4px 10px;border-radius:11px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 4px;text-align:center}
+.stat b{display:block;font-size:20px;font-weight:600}.stat small{font-size:11px;color:var(--ink2)}
+.set{margin:0 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.srow{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line);font-size:14px;width:100%;background:none;border-left:none;border-right:none;border-top:none;font-family:inherit;color:var(--ink);text-align:left}
+.srow:last-child{border-bottom:none}.srow>i:first-child{font-size:19px;color:var(--ink2)}
+.srow .sv{margin-left:auto;color:var(--ink3);font-size:13px;display:flex;align-items:center;gap:4px}
+.pgoal{display:flex;align-items:center;gap:14px;margin:14px 16px 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.pgoal .ring{width:56px;height:56px;flex-shrink:0}
+.pgoal .gt b{font-size:15px;font-weight:500}.pgoal .gt small{font-size:12px;color:var(--ink2);display:block;margin-top:2px}
+.pgoal .fl{margin-left:auto;text-align:center}.pgoal .fl b{font-size:22px;font-weight:600;color:var(--cin);display:block}.pgoal .fl small{font-size:10px;color:var(--ink2)}
+.card2{margin:0 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+.cal{display:flex;flex-direction:column;gap:5px}.cal .wk{display:flex;gap:5px;justify-content:space-between}
+.cell{width:34px;height:30px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink3)}
+.cell.on{background:var(--cin);border-color:var(--cin);color:#fff}.cell.tod{border:2px solid var(--gold)}
+.shelf{margin:0 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 8px 0;overflow:hidden}
+.cups{display:flex;justify-content:space-around;align-items:flex-end}
+.cup{display:flex;flex-direction:column;align-items:center;width:25%}.cup svg{width:34px;height:42px}
+.cup small{font-size:9px;color:var(--ink2);margin-top:2px;text-align:center;line-height:1.15}
+.cup.lock svg{opacity:.3;filter:grayscale(1)}
+.board{height:9px;background:#A88B5E;margin:6px -8px 0;border-top:2px solid #8A714A}
+.shelf{padding:11px 8px 0 !important}
+.ach{margin:0 16px;display:flex;flex-direction:column;gap:10px}
+.arow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:12px}
+.aic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.aic.c1{background:var(--cinbg);color:var(--cin)}.aic.c2{background:var(--goldbg);color:var(--gold)}.aic.c3{background:var(--jadebg);color:var(--jade)}
+.at{flex:1;min-width:0}.at .ah{font-size:14px;font-weight:500;display:flex;justify-content:space-between}.at .ah small{color:var(--ink2);font-weight:400}
+.abar{height:7px;border-radius:5px;background:var(--line);margin-top:7px;overflow:hidden}.abar>i{display:block;height:100%;border-radius:5px;background:var(--cin)}
+.opt-row{display:flex;align-items:center;gap:11px;width:100%;background:var(--card);border:2px solid var(--line);border-radius:13px;padding:14px;margin-bottom:9px;font-family:inherit;font-size:15px;color:var(--ink)}
+.opt-row.on{border-color:var(--cin);background:var(--cinbg);color:var(--cin2)}
+.opt-row .chk{margin-left:auto;color:var(--cin)}
+.toggle{margin-left:auto;width:44px;height:26px;border-radius:14px;background:var(--line);position:relative;transition:background .2s}
+.toggle.on{background:var(--jade)}.toggle:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}.toggle.on:after{left:21px}
+/* rating */
+.lr{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);margin:0 16px}
+.lr .rk{width:26px;text-align:center;font-weight:600;font-size:14px;color:var(--ink2)}
+.lr .av{width:34px;height:34px;border-radius:10px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--ink2)}
+.lr .nm{flex:1;font-size:14px}.lr .xp{font-size:13px;color:var(--ink2);font-weight:500}
+.lr.me{background:var(--cinbg);border-radius:11px;border-bottom:none;padding:10px 12px}
+.lr.me .av{background:var(--cin);color:#fff}.lr.me .nm{font-weight:500;color:var(--cin2)}.lr.me .xp{color:var(--cin2)}
+.rt-league{display:flex;align-items:center;gap:13px;margin:8px 16px 6px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.rt-emb{width:50px;height:50px;border-radius:14px;background:var(--cin);border:2px solid var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
+.rt-league .nm2{font-size:16px;font-weight:500}.rt-league .sb{font-size:12px;color:var(--ink2);margin-top:2px}
+.rt-cd{margin-left:auto;text-align:center;background:var(--cinbg);border-radius:11px;padding:6px 10px}
+.rt-cd b{display:block;font-size:14px;font-weight:600;color:var(--cin2)}.rt-cd small{font-size:10px;color:var(--cin2)}
+.rt-ladder{display:flex;align-items:center;justify-content:center;gap:7px;margin:2px 16px 6px}
+.rt-step{width:30px;height:30px;border-radius:9px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink3);opacity:.7}
+.rt-step.cur{background:var(--goldbg);border-color:var(--gold);color:var(--gold);opacity:1;transform:scale(1.1)}
+.rt-step.line{width:12px;height:1px;background:var(--line);border:none;border-radius:0;opacity:1}
+.rt-zone{display:flex;align-items:center;gap:8px;margin:8px 16px 2px;font-size:12px;font-weight:500}
+.rt-zone.up{color:var(--gold)}.rt-zone.dn{color:var(--cin)}.rt-zone .ln{flex:1;height:1px;background:currentColor;opacity:.4}
+.rt-seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:3px;margin:0 16px 8px}
+.rt-seg button{flex:1;background:none;border:none;font-family:inherit;font-size:13px;font-weight:500;color:var(--ink2);padding:8px;border-radius:10px}
+.rt-seg button.on{background:var(--cin);color:#fff}
+.med{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;border:2px solid rgba(255,255,255,.5)}
+.med.g{background:var(--gold)}.med.s{background:#A9A293}.med.b{background:#B07A4A}
+.pm{width:14px;height:14px;border-radius:4px;background:var(--gold);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-left:5px}
+.rt-invite{text-align:center;padding:40px 22px}
+.rt-invite .han{font-size:42px;color:var(--cin);display:block;margin-bottom:12px}
+.rt-invite p{font-size:14px;color:var(--ink2);margin:0 0 16px;line-height:1.5}
+.rt-invite button{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:12px 20px;font-family:inherit;font-size:14px;font-weight:500}
+.sp{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.sp .pav2{width:56px;height:56px;border-radius:15px;background:var(--cin);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
+.sp b{font-size:18px;font-weight:500;display:flex;align-items:center}.sp small{font-size:13px;color:var(--ink2)}
+.sst{display:flex;gap:10px;margin-bottom:16px}
+.sst>div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 4px;text-align:center}
+.sst b{display:block;font-size:17px;font-weight:600}.sst small{font-size:11px;color:var(--ink2)}
+.sact{display:flex;gap:10px}
+.sact button{flex:1;border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px}
+.sact .b-ch{background:var(--cin);color:#fff}.sact .b-tg{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.upov{position:fixed;inset:0;background:var(--paper);z-index:42;display:none;max-width:480px;margin:0 auto;overflow-y:auto;padding-top:var(--safe-t)}
+.upov.on{display:block}
+.uptop{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 4px}
+.upx{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
+.uphero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 18px 0}
+.uphero .av{width:80px;height:80px;border-radius:22px;background:var(--cin);border:2px solid var(--cin2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;position:relative}
+.uphero .av .cr{position:absolute;right:-5px;bottom:-5px;width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;border:2px solid var(--paper)}
+.uphero .nm{font-size:21px;font-weight:500;margin:10px 0 2px}.uphero .un{font-size:13px;color:var(--ink3)}
+.uphero .badges{display:flex;gap:7px;justify-content:center;margin-top:9px;flex-wrap:wrap}
+.uphero .bg{font-size:11px;font-weight:500;padding:4px 10px;border-radius:11px;display:flex;align-items:center;gap:4px}
+.bg-lv{background:var(--cinbg);color:var(--cin2)}.bg-lg{background:var(--goldbg);color:var(--gold)}.bg-st{background:var(--jadebg);color:var(--jade)}
+.riv{margin:16px;background:var(--ink);color:#fff;border-radius:16px;padding:15px 16px}
+.riv h4{margin:0 0 12px;font-size:14px;font-weight:500;color:#fff;display:flex;align-items:center;gap:7px}
+.riv .vn{font-size:12px;color:rgba(255,255,255,.75);margin-bottom:5px;display:flex;justify-content:space-between}
+.riv .bar{height:8px;border-radius:5px;background:rgba(255,255,255,.15);overflow:hidden;margin-bottom:11px}.riv .bar>i{display:block;height:100%;border-radius:5px}
+.riv .note{font-size:12px;color:var(--gold);margin-top:2px;text-align:center;font-weight:500}
+.upacts{display:flex;gap:10px;padding:8px 16px calc(20px + var(--safe-b))}
+.upacts button{border:none;border-radius:13px;padding:14px;font-family:inherit;font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px}
+.upacts .b-fr{flex:1.3;background:var(--cin);color:#fff}.upacts .b-fr.on{background:var(--jadebg);color:var(--jade)}
+.upacts .b-ch{flex:1;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.upacts .b-tg{width:50px;background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.tmpl{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:13px;margin-bottom:9px;font-family:inherit;font-size:14px;color:var(--ink);line-height:1.4}
+.tmpl .tact{display:flex;gap:14px;margin-top:9px}
+.tmpl .tact span{font-size:12px;color:var(--cin);font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.linkbox{display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin:10px 0;font-size:13px;color:var(--ink2)}
+.linkbox .lk{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.linkbox button{background:var(--cin);color:#fff;border:none;border-radius:9px;padding:7px 12px;font-family:inherit;font-size:12px;font-weight:500;flex-shrink:0}
+.toast{position:fixed;bottom:calc(86px + var(--safe-b));left:50%;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;font-size:13px;font-weight:500;padding:9px 16px;border-radius:20px;opacity:0;transition:all .25s;z-index:60;pointer-events:none;max-width:90%}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.voicebox{margin:16px;background:var(--ink);color:#fff;border-radius:18px;padding:20px;text-align:center}
+.voicebox .pd{width:90px;height:90px;margin:0 auto 8px}
+.voicebox h3{font-size:18px;font-weight:500;margin:0 0 4px;color:#fff}
+.voicebox p{font-size:13px;color:rgba(255,255,255,.72);margin:0 0 16px}
+.voicebox button{background:var(--cin);color:#fff;border:none;border-radius:13px;padding:14px 26px;font-family:inherit;font-size:15px;font-weight:500}
+.pro{margin:16px;background:var(--ink);color:#fff;border-radius:16px;padding:17px;position:relative;overflow:hidden}
+.pro-price{display:flex;align-items:baseline;gap:7px;margin:8px 0 10px;flex-wrap:wrap}
+.pro-price .pp-main{font-size:22px;font-weight:700;color:#fff}
+.pro-price small{font-size:13px;opacity:.7}
+.pro-price .pp-s{font-size:12px;opacity:.6}
+.pro-price.pp-loading{font-size:18px;opacity:.4;margin:8px 0 10px}
+.pro .gw{position:absolute;right:-6px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
+.pro h3{margin:0 0 4px;font-size:16px;font-weight:500;color:#fff}.pro p{margin:0 0 13px;font-size:13px;color:rgba(255,255,255,.7)}
+.pro button{background:var(--gold);color:#3a2c08;border:none;border-radius:11px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:500}
+.loading{padding:60px 20px;text-align:center;color:var(--ink3);font-size:14px}
+.writebtn{position:absolute;right:18px;bottom:152px;width:56px;height:56px;border-radius:50%;background:var(--gold);color:#3a2c08;border:none;box-shadow:0 4px 0 #9a7420;display:flex;align-items:center;justify-content:center;font-size:24px;z-index:7}
+.writebtn:active{transform:translateY(2px);box-shadow:0 2px 0 #9a7420}
+.writebtn .penwrap{display:inline-flex;animation:penwrite 1.3s ease-in-out infinite;transform-origin:60% 80%}
+@keyframes penwrite{0%,100%{transform:translate(0,0) rotate(0)}20%{transform:translate(2px,-2px) rotate(-13deg)}45%{transform:translate(-2px,1px) rotate(9deg)}70%{transform:translate(2px,0) rotate(-6deg)}}
+.writebtn:before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--gold);animation:wpulse 1.9s ease-out infinite}
+@keyframes wpulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.45);opacity:0}}
+.writeov{position:fixed;inset:0;background:var(--paper);z-index:45;display:none;max-width:480px;margin:0 auto}
+.writeov.on{display:block}
+.writeov iframe{width:100%;height:100%;border:none;display:block}
+.writeov-x{position:absolute;top:calc(10px + var(--safe-t));right:12px;z-index:2;width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:20px;display:flex;align-items:center;justify-content:center}
+.levelup{position:fixed;inset:0;background:var(--ink);z-index:50;display:none;flex-direction:column;max-width:480px;margin:0 auto;color:#fff;overflow:hidden;padding-top:var(--safe-t)}
+.levelup.on{display:flex}
+.lu-rays{position:absolute;top:130px;left:50%;width:520px;height:520px;transform:translate(-50%,-50%);opacity:.5;animation:luspin 28s linear infinite}
+@keyframes luspin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.lu-panda{width:64px;height:64px;position:absolute;top:70px;right:50px;z-index:2}
+.lu-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;position:relative;z-index:2}
+.lu-emb{width:138px;height:138px;border-radius:34px;background:var(--cin);border:3px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:6px;transform:scale(0);transition:transform .5s cubic-bezier(.2,1.5,.4,1)}
+.lu-emb.in{transform:scale(1)}
+.lu-emb small{font-size:13px;color:rgba(255,255,255,.8)}.lu-emb b{font-size:50px;font-weight:600;line-height:1}.lu-emb .h2{font-size:58px}
+.levelup h2{font-size:26px;font-weight:500;margin:14px 0 6px;color:#fff}
+.levelup p{font-size:15px;color:rgba(255,255,255,.78);margin:0 0 18px;max-width:280px}
+.lu-rewards{display:flex;gap:10px}
+.lu-rw{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:13px;padding:11px 14px;text-align:center;min-width:72px}
+.lu-rw b{display:block;font-size:18px;font-weight:600;color:var(--gold)}.lu-rw small{font-size:11px;color:rgba(255,255,255,.7)}
+.lu-cta{margin:0 16px calc(16px + var(--safe-b));padding:16px;background:#fff;color:var(--cin2);border:none;border-radius:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
+.lu-conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:3}
+.lu-conf.fall{opacity:1;transition:transform 1.7s ease-in,opacity 1.7s}
+.ru-wrap{width:100%;display:flex;flex-direction:column;align-items:center}
+.ru-board{width:100%;max-width:300px;margin:8px auto 0}
+.ru-row{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.06);border-radius:12px;padding:11px 13px;margin-bottom:6px;transition:transform .7s cubic-bezier(.3,.85,.3,1)}
+.ru-row.me{background:var(--cin)}
+.ru-rk{width:20px;text-align:center;font-weight:600;font-size:14px;color:rgba(255,255,255,.7)}
+.ru-row.me .ru-rk{color:#fff}
+.ru-av{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#fff}
+.ru-row.me .ru-av{background:#fff;color:var(--cin2)}
+.ru-nm{flex:1;font-size:14px;color:#fff}.ru-xp{font-size:13px;color:rgba(255,255,255,.78);font-weight:500}
+.tour{position:fixed;inset:0;z-index:55;display:none;max-width:480px;margin:0 auto}
+.tour.on{display:block}
+.tour-spot{position:absolute;border:2px solid var(--gold);border-radius:16px;box-shadow:0 0 0 2000px rgba(20,17,13,.6);transition:all .35s ease;pointer-events:none}
+.tour-skip{position:absolute;top:calc(14px + var(--safe-t));right:14px;background:rgba(255,255,255,.92);border:none;border-radius:20px;padding:6px 13px;font-family:inherit;font-size:12px;color:var(--ink2)}
+.tour-coach{position:absolute;left:16px;right:16px;bottom:calc(96px + var(--safe-b));background:var(--paper);border-radius:18px;padding:15px}
+.tour-coach .ch{display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.tour-coach .pd{width:44px;height:44px;flex-shrink:0}
+.tour-coach .ct b{font-size:16px;font-weight:500;display:block}.tour-coach .ct small{font-size:11px;color:var(--ink3)}
+.tour-coach .vt{margin-left:auto;display:flex;align-items:center;gap:5px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:6px 10px;font-family:inherit;font-size:12px;color:var(--ink2)}
+.tour-coach .vt.on{background:var(--cinbg);border-color:var(--cin);color:var(--cin2);font-weight:500}
+.tour-coach .desc{font-size:14px;line-height:1.45;margin:0 0 12px}
+.tour-coach .row{display:flex;align-items:center;gap:10px}
+.tour-coach .dots{display:flex;gap:5px;flex:1}.tour-coach .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.tour-coach .dots i.on{background:var(--cin)}
+.tour-coach .nx{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:11px 20px;font-family:inherit;font-size:14px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="scr on" id="s-course"><div class="loading">…</div></div>
+  <div class="scr" id="s-mashq"></div>
+  <div class="scr" id="s-voice"></div>
+  <div class="scr" id="s-rating"></div>
+  <div class="scr" id="s-profile"></div>
+
+  <div class="nav" id="nav">
+    <button class="on" data-s="course"><i class="ti ti-map-2" id="i-c"></i><span data-i="course"></span></button>
+    <button data-s="mashq"><i class="ti ti-cards"></i><span data-i="mashq"></span></button>
+    <button class="center" data-s="voice"><span class="fab"><i class="ti ti-microphone"></i></span><span class="lbl" data-i="voice"></span></button>
+    <button data-s="rating"><i class="ti ti-trophy"></i><span data-i="rating"></span></button>
+    <button data-s="profile"><i class="ti ti-user"></i><span data-i="profile"></span></button>
+  </div>
+
+  <div class="sheet" id="sheet"><div class="si" onclick="event.stopPropagation()"><button class="sx" onclick="App.closeSheet()"><i class="ti ti-x"></i></button><div class="grip"></div><div id="sheet-body"></div></div></div>
+
+  <div class="sheet" id="paywall"><div class="si" onclick="event.stopPropagation()"><button class="sx" onclick="App.closePaywall()"><i class="ti ti-x"></i></button><div class="grip"></div><div id="paywall-body"></div></div></div>
+
+  <div class="flow" id="flow">
+    <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
+    <div class="fstage" id="f-stage"></div>
+    <div class="fbody" id="f-body"></div>
+    <button class="fcta" id="f-cta" onclick="Flow.next()"></button>
+    <button class="writebtn" id="writebtn" onclick="App.openWriter(writeChar)" style="display:none" aria-label="Yozilishi"><span class="penwrap"><i class="ti ti-pencil"></i></span></button>
+    <div class="fbar" id="f-bar"><div class="fmsg" id="f-msg"></div><button class="fbtn" onclick="Flow.next()" id="f-barbtn"></button></div>
+  </div>
+
+  <div class="writeov" id="writeov"><button class="writeov-x" onclick="App.closeWriter()" aria-label="Yopish"><i class="ti ti-chevron-down"></i></button><iframe id="writeframe" title="Ieroglif yozilishi"></iframe></div>
+
+  <div class="levelup" id="levelup"><svg class="lu-rays" id="lu-rays" viewBox="0 0 200 200"></svg><div class="lu-panda" id="lu-panda"></div><div class="lu-stage" id="lu-stage"></div><button class="lu-cta" id="lu-cta" onclick="App.closeLevelUp()"></button></div>
+
+  <div class="tour" id="tour"><div class="tour-spot" id="tour-spot"></div><button class="tour-skip" id="tour-skip" onclick="App.tourEnd()"></button><div class="tour-coach" id="tour-coach"></div></div>
+  <div class="upov" id="upov"></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<script>
+/* ---------- i18n (default RU) ---------- */
+var I18N={
+  ru:{nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"Premium",learner:"ученик",premium:"Premium",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Premium",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Оформить подписку",later:"Позже",lockedLesson:"Этот урок в Premium"},
+  uz:{nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"Premium",learner:"o'quvchi",premium:"Premium",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Premium",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"Obuna bo'lish",later:"Keyinroq",lockedLesson:"Bu dars Premium'da"},
+  tj:{nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Муколама",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"Premium",learner:"донишҷӯ",premium:"Premium",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Premium",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"Обуна шудан",later:"Дертар",lockedLesson:"Ин дарс дар Premium аст"}
+};
+var LANG=(new URLSearchParams(location.search).get("lang")||"ru");if(!I18N[LANG])LANG="ru";
+var LEVELS=["hsk1","hsk2","hsk3","hsk4"];
+function normalizeLevel(v){v=String(v||"").toLowerCase();return LEVELS.indexOf(v)>=0?v:"hsk1"}
+function getStoredLevel(){try{return normalizeLevel(localStorage.getItem("hsk_v3_level"))}catch(e){return"hsk1"}}
+function getSelectedLevel(){var p=new URLSearchParams(location.search);return normalizeLevel(p.get("level")||getStoredLevel())}
+function setSelectedLevel(lv){
+  lv=normalizeLevel(lv);
+  try{localStorage.setItem("hsk_v3_level",lv)}catch(e){}
+  try{var u=new URL(location.href);u.searchParams.set("level",lv);history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString())}catch(e){}
+  return lv;
+}
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var INIT_DATA=(tg&&tg.initData)||"";
+function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
+function _apiGet(url){return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}})}
+function _apiPost(url,body){return fetch(url,{method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)})}
+function T(){return I18N[LANG]}
+function tr(v){return !v?"":(typeof v==="string"?v:(v[LANG]||v.ru||v.uz||""))}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function $(s){return document.querySelector(s)}
+function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notificationOccurred("success"):t==="no"?tg.HapticFeedback.notificationOccurred("error"):tg.HapticFeedback.impactOccurred("light"))}catch(e){}}
+var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
+
+/* ---------- App ---------- */
+var MAP=null,SCREEN="course",HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,PRICES=null;
+function _priceStr(plan_type){
+  if(!PRICES||!PRICES.prices)return"";
+  var methods=["visa","alipay","wechat"];
+  for(var i=0;i<methods.length;i++){var m=PRICES.prices[methods[i]];if(m&&m[plan_type])return m[plan_type].amount+" "+m[plan_type].currency;}
+  return"";
+}
+function fetchPrices(){
+  if(!INIT_DATA)return;
+  _apiPost("/api/subscription-miniapp/overview",{mode:"subscription",source:"v3_price_preview"})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d.ok&&d.prices){PRICES=d;if(SCREEN==="profile")renderProfile();}
+    }).catch(function(){});
+}
+var App={
+  setLang:function(l){if(!I18N[l])return;LANG=l;renderAll()},
+  show:function(s){SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
+    document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.s===s)});window.scrollTo(0,0);
+    if(s==="voice")renderVoice();},
+  openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on")},
+  closeSheet:function(){$("#sheet").classList.remove("on")},
+  openPaywall:function(ctx){
+    var source=ctx==="lockedLesson"?"v3_locked_lesson":"v3_paywall";
+    App.goPay(source);
+  },
+  closePaywall:function(){$("#paywall").classList.remove("on")},
+  goPay:function(src){
+    var source=src||"v3_paywall";
+    var url="/subscription.html?lang="+LANG+"&source="+source+"&mode=subscription";
+    if(tg&&tg.openLink){try{tg.openLink(url,{try_instant_view:false});return}catch(e){}}
+    location.href=url;
+  },
+  exitFlow:function(){$("#flow").classList.remove("on")},
+  openWriter:function(ch){if(!ch)return;$("#writeframe").src="/hsk-lugat.html?theme=light&char="+encodeURIComponent(ch)+"&lang="+LANG;$("#writeov").classList.add("on")},
+  closeWriter:function(){$("#writeov").classList.remove("on");try{$("#writeframe").src="about:blank"}catch(e){}},
+  showLevelUp:function(type){
+    var lu={ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
+      uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
+      tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}}[LANG];
+    var V={lesson:{emb:'<span class="h2 han">毕</span>',h:lu.lessonH,p:lu.lessonP,rw:[["+60","XP"],["100%",lu.acc],["5",lu.combo]]},
+      level:{emb:'<span class="h2 han">二</span>',h:lu.levelH,p:lu.levelP,rw:[["HSK 2",lu.opened],["+200","XP"]]},
+      xp:{emb:'<small>'+lu.lvl+'</small><b>5</b>',h:lu.xpH,p:lu.xpP,rw:[["+50",lu.bonusXp],["1",lu.chest]]}}[type||"lesson"];
+    if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#C2962F" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
+    $("#lu-panda").innerHTML=pandaSvg();
+    $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p><div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw"><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join("")+'</div>';
+    $("#lu-cta").setAttribute("onclick",(type||"lesson")==="lesson"?"App.showRankUp()":"App.closeLevelUp()");
+    $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+lu.cont;
+    $("#levelup").classList.add("on");setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
+    luRain();beep([523,659,784,1046]);haptic("ok");
+  },
+  showRankUp:function(){
+    var meIdx=ratingUsers.findIndex(function(u){return u.me});
+    var meU=meIdx>=0?ratingUsers[meIdx]:null;
+    var aboveU=meIdx>0?ratingUsers[meIdx-1]:null;
+    var belowU=meIdx>=0&&meIdx<ratingUsers.length-1?ratingUsers[meIdx+1]:null;
+    var sub=aboveU?(LANG==="ru"?"Вы обогнали "+aboveU.n:LANG==="tj"?"Аз "+aboveU.n+" пеш гузаштед":aboveU.n+"dan o'tdingiz"):"";
+    var r={title:LANG==="ru"?"Вы поднялись в рейтинге!":LANG==="tj"?"Дар рейтинг боло рафтед!":"Reytingda ko'tarildingiz!",sub:sub,cont:T().cont};
+    var rows=[];
+    if(aboveU)rows.push({rk:meIdx,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
+    if(meU)rows.push({rk:meIdx+1,a:meU.a||PROF.avatar||"阿",n:T().you,xp:((meU.weeklyXp||MAP&&MAP.progress&&MAP.progress.xp)||0).toLocaleString("ru"),me:1,from:aboveU?1:0});
+    if(belowU)rows.push({rk:meIdx+2,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
+    if(!rows.length)rows=[{rk:1,a:PROF.avatar||"阿",n:T().you,xp:((MAP&&MAP.progress&&MAP.progress.xp)||0).toLocaleString("ru"),me:1,from:0}];
+    $("#lu-panda").innerHTML=pandaSvg();
+    $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+r.title+'</h2><p>'+r.sub+'</p><div class="ru-board">'+rows.map(function(u){return '<div class="ru-row '+(u.me?"me":"")+'" data-from="'+(u.from||0)+'"><span class="ru-rk">'+u.rk+'</span><span class="ru-av'+(u.me?" han":"")+'">'+u.a+'</span><span class="ru-nm">'+esc(u.n)+'</span><span class="ru-xp">'+u.xp+'</span></div>'}).join("")+'</div></div>';
+    $("#levelup").classList.add("on");
+    document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){var f=+row.dataset.from;if(f)row.style.transform="translateY("+(f*58)+"px)"});
+    setTimeout(function(){document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){row.style.transform="translateY(0)"});luRain();beep([784,988,1175,1318]);haptic("ok")},420);
+    $("#lu-cta").setAttribute("onclick","App.closeLevelUp()");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
+  },
+  closeLevelUp:function(){$("#levelup").classList.remove("on");App.exitFlow();App.show("rating")},
+  runTour:function(){var t={
+    ru:{
+      c:"Вот ваш курс! Каждый кружок — это урок. Нажми на узел и начни учиться.",
+      cNode:"Это твой текущий урок — нажми и начни! Внутри урока появится кнопка ✏️ — нажми, чтобы увидеть как пишется иероглиф.",
+      m:"Раздел практики — тут всё для закрепления знаний.",
+      mDict:"Словарь иероглифов 字 — все знаки HSK 1–4: написание, пиньинь, значение. Можно искать по иероглифу или значению.",
+      mTest:"Тест-центр — официальные экзамены HSK 1–4 и тест для определения твоего уровня с нуля.",
+      mMist:"Мои ошибки — здесь собираются все слова, где ты ошибся. Повторяй слабые места!",
+      v:"AI Voice — живой разговор с пандой 阿宝 на китайском. Говори — получай мгновенные исправления!",
+      r:"Лига 朱雀 — твоё место среди учеников. Набирай XP каждый день и поднимайся в рейтинге!",
+      p:"Профиль: стрик, дневная цель, кубки и достижения. Настрой язык, уведомления и XP-цель.",
+      skip:"Пропустить",voice:"Голос",done:"Начнём!",next:"Далее"
+    },
+    uz:{
+      c:"Mana kursIngiz! Har bir doira — bitta dars. Tugmachani bosing va o'qishni boshlang.",
+      cNode:"Bu hozirgi darsIngiz — bosing va boshlang! Dars ichida ✏️ tugmasi paydo bo'ladi — ieroglif yozilishini ko'rish uchun bosing.",
+      m:"Mashq bo'limi — bilimlarni mustahkamlash uchun hamma narsa.",
+      mDict:"Ieroglif lug'ati 字 — HSK 1–4 barcha belgilar: yozilishi, pinyin va ma'nosi. Ieroglif yoki ma'no bo'yicha qidirish mumkin.",
+      mTest:"Test markazi — HSK 1–4 rasmiy imtihon savollari va noldan daraja aniqlash testi.",
+      mMist:"Xatolarim — xato qilgan so'zlar shu yerda yig'iladi. Zaif joylarni takrorlang!",
+      v:"AI Voice — panda 阿宝 bilan jonli xitoycha suhbat. Gaping — tuzatishlar oling!",
+      r:"朱雀 ligasi — o'quvchilar orasidagi o'rningiz. Har kuni XP to'plang va yuqoriga chiqing!",
+      p:"Profil: streak, kunlik maqsad, kuboklar va yutuqlar. Til, bildirishnoma va XP maqsadini sozlang.",
+      skip:"O'tkazib yuborish",voice:"Ovoz",done:"Boshlaylik!",next:"Keyingi"
+    },
+    tj:{
+      c:"Ин ҷо курси шумо! Ҳар доира — як дарс. Тугмачаро пахш кунед ва омӯзишро оғоз кунед.",
+      cNode:"Ин дарси ҷории шумо — пахш кунед ва оғоз кунед! Дар дарс тугмаи ✏️ пайдо мешавад — барои дидани навиштани иероглиф пахш кунед.",
+      m:"Бахши машқ — ҳама чиз барои мустаҳкам кардани дониш.",
+      mDict:"Луғати иероглиф 字 — ҳамаи аломатҳои HSK 1–4: навишт, пинйин, маъно. Ҷустуҷӯ мумкин аст.",
+      mTest:"Маркази тест — имтиҳонҳои расмии HSK 1–4 ва тести муайянкунии сатҳ аз сифр.",
+      mMist:"Хатоҳои ман — калимаҳое ки хато кардед. Ҷойҳои заифро такрор кунед!",
+      v:"AI Voice — сӯҳбати зиндаи чинӣ бо панда 阿宝. Гӯед — ислоҳи фаврӣ гиред!",
+      r:"Лигаи 朱雀 — ҷойгоҳи шумо миёни донишҷӯён. Ҳар рӯз XP ҷамъ кунед ва боло равед!",
+      p:"Профил: streak, ҳадафи рӯзона, ҷомҳо ва дастовардҳо. Забон, огоҳиҳо ва XP-ро танзим кунед.",
+      skip:"Гузарондан",voice:"Овоз",done:"Сар кардем!",next:"Баъдӣ"
+    }}[LANG];
+    TOUR={i:0,t:t,steps:[
+      {s:"course",d:t.c},
+      {s:"course",sel:".node.current",d:t.cNode},
+      {s:"mashq",d:t.m},
+      {s:"mashq",sel:"#m-dict",d:t.mDict},
+      {s:"mashq",sel:"#m-test",d:t.mTest},
+      {s:"mashq",sel:"#m-mist",d:t.mMist},
+      {s:"voice",d:t.v},
+      {s:"rating",d:t.r},
+      {s:"profile",d:t.p}
+    ]};
+    $("#tour-skip").textContent=t.skip;$("#tour").classList.add("on");tourRender();},
+  tourNext:function(){if(TOUR.i<TOUR.steps.length-1){TOUR.i++;tourRender()}else{App.tourEnd()}},
+  tourEnd:function(){try{window.speechSynthesis.cancel()}catch(e){}try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
+  toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){try{window.speechSynthesis.cancel()}catch(e){}}tourRender(!TOURV)},
+  openDict:function(){location.href="/hsk-lugat.html?theme=light&lang="+LANG},
+  openRecog:function(){location.href="/course_v3_recognition.html?lang="+LANG},
+  openPron:function(){location.href="/course_v3_pronunciation.html?lang="+LANG},
+  openTest:function(){location.href="/course_v3_test.html?lang="+LANG},
+  openMistakes:function(){location.href="/course_v3_mistakes.html?lang="+LANG},
+  openVoiceCall:function(){location.href="/course_v3_voice.html?lang="+LANG},
+  openFriends:function(){ratingTabCur="friends";App.show("rating");renderRating()},
+  notifToggle:function(){notifOn=!notifOn;if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:notifOn}).catch(function(){});renderProfile()},
+  avatarEdit:function(){var t=T();var note=LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi";App.openSheet('<div class="shead"><div class="zh han" style="font-size:30px">'+(PROF.avatar||"阿")+'</div><div class="tr" style="margin-top:8px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
+  goalPicker:function(){var p=pl();var opts=[10,20,30,50];
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+p.goalSet+'</div></div>'
+      +opts.map(function(v){return '<button class="opt-row'+(v===dailyGoal?" on":"")+'" onclick="App.pickGoal('+v+')"><i class="ti ti-target"></i> '+v+' XP'+(v===dailyGoal?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""))},
+  pickGoal:function(v){dailyGoal=v;App.closeSheet();renderProfile()},
+  levelPicker:function(){
+    var names={hsk1:["你好","HSK 1"],hsk2:["谢谢","HSK 2"],hsk3:["明白","HSK 3"],hsk4:["流利","HSK 4"]};
+    var sub={
+      ru:{hsk1:"С нуля",hsk2:"Базовое общение",hsk3:"Повседневное общение",hsk4:"Свободное общение",title:"Выберите уровень"},
+      uz:{hsk1:"Noldan",hsk2:"Asosiy suhbat",hsk3:"Kundalik muloqot",hsk4:"Erkin muloqot",title:"Darajani tanlang"},
+      tj:{hsk1:"Аз сифр",hsk2:"Муоширати асосӣ",hsk3:"Муоширати ҳаррӯза",hsk4:"Муоширати озод",title:"Сатҳро интихоб кунед"}
+    }[LANG];
+    var cur=normalizeLevel(MAP&&MAP.level||getSelectedLevel());
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+sub.title+'</div></div>'
+      +LEVELS.map(function(lv){var n=names[lv];return '<button class="opt-row'+(cur===lv?' on':'')+'" onclick="App.pickLevel(\''+lv+'\')"><span class="han" style="font-size:22px;width:34px;text-align:center">'+n[0]+'</span><span style="flex:1"><b style="display:block">'+n[1]+'</b><small style="color:var(--ink2)">'+sub[lv]+'</small></span>'+(cur===lv?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""));
+  },
+  pickLevel:function(lv){App.closeSheet();loadLevel(lv)},
+  goCurrentLesson:function(){var idx=-1;allLessons().forEach(function(l,i){if(l.status==="current")idx=i});App.show("course");if(idx>=0)setTimeout(function(){openLessonSheet(idx)},60)},
+  langPicker:function(){var t=T();var names={uz:"O'zbekcha",ru:"Русский",tj:"Тоҷикӣ"};
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+t.lang+'</div></div>'
+      +["uz","ru","tj"].map(function(l){return '<button class="sec'+(l===LANG?' cur':'')+'" style="width:100%;margin-bottom:8px" onclick="App.pickLang(\''+l+'\')"><span class="si2">'+(l===LANG?'<i class="ti ti-check"></i>':'')+'</span><b>'+names[l]+'</b></button>'}).join(""));},
+  pickLang:function(l){App.closeSheet();App.setLang(l)}
+};
+function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})}
+
+/* ---------- Course (hybrid path) ---------- */
+function allLessons(){var a=[];(MAP.units||[]).forEach(function(u){(u.lessons||[]).forEach(function(l){a.push(l)})});return a}
+function isPaidUser(){return !!(PROF&&PROF.is_paid||MAP&&MAP.user&&MAP.user.is_paid)}
+function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
+function serverSaveErrorText(code){
+  var m={
+    ru:{free_feature_limit_reached:"Этот урок доступен только Premium.",course_lesson_not_unlocked:"Сначала завершите предыдущий урок.",default:"Прогресс не сохранился. Попробуйте ещё раз."},
+    uz:{free_feature_limit_reached:"Bu dars faqat Premium uchun.",course_lesson_not_unlocked:"Avvalgi darsni tugating.",default:"Progress saqlanmadi. Qayta urinib ko'ring."},
+    tj:{free_feature_limit_reached:"Ин дарс танҳо барои Premium аст.",course_lesson_not_unlocked:"Аввал дарси пешинаро анҷом диҳед.",default:"Пешрафт сабт нашуд. Боз кӯшиш кунед."}
+  }[LANG]||{};
+  return m[code]||m.default||"Progress error";
+}
+function lessonStatusNode(l){return l.status}
+function renderCourse(){
+  var done=allLessons().filter(function(l){return l.status==="done"}).length;
+  var total=allLessons().length;
+  var pct=Math.round(done/Math.max(total,1)*100);
+  var h='<div class="htop"><button class="lvpill" onclick="App.levelPicker()"><i class="ti ti-bolt"></i> '+esc(MAP.label)+' <i class="ti ti-chevron-down"></i></button>'
+    +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
+    +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span></div>'
+    +'<div class="pwrap"><div class="pbar"><i style="width:'+pct+'%"></i></div><small>'+done+' / '+total+' '+T().lessons+'</small></div>';
+  (MAP.units||[]).forEach(function(u,ui){
+    var locked=u.status==="locked";
+    h+='<div class="uban'+(locked?' lock':'')+'"><div><div class="un">'+(u.no)+'-'+T().unit+'</div><div class="utt">'+esc(tr(u.title))+'</div></div><span class="ic"><i class="ti ti-'+(locked?'lock':'book-2')+'"></i></span></div>';
+    h+='<div class="path">';
+    var nodes=[];
+    (u.lessons||[]).forEach(function(l){nodes.push({kind:"lesson",l:l})});
+    if(!locked && u.milestone){nodes.splice(Math.min(3,nodes.length),0,{kind:"chest"});nodes.push({kind:"boss",m:u.milestone})}
+    nodes.forEach(function(n,k){
+      var off=Math.round(Math.sin((ui*3+k)*0.9)*76);
+      var inner,cls,lbl="",clk="",bub="";
+      if(n.kind==="chest"){cls="chest";inner='<i class="ti ti-gift"></i>'}
+      else if(n.kind==="boss"){cls="boss";inner='<i class="ti ti-star"></i>';lbl=tr(n.m.title).split(" ")[0]||"Sinov"}
+      else{
+        var st=isPremiumLocked(n.l)?"locked":n.l.status;cls=st;
+        if(st==="done")inner='<i class="ti ti-check"></i>';
+        else if(st==="current"){inner='<span class="han" style="font-size:19px">学</span>';bub='<div class="bubble">'+T().cont.toUpperCase()+'</div>'}
+        else inner='<i class="ti ti-lock"></i>';
+        lbl=n.l.zh;clk='onclick="openLessonSheet('+JSON.stringify(allLessons().indexOf(n.l))+')"';
+      }
+      h+='<div class="prow"><div class="nodewrap" style="transform:translateX('+off+'px)">'+bub
+        +'<button class="node '+cls+'" '+clk+'><span class="ring"></span>'+inner+'</button>'
+        +(lbl?'<span class="nlabel '+(cls==="locked"||cls==="boss"||cls==="chest"?"mut":"")+'">'+esc(lbl)+'</span>':'')+'</div></div>';
+    });
+    h+='</div>';
+  });
+  h+='<div style="height:14px"></div>';
+  $("#s-course").innerHTML=h;
+}
+function secNames(){var m={ru:["Новые слова","Закрепление","Аудирование","В речи","Диалог","Повторение"],uz:["Yangi so'zlar","Mustahkamlash","Tinglash","Gapda ishlatish","Qisqa dialog","Review"],tj:["Калимаҳои нав","Мустаҳкамкунӣ","Шунидан","Дар ҷумла","Муколама","Такрор"]};return m[LANG]||m.ru}
+function openLessonSheet(idx){
+  var l=allLessons()[idx];if(!l)return;
+  if(isPremiumLocked(l)){App.openPaywall("lockedLesson");return}
+  if(l.status==="locked"){App.openPaywall("lockedLesson");return}
+  var prog=l.status==="done"?6:(l.n===3?4:0);
+  var secs=secNames().map(function(s,k){var cls=k<prog?"done":(k===prog&&l.status==="current"?"cur":"lock");var ic=cls==="done"?'<i class="ti ti-check"></i>':(cls==="cur"?'<i class="ti ti-player-play"></i>':'<i class="ti ti-lock"></i>');return '<div class="sec '+cls+'"><span class="si2">'+ic+'</span><b>'+(k+1)+'. '+s+'</b></div>'}).join("");
+  var stars=l.status==="done"?'<div class="stars">'+"★★★☆☆☆".slice(3-(l.stars||0),6-(l.stars||0))+'</div>':'';
+  var cta=l.status==="current"?'<button class="scta" onclick="startLesson('+idx+')"><i class="ti ti-player-play"></i> '+T().cont+'</button>'
+    :'<button class="scta ghost" onclick="startLesson('+idx+')"><i class="ti ti-refresh"></i> '+T().repeat+'</button>';
+  App.openSheet('<div class="shead"><div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div>'+stars+'</div>'
+    +'<div class="pmeta"><span>6 '+T().stage+'</span><span>'+prog+' / 6 '+T().completeOf+'</span></div><div class="secs">'+secs+'</div>'+cta);
+}
+
+/* ---------- Lesson flow engine ---------- */
+var Flow={queue:[],i:0,answered:false};
+function startLesson(idx){
+  var l=allLessons()[idx];App.closeSheet();
+  if(!l)return;
+  if(isPremiumLocked(l)){App.openPaywall("lockedLesson");return}
+  if(l.status==="locked"){return}
+  var lv=MAP.level||"hsk1";
+  var pad=String(l.n).padStart(2,"0");
+  var url="/course_v3_data/"+lv+"/lesson_"+pad+".json";
+  fetch(url).then(function(r){
+    if(!r.ok)throw new Error("not_found");
+    return r.json();
+  }).then(function(d){
+    Flow.queue=buildQueue(d);Flow.i=0;HP=5;$("#f-hp").textContent=HP;$("#flow").classList.add("on");renderFlowCard();
+  }).catch(function(){
+    var msg=LANG==="ru"?"Дарс пока не готов":LANG==="tj"?"Дарс ҳанӯз тайёр нест":"Dars hali tayyor emas";
+    toast(msg,2500);
+  });
+}
+function buildQueue(d){
+  var q=[];
+  (d.sections||[]).forEach(function(sec){
+    var cards=(sec.cards||[]).slice();
+    if(sec.section_purpose==="intro"){
+      var words=cards.filter(function(c){return c.type==="active_word"});
+      var rest=cards.filter(function(c){return c.type!=="active_word"});
+      var drill=[];
+      words.slice(0,4).forEach(function(c,idx){
+        var w=c.word||{};
+        if(idx===0)drill.push({type:"_word_flash",word:w});
+        else if(idx===1)drill.push({type:"_word_listen",word:w});
+        else if(idx===2)drill.push({type:"_word_pick_meaning",word:w,words:words});
+        else drill.push({type:"_word_pick_hanzi",word:w,words:words});
+      });
+      cards=drill.concat(rest);
+    }
+    if(sec.section_purpose==="intro" && d.grammar && d.grammar.length){
+      var idx=cards.findIndex(function(c){return c.type!=="active_word"&&String(c.type||"").indexOf("_word_")!==0});if(idx<0)idx=cards.length;
+      var gc=d.grammar.map(function(g){return {type:"_grammar",g:g}});
+      cards=cards.slice(0,idx).concat(gc,cards.slice(idx));
+    }
+    if(sec.section_purpose==="dialog" && d.dialogues && d.dialogues.length){
+      cards=[{type:"_dialogue",d:d.dialogues[0]}].concat(cards);
+    }
+    var sNo=sec.section_no||0, sTitle=tr(sec.section_title)||(secNames()[(sec.section_no||1)-1]||"");
+    cards.forEach(function(c){c._sNo=sNo;c._sTitle=sTitle;q.push(c)});
+  });
+  return q;
+}
+function flowProg(){$("#f-prog").style.width=Math.round(Flow.i/Flow.queue.length*100)+"%"}
+function hideBar(){$("#f-bar").className="fbar"}
+function showBar(ok,msg,sub){var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");$("#f-msg").innerHTML='<i class="ti ti-'+(ok?"check":"x")+'"></i><span>'+msg+(sub?'<small>'+sub+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next}
+var writeChar="";
+function setWriteBtn(ch){writeChar=ch||"";var b=$("#writebtn");if(b)b.style.display=writeChar?"flex":"none";}
+function renderFlowCard(){
+  Flow.answered=false;hideBar();flowProg();
+  if(Flow.i>=Flow.queue.length){return flowDone()}
+  var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:T().check);
+  var t=c.type;
+  setWriteBtn((t==="active_word"||t==="_word_flash"||t==="_word_listen"||t==="_word_pick_meaning"||t==="_word_pick_hanzi")?(c.word&&c.word.zh):t==="pronunciation"?c.phrase:t==="listening_choice"?c.audio_text:(c.source_words&&c.source_words.length?c.source_words[0]:""));
+  var stEl=$("#f-stage");if(stEl)stEl.innerHTML=c._sNo?'<span>'+(Flow.i+1)+' / '+Flow.queue.length+'</span><b>'+esc(c._sTitle||"")+'</b>':'';
+  if(t==="active_word")return cardWord(c);
+  if(t==="_word_flash")return cardWordFlash(c);
+  if(t==="_word_listen")return cardWordListen(c);
+  if(t==="_word_pick_meaning")return cardWordMeaning(c);
+  if(t==="_word_pick_hanzi")return cardWordHanzi(c);
+  if(t==="_grammar")return cardGrammar(c.g);
+  if(t==="_dialogue")return cardDialogue(c.d);
+  if(t==="sentence_builder")return cardBuilder(c);
+  if(t==="match_pairs")return cardMatch(c);
+  if(t==="pronunciation")return cardPron(c);
+  return cardChoice(c); /* meaning_guess, pinyin_choice, hanzi_choice, translation_choice, quick_quiz, gap_fill, listening_choice, dialog_context */
+}
+function teachContinue(){var cta=$("#f-cta");cta.style.display="flex"}
+function _wrongWordOptions(words,field,correct){
+  var vals=(words||[]).map(function(c){var w=c.word||{};return field==="meaning"?tr(w.meaning):w.zh}).filter(Boolean);
+  vals=vals.filter(function(v,i,a){return v!==correct&&a.indexOf(v)===i}).slice(0,3);
+  while(vals.length<3){vals.push(field==="meaning"?["men","sen","dars","savol"][vals.length]:["我","你","学"][vals.length])}
+  return vals;
+}
+function _choiceFromWord(c,opts,correctIndex,title,question,headHtml){
+  $("#f-cta").style.display="none";
+  $("#f-body").innerHTML='<div class="qq">'+esc(title)+'</div>'+headHtml+opts.map(function(o,k){return '<button class="opt" data-k="'+k+'" onclick="Flow.pick(this,'+k+')"><span class="k">'+"ABCD"[k]+'</span>'+esc(o)+'</button>'}).join("");
+  c.options=opts;c.correct_index=correctIndex;c.title=title;c.prompt=question;c.explanation={uz:"To'g'ri javob: "+opts[correctIndex],ru:"Правильный ответ: "+opts[correctIndex],tj:"Ҷавоби дуруст: "+opts[correctIndex]};
+}
+function cardWordFlash(c){
+  var w=c.word||{};$("#f-cta").style.display="flex";
+  $("#f-body").innerHTML='<span class="kicker k-word"><i class="ti ti-sparkles"></i> '+T().newWord+'</span>'
+    +'<div class="wc"><div class="big han">'+esc(w.zh||"")+'</div><div class="py">'+esc(w.pinyin||"")+'<button class="audio" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>'
+    +'<div><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div>'
+    +'<div class="duo-mini"><span>Pinyin<b>'+esc(w.pinyin||"")+'</b></span><span>'+T().newWord+'<b>'+esc(tr(w.meaning))+'</b></span></div></div>';
+  setTimeout(function(){speak(w.zh||"")},250);
+}
+function cardWordListen(c){
+  var w=c.word||{};var opts=[w.zh].concat(_wrongWordOptions(c.words,"hanzi",w.zh)).slice(0,4);
+  opts=opts.map(function(v,i){return {v:v,sort:Math.random()+i/100}}).sort(function(a,b){return a.sort-b.sort}).map(function(x){return x.v});
+  var correct=opts.indexOf(w.zh);
+  var head='<div class="qcard"><button class="audio" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i></button><div class="qpy" style="margin-top:10px">'+esc(w.pinyin||"")+'</div></div>';
+  _choiceFromWord(c,opts,correct,T().listen,{},head);setTimeout(function(){speak(w.zh||"")},250);
+}
+function cardWordMeaning(c){
+  var w=c.word||{};var right=tr(w.meaning);var opts=[right].concat(_wrongWordOptions(c.words,"meaning",right)).slice(0,4);
+  opts=opts.map(function(v,i){return {v:v,sort:Math.random()+i/100}}).sort(function(a,b){return a.sort-b.sort}).map(function(x){return x.v});
+  var head='<div class="qcard"><div class="qh han">'+esc(w.zh||"")+'</div><div class="qpy">'+esc(w.pinyin||"")+'</div></div>';
+  _choiceFromWord(c,opts,opts.indexOf(right),LANG==="ru"?"Что означает?":LANG==="tj"?"Маъно чист?":"Ma'nosi nima?",{},head);
+}
+function cardWordHanzi(c){
+  var w=c.word||{};var opts=[w.zh].concat(_wrongWordOptions(c.words,"hanzi",w.zh)).slice(0,4);
+  opts=opts.map(function(v,i){return {v:v,sort:Math.random()+i/100}}).sort(function(a,b){return a.sort-b.sort}).map(function(x){return x.v});
+  var head='<div class="qcard"><div class="qpy" style="font-size:26px">'+esc(w.pinyin||"")+'</div><div class="tr" style="margin-top:8px;color:var(--ink2)">'+esc(tr(w.meaning))+'</div></div>';
+  _choiceFromWord(c,opts,opts.indexOf(w.zh),LANG==="ru"?"Выберите иероглиф":LANG==="tj"?"Иероглифро интихоб кунед":"Ieroglifni tanlang",{},head);
+}
+function cardWord(c){
+  var w=c.word;$("#f-cta").style.display="flex";
+  $("#f-body").innerHTML='<span class="kicker k-word"><i class="ti ti-sparkles"></i> '+T().newWord+'</span>'
+    +'<div class="wc"><div class="big han">'+esc(w.zh)+'</div><div class="py">'+esc(w.pinyin)+'<button class="audio" onclick="speak(\''+esc(w.zh)+'\')"><i class="ti ti-volume"></i></button></div>'
+    +'<div><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div></div>';
+  setTimeout(function(){speak(w.zh)},250);
+}
+function cardGrammar(g){
+  $("#f-cta").style.display="flex";
+  var ex=(g.examples||[]).map(function(e){return '<div class="exrow"><div class="z2 han">'+esc(e.zh)+'</div><div><div class="p2">'+esc(e.pinyin)+'</div><div class="t2">'+esc(tr(e.translation))+'</div></div><button class="au" onclick="speak(\''+esc(e.zh)+'\')"><i class="ti ti-volume"></i></button></div>'}).join("");
+  $("#f-body").innerHTML='<span class="kicker k-gram"><i class="ti ti-bulb"></i> '+T().grammar+'</span>'
+    +'<div class="gc"><h3><span class="han zh">'+esc(g.title_zh||"")+'</span> '+esc(tr(g.title))+'</h3><div class="rule">'+esc(tr(g.rule))+'</div>'+ex+'</div>';
+}
+function cardDialogue(d){
+  $("#f-cta").style.display="flex";
+  var lines=(d.dialogue||[]).map(function(l){return '<div class="line '+l.speaker+'"><div class="ava">'+l.speaker+'</div><div class="bub"><button class="au" onclick="speak(\''+esc(l.zh)+'\')"><i class="ti ti-volume"></i></button><div class="z3 han">'+esc(l.zh)+'</div><div class="p3">'+esc(l.pinyin)+'</div><div class="t3">'+esc(tr(l.text))+'</div></div></div>'}).join("");
+  $("#f-body").innerHTML='<span class="kicker k-dia"><i class="ti ti-messages"></i> '+T().dialog+'</span><div class="dia"><div class="scene"><i class="ti ti-map-pin"></i> '+esc(tr(d.scene))+'</div>'+lines+'</div>';
+}
+function optText(o){return typeof o==="string"?o:tr(o)}
+function cardChoice(c){
+  $("#f-cta").style.display="none";
+  var t=c.type,head="",audio="";
+  if(t==="listening_choice"){audio='<div class="qcard"><button class="audio" onclick="speak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button></div>';head='';setTimeout(function(){speak(c.audio_text)},250)}
+  else if(t==="gap_fill"){head='<div class="qcard"><div class="gap han">'+esc(c.sentence||"").replace("____","<u>?</u>")+'</div></div>'}
+  else if(t==="dialog_context"){var dl=(c.dialog||[]).map(function(l){return '<div class="line '+l.speaker+'"><div class="ava">'+l.speaker+'</div><div class="bub"><div class="z3 han">'+esc(l.text)+'</div></div></div>'}).join("");head='<div class="dia">'+dl+'</div>'}
+  else{var p=tr(c.prompt);head='<div class="qcard"><div class="qh han">'+esc(p)+'</div></div>'}
+  var opts=(c.options||[]).map(function(o,k){return '<button class="opt" data-k="'+k+'" onclick="Flow.pick(this,'+k+')"><span class="k">'+"ABCD"[k]+'</span>'+esc(optText(o))+'</button>'}).join("");
+  $("#f-body").innerHTML='<div class="qq">'+esc(tr(c.title)||"")+'</div>'+audio+head+opts;
+}
+Flow.pick=function(el,k){
+  if(Flow.answered)return;Flow.answered=true;
+  var c=Flow.queue[Flow.i];document.querySelectorAll("#f-body .opt").forEach(function(o){o.style.pointerEvents="none"});
+  var ok=k===c.correct_index;
+  document.querySelectorAll("#f-body .opt").forEach(function(o){if(+o.dataset.k===c.correct_index)o.classList.add("sel")});
+  if(!ok)el.classList.add("bad");
+  beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");
+  if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP}
+  showBar(ok,ok?T().correct:T().wrong,ok?tr(c.explanation):T().rightAns+" "+(c.options&&typeof c.options[c.correct_index]!=="undefined"?optText(c.options[c.correct_index]):""));
+};
+function cardBuilder(c){
+  $("#f-cta").style.display="none";
+  var bank=(c.tokens||[]).slice();
+  $("#f-body").innerHTML='<div class="qq">'+T().buildSent+' — '+esc(tr(c.sentence))+'</div><div class="tokens" id="bld-line"></div><div class="bank" id="bld-bank"></div>';
+  var line=[],used=[];
+  function draw(){
+    $("#bld-line").innerHTML=line.map(function(x,i){return '<button class="tok han" onclick="window._bldUn('+i+')">'+esc(x)+'</button>'}).join("");
+    $("#bld-bank").innerHTML=bank.map(function(x,i){return used.indexOf(i)>=0?'':'<button class="tok han" onclick="window._bldAdd('+i+')">'+esc(x)+'</button>'}).join("");
+  }
+  window._bldAdd=function(i){if(Flow.answered)return;line.push(bank[i]);used.push(i);draw();if(line.length===(c.answer_tokens||[]).length){check()}};
+  window._bldUn=function(i){if(Flow.answered)return;var v=line.splice(i,1)[0];var bi=bank.indexOf(v);/* allow re-add */used=used.filter(function(u){return bank[u]!==v||false});/* simple */draw()};
+  function check(){Flow.answered=true;var ok=JSON.stringify(line)===JSON.stringify(c.answer_tokens);beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP}showBar(ok,ok?T().correct:T().wrong,(c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation))}
+  draw();
+}
+function cardMatch(c){
+  $("#f-cta").style.display="none";
+  var pairs=(c.pairs||[]).slice();
+  var left=pairs.map(function(p){return p[0]}),right=pairs.map(function(p){return tr(p[1])});
+  var ri=right.map(function(x,i){return i}).sort(function(){return Math.random()-.5});
+  $("#f-body").innerHTML='<div class="qq">'+T().matchPairs+'</div><div class="pairs"><div class="col" id="mL"></div><div class="col" id="mR"></div></div>';
+  var selL=null,matched=0;
+  function draw(){
+    $("#mL").innerHTML=left.map(function(x,i){return '<button class="pcell han" data-i="'+i+'" onclick="window._mL('+i+')">'+esc(x)+'</button>'}).join("");
+    $("#mR").innerHTML=ri.map(function(idx){return '<button class="pcell sm" data-i="'+idx+'" onclick="window._mR('+idx+')">'+esc(right[idx])+'</button>'}).join("");
+  }
+  window._mL=function(i){if(Flow.answered)return;selL=i;document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.toggle("sel",+b.dataset.i===i&&!b.classList.contains("ok"))})};
+  window._mR=function(i){if(Flow.answered||selL===null)return;if(i===selL){document.querySelectorAll("#mL .pcell").forEach(function(b){if(+b.dataset.i===i){b.classList.add("ok");b.classList.remove("sel")}});document.querySelectorAll("#mR .pcell").forEach(function(b){if(+b.dataset.i===i)b.classList.add("ok")});selL=null;matched++;beep([660,880]);if(matched===left.length){Flow.answered=true;haptic("ok");showBar(true,T().correct,"")}}else{beep([200,150]);haptic("no");document.querySelectorAll("#mL .pcell").forEach(function(b){b.classList.remove("sel")});selL=null}};
+  draw();
+}
+function cardPron(c){
+  $("#f-cta").style.display="none";
+  $("#f-body").innerHTML='<span class="kicker k-check"><i class="ti ti-microphone"></i> '+T().say+'</span><div class="qcard"><div class="qh han">'+esc(c.phrase)+'</div><div class="qpy">'+esc(c.pinyin)+'</div><button class="audio" onclick="speak(\''+esc(c.phrase)+'\')"><i class="ti ti-volume"></i></button></div>'
+    +'<button class="scta" id="pron-btn" onclick="window._pron()"><i class="ti ti-microphone"></i> '+T().say+'</button>';
+  window._pron=function(){if(Flow.answered)return;var b=$("#pron-btn");b.innerHTML='<i class="ti ti-microphone"></i> …';haptic("light");setTimeout(function(){Flow.answered=true;var sc=85+Math.floor(Math.random()*12);beep([523,659,784]);haptic("ok");showBar(true,T().correct+" "+sc+"%","")},1400)};
+}
+Flow.next=function(){hideBar();Flow.i++;if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}};
+function luRain(){var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'],el=$("#levelup");for(var n=0;n<24;n++){(function(){var c=document.createElement('span');c.className='lu-conf';c.style.left=(4+Math.random()*92)+'%';c.style.background=cols[n%5];el.appendChild(c);var dx=Math.random()*70-35,rot=Math.random()*720-360;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,760px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1750)})()}}
+var TOUR={i:0,steps:[],t:{}},TOURV=true;
+function tourSpeak(text){if(!TOURV)return;try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text);u.lang=LANG==="ru"?"ru-RU":LANG==="tj"?"tg-TJ":"uz-UZ";window.speechSynthesis.speak(u)}catch(e){}}
+function tourRender(noSpeak){var st=TOUR.steps[TOUR.i];App.show(st.s);
+  var t=TOUR.t,dots=TOUR.steps.map(function(_,k){return '<i class="'+(k===TOUR.i?"on":"")+'"></i>'}).join("");
+  $("#tour-coach").innerHTML='<div class="ch"><div class="pd">'+pandaSvg()+'</div><div class="ct"><b>'+T().nav[st.s]+'</b><small>'+(TOUR.i+1)+" / "+TOUR.steps.length+'</small></div><button class="vt '+(TOURV?"on":"")+'" onclick="App.toggleTourVoice()"><i class="ti ti-'+(TOURV?"volume":"volume-off")+'"></i> '+t.voice+'</button></div><div class="desc">'+st.d+'</div><div class="row"><div class="dots">'+dots+'</div><button class="nx" onclick="App.tourNext()">'+(TOUR.i<TOUR.steps.length-1?t.next:t.done)+'</button></div>';
+  if(!noSpeak)tourSpeak(st.d);
+  function placeSpot(){
+    var el=st.sel?document.querySelector(st.sel):null;
+    if(!el)el=document.querySelector('#nav button[data-s="'+st.s+'"]');
+    if(!el)return;
+    if(st.sel)el.scrollIntoView({block:"nearest",behavior:"instant"});
+    setTimeout(function(){
+      var r=el.getBoundingClientRect();var spot=$("#tour-spot");
+      spot.style.left=(r.left-6)+"px";spot.style.top=(r.top-6)+"px";
+      spot.style.width=(r.width+12)+"px";spot.style.height=(r.height+12)+"px";
+    },60);
+  }
+  placeSpot();
+}
+var _NEXT_LEVEL={hsk1:"hsk2",hsk2:"hsk3",hsk3:"hsk4"};
+function loadLevel(lv){
+  lv=setSelectedLevel(lv);
+  var url=INIT_DATA?"/api/v3/map?lang="+LANG+"&level="+lv:"/course_v3_data/"+lv+".json";
+  var opts=INIT_DATA?{headers:{"X-Telegram-Init-Data":INIT_DATA}}:{};
+  fetch(url,opts).then(function(r){return r.json()}).then(function(d){
+    MAP=d;setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;ratingLoaded=false;renderAll();App.show("course");
+  }).catch(function(){});
+}
+function applyLessonDone(cur,d){
+  var al=allLessons();
+  cur.status="done";cur.stars=3;cur.locked_premium=false;
+  if(d&&d.gamification&&MAP.progress){
+    MAP.progress.xp=d.gamification.xp||MAP.progress.xp;
+    MAP.progress.streak=d.gamification.streak||MAP.progress.streak;
+    if(typeof d.completed_lessons_count!=="undefined")MAP.progress.completed=d.completed_lessons_count;
+  }
+  var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
+  if(next&&next.status==="locked"&&!isPremiumLocked(next))next.status="current";
+  if(next&&isPremiumLocked(next))next.status="locked";
+  renderAll();
+  if(al.every(function(l){return l.status==="done"})){
+    var nxt=_NEXT_LEVEL[MAP.level||"hsk1"];
+    if(nxt){App.showLevelUp("level");setTimeout(function(){loadLevel(nxt)},2200);return;}
+  }
+  App.showLevelUp("lesson");
+}
+function flowDone(){
+  flowProg();$("#f-cta").style.display="none";hideBar();setWriteBtn("");
+  var cur=allLessons().find(function(l){return l.status==="current"});
+  if(!cur){App.showLevelUp("lesson");return}
+  if(!INIT_DATA){applyLessonDone(cur,null);return}
+  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG})
+    .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
+    .then(function(d){
+      if(!d.ok){
+        if(d.error==="free_feature_limit_reached"){App.openPaywall("lockedLesson");return}
+        toast(serverSaveErrorText(d.error),2600);return;
+      }
+      applyLessonDone(cur,d);
+    })
+    .catch(function(){toast(serverSaveErrorText(),2600)});
+}
+
+/* ---------- Mashq ---------- */
+function renderMashq(){
+  var t=T();
+  $("#s-mashq").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-cards"></i> '+t.nav.mashq+'</span></div>'
+    +'<div class="phead"><div class="sub">'+t.mashqSub+'</div></div>'
+    +'<div class="sech">'+t.grammar+' · '+t.pron+'</div>'
+    +rowCard("t-amber",'<span class="han">字</span>',t.dict,t.dictSub,"App.openDict()","m-dict")
+    +rowCard("t-blue",'<i class="ti ti-eye"></i>',t.recog,t.recogSub,"App.openRecog()")
+    +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()")
+    +'<div class="sech">'+t.testCenter.split(" ")[0]+'</div>'
+    +rowCard("t-cin",'<i class="ti ti-certificate"></i>',t.testCenter,t.testSub,"App.openTest()","m-test")
+    +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()","m-mist");
+}
+function rowCard(cls,ic,title,sub,act,id){return '<button class="row-card"'+(id?' id="'+id+'"':'')+(act?' onclick="'+act+'"':'')+'><span class="ti2 '+cls+'">'+ic+'</span><span class="rt"><b>'+esc(title)+'</b><small>'+esc(sub)+'</small></span><span class="ar"><i class="ti ti-chevron-right"></i></span></button>'}
+
+/* ---------- Voice ---------- */
+function renderVoice(){
+  var t=T();
+  $("#s-voice").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-microphone"></i> AI Voice</span></div>'
+    +'<div class="voicebox"><div class="pd">'+pandaSvg()+'</div><h3>'+t.voiceTitle+'</h3><p>'+t.voiceSub+'</p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+t.voiceStart+'</button></div>';
+}
+function pandaSvg(){return '<svg viewBox="0 0 72 72" width="100%" height="100%"><circle cx="16" cy="15" r="10" fill="#211D17"/><circle cx="56" cy="15" r="10" fill="#211D17"/><path d="M22 60 q-3 -22 6 -30 h16 q9 8 6 30 z" fill="#fff" stroke="#211D17" stroke-width="2"/><path d="M24 40 q12 7 24 0 l-2 7 q-10 5 -20 0 z" fill="#C2403A"/><circle cx="36" cy="30" r="22" fill="#fff" stroke="#211D17" stroke-width="2"/><ellipse cx="27" cy="30" rx="6.5" ry="9" fill="#211D17"/><ellipse cx="45" cy="30" rx="6.5" ry="9" fill="#211D17"/><path d="M22 31 q5 -5 10 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/><path d="M40 31 q5 -5 10 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="36" cy="38" rx="3.4" ry="2.4" fill="#211D17"/><path d="M27 42 q9 10 18 0 z" fill="#9A2F2B"/></svg>'}
+
+/* ---------- Rating (league + challenge) ---------- */
+// Leaderboard is DEMO data; real users come from server /api/miniapp/leaderboard.
+var ratingTabCur="league",ratingUsers=[];
+function rl(){return {ru:{promote:"Топ 5 поднимаются выше",demote:"Зона понижения",liga:"Лига",friends:"Друзья",members:"учеников",left:"осталось",ch:"Вызов",chDone:"Вызов отправлен",invite:"Пригласить друзей",inviteSub:"Позови друга и сразись в лиге или тестах — покажи, кто лучший! 🔥",msg:"Написать",weekRank:"место"},
+  uz:{promote:"Top 5 yuqoriga ko'tariladi",demote:"Tushish zonasi",liga:"Liga",friends:"Do'stlar",members:"o'quvchi",left:"qoldi",ch:"Belashuv",chDone:"Chaqiruv yuborildi",invite:"Do'st taklif qilish",inviteSub:"Do'stingni chaqir va ligada yoki testda kuch sina — kim zo'rligini ko'rsat! 🔥",msg:"Yozish",weekRank:"o'rin"},
+  tj:{promote:"Топ 5 боло мебароянд",demote:"Минтақаи поёншавӣ",liga:"Лига",friends:"Дӯстон",members:"донишҷӯ",left:"мондааст",ch:"Мубориза",chDone:"Даъват фиристода шуд",invite:"Даъвати дӯстон",inviteSub:"Дӯстатро даъват кун ва дар лига ё тест мубориза кун — нишон деҳ, ки кӣ беҳтар аст! 🔥",msg:"Навиштан",weekRank:"ҷой"}}[LANG]}
+function renderRating(){
+  if(!ratingLoaded&&INIT_DATA){
+    ratingLoaded=true;
+    var t=T();
+    $("#s-rating").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div><div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+    _apiGet("/api/miniapp/gamification").then(function(r){return r.json()}).then(function(d){
+      if(d.leaderboard&&d.leaderboard.length){
+        ratingUsers=d.leaderboard.map(function(u){return{
+          me:!!u.is_current_user,
+          a:(u.name||"?")[0].toUpperCase(),
+          n:u.name||"?",
+          xp:u.total_xp||0,
+          weeklyXp:u.xp||0,
+          p:u.is_paid?1:0
+        }});
+        if(MAP&&MAP.progress){MAP.progress.xp=d.xp||MAP.progress.xp;MAP.progress.streak=d.streak||MAP.progress.streak}
+      }
+      _renderRatingContent();
+    }).catch(function(){_renderRatingContent()});
+    return;
+  }
+  _renderRatingContent();
+}
+function _renderRatingContent(){
+  var t=T(),r=rl();
+  if(!ratingUsers.length){
+    var myXp=Number(MAP&&MAP.progress&&MAP.progress.xp||0);
+    ratingUsers=[{me:1,a:PROF.avatar||(PROF.name?PROF.name[0].toUpperCase():"阿"),n:PROF.name||t.you,xp:myXp,p:PROF.is_paid?1:0}];
+  }
+  ratingUsers.sort(function(x,y){return y.xp-x.xp});
+  var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'
+    +'<div class="rt-seg"><button class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
+  if(ratingTabCur==="friends"){
+    h+='<div class="rt-invite"><span class="han">友</span><p>'+r.inviteSub+'</p><button onclick="openInviteSheet()"><i class="ti ti-user-plus"></i> '+r.invite+'</button></div>';
+    $("#s-rating").innerHTML=h;return;
+  }
+  h+='<div class="rt-league"><div class="rt-emb han">朱</div><div><div class="nm2">'+t.league+'</div><div class="sb"><i class="ti ti-users" style="font-size:12px"></i> '+ratingUsers.length+' '+r.members+'</div></div><div class="rt-cd"><b>2'+(LANG==="ru"?"д":"k")+' 14'+(LANG==="ru"?"ч":"s")+'</b><small>'+r.left+'</small></div></div>'
+    +'<div class="rt-ladder"><span class="rt-step han">玄</span><span class="rt-step line"></span><span class="rt-step cur han">朱</span><span class="rt-step line"></span><span class="rt-step han">龙</span><span class="rt-step line"></span><span class="rt-step han">凤</span></div>'
+    +'<div class="rt-zone up"><i class="ti ti-arrow-up"></i> '+r.promote+' <span class="ln"></span></div>';
+  var med=["g","s","b"];
+  ratingUsers.forEach(function(u,i){
+    if(i===ratingUsers.length-2)h+='<div class="rt-zone dn"><span class="ln"></span><i class="ti ti-arrow-down"></i> '+r.demote+' <span class="ln"></span></div>';
+    var rk=i<3?'<span class="med '+med[i]+'">'+(i+1)+'</span>':'<span class="rk">'+(i+1)+'</span>';
+    var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
+    h+='<div class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+(u.weeklyXp||u.xp||0).toLocaleString("ru")+'</span></div>';
+  });
+  $("#s-rating").innerHTML=h;
+}
+function setRatingTab(tab){ratingTabCur=tab;ratingLoaded=true;_renderRatingContent()}
+
+/* ---------- Clipboard / share / toast helpers ---------- */
+var _writeTmpls=[];
+function copyText(txt){
+  var ok=LANG==="ru"?"Скопировано":LANG==="tj"?"Нусха гирифта шуд":"Nusxalandi";
+  function fallback(){try{var el=document.createElement("textarea");el.value=txt;el.style.cssText="position:fixed;opacity:0";document.body.appendChild(el);el.select();document.execCommand("copy");document.body.removeChild(el);toast(ok)}catch(e){}}
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){toast(ok)}).catch(fallback)}else{fallback()}
+}
+function tgShare(txt){
+  var url="https://t.me/share/url?text="+encodeURIComponent(txt);
+  try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
+  window.open(url,"_blank");
+}
+function tgShareLink(link,text){
+  var url="https://t.me/share/url?url="+encodeURIComponent(link||"")+"&text="+encodeURIComponent(text||"");
+  try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
+  window.open(url,"_blank");
+}
+function toast(msg,dur){
+  var el=$("#toast");el.textContent=msg;el.classList.add("on");
+  clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove("on")},dur||1900);
+}
+function closeUserProfile(){$("#upov").classList.remove("on")}
+function friendAdd(btn){var msg=LANG==="ru"?"Запрос отправлен!":LANG==="tj"?"Дархост фиристода шуд!":"So'rov yuborildi!";btn.className="b-fr on";btn.innerHTML='<i class="ti ti-check"></i> '+(LANG==="ru"?"Добавлено":LANG==="tj"?"Иловашуд":"Qo'shildi");toast(msg)}
+function friendChallenge(){var r=rl();toast(r.chDone)}
+
+/* ---------- Write templates sheet ---------- */
+function openWriteTemplates(uIdx){
+  var u=ratingUsers[uIdx]||{n:"",xp:0};
+  var myXp=Number(MAP&&MAP.progress.xp||1240);
+  var botLink="https://t.me/hsk_ai_bot";
+  var rank=uIdx+1;
+  var myRank=(ratingUsers.findIndex(function(x){return x.me})||3)+1;
+  var t={
+    ru:["Привет! Учу китайский с HSK AI — уже "+myXp.toLocaleString("ru")+" XP и иду #"+myRank+" в лиге. Попробуй тоже 🐼 "+botLink,
+        "Иду в лиге на #"+myRank+" месте. Обгони меня, если сможешь 🔥 "+botLink,
+        "Вызываю тебя на соревнование в HSK AI! Кто наберёт больше XP за неделю? 🀄 "+botLink],
+    uz:["Salom! HSK AI bilan xitoycha o'rganmoqdaman — "+myXp.toLocaleString("ru")+" XP, ligada #"+myRank+"-o'rindaman. Sen ham sinab ko'r 🐼 "+botLink,
+        "Ligada #"+myRank+"-o'rindaman. Meni utib o'tishga urinib ko'r! 🔥 "+botLink,
+        "HSK AI da belashuv chaqiraman! Kim bir haftada ko'proq XP to'playdi? 🀄 "+botLink],
+    tj:["Салом! Бо HSK AI чинӣ меомӯзам — "+myXp.toLocaleString("ru")+" XP, дар лига #"+myRank+"-ум. Ту ҳам санҷ 🐼 "+botLink,
+        "Дар лига ҷои #"+myRank+"-ум. Аз ман пеш гузаштан кӯш! 🔥 "+botLink,
+        "Дар HSK AI мубориза даъват мекунам! Кӣ дар як ҳафта бештар XP ҷамъ мекунад? 🀄 "+botLink]
+  };
+  _writeTmpls=(t[LANG]||t.ru);
+  var cpLbl=LANG==="ru"?"Копировать":LANG==="tj"?"Нусха":"\Nusxa";
+  var sdLbl=LANG==="ru"?"Telegram":LANG==="tj"?"Telegram":"Telegram";
+  var ttl=LANG==="ru"?"Написать":LANG==="tj"?"Навиштан":"Yozish";
+  var html='<div class="shead"><div class="tr" style="font-size:15px;color:var(--ink)">'+ttl+'</div></div>'
+    +_writeTmpls.map(function(txt,k){return '<div class="tmpl">'+esc(txt)+'<div class="tact"><span onclick="copyText(_writeTmpls['+k+'])">📋 '+cpLbl+'</span><span onclick="tgShare(_writeTmpls['+k+'])">✈️ '+sdLbl+'</span></div></div>'}).join("");
+  App.openSheet(html);
+}
+
+/* ---------- Invite friend sheet ---------- */
+var _invitePayload=null;
+function renderInviteSheet(d){
+  _invitePayload=d;
+  var sendLbl=LANG==="ru"?"Отправить сообщение":LANG==="tj"?"Паём фиристодан":"Xabar yuborish";
+  var title=LANG==="ru"?"Пригласить друга":LANG==="tj"?"Дӯстро даъват кардан":"Do'st chaqirish";
+  var hint=LANG==="ru"?"Готовый текст откроется в Telegram. Выберите друга и отправьте.":LANG==="tj"?"Матни тайёр дар Telegram кушода мешавад. Дӯстро интихоб кунед ва фиристед.":"Tayyor matn Telegramda ochiladi. Do'stni tanlab yuboring.";
+  var stat=(typeof d.active_count!=="undefined")?'<div class="sst"><div><b>'+Number(d.joined_count||0)+'</b><small>'+(LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(d.active_count||0)+' / '+Number(d.required||10)+'</b><small>'+(LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>':'';
+  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr" style="font-size:16px;color:var(--ink);margin-top:8px">'+title+'</div><div class="tr">'+hint+'</div></div>'
+    +stat
+    +'<div class="tmpl">'+esc((d.share_text||"")+" "+(d.link||""))+'</div>'
+    +'<button class="scta" onclick="tgShareLink(_invitePayload.link,_invitePayload.share_text)"><i class="ti ti-brand-telegram"></i> '+sendLbl+'</button>');
+}
+function openInviteSheet(){
+  var loading=LANG==="ru"?"Готовим ссылку…":LANG==="tj"?"Силка омода мешавад…":"Link tayyorlanyapti…";
+  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr">'+loading+'</div></div>');
+  if(INIT_DATA){
+    _apiGet("/api/v3/invite?lang="+LANG).then(function(r){return r.json()}).then(function(d){
+      if(d&&d.ok){renderInviteSheet(d);return}
+      throw new Error("invite_failed");
+    }).catch(function(){toast(LANG==="ru"?"Ссылка не загрузилась":LANG==="tj"?"Силка бор нашуд":"Link yuklanmadi",2200);App.closeSheet()});
+    return;
+  }
+  var link="https://t.me/hsk_ai_bot";
+  var text={ru:"Привет! Учу китайский в HSK AI. Заходи:",uz:"Salom! Men HSK AI bilan xitoy tilini o'rganyapman. Kirib ko'r:",tj:"Салом! Ман бо HSK AI чинӣ меомӯзам. Дароед:"}[LANG];
+  renderInviteSheet({ok:true,link:link,share_text:text});
+}
+
+/* ---------- Full user profile overlay ---------- */
+function openRatingUser(i){
+  var u=ratingUsers[i],t=T(),r=rl();
+  var myXp=Number(MAP&&MAP.progress.xp||1240);
+  var lvlLbl=LANG==="ru"?"уровень":LANG==="tj"?"сатҳ":"daraja";
+  var isHan=/[一-鿿]/.test(u.a);
+
+  /* rivalry bar */
+  var rivHtml="";
+  if(!u.me){
+    var total=myXp+u.xp||1;
+    var mePct=Math.round(myXp/total*100);
+    var diff=Math.abs(myXp-u.xp);
+    var ahead=myXp>u.xp;
+    var rivNote={ru:ahead?"Вы впереди на "+diff.toLocaleString("ru")+" XP":"Отставание "+diff.toLocaleString("ru")+" XP",
+      uz:ahead?"Siz "+diff.toLocaleString("ru")+" XP oldinda":diff.toLocaleString("ru")+" XP orqadasiz",
+      tj:ahead?"Шумо "+diff.toLocaleString("ru")+" XP пеш":diff.toLocaleString("ru")+" XP қафо"}[LANG];
+    var rivTitle=LANG==="ru"?"Недельный рейтинг":LANG==="tj"?"Рейтинги ҳафтаина":"Haftalik reyting";
+    rivHtml='<div class="riv"><h4><i class="ti ti-swords" style="font-size:15px"></i> '+rivTitle+'</h4>'
+      +'<div class="vn"><span>'+esc(t.you)+'</span><span>'+esc(u.n)+'</span></div>'
+      +'<div class="bar"><i style="width:'+mePct+'%;background:var(--cin)"></i></div>'
+      +'<div class="vn" style="margin-top:5px"><span style="font-weight:500;color:rgba(255,255,255,.9)">'+myXp.toLocaleString("ru")+'</span><span style="font-weight:500;color:rgba(255,255,255,.9)">'+u.xp.toLocaleString("ru")+'</span></div>'
+      +'<div class="note">'+esc(rivNote)+'</div></div>';
+  }
+
+  var addLbl=LANG==="ru"?"Добавить":LANG==="tj"?"Иловаи дӯст":"Do'st qo'sh";
+  var acts=u.me?""
+    :'<div class="upacts">'
+    +'<button class="b-fr" onclick="friendAdd(this)"><i class="ti ti-user-plus"></i> '+addLbl+'</button>'
+    +'<button class="b-ch" onclick="friendChallenge()"><i class="ti ti-swords"></i> '+r.ch+'</button>'
+    +'<button class="b-tg" onclick="openWriteTemplates('+i+')"><i class="ti ti-brand-telegram"></i></button>'
+    +'</div>';
+
+  $("#upov").innerHTML=
+    '<div class="uptop"><button class="upx" onclick="closeUserProfile()"><i class="ti ti-arrow-left"></i></button>'
+    +'<span style="font-size:14px;font-weight:500">'+esc(u.n)+'</span><div style="width:34px"></div></div>'
+    +'<div class="uphero"><div class="av'+(isHan?" han":"")+'">'+u.a+(u.p?'<span class="cr"><i class="ti ti-crown" style="font-size:11px"></i></span>':'')+'</div>'
+    +'<div class="nm">'+esc(u.n)+'</div><div class="un">'+esc(t.league)+'</div>'
+    +'<div class="badges"><span class="bg bg-lv"><i class="ti ti-bolt" style="font-size:10px"></i> HSK 1</span>'
+    +'<span class="bg bg-lg han" style="font-size:12px">朱雀</span>'
+    +(u.p?'<span class="bg" style="background:var(--goldbg);color:var(--gold)"><i class="ti ti-crown" style="font-size:10px"></i> Premium</span>':'')+'</div></div>'
+    +'<div class="stats" style="margin:14px 0 0">'
+    +'<div class="stat"><b style="color:var(--cin)">'+u.xp.toLocaleString("ru")+'</b><small>'+t.xp+'</small></div>'
+    +'<div class="stat"><b style="color:var(--gold)">#'+(i+1)+'</b><small>'+r.weekRank+'</small></div>'
+    +'<div class="stat"><b style="color:var(--jade)">HSK 1</b><small>'+lvlLbl+'</small></div></div>'
+    +rivHtml+acts;
+  $("#upov").classList.add("on");
+  $("#upov").scrollTop=0;
+}
+
+/* ---------- Profile ---------- */
+function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],cups:"Кубки",cupsAll:"Все",t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня"},
+  uz:{calTitle:"Streak kalendari",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],cups:"Kuboklar",cupsAll:"Hammasi",t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun streak",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad"},
+  tj:{calTitle:"Тақвими streak",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],cups:"Ҷомҳо",cupsAll:"Ҳама",t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза"}}[LANG]}
+function cup(b,h,l,g){return '<svg viewBox="0 0 60 80"><path d="M14 18 C2 18 2 36 16 32" fill="none" stroke="'+l+'" stroke-width="5"/><path d="M46 18 C58 18 58 36 44 32" fill="none" stroke="'+l+'" stroke-width="5"/><path d="M13 14 H47 L43 34 Q30 46 17 34 Z" fill="'+b+'"/><path d="M16 15 H24 L23 33 Q20 31 18 27 Z" fill="'+h+'" opacity="0.8"/><rect x="11" y="12" width="38" height="5" rx="2.5" fill="'+h+'"/><rect x="27" y="44" width="6" height="10" fill="'+l+'"/><path d="M20 54 H40 L43 62 H17 Z" fill="'+b+'"/><rect x="15" y="62" width="30" height="6" rx="2" fill="'+l+'"/><circle cx="30" cy="26" r="8" fill="'+l+'" opacity="0.45"/><text x="30" y="30" text-anchor="middle" font-size="10" fill="'+h+'" font-family="serif" font-weight="700">'+g+'</text></svg>'}
+function streakCalHtml(){var p=pl(),act=[1,1,1,1,0,0,0],today=3;
+  var head='<div class="wk">'+p.calDays.map(function(d){return '<div style="flex:1;text-align:center;font-size:11px;color:var(--ink3)">'+d+'</div>'}).join("")+'</div>';
+  var row='<div class="wk">'+act.map(function(on,d){return '<div class="cell '+(on?"on":"")+(d===today?" tod":"")+'" style="flex:1;height:42px">'+(on?'<i class="ti ti-flame" style="font-size:16px"></i>':'')+'</div>'}).join("")+'</div>';
+  return head+row;}
+function renderProfile(){
+  var t=T(),p=pl();
+  var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0),todayXp=Number(MAP&&MAP.progress&&MAP.progress.xp%50||0);
+  var pct=Math.round(Math.min(todayXp/dailyGoal,1)*100),off=Math.round(157-157*Math.min(todayXp/dailyGoal,1));
+  var cups=[cup('#C2962F','#E8D08A','#8A6A1E','朱')+'|'+p.t1,cup('#AEB0AE','#DCDDD9','#7E807E','30')+'|'+p.t2,cup('#B07A4A','#D8A877','#7E5430','百')+'|'+p.t3,'LOCK|'+p.tNext];
+  $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span></div></div>'
+    +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="var(--cin)" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+(dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
+    +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)">'+p.calLong+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
+    +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.cups+'</span><span style="color:var(--cin)">'+p.cupsAll+' (12/30) ›</span></div><div class="shelf"><div class="cups">'+cups.map(function(c){var s=c.split("|");return s[0]==="LOCK"?'<div class="cup lock">'+cup('#AEB0AE','#DCDDD9','#7E807E','?')+'<small>'+s[1]+'</small></div>':'<div class="cup">'+s[0]+'<small>'+s[1]+'</small></div>'}).join("")+'</div><div class="board"></div></div>'
+    +'<div class="sech">'+p.ach+'</div><div class="ach"><div class="arow"><div class="aic c3"><i class="ti ti-check"></i></div><div class="at"><div class="ah"><span>'+p.a1+'</span><small>'+p.a1d+'</small></div><div class="abar"><i style="width:100%;background:var(--jade)"></i></div></div></div>'
+    +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>64 / 100</small></div><div class="abar"><i style="width:64%"></i></div></div></div>'
+    +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+Math.round(streak/30*100)+'%"></i></div></div></div></div>'
+    +(function(){
+        var p1=_priceStr("1_month"),p10=_priceStr("10_days");
+        var priceRow=p1?'<div class="pro-price"><span class="pp-main">'+esc(p1)+'</span><small>/ '+(LANG==="ru"?"мес":LANG==="tj"?"моҳ":"oy")+'</small>'+(p10?' <span class="pp-s">· '+esc(p10)+' / '+(LANG==="ru"?"10д":LANG==="tj"?"10р":"10k")+'</span>':'')+'</div>':'<div class="pro-price pp-loading">…</div>';
+        return '<div class="pro" onclick="App.openPaywall(\'profile\')"><span class="gw han">会</span><h3>'+t.unlockTitle+'</h3><p>'+t.unlockSub+'</p>'+priceRow+'<button>'+t.unlockBtn+' →</button></div>';
+    })()
+    +'<div class="sech">'+t.mistakes+' · '+t.friends+'</div>'
+    +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()")
+    +rowCard("t-jade",'<i class="ti ti-users"></i>',t.friends,"","App.openFriends()")
+    +'<div class="sech">'+p.goalSet.split(" ")[0]+'</div>'
+    +'<div class="set"><button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+t.lang+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
+    +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+t.notif+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
+    +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
+    +'<button class="srow"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button></div>'
+    +'<div style="height:14px"></div>';
+}
+
+/* ---------- Paywall ---------- */
+function paywallHtml(ctx){
+  var t=T();var ctxTitle=ctx==="lockedLesson"?t.lockedLesson:t.payTitle;
+  return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:15px;color:var(--ink)">'+esc(ctxTitle)+'</div><div class="tr">'+t.paySub+'</div></div>'
+    +'<div style="margin-bottom:8px">'+["b1","b2","b3"].map(function(k){return '<div class="sec done"><span class="si2"><i class="ti ti-check"></i></span><b>'+t[k]+'</b></div>'}).join("")+'</div>'
+    +(function(){var p1=_priceStr("1_month"),p10=_priceStr("10_days");if(!p1)return'';return'<div style="display:flex;align-items:baseline;gap:8px;margin:8px 2px"><b style="font-size:24px;font-weight:600">'+esc(p1)+'</b><small style="color:var(--ink2)">/ '+(LANG==="ru"?"мес":LANG==="tj"?"моҳ":"oy")+'</small>'+(p10?'<span style="font-size:13px;color:var(--ink2)">· '+esc(p10)+' / '+(LANG==="ru"?"10д":LANG==="tj"?"10р":"10k")+'</span>':'')+'</div>';})()
+    +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+t.subscribe+'</button>'
+    +'<button class="scta ghost" style="margin-top:8px;border:none" onclick="App.closePaywall()">'+t.later+'</button>';
+}
+
+/* ---------- boot ---------- */
+function renderAll(){
+  document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=T().nav[s.dataset.i]});
+  if(MAP){renderCourse();renderMashq();renderRating();renderProfile();if(SCREEN==="voice")renderVoice()}
+}
+(function(){var p=new URLSearchParams(location.search);var onb=false;try{onb=!!localStorage.getItem("hsk_v3_onb")}catch(e){}if(!onb&&!p.get("onboarded")){location.replace("/course_v3_onboarding.html?lang="+LANG);}})();
+navInit();
+$("#sheet").onclick=function(){App.closeSheet()};
+$("#paywall").onclick=function(){App.closePaywall()};
+window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App=App;window.Flow=Flow;window.speak=speak;
+fetchPrices();
+(function(){
+  var bootLevel=getSelectedLevel();
+  var url=INIT_DATA?"/api/v3/map?lang="+LANG+"&level="+bootLevel:"/course_v3_data/"+bootLevel+".json";
+  var opts=INIT_DATA?{headers:{"X-Telegram-Init-Data":INIT_DATA}}:{};
+  fetch(url,opts).then(function(r){return r.json()}).then(function(d){
+    MAP=d;setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;
+    renderAll();
+    var sp=new URLSearchParams(location.search);
+    App.show(sp.get("tab")||"course");
+    if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
+  }).catch(function(){$("#s-course").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>'});
+})();
+</script>
+</body>
+</html>

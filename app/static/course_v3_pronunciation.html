@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>Talaffuz mashqi</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{--ink:#211D17;--ink2:#6E665B;--ink3:#A89E8E;--paper:#FBF7EF;--card:#FFFFFF;--line:#EAE2D4;--cin:#C2403A;--cin2:#9A2F2B;--cinbg:#FBEDEA;--gold:#C2962F;--jade:#2F7D5E;--jadebg:#E7F1EA;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
+.wrap{max-width:480px;margin:0 auto;height:100vh;padding-top:var(--safe-t);display:flex;flex-direction:column;position:relative;overflow:hidden}
+.top{display:flex;align-items:center;gap:11px;padding:16px 16px 8px;z-index:3}
+.ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
+.pbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
+.pbar>i{display:block;height:100%;width:0;background:var(--jade);border-radius:6px;transition:width .4s}
+.pill{font-size:12px;font-weight:500;color:var(--cin2);background:var(--cinbg);border-radius:14px;padding:5px 11px}
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 22px;position:relative}
+.word{font-size:96px;line-height:1;text-align:center;transition:color .3s}
+.word.ok{color:var(--jade)}
+.word.pop{animation:pop .55s}
+@keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.3)}60%{transform:scale(.93)}100%{transform:scale(1)}}
+.word.bad{animation:shk .4s}
+@keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+.py{font-size:24px;color:var(--cin2);font-weight:500;margin-top:10px}
+.mn{font-size:15px;color:var(--ink2);margin-top:4px;text-align:center}
+.fb{height:22px;margin-top:12px;font-size:14px;font-weight:500}
+.fb.ok{color:var(--jade)}.fb.bad{color:var(--cin2)}
+.listen{margin-top:14px;display:inline-flex;align-items:center;gap:7px;background:var(--cinbg);color:var(--cin2);border:none;border-radius:20px;padding:9px 16px;font-family:inherit;font-size:14px;font-weight:500}
+.ctrl{padding:8px 0 calc(30px + var(--safe-b));display:flex;flex-direction:column;align-items:center;gap:9px}
+.micwrap{position:relative;width:84px;height:84px;display:flex;align-items:center;justify-content:center}
+.mic{width:78px;height:78px;border-radius:50%;background:var(--cin);color:#fff;border:none;font-size:31px;display:flex;align-items:center;justify-content:center;z-index:2}
+.mic.rec{background:var(--cin2)}
+.micwrap.rec:before,.micwrap.rec:after{content:"";position:absolute;width:78px;height:78px;border-radius:50%;border:3px solid var(--cin);animation:pr 1.4s ease-out infinite}
+.micwrap.rec:after{animation-delay:.7s}
+@keyframes pr{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.7);opacity:0}}
+.hint{font-size:13px;color:var(--ink3)}
+.toast{position:absolute;top:54px;left:50%;transform:translateX(-50%) translateY(-12px);background:var(--jade);color:#fff;font-size:14px;font-weight:500;padding:7px 15px;border-radius:18px;opacity:0;transition:all .3s;z-index:6}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:5}
+.conf.fall{opacity:1;transition:transform 1.4s ease-in,opacity 1.4s}
+.done{position:absolute;inset:0;background:var(--paper);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;z-index:8}
+.done.on{display:flex}
+.done .st{width:90px;height:90px;border-radius:24px;background:var(--cin);border:3px solid var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:16px}
+.done h3{font-size:23px;font-weight:500;margin:0 0 4px}.done p{font-size:14px;color:var(--ink2);margin:0 0 20px}
+.done button{width:100%;max-width:280px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500}
+.loading{margin:auto;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><button class="ix" onclick="goBack()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pbar"><i id="prog"></i></div><span class="pill" id="cnt">1 / 10</span></div>
+  <div class="toast" id="toast">+10 XP</div>
+  <div class="stage" id="stage"><div class="loading">…</div></div>
+  <div class="ctrl" id="ctrl" style="display:none">
+    <div class="micwrap" id="micwrap"><button class="mic" id="mic" onclick="rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>
+    <div class="hint" id="hint"></div>
+  </div>
+  <div class="done" id="done"><div class="st han">音</div><h3 id="dh"></h3><p id="dp"></p><button onclick="start()"><i class="ti ti-refresh"></i> <span id="db"></span></button></div>
+</div>
+<script src="hsk-data.js?v=20260625"></script>
+<script>
+var params=new URLSearchParams(location.search||"");
+var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
+var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Подправьте тон и попробуйте снова",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз"},
+  uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Tonni sozlab, yana urinib ko'ring",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq"},
+  tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Садоро ислоҳ карда, боз кӯшиш кунед",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз"}}[LANG];
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
+function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+function haptic(ok){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
+var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
+function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+var TOTAL=10,list=[],i=0,okCount=0,busy=false;
+function rain(){var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'];var stage=document.getElementById('stage');for(var n=0;n<22;n++){(function(){var c=document.createElement('span');c.className='conf';c.style.left=(5+Math.random()*90)+'%';c.style.background=cols[n%5];stage.appendChild(c);var dx=Math.random()*60-30,rot=Math.random()*540-270;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,520px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1450)})()}}
+function load(){var w=list[i];
+  document.getElementById('stage').innerHTML='<div class="word han" id="word">'+w.h+'</div><div class="py">'+w.p+'</div><div class="mn">'+tr(w.m)+'</div><div class="fb" id="fb"></div><button class="listen" onclick="speak(\''+w.h+'\')"><i class="ti ti-volume"></i> '+L.listen+'</button>';
+  document.getElementById('cnt').textContent=(i+1)+' / '+list.length;document.getElementById('hint').textContent=L.hint;
+}
+function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1100)}
+// NOTE: scoring is mocked. Real per-syllable tone scoring will come from the server (material/logic added later).
+function rec(){
+  if(busy)return;busy=true;
+  var mw=document.getElementById('micwrap');mw.classList.add('rec');document.getElementById('mic').classList.add('rec');document.getElementById('hint').textContent='…';
+  try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
+  setTimeout(function(){
+    mw.classList.remove('rec');document.getElementById('mic').classList.remove('rec');
+    var score=80+Math.floor(Math.random()*18),ok=score>=85,word=document.getElementById('word'),fb=document.getElementById('fb');
+    if(ok){okCount++;word.classList.add('ok','pop');rain();toast('+10 XP · '+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok;
+      document.getElementById('prog').style.width=Math.round((i+1)/list.length*100)+'%';
+      setTimeout(function(){busy=false;i++;if(i>=list.length){finish()}else{load()}},1100);
+    }else{word.classList.add('bad');beep([220,180]);haptic(false);fb.className='fb bad';fb.textContent='~ '+L.bad;document.getElementById('hint').textContent=L.retry;
+      setTimeout(function(){word.classList.remove('bad');busy=false},450);
+    }
+  },1500);
+}
+function finish(){document.getElementById('ctrl').style.display='none';document.getElementById('prog').style.width='100%';
+  document.getElementById('dh').textContent=okCount+' / '+list.length+' '+L.done;document.getElementById('dp').textContent=L.doneSub;document.getElementById('db').textContent=L.again;
+  document.getElementById('done').classList.add('on');beep([523,659,784,1046]);haptic(true);}
+function start(){
+  var pool=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length<=3});
+  if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
+  list=shuffle(pool.slice()).slice(0,TOTAL);i=0;okCount=0;busy=false;
+  document.getElementById('done').classList.remove('on');document.getElementById('ctrl').style.display='flex';document.getElementById('prog').style.width='0';
+  load();
+}
+start();
+</script>
+</body>
+</html>
