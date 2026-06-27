@@ -1,6 +1,8 @@
 import asyncio
 import contextlib
 import logging
+import os
+import time
 from contextlib import asynccontextmanager
 
 from aiogram import Bot
@@ -14,7 +16,16 @@ from app.config import settings
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, init_db
 from app.db.models.course_lessons import CourseLesson
+from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
 from app.services.course_seed_service import CourseSeedService
+from app.services.notification_template_service import (
+    MOTIVATION_KEYS,
+    NotificationTemplateService,
+)
+from app.services.motivation_reminder_service import (
+    MEDIA_ROOT as NOTIFICATION_MEDIA_ROOT,
+    MotivationReminderService,
+)
 from app.services.access_service import AccessService
 from app.services.daily_reset_service import DailyResetService
 from app.services.expiry_reminder_service import ExpiryReminderService
@@ -191,6 +202,8 @@ async def _background_scheduler(bot: Bot) -> None:
             async with async_session_maker() as session:
                 await CourseReminderService(session).send_weekly_progress_reports(bot)
             async with async_session_maker() as session:
+                await MotivationReminderService(session).send_due_reminders(bot)
+            async with async_session_maker() as session:
                 await BotFeedbackService(session).send_due_price_discount_offers(bot)
             async with async_session_maker() as session:
                 await DiscountNotificationService(session).send_due_notifications(bot)
@@ -330,7 +343,7 @@ async def course_data_file(level: str):
 
 # ── Course v3 Mini App ──────────────────────────────────────────────────────
 
-_COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice"}
+_COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
 _COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4"}
 
 
@@ -880,6 +893,123 @@ async def admin_miniapp_open_section(request: Request):
         parse_mode="HTML",
     )
     return {"ok": True}
+
+
+@app.post("/api/admin-miniapp/notifications")
+async def admin_miniapp_notifications(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    async with async_session_maker() as session:
+        items = await NotificationTemplateService(session).list_for_admin()
+    return JSONResponse(content={"ok": True, "items": items})
+
+
+@app.post("/api/admin-miniapp/notifications/save")
+async def admin_miniapp_notifications_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    key = str(payload.get("key") or "").strip()
+    if key not in MOTIVATION_KEYS:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "unknown_key"})
+    async with async_session_maker() as session:
+        await NotificationTemplateService(session).update_text(
+            key,
+            text_uz=str(payload.get("text_uz") or ""),
+            text_ru=str(payload.get("text_ru") or ""),
+            text_tj=str(payload.get("text_tj") or ""),
+            enabled=bool(payload.get("enabled", True)),
+            updated_by=telegram_id,
+        )
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/notifications/media")
+async def admin_miniapp_notifications_media(request: Request):
+    form = await request.form()
+    telegram_id = extract_verified_webapp_user_id(
+        str(form.get("initData") or ""), settings.BOT_TOKEN
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    key = str(form.get("key") or "").strip()
+    if key not in MOTIVATION_KEYS:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "unknown_key"})
+    media = form.get("media")
+    if media is None or not hasattr(media, "read"):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "empty_media"})
+    raw_name = str(getattr(media, "filename", "") or "").lower()
+    content_type = str(getattr(media, "content_type", "") or "").lower()
+    if content_type.startswith("video") or raw_name.endswith((".mp4", ".mov", ".webm")):
+        media_type, ext = "video", ".mp4"
+    elif content_type.startswith("image") or raw_name.endswith((".jpg", ".jpeg", ".png", ".webp")):
+        media_type, ext = "photo", ".jpg"
+    else:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "unsupported_media"})
+    data = await media.read(25 * 1024 * 1024 + 1)
+    if len(data) > 25 * 1024 * 1024:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
+    os.makedirs(NOTIFICATION_MEDIA_ROOT, exist_ok=True)
+    filename = f"{key}_{int(time.time())}{ext}"
+    with open(os.path.join(NOTIFICATION_MEDIA_ROOT, filename), "wb") as handle:
+        handle.write(data)
+    async with async_session_maker() as session:
+        service = NotificationTemplateService(session)
+        old = await service._get_row(key)
+        old_path = old.media_path if old else None
+        await service.set_media(key, media_type=media_type, media_path=filename)
+        await session.commit()
+    if old_path and old_path != filename:
+        with contextlib.suppress(OSError):
+            os.remove(os.path.join(NOTIFICATION_MEDIA_ROOT, old_path))
+    return JSONResponse(content={"ok": True, "media_type": media_type, "media_url": f"/uploads/notifications/{filename}"})
+
+
+@app.post("/api/admin-miniapp/notifications/media/clear")
+async def admin_miniapp_notifications_media_clear(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    key = str(payload.get("key") or "").strip()
+    if key not in MOTIVATION_KEYS:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "unknown_key"})
+    async with async_session_maker() as session:
+        service = NotificationTemplateService(session)
+        old = await service._get_row(key)
+        old_path = old.media_path if old else None
+        await service.clear_media(key)
+        await session.commit()
+    if old_path:
+        with contextlib.suppress(OSError):
+            os.remove(os.path.join(NOTIFICATION_MEDIA_ROOT, old_path))
+    return JSONResponse(content={"ok": True})
+
+
+@app.get("/uploads/notifications/{filename}")
+async def serve_notification_media(filename: str):
+    safe = os.path.basename(filename)
+    path = os.path.join(NOTIFICATION_MEDIA_ROOT, safe)
+    if not os.path.exists(path):
+        return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
+    return FileResponse(path)
 
 
 @app.post("/api/miniapp/access")

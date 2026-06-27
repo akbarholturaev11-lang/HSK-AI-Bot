@@ -124,6 +124,21 @@
     .bar-track{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden}
     .bar-track span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--green))}
     .settings-grid{display:grid;gap:10px}
+    .notif-grid{display:grid;gap:12px}
+    .notif-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:11px}
+    .notif-card .nc-head{display:flex;align-items:start;justify-content:space-between;gap:10px}
+    .notif-card .nc-title{margin:0;font-size:14px;font-weight:900}
+    .notif-card .nc-note{margin:3px 0 0;color:var(--muted);font-size:12px;line-height:1.35}
+    .notif-card .nc-ph{margin:2px 0 0;color:var(--blue);font-size:11px;font-weight:850;word-break:break-word}
+    .nc-switch{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:850;color:var(--muted);white-space:nowrap}
+    .nc-switch input{width:16px;height:16px}
+    .nc-lang{display:grid;gap:5px}
+    .nc-lang label{font-size:11px;font-weight:850;color:var(--muted)}
+    .nc-lang textarea{width:100%;min-height:78px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:9px 11px;color:var(--ink);font:inherit;font-size:13px;line-height:1.4;resize:vertical;outline:none}
+    .nc-lang textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,92,168,.12)}
+    .nc-media{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .nc-media img,.nc-media video{width:100%;max-width:240px;border-radius:10px;border:1px solid var(--line)}
+    .nc-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .setting-row{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left}
     .setting-row h3{margin:0;font-size:14px}
     .setting-row p{margin:3px 0 0;color:var(--muted);font-size:12px;line-height:1.35}
@@ -409,6 +424,18 @@
             </div>
           </div>
           <div id="settingsSummary" class="settings-grid"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">🔔 Motivatsion eslatmalar</h2>
+              <p class="section-note">Reyting, kunlik maqsad va streak eslatmalari. Matnni 3 tilda tahrirlang, surat yoki video biriktiring. Matn bo'sh qoldirilsa standart matn ishlatiladi.</p>
+            </div>
+          </div>
+          <div id="notifTemplates" class="notif-grid">
+            <p class="section-note" style="padding:12px 0">Yuklanmoqda…</p>
+          </div>
         </div>
       </section>
     </main>
@@ -829,6 +856,126 @@
       renderModules();
       renderMonitor();
       loadSubEntryStats();
+      loadNotifications();
+    }
+
+    async function apiUpload(url, formData){
+      if(tg && tg.initData) formData.append("initData", tg.initData);
+      const response = await fetch(url, {
+        method:"POST",
+        headers:{ "X-Telegram-Init-Data": tg && tg.initData ? tg.initData : "" },
+        body: formData
+      });
+      const data = await response.json().catch(() => ({}));
+      if(!response.ok || !data.ok) throw {status:response.status, data};
+      return data;
+    }
+
+    function notifMediaPreview(item){
+      if(!item.media_url) return '<span class="section-note">Media biriktirilmagan</span>';
+      return item.media_type === "video"
+        ? `<video src="${item.media_url}" controls></video>`
+        : `<img src="${item.media_url}" alt="eslatma media">`;
+    }
+
+    function notifCardHtml(item){
+      const phs = (item.placeholders || []).join("  ");
+      return `
+      <div class="notif-card" data-key="${item.key}" data-media-type="${item.media_type || "none"}">
+        <div class="nc-head">
+          <div>
+            <h3 class="nc-title">${escapeHtml(item.title)}</h3>
+            <p class="nc-note">${escapeHtml(item.note)}</p>
+            <p class="nc-ph">O'zgaruvchilar: ${escapeHtml(phs)}</p>
+          </div>
+          <label class="nc-switch"><input type="checkbox" data-nc="enabled" ${item.enabled ? "checked" : ""}> Yoqilgan</label>
+        </div>
+        <div class="nc-lang"><label>🇺🇿 O'zbekcha</label><textarea data-nc="text_uz" maxlength="3500" placeholder="${escapeHtml(item.default_uz)}">${escapeHtml(item.text_uz)}</textarea></div>
+        <div class="nc-lang"><label>🇷🇺 Ruscha</label><textarea data-nc="text_ru" maxlength="3500" placeholder="${escapeHtml(item.default_ru)}">${escapeHtml(item.text_ru)}</textarea></div>
+        <div class="nc-lang"><label>🇹🇯 Tojikcha</label><textarea data-nc="text_tj" maxlength="3500" placeholder="${escapeHtml(item.default_tj)}">${escapeHtml(item.text_tj)}</textarea></div>
+        <div class="nc-media" data-nc-media>${notifMediaPreview(item)}</div>
+        <div class="nc-actions">
+          <button class="btn" data-nc-act="save">Saqlash</button>
+          <button class="btn secondary" data-nc-act="upload">📎 Surat/video yuklash</button>
+          <button class="btn secondary" data-nc-act="clear-media"${item.media_url ? "" : " hidden"}>Mediani o'chirish</button>
+          <input type="file" accept="image/*,video/*" data-nc-file hidden>
+        </div>
+        <p class="section-note">Media bilan caption max ${item.caption_max} belgi, mediasiz matn max ${item.text_max} belgi.</p>
+      </div>`;
+    }
+
+    async function loadNotifications(){
+      const host = $("notifTemplates");
+      if(!host) return;
+      try{
+        const data = await apiPost("/api/admin-miniapp/notifications", {});
+        const items = data.items || [];
+        host.innerHTML = items.map(notifCardHtml).join("");
+        host.querySelectorAll(".notif-card").forEach(bindNotifCard);
+      }catch(error){
+        host.innerHTML = '<p class="section-note" style="padding:12px 0">Eslatmalarni yuklab bo\'lmadi.</p>';
+      }
+    }
+
+    function bindNotifCard(card){
+      const key = card.dataset.key;
+      const fileInput = card.querySelector("[data-nc-file]");
+      card.querySelector('[data-nc-act="save"]').addEventListener("click", () => saveNotif(card, key));
+      card.querySelector('[data-nc-act="upload"]').addEventListener("click", () => fileInput.click());
+      const clearBtn = card.querySelector('[data-nc-act="clear-media"]');
+      clearBtn.addEventListener("click", () => clearNotifMedia(card, key));
+      fileInput.addEventListener("change", () => uploadNotifMedia(card, key, fileInput));
+    }
+
+    async function saveNotif(card, key){
+      const btn = card.querySelector('[data-nc-act="save"]');
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/notifications/save", {
+          key,
+          enabled: card.querySelector('[data-nc="enabled"]').checked,
+          text_uz: card.querySelector('[data-nc="text_uz"]').value,
+          text_ru: card.querySelector('[data-nc="text_ru"]').value,
+          text_tj: card.querySelector('[data-nc="text_tj"]').value
+        });
+        showToast("Eslatma saqlandi");
+      }catch(error){
+        showToast("Saqlashda xato");
+      }finally{
+        btn.disabled = false;
+      }
+    }
+
+    async function uploadNotifMedia(card, key, fileInput){
+      const file = fileInput.files && fileInput.files[0];
+      if(!file) return;
+      if(file.size > 25 * 1024 * 1024){ showToast("Fayl 25MB dan katta"); fileInput.value = ""; return; }
+      const formData = new FormData();
+      formData.append("key", key);
+      formData.append("media", file);
+      try{
+        const data = await apiUpload("/api/admin-miniapp/notifications/media", formData);
+        card.dataset.mediaType = data.media_type;
+        card.querySelector("[data-nc-media]").innerHTML = notifMediaPreview({ media_url: data.media_url + "?v=" + Date.now(), media_type: data.media_type });
+        card.querySelector('[data-nc-act="clear-media"]').hidden = false;
+        showToast("Media biriktirildi");
+      }catch(error){
+        showToast("Media yuklashda xato");
+      }finally{
+        fileInput.value = "";
+      }
+    }
+
+    async function clearNotifMedia(card, key){
+      try{
+        await apiPost("/api/admin-miniapp/notifications/media/clear", { key });
+        card.dataset.mediaType = "none";
+        card.querySelector("[data-nc-media]").innerHTML = notifMediaPreview({ media_url: null });
+        card.querySelector('[data-nc-act="clear-media"]').hidden = true;
+        showToast("Media o'chirildi");
+      }catch(error){
+        showToast("O'chirishda xato");
+      }
     }
 
     document.addEventListener("click", (event) => {

@@ -136,6 +136,12 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "processing_by_telegram_id": "BIGINT",
         "processing_started_at": "TIMESTAMP WITH TIME ZONE",
     },
+    "course_miniapp_profiles": {
+        "last_known_rank": "INTEGER",
+        "motivation_overtaken_date": "DATE",
+        "motivation_goal_date": "DATE",
+        "motivation_streak_date": "DATE",
+    },
 }
 
 

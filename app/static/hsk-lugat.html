@@ -318,6 +318,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     tj:{head:'Машқҳо', pronT:'Санҷиши талаффуз', pronS:'Ба бот гӯед', recogT:'Аз байни монандҳо ёбед', recogS:'Шинохти иероглиф', memT:'Зуд ёд гирифтан', memS:'Машқи ҳофиза'}
   };
 
+  var memoLabels = {
+    uz:{tarkibi:'Tarkibi', belgi:"Ma'no va tovush belgisi", mano:"Ma'no belgisi", tovush:'Tovush qismi', eslab:'Eslab qolish', oxshash:"O'xshash iyerogliflar", misol:'Misol'},
+    ru:{tarkibi:'Состав', belgi:'Ключ значения и звука', mano:'Ключ значения', tovush:'Фонетик', eslab:'Как запомнить', oxshash:'Похожие иероглифы', misol:'Пример'},
+    tj:{tarkibi:'Таркиб', belgi:'Калиди маъно ва овоз', mano:'Калиди маъно', tovush:'Қисми овозӣ', eslab:'Чӣ тавр дар хотир монед', oxshash:'Иероглифҳои монанд', misol:'Мисол'}
+  };
+
   function normalizeLang(value){
     value = String(value || '').toLowerCase();
     return validLangs.indexOf(value) !== -1 ? value : '';
@@ -543,7 +549,10 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   function goPractice(page){
     if(!currentWord) return;
-    location.href = '/' + page + '.html?lang=' + currentLang + '&char=' + encodeURIComponent(currentWord.h);
+    var url = '/' + page + '.html?lang=' + currentLang + '&char=' + encodeURIComponent(currentWord.h) + '&from=lugat';
+    if(isLight) url += '&theme=light';
+    if(currentLevel !== 'all') url += '&level=' + currentLevel;
+    location.href = url;
   }
   document.getElementById('pr-pron').onclick = function(){ goPractice('course_v3_pronunciation'); };
   document.getElementById('pr-recog').onclick = function(){ goPractice('course_v3_recognition'); };
@@ -685,6 +694,61 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   /* ---------- detail view ---------- */
 
+  function memoText(value){
+    if(value && typeof value === 'object') return value[currentLang] || value.uz || value.ru || value.tj || '';
+    return value || '';
+  }
+  // Structured "fast memorization" sections — optional, only when memo data exists for the char.
+  function renderMemo(word){
+    var memoBlock = document.getElementById('memo-block');
+    var D = (window.MEMO_DATA && word) ? window.MEMO_DATA[word.h] : null;
+    if(!D){ memoBlock.innerHTML = ''; return; }
+    var L = memoLabels[currentLang] || memoLabels.uz;
+    var html = '';
+    // 4 — Tarkibi (component breakdown)
+    if(Array.isArray(D.breakdown) && D.breakdown.length){
+      html += '<div class="memo-sec"><div class="ms-h">'+escapeHtml(L.tarkibi)+'</div><div class="memo-parts">'+
+        D.breakdown.map(function(p){
+          return '<div class="memo-part"><div class="mp-h">'+escapeHtml(p.part)+'</div><div class="mp-p">'+escapeHtml(p.p||'')+'</div><div class="mp-m">'+escapeHtml(memoText(p.m))+'</div></div>';
+        }).join('')+'</div></div>';
+    }
+    // 5 — Ma'no/tovush belgisi (phonetic-semantic roles + signal)
+    var radParts = Array.isArray(D.breakdown) ? D.breakdown.filter(function(p){return p.role==='radical';}) : [];
+    var hookParts = Array.isArray(D.breakdown) ? D.breakdown.filter(function(p){return p.role==='hook';}) : [];
+    var rows = '';
+    if(radParts.length){
+      rows += '<div class="memo-role"><span class="mr-k">'+escapeHtml(L.mano)+'</span><span class="mr-v"><b>'+escapeHtml(radParts.map(function(p){return p.part;}).join(''))+'</b> — '+escapeHtml(memoText(radParts[0].m))+'</span></div>';
+    } else if(D.radical && D.radical.r){
+      rows += '<div class="memo-role"><span class="mr-k">'+escapeHtml(L.mano)+'</span><span class="mr-v"><b>'+escapeHtml(D.radical.r)+'</b> — '+escapeHtml(memoText(D.radical.m))+'</span></div>';
+    }
+    if(hookParts.length){
+      rows += '<div class="memo-role"><span class="mr-k">'+escapeHtml(L.tovush)+'</span><span class="mr-v"><b>'+escapeHtml(hookParts.map(function(p){return p.part;}).join(''))+'</b> — '+escapeHtml(memoText(hookParts[0].m))+'</span></div>';
+    }
+    if(rows){
+      var signal = (D.radical && D.radical.signal) ? '<div class="memo-signal">'+escapeHtml(memoText(D.radical.signal))+'</div>' : '';
+      var disc = (D.etymology_honest === false && window.MEMO_UI && window.MEMO_UI.disclaimer) ? '<div class="memo-disc">'+escapeHtml(memoText(window.MEMO_UI.disclaimer))+'</div>' : '';
+      html += '<div class="memo-sec"><div class="ms-h">'+escapeHtml(L.belgi)+'</div><div class="memo-roles">'+rows+'</div>'+signal+disc+'</div>';
+    }
+    // 6 — Eslab qolish (mnemonic hooks)
+    if(Array.isArray(D.hooks) && D.hooks.length){
+      html += '<div class="memo-sec"><div class="ms-h">'+escapeHtml(L.eslab)+'</div><div class="memo-hooks">'+
+        D.hooks.map(function(hk){ return '<div class="memo-hook"><span class="mh-d">•</span><span>'+escapeHtml(memoText(hk.t))+'</span></div>'; }).join('')+'</div></div>';
+    }
+    // 7 — O'xshash iyerogliflar (confusables)
+    if(Array.isArray(D.confusables) && D.confusables.length){
+      html += '<div class="memo-sec"><div class="ms-h">'+escapeHtml(L.oxshash)+'</div><div class="memo-conf">'+
+        D.confusables.map(function(c){
+          return '<div class="memo-conf-row"><div class="mc-h">'+escapeHtml(c.h)+'</div><div class="mc-tx"><div class="mc-p">'+escapeHtml(c.p||'')+' · '+escapeHtml(memoText(c.m))+'</div><div class="mc-d">'+escapeHtml(memoText(c.diff))+'</div></div></div>';
+        }).join('')+'</div></div>';
+    }
+    // 8 — Misol (example words)
+    if(Array.isArray(D.words) && D.words.length){
+      html += '<div class="memo-sec"><div class="ms-h">'+escapeHtml(L.misol)+'</div><div class="memo-words">'+
+        D.words.map(function(w){ return '<div class="memo-word"><span class="mw-w">'+escapeHtml(w.w)+'</span><span class="mw-p">'+escapeHtml(w.p||'')+'</span><span class="mw-m">'+escapeHtml(memoText(w.m))+'</span></div>'; }).join('')+'</div></div>';
+    }
+    memoBlock.innerHTML = html;
+  }
+
   function renderExample(word){
     var ex = (typeof EXAMPLES !== 'undefined') ? EXAMPLES[word.h] : null;
     if(ex && ex.zh){
@@ -725,6 +789,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   function refreshDetailText(){
     if(!currentWord) return;
     detailMeaning.textContent = text(currentWord.m);
+    renderMemo(currentWord);
     renderExample(currentWord);
     renderGrammar(currentWord);
   }
@@ -739,6 +804,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     currentChars = Array.from(word.h);
     loadChar(0);
 
+    renderMemo(word);
     renderExample(word);
     renderGrammar(word);
     audioBtn.onclick = function(){ speak(word.h); };

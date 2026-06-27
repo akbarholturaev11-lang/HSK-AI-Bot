@@ -36,6 +36,11 @@ class CourseMiniAppProfile(Base):
     current_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     longest_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     last_activity_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    # Motivational reminder bookkeeping (managed by MotivationReminderService).
+    last_known_rank: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    motivation_overtaken_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    motivation_goal_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    motivation_streak_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     onboarding_completed_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
         nullable=True,

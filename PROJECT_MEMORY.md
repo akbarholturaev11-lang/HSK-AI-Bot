@@ -207,6 +207,87 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-27 — Motivatsion eslatmalar (reyting / kunlik maqsad / streak) + admin tahriri
+
+Changed:
+- Yangi `MotivationReminderService` 3 ta push eslatma yuboradi, har biri real Mini App
+  ma'lumotidan: (1) reytingda kimdir ortda qoldirsa, (2) kun oxirida kunlik maqsad
+  bajarilmasa, (3) streak uzilish xavfi bo'lsa. Har biri foydalanuvchiga mahalliy
+  kun bo'yicha max 1 marta; goal/streak faqat 20:00–21:30 oynasida va bugun
+  shug'ullanmagan bo'lsa. `_background_scheduler` (har 60s) ichiga ulandi.
+- Reyting o'tib ketishini aniqlash uchun `course_miniapp_profiles` ga `last_known_rank`
+  va 3 ta dedupe sanasi (`motivation_overtaken_date/goal_date/streak_date`) qo'shildi.
+- Eslatma matnlari endi bazada (`notification_templates`) — admin Mini App'dan UZ/RU/TJ
+  alohida tahrirlanadi, yoq/o'chir qilinadi, bitta umumiy surat/video biriktiriladi.
+  Matn bo'sh bo'lsa koddagi standart matnga (DEFAULT_TEXTS) qaytadi, shuning uchun
+  noto'g'ri sozlash eslatmani jimitib qo'ymaydi.
+- Media admin Mini App'dan to'g'ridan-to'g'ri yuklanadi (`/api/admin-miniapp/notifications/media`),
+  serverda `app/static/uploads/notifications/` ga saqlanadi, scheduler `FSInputFile`
+  bilan yuboradi, preview `/uploads/notifications/{file}` orqali ko'rsatiladi.
+  Caption (media bilan) max 1024, mediasiz matn max 4096 belgi.
+- Admin Mini App "Sozlash" tabiga "🔔 Motivatsion eslatmalar" bo'limi qo'shildi
+  (yangi tab/navigatsiya qo'shilmadi, 5 tab o'zgarmadi).
+
+Why:
+- Avval streak/liga/reyting faqat Mini App UI'da bor edi; foydalanuvchi botni ochmasa
+  hech qanday motivatsion push kelmasdi (eski `CourseReminderService` faqat oddiy
+  kunlik/haftalik eslatma yuborardi).
+
+Files touched:
+- `app/db/models/notification_template.py` (new)
+- `app/db/models/course_miniapp_profile.py`
+- `app/services/notification_template_service.py` (new)
+- `app/services/motivation_reminder_service.py` (new)
+- `app/main.py` (endpoints + scheduler + media route)
+- `app/db/session.py` (bootstrap columns)
+- `app/static/admin-control.html`
+- `alembic/versions/0054_add_notification_motivation.py` (new head)
+
+Risk:
+- Migration `0054_add_notification_motivation` yangi head. `notification_templates`
+  jadvali `create_all` bilan startda yaratiladi; profil ustunlari `_BOOTSTRAP_COLUMNS`
+  orqali eski Railway DB'ga ham qo'shiladi.
+- To'lov/obuna/ruxsat mantig'i o'zgarmadi.
+- Eslatmalar `User.status == "active"` va Mini App profili bor foydalanuvchilarga
+  yuboriladi; per-user opt-out yo'q (faqat admin template'ni o'chira oladi).
+- Deploydan keyin real Telegram'da smoke-test kerak: admin Mini App'da matn tahriri,
+  media yuklash/o'chirish, va kechqurun goal/streak push'i.
+
+### 2026-06-27 — HSK lug'at kartasiga strukturali "eslab qolish" bo'limlari
+
+Changed:
+- `hsk-lugat.html` belgi detali endi `memo.js` (`window.MEMO_DATA`) dan
+  data-driven 5 bo'lim ko'rsatadi: Tarkibi (breakdown), Ma'no/tovush belgisi
+  (radikal rollari + signal), Eslab qolish (hooks), O'xshash iyerogliflar
+  (confusables), Misol (words). Har bo'lim faqat shu belgi uchun data bo'lsa
+  chiqadi, bo'lmasa toza yashiriladi (`.memo-wrap:empty{display:none}`).
+- Stroke-order animatsiya va 1-3 bo'lim (hanzi/pinyin/ma'no), mavjud
+  misol/grammatika/mashqlar bloklari tegilmadi.
+- `etymology_honest:false` belgilarda `MEMO_UI.disclaimer` (3 til) ko'rsatiladi.
+- `main.py` ga `GET /course_v3_data/memo.js` route qo'shildi (avval `.json`-only
+  route uni 404 qilardi).
+- `main.py` `_COURSE_V3_PAGES` ga `"memorize"` qo'shildi → lug'atdagi ⚡ "Tez
+  eslab qolish" tugmasi (`/course_v3_memorize.html?char=…`) endi 404 emas, real
+  interaktiv yodlash moduli ochiladi.
+- Lug'at ⚡/mashq tugmalari endi `from=lugat` (+ `theme`/`level`) uzatadi
+  (`goPractice`), va `course_v3_memorize.html` `goBack()` `from=lugat` bo'lsa
+  `/hsk-lugat.html?char=FOCUS` ga qaytaradi → mashq tugagach foydalanuvchi
+  boshlagan belgisiga (lug'atga) qaytadi, kurs mashq tabiga emas.
+
+Why:
+- Lug'at kartasi faqat hanzi/pinyin/ma'no ko'rsatardi; mavjud offline yozilgan
+  memo data (HSK1, 87 belgi) shu kartada qayta ishlatildi. Runtime AI yo'q.
+
+Files touched:
+- `app/static/hsk-lugat.html`
+- `app/main.py`
+
+Risk:
+- Faqat frontend + 1 statik route; lesson/quiz/homework/initData/backend/payment
+  tegilmadi.
+- Memo data hozir faqat HSK1 (87 belgi) uchun bor; qolgan belgilarda 4-8 bo'limlar
+  yashirin (lug'at kartasida) va ⚡ modulida deck shu pul ichidan quriladi.
+
 ### 2026-06-27 — Legacy V2 Mini App removed, bot opens Course v3, subscription paywall rewritten
 
 Changed:
