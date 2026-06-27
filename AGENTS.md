@@ -275,15 +275,6 @@ Maqsad:
 
 ---
 
-## graphify
-
-This project has a graphify knowledge graph at graphify-out/.
-
-Rules:
-- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md
-- Prefer graphify query/path/explain over random scanning
-- After code changes, run graphify update .
-
 ## FINAL LAW
 
 Biz gaplashish uchun gaplashmaymiz.
@@ -306,3 +297,83 @@ Rules:
 - If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
 - For cross-module "how does X relate to Y" questions, prefer `graphify query "<question>"`, `graphify path "<A>" "<B>"`, or `graphify explain "<concept>"` over grep — these traverse the graph's EXTRACTED + INFERRED edges instead of scanning files
 - After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)
+
+# HSK AI Codex Instructions
+
+This project is HSK AI: a Telegram Mini App and Telegram bot for Chinese learning.
+
+## Critical rules
+
+Do not break:
+- existing lesson order
+- VOCAB data
+- GRAMMAR data
+- quiz logic
+- homework logic
+- Telegram WebApp SDK integration
+- backend result flow
+- subscription/payment logic
+- referral logic
+
+Prefer small safe patches over full rewrites.
+
+Before editing UI code, first provide:
+1. weak points
+2. why they hurt learning or conversion
+3. exact proposed changes
+4. files to edit
+5. risk level
+
+Only edit after the audit unless explicitly told to patch immediately.
+
+## Skills to use
+
+Use these skills when relevant:
+- hsk-ai-ui
+- frontend-design
+- webapp-testing
+- playwright
+
+## UI/UX rules
+
+The interface must be:
+- mobile-first
+- Telegram Mini App safe-area compatible
+- premium, clean, not childish
+- clear for Uzbek, Russian, and Tajik users
+- optimized for HSK learners
+
+Chinese learning content must show:
+- Chinese characters
+- pinyin
+- translation
+
+Course is the core product. AI, voice, XP, streak, rewards, and subscription must support the course, not replace it.
+
+## Quiz rules
+
+Good quiz formats:
+- fill blank in full sentence
+- choose correct Chinese word
+- choose correct pinyin
+- choose correct translation
+- arrange sentence order
+- listen and choose
+- mistake correction
+
+Avoid:
+- dry school-test layout
+- unclear correct/wrong feedback
+- too much text on one screen
+- hidden progress
+- changing logic without permission
+
+## Testing
+
+After changes, check:
+- app opens on mobile viewport
+- Telegram WebApp SDK does not crash outside Telegram
+- quiz still submits result
+- homework still submits result
+- lesson navigation still works
+- no console errors

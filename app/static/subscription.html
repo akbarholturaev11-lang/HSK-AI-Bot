@@ -1,1422 +1,341 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>HSK AI — Obuna</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<title>HSK AI Subscription</title>
 <style>
 :root{
-  color-scheme:dark;
-  --bg:#05110d;
-  --line:rgba(180,240,214,.13);
-  --line2:rgba(180,240,214,.32);
-  --text:#eafff6;
-  --muted:#93b7ab;
-  --emerald:#34e3a4;
-  --emerald2:#16c98a;
-  --mint:#8ff5cf;
-  --gold:#ffd27d;
-  --radius:18px;
-  --radius-sm:13px;
-  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  --ink:#211D17;--ink2:#6E665B;--ink3:#A89E8E;--paper:#FBF7EF;--card:#FFFFFF;--line:#EAE2D4;
+  --cin:#C2403A;--cin2:#9A2F2B;--cinbg:#FBEDEA;--gold:#C2962F;--goldbg:#F8F0DA;--jade:#2F7D5E;--jadebg:#E7F1EA;
+  --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-html,body{width:100%;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--font)}
-body{overflow-x:hidden;position:relative;background:radial-gradient(125% 80% at 50% -8%,#0d3127 0%,#08201a 44%,#05110d 100%)}
-body.mode-referral_discount{--gold:#ffe08f}
-body.mode-admin_discount{--gold:#ffd36d;--emerald:#62e6b2;--mint:#a8f7d8}
-body.mode-feedback_discount{--gold:#ffd08a;--emerald:#74e7ff;--mint:#c2f7ff}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(58% 40% at 82% 6%,rgba(52,227,164,.16),transparent 70%),
-    radial-gradient(52% 34% at 10% 16%,rgba(255,210,125,.10),transparent 70%)}
-button,input{font:inherit}
-button{border:0;color:inherit;background:none;touch-action:manipulation;cursor:pointer}
-button:active{transform:scale(.98)}
-.app{position:relative;z-index:1;min-height:100dvh;max-width:520px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) 15px calc(110px + env(safe-area-inset-bottom,0px))}
-.top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px}
-.brand{display:flex;flex-direction:column;gap:4px}
-.kicker{font-size:11px;color:var(--emerald);font-weight:800;text-transform:uppercase;letter-spacing:.14em}
-h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
-.top-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
-.lang{display:grid;grid-template-columns:repeat(3,34px);gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);backdrop-filter:blur(8px)}
-.lang button{height:28px;border-radius:999px;color:var(--muted);font-size:12px;font-weight:850;transition:.16s}
-.lang button.active{background:linear-gradient(135deg,var(--emerald),var(--emerald2));color:#04130d;box-shadow:0 4px 14px rgba(52,227,164,.4)}
-.help-btn{width:38px;height:38px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:var(--mint);font-size:17px;font-weight:950;box-shadow:0 8px 22px rgba(0,0,0,.18)}
-.status{display:none;margin:0 0 12px;border:1px solid rgba(255,210,125,.3);border-radius:var(--radius-sm);background:rgba(255,210,125,.1);padding:11px 13px;color:#ffe3ad;font-size:12px;line-height:1.4;font-weight:750}
-.status.show{display:block}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:16px}
-.steps i{height:5px;border-radius:999px;background:rgba(255,255,255,.09);transition:.3s}
-.steps i.active{background:linear-gradient(90deg,var(--emerald),var(--mint));box-shadow:0 0 12px rgba(52,227,164,.5)}
-.screen{display:none;animation:fade .36s cubic-bezier(.22,.61,.36,1)}
-.screen.active{display:block}
-.hero{position:relative;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(160deg,rgba(52,227,164,.08),rgba(255,255,255,.02));padding:17px;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(135% 100% at 88% -12%,rgba(52,227,164,.16),transparent 55%)}
-.hero h2{position:relative;font-size:22px;line-height:1.12;letter-spacing:-.01em;font-weight:900}
-.hero p{position:relative;margin-top:9px;color:var(--muted);font-size:13px;line-height:1.5}
-.tv{position:relative;margin-bottom:14px;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(165deg,rgba(52,227,164,.12),rgba(5,17,13,.55));overflow:hidden;box-shadow:0 0 0 1px rgba(52,227,164,.08),0 16px 40px rgba(0,0,0,.32)}
-.tv::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background:radial-gradient(75% 120% at 50% -20%,rgba(52,227,164,.16),transparent 58%)}
-.tv-head{position:relative;z-index:2;display:flex;align-items:center;gap:8px;padding:11px 14px 0}
-.tv-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);box-shadow:0 0 11px var(--emerald);animation:pulse 1.9s ease-in-out infinite}
-.tv-title{font-size:11px;font-weight:850;letter-spacing:.13em;text-transform:uppercase;color:var(--mint)}
-.tv-screen{position:relative;z-index:2;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
-.tv-track{display:flex;gap:9px;width:max-content;padding:12px 14px;animation:marquee 28s linear infinite;will-change:transform}
-.tv-screen:active .tv-track{animation-play-state:paused}
-.perk{flex:0 0 auto;display:inline-flex;align-items:center;height:38px;padding:0 15px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:13px;font-weight:800;white-space:nowrap;color:var(--text)}
-.discount{position:relative;display:flex;flex-direction:column;gap:11px;margin-top:14px;border:1px solid rgba(255,210,125,.34);border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,210,125,.13),rgba(52,227,164,.05));padding:14px;overflow:hidden;animation:fade .4s ease}
-.discount::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(115% 130% at 6% -25%,rgba(255,210,125,.2),transparent 55%)}
-.discount.used{border-color:var(--line);background:rgba(255,255,255,.04)}
-.discount-row{position:relative;display:flex;align-items:center;gap:13px}
-.discount-badge{flex:0 0 auto;min-width:58px;height:58px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),#ffba4d);color:#2a1c00;font-size:18px;font-weight:950;box-shadow:0 10px 24px rgba(255,186,77,.3)}
-.discount.used .discount-badge{background:rgba(255,255,255,.08);color:var(--muted);box-shadow:none}
-.discount-body{flex:1;min-width:0}
-.discount-body strong{display:block;font-size:14px;font-weight:900;line-height:1.25}
-.discount-body span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.38}
-.discount-bar{position:relative;height:6px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}
-.discount-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--gold),var(--emerald));transition:width .6s cubic-bezier(.22,.61,.36,1)}
-.discount-btn{position:relative;height:46px;border-radius:13px;border:1px solid var(--emerald);background:rgba(52,227,164,.13);color:var(--mint);font-weight:850;font-size:13px;transition:.18s}
-.discount-btn:active{background:rgba(52,227,164,.2)}
-.benefits{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}
-.benefit{position:relative;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.04);padding:12px;min-height:78px}
-.benefit strong{display:block;font-size:13px;line-height:1.28;font-weight:850}
-.benefit span{display:block;margin-top:6px;color:var(--muted);font-size:12px;line-height:1.35}
-.section{margin-top:16px}
-.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:9px}
-.section h3{font-size:15px;font-weight:900}
-.section small{color:var(--emerald);font-size:12px;font-weight:850;text-align:right}
-.plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
-.plan.selected,.choice.selected{border-color:var(--emerald);box-shadow:0 0 0 1px var(--emerald),0 10px 30px rgba(52,227,164,.22);background:linear-gradient(160deg,rgba(52,227,164,.14),rgba(52,227,164,.05))}
-.plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.plan-name{font-size:13px;color:var(--muted);font-weight:850}
-.badge{display:inline-flex;align-items:center;justify-content:center;min-height:22px;border-radius:999px;padding:3px 9px;background:linear-gradient(135deg,rgba(255,210,125,.22),rgba(255,186,77,.16));color:var(--gold);font-size:11px;font-weight:900;border:1px solid rgba(255,210,125,.3)}
-.price{display:inline-block;font-size:30px;line-height:1;font-weight:950;letter-spacing:-.02em;margin-top:12px;background:linear-gradient(135deg,#ffffff,var(--mint));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.price small{font-size:12px;color:var(--muted);font-weight:850;margin-left:4px;-webkit-text-fill-color:var(--muted)}
-.old-price{display:none;margin-top:9px;color:var(--muted);font-size:12px;text-decoration:line-through}
-.discounted .old-price{display:block}
-.list{display:grid;gap:9px}
-.choice{min-height:66px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:0 14px;text-align:left;transition:.18s}
-.choice strong{display:block;font-size:14px;line-height:1.25;font-weight:850;color:var(--text)}
-.choice span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
-.choice .choice-tx{flex:1;min-width:0;margin-top:0;color:inherit}
-.choice-ic{flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:19px;font-weight:900;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.28)}
-.ic-visa{background:linear-gradient(135deg,#3a6ff7,#1f4fd6)}
-.ic-alipay{background:linear-gradient(135deg,#1aa3ff,#1677ff)}
-.ic-wechat{background:linear-gradient(135deg,#2dd36f,#07c160)}
-.dot{flex:0 0 auto;width:20px;height:20px;border-radius:50%;border:2px solid var(--line2);transition:.18s}
-.selected .dot{border-color:var(--emerald);box-shadow:inset 0 0 0 5px var(--bg);background:var(--emerald)}
-.quote-card{position:relative;border:1px solid rgba(52,227,164,.4);border-radius:var(--radius);background:linear-gradient(160deg,rgba(52,227,164,.16),rgba(52,227,164,.05));padding:16px;margin-top:14px;overflow:hidden}
-.quote-card::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 120% at 90% -20%,rgba(52,227,164,.22),transparent 55%)}
-.quote-label{position:relative;color:var(--mint);font-size:12px;font-weight:850}
-.quote-amount{position:relative;margin-top:8px;font-size:36px;line-height:1;font-weight:950;letter-spacing:-.02em}
-.quote-amount small{font-size:15px;color:#cdeee0;font-weight:850;margin-left:6px}
-.quote-old{display:none;position:relative;margin-top:8px;color:var(--muted);font-size:12px;line-height:1.25;font-weight:850;text-decoration:line-through}
-.quote-old.show{display:block}
-.meta{display:grid;gap:8px;margin-top:14px}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.04);padding:11px 13px}
-.row span{color:var(--muted);font-size:12px;font-weight:800}
-.row strong{font-size:13px;text-align:right;line-height:1.28;font-weight:850}
-.paybox{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:16px}
-.paybox h4{font-size:15px;margin-bottom:8px;font-weight:900}
-.paybox p,.paybox pre{color:var(--muted);font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
-.detail-hint{display:block;width:100%;margin-bottom:11px;color:#b9dccf;font-size:12px;line-height:1.45;text-align:left}
-.detail-hint-text{display:block}
-.detail-hint.collapsed .detail-hint-text{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.detail-hint-more{display:block;margin-top:4px;color:var(--mint);font-size:11px;font-weight:900}
-.detail-list{display:grid;gap:9px}
-.detail-row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(255,255,255,.045);padding:11px 12px;min-height:48px}
-.detail-row span{min-width:0;color:var(--text);font-size:13px;line-height:1.38;font-weight:750;word-break:break-word}
-.detail-row.copyable{border-color:rgba(52,227,164,.34);background:linear-gradient(160deg,rgba(52,227,164,.1),rgba(255,255,255,.035))}
-.copy-detail{height:34px;min-width:66px;border-radius:10px;background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:12px;font-weight:950;padding:0 10px}
-.detail-empty{border:1px dashed var(--line2);border-radius:var(--radius-sm);padding:16px;color:var(--muted);font-size:13px;line-height:1.45;text-align:center;background:rgba(255,255,255,.035)}
-.qr{display:flex;align-items:center;justify-content:center;width:100%;min-height:220px;border:1px dashed var(--line2);border-radius:var(--radius-sm);background:#fff;margin-top:11px;overflow:hidden;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
-.qr-tappable{cursor:pointer}
-.qr-tappable:active{transform:scale(.99)}
-.qr img{display:block;max-width:100%;max-height:280px}
-.qr.empty{background:rgba(255,255,255,.04);color:var(--muted);font-size:13px;text-align:center;padding:20px}
-.qr-hint{margin-top:9px;text-align:center;color:var(--muted);font-size:12px;line-height:1.35}
-.qr-actions{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(-4px);transition:grid-template-rows .2s ease,opacity .2s ease,transform .2s ease}
-.qr-actions.show{grid-template-rows:1fr;opacity:1;transform:translateY(0)}
-.qr-actions-inner{overflow:hidden}
-.qr-download{width:100%;height:46px;margin-top:10px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:14px;font-weight:950}
-.qr-preview{position:fixed;inset:0;z-index:28;display:none;background:radial-gradient(110% 70% at 50% 0%,#0d3127 0%,#05110d 58%,#030a08 100%);padding:calc(18px + env(safe-area-inset-top,0px)) 15px calc(88px + env(safe-area-inset-bottom,0px))}
-.qr-preview.show{display:flex;flex-direction:column}
-.qr-preview-head{width:100%;max-width:520px;margin:0 auto 12px}
-.qr-preview-head h3{font-size:18px;line-height:1.2;font-weight:950}
-.qr-preview-body{flex:1;display:flex;align-items:center;justify-content:center;width:100%;max-width:520px;margin:0 auto}
-.qr-preview-frame{display:grid;place-items:center;width:100%;max-width:430px;aspect-ratio:1/1;border:1px solid rgba(255,255,255,.16);border-radius:var(--radius);background:#fff;padding:12px;box-shadow:0 22px 70px rgba(0,0,0,.42)}
-.qr-preview-frame img{display:block;width:100%;height:100%;object-fit:contain}
-.qr-preview-bottom{position:fixed;left:0;right:0;bottom:0;z-index:29;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(5,17,13,.22),rgba(5,17,13,.95));backdrop-filter:blur(18px);border-top:1px solid var(--line)}
-.qr-preview-bottom-inner{max-width:520px;margin:0 auto}
-.qr-preview-back{width:100%;height:54px;border-radius:var(--radius);border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font-size:15px;font-weight:950}
-.upload{display:block;margin-top:14px;border:1.5px dashed var(--line2);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:14px;cursor:pointer;transition:.18s}
-.upload input{display:none}
-.upload strong{display:block;font-size:14px;font-weight:850}
-.upload span{display:block;margin-top:6px;color:var(--muted);font-size:12px;line-height:1.4}
-.upload.ready{border-style:solid;border-color:var(--emerald);background:linear-gradient(160deg,rgba(52,227,164,.14),rgba(52,227,164,.05))}
-.done{display:grid;gap:14px;text-align:center;padding-top:54px;animation:fade .3s ease}
-.done-mark{position:relative;width:84px;height:84px;border-radius:50%;display:grid;place-items:center;margin:0 auto;background:linear-gradient(135deg,var(--emerald),var(--emerald2));color:#04130d;font-size:42px;font-weight:950;box-shadow:0 0 0 10px rgba(52,227,164,.12),0 18px 50px rgba(52,227,164,.4);animation:pop .45s cubic-bezier(.2,1.3,.4,1)}
-.done h2{font-size:25px;font-weight:900}
-.done p{color:var(--muted);font-size:13px;line-height:1.5;max-width:320px;margin:0 auto}
-.done-return{height:54px;border-radius:var(--radius);background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;font-size:15px;font-weight:950;margin:8px auto 0;padding:0 24px;min-width:190px}
-.bottom{position:fixed;left:0;right:0;bottom:0;z-index:5;padding:11px 15px calc(11px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,rgba(5,17,13,.35),rgba(5,17,13,.94));backdrop-filter:blur(18px);border-top:1px solid var(--line)}
-.bottom-inner{max-width:520px;margin:0 auto;display:grid;grid-template-columns:96px 1fr;gap:9px}
-.back,.cta{height:54px;border-radius:var(--radius);font-weight:950;font-size:15px;transition:.18s}
-.back{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text)}
-.back.hide{display:none}
-.back.hide+.cta{grid-column:1/3}
-.cta{background:linear-gradient(135deg,var(--mint),var(--emerald) 45%,var(--emerald2));color:#04130d;box-shadow:0 10px 30px rgba(52,227,164,.36);letter-spacing:.01em}
-.cta:disabled{opacity:.5;box-shadow:none}
-.toast{position:fixed;left:50%;bottom:calc(88px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(12px);max-width:calc(100% - 28px);border-radius:999px;background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d;padding:11px 15px;font-size:13px;font-weight:850;opacity:0;pointer-events:none;transition:.2s ease;box-shadow:0 18px 45px rgba(0,0,0,.42);z-index:20}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.sheet{position:fixed;inset:0;z-index:25;display:none;align-items:flex-end;justify-content:center}
-.sheet.show{display:flex}
-.sheet-backdrop{position:absolute;inset:0;background:rgba(2,8,6,.62);backdrop-filter:blur(8px);transform:none}
-.sheet-panel{position:relative;width:100%;max-width:520px;border:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0;background:#071a14;padding:17px 15px calc(17px + env(safe-area-inset-bottom,0px));box-shadow:0 -18px 60px rgba(0,0,0,.45);animation:sheetUp .22s ease}
-.sheet-panel h3{font-size:17px;line-height:1.25;font-weight:900}
-.sheet-panel p{margin-top:7px;color:var(--muted);font-size:12px;line-height:1.45}
-.invite-link{display:block;margin-top:10px;border:1px solid var(--line2);border-radius:var(--radius-sm);background:rgba(255,255,255,.05);padding:10px 11px;color:var(--mint);font-size:12px;line-height:1.4;word-break:break-all;user-select:all}
-.sheet-actions{display:grid;gap:9px;margin-top:14px}
-.sheet-actions button{min-height:50px;border-radius:var(--radius-sm);font-weight:900;font-size:14px}
-.sheet-primary{background:linear-gradient(135deg,var(--mint),var(--emerald));color:#04130d}
-.sheet-secondary{border:1px solid var(--line2);background:rgba(255,255,255,.06);color:var(--text)}
-.sheet-close{color:var(--muted)}
-.loading{position:fixed;inset:0;display:none;place-items:center;background:rgba(5,17,13,.66);backdrop-filter:blur(8px);z-index:30}
-.loading.show{display:grid}
-.spinner{width:38px;height:38px;border-radius:50%;border:3px solid rgba(143,245,207,.2);border-top-color:var(--emerald);animation:spin .8s linear infinite}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
-@keyframes sheetUp{from{transform:translateY(18px);opacity:.7}to{transform:translateY(0);opacity:1}}
-@media (prefers-reduced-motion:reduce){.tv-track{animation-duration:60s}}
-@media (min-width:620px){
-  .app{padding-top:26px}
-  .bottom{left:50%;right:auto;transform:translateX(-50%);width:520px;border-left:1px solid var(--line);border-right:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0}
-}
-@media (max-width:374px){
-  .app{padding-left:11px;padding-right:11px}
-  .plans,.benefits{grid-template-columns:1fr}
-  h1{font-size:24px}
-  .quote-amount{font-size:31px}
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif;min-height:100vh}
+.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
+.wrap{max-width:480px;margin:0 auto;padding:calc(16px + var(--safe-t)) 16px calc(24px + var(--safe-b));min-height:100vh}
+
+/* header */
+.top{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.top .back{background:none;border:none;color:var(--ink2);font-size:22px;cursor:pointer;padding:0;line-height:1}
+.top h1{font-size:17px;font-weight:600;flex:1}
+.badge-prem{display:inline-flex;align-items:center;gap:4px;background:var(--goldbg);color:var(--gold);font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;border:1px solid #e8d08a}
+
+/* hero */
+.hero{text-align:center;padding:24px 0 20px;border-bottom:1px solid var(--line);margin-bottom:20px}
+.hero .ic{width:68px;height:68px;background:var(--cin);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin:0 auto 14px;border:2px solid var(--gold)}
+.hero h2{font-size:20px;font-weight:600;margin-bottom:6px}
+.hero p{font-size:14px;color:var(--ink2);line-height:1.5}
+.benefits{display:flex;flex-direction:column;gap:8px;margin-top:14px;text-align:left}
+.brow{display:flex;align-items:center;gap:10px;font-size:14px}
+.brow .bic{width:28px;height:28px;border-radius:8px;background:var(--jadebg);color:var(--jade);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+
+/* plan cards */
+.sec-title{font-size:12px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--ink3);margin-bottom:10px}
+.plans{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.plan{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:border-color .15s}
+.plan.on{border-color:var(--cin);background:var(--cinbg)}
+.plan .pcir{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.plan.on .pcir{border-color:var(--cin);background:var(--cin)}
+.plan.on .pcir::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+.plan .pt{flex:1}
+.plan .pt b{font-size:15px;font-weight:600;display:block}
+.plan .pt small{font-size:12px;color:var(--ink2)}
+.plan .pp{font-size:18px;font-weight:700;color:var(--cin)}
+.plan.pop{position:relative}
+.plan.pop .badge{position:absolute;top:-8px;right:12px;background:var(--cin);color:#fff;font-size:11px;font-weight:600;padding:2px 10px;border-radius:10px}
+
+/* methods */
+.methods{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.mth{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color .15s}
+.mth.on{border-color:var(--cin);background:var(--cinbg)}
+.mth .mic{font-size:22px;display:block;margin-bottom:4px}
+.mth .mlbl{font-size:12px;font-weight:500;color:var(--ink2)}
+.mth.on .mlbl{color:var(--cin2)}
+
+/* checkout */
+.checkout{background:var(--card);border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+.checkout h4{font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:10px}
+.price-big{font-size:32px;font-weight:700;color:var(--cin);margin-bottom:4px}
+.price-note{font-size:13px;color:var(--ink2)}
+.pay-details{background:var(--paper);border-radius:12px;padding:12px;margin-top:12px;font-size:13px;line-height:1.7;white-space:pre-wrap;word-break:break-all}
+.qr-img{width:100%;max-width:200px;border-radius:12px;display:block;margin:12px auto 0}
+
+/* upload */
+.upload-area{border:2px dashed var(--line);border-radius:14px;padding:24px;text-align:center;cursor:pointer;margin-bottom:14px;transition:border-color .15s}
+.upload-area.has-file{border-color:var(--jade);background:var(--jadebg)}
+.upload-area .uic{font-size:28px;margin-bottom:8px}
+.upload-area p{font-size:14px;color:var(--ink2)}
+.upload-area.has-file p{color:var(--jade);font-weight:500}
+#file-input{display:none}
+
+/* pending */
+.pending-box{background:var(--goldbg);border:1px solid #e8d08a;border-radius:16px;padding:18px;text-align:center;margin-bottom:18px}
+.pending-box .pic{font-size:32px;margin-bottom:10px}
+.pending-box h3{font-size:16px;font-weight:600;margin-bottom:6px}
+.pending-box p{font-size:13px;color:var(--ink2);line-height:1.5}
+
+/* done */
+.done-box{text-align:center;padding:40px 16px}
+.done-box .dic{font-size:56px;margin-bottom:16px}
+.done-box h2{font-size:22px;font-weight:700;margin-bottom:8px}
+.done-box p{font-size:14px;color:var(--ink2);line-height:1.6}
+
+/* discount banner */
+.disc-banner{background:var(--cinbg);border:1px solid var(--cin);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:13px}
+.disc-banner .dic{font-size:20px;flex-shrink:0}
+.disc-banner b{color:var(--cin2)}
+
+/* country picker */
+.country-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.ctry{background:var(--card);border:2px solid var(--line);border-radius:12px;padding:10px 12px;text-align:center;cursor:pointer;font-size:13px;font-weight:500;transition:border-color .15s}
+.ctry.on{border-color:var(--cin);background:var(--cinbg);color:var(--cin2)}
+
+/* steps indicator */
+.steps{display:flex;align-items:center;gap:6px;margin-bottom:22px}
+.steps .s{width:28px;height:4px;border-radius:2px;background:var(--line);transition:background .2s}
+.steps .s.on{background:var(--cin)}
+.steps .s.done{background:var(--jade)}
+
+/* buttons */
+.btn{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink)}
+.btn.jade{background:var(--jade)}
+
+/* loading */
+.loading{text-align:center;padding:60px 20px;color:var(--ink3);font-size:15px}
 </style>
 </head>
 <body>
-<main class="app">
-  <header class="top">
-    <div class="brand">
-      <div class="kicker">HSK AI</div>
-      <h1 id="title">Obuna</h1>
-    </div>
-    <div class="top-actions">
-      <div class="lang" id="langTabs">
-        <button type="button" data-lang="uz">UZ</button>
-        <button type="button" data-lang="ru">RU</button>
-        <button type="button" data-lang="tj">TJ</button>
-      </div>
-      <button class="help-btn" type="button" id="helpBtn" aria-label="Help">?</button>
-    </div>
-  </header>
-
-  <div class="status" id="status"></div>
-  <div class="steps" id="steps"><i></i><i></i><i></i></div>
-
-  <section class="screen active" data-screen="start">
-    <div class="tv">
-      <div class="tv-head"><span class="tv-dot"></span><span class="tv-title" id="tvTitle"></span></div>
-      <div class="tv-screen"><div class="tv-track" id="tvTrack"></div></div>
-    </div>
-
-    <section class="section">
-      <div class="section-head">
-        <h3 id="plansTitle"></h3>
-      </div>
-      <div class="plans" id="plans"></div>
-    </section>
-
-    <div class="discount" id="discountBox" style="display:none">
-      <div class="discount-row">
-        <div class="discount-badge" id="discountBadge">20%</div>
-        <div class="discount-body">
-          <strong id="discountTitle"></strong>
-          <span id="discountText"></span>
-        </div>
-      </div>
-      <div class="discount-bar" id="discountBar" style="display:none"><i></i></div>
-      <button class="discount-btn" id="discountBtn" type="button" style="display:none"></button>
-    </div>
-
-    <section class="section">
-      <div class="section-head">
-        <h3 id="methodsTitle"></h3>
-        <small id="methodHint"></small>
-      </div>
-      <div class="list" id="methods"></div>
-    </section>
-  </section>
-
-  <section class="screen" data-screen="country">
-    <div class="hero">
-      <h2 id="countryTitle"></h2>
-      <p id="countryText"></p>
-      <div class="list section" id="countries"></div>
-    </div>
-  </section>
-
-  <section class="screen" data-screen="pay">
-    <div class="hero">
-      <h2 id="payTitle"></h2>
-      <p id="payText"></p>
-      <div class="quote-card">
-        <div class="quote-label" id="amountLabel"></div>
-        <div class="quote-amount"><span id="amountValue">...</span><small id="amountCurrency"></small></div>
-        <div class="quote-old" id="amountOld"></div>
-      </div>
-      <div class="meta" id="summaryRows"></div>
-      <div class="paybox" id="paymentBox"></div>
-      <label class="upload" id="uploadBox">
-        <input type="file" id="receiptInput" accept="image/*">
-        <strong id="uploadTitle"></strong>
-        <span id="uploadText"></span>
-      </label>
-    </div>
-  </section>
-
-  <section class="screen" data-screen="done">
-    <div class="done">
-      <div class="done-mark" id="doneMark">✓</div>
-      <h2 id="doneTitle"></h2>
-      <p id="doneText"></p>
-      <button class="done-return" type="button" id="botReturnBtn"></button>
-    </div>
-  </section>
-</main>
-
-<footer class="bottom" id="bottom">
-  <div class="bottom-inner">
-    <button class="back hide" type="button" id="backBtn"></button>
-    <button class="cta" type="button" id="nextBtn"></button>
-  </div>
-</footer>
-<div class="toast" id="toast"></div>
-<div class="sheet" id="inviteSheet" aria-hidden="true">
-  <button class="sheet-backdrop" type="button" id="inviteBackdrop" aria-label="Close"></button>
-  <div class="sheet-panel">
-    <h3 id="inviteTitle"></h3>
-    <p id="inviteText"></p>
-    <code class="invite-link" id="inviteLinkText"></code>
-    <div class="sheet-actions">
-      <button class="sheet-primary" type="button" id="shareInviteBtn"></button>
-      <button class="sheet-secondary" type="button" id="copyInviteBtn"></button>
-      <button class="sheet-close" type="button" id="closeInviteBtn"></button>
-    </div>
-  </div>
-</div>
-<div class="sheet" id="supportSheet" aria-hidden="true">
-  <button class="sheet-backdrop" type="button" id="supportBackdrop" aria-label="Close"></button>
-  <div class="sheet-panel">
-    <h3 id="supportTitle"></h3>
-    <p id="supportText"></p>
-    <div class="sheet-actions">
-      <button class="sheet-primary" type="button" id="openSupportBtn"></button>
-      <button class="sheet-close" type="button" id="closeSupportBtn"></button>
-    </div>
-  </div>
-</div>
-<div class="qr-preview" id="qrPreview" aria-hidden="true">
-  <div class="qr-preview-head">
-    <h3 id="qrPreviewTitle"></h3>
-  </div>
-  <div class="qr-preview-body">
-    <div class="qr-preview-frame">
-      <img id="qrPreviewImg" alt="QR">
-    </div>
-  </div>
-  <div class="qr-preview-bottom">
-    <div class="qr-preview-bottom-inner">
-      <button class="qr-preview-back" type="button" id="qrPreviewBackBtn"></button>
-    </div>
-  </div>
-</div>
-<div class="loading" id="loading"><div class="spinner"></div></div>
+<div class="wrap" id="app"><div class="loading">…</div></div>
+<input type="file" id="file-input" accept="image/*">
 
 <script>
-const tg=window.Telegram?.WebApp;
-try{tg?.ready?.();tg?.expand?.();}catch(e){}
+var tg=window.Telegram&&window.Telegram.WebApp;
+if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var INIT_DATA=(tg&&tg.initData)||"";
+var p=new URLSearchParams(location.search);
+var LANG=p.get("lang")||"uz";if(!{uz:1,ru:1,tj:1}[LANG])LANG="uz";
+var SOURCE=p.get("source")||"subscription_miniapp";
+var MODE=p.get("mode")||"subscription";
 
-const API={
-  overview:"/api/subscription-miniapp/overview",
-  discountStart:"/api/subscription-miniapp/discount-start",
-  quote:"/api/subscription-miniapp/quote",
-  submit:"/api/subscription-miniapp/submit"
-};
-const PARAMS=new URLSearchParams(window.location.search);
-const INIT_DATA=tg?.initData||"";
-const PLAN_ORDER=["10_days","1_month"];
-const METHOD_ORDER=["visa","alipay","wechat"];
-const COUNTRY_ORDER=["tj","uz","ru","other"];
-const CARD_BANK_NAME="Dushanbe City";
-const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
+var STATE={step:1,plan:null,method:null,country:"uz",screenshot:null,overview:null,quote:null};
 
-const I18N={
-  uz:{
-    title:"Obuna",
-    modeTitles:{subscription:"Obuna",referral_discount:"3 do'st chegirmasi",admin_discount:"Maxsus chegirma",feedback_discount:"20% taklif"},
-    modeTv:{subscription:"Obuna nima beradi",referral_discount:"Referral chegirma",admin_discount:"Admin maxsus taklifi",feedback_discount:"Siz uchun chegirma"},
-    modePlans:{subscription:"Tarif",referral_discount:"Chegirmali tarif",admin_discount:"Maxsus tarif",feedback_discount:"20% chegirmali tarif"},
-    adminDiscountTitle:"Maxsus chegirma {percent}%",
-    adminDiscountText:"Admin bergan maxsus taklif. Mos tarif va to'lovlar shu oynada ko'rsatiladi.",
-    feedbackDiscountTitle:"Siz uchun 20% taklif",
-    feedbackDiscountText:"Fikr bildirganingiz uchun chegirma shu oynada hisoblanadi.",
-    offerExpired:"Bu taklif tugagan yoki sizga mos emas.",
-    heroTitle:"Tarif va to'lov usulini tanlang",
-    heroText:"Obuna bilan kurs, AI javoblar, foto, voice, quiz va xato tahlili to'liq ochiladi.",
-    benefits:[
-      ["AI yordamchi","Savol va mashqlarga tez javob olasiz."],
-      ["Kurs rejimi","HSK darslari va progress tartibli boradi."],
-      ["Foto va voice","Rasm va ovozli savollar bilan ishlaysiz."],
-      ["Xato tahlili","Quiz va javoblardagi xatolar tushuntiriladi."]
-    ],
-    tvTitle:"Obuna nima beradi",
-    perks:["📚 HSK darslari bosqichma-bosqich","🤖 AI savol-javob kengayadi","🖼 Rasm va ieroglif tahlili","🎙 Voice savollar bilan practice","🧩 Quiz, test va xato tahlili","📈 Progress botda saqlanadi","⚡ Kunlik mashq tezroq yuradi","✅ Obuna davrida cheklovlar kamayadi"],
-    discountActiveText:"Bu obunaga avtomatik qo'llanadi.",
-    discountLockTitle:"20% chegirmani oching",
-    discountInviteText:"3 do'stingiz botdan foydalansa, 20% chegirma ochiladi.",
-    discountUsed:"20% chegirma allaqachon ishlatilgan.",
-    discountBtn:"Do'stlarni chaqirish",
-    shareText:"HSK AI — xitoy tilini AI bilan o'rgan. Qo'shilsang menga 20% chegirma ochiladi 👇",
-    inviteTitle:"Referral link tayyor",
-    inviteText:"Xabar siz tanlagan tilda yuboriladi. Xohlasangiz faqat linkni copy qiling.",
-    shareLocalized:"Xabar bilan yuborish",
-    copyLink:"Faqat linkni copy qilish",
-    copied:"Link copy qilindi.",
-    copiedButton:"Copy qilindi",
-    copyFailed:"Linkni copy qilib bo'lmadi.",
-    close:"Yopish",
-    supportTitle:"Yordam",
-    supportText:"To'lov yoki mini appda muammo bo'lsa, adminga qisqa yozing va screenshot yuboring.",
-    supportButton:"Adminga yozish",
-    plansTitle:"Tarif",
-    methodsTitle:"To'lov usuli",
-    discountReady:"20% chegirma qo'llanadi",
-    discountProgress:"20% chegirma: {count}/{required} referral",
-    planLabels:{ten:"10 kun",month:"1 oy",fast:"Tez start",best:"Eng foydali"},
-    methods:{
-      visa:["Bank karta / VISA","Tojik, o'zbek, rus yoki boshqa davlat kartasi"],
-      alipay:["Alipay","QR orqali yuan to'lovi"],
-      wechat:["WeChat Pay","QR orqali yuan to'lovi"]
-    },
-    methodHint:"",
-    countryTitle:"Karta qaysi davlatniki?",
-    countryText:"Karta davlatini tanlang, summa shu valyutada ko'rsatiladi.",
-    countries:{
-      tj:["Tojikiston kartasi","TJS ko'rinishida to'lov"],
-      uz:["O'zbekiston kartasi","UZS ekvivalentida to'lov"],
-      ru:["Rossiya kartasi","RUB ekvivalentida to'lov"],
-      other:["Boshqa davlat kartasi","USD ekvivalentida to'lov"]
-    },
-    payTitle:"To'lovni yakunlash",
-    payText:"Summani to'lang va to'lov screenshotini yuklang.",
-    amountLabel:"To'lanadigan summa",
-    rows:{plan:"Tarif",method:"Usul",bank:"TJK bank nomi",rate:"Kurs"},
-    detailsTitle:"Karta rekvizitlari",
-    detailsHint:"To'lovni shu rekvizitlarga qiling. Karta raqamini copy qilish uchun yonidagi tugmani bosing.",
-    cardHints:{
-      tj:"Tojikistonning hamma kartalari orqali to'lov qilishingiz mumkin. Agar kartangiz DC City bo'lsa, pul o'tkazish bo'limiga kirib, 'po nomeru karta' variantini tanlab to'lov qiling. Agar kartangiz boshqa bankniki bo'lsa, bank ilovasida 'DC City' deb qidiring yoki 'Korti Milli Tojikiston' variantini tanlab to'lov qiling.",
-      foreign:"Karta Tojikiston VISA kartasi. Agar bankingizda Tojikiston bank kartasiga pul jo'natish imkoni bo'lsa, o'sha variantdan foydalaning. Bo'lmasa, 'Mejdunarodniy VISA' orqali ham to'lov qilishingiz mumkin."
-    },
-    showMore:"Ko'proq",
-    showLess:"Yopish",
-    copyValue:"Copy",
-    copiedValue:"Copy qilindi.",
-    noDetails:"Karta rekviziti hali kiritilmagan. Keyinroq qayta urinib ko'ring.",
-    qrTitle:"QR kod",
-    qrTapHint:"QR ustiga bosing — kattalashtirish tugmasi chiqadi.",
-    downloadQr:"QR kodni kattalashtirish",
-    qrMissing:"QR kod hozircha tayyor emas.",
-    uploadTitle:"To'lov screenshotini yuklash",
-    uploadText:"JPG, PNG yoki WEBP.",
-    uploaded:"Screenshot tanlandi: {name}",
-    next:"Davom etish",
-    back:"Orqaga",
-    submit:"So'rov yuborish",
-    loading:"Hisoblanmoqda...",
-    needScreenshot:"Avval to'lov screenshotini yuklang.",
-    preview:"Preview mode: Telegram init data yo'q. Real submit faqat bot ichida ishlaydi.",
-    previewSubmit:"Real bot ichida ochilganda admin tekshiruvga yuboriladi.",
-    doneTitle:"So'rov yuborildi ✅",
-    doneText:"To'lov tekshiruvga yuborildi. Tekshiruv taxminan 5–15 daqiqa davom etadi. Tasdiqlangach bot sizga xabar yuboradi.",
-    pendingTitle:"So'rovingiz tekshiruvda",
-    pendingText:"To'lov so'rovingiz tekshiruvda. Iltimos, tasdiq kelguncha kuting.",
-    returnToBot:"Botga qaytish",
-    error:"Xatolik yuz berdi. Qayta urinib ko'ring.",
-    loadError:"Ma'lumotni yuklab bo'lmadi. Internetni tekshirib, mini appni qayta oching.",
-    quoteError:"To'lov ma'lumotini hozir ochib bo'lmadi. Qayta urinib ko'ring.",
-    paymentDetailsMissing:"Karta rekviziti hozircha tayyor emas. Keyinroq urinib ko'ring.",
-    adminNotificationFailed:"To'lov so'rovi yuborilmadi. Qayta urinib ko'ring.",
-    invalidTelegram:"Mini appni bot ichidan qayta oching."
-  },
-  ru:{
-    title:"Подписка",
-    modeTitles:{subscription:"Подписка",referral_discount:"Скидка за 3 друзей",admin_discount:"Специальная скидка",feedback_discount:"Предложение 20%"},
-    modeTv:{subscription:"Что дает подписка",referral_discount:"Реферальная скидка",admin_discount:"Спецпредложение админа",feedback_discount:"Скидка для вас"},
-    modePlans:{subscription:"Тариф",referral_discount:"Тариф со скидкой",admin_discount:"Специальный тариф",feedback_discount:"Тариф со скидкой 20%"},
-    adminDiscountTitle:"Специальная скидка {percent}%",
-    adminDiscountText:"Специальное предложение от админа. Подходящие тарифы и способы оплаты показаны здесь.",
-    feedbackDiscountTitle:"Для вас предложение 20%",
-    feedbackDiscountText:"Скидка за обратную связь будет рассчитана в этом окне.",
-    offerExpired:"Это предложение закончилось или вам не подходит.",
-    heroTitle:"Выберите тариф и оплату",
-    heroText:"Подписка открывает курс, AI-ответы, фото, voice, quiz и разбор ошибок.",
-    benefits:[
-      ["AI-помощник","Быстрые ответы по вопросам и упражнениям."],
-      ["Курс","HSK-уроки и прогресс идут по порядку."],
-      ["Фото и voice","Работаете с фото и голосовыми вопросами."],
-      ["Разбор ошибок","Ошибки в quiz и ответах объясняются."]
-    ],
-    tvTitle:"Что дает подписка",
-    perks:["📚 HSK-уроки по шагам","🤖 Больше AI-вопросов и ответов","🖼 Разбор фото и иероглифов","🎙 Практика с voice-вопросами","🧩 Quiz, тесты и разбор ошибок","📈 Прогресс сохраняется в боте","⚡ Ежедневная практика быстрее","✅ На время подписки меньше ограничений"],
-    discountActiveText:"Применится к этой подписке автоматически.",
-    discountLockTitle:"Откройте скидку 20%",
-    discountInviteText:"Пригласите 3 друзей — откроется скидка 20%.",
-    discountUsed:"Скидка 20% уже использована.",
-    discountBtn:"Пригласить друзей",
-    shareText:"HSK AI — учи китайский с AI. Присоединяйся, и мне откроется скидка 20% 👇",
-    inviteTitle:"Реферальная ссылка готова",
-    inviteText:"Сообщение отправится на выбранном языке. Можно скопировать только ссылку.",
-    shareLocalized:"Отправить с текстом",
-    copyLink:"Скопировать только ссылку",
-    copied:"Ссылка скопирована.",
-    copiedButton:"Скопировано",
-    copyFailed:"Не удалось скопировать ссылку.",
-    close:"Закрыть",
-    supportTitle:"Помощь",
-    supportText:"Если возникла проблема с оплатой или mini app, коротко напишите админу и отправьте screenshot.",
-    supportButton:"Написать админу",
-    plansTitle:"Тариф",
-    methodsTitle:"Способ оплаты",
-    discountReady:"Скидка 20% применится",
-    discountProgress:"Скидка 20%: {count}/{required} реферала",
-    planLabels:{ten:"10 дней",month:"1 месяц",fast:"Быстрый старт",best:"Выгодно"},
-    methods:{
-      visa:["Банковская карта / VISA","Карта Таджикистана, Узбекистана, России или другой страны"],
-      alipay:["Alipay","Оплата в юанях через QR"],
-      wechat:["WeChat Pay","Оплата в юанях через QR"]
-    },
-    methodHint:"",
-    countryTitle:"Из какой страны карта?",
-    countryText:"Выберите страну карты, сумма будет показана в нужной валюте.",
-    countries:{
-      tj:["Карта Таджикистана","Оплата в TJS"],
-      uz:["Карта Узбекистана","Оплата в UZS"],
-      ru:["Карта России","Оплата в RUB"],
-      other:["Карта другой страны","Оплата в USD"]
-    },
-    payTitle:"Завершение оплаты",
-    payText:"Оплатите сумму и загрузите screenshot оплаты.",
-    amountLabel:"Сумма к оплате",
-    rows:{plan:"Тариф",method:"Способ",bank:"Банк TJK",rate:"Курс"},
-    detailsTitle:"Реквизиты карты",
-    detailsHint:"Оплатите по этим реквизитам. Чтобы скопировать номер карты, нажмите кнопку рядом.",
-    cardHints:{
-      tj:"Можно оплатить с любой карты Таджикистана. Если карта DC City, откройте перевод и выберите перевод по номеру карты. Если карта другого банка, в приложении банка найдите DC City или вариант «Корти миллии Точикистон».",
-      foreign:"Это таджикская VISA-карта. Если в вашем банке есть перевод на карту банка Таджикистана, используйте его. Если нет, можно оплатить через «Международный VISA»."
-    },
-    showMore:"Показать полностью",
-    showLess:"Скрыть",
-    copyValue:"Copy",
-    copiedValue:"Скопировано.",
-    noDetails:"Реквизиты карты ещё не добавлены. Попробуйте позже.",
-    qrTitle:"QR-код",
-    qrTapHint:"Нажмите на QR — появится кнопка крупного вида.",
-    downloadQr:"Открыть QR крупно",
-    qrMissing:"QR-код пока не готов.",
-    uploadTitle:"Загрузить screenshot оплаты",
-    uploadText:"JPG, PNG или WEBP.",
-    uploaded:"Screenshot выбран: {name}",
-    next:"Продолжить",
-    back:"Назад",
-    submit:"Отправить заявку",
-    loading:"Считаем...",
-    needScreenshot:"Сначала загрузите screenshot оплаты.",
-    preview:"Preview mode: Telegram init data нет. Реальная отправка работает только внутри бота.",
-    previewSubmit:"Внутри реального бота заявка уйдёт админу на проверку.",
-    doneTitle:"Заявка отправлена ✅",
-    doneText:"Платёж отправлен на проверку. Проверка занимает примерно 5–15 минут. После подтверждения бот пришлёт вам сообщение.",
-    pendingTitle:"Ваша заявка на проверке",
-    pendingText:"Платёж уже находится на проверке. Пожалуйста, дождитесь подтверждения.",
-    returnToBot:"Вернуться в бот",
-    error:"Произошла ошибка. Попробуйте снова.",
-    loadError:"Не удалось загрузить данные. Проверьте интернет и откройте мини-приложение заново.",
-    quoteError:"Не удалось открыть данные оплаты. Попробуйте ещё раз.",
-    paymentDetailsMissing:"Реквизиты карты пока не готовы. Попробуйте позже.",
-    adminNotificationFailed:"Заявку не удалось отправить. Попробуйте ещё раз.",
-    invalidTelegram:"Откройте mini app из бота."
-  },
-  tj:{
-    title:"Обуна",
-    modeTitles:{subscription:"Обуна",referral_discount:"Тахфифи 3 дӯст",admin_discount:"Тахфифи махсус",feedback_discount:"Таклифи 20%"},
-    modeTv:{subscription:"Обуна чӣ медиҳад",referral_discount:"Тахфифи referral",admin_discount:"Пешниҳоди махсуси admin",feedback_discount:"Тахфиф барои шумо"},
-    modePlans:{subscription:"Тариф",referral_discount:"Тарифи тахфифӣ",admin_discount:"Тарифи махсус",feedback_discount:"Тарифи 20% тахфиф"},
-    adminDiscountTitle:"Тахфифи махсус {percent}%",
-    adminDiscountText:"Пешниҳоди махсуси admin. Тариф ва усули пардохти мувофиқ дар ҳамин ҷо нишон дода мешавад.",
-    feedbackDiscountTitle:"Барои шумо таклифи 20%",
-    feedbackDiscountText:"Барои feedback тахфиф дар ҳамин равзана ҳисоб мешавад.",
-    offerExpired:"Ин пешниҳод тамом шудааст ё ба шумо мувофиқ нест.",
-    heroTitle:"Тариф ва пардохтро интихоб кунед",
-    heroText:"Бо обуна курс, AI ҷавобҳо, фото, voice, quiz ва таҳлили хатоҳо кушода мешаванд.",
-    benefits:[
-      ["AI ёрдамчӣ","Ба саволҳо ва машқҳо зуд ҷавоб мегиред."],
-      ["Режими курс","Дарсҳои HSK ва progress бо тартиб мераванд."],
-      ["Фото ва voice","Бо расм ва саволҳои овозӣ кор мекунед."],
-      ["Таҳлили хато","Хатоҳои quiz ва ҷавобҳо шарҳ дода мешаванд."]
-    ],
-    tvTitle:"Обуна чӣ медиҳад",
-    perks:["📚 Дарсҳои HSK қадам ба қадам","🤖 Саволу ҷавоби AI васеъ мешавад","🖼 Таҳлили расм ва иероглиф","🎙 Practice бо саволҳои voice","🧩 Quiz, тест ва таҳлили хато","📈 Progress дар bot нигоҳ дошта мешавад","⚡ Машқи ҳаррӯза тезтар меравад","✅ Дар вақти обуна маҳдудият кам мешавад"],
-    discountActiveText:"Ба ин обуна худкор татбиқ мешавад.",
-    discountLockTitle:"Тахфифи 20%-ро кушоед",
-    discountInviteText:"3 дӯстро даъват кунед — тахфифи 20% кушода мешавад.",
-    discountUsed:"Тахфифи 20% аллакай истифода шуд.",
-    discountBtn:"Даъвати дӯстон",
-    shareText:"HSK AI — забони хитоиро бо AI омӯз. Ҳамроҳ шав, ба ман тахфифи 20% кушода мешавад 👇",
-    inviteTitle:"Referral link тайёр аст",
-    inviteText:"Паём бо забони интихобшуда фиристода мешавад. Метавонед танҳо link-ро copy кунед.",
-    shareLocalized:"Бо паём фиристодан",
-    copyLink:"Танҳо link-ро copy кардан",
-    copied:"Link copy шуд.",
-    copiedButton:"Copy шуд",
-    copyFailed:"Link-ро copy кардан нашуд.",
-    close:"Пӯшидан",
-    supportTitle:"Ёрдам",
-    supportText:"Агар пардохт ё mini app кор накунад, ба admin кӯтоҳ нависед ва screenshot фиристед.",
-    supportButton:"Ба admin навиштан",
-    plansTitle:"Тариф",
-    methodsTitle:"Усули пардохт",
-    discountReady:"20% тахфиф ҳисоб мешавад",
-    discountProgress:"20% тахфиф: {count}/{required} referral",
-    planLabels:{ten:"10 рӯз",month:"1 моҳ",fast:"Оғози тез",best:"Фоиданок"},
-    methods:{
-      visa:["Корти бонкӣ / VISA","Корти тоҷик, ӯзбек, рус ё дигар давлат"],
-      alipay:["Alipay","Пардохти юан бо QR"],
-      wechat:["WeChat Pay","Пардохти юан бо QR"]
-    },
-    methodHint:"",
-    countryTitle:"Кортатон аз кадом давлат аст?",
-    countryText:"Давлати кортро интихоб кунед, маблағ бо ҳамон валюта мебарояд.",
-    countries:{
-      tj:["Корти Тоҷикистон","Пардохт бо TJS"],
-      uz:["Корти Ӯзбекистон","Пардохт бо UZS"],
-      ru:["Корти Русия","Пардохт бо RUB"],
-      other:["Корти дигар давлат","Пардохт бо USD"]
-    },
-    payTitle:"Пардохтро тамом кунед",
-    payText:"Маблағро пардохт кунед ва screenshot-и пардохтро бор кунед.",
-    amountLabel:"Маблағи пардохт",
-    rows:{plan:"Тариф",method:"Усул",bank:"Номи банк",rate:"Курс"},
-    detailsTitle:"Реквизити корт",
-    detailsHint:"Ба ҳамин реквизит пардохт кунед. Барои copy кардани рақами корт тугмаи паҳлӯяшро пахш кунед.",
-    cardHints:{
-      tj:"Бо ҳама кортҳои Тоҷикистон пардохт карда метавонед. Агар кортатон DC City бошад, ба бахши перевод дароед ва варианти 'по номеру карты'-ро интихоб кунед. Агар кортатон аз дигар банк бошад, дар app-и банк 'DC City' ё 'Корти миллии Тоҷикистон'-ро ёфта пардохт кунед.",
-      foreign:"Ин реквизит корти VISA-и Тоҷикистон аст. Агар дар app-и банки шумо фиристодани пул ба корти Тоҷикистон бошад, ҳамонро интихоб кунед. Агар набошад, аз варианти 'Международный VISA' ҳам пардохт карда метавонед."
-    },
-    showMore:"Пурра дидан",
-    showLess:"Кам кардан",
-    copyValue:"Copy",
-    copiedValue:"Copy шуд.",
-    noDetails:"Реквизити корт ҳоло ворид нашудааст. Баъдтар боз кӯшиш кунед.",
-    qrTitle:"QR код",
-    qrTapHint:"QR-ро пахш кунед — тугмаи калон дидан мебарояд.",
-    downloadQr:"QR-ро калон дидан",
-    qrMissing:"QR код ҳоло тайёр нест.",
-    uploadTitle:"Screenshot-и пардохтро бор кунед",
-    uploadText:"JPG, PNG ё WEBP.",
-    uploaded:"Screenshot интихоб шуд: {name}",
-    next:"Давом",
-    back:"Бозгашт",
-    submit:"Фиристодан",
-    loading:"Ҳисоб мешавад...",
-    needScreenshot:"Аввал screenshot-и пардохтро бор кунед.",
-    preview:"Preview mode: Telegram init data нест. Submit-и real танҳо дар bot кор мекунад.",
-    previewSubmit:"Дар bot-и real дархост ба admin барои санҷиш меравад.",
-    doneTitle:"Дархост фиристода шуд ✅",
-    doneText:"Пардохт ба санҷиш фиристода шуд. Санҷиш тахминан 5–15 дақиқа давом мекунад. Баъд аз тасдиқ bot ба шумо хабар мефиристад.",
-    pendingTitle:"Дархости шумо дар санҷиш аст",
-    pendingText:"Дархости пардохти шумо дар санҷиш аст. Лутфан то тасдиқ интизор шавед.",
-    returnToBot:"Ба bot баргаштан",
-    error:"Хатогӣ шуд. Боз кӯшиш кунед.",
-    loadError:"Маълумотро бор кардан нашуд. Интернетро тафтиш карда, mini app-ро аз нав кушоед.",
-    quoteError:"Маълумоти пардохт ҳоло кушода нашуд. Боз кӯшиш кунед.",
-    paymentDetailsMissing:"Реквизити корт ҳоло тайёр нест. Баъдтар кӯшиш кунед.",
-    adminNotificationFailed:"Дархости пардохт фиристода нашуд. Боз кӯшиш кунед.",
-    invalidTelegram:"Mini app-ро аз дохили bot кушоед."
-  }
-};
+function T(){return({
+  uz:{title:"Obuna",hero:"HSK AI Premium",heroChin:"汉语学习",heroSub:"Barcha darslar, AI voice va testlar cheksiz",
+    b1:"Barcha HSK 1–4 darslari cheksiz",b2:"AI Voice — panda 阿宝 bilan suhbat",b3:"Xato tahlili va smart takrorlar",
+    plan10:"10 kunlik",plan1m:"1 oylik",perDay10:"kuniga",popular:"Mashhur",
+    step1:"Rejani tanlang",step2:"To'lov usulini tanlang",step3:"To'lov",
+    visa:"Plastik karta",alipay:"Alipay",wechat:"WeChat",
+    country:"Karta mamlakati",ctryTj:"Tojikiston",ctryUz:"O'zbekiston",ctryRu:"Rossiya",ctryOth:"Boshqa",
+    payDetails:"To'lov rekvizitlari:",qrSub:"QR kodni skanerlang:",
+    uploadHint:"Screenshot yuklang",uploadDone:"Rasm tanlandi ✓",
+    submit:"To'lovni yuborish",next:"Keyingi",back:"Orqaga",
+    pendingTitle:"To'lov tekshiruvda",pendingSub:"Adminlar tasdiqlashini kuting. 1–24 soat ichida javob beradi.",
+    doneTitle:"Yuborildi!",doneSub:"To'lov tasdiqlanishi bilan Premium yoqiladi. Kuting.",
+    support:"Yordam",discount:"Chegirma mavjud!",discSub:"Sizga maxsus taklif"},
+  ru:{title:"Подписка",hero:"HSK AI Premium",heroChin:"汉语学习",heroSub:"Все уроки, AI voice и тесты без ограничений",
+    b1:"Все уроки HSK 1–4 без ограничений",b2:"AI Voice — диалог с пандой 阿宝",b3:"Анализ ошибок и умные повторения",
+    plan10:"10 дней",plan1m:"1 месяц",perDay10:"в день",popular:"Хит",
+    step1:"Выберите план",step2:"Способ оплаты",step3:"Оплата",
+    visa:"Банковская карта",alipay:"Alipay",wechat:"WeChat",
+    country:"Страна карты",ctryTj:"Таджикистан",ctryUz:"Узбекистан",ctryRu:"Россия",ctryOth:"Другое",
+    payDetails:"Реквизиты для оплаты:",qrSub:"Отсканируйте QR-код:",
+    uploadHint:"Загрузите скриншот",uploadDone:"Фото выбрано ✓",
+    submit:"Отправить оплату",next:"Далее",back:"Назад",
+    pendingTitle:"Оплата проверяется",pendingSub:"Ожидайте подтверждения администратора. Ответ в течение 1–24 ч.",
+    doneTitle:"Отправлено!",doneSub:"После подтверждения оплаты Premium будет активирован.",
+    support:"Поддержка",discount:"Скидка доступна!",discSub:"У вас есть специальное предложение"},
+  tj:{title:"Обуна",hero:"HSK AI Premium",heroChin:"汉语学习",heroSub:"Ҳамаи дарсҳо, AI voice ва тестҳо бидуни маҳдудият",
+    b1:"Ҳамаи дарсҳои HSK 1–4 бидуни маҳдудият",b2:"AI Voice — сӯҳбат бо панда 阿宝",b3:"Таҳлили хатоҳо ва такрорҳои ҳушманд",
+    plan10:"10 рӯз",plan1m:"1 моҳ",perDay10:"дар як рӯз",popular:"Машҳур",
+    step1:"Нақшаро интихоб кунед",step2:"Усули пардохтро интихоб кунед",step3:"Пардохт",
+    visa:"Корти бонкӣ",alipay:"Alipay",wechat:"WeChat",
+    country:"Кишвари корт",ctryTj:"Тоҷикистон",ctryUz:"Ӯзбекистон",ctryRu:"Россия",ctryOth:"Дигар",
+    payDetails:"Реквизитҳо барои пардохт:",qrSub:"QR-кодро сканер кунед:",
+    uploadHint:"Скриншот бор кунед",uploadDone:"Акс интихоб шуд ✓",
+    submit:"Пардохтро фиристед",next:"Минбаъд",back:"Бозгашт",
+    pendingTitle:"Пардохт тафтиш мешавад",pendingSub:"Тасдиқи маъмурро интизор шавед. Дар давоми 1–24 соат ҷавоб дода мешавад.",
+    doneTitle:"Фиристода шуд!",doneSub:"Пас аз тасдиқи пардохт Premium фаъол мегардад.",
+    support:"Ёрдам",discount:"Тахфиф мавҷуд аст!",discSub:"Барои шумо пешниҳоди махсус мавҷуд аст"}
+})[LANG]}
 
-const state={
-  lang:normalizeLang(PARAMS.get("lang")||tg?.initDataUnsafe?.user?.language_code||"uz"),
-  source:String(PARAMS.get("source")||"").trim(),
-  mode:normalizeMode(PARAMS.get("mode")),
-  campaignId:positiveParam(PARAMS.get("campaign_id")),
-  feedbackId:positiveParam(PARAMS.get("feedback_id")),
-  preview:!INIT_DATA,
-  overview:null,
-  plan:PLAN_ORDER.includes(PARAMS.get("plan"))?PARAMS.get("plan"):"10_days",
-  method:METHOD_ORDER.includes(PARAMS.get("method"))?PARAMS.get("method"):"visa",
-  country:"tj",
-  step:0,
-  quote:null,
-  screenshotDataUrl:"",
-  screenshotName:"",
-  quoteError:"",
-  inviteOpen:false,
-  inviteLink:"",
-  inviteCopied:false,
-  supportOpen:false,
-  supportUrl:"",
-  busy:false,
-  busyOverlay:false,
-  done:false,
-  pending:false,
-  pendingPayment:null,
-  qrActionsOpen:false,
-  qrPreviewOpen:false,
-  detailHintOpen:false,
-  loadError:false
-};
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function apiPost(url,body){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},body:JSON.stringify(body)})}
+function render(html){document.getElementById("app").innerHTML=html}
 
-function $(selector){return document.querySelector(selector)}
-function $$(selector){return Array.from(document.querySelectorAll(selector))}
-function tr(){return I18N[state.lang]||I18N.uz}
-function normalizeMode(value){
-  const mode=String(value||"subscription").toLowerCase();
-  return MODE_ORDER.includes(mode)?mode:"subscription";
+function stepsHtml(active){
+  var steps=[1,2,3];
+  return '<div class="steps">'+steps.map(function(s){return '<div class="s'+(s<active?" done":s===active?" on":"")+'"></div>'}).join("")+'</div>';
 }
-function positiveParam(value){
-  const number=Number.parseInt(value||"",10);
-  return Number.isFinite(number)&&number>0?number:null;
-}
-function normalizeLang(value){
-  const lang=String(value||"").toLowerCase();
-  if(lang==="tg"||lang==="tg-cyrl")return "tj";
-  if(["uz","ru","tj"].includes(lang))return lang;
-  return "uz";
-}
-function money(amount){
-  const raw=String(amount??"").trim();
-  const numeric=Number(raw.replace(/\s/g,""));
-  if(Number.isFinite(numeric))return numeric.toLocaleString("ru-RU");
-  return raw||"...";
-}
-function priceInfo(method=state.method,plan=state.plan){
-  const real=state.overview?.prices?.[method]?.[plan];
-  if(real)return real;
-  return state.preview?mockOverview().prices?.[method]?.[plan]||null:null;
-}
-function availableMethods(){
-  const prices=state.overview?.prices||mockOverview().prices;
-  return METHOD_ORDER.filter(method=>Object.keys(prices?.[method]||{}).length>0);
-}
-function availablePlans(method=state.method){
-  const prices=state.overview?.prices||mockOverview().prices;
-  return PLAN_ORDER.filter(plan=>prices?.[method]?.[plan]);
-}
-function ensureSelection(){
-  const methods=availableMethods();
-  if(!methods.includes(state.method))state.method=methods[0]||"visa";
-  const plans=availablePlans(state.method);
-  if(!plans.includes(state.plan))state.plan=plans[0]||"10_days";
-}
-function contextPayload(){
-  return {
-    source:state.source,
-    mode:state.mode,
-    campaign_id:state.campaignId,
-    feedback_id:state.feedbackId
-  };
-}
-function hasCurrentPrice(){return Boolean(priceInfo(state.method,state.plan))}
-function flow(){return state.done||state.pending?["done"]:(state.method==="visa"?["start","country","pay"]:["start","pay"])}
-function currentScreen(){return flow()[state.step]||"start"}
-function api(path,body){
-  return fetch(path,{
-    method:"POST",
-    headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
-    body:JSON.stringify(body||{})
-  }).then(async response=>{
-    const data=await response.json().catch(()=>({ok:false,error:"bad_json"}));
-    if(!response.ok||!data.ok)throw new Error(errorText(data.error||"api_error"));
-    return data;
-  });
-}
-function errorText(code){
-  const text=tr();
-  const errors={
-    invalid_telegram_init_data:text.invalidTelegram,
-    payment_details_missing:text.paymentDetailsMissing,
-    admin_notification_failed:text.adminNotificationFailed,
-    qr_not_ready:text.qrMissing,
-    payment_invalid_plan:text.offerExpired,
-    access_start_first:text.invalidTelegram,
-    bad_json:text.error,
-    api_error:text.error
-  };
-  return errors[code]||text.error;
-}
-function mockOverview(){
-  const special=state.mode==="admin_discount"||state.mode==="feedback_discount";
-  const percent=state.mode==="admin_discount"?30:(state.mode==="feedback_discount"?20:0);
-  const apply=item=>special?{
-    ...item,
-    final_amount:Math.round(item.base_amount*(100-percent)/100),
-    discount_applied:true,
-    discount_percent:percent,
-    discount_source:state.mode==="admin_discount"?"admin_campaign":"feedback_price_offer",
-    discount_title:state.mode==="admin_discount"?"Preview admin discount":"Preview feedback discount"
-  }:item;
-  return {
-    ok:true,
-    language:state.lang,
-    mode:state.mode,
-    pending_payment:null,
-    offer:special?{type:state.mode,available:true,percent,title:"Preview discount"}:null,
-    discount:{referral_20_available:false,referral_count:0,referral_required:3,discount_used:false,offer_started:false,referral_link:""},
-    payment_details:"Preview karta rekviziti\nNAME: HSK AI\nCARD: 0000 0000 0000 0000",
-    prices:{
-      visa:{
-        "10_days":apply({base_amount:29,final_amount:29,currency:"TJS",discount_applied:false,discount_percent:0}),
-        "1_month":apply({base_amount:89,final_amount:89,currency:"TJS",discount_applied:false,discount_percent:0})
-      },
-      alipay:{
-        "10_days":apply({base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0}),
-        "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0})
-      },
-      wechat:{
-        "10_days":apply({base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0}),
-        "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0})
-      }
-    }
-  };
-}
-function mockQuote(){
-  const info=priceInfo();
-  if(!info)return null;
-  const cardAmount=tjsAmount=>({
-    tj:{amount:tjsAmount,currency:"TJS",rate:"1 TJS = 1 TJS"},
-    uz:{amount:Math.round(tjsAmount*1300/1000)*1000,currency:"UZS",rate:"1 TJS = 1 298.13 UZS"},
-    ru:{amount:(tjsAmount*7.68).toFixed(2),currency:"RUB",rate:"1 TJS = 7.68 RUB"},
-    other:{amount:(tjsAmount/9.2464).toFixed(2),currency:"USD",rate:"1 TJS = 0.1082 USD"}
-  }[state.country]||{amount:tjsAmount,currency:"TJS",rate:"1 TJS = 1 TJS"});
-  const card=cardAmount(info.final_amount);
-  const baseCard=cardAmount(info.base_amount);
-  return {
-    plan_type:state.plan,
-    payment_method:state.method,
-    card_country:state.method==="visa"?state.country:null,
-    base_amount:info.base_amount,
-    base_currency:info.currency,
-    final_amount:info.final_amount,
-    final_currency:info.currency,
-    pay_amount:state.method==="visa"?card.amount:info.final_amount,
-    pay_currency:state.method==="visa"?card.currency:info.currency,
-    pay_base_amount:state.method==="visa"?baseCard.amount:info.base_amount,
-    pay_base_currency:state.method==="visa"?baseCard.currency:info.currency,
-    exchange_rate:state.method==="visa"?card.rate:"",
-    discount_applied:info.discount_applied,
-    discount_percent:info.discount_percent,
-    payment_details:state.method==="visa"?(state.overview?.payment_details||mockOverview().payment_details):"",
-    qr:state.method==="visa"?null:{available:false}
-  };
-}
-function fallbackOverview(){
-  const mock=mockOverview();
-  return {
-    ok:true,
-    language:state.lang,
-    mode:state.mode,
-    pending_payment:null,
-    offer:null,
-    discount:null,
-    payment_details:"",
-    prices:mock.prices
-  };
-}
-function applyOverview(data){
-  state.overview=data;
-  state.mode=normalizeMode(data?.mode||state.mode);
-  state.supportUrl=data?.support_url||"";
-  state.pending=Boolean(data?.pending_payment);
-  state.pendingPayment=data?.pending_payment||null;
-  ensureSelection();
-  if(state.pending){
-    state.done=false;
-    state.step=0;
-    state.quote=null;
-    state.qrActionsOpen=false;
-    state.qrPreviewOpen=false;
-    state.screenshotDataUrl="";
-    state.screenshotName="";
+
+// ── Step 1: Plan picker ──────────────────────────────────────────────
+function renderStep1(){
+  var t=T(),ov=STATE.overview;
+  var prices=ov&&ov.prices||{};
+  var disc=ov&&ov.discount;
+  var discHtml=disc&&disc.active?'<div class="disc-banner"><span class="dic">🎁</span><div><b>'+t.discount+'</b><div>'+esc(t.discSub)+'</div></div></div>':'';
+
+  function planPrice(plan_type){
+    var vis=prices.visa;
+    if(vis&&vis[plan_type])return vis[plan_type].amount+" "+vis[plan_type].currency;
+    var ali=prices.alipay;
+    if(ali&&ali[plan_type])return ali[plan_type].amount+" "+ali[plan_type].currency;
+    return "";
   }
+
+  render(stepsHtml(1)
+    +'<div class="hero"><div class="ic han">会</div>'
+    +'<h2>'+t.hero+'</h2><p>'+t.heroSub+'</p>'
+    +'<div class="benefits">'
+    +'<div class="brow"><div class="bic">✓</div>'+t.b1+'</div>'
+    +'<div class="brow"><div class="bic">🎙</div>'+t.b2+'</div>'
+    +'<div class="brow"><div class="bic">📊</div>'+t.b3+'</div>'
+    +'</div></div>'
+    +discHtml
+    +'<div class="sec-title">'+t.step1+'</div>'
+    +'<div class="plans">'
+    +'<div class="plan'+(STATE.plan==="1_month"?" on":"")+" pop"+'" onclick="pickPlan(\'1_month\')">'
+    +'<span class="badge">'+t.popular+'</span>'
+    +'<div class="pcir"></div><div class="pt"><b>'+t.plan1m+'</b><small>'+planPrice("1_month")+'</small></div>'
+    +'<div class="pp">'+planPrice("1_month")+'</div></div>'
+    +'<div class="plan'+(STATE.plan==="10_days"?" on":"")+'\" onclick="pickPlan(\'10_days\')">'
+    +'<div class="pcir"></div><div class="pt"><b>'+t.plan10+'</b><small>'+planPrice("10_days")+'</small></div>'
+    +'<div class="pp">'+planPrice("10_days")+'</div></div>'
+    +'</div>'
+    +'<button class="btn" onclick="goStep2()" '+(STATE.plan?"":"disabled")+'>'+t.next+' →</button>'
+  );
 }
-async function loadOverview(){
-  setBusy(true,false);
-  try{
-    if(state.preview){
-      applyOverview(mockOverview());
-    }else{
-      const data=await api(API.overview,contextPayload());
-      applyOverview(data);
-      state.lang=normalizeLang(PARAMS.get("lang")||data.language||state.lang);
-      state.loadError=false;
-    }
-  }catch(error){
-    if(!INIT_DATA){
-      state.preview=true;
-      applyOverview(mockOverview());
-    }else{
-      state.loadError=true;
-      applyOverview(state.overview||fallbackOverview());
-    }
-    toast(state.preview?tr().preview:tr().loadError);
-  }finally{
-    setBusy(false);
-    render();
-  }
+
+function pickPlan(pl){STATE.plan=pl;renderStep1()}
+function goStep2(){if(STATE.plan)renderStep2()}
+
+// ── Step 2: Method picker ────────────────────────────────────────────
+function renderStep2(){
+  var t=T();
+  render(stepsHtml(2)
+    +'<div class="sec-title" style="margin-bottom:16px">'+t.step2+'</div>'
+    +'<div class="methods">'
+    +'<div class="mth'+(STATE.method==="visa"?" on":"")+'\" onclick="pickMethod(\'visa\')">'
+    +'<span class="mic">💳</span><span class="mlbl">'+t.visa+'</span></div>'
+    +'<div class="mth'+(STATE.method==="alipay"?" on":"")+'\" onclick="pickMethod(\'alipay\')">'
+    +'<span class="mic">🟦</span><span class="mlbl">'+t.alipay+'</span></div>'
+    +'<div class="mth'+(STATE.method==="wechat"?" on":"")+'\" onclick="pickMethod(\'wechat\')">'
+    +'<span class="mic">🟩</span><span class="mlbl">'+t.wechat+'</span></div>'
+    +'</div>'
+    +(STATE.method==="visa"?renderCountryPicker():'')
+    +'<button class="btn" onclick="goStep3()" '+(STATE.method?"":"disabled")+'>'+t.next+' →</button>'
+    +'<button class="btn ghost" onclick="renderStep1()">← '+t.back+'</button>'
+  );
 }
-async function loadQuote(){
-  setBusy(true);
-  state.quoteError="";
-  state.qrActionsOpen=false;
-  state.qrPreviewOpen=false;
-  state.detailHintOpen=false;
-  try{
-    if(!hasCurrentPrice())throw new Error(tr().offerExpired);
-    if(state.preview){
-      state.quote=mockQuote();
-    }else{
-      const data=await api(API.quote,{
-        ...contextPayload(),
-        plan_type:state.plan,
-        payment_method:state.method,
-        card_country:state.method==="visa"?state.country:null
-      });
-      state.quote=data.quote;
-    }
-  }catch(error){
-    state.quote=null;
-    state.quoteError=error.message||tr().quoteError;
-    toast(state.quoteError);
-  }finally{
-    setBusy(false);
-    render();
-  }
+
+function renderCountryPicker(){
+  var t=T();
+  var countries=[["tj",t.ctryTj],["uz",t.ctryUz],["ru",t.ctryRu],["other",t.ctryOth]];
+  return '<div class="sec-title">'+t.country+'</div>'
+    +'<div class="country-grid">'
+    +countries.map(function(c){return '<div class="ctry'+(STATE.country===c[0]?" on":"")+'\" onclick="pickCountry(\''+c[0]+'\')">'+c[1]+'</div>'}).join("")
+    +'</div>';
 }
-function setBusy(value,overlay=true){
-  state.busy=Boolean(value);
-  state.busyOverlay=Boolean(value&&overlay);
-  $("#loading").classList.toggle("show",state.busyOverlay);
-  $("#nextBtn").disabled=state.busy;
+
+function pickMethod(m){STATE.method=m;renderStep2()}
+function pickCountry(c){STATE.country=c;renderStep2()}
+
+function goStep3(){
+  if(!STATE.method)return;
+  render('<div class="loading">…</div>');
+  apiPost("/api/subscription-miniapp/quote",{
+    plan_type:STATE.plan,payment_method:STATE.method,
+    card_country:STATE.method==="visa"?STATE.country:null,
+    mode:MODE,source:SOURCE
+  }).then(function(r){return r.json()}).then(function(d){
+    if(d.ok){STATE.quote=d.quote;renderStep3()}
+    else{render('<div class="loading">'+esc(d.error||"Xatolik")+'</div>')}
+  }).catch(function(){render('<div class="loading">Xatolik</div>')});
 }
-function setStep(step){
-  const items=flow();
-  state.step=Math.max(0,Math.min(step,items.length-1));
-  if(currentScreen()==="pay")loadQuote();
-  render();
+
+// ── Step 3: Checkout ─────────────────────────────────────────────────
+function renderStep3(){
+  var t=T(),q=STATE.quote||{};
+  var isQr=STATE.method==="alipay"||STATE.method==="wechat";
+  var amt=q.pay_amount||q.final_amount||"";
+  var cur=q.pay_currency||q.currency||"";
+  var qrHtml=q.qr&&q.qr.available&&q.qr.image_url?'<div style="margin-top:12px"><div style="font-size:12px;color:var(--ink2);margin-bottom:6px">'+t.qrSub+'</div><img class="qr-img" src="'+esc(q.qr.image_url)+'"></div>':'';
+  var detHtml=STATE.method==="visa"&&q.payment_details?'<div style="margin-top:10px;font-size:12px;color:var(--ink2)">'+t.payDetails+'</div><div class="pay-details">'+esc(q.payment_details)+'</div>':'';
+
+  render(stepsHtml(3)
+    +'<div class="checkout">'
+    +'<h4>'+t.step3+'</h4>'
+    +'<div class="price-big">'+esc(amt)+' '+esc(cur)+'</div>'
+    +'<div class="price-note">'+(STATE.plan==="1_month"?t.plan1m:t.plan10)+'</div>'
+    +detHtml+qrHtml
+    +'</div>'
+    +'<div class="upload-area'+(STATE.screenshot?" has-file":"")+'\" onclick="document.getElementById(\'file-input\').click()">'
+    +'<div class="uic">📸</div>'
+    +'<p>'+(STATE.screenshot?t.uploadDone:t.uploadHint)+'</p>'
+    +'</div>'
+    +'<button class="btn jade" onclick="submitPayment()" '+(STATE.screenshot?"":"disabled")+'>'+t.submit+'</button>'
+    +'<button class="btn ghost" onclick="renderStep2()">← '+t.back+'</button>'
+  );
 }
-function setLang(lang){
-  state.lang=normalizeLang(lang);
-  document.documentElement.lang=state.lang;
-  render();
-}
-function modeText(text,key){
-  return text[key]?.[state.mode]||text[key]?.subscription||text.title;
-}
-function localizedOfferField(offer,field){
-  if(!offer)return "";
-  return offer[`${field}_${state.lang}`]||offer[field]||"";
-}
-function render(){
-  const text=tr();
-  document.body.classList.remove("mode-subscription","mode-referral_discount","mode-admin_discount","mode-feedback_discount");
-  document.body.classList.add(`mode-${state.mode}`);
-  document.documentElement.lang=state.lang;
-  $("#title").textContent=modeText(text,"modeTitles");
-  $$("#langTabs button").forEach(btn=>btn.classList.toggle("active",btn.dataset.lang===state.lang));
-  const statusText=state.preview?text.preview:(state.loadError?text.loadError:"");
-  $("#status").textContent=statusText;
-  $("#status").classList.toggle("show",Boolean(statusText));
-  const items=flow();
-  const screen=currentScreen();
-  const finalScreen=state.done||state.pending;
-  $$(".screen").forEach(node=>node.classList.toggle("active",node.dataset.screen===screen));
-  $$("#steps i").forEach((node,index)=>{
-    node.style.display=finalScreen||index>=items.length?"none":"block";
-    node.classList.toggle("active",index<=state.step);
-  });
-  $("#bottom").style.display=finalScreen||state.qrPreviewOpen?"none":"block";
-  renderStart(text);
-  renderCountry(text);
-  renderPay(text);
-  renderDone(text);
-  renderSupportSheet(text);
-  renderQrPreview(text);
-  $("#backBtn").textContent=text.back;
-  $("#nextBtn").textContent=screen==="pay"?text.submit:text.next;
-  $("#backBtn").classList.toggle("hide",state.step===0);
-  $("#nextBtn").disabled=state.busy||!hasCurrentPrice()||(!state.preview&&state.loadError)||(screen==="pay"&&!state.preview&&!state.quote);
-}
-function renderStart(text){
-  $("#tvTitle").textContent=modeText(text,"modeTv");
-  const perks=text.perks||[];
-  $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
-  $("#plansTitle").textContent=modeText(text,"modePlans");
-  renderDiscount(text);
-  renderInviteSheet(text);
-  const plans=availablePlans(state.method);
-  $("#plans").innerHTML=(plans.length?plans:[]).map(plan=>{
-    const info=priceInfo(state.method,plan);
-    if(!info)return "";
-    const selected=state.plan===plan?"selected":"";
-    const discounted=info.discount_applied?"discounted":"";
-    const name=plan==="10_days"?text.planLabels.ten:text.planLabels.month;
-    const badge=plan==="10_days"?text.planLabels.fast:text.planLabels.best;
-    return `<button class="plan ${selected} ${discounted}" type="button" data-plan="${plan}">
-      <span class="plan-top"><span class="plan-name">${name}</span><span class="badge">${badge}</span></span>
-      <span>
-        <span class="price">${money(info.final_amount)}<small>${info.currency}</small></span>
-        <span class="old-price">${money(info.base_amount)} ${info.currency}</span>
-      </span>
-    </button>`;
-  }).join("") || `<div class="detail-empty">${text.offerExpired}</div>`;
-  $("#methodsTitle").textContent=text.methodsTitle;
-  $("#methodHint").textContent=text.methodHint;
-  $("#methodHint").style.display=text.methodHint?"block":"none";
-  const methodIcons={visa:"💳",alipay:"支",wechat:"微"};
-  $("#methods").innerHTML=availableMethods().map(method=>{
-    const item=text.methods[method];
-    const selected=state.method===method?"selected":"";
-    return `<button class="choice ${selected}" type="button" data-method="${method}">
-      <i class="choice-ic ic-${method}">${methodIcons[method]||""}</i>
-      <span class="choice-tx"><strong>${item[0]}</strong><span>${item[1]}</span></span>
-      <i class="dot"></i>
-    </button>`;
-  }).join("");
-}
-function renderDiscount(text){
-  const discount=state.overview?.discount;
-  const offer=state.overview?.offer;
-  const box=$("#discountBox");
-  const bar=$("#discountBar");
-  const btn=$("#discountBtn");
-  if(state.mode==="admin_discount"||state.mode==="feedback_discount"){
-    box.style.display="flex";
-    box.classList.toggle("used",!offer?.available);
-    $("#discountBadge").textContent=offer?.available?`${offer.percent||0}%`:"!";
-    if(!offer?.available){
-      $("#discountTitle").textContent=text.offerExpired;
-      $("#discountText").textContent="";
-    }else if(state.mode==="admin_discount"){
-      $("#discountTitle").textContent=localizedOfferField(offer,"title")||text.adminDiscountTitle.replace("{percent}",offer.percent||0);
-      $("#discountText").textContent=localizedOfferField(offer,"reason")||text.adminDiscountText;
-    }else{
-      $("#discountTitle").textContent=text.feedbackDiscountTitle;
-      $("#discountText").textContent=text.feedbackDiscountText;
-    }
-    bar.style.display="none";
-    btn.style.display="none";
-    return;
-  }
-  if(!discount||discount.discount_used){
-    box.style.display="none";
-    return;
-  }
-  const required=discount.referral_required||3;
-  const count=Math.max(0,Math.min(discount.referral_count||0,required));
-  box.style.display="flex";
-  box.classList.remove("used");
-  $("#discountBadge").textContent="20%";
-  if(discount.referral_20_available){
-    $("#discountTitle").textContent=text.discountReady;
-    $("#discountText").textContent=text.discountActiveText;
-    bar.style.display="none";
-    btn.style.display="none";
-  }else{
-    $("#discountTitle").textContent=text.discountLockTitle;
-    $("#discountText").textContent=discount.offer_started
-      ? text.discountProgress.replace("{count}",count).replace("{required}",required)
-      : text.discountInviteText;
-    bar.style.display="block";
-    bar.firstElementChild.style.width=Math.round(count/required*100)+"%";
-    btn.style.display="block";
-    btn.textContent=text.discountBtn;
-  }
-}
-function renderDone(text){
-  const pending=Boolean(state.pending&&!state.done);
-  $("#doneMark").textContent=pending?"…":"✓";
-  $("#doneTitle").textContent=pending?text.pendingTitle:text.doneTitle;
-  $("#doneText").textContent=pending?text.pendingText:text.doneText;
-  $("#botReturnBtn").textContent=text.returnToBot;
-}
-function renderCountry(text){
-  $("#countryTitle").textContent=text.countryTitle;
-  $("#countryText").textContent=text.countryText;
-  $("#countries").innerHTML=COUNTRY_ORDER.map(country=>{
-    const item=text.countries[country];
-    const selected=state.country===country?"selected":"";
-    return `<button class="choice ${selected}" type="button" data-country="${country}">
-      <span><strong>${item[0]}</strong><span>${item[1]}</span></span><i class="dot"></i>
-    </button>`;
-  }).join("");
-}
-function renderPay(text){
-  const quote=state.quote||(state.preview?mockQuote():null);
-  $("#payTitle").textContent=text.payTitle;
-  $("#payText").textContent=text.payText;
-  $("#amountLabel").textContent=text.amountLabel;
-  if(!quote){
-    $("#amountValue").textContent="...";
-    $("#amountCurrency").textContent="";
-    $("#amountOld").textContent="";
-    $("#amountOld").classList.remove("show");
-    $("#summaryRows").innerHTML="";
-    $("#paymentBox").innerHTML=`<h4>${text.detailsTitle}</h4><div class="qr empty">${state.quoteError||text.quoteError}</div>`;
-    $("#uploadTitle").textContent=state.screenshotName?text.uploaded.replace("{name}",state.screenshotName):text.uploadTitle;
-    $("#uploadText").textContent=text.uploadText;
-    $("#uploadBox").classList.toggle("ready",Boolean(state.screenshotDataUrl));
-    return;
-  }
-  $("#amountValue").textContent=money(quote.pay_amount);
-  $("#amountCurrency").textContent=quote.pay_currency||"";
-  const oldAmount=quote.pay_base_amount??quote.base_amount;
-  const oldCurrency=quote.pay_base_currency||quote.base_currency||quote.pay_currency||"";
-  const hasOldAmount=Boolean(quote.discount_applied&&oldAmount&&(`${oldAmount}`!==`${quote.pay_amount}`||oldCurrency!==quote.pay_currency));
-  $("#amountOld").textContent=hasOldAmount?`${money(oldAmount)} ${oldCurrency}`:"";
-  $("#amountOld").classList.toggle("show",hasOldAmount);
-  const planText=state.plan==="10_days"?text.planLabels.ten:text.planLabels.month;
-  const methodText=text.methods[state.method][0];
-  const rows=[
-    [text.rows.plan,planText],
-    [text.rows.method,methodText]
-  ];
-  if(state.method==="visa"){
-    rows.push([text.rows.bank,CARD_BANK_NAME]);
-    if(state.country!=="tj"&&quote.exchange_rate)rows.push([text.rows.rate,quote.exchange_rate]);
-  }
-  $("#summaryRows").innerHTML=rows.map(row=>`<div class="row"><span>${row[0]}</span><strong>${row[1]}</strong></div>`).join("");
-  if(state.method==="visa"){
-    $("#paymentBox").innerHTML=renderPaymentDetails(quote.payment_details||state.overview?.payment_details||"",text);
-  }else if(quote.qr?.available&&quote.qr?.image_data_url){
-    $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4>
-      <button class="qr qr-tappable" type="button" data-qr-toggle aria-label="${escapeAttr(text.downloadQr)}">
-        <img src="${quote.qr.image_data_url}" alt="QR">
-      </button>
-      <p class="qr-hint">${text.qrTapHint}</p>
-      <div class="qr-actions ${state.qrActionsOpen?"show":""}">
-        <div class="qr-actions-inner">
-          <button class="qr-download" type="button" data-open-qr-preview>${text.downloadQr}</button>
-        </div>
-      </div>`;
-  }else{
-    $("#paymentBox").innerHTML=`<h4>${text.qrTitle}</h4><div class="qr empty">${text.qrMissing}</div>`;
-  }
-  $("#uploadTitle").textContent=state.screenshotName?text.uploaded.replace("{name}",state.screenshotName):text.uploadTitle;
-  $("#uploadText").textContent=state.screenshotName?text.uploadText:text.uploadText;
-  $("#uploadBox").classList.toggle("ready",Boolean(state.screenshotDataUrl));
-}
-function currentQrImage(){
-  return state.quote?.qr?.image_data_url||"";
-}
-function renderQrPreview(text){
-  const image=currentQrImage();
-  const visible=Boolean(state.qrPreviewOpen&&image);
-  $("#qrPreview").classList.toggle("show",visible);
-  $("#qrPreview").setAttribute("aria-hidden",visible?"false":"true");
-  $("#qrPreviewTitle").textContent=text.qrTitle;
-  $("#qrPreviewImg").src=visible?image:"";
-  $("#qrPreviewBackBtn").textContent=text.back;
-}
-function escapeHtml(value){
-  return String(value||"").replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
-}
-function escapeAttr(value){
-  return escapeHtml(value).replace(/`/g,"&#96;");
-}
-function paymentDetailRows(details){
-  return String(details||"")
-    .split(/\n+/)
-    .map(line=>line.trim())
-    .filter(Boolean)
-    .map(line=>{
-      const match=line.match(/\+?\d[\d\s\-()]{7,}\d/);
-      const copyValue=match?match[0].replace(/\D/g,""):"";
-      return {line,copyValue:copyValue.length>=8?copyValue:""};
-    });
-}
-function cardInstructionText(text){
-  const hints=text.cardHints||{};
-  if(state.country==="tj")return hints.tj||text.detailsHint;
-  return hints.foreign||text.detailsHint;
-}
-function renderPaymentDetails(details,text){
-  const rows=paymentDetailRows(details);
-  if(!rows.length){
-    return `<h4>${text.detailsTitle}</h4><div class="detail-empty">${text.noDetails}</div>`;
-  }
-  const instruction=cardInstructionText(text);
-  const hintClass=state.detailHintOpen?"":"collapsed";
-  const hintToggleText=state.detailHintOpen?(text.showLess||"Less"):(text.showMore||"More");
-  return `<h4>${text.detailsTitle}</h4>
-    <button class="detail-hint ${hintClass}" type="button" data-detail-hint-toggle>
-      <span class="detail-hint-text">${escapeHtml(instruction)}</span>
-      <span class="detail-hint-more">${escapeHtml(hintToggleText)}</span>
-    </button>
-    <div class="detail-list">
-      ${rows.map(row=>`<div class="detail-row ${row.copyValue?"copyable":""}">
-        <span>${escapeHtml(row.line)}</span>
-        ${row.copyValue?`<button class="copy-detail" type="button" data-copy-detail data-copy-value="${escapeAttr(row.copyValue)}">${text.copyValue}</button>`:""}
-      </div>`).join("")}
-    </div>`;
-}
-function toast(message){
-  const node=$("#toast");
-  node.textContent=message;
-  node.classList.add("show");
-  clearTimeout(window.toastTimer);
-  window.toastTimer=setTimeout(()=>node.classList.remove("show"),2200);
-}
-function renderInviteSheet(text){
-  const sheet=$("#inviteSheet");
-  const visible=Boolean(state.inviteOpen&&state.inviteLink);
-  sheet.classList.toggle("show",visible);
-  sheet.setAttribute("aria-hidden",visible?"false":"true");
-  $("#inviteTitle").textContent=text.inviteTitle;
-  $("#inviteText").textContent=text.inviteText;
-  $("#inviteLinkText").textContent=state.inviteLink||"";
-  $("#shareInviteBtn").textContent=text.shareLocalized;
-  $("#copyInviteBtn").textContent=state.inviteCopied?(text.copiedButton||text.copied):text.copyLink;
-  $("#closeInviteBtn").textContent=text.close;
-}
-function renderSupportSheet(text){
-  const sheet=$("#supportSheet");
-  const visible=Boolean(state.supportOpen);
-  sheet.classList.toggle("show",visible);
-  sheet.setAttribute("aria-hidden",visible?"false":"true");
-  $("#supportTitle").textContent=text.supportTitle;
-  $("#supportText").textContent=text.supportText;
-  $("#openSupportBtn").textContent=text.supportButton;
-  $("#closeSupportBtn").textContent=text.close;
-}
-function showInviteSheet(link){
-  if(!link){toast(tr().error);return}
-  state.inviteLink=link;
-  state.inviteCopied=false;
-  state.inviteOpen=true;
-  render();
-}
-function hideInviteSheet(){
-  state.inviteOpen=false;
-  render();
-}
-function showSupportSheet(){
-  state.supportOpen=true;
-  render();
-}
-function hideSupportSheet(){
-  state.supportOpen=false;
-  render();
-}
-async function copyText(value,successMessage,failedMessage){
-  if(!value){toast(tr().error);return false}
-  try{
-    if(navigator.clipboard?.writeText){
-      await navigator.clipboard.writeText(value);
-    }else{
-      const input=document.createElement("textarea");
-      input.value=value;
-      input.setAttribute("readonly","");
-      input.style.position="fixed";
-      input.style.left="-9999px";
-      document.body.appendChild(input);
-      input.select();
-      const copied=document.execCommand("copy");
-      input.remove();
-      if(!copied)throw new Error("copy_failed");
-    }
-    toast(successMessage);
-    return true;
-  }catch(error){
-    toast(failedMessage);
-    return false;
-  }
-}
-async function copyReferralLink(link){
-  const copied=await copyText(link,tr().copied,tr().copyFailed);
-  if(copied){
-    state.inviteCopied=true;
-    render();
-  }
-}
-function closeMiniApp(){
-  if(tg&&typeof tg.close==="function"){
-    tg.close();
-    return;
-  }
-  window.close();
-}
-function openSupportChat(){
-  const url=state.supportUrl||"";
-  if(!url)return;
-  if(tg&&typeof tg.openTelegramLink==="function"&&(url.includes("t.me/")||url.startsWith("tg://"))){
-    tg.openTelegramLink(url);
-    return;
-  }
-  if(tg&&typeof tg.openLink==="function"){
-    tg.openLink(url);
-    return;
-  }
-  window.open(url,"_blank");
-}
-function openQrPreview(){
-  const image=currentQrImage();
-  if(!image){
-    toast(tr().qrMissing);
-    return;
-  }
-  state.qrPreviewOpen=true;
-  render();
-}
-function closeQrPreview(){
-  state.qrPreviewOpen=false;
-  render();
-}
-async function submitPayment(){
-  if(!state.screenshotDataUrl){
-    toast(tr().needScreenshot);
-    return;
-  }
-  if(!state.preview&&!state.quote){
-    toast(state.quoteError||tr().quoteError);
-    return;
-  }
-  if(state.preview){
-    toast(tr().previewSubmit);
-    return;
-  }
-  setBusy(true);
-  try{
-    const data=await api(API.submit,{
-      ...contextPayload(),
-      plan_type:state.plan,
-      payment_method:state.method,
-      card_country:state.method==="visa"?state.country:null,
-      screenshot_data_url:state.screenshotDataUrl
-    });
-    state.pending=Boolean(data.already_pending);
-    state.pendingPayment=data.already_pending?data:null;
-    state.done=!state.pending;
-    state.step=0;
-  }catch(error){
-    toast(error.message||tr().error);
-  }finally{
-    setBusy(false);
-    render();
-  }
-}
-document.addEventListener("click",event=>{
-  const qrToggle=event.target.closest("[data-qr-toggle]");
-  if(qrToggle){state.qrActionsOpen=!state.qrActionsOpen;render();return}
-  const qrPreview=event.target.closest("[data-open-qr-preview]");
-  if(qrPreview){openQrPreview();return}
-  const detailHint=event.target.closest("[data-detail-hint-toggle]");
-  if(detailHint){state.detailHintOpen=!state.detailHintOpen;render();return}
-  const copyBtn=event.target.closest("[data-copy-detail]");
-  if(copyBtn){copyText(copyBtn.dataset.copyValue,tr().copiedValue,tr().copyFailed);return}
-  const langBtn=event.target.closest("[data-lang]");
-  if(langBtn){setLang(langBtn.dataset.lang);return}
-  const planBtn=event.target.closest("[data-plan]");
-  if(planBtn){state.plan=planBtn.dataset.plan;state.quote=null;state.qrActionsOpen=false;state.qrPreviewOpen=false;state.detailHintOpen=false;render();return}
-  const methodBtn=event.target.closest("[data-method]");
-  if(methodBtn){
-    state.method=methodBtn.dataset.method;
-    ensureSelection();
-    state.quote=null;
-    state.qrActionsOpen=false;
-    state.qrPreviewOpen=false;
-    state.detailHintOpen=false;
-    state.step=0;
-    render();
-    return;
-  }
-  const countryBtn=event.target.closest("[data-country]");
-  if(countryBtn){state.country=countryBtn.dataset.country;state.quote=null;state.qrActionsOpen=false;state.qrPreviewOpen=false;state.detailHintOpen=false;render();return}
-});
-$("#nextBtn").addEventListener("click",()=>{
-  const screen=currentScreen();
-  if(!hasCurrentPrice()){toast(tr().offerExpired);return}
-  if(screen==="pay"){submitPayment();return}
-  setStep(state.step+1);
-});
-$("#backBtn").addEventListener("click",()=>setStep(state.step-1));
-$("#botReturnBtn").addEventListener("click",closeMiniApp);
-$("#qrPreviewBackBtn").addEventListener("click",closeQrPreview);
-function shareReferral(link){
-  if(!link){toast(tr().error);return}
-  const url="https://t.me/share/url?url="+encodeURIComponent(link)+"&text="+encodeURIComponent(tr().shareText);
-  if(tg&&tg.openTelegramLink){tg.openTelegramLink(url)}
-  else{window.open(url,"_blank")}
-}
-async function inviteForDiscount(){
-  let link=state.overview?.discount?.referral_link||"";
-  if(state.preview){
-    toast(tr().preview);
-    return;
-  }
-  setBusy(true);
-  try{
-    const data=await api(API.discountStart,contextPayload());
-    state.overview.discount=data.discount;
-    link=data.discount.referral_link||link;
-  }catch(error){
-    setBusy(false);
-    toast(error.message||tr().error);
-    return;
-  }
-  setBusy(false);
-  render();
-  showInviteSheet(link);
-}
-$("#discountBtn").addEventListener("click",inviteForDiscount);
-$("#shareInviteBtn").addEventListener("click",()=>shareReferral(state.inviteLink));
-$("#copyInviteBtn").addEventListener("click",()=>copyReferralLink(state.inviteLink));
-$("#closeInviteBtn").addEventListener("click",hideInviteSheet);
-$("#inviteBackdrop").addEventListener("click",hideInviteSheet);
-$("#helpBtn").addEventListener("click",showSupportSheet);
-$("#openSupportBtn").addEventListener("click",openSupportChat);
-$("#closeSupportBtn").addEventListener("click",hideSupportSheet);
-$("#supportBackdrop").addEventListener("click",hideSupportSheet);
-$("#receiptInput").addEventListener("change",event=>{
-  const file=event.target.files?.[0];
-  if(!file)return;
-  if(!file.type.startsWith("image/")){
-    toast(tr().needScreenshot);
-    return;
-  }
-  const reader=new FileReader();
-  reader.onload=()=>{
-    state.screenshotDataUrl=String(reader.result||"");
-    state.screenshotName=file.name;
-    render();
-  };
+
+document.getElementById("file-input").addEventListener("change",function(e){
+  var file=e.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){STATE.screenshot=ev.target.result;renderStep3()};
   reader.readAsDataURL(file);
 });
-render();
-loadOverview();
+
+function submitPayment(){
+  if(!STATE.screenshot)return;
+  var btn=document.querySelector(".btn.jade");if(btn)btn.disabled=true;
+  apiPost("/api/subscription-miniapp/submit",{
+    plan_type:STATE.plan,payment_method:STATE.method,
+    card_country:STATE.method==="visa"?STATE.country:null,
+    screenshot_data_url:STATE.screenshot,
+    mode:MODE,source:SOURCE
+  }).then(function(r){return r.json()}).then(function(d){
+    if(d.ok){renderDone()}
+    else{if(btn)btn.disabled=false;alert(d.error||"Xatolik")}
+  }).catch(function(){if(btn)btn.disabled=false});
+}
+
+// ── Done ─────────────────────────────────────────────────────────────
+function renderDone(){
+  var t=T();
+  render('<div class="done-box">'
+    +'<div class="dic">✅</div>'
+    +'<h2>'+t.doneTitle+'</h2>'
+    +'<p>'+t.doneSub+'</p>'
+    +'</div>'
+    +'<button class="btn ghost" onclick="if(tg&&tg.close)tg.close()">✕ '+t.back+'</button>'
+  );
+}
+
+// ── Pending ───────────────────────────────────────────────────────────
+function renderPending(pending,supportUrl){
+  var t=T();
+  render('<div class="pending-box">'
+    +'<div class="pic">⏳</div>'
+    +'<h3>'+t.pendingTitle+'</h3>'
+    +'<p>'+t.pendingSub+'</p>'
+    +'</div>'
+    +(supportUrl?'<button class="btn ghost" onclick="if(tg&&tg.openTelegramLink)tg.openTelegramLink(\''+esc(supportUrl)+'\');else window.open(\''+esc(supportUrl)+'\',\'_blank\')">'+t.support+'</button>':'')
+  );
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────
+apiPost("/api/subscription-miniapp/overview",{mode:MODE,source:SOURCE,lang:LANG})
+  .then(function(r){return r.json()})
+  .then(function(d){
+    if(!d.ok){render('<div class="loading">'+esc(d.error||"Xatolik")+'</div>');return}
+    STATE.overview=d;
+    if(d.pending_payment){renderPending(d.pending_payment,d.support_url);return}
+    STATE.plan="1_month";
+    renderStep1();
+  }).catch(function(){render('<div class="loading">Ulanishda xatolik</div>')});
 </script>
 </body>
 </html>

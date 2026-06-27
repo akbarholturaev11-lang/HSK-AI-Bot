@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 import uuid
+from collections import Counter
 from datetime import datetime, time, timezone
 
 from sqlalchemy import func, select
@@ -401,6 +402,83 @@ class VoicePracticeService:
             "max_dialogs": MAX_DIALOGS_PER_SESSION,
             "session_should_end": session_should_end,
             "budget_notice": self._budget_notice_payload(transcribe_record, reply_record),
+        }
+
+    @staticmethod
+    def _cjk_chars(text: str) -> list[str]:
+        return [c for c in str(text or "") if "一" <= c <= "鿿"]
+
+    @classmethod
+    def _pronunciation_score(cls, target: str, heard: str) -> int:
+        target_chars = cls._cjk_chars(target)
+        if not target_chars:
+            return 0
+        heard_counts = Counter(cls._cjk_chars(heard))
+        matched = 0
+        for ch in target_chars:
+            if heard_counts.get(ch, 0) > 0:
+                heard_counts[ch] -= 1
+                matched += 1
+        return int(round(matched / len(target_chars) * 100))
+
+    async def score_pronunciation(
+        self,
+        telegram_id: int,
+        *,
+        target: str,
+        audio_bytes: bytes,
+        filename: str,
+        language: str,
+        level: str,
+    ) -> dict:
+        if not settings.OPENAI_API_KEY:
+            raise VoicePracticeError("AI_UNAVAILABLE", "Voice AI sozlanmagan.", 503)
+        if not self._cjk_chars(target):
+            raise VoicePracticeError("INVALID_TARGET", "Talaffuz uchun so'z topilmadi.")
+        if not audio_bytes:
+            raise VoicePracticeError("EMPTY_AUDIO", "Audio bo'sh.")
+        if len(audio_bytes) > MAX_AUDIO_BYTES:
+            raise VoicePracticeError("AUDIO_TOO_LARGE", "Audio hajmi juda katta.", 413)
+
+        paid = await self._is_paid_telegram_user(telegram_id)
+        if paid:
+            await self._ensure_budget_available(telegram_id)
+
+        record = None
+        try:
+            ai = AIService()
+            transcription_result = await asyncio.wait_for(
+                ai.transcribe_voice_with_usage(
+                    audio_bytes=audio_bytes,
+                    filename=filename,
+                    user_language=(language or "ru"),
+                    user_level=(level or "hsk1"),
+                ),
+                timeout=35,
+            )
+            record = await AIUsageBudgetService(self.session).record_usage(
+                telegram_id=telegram_id,
+                result=transcription_result,
+                source="voice_practice_pronounce",
+            )
+            await self.session.commit()
+        except VoicePracticeError:
+            raise
+        except asyncio.TimeoutError as error:
+            raise VoicePracticeError("AI_TIMEOUT", "Voice AI timed out. Try again.", 504) from error
+        except Exception as error:
+            logger.exception("Pronunciation scoring failed for user %s", telegram_id)
+            raise VoicePracticeError("AI_FAILED", "Voice AI failed. Try again.", 502) from error
+
+        heard = (transcription_result.content or "").strip()
+        score = self._pronunciation_score(target, heard)
+        return {
+            "ok": True,
+            "score": score,
+            "passed": score >= 60,
+            "heard": heard,
+            "target": target,
+            "budget_notice": self._budget_notice_payload(record),
         }
 
     async def end_session(self, telegram_id: int, session_id: str) -> dict:

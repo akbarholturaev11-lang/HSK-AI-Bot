@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "level": "hsk4",
+  "duration_min": 40,
+  "pass_score": 60,
+  "sections": [
+    {
+      "key": "listening",
+      "title": { "uz": "Tinglash", "ru": "Аудирование", "tj": "Шунидан" },
+      "title_zh": "听力",
+      "questions": [
+        { "no": 1, "type": "audio_truefalse", "audio_text": "随着科技的发展，人们的生活变得更加方便了。", "prompt_zh": "科技发展让生活更方便。",
+          "stem": { "uz": "Eshiting: yozilgan gap to'g'rimi?", "ru": "Послушайте: верно ли написанное?", "tj": "Гӯш кунед: ҷумла дуруст аст?" },
+          "answer": true },
+        { "no": 2, "type": "audio_choice", "audio_text": "这次会议主要讨论了公司明年的发展计划。",
+          "stem": { "uz": "Yig'ilishda nima muhokama qilindi?", "ru": "Что обсуждалось на собрании?", "tj": "Дар маҷлис чӣ муҳокима шуд?" },
+          "options": [
+            { "zh": "明年的发展计划", "py": "míngnián de fāzhǎn jìhuà", "label": { "uz": "Kelasi yil rejasi", "ru": "План развития на след. год", "tj": "Нақшаи соли оянда" }, "ok": 1 },
+            { "zh": "员工的工资", "py": "yuángōng de gōngzī", "label": { "uz": "Xodimlar maoshi", "ru": "Зарплата сотрудников", "tj": "Маоши кормандон" } },
+            { "zh": "新办公室", "py": "xīn bàngōngshì", "label": { "uz": "Yangi ofis", "ru": "Новый офис", "tj": "Дафтари нав" } }
+          ] },
+        { "no": 3, "type": "audio_choice", "audio_text": "他做事很认真，从来不马虎。",
+          "stem": { "uz": "U qanday odam?", "ru": "Какой он человек?", "tj": "Ӯ чӣ гуна одам аст?" },
+          "options": [
+            { "zh": "很认真", "py": "hěn rènzhēn", "label": { "uz": "Mas'uliyatli/jiddiy", "ru": "Ответственный", "tj": "Бомасъулият" }, "ok": 1 },
+            { "zh": "很懒", "py": "hěn lǎn", "label": { "uz": "Dangasa", "ru": "Ленивый", "tj": "Танбал" } },
+            { "zh": "很粗心", "py": "hěn cūxīn", "label": { "uz": "E'tiborsiz", "ru": "Невнимательный", "tj": "Бедиққат" } }
+          ] },
+        { "no": 4, "type": "audio_truefalse", "audio_text": "尽管遇到了很多困难，他还是坚持把项目完成了。", "prompt_zh": "他放弃了这个项目。",
+          "stem": { "uz": "Eshiting va belgilang.", "ru": "Послушайте и определите.", "tj": "Гӯш кунед ва муайян кунед." },
+          "answer": false },
+        { "no": 5, "type": "audio_choice", "audio_text": "我建议你提前预订机票，这样会便宜一些。",
+          "stem": { "uz": "Qanday maslahat berildi?", "ru": "Какой дан совет?", "tj": "Чӣ маслиҳат дода шуд?" },
+          "options": [
+            { "zh": "提前预订机票", "py": "tíqián yùdìng jīpiào", "label": { "uz": "Aviachiptani oldindan band qilish", "ru": "Заранее забронировать билет", "tj": "Чиптаро пешакӣ фармоиш додан" }, "ok": 1 },
+            { "zh": "坐火车去", "py": "zuò huǒchē qù", "label": { "uz": "Poyezdda borish", "ru": "Ехать на поезде", "tj": "Бо қатора рафтан" } },
+            { "zh": "取消旅行", "py": "qǔxiāo lǚxíng", "label": { "uz": "Sayohatni bekor qilish", "ru": "Отменить поездку", "tj": "Сафарро бекор кардан" } }
+          ] }
+      ]
+    },
+    {
+      "key": "reading",
+      "title": { "uz": "O'qish", "ru": "Чтение", "tj": "Хондан" },
+      "title_zh": "阅读",
+      "questions": [
+        { "no": 6, "type": "text_choice", "stem_zh": "他的话___了大家的注意。",
+          "stem": { "uz": "“So'zlari hammaning e'tiborini ___” (tortdi).", "ru": "«Его слова ___ внимание всех» (привлекли).", "tj": "«Суханаш диққати ҳамаро ___» (ҷалб кард)." },
+          "options": [
+            { "zh": "引起", "py": "yǐnqǐ", "label": { "uz": "uyg'otmoq/tortmoq", "ru": "вызвать/привлечь", "tj": "ба вуҷуд овардан" }, "ok": 1 },
+            { "zh": "提高", "py": "tígāo", "label": { "uz": "oshirmoq", "ru": "повышать", "tj": "баланд бардоштан" } },
+            { "zh": "降低", "py": "jiàngdī", "label": { "uz": "pasaytirmoq", "ru": "понижать", "tj": "паст кардан" } }
+          ] },
+        { "no": 7, "type": "text_choice", "stem_zh": "___你努力，就一定会成功。",
+          "stem": { "uz": "“Harakat qilsang, albatta muvaffaq bo'lasan” — bog'lovchi.", "ru": "«Если будешь стараться, обязательно добьёшься» — союз.", "tj": "«Агар кӯшиш кунӣ, ҳатман муваффақ мешавӣ» — пайвандак." },
+          "options": [
+            { "zh": "只要", "py": "zhǐyào", "label": { "uz": "...sa bo'lgani", "ru": "стоит лишь", "tj": "танҳо агар" }, "ok": 1 },
+            { "zh": "即使", "py": "jíshǐ", "label": { "uz": "hatto ...sa ham", "ru": "даже если", "tj": "ҳатто агар" } },
+            { "zh": "无论", "py": "wúlùn", "label": { "uz": "qanday bo'lmasin", "ru": "независимо от", "tj": "новобаста аз" } }
+          ] },
+        { "no": 8, "type": "text_choice", "stem_zh": "这个问题很复杂，我们需要___地考虑。",
+          "stem": { "uz": "“Diqqat bilan o'ylamoq kerak” — ravish.", "ru": "«Нужно тщательно обдумать» — наречие.", "tj": "«Бодиққат фикр кардан лозим» — зарф." },
+          "options": [
+            { "zh": "认真", "py": "rènzhēn", "label": { "uz": "jiddiy/diqqat bilan", "ru": "тщательно", "tj": "бодиққат" }, "ok": 1 },
+            { "zh": "马虎", "py": "mǎhu", "label": { "uz": "beparvo", "ru": "небрежно", "tj": "сарсарӣ" } },
+            { "zh": "随便", "py": "suíbiàn", "label": { "uz": "tasodifan", "ru": "как попало", "tj": "ҳар тавр" } }
+          ] },
+        { "no": 9, "type": "text_choice", "stem_zh": "“坚持” 的意思是？",
+          "stem": { "uz": "“坚持” ma'nosi?", "ru": "Что значит «坚持»?", "tj": "“坚持” чӣ маъно дорад?" },
+          "options": [
+            { "zh": "坚持", "py": "jiānchí", "label": { "uz": "Sabot bilan davom etmoq", "ru": "Упорно продолжать", "tj": "Устуворона давом додан" }, "ok": 1 },
+            { "zh": "放弃", "py": "fàngqì", "label": { "uz": "Voz kechmoq", "ru": "Сдаваться", "tj": "Даст кашидан" } },
+            { "zh": "怀疑", "py": "huáiyí", "label": { "uz": "Shubhalanmoq", "ru": "Сомневаться", "tj": "Шубҳа кардан" } }
+          ] },
+        { "no": 10, "type": "text_choice", "stem_zh": "通过这次经历，他___了很多。",
+          "stem": { "uz": "“Bu tajriba orqali ko'p narsa ___” (o'rgandi/o'sdi).", "ru": "«Через этот опыт он многому ___» (научился).", "tj": "«Тавассути ин таҷриба ӯ бисёр чиз ___» (омӯхт)." },
+          "options": [
+            { "zh": "成长", "py": "chéngzhǎng", "label": { "uz": "ulg'aymoq/o'smoq", "ru": "вырасти", "tj": "камол ёфтан" }, "ok": 1 },
+            { "zh": "出发", "py": "chūfā", "label": { "uz": "yo'lga chiqmoq", "ru": "отправляться", "tj": "ба роҳ баромадан" } },
+            { "zh": "迟到", "py": "chídào", "label": { "uz": "kechikmoq", "ru": "опаздывать", "tj": "дер мондан" } }
+          ] },
+        { "no": 11, "type": "text_choice", "stem_zh": "他对工作非常负责，___大家的尊重。",
+          "stem": { "uz": "“Hammaning hurmatini ___” (qozondi).", "ru": "«___ уважение всех» (завоевал).", "tj": "«Эҳтироми ҳамаро ___» (ба даст овард)." },
+          "options": [
+            { "zh": "赢得", "py": "yíngdé", "label": { "uz": "qozonmoq", "ru": "завоевать", "tj": "ба даст овардан" }, "ok": 1 },
+            { "zh": "失去", "py": "shīqù", "label": { "uz": "yo'qotmoq", "ru": "терять", "tj": "гум кардан" } },
+            { "zh": "浪费", "py": "làngfèi", "label": { "uz": "isrof qilmoq", "ru": "тратить впустую", "tj": "беҳуда сарф кардан" } }
+          ] }
+      ]
+    },
+    {
+      "key": "writing",
+      "title": { "uz": "Yozish", "ru": "Письмо", "tj": "Навиштан" },
+      "title_zh": "书写",
+      "questions": [
+        { "no": 12, "type": "text_choice", "stem_zh": "这本书 / 对我 / 很大的 / 有 / 帮助  →  正确语序？",
+          "stem": { "uz": "To'g'ri so'z tartibini tanlang.", "ru": "Выберите правильный порядок слов.", "tj": "Тартиби дурусти калимаҳоро интихоб кунед." },
+          "options": [
+            { "zh": "这本书对我有很大的帮助。", "py": "Zhè běn shū duì wǒ yǒu hěn dà de bāngzhù.", "label": { "uz": "Bu kitob menga katta yordam berdi.", "ru": "Эта книга мне очень помогла.", "tj": "Ин китоб ба ман кӯмаки калон расонд." }, "ok": 1 },
+            { "zh": "这本书有对我很大的帮助。", "py": "—", "label": { "uz": "(noto'g'ri tartib)", "ru": "(неверный порядок)", "tj": "(тартиби нодуруст)" } },
+            { "zh": "对我这本书有很大的帮助。", "py": "—", "label": { "uz": "(noto'g'ri tartib)", "ru": "(неверный порядок)", "tj": "(тартиби нодуруст)" } }
+          ] }
+      ]
+    }
+  ]
+}

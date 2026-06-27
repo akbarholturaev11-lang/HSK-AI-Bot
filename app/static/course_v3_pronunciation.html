@@ -64,9 +64,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Подправьте тон и попробуйте снова",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз"},
-  uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Tonni sozlab, yana urinib ko'ring",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq"},
-  tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Садоро ислоҳ карда, боз кӯшиш кунед",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз"}}[LANG];
+var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram"},
+  uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Aniq emas, yana urinib ko'ring",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq",listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi, qayta urining",needTg:"Telegram'da oching"},
+  tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
@@ -82,21 +82,52 @@ function load(){var w=list[i];
   document.getElementById('cnt').textContent=(i+1)+' / '+list.length;document.getElementById('hint').textContent=L.hint;
 }
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1100)}
-// NOTE: scoring is mocked. Real per-syllable tone scoring will come from the server (material/logic added later).
+// Real pronunciation check: record mic -> server speech-to-text -> character-match score.
+function initData(){return (tg&&tg.initData)?tg.initData:""}
+var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null,MAX_REC_MS=4000,MIN_BYTES=1200;
+function setRec(on){var mw=document.getElementById('micwrap');if(on){mw.classList.add('rec');document.getElementById('mic').classList.add('rec')}else{mw.classList.remove('rec');document.getElementById('mic').classList.remove('rec')}}
+function setHint(t){document.getElementById('hint').textContent=t||""}
+function pickMime(){var c=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/aac","audio/ogg;codecs=opus"];
+  if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return"";
+  for(var k=0;k<c.length;k++){if(MediaRecorder.isTypeSupported(c[k]))return c[k]}return""}
 function rec(){
-  if(busy)return;busy=true;
-  var mw=document.getElementById('micwrap');mw.classList.add('rec');document.getElementById('mic').classList.add('rec');document.getElementById('hint').textContent='…';
-  try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
-  setTimeout(function(){
-    mw.classList.remove('rec');document.getElementById('mic').classList.remove('rec');
-    var score=80+Math.floor(Math.random()*18),ok=score>=85,word=document.getElementById('word'),fb=document.getElementById('fb');
-    if(ok){okCount++;word.classList.add('ok','pop');rain();toast('+10 XP · '+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok;
-      document.getElementById('prog').style.width=Math.round((i+1)/list.length*100)+'%';
-      setTimeout(function(){busy=false;i++;if(i>=list.length){finish()}else{load()}},1100);
-    }else{word.classList.add('bad');beep([220,180]);haptic(false);fb.className='fb bad';fb.textContent='~ '+L.bad;document.getElementById('hint').textContent=L.retry;
-      setTimeout(function(){word.classList.remove('bad');busy=false},450);
-    }
-  },1500);
+  if(busy)return;
+  if(mediaRecorder&&mediaRecorder.state!=="inactive"){stopRec();return;}
+  startRec();
+}
+function startRec(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){setHint(L.noSupport);return;}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    mediaStream=stream;chunks=[];var mime=pickMime(),opts={audioBitsPerSecond:32000};if(mime)opts.mimeType=mime;
+    try{mediaRecorder=new MediaRecorder(stream,opts)}catch(_){mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream)}
+    mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size>0)chunks.push(e.data)};
+    mediaRecorder.onstop=onStopped;mediaRecorder.start(250);
+    try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
+    setRec(true);setHint(L.listening);
+    clearTimeout(autoStop);autoStop=setTimeout(stopRec,MAX_REC_MS);
+  }).catch(function(){setHint(L.micDeny)});
+}
+function stopRec(){clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){setRec(false);setHint(L.analyzing);mediaRecorder.stop();}}
+function onStopped(){
+  var blob=new Blob(chunks,{type:(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm"});
+  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
+  if(blob.size<MIN_BYTES){setHint(L.retry);return;}
+  busy=true;var w=list[i],fd=new FormData();
+  fd.append("initData",initData());fd.append("target",w.h);fd.append("language",LANG);fd.append("level",(params.get("level")||""));fd.append("audio",blob,"voice.webm");
+  fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
+    .then(function(o){busy=false;if(!o.ok||!o.j||o.j.ok!==true){onErr(o);return;}applyScore(Number(o.j.score)||0)})
+    .catch(function(){busy=false;setHint(L.netErr)});
+}
+function onErr(o){var code=o&&o.j&&o.j.code;setHint(code==="INVALID_INIT_DATA"?L.needTg:(o&&o.j&&o.j.message)||L.netErr)}
+function applyScore(score){
+  var ok=score>=60,word=document.getElementById('word'),fb=document.getElementById('fb');
+  if(ok){okCount++;word.classList.add('ok','pop');rain();toast('+10 XP · '+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok+' '+score+'%';
+    document.getElementById('prog').style.width=Math.round((i+1)/list.length*100)+'%';
+    setTimeout(function(){i++;if(i>=list.length){finish()}else{load()}},1100);
+  }else{word.classList.add('bad');beep([220,180]);haptic(false);fb.className='fb bad';fb.textContent='~ '+L.bad+' '+score+'%';setHint(L.retry);
+    setTimeout(function(){word.classList.remove('bad')},450);
+  }
 }
 function finish(){document.getElementById('ctrl').style.display='none';document.getElementById('prog').style.width='100%';
   document.getElementById('dh').textContent=okCount+' / '+list.length+' '+L.done;document.getElementById('dp').textContent=L.doneSub;document.getElementById('db').textContent=L.again;

@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "level": "hsk1",
+  "duration_min": 25,
+  "pass_score": 60,
+  "sections": [
+    {
+      "key": "listening",
+      "title": { "uz": "Tinglash", "ru": "Аудирование", "tj": "Шунидан" },
+      "title_zh": "听力",
+      "questions": [
+        { "no": 1, "type": "audio_truefalse", "audio_text": "我喜欢喝茶。", "prompt_zh": "我喜欢喝茶。",
+          "stem": { "uz": "Eshiting va gap mosligini belgilang.", "ru": "Послушайте и определите, верно ли утверждение.", "tj": "Гӯш кунед ва дурустии ҷумларо муайян кунед." },
+          "answer": true },
+        { "no": 2, "type": "audio_truefalse", "audio_text": "现在是三点。", "prompt_zh": "现在是五点。",
+          "stem": { "uz": "Eshiting: aytilgan va yozilgan bir xilmi?", "ru": "Послушайте: совпадает ли сказанное с написанным?", "tj": "Гӯш кунед: гуфта ва навишта якхелаанд?" },
+          "answer": false },
+        { "no": 3, "type": "audio_choice", "audio_text": "你好！",
+          "stem": { "uz": "Eshitilgan ibora ma'nosini tanlang.", "ru": "Выберите значение услышанной фразы.", "tj": "Маънои ибораи шунидаро интихоб кунед." },
+          "options": [
+            { "zh": "你好", "py": "nǐ hǎo", "label": { "uz": "Salom", "ru": "Здравствуй", "tj": "Салом" }, "ok": 1 },
+            { "zh": "再见", "py": "zàijiàn", "label": { "uz": "Xayr", "ru": "До свидания", "tj": "Хайр" } },
+            { "zh": "谢谢", "py": "xièxie", "label": { "uz": "Rahmat", "ru": "Спасибо", "tj": "Ташаккур" } }
+          ] },
+        { "no": 4, "type": "audio_choice", "audio_text": "今天星期一。",
+          "stem": { "uz": "Bugun qaysi kun?", "ru": "Какой сегодня день?", "tj": "Имрӯз кадом рӯз аст?" },
+          "options": [
+            { "zh": "星期一", "py": "xīngqīyī", "label": { "uz": "Dushanba", "ru": "Понедельник", "tj": "Душанбе" }, "ok": 1 },
+            { "zh": "星期三", "py": "xīngqīsān", "label": { "uz": "Chorshanba", "ru": "Среда", "tj": "Чоршанбе" } },
+            { "zh": "星期日", "py": "xīngqīrì", "label": { "uz": "Yakshanba", "ru": "Воскресенье", "tj": "Якшанбе" } }
+          ] },
+        { "no": 5, "type": "audio_choice", "audio_text": "我有三个苹果。",
+          "stem": { "uz": "Mendaqancha olma bor?", "ru": "Сколько у меня яблок?", "tj": "Ман чанд себ дорам?" },
+          "options": [
+            { "zh": "三个", "py": "sān gè", "label": { "uz": "Uchta", "ru": "Три", "tj": "Се" }, "ok": 1 },
+            { "zh": "两个", "py": "liǎng gè", "label": { "uz": "Ikkita", "ru": "Два", "tj": "Ду" } },
+            { "zh": "五个", "py": "wǔ gè", "label": { "uz": "Beshta", "ru": "Пять", "tj": "Панҷ" } }
+          ] },
+        { "no": 6, "type": "audio_truefalse", "audio_text": "他是中国人。", "prompt_zh": "他是中国人。",
+          "stem": { "uz": "Eshiting va belgilang.", "ru": "Послушайте и определите.", "tj": "Гӯш кунед ва муайян кунед." },
+          "answer": true },
+        { "no": 7, "type": "audio_choice", "audio_text": "我妈妈是老师。",
+          "stem": { "uz": "Onam kim?", "ru": "Кто моя мама?", "tj": "Модари ман кист?" },
+          "options": [
+            { "zh": "老师", "py": "lǎoshī", "label": { "uz": "O'qituvchi", "ru": "Учитель", "tj": "Муаллим" }, "ok": 1 },
+            { "zh": "医生", "py": "yīshēng", "label": { "uz": "Shifokor", "ru": "Врач", "tj": "Духтур" } },
+            { "zh": "学生", "py": "xuésheng", "label": { "uz": "O'quvchi", "ru": "Ученик", "tj": "Талаба" } }
+          ] }
+      ]
+    },
+    {
+      "key": "reading",
+      "title": { "uz": "O'qish", "ru": "Чтение", "tj": "Хондан" },
+      "title_zh": "阅读",
+      "questions": [
+        { "no": 8, "type": "text_choice", "stem_zh": "我___学生。",
+          "stem": { "uz": "Bo'sh joyga to'g'ri so'zni qo'ying.", "ru": "Вставьте подходящее слово.", "tj": "Калимаи мувофиқро гузоред." },
+          "options": [
+            { "zh": "是", "py": "shì", "label": { "uz": "...man (bo'lmoq)", "ru": "являюсь", "tj": "ҳастам" }, "ok": 1 },
+            { "zh": "不", "py": "bù", "label": { "uz": "emas", "ru": "не", "tj": "не" } },
+            { "zh": "很", "py": "hěn", "label": { "uz": "juda", "ru": "очень", "tj": "хеле" } }
+          ] },
+        { "no": 9, "type": "text_choice", "stem_zh": "“谢谢” 的意思是？",
+          "stem": { "uz": "“谢谢” ma'nosi nima?", "ru": "Что значит «谢谢»?", "tj": "“谢谢” чӣ маъно дорад?" },
+          "options": [
+            { "zh": "谢谢", "py": "xièxie", "label": { "uz": "Rahmat", "ru": "Спасибо", "tj": "Ташаккур" }, "ok": 1 },
+            { "zh": "对不起", "py": "duìbuqǐ", "label": { "uz": "Kechirasiz", "ru": "Извините", "tj": "Бубахшед" } },
+            { "zh": "没关系", "py": "méi guānxi", "label": { "uz": "Hechqisi yo'q", "ru": "Ничего", "tj": "Ҳеҷ гап не" } }
+          ] },
+        { "no": 10, "type": "text_choice", "stem_zh": "现在几___？",
+          "stem": { "uz": "Bo'sh joyga mos so'z (soat haqida).", "ru": "Подходящее слово (о времени).", "tj": "Калимаи мувофиқ (дар бораи вақт)." },
+          "options": [
+            { "zh": "点", "py": "diǎn", "label": { "uz": "soat", "ru": "час", "tj": "соат" }, "ok": 1 },
+            { "zh": "块", "py": "kuài", "label": { "uz": "so'm/yuan", "ru": "юань", "tj": "пул" } },
+            { "zh": "个", "py": "gè", "label": { "uz": "dona", "ru": "штука", "tj": "дона" } }
+          ] },
+        { "no": 11, "type": "text_choice", "stem_zh": "他___苹果。",
+          "stem": { "uz": "“U olma yeydi” — bo'sh joyga fe'l.", "ru": "«Он ест яблоко» — глагол в пропуск.", "tj": "«Ӯ себ мехӯрад» — феъл гузоред." },
+          "options": [
+            { "zh": "吃", "py": "chī", "label": { "uz": "yemoq", "ru": "есть", "tj": "хӯрдан" }, "ok": 1 },
+            { "zh": "喝", "py": "hē", "label": { "uz": "ichmoq", "ru": "пить", "tj": "нӯшидан" } },
+            { "zh": "看", "py": "kàn", "label": { "uz": "ko'rmoq", "ru": "смотреть", "tj": "дидан" } }
+          ] },
+        { "no": 12, "type": "text_choice", "stem_zh": "我家有五口___。",
+          "stem": { "uz": "Oila a'zolari uchun sanoq so'zi.", "ru": "Счётное слово для членов семьи.", "tj": "Калимаи ҳисоб барои аъзои оила." },
+          "options": [
+            { "zh": "人", "py": "rén", "label": { "uz": "kishi/odam", "ru": "человек", "tj": "одам" }, "ok": 1 },
+            { "zh": "猫", "py": "māo", "label": { "uz": "mushuk", "ru": "кошка", "tj": "гурба" } },
+            { "zh": "书", "py": "shū", "label": { "uz": "kitob", "ru": "книга", "tj": "китоб" } }
+          ] },
+        { "no": 13, "type": "text_choice", "stem_zh": "“水” 的意思是？",
+          "stem": { "uz": "“水” ma'nosi?", "ru": "Что значит «水»?", "tj": "“水” чӣ маъно дорад?" },
+          "options": [
+            { "zh": "水", "py": "shuǐ", "label": { "uz": "Suv", "ru": "Вода", "tj": "Об" }, "ok": 1 },
+            { "zh": "茶", "py": "chá", "label": { "uz": "Choy", "ru": "Чай", "tj": "Чой" } },
+            { "zh": "米饭", "py": "mǐfàn", "label": { "uz": "Guruch", "ru": "Рис", "tj": "Биринҷ" } }
+          ] },
+        { "no": 14, "type": "text_choice", "stem_zh": "今天天气很___。",
+          "stem": { "uz": "“Bugun ob-havo juda ___” (yaxshi).", "ru": "«Сегодня погода очень ___» (хорошая).", "tj": "«Имрӯз ҳаво хеле ___» (хуб)." },
+          "options": [
+            { "zh": "好", "py": "hǎo", "label": { "uz": "yaxshi", "ru": "хорошо", "tj": "хуб" }, "ok": 1 },
+            { "zh": "大", "py": "dà", "label": { "uz": "katta", "ru": "большой", "tj": "калон" } },
+            { "zh": "多", "py": "duō", "label": { "uz": "ko'p", "ru": "много", "tj": "бисёр" } }
+          ] }
+      ]
+    }
+  ]
+}

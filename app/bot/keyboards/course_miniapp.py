@@ -1,7 +1,25 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 
-from app.bot.utils.course_miniapp import course_miniapp_url, course_stroke_order_url, course_study_miniapp_url
+from app.bot.utils.course_miniapp import course_miniapp_url, course_stroke_order_url, course_study_miniapp_url, course_v3_miniapp_url
 from app.bot.utils.i18n import t
+
+
+def course_v3_miniapp_keyboard(lang: str) -> InlineKeyboardMarkup:
+    labels = {
+        "uz": "📚 Kursni ochish",
+        "ru": "📚 Открыть курс",
+        "tj": "📚 Курсро кушодан",
+    }
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=labels.get(lang, labels["ru"]),
+                    web_app=WebAppInfo(url=course_v3_miniapp_url(lang=lang)),
+                )
+            ]
+        ]
+    )
 
 
 def course_study_miniapp_keyboard(

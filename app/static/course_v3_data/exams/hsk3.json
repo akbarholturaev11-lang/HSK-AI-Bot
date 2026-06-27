@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "level": "hsk3",
+  "duration_min": 35,
+  "pass_score": 60,
+  "sections": [
+    {
+      "key": "listening",
+      "title": { "uz": "Tinglash", "ru": "Аудирование", "tj": "Шунидан" },
+      "title_zh": "听力",
+      "questions": [
+        { "no": 1, "type": "audio_truefalse", "audio_text": "虽然今天很冷，但是他还是去上班了。", "prompt_zh": "他今天没去上班。",
+          "stem": { "uz": "Eshiting: yozilgan gap to'g'rimi?", "ru": "Послушайте: верно ли написанное?", "tj": "Гӯш кунед: ҷумла дуруст аст?" },
+          "answer": false },
+        { "no": 2, "type": "audio_choice", "audio_text": "我打算这个周末去爬山。",
+          "stem": { "uz": "Hafta oxiri rejam nima?", "ru": "Каковы мои планы на выходные?", "tj": "Нақшаам барои рӯзҳои истироҳат чист?" },
+          "options": [
+            { "zh": "爬山", "py": "pá shān", "label": { "uz": "Tog'ga chiqmoq", "ru": "Подняться в горы", "tj": "Ба кӯҳ баромадан" }, "ok": 1 },
+            { "zh": "看电影", "py": "kàn diànyǐng", "label": { "uz": "Kino ko'rmoq", "ru": "Смотреть кино", "tj": "Кино дидан" } },
+            { "zh": "在家休息", "py": "zài jiā xiūxi", "label": { "uz": "Uyda dam olmoq", "ru": "Отдыхать дома", "tj": "Дар хона дам гирифтан" } }
+          ] },
+        { "no": 3, "type": "audio_choice", "audio_text": "这道题太难了，我做不出来。",
+          "stem": { "uz": "Masala haqida nima deyildi?", "ru": "Что сказано о задаче?", "tj": "Дар бораи масъала чӣ гуфта шуд?" },
+          "options": [
+            { "zh": "太难了", "py": "tài nán le", "label": { "uz": "Juda qiyin", "ru": "Слишком трудная", "tj": "Хеле душвор" }, "ok": 1 },
+            { "zh": "很简单", "py": "hěn jiǎndān", "label": { "uz": "Juda oson", "ru": "Очень простая", "tj": "Хеле осон" } },
+            { "zh": "很有意思", "py": "hěn yǒu yìsi", "label": { "uz": "Juda qiziqarli", "ru": "Очень интересная", "tj": "Хеле ҷолиб" } }
+          ] },
+        { "no": 4, "type": "audio_truefalse", "audio_text": "经理让我把这个文件发给客户。", "prompt_zh": "经理让我把文件发给客户。",
+          "stem": { "uz": "Eshiting va belgilang.", "ru": "Послушайте и определите.", "tj": "Гӯш кунед ва муайян кунед." },
+          "answer": true },
+        { "no": 5, "type": "audio_choice", "audio_text": "我觉得这个城市的环境越来越好了。",
+          "stem": { "uz": "Shahar muhiti haqida fikr qanday?", "ru": "Каково мнение об экологии города?", "tj": "Андеша дар бораи муҳити шаҳр чӣ гуна аст?" },
+          "options": [
+            { "zh": "越来越好", "py": "yuèláiyuè hǎo", "label": { "uz": "Tobora yaxshilanmoqda", "ru": "Всё лучше", "tj": "Торафт беҳтар" }, "ok": 1 },
+            { "zh": "越来越差", "py": "yuèláiyuè chà", "label": { "uz": "Tobora yomonlashmoqda", "ru": "Всё хуже", "tj": "Торафт бадтар" } },
+            { "zh": "没有变化", "py": "méiyǒu biànhuà", "label": { "uz": "O'zgarmagan", "ru": "Без изменений", "tj": "Бетағйир" } }
+          ] }
+      ]
+    },
+    {
+      "key": "reading",
+      "title": { "uz": "O'qish", "ru": "Чтение", "tj": "Хондан" },
+      "title_zh": "阅读",
+      "questions": [
+        { "no": 6, "type": "text_choice", "stem_zh": "___天气不好，我们还是出发吧。",
+          "stem": { "uz": "“Ob-havo yomon bo'lsa-da ...” — bog'lovchi.", "ru": "«Хотя погода плохая ...» — союз.", "tj": "«Гарчанде ҳаво бад аст ...» — пайвандак." },
+          "options": [
+            { "zh": "虽然", "py": "suīrán", "label": { "uz": "garchi", "ru": "хотя", "tj": "ҳарчанд" }, "ok": 1 },
+            { "zh": "因为", "py": "yīnwèi", "label": { "uz": "chunki", "ru": "потому что", "tj": "зеро" } },
+            { "zh": "如果", "py": "rúguǒ", "label": { "uz": "agar", "ru": "если", "tj": "агар" } }
+          ] },
+        { "no": 7, "type": "text_choice", "stem_zh": "请把窗户___开，房间里太热了。",
+          "stem": { "uz": "把-konstruksiyada natija fe'li.", "ru": "Результативный глагол в конструкции 把.", "tj": "Феъли натиҷавӣ дар сохти 把." },
+          "options": [
+            { "zh": "打", "py": "dǎ", "label": { "uz": "ochmoq (打开)", "ru": "открыть (打开)", "tj": "кушодан (打开)" }, "ok": 1 },
+            { "zh": "关", "py": "guān", "label": { "uz": "yopmoq", "ru": "закрыть", "tj": "пӯшидан" } },
+            { "zh": "放", "py": "fàng", "label": { "uz": "qo'ymoq", "ru": "положить", "tj": "гузоштан" } }
+          ] },
+        { "no": 8, "type": "text_choice", "stem_zh": "他汉语说得很好，___他在中国住了五年。",
+          "stem": { "uz": "“... chunki u Xitoyda 5 yil yashagan.”", "ru": "«... потому что он жил в Китае 5 лет.»", "tj": "«... зеро ӯ дар Хитой 5 сол зиндагӣ кардааст.»" },
+          "options": [
+            { "zh": "因为", "py": "yīnwèi", "label": { "uz": "chunki", "ru": "потому что", "tj": "зеро" }, "ok": 1 },
+            { "zh": "但是", "py": "dànshì", "label": { "uz": "lekin", "ru": "но", "tj": "аммо" } },
+            { "zh": "为了", "py": "wèile", "label": { "uz": "...uchun", "ru": "ради", "tj": "барои" } }
+          ] },
+        { "no": 9, "type": "text_choice", "stem_zh": "“附近” 的意思是？",
+          "stem": { "uz": "“附近” ma'nosi?", "ru": "Что значит «附近»?", "tj": "“附近” чӣ маъно дорад?" },
+          "options": [
+            { "zh": "附近", "py": "fùjìn", "label": { "uz": "Yaqin-atrof", "ru": "Поблизости", "tj": "Гирду атроф" }, "ok": 1 },
+            { "zh": "中间", "py": "zhōngjiān", "label": { "uz": "O'rta", "ru": "Посередине", "tj": "Мобайн" } },
+            { "zh": "对面", "py": "duìmiàn", "label": { "uz": "Qarshi taraf", "ru": "Напротив", "tj": "Рӯ ба рӯ" } }
+          ] },
+        { "no": 10, "type": "text_choice", "stem_zh": "这次考试我考___了，下次要努力。",
+          "stem": { "uz": "“Bu safar imtihondan yiqildim” — natija.", "ru": "«В этот раз я провалил экзамен» — результат.", "tj": "«Ин дафъа аз имтиҳон афтодам» — натиҷа." },
+          "options": [
+            { "zh": "砸", "py": "zá", "label": { "uz": "yiqilmoq (考砸)", "ru": "провалить (考砸)", "tj": "афтодан (考砸)" }, "ok": 1 },
+            { "zh": "好", "py": "hǎo", "label": { "uz": "yaxshi", "ru": "хорошо", "tj": "хуб" } },
+            { "zh": "完", "py": "wán", "label": { "uz": "tugatmoq", "ru": "закончить", "tj": "тамом кардан" } }
+          ] },
+        { "no": 11, "type": "text_choice", "stem_zh": "我们应该___健康的生活习惯。",
+          "stem": { "uz": "“Sog'lom odat ___ kerak” (shakllantirmoq).", "ru": "«Нужно ___ здоровые привычки» (формировать).", "tj": "«Бояд одати солим ___ кунем» (ташкил)." },
+          "options": [
+            { "zh": "养成", "py": "yǎngchéng", "label": { "uz": "shakllantirmoq", "ru": "вырабатывать", "tj": "ба вуҷуд овардан" }, "ok": 1 },
+            { "zh": "解决", "py": "jiějué", "label": { "uz": "hal qilmoq", "ru": "решать", "tj": "ҳал кардан" } },
+            { "zh": "参加", "py": "cānjiā", "label": { "uz": "qatnashmoq", "ru": "участвовать", "tj": "иштирок кардан" } }
+          ] }
+      ]
+    },
+    {
+      "key": "writing",
+      "title": { "uz": "Yozish", "ru": "Письмо", "tj": "Навиштан" },
+      "title_zh": "书写",
+      "questions": [
+        { "no": 12, "type": "text_choice", "stem_zh": "他 / 把 / 作业 / 写完了  →  正确语序？",
+          "stem": { "uz": "To'g'ri so'z tartibini tanlang.", "ru": "Выберите правильный порядок слов.", "tj": "Тартиби дурусти калимаҳоро интихоб кунед." },
+          "options": [
+            { "zh": "他把作业写完了。", "py": "Tā bǎ zuòyè xiěwán le.", "label": { "uz": "U vazifani yozib bo'ldi.", "ru": "Он закончил домашнее задание.", "tj": "Ӯ вазифаро навишта тамом кард." }, "ok": 1 },
+            { "zh": "他写完了把作业。", "py": "—", "label": { "uz": "(noto'g'ri tartib)", "ru": "(неверный порядок)", "tj": "(тартиби нодуруст)" } },
+            { "zh": "把他作业写完了。", "py": "—", "label": { "uz": "(noto'g'ri tartib)", "ru": "(неверный порядок)", "tj": "(тартиби нодуруст)" } }
+          ] }
+      ]
+    }
+  ]
+}

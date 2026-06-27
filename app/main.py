@@ -352,12 +352,25 @@ async def course_v3_sub_page(page: str):
     return miniapp_file_response(f"app/static/course_v3_{page}.html")
 
 
+@app.get("/course_v3_data/memo.js")
+async def course_v3_memo_script():
+    return miniapp_file_response("app/static/course_v3_data/memo.js")
+
+
 @app.get("/course_v3_data/{filename}")
 async def course_v3_data_file(filename: str):
     import re
     if not re.fullmatch(r"[a-z0-9_\-]+\.json", filename):
         return JSONResponse(status_code=404, content={"error": "not_found"})
     return static_json_response(f"app/static/course_v3_data/{filename}")
+
+
+@app.get("/course_v3_data/exams/{filename}")
+async def course_v3_exam_file(filename: str):
+    import re
+    if not re.fullmatch(r"hsk[1-4]\.json", filename):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return static_json_response(f"app/static/course_v3_data/exams/{filename}")
 
 
 @app.get("/course_v3_data/{level}/{filename}")
@@ -719,6 +732,36 @@ async def voice_practice_message(request: Request):
                 session_id=str(form.get("session_id") or ""),
                 audio_bytes=audio_bytes,
                 filename=str(getattr(audio, "filename", None) or "voice.webm"),
+            )
+    except VoicePracticeError as error:
+        return _voice_practice_error(error)
+
+
+@app.post("/api/voice-practice/pronounce")
+async def voice_practice_pronounce(request: Request):
+    form = await request.form()
+    telegram_id = _voice_practice_user_id(str(form.get("initData") or ""))
+    if not telegram_id:
+        return JSONResponse(
+            status_code=401,
+            content={"ok": False, "code": "INVALID_INIT_DATA", "message": "Invalid Telegram init data."},
+        )
+    audio = form.get("audio")
+    if audio is None or not hasattr(audio, "read"):
+        return JSONResponse(
+            status_code=400,
+            content={"ok": False, "code": "EMPTY_AUDIO", "message": "Audio is required."},
+        )
+    audio_bytes = await audio.read(5 * 1024 * 1024 + 1)
+    try:
+        async with async_session_maker() as session:
+            return await VoicePracticeService(session).score_pronunciation(
+                telegram_id,
+                target=str(form.get("target") or ""),
+                audio_bytes=audio_bytes,
+                filename=str(getattr(audio, "filename", None) or "voice.webm"),
+                language=str(form.get("language") or ""),
+                level=str(form.get("level") or ""),
             )
     except VoicePracticeError as error:
         return _voice_practice_error(error)

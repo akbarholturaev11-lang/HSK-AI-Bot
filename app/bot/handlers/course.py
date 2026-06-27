@@ -49,6 +49,7 @@ from app.bot.keyboards.course_miniapp import (
     course_homework_miniapp_keyboard,
     course_quiz_miniapp_keyboard,
     course_study_miniapp_keyboard,
+    course_v3_miniapp_keyboard,
     course_vocab_stroke_order_keyboard,
 )
 
@@ -160,12 +161,7 @@ async def send_course_miniapp_entry(
 
     await respond(
         course_miniapp_entry_text(lang),
-        reply_markup=course_study_miniapp_keyboard(
-            lang,
-            level=level or (getattr(user, "level", None) if user else None),
-            lesson=lesson,
-            tab=tab,
-        ),
+        reply_markup=course_v3_miniapp_keyboard(lang),
         parse_mode="HTML",
     )
 
@@ -999,11 +995,7 @@ async def run_course_entry_flow(
     try:
         await respond(
             open_text.get(lang, open_text["ru"]),
-            reply_markup=course_study_miniapp_keyboard(
-                lang,
-                level=getattr(current_lesson, "level", None) or getattr(progress, "level", None) or user.level,
-                lesson=getattr(current_lesson, "lesson_order", None),
-            ),
+            reply_markup=course_v3_miniapp_keyboard(lang),
             parse_mode="HTML",
         )
         return

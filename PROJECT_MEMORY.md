@@ -207,6 +207,107 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-27 — Legacy V2 Mini App removed, bot opens Course v3, subscription paywall rewritten
+
+Changed:
+- Removed the legacy V2 course Mini App surface and its assets: `study.html`,
+  `study-v2.js`, `study-v2.css`, `course-miniapp-v2.js`, `voice-practice.html`,
+  `stroke-order.html`, `hsk1.html`..`hsk4.html`, `subscription-preview.html`.
+  The active course experience is now Course v3 (`course-v3.html` + `course_v3_*`).
+- Bot Course entry points now open Course v3: `send_course_miniapp_entry()` and
+  `run_course_entry_flow()` use the new `course_v3_miniapp_keyboard(lang)` /
+  `course_v3_miniapp_url()` (opens `course-v3.html`) instead of `study.html`.
+- `subscription.html` rebuilt as a compact Course v3-styled paywall (~1422 -> ~341
+  lines): plan picker (1_month / 10_days), payment method, discount block.
+- Subscription entry analytics gained Course v3 sources: `v3_paywall`,
+  `v3_locked_lesson`, `v3_level_up` (and `v3_profile` relabeled). Admin control
+  Mini App (`admin-control.html`) now shows an "Obuna manbalari" table via the
+  existing `/api/admin-miniapp/sub-entry-stats` endpoint.
+- `course_v3_voice.html` AI Voice character moods/visuals updated (UI only).
+
+Why:
+- Course fully moved to V3; the old V2 Mini App and its duplicate paywall/voice
+  pages were dead weight and confused the entry flow.
+
+Files touched:
+- `app/bot/handlers/course.py`, `app/bot/keyboards/course_miniapp.py`,
+  `app/bot/utils/course_miniapp.py`
+- `app/services/subscription_entry_analytics_service.py`, `app/static/admin-control.html`
+- `app/static/subscription.html`, `app/static/course_v3_voice.html`
+- Deleted: `app/static/{study.html,study-v2.js,study-v2.css,course-miniapp-v2.js,voice-practice.html,stroke-order.html,hsk1.html,hsk2.html,hsk3.html,hsk4.html,subscription-preview.html}`
+
+Risk:
+- No payment/subscription/access backend rules changed; only the entry keyboard
+  target and the paywall frontend.
+- Bug fixed during review: `subscription.html` plan render had a stray `)` that
+  broke the entire inline script (paywall would not render); corrected so the
+  popular-plan `pop` class concatenates cleanly.
+- Legacy bot code still references the deleted `study.html` (course challenge
+  notifications, `course_study_miniapp_keyboard`) and `stroke-order.html`
+  (`course_vocab_stroke_order_keyboard`), but these paths are only reachable from
+  the removed V2 frontend / old in-chat course steps, so there is no live 404 in
+  the V3 flow. Follow-up: repoint or remove those legacy references.
+- `hsk-lugat.html` `goBackToStudy()` has a dead `study.html` branch; the dictionary
+  is only opened from `course-v3.html` with `?theme=light`, so the live path always
+  returns to `course-v3.html`.
+
+### 2026-06-27 — Course v3 real pronunciation (microphone) scoring
+
+Changed:
+- Replaced the mocked random-score pronunciation checks with real microphone + server speech-to-text scoring in all course v3 sections that need a mic.
+- Added `VoicePracticeService.score_pronunciation()` and `POST /api/voice-practice/pronounce`: verifies Telegram initData, gates paid users through the existing AI usage budget, transcribes audio via `transcribe_voice_with_usage`, and scores by CJK character match against the target word (`score>=60` passes). Usage recorded with source `voice_practice_pronounce`.
+- `course_v3_pronunciation.html` (standalone Talaffuz mashqi) and the in-lesson `pronunciation` card in `course-v3.html` now record with `MediaRecorder`/`getUserMedia` and call the new endpoint instead of `Math.random()`. UZ/RU/TJ status/error strings added.
+- AI Voice (`course_v3_voice.html`) already used a real mic and was left unchanged.
+
+Why:
+- The two pronunciation exercises only had the mic UI; they never opened the microphone and returned a fake random score.
+
+Files touched:
+- `app/services/voice_practice_service.py`
+- `app/main.py`
+- `app/static/course_v3_pronunciation.html`
+- `app/static/course-v3.html`
+
+Risk:
+- No payment/subscription/access rules changed. Pronunciation scoring shares the existing AI budget gate for paid users.
+- Scoring is character-match from STT, not per-syllable tone analysis. In-lesson failed attempts do NOT cost a heart and always allow continue (no soft-lock).
+- Needs real Telegram WebView smoke test (mic permission + initData + OpenAI key) after deploy; browser preview returns 401 without initData.
+
+### 2026-06-27 — Course v3 HSK exams functional (Test markazi)
+
+Changed:
+- Course v3 Test markazi (`course_v3_test.html`) HSK 1-4 imtihonlari endi real
+  ishlaydi. Avval kartochkalar har doim "Material tayyorlanmoqda" bo'sh holatini
+  ko'rsatardi (savol fayllari yo'q edi).
+- Added per-level exam material files `app/static/course_v3_data/exams/hsk{1..4}.json`
+  (schema_version 1; `sections` → listening/reading/writing; question types
+  `audio_truefalse`, `audio_choice`, `text_choice`; multilingual uz/ru/tj).
+- `course_v3_test.html` now loads that JSON and runs a real exam: section-grouped
+  questions, TTS playback (`speak()`, `lang=zh-CN`) for listening, client-side
+  grading, and a per-section result screen (reuses placement `.pl`/`.opt`/`.res` UI).
+- Added route `/course_v3_data/exams/{filename}` in `app/main.py` (filename
+  whitelisted to `hsk[1-4].json`).
+- Hub exam cards now show real question/duration counts (14/12/12/12) instead of
+  placeholder 40/60/80/100.
+
+Why:
+- HSK exam cards were dead (always empty state); the interface existed but the
+  question material/runner did not.
+
+Files touched:
+- `app/static/course_v3_data/exams/hsk1.json` .. `hsk4.json` (new)
+- `app/static/course_v3_test.html`
+- `app/main.py`
+
+Risk:
+- Frontend + static data only; payment/subscription/progress logic unchanged.
+- Exam result is client-side and NOT persisted to the server (like placement);
+  add an endpoint if admin stats need it.
+- Listening uses browser TTS; if device has no zh-CN voice, audio may be silent
+  but option text still shows.
+- Current scope is a simplified practice exam (~12-14 questions/level), not the
+  full 40-100 question real HSK.
+
 ### 2026-06-26 — Course v3 static lesson data files
 
 Changed:

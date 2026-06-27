@@ -49,6 +49,9 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 .done p{font-size:14px;color:var(--ink2);margin:6px 0 0}
 .done h3{font-size:21px;font-weight:500;margin:6px 0 0}
 .dchar{width:130px;height:130px;margin:0 auto}
+.corr{text-align:left;margin-top:14px;max-height:148px;overflow-y:auto}
+.corr .ct{font-size:12px;font-weight:600;color:var(--cin2);margin-bottom:6px}
+.corr .ci{font-size:13px;color:var(--ink);background:var(--cinbg);border:1px solid rgba(194,64,58,.18);border-radius:10px;padding:8px 10px;margin-bottom:6px;line-height:1.4}
 </style>
 </head>
 <body>
@@ -77,16 +80,23 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
   <div class="done" id="done"><div class="dcard">
     <div class="dchar" id="dchar"></div>
     <h3 id="dh"></h3><p id="dp"></p>
+    <div class="corr" id="dcorr"></div>
     <button class="b" onclick="reset()"><i class="ti ti-refresh"></i> <span id="db"></span></button>
     <button class="b2" onclick="goBack()" id="db2"></button>
+  </div></div>
+  <div class="done" id="paywall"><div class="dcard">
+    <div class="dchar" id="pwchar"></div>
+    <h3 id="pwh"></h3><p id="pwp"></p>
+    <button class="b" onclick="goPremium()"><i class="ti ti-crown"></i> <span id="pwb"></span></button>
+    <button class="b2" onclick="goBack()" id="pwb2"></button>
   </div></div>
 </div>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{speaking:"Говорит…",listening:"Слушает…",analyzing:"Анализирует…",hint:"",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",doneSub:"7 реплик · новые слова · +40 XP",again:"Ещё разговор",exit:"Выйти"},
-  uz:{speaking:"Gapiryapti…",listening:"Tinglayapti…",analyzing:"Tahlil…",hint:"",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",doneSub:"7 javob · yangi so'zlar · +40 XP",again:"Yana suhbat",exit:"Chiqish"},
-  tj:{speaking:"Сухан мегӯяд…",listening:"Гӯш мекунад…",analyzing:"Таҳлил…",hint:"",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",doneSub:"7 ҷавоб · калимаҳои нав · +40 XP",again:"Боз сӯҳбат",exit:"Баромадан"}}[LANG];
+var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analyzing:"Анализирую…",connecting:"Соединение…",tapStart:"Нажмите микрофон и говорите",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",replWord:"реплик",corrTitle:"Что подправить",again:"Ещё разговор",exit:"Выйти",micDeny:"Разрешите доступ к микрофону в настройках Telegram.",sendErr:"Ошибка. Попробуйте ещё раз.",tooShort:"Слишком коротко. Скажите ещё раз.",noSupport:"Запись голоса недоступна на этом устройстве.",startBot:"Сначала откройте бота и нажмите /start.",limitTitle:"Лимит достигнут",limitSub:"Бесплатный разговор использован. Откройте Premium для безлимита.",premiumBtn:"Открыть Premium"},
+  uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",tapStart:"Mikrofonni bosing va gapiring",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Limit tugadi",limitSub:"Bepul suhbat ishlatildi. Cheksiz uchun Premium oching.",premiumBtn:"Premium ochish"},
+  tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",tapStart:"Микрофонро пахш карда гап занед",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Лимит ба охир расид",limitSub:"Сӯҳбати ройгон истифода шуд. Барои бепоён Premium кушоед.",premiumBtn:"Кушодани Premium"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=voice"}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
@@ -114,29 +124,142 @@ function chr(mood,p){
   if(p==="li"){glass='<circle cx="79" cy="95" r="15" fill="none" stroke="#2C3A4A" stroke-width="2.6"/><circle cx="121" cy="95" r="15" fill="none" stroke="#2C3A4A" stroke-width="2.6"/><path d="M94 95 h12" stroke="#2C3A4A" stroke-width="2.6"/>';}
   return '<svg viewBox="0 0 200 210"><path d="M52 205 q-6 -60 18 -84 h60 q24 24 18 84 z" fill="#fff" stroke="#211D17" stroke-width="2.5"/><path d="M60 132 q40 20 80 0 l-6 20 q-34 16 -68 0 z" fill="'+scarf+'"/><path d="M128 150 l14 26 -16 -4 -4 -16 z" fill="'+scarf2+'"/><circle cx="64" cy="58" r="22" fill="#211D17"/><circle cx="136" cy="58" r="22" fill="#211D17"/><circle cx="64" cy="58" r="10" fill="#3a352f"/><circle cx="136" cy="58" r="10" fill="#3a352f"/><circle cx="100" cy="86" r="54" fill="#fff" stroke="#211D17" stroke-width="2.5"/><ellipse cx="79" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(-12 79 92)"/><ellipse cx="121" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(12 121 92)"/>'+eyes+glass+'<ellipse cx="100" cy="110" rx="8" ry="5.5" fill="#211D17"/>'+mouth+'</svg>';
 }
-var LINES=[
-  {zh:"你好！你叫什么名字？",py:"nǐ hǎo! nǐ jiào shénme míngzi?",tr:{uz:"Salom! Isming nima?",ru:"Привет! Как тебя зовут?",tj:"Салом! Номат чист?"}},
-  {zh:"很高兴认识你！你是哪国人？",py:"hěn gāoxìng rènshi nǐ! nǐ shì nǎ guó rén?",tr:{uz:"Tanishganimdan xursandman! Qaysi millatdansan?",ru:"Рад знакомству! Из какой ты страны?",tj:"Аз шиносоӣ шодам! Аз кадом кишварӣ?"}},
-  {zh:"你的中文很好！你学了多久了？",py:"nǐ de zhōngwén hěn hǎo! nǐ xué le duōjiǔ le?",tr:{uz:"Xitoy tiling zo'r! Qancha vaqtdan beri o'rganyapsan?",ru:"Твой китайский отличный! Как давно учишь?",tj:"Хитоии ту хуб аст! Чанд вақт боз меомӯзӣ?"}},
-  {zh:"太棒了！你为什么学中文？",py:"tài bàng le! nǐ wèishénme xué zhōngwén?",tr:{uz:"Ajoyib! Nega xitoy tilini o'rganyapsan?",ru:"Здорово! Почему учишь китайский?",tj:"Олӣ! Чаро хитоиро меомӯзӣ?"}},
-  {zh:"明白了。你喜欢中国吗？",py:"míngbai le. nǐ xǐhuan zhōngguó ma?",tr:{uz:"Tushundim. Xitoyni yoqtirasanmi?",ru:"Понятно. Тебе нравится Китай?",tj:"Фаҳмидам. Чин ба ту маъқул аст?"}},
-  {zh:"好的！今天到这里，下次见！",py:"hǎo de! jīntiān dào zhèlǐ, xià cì jiàn!",tr:{uz:"Yaxshi! Bugun shu yerda, keyingi safargacha!",ru:"Хорошо! На сегодня всё, до встречи!",tj:"Хуб! Имрӯз ҳамин, то дидор!"}}
-];
-var i=0,persona="bao";
-function setChar(m){document.getElementById("char").innerHTML=chr(m,persona);document.getElementById("char").className="charwrap"+(m==="talk"?" speaking":"")}
-function line(n){var Ln=LINES[n];document.getElementById("zh").textContent=Ln.zh;document.getElementById("py").textContent=Ln.py;document.getElementById("tr").textContent=tr(Ln.tr);document.getElementById("cnt").textContent="对话 "+(n+1)+" / 7"}
-// NOTE: voice is demo — AI speaks via browser zh-CN TTS, mic is simulated. Real STT/AI/TTS connects from server later.
-function aiTalk(){setChar("talk");document.getElementById("status").textContent=L.speaking;document.getElementById("dots").className="dots";document.getElementById("mic").classList.remove("rec");ring(persona==="li"?[523,659]:[587,740]);}
-function talk(){
-  setChar("listen");document.getElementById("status").textContent=L.listening;document.getElementById("mic").classList.add("rec");document.getElementById("dots").className="dots rec";
-  try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
-  setTimeout(function(){document.getElementById("mic").classList.remove("rec");document.getElementById("dots").className="dots";document.getElementById("status").textContent=L.analyzing;
-    setTimeout(function(){if(i>=LINES.length-1){endCall();return}i++;line(i);aiTalk()},650)},1500);
+/* ---- real backend wiring (STT + AI reply via /api/voice-practice) ---- */
+var $=function(id){return document.getElementById(id)};
+function initData(){return (tg&&tg.initData)?tg.initData:""}
+var PERS={bao:{role:"friend",voice:"female",name:L.baoName},li:{role:"teacher_li",voice:"male",name:L.liName}};
+var persona="bao";
+var ME={level:"hsk1",language:LANG,is_paid:false};
+var sess=null,turn=0,maxDialogs=7,corrections=[],busy=false,started=false;
+var mediaStream=null,mediaRecorder=null,chunks=[],autoStop=null;
+var MAX_REC_MS=20000,MIN_BYTES=1200;
+
+function setChar(m){$("char").innerHTML=chr(m,persona);$("char").className="charwrap"+(m==="talk"?" speaking":"")}
+function setStatus(t){$("status").textContent=t||""}
+function setDots(c){$("dots").className=c}
+function setMicRec(on){if(on)$("mic").classList.add("rec");else $("mic").classList.remove("rec")}
+function setCnt(){$("cnt").textContent="对话 "+Math.min(turn+1,maxDialogs)+" / "+maxDialogs}
+function showLine(zh,py,trx){$("zh").textContent=zh||"";$("py").textContent=py||"";$("tr").textContent=trx||""}
+function setName(){$("nm").textContent=PERS[persona].name}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
+function jr(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}})}
+
+function init(){
+  setName();setChar("talk");setStatus(L.connecting);setCnt();showLine("","",L.tapStart);
+  fetch("/api/voice-practice/me?initData="+encodeURIComponent(initData())).then(jr)
+    .then(function(o){if(o.ok&&o.j){ME.level=o.j.level||"hsk1";ME.language=o.j.language||LANG;ME.is_paid=!!o.j.is_paid}
+      setChar("happy");setStatus(L.tapStart);})
+    .catch(function(){setChar("happy");setStatus(L.tapStart)});
 }
-function swap(){persona=(persona==="bao"?"li":"bao");document.getElementById("nm").textContent=persona==="bao"?L.baoName:L.liName;aiTalk()}
-function endCall(){document.getElementById("dchar").innerHTML=chr("happy",persona);document.getElementById("dh").textContent=L.doneTitle;document.getElementById("dp").textContent=L.doneSub;document.getElementById("db").textContent=L.again;document.getElementById("db2").textContent=L.exit;document.getElementById("done").classList.add("on");ring([659,784,988]);}
-function reset(){i=0;document.getElementById("done").classList.remove("on");line(0);aiTalk()}
-line(0);aiTalk();
+
+function talk(){
+  if(busy)return;
+  if(!started){startSession();return;}
+  if(mediaRecorder&&mediaRecorder.state!=="inactive"){stopRecording();return;}
+  startRecording();
+}
+
+function startSession(){
+  busy=true;setStatus(L.connecting);setChar("talk");setDots("dots");
+  fetch("/api/voice-practice/session/start",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({initData:initData(),role:PERS[persona].role,level:ME.level,language:ME.language,voice:PERS[persona].voice})}).then(jr)
+   .then(function(o){busy=false;
+      if(!o.ok){onStartError(o);return;}
+      sess=o.j.session_id;maxDialogs=Number(o.j.max_dialogs)||7;turn=0;corrections=[];started=true;setCnt();
+      var op=o.j.opening_message||{};
+      showLine(op.chinese_reply||"",op.pinyin||"",op.translation||"");
+      setChar("talk");setStatus(L.speaking);speak(op.chinese_reply||"");ring([587,740]);
+      setTimeout(function(){if(started){setChar("happy");setStatus(L.tapStart);setDots("dots")}},1100);
+   }).catch(function(){busy=false;setChar("happy");setStatus(L.sendErr)});
+}
+function onStartError(o){
+  setChar("happy");setDots("dots");
+  var code=o.j&&o.j.code;
+  if(code==="LIMIT_EXCEEDED"||o.status===403){showPaywall();return;}
+  if(code==="USER_NOT_FOUND"){setStatus(L.startBot);return;}
+  setStatus(L.sendErr);
+}
+
+function pickMime(){var c=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/aac","audio/ogg;codecs=opus"];
+  if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return"";
+  for(var i=0;i<c.length;i++){if(MediaRecorder.isTypeSupported(c[i]))return c[i]}return""}
+function startRecording(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){setStatus(L.noSupport);return;}
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    mediaStream=stream;var mime=pickMime();chunks=[];
+    var opts={audioBitsPerSecond:32000};if(mime)opts.mimeType=mime;
+    try{mediaRecorder=new MediaRecorder(stream,opts)}catch(_){mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream)}
+    mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size>0)chunks.push(e.data)};
+    mediaRecorder.onstop=onStopped;mediaRecorder.start(250);
+    try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
+    setChar("listen");setStatus(L.listening);setMicRec(true);setDots("dots rec");
+    clearTimeout(autoStop);autoStop=setTimeout(stopRecording,MAX_REC_MS);
+  }).catch(function(){setStatus(L.micDeny)});
+}
+function stopRecording(){clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){setMicRec(false);setDots("dots");setChar("talk");setStatus(L.analyzing);mediaRecorder.stop();}}
+function stopHard(){clearTimeout(autoStop);try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;}
+function onStopped(){
+  var blob=new Blob(chunks,{type:(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm"});
+  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
+  if(blob.size<MIN_BYTES){setChar("happy");setStatus(L.tooShort);setDots("dots");return;}
+  busy=true;setChar("talk");setStatus(L.analyzing);setDots("dots");
+  var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice.webm");
+  fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
+    .then(function(o){busy=false;if(!o.ok){onMsgError(o);return;}renderReply(o.j)})
+    .catch(function(){busy=false;setChar("happy");setStatus(L.sendErr)});
+}
+function onMsgError(o){
+  setChar("happy");setDots("dots");
+  var code=o.j&&o.j.code;
+  if(code==="LIMIT_EXCEEDED"){showPaywall();return;}
+  if(code==="SESSION_NOT_FOUND"){started=false;sess=null;setStatus(L.sendErr);return;}
+  setStatus(L.sendErr);
+}
+function renderReply(res){
+  if(!res){setStatus("");return;}
+  if(res.correction)corrections.push(res.correction);
+  turn=Number(res.turn_count)||turn+1;if(res.max_dialogs)maxDialogs=Number(res.max_dialogs);setCnt();
+  showLine(res.chinese_reply||"",res.pinyin||"",res.translation||"");
+  setChar("talk");setStatus(L.speaking);speak(res.chinese_reply||"");ring(persona==="li"?[523,659]:[587,740]);
+  if(res.session_should_end){setTimeout(endCall,1300);return;}
+  setTimeout(function(){if(started){setChar("happy");setStatus(L.tapStart);setDots("dots")}},1100);
+}
+function endCall(){
+  if(!started||!sess){showDone(turn,0,corrections);return;}
+  stopHard();var sid=sess;started=false;sess=null;
+  fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
+   .then(function(j){var rw=j&&j.reward||{};var xp=rw.xp_awarded||rw.xp||0;showDone((j&&j.message_count)||turn,xp,(j&&j.corrections)||corrections)})
+   .catch(function(){showDone(turn,0,corrections)});
+}
+function showDone(count,xp,corrs){
+  $("dchar").innerHTML=chr("happy",persona);
+  $("dh").textContent=L.doneTitle;
+  $("dp").textContent=count+" "+L.replWord+(xp?(" · +"+xp+" XP"):"");
+  var html="";if(corrs&&corrs.length){html='<div class="ct">'+L.corrTitle+'</div>';corrs.forEach(function(c){if(String(c||"").trim())html+='<div class="ci">'+esc(c)+'</div>'})}
+  $("dcorr").innerHTML=html;
+  $("db").textContent=L.again;$("db2").textContent=L.exit;
+  $("done").classList.add("on");ring([659,784,988]);
+}
+function showPaywall(){
+  $("pwchar").innerHTML=chr("happy",persona);
+  $("pwh").textContent=L.limitTitle;$("pwp").textContent=L.limitSub;
+  $("pwb").textContent=L.premiumBtn;$("pwb2").textContent=L.exit;
+  $("paywall").classList.add("on");
+}
+function goPremium(){location.href="/subscription.html?lang="+LANG}
+function reset(){
+  $("done").classList.remove("on");started=false;sess=null;turn=0;corrections=[];
+  setName();setChar("happy");setStatus(L.tapStart);setDots("dots");showLine("","",L.tapStart);setCnt();
+}
+function swap(){
+  if(busy)return;
+  stopHard();
+  if(sess){fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),session_id:sess})}).catch(function(){})}
+  persona=(persona==="bao"?"li":"bao");started=false;sess=null;turn=0;corrections=[];
+  setName();setChar("happy");setStatus(L.tapStart);setDots("dots");showLine("","",L.tapStart);setCnt();
+}
+init();
 </script>
 </body>
 </html>

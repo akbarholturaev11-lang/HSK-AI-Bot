@@ -55,6 +55,11 @@ h1{font-size:23px}
 .pl .mrow.rec .ml{color:var(--cin2);font-weight:500}
 .pl .cta{width:100%;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
 .pl .ghost{width:100%;background:none;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:13px;font-family:inherit;font-size:14px;font-weight:500}
+.pl .abtn{width:84px;height:84px;border-radius:50%;background:var(--cin);border:none;color:#fff;font-size:34px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.pl .ahint{font-size:13px;color:var(--ink2);margin-top:2px}
+.pl .qzh{font-size:26px;line-height:1.3;margin-top:8px}
+.pl .opt small{display:block;font-size:12px;color:var(--ink2);font-weight:400;margin-top:2px}
+.pl .opt .py{font-size:12px;color:var(--cin2);font-weight:400;margin-left:4px}
 </style>
 </head>
 <body>
@@ -73,6 +78,7 @@ h1{font-size:23px}
     <button onclick="showHub()"><i class="ti ti-arrow-left"></i> <span id="e-back"></span></button>
   </div>
   <div class="pl" id="placement"></div>
+  <div class="pl" id="exam"></div>
 </div>
 <script>
 var params=new URLSearchParams(location.search||"");
@@ -80,14 +86,18 @@ var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru
 var L={ru:{title:"Тест-центр",sub:"Проверьте себя в формате реального HSK",pTitle:"Не знаете свой уровень?",pSub:"Пройдите короткий тест — мы определим подходящий уровень HSK.",pBtn:"Тест на уровень · ~10 мин",exHead:"Экзамены HSK",eTitle:"Материал готовится",eSub:"Экзаменационные вопросы будут добавлены позже и подгружены из заданного источника.",eBack:"К списку",listen:"听力 Аудир.",read:"阅读 Чтение",write:"书写 Письмо",q:"вопросов",min:"мин",start:"Начать"},
   uz:{title:"Test markazi",sub:"O'zingizni haqiqiy HSK formatida sinang",pTitle:"Darajangizni bilmaysizmi?",pSub:"Qisqa testdan o'ting — sizga mos HSK darajasini aytamiz.",pBtn:"Daraja aniqlash testi · ~10 daq",exHead:"HSK imtihonlari",eTitle:"Material tayyorlanmoqda",eSub:"Imtihon savollari keyinroq qo'shiladi va belgilangan manbadan yuklanadi.",eBack:"Ro'yxatga",listen:"听力 Tinglash",read:"阅读 O'qish",write:"书写 Yozish",q:"savol",min:"daq",start:"Boshlash"},
   tj:{title:"Маркази тест",sub:"Худро дар формати HSK санҷед",pTitle:"Сатҳи худро намедонед?",pSub:"Тести кӯтоҳро гузаред — сатҳи мувофиқи HSK-ро муайян мекунем.",pBtn:"Тести муайянкунии сатҳ",exHead:"Имтиҳонҳои HSK",eTitle:"Мавод омода мешавад",eSub:"Саволҳои имтиҳон баъдтар илова ва аз манбаи муайян бор карда мешаванд.",eBack:"Ба рӯйхат",listen:"听力 Шунидан",read:"阅读 Хондан",write:"书写 Навиштан",q:"савол",min:"дақ",start:"Оғоз"}}[LANG];
+var EM={ru:{tfTrue:"Верно",tfFalse:"Неверно",listen:"Прослушать",q:"Вопрос",of:"из",result:"Результат",passed:"Тест пройден!",failed:"Пока не пройден",passSub:"Вы готовы к уровню HSK ",failSub:"Продолжайте подготовку к HSK ",again:"Пройти заново",toList:"К списку экзаменов",sec:{listening:"Аудирование",reading:"Чтение",writing:"Письмо"}},
+  uz:{tfTrue:"To'g'ri",tfFalse:"Noto'g'ri",listen:"Tinglash",q:"Savol",of:"/",result:"Natija",passed:"Test topshirildi!",failed:"Hozircha o'tilmadi",passSub:"Siz HSK darajasiga tayyorsiz: HSK ",failSub:"Tayyorgarlikni davom ettiring: HSK ",again:"Qayta topshirish",toList:"Imtihonlar ro'yxatiga",sec:{listening:"Tinglash",reading:"O'qish",writing:"Yozish"}},
+  tj:{tfTrue:"Дуруст",tfFalse:"Нодуруст",listen:"Шунидан",q:"Савол",of:"аз",result:"Натиҷа",passed:"Тест супорида шуд!",failed:"Ҳоло гузаронида нашуд",passSub:"Шумо ба сатҳи HSK тайёред: HSK ",failSub:"Омодагиро давом диҳед: HSK ",again:"Аз нав супоридан",toList:"Ба рӯйхати имтиҳонҳо",sec:{listening:"Шунидан",reading:"Хондан",writing:"Навиштан"}}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function $(id){return document.getElementById(id)}
 var EXAMS=[
-  {lvl:"1",q:40,min:40,tags:["listen","read"]},
-  {lvl:"2",q:60,min:55,tags:["listen","read"]},
-  {lvl:"3",q:80,min:90,tags:["listen","read","write"]},
-  {lvl:"4",q:100,min:105,tags:["listen","read","write"]}
+  {lvl:"1",q:14,min:25,tags:["listen","read"]},
+  {lvl:"2",q:12,min:30,tags:["listen","read"]},
+  {lvl:"3",q:12,min:35,tags:["listen","read","write"]},
+  {lvl:"4",q:12,min:40,tags:["listen","read","write"]}
 ];
 function renderHub(){
   $("t-title").textContent=L.title;$("t-sub").textContent=L.sub;
@@ -99,17 +109,80 @@ function renderHub(){
   }).join("");
   $("e-title").textContent=L.eTitle;$("e-sub").textContent=L.eSub;$("e-back").textContent=L.eBack;
 }
-function showHub(){$("hub").style.display="block";$("empty").classList.remove("on");$("placement").classList.remove("on")}
-// Exam/placement material is loaded from a defined source (e.g. /course_v3_data/exams/{level}.json).
-// Until that material exists, show the prepared empty state. Interface is complete; content plugs in later.
+function showHub(){$("hub").style.display="block";$("empty").classList.remove("on");$("placement").classList.remove("on");$("exam").classList.remove("on")}
 function openExam(which){
   if(which==="placement"){return runPlacement();}
   fetch("/course_v3_data/exams/"+which+".json").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(data){
-    // TODO: run exam with `data` when material is added
-    showEmpty();
+    if(!data||!data.sections||!data.sections.length)return showEmpty();
+    runExam(data);
   }).catch(function(){showEmpty()});
 }
 function showEmpty(){$("hub").style.display="none";$("empty").classList.add("on")}
+
+/* ---- HSK exam runner (loads section/question material from /course_v3_data/exams/{level}.json) ---- */
+var EXD=null,EQ=[],ei=0,eans=[];
+function esc(s){return String(s==null?"":s).replace(/'/g,"\\'").replace(/"/g,"&quot;")}
+function runExam(data){
+  EXD=data;EQ=[];ei=0;eans=[];
+  (data.sections||[]).forEach(function(sec){
+    (sec.questions||[]).forEach(function(q){EQ.push({q:q,key:sec.key})});
+  });
+  if(!EQ.length)return showEmpty();
+  $("hub").style.display="none";$("placement").classList.remove("on");$("exam").classList.add("on");
+  exRender();
+}
+function exRender(){
+  var item=EQ[ei],q=item.q;
+  var lv=String(EXD.level||"").replace("hsk","").toUpperCase();
+  var lead=EM.sec[item.key]||item.key;
+  var card="",opts="";
+  if(q.type==="audio_truefalse"||q.type==="audio_choice"){
+    card='<div class="qcard"><button class="abtn" onclick="speak(\''+esc(q.audio_text)+'\')"><i class="ti ti-volume"></i></button>'
+      +(q.type==="audio_truefalse"?'<div class="qzh han">'+(q.prompt_zh||"")+'</div>':'')
+      +'<div class="ahint">'+EM.listen+'</div></div>';
+    setTimeout(function(){speak(q.audio_text)},300);
+  }else{
+    card='<div class="qcard"><div class="qzh han">'+(q.stem_zh||"")+'</div></div>';
+  }
+  if(q.type==="audio_truefalse"){
+    opts=[{t:EM.tfTrue,ok:q.answer===true},{t:EM.tfFalse,ok:q.answer===false}].map(function(o,k){
+      return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="exPick('+k+',this)"><span class="k">'+(k===0?'✓':'✕')+'</span>'+o.t+'</button>';
+    }).join("");
+  }else{
+    opts=(q.options||[]).map(function(o,k){
+      var lab=o.label?(o.label[LANG]||o.label.ru||""):"";
+      var py=o.py?'<span class="py">'+o.py+'</span>':"";
+      return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="exPick('+k+',this)"><span class="k">'+"ABCD"[k]+'</span><span>'+(o.zh||"")+py+(lab?'<small>'+lab+'</small>':'')+'</span></button>';
+    }).join("");
+  }
+  var stem=q.stem?(q.stem[LANG]||q.stem.ru||""):"";
+  $("exam").innerHTML='<div class="ptop"><button class="ix2" onclick="exitExam()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(ei/EQ.length*100)+'%"></i></div><span class="lvtag">HSK '+lv+'</span></div>'
+    +'<div class="qlead">'+lead+' · '+EM.q+' '+(ei+1)+' '+EM.of+' '+EQ.length+'</div>'
+    +card
+    +(stem?'<div class="qlead" style="text-align:center;margin-top:-6px">'+stem+'</div>':'')
+    +opts;
+}
+function exPick(k,el){
+  document.querySelectorAll("#exam .opt").forEach(function(o){o.style.pointerEvents="none"});el.classList.add("sel");
+  eans[ei]=el.getAttribute("data-ok")==="1";
+  try{window.speechSynthesis.cancel()}catch(e){}
+  setTimeout(function(){ei++;if(ei>=EQ.length){exResult()}else{exRender()}},360);
+}
+function exitExam(){try{window.speechSynthesis.cancel()}catch(e){}showHub()}
+function exResult(){
+  var per={},order=[];
+  EQ.forEach(function(item,k){var key=item.key;if(!per[key]){per[key]=[0,0];order.push(key)}per[key][1]++;if(eans[k])per[key][0]++});
+  var tot=0,cor=0;EQ.forEach(function(it,k){tot++;if(eans[k])cor++});
+  var pct=tot?Math.round(cor/tot*100):0;
+  var pass=pct>=(EXD.pass_score||60);
+  var lv=String(EXD.level||"").replace("hsk","").toUpperCase();
+  var meter=order.map(function(key){var p=per[key][1]?Math.round(per[key][0]/per[key][1]*100):0;return '<div class="mrow"><span class="ml">'+(EM.sec[key]||key)+'</span><span class="mb"><i style="width:'+p+'%"></i></span><span class="mv">'+p+'%</span></div>'}).join("");
+  $("exam").innerHTML='<div class="res"><div class="lvl"><small>'+EM.result+'</small><b>'+pct+'%</b></div>'
+    +'<h3>'+(pass?EM.passed:EM.failed)+'</h3><p>'+(pass?EM.passSub:EM.failSub)+lv+'.</p>'
+    +'<div class="meter">'+meter+'</div>'
+    +'<button class="cta" onclick="runExam(EXD)"><i class="ti ti-refresh"></i> '+EM.again+'</button>'
+    +'<button class="ghost" onclick="showHub()">'+EM.toList+'</button></div>';
+}
 
 /* ---- Placement test (sample questions; real adaptive bank from a defined source later) ---- */
 var PT={ru:{lead:"Выберите значение",rec:"Рекомендуем",recSub:"Вы хорошо освоили нижние уровни. Лучше начать с HSK ",start:"Начать курс HSK ",retake:"Пройти заново",lvl:"HSK"},

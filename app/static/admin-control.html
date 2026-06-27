@@ -287,6 +287,19 @@
           <div id="statsGrid" class="grid stats-grid"></div>
         </div>
 
+        <div class="section" style="margin-bottom:16px">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">💎 Obuna manbalari</h2>
+              <p class="section-note">Qaysi bo'limdan obuna sahifasiga o'tganlar (hafta / jami)</p>
+            </div>
+            <button class="mini-link" onclick="loadSubEntryStats()">Yangilash</button>
+          </div>
+          <div id="subEntryStats" style="overflow-x:auto">
+            <p class="section-note" style="padding:12px 0">Yuklanmoqda…</p>
+          </div>
+        </div>
+
         <div class="grid dashboard-wide">
           <div class="section">
             <div class="section-head">
@@ -780,6 +793,31 @@
       }
     }
 
+    async function loadSubEntryStats(){
+      $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Yuklanmoqda…</p>';
+      try{
+        const d = await apiPost("/api/admin-miniapp/sub-entry-stats", {});
+        if(!d.ok || !d.rows || !d.rows.length){
+          $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Ma\'lumot yo\'q</p>';
+          return;
+        }
+        $("subEntryStats").innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead><tr style="text-align:left;color:var(--muted,#888)">
+            <th style="padding:6px 8px;font-weight:600">Manba</th>
+            <th style="padding:6px 8px;text-align:right;font-weight:600">Hafta<br><small>kirish / user</small></th>
+            <th style="padding:6px 8px;text-align:right;font-weight:600">Jami<br><small>kirish / user</small></th>
+          </tr></thead>
+          <tbody>${d.rows.map((r,i) => `<tr style="border-top:1px solid var(--line,#eee);background:${i%2===0?"transparent":"rgba(0,0,0,.02)"}">
+            <td style="padding:7px 8px;font-weight:500">${escapeHtml(r.label)}</td>
+            <td style="padding:7px 8px;text-align:right"><b>${r.total_week}</b> / ${r.unique_week}</td>
+            <td style="padding:7px 8px;text-align:right">${r.total_all} / ${r.unique_all}</td>
+          </tr>`).join("")}</tbody>
+        </table>`;
+      }catch(e){
+        $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Xatolik</p>';
+      }
+    }
+
     function renderAll(){
       renderStats();
       renderSegments();
@@ -790,6 +828,7 @@
       renderPayments();
       renderModules();
       renderMonitor();
+      loadSubEntryStats();
     }
 
     document.addEventListener("click", (event) => {

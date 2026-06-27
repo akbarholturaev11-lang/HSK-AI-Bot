@@ -67,15 +67,32 @@ button:active{transform:scale(.96)}
 .writer-pos{font-size:11px;color:var(--text2);font-weight:700;letter-spacing:.2px}
 .writer-pos.hidden{display:none}
 .writer-strokes{font-size:12.5px;color:var(--ink);font-weight:800;letter-spacing:.2px;margin-top:1px}
-.char-box-lg{position:relative;width:208px;height:208px;margin-top:10px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);overflow:hidden;flex-shrink:0}
+.char-box-lg{position:relative;width:248px;height:248px;margin-top:10px;border-radius:20px;background:var(--bg2);border:1px solid var(--border);overflow:hidden;flex-shrink:0}
 .char-box-lg .grid-bg{position:absolute;inset:0;width:100%;height:100%}
 .char-box-lg .grid-bg line{stroke:rgba(255,255,255,.09);stroke-width:1}
 .char-box-lg .writer-target{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 .char-box-lg .plain-char{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--cjk);font-size:64px;font-weight:600;color:var(--text2)}
 .writer-controls{display:flex;align-items:center;gap:16px;margin-top:16px}
-.ctrl-btn{width:44px;height:44px;border-radius:50%;background:var(--ink-dim);color:var(--ink);font-size:16px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(214,69,58,.34)}
-.ctrl-btn.ctrl-main{width:56px;height:56px;font-size:19px;background:var(--ink);color:#fff;border-color:var(--ink)}
+.ctrl-btn{width:48px;height:48px;border-radius:50%;background:var(--ink-dim);color:var(--ink);font-size:17px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(214,69,58,.34)}
+.ctrl-btn.ctrl-main{width:60px;height:60px;font-size:20px;background:var(--ink);color:#fff;border-color:var(--ink)}
 .ctrl-btn:active{transform:scale(.94)}
+.next-word-btn{margin-top:14px;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 12px;border-radius:14px;background:var(--bg2);border:1px solid var(--border2);cursor:pointer;transition:background .14s}
+.next-word-btn:active{background:var(--bg3)}
+.next-word-btn .nw-char{font-family:var(--cjk);font-size:26px;font-weight:700;color:var(--text);line-height:1}
+.next-word-btn .nw-info{display:flex;flex-direction:column;gap:1px}
+.next-word-btn .nw-pin{font-size:11px;color:var(--accent);font-weight:700}
+.next-word-btn .nw-lbl{font-size:10px;color:var(--text2);font-weight:600}
+.next-word-btn .nw-arr{font-size:16px;color:var(--text2);margin-left:2px}
+.practice-block{margin-top:26px;width:100%;max-width:360px}
+.practice-block .pb-head{font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--text2);font-weight:800;margin:0 4px 10px}
+.practice-btn{width:100%;display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:14px;background:var(--bg2);border:1px solid var(--border);cursor:pointer;transition:background .14s;margin-bottom:10px;text-align:left}
+.practice-btn:last-child{margin-bottom:0}
+.practice-btn:active{background:var(--bg3)}
+.practice-btn .pb-ic{width:40px;height:40px;border-radius:11px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.practice-btn .pb-tx{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.practice-btn .pb-t{font-size:14px;font-weight:700;color:var(--text)}
+.practice-btn .pb-s{font-size:11px;color:var(--text2);font-weight:600}
+.practice-btn .pb-arr{font-size:18px;color:var(--text2);flex-shrink:0}
 
 .pinyin-row{display:flex;align-items:center;gap:10px;margin-top:22px}
 .pinyin{font-size:22px;font-weight:700;color:var(--accent)}
@@ -96,6 +113,52 @@ button:active{transform:scale(.96)}
 .grammar-formula{margin-top:7px;font-size:12.5px;color:var(--accent);font-weight:700;line-height:1.45}
 .grammar-rule{margin-top:8px;font-size:12.5px;color:var(--text2);line-height:1.55}
 .grammar-example{margin-top:10px;border-top:1px solid rgba(148,163,184,.16);padding-top:10px}
+/* ---- memo structured sections (data-driven, optional) ---- */
+.memo-wrap{width:100%;max-width:360px;margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.memo-wrap:empty{display:none}
+.memo-sec{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px 16px}
+.memo-sec .ms-h{font-size:10.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--text2);font-weight:800;margin-bottom:10px}
+.memo-parts{display:flex;gap:8px;flex-wrap:wrap}
+.memo-part{flex:1;min-width:92px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px 8px;text-align:center}
+.memo-part .mp-h{font-family:var(--cjk);font-size:26px;font-weight:700;color:var(--text);line-height:1}
+.memo-part .mp-p{font-size:11px;color:var(--accent);font-weight:700;margin-top:5px}
+.memo-part .mp-m{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.35}
+.memo-roles{display:flex;flex-direction:column;gap:8px}
+.memo-role{display:flex;gap:9px;align-items:flex-start}
+.memo-role .mr-k{font-size:9.5px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;color:var(--accent);background:var(--accent-dim);padding:5px 8px;border-radius:8px;flex-shrink:0;min-width:84px;text-align:center}
+.memo-role .mr-v{font-size:13px;color:var(--text);line-height:1.45;padding-top:1px}
+.memo-role .mr-v b{font-family:var(--cjk);font-weight:700}
+.memo-signal{font-size:12px;color:var(--text2);line-height:1.5;margin-top:9px}
+.memo-disc{font-size:11px;color:var(--text2);opacity:.82;font-style:italic;line-height:1.45;margin-top:8px}
+.memo-hooks{display:flex;flex-direction:column;gap:7px}
+.memo-hook{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text);line-height:1.45}
+.memo-hook .mh-d{color:var(--accent);flex-shrink:0;font-weight:800}
+.memo-conf{display:flex;flex-direction:column;gap:9px}
+.memo-conf-row{display:flex;gap:11px;align-items:flex-start}
+.memo-conf-row .mc-h{font-family:var(--cjk);font-size:24px;font-weight:700;color:var(--text);line-height:1;min-width:28px;text-align:center}
+.memo-conf-row .mc-tx{flex:1;min-width:0}
+.memo-conf-row .mc-p{font-size:11px;color:var(--accent);font-weight:700}
+.memo-conf-row .mc-d{font-size:12px;color:var(--text2);line-height:1.42;margin-top:2px}
+.memo-words{display:flex;flex-direction:column;gap:8px}
+.memo-word{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.memo-word .mw-w{font-family:var(--cjk);font-size:16px;font-weight:700;color:var(--text)}
+.memo-word .mw-p{font-size:11px;color:var(--accent);font-weight:700}
+.memo-word .mw-m{font-size:12px;color:var(--text2)}
+/* ---- light theme (course-v3 ink-cinnabar) — opt-in via ?theme=light ---- */
+html.theme-light{color-scheme:light;
+  --bg:#FBF7EF;--bg2:#FFFFFF;--bg3:#F1ECE0;
+  --border:rgba(33,29,23,.10);--border2:rgba(33,29,23,.18);
+  --text:#211D17;--text2:#6E665B;
+  --accent:#C2403A;--accent-dim:rgba(194,64,58,.10);
+  --ink:#C2403A;--ink-dim:rgba(194,64,58,.12);
+  --cjk:"Songti SC","STSong","Noto Serif SC",serif;}
+html.theme-light #app{background:#FBF7EF;}
+html.theme-light .char-box-lg .grid-bg line{stroke:rgba(33,29,23,.08);}
+html.theme-light #search:focus{box-shadow:0 0 0 4px rgba(194,64,58,.12);}
+html.theme-light .lang-btn.active{border-color:rgba(194,64,58,.55);}
+html.theme-light .lang-switch{display:none;}
+html.theme-light .hero-copy{display:none;}
+html.theme-light .hero{padding-bottom:10px;}
 </style>
 </head>
 <body>
@@ -136,16 +199,18 @@ button:active{transform:scale(.96)}
         </div>
         <div class="char-box-lg" id="char-box-lg"></div>
         <div class="writer-controls">
-          <button class="ctrl-btn" id="ctrl-restart" aria-label="Boshidan">⏮</button>
+          <button class="ctrl-btn" id="ctrl-restart" aria-label="Bir chiziq orqaga">«</button>
           <button class="ctrl-btn ctrl-main" id="ctrl-playpause" aria-label="Pauza / Davom">▶</button>
-          <button class="ctrl-btn" id="ctrl-skip" aria-label="Oxirigacha ko'rsat">⏭</button>
+          <button class="ctrl-btn" id="ctrl-skip" aria-label="Bir chiziq oldinga">»</button>
         </div>
+        <div class="next-word-btn hidden" id="next-word-btn"></div>
       </div>
       <div class="pinyin-row">
         <div class="pinyin" id="detail-pinyin"></div>
         <button class="audio-btn" id="audio-btn" aria-label="Tinglash">🔊</button>
       </div>
       <div class="meaning" id="detail-meaning"></div>
+      <div class="memo-wrap" id="memo-block"></div>
       <div class="example hidden" id="example-block">
         <div class="usage-pos" id="usage-pos"></div>
         <div class="example-row">
@@ -167,6 +232,24 @@ button:active{transform:scale(.96)}
           <div class="example-uz" id="grammar-example-text"></div>
         </div>
       </div>
+      <div class="practice-block" id="practice-block">
+        <div class="pb-head" id="practice-head">Mashqlar</div>
+        <button class="practice-btn" id="pr-pron" type="button">
+          <span class="pb-ic">🎙️</span>
+          <span class="pb-tx"><span class="pb-t" id="pr-pron-t"></span><span class="pb-s" id="pr-pron-s"></span></span>
+          <span class="pb-arr">›</span>
+        </button>
+        <button class="practice-btn" id="pr-recog" type="button">
+          <span class="pb-ic">🔍</span>
+          <span class="pb-tx"><span class="pb-t" id="pr-recog-t"></span><span class="pb-s" id="pr-recog-s"></span></span>
+          <span class="pb-arr">›</span>
+        </button>
+        <button class="practice-btn" id="pr-mem" type="button">
+          <span class="pb-ic">⚡</span>
+          <span class="pb-tx"><span class="pb-t" id="pr-mem-t"></span><span class="pb-s" id="pr-mem-s"></span></span>
+          <span class="pb-arr">›</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -179,6 +262,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
 </script>
 <script src="hsk-data.js?v=20260625"></script>
+<script src="course_v3_data/memo.js?v=20260627"></script>
 <script>
 (function(){
   var validLangs = ['uz', 'ru', 'tj'];
@@ -228,6 +312,12 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     hsk4b: 'HSK 4 下'
   };
 
+  var practiceLabels = {
+    uz:{head:'Mashqlar', pronT:'Talaffuzni tekshirish', pronS:'Bot bilan ayting', recogT:"O'xshashlardan ajrating", recogS:'Ieroglifni taning', memT:'Tez eslab qolish', memS:'Yodlash mashqi'},
+    ru:{head:'Упражнения', pronT:'Проверка произношения', pronS:'Скажите боту', recogT:'Найдите среди похожих', recogS:'Распознавание', memT:'Быстрое запоминание', memS:'Тренировка памяти'},
+    tj:{head:'Машқҳо', pronT:'Санҷиши талаффуз', pronS:'Ба бот гӯед', recogT:'Аз байни монандҳо ёбед', recogS:'Шинохти иероглиф', memT:'Зуд ёд гирифтан', memS:'Машқи ҳофиза'}
+  };
+
   function normalizeLang(value){
     value = String(value || '').toLowerCase();
     return validLangs.indexOf(value) !== -1 ? value : '';
@@ -244,6 +334,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
   var currentLang = normalizeLang(params.get('lang')) || normalizeLang(localStorage.getItem('hsk_all_current_lang_v3')) || detectLang();
   var currentLevel = normalizeLevel(params.get('level'));
+  var isLight = params.get('theme') === 'light';
+  if(isLight) document.documentElement.classList.add('theme-light');
   var activeWords = [];
   var currentWord = null;
 
@@ -293,7 +385,14 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     w._p = normPinyin(w.p);
     w._m = allText(w.m).toLowerCase();
   });
-  activeWords = WORDS.filter(wordMatchesLevel);
+  // Show all hieroglyphs; user's level first, the rest follow in book order.
+  if(currentLevel === 'all'){
+    activeWords = WORDS.slice();
+  } else {
+    var _inLevel = [], _others = [];
+    WORDS.forEach(function(w){ (wordMatchesLevel(w) ? _inLevel : _others).push(w); });
+    activeWords = _inLevel.concat(_others);
+  }
 
   var searchEl = document.getElementById('search');
   var listEl = document.getElementById('list');
@@ -339,6 +438,75 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   var currentWriter = null;
   var isPlaying = false;
   var isFinished = false;
+  var currentStrokeShown = 0;
+  var totalStrokes = 0;
+  var isReshowing = false;
+
+  var nextWordBtn = document.getElementById('next-word-btn');
+
+  function getNextWord(){
+    if(!currentWord) return null;
+    var idx = -1;
+    for(var i=0;i<activeWords.length;i++){ if(activeWords[i].id===currentWord.id){idx=i;break;} }
+    return (idx !== -1 && idx < activeWords.length-1) ? activeWords[idx+1] : null;
+  }
+
+  function showNextWordBtn(){
+    var nw = getNextWord();
+    if(!nw){ nextWordBtn.classList.add('hidden'); return; }
+    var lbl = {'uz':'Keyingi so\'z','ru':'Следующее слово','tj':'Калимаи навбатӣ'};
+    nextWordBtn.innerHTML =
+      '<div class="nw-char">'+escapeHtml(nw.h)+'</div>'+
+      '<div class="nw-info"><div class="nw-pin">'+escapeHtml(nw.p)+'</div>'+
+      '<div class="nw-lbl">'+(lbl[currentLang]||lbl.uz)+'</div></div>'+
+      '<div class="nw-arr">›</div>';
+    nextWordBtn.classList.remove('hidden');
+    nextWordBtn.onclick = function(){ openDetail(nw); };
+  }
+
+  function hideNextWordBtn(){
+    nextWordBtn.classList.add('hidden');
+    nextWordBtn.onclick = null;
+  }
+
+  function updateStepBtns(){
+    document.getElementById('ctrl-restart').disabled = (!currentWriter || currentStrokeShown <= 0 || isReshowing);
+    document.getElementById('ctrl-skip').disabled = (!currentWriter || currentStrokeShown >= totalStrokes || isPlaying || isReshowing);
+  }
+
+  function stepForward(){
+    if(!currentWriter || currentStrokeShown >= totalStrokes || isPlaying || isReshowing) return;
+    isPlaying = true; isFinished = false; setPlayIcon();
+    var n = currentStrokeShown;
+    currentWriter.animateStroke(n, {onComplete: function(){
+      currentStrokeShown++;
+      isPlaying = false; setPlayIcon();
+      if(currentStrokeShown >= totalStrokes){ isFinished = true; showNextWordBtn(); }
+      updateStepBtns();
+    }});
+  }
+
+  function stepBack(){
+    if(!currentWriter || currentStrokeShown <= 0 || isPlaying || isReshowing) return;
+    currentStrokeShown--;
+    hideNextWordBtn();
+    isFinished = false;
+    var target = currentStrokeShown;
+    currentWriter.hideCharacter({duration:0});
+    if(target === 0){ updateStepBtns(); return; }
+    isReshowing = true;
+    updateStepBtns();
+    var origSpeed = currentWriter._options.strokeAnimationSpeed;
+    currentWriter._options.strokeAnimationSpeed = 60;
+    function showNext(i){
+      if(i >= target){
+        currentWriter._options.strokeAnimationSpeed = origSpeed;
+        isReshowing = false; updateStepBtns(); return;
+      }
+      currentWriter.animateStroke(i, {onComplete: function(){ showNext(i+1); }});
+    }
+    showNext(0);
+  }
 
   function speak(textValue){
     if(!('speechSynthesis' in window) || !textValue) return;
@@ -353,7 +521,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   function applyStaticText(){
     var t = UI[currentLang] || UI.uz;
-    var label = levelLabels[currentLevel] || levelLabels.all;
+    var label = levelLabels.all;
     document.documentElement.lang = currentLang;
     document.title = t.title;
     heroTitle.textContent = t.title;
@@ -363,9 +531,26 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     langSwitch.innerHTML = validLangs.map(function(value){
       return '<button class="lang-btn '+(value === currentLang ? 'active' : '')+'" data-lang="'+value+'">'+value.toUpperCase()+'</button>';
     }).join('');
+    var pl = practiceLabels[currentLang] || practiceLabels.uz;
+    document.getElementById('practice-head').textContent = pl.head;
+    document.getElementById('pr-pron-t').textContent = pl.pronT;
+    document.getElementById('pr-pron-s').textContent = pl.pronS;
+    document.getElementById('pr-recog-t').textContent = pl.recogT;
+    document.getElementById('pr-recog-s').textContent = pl.recogS;
+    document.getElementById('pr-mem-t').textContent = pl.memT;
+    document.getElementById('pr-mem-s').textContent = pl.memS;
   }
 
+  function goPractice(page){
+    if(!currentWord) return;
+    location.href = '/' + page + '.html?lang=' + currentLang + '&char=' + encodeURIComponent(currentWord.h);
+  }
+  document.getElementById('pr-pron').onclick = function(){ goPractice('course_v3_pronunciation'); };
+  document.getElementById('pr-recog').onclick = function(){ goPractice('course_v3_recognition'); };
+  document.getElementById('pr-mem').onclick = function(){ goPractice('course_v3_memorize'); };
+
   function goBackToStudy(){
+    if(isLight){ location.href = '/course-v3.html?lang=' + currentLang + '&tab=mashq'; return; }
     var url = new URL('/study.html', location.origin);
     if(currentLevel !== 'all') url.searchParams.set('level', currentLevel);
     url.searchParams.set('lang', currentLang);
@@ -389,7 +574,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
           w._m.indexOf(qLower) !== -1 || text(w.m).toLowerCase().indexOf(qLower) !== -1;
       });
     }
-    countEl.textContent = q ? t.countResults(results.length) : t.countAll(activeWords.length, levelLabels[currentLevel] || levelLabels.all);
+    countEl.textContent = q ? t.countResults(results.length) : t.countAll(activeWords.length, levelLabels.all);
     if(results.length === 0){
       listEl.innerHTML = '<div class="empty">'+escapeHtml(t.emptyTitle)+'<br>'+escapeHtml(t.emptySub)+'</div>';
       return;
@@ -421,10 +606,17 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   function playCurrent(){
     if(!currentWriter) return;
+    currentStrokeShown = 0;
     isPlaying = true; isFinished = false;
-    setPlayIcon();
+    hideNextWordBtn();
+    setPlayIcon(); updateStepBtns();
     currentWriter.animateCharacter({
-      onComplete: function(){ isPlaying = false; isFinished = true; setPlayIcon(); }
+      onComplete: function(){
+        isPlaying = false; isFinished = true;
+        currentStrokeShown = totalStrokes;
+        setPlayIcon(); updateStepBtns();
+        showNextWordBtn();
+      }
     });
   }
 
@@ -432,7 +624,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     currentCharIdx = idx;
     var ch = currentChars[idx];
     currentWriter = null;
-    isPlaying = false; isFinished = false;
+    isPlaying = false; isFinished = false; isReshowing = false;
+    currentStrokeShown = 0; totalStrokes = 0;
+    hideNextWordBtn();
     setPlayIcon();
 
     var multi = currentChars.length > 1;
@@ -445,21 +639,24 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
     var data = STROKES[ch];
     if(data){
-      writerStrokes.textContent = (UI[currentLang] || UI.uz).strokes(data.strokes.length);
+      totalStrokes = data.strokes.length;
+      currentStrokeShown = 0;
+      writerStrokes.textContent = (UI[currentLang] || UI.uz).strokes(totalStrokes);
       charBoxLg.innerHTML = gridSvg();
       var target = charBoxLg.querySelector('.writer-target');
       currentWriter = HanziWriter.create(target, ch, {
-        width: 200, height: 200, padding: 10,
+        width: 236, height: 236, padding: 12,
         showOutline: true,
-        outlineColor: 'rgba(255,255,255,.16)',
+        showCharacter: false,
+        outlineColor: isLight ? 'rgba(33,29,23,.14)' : 'rgba(255,255,255,.16)',
         strokeColor: '#d6453a',
-        strokeAnimationSpeed: 1.1,
-        delayBetweenStrokes: 260,
+        strokeAnimationSpeed: 1,
+        delayBetweenStrokes: 280,
         charDataLoader: function(c, onComplete){
           if(STROKES[c]) onComplete(STROKES[c]);
         }
       });
-      playCurrent();
+      updateStepBtns();
     } else {
       writerStrokes.textContent = '';
       charBoxLg.innerHTML = '<div class="plain-char">'+ch+'</div>';
@@ -468,29 +665,16 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
 
   ctrlPlayPause.addEventListener('click', function(){
     if(!currentWriter) return;
-    if(isFinished){
-      currentWriter.hideCharacter({duration:0});
-      playCurrent();
-    } else if(isPlaying){
+    if(isPlaying){
       currentWriter.pauseAnimation();
-      isPlaying = false; setPlayIcon();
+      isPlaying = false; setPlayIcon(); updateStepBtns();
     } else {
-      currentWriter.resumeAnimation();
-      isPlaying = true; setPlayIcon();
+      playCurrent();
     }
   });
 
-  ctrlRestart.addEventListener('click', function(){
-    if(!currentWriter) return;
-    currentWriter.hideCharacter({duration:0});
-    playCurrent();
-  });
-
-  ctrlSkip.addEventListener('click', function(){
-    if(!currentWriter) return;
-    currentWriter.showCharacter({duration:0});
-    isPlaying = false; isFinished = true; setPlayIcon();
-  });
+  ctrlRestart.addEventListener('click', function(){ stepBack(); });
+  ctrlSkip.addEventListener('click', function(){ stepForward(); });
 
   charPrevBtn.addEventListener('click', function(){
     if(currentCharIdx > 0) loadChar(currentCharIdx - 1);
@@ -597,6 +781,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   function init(){
     applyStaticText();
     renderList('');
+    var deepChar = params.get('char');
+    if(deepChar){ for(var qi=0;qi<WORDS.length;qi++){ if(WORDS[qi].h===deepChar){ openDetail(WORDS[qi]); break; } } }
     try{
       var tg = window.Telegram && window.Telegram.WebApp;
       if(tg && tg.ready) tg.ready();

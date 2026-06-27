@@ -151,6 +151,12 @@ def subscription_miniapp_url(
     return f"{base_url}{separator}{urlencode(params)}"
 
 
+def course_v3_miniapp_url(lang: str | None = None) -> str:
+    base_url = _miniapp_base_url_for_file("course-v3.html")
+    separator = "&" if "?" in base_url else "?"
+    return f"{base_url}{separator}{urlencode({'lang': normalize_miniapp_lang(lang), 'v': MINIAPP_ASSET_VERSION})}"
+
+
 def admin_miniapp_url() -> str:
     base_url = _miniapp_base_url_for_file("admin-control.html")
     separator = "&" if "?" in base_url else "?"
