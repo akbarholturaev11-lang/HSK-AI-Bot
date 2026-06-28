@@ -49,10 +49,12 @@ button{cursor:pointer}
 .nlabel{font-size:12px;font-weight:500;color:var(--ink2)}.nlabel.mut{color:var(--ink3)}
 .bubble{position:absolute;top:-42px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--cin);color:var(--cin2);font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;white-space:nowrap}
 .bubble:after{content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#fff;border-right:1px solid var(--cin);border-bottom:1px solid var(--cin)}
-.pmasc{position:absolute;top:50%;width:50px;height:50px;margin-top:-25px;pointer-events:none;animation:pmascBob 3.2s ease-in-out infinite;filter:drop-shadow(0 5px 5px rgba(33,29,23,.16));z-index:1}
-.pmasc svg{width:100%;height:100%;display:block}
-.pmasc:after{content:"";position:absolute;left:50%;bottom:-7px;width:34px;height:8px;margin-left:-17px;background:radial-gradient(closest-side,rgba(33,29,23,.18),rgba(33,29,23,0));border-radius:50%}
-@keyframes pmascBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+.pmasc{position:absolute;top:50%;width:50px;height:50px;margin-top:-25px;pointer-events:none;animation:pmascBob 3.4s ease-in-out infinite;z-index:1;opacity:.9}
+.pmasc svg{width:100%;height:100%;display:block;opacity:.8;animation:pmascNod 4.6s ease-in-out infinite;transform-origin:50% 90%}
+.pmasc:after{content:"";position:absolute;left:50%;bottom:-7px;width:34px;height:8px;margin-left:-17px;background:radial-gradient(closest-side,rgba(33,29,23,.16),rgba(33,29,23,0));border-radius:50%;animation:pmascShadow 3.4s ease-in-out infinite}
+@keyframes pmascBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pmascNod{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes pmascShadow{0%,100%{transform:scaleX(1);opacity:.16}50%{transform:scaleX(.78);opacity:.09}}
 .pmasc-bub{position:absolute;top:-28px;background:#fff;border:1px solid var(--line);color:var(--ink);font-size:11px;font-weight:500;line-height:1;padding:6px 11px;border-radius:14px;white-space:nowrap;box-shadow:0 3px 8px rgba(33,29,23,.12)}
 .pmasc.l .pmasc-bub{left:0}.pmasc.r .pmasc-bub{right:0}
 .pmasc-bub:after{content:"";position:absolute;bottom:-5px;width:8px;height:8px;background:#fff;border-right:1px solid var(--line);border-bottom:1px solid var(--line);transform:rotate(45deg)}
@@ -517,6 +519,8 @@ var App={
       cNode:"Это твой текущий урок — нажми и начни! Внутри урока появится кнопка ✏️ — нажми, чтобы увидеть как пишется иероглиф.",
       m:"Раздел практики — тут всё для закрепления знаний.",
       mDict:"Словарь иероглифов 字 — все знаки HSK 1–4: написание, пиньинь, значение. Можно искать по иероглифу или значению.",
+      mRecog:"Распознавание — слышишь и видишь слово, выбираешь нужный иероглиф. Тренирует чтение знаков.",
+      mPron:"Произношение — слушай эталон, повторяй вслух, а ИИ проверит твоё произношение и тон.",
       mTest:"Тест-центр — официальные экзамены HSK 1–4 и тест для определения твоего уровня с нуля.",
       mMist:"Мои ошибки — здесь собираются все слова, где ты ошибся. Повторяй слабые места!",
       v:"AI Voice — живой разговор с пандой 阿宝 на китайском. Говори — получай мгновенные исправления!",
@@ -525,13 +529,15 @@ var App={
       skip:"Пропустить",voice:"Голос",done:"Начнём!",next:"Далее"
     },
     uz:{
-      c:"Mana kursIngiz! Har bir doira — bitta dars. Tugmachani bosing va o'qishni boshlang.",
-      cNode:"Bu hozirgi darsIngiz — bosing va boshlang! Dars ichida ✏️ tugmasi paydo bo'ladi — ieroglif yozilishini ko'rish uchun bosing.",
+      c:"Mana kursingiz! Har bir doira — bitta dars. Tugmachani bosing va o'qishni boshlang.",
+      cNode:"Bu hozirgi darsingiz — bosing va boshlang! Dars ichida ✏️ tugmasi paydo bo'ladi — ieroglif yozilishini ko'rish uchun bosing.",
       m:"Mashq bo'limi — bilimlarni mustahkamlash uchun hamma narsa.",
       mDict:"Ieroglif lug'ati 字 — HSK 1–4 barcha belgilar: yozilishi, pinyin va ma'nosi. Ieroglif yoki ma'no bo'yicha qidirish mumkin.",
+      mRecog:"Ieroglifni tanish — so'zni eshitib, ko'rib, to'g'ri ieroglifni tanlaysiz. Belgilarni o'qishni mashq qiladi.",
+      mPron:"Talaffuz mashqi — namunani eshiting, ovoz chiqarib takrorlang, AI talaffuz va ohangni tekshiradi.",
       mTest:"Test markazi — HSK 1–4 rasmiy imtihon savollari va noldan daraja aniqlash testi.",
       mMist:"Xatolarim — xato qilgan so'zlar shu yerda yig'iladi. Zaif joylarni takrorlang!",
-      v:"AI Voice — panda 阿宝 bilan jonli xitoycha suhbat. Gaping — tuzatishlar oling!",
+      v:"AI Voice — panda 阿宝 bilan jonli xitoycha suhbat. Gapiring — darhol tuzatish oling!",
       r:"朱雀 ligasi — o'quvchilar orasidagi o'rningiz. Har kuni XP to'plang va yuqoriga chiqing!",
       p:"Profil: streak, kunlik maqsad, kuboklar va yutuqlar. Til, bildirishnoma va XP maqsadini sozlang.",
       skip:"O'tkazib yuborish",voice:"Ovoz",done:"Boshlaylik!",next:"Keyingi"
@@ -541,6 +547,8 @@ var App={
       cNode:"Ин дарси ҷории шумо — пахш кунед ва оғоз кунед! Дар дарс тугмаи ✏️ пайдо мешавад — барои дидани навиштани иероглиф пахш кунед.",
       m:"Бахши машқ — ҳама чиз барои мустаҳкам кардани дониш.",
       mDict:"Луғати иероглиф 字 — ҳамаи аломатҳои HSK 1–4: навишт, пинйин, маъно. Ҷустуҷӯ мумкин аст.",
+      mRecog:"Шинохти иероглиф — калимаро шунида ва дида, иероглифи дурустро интихоб мекунед. Хонданро машқ мекунад.",
+      mPron:"Машқи талаффуз — намунаро гӯш кунед, бо овоз такрор кунед, AI талаффуз ва оҳангро месанҷад.",
       mTest:"Маркази тест — имтиҳонҳои расмии HSK 1–4 ва тести муайянкунии сатҳ аз сифр.",
       mMist:"Хатоҳои ман — калимаҳое ки хато кардед. Ҷойҳои заифро такрор кунед!",
       v:"AI Voice — сӯҳбати зиндаи чинӣ бо панда 阿宝. Гӯед — ислоҳи фаврӣ гиред!",
@@ -549,20 +557,22 @@ var App={
       skip:"Гузарондан",voice:"Овоз",done:"Сар кардем!",next:"Баъдӣ"
     }}[LANG];
     TOUR={i:0,t:t,steps:[
-      {s:"course",d:t.c},
-      {s:"course",sel:".node.current",d:t.cNode},
-      {s:"mashq",d:t.m},
-      {s:"mashq",sel:"#m-dict",d:t.mDict},
-      {s:"mashq",sel:"#m-test",d:t.mTest},
-      {s:"mashq",sel:"#m-mist",d:t.mMist},
-      {s:"voice",d:t.v},
-      {s:"rating",d:t.r},
-      {s:"profile",d:t.p}
+      {s:"course",k:"c",d:t.c},
+      {s:"course",k:"cNode",sel:".node.current",d:t.cNode},
+      {s:"mashq",k:"m",d:t.m},
+      {s:"mashq",k:"mDict",sel:"#m-dict",d:t.mDict},
+      {s:"mashq",k:"mRecog",sel:"#m-recog",d:t.mRecog},
+      {s:"mashq",k:"mPron",sel:"#m-pron",d:t.mPron},
+      {s:"mashq",k:"mTest",sel:"#m-test",d:t.mTest},
+      {s:"mashq",k:"mMist",sel:"#m-mist",d:t.mMist},
+      {s:"voice",k:"v",d:t.v},
+      {s:"rating",k:"r",d:t.r},
+      {s:"profile",k:"p",d:t.p}
     ]};
     $("#tour-skip").textContent=t.skip;$("#tour").classList.add("on");tourRender();},
   tourNext:function(){if(TOUR.i<TOUR.steps.length-1){TOUR.i++;tourRender()}else{App.tourEnd()}},
-  tourEnd:function(){try{window.speechSynthesis.cancel()}catch(e){}try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
-  toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){try{window.speechSynthesis.cancel()}catch(e){}}tourRender(!TOURV)},
+  tourEnd:function(){stopTourAudio();try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
+  toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
   openDict:function(){location.href="/hsk-lugat.html?theme=light&lang="+LANG},
   openRecog:function(){location.href="/course_v3_recognition.html?lang="+LANG},
   openPron:function(){location.href="/course_v3_pronunciation.html?lang="+LANG},
@@ -1098,13 +1108,13 @@ Flow.next=function(){
   Flow.i=nextI;if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}
 };
 function luRain(){var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'],el=$("#levelup");for(var n=0;n<24;n++){(function(){var c=document.createElement('span');c.className='lu-conf';c.style.left=(4+Math.random()*92)+'%';c.style.background=cols[n%5];el.appendChild(c);var dx=Math.random()*70-35,rot=Math.random()*720-360;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,760px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1750)})()}}
-var TOUR={i:0,steps:[],t:{}},TOURV=true;
-/* tg-TJ / uz-UZ ovozlari aksariyat qurilmalarda yo'q -> noto'g'ri talaffuz.
-   Tojik kirill -> rus ovozi, o'zbek lotin -> turk ovozi fonetik jihatdan eng yaqin. */
+var TOUR={i:0,steps:[],t:{}},TOURV=true,_tourAudio=null,TOUR_AUDIO_VER="20260628b";
+/* Asosiy ovoz oldindan tayyorlangan MP3. Fallback faqat mos native voice topilsa ishlaydi;
+   UZ/TJ uchun turk/rusga majburiy fallback qilish talaffuzni buzadi. */
 function _tourVoices(){try{return window.speechSynthesis.getVoices()||[]}catch(e){return[]}}
 function _pickTourVoice(){
   var vs=_tourVoices();if(!vs.length)return null;
-  var pref=LANG==="ru"?["ru"]:LANG==="tj"?["tg","ru"]:["uz","tr","az","ru"];
+  var pref=LANG==="ru"?["ru"]:LANG==="tj"?["tg"]:["uz"];
   for(var i=0;i<pref.length;i++)for(var j=0;j<vs.length;j++){
     var lc=(vs[j].lang||"").toLowerCase().replace("_","-");
     if(lc===pref[i]||lc.indexOf(pref[i]+"-")===0)return vs[j];
@@ -1112,11 +1122,20 @@ function _pickTourVoice(){
   return null;
 }
 try{if(window.speechSynthesis)window.speechSynthesis.onvoiceschanged=function(){_tourVoices()}}catch(e){}
-function tourSpeak(text){if(!TOURV)return;try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text);var v=_pickTourVoice();if(v){u.voice=v;u.lang=v.lang}else{u.lang=LANG==="ru"?"ru-RU":LANG==="tj"?"ru-RU":"tr-TR"}u.rate=.95;window.speechSynthesis.speak(u)}catch(e){}}
+function _tourTTS(text){try{window.speechSynthesis.cancel();var v=_pickTourVoice();if(!v)return;var u=new SpeechSynthesisUtterance(text);u.voice=v;u.lang=v.lang;u.rate=.95;window.speechSynthesis.speak(u)}catch(e){}}
+function stopTourAudio(){try{if(_tourAudio){_tourAudio.pause();_tourAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function tourSpeak(text,key){if(!TOURV)return;stopTourAudio();
+  if(!key){_tourTTS(text);return}
+  try{
+    var a=new Audio("/audio/tour/"+LANG+"/"+key+".mp3?v="+TOUR_AUDIO_VER);_tourAudio=a;
+    a.onerror=function(){if(_tourAudio===a){_tourAudio=null;_tourTTS(text)}};
+    a.play().catch(function(){if(_tourAudio===a){_tourAudio=null;_tourTTS(text)}});
+  }catch(e){_tourTTS(text)}
+}
 function tourRender(noSpeak){var st=TOUR.steps[TOUR.i];App.show(st.s);
   var t=TOUR.t,dots=TOUR.steps.map(function(_,k){return '<i class="'+(k===TOUR.i?"on":"")+'"></i>'}).join("");
   $("#tour-coach").innerHTML='<div class="ch"><div class="pd">'+pandaSvg()+'</div><div class="ct"><b>'+T().nav[st.s]+'</b><small>'+(TOUR.i+1)+" / "+TOUR.steps.length+'</small></div><button class="vt '+(TOURV?"on":"")+'" onclick="App.toggleTourVoice()"><i class="ti ti-'+(TOURV?"volume":"volume-off")+'"></i> '+t.voice+'</button></div><div class="desc">'+st.d+'</div><div class="row"><div class="dots">'+dots+'</div><button class="nx" onclick="App.tourNext()">'+(TOUR.i<TOUR.steps.length-1?t.next:t.done)+'</button></div>';
-  if(!noSpeak)tourSpeak(st.d);
+  if(!noSpeak)tourSpeak(st.d,st.k);
   function placeSpot(){
     var el=st.sel?document.querySelector(st.sel):null;
     if(!el)el=document.querySelector('#nav button[data-s="'+st.s+'"]');
@@ -1189,8 +1208,8 @@ function renderMashq(){
     +'<div class="phead"><div class="sub">'+t.mashqSub+'</div></div>'
     +'<div class="sech">'+t.grammar+' · '+t.pron+'</div>'
     +rowCard("t-amber",'<span class="han">字</span>',t.dict,t.dictSub,"App.openDict()","m-dict")
-    +rowCard("t-blue",'<i class="ti ti-eye"></i>',t.recog,t.recogSub,"App.openRecog()")
-    +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()")
+    +rowCard("t-blue",'<i class="ti ti-eye"></i>',t.recog,t.recogSub,"App.openRecog()","m-recog")
+    +rowCard("t-jade",'<i class="ti ti-microphone"></i>',t.pron,t.pronSub,"App.openPron()","m-pron")
     +'<div class="sech">'+t.testCenter.split(" ")[0]+'</div>'
     +rowCard("t-cin",'<i class="ti ti-certificate"></i>',t.testCenter,t.testSub,"App.openTest()","m-test")
     +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()","m-mist");

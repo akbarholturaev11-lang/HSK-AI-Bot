@@ -810,6 +810,18 @@ async def course_v3_lesson_file(level: str, filename: str):
     return static_json_response(f"app/static/course_v3_data/{level}/{filename}")
 
 
+@app.get("/audio/tour/{lang}/{key}.mp3")
+async def course_v3_tour_audio(lang: str, key: str):
+    import os
+    import re
+    if lang not in {"uz", "ru", "tj"} or not re.fullmatch(r"[A-Za-z0-9_\-]+", key):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    path = f"app/static/audio/tour/{lang}/{key}.mp3"
+    if not os.path.isfile(path):
+        return JSONResponse(status_code=404, content={"error": "not_found"})
+    return FileResponse(path, media_type="audio/mpeg")
+
+
 @app.get("/api/v3/map")
 async def v3_course_map(request: Request, lang: str = "uz", level: str | None = None):
     import json as _json

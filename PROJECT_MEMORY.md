@@ -207,6 +207,36 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-28 — Course v3 tour narration fixed for Uzbek/Tajik
+
+Changed:
+- Course v3 onboarding tour now plays pre-generated MP3 narration from
+  `app/static/audio/tour/{uz,ru,tj}/{key}.mp3` through `/audio/tour/{lang}/{key}.mp3`.
+- Tour UI text and TTS text are separated in `scripts/gen_tour_audio.py`: screen text stays
+  clean, while Uzbek/Tajik audio uses TTS-friendly wording.
+- Browser speechSynthesis fallback no longer forces Uzbek/Tajik into Turkish/Russian voices;
+  fallback runs only when a native matching browser voice exists. Cache version bumped to
+  `TOUR_AUDIO_VER="20260628b"`.
+
+Why:
+- Device/browser TTS was producing bad Uzbek/Tajik pronunciation in the first Course v3 tour.
+  Tajik has no native Edge voice, so the Tajik MP3s use Russian neural voice with phonetic
+  Cyrillic text prepared for that voice.
+
+Files touched:
+- `app/static/course-v3.html`
+- `app/main.py`
+- `scripts/gen_tour_audio.py`
+- `app/static/audio/tour/`
+
+Risk:
+- Frontend/static-audio only. Lesson order, quiz, homework, payment/subscription/access logic
+  unchanged.
+
+Follow-up:
+- Real Telegram WebView listening check is still useful because autoplay policy can vary by
+  client, but local Playwright verified UZ/TJ tour visibility and 2xx `audio/mpeg` requests.
+
 ### 2026-06-28 — Course v3 UX fixes: subscription nav, no-ad free fallback, league chat
 
 Changed:
