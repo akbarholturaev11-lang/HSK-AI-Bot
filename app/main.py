@@ -1038,13 +1038,21 @@ async def v3_course_lesson_complete(request: Request):
         is_paid = access.is_paid_user(user)
         ad_supported = False
         if not is_paid and CourseMiniAppAccessService.lesson_requires_premium(resolved_level, lesson_order):
-            ad_supported = await CourseAdService(session).has_completed_required_views(
-                user_telegram_id=telegram_id,
-                level=resolved_level,
-                lesson_order=lesson_order,
-            )
-            if not ad_supported:
-                return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
+            ad_service = CourseAdService(session)
+            has_active_ad = await ad_service.get_active_ad() is not None
+            if has_active_ad:
+                ad_supported = await ad_service.has_completed_required_views(
+                    user_telegram_id=telegram_id,
+                    level=resolved_level,
+                    lesson_order=lesson_order,
+                )
+                if not ad_supported:
+                    return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
+            else:
+                # No admin ad uploaded yet: let the free user continue this next
+                # premium lesson without ads. When an ad is enabled later, the ad
+                # gate above applies again automatically.
+                ad_supported = True
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)

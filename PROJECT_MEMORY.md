@@ -207,6 +207,47 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-28 — Course v3 UX fixes: subscription nav, no-ad free fallback, league chat
+
+Changed:
+- Subscribe button no longer kicks users to the external browser: `App.goPay()` now
+  navigates the same-origin `subscription.html` inside the Telegram Mini App webview
+  via `location.href` instead of `tg.openLink`. Paywall/locked-lesson sheets got a clear
+  trilingual hint: "Subscribe → after payment confirmed, lessons open right here".
+- Ad-supported path when NO admin ad is uploaded: free users now continue the next
+  premium lesson for free instead of being blocked. `/api/v3/lesson/complete` checks
+  `CourseAdService.get_active_ad()`; if none active, the ad-gate is skipped (ad_supported
+  =True). Frontend `_isNoAd()` lets start/middle/end ad failures (course_ad_not_found)
+  fall through to the lesson. When admin enables an ad later, the 3-placement gate
+  applies again automatically.
+- Removed redundant "Keyinroq/Позже/Дертар" ghost close buttons from sheets (paywall,
+  locked lesson, skip-test offer, skip-test result) since each sheet already has an X +
+  backdrop-tap close.
+- Profile streak calendar now reflects real data (current weekday + `progress.streak`)
+  instead of a hardcoded week; header shows real streak count, not "Rekord: 23".
+- Profile cups/trophies are now derived from real progress (completed lessons / streak)
+  and the whole cups section is hidden when the user has earned none.
+- League/rating "message" button opens the ranked user's direct Telegram chat
+  (`openUserChat` via username/`tg://user?id=`), and "Challenge" now actually POSTs
+  `/api/miniapp/challenges` (delivers a real bot notification to the opponent) instead
+  of only showing a toast. `ratingUsers` now carries `username`/`tgId` from the
+  leaderboard payload.
+
+Files touched:
+- `app/static/course-v3.html`
+- `app/main.py` (v3 lesson complete ad gate)
+
+Risk / follow-up:
+- Access change: free users can now progress through premium lessons one-by-one while NO
+  course ad is active. Once admin enables an ad, the watch-required gate returns. Paid
+  approval logic unchanged.
+- "Do'st qo'sh" (friendAdd) button was REMOVED from the rating profile: there was no
+  friend-relationship backend, so it only faked "request sent". Rating profile now shows
+  Challenge + direct-chat message, both of which DO reach the other user.
+- Real Telegram WebView smoke-test needed: subscribe stays in-app, no-ad free lesson
+  completes, challenge notification arrives for opponent, direct chat opens for a ranked
+  user with/without username.
+
 ### 2026-06-28 — Course free preview gate + ad-supported Premium lesson path
 
 Changed:
