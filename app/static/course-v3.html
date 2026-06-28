@@ -199,13 +199,6 @@ button{cursor:pointer}
 .cal{display:flex;flex-direction:column;gap:5px}.cal .wk{display:flex;gap:5px;justify-content:space-between}
 .cell{width:34px;height:30px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink3)}
 .cell.on{background:var(--cin);border-color:var(--cin);color:#fff}.cell.tod{border:2px solid var(--gold)}
-.shelf{margin:0 16px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 8px 0;overflow:hidden}
-.cups{display:flex;justify-content:space-around;align-items:flex-end}
-.cup{display:flex;flex-direction:column;align-items:center;width:25%}.cup svg{width:34px;height:42px}
-.cup small{font-size:9px;color:var(--ink2);margin-top:2px;text-align:center;line-height:1.15}
-.cup.lock svg{opacity:.3;filter:grayscale(1)}
-.board{height:9px;background:#A88B5E;margin:6px -8px 0;border-top:2px solid #8A714A}
-.shelf{padding:11px 8px 0 !important}
 .ach{margin:0 16px;display:flex;flex-direction:column;gap:10px}
 .arow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:12px}
 .aic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
@@ -1583,10 +1576,9 @@ function openRatingUser(i){
 }
 
 /* ---------- Profile ---------- */
-function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],cups:"Кубки",cupsAll:"Все",t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня"},
-  uz:{calTitle:"Streak kalendari",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],cups:"Kuboklar",cupsAll:"Hammasi",t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun streak",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad"},
-  tj:{calTitle:"Тақвими streak",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],cups:"Ҷомҳо",cupsAll:"Ҳама",t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза"}}[LANG]}
-function cup(b,h,l,g){return '<svg viewBox="0 0 60 80"><path d="M14 18 C2 18 2 36 16 32" fill="none" stroke="'+l+'" stroke-width="5"/><path d="M46 18 C58 18 58 36 44 32" fill="none" stroke="'+l+'" stroke-width="5"/><path d="M13 14 H47 L43 34 Q30 46 17 34 Z" fill="'+b+'"/><path d="M16 15 H24 L23 33 Q20 31 18 27 Z" fill="'+h+'" opacity="0.8"/><rect x="11" y="12" width="38" height="5" rx="2.5" fill="'+h+'"/><rect x="27" y="44" width="6" height="10" fill="'+l+'"/><path d="M20 54 H40 L43 62 H17 Z" fill="'+b+'"/><rect x="15" y="62" width="30" height="6" rx="2" fill="'+l+'"/><circle cx="30" cy="26" r="8" fill="'+l+'" opacity="0.45"/><text x="30" y="30" text-anchor="middle" font-size="10" fill="'+h+'" font-family="serif" font-weight="700">'+g+'</text></svg>'}
+function pl(){return {ru:{calTitle:"Календарь ударов",calLong:"Рекорд: 23 дня",calDays:["П","В","С","Ч","П","С","В"],t1:"Победа лиги",t2:"30 дней",t3:"100 слов",tNext:"Дальше",ach:"Достижения",a1:"Первый шаг",a1d:"Выполнено",a2:"100 уроков",a3:"30 дней подряд",goalSet:"Дневная цель",goalLeft:"осталось",todayGoal:"Цель на сегодня"},
+  uz:{calTitle:"Streak kalendari",calLong:"Rekord: 23 kun",calDays:["D","S","C","P","J","S","Y"],t1:"Liga g'olibi",t2:"30 kun",t3:"100 so'z",tNext:"Keyingi",ach:"Yutuqlar",a1:"Birinchi qadam",a1d:"Bajarildi",a2:"100 dars",a3:"30 kun streak",goalSet:"Kunlik maqsad",goalLeft:"qoldi",todayGoal:"Bugungi maqsad"},
+  tj:{calTitle:"Тақвими streak",calLong:"Рекорд: 23 рӯз",calDays:["Д","С","Ч","П","Ҷ","Ш","Я"],t1:"Ғолиби лига",t2:"30 рӯз",t3:"100 калима",tNext:"Баъдӣ",ach:"Дастовардҳо",a1:"Қадами аввал",a1d:"Иҷро шуд",a2:"100 дарс",a3:"30 рӯз пайдарпай",goalSet:"Ҳадафи рӯзона",goalLeft:"мондааст",todayGoal:"Ҳадафи имрӯза"}}[LANG]}
 function streakCalHtml(){var p=pl();
   var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0);
   /* calDays start on Monday; JS getDay() is Sun=0..Sat=6 -> Mon=0 */
@@ -1599,29 +1591,18 @@ function renderProfile(){
   var t=T(),p=pl();
   var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0),todayXp=Number(MAP&&MAP.progress&&MAP.progress.xp%50||0);
   var pct=Math.round(Math.min(todayXp/dailyGoal,1)*100),off=Math.round(157-157*Math.min(todayXp/dailyGoal,1));
-  /* Real earned cups only — derived from actual streak / completed lessons. */
   var completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
   var firstDone=completedLessons>=1;
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
-  var cups=[];
-  if(completedLessons>=1)cups.push(cup('#B07A4A','#D8A877','#7E5430','步')+'|'+p.a1);
-  if(streak>=7)cups.push(cup('#AEB0AE','#DCDDD9','#7E807E','7')+'|'+'7 '+t.streak);
-  if(streak>=30)cups.push(cup('#C2962F','#E8D08A','#8A6A1E','30')+'|'+p.t2);
-  if(completedLessons>=100)cups.push(cup('#C2962F','#E8D08A','#8A6A1E','百')+'|'+p.a2);
   $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span></div></div>'
     +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="var(--cin)" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+(dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
-    +(cups.length?('<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.cups+'</span><span style="color:var(--cin)">'+p.cupsAll+' ('+cups.length+') ›</span></div><div class="shelf"><div class="cups">'+cups.map(function(c){var s=c.split("|");return '<div class="cup">'+s[0]+'<small>'+s[1]+'</small></div>'}).join("")+'</div><div class="board"></div></div>'):'')
     +'<div class="sech">'+p.ach+'</div><div class="ach"><div class="arow"><div class="aic c3"><i class="ti ti-check"></i></div><div class="at"><div class="ah"><span>'+p.a1+'</span><small>'+(firstDone?p.a1d:"0 / 1")+'</small></div><div class="abar"><i style="width:'+(firstDone?100:0)+'%;background:var(--jade)"></i></div></div></div>'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'
     +'<div class="arow"><div class="aic c2"><i class="ti ti-flame"></i></div><div class="at"><div class="ah"><span>'+p.a3+'</span><small>'+streak+' / 30</small></div><div class="abar"><i style="width:'+streakAchPct+'%"></i></div></div></div></div>'
-    +(function(){
-        var p1=_priceStr("1_month"),p10=_priceStr("10_days");
-        var priceRow=p1?'<div class="pro-price"><span class="pp-main">'+esc(p1)+'</span><small>/ '+(LANG==="ru"?"мес":LANG==="tj"?"моҳ":"oy")+'</small>'+(p10?' <span class="pp-s">· '+esc(p10)+' / '+(LANG==="ru"?"10д":LANG==="tj"?"10р":"10k")+'</span>':'')+'</div>':'<div class="pro-price pp-loading">…</div>';
-        return '<div class="pro" onclick="App.openPaywall(\'profile\')"><span class="gw han">会</span><h3>'+t.unlockTitle+'</h3><p>'+t.unlockSub+'</p>'+priceRow+'<button>'+t.unlockBtn+' →</button></div>';
-    })()
+    +'<div class="pro" onclick="App.openPaywall(\'profile\')"><span class="gw han">会</span><h3>'+t.unlockTitle+'</h3><p>'+t.unlockSub+'</p><button>'+t.unlockBtn+' →</button></div>'
     +'<div class="sech">'+t.mistakes+' · '+t.friends+'</div>'
     +rowCard("t-cin",'<i class="ti ti-alert-triangle"></i>',t.mistakes,t.mistakesSub,"App.openMistakes()")
     +rowCard("t-jade",'<i class="ti ti-users"></i>',t.friends,"","App.openFriends()")
@@ -1644,7 +1625,6 @@ function paywallHtml(ctx){
   var t=T();var ctxTitle=ctx==="lockedLesson"?t.lockedLesson:t.payTitle;
   return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:15px;color:var(--ink)">'+esc(ctxTitle)+'</div><div class="tr">'+t.paySub+'</div></div>'
     +'<div style="margin-bottom:8px">'+["b1","b2","b3"].map(function(k){return '<div class="sec done"><span class="si2"><i class="ti ti-check"></i></span><b>'+t[k]+'</b></div>'}).join("")+'</div>'
-    +(function(){var p1=_priceStr("1_month"),p10=_priceStr("10_days");if(!p1)return'';return'<div style="display:flex;align-items:baseline;gap:8px;margin:8px 2px"><b style="font-size:24px;font-weight:600">'+esc(p1)+'</b><small style="color:var(--ink2)">/ '+(LANG==="ru"?"мес":LANG==="tj"?"моҳ":"oy")+'</small>'+(p10?'<span style="font-size:13px;color:var(--ink2)">· '+esc(p10)+' / '+(LANG==="ru"?"10д":LANG==="tj"?"10р":"10k")+'</span>':'')+'</div>';})()
     +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+t.subscribe+'</button>'
     +payHintHtml();
 }
