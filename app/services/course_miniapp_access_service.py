@@ -9,6 +9,7 @@ from app.db.models.voice_practice_session import VoicePracticeSession
 
 
 FREE_FEATURE_LIMITS = {feature_key: 1 for feature_key in COURSE_FEATURE_KEYS}
+FREE_COURSE_LESSONS_PER_LEVEL = 3
 
 
 class CourseMiniAppAccessService:
@@ -39,6 +40,14 @@ class CourseMiniAppAccessService:
     @classmethod
     def is_free_user(cls, user) -> bool:
         return bool(user and not cls.is_paid_user(user) and getattr(user, "status", "") != "blocked")
+
+    @classmethod
+    def lesson_requires_premium(cls, level: str | None, lesson_order: int | None = None) -> bool:
+        try:
+            order = int(lesson_order or 0)
+        except (TypeError, ValueError):
+            order = 0
+        return order > FREE_COURSE_LESSONS_PER_LEVEL
 
     @staticmethod
     def _normalize_feature_key(feature_key: str) -> str:

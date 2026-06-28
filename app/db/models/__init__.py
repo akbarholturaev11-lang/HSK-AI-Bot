@@ -29,3 +29,4 @@ from .course_mistake import CourseMistake
 from .course_xp_event import CourseXpEvent
 from .course_challenge import CourseChallenge
 from .subscription_entry_event import SubscriptionEntryEvent
+from .course_ad import CourseAdCreative, CourseAdView

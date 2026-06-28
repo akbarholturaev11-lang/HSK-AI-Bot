@@ -437,6 +437,33 @@
             <p class="section-note" style="padding:12px 0">Yuklanmoqda…</p>
           </div>
         </div>
+
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">🎬 Course reklama roliklari</h2>
+              <p class="section-note">Premium darsni reklama bilan davom ettirgan userlarga dars boshida, o'rtasida va oxirida 6-7 soniya majburiy video ko'rsatiladi.</p>
+            </div>
+          </div>
+          <div class="notif-card">
+            <div class="nc-head">
+              <div>
+                <h3 class="nc-title">Yangi reklama video</h3>
+                <p class="nc-note">MP4, WebM yoki MOV. Premium userlarga reklama ko'rsatilmaydi.</p>
+              </div>
+              <span class="tag blue">Course v3</span>
+            </div>
+            <div class="nc-lang"><label>Sarlavha</label><input id="courseAdTitle" class="input" maxlength="120" placeholder="Masalan: Premium taklif yoki partner roligi"></div>
+            <div class="nc-lang"><label>Majburiy ko'rish vaqti</label><input id="courseAdDuration" class="input" type="number" min="6" max="7" value="7"></div>
+            <div class="nc-actions">
+              <button class="btn" data-action="upload-course-ad">Video yuklash</button>
+              <input id="courseAdFile" type="file" accept="video/*" hidden>
+            </div>
+          </div>
+          <div id="courseAds" class="notif-grid" style="margin-top:12px">
+            <p class="section-note" style="padding:12px 0">Yuklanmoqda…</p>
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -857,6 +884,7 @@
       renderMonitor();
       loadSubEntryStats();
       loadNotifications();
+      loadCourseAds();
     }
 
     async function apiUpload(url, formData){
@@ -978,7 +1006,80 @@
       }
     }
 
+    function courseAdCardHtml(item){
+      return `<div class="notif-card" data-course-ad="${item.id}">
+        <div class="nc-head">
+          <div>
+            <h3 class="nc-title">${escapeHtml(item.title)}</h3>
+            <p class="nc-note">${item.duration_seconds || 7}s majburiy ko'rish · ${escapeHtml(item.created_at || "—")}</p>
+          </div>
+          ${tag(item.is_active ? "aktiv" : "o'chirilgan", item.is_active ? "green" : "red")}
+        </div>
+        <div class="nc-media">${item.media_url ? `<video src="${item.media_url}" controls muted playsinline></video>` : '<span class="section-note">Video yo\'q</span>'}</div>
+        <div class="nc-actions">
+          <button class="btn secondary" data-course-ad-toggle="${item.id}" data-active="${item.is_active ? "0" : "1"}">${item.is_active ? "O'chirish" : "Yoqish"}</button>
+        </div>
+      </div>`;
+    }
+
+    async function loadCourseAds(){
+      const host = $("courseAds");
+      if(!host) return;
+      try{
+        const data = await apiPost("/api/admin-miniapp/course-ads", {});
+        const items = data.items || [];
+        host.innerHTML = items.length ? items.map(courseAdCardHtml).join("") : '<p class="section-note" style="padding:12px 0">Hali reklama video yuklanmagan.</p>';
+      }catch(error){
+        host.innerHTML = '<p class="section-note" style="padding:12px 0">Course reklamalarni yuklab bo\'lmadi.</p>';
+      }
+    }
+
+    async function uploadCourseAd(){
+      const input = $("courseAdFile");
+      if(!input) return;
+      input.click();
+    }
+
+    async function submitCourseAdFile(){
+      const input = $("courseAdFile");
+      const file = input && input.files && input.files[0];
+      if(!file) return;
+      if(file.size > 25 * 1024 * 1024){ showToast("Fayl 25MB dan katta"); input.value = ""; return; }
+      const formData = new FormData();
+      formData.append("title", $("courseAdTitle").value || "Course ad");
+      formData.append("duration_seconds", $("courseAdDuration").value || "7");
+      formData.append("media", file);
+      try{
+        await apiUpload("/api/admin-miniapp/course-ads/upload", formData);
+        $("courseAdTitle").value = "";
+        showToast("Course reklama yuklandi");
+        loadCourseAds();
+      }catch(error){
+        showToast("Reklama yuklashda xato");
+      }finally{
+        input.value = "";
+      }
+    }
+
+    async function toggleCourseAd(btn){
+      const adId = Number(btn.dataset.courseAdToggle || 0);
+      const active = btn.dataset.active === "1";
+      if(!adId) return;
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/course-ads/toggle", {ad_id: adId, is_active: active});
+        showToast(active ? "Reklama yoqildi" : "Reklama o'chirildi");
+        loadCourseAds();
+      }catch(error){
+        showToast("Holatni o'zgartirib bo'lmadi");
+      }finally{
+        btn.disabled = false;
+      }
+    }
+
     document.addEventListener("click", (event) => {
+      const courseAdToggle = event.target.closest("[data-course-ad-toggle]");
+      if(courseAdToggle){ toggleCourseAd(courseAdToggle); return; }
       const tab = event.target.closest("[data-tab]");
       if(tab){ switchTab(tab.dataset.tab); return; }
       const openTab = event.target.closest("[data-open-tab]");
@@ -999,6 +1100,7 @@
       const name = action.dataset.action;
       if(name === "reload"){ loadData(); return; }
       if(name === "clear-search"){ $("search").value = ""; state.search = ""; renderUsers(); return; }
+      if(name === "upload-course-ad"){ uploadCourseAd(); return; }
       if(name === "copy-stats"){
         copyText(state.data && state.data.report_text ? state.data.report_text : "");
         showToast("Hisobot nusxalandi");
@@ -1012,6 +1114,7 @@
       state.search = event.target.value;
       renderUsers();
     });
+    $("courseAdFile").addEventListener("change", submitCourseAdFile);
     $("closeDrawer").addEventListener("click", closeDrawer);
     document.addEventListener("keydown", (event) => {
       if(event.key === "Escape"){ closeDrawer(); closeMonitor(); }

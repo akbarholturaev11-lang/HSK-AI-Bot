@@ -28,7 +28,7 @@ TEXTS = {
         "access_start_first": "Лутфан, аввал /start ро пахш кунед.",
         "access_blocked": "<b>🚫 Профили шумо баста шудааст</b>\n\n<blockquote>Ба профили шумо дастрасӣ маҳдуд аст. Барои кӯмак ба техподдержка нависед:\n{support_contact}</blockquote>",
         "access_trial_expired": "<b>⏰ Мӯҳлати санҷишӣ ба поён расид</b>\n\n<blockquote>Барои идома додани омӯзиш обуна лозим аст.\nОбунаро расмӣ кунед ва бо тамоми имкониятҳо истифода баред.</blockquote>",
-        "access_daily_limit_reached": "<b>📊 Лимити матни имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+10 дӯст даъват кунед ва 3 рӯз дастрасии ройгон гиред.</blockquote>",
+        "access_daily_limit_reached": "<b>📊 Лимити матни имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Бепул AI пагоҳ боз нав мешавад. Барои истифодаи бе лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+5 дӯст даъват кунед ва 3 рӯз дастрасии ройгон гиред.</blockquote>",
         "access_subscription_expired": "<b>💳 Муҳлати обунаи шумо ба анҷом расид</b>\n\n<blockquote>Барои идома аз нав обуна гиред.</blockquote>",
         "access_payment_pending_review": "<b>⏳ Пардохти шумо баррасӣ мешавад</b>\n\n<blockquote>Пардохти шумо барои санҷиш фиристода шуд. Лутфан интизори тасдиқи админ шавед.</blockquote>",
         "force_sub_required_text": "<b>📣 Як қадами хурд мондааст</b>\n\n<blockquote>Барои истифодаи бот аввал ба канал(ҳо) обуна шавед. Баъд тугмаи «Санҷидан»-ро пахш кунед.</blockquote>",
@@ -43,7 +43,7 @@ TEXTS = {
         "ai_budget_depleted": "<b>⏳ Лимити истифодаи ройгон ба анҷом расид</b>\n\n<blockquote>Дастрасии 3-рӯза тамом шуд. Барои истифодаи бе лимит обуна гиред.</blockquote>",
         "ai_budget_depleted_notice": "<b>⏳ Лимити истифодаи ройгон ба анҷом расид</b>\n\n<blockquote>Дастрасии 3-рӯза тамом шуд. Барои истифодаи бе лимит обуна гиред.</blockquote>",
 
-        "referral_daily_limit_offer": "<b>📊 Лимити матни имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
+        "referral_daily_limit_offer": "<b>📊 Лимити матни имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Бепул AI пагоҳ боз нав мешавад. Барои истифодаи бе лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Лимити фотои имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Лимити фотои имрӯзаатон ба анҷом расид</b>\n\n<blockquote>Барои истифодаи бот бе ягон лимит обуна гиред.\n\nДӯстатонро даъват кунед ва +5 саволи бонусӣ гиред.\n+{required} дӯст даъват кунед ва {days} рӯз дастрасии ройгон гиред.</blockquote>",
@@ -192,14 +192,14 @@ TEXTS = {
         "access_start_first": "Пожалуйста, сначала нажмите /start.",
         "access_blocked": "<b>🚫 Ваш профиль заблокирован</b>\n\n<blockquote>Доступ к профилю ограничен. Для помощи напишите в техподдержку:\n{support_contact}</blockquote>",
         "access_trial_expired": "<b>⏰ Пробный период закончился</b>\n\n<blockquote>Для продолжения обучения необходима подписка.\nОформите подписку и пользуйтесь всеми возможностями.</blockquote>",
-        "access_daily_limit_reached": "<b>📊 Ваш текстовый лимит на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +10 друзей и получите 3 дня бесплатного доступа.</blockquote>",
+        "access_daily_limit_reached": "<b>📊 Ваш текстовый лимит на сегодня закончился</b>\n\n<blockquote>Бесплатный AI обновится завтра. Оформите подписку, чтобы пользоваться без лимита.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +5 друзей и получите 3 дня бесплатного доступа.</blockquote>",
         "access_subscription_expired": "<b>💳 Срок вашей подписки закончился</b>\n\n<blockquote>Оформите подписку заново, чтобы продолжить.</blockquote>",
         "ai_budget_cooldown": "<b>⏳ Поставлен перерыв на 6 часов</b>\n\n<blockquote>Вы учитесь слишком много и слишком быстро. Так обучение становится менее эффективным.\n\nОтдохните или повторите прошлые уроки. Через 6 часов бот снова будет доступен.</blockquote>",
         "ai_budget_cooldown_notice": "<b>⏳ Поставлен перерыв на 6 часов</b>\n\n<blockquote>Сегодня вы слишком быстро израсходовали учебный лимит. Спешка не помогает учиться — двигайтесь медленнее и качественнее.\n\nПовторите прошлые уроки. Через 6 часов бот снова заработает.</blockquote>",
         "ai_budget_depleted": "<b>⏳ Лимит бесплатного доступа закончился</b>\n\n<blockquote>3-дневный бесплатный доступ завершён. Оформите подписку, чтобы пользоваться ботом без ограничений.</blockquote>",
         "ai_budget_depleted_notice": "<b>⏳ Лимит бесплатного доступа закончился</b>\n\n<blockquote>3-дневный бесплатный доступ завершён. Оформите подписку, чтобы пользоваться ботом без ограничений.</blockquote>",
 
-        "referral_daily_limit_offer": "<b>📊 Ваш текстовый лимит на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
+        "referral_daily_limit_offer": "<b>📊 Ваш текстовый лимит на сегодня закончился</b>\n\n<blockquote>Бесплатный AI обновится завтра. Оформите подписку, чтобы пользоваться без лимита.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Ваш лимит фото на сегодня закончился</b>\n\n<blockquote>Оформите подписку, чтобы пользоваться ботом без ограничений.\n\nПригласите друга и получите +5 бонусных вопросов.\nПригласите +{required} друзей и получите {days} дня бесплатного доступа.</blockquote>",
@@ -352,7 +352,7 @@ TEXTS = {
         "access_start_first": "Iltimos, avval /start ni bosing.",
         "access_blocked": "<b>🚫 Profilingiz bloklangan</b>\n\n<blockquote>Profilingizga kirish cheklangan. Yordam uchun texnik yordamga yozing:\n{support_contact}</blockquote>",
         "access_trial_expired": "<b>⏰ Sinov muddati tugadi</b>\n\n<blockquote>O’rganishni davom ettirish uchun obuna kerak.\nObuna rasmiylashtiring va barcha imkoniyatlardan foydalaning.</blockquote>",
-        "access_daily_limit_reached": "<b>📊 Bugungi matn limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+10 do‘st chaqiring va 3 kun bepul foydalanish oling.</blockquote>",
+        "access_daily_limit_reached": "<b>📊 Bugungi matn limitingiz tugadi</b>\n\n<blockquote>Bepul AI ertaga yana yangilanadi. Limitsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+5 do‘st chaqiring va 3 kun bepul foydalanish oling.</blockquote>",
         "access_subscription_expired": "<b>💳 Obuna muddatingiz tugadi</b>\n\n<blockquote>Davom etish uchun qaytadan obuna oling.</blockquote>",
         "force_sub_required_text": "<b>📣 Bitta kichik qadam qoldi</b>\n\n<blockquote>Botdan foydalanish uchun avval kanal(lar)ga obuna bo'ling. Keyin «Tekshirish» tugmasini bosing.</blockquote>",
         "force_sub_main_channel_text": "<b>📣 Bitta kichik qadam qoldi</b>\n\n<blockquote>Bu botning asosiy kanali. Shu kanal orqali botdagi yangilanishlar, o'zgarishlar va ishlash funksiyalarini bilib borasiz.\n\nIltimos, obuna bo'ling va keyin «Tekshirish» tugmasini bosing.</blockquote>",
@@ -366,7 +366,7 @@ TEXTS = {
         "ai_budget_depleted": "<b>⏳ Bepul foydalanish limiti tugadi</b>\n\n<blockquote>3 kunlik bepul foydalanish yakunlandi. Botdan limitlarsiz foydalanish uchun obuna oling.</blockquote>",
         "ai_budget_depleted_notice": "<b>⏳ Bepul foydalanish limiti tugadi</b>\n\n<blockquote>3 kunlik bepul foydalanish yakunlandi. Botdan limitlarsiz foydalanish uchun obuna oling.</blockquote>",
 
-        "referral_daily_limit_offer": "<b>📊 Bugungi matn limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",
+        "referral_daily_limit_offer": "<b>📊 Bugungi matn limitingiz tugadi</b>\n\n<blockquote>Bepul AI ertaga yana yangilanadi. Limitsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",
 
         "access_daily_image_limit_reached": "<b>📸 Bugungi foto limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.</blockquote>",
         "referral_image_limit_offer": "<b>📸 Bugungi foto limitingiz tugadi</b>\n\n<blockquote>Botdan hech qanday limitlarsiz foydalanish uchun obuna oling.\n\nDo‘stingizni chaqirib +5 ta bonus savol oling.\n+{required} do‘st chaqiring va {days} kun bepul foydalanish oling.</blockquote>",

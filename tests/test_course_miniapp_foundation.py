@@ -9,6 +9,7 @@ from sqlalchemy import create_engine
 from app.db import models  # noqa: F401
 from app.db.base import Base
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.course_ad_service import CourseAdService
 from app.services.course_miniapp_analytics_service import (
     MAX_EVENT_PAYLOAD_CHARS,
     CourseMiniAppAnalyticsService,
@@ -48,6 +49,17 @@ class _Result:
         return self._scalar
 
 
+class _ScalarListResult:
+    def __init__(self, values):
+        self.values = list(values)
+
+    def scalars(self):
+        return self
+
+    def all(self):
+        return self.values
+
+
 class _QuerySession(_FakeSession):
     def __init__(self, results):
         super().__init__()
@@ -80,6 +92,8 @@ class CourseMiniAppModelTests(unittest.TestCase):
         self.assertIn("course_mistakes", table_names)
         self.assertIn("course_xp_events", table_names)
         self.assertIn("subscription_entry_events", table_names)
+        self.assertIn("course_ad_creatives", table_names)
+        self.assertIn("course_ad_views", table_names)
 
 
 class CourseMiniAppAccessTests(unittest.TestCase):
@@ -117,6 +131,12 @@ class CourseMiniAppAccessTests(unittest.TestCase):
     def test_blocked_user_is_not_free_eligible(self):
         self.assertFalse(CourseMiniAppAccessService.is_free_user(self._user(status="blocked")))
 
+    def test_unpaid_course_lesson_policy_keeps_three_free_previews_per_level(self):
+        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 3))
+        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 4))
+        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 1))
+        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk4", 4))
+
 
 class CourseMiniAppEntitlementTests(unittest.IsolatedAsyncioTestCase):
     async def test_legacy_trial_usage_closes_free_lesson_and_voice(self):
@@ -140,6 +160,32 @@ class CourseMiniAppEntitlementTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(entitlements["voice"]["allowed"])
         self.assertTrue(entitlements["placement"]["allowed"])
         self.assertTrue(entitlements["training_test"]["allowed"])
+
+
+class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
+    async def test_ad_supported_lesson_requires_all_three_views(self):
+        missing_end = _QuerySession([_ScalarListResult(["start", "middle"])])
+        complete = _QuerySession([_ScalarListResult(["start", "middle", "end"])])
+
+        self.assertFalse(
+            await CourseAdService(missing_end).has_completed_required_views(
+                user_telegram_id=123,
+                level="hsk1",
+                lesson_order=4,
+            )
+        )
+        self.assertTrue(
+            await CourseAdService(complete).has_completed_required_views(
+                user_telegram_id=123,
+                level="hsk1",
+                lesson_order=4,
+            )
+        )
+
+    def test_course_ad_duration_is_clamped_to_six_or_seven_seconds(self):
+        self.assertEqual(CourseAdService.normalize_duration(4), 6)
+        self.assertEqual(CourseAdService.normalize_duration(99), 7)
+        self.assertEqual(CourseAdService.normalize_duration(6), 6)
 
 
 class CourseMiniAppProfileTests(unittest.TestCase):

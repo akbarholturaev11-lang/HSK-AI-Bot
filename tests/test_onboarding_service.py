@@ -11,7 +11,7 @@ from app.services.onboarding_service import (
     can_attach_start_referral,
     onboarding_stage,
 )
-from app.services.referral_service import ReferralService
+from app.services.referral_service import REFERRAL_TRIAL_REQUIRED_ACTIVE, ReferralService
 
 
 class OnboardingServiceTests(unittest.IsolatedAsyncioTestCase):
@@ -156,6 +156,9 @@ class OnboardingServiceTests(unittest.IsolatedAsyncioTestCase):
 
 
 class ReferralServiceTests(unittest.IsolatedAsyncioTestCase):
+    def test_referral_trial_access_threshold_is_viral_enough(self):
+        self.assertEqual(REFERRAL_TRIAL_REQUIRED_ACTIVE, 5)
+
     async def test_existing_pending_referral_activates_when_user_is_eligible(self):
         session = SimpleNamespace(commit=AsyncMock())
         service = ReferralService(session)

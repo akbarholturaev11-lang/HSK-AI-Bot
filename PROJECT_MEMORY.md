@@ -207,6 +207,66 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-28 — Course free preview gate + ad-supported Premium lesson path
+
+Changed:
+- Course v3 free access is now lesson-number based, not level based: every HSK level
+  allows lessons 1-3 as free preview; lesson 4+ requires Premium unless the user is
+  paid or completes the ad-supported flow for that lesson.
+- `FREE_COURSE_LESSONS_PER_LEVEL = 3` lives in `course_miniapp_access_service.py`
+  and is used by both `/api/v3/map` and `/api/v3/lesson/complete`.
+- Added `course_ad_creatives` and `course_ad_views` tables. Admins can upload and
+  enable/disable course ad media from the admin Mini App; free users may unlock a
+  next premium lesson after watching required start/middle/end placements for 6-7s.
+- Premium users keep full course access and do not need course ads.
+
+Why:
+- HSK1 users are the largest segment, so making all HSK1 free blocks monetization.
+  The preview should show value without opening the full paid course.
+
+Files touched:
+- `app/services/course_miniapp_access_service.py`
+- `app/main.py`
+- `app/services/course_ad_service.py`
+- `app/db/models/course_ad.py`
+- `app/static/course-v3.html`
+- `app/static/admin-control.html`
+- `alembic/versions/0056_course_ad_supported_lessons.py`
+
+Risk / follow-up:
+- Run the Alembic migration before using admin ad uploads in production.
+- Telegram Mini App ad policy should be checked before connecting external ad networks;
+  the current implementation supports in-house/admin-uploaded media first.
+
+### 2026-06-28 — Free-tier monetization limits
+
+Changed:
+- New users default to 5 free QA text answers per day (`User.question_limit = 5`).
+- Migration `0055_free_tier_monetization_policy` updates existing non-paid trial/free
+  users that still had the old 10-question default.
+- Free pronunciation assessment is capped at 3 STT attempts per day before calling AI.
+- Referral active-friend threshold changed from 10 to 5.
+- Subscription analytics labels now include `v3_ad`, `v3_qa_limit`,
+  `v3_voice_trial_used`, and `v3_pronunciation_limit`.
+
+Why:
+- Static course/language learning surfaces can stay generous, but real-cost AI paths
+  need tighter metering so free users do not create unlimited token/STT cost.
+
+Files touched:
+- `app/db/models/user.py`
+- `app/services/voice_practice_service.py`
+- `app/services/referral_service.py`
+- `app/services/subscription_entry_analytics_service.py`
+- `app/bot/utils/i18n.py`
+- `app/static/course_v3_pronunciation.html`
+- `alembic/versions/0055_free_tier_monetization_policy.py`
+
+Risk / follow-up:
+- Existing paid-user AI budget logic is unchanged.
+- After deploy, smoke-test QA daily limit, pronunciation limit, referral milestone,
+  and subscription entry analytics.
+
 ### 2026-06-27 — Motivatsion eslatmalar (reyting / kunlik maqsad / streak) + admin tahriri
 
 Changed:

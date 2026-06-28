@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, patch
 
 from app.services.ai_service import AIUsageResult
 from app.services.voice_practice_service import (
+    FREE_PRONOUNCE_DAILY,
     MAX_DIALOGS_PER_SESSION,
     ROLE_PROMPTS,
     VoicePracticeError,
@@ -225,6 +226,29 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(item.turn_count, MAX_DIALOGS_PER_SESSION)
         self.assertTrue(result["session_should_end"])
+
+    async def test_free_pronunciation_limit_blocks_before_ai_call(self):
+        session = SimpleNamespace(commit=AsyncMock())
+        service = VoicePracticeService(session)
+        service._is_paid_telegram_user = AsyncMock(return_value=False)
+        service._pronounce_count_today = AsyncMock(return_value=FREE_PRONOUNCE_DAILY)
+
+        with patch("app.services.voice_practice_service.settings.OPENAI_API_KEY", "test-key"), patch(
+            "app.services.voice_practice_service.AIService"
+        ) as ai_cls:
+            with self.assertRaises(VoicePracticeError) as ctx:
+                await service.score_pronunciation(
+                    123,
+                    target="你好",
+                    audio_bytes=b"audio-bytes",
+                    filename="voice.webm",
+                    language="uz",
+                    level="hsk1",
+                )
+
+        self.assertEqual(ctx.exception.code, "PRONOUNCE_LIMIT_EXCEEDED")
+        self.assertEqual(ctx.exception.status_code, 403)
+        ai_cls.assert_not_called()
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ from sqlalchemy import func, select
 
 from app.config import settings
 from app.db.models.voice_practice_session import VoicePracticeSession
+from app.db.models.ai_usage import AIUsageEvent
 from app.repositories.user_repo import UserRepository
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
@@ -23,6 +24,10 @@ from app.services.course_miniapp_lesson_service import CourseMiniAppLessonServic
 logger = logging.getLogger(__name__)
 
 FREE_TOTAL_SESSIONS = 1
+# Bepul (obunasiz) userlar uchun talaffuz baholash kunlik kvotasi.
+# Har bir urinish OpenAI STT (Whisper) chaqiradi va bizga pul turadi, shuning
+# uchun bepul userga kunlik chegara qo'yiladi; pullik userlar AI byudjet orqali.
+FREE_PRONOUNCE_DAILY = 3
 PAID_DAILY_SESSIONS = 5
 MAX_DIALOGS_PER_SESSION = 7
 MAX_AUDIO_BYTES = 5 * 1024 * 1024
@@ -158,6 +163,16 @@ class VoicePracticeService:
         )
         if today_only:
             query = query.where(VoicePracticeSession.started_at >= self._day_start())
+        result = await self.session.execute(query)
+        return int(result.scalar_one() or 0)
+
+    async def _pronounce_count_today(self, telegram_id: int) -> int:
+        """Bugun shu user nechta talaffuz (STT) urinishi qilganini sanaydi."""
+        query = select(func.count(AIUsageEvent.id)).where(
+            AIUsageEvent.user_telegram_id == telegram_id,
+            AIUsageEvent.source == "voice_practice_pronounce",
+            AIUsageEvent.created_at >= self._day_start(),
+        )
         result = await self.session.execute(query)
         return int(result.scalar_one() or 0)
 
@@ -443,6 +458,16 @@ class VoicePracticeService:
         paid = await self._is_paid_telegram_user(telegram_id)
         if paid:
             await self._ensure_budget_available(telegram_id)
+        else:
+            # Bepul user: AI chaqirishdan OLDIN kunlik kvotani tekshiramiz, aks holda
+            # cheksiz OpenAI STT xarajati bo'ladi. Limit tugasa Premium-sheet chiqadi.
+            used_today = await self._pronounce_count_today(telegram_id)
+            if used_today >= FREE_PRONOUNCE_DAILY:
+                raise VoicePracticeError(
+                    "PRONOUNCE_LIMIT_EXCEEDED",
+                    "Bugungi bepul talaffuz urinishlari tugadi.",
+                    403,
+                )
 
         record = None
         try:

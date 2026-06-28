@@ -85,6 +85,16 @@ button{cursor:pointer}
 /* lesson overlay flow */
 .flow{position:fixed;inset:0;background:var(--paper);z-index:30;display:none;flex-direction:column;max-width:480px;margin:0 auto}
 .flow.on{display:flex}
+.adov{position:fixed;inset:0;z-index:82;background:#15120f;display:none;max-width:480px;margin:0 auto;color:#fff}
+.adov.on{display:flex;flex-direction:column}
+.adbox{min-height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:calc(14px + var(--safe-t)) 14px calc(16px + var(--safe-b));gap:12px}
+.adtop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.78);font-weight:600}
+.adcount{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:7px 10px;white-space:nowrap}
+.advideo{width:100%;height:100%;min-height:280px;max-height:68dvh;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}
+.admeta{display:grid;gap:8px}
+.admeta b{font-size:15px;font-weight:600}.admeta small{font-size:12px;color:rgba(255,255,255,.68);line-height:1.4}
+.adcta{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;background:#fff;color:#211D17;display:flex;align-items:center;justify-content:center;gap:8px}
+.adcta:disabled{background:rgba(255,255,255,.14);color:rgba(255,255,255,.62)}
 .ftop{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
 .fx{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
 .fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
@@ -113,7 +123,7 @@ button{cursor:pointer}
 .wc .py{font-size:26px;color:var(--cin2);font-weight:500;margin-top:8px;display:inline-flex;align-items:center;gap:10px}
 .wc .pos{display:inline-block;font-size:12px;color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:3px 11px;margin-top:12px}
 .wc .mn{font-size:18px;margin-top:12px}
-.duo-mini{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px}
+.duo-mini{display:grid;grid-template-columns:1fr;gap:9px;margin-top:18px}
 .duo-mini span{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:10px;text-align:center;font-size:12px;color:var(--ink2)}
 .duo-mini b{display:block;font-size:15px;color:var(--ink);margin-top:2px}
 .gc h3{font-size:20px;margin:0 0 3px;display:flex;align-items:center;gap:9px}.gc .zh{color:var(--cin2)}
@@ -362,6 +372,14 @@ button{cursor:pointer}
     <div class="fbar" id="f-bar"><div class="fmsg" id="f-msg"></div><button class="fbtn" onclick="Flow.next()" id="f-barbtn"></button></div>
   </div>
 
+  <div class="adov" id="adov" aria-hidden="true">
+    <div class="adbox">
+      <div class="adtop"><span id="ad-label"></span><span class="adcount" id="ad-count"></span></div>
+      <video class="advideo" id="ad-video" muted playsinline webkit-playsinline></video>
+      <div class="admeta"><b id="ad-title"></b><small id="ad-note"></small><button class="adcta" id="ad-cta" disabled onclick="AdFlow.done()"></button></div>
+    </div>
+  </div>
+
   <div class="writeov" id="writeov"><button class="writeov-x" onclick="App.closeWriter()" aria-label="Yopish"><i class="ti ti-chevron-down"></i></button><iframe id="writeframe" title="Ieroglif yozilishi"></iframe></div>
 
   <div class="levelup" id="levelup"><svg class="lu-rays" id="lu-rays" viewBox="0 0 200 200"></svg><div class="lu-panda" id="lu-panda"></div><div class="lu-stage" id="lu-stage"></div><button class="lu-cta" id="lu-cta" onclick="App.closeLevelUp()"></button></div>
@@ -375,9 +393,9 @@ button{cursor:pointer}
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
-  ru:{nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"Premium",learner:"ученик",premium:"Premium",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Premium",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Оформить подписку",later:"Позже",lockedLesson:"Этот урок в Premium"},
-  uz:{nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"Premium",learner:"o'quvchi",premium:"Premium",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Premium",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"Obuna bo'lish",later:"Keyinroq",lockedLesson:"Bu dars Premium'da"},
-  tj:{nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Муколама",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"Premium",learner:"донишҷӯ",premium:"Premium",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Premium",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"Обуна шудан",later:"Дертар",lockedLesson:"Ин дарс дар Premium аст"}
+  ru:{nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"Premium",learner:"ученик",premium:"Premium",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Premium",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Оформить подписку",later:"Позже",lockedLesson:"Этот урок в Premium",adContinue:"Продолжить с рекламой",adStart:"Реклама перед уроком",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adWait:"Продолжить через {s} сек.",adReady:"Продолжить урок",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adNoAd:"Реклама пока недоступна",adWatchFirst:"Сначала посмотрите рекламу"},
+  uz:{nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"Premium",learner:"o'quvchi",premium:"Premium",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Premium",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"Obuna bo'lish",later:"Keyinroq",lockedLesson:"Bu dars Premium'da",adContinue:"Reklama bilan davom etish",adStart:"Darsdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adWait:"{s} soniyadan keyin davom etish",adReady:"Darsni davom ettirish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adNoAd:"Reklama hozircha yo'q",adWatchFirst:"Avval reklamani ko'ring"},
+  tj:{nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Муколама",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"Premium",learner:"донишҷӯ",premium:"Premium",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Premium",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"Обуна шудан",later:"Дертар",lockedLesson:"Ин дарс дар Premium аст",adContinue:"Идома бо реклама",adStart:"Реклама пеш аз дарс",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adWait:"Пас аз {s} сония идома",adReady:"Идомаи дарс",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adNoAd:"Реклама ҳоло дастрас нест",adWatchFirst:"Аввал рекламаро бинед"}
 };
 var LANG=(new URLSearchParams(location.search).get("lang")||"ru");if(!I18N[LANG])LANG="ru";
 var LEVELS=["hsk1","hsk2","hsk3","hsk4"];
@@ -427,7 +445,7 @@ var App={
   openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on")},
   closeSheet:function(){$("#sheet").classList.remove("on")},
   openPaywall:function(ctx){
-    PAY_SOURCE=ctx==="lockedLesson"?"v3_locked_lesson":(ctx==="profile"?"v3_profile":"v3_paywall");
+    PAY_SOURCE=ctx==="lockedLesson"?"v3_locked_lesson":(ctx==="profile"?"v3_profile":(ctx==="pronLimit"?"v3_pronunciation_limit":"v3_paywall"));
     $("#paywall-body").innerHTML=paywallHtml(ctx);
     $("#paywall").classList.add("on");
   },
@@ -573,6 +591,107 @@ function serverSaveErrorText(code){
   }[LANG]||{};
   return m[code]||m.default||"Progress error";
 }
+function adPlacementTitle(placement){
+  var t=T();
+  if(placement==="middle")return t.adMiddle;
+  if(placement==="end")return t.adEnd;
+  return t.adStart;
+}
+function canAdContinueLesson(l){
+  var completed=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
+  return !!(l&&isPremiumLocked(l)&&l.n===completed+1);
+}
+function openLockedLessonSheet(idx){
+  var l=allLessons()[idx];if(!l)return;
+  var t=T();
+  var adBtn=canAdContinueLesson(l)
+    ? '<button class="scta ghost" style="margin-top:8px" onclick="startAdSupportedLesson('+idx+')"><i class="ti ti-player-play"></i> '+esc(t.adContinue)+'</button>'
+    : '<div class="tr" style="margin:8px 6px 12px;text-align:center;color:var(--ink2);line-height:1.5">'+esc(t.finishPrev)+'</div>';
+  App.openSheet('<div class="shead"><div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div></div>'
+    +'<div style="margin-bottom:8px">'+["b1","b2","b3"].map(function(k){return '<div class="sec done"><span class="si2"><i class="ti ti-check"></i></span><b>'+t[k]+'</b></div>'}).join("")+'</div>'
+    +'<button class="scta" onclick="App.goPay(\'v3_locked_lesson\')"><i class="ti ti-lock-open"></i> '+esc(t.subscribe)+'</button>'
+    +adBtn
+    +'<button class="scta ghost" style="margin-top:8px;border:none" onclick="App.closeSheet()">'+esc(t.later)+'</button>');
+}
+function fetchCourseAd(placement,l){
+  var url="/api/v3/ad?placement="+encodeURIComponent(placement)+"&level="+encodeURIComponent(MAP&&MAP.level||"hsk1")+"&lesson="+encodeURIComponent(l&&l.n||0);
+  return _apiGet(url).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
+    if(!d.ok||!d.ad)throw new Error(d.error||"course_ad_not_found");
+    return d.ad;
+  });
+}
+function recordCourseAdView(ad,placement,l,watched){
+  if(!INIT_DATA)return Promise.resolve({ok:true});
+  return _apiPost("/api/v3/ad/view",{
+    ad_id:ad.id,
+    level:MAP&&MAP.level||"hsk1",
+    lesson_order:l&&l.n||0,
+    placement:placement,
+    watched_seconds:watched
+  }).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
+    if(!d.ok)throw new Error(d.error||"course_ad_view_failed");
+    return d;
+  });
+}
+var AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
+var AdFlow={
+  done:function(){
+    if(!AD_STATE.ready||AD_STATE.busy)return;
+    AD_STATE.busy=true;
+    var btn=$("#ad-cta");if(btn){btn.disabled=true;btn.innerHTML='<i class="ti ti-loader-2"></i> …'}
+    recordCourseAdView(AD_STATE.ad,AD_STATE.placement,AD_STATE.lesson,AD_STATE.watched)
+      .then(function(){
+        clearInterval(AD_STATE.timer);
+        try{$("#ad-video").pause()}catch(e){}
+        $("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true");
+        var resolve=AD_STATE.resolve;AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
+        if(resolve)resolve();
+      })
+      .catch(function(){
+        clearInterval(AD_STATE.timer);
+        try{$("#ad-video").pause()}catch(e){}
+        $("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true");
+        var reject=AD_STATE.reject;AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
+        if(reject)reject(new Error("course_ad_view_failed"));
+      });
+  }
+};
+function showCourseAd(placement,idx){
+  return new Promise(function(resolve,reject){
+    var l=allLessons()[idx];if(!l){reject(new Error("lesson_not_found"));return}
+    fetchCourseAd(placement,l).then(function(ad){
+      var t=T(),duration=Math.max(6,Math.min(7,Number(ad.duration_seconds)||7));
+      clearInterval(AD_STATE.timer);
+      AD_STATE={timer:null,resolve:resolve,reject:reject,ad:ad,lesson:l,placement:placement,watched:0,ready:false,busy:false};
+      $("#ad-label").textContent=adPlacementTitle(placement);
+      $("#ad-title").textContent=ad.title||adPlacementTitle(placement);
+      $("#ad-note").textContent=t.adNote;
+      var btn=$("#ad-cta"),count=$("#ad-count"),video=$("#ad-video");
+      btn.disabled=true;btn.textContent=t.adWait.replace("{s}",duration);
+      count.textContent=duration+"s";
+      video.removeAttribute("src");video.load();video.src=ad.media_url;video.loop=true;video.muted=true;
+      $("#adov").classList.add("on");$("#adov").setAttribute("aria-hidden","false");
+      var left=duration;
+      function draw(){
+        count.textContent=left>0?left+"s":"OK";
+        if(left>0){btn.disabled=true;btn.textContent=t.adWait.replace("{s}",left);return}
+        AD_STATE.ready=true;btn.disabled=false;btn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adReady;
+      }
+      draw();
+      AD_STATE.timer=setInterval(function(){
+        left=Math.max(0,left-1);AD_STATE.watched=duration-left;draw();
+        if(left<=0)clearInterval(AD_STATE.timer);
+      },1000);
+      var play=video.play();if(play&&play.catch)play.catch(function(){});
+    }).catch(function(){reject(new Error("course_ad_not_found"))});
+  });
+}
+function startAdSupportedLesson(idx){
+  var l=allLessons()[idx];
+  if(!canAdContinueLesson(l)){toast(T().finishPrev,2400);openLockedLessonSheet(idx);return}
+  App.closeSheet();App.closePaywall();
+  showCourseAd("start",idx).then(function(){startLesson(idx,{adSupported:true})}).catch(function(){toast(T().adNoAd,2400);openLockedLessonSheet(idx)});
+}
 function lessonStatusNode(l){return l.status}
 function renderCourse(){
   var done=allLessons().filter(function(l){return l.status==="done"}).length;
@@ -614,7 +733,7 @@ function renderCourse(){
 function secNames(){var m={ru:["Новые слова","Закрепление","Аудирование","В речи","Диалог","Повторение"],uz:["Yangi so'zlar","Mustahkamlash","Tinglash","Gapda ishlatish","Qisqa dialog","Review"],tj:["Калимаҳои нав","Мустаҳкамкунӣ","Шунидан","Дар ҷумла","Муколама","Такрор"]};return m[LANG]||m.ru}
 function openLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
-  if(isPremiumLocked(l)){App.openPaywall("lockedLesson");return}
+  if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
   if(l.status==="locked"){return offerSkipTest(idx)}
   var prog=l.status==="done"?6:(l.n===3?4:0);
   var secs=secNames().map(function(s,k){var cls=k<prog?"done":(k===prog&&l.status==="current"?"cur":"lock");var ic=cls==="done"?'<i class="ti ti-check"></i>':(cls==="cur"?'<i class="ti ti-player-play"></i>':'<i class="ti ti-lock"></i>');return '<div class="sec '+cls+'"><span class="si2">'+ic+'</span><b>'+(k+1)+'. '+s+'</b></div>'}).join("");
@@ -666,19 +785,19 @@ function buildTestQueue(d){
 }
 function startSkipTest(idx){
   var l=allLessons()[idx];App.closeSheet();if(!l)return;
-  if(isPremiumLocked(l)){App.openPaywall("lockedLesson");return}
+  if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
   var lv=MAP.level||"hsk1",pad=String(l.n).padStart(2,"0");
   fetch("/course_v3_data/"+lv+"/lesson_"+pad+".json").then(function(r){if(!r.ok)throw new Error("nf");return r.json()}).then(function(d){
     var q=buildTestQueue(d);
     if(!q.length){if(l.status==="locked")l.status="current";renderAll();showSkipResult(100,idx);return}
-    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.test={idx:idx};HP=5;$("#f-hp").textContent=HP;
+    Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.test={idx:idx};Flow.lessonIdx=null;Flow.ad=null;HP=5;$("#f-hp").textContent=HP;
     $("#flow").classList.add("on");renderFlowCard();
   }).catch(function(){toast(skipI18n().notReady,2500)});
 }
 function finishSkipTest(){
   $("#flow").classList.remove("on");$("#f-cta").style.display="none";hideBar();setWriteBtn("");
   var pct=Flow.graded?Math.round(Flow.correct/Flow.graded*100):0;
-  var idx=Flow.test&&Flow.test.idx;Flow.test=null;
+  var idx=Flow.test&&Flow.test.idx;Flow.test=null;Flow.lessonIdx=null;Flow.ad=null;
   var l=allLessons()[idx];
   if(l&&l.status==="locked")l.status="current";
   renderAll();App.show("course");
@@ -697,12 +816,13 @@ function showSkipResult(pct,idx){
 }
 
 /* ---------- Lesson flow engine ---------- */
-var Flow={queue:[],i:0,answered:false,correct:0,graded:0,test:null};
-function startLesson(idx){
+var Flow={queue:[],i:0,answered:false,correct:0,graded:0,test:null,lessonIdx:null,ad:null};
+function startLesson(idx,opts){
+  opts=opts||{};
   var l=allLessons()[idx];App.closeSheet();
   if(!l)return;
-  if(isPremiumLocked(l)){App.openPaywall("lockedLesson");return}
-  if(l.status==="locked"){return}
+  if(isPremiumLocked(l)&&!opts.adSupported){openLockedLessonSheet(idx);return}
+  if(l.status==="locked"&&!opts.adSupported){return}
   var lv=MAP.level||"hsk1";
   var pad=String(l.n).padStart(2,"0");
   var url="/course_v3_data/"+lv+"/lesson_"+pad+".json";
@@ -710,7 +830,9 @@ function startLesson(idx){
     if(!r.ok)throw new Error("not_found");
     return r.json();
   }).then(function(d){
-    Flow.queue=buildQueue(d);Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.test=null;HP=5;$("#f-hp").textContent=HP;$("#flow").classList.add("on");renderFlowCard();
+    Flow.queue=buildQueue(d);Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.test=null;Flow.lessonIdx=idx;
+    Flow.ad=opts.adSupported?{lessonIdx:idx,middle:false,end:false,middleAt:Math.max(1,Math.floor(Flow.queue.length/2))}:null;
+    HP=5;$("#f-hp").textContent=HP;$("#flow").classList.add("on");renderFlowCard();
   }).catch(function(){
     var msg=LANG==="ru"?"Дарс пока не готов":LANG==="tj"?"Дарс ҳанӯз тайёр нест":"Dars hali tayyor emas";
     toast(msg,2500);
@@ -787,7 +909,7 @@ function cardWordFlash(c){
   $("#f-body").innerHTML='<span class="kicker k-word"><i class="ti ti-sparkles"></i> '+T().newWord+'</span>'
     +'<div class="wc"><div class="big han">'+esc(w.zh||"")+'</div><div class="py">'+esc(w.pinyin||"")+'<button class="audio" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>'
     +'<div><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div>'
-    +'<div class="duo-mini"><span>Pinyin<b>'+esc(w.pinyin||"")+'</b></span><span>'+T().newWord+'<b>'+esc(tr(w.meaning))+'</b></span></div></div>';
+    +'<div class="duo-mini"><span>Pinyin<b>'+esc(w.pinyin||"")+'</b></span></div></div>';
   setTimeout(function(){speak(w.zh||"")},250);
 }
 function cardWordListen(c){
@@ -910,7 +1032,11 @@ function cardPron(c){
         fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
           .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
           .then(function(o){
-            if(!o.ok||!o.j||o.j.ok!==true){setBtn(T().say);hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return;}
+            if(!o.ok||!o.j||o.j.ok!==true){
+              setBtn(T().say);
+              if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){App.openPaywall("pronLimit");return;}
+              hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return;
+            }
             var sc=Number(o.j.score)||0,pass=sc>=60;
             Flow.answered=true;Flow.graded=(Flow.graded||0)+1;if(pass)Flow.correct=(Flow.correct||0)+1;
             beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
@@ -924,7 +1050,16 @@ function cardPron(c){
     }).catch(function(){hint(_prL().micDeny)});
   };
 }
-Flow.next=function(){hideBar();Flow.i++;if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}};
+Flow.next=function(){
+  hideBar();
+  var nextI=Flow.i+1;
+  if(Flow.ad&&!Flow.ad.middle&&nextI>=Flow.ad.middleAt&&nextI<Flow.queue.length){
+    Flow.i=nextI;Flow.ad.middle=true;
+    showCourseAd("middle",Flow.ad.lessonIdx).then(function(){renderFlowCard()}).catch(function(){toast(T().adNoAd,2400);App.exitFlow();openLockedLessonSheet(Flow.ad&&Flow.ad.lessonIdx||0)});
+    return;
+  }
+  Flow.i=nextI;if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}
+};
 function luRain(){var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'],el=$("#levelup");for(var n=0;n<24;n++){(function(){var c=document.createElement('span');c.className='lu-conf';c.style.left=(4+Math.random()*92)+'%';c.style.background=cols[n%5];el.appendChild(c);var dx=Math.random()*70-35,rot=Math.random()*720-360;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,760px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1750)})()}}
 var TOUR={i:0,steps:[],t:{}},TOURV=true;
 function tourSpeak(text){if(!TOURV)return;try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text);u.lang=LANG==="ru"?"ru-RU":LANG==="tj"?"tg-TJ":"uz-UZ";window.speechSynthesis.speak(u)}catch(e){}}
@@ -974,15 +1109,20 @@ function applyLessonDone(cur,d){
 }
 function flowDone(){
   if(Flow.test){return finishSkipTest()}
+  if(Flow.ad&&!Flow.ad.end){
+    Flow.ad.end=true;
+    return showCourseAd("end",Flow.ad.lessonIdx).then(function(){flowDone()}).catch(function(){toast(T().adNoAd,2400);App.exitFlow();openLockedLessonSheet(Flow.ad&&Flow.ad.lessonIdx||0)});
+  }
   flowProg();$("#f-cta").style.display="none";hideBar();setWriteBtn("");
-  var cur=allLessons().find(function(l){return l.status==="current"});
+  var cur=typeof Flow.lessonIdx==="number"?allLessons()[Flow.lessonIdx]:allLessons().find(function(l){return l.status==="current"});
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA){applyLessonDone(cur,null);return}
+  var doneIdx=Flow.lessonIdx;
   _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){
-        if(d.error==="free_feature_limit_reached"){App.openPaywall("lockedLesson");return}
+        if(d.error==="free_feature_limit_reached"){App.exitFlow();openLockedLessonSheet(doneIdx||0);return}
         toast(serverSaveErrorText(d.error),2600);return;
       }
       applyLessonDone(cur,d);
@@ -1256,7 +1396,7 @@ function renderAll(){
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
 $("#paywall").onclick=function(){App.closePaywall()};
-window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App=App;window.Flow=Flow;window.speak=speak;
+window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.startAdSupportedLesson=startAdSupportedLesson;window.App=App;window.Flow=Flow;window.AdFlow=AdFlow;window.speak=speak;
 fetchPrices();
 (function(){
   var bootLevel=getSelectedLevel();

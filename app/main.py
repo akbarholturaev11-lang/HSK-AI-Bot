@@ -17,6 +17,7 @@ from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, init_db
 from app.db.models.course_lessons import CourseLesson
 from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
+from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
 from app.services.course_seed_service import CourseSeedService
 from app.services.notification_template_service import (
     MOTIVATION_KEYS,
@@ -49,7 +50,8 @@ from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
-from app.services.referral_service import ReferralService
+from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
+from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.admin_miniapp_service import AdminMiniAppService
@@ -352,6 +354,37 @@ def _course_v3_level(value: str | None) -> str:
     return normalized if normalized in _COURSE_V3_LEVELS else "hsk1"
 
 
+def _apply_course_v3_access_policy(data: dict, *, level: str, completed: int, is_paid: bool) -> None:
+    for unit in data.get("units", []):
+        unit_unlocked = False
+        for lesson in unit.get("lessons", []):
+            n = int(lesson.get("n", 0) or 0)
+            if n <= completed:
+                lesson["status"] = "done"
+                lesson.setdefault("stars", 2)
+            elif n == completed + 1:
+                lesson["status"] = "current"
+                lesson.pop("stars", None)
+            else:
+                lesson["status"] = "locked"
+                lesson.pop("stars", None)
+
+            requires_premium = CourseMiniAppAccessService.lesson_requires_premium(level, n)
+            if not is_paid and requires_premium and n > completed:
+                lesson["status"] = "locked"
+                lesson["locked_premium"] = True
+            else:
+                lesson.pop("locked_premium", None)
+
+            if lesson.get("status") in {"done", "current"} and not lesson.get("locked_premium"):
+                unit_unlocked = True
+
+        if not unit_unlocked:
+            unit["status"] = "locked"
+        else:
+            unit.pop("status", None)
+
+
 @app.get("/course-v3.html")
 @app.get("/course-v3")
 async def course_v3_miniapp():
@@ -419,6 +452,7 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
                 return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
             data["authenticated"] = False
             data["level"] = preview_level
+            _apply_course_v3_access_policy(data, level=preview_level, completed=0, is_paid=False)
             return JSONResponse(content=data)
 
         progress = await CourseProgressRepository(session).get_by_user_id(user.id)
@@ -460,28 +494,7 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             "referral_code": getattr(user, "referral_code", None) or "",
         }
 
-        for unit in data.get("units", []):
-            unit_unlocked = False
-            for lesson in unit.get("lessons", []):
-                n = int(lesson.get("n", 0))
-                if n <= completed:
-                    lesson["status"] = "done"
-                    lesson.setdefault("stars", 2)
-                    unit_unlocked = True
-                elif n == completed + 1:
-                    lesson["status"] = "current"
-                    lesson.pop("stars", None)
-                    unit_unlocked = True
-                else:
-                    lesson["status"] = "locked"
-                    lesson.pop("stars", None)
-                if n > 3 and not is_paid and n > completed:
-                    lesson["status"] = "locked"
-                    lesson["locked_premium"] = True
-            if not unit_unlocked:
-                unit["status"] = "locked"
-            else:
-                unit.pop("status", None)
+        _apply_course_v3_access_policy(data, level=resolved_level, completed=completed, is_paid=is_paid)
 
         return JSONResponse(content=data)
 
@@ -523,7 +536,7 @@ async def v3_invite_payload(request: Request, lang: str = "uz"):
             "language": full_lang,
             "joined_count": int(joined_count),
             "active_count": int(active_count),
-            "required": 10,
+            "required": REFERRAL_TRIAL_REQUIRED_ACTIVE,
         })
 
 
@@ -536,6 +549,81 @@ async def v3_notify_toggle(request: Request):
     payload = await request.json()
     enabled = bool(payload.get("enabled", True))
     return JSONResponse(content={"ok": True, "notifications": enabled})
+
+
+@app.get("/api/v3/ad")
+async def v3_course_ad(request: Request, placement: str = "start", level: str = "hsk1", lesson: int = 0):
+    resolved_level = _course_v3_level(level)
+    lesson_order = _positive_int(lesson) or 0
+    if lesson_order <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
+
+    async with async_session_maker() as session:
+        service = CourseAdService(session)
+        ad = await service.get_active_payload()
+        if not ad:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
+        return JSONResponse(
+            content={
+                "ok": True,
+                "ad": ad,
+                "placement": service.normalize_placement(placement),
+                "level": resolved_level,
+                "lesson_order": lesson_order,
+            }
+        )
+
+
+@app.post("/api/v3/ad/view")
+async def v3_course_ad_view(request: Request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+
+    try:
+        payload = await request.json()
+        ad_id = int(payload.get("ad_id") or 0)
+        lesson_order = int(payload.get("lesson_order") or payload.get("lesson_id") or 0)
+        watched_seconds = int(payload.get("watched_seconds") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
+    if ad_id <= 0 or lesson_order <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
+
+    resolved_level = _course_v3_level(str(payload.get("level") or "hsk1"))
+    placement = CourseAdService.normalize_placement(str(payload.get("placement") or "start"))
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+
+        service = CourseAdService(session)
+        result = await service.record_view(
+            user=user,
+            ad_id=ad_id,
+            level=resolved_level,
+            lesson_order=lesson_order,
+            placement=placement,
+            watched_seconds=watched_seconds,
+        )
+        if result.get("ok"):
+            await CourseMiniAppAnalyticsService(session).record_server_event(
+                event_name="course_ad_viewed",
+                telegram_id=telegram_id,
+                user_id=getattr(user, "id", None),
+                source="course_v3_ad",
+                level=resolved_level,
+                lesson_order=lesson_order,
+                payload={
+                    "ad_id": ad_id,
+                    "placement": placement,
+                    "watched_seconds": watched_seconds,
+                },
+            )
+        await session.commit()
+        status = 200 if result.get("ok") else 400
+        return JSONResponse(status_code=status, content=result)
 
 
 @app.post("/api/v3/lesson/complete")
@@ -567,8 +655,15 @@ async def v3_course_lesson_complete(request: Request):
 
         access = CourseMiniAppAccessService(session)
         is_paid = access.is_paid_user(user)
-        if not is_paid and lesson_order > 3:
-            return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
+        ad_supported = False
+        if not is_paid and CourseMiniAppAccessService.lesson_requires_premium(resolved_level, lesson_order):
+            ad_supported = await CourseAdService(session).has_completed_required_views(
+                user_telegram_id=telegram_id,
+                level=resolved_level,
+                lesson_order=lesson_order,
+            )
+            if not ad_supported:
+                return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
@@ -615,7 +710,11 @@ async def v3_course_lesson_complete(request: Request):
         )
 
         next_lesson = await lesson_repo.get_next_lesson(resolved_level, lesson_order)
-        if next_lesson and (is_paid or int(next_lesson.lesson_order or 0) <= 3):
+        next_requires_premium = CourseMiniAppAccessService.lesson_requires_premium(
+            resolved_level,
+            int(getattr(next_lesson, "lesson_order", 0) or 0) if next_lesson else None,
+        )
+        if next_lesson and (is_paid or not next_requires_premium):
             await progress_repo.set_current_lesson_and_step(
                 progress=progress,
                 lesson_id=next_lesson.id,
@@ -643,6 +742,7 @@ async def v3_course_lesson_complete(request: Request):
             payload={
                 "lesson_order": lesson_order,
                 "is_paid": is_paid,
+                "ad_supported": ad_supported,
                 "next_lesson": getattr(next_lesson, "lesson_order", None),
             },
         )
@@ -1007,6 +1107,96 @@ async def admin_miniapp_notifications_media_clear(request: Request):
 async def serve_notification_media(filename: str):
     safe = os.path.basename(filename)
     path = os.path.join(NOTIFICATION_MEDIA_ROOT, safe)
+    if not os.path.exists(path):
+        return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
+    return FileResponse(path)
+
+
+@app.post("/api/admin-miniapp/course-ads")
+async def admin_miniapp_course_ads(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    async with async_session_maker() as session:
+        items = await CourseAdService(session).list_for_admin()
+    return JSONResponse(content={"ok": True, "items": items})
+
+
+@app.post("/api/admin-miniapp/course-ads/upload")
+async def admin_miniapp_course_ads_upload(request: Request):
+    form = await request.form()
+    telegram_id = extract_verified_webapp_user_id(
+        str(form.get("initData") or ""), settings.BOT_TOKEN
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+
+    media = form.get("media")
+    if media is None or not hasattr(media, "read"):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "empty_media"})
+
+    raw_name = str(getattr(media, "filename", "") or "").lower()
+    content_type = str(getattr(media, "content_type", "") or "").lower()
+    _, raw_ext = os.path.splitext(raw_name)
+    ext = raw_ext if raw_ext in {".mp4", ".webm", ".mov"} else ".mp4"
+    if not (content_type.startswith("video") or raw_name.endswith((".mp4", ".webm", ".mov"))):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "unsupported_media"})
+
+    data = await media.read(25 * 1024 * 1024 + 1)
+    if len(data) > 25 * 1024 * 1024:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
+
+    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
+    filename = f"course_ad_{telegram_id}_{int(time.time())}{ext}"
+    with open(os.path.join(COURSE_AD_MEDIA_ROOT, filename), "wb") as handle:
+        handle.write(data)
+
+    title = str(form.get("title") or "Course ad").strip()[:120] or "Course ad"
+    duration_seconds = CourseAdService.normalize_duration(form.get("duration_seconds"))
+    async with async_session_maker() as session:
+        ad = await CourseAdService(session).create_video(
+            title=title,
+            media_path=filename,
+            duration_seconds=duration_seconds,
+            created_by_telegram_id=telegram_id,
+        )
+        await session.commit()
+        payload = CourseAdService.payload(ad)
+    return JSONResponse(content={"ok": True, "ad": payload})
+
+
+@app.post("/api/admin-miniapp/course-ads/toggle")
+async def admin_miniapp_course_ads_toggle(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    try:
+        payload = await request.json()
+        ad_id = int(payload.get("ad_id") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_course_ad_payload"})
+    if ad_id <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_course_ad_payload"})
+
+    async with async_session_maker() as session:
+        ad = await CourseAdService(session).set_active(ad_id, bool(payload.get("is_active", True)))
+        if not ad:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
+        await session.commit()
+        item = CourseAdService.payload(ad)
+    return JSONResponse(content={"ok": True, "ad": item})
+
+
+@app.get("/uploads/course_ads/{filename}")
+async def serve_course_ad_media(filename: str):
+    safe = os.path.basename(filename)
+    path = os.path.join(COURSE_AD_MEDIA_ROOT, safe)
     if not os.path.exists(path):
         return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
     return FileResponse(path)

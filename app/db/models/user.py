@@ -26,7 +26,7 @@ class User(Base):
     status: Mapped[str] = mapped_column(String(16), default="free", nullable=False)
     payment_status: Mapped[str] = mapped_column(String(16), default="none", nullable=False)
 
-    question_limit: Mapped[int] = mapped_column(Integer, default=10, nullable=False)
+    question_limit: Mapped[int] = mapped_column(Integer, default=5, nullable=False)
     questions_used: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     bonus_questions: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     bonus_questions_used: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

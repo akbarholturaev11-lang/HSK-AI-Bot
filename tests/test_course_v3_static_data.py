@@ -28,8 +28,8 @@ class CourseV3StaticMapTests(unittest.TestCase):
                 self.assertEqual(data["progress"]["xp"], 0)
                 self.assertEqual(data["progress"]["completed"], 0)
                 self.assertEqual(len(lessons), expected_count)
-                self.assertEqual(lessons[0]["status"], "current")
 
+                self.assertEqual(lessons[0]["status"], "current")
                 for lesson in lessons[:3]:
                     self.assertFalse(lesson.get("locked_premium", False))
                     self.assertTrue((BASE / level / f"lesson_{lesson['n']:02d}.json").exists())
@@ -49,6 +49,12 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("App.levelPicker()", html)
         self.assertIn("/api/v3/invite?lang=", html)
         self.assertNotIn("start=ref_", html)
+        self.assertIn("PRONOUNCE_LIMIT_EXCEEDED", html)
+        self.assertIn("v3_pronunciation_limit", html)
+        self.assertIn("Reklama bilan davom etish", html)
+        self.assertIn("/api/v3/ad?placement=", html)
+        self.assertIn("/api/v3/ad/view", html)
+        self.assertIn("AdFlow", html)
         self.assertIn('"&level="+sel+"&onboarded=1&tour=1"', onboarding)
 
 

@@ -69,6 +69,7 @@ var L={ru:{hint:"Нажмите на микрофон и произнесите 
   tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription"}
 function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
 function haptic(ok){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
@@ -119,7 +120,7 @@ function onStopped(){
     .then(function(o){busy=false;if(!o.ok||!o.j||o.j.ok!==true){onErr(o);return;}applyScore(Number(o.j.score)||0)})
     .catch(function(){busy=false;setHint(L.netErr)});
 }
-function onErr(o){var code=o&&o.j&&o.j.code;setHint(code==="INVALID_INIT_DATA"?L.needTg:(o&&o.j&&o.j.message)||L.netErr)}
+	function onErr(o){var code=o&&o.j&&o.j.code;if(code==="PRONOUNCE_LIMIT_EXCEEDED"){goPremium();return;}setHint(code==="INVALID_INIT_DATA"?L.needTg:(o&&o.j&&o.j.message)||L.netErr)}
 function applyScore(score){
   var ok=score>=60,word=document.getElementById('word'),fb=document.getElementById('fb');
   if(ok){okCount++;word.classList.add('ok','pop');rain();toast('+10 XP · '+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok+' '+score+'%';

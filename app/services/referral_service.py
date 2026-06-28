@@ -13,7 +13,7 @@ from app.services.referral_notify_service import ReferralNotifyService
 from app.services.subscription_progress_service import SubscriptionProgressService
 
 
-REFERRAL_TRIAL_REQUIRED_ACTIVE = 10
+REFERRAL_TRIAL_REQUIRED_ACTIVE = 5
 REFERRAL_TRIAL_ACCESS_DAYS = 3
 REFERRAL_TRIAL_AI_BUDGET_USD = 2.0
 
