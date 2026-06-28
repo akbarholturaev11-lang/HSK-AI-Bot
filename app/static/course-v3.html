@@ -445,7 +445,7 @@ function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notifi
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
 /* ---------- App ---------- */
-var MAP=null,SCREEN="course",HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false;
+var MAP=null,SCREEN="course",HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,pendingRankUp=null;
 function syncNotify(){if(MAP&&MAP.notify&&typeof MAP.notify.enabled==="boolean")notifOn=MAP.notify.enabled}
 function notifTimesHtml(){var c={uz:{head:"Bot quyidagi holatlarda xabar yuboradi:",items:["Reytingda kimdir sizdan o'zib ketsa","Kun tugayotganda darsni hali bajarmagan bo'lsangiz","Streak (kunlar ketma-ketligi) uzilish xavfi bo'lsa"]},ru:{head:"Бот пришлёт уведомление, когда:",items:["кто-то обгоняет вас в рейтинге","день заканчивается, а урок ещё не пройден","серия (streak) под угрозой"]},tj:{head:"Бот вақте огоҳӣ мефиристад, ки:",items:["касе дар рейтинг аз шумо пеш меравад","рӯз ба охир мерасаду дарс иҷро нашудааст","силсила (streak) дар хатар аст"]}}[LANG]||{head:"",items:[]};return '<b style="color:var(--ink);font-weight:500">'+esc(c.head)+'</b>'+c.items.map(function(x){return '<div style="margin-top:3px">• '+esc(x)+'</div>'}).join("");}
 var App={
@@ -472,7 +472,7 @@ var App={
   exitFlow:function(){$("#flow").classList.remove("on")},
   openWriter:function(ch){if(!ch)return;$("#writeframe").src="/hsk-lugat.html?theme=light&char="+encodeURIComponent(ch)+"&lang="+LANG;$("#writeov").classList.add("on")},
   closeWriter:function(){$("#writeov").classList.remove("on");try{$("#writeframe").src="about:blank"}catch(e){}},
-  showLevelUp:function(type){
+  showLevelUp:function(type,data){
     var lu={ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
       uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
       tj:{cont:"Идома",lessonH:"Дарс анҷом ёфт!",lessonP:"Офарин! Зинаи навбатӣ интизор аст.",acc:"дақиқӣ",combo:"комбо",levelH:"HSK 1 тамом!",levelP:"Табрик! HSK 2 кушода шуд.",opened:"кушода шуд",xpH:"Сатҳи 5!",xpP:"Офарин! Сатҳи нав — имкониятҳои нав.",lvl:"Сатҳ",bonusXp:"бонус XP",chest:"сандуқи нав"}}[LANG];
@@ -482,23 +482,47 @@ var App={
       uz:{h:curLabel+" tugadi!",p:nextLabel?"Tabriklaymiz! "+nextLabel+" ochildi.":"Tabriklaymiz! Bu daraja tugadi."},
       tj:{h:curLabel+" тамом!",p:nextLabel?"Табрик! "+nextLabel+" кушода шуд.":"Табрик! Ин сатҳ анҷом ёфт."}
     }[LANG]||{};
-    var V={lesson:{emb:'<span class="h2 han">毕</span>',h:lu.lessonH,p:lu.lessonP,rw:[["+60","XP"],["100%",lu.acc],["5",lu.combo]]},
-      level:{emb:'<span class="h2 han">二</span>',h:levelCopy.h||lu.levelH,p:levelCopy.p||lu.levelP,rw:[[nextLabel||curLabel,lu.opened],["+200","XP"]]},
-      xp:{emb:'<small>'+lu.lvl+'</small><b>5</b>',h:lu.xpH,p:lu.xpP,rw:[["+50",lu.bonusXp],["1",lu.chest]]}}[type||"lesson"];
+    var g=(data&&data.gamification)||data||{};
+    var awardedXp=Math.max(0,Number(g.awarded_xp||0));
+    var xpRows=awardedXp>0?[["+"+awardedXp,"XP"]]:[];
+    var levelRows=[[nextLabel||curLabel,lu.opened]].concat(xpRows);
+    var V={lesson:{emb:'<span class="h2 han">毕</span>',h:lu.lessonH,p:lu.lessonP,rw:xpRows},
+      level:{emb:'<span class="h2 han">二</span>',h:levelCopy.h||lu.levelH,p:levelCopy.p||lu.levelP,rw:levelRows},
+      xp:{emb:'<small>'+lu.lvl+'</small><b>5</b>',h:lu.xpH,p:lu.xpP,rw:xpRows}}[type||"lesson"];
     if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#C2962F" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
     $("#lu-panda").innerHTML=pandaSvg();
-    $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p><div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw"><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join("")+'</div>';
+    var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw"><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join("")+'</div>':"";
+    $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
     $("#lu-cta").setAttribute("onclick",(type||"lesson")==="lesson"?"App.showRankUp()":"App.closeLevelUp()");
     $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+lu.cont;
     $("#levelup").classList.add("on");setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
     luRain();beep([523,659,784,1046]);haptic("ok");
   },
   showRankUp:function(){
+    var beforeRank=pendingRankUp&&pendingRankUp.before;pendingRankUp=null;
+    if(INIT_DATA){
+      var waitTexts={ru:["Проверяем рейтинг…","Секунду, обновляем вашу позицию."],uz:["Reyting tekshirilmoqda…","Bir soniya, o'rningizni yangilayapmiz."],tj:["Рейтинг санҷида мешавад…","Як лаҳза, ҷойи шуморо нав мекунем."]};
+      var wait=waitTexts[LANG]||waitTexts.uz;
+      $("#lu-panda").innerHTML=pandaSvg();
+      $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+wait[0]+'</h2><p>'+wait[1]+'</p></div>';
+      loadLatestRating().then(function(){
+        var afterRank=currentRatingRank();
+        if(!beforeRank||!afterRank||afterRank>=beforeRank){App.closeLevelUp();return}
+        App.renderRankUpBoard();
+      }).catch(function(){App.closeLevelUp()});
+      return;
+    }
+    if(!beforeRank){App.closeLevelUp();return}
+    App.renderRankUpBoard();
+  },
+  renderRankUpBoard:function(){
+    sortRatingUsers();
     var meIdx=ratingUsers.findIndex(function(u){return u.me});
     var meU=meIdx>=0?ratingUsers[meIdx]:null;
     var aboveU=meIdx>0?ratingUsers[meIdx-1]:null;
     var belowU=meIdx>=0&&meIdx<ratingUsers.length-1?ratingUsers[meIdx+1]:null;
-    var sub=aboveU?(LANG==="ru"?"Вы обогнали "+aboveU.n:LANG==="tj"?"Аз "+aboveU.n+" пеш гузаштед":aboveU.n+"dan o'tdingiz"):"";
+    var passedU=belowU;
+    var sub=passedU?(LANG==="ru"?"Вы обогнали "+passedU.n:LANG==="tj"?"Аз "+passedU.n+" пеш гузаштед":passedU.n+"dan o'tdingiz"):"";
     var r={title:LANG==="ru"?"Вы поднялись в рейтинге!":LANG==="tj"?"Дар рейтинг боло рафтед!":"Reytingda ko'tarildingiz!",sub:sub,cont:T().cont};
     var rows=[];
     if(aboveU)rows.push({rk:meIdx,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
@@ -512,7 +536,7 @@ var App={
     setTimeout(function(){document.querySelectorAll("#lu-stage .ru-row").forEach(function(row){row.style.transform="translateY(0)"});luRain();beep([784,988,1175,1318]);haptic("ok")},420);
     $("#lu-cta").setAttribute("onclick","App.closeLevelUp()");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
   },
-  closeLevelUp:function(){$("#levelup").classList.remove("on");App.exitFlow();App.show("rating")},
+  closeLevelUp:function(){$("#levelup").classList.remove("on");App.exitFlow();App.show("rating");renderRating()},
   runTour:function(){var t={
     ru:{
       c:"Вот ваш курс! Каждый кружок — это урок. Нажми на узел и начни учиться.",
@@ -1261,22 +1285,25 @@ function loadLevel(lv){
   }).catch(function(){});
 }
 function applyLessonDone(cur,d){
+  var rankBefore=currentRatingRank();
   var al=allLessons();
   cur.status="done";cur.stars=3;cur.locked_premium=false;
   if(d&&d.gamification&&MAP.progress){
     MAP.progress.xp=d.gamification.xp||MAP.progress.xp;
     MAP.progress.streak=d.gamification.streak||MAP.progress.streak;
     if(typeof d.completed_lessons_count!=="undefined")MAP.progress.completed=d.completed_lessons_count;
+    ratingLoaded=false;
   }
+  pendingRankUp=(d&&d.gamification&&!d.duplicate)?{before:rankBefore}:null;
   var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
   if(next&&next.status==="locked"&&!isPremiumLocked(next))next.status="current";
   if(next&&isPremiumLocked(next))next.status="locked";
   renderAll();
   if(al.every(function(l){return l.status==="done"})){
     var nxt=_NEXT_LEVEL[MAP.level||"hsk1"];
-    if(nxt){App.showLevelUp("level");setTimeout(function(){loadLevel(nxt)},2200);return;}
+    if(nxt){App.showLevelUp("level",d);setTimeout(function(){loadLevel(nxt)},2200);return;}
   }
-  App.showLevelUp("lesson");
+  App.showLevelUp("lesson",d);
 }
 function flowDone(){
   if(Flow.test){return finishSkipTest()}
@@ -1342,32 +1369,53 @@ function courseLevelLabel(lv){
   lv=normalizeLevel(lv||((MAP&&MAP.level)||"hsk1"));
   return lv.toUpperCase().replace("HSK","HSK ");
 }
+function sortRatingUsers(){
+  ratingUsers.sort(function(x,y){
+    if((x.rank||0)&&(y.rank||0))return (x.rank||0)-(y.rank||0);
+    return (y.weeklyXp||0)-(x.weeklyXp||0)||y.xp-x.xp||((x.tgId||0)-(y.tgId||0));
+  });
+}
+function currentRatingRank(){
+  sortRatingUsers();
+  var i=ratingUsers.findIndex(function(u){return u.me});
+  return i>=0?i+1:null;
+}
+function applyRatingPayload(d){
+  ratingMeta={
+    loaded:true,
+    error:false,
+    leagueSize:Number(d.league_size||0),
+    resetAtMs:Number(d.weekly_reset_seconds||0)>0?Date.now()+Number(d.weekly_reset_seconds||0)*1000:null
+  };
+  ratingUsers=(d.leaderboard||[]).map(function(u){return{
+    rank:Number(u.rank||0),
+    me:!!u.is_current_user,
+    a:(u.name||"?")[0].toUpperCase(),
+    n:u.name||"?",
+    xp:u.total_xp||0,
+    weeklyXp:u.xp||0,
+    p:u.is_paid?1:0,
+    username:u.username||"",
+    tgId:u.telegram_id||0,
+    level:u.course_level||"",
+    completedLessons:u.completed_lessons||0
+  }});
+  ratingLoaded=true;
+  if(MAP&&MAP.progress){MAP.progress.xp=d.xp||MAP.progress.xp;MAP.progress.streak=d.streak||MAP.progress.streak}
+}
+function loadLatestRating(){
+  return _apiGet("/api/miniapp/gamification").then(function(r){return r.json()}).then(function(d){
+    if(!d||!d.ok)throw new Error("rating_failed");
+    applyRatingPayload(d);
+    return d;
+  });
+}
 function renderRating(){
   if(!ratingLoaded&&INIT_DATA){
     ratingLoaded=true;
     var t=T();
     $("#s-rating").innerHTML='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div><div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
-    _apiGet("/api/miniapp/gamification").then(function(r){return r.json()}).then(function(d){
-      if(!d||!d.ok)throw new Error("rating_failed");
-      ratingMeta={
-        loaded:true,
-        error:false,
-        leagueSize:Number(d.league_size||0),
-        resetAtMs:Number(d.weekly_reset_seconds||0)>0?Date.now()+Number(d.weekly_reset_seconds||0)*1000:null
-      };
-      ratingUsers=(d.leaderboard||[]).map(function(u){return{
-        me:!!u.is_current_user,
-        a:(u.name||"?")[0].toUpperCase(),
-        n:u.name||"?",
-        xp:u.total_xp||0,
-        weeklyXp:u.xp||0,
-        p:u.is_paid?1:0,
-        username:u.username||"",
-        tgId:u.telegram_id||0,
-        level:u.course_level||"",
-        completedLessons:u.completed_lessons||0
-      }});
-      if(MAP&&MAP.progress){MAP.progress.xp=d.xp||MAP.progress.xp;MAP.progress.streak=d.streak||MAP.progress.streak}
+    loadLatestRating().then(function(){
       _renderRatingContent();
     }).catch(function(){ratingMeta={loaded:true,error:true,leagueSize:0,resetAtMs:null};ratingUsers=[];_renderRatingContent()});
     return;
@@ -1376,7 +1424,7 @@ function renderRating(){
 }
 function _renderRatingContent(){
   var t=T(),r=rl();
-  ratingUsers.sort(function(x,y){return (y.weeklyXp||0)-(x.weeklyXp||0)||y.xp-x.xp});
+  sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
   var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'
     +'<div class="rt-seg"><button class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';

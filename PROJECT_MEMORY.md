@@ -207,6 +207,29 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-28 — Course v3 reward message correctness
+
+Changed:
+- Course v3 lesson-completion rank-up popup now refreshes real leaderboard data before showing and only appears when the user's rank actually improved.
+- Mini App rating rows now preserve server-provided rank order, including stable tie handling.
+- Motivation reminder ranking uses the same stable tie-breaker and no longer sends `0 XP` as the overtaken gap.
+- Course v3 lesson-completion reward overlay now displays the backend `awarded_xp` value instead of hardcoded fake rewards such as `+60 XP`.
+
+Why:
+- The old lesson-completion popup could claim the user rose in ranking after every lesson and could name the wrong user because it used stale client leaderboard data.
+- The old reward overlay showed fixed XP values that did not match real XP awarded by `CourseGamificationService`.
+
+Files touched:
+- `app/static/course-v3.html`
+- `app/services/course_gamification_service.py`
+- `app/services/motivation_reminder_service.py`
+
+Risk:
+- Low. Lesson completion, XP awarding, payment, subscription, and access rules are unchanged.
+
+Follow-up:
+- Re-test in real Telegram WebView after deploy because local Playwright Chromium is blocked by sandbox permissions.
+
 ### 2026-06-28 — Course v3 analytics, skip-test unlock, and real fallback cleanup
 
 Changed:

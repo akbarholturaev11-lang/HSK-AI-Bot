@@ -215,7 +215,11 @@ class CourseGamificationService:
             .outerjoin(CourseProgress, CourseProgress.user_id == User.id)
             .outerjoin(weekly, weekly.c.user_id == User.id)
             .where(CourseMiniAppProfile.xp_total >= low)
-            .order_by(func.coalesce(weekly.c.weekly_xp, 0).desc(), CourseMiniAppProfile.xp_total.desc())
+            .order_by(
+                func.coalesce(weekly.c.weekly_xp, 0).desc(),
+                CourseMiniAppProfile.xp_total.desc(),
+                User.id.asc(),
+            )
         )
         if high is not None:
             query = query.where(CourseMiniAppProfile.xp_total < high)

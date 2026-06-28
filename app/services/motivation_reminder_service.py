@@ -59,6 +59,10 @@ class MotivationReminderService:
     def _local_now(offset_minutes: int, now: datetime) -> datetime:
         return now + timedelta(minutes=max(-720, min(840, int(offset_minutes or 0))))
 
+    @staticmethod
+    def _xp_gap_to_above(above_weekly_xp: int, my_weekly_xp: int) -> int:
+        return max(1, int(above_weekly_xp or 0) - int(my_weekly_xp or 0))
+
     async def send_due_reminders(self, bot: Bot) -> None:
         now = datetime.now(timezone.utc)
         week_start_by_day: dict[date, date] = {}
@@ -103,7 +107,13 @@ class MotivationReminderService:
             )
         ranks: dict[int, tuple[int, list]] = {}
         for members in league_members.values():
-            members.sort(key=lambda item: (item[2], int(item[0].xp_total or 0)), reverse=True)
+            members.sort(
+                key=lambda item: (
+                    -int(item[2] or 0),
+                    -int(item[0].xp_total or 0),
+                    int(item[1].id or 0),
+                )
+            )
             for index, (profile, _user, _wx) in enumerate(members, 1):
                 ranks[int(profile.user_id)] = (index, members)
 
@@ -178,7 +188,7 @@ class MotivationReminderService:
             f"@{above_user.username}" if above_user.username else "Bir o'quvchi"
         )
         my_wx = members[current_rank - 1][2]
-        xp_gap = max(0, int(above_wx) - int(my_wx))
+        xp_gap = self._xp_gap_to_above(above_wx, my_wx)
         league = CourseGamificationService.league_for_xp(profile.xp_total)
         resolved = await self.templates.resolve(KEY_OVERTAKEN, lang)
         if not resolved:
