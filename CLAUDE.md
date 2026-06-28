@@ -1,3 +1,9 @@
+## Communication Rule (STRICT)
+
+Always communicate with the user ONLY in Uzbek. This is a strict, non-negotiable rule.
+All explanations, questions, summaries, and status updates must be written in Uzbek.
+(Code, file paths, and technical identifiers stay as-is — only the conversation language is Uzbek.)
+
 ## Mandatory Project Guidance First
 
 Before making any code change, always read the project guidance files first and follow their rules.
