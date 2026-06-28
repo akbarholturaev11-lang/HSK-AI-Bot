@@ -27,6 +27,7 @@
       --radius:8px;
       --safe-top:env(safe-area-inset-top,0px);
       --safe-bottom:env(safe-area-inset-bottom,0px);
+      --app-h:100dvh;
       color-scheme:light;
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;letter-spacing:0}
@@ -37,7 +38,7 @@
     button,input,select,textarea{font:inherit}
     button{border:0;background:none;color:inherit;cursor:pointer}
     [hidden]{display:none !important}
-    .app{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
+    .app{min-height:var(--app-h);display:grid;grid-template-rows:auto 1fr auto}
     .topbar{position:sticky;top:0;z-index:20;background:rgba(246,247,249,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
     .topbar-inner{display:grid;grid-template-columns:1fr;gap:10px;padding:10px 12px 8px}
     .brand-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
@@ -175,7 +176,7 @@
     .drawer-body{overflow:auto;padding:12px 16px calc(16px + var(--safe-bottom))}
     .monitor{position:fixed;inset:0;z-index:90;display:none;background:#05070b;color:#eff7f2;overflow:auto}
     .monitor.open{display:block}
-    .monitor-shell{min-height:100dvh;padding:calc(16px + var(--safe-top)) 14px calc(18px + var(--safe-bottom));display:grid;gap:14px;background:radial-gradient(circle at 14% 0%,rgba(42,120,255,.2),transparent 32%),radial-gradient(circle at 88% 14%,rgba(34,197,94,.16),transparent 34%),linear-gradient(135deg,#05070b 0%,#09111c 48%,#07140f 100%)}
+    .monitor-shell{min-height:var(--app-h);padding:calc(16px + var(--safe-top)) 14px calc(18px + var(--safe-bottom));display:grid;gap:14px;background:radial-gradient(circle at 14% 0%,rgba(42,120,255,.2),transparent 32%),radial-gradient(circle at 88% 14%,rgba(34,197,94,.16),transparent 34%),linear-gradient(135deg,#05070b 0%,#09111c 48%,#07140f 100%)}
     .monitor-top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;border-bottom:1px solid rgba(255,255,255,.14);padding-bottom:12px}
     .monitor-kicker{display:flex;align-items:center;gap:8px;color:#9be7c0;font-size:11px;font-weight:950;text-transform:uppercase}
     .monitor-dot{width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 7px rgba(34,197,94,.14)}
@@ -207,11 +208,11 @@
     .state-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
     .toast{position:fixed;left:12px;right:12px;bottom:calc(74px + var(--safe-bottom));z-index:100;background:#151922;color:#fff;border-radius:8px;padding:12px 14px;font-size:13px;font-weight:850;box-shadow:var(--shadow);transform:translateY(140%);transition:transform .2s ease}
     .toast.show{transform:translateY(0)}
-    .bottom-safe{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-bottom));background:linear-gradient(180deg,rgba(246,247,249,0),var(--bg) 28%)}
+    .bottom-safe{position:fixed;left:0;right:0;bottom:0;height:calc(70px + var(--safe-bottom));background:linear-gradient(180deg,rgba(246,247,249,0),var(--bg) 28%);pointer-events:none;z-index:1}
     @media (min-width:820px){
       body{padding:0;overflow:hidden}
-      .app{grid-template-columns:300px minmax(0,1fr);grid-template-rows:1fr;height:100dvh;overflow:hidden}
-      .topbar{height:100dvh;border-bottom:0;border-right:1px solid var(--line);display:grid;grid-template-rows:auto 1fr;overflow:auto}
+      .app{grid-template-columns:300px minmax(0,1fr);grid-template-rows:1fr;height:var(--app-h);overflow:hidden}
+      .topbar{height:var(--app-h);border-bottom:0;border-right:1px solid var(--line);display:grid;grid-template-rows:auto 1fr;overflow:auto}
       .topbar-inner{padding:20px}
       .brand-row{grid-template-columns:1fr}
       .brand{align-items:flex-start}
@@ -226,7 +227,7 @@
       .tabs{position:static;align-self:start;grid-template-columns:1fr;padding:12px 14px;gap:8px;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none}
       .tab{height:48px;text-align:left;padding:0 14px;font-size:13px;border:1px solid transparent}
       .tab.active{box-shadow:0 10px 24px rgba(21,25,34,.16)}
-      main{height:100dvh;overflow:auto;padding:28px 30px 38px;max-width:none;width:100%;margin:0}
+      main{height:var(--app-h);overflow:auto;padding:28px 30px 38px;max-width:none;width:100%;margin:0}
       .section{margin-bottom:22px}
       .section-title{font-size:19px}
       .stats-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -532,7 +533,20 @@
 
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-    try{ tg && tg.ready(); tg && tg.expand(); }catch(error){}
+    function syncViewport(){
+      const h = (tg && (tg.viewportStableHeight || tg.viewportHeight)) || window.innerHeight;
+      if(h) document.documentElement.style.setProperty("--app-h", h + "px");
+    }
+    try{
+      if(tg){
+        tg.ready();
+        tg.expand();
+        syncViewport();
+        tg.onEvent && tg.onEvent("viewportChanged", syncViewport);
+      }
+    }catch(error){}
+    window.addEventListener("resize", syncViewport);
+    window.addEventListener("orientationchange", () => setTimeout(syncViewport, 250));
 
     const $ = (id) => document.getElementById(id);
     const state = {data:null, management:null, remoteUsers:null, activeModule:null, tab:"dashboard", filter:"all", search:""};
