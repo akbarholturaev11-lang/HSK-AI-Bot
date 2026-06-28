@@ -291,11 +291,6 @@ button{cursor:pointer}
 .voicebox p{font-size:13px;color:rgba(255,255,255,.72);margin:0 0 16px}
 .voicebox button{background:var(--cin);color:#fff;border:none;border-radius:13px;padding:14px 26px;font-family:inherit;font-size:15px;font-weight:500}
 .pro{margin:16px;background:var(--ink);color:#fff;border-radius:16px;padding:17px;position:relative;overflow:hidden}
-.pro-price{display:flex;align-items:baseline;gap:7px;margin:8px 0 10px;flex-wrap:wrap}
-.pro-price .pp-main{font-size:22px;font-weight:700;color:#fff}
-.pro-price small{font-size:13px;opacity:.7}
-.pro-price .pp-s{font-size:12px;opacity:.6}
-.pro-price.pp-loading{font-size:18px;opacity:.4;margin:8px 0 10px}
 .pro .gw{position:absolute;right:-6px;top:-16px;font-size:84px;color:rgba(255,255,255,.06)}
 .pro h3{margin:0 0 4px;font-size:16px;font-weight:500;color:#fff}.pro p{margin:0 0 13px;font-size:13px;color:rgba(255,255,255,.7)}
 .pro button{background:var(--gold);color:#3a2c08;border:none;border-radius:11px;padding:11px 16px;font-family:inherit;font-size:14px;font-weight:500}
@@ -449,20 +444,9 @@ function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notifi
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
 /* ---------- App ---------- */
-var MAP=null,SCREEN="course",HP=5,notifOn=true,dailyGoal=50,PROF={},ratingLoaded=false,PRICES=null;
-function _priceStr(plan_type){
-  if(!PRICES||!PRICES.prices)return"";
-  var methods=["visa","alipay","wechat"];
-  for(var i=0;i<methods.length;i++){var m=PRICES.prices[methods[i]];if(m&&m[plan_type])return m[plan_type].amount+" "+m[plan_type].currency;}
-  return"";
-}
-function fetchPrices(){
-  if(!INIT_DATA)return;
-  _apiPost("/api/subscription-miniapp/overview",{mode:"subscription",source:"v3_price_preview"})
-    .then(function(r){return r.json()}).then(function(d){
-      if(d.ok&&d.prices){PRICES=d;if(SCREEN==="profile")renderProfile();}
-    }).catch(function(){});
-}
+var MAP=null,SCREEN="course",HP=5,notifOn=true,notifTime="20:00",dailyGoal=50,PROF={},ratingLoaded=false;
+function syncNotify(){if(MAP&&MAP.notify){if(typeof MAP.notify.enabled==="boolean")notifOn=MAP.notify.enabled;if(MAP.notify.time)notifTime=MAP.notify.time}}
+function notifTimesText(){var tt=notifTime||"20:00";return {ru:"Ежедневное напоминание: "+tt+" · Еженедельный отчёт: понедельник 09:00",uz:"Kunlik eslatma: "+tt+" · Haftalik hisobot: dushanba 09:00",tj:"Ёдоварии ҳаррӯза: "+tt+" · Ҳисоботи ҳафтаина: душанбе 09:00"}[LANG]||"Kunlik eslatma: "+tt;}
 var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;renderAll()},
   show:function(s){SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
@@ -595,7 +579,7 @@ var App={
   openMistakes:function(){location.href="/course_v3_mistakes.html?lang="+LANG},
   openVoiceCall:function(){location.href="/course_v3_voice.html?lang="+LANG},
   openFriends:function(){ratingTabCur="friends";App.show("rating");renderRating()},
-  notifToggle:function(){notifOn=!notifOn;if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:notifOn}).catch(function(){});renderProfile()},
+  notifToggle:function(){notifOn=!notifOn;if(MAP)MAP.notify={enabled:notifOn,time:notifTime};renderProfile();if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:notifOn}).then(function(r){return r.json()}).then(function(d){if(d&&d.reminder_time){notifTime=d.reminder_time;if(MAP)MAP.notify={enabled:notifOn,time:notifTime};renderProfile()}}).catch(function(){})},
   avatarEdit:function(){var t=T();var note=LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi";App.openSheet('<div class="shead"><div class="zh han" style="font-size:30px">'+(PROF.avatar||"阿")+'</div><div class="tr" style="margin-top:8px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
   goalPicker:function(){var p=pl();var opts=[10,20,30,50];
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+p.goalSet+'</div></div>'
@@ -1609,6 +1593,7 @@ function renderProfile(){
     +'<div class="sech">'+p.goalSet.split(" ")[0]+'</div>'
     +'<div class="set"><button class="srow" onclick="App.langPicker()"><i class="ti ti-language"></i> '+t.lang+'<span class="sv">'+LANG.toUpperCase()+' <i class="ti ti-chevron-right"></i></span></button>'
     +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+t.notif+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
+    +(notifOn?'<div class="srow-note">'+esc(notifTimesText())+'</div>':'')
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
     +'<button class="srow"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button></div>'
     +'<div style="height:14px"></div>';
@@ -1639,7 +1624,6 @@ navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
 $("#paywall").onclick=function(){App.closePaywall()};
 window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.startAdSupportedLesson=startAdSupportedLesson;window.App=App;window.Flow=Flow;window.AdFlow=AdFlow;window.speak=speak;
-fetchPrices();
 (function(){
   var bootLevel=getSelectedLevel();
   var url=INIT_DATA?"/api/v3/map?lang="+LANG+"&level="+bootLevel:"/course_v3_data/"+bootLevel+".json";
