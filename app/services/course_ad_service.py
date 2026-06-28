@@ -5,8 +5,8 @@ from app.db.models.course_ad import CourseAdCreative, CourseAdView
 
 
 COURSE_AD_PLACEMENTS = ("start", "middle", "end")
-COURSE_AD_MIN_SECONDS = 6
-COURSE_AD_MAX_SECONDS = 7
+COURSE_AD_MIN_SECONDS = 5
+COURSE_AD_MAX_SECONDS = 120
 COURSE_AD_DEFAULT_SECONDS = 7
 COURSE_AD_MEDIA_ROOT = "app/static/uploads/course_ads"
 
@@ -30,6 +30,15 @@ class CourseAdService:
             duration = COURSE_AD_DEFAULT_SECONDS
         return min(max(duration, COURSE_AD_MIN_SECONDS), COURSE_AD_MAX_SECONDS)
 
+    @staticmethod
+    def normalize_link(value) -> str | None:
+        link = str(value or "").strip()
+        if not link:
+            return None
+        if not (link.startswith("http://") or link.startswith("https://")):
+            link = "https://" + link
+        return link[:512]
+
     @classmethod
     def payload(cls, ad: CourseAdCreative) -> dict:
         return {
@@ -37,6 +46,7 @@ class CourseAdService:
             "title": ad.title,
             "media_type": ad.media_type,
             "media_url": f"/uploads/course_ads/{ad.media_path}",
+            "link_url": getattr(ad, "link_url", None) or None,
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
             "is_active": bool(ad.is_active),
             "created_at": ad.created_at.isoformat() if ad.created_at else None,
@@ -54,12 +64,14 @@ class CourseAdService:
         title: str,
         media_path: str,
         duration_seconds: int = COURSE_AD_DEFAULT_SECONDS,
+        link_url: str | None = None,
         created_by_telegram_id: int | None = None,
     ) -> CourseAdCreative:
         ad = CourseAdCreative(
             title=(title or "Course ad").strip()[:120],
             media_path=media_path,
             media_type="video",
+            link_url=self.normalize_link(link_url),
             duration_seconds=self.normalize_duration(duration_seconds),
             is_active=True,
             created_by_telegram_id=created_by_telegram_id,
@@ -78,6 +90,20 @@ class CourseAdService:
         ad.is_active = bool(is_active)
         await self.session.flush()
         return ad
+
+    async def delete(self, ad_id: int) -> str | None:
+        """Reklamani butunlay o'chiradi. O'chirilgan media fayl nomini qaytaradi
+        (mavjud bo'lsa) — chaqiruvchi diskdan ham o'chirishi uchun."""
+        result = await self.session.execute(
+            select(CourseAdCreative).where(CourseAdCreative.id == ad_id)
+        )
+        ad = result.scalar_one_or_none()
+        if not ad:
+            return None
+        media_path = ad.media_path
+        await self.session.delete(ad)
+        await self.session.flush()
+        return media_path
 
     async def get_active_ad(self) -> CourseAdCreative | None:
         result = await self.session.execute(

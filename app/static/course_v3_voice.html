@@ -16,6 +16,7 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 .bg svg{width:100%;height:100%}
 .top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 4px}
 .ic{width:36px;height:36px;border-radius:50%;background:rgba(251,247,239,.82);border:1px solid rgba(120,95,60,.3);color:#5b4a33;display:flex;align-items:center;justify-content:center;font-size:18px}
+.nosub .sub{visibility:hidden}
 .cnt{font-size:13px;color:#4a3c28;font-weight:500;background:rgba(251,247,239,.74);padding:5px 12px;border-radius:14px}
 .stage{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;padding:0 24px 4px}
 .charwrap{width:214px;height:214px;display:flex;align-items:center;justify-content:center}
@@ -74,6 +75,7 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
     <div class="dots" id="dots"><i></i><i></i><i></i></div>
   </div>
   <div class="ctrl"><div class="ctrlw">
+    <button class="sct" id="subToggle" onclick="toggleSub()" aria-label="subtitr"><i class="ti ti-badge-cc"></i></button>
     <button class="mic" id="mic" onclick="talk()" aria-label="gapirish"><i class="ti ti-microphone"></i></button>
     <button class="end" onclick="endCall()" aria-label="tugatish"><i class="ti ti-phone-off"></i></button>
   </div></div>
@@ -98,6 +100,11 @@ var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analy
   uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",tapStart:"Mikrofonni bosing va gapiring",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Limit tugadi",limitSub:"Bepul suhbat ishlatildi. Cheksiz uchun Premium oching.",premiumBtn:"Premium ochish"},
   tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",tapStart:"Микрофонро пахш карда гап занед",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Лимит ба охир расид",limitSub:"Сӯҳбати ройгон истифода шуд. Барои бепоён Premium кушоед.",premiumBtn:"Кушодани Premium"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+/* ---- subtitle (hanzi/pinyin/translation) visibility toggle ---- */
+var SUB_KEY="hsk_voice_sub";
+function subOn(){try{return localStorage.getItem(SUB_KEY)!=="0"}catch(e){return true}}
+function applySub(){var on=subOn();document.body.classList.toggle("nosub",!on);var ic=document.querySelector("#subToggle i");if(ic)ic.className="ti "+(on?"ti-eye":"ti-eye-off");}
+function toggleSub(){try{localStorage.setItem(SUB_KEY,subOn()?"0":"1")}catch(e){}applySub();}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=voice"}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.85;window.speechSynthesis.speak(u)}catch(e){}}
@@ -145,6 +152,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp
 function jr(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}})}
 
 function init(){
+  applySub();
   setName();setChar("talk");setStatus(L.connecting);setCnt();showLine("","",L.tapStart);
   fetch("/api/voice-practice/me?initData="+encodeURIComponent(initData())).then(jr)
     .then(function(o){if(o.ok&&o.j){ME.level=o.j.level||"hsk1";ME.language=o.j.language||LANG;ME.is_paid=!!o.j.is_paid}

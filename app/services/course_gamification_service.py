@@ -182,8 +182,15 @@ class CourseGamificationService:
             },
         }
 
-    async def leaderboard(self, user, limit: int | None = None) -> dict:
+    async def leaderboard(
+        self,
+        user,
+        limit: int | None = None,
+        timezone_offset_minutes: int | None = None,
+    ) -> dict:
         profile = await self.profiles.get_or_create(user.id)
+        if timezone_offset_minutes is not None:
+            profile.timezone_offset_minutes = max(-720, min(840, int(timezone_offset_minutes)))
         snapshot = await self.snapshot(user, profile=profile)
         day = self._local_day(profile.timezone_offset_minutes)
         week_start = self._week_start(day)
@@ -196,7 +203,6 @@ class CourseGamificationService:
             .group_by(CourseXpEvent.user_id)
             .subquery()
         )
-        low, high = self._league_range(profile.xp_total)
         query = (
             select(
                 User.id,
@@ -214,15 +220,11 @@ class CourseGamificationService:
             .join(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
             .outerjoin(CourseProgress, CourseProgress.user_id == User.id)
             .outerjoin(weekly, weekly.c.user_id == User.id)
-            .where(CourseMiniAppProfile.xp_total >= low)
             .order_by(
                 func.coalesce(weekly.c.weekly_xp, 0).desc(),
-                CourseMiniAppProfile.xp_total.desc(),
                 User.id.asc(),
             )
         )
-        if high is not None:
-            query = query.where(CourseMiniAppProfile.xp_total < high)
         rows = (await self.session.execute(query)).all()
         ranked = []
         current_rank = 0

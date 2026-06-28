@@ -32,6 +32,10 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "trial_quiz_explanation_used_at": "TIMESTAMP WITH TIME ZONE",
         "trial_voice_used_at": "TIMESTAMP WITH TIME ZONE",
         "force_sub_required_at": "TIMESTAMP WITH TIME ZONE",
+        "bot_blocked_at": "TIMESTAMP WITH TIME ZONE",
+        "bot_unblocked_at": "TIMESTAMP WITH TIME ZONE",
+        "last_bot_block_check_at": "TIMESTAMP WITH TIME ZONE",
+        "bot_block_reason": "VARCHAR(120)",
         "daily_practice_started_at": "TIMESTAMP WITH TIME ZONE",
         "daily_practice_completed_at": "TIMESTAMP WITH TIME ZONE",
         "daily_practice_streak": "INTEGER DEFAULT 0 NOT NULL",
@@ -141,6 +145,9 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
         "motivation_overtaken_date": "DATE",
         "motivation_goal_date": "DATE",
         "motivation_streak_date": "DATE",
+    },
+    "course_ad_creatives": {
+        "link_url": "VARCHAR(512)",
     },
 }
 

@@ -96,11 +96,17 @@ button{cursor:pointer}
 .adbox{min-height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:calc(14px + var(--safe-t)) 14px calc(16px + var(--safe-b));gap:12px}
 .adtop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.78);font-weight:600}
 .adcount{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:7px 10px;white-space:nowrap}
+.advideo-wrap{position:relative;min-height:0;height:100%;display:block}
 .advideo{width:100%;height:100%;min-height:280px;max-height:68dvh;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}
+.advisit{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.24);color:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .admeta{display:grid;gap:8px}
 .admeta b{font-size:15px;font-weight:600}.admeta small{font-size:12px;color:rgba(255,255,255,.68);line-height:1.4}
 .adcta{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;background:#fff;color:#211D17;display:flex;align-items:center;justify-content:center;gap:8px}
 .adcta:disabled{background:rgba(255,255,255,.14);color:rgba(255,255,255,.62)}
+.adsub{display:grid;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px}
+.adsub-t{margin:0 0 2px;font-size:13.5px;line-height:1.45;color:#fff;text-align:center;font-weight:500}
+.adsub-pay{background:#fff;color:#211D17}
+.adcta.ghost{background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.2)}
 .ftop{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
 .fx{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
 .fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
@@ -215,11 +221,12 @@ button{cursor:pointer}
 .toggle.on{background:var(--jade)}.toggle:after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}.toggle.on:after{left:21px}
 /* rating */
 .lr{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);margin:0 16px}
-.lr .rk{width:26px;text-align:center;font-weight:600;font-size:14px;color:var(--ink2)}
-.lr .av{width:34px;height:34px;border-radius:10px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--ink2)}
-.lr .nm{flex:1;font-size:14px}.lr .xp{font-size:13px;color:var(--ink2);font-weight:500}
-.lr.me{background:var(--cinbg);border-radius:11px;border-bottom:none;padding:10px 12px}
-.lr.me .av{background:var(--cin);color:#fff}.lr.me .nm{font-weight:500;color:var(--cin2)}.lr.me .xp{color:var(--cin2)}
+	.lr .rk{width:26px;text-align:center;font-weight:600;font-size:14px;color:var(--ink2)}
+	.lr .av{width:34px;height:34px;border-radius:10px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--ink2)}
+	.lr .nm{flex:1;font-size:14px}.lr .xp{font-size:13px;color:var(--ink2);font-weight:500}
+	.lr .nm small{display:block;font-size:11px;color:var(--ink3);margin-top:2px}
+	.lr.me{background:var(--cinbg);border-radius:11px;border-bottom:none;padding:10px 12px}
+	.lr.me .av{background:var(--cin);color:#fff}.lr.me .nm{font-weight:500;color:var(--cin2)}.lr.me .xp{color:var(--cin2)}
 .rt-league{display:flex;align-items:center;gap:13px;margin:8px 16px 6px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:16px}
 .rt-emb{width:50px;height:50px;border-radius:14px;background:var(--cin);border:2px solid var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:23px;flex-shrink:0}
 .rt-league .nm2{font-size:16px;font-weight:500}.rt-league .sb{font-size:12px;color:var(--ink2);margin-top:2px}
@@ -237,10 +244,15 @@ button{cursor:pointer}
 .med{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;border:2px solid rgba(255,255,255,.5)}
 .med.g{background:var(--gold)}.med.s{background:#A9A293}.med.b{background:#B07A4A}
 .pm{width:14px;height:14px;border-radius:4px;background:var(--gold);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;margin-left:5px}
-.rt-invite{text-align:center;padding:40px 22px}
-.rt-invite .han{font-size:42px;color:var(--cin);display:block;margin-bottom:12px}
-.rt-invite p{font-size:14px;color:var(--ink2);margin:0 0 16px;line-height:1.5}
-.rt-invite button{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:12px 20px;font-family:inherit;font-size:14px;font-weight:500}
+	.rt-invite{text-align:center;padding:40px 22px}
+	.rt-invite .han{font-size:42px;color:var(--cin);display:block;margin-bottom:12px}
+	.rt-invite p{font-size:14px;color:var(--ink2);margin:0 0 16px;line-height:1.5}
+	.rt-invite button{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:12px 20px;font-family:inherit;font-size:14px;font-weight:500}
+	.ref-stat{display:flex;gap:10px;margin:0 16px 12px}
+	.ref-stat>div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:10px 4px;text-align:center}
+	.ref-stat b{display:block;font-size:18px;font-weight:600}.ref-stat small{font-size:11px;color:var(--ink2)}
+	.ref-badge{display:inline-flex;align-items:center;gap:4px;background:var(--jadebg);color:var(--jade);border-radius:10px;padding:3px 8px;font-size:10px;font-weight:600}
+	.ref-badge.wait{background:var(--goldbg);color:var(--gold)}
 .sp{display:flex;align-items:center;gap:13px;margin-bottom:14px}
 .sp .pav2{width:56px;height:56px;border-radius:15px;background:var(--cin);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px}
 .sp b{font-size:18px;font-weight:500;display:flex;align-items:center}.sp small{font-size:13px;color:var(--ink2)}
@@ -383,8 +395,19 @@ button{cursor:pointer}
   <div class="adov" id="adov" aria-hidden="true">
     <div class="adbox">
       <div class="adtop"><span id="ad-label"></span><span class="adcount" id="ad-count"></span></div>
-      <video class="advideo" id="ad-video" muted playsinline webkit-playsinline></video>
-      <div class="admeta"><b id="ad-title"></b><small id="ad-note"></small><button class="adcta" id="ad-cta" disabled onclick="AdFlow.done()"></button></div>
+      <div class="advideo-wrap" id="ad-video-wrap" onclick="AdFlow.openAdLink()">
+        <video class="advideo" id="ad-video" muted playsinline webkit-playsinline></video>
+        <span class="advisit" id="ad-visit" hidden><i class="ti ti-external-link"></i> <span id="ad-visit-t"></span></span>
+      </div>
+      <div class="admeta">
+        <b id="ad-title"></b><small id="ad-note"></small>
+        <button class="adcta" id="ad-cta" disabled onclick="AdFlow.done()"></button>
+        <div class="adsub" id="ad-sub" hidden>
+          <p class="adsub-t" id="ad-sub-title"></p>
+          <button class="adcta adsub-pay" id="ad-sub-pay" onclick="AdFlow.subscribe()"></button>
+          <button class="adcta ghost" id="ad-sub-cont" onclick="AdFlow.done()"></button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -402,9 +425,9 @@ button{cursor:pointer}
 <script>
 /* ---------- i18n (default RU) ---------- */
 var I18N={
-  ru:{nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"Premium",learner:"ученик",premium:"Premium",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Premium",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Оформить подписку",later:"Позже",lockedLesson:"Этот урок в Premium",adContinue:"Продолжить с рекламой",adStart:"Реклама перед уроком",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adWait:"Продолжить через {s} сек.",adReady:"Продолжить урок",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adNoAd:"Реклама пока недоступна",adWatchFirst:"Сначала посмотрите рекламу"},
-  uz:{nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"Premium",learner:"o'quvchi",premium:"Premium",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Premium",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"Obuna bo'lish",later:"Keyinroq",lockedLesson:"Bu dars Premium'da",adContinue:"Reklama bilan davom etish",adStart:"Darsdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adWait:"{s} soniyadan keyin davom etish",adReady:"Darsni davom ettirish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adNoAd:"Reklama hozircha yo'q",adWatchFirst:"Avval reklamani ko'ring"},
-  tj:{nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Муколама",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"Premium",learner:"донишҷӯ",premium:"Premium",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Premium",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"Обуна шудан",later:"Дертар",lockedLesson:"Ин дарс дар Premium аст",adContinue:"Идома бо реклама",adStart:"Реклама пеш аз дарс",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adWait:"Пас аз {s} сония идома",adReady:"Идомаи дарс",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adNoAd:"Реклама ҳоло дастрас нест",adWatchFirst:"Аввал рекламаро бинед"}
+  ru:{nav:{course:"Курс",mashq:"Практика",voice:"AI Voice",rating:"Рейтинг",profile:"Профиль"},cont:"Продолжить",check:"Проверить",next:"Продолжить",lessons:"урок",unit:"Раздел",done:"завершено",here:"Вы здесь",stage:"этап",completeOf:"выполнено",finishPrev:"Завершите предыдущий урок",repeat:"Повторить",lessonDone:"Урок завершён!",lessonDoneSub:"Отличная работа. Следующий этап ждёт.",correct:"Верно!",wrong:"Неверно",rightAns:"Правильный ответ:",newWord:"Новое слово",grammar:"Грамматика",dialog:"Диалог",listen:"Послушать",buildSent:"Соберите предложение",matchPairs:"Соедините пары",say:"Произнесите",mashqSub:"Закрепление и проверка",dict:"Словарь иероглифов",dictSub:"HSK 1–4 · написание, пиньинь, значение",recog:"Распознавание иероглифов",recogSub:"Найдите нужный среди похожих",pron:"Произношение",pronSub:"Слушай, повторяй, проверка тонов",testCenter:"Тест-центр",testSub:"Экзамены HSK и определение уровня",mistakes:"Мои ошибки",mistakesSub:"Работа над слабыми местами",voiceTitle:"Поговорите с AI",voiceSub:"Живой разговор с пандой 阿宝. Слушай, говори, получай исправления.",voiceStart:"Начать разговор",league:"Лига 朱雀",you:"Вы",unlockTitle:"Откройте всё",unlockSub:"AI Voice, все уроки HSK 1–4 и безлимит",unlockBtn:"Premium",learner:"ученик",premium:"Premium",xp:"XP",streak:"дней",rank:"место",lang:"Язык",notif:"Уведомления",goal:"Дневная цель",help:"Помощь",helpTitle:"Помощь",helpText:"Возникла ошибка или проблема в приложении? Коротко напишите админу и приложите screenshot — мы поможем.",helpBtn:"Написать админу",helpNoContact:"Контакт админа пока недоступен. Попробуйте позже.",on:"Вкл",friends:"Друзья",payTitle:"HSK AI Premium",paySub:"Откройте весь путь HSK",b1:"Все уроки HSK 1–4",b2:"AI Voice — безлимит",b3:"Безлимит тестов и работа над ошибками",subscribe:"Оформить подписку",later:"Позже",lockedLesson:"Этот урок в Premium",adContinue:"Продолжить с рекламой",adStart:"Реклама перед уроком",adMiddle:"Короткая пауза",adEnd:"Последняя реклама",adWait:"Продолжить через {s} сек.",adReady:"Продолжить урок",adNote:"Посмотрите ролик до конца. Premium учится без рекламы.",adNoAd:"Реклама пока недоступна",adWatchFirst:"Сначала посмотрите рекламу",adSubTitle:"Оформите подписку — и пользуйтесь ботом без рекламы и без ограничений",adSubPay:"Оформить подписку",adSubCont:"Продолжить с рекламой",adOpenLink:"Открыть ссылку рекламодателя?",adVisit:"Перейти по ссылке"},
+  uz:{nav:{course:"Kurs",mashq:"Mashq",voice:"AI Voice",rating:"Reyting",profile:"Profil"},cont:"Davom etish",check:"Tekshirish",next:"Davom etish",lessons:"dars",unit:"Bo'lim",done:"tugallandi",here:"Shu yerda",stage:"bosqich",completeOf:"bajarildi",finishPrev:"Avvalgi darsni tugating",repeat:"Takrorlash",lessonDone:"Dars tugadi!",lessonDoneSub:"Ajoyib! Keyingi bosqich kutyapti.",correct:"To'g'ri!",wrong:"Noto'g'ri",rightAns:"To'g'ri javob:",newWord:"Yangi so'z",grammar:"Grammatika",dialog:"Dialog",listen:"Tinglash",buildSent:"Gapni tuzing",matchPairs:"Juftlarni moslang",say:"Talaffuz qiling",mashqSub:"Mustahkamlash va sinash",dict:"Ieroglif lug'ati",dictSub:"HSK 1–4 · yozilishi, pinyin, ma'no",recog:"Ieroglif tanish",recogSub:"O'xshashlardan to'g'risini toping",pron:"Talaffuz mashqi",pronSub:"Eshit, takrorla, ton tekshiruvi",testCenter:"Test markazi",testSub:"HSK imtihonlari va daraja aniqlash",mistakes:"Xatolarim",mistakesSub:"Zaif joylar ustida ishlash",voiceTitle:"AI bilan gaplashing",voiceSub:"Panda 阿宝 bilan jonli suhbat. Eshit, gapir, tuzatish ol.",voiceStart:"Suhbatni boshlash",league:"朱雀 ligasi",you:"Siz",unlockTitle:"Hammasini oching",unlockSub:"AI Voice, barcha HSK 1–4 darslar va cheksiz",unlockBtn:"Premium",learner:"o'quvchi",premium:"Premium",xp:"XP",streak:"kun",rank:"o'rin",lang:"Til",notif:"Bildirishnomalar",goal:"Kunlik maqsad",help:"Yordam",helpTitle:"Yordam",helpText:"Mini appda biror xatolik yoki muammo bo'lsa, adminga qisqa yozing va screenshot yuboring — yordam beramiz.",helpBtn:"Adminga yozish",helpNoContact:"Admin kontakti hozircha mavjud emas. Keyinroq urinib ko'ring.",on:"Yoq",friends:"Do'stlar",payTitle:"HSK AI Premium",paySub:"Butun HSK yo'lini oching",b1:"Barcha HSK 1–4 darslar",b2:"AI Voice — cheksiz",b3:"Cheksiz test va xatolar mashqi",subscribe:"Obuna bo'lish",later:"Keyinroq",lockedLesson:"Bu dars Premium'da",adContinue:"Reklama bilan davom etish",adStart:"Darsdan oldingi reklama",adMiddle:"Qisqa reklama pauzasi",adEnd:"Yakuniy reklama",adWait:"{s} soniyadan keyin davom etish",adReady:"Darsni davom ettirish",adNote:"Rolikni oxirigacha ko'ring. Premium reklamasisiz o'qiydi.",adNoAd:"Reklama hozircha yo'q",adWatchFirst:"Avval reklamani ko'ring",adSubTitle:"Obuna bo'ling — botdan reklamasiz va hech qanday limitsiz foydalaning",adSubPay:"Obuna olish",adSubCont:"Reklama bilan davom etish",adOpenLink:"Reklama havolasini ochasizmi?",adVisit:"Havolaga o'tish"},
+  tj:{nav:{course:"Курс",mashq:"Машқ",voice:"AI Voice",rating:"Рейтинг",profile:"Профил"},cont:"Идома",check:"Санҷидан",next:"Идома",lessons:"дарс",unit:"Фасл",done:"анҷом",here:"Ин ҷо",stage:"зина",completeOf:"иҷро шуд",finishPrev:"Дарси пешинаро анҷом диҳед",repeat:"Такрор",lessonDone:"Дарс анҷом ёфт!",lessonDoneSub:"Офарин! Зинаи навбатӣ интизор аст.",correct:"Дуруст!",wrong:"Нодуруст",rightAns:"Ҷавоби дуруст:",newWord:"Калимаи нав",grammar:"Грамматика",dialog:"Муколама",listen:"Гӯш кардан",buildSent:"Ҷумларо созед",matchPairs:"Ҷуфтҳоро мувофиқ кунед",say:"Талаффуз кунед",mashqSub:"Мустаҳкам ва санҷиш",dict:"Луғати иероглиф",dictSub:"HSK 1–4 · навишт, пинйин, маъно",recog:"Шинохти иероглиф",recogSub:"Аз байни монандҳо дурустро ёбед",pron:"Машқи талаффуз",pronSub:"Гӯш кун, такрор кун",testCenter:"Маркази тест",testSub:"Имтиҳонҳои HSK ва муайянкунии сатҳ",mistakes:"Хатоҳои ман",mistakesSub:"Кор бар ҷойҳои заиф",voiceTitle:"Бо AI сӯҳбат кунед",voiceSub:"Сӯҳбати зинда бо панда 阿宝.",voiceStart:"Оғози сӯҳбат",league:"Лигаи 朱雀",you:"Шумо",unlockTitle:"Ҳамаро кушоед",unlockSub:"AI Voice ва ҳамаи дарсҳо",unlockBtn:"Premium",learner:"донишҷӯ",premium:"Premium",xp:"XP",streak:"рӯз",rank:"ҷой",lang:"Забон",notif:"Огоҳиҳо",goal:"Ҳадафи рӯзона",help:"Кӯмак",helpTitle:"Кӯмак",helpText:"Дар mini app хатогӣ ё мушкилӣ пайдо шуд? Ба админ кӯтоҳ нависед ва screenshot фиристед — кӯмак мекунем.",helpBtn:"Ба админ навиштан",helpNoContact:"Тамоси админ ҳоло дастрас нест. Баъдтар кӯшиш кунед.",on:"Фаъол",friends:"Дӯстон",payTitle:"HSK AI Premium",paySub:"Тамоми роҳи HSK",b1:"Ҳамаи дарсҳои HSK 1–4",b2:"AI Voice — бепоён",b3:"Тестҳои бепоён ва кор бар хатоҳо",subscribe:"Обуна шудан",later:"Дертар",lockedLesson:"Ин дарс дар Premium аст",adContinue:"Идома бо реклама",adStart:"Реклама пеш аз дарс",adMiddle:"Танаффуси кӯтоҳи реклама",adEnd:"Рекламаи охирин",adWait:"Пас аз {s} сония идома",adReady:"Идомаи дарс",adNote:"Роликро то охир бинед. Premium бе реклама меомӯзад.",adNoAd:"Реклама ҳоло дастрас нест",adWatchFirst:"Аввал рекламаро бинед",adSubTitle:"Обуна шавед — аз бот бе реклама ва бе ягон маҳдудият истифода баред",adSubPay:"Обуна шудан",adSubCont:"Идома бо реклама",adOpenLink:"Ҳаволаи рекламаро мекушоед?",adVisit:"Гузаштан ба ҳавола"}
 };
 var LANG=(new URLSearchParams(location.search).get("lang")||"ru");if(!I18N[LANG])LANG="ru";
 var LEVELS=["hsk1","hsk2","hsk3","hsk4"];
@@ -527,10 +550,10 @@ var App={
     var sub=passedU?(LANG==="ru"?"Вы обогнали "+passedU.n:LANG==="tj"?"Аз "+passedU.n+" пеш гузаштед":passedU.n+"dan o'tdingiz"):"";
     var r={title:LANG==="ru"?"Вы поднялись в рейтинге!":LANG==="tj"?"Дар рейтинг боло рафтед!":"Reytingda ko'tarildingiz!",sub:sub,cont:T().cont};
     var rows=[];
-    if(aboveU)rows.push({rk:meIdx,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
-    if(meU)rows.push({rk:meIdx+1,a:meU.a||PROF.avatar||"阿",n:T().you,xp:((meU.weeklyXp||MAP&&MAP.progress&&MAP.progress.xp)||0).toLocaleString("ru"),me:1,from:aboveU?1:0});
-    if(belowU)rows.push({rk:meIdx+2,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
-    if(!rows.length)rows=[{rk:1,a:PROF.avatar||"阿",n:T().you,xp:((MAP&&MAP.progress&&MAP.progress.xp)||0).toLocaleString("ru"),me:1,from:0}];
+	    if(aboveU)rows.push({rk:meIdx,a:aboveU.a,n:aboveU.n,xp:(aboveU.weeklyXp||0).toLocaleString("ru")});
+	    if(meU)rows.push({rk:meIdx+1,a:meU.a||PROF.avatar||"阿",n:T().you,xp:ratingScore(meU).toLocaleString("ru"),me:1,from:aboveU?1:0});
+	    if(belowU)rows.push({rk:meIdx+2,a:belowU.a,n:belowU.n,xp:(belowU.weeklyXp||0).toLocaleString("ru"),from:-1});
+	    if(!rows.length)rows=[{rk:1,a:PROF.avatar||"阿",n:T().you,xp:currentUserWeeklyXp().toLocaleString("ru"),me:1,from:0}];
     $("#lu-panda").innerHTML=pandaSvg();
     $("#lu-stage").innerHTML='<div class="ru-wrap"><h2>'+r.title+'</h2><p>'+r.sub+'</p><div class="ru-board">'+rows.map(function(u){return '<div class="ru-row '+(u.me?"me":"")+'" data-from="'+(u.from||0)+'"><span class="ru-rk">'+u.rk+'</span><span class="ru-av'+(u.me?" han":"")+'">'+u.a+'</span><span class="ru-nm">'+esc(u.n)+'</span><span class="ru-xp">'+u.xp+'</span></div>'}).join("")+'</div></div>';
     $("#levelup").classList.add("on");
@@ -604,6 +627,14 @@ var App={
   openPron:function(){location.href="/course_v3_pronunciation.html?lang="+LANG},
   openTest:function(){location.href="/course_v3_test.html?lang="+LANG},
   openMistakes:function(){location.href="/course_v3_mistakes.html?lang="+LANG},
+  openHelp:function(){var t=T();var c=(MAP&&MAP.admin_contact)||"";
+    var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(t.helpBtn)+'</button>'
+      :'<div class="tr" style="margin-top:6px;color:var(--ink2)">'+esc(t.helpNoContact)+'</div>';
+    App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-lifebuoy"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(t.helpTitle)+'</div><div class="tr">'+esc(t.helpText)+'</div></div>'+btn);},
+  contactAdmin:function(){var c=(MAP&&MAP.admin_contact)||"";if(!c){return}App.closeSheet();
+    try{if(tg&&tg.openTelegramLink&&/^https:\/\/t\.me\//i.test(c)){tg.openTelegramLink(c);return}}catch(e){}
+    try{if(tg&&tg.openLink){tg.openLink(c);return}}catch(e){}
+    try{location.href=c}catch(e){}},
   openVoiceCall:function(){location.href="/course_v3_voice.html?lang="+LANG},
   openFriends:function(){ratingTabCur="friends";App.show("rating");renderRating()},
   notifToggle:function(){if(notifOn){App.confirmNotifOff()}else{App.applyNotif(true)}},
@@ -630,7 +661,9 @@ var App={
   langPicker:function(){var t=T();var names={uz:"O'zbekcha",ru:"Русский",tj:"Тоҷикӣ"};
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+t.lang+'</div></div>'
       +["uz","ru","tj"].map(function(l){return '<button class="sec'+(l===LANG?' cur':'')+'" style="width:100%;margin-bottom:8px" onclick="App.pickLang(\''+l+'\')"><span class="si2">'+(l===LANG?'<i class="ti ti-check"></i>':'')+'</span><b>'+names[l]+'</b></button>'}).join(""));},
-  pickLang:function(l){App.closeSheet();App.setLang(l)}
+  pickLang:function(l){App.closeSheet();App.setLang(l);
+    /* Tilni botga ham yozamiz — QA rejim va Kurs rejim bir xil tilda ochiladi. */
+    if(INIT_DATA)_apiPost("/api/v3/language",{language:l}).catch(function(){})}
 };
 function navInit(){document.querySelectorAll("#nav button").forEach(function(b){b.onclick=function(){App.show(b.dataset.s)}})}
 
@@ -688,27 +721,38 @@ function recordCourseAdView(ad,placement,l,watched){
     return d;
   });
 }
+/* Davomiylik adminda 5–120s oralig'ida boshqariladi (backend bilan bir xil clamp). */
+function adDuration(ad){return Math.max(5,Math.min(120,Number(ad&&ad.duration_seconds)||7))}
+function _closeAdOverlay(){clearInterval(AD_STATE.timer);try{$("#ad-video").pause()}catch(e){}$("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true")}
+function _resetAdState(){AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false}}
 var AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
 var AdFlow={
+  /* "Reklama bilan davom etish" — rolik tugagach darsni davom ettiradi.
+     Yozuv saqlanmasa ham userni obunaga MAJBURLAMAYMIZ, shunchaki davom etadi. */
   done:function(){
     if(!AD_STATE.ready||AD_STATE.busy)return;
     AD_STATE.busy=true;
-    var btn=$("#ad-cta");if(btn){btn.disabled=true;btn.innerHTML='<i class="ti ti-loader-2"></i> …'}
+    var cont=$("#ad-sub-cont");if(cont){cont.disabled=true;cont.innerHTML='<i class="ti ti-loader-2"></i> …'}
+    function finish(){
+      _closeAdOverlay();
+      var resolve=AD_STATE.resolve;_resetAdState();
+      if(resolve)resolve();
+    }
     recordCourseAdView(AD_STATE.ad,AD_STATE.placement,AD_STATE.lesson,AD_STATE.watched)
-      .then(function(){
-        clearInterval(AD_STATE.timer);
-        try{$("#ad-video").pause()}catch(e){}
-        $("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true");
-        var resolve=AD_STATE.resolve;AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
-        if(resolve)resolve();
-      })
-      .catch(function(){
-        clearInterval(AD_STATE.timer);
-        try{$("#ad-video").pause()}catch(e){}
-        $("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true");
-        var reject=AD_STATE.reject;AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
-        if(reject)reject(new Error("course_ad_view_failed"));
-      });
+      .then(finish).catch(finish);
+  },
+  /* "Obuna olish" — istalgan reklama oxirida obuna sahifasiga olib boradi. */
+  subscribe:function(){
+    _closeAdOverlay();_resetAdState();
+    App.goPay("v3_course_ad");
+  },
+  /* Rolikka tegilsa — reklama beruvchining havolasini ochishni so'raydi. */
+  openAdLink:function(){
+    var ad=AD_STATE.ad;if(!ad||!ad.link_url)return;
+    var url=ad.link_url;haptic("tap");
+    function go(){try{if(tg&&tg.openLink){tg.openLink(url);return}}catch(e){}try{window.open(url,"_blank")}catch(e){}}
+    try{if(tg&&tg.showConfirm){tg.showConfirm(T().adOpenLink,function(ok){if(ok)go()});return}}catch(e){}
+    if(window.confirm(T().adOpenLink))go();
   }
 };
 function _isNoAd(e){return e&&String(e.message||e)==="course_ad_not_found"}
@@ -716,22 +760,34 @@ function showCourseAd(placement,idx){
   return new Promise(function(resolve,reject){
     var l=allLessons()[idx];if(!l){reject(new Error("lesson_not_found"));return}
     fetchCourseAd(placement,l).then(function(ad){
-      var t=T(),duration=Math.max(6,Math.min(7,Number(ad.duration_seconds)||7));
+      var t=T(),duration=adDuration(ad);
       clearInterval(AD_STATE.timer);
       AD_STATE={timer:null,resolve:resolve,reject:reject,ad:ad,lesson:l,placement:placement,watched:0,ready:false,busy:false};
       $("#ad-label").textContent=adPlacementTitle(placement);
       $("#ad-title").textContent=ad.title||adPlacementTitle(placement);
       $("#ad-note").textContent=t.adNote;
       var btn=$("#ad-cta"),count=$("#ad-count"),video=$("#ad-video");
-      btn.disabled=true;btn.textContent=t.adWait.replace("{s}",duration);
+      var sub=$("#ad-sub"),contBtn=$("#ad-sub-cont"),payBtn=$("#ad-sub-pay");
+      /* reklama beruvchi havolasi: rolik ustidagi belgi */
+      var hasLink=!!ad.link_url,visit=$("#ad-visit");
+      if(hasLink){$("#ad-visit-t").textContent=t.adVisit;visit.hidden=false}else{visit.hidden=true}
+      $("#ad-video-wrap").style.cursor=hasLink?"pointer":"default";
+      /* obuna bloki matnlari */
+      $("#ad-sub-title").textContent=t.adSubTitle;
+      payBtn.innerHTML='<i class="ti ti-lock-open"></i> '+t.adSubPay;
+      contBtn.disabled=false;contBtn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
+      /* boshlang'ich holat: sanoq ko'rinadi, obuna bloki yashirin */
+      sub.hidden=true;btn.style.display="";btn.disabled=true;
+      btn.textContent=t.adWait.replace("{s}",duration);
       count.textContent=duration+"s";
       video.removeAttribute("src");video.load();video.src=ad.media_url;video.loop=true;video.muted=true;
       $("#adov").classList.add("on");$("#adov").setAttribute("aria-hidden","false");
       var left=duration;
       function draw(){
         count.textContent=left>0?left+"s":"OK";
-        if(left>0){btn.disabled=true;btn.textContent=t.adWait.replace("{s}",left);return}
-        AD_STATE.ready=true;btn.disabled=false;btn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adReady;
+        if(left>0){btn.style.display="";btn.disabled=true;btn.textContent=t.adWait.replace("{s}",left);sub.hidden=true;return}
+        /* rolik tugadi — har bir reklama oxirida obuna taklifi + davom etish */
+        AD_STATE.ready=true;btn.style.display="none";sub.hidden=false;
       }
       draw();
       AD_STATE.timer=setInterval(function(){
@@ -746,14 +802,17 @@ function startAdSupportedLesson(idx){
   var l=allLessons()[idx];
   if(!canAdContinueLesson(l)){toast(T().finishPrev,2400);openLockedLessonSheet(idx);return}
   App.closeSheet();App.closePaywall();
-  showCourseAd("start",idx).then(function(){startLesson(idx,{adSupported:true})}).catch(function(e){if(_isNoAd(e)){startLesson(idx,{adSupported:true});return}toast(T().adNoAd,2400);openLockedLessonSheet(idx)});
+  /* Boshlang'ich reklama xato bersa ham darsni ochamiz — obunaga majburlamaymiz. */
+  showCourseAd("start",idx).then(function(){startLesson(idx,{adSupported:true})}).catch(function(){startLesson(idx,{adSupported:true})});
 }
 function lessonStatusNode(l){return l.status}
 function renderCourse(){
   var done=allLessons().filter(function(l){return l.status==="done"}).length;
   var total=allLessons().length;
   var pct=Math.round(done/Math.max(total,1)*100);
-  var h='<div class="htop"><button class="lvpill" onclick="App.levelPicker()"><i class="ti ti-bolt"></i> '+esc(MAP.label)+' <i class="ti ti-chevron-down"></i></button>'
+  /* Daraja yagona manbadan (botdagi user.level) keladi — mini app ichida daraja
+     tanlash ko'rsatilmaydi, shuning uchun bu statik yorliq (tugma emas). */
+  var h='<div class="htop"><span class="lvpill"><i class="ti ti-bolt"></i> '+esc(MAP.label)+'</span>'
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
     +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span></div>'
     +'<div class="pwrap"><div class="pbar"><i style="width:'+pct+'%"></i></div><small>'+done+' / '+total+' '+T().lessons+'</small></div>';
@@ -792,6 +851,28 @@ function renderCourse(){
   $("#s-course").innerHTML=h;
 }
 function secNames(){var m={ru:["Новые слова","Закрепление","Аудирование","В речи","Диалог","Повторение"],uz:["Yangi so'zlar","Mustahkamlash","Tinglash","Gapda ishlatish","Qisqa dialog","Review"],tj:["Калимаҳои нав","Мустаҳкамкунӣ","Шунидан","Дар ҷумла","Муколама","Такрор"]};return m[LANG]||m.ru}
+function authGateCopy(){
+  return {
+    ru:{title:"Откройте курс из бота",body:"Mini App не смог подтвердить подключение к Telegram. Вернитесь в бот, нажмите /start и откройте курс заново.",btn:"Вернуться в бот"},
+    uz:{title:"Kursni bot ichidan oching",body:"Mini App Telegram bilan real ulanishni tasdiqlay olmadi. Botga qayting, /start ni bosing va kursni qaytadan oching.",btn:"Botga qaytish"},
+    tj:{title:"Курсро аз дохили бот кушоед",body:"Mini App пайвастшавии Telegram-ро тасдиқ карда натавонист. Ба бот баргардед, /start-ро пахш кунед ва курсро аз нав кушоед.",btn:"Ба бот баргаштан"}
+  }[LANG]||{};
+}
+function openBotStart(){
+  var url="https://t.me/hsk_ai_bot?start=start";
+  try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
+  try{if(tg&&tg.close){tg.close();return}}catch(e){}
+  try{location.href=url}catch(e){}
+}
+function showAuthGate(){
+  var c=authGateCopy();
+  MAP={units:[],progress:{xp:0,streak:0,completed:0},label:"HSK",level:getSelectedLevel()};
+  $("#s-course").innerHTML='<div class="htop"><span class="lvpill"><i class="ti ti-alert-circle"></i> HSK AI</span></div>'
+    +'<div class="rt-invite" style="margin-top:42px"><span class="han">开</span><p style="font-weight:600;color:var(--ink);margin-bottom:6px">'+esc(c.title)+'</p><p>'+esc(c.body)+'</p><button onclick="openBotStart()"><i class="ti ti-brand-telegram"></i> '+esc(c.btn)+'</button></div>';
+  ["s-mashq","s-voice","s-rating","s-profile"].forEach(function(id){var el=document.getElementById(id);if(el)el.innerHTML=""});
+  App.show("course");
+}
+function hideAuthGate(){}
 function openLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
@@ -809,17 +890,20 @@ function openLessonSheet(idx){
 var SKIP_PASS=60;
 function skipI18n(){
   var M={
-    uz:{offerTag:"O'tish testi",offerP:"Bu dars hali qulflangan. Uni ochish uchun qisqa test topshiring — natijadan qat'i nazar dars ochiladi.",offerBtn:"Testni boshlash",
+    uz:{offerTag:"O'tish testi",offerP:"Bu dars hali qulflangan. Uni ochish uchun qisqa test topshiring.",offerBtn:"Testni boshlash",
         passH:"Ajoyib natija!",passP:"{pct}% — zo'r! Bu dars sizga oson keladi. Dars ochildi 🎉",
         failH:"Dars ochildi",failP:"{pct}% — bu dars sizga biroz qiyinlik qilishi mumkin. Lekin xafa bo'lmang — dars ochildi, bosqichma-bosqich o'rganib olasiz 💪",
+        confirmH:"Bu darsga hali tayyor emassiz",confirmP:"{pct}% — natija past. Bu dars sizga qiyinlik qilishi mumkin. Baribir ochishni xohlaysizmi?",confirmYes:"Baribir ochish",confirmNo:"Orqaga",
         startNow:"Darsni boshlash",notReady:"Dars hali tayyor emas",saveErr:"Dars ochilishi saqlanmadi. Qayta urinib ko'ring."},
-    ru:{offerTag:"Тест на пропуск",offerP:"Этот урок пока закрыт. Пройдите короткий тест, чтобы открыть его — урок откроется в любом случае.",offerBtn:"Начать тест",
+    ru:{offerTag:"Тест на пропуск",offerP:"Этот урок пока закрыт. Пройдите короткий тест, чтобы открыть его.",offerBtn:"Начать тест",
         passH:"Отличный результат!",passP:"{pct}% — превосходно! Этот урок будет для вас лёгким. Урок открыт 🎉",
         failH:"Урок открыт",failP:"{pct}% — этот урок может быть для вас сложноват. Но не переживайте — урок открыт, освоите шаг за шагом 💪",
+        confirmH:"Вы пока не готовы к этому уроку",confirmP:"{pct}% — низкий результат. Этот урок может быть для вас сложным. Всё равно открыть?",confirmYes:"Всё равно открыть",confirmNo:"Назад",
         startNow:"Начать урок",notReady:"Урок пока не готов",saveErr:"Открытие урока не сохранилось. Попробуйте ещё раз."},
-    tj:{offerTag:"Санҷиши гузариш",offerP:"Ин дарс ҳоло баста аст. Барои кушодани он санҷиши кӯтоҳ супоред — дарс ба ҳар ҳол кушода мешавад.",offerBtn:"Оғози санҷиш",
+    tj:{offerTag:"Санҷиши гузариш",offerP:"Ин дарс ҳоло баста аст. Барои кушодани он санҷиши кӯтоҳ супоред.",offerBtn:"Оғози санҷиш",
         passH:"Натиҷаи аъло!",passP:"{pct}% — олӣ! Ин дарс барои шумо осон хоҳад буд. Дарс кушода шуд 🎉",
         failH:"Дарс кушода шуд",failP:"{pct}% — ин дарс барои шумо каме душвор буда метавонад. Вале ғам нахӯред — дарс кушода шуд, қадам ба қадам аз худ мекунед 💪",
+        confirmH:"Шумо ҳоло ба ин дарс тайёр нестед",confirmP:"{pct}% — натиҷаи паст. Ин дарс барои шумо душвор буда метавонад. Бо ҳамин ҳам кушоед?",confirmYes:"Бо ҳамин ҳам кушодан",confirmNo:"Бозгашт",
         startNow:"Оғози дарс",notReady:"Дарс ҳанӯз тайёр нест",saveErr:"Кушодани дарс сабт нашуд. Боз кӯшиш кунед."}
   };
   return M[LANG]||M.ru;
@@ -859,7 +943,18 @@ function finishSkipTest(){
   $("#flow").classList.remove("on");$("#f-cta").style.display="none";hideBar();setWriteBtn("");
   var pct=Flow.graded?Math.round(Flow.correct/Flow.graded*100):0;
   var idx=Flow.test&&Flow.test.idx;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;
+  if(pct<SKIP_PASS){showSkipConfirm(pct,idx);return}
   completeSkipUnlock(pct,idx);
+}
+function showSkipConfirm(pct,idx){
+  var s=skipI18n();
+  App.openSheet('<div class="shead"><div style="font-size:46px;line-height:1">🤔</div>'
+    +'<div class="han" style="font-size:40px;font-weight:800;color:var(--gold);margin-top:4px">'+pct+'%</div>'
+    +'<div class="tr" style="font-size:17px;font-weight:700;color:var(--ink);margin-top:6px">'+esc(s.confirmH)+'</div>'
+    +'<div class="tr" style="margin-top:8px;line-height:1.5">'+esc(s.confirmP.replace("{pct}",pct))+'</div></div>'
+    +'<button class="scta" onclick="completeSkipUnlock('+pct+','+idx+')"><i class="ti ti-lock-open"></i> '+esc(s.confirmYes)+'</button>'
+    +'<button class="scta ghost" onclick="App.closeSheet()"><i class="ti ti-arrow-left"></i> '+esc(s.confirmNo)+'</button>');
+  beep([392,330]);haptic("light");
 }
 function applyLocalProgress(completed){
   if(!MAP)return;
@@ -1232,7 +1327,8 @@ Flow.next=function(){
   trackSectionCompleted(Flow.queue&&Flow.queue[Flow.i],nextI);
   if(Flow.ad&&!Flow.ad.middle&&nextI>=Flow.ad.middleAt&&nextI<Flow.queue.length){
     Flow.i=nextI;Flow.ad.middle=true;
-    showCourseAd("middle",Flow.ad.lessonIdx).then(function(){renderFlowCard()}).catch(function(e){if(_isNoAd(e)){renderFlowCard();return}toast(T().adNoAd,2400);App.exitFlow();openLockedLessonSheet(Flow.ad&&Flow.ad.lessonIdx||0)});
+    /* O'rtadagi reklama xato bersa ham dars o'rtasida obunaga majburlamaymiz — davom etamiz. */
+    showCourseAd("middle",Flow.ad.lessonIdx).then(function(){renderFlowCard()}).catch(function(){renderFlowCard()});
     return;
   }
   Flow.i=nextI;if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}
@@ -1282,13 +1378,19 @@ function tourRender(noSpeak){var st=TOUR.steps[TOUR.i];App.show(st.s);
   placeSpot();
 }
 var _NEXT_LEVEL={hsk1:"hsk2",hsk2:"hsk3",hsk3:"hsk4"};
+function adoptServerLang(d){
+  /* Til yagona manbadan (botdagi user.language) keladi — server tilini qabul qilamiz. */
+  if(d&&d.user&&d.user.language&&I18N[d.user.language])LANG=d.user.language;
+}
 function loadLevel(lv){
   lv=setSelectedLevel(lv);
-  var url=INIT_DATA?"/api/v3/map?lang="+LANG+"&level="+lv:"/course_v3_data/"+lv+".json";
-  var opts=INIT_DATA?{headers:{"X-Telegram-Init-Data":INIT_DATA}}:{};
-  fetch(url,opts).then(function(r){return r.json()}).then(function(d){
-    MAP=d;setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");
-  }).catch(function(){});
+  if(!INIT_DATA){showAuthGate();return;}
+  fetch("/api/v3/map?lang="+LANG+"&level="+lv,{headers:{"X-Telegram-Init-Data":INIT_DATA}})
+    .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
+    .then(function(d){
+      if(!d||d.authenticated===false||d._status===401){showAuthGate();return;}
+      hideAuthGate();MAP=d;adoptServerLang(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");
+    }).catch(function(){showAuthGate()});
 }
 function applyLessonDone(cur,d){
   var rankBefore=currentRatingRank();
@@ -1316,18 +1418,24 @@ function flowDone(){
   if(Flow.test){return finishSkipTest()}
   if(Flow.ad&&!Flow.ad.end){
     Flow.ad.end=true;
-    return showCourseAd("end",Flow.ad.lessonIdx).then(function(){flowDone()}).catch(function(e){if(_isNoAd(e)){flowDone();return}toast(T().adNoAd,2400);App.exitFlow();openLockedLessonSheet(Flow.ad&&Flow.ad.lessonIdx||0)});
+    /* Yakuniy reklama xato bersa ham darsni majburan to'xtatmaymiz — yakunlaymiz. */
+    return showCourseAd("end",Flow.ad.lessonIdx).then(function(){flowDone()}).catch(function(){flowDone()});
   }
   flowProg();$("#f-cta").style.display="none";hideBar();setWriteBtn("");
   var cur=typeof Flow.lessonIdx==="number"?allLessons()[Flow.lessonIdx]:allLessons().find(function(l){return l.status==="current"});
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA){applyLessonDone(cur,null);return}
-  var doneIdx=Flow.lessonIdx;
+  var doneIdx=Flow.lessonIdx,wasAd=!!Flow.ad;
   _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){
-        if(d.error==="free_feature_limit_reached"){App.exitFlow();openLockedLessonSheet(doneIdx||0);return}
+        if(d.error==="free_feature_limit_reached"){
+          App.exitFlow();
+          /* Reklama bilan o'tilgan darsda obunaga MAJBURLAMAYMIZ — faqat ogohlantiramiz. */
+          if(wasAd){toast(T().adNoAd,2600);}else{openLockedLessonSheet(doneIdx||0);}
+          return;
+        }
         toast(serverSaveErrorText(d.error),2600);return;
       }
       applyLessonDone(cur,d);
@@ -1360,10 +1468,10 @@ function pandaSvg(){return '<svg viewBox="0 0 72 72" width="100%" height="100%">
 
 /* ---------- Rating (league + challenge) ---------- */
 // Real users come from server /api/miniapp/gamification.
-var ratingTabCur="league",ratingUsers=[],ratingMeta={loaded:false,error:false,leagueSize:0,resetAtMs:null};
-function rl(){return {ru:{promote:"Топ 5 поднимаются выше",demote:"Зона понижения",liga:"Лига",friends:"Друзья",members:"учеников",left:"осталось",ch:"Вызов",chDone:"Вызов отправлен",invite:"Пригласить друзей",inviteSub:"Позови друга и сразись в лиге или тестах — покажи, кто лучший! 🔥",msg:"Написать",weekRank:"место",loadErr:"Рейтинг не загрузился",empty:"Пока нет реальных участников лиги"},
-  uz:{promote:"Top 5 yuqoriga ko'tariladi",demote:"Tushish zonasi",liga:"Liga",friends:"Do'stlar",members:"o'quvchi",left:"qoldi",ch:"Belashuv",chDone:"Chaqiruv yuborildi",invite:"Do'st taklif qilish",inviteSub:"Do'stingni chaqir va ligada yoki testda kuch sina — kim zo'rligini ko'rsat! 🔥",msg:"Yozish",weekRank:"o'rin",loadErr:"Reyting yuklanmadi",empty:"Ligada hali real ishtirokchi yo'q"},
-  tj:{promote:"Топ 5 боло мебароянд",demote:"Минтақаи поёншавӣ",liga:"Лига",friends:"Дӯстон",members:"донишҷӯ",left:"мондааст",ch:"Мубориза",chDone:"Даъват фиристода шуд",invite:"Даъвати дӯстон",inviteSub:"Дӯстатро даъват кун ва дар лига ё тест мубориза кун — нишон деҳ, ки кӣ беҳтар аст! 🔥",msg:"Навиштан",weekRank:"ҷой",loadErr:"Рейтинг бор нашуд",empty:"Дар лига ҳоло иштирокчии воқеӣ нест"}}[LANG]}
+	var ratingTabCur="league",ratingUsers=[],ratingMeta={loaded:false,error:false,leagueSize:0,resetAtMs:null},referralUsers=[],referralMeta={loaded:false,error:false,joined:0,active:0,required:0};
+	function rl(){return {ru:{promote:"Топ 5 поднимаются выше",demote:"Зона понижения",liga:"Лига",friends:"Друзья",refs:"Мои приглашённые",members:"учеников",left:"осталось",ch:"Вызов",chDone:"Вызов отправлен",invite:"Пригласить друзей",inviteSub:"Позови друга и сразись в лиге или тестах — покажи, кто лучший! 🔥",refSub:"Здесь видны ученики, которые пришли по вашей ссылке. Откройте профиль, напишите или отправьте дуэль.",msg:"Написать",weekRank:"место",loadErr:"Рейтинг не загрузился",refLoadErr:"Список друзей не загрузился",empty:"Пока нет реальных участников лиги",refEmpty:"По вашей ссылке пока никто не зашёл",pending:"ждём активности",active:"активный",totalXp:"всего XP"},
+	  uz:{promote:"Top 5 yuqoriga ko'tariladi",demote:"Tushish zonasi",liga:"Liga",friends:"Do'stlar",refs:"Referallarim",members:"o'quvchi",left:"qoldi",ch:"Belashuv",chDone:"Chaqiruv yuborildi",invite:"Do'st taklif qilish",inviteSub:"Do'stingni chaqir va ligada yoki testda kuch sina — kim zo'rligini ko'rsat! 🔥",refSub:"Sizning havolangizdan kirgan o'quvchilar shu yerda. Profilini oching, yozing yoki belashuv yuboring.",msg:"Yozish",weekRank:"o'rin",loadErr:"Reyting yuklanmadi",refLoadErr:"Do'stlar ro'yxati yuklanmadi",empty:"Ligada hali real ishtirokchi yo'q",refEmpty:"Havolangizdan hali hech kim kirmagan",pending:"aktivlik kutilmoqda",active:"aktiv",totalXp:"jami XP"},
+	  tj:{promote:"Топ 5 боло мебароянд",demote:"Минтақаи поёншавӣ",liga:"Лига",friends:"Дӯстон",refs:"Рефералҳои ман",members:"донишҷӯ",left:"мондааст",ch:"Мубориза",chDone:"Даъват фиристода шуд",invite:"Даъвати дӯстон",inviteSub:"Дӯстатро даъват кун ва дар лига ё тест мубориза кун — нишон деҳ, ки кӣ беҳтар аст! 🔥",refSub:"Донишҷӯёне, ки аз пайванди шумо омаданд, ин ҷо ҳастанд. Профилро кушоед, нависед ё рақобат фиристед.",msg:"Навиштан",weekRank:"ҷой",loadErr:"Рейтинг бор нашуд",refLoadErr:"Рӯйхати дӯстон бор нашуд",empty:"Дар лига ҳоло иштирокчии воқеӣ нест",refEmpty:"Аз пайванди шумо ҳоло касе надаромадааст",pending:"фаъолият интизор",active:"фаъол",totalXp:"XP умумӣ"}}[LANG]}
 function ratingCountdownText(){
   if(!ratingMeta.resetAtMs)return "—";
   var sec=Math.max(0,Math.floor((ratingMeta.resetAtMs-Date.now())/1000));
@@ -1372,16 +1480,40 @@ function ratingCountdownText(){
   if(h>0)return h+(LANG==="ru"?"ч":"s")+" "+m+"m";
   return m+"m";
 }
-function courseLevelLabel(lv){
-  lv=normalizeLevel(lv||((MAP&&MAP.level)||"hsk1"));
-  return lv.toUpperCase().replace("HSK","HSK ");
-}
-function sortRatingUsers(){
-  ratingUsers.sort(function(x,y){
-    if((x.rank||0)&&(y.rank||0))return (x.rank||0)-(y.rank||0);
-    return (y.weeklyXp||0)-(x.weeklyXp||0)||y.xp-x.xp||((x.tgId||0)-(y.tgId||0));
-  });
-}
+	function courseLevelLabel(lv){
+	  lv=normalizeLevel(lv||((MAP&&MAP.level)||"hsk1"));
+	  return lv.toUpperCase().replace("HSK","HSK ");
+	}
+	function normalizeSocialUser(u){
+	  u=u||{};
+	  return {
+	    rank:Number(u.rank||0),
+	    me:!!u.is_current_user,
+	    a:(u.name||"?")[0].toUpperCase(),
+	    n:u.name||"?",
+	    xp:Number(u.total_xp||0),
+	    totalXp:Number(u.total_xp||0),
+	    weeklyXp:Number(u.xp||u.league_points||0),
+	    p:u.is_paid?1:0,
+	    username:u.username||"",
+	    tgId:u.telegram_id||0,
+	    level:u.course_level||"",
+	    completedLessons:u.completed_lessons||0,
+	    refStatus:u.status||""
+	  };
+	}
+	function ratingScore(u){return Number(u&&u.weeklyXp||0)}
+	function socialUsers(src){return src==="referrals"?referralUsers:ratingUsers}
+	function currentUserWeeklyXp(){
+	  var me=ratingUsers.find(function(u){return u.me});
+	  return me?ratingScore(me):Number(MAP&&MAP.progress&&MAP.progress.weekly_xp||0);
+	}
+	function sortRatingUsers(){
+	  ratingUsers.sort(function(x,y){
+	    if((x.rank||0)&&(y.rank||0))return (x.rank||0)-(y.rank||0);
+	    return ratingScore(y)-ratingScore(x)||((x.tgId||0)-(y.tgId||0));
+	  });
+	}
 function currentRatingRank(){
   sortRatingUsers();
   var i=ratingUsers.findIndex(function(u){return u.me});
@@ -1394,29 +1526,29 @@ function applyRatingPayload(d){
     leagueSize:Number(d.league_size||0),
     resetAtMs:Number(d.weekly_reset_seconds||0)>0?Date.now()+Number(d.weekly_reset_seconds||0)*1000:null
   };
-  ratingUsers=(d.leaderboard||[]).map(function(u){return{
-    rank:Number(u.rank||0),
-    me:!!u.is_current_user,
-    a:(u.name||"?")[0].toUpperCase(),
-    n:u.name||"?",
-    xp:u.total_xp||0,
-    weeklyXp:u.xp||0,
-    p:u.is_paid?1:0,
-    username:u.username||"",
-    tgId:u.telegram_id||0,
-    level:u.course_level||"",
-    completedLessons:u.completed_lessons||0
-  }});
-  ratingLoaded=true;
-  if(MAP&&MAP.progress){MAP.progress.xp=d.xp||MAP.progress.xp;MAP.progress.streak=d.streak||MAP.progress.streak}
-}
-function loadLatestRating(){
-  return _apiGet("/api/miniapp/gamification").then(function(r){return r.json()}).then(function(d){
-    if(!d||!d.ok)throw new Error("rating_failed");
-    applyRatingPayload(d);
-    return d;
-  });
-}
+	  ratingUsers=(d.leaderboard||[]).map(normalizeSocialUser);
+	  ratingLoaded=true;
+	  if(MAP&&MAP.progress){MAP.progress.xp=d.xp||MAP.progress.xp;MAP.progress.weekly_xp=Number(d.weekly_xp||0);MAP.progress.streak=d.streak||MAP.progress.streak}
+	}
+	function invitePayloadUrl(){return "/api/v3/invite?lang="+LANG+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())}
+	function loadLatestRating(){
+	  return _apiGet("/api/miniapp/gamification?tz="+encodeURIComponent(-new Date().getTimezoneOffset())).then(function(r){return r.json()}).then(function(d){
+	    if(!d||!d.ok)throw new Error("rating_failed");
+	    applyRatingPayload(d);
+	    return d;
+	  });
+	}
+	function applyReferralPayload(d){
+	  referralMeta={loaded:true,error:false,joined:Number(d.joined_count||0),active:Number(d.active_count||0),required:Number(d.required||0)};
+	  referralUsers=(d.referrals||[]).map(normalizeSocialUser);
+	}
+	function loadReferrals(){
+	  return _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
+	    if(!d||!d.ok)throw new Error("referrals_failed");
+	    applyReferralPayload(d);
+	    return d;
+	  });
+	}
 function renderRating(){
   if(!ratingLoaded&&INIT_DATA){
     ratingLoaded=true;
@@ -1433,12 +1565,33 @@ function _renderRatingContent(){
   var t=T(),r=rl();
   sortRatingUsers();
   var memberCount=Number(ratingMeta.leagueSize||ratingUsers.length||0);
-  var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'
-    +'<div class="rt-seg"><button class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
-  if(ratingTabCur==="friends"){
-    h+='<div class="rt-invite"><span class="han">友</span><p>'+r.inviteSub+'</p><button onclick="openInviteSheet()"><i class="ti ti-user-plus"></i> '+r.invite+'</button></div>';
-    $("#s-rating").innerHTML=h;return;
-  }
+	  var h='<div class="htop" style="padding-bottom:6px"><span class="lvpill"><i class="ti ti-trophy"></i> '+t.nav.rating+'</span></div>'
+	    +'<div class="rt-seg"><button class="'+(ratingTabCur==="league"?"on":"")+'" onclick="setRatingTab(\'league\')">'+r.liga+'</button><button class="'+(ratingTabCur==="friends"?"on":"")+'" onclick="setRatingTab(\'friends\')">'+r.friends+'</button></div>';
+	  if(ratingTabCur==="friends"){
+	    if(!referralMeta.loaded&&INIT_DATA){
+	      referralMeta.loaded=true;
+	      $("#s-rating").innerHTML=h+'<div style="padding:60px 0;text-align:center;color:var(--ink3)">…</div>';
+	      loadReferrals().then(function(){_renderRatingContent()}).catch(function(){referralMeta={loaded:true,error:true,joined:0,active:0,required:0};referralUsers=[];_renderRatingContent()});
+	      return;
+	    }
+	    h+='<div class="rt-invite" style="padding:20px 22px 18px"><span class="han">友</span><p>'+esc(r.refSub||r.inviteSub)+'</p><button onclick="openInviteSheet()"><i class="ti ti-user-plus"></i> '+esc(r.invite)+'</button></div>'
+	      +'<div class="ref-stat"><div><b>'+Number(referralMeta.joined||0)+'</b><small>'+(LANG==="ru"?"перешли":LANG==="tj"?"даромаданд":"kirgan")+'</small></div><div><b>'+Number(referralMeta.active||0)+' / '+Number(referralMeta.required||0)+'</b><small>'+(LANG==="ru"?"актив":LANG==="tj"?"фаъол":"faol")+'</small></div></div>';
+	    if(referralMeta.error){
+	      h+='<div class="rt-invite"><span class="han">友</span><p>'+esc(r.refLoadErr)+'</p></div>';
+	      $("#s-rating").innerHTML=h;return;
+	    }
+	    if(!referralUsers.length){
+	      h+='<div class="rt-invite"><span class="han">人</span><p>'+esc(r.refEmpty)+'</p></div>';
+	      $("#s-rating").innerHTML=h;return;
+	    }
+	    referralUsers.forEach(function(u,i){
+	      var st=u.refStatus==="active"?r.active:r.pending;
+	      var badge='<span class="ref-badge '+(u.refStatus==="active"?"":"wait")+'">'+esc(st)+'</span>';
+	      var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
+	      h+='<div class="lr" onclick="openRatingUser('+i+',\'referrals\')"><span class="rk">'+(i+1)+'</span><span class="av">'+u.a+'</span><span class="nm">'+esc(u.n)+pm+'<small>'+badge+' · '+esc(courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1")))+' · '+esc(r.totalXp)+': '+u.totalXp.toLocaleString("ru")+'</small></span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></div>';
+	    });
+	    $("#s-rating").innerHTML=h;return;
+	  }
   h+='<div class="rt-league"><div class="rt-emb han">朱</div><div><div class="nm2">'+t.league+'</div><div class="sb"><i class="ti ti-users" style="font-size:12px"></i> '+memberCount+' '+r.members+'</div></div><div class="rt-cd"><b>'+ratingCountdownText()+'</b><small>'+r.left+'</small></div></div>'
     +'<div class="rt-ladder"><span class="rt-step han">玄</span><span class="rt-step line"></span><span class="rt-step cur han">朱</span><span class="rt-step line"></span><span class="rt-step han">龙</span><span class="rt-step line"></span><span class="rt-step han">凤</span></div>';
   if(ratingMeta.error){
@@ -1455,8 +1608,8 @@ function _renderRatingContent(){
     if(ratingUsers.length>=8&&i===ratingUsers.length-2)h+='<div class="rt-zone dn"><span class="ln"></span><i class="ti ti-arrow-down"></i> '+r.demote+' <span class="ln"></span></div>';
     var rk=i<3?'<span class="med '+med[i]+'">'+(i+1)+'</span>':'<span class="rk">'+(i+1)+'</span>';
     var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
-    h+='<div class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+(u.weeklyXp||u.xp||0).toLocaleString("ru")+'</span></div>';
-  });
+	    h+='<div class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></div>';
+	  });
   $("#s-rating").innerHTML=h;
 }
 function setRatingTab(tab){ratingTabCur=tab;ratingLoaded=true;_renderRatingContent()}
@@ -1482,8 +1635,8 @@ function toast(msg,dur){
   var el=$("#toast");el.textContent=msg;el.classList.add("on");
   clearTimeout(el._t);el._t=setTimeout(function(){el.classList.remove("on")},dur||1900);
 }
-function openUserChat(i){
-  var u=ratingUsers[i]||{};
+	function openUserChat(i,src){
+	  var u=socialUsers(src)[i]||{};
   /* Open the ranked user's direct Telegram chat inside the app (not the browser). */
   if(u.username){
     var url="https://t.me/"+String(u.username).replace(/^@/,"");
@@ -1494,13 +1647,13 @@ function openUserChat(i){
   if(u.tgId){
     try{if(tg&&tg.openTelegramLink){tg.openTelegramLink("tg://user?id="+u.tgId);return}}catch(e){}
   }
-  /* No public username: fall back to the ready-text chat picker. */
-  openWriteTemplates(i);
-}
-function closeUserProfile(){$("#upov").classList.remove("on")}
-function friendChallenge(i){
-  var r=rl();
-  var u=(typeof i==="number")?ratingUsers[i]:null;
+	  /* No public username: fall back to the ready-text chat picker. */
+	  openWriteTemplates(i,src);
+	}
+	function closeUserProfile(){$("#upov").classList.remove("on")}
+	function friendChallenge(i,src){
+	  var r=rl();
+	  var u=(typeof i==="number")?socialUsers(src)[i]:null;
   if(!u||!u.tgId||u.me){
     toast(LANG==="ru"?"Этому пользователю нельзя бросить вызов":LANG==="tj"?"Ба ин корбар даъват фиристодан мумкин нест":"Bu foydalanuvchiga chaqiruv yuborib bo'lmaydi",2400);
     return;
@@ -1643,12 +1796,12 @@ function finishChallengeRound(){
 }
 
 /* ---------- Write templates sheet ---------- */
-function openWriteTemplates(uIdx){
-  var u=ratingUsers[uIdx]||{n:"",xp:0};
-  var myXp=Number((MAP&&MAP.progress&&MAP.progress.xp)||0);
-  var botLink="https://t.me/hsk_ai_bot";
-  var rank=uIdx+1;
-  var myRank=(ratingUsers.findIndex(function(x){return x.me})||3)+1;
+	function openWriteTemplates(uIdx,src){
+	  var u=socialUsers(src)[uIdx]||{n:"",xp:0};
+	  var myXp=Number((MAP&&MAP.progress&&MAP.progress.xp)||0);
+	  var botLink="https://t.me/hsk_ai_bot";
+	  var rank=uIdx+1;
+	  var myRank=currentRatingRank()||rank||1;
   var t={
     ru:["Привет! Учу китайский с HSK AI — уже "+myXp.toLocaleString("ru")+" XP и иду #"+myRank+" в лиге. Попробуй тоже 🐼 "+botLink,
         "Иду в лиге на #"+myRank+" месте. Обгони меня, если сможешь 🔥 "+botLink,
@@ -1684,12 +1837,12 @@ function renderInviteSheet(d){
 }
 function openInviteSheet(){
   var loading=LANG==="ru"?"Готовим ссылку…":LANG==="tj"?"Силка омода мешавад…":"Link tayyorlanyapti…";
-  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr">'+loading+'</div></div>');
-  if(INIT_DATA){
-    _apiGet("/api/v3/invite?lang="+LANG).then(function(r){return r.json()}).then(function(d){
-      if(d&&d.ok){renderInviteSheet(d);return}
-      throw new Error("invite_failed");
-    }).catch(function(){toast(LANG==="ru"?"Ссылка не загрузилась":LANG==="tj"?"Силка бор нашуд":"Link yuklanmadi",2200);App.closeSheet()});
+	  App.openSheet('<div class="shead"><div class="zh han" style="font-size:34px">友</div><div class="tr">'+loading+'</div></div>');
+	  if(INIT_DATA){
+	    _apiGet(invitePayloadUrl()).then(function(r){return r.json()}).then(function(d){
+	      if(d&&d.ok){renderInviteSheet(d);return}
+	      throw new Error("invite_failed");
+	    }).catch(function(){toast(LANG==="ru"?"Ссылка не загрузилась":LANG==="tj"?"Силка бор нашуд":"Link yuklanmadi",2200);App.closeSheet()});
     return;
   }
   var link="https://t.me/hsk_ai_bot";
@@ -1698,47 +1851,50 @@ function openInviteSheet(){
 }
 
 /* ---------- Full user profile overlay ---------- */
-function openRatingUser(i){
-  var u=ratingUsers[i],t=T(),r=rl();
-  var myXp=Number((MAP&&MAP.progress&&MAP.progress.xp)||0);
-  var lvlLbl=LANG==="ru"?"уровень":LANG==="tj"?"сатҳ":"daraja";
-  var isHan=/[一-鿿]/.test(u.a);
-  var uLevel=courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1"));
+	function openRatingUser(i,src){
+	  src=src==="referrals"?"referrals":"rating";
+	  var list=socialUsers(src),u=list[i],t=T(),r=rl();
+	  if(!u)return;
+	  var myXp=currentUserWeeklyXp();
+	  var userXp=ratingScore(u);
+	  var lvlLbl=LANG==="ru"?"уровень":LANG==="tj"?"сатҳ":"daraja";
+	  var isHan=/[一-鿿]/.test(u.a);
+	  var uLevel=courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1"));
 
   /* rivalry bar */
-  var rivHtml="";
-  if(!u.me){
-    var total=myXp+u.xp||1;
-    var mePct=Math.round(myXp/total*100);
-    var diff=Math.abs(myXp-u.xp);
-    var ahead=myXp>u.xp;
-    var rivNote={ru:ahead?"Вы впереди на "+diff.toLocaleString("ru")+" XP":"Отставание "+diff.toLocaleString("ru")+" XP",
-      uz:ahead?"Siz "+diff.toLocaleString("ru")+" XP oldinda":diff.toLocaleString("ru")+" XP orqadasiz",
-      tj:ahead?"Шумо "+diff.toLocaleString("ru")+" XP пеш":diff.toLocaleString("ru")+" XP қафо"}[LANG];
+	  var rivHtml="";
+	  if(!u.me){
+	    var total=myXp+userXp||1;
+	    var mePct=Math.round(myXp/total*100);
+	    var diff=Math.abs(myXp-userXp);
+	    var ahead=myXp>userXp;
+	    var rivNote={ru:ahead?"Вы впереди на "+diff.toLocaleString("ru")+" XP":"Отставание "+diff.toLocaleString("ru")+" XP",
+	      uz:ahead?"Siz "+diff.toLocaleString("ru")+" XP oldinda":diff.toLocaleString("ru")+" XP orqadasiz",
+	      tj:ahead?"Шумо "+diff.toLocaleString("ru")+" XP пеш":diff.toLocaleString("ru")+" XP қафо"}[LANG];
     var rivTitle=LANG==="ru"?"Недельный рейтинг":LANG==="tj"?"Рейтинги ҳафтаина":"Haftalik reyting";
     rivHtml='<div class="riv"><h4><i class="ti ti-swords" style="font-size:15px"></i> '+rivTitle+'</h4>'
-      +'<div class="vn"><span>'+esc(t.you)+'</span><span>'+esc(u.n)+'</span></div>'
-      +'<div class="bar"><i style="width:'+mePct+'%;background:var(--cin)"></i></div>'
-      +'<div class="vn" style="margin-top:5px"><span style="font-weight:500;color:rgba(255,255,255,.9)">'+myXp.toLocaleString("ru")+'</span><span style="font-weight:500;color:rgba(255,255,255,.9)">'+u.xp.toLocaleString("ru")+'</span></div>'
-      +'<div class="note">'+esc(rivNote)+'</div></div>';
-  }
+	      +'<div class="vn"><span>'+esc(t.you)+'</span><span>'+esc(u.n)+'</span></div>'
+	      +'<div class="bar"><i style="width:'+mePct+'%;background:var(--cin)"></i></div>'
+	      +'<div class="vn" style="margin-top:5px"><span style="font-weight:500;color:rgba(255,255,255,.9)">'+myXp.toLocaleString("ru")+'</span><span style="font-weight:500;color:rgba(255,255,255,.9)">'+userXp.toLocaleString("ru")+'</span></div>'
+	      +'<div class="note">'+esc(rivNote)+'</div></div>';
+	  }
 
-  var acts=u.me?""
-    :'<div class="upacts">'
-    +'<button class="b-ch" onclick="friendChallenge('+i+')"><i class="ti ti-swords"></i> '+r.ch+'</button>'
-    +'<button class="b-tg" onclick="openUserChat('+i+')"><i class="ti ti-brand-telegram"></i></button>'
-    +'</div>';
+	  var acts=u.me?""
+	    :'<div class="upacts">'
+	    +'<button class="b-ch" onclick="friendChallenge('+i+',\''+src+'\')"><i class="ti ti-swords"></i> '+r.ch+'</button>'
+	    +'<button class="b-tg" onclick="openUserChat('+i+',\''+src+'\')"><i class="ti ti-brand-telegram"></i></button>'
+	    +'</div>';
 
   $("#upov").innerHTML=
     '<div class="uptop"><button class="upx" onclick="closeUserProfile()"><i class="ti ti-arrow-left"></i></button>'
     +'<span style="font-size:14px;font-weight:500">'+esc(u.n)+'</span><div style="width:34px"></div></div>'
     +'<div class="uphero"><div class="av'+(isHan?" han":"")+'">'+u.a+(u.p?'<span class="cr"><i class="ti ti-crown" style="font-size:11px"></i></span>':'')+'</div>'
     +'<div class="nm">'+esc(u.n)+'</div><div class="un">'+esc(t.league)+'</div>'
-    +'<div class="badges"><span class="bg bg-lv"><i class="ti ti-bolt" style="font-size:10px"></i> '+esc(uLevel)+'</span>'
-    +'<span class="bg bg-lg han" style="font-size:12px">朱雀</span>'
-    +(u.p?'<span class="bg" style="background:var(--goldbg);color:var(--gold)"><i class="ti ti-crown" style="font-size:10px"></i> Premium</span>':'')+'</div></div>'
-    +'<div class="stats" style="margin:14px 0 0">'
-    +'<div class="stat"><b style="color:var(--cin)">'+u.xp.toLocaleString("ru")+'</b><small>'+t.xp+'</small></div>'
+	    +'<div class="badges"><span class="bg bg-lv"><i class="ti ti-bolt" style="font-size:10px"></i> '+esc(uLevel)+'</span>'
+	    +'<span class="bg bg-lg han" style="font-size:12px">朱雀</span>'
+	    +(u.p?'<span class="bg" style="background:var(--goldbg);color:var(--gold)"><i class="ti ti-crown" style="font-size:10px"></i> Premium</span>':'')+'</div></div>'
+	    +'<div class="stats" style="margin:14px 0 0">'
+	    +'<div class="stat"><b style="color:var(--cin)">'+userXp.toLocaleString("ru")+'</b><small>'+t.xp+'</small></div>'
     +'<div class="stat"><b style="color:var(--gold)">#'+(i+1)+'</b><small>'+r.weekRank+'</small></div>'
     +'<div class="stat"><b style="color:var(--jade)">'+esc(uLevel)+'</b><small>'+lvlLbl+'</small></div></div>'
     +rivHtml+acts;
@@ -1782,7 +1938,7 @@ function renderProfile(){
     +'<button class="srow" onclick="App.notifToggle()"><i class="ti ti-bell"></i> '+t.notif+'<span class="toggle '+(notifOn?"on":"")+'"></span></button>'
     +(notifOn?'<div class="srow-note">'+notifTimesHtml()+'</div>':'')
     +'<button class="srow" onclick="App.goalPicker()"><i class="ti ti-target"></i> '+p.goalSet+'<span class="sv">'+dailyGoal+' XP <i class="ti ti-chevron-right"></i></span></button>'
-    +'<button class="srow"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button></div>'
+    +'<button class="srow" onclick="App.openHelp()"><i class="ti ti-help-circle"></i> '+t.help+'<span class="sv"><i class="ti ti-chevron-right"></i></span></button></div>'
     +'<div style="height:14px"></div>';
 }
 
@@ -1806,17 +1962,18 @@ function renderAll(){
   document.querySelectorAll("#nav [data-i]").forEach(function(s){s.textContent=T().nav[s.dataset.i]});
   if(MAP){renderCourse();renderMashq();renderRating();renderProfile();if(SCREEN==="voice")renderVoice()}
 }
-(function(){var p=new URLSearchParams(location.search);var onb=false;try{onb=!!localStorage.getItem("hsk_v3_onb")}catch(e){}if(!onb&&!p.get("onboarded")){location.replace("/course_v3_onboarding.html?lang="+LANG);}})();
+(function(){var p=new URLSearchParams(location.search);var onb=false;try{onb=!!localStorage.getItem("hsk_v3_onb")}catch(e){}if(INIT_DATA&&!onb&&!p.get("onboarded")){location.replace("/course_v3_onboarding.html?lang="+LANG);}})();
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
 $("#paywall").onclick=function(){App.closePaywall()};
 window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.startAdSupportedLesson=startAdSupportedLesson;window.App=App;window.Flow=Flow;window.AdFlow=AdFlow;window.speak=speak;
 (function(){
   var bootLevel=getSelectedLevel();
-  var url=INIT_DATA?"/api/v3/map?lang="+LANG+"&level="+bootLevel:"/course_v3_data/"+bootLevel+".json";
-  var opts=INIT_DATA?{headers:{"X-Telegram-Init-Data":INIT_DATA}}:{};
-  fetch(url,opts).then(function(r){return r.json()}).then(function(d){
-    MAP=d;setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
+  if(!INIT_DATA){showAuthGate();return;}
+  var url="/api/v3/map?lang="+LANG+"&level="+bootLevel;
+  fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
+    if(!d||d.authenticated===false||d._status===401){showAuthGate();return;}
+    hideAuthGate();MAP=d;adoptServerLang(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
     renderAll();
     var sp=new URLSearchParams(location.search);
     App.show(sp.get("tab")||"course");
@@ -1828,7 +1985,7 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.sta
     var challengeId=Number(sp.get("challenge_id")||0);
     if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);
     if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
-  }).catch(function(){$("#s-course").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>'});
+  }).catch(function(){showAuthGate()});
 })();
 </script>
 </body>

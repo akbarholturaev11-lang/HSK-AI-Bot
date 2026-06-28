@@ -1,14 +1,23 @@
 from datetime import datetime, timedelta, timezone
+from types import SimpleNamespace
 from typing import Optional
 
 from aiogram import Bot
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
+from sqlalchemy import func, select
 
 from app.bot.utils.i18n import t
 from app.config import settings
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.course_progress import CourseProgress
+from app.db.models.course_xp_event import CourseXpEvent
+from app.db.models.referral import Referral
+from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
 from app.repositories.referral_repo import ReferralRepository
 from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
+from app.services.course_gamification_service import CourseGamificationService
+from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.referral_notify_service import ReferralNotifyService
 from app.services.subscription_progress_service import SubscriptionProgressService
 
@@ -71,6 +80,95 @@ class ReferralService:
             required=REFERRAL_TRIAL_REQUIRED_ACTIVE,
             days=REFERRAL_TRIAL_ACCESS_DAYS,
         )
+
+    async def list_miniapp_referrals(
+        self,
+        referrer,
+        *,
+        timezone_offset_minutes: int | None = None,
+        limit: int = 100,
+    ) -> list[dict]:
+        if not referrer:
+            return []
+
+        offset = max(-720, min(840, int(timezone_offset_minutes or 0)))
+        day = CourseGamificationService._local_day(offset)
+        week_start = CourseGamificationService._week_start(day)
+        weekly = (
+            select(
+                CourseXpEvent.user_id.label("user_id"),
+                func.sum(CourseXpEvent.xp).label("weekly_xp"),
+            )
+            .where(CourseXpEvent.week_start == week_start)
+            .group_by(CourseXpEvent.user_id)
+            .subquery()
+        )
+        max_items = max(1, min(200, int(limit or 100)))
+        result = await self.session.execute(
+            select(
+                Referral.status,
+                Referral.created_at,
+                Referral.activated_at,
+                User.id,
+                User.telegram_id,
+                User.full_name,
+                User.username,
+                User.status,
+                User.payment_status,
+                User.end_date,
+                CourseMiniAppProfile.xp_total,
+                CourseProgress.level,
+                CourseProgress.completed_lessons_count,
+                func.coalesce(weekly.c.weekly_xp, 0),
+            )
+            .join(User, User.telegram_id == Referral.invited_user_telegram_id)
+            .outerjoin(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
+            .outerjoin(CourseProgress, CourseProgress.user_id == User.id)
+            .outerjoin(weekly, weekly.c.user_id == User.id)
+            .where(Referral.referrer_telegram_id == referrer.telegram_id)
+            .order_by(Referral.created_at.desc(), User.id.asc())
+            .limit(max_items)
+        )
+
+        items = []
+        for index, (
+            ref_status,
+            created_at,
+            activated_at,
+            user_id,
+            telegram_id,
+            full_name,
+            username,
+            status,
+            payment_status,
+            end_date,
+            xp_total,
+            course_level,
+            completed_lessons_count,
+            weekly_xp,
+        ) in enumerate(result.all(), 1):
+            items.append(
+                {
+                    "rank": index,
+                    "name": str(full_name or username or "HSK Student").strip()[:40],
+                    "telegram_id": int(telegram_id) if telegram_id else None,
+                    "username": str(username or "").strip().lstrip("@")[:32],
+                    "status": str(ref_status or "pending"),
+                    "joined_at": created_at.isoformat() if created_at else "",
+                    "activated_at": activated_at.isoformat() if activated_at else "",
+                    "xp": int(weekly_xp or 0),
+                    "league_points": int(weekly_xp or 0),
+                    "total_xp": int(xp_total or 0),
+                    "course_level": str(course_level or "").strip()[:32],
+                    "completed_lessons": int(completed_lessons_count or 0),
+                    "is_paid": CourseMiniAppAccessService.is_paid_user(
+                        SimpleNamespace(status=status, payment_status=payment_status, end_date=end_date)
+                    ),
+                    "is_current_user": False,
+                    "user_id": int(user_id),
+                }
+            )
+        return items
 
     async def remember_trial_progress_message(
         self,

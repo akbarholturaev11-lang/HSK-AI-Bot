@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
 
+from app.services.user_access_state_service import UserAccessState, UserAccessStateService
+
 
 class CourseTrialService:
     def __init__(self, session):
@@ -13,17 +15,14 @@ class CourseTrialService:
         return value.astimezone(timezone.utc)
 
     def is_paid_user(self, user) -> bool:
-        if not user:
-            return False
-        if getattr(user, "status", "") != "active":
-            return False
-        if getattr(user, "payment_status", "") != "approved":
-            return False
-        end_date = self._as_utc(getattr(user, "end_date", None))
-        return end_date is None or end_date > datetime.now(timezone.utc)
+        return UserAccessStateService.is_paid(user)
 
     def is_free_user(self, user) -> bool:
-        return bool(user and not self.is_paid_user(user) and getattr(user, "status", "") != "blocked")
+        return bool(
+            user
+            and not self.is_paid_user(user)
+            and UserAccessStateService.classify(user) in UserAccessStateService.COURSE_ELIGIBLE_STATES
+        )
 
     async def ensure_trial_lesson(self, user, lesson_id: int) -> bool:
         if self.is_paid_user(user):
@@ -55,6 +54,8 @@ class CourseTrialService:
         if current_lesson_id and int(current_lesson_id) == int(lesson_id):
             if getattr(user, "trial_course_completed_at", None) is None:
                 user.trial_course_completed_at = datetime.now(timezone.utc)
+                if UserAccessStateService.classify(user) == UserAccessState.TRIAL:
+                    user.status = "free"
                 await self.session.flush()
 
     async def mark_force_sub_required(self, user) -> None:

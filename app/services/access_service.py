@@ -9,6 +9,7 @@ from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
 from app.repositories.payment_repo import PaymentRepository
 from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
+from app.services.user_access_state_service import UserAccessStateService
 
 class AccessService:
     def __init__(self, session):
@@ -30,16 +31,29 @@ class AccessService:
             return self._as_utc(dt) <= now
         return dt < now.date()
 
-    async def _downgrade_expired_user(self, user) -> None:
-        user.status = "trial"
+    async def _move_to_free_user(self, user) -> None:
+        user.status = "free"
         user.end_date = None
         if getattr(user, "learning_mode", "qa") == "course":
             user.learning_mode = "qa"
             user.voice_mode = "none"
         await self.session.flush()
 
+    async def _mark_paid_user_expired(self, user) -> None:
+        user.status = "expired"
+        if getattr(user, "learning_mode", "qa") == "course":
+            user.learning_mode = "qa"
+            user.voice_mode = "none"
+        await self.session.flush()
+
+    async def _normalize_expired_active_user(self, user) -> None:
+        if getattr(user, "payment_status", "") == "approved":
+            await self._mark_paid_user_expired(user)
+            return
+        await self._move_to_free_user(user)
+
     def _is_paid_user(self, user) -> bool:
-        return user.payment_status == "approved"
+        return UserAccessStateService.is_paid(user)
 
     def is_paid_user(self, user) -> bool:
         return bool(user) and self._is_paid_user(user)
@@ -82,12 +96,9 @@ class AccessService:
             return False
 
         if user.status == "active" and self._is_date_expired(user.end_date):
-            await self._downgrade_expired_user(user)
+            await self._normalize_expired_active_user(user)
 
-        if user.status == "active":
-            return True
-
-        if user.status == "trial":
+        if UserAccessStateService.can_use_course(user):
             return True
 
         if getattr(user, "learning_mode", "qa") == "course":
@@ -140,7 +151,7 @@ class AccessService:
 
         if budget.status == "active":
             await budget_service.expire_budget(budget)
-        await self._downgrade_expired_user(user)
+        await self._move_to_free_user(user)
         return True
 
     async def _can_use_non_paid_active_budget(self, user) -> Tuple[bool, str, bool, bool]:
@@ -154,13 +165,13 @@ class AccessService:
         if budget_service.is_total_budget_depleted(budget):
             if budget.status == "active":
                 await budget_service.expire_budget(budget)
-            await self._downgrade_expired_user(user)
+            await self._move_to_free_user(user)
             return False, "", True, True
 
         budget_access = await budget_service.can_use_ai(user.telegram_id)
         if not budget_access.allowed:
             if budget_access.budget_depleted:
-                await self._downgrade_expired_user(user)
+                await self._move_to_free_user(user)
                 return False, "", True, True
             return False, budget_access.message_key, False, True
 
@@ -223,7 +234,7 @@ class AccessService:
             if not self._is_date_expired(user.end_date):
                 continue
             was_in_course = getattr(user, "learning_mode", "qa") == "course"
-            await self._downgrade_expired_user(user)
+            await self._normalize_expired_active_user(user)
             if was_in_course:
                 ejected_course_telegram_ids.append(user.telegram_id)
             changed += 1
@@ -253,8 +264,8 @@ class AccessService:
 
         if user.status == "active":
             if self._is_date_expired(user.end_date):
-                await self._downgrade_expired_user(user)
-                # falls through to trial logic below
+                await self._normalize_expired_active_user(user)
+                # falls through to free-tier logic below
             else:
                 if not self._is_paid_user(user):
                     if await self._has_active_release_feedback_trial(user):
@@ -269,11 +280,7 @@ class AccessService:
                 else:
                     return await self._can_use_ai_budget(telegram_id)
 
-        if user.status == "expired":
-            await self._downgrade_expired_user(user)
-            # falls through to trial logic below
-
-        if user.status == "trial":
+        if UserAccessStateService.can_use_free_tier(user):
             if not enforce_daily_limit:
                 return True, ""
             return await self._can_use_daily_text_limit(user)
@@ -295,8 +302,8 @@ class AccessService:
 
         if user.status == "active":
             if self._is_date_expired(user.end_date):
-                await self._downgrade_expired_user(user)
-                # falls through to trial logic below
+                await self._normalize_expired_active_user(user)
+                # falls through to free-tier logic below
             else:
                 if not self._is_paid_user(user):
                     if await self._has_active_release_feedback_trial(user):
@@ -309,11 +316,7 @@ class AccessService:
                 else:
                     return await self._can_use_ai_budget(telegram_id)
 
-        if user.status == "expired":
-            await self._downgrade_expired_user(user)
-            # falls through to trial logic below
-
-        if user.status == "trial":
+        if UserAccessStateService.can_use_free_tier(user):
             return await self._can_use_daily_image_limit(user)
 
         return False, "access_start_first"
@@ -333,7 +336,7 @@ class AccessService:
         if await self._has_active_release_feedback_trial(user):
             return
 
-        if user.status == "trial":
+        if UserAccessStateService.can_use_free_tier(user):
 
             now = datetime.now(timezone.utc)
 

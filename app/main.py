@@ -30,6 +30,7 @@ from app.services.motivation_reminder_service import (
     MotivationReminderService,
 )
 from app.services.access_service import AccessService
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.daily_reset_service import DailyResetService
 from app.services.expiry_reminder_service import ExpiryReminderService
 from app.services.course_reminder_service import CourseReminderService
@@ -237,6 +238,8 @@ async def _background_scheduler(bot: Bot) -> None:
                 await ReleaseFeedbackService(session).send_due_campaigns(bot)
             async with async_session_maker() as session:
                 await BotFeedbackService(session).send_due_feedback_requests(bot)
+            async with async_session_maker() as session:
+                await BotBlockStatusService(session).scan_due_users(bot, limit=100)
         except Exception as e:
             print("Scheduler error:", e)
 
@@ -276,6 +279,12 @@ MINIAPP_HTML_HEADERS = {
     "Pragma": "no-cache",
     "Expires": "0",
 }
+# Heavy, version-busted static assets (loaded as `file.js?v=YYYYMMDD`) can be cached
+# long-term: a content change bumps the `?v=` query and busts the cache. Without this
+# the 2.9 MB dictionary re-downloads on every page/iframe open, making the Mini App slow.
+STATIC_ASSET_HEADERS = {
+    "Cache-Control": "public, max-age=31536000, immutable",
+}
 COURSE_DATA_FILES = {
     "hsk1": "app/static/course_data/hsk1.json",
     "hsk2": "app/static/course_data/hsk2.json",
@@ -303,6 +312,10 @@ ADMIN_MINIAPP_SECTIONS = {
 
 def miniapp_file_response(path: str) -> FileResponse:
     return FileResponse(path, headers=MINIAPP_HTML_HEADERS)
+
+
+def static_asset_response(path: str, media_type: str | None = None) -> FileResponse:
+    return FileResponse(path, media_type=media_type, headers=STATIC_ASSET_HEADERS)
 
 
 def static_json_response(path: str) -> FileResponse:
@@ -548,6 +561,11 @@ async def _admin_user_payload(session, user) -> dict:
             "level": user.level,
             "learning_mode": user.learning_mode,
             "status": user.status,
+            "status_label": user.status or "—",
+            "bot_blocked": BotBlockStatusService.is_bot_blocked(user),
+            "bot_blocked_at": _mini_dt(user.bot_blocked_at),
+            "bot_unblocked_at": _mini_dt(user.bot_unblocked_at),
+            "last_bot_block_check_at": _mini_dt(user.last_bot_block_check_at),
             "payment_status": user.payment_status,
             "payment_method": user.payment_method,
             "selected_plan_type": user.selected_plan_type,
@@ -588,6 +606,10 @@ def _admin_user_card_payload(user) -> dict:
         "mode": "Kurs" if user.learning_mode == "course" else "Savol-javob",
         "status": user.status,
         "status_label": user.status or "—",
+        "bot_blocked": BotBlockStatusService.is_bot_blocked(user),
+        "bot_blocked_at": _mini_dt(user.bot_blocked_at),
+        "bot_unblocked_at": _mini_dt(user.bot_unblocked_at),
+        "last_bot_block_check_at": _mini_dt(user.last_bot_block_check_at),
         "payment_status": user.payment_status,
         "payment_label": user.payment_status or "—",
         "plan": _mini_plan_label(user.selected_plan_type),
@@ -703,7 +725,7 @@ async def hsk_lugat_miniapp():
 
 @app.get("/hsk-data.js")
 async def hsk_data_script():
-    return miniapp_file_response("app/static/hsk-data.js")
+    return static_asset_response("app/static/hsk-data.js", "application/javascript")
 
 
 @app.get("/admin-control.html")
@@ -733,6 +755,18 @@ _COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4"}
 def _course_v3_level(value: str | None) -> str:
     normalized = str(value or "").strip().lower()
     return normalized if normalized in _COURSE_V3_LEVELS else "hsk1"
+
+
+# Band tugaganda keyingi HSK bandiga avtomatik o'tish (user.level yangilanadi).
+_COURSE_V3_NEXT_BAND = {"hsk1": "hsk2", "hsk2": "hsk3", "hsk3": "hsk4"}
+
+
+def _course_v3_user_level(user) -> str:
+    return _course_v3_level(getattr(user, "level", None))
+
+
+def _course_v3_user_lang(user) -> str:
+    return normalize_miniapp_lang(getattr(user, "language", None))
 
 
 def _apply_course_v3_access_policy(data: dict, *, level: str, completed: int, is_paid: bool) -> None:
@@ -781,7 +815,7 @@ async def course_v3_sub_page(page: str):
 
 @app.get("/course_v3_data/memo.js")
 async def course_v3_memo_script():
-    return miniapp_file_response("app/static/course_v3_data/memo.js")
+    return static_asset_response("app/static/course_v3_data/memo.js", "application/javascript")
 
 
 @app.get("/course_v3_data/{filename}")
@@ -827,7 +861,6 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
     import json as _json
     from pathlib import Path
 
-    resolved_lang = normalize_miniapp_lang(lang)
     init_data = request.headers.get("X-Telegram-Init-Data", "")
     telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
 
@@ -835,26 +868,52 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         user = await UserRepository(session).get_by_telegram_id(telegram_id) if telegram_id else None
 
         if not user:
-            preview_level = _course_v3_level(level or "hsk1")
-            map_path = Path(f"app/static/course_v3_data/{preview_level}.json")
-            if not map_path.exists():
-                map_path = Path("app/static/course_v3_data/hsk1.json")
-            try:
-                data = _json.loads(map_path.read_text())
-            except Exception:
-                return JSONResponse(status_code=500, content={"ok": False, "error": "map_load_failed"})
-            data["authenticated"] = False
-            data["level"] = preview_level
-            _apply_course_v3_access_policy(data, level=preview_level, completed=0, is_paid=False)
-            return JSONResponse(content=data)
+            # Botka real ulanmaganda (initData yo'q / token mos kelmadi / user topilmadi)
+            # default darajadagi "preview" KO'RSATILMAYDI. Mini app bot bilan bir xil
+            # daraja va tilda ochilishi shart, shuning uchun foydalanuvchidan botga
+            # qaytib /start bosib qaytadan kirishni so'raymiz.
+            return JSONResponse(
+                status_code=401,
+                content={"ok": False, "authenticated": False, "error": "auth_required"},
+            )
 
-        progress = await CourseProgressRepository(session).get_by_user_id(user.id)
+        # Yagona manba: foydalanuvchi botda (QA / onboarding) tanlagan daraja va til.
+        # Course Mini App doim user.level bandida va user.language tilida ochiladi —
+        # shunday qilib QA rejim va Kurs rejim hech qachon bir-biridan farq qilmaydi.
+        resolved_lang = _course_v3_user_lang(user)
+        target_band = _course_v3_user_level(user)
+
+        progress_repo = CourseProgressRepository(session)
+        progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+        if not progress:
+            progress = await progress_repo.create(
+                user_id=user.id,
+                level=target_band,
+                current_lesson_id=None,
+                current_step="intro",
+                waiting_for="none",
+            )
+        elif _course_v3_level(progress.level) != target_band:
+            # Foydalanuvchi HSK bandini o'zgartirdi (botda darajani almashtirdi yoki
+            # avvalgi bandni tugatdi). Progress har bir band uchun alohida, shuning
+            # uchun yangi bandni noldan boshlaymiz.
+            progress.level = target_band
+            progress.completed_lessons_count = 0
+            progress.current_lesson_id = None
+            progress.current_step = "intro"
+            progress.waiting_for = "none"
+            progress.homework_status = "none"
+        elif progress.level != target_band:
+            # Band bir xil, lekin kanonik bo'lmagan nom bilan saqlangan
+            # (masalan "beginner") — kanonik bandga normallashtiramiz.
+            progress.level = target_band
+
         profile_svc = CourseMiniAppProfileService(session)
         profile = await profile_svc.get_or_create(user.id)
         gamification = await CourseGamificationService(session).snapshot(user, profile=profile)
         is_paid = StudyMiniAppService.is_paid_user(user)
 
-        resolved_level = _course_v3_level(level or getattr(progress, "level", "") or "hsk1")
+        resolved_level = target_band
 
         map_path = Path(f"app/static/course_v3_data/{resolved_level}.json")
         if not map_path.exists():
@@ -882,7 +941,7 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         data["user"] = {
             "name": display_name,
             "avatar": initials[:2],
-            "language": getattr(user, "language", None) or "uz",
+            "language": resolved_lang,
             "is_paid": is_paid,
             "referral_code": getattr(user, "referral_code", None) or "",
         }
@@ -890,6 +949,7 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         data["notify"] = {
             "enabled": bool(getattr(profile, "notifications_enabled", True)),
         }
+        data["admin_contact"] = admin_contact_url(await BotSettingRepository(session).get(ADMIN_CONTACT_KEY))
 
         _apply_course_v3_access_policy(data, level=resolved_level, completed=completed, is_paid=is_paid)
 
@@ -913,6 +973,13 @@ async def v3_invite_payload(request: Request, lang: str = "uz"):
         return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
 
     resolved_lang = normalize_miniapp_lang(lang)
+    tz_raw = request.query_params.get("tz")
+    tz_offset = None
+    if tz_raw is not None:
+        try:
+            tz_offset = int(tz_raw)
+        except (TypeError, ValueError):
+            tz_offset = None
     async with async_session_maker() as session:
         user_repo = UserRepository(session)
         user = await user_repo.get_by_telegram_id(telegram_id)
@@ -923,6 +990,7 @@ async def v3_invite_payload(request: Request, lang: str = "uz"):
         await user_repo.ensure_referral_code(user)
         active_count = await service.get_trial_activation_progress(user)
         joined_count = await service.referral_repo.count_by_referrer(user.telegram_id)
+        referrals = await service.list_miniapp_referrals(user, timezone_offset_minutes=tz_offset)
         bot_username = (settings.BOT_USERNAME or "hsk_ai_bot").strip().lstrip("@") or "hsk_ai_bot"
         link = f"https://t.me/{bot_username}?start={user.referral_code}"
         full_lang, full_text = await service.build_trial_progress_text(user)
@@ -943,6 +1011,7 @@ async def v3_invite_payload(request: Request, lang: str = "uz"):
             "joined_count": int(joined_count),
             "active_count": int(active_count),
             "required": REFERRAL_TRIAL_REQUIRED_ACTIVE,
+            "referrals": referrals,
         })
 
 
@@ -967,6 +1036,29 @@ async def v3_notify_toggle(request: Request):
         await session.commit()
 
         return JSONResponse(content={"ok": True, "notifications": enabled})
+
+
+@app.post("/api/v3/language")
+async def v3_set_language(request: Request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    resolved_lang = normalize_miniapp_lang(str(payload.get("language") or ""))
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
+        # Til ham yagona manba: Mini Appda tanlangan til botga (user.language) yoziladi,
+        # shunda QA rejim va Kurs rejim bir xil tilda ochiladi.
+        user.language = resolved_lang
+        await session.commit()
+        return JSONResponse(content={"ok": True, "language": resolved_lang})
 
 
 @app.get("/api/v3/ad")
@@ -1009,13 +1101,13 @@ async def v3_course_ad_view(request: Request):
     if ad_id <= 0 or lesson_order <= 0:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
 
-    resolved_level = _course_v3_level(str(payload.get("level") or "hsk1"))
     placement = CourseAdService.normalize_placement(str(payload.get("placement") or "start"))
     async with async_session_maker() as session:
         user = await UserRepository(session).get_by_telegram_id(telegram_id)
         if not user:
             return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
 
+        resolved_level = _course_v3_user_level(user)
         service = CourseAdService(session)
         result = await service.record_view(
             user=user,
@@ -1060,12 +1152,12 @@ async def v3_course_lesson_unlock(request: Request):
     if lesson_order <= 0:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
-    resolved_level = _course_v3_level(str(payload.get("level") or "hsk1"))
     async with async_session_maker() as session:
         user = await UserRepository(session).get_by_telegram_id(telegram_id)
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
 
+        resolved_level = _course_v3_user_level(user)
         lesson_repo = CourseLessonRepository(session)
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
         if not lesson:
@@ -1137,12 +1229,15 @@ async def v3_course_lesson_complete(request: Request):
     if lesson_order <= 0:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
-    resolved_level = _course_v3_level(str(payload.get("level") or "hsk1"))
     async with async_session_maker() as session:
         user_repo = UserRepository(session)
         user = await user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
+
+        # Band yagona manbadan — user.level. Klient yuborgan level emas, server
+        # foydalanuvchining haqiqiy bandiga ishonadi (QA rejim bilan bir xil).
+        resolved_level = _course_v3_user_level(user)
 
         lesson_repo = CourseLessonRepository(session)
         lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
@@ -1214,6 +1309,13 @@ async def v3_course_lesson_complete(request: Request):
         )
 
         next_lesson = await lesson_repo.get_next_lesson(resolved_level, lesson_order)
+        if next_lesson is None:
+            # Joriy band to'liq tugadi: keyingi HSK bandiga o'tamiz va user.level ni
+            # yangilaymiz, shunda QA rejim ham yangi bandda bo'ladi (sinxron qoladi).
+            # Progress keyingi map ochilganda yangi banddan noldan boshlanadi.
+            next_band = _COURSE_V3_NEXT_BAND.get(resolved_level)
+            if next_band:
+                user.level = next_band
         next_requires_premium = CourseMiniAppAccessService.lesson_requires_premium(
             resolved_level,
             int(getattr(next_lesson, "lesson_order", 0) or 0) if next_lesson else None,
@@ -2096,11 +2198,13 @@ async def admin_miniapp_course_ads_upload(request: Request):
 
     title = str(form.get("title") or "Course ad").strip()[:120] or "Course ad"
     duration_seconds = CourseAdService.normalize_duration(form.get("duration_seconds"))
+    link_url = CourseAdService.normalize_link(form.get("link_url"))
     async with async_session_maker() as session:
         ad = await CourseAdService(session).create_video(
             title=title,
             media_path=filename,
             duration_seconds=duration_seconds,
+            link_url=link_url,
             created_by_telegram_id=telegram_id,
         )
         await session.commit()
@@ -2130,6 +2234,39 @@ async def admin_miniapp_course_ads_toggle(request: Request):
         await session.commit()
         item = CourseAdService.payload(ad)
     return JSONResponse(content={"ok": True, "ad": item})
+
+
+@app.post("/api/admin-miniapp/course-ads/delete")
+async def admin_miniapp_course_ads_delete(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    try:
+        payload = await request.json()
+        ad_id = int(payload.get("ad_id") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_course_ad_payload"})
+    if ad_id <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_course_ad_payload"})
+
+    async with async_session_maker() as session:
+        media_path = await CourseAdService(session).delete(ad_id)
+        if media_path is None:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
+        await session.commit()
+
+    # Diskdan media faylni ham o'chiramiz (DB o'chgandan keyin, xatoga chidamli).
+    try:
+        safe = os.path.basename(media_path)
+        file_path = os.path.join(COURSE_AD_MEDIA_ROOT, safe)
+        if safe and os.path.exists(file_path):
+            os.remove(file_path)
+    except OSError:
+        pass
+
+    return JSONResponse(content={"ok": True, "deleted_id": ad_id})
 
 
 @app.get("/uploads/course_ads/{filename}")
@@ -2382,11 +2519,14 @@ async def miniapp_practice_start(request: Request):
     try:
         payload = await request.json()
         async with async_session_maker() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
             result = await CourseMiniAppPracticeService(session).start(
                 telegram_id,
                 mode=str(payload.get("mode") or ""),
-                level=str(payload.get("level") or "hsk1"),
-                lang=normalize_miniapp_lang(str(payload.get("lang") or "ru")),
+                level=_course_v3_user_level(user),
+                lang=_course_v3_user_lang(user),
                 skill=str(payload.get("skill") or ""),
             )
     except ValueError as error:
@@ -2405,12 +2545,15 @@ async def miniapp_practice_complete(request: Request):
     try:
         payload = await request.json()
         async with async_session_maker() as session:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if not user:
+                return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
             result = await CourseMiniAppPracticeService(session).complete(
                 telegram_id,
                 session_id=str(payload.get("session_id") or ""),
                 mode=str(payload.get("mode") or ""),
-                level=str(payload.get("level") or "hsk1"),
-                lang=normalize_miniapp_lang(str(payload.get("lang") or "ru")),
+                level=_course_v3_user_level(user),
+                lang=_course_v3_user_lang(user),
                 skill=str(payload.get("skill") or ""),
                 answers=payload.get("answers") if isinstance(payload.get("answers"), list) else [],
             )
@@ -2444,7 +2587,16 @@ async def miniapp_gamification(request: Request):
         user = await UserRepository(session).get_by_telegram_id(telegram_id)
         if not user:
             return JSONResponse(status_code=404, content={"ok": False, "error": "access_start_first"})
-        result = await CourseGamificationService(session).leaderboard(user)
+        tz_raw = request.query_params.get("tz")
+        tz_offset = None
+        if tz_raw is not None:
+            try:
+                tz_offset = int(tz_raw)
+            except (TypeError, ValueError):
+                tz_offset = None
+        result = await CourseGamificationService(session).leaderboard(
+            user, timezone_offset_minutes=tz_offset
+        )
         await session.commit()
     return {"ok": True, **result}
 

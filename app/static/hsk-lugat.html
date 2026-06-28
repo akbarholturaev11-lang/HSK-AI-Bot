@@ -670,6 +670,9 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       writerStrokes.textContent = '';
       charBoxLg.innerHTML = '<div class="plain-char">'+ch+'</div>';
     }
+    // Show "next word" right away (it self-hides when there is no next word) so the
+    // button does not depend on finishing the stroke animation first.
+    showNextWordBtn();
   }
 
   ctrlPlayPause.addEventListener('click', function(){
@@ -814,6 +817,24 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     speak(word.h);
   }
 
+  // Deep-link (?char=...) opened from a lesson. The requested value may be a full
+  // word ("学生"), a single character, or something not present as an exact dictionary
+  // entry. Always open a detail for it instead of silently falling back to the list.
+  function openDeepChar(deep){
+    deep = (deep || '').trim();
+    if(!deep) return;
+    var i;
+    // 1) exact word match
+    for(i=0;i<WORDS.length;i++){ if(WORDS[i].h===deep){ openDetail(WORDS[i]); return; } }
+    // 2) a word that contains the requested text (e.g. char inside a known word)
+    for(i=0;i<WORDS.length;i++){ if(WORDS[i].h.indexOf(deep)>=0){ openDetail(WORDS[i]); return; } }
+    // 3) a word containing the first character of the request
+    var fc = Array.from(deep)[0];
+    if(fc){ for(i=0;i<WORDS.length;i++){ if(WORDS[i].h.indexOf(fc)>=0){ openDetail(WORDS[i]); return; } } }
+    // 4) nothing in the dictionary — still show stroke writing for exactly what was asked
+    openDetail({ id:'deep:'+deep, h:deep, p:'', m:'', lv:'' });
+  }
+
   listEl.addEventListener('click', function(e){
     var row = e.target.closest('.row');
     if(!row) return;
@@ -848,7 +869,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     applyStaticText();
     renderList('');
     var deepChar = params.get('char');
-    if(deepChar){ for(var qi=0;qi<WORDS.length;qi++){ if(WORDS[qi].h===deepChar){ openDetail(WORDS[qi]); break; } } }
+    if(deepChar){ openDeepChar(deepChar); }
     try{
       var tg = window.Telegram && window.Telegram.WebApp;
       if(tg && tg.ready) tg.ready();

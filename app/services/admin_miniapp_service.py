@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, or_, select
 
 from app.db.models.ad_campaign import AdCampaign, AdCampaignDelivery
 from app.db.models.bot_feedback import BotFeedback
@@ -13,6 +13,7 @@ from app.db.models.required_channel import RequiredChannel
 from app.db.models.user import User
 from app.services.admin_stats_service import miniapp_course_stats
 from app.services.required_channel_service import RequiredChannelService
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.subscription_price_service import SubscriptionPriceService
 from app.services.subscription_currency_service import format_subscription_price
@@ -90,6 +91,16 @@ def _payment_label(value: str | None) -> str:
     return labels.get(str(value or "").lower(), value or "—")
 
 
+def _bot_block_filter():
+    return (
+        User.bot_blocked_at.is_not(None),
+        or_(
+            User.bot_unblocked_at.is_(None),
+            User.bot_unblocked_at < User.bot_blocked_at,
+        ),
+    )
+
+
 def _plan_label(value: str | None) -> str:
     labels = {"10_days": "10 кун", "1_month": "1 ой"}
     return labels.get(str(value or "").lower(), value or "—")
@@ -145,6 +156,7 @@ class AdminMiniAppService:
         rejected_payments = int(pay_by_status.get("rejected", {}).get("count", 0))
         paid_users = await self._paid_user_count(now)
         historical_approved_users = await self._count_users(User.payment_status == "approved")
+        bot_blocked_users = await self._count_users(*_bot_block_filter())
 
         miniapp_course = await miniapp_course_stats(self.session)
         avg_sections = (
@@ -210,11 +222,21 @@ class AdminMiniAppService:
             qa_users=qa_users,
             engagement=engagement,
         )
+        period_reports = await self._period_reports(
+            now=now,
+            week_ago=week_ago,
+            month_ago=month_ago,
+            all_course_stats=miniapp_course,
+        )
+        for report in period_reports:
+            if report.get("key") == "all_time":
+                report["text"] = report_text
 
         return {
             "ok": True,
             "generated_at": _dt(now),
             "report_text": report_text,
+            "statistics_reports": period_reports,
             "summary": [
                 {"label": "Фойдаланувчилар", "value": total, "note": f"{active_today} бугун фаол", "tone": "info"},
                 {"label": "Фаол обуна", "value": paid_users, "note": "ҳозир тўловли", "tone": "good"},
@@ -235,6 +257,7 @@ class AdminMiniAppService:
                 "active_week": active_week,
                 "expired_hot": expired_hot,
                 "expiring_soon": expiring_soon,
+                "bot_blocked_users": bot_blocked_users,
                 "conversion": conversion,
                 "engagement": engagement,
             },
@@ -244,8 +267,10 @@ class AdminMiniAppService:
                 "pending": pending_payments,
                 "wants_pay": wants_pay,
                 "trial": int(status_counts.get("trial", 0)),
+                "free": int(status_counts.get("free", 0)),
                 "expired": int(status_counts.get("expired", 0)),
                 "blocked": int(status_counts.get("blocked", 0)),
+                "bot_blocked": bot_blocked_users,
             },
             "levels": [{"label": _level_label(key), "value": value} for key, value in sorted(level_counts.items())],
             "languages": [{"label": _language_label(key), "value": value} for key, value in sorted(language_counts.items())],
@@ -304,14 +329,15 @@ class AdminMiniAppService:
         )).fetchall()
         return {str(row[0] or "—"): int(row.cnt or 0) for row in rows}
 
-    async def _payment_status_counts(self) -> dict[str, dict[str, int]]:
-        rows = (await self.session.execute(
-            select(
-                Payment.payment_status,
-                func.count().label("cnt"),
-                func.coalesce(func.sum(Payment.amount), 0).label("total_sum"),
-            ).group_by(Payment.payment_status)
-        )).fetchall()
+    async def _payment_status_counts(self, since: datetime | None = None) -> dict[str, dict[str, int]]:
+        stmt = select(
+            Payment.payment_status,
+            func.count().label("cnt"),
+            func.coalesce(func.sum(Payment.amount), 0).label("total_sum"),
+        ).group_by(Payment.payment_status)
+        if since is not None:
+            stmt = stmt.where(Payment.submitted_at >= since)
+        rows = (await self.session.execute(stmt)).fetchall()
         return {
             str(row.payment_status or "—"): {
                 "count": int(row.cnt or 0),
@@ -320,18 +346,20 @@ class AdminMiniAppService:
             for row in rows
         }
 
-    async def _payment_plan_counts(self) -> dict[str, int]:
+    async def _payment_plan_counts(self, since: datetime | None = None) -> dict[str, int]:
+        conditions = [Payment.payment_status == "approved", *self._approved_payment_period_conditions(since)]
         rows = (await self.session.execute(
             select(Payment.plan_type, func.count().label("cnt"))
-            .where(Payment.payment_status == "approved")
+            .where(*conditions)
             .group_by(Payment.plan_type)
         )).fetchall()
         return {str(row.plan_type or "—"): int(row.cnt or 0) for row in rows}
 
-    async def _approved_currency_totals(self):
+    async def _approved_currency_totals(self, since: datetime | None = None):
+        conditions = [Payment.payment_status == "approved", *self._approved_payment_period_conditions(since)]
         return (await self.session.execute(
             select(Payment.currency, func.sum(Payment.amount).label("total_sum"))
-            .where(Payment.payment_status == "approved")
+            .where(*conditions)
             .group_by(Payment.currency)
         )).fetchall()
 
@@ -342,6 +370,127 @@ class AdminMiniAppService:
             User.end_date.is_not(None),
             User.end_date > now,
         )
+
+    @staticmethod
+    def _approved_payment_period_conditions(since: datetime | None = None) -> list:
+        if since is None:
+            return []
+        return [
+            or_(
+                Payment.reviewed_at >= since,
+                and_(Payment.reviewed_at.is_(None), Payment.submitted_at >= since),
+            )
+        ]
+
+    async def _approved_payment_user_count(self, since: datetime | None = None) -> int:
+        conditions = [Payment.payment_status == "approved", *self._approved_payment_period_conditions(since)]
+        stmt = select(func.count(func.distinct(Payment.user_telegram_id))).select_from(Payment).where(*conditions)
+        return (await self.session.execute(stmt)).scalar() or 0
+
+    async def _period_reports(
+        self,
+        *,
+        now: datetime,
+        week_ago: datetime,
+        month_ago: datetime,
+        all_course_stats,
+    ) -> list[dict]:
+        return [
+            await self._period_report(
+                key="weekly",
+                title="Ҳафталик",
+                note="Охирги 7 кун",
+                since=week_ago,
+                now=now,
+            ),
+            await self._period_report(
+                key="monthly",
+                title="Ойлик",
+                note="Охирги 30 кун",
+                since=month_ago,
+                now=now,
+            ),
+            await self._period_report(
+                key="all_time",
+                title="Тўлиқ",
+                note="Бутун база",
+                since=None,
+                now=now,
+                course_stats=all_course_stats,
+            ),
+        ]
+
+    async def _period_report(
+        self,
+        *,
+        key: str,
+        title: str,
+        note: str,
+        since: datetime | None,
+        now: datetime,
+        course_stats=None,
+    ) -> dict:
+        if since is None:
+            user_count = await self._count_users()
+            active_users = user_count
+            bot_blocked = await self._count_users(*_bot_block_filter())
+        else:
+            user_count = await self._count_users(User.created_at >= since)
+            active_users = await self._count_users(User.last_active_at >= since)
+            bot_blocked = await self._count_users(User.bot_blocked_at >= since)
+
+        payment_status = await self._payment_status_counts(since)
+        pending_payments = int(payment_status.get("pending", {}).get("count", 0))
+        approved_payments = int(payment_status.get("approved", {}).get("count", 0))
+        rejected_payments = int(payment_status.get("rejected", {}).get("count", 0))
+        approved_total_text = _currency_total(await self._approved_currency_totals(since))
+        approved_users = await self._approved_payment_user_count(since)
+        plan_counts = await self._payment_plan_counts(since)
+        course = course_stats or await miniapp_course_stats(self.session, since=since)
+
+        metrics = {
+            "user_count": user_count,
+            "active_users": active_users,
+            "approved_payment_users": approved_users,
+            "pending_payments": pending_payments,
+            "approved_payments": approved_payments,
+            "rejected_payments": rejected_payments,
+            "approved_total_text": approved_total_text,
+            "bot_blocked": bot_blocked,
+            "course_completion": _pct(course.completed_users, course.opened_users),
+        }
+        report = {
+            "key": key,
+            "title": title,
+            "note": note,
+            "generated_at": _dt(now),
+            "metrics": metrics,
+            "cards": [
+                {"label": "Фойдаланувчи", "value": user_count, "note": "янги" if since else "жами база", "tone": "info"},
+                {"label": "Фаол", "value": active_users, "note": "шу даврда" if since else "жами база", "tone": "good"},
+                {"label": "Тасдиқланган тўлов", "value": approved_users, "note": approved_total_text, "tone": "good"},
+                {"label": "Тўлов текширувда", "value": pending_payments, "note": "шу даврда юборилган", "tone": "warn"},
+                {"label": "Курс очилди", "value": course.opened_users, "note": f"тугатиш {metrics['course_completion']}%", "tone": "info"},
+                {"label": "Дарс тугади", "value": course.completed_users, "note": f"{course.completed_book_lessons} та дарс", "tone": "good"},
+                {"label": "Бот блок", "value": bot_blocked, "note": "шу даврда" if since else "ҳозир блок", "tone": "danger"},
+                {"label": "Рад тўлов", "value": rejected_payments, "note": "қайта сотиш сигнали", "tone": "danger"},
+            ],
+            "payments": {
+                "by_status": payment_status,
+                "by_plan": plan_counts,
+                "total_text": approved_total_text,
+            },
+            "course": {
+                "opened_users": course.opened_users,
+                "lesson_users": course.lesson_users,
+                "completed_users": course.completed_users,
+                "completed_sections": course.completed_sections,
+                "completed_book_lessons": course.completed_book_lessons,
+                "completion": metrics["course_completion"],
+            },
+        }
+        report["text"] = self._period_report_text(report)
+        return report
 
     async def _required_channels(self) -> list[dict]:
         rows = (await self.session.execute(
@@ -466,6 +615,10 @@ class AdminMiniAppService:
                 "mode": "Курс" if item.learning_mode == "course" else "Савол-жавоб",
                 "status": item.status,
                 "status_label": _status_label(item.status),
+                "bot_blocked": BotBlockStatusService.is_bot_blocked(item),
+                "bot_blocked_at": _dt(item.bot_blocked_at),
+                "bot_unblocked_at": _dt(item.bot_unblocked_at),
+                "last_bot_block_check_at": _dt(item.last_bot_block_check_at),
                 "payment_status": item.payment_status,
                 "payment_label": _payment_label(item.payment_status),
                 "plan": _plan_label(item.selected_plan_type),
@@ -597,6 +750,35 @@ class AdminMiniAppService:
                 {"label": "Реклама хатоси", "value": ad_summary.get("failed", 0), "tone": "risk"},
             ],
         }
+
+    @staticmethod
+    def _period_report_text(report: dict) -> str:
+        metrics = report.get("metrics") or {}
+        course = report.get("course") or {}
+        payments = report.get("payments") or {}
+        by_plan = payments.get("by_plan") or {}
+        return (
+            f"📊 {report.get('title', 'Статистика')} статистика\n"
+            f"Давр: {report.get('note', '—')}\n"
+            f"Янгиланди: {report.get('generated_at') or '—'}\n"
+            "────────────────────────────────\n\n"
+            "👥 ФОЙДАЛАНУВЧИЛАР\n"
+            f"Янги/жами: {metrics.get('user_count', 0)}\n"
+            f"Фаол: {metrics.get('active_users', 0)}\n"
+            f"Ботни блоклаган: {metrics.get('bot_blocked', 0)}\n\n"
+            "💳 ТЎЛОВЛАР\n"
+            f"Тасдиқланган user: {metrics.get('approved_payment_users', 0)}\n"
+            f"Кутилмоқда: {metrics.get('pending_payments', 0)} · Рад: {metrics.get('rejected_payments', 0)}\n"
+            f"10 кун: {by_plan.get('10_days', 0)} · 1 ой: {by_plan.get('1_month', 0)}\n"
+            f"Тушум: {metrics.get('approved_total_text', '0')}\n\n"
+            "📚 КУРС\n"
+            f"Мини илова очган: {course.get('opened_users', 0)}\n"
+            f"Дарс бошлаган: {course.get('lesson_users', 0)}\n"
+            f"Дарс тугатган: {course.get('completed_users', 0)}\n"
+            f"Тугатилган қисм: {course.get('completed_sections', 0)}\n"
+            f"Тугатилган дарс: {course.get('completed_book_lessons', 0)}\n"
+            f"Курс тугатиш: {metrics.get('course_completion', 0)}%"
+        )
 
     @staticmethod
     def _report_text(

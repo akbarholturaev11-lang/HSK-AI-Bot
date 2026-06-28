@@ -24,6 +24,7 @@ from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
 from app.services.admin_stats_service import miniapp_course_stats
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.portfolio_service import PortfolioService
@@ -783,6 +784,9 @@ async def _admin_user_info_text(session, user: User) -> str:
         "",
         "🔐 <b>Kirish va obuna</b>",
         f"Holat: <b>{_admin_label(user.status, status_labels)}</b>",
+        f"Telegram bot blok: <b>{_yes_no(BotBlockStatusService.is_bot_blocked(user))}</b>",
+        f"Bot bloklangan vaqt: <code>{_fmt_dt(user.bot_blocked_at)}</code>",
+        f"Bot blok tekshiruvi: <code>{_fmt_dt(user.last_bot_block_check_at)}</code>",
         f"O'qish rejimi: <b>{_admin_label(user.learning_mode, learning_mode_labels)}</b>",
         f"To'lov holati: <b>{_admin_label(user.payment_status, payment_status_labels)}</b>",
         f"To'lov usuli: <b>{escape(_method_label(user.payment_method)) if user.payment_method else '—'}</b>",

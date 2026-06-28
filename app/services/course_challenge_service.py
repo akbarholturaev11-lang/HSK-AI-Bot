@@ -134,8 +134,10 @@ class CourseChallengeService:
         if int(challenger.id) == int(opponent.id):
             return {"ok": False, "error": "challenge_self_not_allowed"}
 
-        level = self._level(level)
-        lang = normalize_miniapp_lang(lang)
+        # Challenge ham Course/QA bilan bir xil manbadan yuradi: botdagi user.level
+        # va user.language. Client payload faqat eski URLlar uchun kelishi mumkin.
+        level = self._level(getattr(challenger, "level", None))
+        lang = normalize_miniapp_lang(getattr(challenger, "language", None))
         questions = await CourseMiniAppPracticeService(self.session)._questions(
             "mock",
             self._practice_level(level),

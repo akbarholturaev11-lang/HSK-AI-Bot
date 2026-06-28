@@ -131,6 +131,18 @@
     .mini-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}
     .danger-note{border:1px solid rgba(163,61,58,.28);background:var(--red-soft);color:var(--red);border-radius:8px;padding:10px;font-size:12px;font-weight:850;line-height:1.35}
     .report-layout{display:grid;gap:12px}
+    .period-tabs{display:flex;gap:7px;overflow:auto;padding:0 0 10px}
+    .period-tab{height:36px;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:0 13px;font-size:12px;font-weight:900;color:var(--muted);white-space:nowrap}
+    .period-tab.active{background:var(--ink);border-color:var(--ink);color:#fff}
+    .period-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin:0 0 12px}
+    .period-stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;min-height:92px;display:grid;align-content:space-between;gap:8px}
+    .period-stat span{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:900}
+    .period-stat strong{font-size:24px;line-height:1;font-weight:950}
+    .period-stat em{font-style:normal;font-size:11px;color:var(--muted);font-weight:750}
+    .period-stat.good{border-color:rgba(20,106,82,.22);background:linear-gradient(180deg,#fff,var(--green-soft))}
+    .period-stat.warn{border-color:rgba(138,99,15,.26);background:linear-gradient(180deg,#fff,var(--amber-soft))}
+    .period-stat.danger{border-color:rgba(163,61,58,.24);background:linear-gradient(180deg,#fff,var(--red-soft))}
+    .period-stat.info{border-color:rgba(40,92,168,.22);background:linear-gradient(180deg,#fff,var(--blue-soft))}
     .report-card{background:#463243;color:#f7eef7;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:16px;box-shadow:var(--shadow);user-select:text}
     .report-top{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:0 0 10px}
     .report-title{font-size:14px;font-weight:950;margin:0}
@@ -237,6 +249,7 @@
       .segment-strip{grid-auto-flow:initial;grid-auto-columns:auto;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:10px}
       .segment{min-height:112px;padding:16px}
       .segment strong{font-size:30px}
+      .period-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
       .toolbar{grid-template-columns:1fr auto;align-items:center}
       .search-row{min-width:430px}
       .user-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
@@ -370,6 +383,8 @@
               <button class="mini-link" data-action="open-monitor">Катта экран</button>
             </div>
           </div>
+          <div id="periodTabs" class="period-tabs"></div>
+          <div id="periodStats" class="grid period-grid"></div>
           <div class="report-layout">
             <article class="report-card">
               <div class="report-top">
@@ -473,7 +488,8 @@
               <span class="tag blue">Course v3</span>
             </div>
             <div class="nc-lang"><label>Сарлавҳа</label><input id="courseAdTitle" class="input" maxlength="120" placeholder="Масалан: Premium таклиф ёки ҳамкор ролиги"></div>
-            <div class="nc-lang"><label>Мажбурий кўриш вақти</label><input id="courseAdDuration" class="input" type="number" min="6" max="7" value="7"></div>
+            <div class="nc-lang"><label>Мажбурий кўриш вақти (сония, 5–120)</label><input id="courseAdDuration" class="input" type="number" min="5" max="120" value="7"></div>
+            <div class="nc-lang"><label>Реклама ҳаваласи (ихтиёрий)</label><input id="courseAdLink" class="input" type="url" maxlength="512" placeholder="https://t.me/... ёки https://example.uz"></div>
             <div class="nc-actions">
               <button class="btn" data-action="upload-course-ad">Видео юклаш</button>
               <input id="courseAdFile" type="file" accept="video/*" hidden>
@@ -549,15 +565,17 @@
     window.addEventListener("orientationchange", () => setTimeout(syncViewport, 250));
 
     const $ = (id) => document.getElementById(id);
-    const state = {data:null, management:null, remoteUsers:null, activeModule:null, tab:"dashboard", filter:"all", search:""};
+    const state = {data:null, management:null, remoteUsers:null, activeModule:null, tab:"dashboard", filter:"all", search:"", statsPeriod:"weekly"};
     const segmentLabels = {
       all:["Барча фойдаланувчилар","Тўлиқ база"],
       paid:["Обуна олган","Ҳозир фаол"],
       pending:["Тўлов расми юборган","Тасдиқ кутяпти"],
       wants_pay:["Обуна олмоқчи","Иссиқ мижоз"],
       trial:["Синов","Бепул синовдаги"],
+      free:["Бепул","Доимий free plan"],
       expired:["Муддати тугаган","Қайта сотиш"],
-      blocked:["Блокланган","Админ қарори керак"]
+      blocked:["Админ блок","Админ қарори керак"],
+      bot_blocked:["Ботни блоклаган","Telegram блок"]
     };
 
     function showToast(text){
@@ -636,6 +654,7 @@
     function statusTone(user){
       if(user.payment_status === "approved" && user.status === "active") return ["Обуначи","green"];
       if(user.payment_status === "pending") return ["Тўлов текширувда","amber"];
+      if(user.bot_blocked) return ["Бот блокланган","red"];
       if(user.status === "expired") return ["Муддати тугаган","red"];
       if(user.status === "blocked") return ["Блокланган","red"];
       return [user.status_label || "Ҳолат йўқ","violet"];
@@ -677,16 +696,49 @@
       $("focusList").innerHTML = $("queue").innerHTML;
     }
 
+    function statisticReports(){
+      return state.data && Array.isArray(state.data.statistics_reports) ? state.data.statistics_reports : [];
+    }
+
+    function activeStatisticReport(){
+      const reports = statisticReports();
+      if(!reports.length) return null;
+      return reports.find(item => item.key === state.statsPeriod) || reports[0];
+    }
+
+    function renderPeriodTabs(report){
+      const reports = statisticReports();
+      if(!reports.length){
+        $("periodTabs").innerHTML = "";
+        $("periodStats").innerHTML = "";
+        return;
+      }
+      $("periodTabs").innerHTML = reports.map(item => `
+        <button class="period-tab ${(report && report.key === item.key) ? "active" : ""}" data-period="${escapeHtml(item.key)}">
+          ${escapeHtml(item.title)} · ${escapeHtml(item.note)}
+        </button>
+      `).join("");
+      $("periodStats").innerHTML = ((report && report.cards) || []).map(item => `
+        <article class="period-stat ${item.tone || ""}">
+          <span>${escapeHtml(item.label)}</span>
+          <strong>${escapeHtml(item.value)}</strong>
+          <em>${escapeHtml(item.note)}</em>
+        </article>
+      `).join("");
+    }
+
     function renderReport(){
-      $("reportText").textContent = state.data.report_text || "";
-      const course = state.data.course || {};
-      const payments = state.data.counts || {};
+      const report = activeStatisticReport();
+      renderPeriodTabs(report);
+      $("reportText").textContent = (report && report.text) || state.data.report_text || "";
+      const course = (report && report.course) || state.data.course || {};
+      const payments = (report && report.metrics) || state.data.counts || {};
       const opened = Math.max(Number(course.opened_users || 0), 1);
       const rows = [
         ["Очилди", course.opened_users || 0, 100],
         ["Дарс", course.lesson_users || 0, Math.round((course.lesson_users || 0) / opened * 100)],
         ["Тугатди", course.completed_users || 0, Math.round((course.completed_users || 0) / opened * 100)],
-        ["Тўловли", payments.paid_users || 0, Math.round((payments.paid_users || 0) / opened * 100)]
+        ["Тўловли", payments.approved_payment_users || payments.paid_users || 0, Math.round((payments.approved_payment_users || payments.paid_users || 0) / opened * 100)]
       ];
       $("conversionBars").innerHTML = rows.map(row => `
         <div class="bar-row"><span>${row[0]}</span><div class="bar-track"><span style="width:${Math.min(row[2],100)}%"></span></div><b>${row[1]}</b></div>
@@ -703,9 +755,11 @@
           (state.filter === "pending" && user.payment_status === "pending") ||
           (state.filter === "wants_pay" && ["none","draft","rejected"].includes(user.payment_status) && user.status !== "blocked") ||
           (state.filter === "trial" && user.status === "trial") ||
+          (state.filter === "free" && user.status === "free") ||
           (state.filter === "expired" && user.status === "expired") ||
-          (state.filter === "blocked" && user.status === "blocked");
-        const hay = `${user.id} ${user.name} ${user.username || ""} ${user.language} ${user.level} ${user.status_label} ${user.payment_label} ${user.plan} ${user.method}`.toLowerCase();
+          (state.filter === "blocked" && user.status === "blocked") ||
+          (state.filter === "bot_blocked" && user.bot_blocked);
+        const hay = `${user.id} ${user.name} ${user.username || ""} ${user.language} ${user.level} ${user.status_label} ${user.payment_label} ${user.plan} ${user.method} ${user.bot_blocked ? "telegram block bot blocked" : ""}`.toLowerCase();
         return byFilter && (!q || hay.includes(q));
       });
     }
@@ -734,6 +788,7 @@
           <div class="tag-row">
             ${tag(user.plan, "blue")}
             ${tag(user.method, "")}
+            ${user.bot_blocked ? tag("Telegram блок", "red") : ""}
             ${tag(user.end_date ? "тугайди " + user.end_date : "фаол обуна йўқ", user.end_date ? "green" : "red")}
           </div>
           <div class="split">
@@ -843,6 +898,8 @@
           <h3 class="detail-title">Рухсат ва обуна</h3>
           <div class="kv">
             <span>Ҳолат</span><b>${escapeHtml(full.status_label || full.status)}</b>
+            <span>Telegram блок</span><b>${full.bot_blocked ? "ҳа" : "йўқ"}</b>
+            <span>Блок текшируви</span><b>${escapeHtml(full.last_bot_block_check_at || "—")}</b>
             <span>Тўлов</span><b>${escapeHtml(full.payment_label || full.payment_status)}</b>
             <span>Тариф</span><b>${escapeHtml(full.plan || full.selected_plan_type || "—")}</b>
             <span>Усул</span><b>${escapeHtml(full.method || full.payment_method || "—")}</b>
@@ -1550,12 +1607,14 @@
           <div>
             <h3 class="nc-title">${escapeHtml(item.title)}</h3>
             <p class="nc-note">${item.duration_seconds || 7}s мажбурий кўриш · ${escapeHtml(item.created_at || "—")}</p>
+            ${item.link_url ? `<p class="nc-note"><i class="ti ti-link"></i> <a href="${escapeHtml(item.link_url)}" target="_blank" rel="noopener">${escapeHtml(item.link_url)}</a></p>` : '<p class="nc-note">Ҳавала йўқ</p>'}
           </div>
           ${tag(item.is_active ? "фаол" : "ўчирилган", item.is_active ? "green" : "red")}
         </div>
         <div class="nc-media">${item.media_url ? `<video src="${item.media_url}" controls muted playsinline></video>` : '<span class="section-note">Видео йўқ</span>'}</div>
         <div class="nc-actions">
-          <button class="btn secondary" data-course-ad-toggle="${item.id}" data-active="${item.is_active ? "0" : "1"}">${item.is_active ? "Ўчириш" : "Ёқиш"}</button>
+          <button class="btn secondary" data-course-ad-toggle="${item.id}" data-active="${item.is_active ? "0" : "1"}">${item.is_active ? "Фаолсизлантириш" : "Фаоллаштириш"}</button>
+          <button class="btn danger" data-course-ad-delete="${item.id}"><i class="ti ti-trash"></i> Бутунлай ўчириш</button>
         </div>
       </div>`;
     }
@@ -1586,10 +1645,12 @@
       const formData = new FormData();
       formData.append("title", $("courseAdTitle").value || "Курс реклама");
       formData.append("duration_seconds", $("courseAdDuration").value || "7");
+      formData.append("link_url", ($("courseAdLink") && $("courseAdLink").value) || "");
       formData.append("media", file);
       try{
         await apiUpload("/api/admin-miniapp/course-ads/upload", formData);
         $("courseAdTitle").value = "";
+        if($("courseAdLink")) $("courseAdLink").value = "";
         showToast("Курс реклама юкланди");
         loadCourseAds();
       }catch(error){
@@ -1615,7 +1676,24 @@
       }
     }
 
+    async function deleteCourseAd(btn){
+      const adId = Number(btn.dataset.courseAdDelete || 0);
+      if(!adId) return;
+      if(!confirm("Бу реклама ролигини бутунлай ўчирасизми? Видео файл ҳам ўчади.")) return;
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/course-ads/delete", {ad_id: adId});
+        showToast("Реклама бутунлай ўчирилди");
+        loadCourseAds();
+      }catch(error){
+        showToast("Рекламани ўчириб бўлмади");
+        btn.disabled = false;
+      }
+    }
+
     document.addEventListener("click", (event) => {
+      const courseAdDelete = event.target.closest("[data-course-ad-delete]");
+      if(courseAdDelete){ deleteCourseAd(courseAdDelete); return; }
       const courseAdToggle = event.target.closest("[data-course-ad-toggle]");
       if(courseAdToggle){ toggleCourseAd(courseAdToggle); return; }
       const paymentReview = event.target.closest("[data-payment-review]");
@@ -1658,6 +1736,12 @@
       if(tab){ switchTab(tab.dataset.tab); return; }
       const openTab = event.target.closest("[data-open-tab]");
       if(openTab){ switchTab(openTab.dataset.openTab); return; }
+      const period = event.target.closest("[data-period]");
+      if(period){
+        state.statsPeriod = period.dataset.period || "weekly";
+        renderReport();
+        return;
+      }
       const filter = event.target.closest("[data-filter]");
       if(filter){
         state.filter = filter.dataset.filter;
@@ -1676,7 +1760,8 @@
       if(name === "clear-search"){ $("search").value = ""; state.search = ""; state.remoteUsers = null; renderUsers(); return; }
       if(name === "upload-course-ad"){ uploadCourseAd(); return; }
       if(name === "copy-stats"){
-        copyText(state.data && state.data.report_text ? state.data.report_text : "");
+        const report = activeStatisticReport();
+        copyText((report && report.text) || (state.data && state.data.report_text) || "");
         showToast("Ҳисобот нусхаланди");
         return;
       }

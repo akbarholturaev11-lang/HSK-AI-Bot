@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from app.db.models.course_feature_usage import COURSE_FEATURE_KEYS, CourseFeatureUsage
 from app.db.models.user import User
 from app.db.models.voice_practice_session import VoicePracticeSession
+from app.services.user_access_state_service import UserAccessStateService
 
 
 FREE_FEATURE_LIMITS = {feature_key: 1 for feature_key in COURSE_FEATURE_KEYS}
@@ -28,18 +29,15 @@ class CourseMiniAppAccessService:
 
     @classmethod
     def is_paid_user(cls, user) -> bool:
-        end_date = cls._as_utc(getattr(user, "end_date", None))
-        return bool(
-            user
-            and getattr(user, "status", "") == "active"
-            and getattr(user, "payment_status", "") == "approved"
-            and end_date
-            and end_date > datetime.now(timezone.utc)
-        )
+        return UserAccessStateService.is_paid(user)
 
     @classmethod
     def is_free_user(cls, user) -> bool:
-        return bool(user and not cls.is_paid_user(user) and getattr(user, "status", "") != "blocked")
+        return bool(
+            user
+            and not cls.is_paid_user(user)
+            and UserAccessStateService.classify(user) in UserAccessStateService.COURSE_ELIGIBLE_STATES
+        )
 
     @classmethod
     def lesson_requires_premium(cls, level: str | None, lesson_order: int | None = None) -> bool:

@@ -207,6 +207,150 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-29 — Admin Mini App weekly/monthly/all-time statistics
+
+Changed:
+- Admin Mini App overview payload now includes `statistics_reports` split into weekly (last 7 days), monthly (last 30 days), and all-time reports.
+- Each period report includes users, active users, approved payment users/revenue, pending/rejected payments, current/new bot blocks, and Course Mini App activity for the same period.
+- `miniapp_course_stats(session, since=None)` can now filter Course Mini App event analytics by `created_at`.
+- `admin-control.html` Statistics tab has period buttons, quick metric cards, period-specific conversion bars, and copies the selected report text.
+
+Why:
+- Admin needed weekly, monthly, and full statistics visible inside the admin panel instead of one mixed report.
+
+Files touched:
+- `app/services/admin_miniapp_service.py`, `app/services/admin_stats_service.py`, `app/static/admin-control.html`, `tests/test_admin_stats_service.py`
+
+Risk:
+- Read-only analytics/UI change. Payment, subscription, access, referral, lesson, quiz, and homework logic are not changed.
+
+Follow-up:
+- Real Telegram admin Mini App smoke-test after deploy; local Chromium smoke test is blocked by macOS sandbox permission in this Codex environment.
+
+### 2026-06-29 — Course Mini App referral list + weekly rating reset behavior
+
+Changed:
+- `/api/v3/invite` now also returns the current user's referred users for the Course Mini App friends tab: name, Telegram username/id, referral status, weekly XP, total XP, course level, completed lessons, and paid flag.
+- Course v3 friends tab now shows invited referrals, opens the same full profile overlay used by rating users, and lets the user open Telegram chat or send a Course challenge from that profile.
+- Course leaderboard is now one weekly pool instead of filtering users by lifetime XP league. Weekly rating display uses weekly XP only, so after the weekly reset users show `0` instead of falling back to lifetime XP.
+
+Why:
+- Users need to see and re-engage people they invited. The old rating logic made weekly reset look broken because lifetime XP still separated users into league buckets and appeared as the visible score when weekly XP was zero.
+
+Files touched:
+- `app/services/referral_service.py`, `app/main.py`
+- `app/services/course_gamification_service.py`
+- `app/static/course-v3.html`
+- `tests/test_course_v3_static_data.py`
+
+Risk:
+- Medium: user-facing Mini App referral/rating flow changed. No payment/subscription/access entitlement logic changed. Real Telegram WebView smoke-test with two accounts is still recommended.
+
+Follow-up:
+- In Telegram, verify invited-user list, profile overlay, direct Telegram chat behavior for username/no-username users, challenge send/receive, and Monday reset display.
+
+### 2026-06-29 — Access state classifier + Telegram bot block tracking
+
+Changed:
+- Added canonical access classification for `paid`, `temporary_trial`, `trial`, `free`,
+  `expired`, `blocked` without rewriting the whole subscription system.
+- Free/expired users no longer fall into `access_start_first` in QA/image access; they
+  use free-tier limits. Expired paid users become `status="expired"`; expired temporary
+  trial users become `status="free"`.
+- Course trial completion moves a `status="trial"` user to `status="free"` while keeping
+  course trial fields as the source of trial entitlement history.
+- Added Telegram bot-block tracking fields on `users` and a silent daily `getChat` scan.
+  Admin block (`status="blocked"`) remains separate from Telegram bot block.
+- Admin Mini App now shows separate `free` and `bot_blocked` segments.
+
+Why:
+- Trial/free/paid/expired were mixed across bot, Course Mini App, and admin stats, which
+  could make old `free` users look like they had not started the bot.
+
+Files touched:
+- `app/services/user_access_state_service.py`, `app/services/access_service.py`
+- `app/services/course_trial_service.py`, `app/services/course_miniapp_access_service.py`
+- `app/services/bot_block_status_service.py`, `app/db/models/user.py`, `app/db/session.py`
+- `app/main.py`, `app/services/admin_miniapp_service.py`, `app/static/admin-control.html`
+- `alembic/versions/0059_user_bot_block_tracking.py`
+
+Risk:
+- Medium: access/payment-adjacent logic changed. The patch is backward-compatible and
+  does not bulk-migrate existing users. Deploy must run migration `0059_user_bot_block_tracking`.
+
+Follow-up:
+- Smoke-test real Telegram: free user asks QA, expired paid user asks QA, trial lesson
+  completion, admin Mini App free/bot-blocked segments, and bot-block status after a user
+  blocks/unblocks the bot.
+
+### 2026-06-29 — Course v3 and QA level/language canonical sync
+
+Changed:
+- Course v3 map no longer serves unauthenticated/local preview data when Telegram `initData` is missing, invalid, or the user is not found; the Mini App shows a "return to bot and press /start" gate instead.
+- Course v3 uses `users.level` and `users.language` as the canonical source for map loading, ad view recording, skip-test unlock, lesson completion, practice start/complete, and challenge creation. Client URL/query/payload level/lang are ignored for these write paths.
+- Finishing the last lesson in a band promotes `users.level` to the next HSK band, so QA and Course stay aligned.
+
+Why:
+- QA mode and Course mode must not open at different HSK levels or languages. A failed Mini App API/bot connection must not silently fall back to HSK1 or cached/local preview.
+
+Files touched:
+- `app/main.py`, `app/static/course-v3.html`, `app/services/course_challenge_service.py`
+
+Risk:
+- Medium: affects course progress, practice/challenge level selection, and unauthenticated Mini App behavior. Smoke-test inside real Telegram WebView after deploy.
+
+Follow-up:
+- Verify a user with non-HSK1 level/language in bot opens Course v3 at the same level/language, then completes a lesson and starts practice/challenge without drift.
+
+### 2026-06-29 — Mini App slowness + lesson writer/dictionary deep-link fixes
+
+Changed:
+- `hsk-data.js` (2.9 MB) and `course_v3_data/memo.js` (440 KB) were served with
+  `no-store` headers, so every Mini App page open and every in-lesson writer iframe
+  re-downloaded ~3.4 MB. They are loaded as `file.js?v=YYYYMMDD` (version-busted), so
+  they are now served with `Cache-Control: public, max-age=31536000, immutable` via a
+  new `static_asset_response()` / `STATIC_ASSET_HEADERS` in `app/main.py`. HTML pages
+  stay `no-store`. Bump the `?v=` query when the data content changes.
+- `hsk-lugat.html` deep-link `?char=` (used by the lesson pencil ✏️ writer) previously
+  only opened a detail on an exact `WORDS[].h` match and otherwise silently fell back to
+  the full dictionary list ("opens old dictionary, doesn't open the requested char").
+  New `openDeepChar()` tries: exact word → word containing the text → word containing the
+  first character → synthesized `{h:deep}` so the stroke writer always shows the requested
+  character.
+- "Keyingi so'z" (next-word) button in the dictionary detail used to appear only after the
+  stroke animation finished. It is now shown at the end of `loadChar()` (self-hides when no
+  next word), so it works without waiting for the animation and across multi-char nav.
+
+Why:
+- User reported: in-lesson pencil sometimes opens the old dictionary and not the needed
+  character; the next-character button sometimes does nothing; HTML sections open slowly.
+
+Files:
+- `app/main.py`, `app/static/hsk-lugat.html`
+
+Risk:
+- Caching is keyed by the full URL incl. `?v=`; if `hsk-data.js`/`memo.js` content changes
+  without bumping `?v=`, clients keep the old cached file. No payment/subscription/access
+  logic changed. Real Telegram WebView smoke test still recommended.
+
+### 2026-06-29 — Course ad: admin-controlled duration, end-of-ad subscribe block, advertiser link, no mid-lesson force
+
+Changed:
+- Course ad watch duration is now admin-controlled in the 5–120s range (was hard-clamped to 6–7s). `COURSE_AD_MIN_SECONDS=5`, `COURSE_AD_MAX_SECONDS=120` in `app/services/course_ad_service.py`; frontend `adDuration()` in `course-v3.html` uses the same clamp so client watched-seconds match the server gate.
+- Each ad now ends with a subscribe block ("Obuna bo'ling — reklamasiz, limitsiz") offering "Obuna olish" (→ paywall) and "Reklama bilan davom etish" (continue). Shown after the countdown for start/middle/end placements.
+- `CourseAdCreative.link_url` added (advertiser link). Admin upload form has an optional link field; tapping the ad video in the Mini App asks (Telegram showConfirm) before opening the link via `tg.openLink`.
+- Ad-supported lessons no longer force the subscribe sheet mid-lesson: start/middle/end ad errors now just continue the lesson, and a `free_feature_limit_reached` at completion of an ad-supported lesson shows a toast instead of the locked-lesson paywall.
+- Admin Mini App can now fully DELETE a course ad (not just toggle): `POST /api/admin-miniapp/course-ads/delete` removes the row and the media file from disk. `CourseAdService.delete()` returns the media path for file cleanup. Toggle button relabeled to Фаолсизлантириш/Фаоллаштириш; a separate red "Бутунлай ўчириш" button does the full delete.
+
+Why:
+- Duration was stuck at 7s; advertisers/admin need control. The subscribe block gives a clean upsell at each ad without hard-blocking. Advertiser links monetize the placement. Forcing a paywall mid-lesson after the user chose the ad path was a bad UX bug.
+
+Files:
+- `app/db/models/course_ad.py`, `app/services/course_ad_service.py`, `app/main.py` (upload endpoint), `app/db/session.py` (bootstrap column), `alembic/versions/0058_course_ad_link_url.py`, `app/static/admin-control.html`, `app/static/course-v3.html`, `tests/test_course_miniapp_foundation.py`.
+
+Risk:
+- Migration `0058_course_ad_link_url` adds nullable `link_url`; runtime bootstrap also patches legacy DBs. Server-side ad gate (`has_completed_required_views`, all 3 placements) is unchanged.
+
 ### 2026-06-28 — Challenge invite deep-link and XP rewards
 
 Changed:

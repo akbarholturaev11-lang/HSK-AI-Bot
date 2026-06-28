@@ -60,11 +60,44 @@ class AdminMiniAppServiceTests(unittest.TestCase):
 
         labels = [item["label"] for item in monitor["bars"]]
         values = {item["label"]: item["value"] for item in monitor["bars"]}
-        self.assertIn("24 soat aktiv", labels)
-        self.assertIn("Dars tugadi", labels)
-        self.assertEqual(values["24 soat aktiv"], 4)
-        self.assertEqual(values["Dars tugadi"], 5)
-        self.assertEqual(values["Tekshiruvdagi to'lov"], 2)
+        self.assertIn("24 соат фаол", labels)
+        self.assertIn("Дарс тугади", labels)
+        self.assertEqual(values["24 соат фаол"], 4)
+        self.assertEqual(values["Дарс тугади"], 5)
+        self.assertEqual(values["Текширувдаги тўлов"], 2)
+
+    def test_period_report_text_includes_core_metrics(self):
+        report = {
+            "title": "Ҳафталик",
+            "note": "Охирги 7 кун",
+            "generated_at": "29.06.2026 10:00",
+            "metrics": {
+                "user_count": 14,
+                "active_users": 9,
+                "approved_payment_users": 3,
+                "pending_payments": 2,
+                "rejected_payments": 1,
+                "approved_total_text": "267 TJS",
+                "bot_blocked": 4,
+                "course_completion": 55.6,
+            },
+            "payments": {"by_plan": {"10_days": 2, "1_month": 1}},
+            "course": {
+                "opened_users": 18,
+                "lesson_users": 12,
+                "completed_users": 10,
+                "completed_sections": 31,
+                "completed_book_lessons": 7,
+            },
+        }
+
+        text = AdminMiniAppService._period_report_text(report)
+
+        self.assertIn("Ҳафталик статистика", text)
+        self.assertIn("Янги/жами: 14", text)
+        self.assertIn("Тасдиқланган user: 3", text)
+        self.assertIn("Тушум: 267 TJS", text)
+        self.assertIn("Курс тугатиш: 55.6%", text)
 
 
 if __name__ == "__main__":

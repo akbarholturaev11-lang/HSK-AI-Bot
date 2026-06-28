@@ -211,10 +211,59 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
             )
         )
 
-    def test_course_ad_duration_is_clamped_to_six_or_seven_seconds(self):
-        self.assertEqual(CourseAdService.normalize_duration(4), 6)
-        self.assertEqual(CourseAdService.normalize_duration(99), 7)
-        self.assertEqual(CourseAdService.normalize_duration(6), 6)
+    def test_course_ad_duration_is_admin_controlled_within_bounds(self):
+        # Admin panel boshqaradi: 5–120s oralig'iga clamp qilinadi.
+        self.assertEqual(CourseAdService.normalize_duration(3), 5)
+        self.assertEqual(CourseAdService.normalize_duration(999), 120)
+        self.assertEqual(CourseAdService.normalize_duration(30), 30)
+        self.assertEqual(CourseAdService.normalize_duration(None), 7)
+
+    def test_course_ad_link_is_normalized(self):
+        self.assertIsNone(CourseAdService.normalize_link(""))
+        self.assertIsNone(CourseAdService.normalize_link(None))
+        self.assertEqual(
+            CourseAdService.normalize_link("example.uz"), "https://example.uz"
+        )
+        self.assertEqual(
+            CourseAdService.normalize_link("https://t.me/foo"), "https://t.me/foo"
+        )
+
+    async def test_delete_removes_ad_and_returns_media_path(self):
+        from app.db.models.course_ad import CourseAdCreative
+
+        ad = CourseAdCreative(
+            title="x", media_path="course_ad_1.mp4", media_type="video",
+            duration_seconds=7, is_active=True,
+        )
+
+        class _Found:
+            def scalar_one_or_none(self_inner):
+                return ad
+
+        class _Missing:
+            def scalar_one_or_none(self_inner):
+                return None
+
+        class _DelSession(_FakeSession):
+            def __init__(self, result):
+                super().__init__()
+                self.result = result
+                self.deleted = []
+
+            async def execute(self, _query):
+                return self.result
+
+            async def delete(self, obj):
+                self.deleted.append(obj)
+
+        found = _DelSession(_Found())
+        media = await CourseAdService(found).delete(5)
+        self.assertEqual(media, "course_ad_1.mp4")
+        self.assertIn(ad, found.deleted)
+
+        missing = _DelSession(_Missing())
+        self.assertIsNone(await CourseAdService(missing).delete(99))
+        self.assertEqual(missing.deleted, [])
 
 
 class CourseMiniAppProfileTests(unittest.TestCase):

@@ -3,6 +3,7 @@ from typing import Callable, Dict, Any, Awaitable
 from datetime import datetime, timezone
 
 from app.repositories.user_repo import UserRepository
+from app.services.bot_block_status_service import BotBlockStatusService
 
 
 class DBSessionMiddleware(BaseMiddleware):
@@ -30,6 +31,9 @@ class DBSessionMiddleware(BaseMiddleware):
                         changed = True
                     user.last_active_at = datetime.now(timezone.utc)
                     changed = True
+                    if BotBlockStatusService.is_bot_blocked(user):
+                        user.bot_unblocked_at = datetime.now(timezone.utc)
+                        changed = True
                     if changed:
                         await session.commit()
             return await handler(event, data)

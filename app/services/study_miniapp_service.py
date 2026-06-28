@@ -14,6 +14,7 @@ from app.services.course_miniapp_access_service import CourseMiniAppAccessServic
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.support_contact_service import get_admin_contact_url
+from app.services.user_access_state_service import UserAccessStateService
 from app.db.models.course_mistake import CourseMistake
 from sqlalchemy import func, select
 
@@ -83,6 +84,7 @@ class StudyMiniAppService:
             return {"ok": False, "error": "access_start_first"}
 
         paid = self.is_paid_user(user)
+        access_state = UserAccessStateService.classify(user)
         limits = dict(PAID_LIMITS if paid else TRIAL_LIMITS)
         if not paid and getattr(user, "trial_quiz_explanation_used_at", None) is None:
             limits["wrong_analysis"] = True
@@ -92,7 +94,7 @@ class StudyMiniAppService:
         gamification = await CourseGamificationService(self.session).snapshot(user, profile=profile)
         support_url = await get_admin_contact_url(self.session)
         return {
-            "status": "active" if paid else "trial",
+            "status": "active" if paid else access_state,
             "language": getattr(user, "language", None) or "uz",
             "level": await self._resolve_level(user),
             "support_url": support_url,
@@ -114,6 +116,7 @@ class StudyMiniAppService:
         if not user:
             return {"ok": False, "error": "access_start_first"}
         paid = self.is_paid_user(user)
+        access_state = UserAccessStateService.classify(user)
         profile = await CourseMiniAppProfileService(self.session).get_or_create(user.id)
         gamification = await CourseGamificationService(self.session).snapshot(user, profile=profile)
         features = await CourseMiniAppAccessService(self.session).get_entitlements(user)
@@ -145,7 +148,7 @@ class StudyMiniAppService:
                 "mistakes": int(mistakes_result.scalar_one() or 0),
             },
             "subscription": {
-                "status": "active" if paid else "trial",
+                "status": "active" if paid else access_state,
                 "is_paid": paid,
                 "until": self._as_utc(getattr(user, "end_date", None)).isoformat() if getattr(user, "end_date", None) else None,
             },

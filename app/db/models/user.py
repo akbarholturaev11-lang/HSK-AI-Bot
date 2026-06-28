@@ -100,6 +100,19 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    bot_blocked_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    bot_unblocked_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    last_bot_block_check_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    bot_block_reason: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
     daily_practice_started_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
