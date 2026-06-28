@@ -540,19 +540,19 @@ class AdminMiniAppService:
     def _modules() -> list[dict]:
         return [
             {"key": "stats", "icon": "📊", "title": "Statistika", "note": "Umumiy hisobot va konversiya", "section": "statistics", "callback": "adm:stats"},
-            {"key": "user_search", "icon": "🔎", "title": "Foydalanuvchi qidirish", "note": "Botda /user ID orqali ochiladi", "section": "users", "callback": "adm:user_search_info"},
-            {"key": "portfolio", "icon": "💼", "title": "Portfel", "note": "Tushum, rasxod va sof foyda", "section": "settings", "callback": "adm:portfolio"},
-            {"key": "prices", "icon": "💳", "title": "Obuna narxlari", "note": "Visa/karta, Alipay, WeChat narxlari", "section": "settings", "callback": "adm:prices"},
-            {"key": "channels", "icon": "📣", "title": "Majburiy kanal obunasi", "note": "Kanal linki va tekshiruv holati", "section": "settings", "callback": "adm:channels"},
-            {"key": "delete_user", "icon": "🗑", "title": "Foydalanuvchini o'chirish", "note": "Xavfli amal, botda tasdiq bilan", "section": "users", "callback": "adm:deleteuser_info"},
-            {"key": "broadcast", "icon": "📢", "title": "Ommaviy xabar", "note": "Segment tanlab xabar yuborish", "section": "settings", "callback": "adm:broadcast_info"},
-            {"key": "ads", "icon": "📣", "title": "Reklama kampaniyasi", "note": "Reklama yaratish va statistika", "section": "settings", "callback": "adm:ads_panel"},
-            {"key": "release_feedback", "icon": "🆕", "title": "Yangilik fikri", "note": "Yangilik bahosi va fikr yig'ish", "section": "settings", "callback": "adm:release_feedback"},
-            {"key": "discount", "icon": "🎁", "title": "Chegirma boshqaruv", "note": "Chegirma, QR va muddat", "section": "settings", "callback": "adm:discount_panel"},
-            {"key": "partners", "icon": "🤝", "title": "Hamkorlar", "note": "Taklif tizimi va hamkor to'lovi", "section": "settings", "callback": "adm:partners"},
-            {"key": "help", "icon": "🆘", "title": "Yordam sozlamalari", "note": "Admin aloqa va yordam linklari", "section": "settings", "callback": "adm:help_settings"},
+            {"key": "user_search", "icon": "🔎", "title": "Foydalanuvchi qidirish", "note": "ID yoki username bo'yicha Mini App ichida qidirish", "section": "users", "callback": "adm:user_search_info"},
+            {"key": "portfolio", "icon": "💼", "title": "Portfel", "note": "Tushum, rasxod va sof foydani boshqarish", "section": "settings", "callback": "adm:portfolio"},
+            {"key": "prices", "icon": "💳", "title": "Obuna narxlari", "note": "Visa/karta, Alipay, WeChat narxlarini tahrirlash", "section": "settings", "callback": "adm:prices"},
+            {"key": "channels", "icon": "📣", "title": "Majburiy kanal obunasi", "note": "Kanal linki, yoqish/o'chirish va ro'yxat", "section": "settings", "callback": "adm:channels"},
+            {"key": "delete_user", "icon": "🗑", "title": "Foydalanuvchini o'chirish", "note": "Xavfli amal, ID bilan tasdiqlanadi", "section": "users", "callback": "adm:deleteuser_info"},
+            {"key": "broadcast", "icon": "📢", "title": "Ommaviy xabar", "note": "Segment tanlab matn yuborish", "section": "settings", "callback": "adm:broadcast_info"},
+            {"key": "ads", "icon": "📣", "title": "Reklama kampaniyasi", "note": "Text-first reklama yaratish va holatni ko'rish", "section": "settings", "callback": "adm:ads_panel"},
+            {"key": "release_feedback", "icon": "🆕", "title": "Yangilik fikri", "note": "Release feedback kampaniyasini rejalash", "section": "settings", "callback": "adm:release_feedback"},
+            {"key": "discount", "icon": "🎁", "title": "Chegirma boshqaruv", "note": "Chegirma kampaniyasini yaratish va kuzatish", "section": "settings", "callback": "adm:discount_panel"},
+            {"key": "partners", "icon": "🤝", "title": "Hamkorlar", "note": "Ariza, payout va hamkor statistikasi", "section": "settings", "callback": "adm:partners"},
+            {"key": "help", "icon": "🆘", "title": "Yordam sozlamalari", "note": "Admin aloqa va video linklar", "section": "settings", "callback": "adm:help_settings"},
             {"key": "give_access", "icon": "✅", "title": "Obuna berish", "note": "Foydalanuvchiga qo'lda ruxsat berish", "section": "users", "callback": "adm:giveaccess_info"},
-            {"key": "audio", "icon": "🎵", "title": "Audio boshqaruv", "note": "Kurs audio fayllari", "section": "settings", "callback": "adm:audio_panel"},
+            {"key": "audio", "icon": "🎵", "title": "Audio boshqaruv", "note": "Kurs audio fayllarini tekshirish", "section": "settings", "callback": "adm:audio_panel"},
         ]
 
     @staticmethod
@@ -585,6 +585,16 @@ class AdminMiniAppService:
                 {"label": "aktiv kanal", "value": active_channels, "tone": "flat"},
                 {"label": "reklama yetkazildi", "value": ad_summary.get("delivered", 0), "tone": "hot"},
                 {"label": "reklama xatosi", "value": ad_summary.get("failed", 0), "tone": "risk"},
+            ],
+            "bars": [
+                {"label": "24 soat aktiv", "value": active_24h, "tone": "hot"},
+                {"label": "Haftalik aktiv", "value": active_week, "tone": "hot"},
+                {"label": "Kurs ochildi", "value": miniapp_course.opened_users, "tone": "hot"},
+                {"label": "Dars boshlandi", "value": miniapp_course.lesson_users, "tone": "hot"},
+                {"label": "Dars tugadi", "value": miniapp_course.completed_users, "tone": "hot"},
+                {"label": "Tekshiruvdagi to'lov", "value": pending_payments, "tone": "warn"},
+                {"label": "Reklama yetkazildi", "value": ad_summary.get("delivered", 0), "tone": "hot"},
+                {"label": "Reklama xatosi", "value": ad_summary.get("failed", 0), "tone": "risk"},
             ],
         }
 

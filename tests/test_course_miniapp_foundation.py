@@ -8,6 +8,11 @@ from sqlalchemy import create_engine
 
 from app.db import models  # noqa: F401
 from app.db.base import Base
+from app.bot.utils.course_miniapp import (
+    course_miniapp_url,
+    course_stroke_order_url,
+    course_study_miniapp_url,
+)
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_ad_service import CourseAdService
 from app.services.course_miniapp_analytics_service import (
@@ -94,6 +99,27 @@ class CourseMiniAppModelTests(unittest.TestCase):
         self.assertIn("subscription_entry_events", table_names)
         self.assertIn("course_ad_creatives", table_names)
         self.assertIn("course_ad_views", table_names)
+
+
+class CourseMiniAppUrlTests(unittest.TestCase):
+    def test_legacy_course_links_point_to_existing_course_v3_surfaces(self):
+        lesson = SimpleNamespace(level="hsk1", lesson_order=4)
+
+        course_url = course_study_miniapp_url(lang="uz", level="hsk1", lesson=4, tab="training")
+        quiz_url = course_miniapp_url(lesson, "quiz", "uz", block_no=1)
+        vocab_url = course_stroke_order_url(lesson, lang="uz", block_no=1)
+
+        self.assertIn("course-v3.html", course_url)
+        self.assertIn("tab=mashq", course_url)
+        self.assertIn("lesson=4", course_url)
+        self.assertIn("course-v3.html", quiz_url)
+        self.assertIn("tab=mashq", quiz_url)
+        self.assertIn("lesson=4", quiz_url)
+        self.assertIn("hsk-lugat.html", vocab_url)
+        for url in (course_url, quiz_url, vocab_url):
+            self.assertNotIn("study.html", url)
+            self.assertNotIn("stroke-order.html", url)
+            self.assertNotIn("duo-lesson.html", url)
 
 
 class CourseMiniAppAccessTests(unittest.TestCase):

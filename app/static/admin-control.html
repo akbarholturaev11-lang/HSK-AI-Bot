@@ -33,7 +33,7 @@
     html,body{margin:0;min-height:100%;width:100%;overflow-x:hidden;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
     body{padding:var(--safe-top) 0 var(--safe-bottom)}
     body.locked{overflow:hidden}
-    button,input{font:inherit}
+    button,input,select,textarea{font:inherit}
     button{border:0;background:none;color:inherit;cursor:pointer}
     .app{min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto}
     .topbar{position:sticky;top:0;z-index:20;background:rgba(246,247,249,.94);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
@@ -111,6 +111,22 @@
     .amount{font-size:20px;font-weight:950}
     .btn{height:40px;border-radius:8px;background:var(--ink);color:#fff;font-size:13px;font-weight:850;padding:0 12px}
     .btn.secondary{background:var(--surface-2);color:var(--ink)}
+    .btn.danger{background:var(--red);color:#fff}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .form-grid{display:grid;gap:10px}
+    .form-row{display:grid;gap:8px}
+    .form-row.two{grid-template-columns:1fr 1fr}
+    .form-row label{font-size:11px;font-weight:900;color:var(--muted)}
+    .select,.textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);outline:none}
+    .select{height:42px;padding:0 12px}
+    .textarea{min-height:92px;padding:10px 12px;resize:vertical;line-height:1.4}
+    .select:focus,.textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,92,168,.12)}
+    .action-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .mini-panel{display:grid;gap:10px}
+    .mini-card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;display:grid;gap:9px}
+    .mini-card h3{margin:0;font-size:14px}
+    .mini-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.4}
+    .danger-note{border:1px solid rgba(163,61,58,.28);background:var(--red-soft);color:var(--red);border-radius:8px;padding:10px;font-size:12px;font-weight:850;line-height:1.35}
     .report-layout{display:grid;gap:12px}
     .report-card{background:#463243;color:#f7eef7;border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:16px;box-shadow:var(--shadow);user-select:text}
     .report-top{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin:0 0 10px}
@@ -254,7 +270,7 @@
   <div id="loadingState" class="screen-state">
     <div class="state-card">
       <h2>Kirish tekshirilyapti</h2>
-      <p>Admin mini ilova Telegram ichidan ochilganda haqiqiy ma'lumotlar yuklanadi.</p>
+      <p>Real admin ma'lumotlar faqat Telegram admin Mini App orqali tekshirilgan sessiyada yuklanadi.</p>
     </div>
   </div>
 
@@ -399,7 +415,7 @@
               <h2 class="section-title">To'lov navbati</h2>
               <p class="section-note">Oxirgi to'lov arizalari va tekshiruvdagi to'lovlar.</p>
             </div>
-            <button class="mini-link" data-admin-section="stats">Botda statistika ochish</button>
+            <button class="mini-link" data-open-tab="statistics">Statistikaga o'tish</button>
           </div>
           <div id="paymentBoard" class="payment-board"></div>
         </div>
@@ -410,7 +426,7 @@
           <div class="section-head">
             <div>
               <h2 class="section-title">Boshqaruv bo'limlari</h2>
-              <p class="section-note">Har bir tugma botdagi mavjud real admin bo'limini ochadi.</p>
+              <p class="section-note">Har bir tugma Mini App ichida real boshqaruv panelini ochadi.</p>
             </div>
           </div>
           <div id="adminModules" class="settings-grid"></div>
@@ -517,7 +533,7 @@
     try{ tg && tg.ready(); tg && tg.expand(); }catch(error){}
 
     const $ = (id) => document.getElementById(id);
-    const state = {data:null, tab:"dashboard", filter:"all", search:""};
+    const state = {data:null, management:null, remoteUsers:null, activeModule:null, tab:"dashboard", filter:"all", search:""};
     const segmentLabels = {
       all:["Barcha foydalanuvchilar","To'liq baza"],
       paid:["Obuna olgan","Hozir aktiv"],
@@ -554,6 +570,25 @@
       const data = await response.json().catch(() => ({}));
       if(!response.ok || !data.ok) throw {status:response.status, data};
       return data;
+    }
+
+    function apiErrorText(error, fallback){
+      const key = error && error.data && error.data.error ? error.data.error : "";
+      const labels = {
+        invalid_telegram_init_data:"Telegram sessiya noto'g'ri",
+        admin_only:"Admin ruxsati yo'q",
+        payment_already_reviewed:"Bu to'lov allaqachon ko'rib chiqilgan",
+        payment_not_found:"To'lov topilmadi",
+        user_not_found:"User topilmadi",
+        invalid_price_payload:"Narx ma'lumoti noto'g'ri",
+        invalid_channel_payload:"Kanal ma'lumoti noto'g'ri",
+        delete_confirmation_required:"O'chirish uchun IDni tasdiq maydoniga yozing",
+        invalid_help_url:"Yordam linki noto'g'ri",
+        invalid_contact:"Admin kontakt noto'g'ri",
+        invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun",
+        invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas"
+      };
+      return labels[key] || fallback || "Amal bajarilmadi";
     }
 
     async function loadData(){
@@ -644,7 +679,8 @@
 
     function filterUsers(){
       const q = state.search.trim().toLowerCase();
-      return (state.data.users || []).filter(user => {
+      const source = state.search.trim().length >= 2 && state.remoteUsers ? state.remoteUsers : (state.data.users || []);
+      return source.filter(user => {
         const byFilter =
           state.filter === "all" ||
           (state.filter === "paid" && user.payment_status === "approved" && user.status === "active") ||
@@ -712,6 +748,10 @@
                   <div class="amount">${escapeHtml(payment.amount)}</div>
                 </div>
                 <div class="tag-row">${tag(payment.status_label, payment.status === "approved" ? "green" : payment.status === "pending" ? "amber" : "red")}${tag(payment.has_screenshot ? "rasm bor" : "rasm yo'q","")}</div>
+                ${payment.status === "pending" ? `<div class="action-row">
+                  <button class="btn" data-payment-review="${payment.id}" data-review-action="approve">Tasdiqlash</button>
+                  <button class="btn secondary" data-payment-review="${payment.id}" data-review-action="reject">Rad etish</button>
+                </div>` : ""}
               </article>
             `).join("") || `<article class="payment-card"><div class="user-sub">Hozircha bo'sh.</div></article>`}
           </div>
@@ -721,9 +761,9 @@
 
     function renderModules(){
       $("adminModules").innerHTML = (state.data.modules || []).map(item => `
-        <button class="setting-row" data-admin-section="${item.key}">
+        <button class="setting-row" data-module="${item.key}">
           <div><h3>${item.icon} ${escapeHtml(item.title)}</h3><p>${escapeHtml(item.note)}</p></div>
-          <span class="tag green">botda ochish</span>
+          <span class="tag green">ochish</span>
         </button>
       `).join("");
       const channels = state.data.channels || {};
@@ -736,7 +776,7 @@
         ["📢 Reklama", `kampaniya: ${ads.total || 0} · faol: ${ads.active || 0} · xato: ${ads.failed || 0}`, "ads"],
         ["🆕 Yangilik fikri", `kutilmoqda: ${feedback.pending || 0} · tugagan: ${feedback.completed || 0}`, "release_feedback"]
       ].map(item => `
-        <button class="setting-row" data-admin-section="${item[2]}">
+        <button class="setting-row" data-module="${item[2]}">
           <div><h3>${item[0]}</h3><p>${escapeHtml(item[1])}</p></div>
           <span class="tag blue">boshqarish</span>
         </button>
@@ -752,47 +792,86 @@
       `).join("");
       $("monitorActive").textContent = counts.active_week || 0;
       $("monitorNote").textContent = `${counts.active_24h || 0} foydalanuvchi 24 soatda aktiv. Tekshiruvdagi to'lov: ${counts.pending_payments || 0}.`;
-      const values = [34,46,28,62,75,38,83,69,92,44,58,88,71,31,67,78,96,49];
-      $("candleChart").innerHTML = values.map((value,index) => `<span class="candle ${index % 5 === 2 ? "risk" : ""}" style="--h:${value}%"></span>`).join("");
+      const bars = (monitor.bars || []).filter(item => Number(item.value || 0) >= 0);
+      const maxBar = Math.max(1, ...bars.map(item => Number(item.value || 0)));
+      $("candleChart").innerHTML = bars.length ? bars.map(item => {
+        const value = Number(item.value || 0);
+        const height = Math.max(6, Math.round(value / maxBar * 100));
+        const risk = item.tone === "risk" || item.tone === "warn" ? "risk" : "";
+        return `<span class="candle ${risk}" title="${escapeHtml(item.label)}: ${escapeHtml(value)}" style="--h:${height}%"></span>`;
+      }).join("") : '<span class="section-note">Grafik uchun real signal hali yo\'q.</span>';
       $("heatMap").innerHTML = (monitor.heat || []).map(item => `
         <div class="heat-cell ${item.tone || ""}"><strong>${escapeHtml(item.value)}</strong><span>${escapeHtml(item.label)}</span></div>
       `).join("");
     }
 
-    function openUser(id){
-      const user = (state.data.users || []).find(item => String(item.id) === String(id));
+    async function openUser(id){
+      state.activeModule = null;
+      const user = ((state.remoteUsers || []).concat(state.data.users || [])).find(item => String(item.id) === String(id));
       if(!user) return;
       $("drawerTitle").textContent = user.name;
       $("drawerSub").textContent = `${user.username ? "@" + user.username + " · " : ""}${user.id} · ${user.last_active}`;
+      $("drawerBody").innerHTML = '<p class="section-note">Yuklanmoqda…</p>';
+      $("drawer").classList.add("open");
+      $("drawer").setAttribute("aria-hidden","false");
+      let detail = null;
+      try{
+        detail = await apiPost("/api/admin-miniapp/users/detail", {telegram_id:user.id});
+      }catch(error){
+        showToast(apiErrorText(error, "User detail yuklanmadi"));
+      }
+      const full = detail && detail.user ? detail.user : user;
+      const payments = detail && detail.payments ? detail.payments : [];
       $("drawerBody").innerHTML = `
         <section class="detail-section">
           <h3 class="detail-title">Ruxsat va obuna</h3>
           <div class="kv">
-            <span>Holat</span><b>${escapeHtml(user.status_label)}</b>
-            <span>To'lov</span><b>${escapeHtml(user.payment_label)}</b>
-            <span>Tarif</span><b>${escapeHtml(user.plan)}</b>
-            <span>Usul</span><b>${escapeHtml(user.method)}</b>
-            <span>Tugash sanasi</span><b>${escapeHtml(user.end_date || "yo'q")}</b>
+            <span>Holat</span><b>${escapeHtml(full.status_label || full.status)}</b>
+            <span>To'lov</span><b>${escapeHtml(full.payment_label || full.payment_status)}</b>
+            <span>Tarif</span><b>${escapeHtml(full.plan || full.selected_plan_type || "—")}</b>
+            <span>Usul</span><b>${escapeHtml(full.method || full.payment_method || "—")}</b>
+            <span>Boshlangan</span><b>${escapeHtml(full.start_date || "—")}</b>
+            <span>Tugash sanasi</span><b>${escapeHtml(full.end_date || "yo'q")}</b>
           </div>
         </section>
         <section class="detail-section">
           <h3 class="detail-title">O'qish</h3>
           <div class="kv">
-            <span>Til</span><b>${escapeHtml(user.language)}</b>
-            <span>Daraja</span><b>${escapeHtml(user.level)}</b>
-            <span>Rejim</span><b>${escapeHtml(user.mode)}</b>
-            <span>Savollar</span><b>${escapeHtml(user.questions)}</b>
-            <span>Bonus</span><b>${escapeHtml(user.bonus_left)}</b>
-            <span>Seriya</span><b>${escapeHtml(user.streak)} kun</b>
+            <span>Til</span><b>${escapeHtml(full.language)}</b>
+            <span>Daraja</span><b>${escapeHtml(full.level)}</b>
+            <span>Rejim</span><b>${escapeHtml(full.mode || full.learning_mode)}</b>
+            <span>Savollar</span><b>${escapeHtml(full.questions)}</b>
+            <span>Bonus</span><b>${escapeHtml(full.bonus_left)}</b>
+            <span>Seriya</span><b>${escapeHtml(full.streak)} kun</b>
+            <span>Referral</span><b>${escapeHtml(full.referral_code || "—")}</b>
           </div>
         </section>
         <section class="detail-section">
-          <h3 class="detail-title">Admin amali</h3>
-          <button class="btn" data-admin-section="user_search">Botda foydalanuvchi qidirishni ochish</button>
+          <h3 class="detail-title">To'lov tarixi</h3>
+          <div class="mini-panel">
+            ${payments.length ? payments.map(payment => `<div class="mini-card">
+              <h3>#${payment.id} · ${escapeHtml(payment.status)}</h3>
+              <p>${escapeHtml(payment.plan)} · ${escapeHtml(payment.method)} · ${escapeHtml(payment.amount)}<br>${escapeHtml(payment.submitted_at)} ${payment.comment ? "· " + escapeHtml(payment.comment) : ""}</p>
+            </div>`).join("") : '<p class="section-note">To\'lov tarixi yo\'q.</p>'}
+          </div>
+        </section>
+        <section class="detail-section">
+          <h3 class="detail-title">Admin amallari</h3>
+          <div class="mini-panel">
+            <div class="form-row">
+              <label>Qo'lda obuna berish</label>
+              <div class="action-row">
+                <select id="quickAccessPlan" class="select" style="max-width:160px">
+                  <option value="10_days">10 kun</option>
+                  <option value="1_month">1 oy</option>
+                </select>
+                <button class="btn" data-user-access="${full.id}">Obuna berish</button>
+              </div>
+            </div>
+            <button class="btn danger" data-module="delete_user" data-prefill="${full.id}">Userni o'chirish</button>
+          </div>
         </section>
       `;
-      $("drawer").classList.add("open");
-      $("drawer").setAttribute("aria-hidden","false");
     }
 
     function closeDrawer(){
@@ -840,11 +919,431 @@
     async function openAdminSection(section){
       try{
         await apiPost("/api/admin-miniapp/open-section", {section});
-        showToast("Botga bo'lim tugmasi yuborildi");
-        try{ tg && tg.close(); }catch(error){}
+        showToast("Bu bo'lim Mini App ichida ochiladi");
       }catch(error){
         showToast("Bo'limni ochib bo'lmadi");
       }
+    }
+
+    function setDrawer(title, sub, html){
+      $("drawerTitle").textContent = title;
+      $("drawerSub").textContent = sub || "";
+      $("drawerBody").innerHTML = html;
+      $("drawer").classList.add("open");
+      $("drawer").setAttribute("aria-hidden","false");
+    }
+
+    function moduleTitle(key){
+      const item = (state.data.modules || []).find(row => row.key === key);
+      return item ? `${item.icon} ${item.title}` : "Boshqaruv";
+    }
+
+    async function openModule(key, prefill){
+      state.activeModule = key;
+      closeDrawer();
+      setDrawer(moduleTitle(key), "Mini App ichidagi real boshqaruv", '<p class="section-note">Yuklanmoqda…</p>');
+      let data;
+      try{ data = await loadManagement(false); }
+      catch(error){ setDrawer(moduleTitle(key), "", '<p class="section-note">Ma\'lumot yuklanmadi.</p>'); return; }
+      if(key === "stats"){ switchTab("statistics"); closeDrawer(); return; }
+      if(key === "user_search"){ switchTab("users"); closeDrawer(); $("search").focus(); return; }
+      if(key === "prices") return renderPricesModule(data);
+      if(key === "channels") return renderChannelsModule(data);
+      if(key === "help") return renderHelpModule(data);
+      if(key === "portfolio") return renderPortfolioModule(data);
+      if(key === "broadcast") return renderBroadcastModule();
+      if(key === "ads") return renderCampaignModule(data, "ad");
+      if(key === "release_feedback") return renderCampaignModule(data, "release_feedback");
+      if(key === "discount") return renderCampaignModule(data, "discount");
+      if(key === "partners") return renderPartnersModule(data);
+      if(key === "give_access") return renderGiveAccessModule(prefill);
+      if(key === "delete_user") return renderDeleteUserModule(prefill);
+      if(key === "audio") return renderAudioModule(data);
+      setDrawer(moduleTitle(key), "", '<p class="section-note">Bu bo\'lim uchun Mini App panel tayyor emas.</p>');
+    }
+
+    function renderPricesModule(data){
+      setDrawer("💳 Obuna narxlari", "Narxlar darhol subscription Mini Appda ishlaydi", `
+        <div class="mini-panel">
+          ${(data.prices || []).map(price => `<div class="mini-card" data-price-row data-method="${price.method}" data-plan="${price.plan}">
+            <h3>${escapeHtml(price.method_label)} · ${escapeHtml(price.plan_label)}</h3>
+            <p>Joriy: ${escapeHtml(price.text)}</p>
+            <div class="action-row">
+              <input class="input" data-price-amount type="number" min="1" max="1000000" value="${price.amount}" style="max-width:160px">
+              <button class="btn" data-price-save>Saqlash</button>
+            </div>
+          </div>`).join("")}
+          <div class="mini-card">
+            <h3>Karta rekviziti</h3>
+            <textarea id="paymentDetailsInput" class="textarea" maxlength="1500">${escapeHtml(data.payment_details || "")}</textarea>
+            <button class="btn" data-payment-details-save>Rekvizitni saqlash</button>
+          </div>
+          <p class="section-note">Alipay/WeChat uchun custom QR file_id flow chat admin bo'limida ham saqlanib qolgan.</p>
+        </div>
+      `);
+    }
+
+    function renderChannelsModule(data){
+      const channels = data.channels || {};
+      setDrawer("📣 Majburiy kanal", "Kanal majburiyligini Mini App ichida boshqarish", `
+        <div class="mini-panel">
+          <div class="mini-card">
+            <h3>Majburiy obuna holati</h3>
+            <p>Hozir: ${channels.enabled ? "yoqilgan" : "o'chirilgan"}</p>
+            <button class="btn ${channels.enabled ? "secondary" : ""}" data-channel-mode="${channels.enabled ? "0" : "1"}">${channels.enabled ? "O'chirish" : "Yoqish"}</button>
+          </div>
+          <div class="mini-card">
+            <h3>Kanal qo'shish</h3>
+            <div class="form-grid">
+              <div class="form-row"><label>Kanal title</label><input id="channelTitle" class="input" placeholder="HSK AI kanal"></div>
+              <div class="form-row"><label>@username yoki chat_id</label><input id="channelChatId" class="input" placeholder="@channel yoki -100..."></div>
+              <div class="form-row"><label>Invite link</label><input id="channelInvite" class="input" placeholder="https://t.me/..."></div>
+              <button class="btn" data-channel-add>Kanalni saqlash</button>
+            </div>
+          </div>
+          ${(channels.items || []).map(item => `<div class="mini-card">
+            <h3>${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.chat_id)}<br>${escapeHtml(item.invite_link || "link yo'q")}</p>
+            <div class="action-row">
+              ${tag(item.active ? "aktiv" : "o'chirilgan", item.active ? "green" : "red")}
+              <button class="btn secondary" data-channel-toggle="${item.id}" data-active="${item.active ? "0" : "1"}">${item.active ? "O'chirish" : "Yoqish"}</button>
+              <button class="btn danger" data-channel-delete="${item.id}">O'chirish</button>
+            </div>
+          </div>`).join("") || '<p class="section-note">Kanal qo\'shilmagan.</p>'}
+        </div>
+      `);
+    }
+
+    function renderHelpModule(data){
+      const help = data.help || {};
+      setDrawer("🆘 Yordam sozlamalari", "Admin aloqa va 3 tildagi video linklar", `
+        <div class="mini-panel">
+          <div class="mini-card">
+            <h3>Admin aloqa</h3>
+            <input id="adminContactInput" class="input" value="${escapeHtml(help.admin_contact || "")}" placeholder="@username yoki t.me/link">
+            <button class="btn" data-help-contact-save>Saqlash</button>
+          </div>
+          ${(help.links || []).map(item => `<div class="mini-card" data-help-row data-key="${item.key}" data-lang="${item.lang}">
+            <h3>${escapeHtml(item.icon)} ${escapeHtml(item.label)} · ${escapeHtml(item.lang.toUpperCase())}</h3>
+            <input class="input" data-help-value value="${escapeHtml(item.value || "")}" placeholder="https://...">
+            <button class="btn" data-help-save>Saqlash</button>
+          </div>`).join("")}
+        </div>
+      `);
+    }
+
+    function renderPortfolioModule(data){
+      const p = data.portfolio || {};
+      const s = p.summary || {};
+      setDrawer("💼 Portfel", "Tushum, rasxod va sof foyda", `
+        <div class="mini-panel">
+          <div class="mini-card">
+            <h3>Joriy holat</h3>
+            <div class="kv">
+              <span>Tasdiqlangan to'lov</span><b>${escapeHtml(s.approved_payments || 0)}</b>
+              <span>Gross</span><b>${escapeHtml(s.gross_revenue_usd || "$0.00")}</b>
+              <span>Manual foyda</span><b>${escapeHtml(s.manual_profit_usd || "$0.00")}</b>
+              <span>Manual rasxod</span><b>${escapeHtml(s.manual_expense_usd || "$0.00")}</b>
+              <span>Net</span><b>${escapeHtml(s.net_usd || "$0.00")}</b>
+            </div>
+          </div>
+          <div class="mini-card">
+            <h3>Transaction qo'shish</h3>
+            <div class="form-grid">
+              <div class="form-row two">
+                <div><label>Tur</label><select id="portfolioType" class="select"><option value="profit">Foyda</option><option value="expense">Rasxod</option></select></div>
+                <div><label>Currency</label><select id="portfolioCurrency" class="select"><option value="usd">USD</option><option value="tjs">TJS</option><option value="¥">CNY/¥</option></select></div>
+              </div>
+              <div class="form-row"><label>Summa</label><input id="portfolioAmount" class="input" type="number" step="0.01" min="0"></div>
+              <div class="form-row"><label>Sabab</label><input id="portfolioNote" class="input" placeholder="OpenAI to'lov, reklama, ..."></div>
+              <button class="btn" data-portfolio-save>Saqlash</button>
+            </div>
+          </div>
+          ${(p.history || []).map(item => `<div class="mini-card">
+            <h3>${item.type === "profit" ? "+" : "-"} ${escapeHtml(item.amount_usd)}</h3>
+            <p>${escapeHtml(item.source)} · ${escapeHtml(item.created_at)}<br>${escapeHtml(item.original || "")} ${escapeHtml(item.note || "")}</p>
+          </div>`).join("") || '<p class="section-note">History bo\'sh.</p>'}
+        </div>
+      `);
+    }
+
+    function renderBroadcastModule(){
+      setDrawer("📢 Ommaviy xabar", "Text xabarni segmentga darhol yuborish", `
+        <div class="mini-panel">
+          <div class="danger-note">Bu real yuborish. Tugmani bosgandan keyin xabar userlarga ketadi.</div>
+          <div class="mini-card">
+            <div class="form-grid">
+              <div class="form-row"><label>Segment</label><select id="broadcastSegment" class="select"><option value="all">Barcha aktiv bo'lmagan bloklanmaganlar</option><option value="paid">To'lovli active</option><option value="trial">Trial</option><option value="expired">Expired</option></select></div>
+              <div class="form-row"><label>Xabar</label><textarea id="broadcastText" class="textarea" maxlength="3500"></textarea></div>
+              <button class="btn danger" data-broadcast-send>Yuborish</button>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+
+    function renderCampaignModule(data, kind){
+      const config = {
+        ad:["📣 Reklama kampaniyasi","ads","Text reklama schedule qilinadi, background sender yuboradi."],
+        release_feedback:["🆕 Yangilik fikri","release_feedback","Release feedback rating flow bilan schedule qilinadi."],
+        discount:["🎁 Chegirma","discounts","Chegirma kampaniyasi yaratiladi."]
+      }[kind];
+      const rows = ((data.campaigns || {})[config[1]] || []);
+      setDrawer(config[0], config[2], `
+        <div class="mini-panel">
+          <div class="mini-card">
+            <div class="form-grid">
+              <div class="form-row"><label>Nomi</label><input id="campaignTitle" class="input" maxlength="120"></div>
+              <div class="form-row"><label>Matn / sabab</label><textarea id="campaignText" class="textarea" maxlength="3500"></textarea></div>
+              <div class="form-row two">
+                <div><label>Davomiylik soat</label><input id="campaignHours" class="input" type="number" min="1" max="720" value="24"></div>
+                ${kind === "discount" ? '<div><label>Chegirma %</label><input id="campaignPercent" class="input" type="number" min="1" max="90" value="20"></div>' : '<div><label>Feature key</label><input id="campaignFeature" class="input" value="general"></div>'}
+              </div>
+              <button class="btn" data-campaign-create="${kind}">Yaratish</button>
+            </div>
+          </div>
+          ${rows.map(item => `<div class="mini-card">
+            <h3>#${item.id} · ${escapeHtml(item.title)}</h3>
+            <p>${escapeHtml(item.status || (item.active ? "active" : "inactive"))} · ${escapeHtml(item.send_at || item.starts_at || "")}<br>${escapeHtml(item.text || "")}</p>
+          </div>`).join("") || '<p class="section-note">Hali yozuv yo\'q.</p>'}
+        </div>
+      `);
+    }
+
+    function renderPartnersModule(data){
+      const p = data.partners || {};
+      const stats = p.stats || {};
+      setDrawer("🤝 Hamkorlar", "Ariza, payout va statistika", `
+        <div class="mini-panel">
+          <div class="mini-card"><h3>Statistika</h3><p>Pending: ${escapeHtml(stats.pending || 0)} · Active: ${escapeHtml(stats.active || 0)} · Referral: ${escapeHtml(stats.referrals || 0)} · Paid: ${escapeHtml(stats.paid_referrals || 0)}</p></div>
+          ${(p.pending || []).map(item => `<div class="mini-card">
+            <h3>Ariza #${item.id}</h3><p>${escapeHtml(item.telegram_id)} · ${escapeHtml(item.contact_username)}<br>${escapeHtml(item.promotion_channel)} · ${escapeHtml(item.audience_size)}</p>
+            <button class="btn" data-partner-action="approve" data-partner-id="${item.id}">Tasdiqlash</button>
+          </div>`).join("") || '<p class="section-note">Pending ariza yo\'q.</p>'}
+          ${(p.payouts || []).map(item => `<div class="mini-card">
+            <h3>Payout #${item.id} · ${escapeHtml(item.amount_usd)}</h3><p>${escapeHtml(item.status)} · ${escapeHtml(item.local_amount)}<br>${escapeHtml(item.method)} · ${escapeHtml(item.account)}</p>
+          </div>`).join("")}
+        </div>
+      `);
+    }
+
+    function renderGiveAccessModule(prefill){
+      setDrawer("✅ Obuna berish", "User ID va tarifni tanlang", `
+        <div class="mini-panel">
+          <div class="mini-card">
+            <div class="form-grid">
+              <div class="form-row"><label>Telegram ID</label><input id="accessUserId" class="input" inputmode="numeric" value="${escapeHtml(prefill || "")}"></div>
+              <div class="form-row"><label>Tarif</label><select id="accessPlan" class="select"><option value="10_days">10 kun</option><option value="1_month">1 oy</option></select></div>
+              <button class="btn" data-access-save>Obuna berish</button>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+
+    function renderDeleteUserModule(prefill){
+      setDrawer("🗑 Userni o'chirish", "Xavfli amal: ID bilan tasdiqlanadi", `
+        <div class="mini-panel">
+          <div class="danger-note">Bu user va unga bog'liq course/message/feedback ma'lumotlarini o'chiradi. Reset yo'q.</div>
+          <div class="mini-card">
+            <div class="form-grid">
+              <div class="form-row"><label>Telegram ID</label><input id="deleteUserId" class="input" inputmode="numeric" value="${escapeHtml(prefill || "")}"></div>
+              <div class="form-row"><label>Tasdiq uchun shu IDni qayta yozing</label><input id="deleteConfirm" class="input" inputmode="numeric"></div>
+              <button class="btn danger" data-delete-user>O'chirish</button>
+            </div>
+          </div>
+        </div>
+      `);
+    }
+
+    function renderAudioModule(data){
+      const rows = data.audio || [];
+      setDrawer("🎵 Audio boshqaruv", "Audio ro'yxatini Mini Appda tekshirish", `
+        <div class="mini-panel">
+          <div class="mini-card"><h3>Coverage</h3><p>${rows.map(row => `${row.level}: ${row.lessons} dars`).join(" · ")}</p></div>
+          <div class="mini-card">
+            <div class="form-row two">
+              <div><label>Level</label><select id="audioLevel" class="select"><option value="hsk1">HSK1</option><option value="hsk2">HSK2</option><option value="hsk3">HSK3</option><option value="hsk4">HSK4</option></select></div>
+              <div><label>Dars</label><input id="audioLesson" class="input" type="number" min="1" value="1"></div>
+            </div>
+            <button class="btn" data-audio-list>Ro'yxatni ko'rish</button>
+          </div>
+          <div id="audioResult" class="mini-panel"></div>
+          <p class="section-note">Audio upload hali Telegram file_id talab qiladi, shuning uchun chatdagi upload flow saqlanadi.</p>
+        </div>
+      `);
+    }
+
+    async function reloadAdminState(message){
+      const module = state.activeModule;
+      state.management = null;
+      await loadData();
+      if(module) await openModule(module);
+      showToast(message || "Saqlandi");
+    }
+
+    async function reviewPayment(btn){
+      const paymentId = Number(btn.dataset.paymentReview || 0);
+      const action = btn.dataset.reviewAction;
+      if(!paymentId || !action) return;
+      let reason = "";
+      if(action === "reject"){
+        reason = prompt("Rad sababini yozing", "rejected by admin mini app") || "";
+        if(!reason.trim()) return;
+      }
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/payments/review", {payment_id:paymentId, action, reason});
+        await reloadAdminState(action === "approve" ? "To'lov tasdiqlandi" : "To'lov rad etildi");
+      }catch(error){
+        showToast(apiErrorText(error, "To'lovni ko'rib bo'lmadi"));
+      }finally{
+        btn.disabled = false;
+      }
+    }
+
+    async function grantAccess(userId, plan){
+      await apiPost("/api/admin-miniapp/users/give-access", {telegram_id:Number(userId), plan});
+      await reloadAdminState("Obuna berildi");
+    }
+
+    async function savePrice(btn){
+      const row = btn.closest("[data-price-row]");
+      const amount = Number(row.querySelector("[data-price-amount]").value || 0);
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/prices/save", {method:row.dataset.method, plan:row.dataset.plan, amount});
+        await reloadAdminState("Narx saqlandi");
+      }catch(error){ showToast(apiErrorText(error, "Narx saqlanmadi")); }
+      finally{ btn.disabled = false; }
+    }
+
+    async function savePaymentDetails(btn){
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/payment-details/save", {payment_details:$("paymentDetailsInput").value});
+        await reloadAdminState("Rekvizit saqlandi");
+      }catch(error){ showToast(apiErrorText(error, "Rekvizit saqlanmadi")); }
+      finally{ btn.disabled = false; }
+    }
+
+    async function saveChannel(payload, button){
+      if(button) button.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/channels/save", payload);
+        await reloadAdminState("Kanal sozlamasi saqlandi");
+      }catch(error){ showToast(apiErrorText(error, "Kanal saqlanmadi")); }
+      finally{ if(button) button.disabled = false; }
+    }
+
+    async function saveHelp(row, button){
+      button.disabled = true;
+      try{
+        if(row === "contact"){
+          await apiPost("/api/admin-miniapp/help/save", {target:"admin_contact", value:$("adminContactInput").value});
+        }else{
+          await apiPost("/api/admin-miniapp/help/save", {
+            key:row.dataset.key,
+            lang:row.dataset.lang,
+            value:row.querySelector("[data-help-value]").value
+          });
+        }
+        await reloadAdminState("Yordam linki saqlandi");
+      }catch(error){ showToast(apiErrorText(error, "Yordam linki saqlanmadi")); }
+      finally{ button.disabled = false; }
+    }
+
+    async function savePortfolio(btn){
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/portfolio/transaction", {
+          type:$("portfolioType").value,
+          amount:$("portfolioAmount").value,
+          currency:$("portfolioCurrency").value,
+          note:$("portfolioNote").value
+        });
+        await reloadAdminState("Portfel saqlandi");
+      }catch(error){ showToast(apiErrorText(error, "Portfel saqlanmadi")); }
+      finally{ btn.disabled = false; }
+    }
+
+    async function sendBroadcast(btn){
+      if(!confirm("Xabar userlarga hozir yuboriladi. Davom etasizmi?")) return;
+      btn.disabled = true;
+      try{
+        const data = await apiPost("/api/admin-miniapp/broadcast/send", {
+          segment:$("broadcastSegment").value,
+          text:$("broadcastText").value
+        });
+        showToast(`Yuborildi: ${data.sent}, xato: ${data.failed}`);
+      }catch(error){ showToast(apiErrorText(error, "Broadcast yuborilmadi")); }
+      finally{ btn.disabled = false; }
+    }
+
+    async function createCampaign(btn, kind){
+      if(!confirm("Kampaniya real schedule qilinadi. Davom etasizmi?")) return;
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/campaigns/create", {
+          kind,
+          title:$("campaignTitle").value,
+          text:$("campaignText").value,
+          hours:$("campaignHours").value,
+          percent:$("campaignPercent") ? $("campaignPercent").value : undefined,
+          feature_key:$("campaignFeature") ? $("campaignFeature").value : undefined
+        });
+        await reloadAdminState("Kampaniya yaratildi");
+      }catch(error){ showToast(apiErrorText(error, "Kampaniya yaratilmadi")); }
+      finally{ btn.disabled = false; }
+    }
+
+    async function partnerAction(btn){
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/partners/action", {
+          partner_id:Number(btn.dataset.partnerId || 0),
+          action:btn.dataset.partnerAction
+        });
+        await reloadAdminState("Hamkor holati yangilandi");
+      }catch(error){ showToast(apiErrorText(error, "Hamkor amali bajarilmadi")); }
+      finally{ btn.disabled = false; }
+    }
+
+    async function giveAccessFromModule(btn){
+      btn.disabled = true;
+      try{ await grantAccess($("accessUserId").value, $("accessPlan").value); }
+      catch(error){ showToast(apiErrorText(error, "Obuna berilmadi")); }
+      finally{ btn.disabled = false; }
+    }
+
+    async function deleteUser(btn){
+      if(!confirm("User o'chiriladi. Davom etasizmi?")) return;
+      btn.disabled = true;
+      try{
+        await apiPost("/api/admin-miniapp/users/delete", {
+          telegram_id:$("deleteUserId").value,
+          confirm:$("deleteConfirm").value
+        });
+        state.activeModule = null;
+        closeDrawer();
+        await loadData();
+        showToast("User o'chirildi");
+      }catch(error){ showToast(apiErrorText(error, "User o'chirilmadi")); }
+      finally{ btn.disabled = false; }
+    }
+
+    async function listAudio(btn){
+      btn.disabled = true;
+      try{
+        const data = await apiPost("/api/admin-miniapp/audio/list", {
+          level:$("audioLevel").value,
+          lesson_order:$("audioLesson").value
+        });
+        $("audioResult").innerHTML = (data.items || []).length
+          ? data.items.map(item => `<div class="mini-card"><h3>${escapeHtml(item.audio_type)}</h3><p>${escapeHtml(item.file_id)}</p></div>`).join("")
+          : '<p class="section-note">Bu dars uchun audio yo\'q.</p>';
+      }catch(error){ showToast(apiErrorText(error, "Audio ro'yxat olinmadi")); }
+      finally{ btn.disabled = false; }
     }
 
     async function loadSubEntryStats(){
@@ -872,6 +1371,28 @@
       }
     }
 
+    async function loadManagement(force){
+      if(state.management && !force) return state.management;
+      const data = await apiPost("/api/admin-miniapp/management", {});
+      state.management = data;
+      return data;
+    }
+
+    async function remoteUserSearch(query){
+      if(query.trim().length < 2){
+        state.remoteUsers = null;
+        renderUsers();
+        return;
+      }
+      try{
+        const data = await apiPost("/api/admin-miniapp/users/search", {query});
+        state.remoteUsers = data.users || [];
+        renderUsers();
+      }catch(error){
+        showToast(apiErrorText(error, "Qidirish ishlamadi"));
+      }
+    }
+
     function renderAll(){
       renderStats();
       renderSegments();
@@ -883,6 +1404,7 @@
       renderModules();
       renderMonitor();
       loadSubEntryStats();
+      loadManagement(true).catch(() => showToast("Boshqaruv ma'lumotlari yuklanmadi"));
       loadNotifications();
       loadCourseAds();
     }
@@ -1080,6 +1602,42 @@
     document.addEventListener("click", (event) => {
       const courseAdToggle = event.target.closest("[data-course-ad-toggle]");
       if(courseAdToggle){ toggleCourseAd(courseAdToggle); return; }
+      const paymentReview = event.target.closest("[data-payment-review]");
+      if(paymentReview){ reviewPayment(paymentReview); return; }
+      const moduleBtn = event.target.closest("[data-module]");
+      if(moduleBtn){ openModule(moduleBtn.dataset.module, moduleBtn.dataset.prefill); return; }
+      const userAccess = event.target.closest("[data-user-access]");
+      if(userAccess){ grantAccess(userAccess.dataset.userAccess, $("quickAccessPlan").value).catch(error => showToast(apiErrorText(error, "Obuna berilmadi"))); return; }
+      const priceSave = event.target.closest("[data-price-save]");
+      if(priceSave){ savePrice(priceSave); return; }
+      const paymentDetails = event.target.closest("[data-payment-details-save]");
+      if(paymentDetails){ savePaymentDetails(paymentDetails); return; }
+      const channelMode = event.target.closest("[data-channel-mode]");
+      if(channelMode){ saveChannel({action:"mode", enabled:channelMode.dataset.channelMode === "1"}, channelMode); return; }
+      const channelAdd = event.target.closest("[data-channel-add]");
+      if(channelAdd){ saveChannel({action:"add", title:$("channelTitle").value, chat_id:$("channelChatId").value, invite_link:$("channelInvite").value}, channelAdd); return; }
+      const channelToggle = event.target.closest("[data-channel-toggle]");
+      if(channelToggle){ saveChannel({action:"toggle", channel_id:Number(channelToggle.dataset.channelToggle), active:channelToggle.dataset.active === "1"}, channelToggle); return; }
+      const channelDelete = event.target.closest("[data-channel-delete]");
+      if(channelDelete && confirm("Kanal o'chirilsinmi?")){ saveChannel({action:"delete", channel_id:Number(channelDelete.dataset.channelDelete)}, channelDelete); return; }
+      const helpContact = event.target.closest("[data-help-contact-save]");
+      if(helpContact){ saveHelp("contact", helpContact); return; }
+      const helpSave = event.target.closest("[data-help-save]");
+      if(helpSave){ saveHelp(helpSave.closest("[data-help-row]"), helpSave); return; }
+      const portfolioSave = event.target.closest("[data-portfolio-save]");
+      if(portfolioSave){ savePortfolio(portfolioSave); return; }
+      const broadcastSend = event.target.closest("[data-broadcast-send]");
+      if(broadcastSend){ sendBroadcast(broadcastSend); return; }
+      const campaignCreate = event.target.closest("[data-campaign-create]");
+      if(campaignCreate){ createCampaign(campaignCreate, campaignCreate.dataset.campaignCreate); return; }
+      const partnerActionBtn = event.target.closest("[data-partner-action]");
+      if(partnerActionBtn){ partnerAction(partnerActionBtn); return; }
+      const accessSave = event.target.closest("[data-access-save]");
+      if(accessSave){ giveAccessFromModule(accessSave); return; }
+      const deleteBtn = event.target.closest("[data-delete-user]");
+      if(deleteBtn){ deleteUser(deleteBtn); return; }
+      const audioList = event.target.closest("[data-audio-list]");
+      if(audioList){ listAudio(audioList); return; }
       const tab = event.target.closest("[data-tab]");
       if(tab){ switchTab(tab.dataset.tab); return; }
       const openTab = event.target.closest("[data-open-tab]");
@@ -1099,7 +1657,7 @@
       if(!action) return;
       const name = action.dataset.action;
       if(name === "reload"){ loadData(); return; }
-      if(name === "clear-search"){ $("search").value = ""; state.search = ""; renderUsers(); return; }
+      if(name === "clear-search"){ $("search").value = ""; state.search = ""; state.remoteUsers = null; renderUsers(); return; }
       if(name === "upload-course-ad"){ uploadCourseAd(); return; }
       if(name === "copy-stats"){
         copyText(state.data && state.data.report_text ? state.data.report_text : "");
@@ -1112,6 +1670,8 @@
 
     $("search").addEventListener("input", (event) => {
       state.search = event.target.value;
+      clearTimeout(window.adminSearchTimer);
+      window.adminSearchTimer = setTimeout(() => remoteUserSearch(state.search), 260);
       renderUsers();
     });
     $("courseAdFile").addEventListener("change", submitCourseAdFile);

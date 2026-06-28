@@ -4,6 +4,7 @@ import logging
 import os
 import time
 from contextlib import asynccontextmanager
+from datetime import datetime, timedelta, timezone
 
 from aiogram import Bot
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -15,6 +16,7 @@ from starlette.middleware.gzip import GZipMiddleware
 from app.config import settings
 from app.bot.create_bot import create_bot
 from app.db.session import async_session_maker, init_db
+from app.db.models.user import User
 from app.db.models.course_lessons import CourseLesson
 from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
 from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
@@ -52,12 +54,28 @@ from app.services.course_challenge_service import CourseChallengeService
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
+from app.services.payment_notify_service import PaymentNotifyService
+from app.services.portfolio_service import PortfolioService
+from app.services.required_channel_service import RequiredChannelService
+from app.services.subscription_service import SubscriptionService
+from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
+from app.services.subscription_currency_service import format_subscription_price
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
+from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.admin_miniapp_service import AdminMiniAppService
+from app.services.broadcast_translation_service import localized_broadcast_text_for_language
+from app.services.help_settings_service import HELP_LANGS, HELP_VIDEO_FIELDS, normalize_help_url
+from app.services.support_contact_service import ADMIN_CONTACT_KEY, admin_contact_url, normalize_admin_contact
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
 from app.services.telegram_webapp_auth import extract_verified_webapp_user_id
+from app.repositories.ad_campaign_repo import AdCampaignRepository, decode_languages as decode_ad_languages
+from app.repositories.bot_setting_repo import BotSettingRepository
+from app.repositories.course_audio_repo import CourseAudioRepository
 from app.repositories.user_repo import UserRepository
+from app.repositories.payment_repo import PaymentRepository
+from app.repositories.release_feedback_repo import ReleaseFeedbackRepository, decode_languages as decode_feedback_languages
+from app.repositories.discount_campaign_repo import DiscountCampaignRepository
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.course_pilot_event_repo import CoursePilotEventRepository
@@ -300,6 +318,42 @@ def _is_admin_id(telegram_id: int | None) -> bool:
     return bool(telegram_id and telegram_id in settings.admin_id_list)
 
 
+def _admin_auth_error(telegram_id: int | None) -> JSONResponse | None:
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    return None
+
+
+def _mini_label(value: str | None, labels: dict[str, str]) -> str:
+    return labels.get(str(value or "").lower(), value or "—")
+
+
+def _mini_plan_label(value: str | None) -> str:
+    return _mini_label(value, {"10_days": "10 kun", "1_month": "1 oy"})
+
+
+def _mini_method_label(value: str | None) -> str:
+    return _mini_label(value, {"visa": "Visa/karta", "alipay": "Alipay", "wechat": "WeChat"})
+
+
+def _mini_dt(value) -> str:
+    if not value:
+        return "—"
+    try:
+        return value.astimezone(timezone(timedelta(hours=8))).strftime("%d.%m.%Y %H:%M")
+    except Exception:
+        return str(value)
+
+
+def _mini_usd(value) -> str:
+    try:
+        return f"${float(value or 0):.2f}"
+    except (TypeError, ValueError):
+        return "$0.00"
+
+
 def _admin_miniapp_section_keyboard(section: str) -> InlineKeyboardMarkup:
     title, callback_data = ADMIN_MINIAPP_SECTIONS.get(section, ADMIN_MINIAPP_SECTIONS["stats"])
     return InlineKeyboardMarkup(
@@ -308,6 +362,333 @@ def _admin_miniapp_section_keyboard(section: str) -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="🛠 Admin panel", callback_data="adm:menu")],
         ]
     )
+
+
+async def _admin_miniapp_management_payload(session) -> dict:
+    setting_repo = BotSettingRepository(session)
+    prices = await SubscriptionPriceService(session).all_prices()
+    channels_service = RequiredChannelService(session)
+    channel_rows = await channels_service.list_channels()
+    portfolio = PortfolioService(session)
+    portfolio_summary = await portfolio.get_summary()
+    portfolio_history = await portfolio.list_history(limit=12)
+    ad_repo = AdCampaignRepository(session)
+    feedback_repo = ReleaseFeedbackRepository(session)
+    discount_repo = DiscountCampaignRepository(session)
+    partner_service = PartnerService(session)
+    partner_stats = await partner_service.overall_stats()
+    pending_partners = await partner_service.repo.list_by_status("pending", limit=8)
+    open_payouts = await partner_service.repo.list_open_payouts(limit=8)
+    audio_repo = CourseAudioRepository(session)
+
+    help_links = []
+    for field in HELP_VIDEO_FIELDS:
+        for lang in HELP_LANGS:
+            help_links.append({
+                "key": field.key,
+                "label": field.label,
+                "icon": field.icon,
+                "lang": lang,
+                "value": normalize_help_url(await setting_repo.get(field.setting_key(lang))),
+            })
+
+    recent_ads = []
+    for item in await ad_repo.list_recent(limit=8):
+        recent_ads.append({
+            "id": item.id,
+            "title": item.title,
+            "text": item.message_text or "",
+            "active": bool(item.is_active),
+            "rounds_sent": int(item.rounds_sent or 0),
+            "send_count_total": int(item.send_count_total or 0),
+            "languages": decode_ad_languages(item.target_languages),
+            "starts_at": _mini_dt(item.starts_at),
+            "ends_at": _mini_dt(item.ends_at),
+        })
+
+    recent_feedback = []
+    for item in await feedback_repo.list_recent_campaigns(limit=8):
+        recent_feedback.append({
+            "id": item.id,
+            "title": item.title,
+            "text": item.message_text or "",
+            "status": item.status,
+            "sent": int(item.sent_count or 0),
+            "failed": int(item.failed_count or 0),
+            "languages": decode_feedback_languages(item.target_languages),
+            "send_at": _mini_dt(item.send_at),
+        })
+
+    recent_discounts = []
+    for item in await discount_repo.list_recent(limit=8):
+        recent_discounts.append({
+            "id": item.id,
+            "title": item.title,
+            "percent": int(item.percent or 0),
+            "active": bool(item.is_active),
+            "audience_status": item.audience_status or "barcha",
+            "language": item.audience_language or "barcha",
+            "payment_method": item.payment_method or "barcha",
+            "plan_type": item.plan_type or "barcha",
+            "starts_at": _mini_dt(item.starts_at),
+            "ends_at": _mini_dt(item.ends_at),
+            "used": await discount_repo.count_used(item.id),
+        })
+
+    audio_summary = []
+    for level in ("hsk1", "hsk2", "hsk3", "hsk4"):
+        audio_summary.append({
+            "level": level.upper(),
+            "lessons": int(await audio_repo.count_uploaded_lessons(level)),
+        })
+
+    return {
+        "ok": True,
+        "prices": [
+            {
+                "method": price.payment_method,
+                "method_label": _mini_method_label(price.payment_method),
+                "plan": price.plan_type,
+                "plan_label": _mini_plan_label(price.plan_type),
+                "amount": int(price.amount),
+                "currency": price.currency,
+                "text": format_subscription_price(price.amount, price.currency),
+            }
+            for price in prices
+        ],
+        "payment_details": (await setting_repo.get(PAYMENT_DETAILS_KEY) or settings.PAYMENT_DETAILS or "").strip(),
+        "channels": {
+            "enabled": await channels_service.is_enabled(),
+            "items": [
+                {
+                    "id": item.id,
+                    "title": item.title,
+                    "chat_id": item.chat_id,
+                    "invite_link": item.invite_link or "",
+                    "active": bool(item.is_active),
+                }
+                for item in channel_rows
+            ],
+        },
+        "help": {
+            "admin_contact": admin_contact_url(await setting_repo.get(ADMIN_CONTACT_KEY)) or (await setting_repo.get(ADMIN_CONTACT_KEY) or ""),
+            "links": help_links,
+        },
+        "portfolio": {
+            "summary": {
+                "approved_payments": portfolio_summary.approved_payments,
+                "gross_revenue_usd": _mini_usd(portfolio_summary.gross_revenue_usd),
+                "subscription_profit_usd": _mini_usd(portfolio_summary.subscription_profit_usd),
+                "manual_profit_usd": _mini_usd(portfolio_summary.manual_profit_usd),
+                "manual_expense_usd": _mini_usd(portfolio_summary.manual_expense_usd),
+                "net_usd": _mini_usd(portfolio_summary.net_usd),
+            },
+            "history": [
+                {
+                    "id": item.id,
+                    "type": item.transaction_type,
+                    "source": item.source,
+                    "amount_usd": _mini_usd(item.amount_usd),
+                    "original": (
+                        f"{item.original_amount:g} {item.original_currency}"
+                        if item.original_amount is not None and item.original_currency
+                        else ""
+                    ),
+                    "note": item.note or "",
+                    "created_at": _mini_dt(item.created_at),
+                }
+                for item in portfolio_history
+            ],
+        },
+        "campaigns": {
+            "ads": recent_ads,
+            "release_feedback": recent_feedback,
+            "discounts": recent_discounts,
+        },
+        "partners": {
+            "stats": {key: str(value) for key, value in partner_stats.items()},
+            "pending": [
+                {
+                    "id": item.id,
+                    "telegram_id": item.user_telegram_id,
+                    "promotion_channel": item.promotion_channel,
+                    "audience_size": item.audience_size,
+                    "contact_username": item.contact_username,
+                    "created_at": _mini_dt(item.created_at),
+                }
+                for item in pending_partners
+            ],
+            "payouts": [
+                {
+                    "id": item.id,
+                    "partner_id": item.partner_id,
+                    "amount_usd": _mini_usd(item.amount_usd),
+                    "local_amount": f"{item.local_amount:.2f} {item.local_currency}",
+                    "status": item.status,
+                    "method": item.payment_method,
+                    "account": item.account_details,
+                    "created_at": _mini_dt(item.created_at),
+                }
+                for item in open_payouts
+            ],
+        },
+        "audio": audio_summary,
+    }
+
+
+async def _admin_user_payload(session, user) -> dict:
+    payments = await PaymentRepository(session).list_by_user(user.telegram_id, limit=10)
+    return {
+        "ok": True,
+        "user": {
+            "id": user.telegram_id,
+            "name": user.full_name or "Nomsiz",
+            "username": user.username,
+            "language": user.language,
+            "level": user.level,
+            "learning_mode": user.learning_mode,
+            "status": user.status,
+            "payment_status": user.payment_status,
+            "payment_method": user.payment_method,
+            "selected_plan_type": user.selected_plan_type,
+            "start_date": _mini_dt(user.start_date),
+            "end_date": _mini_dt(user.end_date),
+            "questions": f"{user.questions_used}/{user.question_limit}",
+            "bonus_left": max((user.bonus_questions or 0) - (user.bonus_questions_used or 0), 0),
+            "streak": user.daily_practice_streak or 0,
+            "created_at": _mini_dt(user.created_at),
+            "last_active_at": _mini_dt(user.last_active_at),
+            "referral_code": user.referral_code or "",
+            "referred_by_telegram_id": user.referred_by_telegram_id,
+        },
+        "payments": [
+            {
+                "id": payment.id,
+                "status": payment.payment_status,
+                "plan": _mini_plan_label(payment.plan_type),
+                "method": _mini_method_label(payment.payment_method),
+                "amount": format_subscription_price(payment.amount, payment.currency),
+                "submitted_at": _mini_dt(payment.submitted_at),
+                "reviewed_at": _mini_dt(payment.reviewed_at),
+                "comment": payment.admin_comment or "",
+            }
+            for payment in payments
+        ],
+    }
+
+
+def _admin_user_card_payload(user) -> dict:
+    bonus_left = max((user.bonus_questions or 0) - (user.bonus_questions_used or 0), 0)
+    return {
+        "id": user.telegram_id,
+        "name": user.full_name or "Nomsiz",
+        "username": user.username,
+        "language": user.language or "—",
+        "level": user.level or "—",
+        "mode": "Kurs" if user.learning_mode == "course" else "Savol-javob",
+        "status": user.status,
+        "status_label": user.status or "—",
+        "payment_status": user.payment_status,
+        "payment_label": user.payment_status or "—",
+        "plan": _mini_plan_label(user.selected_plan_type),
+        "method": _mini_method_label(user.payment_method),
+        "end_date": _mini_dt(user.end_date) if user.end_date else "",
+        "last_active": _mini_dt(user.last_active_at),
+        "questions": f"{user.questions_used}/{user.question_limit}",
+        "bonus_left": bonus_left,
+        "streak": user.daily_practice_streak or 0,
+    }
+
+
+async def _review_admin_payment(
+    session,
+    *,
+    payment_id: int,
+    action: str,
+    reason: str | None,
+) -> tuple[dict, int]:
+    payment_repo = PaymentRepository(session)
+    user_repo = UserRepository(session)
+    payment = await payment_repo.get_by_id(payment_id)
+    if not payment:
+        return {"ok": False, "error": "payment_not_found"}, 404
+    if payment.payment_status != "pending":
+        return {"ok": False, "error": "payment_already_reviewed"}, 409
+
+    if action == "approve":
+        if not await payment_repo.approve(payment, admin_comment="approved by admin mini app"):
+            return {"ok": False, "error": "payment_already_reviewed"}, 409
+        activated = await SubscriptionService(session).activate_plan(
+            telegram_id=payment.user_telegram_id,
+            plan_type=payment.plan_type,
+            discount_source=payment.discount_source,
+            payment=payment,
+        )
+        if not activated:
+            await session.rollback()
+            return {"ok": False, "error": "subscription_activation_failed"}, 400
+        partner, commission_usd, unlocked_bonus = await PartnerService(session).record_approved_payment(payment)
+        user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
+        await session.commit()
+        await ConversionFunnelService().record(
+            event_name="payment_approved",
+            user=user,
+            telegram_id=payment.user_telegram_id,
+            source="admin_miniapp_payment_approve",
+            payment_id=payment.id,
+            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+        )
+        async with async_session_maker() as analytics_session:
+            course_event = await CourseMiniAppAnalyticsService(analytics_session).record_server_event(
+                event_name="subscription_approved",
+                telegram_id=payment.user_telegram_id,
+                user_id=getattr(user, "id", None),
+                source="admin_miniapp_payment_approve",
+                dedupe_key=f"payment:{payment.id}",
+                payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method},
+            )
+            if course_event.get("recorded"):
+                await analytics_session.commit()
+        with contextlib.suppress(Exception):
+            await PaymentNotifyService().notify_payment_approved(bot=bot, user=user)
+        if partner:
+            with contextlib.suppress(Exception):
+                await PartnerService(session).notify_partner(
+                    bot,
+                    partner,
+                    "partner_commission_notification",
+                    commission=f"${commission_usd:.2f}",
+                    include_bonus_line=unlocked_bonus,
+                )
+        return {"ok": True, "status": "approved"}, 200
+
+    if action == "reject":
+        comment = (reason or "rejected by admin mini app").strip()[:300]
+        if not await payment_repo.reject(payment, admin_comment=comment):
+            return {"ok": False, "error": "payment_already_reviewed"}, 409
+        user = await user_repo.get_by_telegram_id(payment.user_telegram_id)
+        if user:
+            await user_repo.set_selected_plan_type(user, None)
+        await session.commit()
+        await ConversionFunnelService().record(
+            event_name="payment_rejected",
+            user=user,
+            telegram_id=payment.user_telegram_id,
+            source="admin_miniapp_payment_reject",
+            payment_id=payment.id,
+            payload={"plan_type": payment.plan_type, "payment_method": payment.payment_method, "reason": comment},
+        )
+        with contextlib.suppress(Exception):
+            await PaymentNotifyService().notify_payment_rejected(
+                bot=bot,
+                user=user,
+                reason=None,
+                plan_type=payment.plan_type,
+                payment=payment,
+            )
+        return {"ok": True, "status": "rejected"}, 200
+
+    return {"ok": False, "error": "invalid_action"}, 400
 
 
 @app.get("/health")
@@ -937,7 +1318,6 @@ async def admin_miniapp_overview(request: Request):
 
 @app.post("/api/admin-miniapp/sub-entry-stats")
 async def admin_miniapp_sub_entry_stats(request: Request):
-    from datetime import datetime, timedelta, timezone
     telegram_id = _admin_miniapp_user_id(request)
     if not telegram_id:
         return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
@@ -962,6 +1342,452 @@ async def admin_miniapp_sub_entry_stats(request: Request):
     })
 
 
+@app.post("/api/admin-miniapp/management")
+async def admin_miniapp_management(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    async with async_session_maker() as session:
+        payload = await _admin_miniapp_management_payload(session)
+        await session.commit()
+    return JSONResponse(content=payload)
+
+
+@app.post("/api/admin-miniapp/users/search")
+async def admin_miniapp_users_search(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    query = str(payload.get("query") or "").strip()
+    async with async_session_maker() as session:
+        repo = UserRepository(session)
+        if query:
+            users = await repo.search_by_identifier(query, limit=30)
+        else:
+            users = (await session.execute(
+                select(User).order_by(User.last_active_at.desc()).limit(30)
+            )).scalars().all()
+    return JSONResponse(content={"ok": True, "users": [_admin_user_card_payload(user) for user in users]})
+
+
+@app.post("/api/admin-miniapp/users/detail")
+async def admin_miniapp_user_detail(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        target_id = int(payload.get("telegram_id") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_user_payload"})
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(target_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+        data = await _admin_user_payload(session, user)
+    return JSONResponse(content=data)
+
+
+@app.post("/api/admin-miniapp/payments/review")
+async def admin_miniapp_payment_review(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        payment_id = int(payload.get("payment_id") or 0)
+        action = str(payload.get("action") or "").strip().lower()
+        reason = str(payload.get("reason") or "").strip()
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_payment_payload"})
+    if payment_id <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_payment_payload"})
+    async with async_session_maker() as session:
+        content, status = await _review_admin_payment(
+            session,
+            payment_id=payment_id,
+            action=action,
+            reason=reason,
+        )
+    return JSONResponse(status_code=status, content=content)
+
+
+@app.post("/api/admin-miniapp/users/give-access")
+async def admin_miniapp_user_give_access(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        target_id = int(payload.get("telegram_id") or 0)
+        plan = str(payload.get("plan") or "").strip()
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_access_payload"})
+    if target_id <= 0 or plan not in PLANS:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_access_payload"})
+    async with async_session_maker() as session:
+        activated = await SubscriptionService(session).activate_plan(target_id, plan)
+        if not activated:
+            await session.rollback()
+            return JSONResponse(status_code=404, content={"ok": False, "error": "user_or_plan_not_found"})
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/users/delete")
+async def admin_miniapp_user_delete(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        target_id = int(payload.get("telegram_id") or 0)
+        confirm = str(payload.get("confirm") or "").strip()
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_delete_payload"})
+    if target_id <= 0 or confirm != str(target_id):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "delete_confirmation_required"})
+    async with async_session_maker() as session:
+        deleted = await UserRepository(session).delete_by_telegram_id(target_id)
+        await session.commit()
+    if not deleted:
+        return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/prices/save")
+async def admin_miniapp_prices_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        method = str(payload.get("method") or "").strip()
+        plan = str(payload.get("plan") or "").strip()
+        amount = int(payload.get("amount") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_price_payload"})
+    if method not in PAYMENT_METHODS or plan not in PLANS or amount <= 0 or amount > 1_000_000:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_price_payload"})
+    async with async_session_maker() as session:
+        price = await SubscriptionPriceService(session).set_price(
+            payment_method=method,
+            plan_type=plan,
+            amount=amount,
+            updated_by_telegram_id=telegram_id,
+        )
+        await session.commit()
+    return JSONResponse(content={
+        "ok": True,
+        "price": {
+            "method": price.payment_method,
+            "plan": price.plan_type,
+            "amount": price.amount,
+            "currency": price.currency,
+            "text": format_subscription_price(price.amount, price.currency),
+        },
+    })
+
+
+@app.post("/api/admin-miniapp/payment-details/save")
+async def admin_miniapp_payment_details_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    text_value = str(payload.get("payment_details") or "").strip()
+    if not text_value or len(text_value) > 1500:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_payment_details"})
+    async with async_session_maker() as session:
+        await BotSettingRepository(session).set(PAYMENT_DETAILS_KEY, text_value)
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/channels/save")
+async def admin_miniapp_channels_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    action = str(payload.get("action") or "").strip()
+    async with async_session_maker() as session:
+        service = RequiredChannelService(session)
+        if action == "mode":
+            await service.set_enabled(bool(payload.get("enabled")))
+        elif action == "add":
+            raw_chat = str(payload.get("chat_id") or "").strip()
+            title = str(payload.get("title") or "").strip()[:180]
+            invite_link = str(payload.get("invite_link") or "").strip() or None
+            if not raw_chat or not title:
+                return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_channel_payload"})
+            if raw_chat.startswith("-"):
+                chat_id = raw_chat
+            else:
+                clean_chat = raw_chat.lstrip("@").strip("/")
+                for prefix in ("https://t.me/", "http://t.me/", "t.me/"):
+                    if clean_chat.startswith(prefix):
+                        clean_chat = clean_chat[len(prefix):]
+                        break
+                clean_chat = clean_chat.strip("/").split("/")[0]
+                if not clean_chat:
+                    return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_channel_payload"})
+                chat_id = f"@{clean_chat}"
+            await service.add_channel(
+                chat_id=chat_id,
+                title=title,
+                invite_link=invite_link,
+                created_by_telegram_id=telegram_id,
+            )
+        elif action == "toggle":
+            channel_id = int(payload.get("channel_id") or 0)
+            if channel_id <= 0 or not await service.set_channel_active(channel_id, bool(payload.get("active"))):
+                return JSONResponse(status_code=404, content={"ok": False, "error": "channel_not_found"})
+        elif action == "delete":
+            channel_id = int(payload.get("channel_id") or 0)
+            if channel_id <= 0 or not await service.delete_channel(channel_id):
+                return JSONResponse(status_code=404, content={"ok": False, "error": "channel_not_found"})
+        else:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_channel_action"})
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/help/save")
+async def admin_miniapp_help_save(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    target = str(payload.get("target") or "").strip()
+    value = str(payload.get("value") or "").strip()
+    async with async_session_maker() as session:
+        if target == "admin_contact":
+            normalized = normalize_admin_contact(value)
+            if normalized and not admin_contact_url(normalized):
+                return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_contact"})
+            await BotSettingRepository(session).set(ADMIN_CONTACT_KEY, normalized)
+        else:
+            field_key = str(payload.get("key") or "").strip()
+            lang = str(payload.get("lang") or "").strip()
+            field = next((item for item in HELP_VIDEO_FIELDS if item.key == field_key), None)
+            normalized = normalize_help_url(value)
+            if not field or lang not in HELP_LANGS:
+                return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_help_payload"})
+            if value and not normalized:
+                return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_help_url"})
+            await BotSettingRepository(session).set(field.setting_key(lang), normalized)
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/portfolio/transaction")
+async def admin_miniapp_portfolio_transaction(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        transaction_type = str(payload.get("type") or "").strip()
+        amount = float(payload.get("amount") or 0)
+        currency = str(payload.get("currency") or "usd").strip()
+        note = str(payload.get("note") or "").strip()
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_portfolio_payload"})
+    if transaction_type not in {"profit", "expense"} or amount <= 0 or len(note) < 2:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_portfolio_payload"})
+    async with async_session_maker() as session:
+        transaction = await PortfolioService(session).add_manual_transaction(
+            transaction_type=transaction_type,
+            admin_telegram_id=telegram_id,
+            amount=amount,
+            currency=currency,
+            note=note,
+        )
+        if not transaction:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "portfolio_save_failed"})
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/broadcast/send")
+async def admin_miniapp_broadcast_send(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    text = str(payload.get("text") or "").strip()
+    segment = str(payload.get("segment") or "all").strip()
+    if len(text) < 2 or len(text) > 3500:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_broadcast_text"})
+    async with async_session_maker() as session:
+        repo = UserRepository(session)
+        if segment == "paid":
+            users = await repo.get_filtered_users(status="active", payment_status="approved")
+        elif segment == "trial":
+            users = await repo.get_filtered_users(status="trial")
+        elif segment == "expired":
+            users = await repo.get_filtered_users(status="expired")
+        else:
+            users = await repo.get_filtered_users()
+    sent = 0
+    failed = 0
+    admin_ids = set(settings.admin_id_list)
+    for user in users:
+        if user.status == "blocked" or user.telegram_id in admin_ids:
+            continue
+        try:
+            await bot.send_message(
+                chat_id=user.telegram_id,
+                text=localized_broadcast_text_for_language(text, user.language),
+            )
+            sent += 1
+        except Exception:
+            failed += 1
+        await asyncio.sleep(0.03)
+    return JSONResponse(content={"ok": True, "sent": sent, "failed": failed})
+
+
+@app.post("/api/admin-miniapp/campaigns/create")
+async def admin_miniapp_campaign_create(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    kind = str(payload.get("kind") or "").strip()
+    title = str(payload.get("title") or "").strip()[:120]
+    text = str(payload.get("text") or "").strip()
+    hours = max(1, min(int(payload.get("hours") or 24), 24 * 30))
+    if not title or len(text) < 2 or len(text) > 3500:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_campaign_payload"})
+    now = datetime.now(timezone.utc)
+    async with async_session_maker() as session:
+        if kind == "ad":
+            await AdCampaignRepository(session).create(
+                title=title,
+                message_text=text,
+                content_type="text",
+                media_file_id=None,
+                starts_at=now,
+                ends_at=now + timedelta(hours=hours),
+                send_count_total=1,
+                created_by_telegram_id=telegram_id,
+            )
+        elif kind == "release_feedback":
+            await ReleaseFeedbackRepository(session).create_campaign(
+                title=title,
+                message_text=text,
+                content_type="text",
+                media_file_id=None,
+                send_at=now,
+                feature_key=str(payload.get("feature_key") or "general").strip()[:32] or "general",
+                created_by_telegram_id=telegram_id,
+            )
+        elif kind == "discount":
+            percent = max(1, min(int(payload.get("percent") or 20), 90))
+            await DiscountCampaignRepository(session).create(
+                title=title,
+                reason=text[:500],
+                percent=percent,
+                starts_at=now,
+                ends_at=now + timedelta(hours=hours),
+                audience_status=str(payload.get("audience_status") or "").strip() or None,
+                created_by_telegram_id=telegram_id,
+            )
+        else:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_campaign_kind"})
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/partners/action")
+async def admin_miniapp_partners_action(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        partner_id = int(payload.get("partner_id") or 0)
+        action = str(payload.get("action") or "").strip()
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_partner_payload"})
+    async with async_session_maker() as session:
+        service = PartnerService(session)
+        partner = await service.repo.get_by_id(partner_id)
+        if not partner:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "partner_not_found"})
+        if action == "approve":
+            await service.approve(partner, telegram_id)
+            with contextlib.suppress(Exception):
+                await service.notify_partner(bot, partner, "partner_approved_notification")
+        elif action == "block":
+            await service.block(partner, telegram_id)
+        elif action == "unblock":
+            await service.unblock(partner, telegram_id)
+        else:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_partner_action"})
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
+@app.post("/api/admin-miniapp/audio/list")
+async def admin_miniapp_audio_list(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        level = str(payload.get("level") or "hsk1").strip().lower()
+        lesson_order = int(payload.get("lesson_order") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_audio_payload"})
+    if level not in {"hsk1", "hsk2", "hsk3", "hsk4"} or lesson_order <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_audio_payload"})
+    async with async_session_maker() as session:
+        rows = await CourseAudioRepository(session).list_for_lesson(level, lesson_order)
+    return JSONResponse(content={
+        "ok": True,
+        "items": [
+            {"audio_type": item.audio_type, "file_id": item.file_id}
+            for item in rows
+        ],
+    })
+
+
 @app.post("/api/admin-miniapp/open-section")
 async def admin_miniapp_open_section(request: Request):
     telegram_id = _admin_miniapp_user_id(request)
@@ -982,17 +1808,7 @@ async def admin_miniapp_open_section(request: Request):
         payload = {}
     section = str(payload.get("section") or "stats").strip()
     title, _ = ADMIN_MINIAPP_SECTIONS.get(section, ADMIN_MINIAPP_SECTIONS["stats"])
-    await bot.send_message(
-        chat_id=telegram_id,
-        text=(
-            "🧭 <b>Admin mini ilova</b>\n\n"
-            f"Tanlangan bo'lim: <b>{title}</b>\n"
-            "Davom etish uchun pastdagi tugmani bosing."
-        ),
-        reply_markup=_admin_miniapp_section_keyboard(section),
-        parse_mode="HTML",
-    )
-    return {"ok": True}
+    return {"ok": True, "section": section, "title": title, "deprecated": True}
 
 
 @app.post("/api/admin-miniapp/notifications")

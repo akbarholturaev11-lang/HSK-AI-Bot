@@ -267,6 +267,152 @@ Risk / follow-up:
 - After deploy, smoke-test QA daily limit, pronunciation limit, referral milestone,
   and subscription entry analytics.
 
+### 2026-06-28 — Admin Mini App real action center
+
+Changed:
+- Admin Mini App now opens internal management panels instead of sending admin section bounce messages to Telegram chat.
+- Added admin Mini App APIs for management payload, user search/detail, payment approve/reject, manual access, user delete, subscription prices, payment details, required channels, help links, portfolio transactions, text broadcast, text-first ad/release/discount campaign creation, partner actions, and audio listing.
+- Payment approval from Mini App follows the same core flow as Telegram admin approval: marks payment approved, activates subscription, records analytics/portfolio/partner commission, and notifies the user.
+
+Why:
+- Admin work should be doable inside the Mini App while keeping old Telegram chat admin sections available as fallback.
+
+Files touched:
+- `app/main.py`
+- `app/services/admin_miniapp_service.py`
+- `app/static/admin-control.html`
+
+Risk:
+- Payment/access/user delete/broadcast/campaign actions are real admin mutations; they require Telegram WebApp admin auth and should be smoke-tested inside Telegram after deploy.
+- Alipay/WeChat custom QR upload and audio upload still depend on Telegram `file_id` chat flows; Mini App can manage prices and list audio but not replace those file_id upload flows yet.
+
+Follow-up:
+- Browser localhost smoke was blocked by environment localhost/usage limits; Python compile, JS syntax check, focused pytest, and dummy-token import passed.
+
+### 2026-06-28 — Legacy Course Mini App URLs now route to Course v3
+
+Changed:
+- Bot Mini App URL helpers no longer point to removed V2/static pages (`study.html`, `duo-lesson.html`, `stroke-order.html`, old `hsk*.html` base fallback).
+- Course study/quiz/training links now open `course-v3.html`; legacy tabs such as `training`, `quiz`, `words`, `grammar`, and `tests` map to Course v3 `tab=mashq`.
+- Stroke/vocab links now open `hsk-lugat.html` with `from=course`.
+- `course-v3.html?lesson=N` opens the matching lesson sheet after boot, so bot deep links still land on the intended lesson.
+- Default `MINI_APP_BASE_URL` in config/example is now the Course v3 page.
+
+Why:
+- The old V2 files were removed, but bot helpers/tests/config still referenced them. That created broken Mini App buttons and failing smoke coverage.
+
+Files touched:
+- `app/bot/utils/course_miniapp.py`, `app/static/course-v3.html`, `app/static/hsk-lugat.html`
+- `app/config.py`, `.env.example`
+- `tests/test_course_miniapp_foundation.py`, `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- Old separate V2 quiz/homework pages are not restored; legacy entry points intentionally land inside Course v3.
+- Real Telegram WebView smoke-test is still needed after deploy for initData/payment/microphone flows.
+
+### 2026-06-28 — Course ad-supported Premium lesson path
+
+Changed:
+- Added Course Mini App ad tables: `course_ad_creatives` for admin-uploaded video creatives and `course_ad_views` for per-user lesson placement watch tracking.
+- Added migration `0056_course_ad_supported_lessons.py`.
+- Admin Mini App Settings can upload/toggle Course ad videos stored under `app/static/uploads/course_ads`.
+- Course v3 locked Premium lessons now offer two paths when the lesson is the user's next lesson: subscribe to Premium or continue with ads.
+- Ad-supported premium lessons require 6-7s video ads at lesson start, middle, and end. Server completion for unpaid users validates all three placements before allowing the Premium lesson to complete.
+- Paid users remain ad-free. Lessons 1-3 free preview stays clean; ads are only for the ad-supported premium path.
+
+Why:
+- Most users are in HSK1, so hard-blocking lesson 4+ leaves money on the table. This creates a second monetization route for non-paying users without changing paid subscription approval logic.
+
+Files touched:
+- `app/db/models/course_ad.py`, `app/services/course_ad_service.py`, `app/main.py`
+- `app/static/course-v3.html`, `app/static/admin-control.html`
+- `alembic/versions/0056_course_ad_supported_lessons.py`
+
+Risk:
+- Deploy must run migration `0056_course_ad_supported_lessons`.
+- Real Telegram smoke-test should verify admin video upload, free user lesson 4 ad flow start/middle/end, server completion after ads, no completion without ads, and paid user sees no ads.
+- If no active Course ad exists, the ad path falls back to the Premium sheet.
+
+Follow-up:
+- Browser Playwright smoke-test was blocked by environment usage limits; Python compile, JS syntax extraction, and focused pytest passed.
+
+### 2026-06-28 — HSK2-HSK4 memorize data coverage
+
+Changed:
+- `course_v3_data/memo.js` now keeps the hand-written HSK1 memo entries and adds a compact HSK2-HSK4 offline generator (`EXTRA_MEMO_ITEMS` + `makeExtraMemo`) built from existing `hsk-data.js` WORDS.
+- Generated entries cover every Han character appearing in HSK2, HSK3, and HSK4 word data, so `course_v3_memorize.html?char=...` no longer falls back to HSK1-only decks for higher levels.
+- `hsk-lugat.html` and `course_v3_memorize.html` bumped the `memo.js` cache query to `v=20260628`.
+
+Why:
+- The HSK character dictionary already exposed HSK2-HSK4 words, but the fast memorize module only had 87 HSK1 character entries.
+
+Files touched:
+- `app/static/course_v3_data/memo.js`
+- `app/static/course_v3_memorize.html`
+- `app/static/hsk-lugat.html`
+
+Risk:
+- Data/frontend-only; no payment, subscription, lesson completion, quiz, homework, or backend result logic changed.
+- HSK2-HSK4 generated entries are honest word-based hooks, not historical etymology explanations.
+
+Follow-up:
+- Browser Playwright smoke test was blocked by local Chromium sandbox/permission limits; JS runtime validation and static data pytest passed.
+
+### 2026-06-28 — Free-tier monetization limits and Course v3 3-lesson preview gate
+
+Changed:
+- Free QA text default is 5 questions/day (`User.question_limit`, new-user repo path, and migration/default aligned).
+- Free pronunciation scoring is capped at 3 STT attempts/day before OpenAI is called; paid users still use the AI budget gate.
+- Referral trial unlock threshold is 5 active friends; per-active-friend +5 bonus question behavior stays.
+- Course v3 free course access is no longer level-based. Every HSK level gives lessons 1-3 as free preview and marks lesson 4+ as Premium in both static maps and server access policy.
+- Course v3 pronunciation-limit paywall source is tracked as `v3_pronunciation_limit`; new analytics labels include v3 ad/QA/voice/pronunciation sources.
+
+Why:
+- Most users are expected to be in HSK1, so making all HSK1 free would block monetization. The new policy gives enough static course preview for learning habit while keeping deeper HSK1+ content behind Premium.
+
+Files touched:
+- `app/db/models/user.py`, `app/services/voice_practice_service.py`, `app/services/referral_service.py`, `app/services/course_miniapp_access_service.py`, `app/main.py`
+- `app/static/course-v3.html`, `app/static/course_v3_pronunciation.html`, `app/static/course_v3_data/hsk1.json`..`hsk4.json`
+- `alembic/versions/0055_free_tier_monetization_policy.py`
+
+Risk:
+- Access behavior changed for unpaid users: HSK1 lesson 4+ now requires Premium. Payment approval and paid-user AI budget logic were not changed.
+- Deploy should run migration `0055_free_tier_monetization_policy`; Telegram smoke-test should verify free HSK1 lesson 3 completes, HSK1 lesson 4 opens Premium sheet, and paid user can open 4+.
+
+### 2026-06-27 — Course v3 paywall to'siq oynasi tiriltirildi (locked dars → Premium sheet)
+
+Changed:
+- Avval Course v3'da qulflangan darsni (HSK 4+, `locked_premium`) bosganda foydalanuvchi
+  hech qanday tushuntiruvchi oyna ko'rmay, to'g'ridan-to'g'ri `subscription.html`'ga
+  uchib o'tardi. `paywallHtml()` funksiyasi va `#paywall` bottom-sheet HTML'i kodda
+  bor edi, lekin hech qayerdan chaqirilmasdi (dead code).
+- `App.openPaywall(ctx)` endi `#paywall-body`'ga `paywallHtml(ctx)` quyadi va sheet'ni
+  ochadi (会 logo, "Bu dars Premium'da" sarlavha, b1/b2/b3 afzalliklar, narx, "Obuna
+  bo'lish" + "Keyinroq" tugmalari). Avvalgidek darrov `goPay` chaqirmaydi.
+- Yangi global `PAY_SOURCE` qo'shildi: `openPaywall` kontekstdan manbani saqlaydi
+  (`v3_locked_lesson` / `v3_paywall` / `v3_profile`), `goPay` argument berilmasa
+  `PAY_SOURCE`'dan oladi. Shu bois sheet'dagi "Obuna bo'lish" tugmasi to'g'ri
+  `source=` bilan `/subscription.html?...&mode=subscription` ochadi.
+- 3 ta trigger o'zgarmadi: qulflangan dars tap, skip-test, va server
+  `free_feature_limit_reached` xatosi — barchasi endi avval sheet'ni ko'rsatadi.
+
+Why:
+- Foydalanuvchi qulfni bosganda nima uchun to'lov sahifasi ochilganini bilmasdi;
+  endi avval qisqa Premium afzalliklari/narx oynasi chiqib, tushunib obunaga o'tadi.
+  Mavjud dead code qayta ishlatildi.
+
+Files touched:
+- `app/static/course-v3.html`
+
+Risk:
+- Faqat frontend (paywall UX); to'lov/obuna/ruxsat backend mantig'i o'zgarmadi.
+  Lock qoidasi (bepul HSK1-3, 4+ Premium) va `subscription.html` o'zi tegilmadi.
+- Narx sheet'da faqat server narx datasi yuklangach ko'rinadi (`_priceStr` guard
+  bilan); statik preview'da backend yo'qligi sabab narx ko'rinmaydi, real Telegram'da
+  chiqadi.
+- Real Telegram WebView smoke-test kerak: HSK 4-darsni bosib sheet → "Obuna bo'lish"
+  → subscription oqimini tekshirish.
+
 ### 2026-06-27 — Motivatsion eslatmalar (reyting / kunlik maqsad / streak) + admin tahriri
 
 Changed:

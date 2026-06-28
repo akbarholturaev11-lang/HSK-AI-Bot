@@ -1407,6 +1407,11 @@ fetchPrices();
     renderAll();
     var sp=new URLSearchParams(location.search);
     App.show(sp.get("tab")||"course");
+    var initialLesson=Number(sp.get("lesson")||0);
+    if(initialLesson>0){
+      var idx=-1;allLessons().forEach(function(l,i){if(Number(l.n)===initialLesson)idx=i});
+      if(idx>=0)setTimeout(function(){App.show("course");openLessonSheet(idx)},80);
+    }
     if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
   }).catch(function(){$("#s-course").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>'});
 })();
