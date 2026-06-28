@@ -13,7 +13,7 @@ MINIAPP_SUPPORTED_LEVELS = {
     "hsk4": (1, 20),
 }
 
-MINIAPP_ASSET_VERSION = "20260623-practice-v1"
+MINIAPP_ASSET_VERSION = "20260628-challenge-v1"
 COURSE_V3_TABS = {"course", "mashq", "voice", "rating", "profile"}
 LEGACY_TAB_MAP = {
     "home": "course",
@@ -104,6 +104,7 @@ def course_study_miniapp_url(
     level: str | None = None,
     lesson: int | None = None,
     tab: str | None = None,
+    challenge_id: int | None = None,
 ) -> str:
     base_url = _miniapp_base_url_for_file("course-v3.html")
     separator = "&" if "?" in base_url else "?"
@@ -116,6 +117,8 @@ def course_study_miniapp_url(
         params["level"] = str(level).strip().lower()
     if lesson:
         params["lesson"] = int(lesson)
+    if challenge_id:
+        params["challenge_id"] = int(challenge_id)
     return f"{base_url}{separator}{urlencode(params)}"
 
 

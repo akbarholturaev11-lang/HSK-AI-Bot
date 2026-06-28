@@ -122,6 +122,18 @@ function showEmpty(){$("hub").style.display="none";$("empty").classList.add("on"
 /* ---- HSK exam runner (loads section/question material from /course_v3_data/exams/{level}.json) ---- */
 var EXD=null,EQ=[],ei=0,eans=[];
 function esc(s){return String(s==null?"":s).replace(/'/g,"\\'").replace(/"/g,"&quot;")}
+function examLabel(o){return o.label?(o.label[LANG]||o.label.ru||o.label.uz||o.label.tj||""):""}
+function examStem(q){return q.stem?(q.stem[LANG]||q.stem.ru||q.stem.uz||q.stem.tj||""):""}
+function isMeaningQuestion(q){
+  var zh=q.stem_zh||"";
+  var stem=examStem(q).toLowerCase();
+  return zh.indexOf("意思")>-1||stem.indexOf("ma'nosi")>-1||stem.indexOf("значит")>-1||stem.indexOf("маъно")>-1;
+}
+function examOptionText(q,o){
+  var lab=examLabel(o),zh=o.zh||"";
+  if(q.type==="audio_choice"||isMeaningQuestion(q))return lab||zh;
+  return zh||lab;
+}
 function runExam(data){
   EXD=data;EQ=[];ei=0;eans=[];
   (data.sections||[]).forEach(function(sec){
@@ -150,12 +162,12 @@ function exRender(){
     }).join("");
   }else{
     opts=(q.options||[]).map(function(o,k){
-      var lab=o.label?(o.label[LANG]||o.label.ru||""):"";
-      var py=o.py?'<span class="py">'+o.py+'</span>':"";
-      return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="exPick('+k+',this)"><span class="k">'+"ABCD"[k]+'</span><span>'+(o.zh||"")+py+(lab?'<small>'+lab+'</small>':'')+'</span></button>';
+      var text=examOptionText(q,o);
+      var cls=text===(o.zh||"")?' class="han"':"";
+      return '<button class="opt" data-ok="'+(o.ok?1:0)+'" onclick="exPick('+k+',this)"><span class="k">'+"ABCD"[k]+'</span><span'+cls+'>'+text+'</span></button>';
     }).join("");
   }
-  var stem=q.stem?(q.stem[LANG]||q.stem.ru||""):"";
+  var stem=examStem(q);
   $("exam").innerHTML='<div class="ptop"><button class="ix2" onclick="exitExam()"><i class="ti ti-x"></i></button><div class="pbar"><i style="width:'+Math.round(ei/EQ.length*100)+'%"></i></div><span class="lvtag">HSK '+lv+'</span></div>'
     +'<div class="qlead">'+lead+' · '+EM.q+' '+(ei+1)+' '+EM.of+' '+EQ.length+'</div>'
     +card

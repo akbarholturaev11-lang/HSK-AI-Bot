@@ -25,24 +25,24 @@ def _text(lang: str, key: str) -> str:
             "not_found": "Belashuv topilmadi",
             "bad_action": "Noto'g'ri amal",
             "closed": "Belashuv allaqachon yopilgan yoki topilmadi",
-            "accepted": "Vizov qabul qilindi. Mini App profilidan boshlang.",
-            "rejected": "Vizov rad qilindi.",
+            "accepted": "Belashuv qabul qilindi. Musobaqani oching.",
+            "rejected": "Belashuv rad qilindi.",
         },
         "ru": {
             "bad_button": "Неверная кнопка поединка",
             "not_found": "Поединок не найден",
             "bad_action": "Неверное действие",
             "closed": "Поединок уже закрыт или не найден",
-            "accepted": "Вызов принят. Стартуйте из профиля Mini App.",
-            "rejected": "Вызов отклонён.",
+            "accepted": "Дуэль принята. Откройте раунд.",
+            "rejected": "Дуэль отклонена.",
         },
         "tj": {
             "bad_button": "Тугмаи рақобат нодуруст аст",
             "not_found": "Рақобат ёфт нашуд",
             "bad_action": "Амал нодуруст аст",
             "closed": "Рақобат аллакай баста шуд ё ёфт нашуд",
-            "accepted": "Даъват қабул шуд. Аз профили Mini App оғоз кунед.",
-            "rejected": "Даъват рад шуд.",
+            "accepted": "Рақобат қабул шуд. Раундро кушоед.",
+            "rejected": "Рақобат рад шуд.",
         },
     }
     return messages.get(lang, messages["uz"]).get(key, key)
@@ -77,4 +77,25 @@ async def challenge_callback(callback: CallbackQuery, session):
         await callback.answer(_text(lang, "closed"), show_alert=True)
         return
     text = _text(lang, "accepted" if action == "accept" else "rejected")
+    challenge = result.get("challenge") or {}
+    try:
+        if callback.message:
+            await callback.message.edit_text(
+                CourseChallengeService.resolved_invite_text(
+                    challenge,
+                    accepted=action == "accept",
+                    lang=lang,
+                ),
+                reply_markup=(
+                    CourseChallengeService._open_keyboard(
+                        lang,
+                        int(challenge.get("id") or challenge_id),
+                        str(challenge.get("level") or ""),
+                    )
+                    if action == "accept"
+                    else None
+                ),
+            )
+    except Exception:
+        pass
     await callback.answer(text, show_alert=True)

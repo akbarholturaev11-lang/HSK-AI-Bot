@@ -98,6 +98,38 @@ class CourseMiniAppPracticeService:
             return subtype in {"hanzi_to_pinyin", "pinyin_to_hanzi"} or question_type in {"pinyin_choice"}
         return True
 
+    @staticmethod
+    def _balanced_questions(questions: list[dict], limit: int) -> list[dict]:
+        remaining = list(questions)
+        selected = []
+        seen_lessons: set[int] = set()
+        seen_types: set[str] = set()
+        seen_subtypes: set[str] = set()
+        while remaining and len(selected) < limit:
+            best_index = 0
+            best_score = -1.0
+            for index, item in enumerate(remaining):
+                lesson = int(item.get("lesson") or 0)
+                question_type = str(item.get("type") or "")
+                subtype = str(item.get("subtype") or "")
+                score = 0.0
+                if lesson not in seen_lessons:
+                    score += 4
+                if question_type and question_type not in seen_types:
+                    score += 3
+                if subtype and subtype not in seen_subtypes:
+                    score += 2
+                score -= index / 1000
+                if score > best_score:
+                    best_score = score
+                    best_index = index
+            picked = remaining.pop(best_index)
+            selected.append(picked)
+            seen_lessons.add(int(picked.get("lesson") or 0))
+            seen_types.add(str(picked.get("type") or ""))
+            seen_subtypes.add(str(picked.get("subtype") or ""))
+        return selected
+
     async def _level_questions(self, level: str, lang: str, limit: int, skill: str = "") -> list[dict]:
         lessons = await self.lesson_repo.list_by_level(level)
         pool = []
@@ -116,16 +148,12 @@ class CourseMiniAppPracticeService:
                 )
                 if normalized:
                     pool.append(normalized)
-            if len(pool) >= max(limit * 3, limit):
-                break
         filtered = [item for item in pool if not skill or self._skill_match(item, skill)]
         if len(filtered) < limit:
             filtered.extend(item for item in pool if item not in filtered)
         if not filtered:
             return []
-        step = max(1, len(filtered) // limit)
-        selected = filtered[::step][:limit]
-        return selected
+        return self._balanced_questions(filtered, limit)
 
     async def _questions(self, mode: str, level: str, lang: str, skill: str) -> list[dict]:
         if mode == "placement":

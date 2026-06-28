@@ -69,6 +69,14 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("AdFlow", html)
         self.assertIn('"&level="+sel+"&onboarded=1&tour=1"', onboarding)
 
+    def test_hsk_exam_options_hide_pinyin_and_hint_labels(self):
+        html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")
+
+        self.assertIn("function examOptionText(q,o)", html)
+        self.assertIn('if(q.type==="audio_choice"||isMeaningQuestion(q))return lab||zh;', html)
+        self.assertNotIn("var py=o.py?", html)
+        self.assertNotIn("'<small>'+lab+'</small>'", html)
+
 
 if __name__ == "__main__":
     unittest.main()

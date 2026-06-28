@@ -207,6 +207,52 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-28 — Challenge invite deep-link and XP rewards
+
+Changed:
+- Course challenge invites now use clearer Uzbek/Russian/Tajik duel copy, edit the original invite message after accept/reject, and open Course v3 directly with `tab=rating&challenge_id=...`.
+- Course v3 can deep-link into a challenge, accept/reject pending invites, start the shared 10-question round, submit answers, and show result/XP feedback.
+- Challenge completion grants XP, and completed rounds grant bonus XP to the winner; exact ties reward both players.
+- Practice/challenge question selection now samples across the level more evenly by lesson/type/subtype instead of stopping at the earliest lessons.
+
+Why:
+- Telegram challenge messages were mixed-language and the Mini App button opened a generic profile instead of the actual duel.
+- Challenge rounds needed a stronger reward loop and fair, same-question gameplay for both users.
+
+Files touched:
+- `app/services/course_challenge_service.py`
+- `app/services/course_miniapp_practice_service.py`
+- `app/bot/handlers/challenge.py`
+- `app/bot/utils/course_miniapp.py`
+- `app/static/course-v3.html`
+- `tests/test_course_challenge_service.py`
+- `tests/test_course_miniapp_foundation.py`
+
+Risk:
+- Touches user-facing challenge flow, Mini App routing, question selection, and XP award events. Payment/subscription logic is not changed.
+
+Follow-up:
+- Smoke test in real Telegram WebApp with two accounts: send challenge, accept/reject, open direct duel, complete both sides, and verify XP/rating updates.
+
+### 2026-06-28 — HSK exam answer hint cleanup
+
+Changed:
+- Test Center HSK 1-4 exam renderer no longer shows pinyin or secondary hint labels inside answer options.
+- Meaning/listening questions show localized answer choices only; grammar, fill-blank, and writing/order questions show Chinese choices only.
+
+Why:
+- Answer options previously exposed pinyin, translations, or labels like `(noto'g'ri tartib)`, making some exam questions answerable without real understanding.
+
+Files touched:
+- `app/static/course_v3_test.html`
+- `tests/test_course_v3_static_data.py`
+
+Risk:
+- Low. Exam data, scoring, result flow, payment, subscription, and access rules are unchanged.
+
+Follow-up:
+- Re-test in Telegram WebView after deploy on HSK 1-4 exams, especially meaning and writing/order questions.
+
 ### 2026-06-28 — Course v3 reward message correctness
 
 Changed:

@@ -8,16 +8,21 @@ from app.bot.utils.course_miniapp import course_study_miniapp_url, normalize_min
 from app.db.models.course_challenge import CourseChallenge
 from app.db.models.user import User
 from app.repositories.user_repo import UserRepository
+from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
 
 
 CHALLENGE_STATUSES = {"pending", "accepted", "rejected", "completed"}
+CHALLENGE_COMPLETE_XP = 6
+CHALLENGE_WIN_XP = 24
+CHALLENGE_TIE_XP = 12
 
 
 class CourseChallengeService:
     def __init__(self, session):
         self.session = session
         self.user_repo = UserRepository(session)
+        self.gamification = CourseGamificationService(session)
 
     @staticmethod
     def _level(value: str) -> str:
@@ -269,18 +274,66 @@ class CourseChallengeService:
             challenge.opponent_duration_seconds = duration_seconds
             challenge.opponent_completed_at = now
         self._update_winner(challenge)
-        await self.session.flush()
         users = await self._users_by_id({int(challenge.challenger_user_id), int(challenge.opponent_user_id)})
+        reward = await self.gamification.award(
+            user,
+            activity_type="challenge",
+            activity_ref=f"challenge:{challenge.id}:user:{user.id}:completed",
+            base_xp=CHALLENGE_COMPLETE_XP,
+            level=challenge.level,
+        )
+        final_rewards = await self._award_final_rewards(challenge, users)
+        await self.session.flush()
         if bot:
             await self.notify_submit(bot, challenge, user, users)
+        viewer_final_reward = final_rewards.get(int(user.id))
         return {
             "ok": True,
             "score": score,
             "total": total,
             "percent": percent,
             "wrong_items": wrong,
+            "reward": reward,
+            "winner_reward": viewer_final_reward,
+            "final_rewards": {
+                str(user_id): {
+                    "awarded_xp": int((payload or {}).get("awarded_xp") or 0),
+                    "xp": int((payload or {}).get("xp") or 0),
+                    "duplicate": bool((payload or {}).get("duplicate")),
+                }
+                for user_id, payload in final_rewards.items()
+            },
             "challenge": self._challenge_payload(challenge, user, users),
         }
+
+    async def _award_final_rewards(self, challenge: CourseChallenge, users: dict[int, User]) -> dict[int, dict]:
+        if challenge.status != "completed":
+            return {}
+        rewards: dict[int, dict] = {}
+        if challenge.winner_user_id:
+            winner = users.get(int(challenge.winner_user_id))
+            if winner:
+                rewards[int(winner.id)] = await self.gamification.award(
+                    winner,
+                    activity_type="challenge_win",
+                    activity_ref=f"challenge:{challenge.id}:winner",
+                    base_xp=CHALLENGE_WIN_XP,
+                    level=challenge.level,
+                )
+            return rewards
+
+        for user_id in (int(challenge.challenger_user_id), int(challenge.opponent_user_id)):
+            player = users.get(user_id)
+            if not player:
+                continue
+            rewards[int(player.id)] = await self.gamification.award(
+                player,
+                activity_type="challenge_tie",
+                activity_ref=f"challenge:{challenge.id}:tie:{player.id}",
+                base_xp=CHALLENGE_TIE_XP,
+                level=challenge.level,
+            )
+        return rewards
 
     @staticmethod
     def _update_winner(challenge: CourseChallenge) -> None:
@@ -302,11 +355,20 @@ class CourseChallengeService:
                 challenge.winner_user_id = None
 
     @staticmethod
-    def _invite_keyboard(challenge_id: int, lang: str) -> InlineKeyboardMarkup:
+    def _challenge_url(challenge_id: int, lang: str, level: str | None = None) -> str:
+        return course_study_miniapp_url(
+            lang=lang,
+            level=level,
+            tab="rating",
+            challenge_id=int(challenge_id),
+        )
+
+    @staticmethod
+    def _invite_keyboard(challenge_id: int, lang: str, level: str | None = None) -> InlineKeyboardMarkup:
         labels = {
-            "uz": ("Vizovni qabul qilish", "Rad qilish", "Mini Appni ochish"),
-            "ru": ("Принять вызов", "Отклонить", "Открыть Mini App"),
-            "tj": ("Қабул кардани даъват", "Рад кардан", "Кушодани Mini App"),
+            "uz": ("Belashuvni qabul qilish", "Rad qilish", "Musobaqani ochish"),
+            "ru": ("Принять дуэль", "Отклонить", "Открыть дуэль"),
+            "tj": ("Қабули рақобат", "Рад кардан", "Кушодани рақобат"),
         }
         accept, reject, open_app = labels.get(lang, labels["uz"])
         return InlineKeyboardMarkup(
@@ -318,49 +380,107 @@ class CourseChallengeService:
                 [
                     InlineKeyboardButton(
                         text=open_app,
-                        web_app=WebAppInfo(url=course_study_miniapp_url(lang=lang, tab="profile")),
+                        web_app=WebAppInfo(url=CourseChallengeService._challenge_url(challenge_id, lang, level)),
                     )
                 ],
             ]
         )
 
     @staticmethod
-    def _open_keyboard(lang: str) -> InlineKeyboardMarkup:
+    def _open_keyboard(lang: str, challenge_id: int | None = None, level: str | None = None) -> InlineKeyboardMarkup:
         labels = {
-            "uz": "Mini Appni ochish",
-            "ru": "Открыть Mini App",
-            "tj": "Кушодани Mini App",
+            "uz": "Musobaqaga kirish",
+            "ru": "Перейти к дуэли",
+            "tj": "Ба рақобат гузаштан",
         }
+        url = (
+            CourseChallengeService._challenge_url(challenge_id, lang, level)
+            if challenge_id
+            else course_study_miniapp_url(lang=lang, tab="rating")
+        )
         return InlineKeyboardMarkup(
             inline_keyboard=[
                 [
                     InlineKeyboardButton(
                         text=labels.get(lang, labels["uz"]),
-                        web_app=WebAppInfo(url=course_study_miniapp_url(lang=lang, tab="profile")),
+                        web_app=WebAppInfo(url=url),
                     )
                 ],
             ]
         )
 
-    async def notify_invite(self, bot, challenge: CourseChallenge, challenger: User, opponent: User) -> None:
-        lang = normalize_miniapp_lang(opponent.language)
+    @staticmethod
+    def _level_label(level: str) -> str:
+        return str(level or "hsk1").upper().replace("HSK", "HSK ")
+
+    @staticmethod
+    def invite_text(challenge: CourseChallenge, challenger: User, lang: str) -> str:
         name = challenger.full_name or challenger.username or "HSK Student"
         title = {
-            "uz": f"{name} sizga belashuv tashladi.",
-            "ru": f"{name} бросил вам вызов.",
-            "tj": f"{name} ба шумо рақобат фиристод.",
+            "uz": f"{name} sizni HSK belashuvga chaqirdi.",
+            "ru": f"{name} вызывает вас на HSK-дуэль.",
+            "tj": f"{name} шуморо ба рақобати HSK даъват кард.",
         }.get(lang)
         body = {
-            "uz": "10 ta bir xil savol, bir xil sharoit. Qabul qilsangiz raund ochiladi va natija profilga tushadi.",
-            "ru": "10 одинаковых вопросов, равные условия. Примите вызов, закройте раунд и заберите результат в профиле.",
-            "tj": "10 саволи якхела, шароити баробар. Қабул кунед, раундро анҷом диҳед ва натиҷаро дар профил бинед.",
+            "uz": (
+                "10 ta savol. Ikkalangizga ham aynan bir xil savollar tushadi.\n"
+                "So'z, pinyin, tarjima va grammatika aralash keladi.\n\n"
+                "Maqsad: ko'proq to'g'ri javob bering. Teng bo'lsa, tezroq yakunlagan yutadi.\n"
+                f"G'olibga +{CHALLENGE_WIN_XP} XP, yakunlaganga +{CHALLENGE_COMPLETE_XP} XP."
+            ),
+            "ru": (
+                "10 вопросов. У обоих игроков будет один и тот же набор.\n"
+                "Слова, пиньинь, перевод и грамматика идут вперемешку.\n\n"
+                "Цель: больше правильных ответов. При равном счёте побеждает скорость.\n"
+                f"Победителю +{CHALLENGE_WIN_XP} XP, за финиш +{CHALLENGE_COMPLETE_XP} XP."
+            ),
+            "tj": (
+                "10 савол. Барои ҳар ду як маҷмӯи саволҳо меояд.\n"
+                "Калима, пинйин, тарҷума ва грамматика омехта мешаванд.\n\n"
+                "Ҳадаф: ҷавоби дуруст бештар. Агар ҳисоб баробар бошад, вақти тезтар мебарад.\n"
+                f"Ба ғолиб +{CHALLENGE_WIN_XP} XP, барои анҷом +{CHALLENGE_COMPLETE_XP} XP."
+            ),
         }.get(lang)
-        text = f"{title}\n\n{body}\n\nLevel: {challenge.level.upper()}"
+        return f"{title}\n\n{body}\n\nLevel: {CourseChallengeService._level_label(challenge.level)}"
+
+    @staticmethod
+    def resolved_invite_text(challenge: CourseChallenge | dict, *, accepted: bool, lang: str) -> str:
+        level = CourseChallengeService._level_label(
+            challenge.get("level") if isinstance(challenge, dict) else challenge.level
+        )
+        if accepted:
+            text = {
+                "uz": (
+                    "Belashuv qabul qilindi.\n\n"
+                    "Raund ochildi: 10 ta bir xil savol, bir xil sharoit.\n"
+                    "Musobaqaga kiring va natijani yopib qo'ying."
+                ),
+                "ru": (
+                    "Дуэль принята.\n\n"
+                    "Раунд открыт: 10 одинаковых вопросов, равные условия.\n"
+                    "Откройте дуэль и зафиксируйте результат."
+                ),
+                "tj": (
+                    "Рақобат қабул шуд.\n\n"
+                    "Раунд кушода шуд: 10 саволи якхела, шароити баробар.\n"
+                    "Ба рақобат дароед ва натиҷаро сабт кунед."
+                ),
+            }.get(lang)
+        else:
+            text = {
+                "uz": "Belashuv rad qilindi.\n\nBu raund yopildi. Keyinroq yangi raqib bilan yana urinib ko'ring.",
+                "ru": "Дуэль отклонена.\n\nЭтот раунд закрыт. Позже можно вызвать другого соперника.",
+                "tj": "Рақобат рад шуд.\n\nИн раунд баста шуд. Баъдтар рақиби дигарро даъват кунед.",
+            }.get(lang)
+        return f"{text}\n\nLevel: {level}"
+
+    async def notify_invite(self, bot, challenge: CourseChallenge, challenger: User, opponent: User) -> None:
+        lang = normalize_miniapp_lang(opponent.language)
         try:
             await bot.send_message(
                 chat_id=int(opponent.telegram_id),
-                text=text,
-                reply_markup=self._invite_keyboard(int(challenge.id), lang),
+                text=self.invite_text(challenge, challenger, lang),
+                reply_markup=self._invite_keyboard(int(challenge.id), lang, challenge.level),
             )
         except Exception:
             return
@@ -374,21 +494,21 @@ class CourseChallengeService:
         name = opponent.full_name or opponent.username or "User"
         if accepted:
             text = {
-                "uz": f"{name} vizovni qabul qildi. Duel ochiq, Mini App profilidan boshlang.",
-                "ru": f"{name} принял вызов. Дуэль открыта, стартуйте из профиля Mini App.",
-                "tj": f"{name} даъватро қабул кард. Дуэл кушода аст, аз профили Mini App оғоз кунед.",
+                "uz": f"{name} belashuvni qabul qildi. Raund ochildi: 10 savol, bir xil sharoit. Musobaqaga kiring.",
+                "ru": f"{name} принял дуэль. Раунд открыт: 10 вопросов, равные условия. Переходите к дуэли.",
+                "tj": f"{name} рақобатро қабул кард. Раунд кушода шуд: 10 савол, шароити баробар. Ба рақобат гузаред.",
             }.get(lang)
         else:
             text = {
-                "uz": f"{name} vizovni rad qildi.",
-                "ru": f"{name} отклонил вызов.",
-                "tj": f"{name} даъватро рад кард.",
+                "uz": f"{name} belashuvni rad qildi. Yangi raqib chaqirib ko'ring.",
+                "ru": f"{name} отклонил дуэль. Можно вызвать другого соперника.",
+                "tj": f"{name} рақобатро рад кард. Метавонед рақиби дигарро даъват кунед.",
             }.get(lang)
         try:
             await bot.send_message(
                 chat_id=int(challenger.telegram_id),
                 text=text,
-                reply_markup=self._open_keyboard(lang) if accepted else None,
+                reply_markup=self._open_keyboard(lang, int(challenge.id), challenge.level) if accepted else None,
             )
         except Exception:
             return
@@ -404,16 +524,39 @@ class CourseChallengeService:
         total = challenge.challenger_total if role == "challenger" else challenge.opponent_total
         name = user.full_name or user.username or "User"
         score_text = f"{score}/{total}" if score is not None and total else ""
-        text = {
-            "uz": f"{name} testni yopdi{f' — {score_text}' if score_text else ''}. Endi navbat sizda: profilni ochib raundni yakunlang.",
-            "ru": f"{name} уже закрыл тест{f' — {score_text}' if score_text else ''}. Теперь ваш ход: откройте профиль и завершите раунд.",
-            "tj": f"{name} тестро анҷом дод{f' — {score_text}' if score_text else ''}. Акнун навбати шумо: профилро кушоед ва раундро анҷом диҳед.",
-        }.get(lang)
+        if challenge.status == "completed":
+            challenger_score = f"{challenge.challenger_score}/{challenge.challenger_total}" if challenge.challenger_total else "-"
+            opponent_score = f"{challenge.opponent_score}/{challenge.opponent_total}" if challenge.opponent_total else "-"
+            other_won = challenge.winner_user_id and int(challenge.winner_user_id) == int(other.id)
+            no_winner = challenge.winner_user_id is None
+            text = {
+                "uz": (
+                    f"Raund yopildi. {name} natijani yubordi{f' — {score_text}' if score_text else ''}.\n\n"
+                    f"Hisob: {challenger_score} vs {opponent_score}.\n"
+                    + ("Siz yutdingiz. Bonus XP profilingizga qo'shildi." if other_won else "Natijani Mini Appda ko'ring." if not no_winner else "Durrang. Ikkalangizga ham bonus XP qo'shildi.")
+                ),
+                "ru": (
+                    f"Раунд закрыт. {name} отправил результат{f' — {score_text}' if score_text else ''}.\n\n"
+                    f"Счёт: {challenger_score} vs {opponent_score}.\n"
+                    + ("Вы победили. Бонус XP добавлен в профиль." if other_won else "Откройте результат в Mini App." if not no_winner else "Ничья. Бонус XP добавлен обоим.")
+                ),
+                "tj": (
+                    f"Раунд баста шуд. {name} натиҷаро фиристод{f' — {score_text}' if score_text else ''}.\n\n"
+                    f"Ҳисоб: {challenger_score} vs {opponent_score}.\n"
+                    + ("Шумо ғолиб шудед. XP бонус ба профил илова шуд." if other_won else "Натиҷаро дар Mini App бинед." if not no_winner else "Мусовӣ. Ба ҳар ду XP бонус илова шуд.")
+                ),
+            }.get(lang)
+        else:
+            text = {
+                "uz": f"{name} testni yopdi{f' — {score_text}' if score_text else ''}. Endi navbat sizda: musobaqani ochib raundni yakunlang.",
+                "ru": f"{name} уже закрыл тест{f' — {score_text}' if score_text else ''}. Теперь ваш ход: откройте дуэль и завершите раунд.",
+                "tj": f"{name} тестро анҷом дод{f' — {score_text}' if score_text else ''}. Акнун навбати шумо: рақобатро кушоед ва раундро анҷом диҳед.",
+            }.get(lang)
         try:
             await bot.send_message(
                 chat_id=int(other.telegram_id),
                 text=text,
-                reply_markup=self._open_keyboard(lang),
+                reply_markup=self._open_keyboard(lang, int(challenge.id), challenge.level),
             )
         except Exception:
             return

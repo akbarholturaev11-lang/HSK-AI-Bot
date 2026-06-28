@@ -106,12 +106,15 @@ class CourseMiniAppUrlTests(unittest.TestCase):
         lesson = SimpleNamespace(level="hsk1", lesson_order=4)
 
         course_url = course_study_miniapp_url(lang="uz", level="hsk1", lesson=4, tab="training")
+        challenge_url = course_study_miniapp_url(lang="uz", level="hsk1", tab="rating", challenge_id=77)
         quiz_url = course_miniapp_url(lesson, "quiz", "uz", block_no=1)
         vocab_url = course_stroke_order_url(lesson, lang="uz", block_no=1)
 
         self.assertIn("course-v3.html", course_url)
         self.assertIn("tab=mashq", course_url)
         self.assertIn("lesson=4", course_url)
+        self.assertIn("tab=rating", challenge_url)
+        self.assertIn("challenge_id=77", challenge_url)
         self.assertIn("course-v3.html", quiz_url)
         self.assertIn("tab=mashq", quiz_url)
         self.assertIn("lesson=4", quiz_url)
