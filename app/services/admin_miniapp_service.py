@@ -668,7 +668,7 @@ class AdminMiniAppService:
             "📚 KURS\n"
             f"Mini ilova ochgan: {miniapp_course.opened_users} · Dars boshlaganlar: {miniapp_course.lesson_users}\n"
             f"Dars tugatganlar: {miniapp_course.completed_users} · Tugatilgan qismlar: {miniapp_course.completed_sections}\n"
-            f"Tugatilgan kitob darslari: {miniapp_course.completed_book_lessons} · O'rtacha qism: {avg_sections}\n\n"
+            f"Tugatilgan darslar: {miniapp_course.completed_book_lessons} · O'rtacha qism: {avg_sections}\n\n"
             "📣 REKLAMA VA KANAL\n"
             f"Reklama kampaniyalari: {ad_summary.get('total', 0)} · Faol: {ad_summary.get('active', 0)}\n"
             f"Yetkazildi: {ad_summary.get('delivered', 0)} · Xato: {ad_summary.get('failed', 0)}\n"

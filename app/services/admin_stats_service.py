@@ -24,12 +24,13 @@ async def _count_unique_users(session, event_names: tuple[str, ...]) -> int:
     ).scalar() or 0
 
 
-async def _count_events(session, event_name: str) -> int:
+async def _count_events(session, event_names: str | tuple[str, ...]) -> int:
+    names = (event_names,) if isinstance(event_names, str) else event_names
     return (
         await session.execute(
             select(func.count())
             .select_from(CourseMiniAppEvent)
-            .where(CourseMiniAppEvent.event_name == event_name)
+            .where(CourseMiniAppEvent.event_name.in_(names))
         )
     ).scalar() or 0
 
@@ -43,5 +44,5 @@ async def miniapp_course_stats(session) -> MiniAppCourseStats:
             ("section_completed", "book_lesson_completed", "lesson_completed"),
         ),
         completed_sections=await _count_events(session, "section_completed"),
-        completed_book_lessons=await _count_events(session, "book_lesson_completed"),
+        completed_book_lessons=await _count_events(session, ("book_lesson_completed", "lesson_completed")),
     )

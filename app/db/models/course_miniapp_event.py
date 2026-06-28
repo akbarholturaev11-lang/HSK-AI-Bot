@@ -49,6 +49,7 @@ CLIENT_COURSE_MINIAPP_EVENT_NAMES = (
     "start_point_selected",
     "lesson_started",
     "section_started",
+    "section_completed",
     "card_seen",
     "interaction_completed",
     "test_started",

@@ -889,6 +889,15 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
 
         _apply_course_v3_access_policy(data, level=resolved_level, completed=completed, is_paid=is_paid)
 
+        await CourseMiniAppAnalyticsService(session).record_server_event(
+            event_name="miniapp_opened",
+            telegram_id=telegram_id,
+            user_id=getattr(user, "id", None),
+            source="course_v3",
+            level=resolved_level,
+            dedupe_key=f"course-v3:miniapp-opened:{resolved_level}:{datetime.now(timezone.utc).date().isoformat()}",
+        )
+        await session.commit()
         return JSONResponse(content=data)
 
 
@@ -1017,6 +1026,84 @@ async def v3_course_ad_view(request: Request):
         await session.commit()
         status = 200 if result.get("ok") else 400
         return JSONResponse(status_code=status, content=result)
+
+
+@app.post("/api/v3/lesson/unlock")
+async def v3_course_lesson_unlock(request: Request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+
+    try:
+        payload = await request.json()
+        lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
+        score = int(payload.get("score") or 0)
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
+    if lesson_order <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
+
+    resolved_level = _course_v3_level(str(payload.get("level") or "hsk1"))
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
+
+        lesson_repo = CourseLessonRepository(session)
+        lesson = await lesson_repo.get_by_level_and_order(resolved_level, lesson_order)
+        if not lesson:
+            return JSONResponse(status_code=404, content={"ok": False, "error": "course_no_lesson_found"})
+
+        access = CourseMiniAppAccessService(session)
+        is_paid = access.is_paid_user(user)
+        if not is_paid and CourseMiniAppAccessService.lesson_requires_premium(resolved_level, lesson_order):
+            return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
+
+        progress_repo = CourseProgressRepository(session)
+        progress = await progress_repo.get_by_user_id(user.id, for_update=True)
+        if not progress:
+            progress = await progress_repo.create(
+                user_id=user.id,
+                level=resolved_level,
+                current_lesson_id=lesson.id,
+                current_step="intro",
+                waiting_for="none",
+            )
+        progress.level = resolved_level
+        progress.completed_lessons_count = max(
+            int(getattr(progress, "completed_lessons_count", 0) or 0),
+            lesson_order - 1,
+        )
+        await progress_repo.set_current_lesson_and_step(
+            progress=progress,
+            lesson_id=lesson.id,
+            step="intro",
+            waiting_for="none",
+        )
+        await progress_repo.set_homework_status(progress, "none")
+        await CourseMiniAppAnalyticsService(session).record_server_event(
+            event_name="test_completed",
+            telegram_id=telegram_id,
+            user_id=getattr(user, "id", None),
+            source="course_v3_skip_test",
+            level=resolved_level,
+            lesson_id=getattr(lesson, "id", None),
+            lesson_order=lesson_order,
+            dedupe_key=f"course-v3:skip-test:{lesson.id}",
+            payload={
+                "score": max(0, min(100, score)),
+                "unlock_completed_lessons_count": int(progress.completed_lessons_count or 0),
+            },
+        )
+        await session.commit()
+        return JSONResponse(
+            content={
+                "ok": True,
+                "lesson_order": lesson_order,
+                "completed_lessons_count": int(progress.completed_lessons_count or 0),
+            }
+        )
 
 
 @app.post("/api/v3/lesson/complete")
@@ -2682,6 +2769,7 @@ async def miniapp_event(request: Request):
                 event_name=event,
                 telegram_id=telegram_id,
                 user_id=getattr(user, "id", None),
+                source=str(payload.get("source") or "course_miniapp"),
                 level=str(payload.get("level") or "") or None,
                 lesson_order=_positive_int(payload.get("lesson_order") or payload.get("lesson_id")),
                 session_id=str(payload.get("session_id") or "") or None,

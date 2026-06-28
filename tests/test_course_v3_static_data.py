@@ -54,6 +54,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("Reklama bilan davom etish", html)
         self.assertIn("/api/v3/ad?placement=", html)
         self.assertIn("/api/v3/ad/view", html)
+        self.assertIn("/api/v3/lesson/unlock", html)
+        self.assertIn("section_completed", html)
+        self.assertIn("ratingCountdownText()", html)
+        self.assertNotIn("64 / 100", html)
+        self.assertNotIn("2'+(LANG", html)
         self.assertIn("AdFlow", html)
         self.assertIn('"&level="+sel+"&onboarded=1&tour=1"', onboarding)
 

@@ -718,12 +718,16 @@ function priceInfo(method=state.method,plan=state.plan){
   if(real)return real;
   return state.preview?mockOverview().prices?.[method]?.[plan]||null:null;
 }
+function overviewPrices(){
+  if(state.overview?.prices)return state.overview.prices;
+  return state.preview?mockOverview().prices:{};
+}
 function availableMethods(){
-  const prices=state.overview?.prices||mockOverview().prices;
+  const prices=overviewPrices();
   return METHOD_ORDER.filter(method=>Object.keys(prices?.[method]||{}).length>0);
 }
 function availablePlans(method=state.method){
-  const prices=state.overview?.prices||mockOverview().prices;
+  const prices=overviewPrices();
   return PLAN_ORDER.filter(plan=>prices?.[method]?.[plan]);
 }
 function ensureSelection(){
@@ -834,7 +838,6 @@ function mockQuote(){
   };
 }
 function fallbackOverview(){
-  const mock=mockOverview();
   return {
     ok:true,
     language:state.lang,
@@ -843,7 +846,7 @@ function fallbackOverview(){
     offer:null,
     discount:null,
     payment_details:"",
-    prices:mock.prices
+    prices:{}
   };
 }
 function applyOverview(data){

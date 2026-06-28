@@ -44,6 +44,19 @@ class CourseGamificationService:
     def _week_start(day: date) -> date:
         return day - timedelta(days=day.weekday())
 
+    @classmethod
+    def _weekly_reset(cls, offset_minutes: int, now: datetime | None = None) -> tuple[str, int]:
+        now_utc = now or datetime.now(timezone.utc)
+        offset = timedelta(minutes=max(-720, min(840, int(offset_minutes or 0))))
+        local_now = now_utc + offset
+        next_reset_day = cls._week_start(local_now.date()) + timedelta(days=7)
+        next_reset_utc = datetime.combine(
+            next_reset_day,
+            datetime.min.time(),
+            tzinfo=timezone.utc,
+        ) - offset
+        return next_reset_utc.isoformat(), max(0, int((next_reset_utc - now_utc).total_seconds()))
+
     @staticmethod
     def next_streak(last_activity_date: date | None, current_streak: int, day: date) -> tuple[int, bool]:
         if last_activity_date == day:
@@ -144,6 +157,7 @@ class CourseGamificationService:
         weekly_xp = int(weekly_result.scalar_one() or 0)
         chest_progress = int(profile.xp_total or 0) % 100
         energy_current = max(0, min(5, 3 + weekly_xp // 120))
+        weekly_reset_at, weekly_reset_seconds = self._weekly_reset(profile.timezone_offset_minutes)
         return {
             "xp": int(profile.xp_total or 0),
             "awarded_xp": int(awarded_xp or 0),
@@ -154,6 +168,8 @@ class CourseGamificationService:
             "weekly_xp": weekly_xp,
             "league_points": weekly_xp,
             "weekly_reset_day": "monday",
+            "weekly_reset_at": weekly_reset_at,
+            "weekly_reset_seconds": weekly_reset_seconds,
             "energy": {
                 "current": energy_current,
                 "max": 5,

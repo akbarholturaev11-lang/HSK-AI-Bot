@@ -207,6 +207,37 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-28 — Course v3 analytics, skip-test unlock, and real fallback cleanup
+
+Changed:
+- Course v3 now records `miniapp_opened` from `/api/v3/map` and client events for `lesson_started`, `section_started`, `section_completed`, `card_seen`, `interaction_completed`, `test_started`, and `paywall_seen` with source/session/dedupe data.
+- Skip-ahead tests in Course v3 now call `/api/v3/lesson/unlock`; backend validates Telegram WebApp auth, lesson existence, and premium/free access before updating `course_progress`.
+- Gamification snapshots include real weekly reset time/seconds for the rating countdown.
+- Admin course stats count Course v3 `lesson_completed` together with legacy `book_lesson_completed`.
+- Subscription Mini App API-error fallback no longer displays preview/mock prices; preview prices remain available only in explicit preview mode.
+
+Why:
+- Course v3 traffic was undercounted in admin stats because v3 did not emit the old Mini App analytics events.
+- Skip-test unlock was frontend-only, so reload/backend progress could disagree with the UI.
+- Rating/profile/subscription UI had fake fallback or hardcoded values that could look like real business data.
+
+Risk:
+- This touches course analytics and Course v3 skip-test access/progress. Payment approval and subscription pricing logic are not changed.
+
+Files touched:
+- `app/main.py`
+- `app/static/course-v3.html`
+- `app/static/subscription.html`
+- `app/services/course_gamification_service.py`
+- `app/services/admin_stats_service.py`
+- `app/services/admin_miniapp_service.py`
+- `app/db/models/course_miniapp_event.py`
+- `tests/test_course_gamification_service.py`
+- `tests/test_course_v3_static_data.py`
+
+Follow-up:
+- Browser smoke test should be repeated in a normal local/dev environment or Telegram WebApp, because this Codex sandbox blocked localhost port binding and `file://` browser navigation.
+
 ### 2026-06-28 — Course v3 tour narration fixed for Uzbek/Tajik
 
 Changed:
