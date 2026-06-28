@@ -36,25 +36,25 @@ def _dt(value: datetime | None) -> str | None:
 
 def _ago(value: datetime | None, *, now: datetime) -> str:
     if not value:
-        return "hali yo'q"
+        return "ҳали йўқ"
     delta = now - value
     if delta.total_seconds() < 60:
-        return "hozir"
+        return "ҳозир"
     minutes = int(delta.total_seconds() // 60)
     if minutes < 60:
-        return f"{minutes} daqiqa oldin"
+        return f"{minutes} дақиқа олдин"
     hours = minutes // 60
     if hours < 24:
-        return f"{hours} soat oldin"
+        return f"{hours} соат олдин"
     days = hours // 24
     if days < 30:
-        return f"{days} kun oldin"
-    return _dt(value) or "hali yo'q"
+        return f"{days} кун олдин"
+    return _dt(value) or "ҳали йўқ"
 
 
 def _level_label(value: str | None) -> str:
     labels = {
-        "beginner": "Boshlovchi",
+        "beginner": "Бошловчи",
         "hsk1": "HSK1",
         "hsk2": "HSK2",
         "hsk3": "HSK3",
@@ -64,39 +64,39 @@ def _level_label(value: str | None) -> str:
 
 
 def _language_label(value: str | None) -> str:
-    labels = {"uz": "O'zbekcha", "ru": "Ruscha", "tj": "Tojikcha"}
+    labels = {"uz": "Ўзбекча", "ru": "Русча", "tj": "Тожикча"}
     return labels.get(str(value or "").lower(), value or "—")
 
 
 def _status_label(value: str | None) -> str:
     labels = {
-        "active": "Faol",
-        "trial": "Sinov",
-        "expired": "Muddati tugagan",
-        "blocked": "Bloklangan",
-        "free": "Bepul",
+        "active": "Фаол",
+        "trial": "Синов",
+        "expired": "Муддати тугаган",
+        "blocked": "Блокланган",
+        "free": "Бепул",
     }
     return labels.get(str(value or "").lower(), value or "—")
 
 
 def _payment_label(value: str | None) -> str:
     labels = {
-        "approved": "Tasdiqlangan",
-        "pending": "Tekshiruvda",
-        "draft": "Tanlangan",
-        "rejected": "Rad etilgan",
-        "none": "To'lov yo'q",
+        "approved": "Тасдиқланган",
+        "pending": "Текширувда",
+        "draft": "Танланган",
+        "rejected": "Рад этилган",
+        "none": "Тўлов йўқ",
     }
     return labels.get(str(value or "").lower(), value or "—")
 
 
 def _plan_label(value: str | None) -> str:
-    labels = {"10_days": "10 kun", "1_month": "1 oy"}
+    labels = {"10_days": "10 кун", "1_month": "1 ой"}
     return labels.get(str(value or "").lower(), value or "—")
 
 
 def _method_label(value: str | None) -> str:
-    labels = {"visa": "Visa/karta", "alipay": "Alipay", "wechat": "WeChat"}
+    labels = {"visa": "Visa/карта", "alipay": "Alipay", "wechat": "WeChat"}
     return labels.get(str(value or "").lower(), value or "—")
 
 
@@ -216,10 +216,10 @@ class AdminMiniAppService:
             "generated_at": _dt(now),
             "report_text": report_text,
             "summary": [
-                {"label": "Foydalanuvchilar", "value": total, "note": f"{active_today} bugun aktiv", "tone": "info"},
-                {"label": "Aktiv obuna", "value": paid_users, "note": "hozir to'lovli", "tone": "good"},
-                {"label": "To'lov tekshiruvda", "value": pending_payments, "note": "admin ko'rishi kerak", "tone": "warn"},
-                {"label": "Issiq mijozlar", "value": wants_pay + expired_hot, "note": "obunaga yaqin", "tone": "danger"},
+                {"label": "Фойдаланувчилар", "value": total, "note": f"{active_today} бугун фаол", "tone": "info"},
+                {"label": "Фаол обуна", "value": paid_users, "note": "ҳозир тўловли", "tone": "good"},
+                {"label": "Тўлов текширувда", "value": pending_payments, "note": "админ кўриши керак", "tone": "warn"},
+                {"label": "Иссиқ мижозлар", "value": wants_pay + expired_hot, "note": "обунага яқин", "tone": "danger"},
             ],
             "counts": {
                 "users_total": total,
@@ -425,16 +425,16 @@ class AdminMiniAppService:
     @staticmethod
     def _source_label(label: str) -> str:
         replacements = {
-            "Mini App": "mini ilova",
-            "Course": "Kurs",
-            "Voice": "ovozli AI",
-            "Release feedback": "yangilik fikri",
-            "Feedback": "fikr",
-            "Daily limit": "kunlik limit",
-            "QA limit": "savol limiti",
-            "Kurs paywall": "kurs obuna oynasi",
-            "Paywall": "obuna oynasi",
-            "Unknown": "Noma'lum",
+            "Mini App": "мини илова",
+            "Course": "Курс",
+            "Voice": "овозли AI",
+            "Release feedback": "янгилик фикри",
+            "Feedback": "фикр",
+            "Daily limit": "кунлик лимит",
+            "QA limit": "савол лимити",
+            "Kurs paywall": "курс обуна ойнаси",
+            "Paywall": "обуна ойнаси",
+            "Unknown": "Номаълум",
         }
         result = label
         for source, target in replacements.items():
@@ -459,11 +459,11 @@ class AdminMiniAppService:
         return [
             {
                 "id": item.telegram_id,
-                "name": item.full_name or "Nomsiz",
+                "name": item.full_name or "Номсиз",
                 "username": item.username,
                 "language": _language_label(item.language),
                 "level": _level_label(item.level),
-                "mode": "Kurs" if item.learning_mode == "course" else "Savol-javob",
+                "mode": "Курс" if item.learning_mode == "course" else "Савол-жавоб",
                 "status": item.status,
                 "status_label": _status_label(item.status),
                 "payment_status": item.payment_status,
@@ -492,7 +492,7 @@ class AdminMiniAppService:
                 {
                     "id": payment.id,
                     "telegram_id": payment.user_telegram_id,
-                    "name": getattr(user, "full_name", None) or "Nomsiz",
+                    "name": getattr(user, "full_name", None) or "Номсиз",
                     "username": getattr(user, "username", None),
                     "status": payment.payment_status,
                     "status_label": _payment_label(payment.payment_status),
@@ -511,27 +511,27 @@ class AdminMiniAppService:
     def _queue(*, pending_payments: int, expiring_soon: int, expired_hot: int, ad_summary: dict) -> list[dict]:
         return [
             {
-                "title": "To'lov tekshiruvi",
-                "note": f"{pending_payments} ta to'lov admin tasdig'ini kutyapti",
-                "priority": "hozir" if pending_payments else "tinch",
+                "title": "Тўлов текшируви",
+                "note": f"{pending_payments} та тўлов админ тасдиғини кутяпти",
+                "priority": "ҳозир" if pending_payments else "тинч",
                 "section": "payments",
             },
             {
-                "title": "Obunasi tugayotganlar",
-                "note": f"{expiring_soon} foydalanuvchiga eslatma kerak",
-                "priority": "muhim" if expiring_soon else "tinch",
+                "title": "Обунаси тугаётганлар",
+                "note": f"{expiring_soon} фойдаланувчига эслатма керак",
+                "priority": "муҳим" if expiring_soon else "тинч",
                 "section": "users",
             },
             {
-                "title": "Qayta sotish segmenti",
-                "note": f"{expired_hot} muddati tugagan, lekin haftada aktiv",
-                "priority": "issiq" if expired_hot else "tinch",
+                "title": "Қайта сотиш сегменти",
+                "note": f"{expired_hot} муддати тугаган, лекин ҳафтада фаол",
+                "priority": "иссиқ" if expired_hot else "тинч",
                 "section": "users",
             },
             {
-                "title": "Reklama holati",
-                "note": f"{ad_summary.get('active', 0)} ta faol kampaniya",
-                "priority": "kuzatish",
+                "title": "Реклама ҳолати",
+                "note": f"{ad_summary.get('active', 0)} та фаол кампания",
+                "priority": "кузатиш",
                 "section": "ads",
             },
         ]
@@ -539,20 +539,20 @@ class AdminMiniAppService:
     @staticmethod
     def _modules() -> list[dict]:
         return [
-            {"key": "stats", "icon": "📊", "title": "Statistika", "note": "Umumiy hisobot va konversiya", "section": "statistics", "callback": "adm:stats"},
-            {"key": "user_search", "icon": "🔎", "title": "Foydalanuvchi qidirish", "note": "ID yoki username bo'yicha Mini App ichida qidirish", "section": "users", "callback": "adm:user_search_info"},
-            {"key": "portfolio", "icon": "💼", "title": "Portfel", "note": "Tushum, rasxod va sof foydani boshqarish", "section": "settings", "callback": "adm:portfolio"},
-            {"key": "prices", "icon": "💳", "title": "Obuna narxlari", "note": "Visa/karta, Alipay, WeChat narxlarini tahrirlash", "section": "settings", "callback": "adm:prices"},
-            {"key": "channels", "icon": "📣", "title": "Majburiy kanal obunasi", "note": "Kanal linki, yoqish/o'chirish va ro'yxat", "section": "settings", "callback": "adm:channels"},
-            {"key": "delete_user", "icon": "🗑", "title": "Foydalanuvchini o'chirish", "note": "Xavfli amal, ID bilan tasdiqlanadi", "section": "users", "callback": "adm:deleteuser_info"},
-            {"key": "broadcast", "icon": "📢", "title": "Ommaviy xabar", "note": "Segment tanlab matn yuborish", "section": "settings", "callback": "adm:broadcast_info"},
-            {"key": "ads", "icon": "📣", "title": "Reklama kampaniyasi", "note": "Text-first reklama yaratish va holatni ko'rish", "section": "settings", "callback": "adm:ads_panel"},
-            {"key": "release_feedback", "icon": "🆕", "title": "Yangilik fikri", "note": "Release feedback kampaniyasini rejalash", "section": "settings", "callback": "adm:release_feedback"},
-            {"key": "discount", "icon": "🎁", "title": "Chegirma boshqaruv", "note": "Chegirma kampaniyasini yaratish va kuzatish", "section": "settings", "callback": "adm:discount_panel"},
-            {"key": "partners", "icon": "🤝", "title": "Hamkorlar", "note": "Ariza, payout va hamkor statistikasi", "section": "settings", "callback": "adm:partners"},
-            {"key": "help", "icon": "🆘", "title": "Yordam sozlamalari", "note": "Admin aloqa va video linklar", "section": "settings", "callback": "adm:help_settings"},
-            {"key": "give_access", "icon": "✅", "title": "Obuna berish", "note": "Foydalanuvchiga qo'lda ruxsat berish", "section": "users", "callback": "adm:giveaccess_info"},
-            {"key": "audio", "icon": "🎵", "title": "Audio boshqaruv", "note": "Kurs audio fayllarini tekshirish", "section": "settings", "callback": "adm:audio_panel"},
+            {"key": "stats", "icon": "📊", "title": "Статистика", "note": "Умумий ҳисобот ва конверсия", "section": "statistics", "callback": "adm:stats"},
+            {"key": "user_search", "icon": "🔎", "title": "Фойдаланувчи қидириш", "note": "ID ёки username бўйича Mini App ичида қидириш", "section": "users", "callback": "adm:user_search_info"},
+            {"key": "portfolio", "icon": "💼", "title": "Портфель", "note": "Тушум, харажат ва соф фойдани бошқариш", "section": "settings", "callback": "adm:portfolio"},
+            {"key": "prices", "icon": "💳", "title": "Обуна нархлари", "note": "Visa/карта, Alipay, WeChat нархларини таҳрирлаш", "section": "settings", "callback": "adm:prices"},
+            {"key": "channels", "icon": "📣", "title": "Мажбурий канал обунаси", "note": "Канал линки, ёқиш/ўчириш ва рўйхат", "section": "settings", "callback": "adm:channels"},
+            {"key": "delete_user", "icon": "🗑", "title": "Фойдаланувчини ўчириш", "note": "Хавфли амал, ID билан тасдиқланади", "section": "users", "callback": "adm:deleteuser_info"},
+            {"key": "broadcast", "icon": "📢", "title": "Оммавий хабар", "note": "Сегмент танлаб матн юбориш", "section": "settings", "callback": "adm:broadcast_info"},
+            {"key": "ads", "icon": "📣", "title": "Реклама кампанияси", "note": "Матнли реклама яратиш ва ҳолатни кўриш", "section": "settings", "callback": "adm:ads_panel"},
+            {"key": "release_feedback", "icon": "🆕", "title": "Янгилик фикри", "note": "Янгилик фикри кампаниясини режалаш", "section": "settings", "callback": "adm:release_feedback"},
+            {"key": "discount", "icon": "🎁", "title": "Чегирма бошқаруви", "note": "Чегирма кампаниясини яратиш ва кузатиш", "section": "settings", "callback": "adm:discount_panel"},
+            {"key": "partners", "icon": "🤝", "title": "Ҳамкорлар", "note": "Ариза, тўлов ва ҳамкор статистикаси", "section": "settings", "callback": "adm:partners"},
+            {"key": "help", "icon": "🆘", "title": "Ёрдам созламалари", "note": "Админ алоқа ва видео линклар", "section": "settings", "callback": "adm:help_settings"},
+            {"key": "give_access", "icon": "✅", "title": "Обуна бериш", "note": "Фойдаланувчига қўлда рухсат бериш", "section": "users", "callback": "adm:giveaccess_info"},
+            {"key": "audio", "icon": "🎵", "title": "Аудио бошқаруви", "note": "Курс аудио файлларини текшириш", "section": "settings", "callback": "adm:audio_panel"},
         ]
 
     @staticmethod
@@ -569,32 +569,32 @@ class AdminMiniAppService:
     ) -> dict:
         return {
             "ticker": [
-                {"label": "Haftalik aktiv", "value": active_week, "tone": "up"},
-                {"label": "24 soat aktiv", "value": active_24h, "tone": "up"},
-                {"label": "Tekshiruvdagi to'lov", "value": pending_payments, "tone": "warn"},
-                {"label": "Tushum", "value": approved_total_text, "tone": "flat"},
-                {"label": "Kurs ochildi", "value": miniapp_course.opened_users, "tone": "up"},
-                {"label": "Reklama faol", "value": ad_summary.get("active", 0), "tone": "flat"},
+                {"label": "Ҳафталик фаол", "value": active_week, "tone": "up"},
+                {"label": "24 соат фаол", "value": active_24h, "tone": "up"},
+                {"label": "Текширувдаги тўлов", "value": pending_payments, "tone": "warn"},
+                {"label": "Тушум", "value": approved_total_text, "tone": "flat"},
+                {"label": "Курс очилди", "value": miniapp_course.opened_users, "tone": "up"},
+                {"label": "Реклама фаол", "value": ad_summary.get("active", 0), "tone": "flat"},
             ],
             "heat": [
-                {"label": "mini ilova ochildi", "value": miniapp_course.opened_users, "tone": "hot"},
-                {"label": "dars boshlandi", "value": miniapp_course.lesson_users, "tone": "hot"},
-                {"label": "dars tugadi", "value": miniapp_course.completed_users, "tone": "hot"},
-                {"label": "to'lov tekshiruvda", "value": pending_payments, "tone": "warn"},
-                {"label": "kanal yoqilgan", "value": "ha" if channels_enabled else "yo'q", "tone": "flat"},
-                {"label": "aktiv kanal", "value": active_channels, "tone": "flat"},
-                {"label": "reklama yetkazildi", "value": ad_summary.get("delivered", 0), "tone": "hot"},
-                {"label": "reklama xatosi", "value": ad_summary.get("failed", 0), "tone": "risk"},
+                {"label": "мини илова очилди", "value": miniapp_course.opened_users, "tone": "hot"},
+                {"label": "дарс бошланди", "value": miniapp_course.lesson_users, "tone": "hot"},
+                {"label": "дарс тугади", "value": miniapp_course.completed_users, "tone": "hot"},
+                {"label": "тўлов текширувда", "value": pending_payments, "tone": "warn"},
+                {"label": "канал ёқилган", "value": "ҳа" if channels_enabled else "йўқ", "tone": "flat"},
+                {"label": "фаол канал", "value": active_channels, "tone": "flat"},
+                {"label": "реклама етказилди", "value": ad_summary.get("delivered", 0), "tone": "hot"},
+                {"label": "реклама хатоси", "value": ad_summary.get("failed", 0), "tone": "risk"},
             ],
             "bars": [
-                {"label": "24 soat aktiv", "value": active_24h, "tone": "hot"},
-                {"label": "Haftalik aktiv", "value": active_week, "tone": "hot"},
-                {"label": "Kurs ochildi", "value": miniapp_course.opened_users, "tone": "hot"},
-                {"label": "Dars boshlandi", "value": miniapp_course.lesson_users, "tone": "hot"},
-                {"label": "Dars tugadi", "value": miniapp_course.completed_users, "tone": "hot"},
-                {"label": "Tekshiruvdagi to'lov", "value": pending_payments, "tone": "warn"},
-                {"label": "Reklama yetkazildi", "value": ad_summary.get("delivered", 0), "tone": "hot"},
-                {"label": "Reklama xatosi", "value": ad_summary.get("failed", 0), "tone": "risk"},
+                {"label": "24 соат фаол", "value": active_24h, "tone": "hot"},
+                {"label": "Ҳафталик фаол", "value": active_week, "tone": "hot"},
+                {"label": "Курс очилди", "value": miniapp_course.opened_users, "tone": "hot"},
+                {"label": "Дарс бошланди", "value": miniapp_course.lesson_users, "tone": "hot"},
+                {"label": "Дарс тугади", "value": miniapp_course.completed_users, "tone": "hot"},
+                {"label": "Текширувдаги тўлов", "value": pending_payments, "tone": "warn"},
+                {"label": "Реклама етказилди", "value": ad_summary.get("delivered", 0), "tone": "hot"},
+                {"label": "Реклама хатоси", "value": ad_summary.get("failed", 0), "tone": "risk"},
             ],
         }
 
@@ -629,10 +629,10 @@ class AdminMiniAppService:
         qa_users: int,
         engagement: float,
     ) -> str:
-        source_text = "hali yo'q"
+        source_text = "ҳали йўқ"
         if source_rows:
             source_text = "\n".join(
-                f"{row['label']}: foydalanuvchi {row['unique_all']}/+{row['unique_week']} · kirish {row['total_all']}/+{row['total_week']}"
+                f"{row['label']}: фойдаланувчи {row['unique_all']}/+{row['unique_week']} · кириш {row['total_all']}/+{row['total_week']}"
                 for row in source_rows
             )
         level_text = " · ".join(
@@ -642,38 +642,38 @@ class AdminMiniAppService:
         language_text = " · ".join(
             f"{_language_label(key)}: {value}"
             for key, value in sorted(language_counts.items())
-        ) or "hali yo'q"
-        channel_status = "yoqilgan" if channels_enabled else "o'chirilgan"
+        ) or "ҳали йўқ"
+        channel_status = "ёқилган" if channels_enabled else "ўчирилган"
         return (
-            f"📊 Statistika {now.astimezone(ADMIN_MINIAPP_TZ).strftime('%d.%m.%Y %H:%M Asia/Shanghai')}\n"
+            f"📊 Статистика {now.astimezone(ADMIN_MINIAPP_TZ).strftime('%d.%m.%Y %H:%M Asia/Shanghai')}\n"
             "────────────────────────────────\n\n"
-            f"👥 FOYDALANUVCHILAR [{total}]\n"
-            f"Bepul: {status_counts.get('free', 0)} · Sinov: {status_counts.get('trial', 0)}\n"
-            f"Faol holat: {status_counts.get('active', 0)} · To'lovli: {paid_users}\n"
-            f"Tarixiy tasdiqlangan: {historical_approved_users}\n"
-            f"Tugagan: {status_counts.get('expired', 0)} · Bloklangan: {status_counts.get('blocked', 0)}\n\n"
-            "📅 FAOLLIK\n"
-            f"Yangi: bugun +{new_today} · hafta +{new_week} · oy +{new_month}\n"
-            f"Aktiv: bugun {active_today} · 24 soat {active_24h} · hafta {active_week}\n\n"
-            "📊 DARAJALAR\n"
+            f"👥 ФОЙДАЛАНУВЧИЛАР [{total}]\n"
+            f"Бепул: {status_counts.get('free', 0)} · Синов: {status_counts.get('trial', 0)}\n"
+            f"Фаол ҳолат: {status_counts.get('active', 0)} · Тўловли: {paid_users}\n"
+            f"Тарихий тасдиқланган: {historical_approved_users}\n"
+            f"Тугаган: {status_counts.get('expired', 0)} · Блокланган: {status_counts.get('blocked', 0)}\n\n"
+            "📅 ФАОЛЛИК\n"
+            f"Янги: бугун +{new_today} · ҳафта +{new_week} · ой +{new_month}\n"
+            f"Фаол: бугун {active_today} · 24 соат {active_24h} · ҳафта {active_week}\n\n"
+            "📊 ДАРАЖАЛАР\n"
             f"{level_text}\n\n"
-            "🌐 TIL\n"
+            "🌐 ТИЛ\n"
             f"{language_text}\n\n"
-            "💳 TO'LOVLAR\n"
-            f"Kutilmoqda: {pending_payments} · Tasdiqlangan: {approved_payments} · Rad: {rejected_payments}\n"
-            f"10 kun: {pay_by_plan.get('10_days', 0)} · 1 oy: {pay_by_plan.get('1_month', 0)}\n"
-            f"Jami daromad: {approved_total_text}\n\n"
-            "💎 OBUNA MANBALARI\n"
+            "💳 ТЎЛОВЛАР\n"
+            f"Кутилмоқда: {pending_payments} · Тасдиқланган: {approved_payments} · Рад: {rejected_payments}\n"
+            f"10 кун: {pay_by_plan.get('10_days', 0)} · 1 ой: {pay_by_plan.get('1_month', 0)}\n"
+            f"Жами даромад: {approved_total_text}\n\n"
+            "💎 ОБУНА МАНБАЛАРИ\n"
             f"{source_text}\n\n"
-            "📚 KURS\n"
-            f"Mini ilova ochgan: {miniapp_course.opened_users} · Dars boshlaganlar: {miniapp_course.lesson_users}\n"
-            f"Dars tugatganlar: {miniapp_course.completed_users} · Tugatilgan qismlar: {miniapp_course.completed_sections}\n"
-            f"Tugatilgan darslar: {miniapp_course.completed_book_lessons} · O'rtacha qism: {avg_sections}\n\n"
-            "📣 REKLAMA VA KANAL\n"
-            f"Reklama kampaniyalari: {ad_summary.get('total', 0)} · Faol: {ad_summary.get('active', 0)}\n"
-            f"Yetkazildi: {ad_summary.get('delivered', 0)} · Xato: {ad_summary.get('failed', 0)}\n"
-            f"Majburiy kanal: {channel_status} · Aktiv kanal: {active_channels}\n\n"
-            "📈 KONVERSIYA\n"
-            f"Foydalanuvchi → to'lovli: {conversion}%\n"
-            f"Savol berganlar: {qa_users} ({engagement}%)"
+            "📚 КУРС\n"
+            f"Мини илова очган: {miniapp_course.opened_users} · Дарс бошлаганлар: {miniapp_course.lesson_users}\n"
+            f"Дарс тугатганлар: {miniapp_course.completed_users} · Тугатилган қисмлар: {miniapp_course.completed_sections}\n"
+            f"Тугатилган дарслар: {miniapp_course.completed_book_lessons} · Ўртача қисм: {avg_sections}\n\n"
+            "📣 РЕКЛАМА ВА КАНАЛ\n"
+            f"Реклама кампаниялари: {ad_summary.get('total', 0)} · Фаол: {ad_summary.get('active', 0)}\n"
+            f"Етказилди: {ad_summary.get('delivered', 0)} · Хато: {ad_summary.get('failed', 0)}\n"
+            f"Мажбурий канал: {channel_status} · Фаол канал: {active_channels}\n\n"
+            "📈 КОНВЕРСИЯ\n"
+            f"Фойдаланувчи → тўловли: {conversion}%\n"
+            f"Савол берганлар: {qa_users} ({engagement}%)"
         )

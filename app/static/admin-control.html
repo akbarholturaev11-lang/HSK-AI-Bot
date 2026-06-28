@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>HSK AI admin boshqaruv</title>
+  <title>HSK AI админ бошқаруви</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root{
@@ -30,7 +30,8 @@
       color-scheme:light;
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;letter-spacing:0}
-    html,body{margin:0;min-height:100%;width:100%;overflow-x:hidden;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    html,body{margin:0;min-height:100%;width:100%;overflow-x:hidden;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;-webkit-text-size-adjust:100%}
+    html{scroll-behavior:smooth}
     body{padding:var(--safe-top) 0 var(--safe-bottom)}
     body.locked{overflow:hidden}
     button,input,select,textarea{font:inherit}
@@ -84,7 +85,7 @@
     .score{font-size:12px;font-weight:850;border-radius:999px;padding:6px 8px;background:var(--green-soft);color:var(--green)}
     .toolbar{display:grid;gap:9px;margin-bottom:10px}
     .search-row{display:grid;grid-template-columns:1fr auto;gap:8px}
-    .input{width:100%;height:42px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 12px;color:var(--ink);outline:none}
+    .input{width:100%;height:42px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:0 12px;color:var(--ink);outline:none;font-size:16px}
     .input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,92,168,.12)}
     .icon-btn{width:42px;height:42px;border-radius:8px;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:950}
     .filters{display:flex;gap:7px;overflow:auto;padding-bottom:2px}
@@ -119,8 +120,8 @@
     .form-row.two{grid-template-columns:1fr 1fr}
     .form-row label{font-size:11px;font-weight:900;color:var(--muted)}
     .select,.textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);outline:none}
-    .select{height:42px;padding:0 12px}
-    .textarea{min-height:92px;padding:10px 12px;resize:vertical;line-height:1.4}
+    .select{height:42px;padding:0 12px;font-size:16px}
+    .textarea{min-height:92px;padding:10px 12px;resize:vertical;line-height:1.4;font-size:16px}
     .select:focus,.textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,92,168,.12)}
     .action-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .mini-panel{display:grid;gap:10px}
@@ -210,7 +211,7 @@
     @media (min-width:820px){
       body{padding:0;overflow:hidden}
       .app{grid-template-columns:300px minmax(0,1fr);grid-template-rows:1fr;height:100dvh;overflow:hidden}
-      .topbar{height:100dvh;border-bottom:0;border-right:1px solid var(--line);display:grid;grid-template-rows:auto 1fr}
+      .topbar{height:100dvh;border-bottom:0;border-right:1px solid var(--line);display:grid;grid-template-rows:auto 1fr;overflow:auto}
       .topbar-inner{padding:20px}
       .brand-row{grid-template-columns:1fr}
       .brand{align-items:flex-start}
@@ -270,8 +271,8 @@
 <body>
   <div id="loadingState" class="screen-state">
     <div class="state-card">
-      <h2>Kirish tekshirilyapti</h2>
-      <p>Real admin ma'lumotlar faqat Telegram admin Mini App orqali tekshirilgan sessiyada yuklanadi.</p>
+      <h2>Кириш текширилмоқда</h2>
+      <p>Реал админ маълумотлар фақат Telegram админ Mini App орқали текширилган сессияда юкланади.</p>
     </div>
   </div>
 
@@ -282,27 +283,27 @@
           <div class="brand">
             <div class="brand-mark">HSK</div>
             <div>
-              <h1>Admin boshqaruv</h1>
-              <p>Bot, foydalanuvchi, obuna va to'lov markazi</p>
+              <h1>Админ бошқаруви</h1>
+              <p>Бот, фойдаланувчи, обуна ва тўлов маркази</p>
             </div>
           </div>
           <div class="top-actions">
             <div class="status-pill">
               <span class="pulse"></span>
-              <span>Jonli ma'lumot</span>
-              <strong class="phone-label">Telefon ko'rinishi</strong>
-              <strong class="mac-label">Kompyuter ko'rinishi</strong>
+              <span>Жонли маълумот</span>
+              <strong class="phone-label">Телефон кўриниши</strong>
+              <strong class="mac-label">Компьютер кўриниши</strong>
             </div>
-            <button class="monitor-link" data-action="open-monitor">Katta ekran</button>
+            <button class="monitor-link" data-action="open-monitor">Катта экран</button>
           </div>
         </div>
       </div>
-      <nav class="tabs" aria-label="Admin oynalari">
-        <button class="tab active" data-tab="dashboard">Bosh</button>
-        <button class="tab" data-tab="statistics">Statistika</button>
-        <button class="tab" data-tab="users">Odamlar</button>
-        <button class="tab" data-tab="payments">To'lovlar</button>
-        <button class="tab" data-tab="settings">Sozlash</button>
+      <nav class="tabs" aria-label="Админ ойналари">
+        <button class="tab active" data-tab="dashboard">Бош</button>
+        <button class="tab" data-tab="statistics">Статистика</button>
+        <button class="tab" data-tab="users">Одамлар</button>
+        <button class="tab" data-tab="payments">Тўловлар</button>
+        <button class="tab" data-tab="settings">Созлаш</button>
       </nav>
     </aside>
 
@@ -311,10 +312,10 @@
         <div class="section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">Bugungi boshqaruv</h2>
-              <p id="generatedAt" class="section-note">Yangilanmoqda...</p>
+              <h2 class="section-title">Бугунги бошқарув</h2>
+              <p id="generatedAt" class="section-note">Янгиланмоқда...</p>
             </div>
-            <button class="mini-link" data-action="reload">Yangilash</button>
+            <button class="mini-link" data-action="reload">Янгилаш</button>
           </div>
           <div id="statsGrid" class="grid stats-grid"></div>
         </div>
@@ -322,10 +323,10 @@
         <div class="section" style="margin-bottom:16px">
           <div class="section-head">
             <div>
-              <h2 class="section-title">💎 Obuna manbalari</h2>
-              <p class="section-note">Qaysi bo'limdan obuna sahifasiga o'tganlar (hafta / jami)</p>
+              <h2 class="section-title">💎 Обуна манбалари</h2>
+              <p class="section-note">Қайси бўлимдан обуна саҳифасига ўтганлар (ҳафта / жами)</p>
             </div>
-            <button class="mini-link" onclick="loadSubEntryStats()">Yangilash</button>
+            <button class="mini-link" onclick="loadSubEntryStats()">Янгилаш</button>
           </div>
           <div id="subEntryStats" style="overflow-x:auto">
             <p class="section-note" style="padding:12px 0">Yuklanmoqda…</p>
@@ -336,10 +337,10 @@
           <div class="section">
             <div class="section-head">
               <div>
-                <h2 class="section-title">Foydalanuvchi segmentlari</h2>
-                <p class="section-note">Obuna, to'lov va faollik bo'yicha kesim.</p>
+                <h2 class="section-title">Фойдаланувчи сегментлари</h2>
+                <p class="section-note">Обуна, тўлов ва фаоллик бўйича кесим.</p>
               </div>
-              <button class="mini-link" data-open-tab="users">Odamlarga o'tish</button>
+              <button class="mini-link" data-open-tab="users">Одамларга ўтиш</button>
             </div>
             <div id="segments" class="segment-strip"></div>
           </div>
@@ -347,8 +348,8 @@
           <div class="section">
             <div class="section-head">
               <div>
-                <h2 class="section-title">Aqlli navbat</h2>
-                <p class="section-note">Admin birinchi ko'rishi kerak bo'lgan ishlar.</p>
+                <h2 class="section-title">Ақлли навбат</h2>
+                <p class="section-note">Админ биринчи кўриши керак бўлган ишлар.</p>
               </div>
             </div>
             <div id="queue" class="queue"></div>
@@ -360,29 +361,29 @@
         <div class="section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">Umumiy statistika</h2>
-              <p class="section-note">Botdagi admin hisobot, mini ilova, to'lov, reklama va kanal signallari.</p>
+              <h2 class="section-title">Умумий статистика</h2>
+              <p class="section-note">Ботдаги админ ҳисобот, мини илова, тўлов, реклама ва канал сигналлари.</p>
             </div>
             <div class="section-actions">
-              <button class="mini-link" data-action="copy-stats">Hisobotni nusxalash</button>
-              <button class="mini-link" data-action="open-monitor">Katta ekran</button>
+              <button class="mini-link" data-action="copy-stats">Ҳисоботни нусхалаш</button>
+              <button class="mini-link" data-action="open-monitor">Катта экран</button>
             </div>
           </div>
           <div class="report-layout">
             <article class="report-card">
               <div class="report-top">
-                <div class="report-title">📊 Statistika</div>
-                <button class="report-copy" data-action="copy-stats">Nusxa olish</button>
+                <div class="report-title">📊 Статистика</div>
+                <button class="report-copy" data-action="copy-stats">Нусха олиш</button>
               </div>
               <pre id="reportText" class="report-text"></pre>
             </article>
             <aside class="report-side">
               <div class="insight-card">
-                <h3>Konversiya yo'li</h3>
+                <h3>Конверсия йўли</h3>
                 <div id="conversionBars"></div>
               </div>
               <div class="insight-card">
-                <h3>Admin fokusi</h3>
+                <h3>Админ фокуси</h3>
                 <div id="focusList" class="queue"></div>
               </div>
             </aside>
@@ -394,13 +395,13 @@
         <div class="section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">Foydalanuvchilar</h2>
-              <p class="section-note">Oxirgi aktivlar, obunachilar, olmoqchi bo'lganlar va bloklanganlar.</p>
+              <h2 class="section-title">Фойдаланувчилар</h2>
+              <p class="section-note">Охирги фаоллар, обуначилар, олмоқчи бўлганлар ва блокланганлар.</p>
             </div>
           </div>
           <div class="toolbar">
             <div class="search-row">
-              <input id="search" class="input" placeholder="ID, telegram nomi, ism yoki tarif bo'yicha qidirish">
+              <input id="search" class="input" placeholder="ID, telegram номи, исм ёки тариф бўйича қидириш">
               <button class="icon-btn" data-action="clear-search">X</button>
             </div>
             <div id="filters" class="filters"></div>
@@ -413,10 +414,10 @@
         <div class="section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">To'lov navbati</h2>
-              <p class="section-note">Oxirgi to'lov arizalari va tekshiruvdagi to'lovlar.</p>
+              <h2 class="section-title">Тўлов навбати</h2>
+              <p class="section-note">Охирги тўлов аризалари ва текширувдаги тўловлар.</p>
             </div>
-            <button class="mini-link" data-open-tab="statistics">Statistikaga o'tish</button>
+            <button class="mini-link" data-open-tab="statistics">Статистикага ўтиш</button>
           </div>
           <div id="paymentBoard" class="payment-board"></div>
         </div>
@@ -426,8 +427,8 @@
         <div class="section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">Boshqaruv bo'limlari</h2>
-              <p class="section-note">Har bir tugma Mini App ichida real boshqaruv panelini ochadi.</p>
+              <h2 class="section-title">Бошқарув бўлимлари</h2>
+              <p class="section-note">Ҳар бир тугма Mini App ичида реал бошқарув панелини очади.</p>
             </div>
           </div>
           <div id="adminModules" class="settings-grid"></div>
@@ -436,8 +437,8 @@
         <div class="section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">Joriy sozlamalar</h2>
-              <p class="section-note">Narxlar, kanal, reklama va fikr yig'ish holati.</p>
+              <h2 class="section-title">Жорий созламалар</h2>
+              <p class="section-note">Нархлар, канал, реклама ва фикр йиғиш ҳолати.</p>
             </div>
           </div>
           <div id="settingsSummary" class="settings-grid"></div>
@@ -446,8 +447,8 @@
         <div class="section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">🔔 Motivatsion eslatmalar</h2>
-              <p class="section-note">Reyting, kunlik maqsad va streak eslatmalari. Matnni 3 tilda tahrirlang, surat yoki video biriktiring. Matn bo'sh qoldirilsa standart matn ishlatiladi.</p>
+              <h2 class="section-title">🔔 Мотивацион эслатмалар</h2>
+              <p class="section-note">Рейтинг, кунлик мақсад ва streak эслатмалари. Матнни 3 тилда таҳрирланг, сурат ёки видео бириктиринг. Матн бўш қолдирилса стандарт матн ишлатилади.</p>
             </div>
           </div>
           <div id="notifTemplates" class="notif-grid">
@@ -458,22 +459,22 @@
         <div class="section">
           <div class="section-head">
             <div>
-              <h2 class="section-title">🎬 Course reklama roliklari</h2>
-              <p class="section-note">Premium darsni reklama bilan davom ettirgan userlarga dars boshida, o'rtasida va oxirida 6-7 soniya majburiy video ko'rsatiladi.</p>
+              <h2 class="section-title">🎬 Курс реклама роликлари</h2>
+              <p class="section-note">Premium дарсни реклама билан давом эттирган фойдаланувчиларга дарс бошида, ўртасида ва охирида 6-7 сония мажбурий видео кўрсатилади.</p>
             </div>
           </div>
           <div class="notif-card">
             <div class="nc-head">
               <div>
-                <h3 class="nc-title">Yangi reklama video</h3>
-                <p class="nc-note">MP4, WebM yoki MOV. Premium userlarga reklama ko'rsatilmaydi.</p>
+                <h3 class="nc-title">Янги реклама видео</h3>
+                <p class="nc-note">MP4, WebM ёки MOV. Premium фойдаланувчиларга реклама кўрсатилмайди.</p>
               </div>
               <span class="tag blue">Course v3</span>
             </div>
-            <div class="nc-lang"><label>Sarlavha</label><input id="courseAdTitle" class="input" maxlength="120" placeholder="Masalan: Premium taklif yoki partner roligi"></div>
-            <div class="nc-lang"><label>Majburiy ko'rish vaqti</label><input id="courseAdDuration" class="input" type="number" min="6" max="7" value="7"></div>
+            <div class="nc-lang"><label>Сарлавҳа</label><input id="courseAdTitle" class="input" maxlength="120" placeholder="Масалан: Premium таклиф ёки ҳамкор ролиги"></div>
+            <div class="nc-lang"><label>Мажбурий кўриш вақти</label><input id="courseAdDuration" class="input" type="number" min="6" max="7" value="7"></div>
             <div class="nc-actions">
-              <button class="btn" data-action="upload-course-ad">Video yuklash</button>
+              <button class="btn" data-action="upload-course-ad">Видео юклаш</button>
               <input id="courseAdFile" type="file" accept="video/*" hidden>
             </div>
           </div>
@@ -491,25 +492,25 @@
     <div class="monitor-shell">
       <header class="monitor-top">
         <div>
-          <div class="monitor-kicker"><span class="monitor-dot"></span><span>Jonli admin oynasi</span></div>
-          <h2 class="monitor-title">Katta ekran</h2>
-          <p class="monitor-sub">Bozor paneli uslubida: foydalanuvchi oqimi, obuna, to'lov, kurs va reklama signallari.</p>
+          <div class="monitor-kicker"><span class="monitor-dot"></span><span>Жонли админ ойнаси</span></div>
+          <h2 class="monitor-title">Катта экран</h2>
+          <p class="monitor-sub">Бозор панели услубида: фойдаланувчи оқими, обуна, тўлов, курс ва реклама сигналлари.</p>
         </div>
-        <button class="btn secondary" data-action="close-monitor">Yopish</button>
+        <button class="btn secondary" data-action="close-monitor">Ёпиш</button>
       </header>
       <div class="ticker-mask"><div id="tickerTrack" class="ticker-track"></div></div>
       <div class="monitor-grid">
         <article class="monitor-card">
-          <h3>Haftalik oqim</h3>
+          <h3>Ҳафталик оқим</h3>
           <p id="monitorActive" class="big-number">0</p>
-          <p id="monitorNote" class="monitor-note">Yuklanmoqda...</p>
+          <p id="monitorNote" class="monitor-note">Юкланмоқда...</p>
         </article>
         <article class="monitor-card span-2">
-          <h3>Kurs va to'lov harakati</h3>
+          <h3>Курс ва тўлов ҳаракати</h3>
           <div id="candleChart" class="candle-chart"></div>
         </article>
         <article class="monitor-card span-2">
-          <h3>Qizigan bo'limlar</h3>
+          <h3>Қизиган бўлимлар</h3>
           <div id="heatMap" class="heat-map"></div>
         </article>
       </div>
@@ -519,7 +520,7 @@
   <aside id="drawer" class="drawer" aria-hidden="true">
     <div class="drawer-head">
       <div>
-        <h2 id="drawerTitle" class="drawer-title">Foydalanuvchi</h2>
+        <h2 id="drawerTitle" class="drawer-title">Фойдаланувчи</h2>
         <p id="drawerSub" class="drawer-sub"></p>
       </div>
       <button id="closeDrawer" class="close">X</button>
@@ -527,7 +528,7 @@
     <div id="drawerBody" class="drawer-body"></div>
   </aside>
 
-  <div id="toast" class="toast">Amal bajarildi</div>
+  <div id="toast" class="toast">Амал бажарилди</div>
 
   <script>
     const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -536,13 +537,13 @@
     const $ = (id) => document.getElementById(id);
     const state = {data:null, management:null, remoteUsers:null, activeModule:null, tab:"dashboard", filter:"all", search:""};
     const segmentLabels = {
-      all:["Barcha foydalanuvchilar","To'liq baza"],
-      paid:["Obuna olgan","Hozir aktiv"],
-      pending:["To'lov rasmi yuborgan","Tasdiq kutyapti"],
-      wants_pay:["Obuna olmoqchi","Issiq mijoz"],
-      trial:["Sinov","Bepul sinovdagi"],
-      expired:["Muddati tugagan","Qayta sotish"],
-      blocked:["Bloklangan","Admin qarori kerak"]
+      all:["Барча фойдаланувчилар","Тўлиқ база"],
+      paid:["Обуна олган","Ҳозир фаол"],
+      pending:["Тўлов расми юборган","Тасдиқ кутяпти"],
+      wants_pay:["Обуна олмоқчи","Иссиқ мижоз"],
+      trial:["Синов","Бепул синовдаги"],
+      expired:["Муддати тугаган","Қайта сотиш"],
+      blocked:["Блокланган","Админ қарори керак"]
     };
 
     function showToast(text){
@@ -576,20 +577,20 @@
     function apiErrorText(error, fallback){
       const key = error && error.data && error.data.error ? error.data.error : "";
       const labels = {
-        invalid_telegram_init_data:"Telegram sessiya noto'g'ri",
-        admin_only:"Admin ruxsati yo'q",
-        payment_already_reviewed:"Bu to'lov allaqachon ko'rib chiqilgan",
-        payment_not_found:"To'lov topilmadi",
-        user_not_found:"User topilmadi",
-        invalid_price_payload:"Narx ma'lumoti noto'g'ri",
-        invalid_channel_payload:"Kanal ma'lumoti noto'g'ri",
-        delete_confirmation_required:"O'chirish uchun IDni tasdiq maydoniga yozing",
-        invalid_help_url:"Yordam linki noto'g'ri",
-        invalid_contact:"Admin kontakt noto'g'ri",
-        invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun",
-        invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas"
+        invalid_telegram_init_data:"Telegram сессия нотўғри",
+        admin_only:"Админ рухсати йўқ",
+        payment_already_reviewed:"Бу тўлов аллақачон кўриб чиқилган",
+        payment_not_found:"Тўлов топилмади",
+        user_not_found:"Фойдаланувчи топилмади",
+        invalid_price_payload:"Нарх маълумоти нотўғри",
+        invalid_channel_payload:"Канал маълумоти нотўғри",
+        delete_confirmation_required:"Ўчириш учун IDни тасдиқ майдонига ёзинг",
+        invalid_help_url:"Ёрдам линки нотўғри",
+        invalid_contact:"Админ контакт нотўғри",
+        invalid_broadcast_text:"Хабар матни жуда қисқа ёки узун",
+        invalid_campaign_payload:"Кампания маълумоти тўлиқ эмас"
       };
-      return labels[key] || fallback || "Amal bajarilmadi";
+      return labels[key] || fallback || "Амал бажарилмади";
     }
 
     async function loadData(){
@@ -602,9 +603,9 @@
         renderAll();
       }catch(error){
         const code = error && error.status;
-        if(code === 401) setError("Kirish rad etildi", "Mini ilovani Telegram ichidan admin tugmasi orqali oching.");
-        else if(code === 403) setError("Admin ruxsati yo'q", "Bu mini ilova faqat adminlar uchun.");
-        else setError("Ulanish xatosi", "Serverdan ma'lumot olib bo'lmadi. Keyinroq qayta oching.");
+        if(code === 401) setError("Кириш рад этилди", "Мини иловани Telegram ичидан админ тугмаси орқали очинг.");
+        else if(code === 403) setError("Админ рухсати йўқ", "Бу мини илова фақат админлар учун.");
+        else setError("Уланиш хатоси", "Сервердан маълумот олиб бўлмади. Кейинроқ қайта очинг.");
       }
     }
 
@@ -619,15 +620,15 @@
     }
 
     function statusTone(user){
-      if(user.payment_status === "approved" && user.status === "active") return ["Obunachi","green"];
-      if(user.payment_status === "pending") return ["To'lov tekshiruvda","amber"];
-      if(user.status === "expired") return ["Muddati tugagan","red"];
-      if(user.status === "blocked") return ["Bloklangan","red"];
-      return [user.status_label || "Holat yo'q","violet"];
+      if(user.payment_status === "approved" && user.status === "active") return ["Обуначи","green"];
+      if(user.payment_status === "pending") return ["Тўлов текширувда","amber"];
+      if(user.status === "expired") return ["Муддати тугаган","red"];
+      if(user.status === "blocked") return ["Блокланган","red"];
+      return [user.status_label || "Ҳолат йўқ","violet"];
     }
 
     function renderStats(){
-      $("generatedAt").textContent = `Oxirgi yangilanish: ${state.data.generated_at || "—"}`;
+      $("generatedAt").textContent = `Охирги янгиланиш: ${state.data.generated_at || "—"}`;
       $("statsGrid").innerHTML = (state.data.summary || []).map(item => `
         <article class="stat ${item.tone || ""}">
           <div class="label">${escapeHtml(item.label)}</div>
@@ -668,10 +669,10 @@
       const payments = state.data.counts || {};
       const opened = Math.max(Number(course.opened_users || 0), 1);
       const rows = [
-        ["Ochildi", course.opened_users || 0, 100],
-        ["Dars", course.lesson_users || 0, Math.round((course.lesson_users || 0) / opened * 100)],
-        ["Tugatdi", course.completed_users || 0, Math.round((course.completed_users || 0) / opened * 100)],
-        ["To'lovli", payments.paid_users || 0, Math.round((payments.paid_users || 0) / opened * 100)]
+        ["Очилди", course.opened_users || 0, 100],
+        ["Дарс", course.lesson_users || 0, Math.round((course.lesson_users || 0) / opened * 100)],
+        ["Тугатди", course.completed_users || 0, Math.round((course.completed_users || 0) / opened * 100)],
+        ["Тўловли", payments.paid_users || 0, Math.round((payments.paid_users || 0) / opened * 100)]
       ];
       $("conversionBars").innerHTML = rows.map(row => `
         <div class="bar-row"><span>${row[0]}</span><div class="bar-track"><span style="width:${Math.min(row[2],100)}%"></span></div><b>${row[1]}</b></div>
@@ -719,21 +720,21 @@
           <div class="tag-row">
             ${tag(user.plan, "blue")}
             ${tag(user.method, "")}
-            ${tag(user.end_date ? "tugaydi " + user.end_date : "aktiv obuna yo'q", user.end_date ? "green" : "red")}
+            ${tag(user.end_date ? "тугайди " + user.end_date : "фаол обуна йўқ", user.end_date ? "green" : "red")}
           </div>
           <div class="split">
-            <div class="small-metric"><b>${escapeHtml(user.questions)}</b><span>AI savollar</span></div>
-            <div class="small-metric"><b>${escapeHtml(user.streak)}</b><span>o'qish seriyasi</span></div>
+            <div class="small-metric"><b>${escapeHtml(user.questions)}</b><span>AI саволлар</span></div>
+            <div class="small-metric"><b>${escapeHtml(user.streak)}</b><span>ўқиш серияси</span></div>
           </div>
         </button>`;
-      }).join("") : `<div class="payment-card">Bu saralash bo'yicha foydalanuvchi topilmadi.</div>`;
+      }).join("") : `<div class="payment-card">Бу саралаш бўйича фойдаланувчи топилмади.</div>`;
     }
 
     function renderPayments(){
       const groups = [
-        ["Tekshiruvdagi to'lovlar", (state.data.payments.latest || []).filter(item => item.status === "pending")],
-        ["Oxirgi tasdiqlanganlar", (state.data.payments.latest || []).filter(item => item.status === "approved")],
-        ["Rad etilganlar", (state.data.payments.latest || []).filter(item => item.status === "rejected")]
+        ["Текширувдаги тўловлар", (state.data.payments.latest || []).filter(item => item.status === "pending")],
+        ["Охирги тасдиқланганлар", (state.data.payments.latest || []).filter(item => item.status === "approved")],
+        ["Рад этилганлар", (state.data.payments.latest || []).filter(item => item.status === "rejected")]
       ];
       $("paymentBoard").innerHTML = groups.map(group => `
         <div>
@@ -748,13 +749,13 @@
                   </div>
                   <div class="amount">${escapeHtml(payment.amount)}</div>
                 </div>
-                <div class="tag-row">${tag(payment.status_label, payment.status === "approved" ? "green" : payment.status === "pending" ? "amber" : "red")}${tag(payment.has_screenshot ? "rasm bor" : "rasm yo'q","")}</div>
+                <div class="tag-row">${tag(payment.status_label, payment.status === "approved" ? "green" : payment.status === "pending" ? "amber" : "red")}${tag(payment.has_screenshot ? "расм бор" : "расм йўқ","")}</div>
                 ${payment.status === "pending" ? `<div class="action-row">
-                  <button class="btn" data-payment-review="${payment.id}" data-review-action="approve">Tasdiqlash</button>
-                  <button class="btn secondary" data-payment-review="${payment.id}" data-review-action="reject">Rad etish</button>
+                  <button class="btn" data-payment-review="${payment.id}" data-review-action="approve">Тасдиқлаш</button>
+                  <button class="btn secondary" data-payment-review="${payment.id}" data-review-action="reject">Рад этиш</button>
                 </div>` : ""}
               </article>
-            `).join("") || `<article class="payment-card"><div class="user-sub">Hozircha bo'sh.</div></article>`}
+            `).join("") || `<article class="payment-card"><div class="user-sub">Ҳозирча бўш.</div></article>`}
           </div>
         </div>
       `).join("");
@@ -764,7 +765,7 @@
       $("adminModules").innerHTML = (state.data.modules || []).map(item => `
         <button class="setting-row" data-module="${item.key}">
           <div><h3>${item.icon} ${escapeHtml(item.title)}</h3><p>${escapeHtml(item.note)}</p></div>
-          <span class="tag green">ochish</span>
+          <span class="tag green">очиш</span>
         </button>
       `).join("");
       const channels = state.data.channels || {};
@@ -772,14 +773,14 @@
       const feedback = state.data.feedback || {};
       const prices = state.data.prices || [];
       $("settingsSummary").innerHTML = [
-        ["💳 Narxlar", prices.map(item => `${item.method} ${item.plan}: ${item.amount}`).join(" · ") || "Narx topilmadi", "prices"],
-        ["📣 Majburiy kanal", `${channels.enabled ? "Yoqilgan" : "O'chirilgan"} · aktiv kanal: ${channels.active_count || 0}`, "channels"],
-        ["📢 Reklama", `kampaniya: ${ads.total || 0} · faol: ${ads.active || 0} · xato: ${ads.failed || 0}`, "ads"],
-        ["🆕 Yangilik fikri", `kutilmoqda: ${feedback.pending || 0} · tugagan: ${feedback.completed || 0}`, "release_feedback"]
+        ["💳 Нархлар", prices.map(item => `${item.method} ${item.plan}: ${item.amount}`).join(" · ") || "Нарх топилмади", "prices"],
+        ["📣 Мажбурий канал", `${channels.enabled ? "Ёқилган" : "Ўчирилган"} · фаол канал: ${channels.active_count || 0}`, "channels"],
+        ["📢 Реклама", `кампания: ${ads.total || 0} · фаол: ${ads.active || 0} · хато: ${ads.failed || 0}`, "ads"],
+        ["🆕 Янгилик фикри", `кутилмоқда: ${feedback.pending || 0} · тугаган: ${feedback.completed || 0}`, "release_feedback"]
       ].map(item => `
         <button class="setting-row" data-module="${item[2]}">
           <div><h3>${item[0]}</h3><p>${escapeHtml(item[1])}</p></div>
-          <span class="tag blue">boshqarish</span>
+          <span class="tag blue">бошқариш</span>
         </button>
       `).join("");
     }
@@ -792,7 +793,7 @@
         <span class="ticker-item"><span class="${item.tone || "flat"}">●</span>${escapeHtml(item.label)} <b>${escapeHtml(item.value)}</b></span>
       `).join("");
       $("monitorActive").textContent = counts.active_week || 0;
-      $("monitorNote").textContent = `${counts.active_24h || 0} foydalanuvchi 24 soatda aktiv. Tekshiruvdagi to'lov: ${counts.pending_payments || 0}.`;
+      $("monitorNote").textContent = `${counts.active_24h || 0} фойдаланувчи 24 соатда фаол. Текширувдаги тўлов: ${counts.pending_payments || 0}.`;
       const bars = (monitor.bars || []).filter(item => Number(item.value || 0) >= 0);
       const maxBar = Math.max(1, ...bars.map(item => Number(item.value || 0)));
       $("candleChart").innerHTML = bars.length ? bars.map(item => {
@@ -800,7 +801,7 @@
         const height = Math.max(6, Math.round(value / maxBar * 100));
         const risk = item.tone === "risk" || item.tone === "warn" ? "risk" : "";
         return `<span class="candle ${risk}" title="${escapeHtml(item.label)}: ${escapeHtml(value)}" style="--h:${height}%"></span>`;
-      }).join("") : '<span class="section-note">Grafik uchun real signal hali yo\'q.</span>';
+      }).join("") : '<span class="section-note">График учун реал сигнал ҳали йўқ.</span>';
       $("heatMap").innerHTML = (monitor.heat || []).map(item => `
         <div class="heat-cell ${item.tone || ""}"><strong>${escapeHtml(item.value)}</strong><span>${escapeHtml(item.label)}</span></div>
       `).join("");
@@ -812,64 +813,64 @@
       if(!user) return;
       $("drawerTitle").textContent = user.name;
       $("drawerSub").textContent = `${user.username ? "@" + user.username + " · " : ""}${user.id} · ${user.last_active}`;
-      $("drawerBody").innerHTML = '<p class="section-note">Yuklanmoqda…</p>';
+      $("drawerBody").innerHTML = '<p class="section-note">Юкланмоқда…</p>';
       $("drawer").classList.add("open");
       $("drawer").setAttribute("aria-hidden","false");
       let detail = null;
       try{
         detail = await apiPost("/api/admin-miniapp/users/detail", {telegram_id:user.id});
       }catch(error){
-        showToast(apiErrorText(error, "User detail yuklanmadi"));
+        showToast(apiErrorText(error, "Фойдаланувчи тафсилоти юкланмади"));
       }
       const full = detail && detail.user ? detail.user : user;
       const payments = detail && detail.payments ? detail.payments : [];
       $("drawerBody").innerHTML = `
         <section class="detail-section">
-          <h3 class="detail-title">Ruxsat va obuna</h3>
+          <h3 class="detail-title">Рухсат ва обуна</h3>
           <div class="kv">
-            <span>Holat</span><b>${escapeHtml(full.status_label || full.status)}</b>
-            <span>To'lov</span><b>${escapeHtml(full.payment_label || full.payment_status)}</b>
-            <span>Tarif</span><b>${escapeHtml(full.plan || full.selected_plan_type || "—")}</b>
-            <span>Usul</span><b>${escapeHtml(full.method || full.payment_method || "—")}</b>
-            <span>Boshlangan</span><b>${escapeHtml(full.start_date || "—")}</b>
-            <span>Tugash sanasi</span><b>${escapeHtml(full.end_date || "yo'q")}</b>
+            <span>Ҳолат</span><b>${escapeHtml(full.status_label || full.status)}</b>
+            <span>Тўлов</span><b>${escapeHtml(full.payment_label || full.payment_status)}</b>
+            <span>Тариф</span><b>${escapeHtml(full.plan || full.selected_plan_type || "—")}</b>
+            <span>Усул</span><b>${escapeHtml(full.method || full.payment_method || "—")}</b>
+            <span>Бошланган</span><b>${escapeHtml(full.start_date || "—")}</b>
+            <span>Тугаш санаси</span><b>${escapeHtml(full.end_date || "йўқ")}</b>
           </div>
         </section>
         <section class="detail-section">
-          <h3 class="detail-title">O'qish</h3>
+          <h3 class="detail-title">Ўқиш</h3>
           <div class="kv">
-            <span>Til</span><b>${escapeHtml(full.language)}</b>
-            <span>Daraja</span><b>${escapeHtml(full.level)}</b>
-            <span>Rejim</span><b>${escapeHtml(full.mode || full.learning_mode)}</b>
-            <span>Savollar</span><b>${escapeHtml(full.questions)}</b>
-            <span>Bonus</span><b>${escapeHtml(full.bonus_left)}</b>
-            <span>Seriya</span><b>${escapeHtml(full.streak)} kun</b>
-            <span>Referral</span><b>${escapeHtml(full.referral_code || "—")}</b>
+            <span>Тил</span><b>${escapeHtml(full.language)}</b>
+            <span>Даража</span><b>${escapeHtml(full.level)}</b>
+            <span>Режим</span><b>${escapeHtml(full.mode || full.learning_mode)}</b>
+            <span>Саволлар</span><b>${escapeHtml(full.questions)}</b>
+            <span>Бонус</span><b>${escapeHtml(full.bonus_left)}</b>
+            <span>Серия</span><b>${escapeHtml(full.streak)} кун</b>
+            <span>Реферал</span><b>${escapeHtml(full.referral_code || "—")}</b>
           </div>
         </section>
         <section class="detail-section">
-          <h3 class="detail-title">To'lov tarixi</h3>
+          <h3 class="detail-title">Тўлов тарихи</h3>
           <div class="mini-panel">
             ${payments.length ? payments.map(payment => `<div class="mini-card">
               <h3>#${payment.id} · ${escapeHtml(payment.status)}</h3>
               <p>${escapeHtml(payment.plan)} · ${escapeHtml(payment.method)} · ${escapeHtml(payment.amount)}<br>${escapeHtml(payment.submitted_at)} ${payment.comment ? "· " + escapeHtml(payment.comment) : ""}</p>
-            </div>`).join("") : '<p class="section-note">To\'lov tarixi yo\'q.</p>'}
+            </div>`).join("") : '<p class="section-note">Тўлов тарихи йўқ.</p>'}
           </div>
         </section>
         <section class="detail-section">
-          <h3 class="detail-title">Admin amallari</h3>
+          <h3 class="detail-title">Админ амаллари</h3>
           <div class="mini-panel">
             <div class="form-row">
-              <label>Qo'lda obuna berish</label>
+              <label>Қўлда обуна бериш</label>
               <div class="action-row">
                 <select id="quickAccessPlan" class="select" style="max-width:160px">
-                  <option value="10_days">10 kun</option>
-                  <option value="1_month">1 oy</option>
+                  <option value="10_days">10 кун</option>
+                  <option value="1_month">1 ой</option>
                 </select>
-                <button class="btn" data-user-access="${full.id}">Obuna berish</button>
+                <button class="btn" data-user-access="${full.id}">Обуна бериш</button>
               </div>
             </div>
-            <button class="btn danger" data-module="delete_user" data-prefill="${full.id}">Userni o'chirish</button>
+            <button class="btn danger" data-module="delete_user" data-prefill="${full.id}">Фойдаланувчини ўчириш</button>
           </div>
         </section>
       `;
@@ -920,9 +921,9 @@
     async function openAdminSection(section){
       try{
         await apiPost("/api/admin-miniapp/open-section", {section});
-        showToast("Bu bo'lim Mini App ichida ochiladi");
+        showToast("Бу бўлим Mini App ичида очилади");
       }catch(error){
-        showToast("Bo'limni ochib bo'lmadi");
+        showToast("Бўлимни очиб бўлмади");
       }
     }
 
@@ -936,16 +937,16 @@
 
     function moduleTitle(key){
       const item = (state.data.modules || []).find(row => row.key === key);
-      return item ? `${item.icon} ${item.title}` : "Boshqaruv";
+      return item ? `${item.icon} ${item.title}` : "Бошқарув";
     }
 
     async function openModule(key, prefill){
       state.activeModule = key;
       closeDrawer();
-      setDrawer(moduleTitle(key), "Mini App ichidagi real boshqaruv", '<p class="section-note">Yuklanmoqda…</p>');
+      setDrawer(moduleTitle(key), "Mini App ичидаги реал бошқарув", '<p class="section-note">Юкланмоқда…</p>');
       let data;
       try{ data = await loadManagement(false); }
-      catch(error){ setDrawer(moduleTitle(key), "", '<p class="section-note">Ma\'lumot yuklanmadi.</p>'); return; }
+      catch(error){ setDrawer(moduleTitle(key), "", '<p class="section-note">Маълумот юкланмади.</p>'); return; }
       if(key === "stats"){ switchTab("statistics"); closeDrawer(); return; }
       if(key === "user_search"){ switchTab("users"); closeDrawer(); $("search").focus(); return; }
       if(key === "prices") return renderPricesModule(data);
@@ -960,74 +961,74 @@
       if(key === "give_access") return renderGiveAccessModule(prefill);
       if(key === "delete_user") return renderDeleteUserModule(prefill);
       if(key === "audio") return renderAudioModule(data);
-      setDrawer(moduleTitle(key), "", '<p class="section-note">Bu bo\'lim uchun Mini App panel tayyor emas.</p>');
+      setDrawer(moduleTitle(key), "", '<p class="section-note">Бу бўлим учун Mini App панел тайёр эмас.</p>');
     }
 
     function renderPricesModule(data){
-      setDrawer("💳 Obuna narxlari", "Narxlar darhol subscription Mini Appda ishlaydi", `
+      setDrawer("💳 Обуна нархлари", "Нархлар дарҳол subscription Mini Appда ишлайди", `
         <div class="mini-panel">
           ${(data.prices || []).map(price => `<div class="mini-card" data-price-row data-method="${price.method}" data-plan="${price.plan}">
             <h3>${escapeHtml(price.method_label)} · ${escapeHtml(price.plan_label)}</h3>
-            <p>Joriy: ${escapeHtml(price.text)}</p>
+            <p>Жорий: ${escapeHtml(price.text)}</p>
             <div class="action-row">
               <input class="input" data-price-amount type="number" min="1" max="1000000" value="${price.amount}" style="max-width:160px">
-              <button class="btn" data-price-save>Saqlash</button>
+              <button class="btn" data-price-save>Сақлаш</button>
             </div>
           </div>`).join("")}
           <div class="mini-card">
-            <h3>Karta rekviziti</h3>
+            <h3>Карта реквизити</h3>
             <textarea id="paymentDetailsInput" class="textarea" maxlength="1500">${escapeHtml(data.payment_details || "")}</textarea>
-            <button class="btn" data-payment-details-save>Rekvizitni saqlash</button>
+            <button class="btn" data-payment-details-save>Реквизитни сақлаш</button>
           </div>
-          <p class="section-note">Alipay/WeChat uchun custom QR file_id flow chat admin bo'limida ham saqlanib qolgan.</p>
+          <p class="section-note">Alipay/WeChat учун махсус QR file_id оқими чат админ бўлимида ҳам сақланиб қолган.</p>
         </div>
       `);
     }
 
     function renderChannelsModule(data){
       const channels = data.channels || {};
-      setDrawer("📣 Majburiy kanal", "Kanal majburiyligini Mini App ichida boshqarish", `
+      setDrawer("📣 Мажбурий канал", "Канал мажбурийлигини Mini App ичида бошқариш", `
         <div class="mini-panel">
           <div class="mini-card">
-            <h3>Majburiy obuna holati</h3>
-            <p>Hozir: ${channels.enabled ? "yoqilgan" : "o'chirilgan"}</p>
-            <button class="btn ${channels.enabled ? "secondary" : ""}" data-channel-mode="${channels.enabled ? "0" : "1"}">${channels.enabled ? "O'chirish" : "Yoqish"}</button>
+            <h3>Мажбурий обуна ҳолати</h3>
+            <p>Ҳозир: ${channels.enabled ? "ёқилган" : "ўчирилган"}</p>
+            <button class="btn ${channels.enabled ? "secondary" : ""}" data-channel-mode="${channels.enabled ? "0" : "1"}">${channels.enabled ? "Ўчириш" : "Ёқиш"}</button>
           </div>
           <div class="mini-card">
-            <h3>Kanal qo'shish</h3>
+            <h3>Канал қўшиш</h3>
             <div class="form-grid">
-              <div class="form-row"><label>Kanal title</label><input id="channelTitle" class="input" placeholder="HSK AI kanal"></div>
+              <div class="form-row"><label>Канал номи</label><input id="channelTitle" class="input" placeholder="HSK AI канал"></div>
               <div class="form-row"><label>@username yoki chat_id</label><input id="channelChatId" class="input" placeholder="@channel yoki -100..."></div>
-              <div class="form-row"><label>Invite link</label><input id="channelInvite" class="input" placeholder="https://t.me/..."></div>
-              <button class="btn" data-channel-add>Kanalni saqlash</button>
+              <div class="form-row"><label>Таклиф линки</label><input id="channelInvite" class="input" placeholder="https://t.me/..."></div>
+              <button class="btn" data-channel-add>Канални сақлаш</button>
             </div>
           </div>
           ${(channels.items || []).map(item => `<div class="mini-card">
             <h3>${escapeHtml(item.title)}</h3>
-            <p>${escapeHtml(item.chat_id)}<br>${escapeHtml(item.invite_link || "link yo'q")}</p>
+            <p>${escapeHtml(item.chat_id)}<br>${escapeHtml(item.invite_link || "линк йўқ")}</p>
             <div class="action-row">
-              ${tag(item.active ? "aktiv" : "o'chirilgan", item.active ? "green" : "red")}
-              <button class="btn secondary" data-channel-toggle="${item.id}" data-active="${item.active ? "0" : "1"}">${item.active ? "O'chirish" : "Yoqish"}</button>
-              <button class="btn danger" data-channel-delete="${item.id}">O'chirish</button>
+              ${tag(item.active ? "фаол" : "ўчирилган", item.active ? "green" : "red")}
+              <button class="btn secondary" data-channel-toggle="${item.id}" data-active="${item.active ? "0" : "1"}">${item.active ? "Ўчириш" : "Ёқиш"}</button>
+              <button class="btn danger" data-channel-delete="${item.id}">Ўчириш</button>
             </div>
-          </div>`).join("") || '<p class="section-note">Kanal qo\'shilmagan.</p>'}
+          </div>`).join("") || '<p class="section-note">Канал қўшилмаган.</p>'}
         </div>
       `);
     }
 
     function renderHelpModule(data){
       const help = data.help || {};
-      setDrawer("🆘 Yordam sozlamalari", "Admin aloqa va 3 tildagi video linklar", `
+      setDrawer("🆘 Ёрдам созламалари", "Админ алоқа ва 3 тилдаги видео линклар", `
         <div class="mini-panel">
           <div class="mini-card">
-            <h3>Admin aloqa</h3>
-            <input id="adminContactInput" class="input" value="${escapeHtml(help.admin_contact || "")}" placeholder="@username yoki t.me/link">
-            <button class="btn" data-help-contact-save>Saqlash</button>
+            <h3>Админ алоқа</h3>
+            <input id="adminContactInput" class="input" value="${escapeHtml(help.admin_contact || "")}" placeholder="@username ёки t.me/линк">
+            <button class="btn" data-help-contact-save>Сақлаш</button>
           </div>
           ${(help.links || []).map(item => `<div class="mini-card" data-help-row data-key="${item.key}" data-lang="${item.lang}">
             <h3>${escapeHtml(item.icon)} ${escapeHtml(item.label)} · ${escapeHtml(item.lang.toUpperCase())}</h3>
             <input class="input" data-help-value value="${escapeHtml(item.value || "")}" placeholder="https://...">
-            <button class="btn" data-help-save>Saqlash</button>
+            <button class="btn" data-help-save>Сақлаш</button>
           </div>`).join("")}
         </div>
       `);
@@ -1036,47 +1037,47 @@
     function renderPortfolioModule(data){
       const p = data.portfolio || {};
       const s = p.summary || {};
-      setDrawer("💼 Portfel", "Tushum, rasxod va sof foyda", `
+      setDrawer("💼 Портфель", "Тушум, харажат ва соф фойда", `
         <div class="mini-panel">
           <div class="mini-card">
-            <h3>Joriy holat</h3>
+            <h3>Жорий ҳолат</h3>
             <div class="kv">
-              <span>Tasdiqlangan to'lov</span><b>${escapeHtml(s.approved_payments || 0)}</b>
-              <span>Gross</span><b>${escapeHtml(s.gross_revenue_usd || "$0.00")}</b>
-              <span>Manual foyda</span><b>${escapeHtml(s.manual_profit_usd || "$0.00")}</b>
-              <span>Manual rasxod</span><b>${escapeHtml(s.manual_expense_usd || "$0.00")}</b>
-              <span>Net</span><b>${escapeHtml(s.net_usd || "$0.00")}</b>
+              <span>Тасдиқланган тўлов</span><b>${escapeHtml(s.approved_payments || 0)}</b>
+              <span>Ялпи тушум</span><b>${escapeHtml(s.gross_revenue_usd || "$0.00")}</b>
+              <span>Қўлда фойда</span><b>${escapeHtml(s.manual_profit_usd || "$0.00")}</b>
+              <span>Қўлда харажат</span><b>${escapeHtml(s.manual_expense_usd || "$0.00")}</b>
+              <span>Соф фойда</span><b>${escapeHtml(s.net_usd || "$0.00")}</b>
             </div>
           </div>
           <div class="mini-card">
-            <h3>Transaction qo'shish</h3>
+            <h3>Амалиёт қўшиш</h3>
             <div class="form-grid">
               <div class="form-row two">
-                <div><label>Tur</label><select id="portfolioType" class="select"><option value="profit">Foyda</option><option value="expense">Rasxod</option></select></div>
-                <div><label>Currency</label><select id="portfolioCurrency" class="select"><option value="usd">USD</option><option value="tjs">TJS</option><option value="¥">CNY/¥</option></select></div>
+                <div><label>Тур</label><select id="portfolioType" class="select"><option value="profit">Фойда</option><option value="expense">Харажат</option></select></div>
+                <div><label>Валюта</label><select id="portfolioCurrency" class="select"><option value="usd">USD</option><option value="tjs">TJS</option><option value="¥">CNY/¥</option></select></div>
               </div>
-              <div class="form-row"><label>Summa</label><input id="portfolioAmount" class="input" type="number" step="0.01" min="0"></div>
-              <div class="form-row"><label>Sabab</label><input id="portfolioNote" class="input" placeholder="OpenAI to'lov, reklama, ..."></div>
-              <button class="btn" data-portfolio-save>Saqlash</button>
+              <div class="form-row"><label>Сумма</label><input id="portfolioAmount" class="input" type="number" step="0.01" min="0"></div>
+              <div class="form-row"><label>Сабаб</label><input id="portfolioNote" class="input" placeholder="OpenAI тўлов, реклама, ..."></div>
+              <button class="btn" data-portfolio-save>Сақлаш</button>
             </div>
           </div>
           ${(p.history || []).map(item => `<div class="mini-card">
             <h3>${item.type === "profit" ? "+" : "-"} ${escapeHtml(item.amount_usd)}</h3>
             <p>${escapeHtml(item.source)} · ${escapeHtml(item.created_at)}<br>${escapeHtml(item.original || "")} ${escapeHtml(item.note || "")}</p>
-          </div>`).join("") || '<p class="section-note">History bo\'sh.</p>'}
+          </div>`).join("") || '<p class="section-note">Тарих бўш.</p>'}
         </div>
       `);
     }
 
     function renderBroadcastModule(){
-      setDrawer("📢 Ommaviy xabar", "Text xabarni segmentga darhol yuborish", `
+      setDrawer("📢 Оммавий хабар", "Матнли хабарни сегментга дарҳол юбориш", `
         <div class="mini-panel">
-          <div class="danger-note">Bu real yuborish. Tugmani bosgandan keyin xabar userlarga ketadi.</div>
+          <div class="danger-note">Бу реал юбориш. Тугмани босгандан кейин хабар фойдаланувчиларга кетади.</div>
           <div class="mini-card">
             <div class="form-grid">
-              <div class="form-row"><label>Segment</label><select id="broadcastSegment" class="select"><option value="all">Barcha aktiv bo'lmagan bloklanmaganlar</option><option value="paid">To'lovli active</option><option value="trial">Trial</option><option value="expired">Expired</option></select></div>
-              <div class="form-row"><label>Xabar</label><textarea id="broadcastText" class="textarea" maxlength="3500"></textarea></div>
-              <button class="btn danger" data-broadcast-send>Yuborish</button>
+              <div class="form-row"><label>Сегмент</label><select id="broadcastSegment" class="select"><option value="all">Барча фаол бўлмаган блокланмаганлар</option><option value="paid">Тўловли фаол</option><option value="trial">Синов</option><option value="expired">Муддати тугаган</option></select></div>
+              <div class="form-row"><label>Хабар</label><textarea id="broadcastText" class="textarea" maxlength="3500"></textarea></div>
+              <button class="btn danger" data-broadcast-send>Юбориш</button>
             </div>
           </div>
         </div>
@@ -1085,28 +1086,28 @@
 
     function renderCampaignModule(data, kind){
       const config = {
-        ad:["📣 Reklama kampaniyasi","ads","Text reklama schedule qilinadi, background sender yuboradi."],
-        release_feedback:["🆕 Yangilik fikri","release_feedback","Release feedback rating flow bilan schedule qilinadi."],
-        discount:["🎁 Chegirma","discounts","Chegirma kampaniyasi yaratiladi."]
+        ad:["📣 Реклама кампанияси","ads","Матнли реклама режалаштирилади, фонда юборувчи юборади."],
+        release_feedback:["🆕 Янгилик фикри","release_feedback","Янгилик фикри баҳолаш оқими билан режалаштирилади."],
+        discount:["🎁 Чегирма","discounts","Чегирма кампанияси яратилади."]
       }[kind];
       const rows = ((data.campaigns || {})[config[1]] || []);
       setDrawer(config[0], config[2], `
         <div class="mini-panel">
           <div class="mini-card">
             <div class="form-grid">
-              <div class="form-row"><label>Nomi</label><input id="campaignTitle" class="input" maxlength="120"></div>
-              <div class="form-row"><label>Matn / sabab</label><textarea id="campaignText" class="textarea" maxlength="3500"></textarea></div>
+              <div class="form-row"><label>Номи</label><input id="campaignTitle" class="input" maxlength="120"></div>
+              <div class="form-row"><label>Матн / сабаб</label><textarea id="campaignText" class="textarea" maxlength="3500"></textarea></div>
               <div class="form-row two">
-                <div><label>Davomiylik soat</label><input id="campaignHours" class="input" type="number" min="1" max="720" value="24"></div>
-                ${kind === "discount" ? '<div><label>Chegirma %</label><input id="campaignPercent" class="input" type="number" min="1" max="90" value="20"></div>' : '<div><label>Feature key</label><input id="campaignFeature" class="input" value="general"></div>'}
+                <div><label>Давомийлик соат</label><input id="campaignHours" class="input" type="number" min="1" max="720" value="24"></div>
+                ${kind === "discount" ? '<div><label>Чегирма %</label><input id="campaignPercent" class="input" type="number" min="1" max="90" value="20"></div>' : '<div><label>Хусусият калити</label><input id="campaignFeature" class="input" value="general"></div>'}
               </div>
-              <button class="btn" data-campaign-create="${kind}">Yaratish</button>
+              <button class="btn" data-campaign-create="${kind}">Яратиш</button>
             </div>
           </div>
           ${rows.map(item => `<div class="mini-card">
             <h3>#${item.id} · ${escapeHtml(item.title)}</h3>
             <p>${escapeHtml(item.status || (item.active ? "active" : "inactive"))} · ${escapeHtml(item.send_at || item.starts_at || "")}<br>${escapeHtml(item.text || "")}</p>
-          </div>`).join("") || '<p class="section-note">Hali yozuv yo\'q.</p>'}
+          </div>`).join("") || '<p class="section-note">Ҳали ёзув йўқ.</p>'}
         </div>
       `);
     }
@@ -1114,28 +1115,28 @@
     function renderPartnersModule(data){
       const p = data.partners || {};
       const stats = p.stats || {};
-      setDrawer("🤝 Hamkorlar", "Ariza, payout va statistika", `
+      setDrawer("🤝 Ҳамкорлар", "Ариза, тўлов ва статистика", `
         <div class="mini-panel">
-          <div class="mini-card"><h3>Statistika</h3><p>Pending: ${escapeHtml(stats.pending || 0)} · Active: ${escapeHtml(stats.active || 0)} · Referral: ${escapeHtml(stats.referrals || 0)} · Paid: ${escapeHtml(stats.paid_referrals || 0)}</p></div>
+          <div class="mini-card"><h3>Статистика</h3><p>Кутилмоқда: ${escapeHtml(stats.pending || 0)} · Фаол: ${escapeHtml(stats.active || 0)} · Реферал: ${escapeHtml(stats.referrals || 0)} · Тўланган: ${escapeHtml(stats.paid_referrals || 0)}</p></div>
           ${(p.pending || []).map(item => `<div class="mini-card">
-            <h3>Ariza #${item.id}</h3><p>${escapeHtml(item.telegram_id)} · ${escapeHtml(item.contact_username)}<br>${escapeHtml(item.promotion_channel)} · ${escapeHtml(item.audience_size)}</p>
-            <button class="btn" data-partner-action="approve" data-partner-id="${item.id}">Tasdiqlash</button>
-          </div>`).join("") || '<p class="section-note">Pending ariza yo\'q.</p>'}
+            <h3>Ариза #${item.id}</h3><p>${escapeHtml(item.telegram_id)} · ${escapeHtml(item.contact_username)}<br>${escapeHtml(item.promotion_channel)} · ${escapeHtml(item.audience_size)}</p>
+            <button class="btn" data-partner-action="approve" data-partner-id="${item.id}">Тасдиқлаш</button>
+          </div>`).join("") || '<p class="section-note">Кутилаётган ариза йўқ.</p>'}
           ${(p.payouts || []).map(item => `<div class="mini-card">
-            <h3>Payout #${item.id} · ${escapeHtml(item.amount_usd)}</h3><p>${escapeHtml(item.status)} · ${escapeHtml(item.local_amount)}<br>${escapeHtml(item.method)} · ${escapeHtml(item.account)}</p>
+            <h3>Тўлов #${item.id} · ${escapeHtml(item.amount_usd)}</h3><p>${escapeHtml(item.status)} · ${escapeHtml(item.local_amount)}<br>${escapeHtml(item.method)} · ${escapeHtml(item.account)}</p>
           </div>`).join("")}
         </div>
       `);
     }
 
     function renderGiveAccessModule(prefill){
-      setDrawer("✅ Obuna berish", "User ID va tarifni tanlang", `
+      setDrawer("✅ Обуна бериш", "Фойдаланувчи ID ва тарифни танланг", `
         <div class="mini-panel">
           <div class="mini-card">
             <div class="form-grid">
               <div class="form-row"><label>Telegram ID</label><input id="accessUserId" class="input" inputmode="numeric" value="${escapeHtml(prefill || "")}"></div>
-              <div class="form-row"><label>Tarif</label><select id="accessPlan" class="select"><option value="10_days">10 kun</option><option value="1_month">1 oy</option></select></div>
-              <button class="btn" data-access-save>Obuna berish</button>
+              <div class="form-row"><label>Тариф</label><select id="accessPlan" class="select"><option value="10_days">10 кун</option><option value="1_month">1 ой</option></select></div>
+              <button class="btn" data-access-save>Обуна бериш</button>
             </div>
           </div>
         </div>
@@ -1143,14 +1144,14 @@
     }
 
     function renderDeleteUserModule(prefill){
-      setDrawer("🗑 Userni o'chirish", "Xavfli amal: ID bilan tasdiqlanadi", `
+      setDrawer("🗑 Фойдаланувчини ўчириш", "Хавфли амал: ID билан тасдиқланади", `
         <div class="mini-panel">
-          <div class="danger-note">Bu user va unga bog'liq course/message/feedback ma'lumotlarini o'chiradi. Reset yo'q.</div>
+          <div class="danger-note">Бу фойдаланувчи ва унга боғлиқ курс/хабар/фикр маълумотларини ўчиради. Қайтариб бўлмайди.</div>
           <div class="mini-card">
             <div class="form-grid">
               <div class="form-row"><label>Telegram ID</label><input id="deleteUserId" class="input" inputmode="numeric" value="${escapeHtml(prefill || "")}"></div>
-              <div class="form-row"><label>Tasdiq uchun shu IDni qayta yozing</label><input id="deleteConfirm" class="input" inputmode="numeric"></div>
-              <button class="btn danger" data-delete-user>O'chirish</button>
+              <div class="form-row"><label>Тасдиқ учун шу IDни қайта ёзинг</label><input id="deleteConfirm" class="input" inputmode="numeric"></div>
+              <button class="btn danger" data-delete-user>Ўчириш</button>
             </div>
           </div>
         </div>
@@ -1159,18 +1160,18 @@
 
     function renderAudioModule(data){
       const rows = data.audio || [];
-      setDrawer("🎵 Audio boshqaruv", "Audio ro'yxatini Mini Appda tekshirish", `
+      setDrawer("🎵 Аудио бошқаруви", "Аудио рўйхатини Mini Appда текшириш", `
         <div class="mini-panel">
-          <div class="mini-card"><h3>Coverage</h3><p>${rows.map(row => `${row.level}: ${row.lessons} dars`).join(" · ")}</p></div>
+          <div class="mini-card"><h3>Қамров</h3><p>${rows.map(row => `${row.level}: ${row.lessons} дарс`).join(" · ")}</p></div>
           <div class="mini-card">
             <div class="form-row two">
-              <div><label>Level</label><select id="audioLevel" class="select"><option value="hsk1">HSK1</option><option value="hsk2">HSK2</option><option value="hsk3">HSK3</option><option value="hsk4">HSK4</option></select></div>
-              <div><label>Dars</label><input id="audioLesson" class="input" type="number" min="1" value="1"></div>
+              <div><label>Даража</label><select id="audioLevel" class="select"><option value="hsk1">HSK1</option><option value="hsk2">HSK2</option><option value="hsk3">HSK3</option><option value="hsk4">HSK4</option></select></div>
+              <div><label>Дарс</label><input id="audioLesson" class="input" type="number" min="1" value="1"></div>
             </div>
-            <button class="btn" data-audio-list>Ro'yxatni ko'rish</button>
+            <button class="btn" data-audio-list>Рўйхатни кўриш</button>
           </div>
           <div id="audioResult" class="mini-panel"></div>
-          <p class="section-note">Audio upload hali Telegram file_id talab qiladi, shuning uchun chatdagi upload flow saqlanadi.</p>
+          <p class="section-note">Аудио юклаш ҳали Telegram file_id талаб қилади, шунинг учун чатдаги юклаш оқими сақланади.</p>
         </div>
       `);
     }
@@ -1180,7 +1181,7 @@
       state.management = null;
       await loadData();
       if(module) await openModule(module);
-      showToast(message || "Saqlandi");
+      showToast(message || "Сақланди");
     }
 
     async function reviewPayment(btn){
@@ -1189,15 +1190,15 @@
       if(!paymentId || !action) return;
       let reason = "";
       if(action === "reject"){
-        reason = prompt("Rad sababini yozing", "rejected by admin mini app") || "";
+        reason = prompt("Рад сабабини ёзинг", "админ мини илова орқали рад этилди") || "";
         if(!reason.trim()) return;
       }
       btn.disabled = true;
       try{
         await apiPost("/api/admin-miniapp/payments/review", {payment_id:paymentId, action, reason});
-        await reloadAdminState(action === "approve" ? "To'lov tasdiqlandi" : "To'lov rad etildi");
+        await reloadAdminState(action === "approve" ? "Тўлов тасдиқланди" : "Тўлов рад этилди");
       }catch(error){
-        showToast(apiErrorText(error, "To'lovni ko'rib bo'lmadi"));
+        showToast(apiErrorText(error, "Тўловни кўриб бўлмади"));
       }finally{
         btn.disabled = false;
       }
@@ -1205,7 +1206,7 @@
 
     async function grantAccess(userId, plan){
       await apiPost("/api/admin-miniapp/users/give-access", {telegram_id:Number(userId), plan});
-      await reloadAdminState("Obuna berildi");
+      await reloadAdminState("Обуна берилди");
     }
 
     async function savePrice(btn){
@@ -1214,8 +1215,8 @@
       btn.disabled = true;
       try{
         await apiPost("/api/admin-miniapp/prices/save", {method:row.dataset.method, plan:row.dataset.plan, amount});
-        await reloadAdminState("Narx saqlandi");
-      }catch(error){ showToast(apiErrorText(error, "Narx saqlanmadi")); }
+        await reloadAdminState("Нарх сақланди");
+      }catch(error){ showToast(apiErrorText(error, "Нарх сақланмади")); }
       finally{ btn.disabled = false; }
     }
 
@@ -1223,8 +1224,8 @@
       btn.disabled = true;
       try{
         await apiPost("/api/admin-miniapp/payment-details/save", {payment_details:$("paymentDetailsInput").value});
-        await reloadAdminState("Rekvizit saqlandi");
-      }catch(error){ showToast(apiErrorText(error, "Rekvizit saqlanmadi")); }
+        await reloadAdminState("Реквизит сақланди");
+      }catch(error){ showToast(apiErrorText(error, "Реквизит сақланмади")); }
       finally{ btn.disabled = false; }
     }
 
@@ -1232,8 +1233,8 @@
       if(button) button.disabled = true;
       try{
         await apiPost("/api/admin-miniapp/channels/save", payload);
-        await reloadAdminState("Kanal sozlamasi saqlandi");
-      }catch(error){ showToast(apiErrorText(error, "Kanal saqlanmadi")); }
+        await reloadAdminState("Канал созламаси сақланди");
+      }catch(error){ showToast(apiErrorText(error, "Канал сақланмади")); }
       finally{ if(button) button.disabled = false; }
     }
 
@@ -1249,8 +1250,8 @@
             value:row.querySelector("[data-help-value]").value
           });
         }
-        await reloadAdminState("Yordam linki saqlandi");
-      }catch(error){ showToast(apiErrorText(error, "Yordam linki saqlanmadi")); }
+        await reloadAdminState("Ёрдам линки сақланди");
+      }catch(error){ showToast(apiErrorText(error, "Ёрдам линки сақланмади")); }
       finally{ button.disabled = false; }
     }
 
@@ -1263,26 +1264,26 @@
           currency:$("portfolioCurrency").value,
           note:$("portfolioNote").value
         });
-        await reloadAdminState("Portfel saqlandi");
-      }catch(error){ showToast(apiErrorText(error, "Portfel saqlanmadi")); }
+        await reloadAdminState("Портфель сақланди");
+      }catch(error){ showToast(apiErrorText(error, "Портфель сақланмади")); }
       finally{ btn.disabled = false; }
     }
 
     async function sendBroadcast(btn){
-      if(!confirm("Xabar userlarga hozir yuboriladi. Davom etasizmi?")) return;
+      if(!confirm("Хабар фойдаланувчиларга ҳозир юборилади. Давом этасизми?")) return;
       btn.disabled = true;
       try{
         const data = await apiPost("/api/admin-miniapp/broadcast/send", {
           segment:$("broadcastSegment").value,
           text:$("broadcastText").value
         });
-        showToast(`Yuborildi: ${data.sent}, xato: ${data.failed}`);
-      }catch(error){ showToast(apiErrorText(error, "Broadcast yuborilmadi")); }
+        showToast(`Юборилди: ${data.sent}, хато: ${data.failed}`);
+      }catch(error){ showToast(apiErrorText(error, "Оммавий хабар юборилмади")); }
       finally{ btn.disabled = false; }
     }
 
     async function createCampaign(btn, kind){
-      if(!confirm("Kampaniya real schedule qilinadi. Davom etasizmi?")) return;
+      if(!confirm("Кампания реал режалаштирилади. Давом этасизми?")) return;
       btn.disabled = true;
       try{
         await apiPost("/api/admin-miniapp/campaigns/create", {
@@ -1293,8 +1294,8 @@
           percent:$("campaignPercent") ? $("campaignPercent").value : undefined,
           feature_key:$("campaignFeature") ? $("campaignFeature").value : undefined
         });
-        await reloadAdminState("Kampaniya yaratildi");
-      }catch(error){ showToast(apiErrorText(error, "Kampaniya yaratilmadi")); }
+        await reloadAdminState("Кампания яратилди");
+      }catch(error){ showToast(apiErrorText(error, "Кампания яратилмади")); }
       finally{ btn.disabled = false; }
     }
 
@@ -1305,20 +1306,20 @@
           partner_id:Number(btn.dataset.partnerId || 0),
           action:btn.dataset.partnerAction
         });
-        await reloadAdminState("Hamkor holati yangilandi");
-      }catch(error){ showToast(apiErrorText(error, "Hamkor amali bajarilmadi")); }
+        await reloadAdminState("Ҳамкор ҳолати янгиланди");
+      }catch(error){ showToast(apiErrorText(error, "Ҳамкор амали бажарилмади")); }
       finally{ btn.disabled = false; }
     }
 
     async function giveAccessFromModule(btn){
       btn.disabled = true;
       try{ await grantAccess($("accessUserId").value, $("accessPlan").value); }
-      catch(error){ showToast(apiErrorText(error, "Obuna berilmadi")); }
+      catch(error){ showToast(apiErrorText(error, "Обуна берилмади")); }
       finally{ btn.disabled = false; }
     }
 
     async function deleteUser(btn){
-      if(!confirm("User o'chiriladi. Davom etasizmi?")) return;
+      if(!confirm("Фойдаланувчи ўчирилади. Давом этасизми?")) return;
       btn.disabled = true;
       try{
         await apiPost("/api/admin-miniapp/users/delete", {
@@ -1328,8 +1329,8 @@
         state.activeModule = null;
         closeDrawer();
         await loadData();
-        showToast("User o'chirildi");
-      }catch(error){ showToast(apiErrorText(error, "User o'chirilmadi")); }
+        showToast("Фойдаланувчи ўчирилди");
+      }catch(error){ showToast(apiErrorText(error, "Фойдаланувчи ўчирилмади")); }
       finally{ btn.disabled = false; }
     }
 
@@ -1342,24 +1343,24 @@
         });
         $("audioResult").innerHTML = (data.items || []).length
           ? data.items.map(item => `<div class="mini-card"><h3>${escapeHtml(item.audio_type)}</h3><p>${escapeHtml(item.file_id)}</p></div>`).join("")
-          : '<p class="section-note">Bu dars uchun audio yo\'q.</p>';
-      }catch(error){ showToast(apiErrorText(error, "Audio ro'yxat olinmadi")); }
+          : '<p class="section-note">Бу дарс учун аудио йўқ.</p>';
+      }catch(error){ showToast(apiErrorText(error, "Аудио рўйхат олинмади")); }
       finally{ btn.disabled = false; }
     }
 
     async function loadSubEntryStats(){
-      $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Yuklanmoqda…</p>';
+      $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Юкланмоқда…</p>';
       try{
         const d = await apiPost("/api/admin-miniapp/sub-entry-stats", {});
         if(!d.ok || !d.rows || !d.rows.length){
-          $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Ma\'lumot yo\'q</p>';
+          $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Маълумот йўқ</p>';
           return;
         }
         $("subEntryStats").innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:13px">
           <thead><tr style="text-align:left;color:var(--muted,#888)">
-            <th style="padding:6px 8px;font-weight:600">Manba</th>
-            <th style="padding:6px 8px;text-align:right;font-weight:600">Hafta<br><small>kirish / user</small></th>
-            <th style="padding:6px 8px;text-align:right;font-weight:600">Jami<br><small>kirish / user</small></th>
+            <th style="padding:6px 8px;font-weight:600">Манба</th>
+            <th style="padding:6px 8px;text-align:right;font-weight:600">Ҳафта<br><small>кириш / фойдаланувчи</small></th>
+            <th style="padding:6px 8px;text-align:right;font-weight:600">Жами<br><small>кириш / фойдаланувчи</small></th>
           </tr></thead>
           <tbody>${d.rows.map((r,i) => `<tr style="border-top:1px solid var(--line,#eee);background:${i%2===0?"transparent":"rgba(0,0,0,.02)"}">
             <td style="padding:7px 8px;font-weight:500">${escapeHtml(r.label)}</td>
@@ -1368,7 +1369,7 @@
           </tr>`).join("")}</tbody>
         </table>`;
       }catch(e){
-        $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Xatolik</p>';
+        $("subEntryStats").innerHTML = '<p class="section-note" style="padding:12px 0">Хатолик</p>';
       }
     }
 
@@ -1390,7 +1391,7 @@
         state.remoteUsers = data.users || [];
         renderUsers();
       }catch(error){
-        showToast(apiErrorText(error, "Qidirish ishlamadi"));
+        showToast(apiErrorText(error, "Қидириш ишламади"));
       }
     }
 
@@ -1405,7 +1406,7 @@
       renderModules();
       renderMonitor();
       loadSubEntryStats();
-      loadManagement(true).catch(() => showToast("Boshqaruv ma'lumotlari yuklanmadi"));
+      loadManagement(true).catch(() => showToast("Бошқарув маълумотлари юкланмади"));
       loadNotifications();
       loadCourseAds();
     }
@@ -1423,10 +1424,10 @@
     }
 
     function notifMediaPreview(item){
-      if(!item.media_url) return '<span class="section-note">Media biriktirilmagan</span>';
+      if(!item.media_url) return '<span class="section-note">Медиа бириктирилмаган</span>';
       return item.media_type === "video"
         ? `<video src="${item.media_url}" controls></video>`
-        : `<img src="${item.media_url}" alt="eslatma media">`;
+        : `<img src="${item.media_url}" alt="эслатма медиа">`;
     }
 
     function notifCardHtml(item){
@@ -1437,21 +1438,21 @@
           <div>
             <h3 class="nc-title">${escapeHtml(item.title)}</h3>
             <p class="nc-note">${escapeHtml(item.note)}</p>
-            <p class="nc-ph">O'zgaruvchilar: ${escapeHtml(phs)}</p>
+            <p class="nc-ph">Ўзгарувчилар: ${escapeHtml(phs)}</p>
           </div>
-          <label class="nc-switch"><input type="checkbox" data-nc="enabled" ${item.enabled ? "checked" : ""}> Yoqilgan</label>
+          <label class="nc-switch"><input type="checkbox" data-nc="enabled" ${item.enabled ? "checked" : ""}> Ёқилган</label>
         </div>
-        <div class="nc-lang"><label>🇺🇿 O'zbekcha</label><textarea data-nc="text_uz" maxlength="3500" placeholder="${escapeHtml(item.default_uz)}">${escapeHtml(item.text_uz)}</textarea></div>
-        <div class="nc-lang"><label>🇷🇺 Ruscha</label><textarea data-nc="text_ru" maxlength="3500" placeholder="${escapeHtml(item.default_ru)}">${escapeHtml(item.text_ru)}</textarea></div>
-        <div class="nc-lang"><label>🇹🇯 Tojikcha</label><textarea data-nc="text_tj" maxlength="3500" placeholder="${escapeHtml(item.default_tj)}">${escapeHtml(item.text_tj)}</textarea></div>
+        <div class="nc-lang"><label>🇺🇿 Ўзбекча</label><textarea data-nc="text_uz" maxlength="3500" placeholder="${escapeHtml(item.default_uz)}">${escapeHtml(item.text_uz)}</textarea></div>
+        <div class="nc-lang"><label>🇷🇺 Русча</label><textarea data-nc="text_ru" maxlength="3500" placeholder="${escapeHtml(item.default_ru)}">${escapeHtml(item.text_ru)}</textarea></div>
+        <div class="nc-lang"><label>🇹🇯 Тожикча</label><textarea data-nc="text_tj" maxlength="3500" placeholder="${escapeHtml(item.default_tj)}">${escapeHtml(item.text_tj)}</textarea></div>
         <div class="nc-media" data-nc-media>${notifMediaPreview(item)}</div>
         <div class="nc-actions">
-          <button class="btn" data-nc-act="save">Saqlash</button>
-          <button class="btn secondary" data-nc-act="upload">📎 Surat/video yuklash</button>
-          <button class="btn secondary" data-nc-act="clear-media"${item.media_url ? "" : " hidden"}>Mediani o'chirish</button>
+          <button class="btn" data-nc-act="save">Сақлаш</button>
+          <button class="btn secondary" data-nc-act="upload">📎 Сурат/видео юклаш</button>
+          <button class="btn secondary" data-nc-act="clear-media"${item.media_url ? "" : " hidden"}>Медиани ўчириш</button>
           <input type="file" accept="image/*,video/*" data-nc-file hidden>
         </div>
-        <p class="section-note">Media bilan caption max ${item.caption_max} belgi, mediasiz matn max ${item.text_max} belgi.</p>
+        <p class="section-note">Медиа билан изоҳ макс ${item.caption_max} белги, медиасиз матн макс ${item.text_max} белги.</p>
       </div>`;
     }
 
@@ -1464,7 +1465,7 @@
         host.innerHTML = items.map(notifCardHtml).join("");
         host.querySelectorAll(".notif-card").forEach(bindNotifCard);
       }catch(error){
-        host.innerHTML = '<p class="section-note" style="padding:12px 0">Eslatmalarni yuklab bo\'lmadi.</p>';
+        host.innerHTML = '<p class="section-note" style="padding:12px 0">Эслатмаларни юклаб бўлмади.</p>';
       }
     }
 
@@ -1489,9 +1490,9 @@
           text_ru: card.querySelector('[data-nc="text_ru"]').value,
           text_tj: card.querySelector('[data-nc="text_tj"]').value
         });
-        showToast("Eslatma saqlandi");
+        showToast("Эслатма сақланди");
       }catch(error){
-        showToast("Saqlashda xato");
+        showToast("Сақлашда хато");
       }finally{
         btn.disabled = false;
       }
@@ -1500,7 +1501,7 @@
     async function uploadNotifMedia(card, key, fileInput){
       const file = fileInput.files && fileInput.files[0];
       if(!file) return;
-      if(file.size > 25 * 1024 * 1024){ showToast("Fayl 25MB dan katta"); fileInput.value = ""; return; }
+      if(file.size > 25 * 1024 * 1024){ showToast("Файл 25MB дан катта"); fileInput.value = ""; return; }
       const formData = new FormData();
       formData.append("key", key);
       formData.append("media", file);
@@ -1509,9 +1510,9 @@
         card.dataset.mediaType = data.media_type;
         card.querySelector("[data-nc-media]").innerHTML = notifMediaPreview({ media_url: data.media_url + "?v=" + Date.now(), media_type: data.media_type });
         card.querySelector('[data-nc-act="clear-media"]').hidden = false;
-        showToast("Media biriktirildi");
+        showToast("Медиа бириктирилди");
       }catch(error){
-        showToast("Media yuklashda xato");
+        showToast("Медиа юклашда хато");
       }finally{
         fileInput.value = "";
       }
@@ -1523,9 +1524,9 @@
         card.dataset.mediaType = "none";
         card.querySelector("[data-nc-media]").innerHTML = notifMediaPreview({ media_url: null });
         card.querySelector('[data-nc-act="clear-media"]').hidden = true;
-        showToast("Media o'chirildi");
+        showToast("Медиа ўчирилди");
       }catch(error){
-        showToast("O'chirishda xato");
+        showToast("Ўчиришда хато");
       }
     }
 
@@ -1534,13 +1535,13 @@
         <div class="nc-head">
           <div>
             <h3 class="nc-title">${escapeHtml(item.title)}</h3>
-            <p class="nc-note">${item.duration_seconds || 7}s majburiy ko'rish · ${escapeHtml(item.created_at || "—")}</p>
+            <p class="nc-note">${item.duration_seconds || 7}s мажбурий кўриш · ${escapeHtml(item.created_at || "—")}</p>
           </div>
-          ${tag(item.is_active ? "aktiv" : "o'chirilgan", item.is_active ? "green" : "red")}
+          ${tag(item.is_active ? "фаол" : "ўчирилган", item.is_active ? "green" : "red")}
         </div>
-        <div class="nc-media">${item.media_url ? `<video src="${item.media_url}" controls muted playsinline></video>` : '<span class="section-note">Video yo\'q</span>'}</div>
+        <div class="nc-media">${item.media_url ? `<video src="${item.media_url}" controls muted playsinline></video>` : '<span class="section-note">Видео йўқ</span>'}</div>
         <div class="nc-actions">
-          <button class="btn secondary" data-course-ad-toggle="${item.id}" data-active="${item.is_active ? "0" : "1"}">${item.is_active ? "O'chirish" : "Yoqish"}</button>
+          <button class="btn secondary" data-course-ad-toggle="${item.id}" data-active="${item.is_active ? "0" : "1"}">${item.is_active ? "Ўчириш" : "Ёқиш"}</button>
         </div>
       </div>`;
     }
@@ -1551,9 +1552,9 @@
       try{
         const data = await apiPost("/api/admin-miniapp/course-ads", {});
         const items = data.items || [];
-        host.innerHTML = items.length ? items.map(courseAdCardHtml).join("") : '<p class="section-note" style="padding:12px 0">Hali reklama video yuklanmagan.</p>';
+        host.innerHTML = items.length ? items.map(courseAdCardHtml).join("") : '<p class="section-note" style="padding:12px 0">Ҳали реклама видео юкланмаган.</p>';
       }catch(error){
-        host.innerHTML = '<p class="section-note" style="padding:12px 0">Course reklamalarni yuklab bo\'lmadi.</p>';
+        host.innerHTML = '<p class="section-note" style="padding:12px 0">Курс рекламаларни юклаб бўлмади.</p>';
       }
     }
 
@@ -1567,18 +1568,18 @@
       const input = $("courseAdFile");
       const file = input && input.files && input.files[0];
       if(!file) return;
-      if(file.size > 25 * 1024 * 1024){ showToast("Fayl 25MB dan katta"); input.value = ""; return; }
+      if(file.size > 25 * 1024 * 1024){ showToast("Файл 25MB дан катта"); input.value = ""; return; }
       const formData = new FormData();
-      formData.append("title", $("courseAdTitle").value || "Course ad");
+      formData.append("title", $("courseAdTitle").value || "Курс реклама");
       formData.append("duration_seconds", $("courseAdDuration").value || "7");
       formData.append("media", file);
       try{
         await apiUpload("/api/admin-miniapp/course-ads/upload", formData);
         $("courseAdTitle").value = "";
-        showToast("Course reklama yuklandi");
+        showToast("Курс реклама юкланди");
         loadCourseAds();
       }catch(error){
-        showToast("Reklama yuklashda xato");
+        showToast("Реклама юклашда хато");
       }finally{
         input.value = "";
       }
@@ -1591,10 +1592,10 @@
       btn.disabled = true;
       try{
         await apiPost("/api/admin-miniapp/course-ads/toggle", {ad_id: adId, is_active: active});
-        showToast(active ? "Reklama yoqildi" : "Reklama o'chirildi");
+        showToast(active ? "Реклама ёқилди" : "Реклама ўчирилди");
         loadCourseAds();
       }catch(error){
-        showToast("Holatni o'zgartirib bo'lmadi");
+        showToast("Ҳолатни ўзгартириб бўлмади");
       }finally{
         btn.disabled = false;
       }
@@ -1620,7 +1621,7 @@
       const channelToggle = event.target.closest("[data-channel-toggle]");
       if(channelToggle){ saveChannel({action:"toggle", channel_id:Number(channelToggle.dataset.channelToggle), active:channelToggle.dataset.active === "1"}, channelToggle); return; }
       const channelDelete = event.target.closest("[data-channel-delete]");
-      if(channelDelete && confirm("Kanal o'chirilsinmi?")){ saveChannel({action:"delete", channel_id:Number(channelDelete.dataset.channelDelete)}, channelDelete); return; }
+      if(channelDelete && confirm("Канал ўчирилсинми?")){ saveChannel({action:"delete", channel_id:Number(channelDelete.dataset.channelDelete)}, channelDelete); return; }
       const helpContact = event.target.closest("[data-help-contact-save]");
       if(helpContact){ saveHelp("contact", helpContact); return; }
       const helpSave = event.target.closest("[data-help-save]");
@@ -1662,7 +1663,7 @@
       if(name === "upload-course-ad"){ uploadCourseAd(); return; }
       if(name === "copy-stats"){
         copyText(state.data && state.data.report_text ? state.data.report_text : "");
-        showToast("Hisobot nusxalandi");
+        showToast("Ҳисобот нусхаланди");
         return;
       }
       if(name === "open-monitor"){ openMonitor(); return; }
