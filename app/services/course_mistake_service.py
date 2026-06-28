@@ -165,6 +165,7 @@ class CourseMistakeService:
                     "level": item.level,
                     "lesson": item.lesson_order,
                     "question": item.prompt,
+                    "user_answer": item.user_answer,
                     "correct_answer": item.correct_answer,
                     "explanation": item.explanation,
                     "count": self._weakness(item),

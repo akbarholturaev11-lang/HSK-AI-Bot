@@ -50,21 +50,23 @@ var L={ru:{title:"Мои ошибки",sub:"Собираются автомат�
   uz:{title:"Xatolarim",sub:"Darslar, testlar va imtihonlardan avtomatik yig'iladi",emptyTitle:"Hozircha xato yo'q",emptySub:"Darslar va testlardan o'ting — xatolar shu yerda paydo bo'ladi va ularni mashq qila olasiz.",toCourse:"Darslarga",review:"Xatolar ustida ishlash",reviewSub:"Zaif joylarni tuzating",start:"Boshlash"},
   tj:{title:"Хатоҳои ман",sub:"Аз дарсҳо, тестҳо ва имтиҳонҳо худкор ҷамъ мешаванд",emptyTitle:"Ҳоло хато нест",emptySub:"Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.",toCourse:"Ба дарсҳо",review:"Кор бар хатоҳо",reviewSub:"Ҷойҳои заифро ислоҳ кунед",start:"Оғоз"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var INIT_DATA=(tg&&tg.initData)||"";
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function $(id){return document.getElementById(id)}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
 $("m-title").textContent=L.title;$("m-sub").textContent=L.sub;
 // Mistakes are user data from the server (Mistake Engine). Render list when present; otherwise the empty state.
 function renderList(items){
   var chips='<div class="chips"><button class="on">'+L.title+'</button></div>';
   var cta='<div class="cta"><span class="gw han">错</span><b><i class="ti ti-refresh"></i> '+L.review+'</b><p>'+items.length+' · '+L.reviewSub+'</p><button><i class="ti ti-player-play"></i> '+L.start+'</button></div>';
-  var list=items.map(function(it){return '<div class="item"><span class="tl"><i class="ti ti-book"></i></span><span class="mid"><span class="w"><b class="han">'+tr(it.zh)+'</b><span class="py">'+tr(it.py)+'</span></span><span class="err"><span class="x">✗ '+tr(it.wrong)+'</span> <span class="c">✓ '+tr(it.correct)+'</span></span></span><span class="cnt">'+(it.count||1)+'×</span></div>'}).join("");
+  var list=items.map(function(it){var wrong=it.user_answer?'<span class="x">✗ '+esc(it.user_answer)+'</span> ':'';return '<div class="item"><span class="tl"><i class="ti ti-book"></i></span><span class="mid"><span class="w"><b>'+esc(it.question)+'</b></span><span class="err">'+wrong+'<span class="c">✓ '+esc(it.correct_answer)+'</span></span></span><span class="cnt">'+(it.count||1)+'×</span></div>'}).join("");
   $("content").innerHTML=cta+chips+list;
 }
 function renderEmpty(){
   $("content").innerHTML='<div class="empty"><div class="ic"><i class="ti ti-circle-check"></i></div><h3>'+L.emptyTitle+'</h3><p>'+L.emptySub+'</p><button onclick="location.href=\'/course-v3.html?lang='+LANG+'&tab=course\'"><i class="ti ti-arrow-right"></i> '+L.toCourse+'</button></div>';
 }
-fetch("/api/miniapp/mistakes").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+fetch("/api/miniapp/mistakes",{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
   var items=(d&&d.items)||[];if(items.length)renderList(items);else renderEmpty();
 }).catch(function(){renderEmpty()});
 </script>
