@@ -1,7 +1,7 @@
 from datetime import date, datetime, timezone
 from typing import Optional
 
-from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -36,6 +36,9 @@ class CourseMiniAppProfile(Base):
     current_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     longest_streak: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     last_activity_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    # Master switch for the motivational reminders. Default ON; the user turns it
+    # off from the Mini App profile (with a warning). See MotivationReminderService.
+    notifications_enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     # Motivational reminder bookkeeping (managed by MotivationReminderService).
     last_known_rank: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     motivation_overtaken_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)

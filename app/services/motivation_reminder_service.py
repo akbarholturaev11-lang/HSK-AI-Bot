@@ -23,6 +23,10 @@ from app.services.notification_template_service import (
 # On-disk root for admin-uploaded reminder media (see /uploads/notifications route).
 MEDIA_ROOT = "app/static/uploads/notifications"
 
+# All reminders use Tajikistan local time (UTC+5), regardless of the per-profile
+# offset stored during onboarding.
+TJ_OFFSET_MIN = 5 * 60  # UTC+5
+
 # Evening window (local time) during which "daily goal" / "streak" reminders fire.
 GOAL_WINDOW_START_MIN = 20 * 60  # 20:00
 GOAL_WINDOW_END_MIN = 21 * 60 + 30  # 21:30
@@ -73,7 +77,7 @@ class MotivationReminderService:
         # Weekly XP per user for the current week (drives league ranking).
         weekly_xp: dict[int, int] = {}
         days = {
-            CourseGamificationService._local_day(p.timezone_offset_minutes, now)
+            CourseGamificationService._local_day(TJ_OFFSET_MIN, now)
             for p, _ in rows
         }
         week_starts = {CourseGamificationService._week_start(d) for d in days}
@@ -105,8 +109,11 @@ class MotivationReminderService:
 
         changed = False
         for profile, user in rows:
+            # Master switch: the user turned notifications off in the Mini App.
+            if not getattr(profile, "notifications_enabled", True):
+                continue
             lang = user.language if user.language in ("uz", "ru", "tj") else "ru"
-            offset = profile.timezone_offset_minutes
+            offset = TJ_OFFSET_MIN
             local_now = self._local_now(offset, now)
             local_day = local_now.date()
             studied_today = profile.last_activity_date == local_day

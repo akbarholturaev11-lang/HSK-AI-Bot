@@ -886,6 +886,10 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             "is_paid": is_paid,
             "referral_code": getattr(user, "referral_code", None) or "",
         }
+        # Motivational reminders are ON by default until the user turns them off.
+        data["notify"] = {
+            "enabled": bool(getattr(profile, "notifications_enabled", True)),
+        }
 
         _apply_course_v3_access_policy(data, level=resolved_level, completed=completed, is_paid=is_paid)
 
@@ -950,7 +954,19 @@ async def v3_notify_toggle(request: Request):
         return JSONResponse(status_code=401, content={"ok": False})
     payload = await request.json()
     enabled = bool(payload.get("enabled", True))
-    return JSONResponse(content={"ok": True, "notifications": enabled})
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=404, content={"ok": False})
+
+        # The toggle is the master switch for the motivational reminders
+        # (overtaken / daily goal / streak) sent by MotivationReminderService.
+        profile = await CourseMiniAppProfileService(session).get_or_create(user.id)
+        profile.notifications_enabled = enabled
+        await session.commit()
+
+        return JSONResponse(content={"ok": True, "notifications": enabled})
 
 
 @app.get("/api/v3/ad")
