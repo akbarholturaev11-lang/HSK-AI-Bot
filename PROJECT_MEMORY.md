@@ -230,27 +230,27 @@ Risk:
 Follow-up:
 - After deploy, wait for the 20:00-21:30 Tajikistan-time window or create a controlled test profile to confirm a real Telegram reminder is delivered.
 
-### 2026-06-29 — Course Mini App rank-up notification
+### 2026-06-29 — Course Mini App rating chat notification scope
 
 Changed:
-- Added `rating_passed` motivational reminder for the user who moves up in the Course Mini App rating by passing another user.
-- Existing `rating_overtaken` remains for the user whose rank drops.
+- `rating_passed` chat notification was removed; passing another user should not create a Telegram chat message for the passer.
+- `rating_overtaken` remains for the user whose rank drops.
 - Course leaderboard now seeds `last_known_rank` the first time the user loads the leaderboard, so future rank changes can be detected.
 
 Why:
-- The previous reminder only notified the opponent who was passed, not the user who moved up. Also, without an initial rank baseline, the first rank change could not be detected reliably.
+- Rank-up copy is better as Mini App post-lesson/result feedback, not as a Telegram chat notification. Without an initial rank baseline, rank-drop notifications still cannot be detected reliably.
 
 Files touched:
-- `app/services/notification_template_service.py`
 - `app/services/motivation_reminder_service.py`
 - `app/services/course_gamification_service.py`
+- `app/services/notification_template_service.py`
 - `tests/test_motivation_reminder_service.py`
 
 Risk:
-- Low/medium: new user-facing Telegram notification. No payment, subscription, lesson, quiz, homework, or access-limit logic changed.
+- Low: chat notification scope restored. No payment, subscription, lesson, quiz, homework, or access-limit logic changed.
 
 Follow-up:
-- Deploy and test with two real Telegram users: open rating once to seed baseline, let one user pass the other, then wait for the scheduler cycle.
+- If rank-up feedback is needed, add it to the Mini App post-lesson/result screen instead of Telegram chat.
 
 ### 2026-06-29 — Course Mini App practice/ad daily limits (server-side paywall)
 

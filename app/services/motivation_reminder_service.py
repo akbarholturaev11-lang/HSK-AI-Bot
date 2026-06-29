@@ -16,7 +16,6 @@ from app.services.notification_template_service import (
     CAPTION_MAX,
     KEY_DAILY_GOAL,
     KEY_OVERTAKEN,
-    KEY_PASSED,
     KEY_STREAK,
     NotificationTemplateService,
 )
@@ -155,12 +154,6 @@ class MotivationReminderService:
                 changed = True
                 profile.last_known_rank = current_rank
                 continue
-            if current_rank and await self._maybe_passed(
-                bot, profile, user, lang, current_rank, members, local_day
-            ):
-                changed = True
-                profile.last_known_rank = current_rank
-                continue
             if current_rank:
                 if profile.last_known_rank != current_rank:
                     profile.last_known_rank = current_rank
@@ -225,36 +218,6 @@ class MotivationReminderService:
             {"name": name[:40], "league": league, "rank": current_rank, "xp_gap": xp_gap},
         ):
             profile.motivation_overtaken_date = local_day
-            return True
-        return False
-
-    async def _maybe_passed(
-        self, bot, profile, user, lang, current_rank, members, local_day
-    ) -> bool:
-        prev_rank = profile.last_known_rank
-        # Notify when the user moved up after a known baseline.
-        if prev_rank is None or current_rank >= prev_rank:
-            return False
-        # Person now directly below the user.
-        if current_rank >= len(members):
-            return False
-        below_profile, below_user, below_wx = members[current_rank]
-        name = (below_user.full_name or "").strip() or (
-            f"@{below_user.username}" if below_user.username else "Bir o'quvchi"
-        )
-        my_wx = members[current_rank - 1][2]
-        xp_gap = self._xp_gap_to_above(my_wx, below_wx)
-        league = CourseGamificationService.league_for_xp(profile.xp_total)
-        resolved = await self.templates.resolve(KEY_PASSED, lang)
-        if not resolved:
-            return False
-        if await self._send(
-            bot,
-            user,
-            resolved,
-            lang,
-            {"name": name[:40], "league": league, "rank": current_rank, "xp_gap": xp_gap},
-        ):
             return True
         return False
 
