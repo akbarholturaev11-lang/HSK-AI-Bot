@@ -34,10 +34,8 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
         )
         self.service.user_repo = SimpleNamespace(get_by_telegram_id=AsyncMock(return_value=self.user))
         self.service.access = SimpleNamespace(
-            is_paid_user=lambda user: False,
-            consume_free_use=AsyncMock(return_value={"allowed": True}),
+            consume_daily_use=AsyncMock(return_value={"allowed": True}),
         )
-        self.service._is_completed = AsyncMock(return_value=False)
         self.service._questions = AsyncMock(return_value=[question("q1")])
         self.service.mistakes = SimpleNamespace(record_items=AsyncMock(return_value=0))
         self.service.gamification = SimpleNamespace(
@@ -59,14 +57,16 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertTrue(result["ok"])
         self.assertEqual(result["session"]["mode"], "mock")
-        self.service.access.consume_free_use.assert_awaited_once_with(
+        self.service.access.consume_daily_use.assert_awaited_once_with(
             self.user,
             feature_key="training_test",
-            usage_ref="practice:training_test:mock:hsk2:v1",
+            ref="mock:hsk2",
         )
 
-    async def test_completed_free_feature_is_locked_before_new_session(self):
-        self.service._is_completed = AsyncMock(return_value=True)
+    async def test_daily_feature_limit_blocks_new_session(self):
+        self.service.access.consume_daily_use = AsyncMock(
+            return_value={"allowed": False, "error": "free_feature_limit_reached"}
+        )
         result = await self.service.start(
             123,
             mode="training",
@@ -75,7 +75,11 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
             skill="listening",
         )
         self.assertEqual(result, {"ok": False, "error": "free_feature_limit_reached"})
-        self.service.access.consume_free_use.assert_not_awaited()
+        self.service.access.consume_daily_use.assert_awaited_once_with(
+            self.user,
+            feature_key="training_test",
+            ref="training:listening",
+        )
 
     async def test_v3_pinyin_training_skill_is_supported(self):
         analytics = SimpleNamespace(record_server_event=AsyncMock(return_value={"ok": True}))
@@ -120,6 +124,11 @@ class CourseMiniAppPracticeTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["percent"], 50)
         self.assertEqual(result["recommendation"], "HSK 1")
         self.assertEqual(self.user.payment_status, "none")
+        self.service.access.consume_daily_use.assert_awaited_once_with(
+            self.user,
+            feature_key="placement",
+            ref="placement:hsk1",
+        )
         analytics.record_server_event.assert_awaited_once()
         self.service.mistakes.record_items.assert_awaited_once()
         self.service.gamification.award.assert_awaited_once()
