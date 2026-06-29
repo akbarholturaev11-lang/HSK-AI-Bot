@@ -49,12 +49,57 @@ class CourseChallengeService:
         }
 
     @staticmethod
-    def _questions(challenge: CourseChallenge) -> list[dict]:
+    def _payload_map(challenge: CourseChallenge) -> dict:
+        """Parse question_payload into a {role: [questions]} map.
+
+        Backwards compatible: legacy challenges stored a flat list shared by
+        both players; expose it under both roles."""
+        def as_list(value) -> list:
+            return value if isinstance(value, list) else []
+
         try:
             value = json.loads(challenge.question_payload or "[]")
         except json.JSONDecodeError:
-            return []
-        return value if isinstance(value, list) else []
+            return {"challenger": [], "opponent": []}
+        if isinstance(value, list):
+            return {"challenger": value, "opponent": value}
+        if isinstance(value, dict):
+            return {
+                "challenger": as_list(value.get("challenger")),
+                "opponent": as_list(value.get("opponent")),
+            }
+        return {"challenger": [], "opponent": []}
+
+    @classmethod
+    def _questions(cls, challenge: CourseChallenge, role: str = "challenger") -> list[dict]:
+        """Questions for one player. Each player gets their own level-matched
+        set; legacy challenges fall back to the shared list."""
+        data = cls._payload_map(challenge)
+        return data.get(role) or data.get("challenger") or []
+
+    async def _generate_questions_for(self, user: User) -> list[dict]:
+        """Generate a fresh practice set matched to this user's own HSK level."""
+        level = self._level(getattr(user, "level", None))
+        lang = normalize_miniapp_lang(getattr(user, "language", None))
+        questions = await CourseMiniAppPracticeService(self.session)._questions(
+            "mock",
+            self._practice_level(level),
+            lang,
+            "",
+        )
+        return questions[:10]
+
+    async def _ensure_questions(self, challenge: CourseChallenge, user: User, role: str) -> list[dict]:
+        """Return this player's questions, generating + persisting them at the
+        player's own level the first time they are needed (e.g. on accept)."""
+        data = self._payload_map(challenge)
+        if data.get(role):
+            return data[role]
+        questions = await self._generate_questions_for(user)
+        data[role] = questions
+        challenge.question_payload = json.dumps(data, ensure_ascii=False)
+        await self.session.flush()
+        return questions
 
     def _challenge_payload(self, challenge: CourseChallenge, viewer: User, users: dict[int, User]) -> dict:
         challenger = users.get(int(challenge.challenger_user_id))
@@ -138,13 +183,11 @@ class CourseChallengeService:
         # va user.language. Client payload faqat eski URLlar uchun kelishi mumkin.
         level = self._level(getattr(challenger, "level", None))
         lang = normalize_miniapp_lang(getattr(challenger, "language", None))
-        questions = await CourseMiniAppPracticeService(self.session)._questions(
-            "mock",
-            self._practice_level(level),
-            lang,
-            "",
-        )
-        if not questions:
+        # Each player answers a set matched to their OWN level. The challenger's
+        # set is built now; the opponent's is built when they accept (their
+        # level may differ). Winner is decided by percentage, not raw score.
+        challenger_questions = await self._generate_questions_for(challenger)
+        if not challenger_questions:
             return {"ok": False, "error": "practice_questions_not_found"}
 
         challenge = CourseChallenge(
@@ -153,7 +196,10 @@ class CourseChallengeService:
             level=level,
             lang=lang,
             mode="mock",
-            question_payload=json.dumps(questions[:10], ensure_ascii=False),
+            question_payload=json.dumps(
+                {"challenger": challenger_questions, "opponent": []},
+                ensure_ascii=False,
+            ),
             status="pending",
         )
         self.session.add(challenge)
@@ -188,6 +234,12 @@ class CourseChallengeService:
         action = str(action or "").strip().lower()
         if action not in {"accept", "reject"}:
             return {"ok": False, "error": "challenge_bad_action"}
+        if action == "accept":
+            # Build the opponent's questions at THEIR own level before marking
+            # the round accepted, so a failed generation does not open a broken duel.
+            questions = await self._ensure_questions(challenge, user, "opponent")
+            if not questions:
+                return {"ok": False, "error": "practice_questions_not_found"}
         challenge.status = "accepted" if action == "accept" else "rejected"
         challenge.accepted_at = datetime.now(timezone.utc) if action == "accept" else None
         await self.session.flush()
@@ -200,13 +252,16 @@ class CourseChallengeService:
         user, challenge = await self.get_for_user(telegram_id, challenge_id)
         if not user or not challenge:
             return {"ok": False, "error": "challenge_not_found"}
+        role = "challenger" if int(user.id) == int(challenge.challenger_user_id) else "opponent"
+        questions = await self._ensure_questions(challenge, user, role)
+        if not questions:
+            return {"ok": False, "error": "practice_questions_not_found"}
         if challenge.status == "pending" and int(user.id) == int(challenge.challenger_user_id):
             challenge.status = "accepted"
             challenge.accepted_at = datetime.now(timezone.utc)
             await self.session.flush()
         if challenge.status not in {"accepted", "completed"}:
             return {"ok": False, "error": f"challenge_{challenge.status}"}
-        role = "challenger" if int(user.id) == int(challenge.challenger_user_id) else "opponent"
         if role == "challenger" and challenge.challenger_score is not None:
             return {"ok": False, "error": "challenge_already_submitted"}
         if role == "opponent" and challenge.opponent_score is not None:
@@ -217,8 +272,8 @@ class CourseChallengeService:
                 "id": f"challenge:{challenge.id}:{user.id}",
                 "challenge_id": int(challenge.id),
                 "mode": "challenge",
-                "level": challenge.level,
-                "questions": self._questions(challenge),
+                "level": self._level(getattr(user, "level", None)),
+                "questions": questions,
             },
         }
 
@@ -228,7 +283,8 @@ class CourseChallengeService:
             return {"ok": False, "error": "challenge_not_found"}
         if challenge.status not in {"accepted", "completed"}:
             return {"ok": False, "error": f"challenge_{challenge.status}"}
-        questions = self._questions(challenge)
+        role = "challenger" if int(user.id) == int(challenge.challenger_user_id) else "opponent"
+        questions = self._questions(challenge, role)
         submitted = {
             str(item.get("question_id") or ""): item
             for item in answers if isinstance(item, dict) and item.get("question_id")
@@ -258,7 +314,6 @@ class CourseChallengeService:
         percent = round((score / total) * 100) if total else 0
         now = datetime.now(timezone.utc)
         duration_seconds = max(0, min(86400, int(duration_seconds or 0)))
-        role = "challenger" if int(user.id) == int(challenge.challenger_user_id) else "opponent"
         if role == "challenger" and challenge.challenger_score is not None:
             return {"ok": False, "error": "challenge_already_submitted"}
         if role == "opponent" and challenge.opponent_score is not None:
@@ -342,9 +397,21 @@ class CourseChallengeService:
         if challenge.challenger_score is None or challenge.opponent_score is None:
             return
         challenge.status = "completed"
-        if challenge.challenger_score > challenge.opponent_score:
+        # Players may answer different question sets at their own levels, so
+        # compare by percentage (not raw score); duration breaks ties.
+        challenger_pct = CourseChallengeService._result_percent(
+            challenge.challenger_score,
+            challenge.challenger_total,
+            challenge.challenger_percent,
+        )
+        opponent_pct = CourseChallengeService._result_percent(
+            challenge.opponent_score,
+            challenge.opponent_total,
+            challenge.opponent_percent,
+        )
+        if challenger_pct > opponent_pct:
             challenge.winner_user_id = int(challenge.challenger_user_id)
-        elif challenge.opponent_score > challenge.challenger_score:
+        elif opponent_pct > challenger_pct:
             challenge.winner_user_id = int(challenge.opponent_user_id)
         else:
             challenger_duration = challenge.challenger_duration_seconds or 86400
@@ -355,6 +422,15 @@ class CourseChallengeService:
                 challenge.winner_user_id = int(challenge.opponent_user_id)
             else:
                 challenge.winner_user_id = None
+
+    @staticmethod
+    def _result_percent(score: int | None, total: int | None, percent: int | None) -> int:
+        if percent is not None:
+            return int(percent)
+        if total:
+            return round((int(score or 0) / int(total)) * 100)
+        # Legacy rows from the old equal-question flow may only have raw score.
+        return int(score or 0)
 
     @staticmethod
     def _challenge_url(challenge_id: int, lang: str, level: str | None = None) -> str:
@@ -419,28 +495,31 @@ class CourseChallengeService:
     def invite_text(challenge: CourseChallenge, challenger: User, lang: str) -> str:
         name = challenger.full_name or challenger.username or "HSK Student"
         title = {
-            "uz": f"{name} sizni HSK belashuvga chaqirdi.",
-            "ru": f"{name} вызывает вас на HSK-дуэль.",
-            "tj": f"{name} шуморо ба рақобати HSK даъват кард.",
+            "uz": f"⚔️ {name} sizni HSK jangiga chaqirdi!",
+            "ru": f"⚔️ {name} бросает вам вызов на HSK-дуэль!",
+            "tj": f"⚔️ {name} шуморо ба дуэли HSK даъват мекунад!",
         }.get(lang)
         body = {
             "uz": (
-                "10 ta savol. Ikkalangizga ham aynan bir xil savollar tushadi.\n"
-                "So'z, pinyin, tarjima va grammatika aralash keladi.\n\n"
-                "Maqsad: ko'proq to'g'ri javob bering. Teng bo'lsa, tezroq yakunlagan yutadi.\n"
-                f"G'olibga +{CHALLENGE_WIN_XP} XP, yakunlaganga +{CHALLENGE_COMPLETE_XP} XP."
+                "🔥 10 ta savol — so'z, pinyin, tarjima va grammatika aralash.\n"
+                "🎯 Har biringiz O'Z darajangizdagi savollarga javob berasiz — adolatli jang!\n"
+                "🏆 G'olib eng baland foiz bilan aniqlanadi. Teng bo'lsa — tezroq tugatgani oladi.\n\n"
+                f"⚡ G'olibga +{CHALLENGE_WIN_XP} XP, har bir jangchiga +{CHALLENGE_COMPLETE_XP} XP.\n"
+                "Qani, kuchingni ko'rsat! 💪"
             ),
             "ru": (
-                "10 вопросов. У обоих игроков будет один и тот же набор.\n"
-                "Слова, пиньинь, перевод и грамматика идут вперемешку.\n\n"
-                "Цель: больше правильных ответов. При равном счёте побеждает скорость.\n"
-                f"Победителю +{CHALLENGE_WIN_XP} XP, за финиш +{CHALLENGE_COMPLETE_XP} XP."
+                "🔥 10 вопросов — слова, пиньинь, перевод и грамматика вперемешку.\n"
+                "🎯 Каждый отвечает на вопросы СВОЕГО уровня — честный бой!\n"
+                "🏆 Победитель — у кого выше процент. При равенстве решает скорость.\n\n"
+                f"⚡ Победителю +{CHALLENGE_WIN_XP} XP, каждому бойцу +{CHALLENGE_COMPLETE_XP} XP.\n"
+                "Покажи, на что способен! 💪"
             ),
             "tj": (
-                "10 савол. Барои ҳар ду як маҷмӯи саволҳо меояд.\n"
-                "Калима, пинйин, тарҷума ва грамматика омехта мешаванд.\n\n"
-                "Ҳадаф: ҷавоби дуруст бештар. Агар ҳисоб баробар бошад, вақти тезтар мебарад.\n"
-                f"Ба ғолиб +{CHALLENGE_WIN_XP} XP, барои анҷом +{CHALLENGE_COMPLETE_XP} XP."
+                "🔥 10 савол — калима, пинйин, тарҷума ва грамматика омехта.\n"
+                "🎯 Ҳар яки шумо ба саволҳои дараҷаи ХУДатон ҷавоб медиҳед — ҷанги одилона!\n"
+                "🏆 Ғолиб бо фоизи баландтар муайян мешавад. Агар баробар бошад — тезтараш мебарад.\n\n"
+                f"⚡ Ба ғолиб +{CHALLENGE_WIN_XP} XP, ба ҳар ҷанговар +{CHALLENGE_COMPLETE_XP} XP.\n"
+                "Қувваи худро нишон деҳ! 💪"
             ),
         }.get(lang)
         return f"{title}\n\n{body}\n\nLevel: {CourseChallengeService._level_label(challenge.level)}"
@@ -453,26 +532,26 @@ class CourseChallengeService:
         if accepted:
             text = {
                 "uz": (
-                    "Belashuv qabul qilindi.\n\n"
-                    "Raund ochildi: 10 ta bir xil savol, bir xil sharoit.\n"
-                    "Musobaqaga kiring va natijani yopib qo'ying."
+                    "✅ Jang qabul qilindi! ⚔️\n\n"
+                    "🎯 Maydon tayyor: 10 ta savol, har biringiz o'z darajangizda.\n"
+                    "🔥 Kir va g'alabani qo'lga ol!"
                 ),
                 "ru": (
-                    "Дуэль принята.\n\n"
-                    "Раунд открыт: 10 одинаковых вопросов, равные условия.\n"
-                    "Откройте дуэль и зафиксируйте результат."
+                    "✅ Вызов принят! ⚔️\n\n"
+                    "🎯 Арена готова: 10 вопросов, каждый на своём уровне.\n"
+                    "🔥 Заходи и забирай победу!"
                 ),
                 "tj": (
-                    "Рақобат қабул шуд.\n\n"
-                    "Раунд кушода шуд: 10 саволи якхела, шароити баробар.\n"
-                    "Ба рақобат дароед ва натиҷаро сабт кунед."
+                    "✅ Дуэл қабул шуд! ⚔️\n\n"
+                    "🎯 Майдон тайёр: 10 савол, ҳар яке дар дараҷаи худаш.\n"
+                    "🔥 Даро ва ғалабаро ба даст ор!"
                 ),
             }.get(lang)
         else:
             text = {
-                "uz": "Belashuv rad qilindi.\n\nBu raund yopildi. Keyinroq yangi raqib bilan yana urinib ko'ring.",
-                "ru": "Дуэль отклонена.\n\nЭтот раунд закрыт. Позже можно вызвать другого соперника.",
-                "tj": "Рақобат рад шуд.\n\nИн раунд баста шуд. Баъдтар рақиби дигарро даъват кунед.",
+                "uz": "😌 Bu safar jang bo'lmadi.\n\nQayg'urma — boshqa raqibni chaqir va g'alabani ol! 💪",
+                "ru": "😌 В этот раз дуэли не будет.\n\nНе беда — вызови другого соперника и побеждай! 💪",
+                "tj": "😌 Ин дафъа дуэл нашуд.\n\nҒам махӯр — рақиби дигарро даъват кун ва ғалаба кун! 💪",
             }.get(lang)
         return f"{text}\n\nLevel: {level}"
 
@@ -496,15 +575,15 @@ class CourseChallengeService:
         name = opponent.full_name or opponent.username or "User"
         if accepted:
             text = {
-                "uz": f"{name} belashuvni qabul qildi. Raund ochildi: 10 savol, bir xil sharoit. Musobaqaga kiring.",
-                "ru": f"{name} принял дуэль. Раунд открыт: 10 вопросов, равные условия. Переходите к дуэли.",
-                "tj": f"{name} рақобатро қабул кард. Раунд кушода шуд: 10 савол, шароити баробар. Ба рақобат гузаред.",
+                "uz": f"🔥 {name} chaqiringizni qabul qildi! ⚔️\nMaydon tayyor — kir va birinchi bo'lib zarba ber! 💪",
+                "ru": f"🔥 {name} принял твой вызов! ⚔️\nАрена готова — заходи и бей первым! 💪",
+                "tj": f"🔥 {name} даъвати шуморо қабул кард! ⚔️\nМайдон тайёр — даро ва аввал зарба зан! 💪",
             }.get(lang)
         else:
             text = {
-                "uz": f"{name} belashuvni rad qildi. Yangi raqib chaqirib ko'ring.",
-                "ru": f"{name} отклонил дуэль. Можно вызвать другого соперника.",
-                "tj": f"{name} рақобатро рад кард. Метавонед рақиби дигарро даъват кунед.",
+                "uz": f"😌 {name} bu safar jangga chiqmadi.\nQayg'urma — kuchli raqib doim topiladi! Yana birovni chaqir. 💪",
+                "ru": f"😌 {name} в этот раз не вышел на бой.\nНе беда — сильный соперник всегда найдётся! Вызови другого. 💪",
+                "tj": f"😌 {name} ин дафъа ба ҷанг набаромад.\nҒам махӯр — рақиби қавӣ ҳамеша ёфт мешавад! Дигареро даъват кун. 💪",
             }.get(lang)
         try:
             await bot.send_message(
@@ -533,26 +612,26 @@ class CourseChallengeService:
             no_winner = challenge.winner_user_id is None
             text = {
                 "uz": (
-                    f"Raund yopildi. {name} natijani yubordi{f' — {score_text}' if score_text else ''}.\n\n"
-                    f"Hisob: {challenger_score} vs {opponent_score}.\n"
-                    + ("Siz yutdingiz. Bonus XP profilingizga qo'shildi." if other_won else "Natijani Mini Appda ko'ring." if not no_winner else "Durrang. Ikkalangizga ham bonus XP qo'shildi.")
+                    f"🏁 Raund tugadi! {name} natijani yubordi{f' — {score_text}' if score_text else ''}.\n\n"
+                    f"📊 Hisob: {challenger_score} vs {opponent_score}.\n"
+                    + ("🏆 G'OLIB SIZSIZ! Bonus XP profilingizga tushdi. Ajoyibsan! 🔥" if other_won else "💪 Bu safar mag'lub bo'lding, ammo jang tugagani yo'q — revansh ol!" if not no_winner else "🤝 Durrang! Ikkalangizga ham bonus XP. Keyingisida hal qil!")
                 ),
                 "ru": (
-                    f"Раунд закрыт. {name} отправил результат{f' — {score_text}' if score_text else ''}.\n\n"
-                    f"Счёт: {challenger_score} vs {opponent_score}.\n"
-                    + ("Вы победили. Бонус XP добавлен в профиль." if other_won else "Откройте результат в Mini App." if not no_winner else "Ничья. Бонус XP добавлен обоим.")
+                    f"🏁 Раунд завершён! {name} отправил результат{f' — {score_text}' if score_text else ''}.\n\n"
+                    f"📊 Счёт: {challenger_score} vs {opponent_score}.\n"
+                    + ("🏆 ПОБЕДА ЗА ТОБОЙ! Бонус XP уже в профиле. Красава! 🔥" if other_won else "💪 В этот раз поражение, но бой не окончен — бери реванш!" if not no_winner else "🤝 Ничья! Бонус XP обоим. В следующий раз реши исход!")
                 ),
                 "tj": (
-                    f"Раунд баста шуд. {name} натиҷаро фиристод{f' — {score_text}' if score_text else ''}.\n\n"
-                    f"Ҳисоб: {challenger_score} vs {opponent_score}.\n"
-                    + ("Шумо ғолиб шудед. XP бонус ба профил илова шуд." if other_won else "Натиҷаро дар Mini App бинед." if not no_winner else "Мусовӣ. Ба ҳар ду XP бонус илова шуд.")
+                    f"🏁 Раунд анҷом ёфт! {name} натиҷаро фиристод{f' — {score_text}' if score_text else ''}.\n\n"
+                    f"📊 Ҳисоб: {challenger_score} vs {opponent_score}.\n"
+                    + ("🏆 ҒАЛАБА АЗ ОНи ШУМОСТ! Бонус XP дар профил аст. Офарин! 🔥" if other_won else "💪 Ин дафъа мағлуб шудӣ, аммо ҷанг тамом нашуд — реваншро гир!" if not no_winner else "🤝 Мусовӣ! Ба ҳар ду бонус XP. Дафъаи оянда ҳал кун!")
                 ),
             }.get(lang)
         else:
             text = {
-                "uz": f"{name} testni yopdi{f' — {score_text}' if score_text else ''}. Endi navbat sizda: musobaqani ochib raundni yakunlang.",
-                "ru": f"{name} уже закрыл тест{f' — {score_text}' if score_text else ''}. Теперь ваш ход: откройте дуэль и завершите раунд.",
-                "tj": f"{name} тестро анҷом дод{f' — {score_text}' if score_text else ''}. Акнун навбати шумо: рақобатро кушоед ва раундро анҷом диҳед.",
+                "uz": f"⚡ {name} o'z raundini yakunladi{f' — {score_text}' if score_text else ''}! Endi navbat senda — kir va zarbangni ber! 🔥",
+                "ru": f"⚡ {name} прошёл свой раунд{f' — {score_text}' if score_text else ''}! Теперь твой ход — заходи и бей! 🔥",
+                "tj": f"⚡ {name} раунди худро анҷом дод{f' — {score_text}' if score_text else ''}! Акнун навбати туст — даро ва зарба зан! 🔥",
             }.get(lang)
         try:
             await bot.send_message(

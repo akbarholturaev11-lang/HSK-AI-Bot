@@ -3126,6 +3126,28 @@ Follow-up:
 
 ---
 
+### 2026-06-29 — Challenge level-matched questions
+
+Changed:
+- Course Mini App HSK challenges now generate separate question sets for challenger and opponent based on each user's own HSK level.
+- Challenge winners are decided by completion percentage, with duration used only as a tie-breaker.
+- Legacy challenge payloads that stored one shared question list still work.
+
+Why:
+- Users at different HSK levels should compete fairly without one player getting questions too easy or too hard.
+
+Files touched:
+- `app/services/course_challenge_service.py`
+- `tests/test_course_challenge_service.py`
+
+Risk:
+- Existing active challenge rows are backward compatible, but any malformed challenge payload returns a safe error instead of opening a broken duel.
+
+Follow-up:
+- Smoke test one challenge between two accounts with different `user.level` values and confirm both receive level-matched questions.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
