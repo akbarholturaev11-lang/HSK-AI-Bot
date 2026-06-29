@@ -13,55 +13,55 @@
     {
       "no": 1,
       "title": {
-        "uz": "Yo‘l va xarid",
-        "ru": "Дорога и покупки",
-        "tj": "Роҳ ва харид"
+        "uz": "1-bo'lim",
+        "ru": "Раздел 1",
+        "tj": "Боби 1"
       },
       "lessons": [
         {
           "n": 1,
-          "zh": "你去哪儿",
-          "py": "nǐ qù nǎr",
+          "zh": "九月去北京旅游最好",
+          "py": "jiǔ yuè qù Běijīng lǚyóu zuìhǎo",
           "tr": {
-            "uz": "Transport va yo'nalish",
-            "ru": "Транспорт и направление",
-            "tj": "Нақлиёт ва самт"
+            "uz": "Sayohat, sport va kundalik hayot mavzularida suhbat qurish; 要, 最 va taxminiy sonlarni ishlatishni o'rganish.",
+            "ru": "Научиться вести беседу о путешествиях, спорте и повседневной жизни; освоить вспомогательный глагол 要, наречие степени 最 и приблизительные числа.",
+            "tj": "Гуфтугӯ дар мавзӯи сафар, варзиш ва ҳаёти рӯзмарра; омӯхтани феъли ёрдамии 要, зарфи дараҷаи 最 ва рақамҳои тахминӣ."
           },
           "status": "current",
           "content": "lesson_01"
         },
         {
           "n": 2,
-          "zh": "怎么走",
-          "py": "zěnme zǒu",
+          "zh": "我每天六点起床",
+          "py": "wǒ měi tiān liù diǎn qǐchuáng",
           "tr": {
-            "uz": "Yo'l ko'rsatish, chapga va o'ngga",
-            "ru": "Как пройти, налево и направо",
-            "tj": "Роҳ нишон додан, чап ва рост"
+            "uz": "Kundalik hayot tartibi, sog'liq va jismoniy faoliyat haqida gapira olish; 是不是 savol qolipini, 每 olmoshini va 多 so'roq olmoshini o'zlashtirish.",
+            "ru": "Научиться говорить о распорядке дня, здоровье и физической активности; освоить вопросный шаблон 是不是, местоимение 每 и вопросительное местоимение 多.",
+            "tj": "Гуфтугӯ дар бораи тартиби рӯзона, саломатӣ ва фаъолияти ҷисмонӣ; азхудкунии шакли саволии 是不是, ҷонишини 每 ва ҷонишини саволии 多."
           },
           "status": "locked",
           "content": "lesson_02"
         },
         {
           "n": 3,
-          "zh": "我想买",
-          "py": "wǒ xiǎng mǎi",
+          "zh": "左边那个红色的是我的",
+          "py": "zuǒbian nà gè hóngsè de shì wǒ de",
           "tr": {
-            "uz": "Xarid qilish, ranglar va o'lcham",
-            "ru": "Покупки, цвета и размер",
-            "tj": "Харид, рангҳо ва андоза"
+            "uz": "Narsalarning egasini, rangini va joylashuvini tasvirlash; '的' qo'shimchasi bilan ot-so'z birikmalarini, 一下 miqdorini va 真 kuchaytiruvchi ravishini o'zlashtirish.",
+            "ru": "Научиться описывать владельца, цвет и местоположение предметов; освоить именные словосочетания с 的, количественное слово 一下 и усилительное наречие 真.",
+            "tj": "Тасвири соҳиб, ранг ва ҷойгиршавии ашё; азхудкунии ибораҳои исмӣ бо 的, воҳиди 一下 ва зарфи тақвиятии 真."
           },
           "status": "locked",
           "content": "lesson_03"
         },
         {
           "n": 4,
-          "zh": "你喜欢什么",
-          "py": "nǐ xǐhuan shénme",
+          "zh": "这个工作是他帮我介绍的",
+          "py": "zhè gè gōngzuò shì tā bāng wǒ jièshào de",
           "tr": {
-            "uz": "Sevimli narsalar va dam olish",
-            "ru": "Любимые вещи и отдых",
-            "tj": "Чизҳои дӯстдошта ва истироҳат"
+            "uz": "O'tgan hodisalarning vaqti, joyi va usulini ta'kidlab gapira olish; '是……的' qolipini, 给 old ko'makchisini va 已经 ravishini o'zlashtirish.",
+            "ru": "Научиться делать акцент на времени, месте и способе совершения прошедшего действия; освоить конструкцию 是……的, предлог 给 и наречие 已经.",
+            "tj": "Таъкид кардан ба вақт, ҷой ва усули амали гузашта; азхудкунии конструксияи 是……的, пешоянди 给 ва зарфи 已经."
           },
           "status": "locked",
           "content": "lesson_04",
@@ -69,12 +69,12 @@
         },
         {
           "n": 5,
-          "zh": "我会说中文",
-          "py": "wǒ huì shuō Zhōngwén",
+          "zh": "就买这件吧",
+          "py": "jiù mǎi zhè jiàn ba",
           "tr": {
-            "uz": "Mahorat, 会 / 能 / 可以",
-            "ru": "Умения, 会 / 能 / 可以",
-            "tj": "Маҳорат, 会 / 能 / 可以"
+            "uz": "Xarid qilish, ovqatlanish va dam olish haqidagi suhbatlarda o'z fikrini bildira olish; 就 ravishi, 还 ravishi va 有点儿 miqdor birikmasini o'zlashtirish.",
+            "ru": "Научиться выражать своё мнение в разговорах о покупках, еде и отдыхе; освоить наречие 就, наречие 还 и конструкцию 有点儿.",
+            "tj": "Баён кардани фикр дар сӯҳбатҳо дар бораи харидорӣ, хӯрок ва истироҳат; азхудкунии зарфи 就, зарфи 还 ва ибораи 有点儿."
           },
           "status": "locked",
           "content": "lesson_05",
@@ -93,19 +93,19 @@
     {
       "no": 2,
       "title": {
-        "uz": "Harakat va tajriba",
-        "ru": "Действия и опыт",
-        "tj": "Амал ва таҷриба"
+        "uz": "2-bo'lim",
+        "ru": "Раздел 2",
+        "tj": "Боби 2"
       },
       "lessons": [
         {
           "n": 6,
-          "zh": "你在做什么",
-          "py": "nǐ zài zuò shénme",
+          "zh": "你怎么不吃了",
+          "py": "nǐ zěnme bù chī le",
           "tr": {
-            "uz": "Hozirgi harakatlar, 在 + fe’l",
-            "ru": "Текущие действия, 在 + глагол",
-            "tj": "Амалҳои ҳозира, 在 + феъл"
+            "uz": "Sabab va oqibat haqida gapira olish, 怎么 so'roq olmoshi, miqdor ko'makchilarining takrorlanishi va 因为……所以…… bog'lovchi qolipini o'zlashtirish.",
+            "ru": "Научиться говорить о причине и следствии, вопросительное местоимение 怎么, удвоение счётных слов и союзная конструкция 因为……所以……",
+            "tj": "Омӯзиши гуфтан дар бораи сабаб ва натиҷа, исми саволии 怎么, такрори калимаҳои шуморавӣ ва сохтори пайвандакии 因为……所以……"
           },
           "status": "locked",
           "content": "lesson_06",
@@ -113,12 +113,12 @@
         },
         {
           "n": 7,
-          "zh": "昨天你做了什么",
-          "py": "zuótiān nǐ zuò le shénme",
+          "zh": "你家离公司远吗",
+          "py": "nǐ jiā lí gōngsī yuǎn ma",
           "tr": {
-            "uz": "O‘tgan zamon, 了 yuklamasi",
-            "ru": "Прошедшее действие, частица 了",
-            "tj": "Замони гузашта, ҳиссачаи 了"
+            "uz": "Masofa, yo'l vaqti va joylashuv haqida gapira olish; 还 ravishining ikkinchi ma'nosini, 就 vaqt ravishinini, 离 old ko'makchisini va 呢 yuklamasini o'zlashtirish.",
+            "ru": "Научиться говорить о расстоянии, времени в пути и местонахождении; освоить второе значение 还, наречие времени 就, предлог 离 и частицу 呢.",
+            "tj": "Омӯзиши гуфтан дар бораи масофа, вақти роҳ ва ҷойгиршавӣ; аз бар кардани маъноии дуввуми 还, зарфи вақтии 就, пешояндии 离 ва ҷузъаи 呢."
           },
           "status": "locked",
           "content": "lesson_07",
@@ -126,12 +126,12 @@
         },
         {
           "n": 8,
-          "zh": "我比你高",
-          "py": "wǒ bǐ nǐ gāo",
+          "zh": "让我想想再告诉你",
+          "py": "ràng wǒ xiǎng xiǎng zài gàosu nǐ",
           "tr": {
-            "uz": "Taqqoslash, 比",
-            "ru": "Сравнение, 比",
-            "tj": "Муқоиса, 比"
+            "uz": "Taklif so'rash, ruxsat berish va harakatni keyinga qoldirish haqida gapira olish; '……好吗' savol qolipini, 再 ravishin, 让 pivotal fe'lni va fe'llarning takrorlanishini o'zlashtirish.",
+            "ru": "Научиться просить разрешения, откладывать действие; освоить вопросную конструкцию '……好吗', наречие 再, глагол-пивот 让 и удвоение глаголов.",
+            "tj": "Омӯзиши хостани иҷозат, ба баъд гузоштани амал; аз бар кардани сохтори саволии '……好吗', зарфи 再, феъли пивотии 让 ва такрори феълҳо."
           },
           "status": "locked",
           "content": "lesson_08",
@@ -139,12 +139,12 @@
         },
         {
           "n": 9,
-          "zh": "你看过吗",
-          "py": "nǐ kàn guò ma",
+          "zh": "题太多，我没做完",
+          "py": "tí tài duō wǒ méi zuò wán",
           "tr": {
-            "uz": "Tajriba, 过 yuklamasi",
-            "ru": "Опыт, частица 过",
-            "tj": "Таҷриба, ҳиссачаи 过"
+            "uz": "Natija fe'llari, 'cóng' old ko'makchisi va 'dì' tartib ko'rsatkichi yordamida gaplar tuzishni o'rganish.",
+            "ru": "Научиться строить предложения с результативными глаголами, предлогом 'cóng' и порядковым показателем 'dì'.",
+            "tj": "Омӯзиши тартиб додани ҷумлаҳо бо феълҳои натиҷавӣ, пешоянди 'cóng' ва нишондиҳандаи тартиби 'dì'."
           },
           "status": "locked",
           "content": "lesson_09",
@@ -152,12 +152,12 @@
         },
         {
           "n": 10,
-          "zh": "快点儿",
-          "py": "kuài diǎnr",
+          "zh": "别找了，手机在桌子上呢",
+          "py": "bié zhǎo le shǒujī zài zhuōzi shàng ne",
           "tr": {
-            "uz": "Tezlik, intensivlik, 一点儿",
-            "ru": "Скорость и 一点儿",
-            "tj": "Суръат ва 一点儿"
+            "uz": "Buyruq gaplarini ('别……了'), 'duì' old ko'makchisini va 'zhèngzài' davom ko'rsatkichini ishlatishni o'rganish.",
+            "ru": "Научиться использовать побудительные предложения ('别……了'), предлог 'duì' и показатель продолжения 'zhèngzài'.",
+            "tj": "Омӯзиши истифодаи ҷумлаҳои фармоишӣ ('别……了'), пешоянди 'duì' ва нишондиҳандаи давомнокии 'zhèngzài'."
           },
           "status": "locked",
           "content": "lesson_10",
@@ -177,19 +177,19 @@
     {
       "no": 3,
       "title": {
-        "uz": "Ish, oila va qiziqish",
-        "ru": "Работа, семья и интересы",
-        "tj": "Кор, оила ва шавқ"
+        "uz": "3-bo'lim",
+        "ru": "Раздел 3",
+        "tj": "Боби 3"
       },
       "lessons": [
         {
           "n": 11,
-          "zh": "工作和学习",
-          "py": "gōngzuò hé xuéxí",
+          "zh": "他比我大三岁",
+          "py": "tā bǐ wǒ dà sān suì",
           "tr": {
-            "uz": "Ish, maktab va kasblar",
-            "ru": "Работа, учёба и профессии",
-            "tj": "Кор, мактаб ва касбҳо"
+            "uz": "'Bǐ' qiyoslash konstruktsiyasini, fe'l sifatdoshini aniqlovchi sifatida ishlatishni va 'kěnéng' yordamchi fe'lini o'rganish.",
+            "ru": "Изучение конструкции сравнения 'bǐ', использования глагольных конструкций в роли определения и модального глагола 'kěnéng'.",
+            "tj": "Омӯзиши конструксияи муқоисавии 'bǐ', истифодаи сохторҳои феълӣ ҳамчун муайянкунанда ва феъли ёрирасони 'kěnéng'."
           },
           "status": "locked",
           "content": "lesson_11",
@@ -197,12 +197,12 @@
         },
         {
           "n": 12,
-          "zh": "家庭成员",
-          "py": "jiātíng chéngyuán",
+          "zh": "你穿得太少了",
+          "py": "nǐ chuān de tài shǎo le",
           "tr": {
-            "uz": "Oila a’zolari",
-            "ru": "Члены семьи",
-            "tj": "Аъзои оила"
+            "uz": "Holat to'ldiruvchisi ('de' yuklamasi bilan) va 'bǐ' qiyoslash gapining kengaytirilgan shaklini o'rganish.",
+            "ru": "Изучение дополнения состояния (с частицей 'de') и расширенной формы конструкции сравнения 'bǐ'.",
+            "tj": "Омӯзиши илова ба ҳолат (бо зарраи 'de') ва шакли васеъшудаи конструксияи муқоисавии 'bǐ'."
           },
           "status": "locked",
           "content": "lesson_12",
@@ -210,12 +210,12 @@
         },
         {
           "n": 13,
-          "zh": "身体部位",
-          "py": "shēntǐ bùwèi",
+          "zh": "门开着呢",
+          "py": "mén kāi zhe ne",
           "tr": {
-            "uz": "Tananing a’zolari",
-            "ru": "Части тела",
-            "tj": "Узвҳои бадан"
+            "uz": "Davom etayotgan holatni bildiruvchi '着' yuklamasini, 'wǎng' yo'nalish ko'makchisini va '不是……吗' ritorik savol shaklini o'rganish.",
+            "ru": "Изучение частицы '着', обозначающей продолжающееся состояние, предлога направления 'wǎng' и риторической конструкции '不是……吗'.",
+            "tj": "Омӯзиши зарраи '着' ифодакунандаи ҳолати давомдор, пешоянди самт 'wǎng' ва шакли пурсиши риторикии '不是……吗'."
           },
           "status": "locked",
           "content": "lesson_13",
@@ -223,12 +223,12 @@
         },
         {
           "n": 14,
-          "zh": "我的爱好",
-          "py": "wǒ de àihào",
+          "zh": "你看过那个电影吗",
+          "py": "nǐ kàn guò nà gè diànyǐng ma",
           "tr": {
-            "uz": "Mashg‘ulotlar va sport",
-            "ru": "Хобби и спорт",
-            "tj": "Шавқҳо ва варзиш"
+            "uz": "O'tgan tajribani bildiruvchi '过' yuklamasini, 'suīrán……dànshì' bog'lovchi juftligini va '次' harakat miqdori to'ldiruvchisini o'rganish.",
+            "ru": "Изучение частицы '过', обозначающей прошлый опыт, союзного сочетания 'suīrán……dànshì' и счётного слова '次' для количества действий.",
+            "tj": "Омӯзиши зарраи '过' ифодакунандаи таҷрибаи гузашта, ҷуфти пайвандии 'suīrán……dànshì' ва калимаи шуморавии '次' барои миқдори амал."
           },
           "status": "locked",
           "content": "lesson_14",
@@ -236,12 +236,12 @@
         },
         {
           "n": 15,
-          "zh": "复习 — HSK 2",
-          "py": "fùxí HSK èr",
+          "zh": "新年就要到了",
+          "py": "xīnnián jiù yào dào le",
           "tr": {
-            "uz": "HSK 2 takrori va umumiy test",
-            "ru": "Повторение HSK 2 и общий тест",
-            "tj": "Такрори HSK 2 ва санҷиши умумӣ"
+            "uz": "Yaqin kelajakda bo'ladigan voqeani bildiruvchi '要……了' / '快要……了' va '都……了' konstruktsiyalarini o'rganish.",
+            "ru": "Изучение конструкций '要……了' / '快要……了' для выражения ближайшего будущего и конструкции '都……了'.",
+            "tj": "Омӯзиши конструксияҳои '要……了' / '快要……了' барои ифодаи оянда ва '都……了'."
           },
           "status": "locked",
           "content": "lesson_15",

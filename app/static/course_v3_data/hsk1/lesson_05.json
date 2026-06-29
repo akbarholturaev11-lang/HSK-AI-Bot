@@ -2,122 +2,164 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 5,
-  "title": "这是什么",
+  "title": "她女儿今年二十岁",
   "subtitle": {
-    "uz": "Mavzu: Narsalarni nomlash, 这 va 那. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Названия предметов, 这 и 那. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Номи ашё, 这 ва 那. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Yosh va oila a'zolari haqida gapirish, 100 gacha raqamlarni o'rganing",
+    "ru": "Говорить о возрасте и членах семьи, выучить числа до 100",
+    "tj": "Дар бораи синну сол ва аъзоёни оила гап задан, рақамҳоро то 100 омӯхтан"
   },
   "active_words": [
     {
-      "zh": "这",
-      "pinyin": "zhè",
+      "no": 1,
+      "zh": "家",
+      "pinyin": "jiā",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oila, uy",
+        "ru": "семья, дом",
+        "tj": "оила, хона"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "有",
+      "pinyin": "yǒu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bor, ega bo'lmoq",
+        "ru": "иметь, есть",
+        "tj": "доштан, мавҷуд будан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "口",
+      "pinyin": "kǒu",
+      "pos": "m.",
+      "meaning": {
+        "uz": "o'lchov so'zi (oila a'zolari uchun)",
+        "ru": "счётное слово (для членов семьи)",
+        "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "女儿",
+      "pinyin": "nǚ'ér",
+      "pos": "n.",
+      "meaning": {
+        "uz": "qiz farzand",
+        "ru": "дочь",
+        "tj": "духтар (фарзанд)"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "几",
+      "pinyin": "jǐ",
       "pos": "pron.",
       "meaning": {
-        "uz": "bu",
-        "ru": "это",
-        "tj": "ин"
-      },
-      "no": 1
+        "uz": "nechta (10 tagacha)",
+        "ru": "сколько (до 10)",
+        "tj": "чанд (то 10)"
+      }
     },
     {
-      "zh": "那",
-      "pinyin": "nà",
-      "pos": "pron.",
+      "no": 6,
+      "zh": "岁",
+      "pinyin": "suì",
+      "pos": "m.",
       "meaning": {
-        "uz": "ana u, o‘sha",
-        "ru": "то, тот",
-        "tj": "он, ҳамон"
-      },
-      "no": 2
+        "uz": "yosh (o'lchov so'zi)",
+        "ru": "лет (счётное слово для возраста)",
+        "tj": "сол (барои синну сол)"
+      }
     },
     {
-      "zh": "什么",
-      "pinyin": "shénme",
-      "pos": "pron.",
+      "no": 7,
+      "zh": "了",
+      "pinyin": "le",
+      "pos": "part.",
       "meaning": {
-        "uz": "nima",
-        "ru": "что",
-        "tj": "чӣ"
-      },
-      "no": 3
+        "uz": "holat o'zgarishi yuklamasi",
+        "ru": "частица изменения состояния",
+        "tj": "ҳарфи тағйири ҳолат"
+      }
     },
     {
-      "zh": "书",
-      "pinyin": "shū",
+      "no": 8,
+      "zh": "今年",
+      "pinyin": "jīnnián",
       "pos": "n.",
       "meaning": {
-        "uz": "kitob",
-        "ru": "книга",
-        "tj": "китоб"
-      },
-      "no": 4
+        "uz": "bu yil",
+        "ru": "в этом году",
+        "tj": "امسол، ин сол"
+      }
     },
     {
-      "zh": "杯子",
-      "pinyin": "bēizi",
-      "pos": "n.",
+      "no": 9,
+      "zh": "多",
+      "pinyin": "duō",
+      "pos": "adv.",
       "meaning": {
-        "uz": "stakan",
-        "ru": "стакан, чашка",
-        "tj": "пиёла, стакан"
-      },
-      "no": 5
+        "uz": "ko'p, qancha (daraja)",
+        "ru": "много, как (степень)",
+        "tj": "зиёд, чӣ қадар (дараҷа)"
+      }
     },
     {
-      "zh": "手机",
-      "pinyin": "shǒujī",
-      "pos": "n.",
+      "no": 10,
+      "zh": "大",
+      "pinyin": "dà",
+      "pos": "adj.",
       "meaning": {
-        "uz": "telefon",
-        "ru": "мобильный телефон",
-        "tj": "телефон"
-      },
-      "no": 6
-    },
-    {
-      "zh": "桌子",
-      "pinyin": "zhuōzi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "stol",
-        "ru": "стол",
-        "tj": "миз"
-      },
-      "no": 7
+        "uz": "katta, ulug' (yoshda)",
+        "ru": "большой, старший (по возрасту)",
+        "tj": "калон, бузург (аз рӯи синну сол)"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "几 — Necha? (10 gacha)",
+        "ru": "几 — Сколько? (до 10)",
+        "tj": "几 — Чанд? (то 10)"
       },
-      "title_zh": "主题词语",
+      "title_zh": "几 — Necha? (10 gacha)",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 这是什么. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“这是什么”。",
-        "ru": "Ключевая фраза урока: 这是什么. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“这是什么”。",
-        "tj": "Ибораи асосии дарс: 这是什么. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“这是什么”。"
+        "uz": "几(jǐ) — 10 dan kichik sonlar uchun so'roq so'zi.\nTuzilma: Ega + 有 + 几 + O'lchov so'zi + Ot?\n\nMisol:\n你家有几口人？— Sizning oilangizda necha kishi bor?\n你有几个汉语老师？— Nechta xitoy tili o'qituvchingiz bor?\n你女儿几岁了？— Qizingiz necha yoshda?",
+        "ru": "几(jǐ) — вопросительное слово для чисел менее 10.\nСтруктура: Подлежащее + 有 + 几 + Счётное слово + Существительное?\n\nПример:\n你家有几口人？— Сколько человек в вашей семье?\n你有几个汉语老师？— Сколько у вас преподавателей китайского?\n你女儿几岁了？— Сколько лет вашей дочери?",
+        "tj": "几(jǐ) — калимаи саволӣ барои рақамҳои камтар аз 10.\nСохтор: Мубтадо + 有 + 几 + Калимаи шуморавӣ + Исм?\n\nМисол:\n你家有几口人？— Дар оилаи шумо чанд нафар аст?\n你有几个汉语老师？— Шумо чанд муаллими забони чинӣ доред?\n你女儿几岁了？— Духтаратон чанд сол дорад?"
       },
       "examples": [
         {
-          "zh": "今天我们学习“这是什么”。",
-          "pinyin": "Jīntiān wǒmen xuéxí zhè shì shénme.",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
           "translation": {
-            "uz": "Biz Narsalarni nomlash, 这 va 那 mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Названия предметов, 这 и 那.",
-            "tj": "Мо мавзӯи Номи ашё, 这 ва 那-ро меомӯзем."
+            "uz": "Sizning oilangizda necha kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
           }
         },
         {
-          "zh": "这个词是这。",
-          "pinyin": "Zhège cí shì zhè.",
+          "zh": "你有几个朋友？",
+          "pinyin": "Nǐ yǒu jǐ ge péngyou?",
           "translation": {
-            "uz": "Bu so'z: bu.",
-            "ru": "Это слово: это.",
-            "tj": "Ин калима: ин."
+            "uz": "Nechta do'stingiz bor?",
+            "ru": "Сколько у вас друзей?",
+            "tj": "Шумо чанд дӯст доред?"
+          }
+        },
+        {
+          "zh": "她有几岁了？",
+          "pinyin": "Tā yǒu jǐ suì le?",
+          "translation": {
+            "uz": "U necha yoshda?",
+            "ru": "Сколько ей лет?",
+            "tj": "Вай чанд сол дорад?"
           }
         }
       ]
@@ -125,33 +167,128 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "100 gacha raqamlar",
+        "ru": "Числа до 100",
+        "tj": "Рақамҳо то 100"
       },
-      "title_zh": "问答结构",
+      "title_zh": "100 gacha raqamlar",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nO'nliklar:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nAralash:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)",
+        "ru": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nДесятки:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nСоставные:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)",
+        "tj": "1-10: 一yī 二èr 三sān 四sì 五wǔ 六liù 七qī 八bā 九jiǔ 十shí\n\nДаҳгонаҳо:\n20 = 二十 (èrshí)\n30 = 三十 (sānshí)\n50 = 五十 (wǔshí)\n99 = 九十九 (jiǔshíjiǔ)\n\nОмехта:\n23 = 二十三 (èrshísān)\n56 = 五十六 (wǔshíliù)\n88 = 八十八 (bāshíbā)"
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "二十",
+          "pinyin": "èrshí",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "yigirma",
+            "ru": "двадцать",
+            "tj": "бист"
           }
         },
         {
-          "zh": "这。",
-          "pinyin": "zhè.",
+          "zh": "五十",
+          "pinyin": "wǔshí",
           "translation": {
-            "uz": "这 — zhè deb o'qiladi.",
-            "ru": "这 читается как zhè.",
-            "tj": "这 ҳамчун zhè хонда мешавад."
+            "uz": "ellik",
+            "ru": "пятьдесят",
+            "tj": "панҷоҳ"
+          }
+        },
+        {
+          "zh": "二十三",
+          "pinyin": "èrshísān",
+          "translation": {
+            "uz": "yigirma uch",
+            "ru": "двадцать три",
+            "tj": "бисту се"
+          }
+        },
+        {
+          "zh": "九十九",
+          "pinyin": "jiǔshíjiǔ",
+          "translation": {
+            "uz": "to'qson to'qqiz",
+            "ru": "девяносто девять",
+            "tj": "навадуно"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "了 — holat o'zgarishi yuklamasi",
+        "ru": "了 — частица изменения состояния",
+        "tj": "了 — ҳарфи тағйири ҳолат"
+      },
+      "title_zh": "了 — holat o'zgarishi yuklamasi",
+      "rule": {
+        "uz": "了(le) — gap oxiriga qo'yilsa, yangi holat yoki o'zgarishni bildiradi.\n\nMisol:\n她今年五十岁了。— U bu yil ellik yoshga kirdi (yangi holat).\n我女儿四岁了。— Qizim to'rt yoshga to'ldi.\n\n多大了？— Necha yoshga kirdingiz? (yosh so'rash)",
+        "ru": "了(le) — ставится в конце предложения, указывая на новое состояние или изменение.\n\nПример:\n她今年五十岁了。— В этом году ей исполнилось пятьдесят (новое состояние).\n我女儿四岁了。— Моей дочери исполнилось четыре.\n\n多大了？— Сколько вам лет? (спрашиваем возраст)",
+        "tj": "了(le) — дар охири ҷумла ҳолати нав ё тағйирро нишон медиҳад.\n\nМисол:\n她今年五十岁了。— Вай имсол панҷоҳ сол шуд (ҳолати нав).\n我女儿四岁了。— Духтарам чор сол шуд.\n\n多大了？— Шумо чанд сол шудед? (пурсидани синну сол)"
+      },
+      "examples": [
+        {
+          "zh": "她今年二十岁了。",
+          "pinyin": "Tā jīnnián èrshí suì le.",
+          "translation": {
+            "uz": "U bu yil yigirma yoshga kirdi.",
+            "ru": "В этом году ей исполнилось двадцать.",
+            "tj": "Вай имсол бист сол шуд."
+          }
+        },
+        {
+          "zh": "他五十岁了。",
+          "pinyin": "Tā wǔshí suì le.",
+          "translation": {
+            "uz": "U ellik yoshga kirdi.",
+            "ru": "Ему исполнилось пятьдесят.",
+            "tj": "Вай панҷоҳ сол шуд."
+          }
+        },
+        {
+          "zh": "你多大了？",
+          "pinyin": "Nǐ duō dà le?",
+          "translation": {
+            "uz": "Siz necha yoshdasiz?",
+            "ru": "Сколько вам лет?",
+            "tj": "Шумо чанд сол доред?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "多大 vs 几岁 — yosh so'rash",
+        "ru": "多大 vs 几岁 — спрашиваем возраст",
+        "tj": "多大 vs 几岁 — пурсидани синну сол"
+      },
+      "title_zh": "多大 vs 几岁 — yosh so'rash",
+      "rule": {
+        "uz": "多大(duō dà) — kattalar yoshini so'rash uchun.\n几岁(jǐ suì) — bolalar yoshini so'rash uchun (10 gacha).\n\nKattalar: 你多大了？— Siz necha yoshdasiz?\nBolalar: 你女儿几岁了？— Qizingiz necha yoshda?",
+        "ru": "多大(duō dà) — спрашиваем возраст взрослых.\n几岁(jǐ suì) — спрашиваем возраст детей (до 10).\n\nВзрослые: 你多大了？— Сколько вам лет?\nДети: 你女儿几岁了？— Сколько лет вашей дочери?",
+        "tj": "多大(duō dà) — пурсидани синну соли калонсолон.\n几岁(jǐ suì) — пурсидани синну соли кӯдакон (то 10).\n\nКалонсолон: 你多大了？— Шумо чанд сол доред?\nКӯдакон: 你女儿几岁了？— Духтаратон чанд сол дорад?"
+      },
+      "examples": [
+        {
+          "zh": "你多大了？",
+          "pinyin": "Nǐ duō dà le?",
+          "translation": {
+            "uz": "Siz necha yoshdasiz? (kattalar)",
+            "ru": "Сколько вам лет? (взрослые)",
+            "tj": "Шумо чанд сол доред? (калонсолон)"
+          }
+        },
+        {
+          "zh": "她女儿几岁了？",
+          "pinyin": "Tā nǚ'ér jǐ suì le?",
+          "translation": {
+            "uz": "Uning qizi necha yoshda? (bola)",
+            "ru": "Сколько лет её дочери? (ребёнок)",
+            "tj": "Духтараш чанд сол дорад? (кӯдак)"
           }
         }
       ]
@@ -160,49 +297,107 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Narsalarni nomlash, 这 va 那",
-        "ru": "Названия предметов, 这 и 那",
-        "tj": "Номи ашё, 这 ва 那"
+        "uz": "Maktabda — oila a'zolari",
+        "ru": "В школе — о членах семьи",
+        "tj": "Дар мактаб — дар бораи аъзоёни оила"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“这是什么”。",
-          "pinyin": "Jīntiān wǒmen xuéxí zhè shì shénme.",
+          "zh": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
           "text": {
-            "uz": "Bugun Narsalarni nomlash, 这 va 那 mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Названия предметов, 这 и 那.",
-            "tj": "Имрӯз мавзӯи Номи ашё, 这 ва 那-ро меомӯзем."
+            "uz": "Sizning oilangizda necha kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "我家有三口人。",
+          "pinyin": "Wǒ jiā yǒu sān kǒu rén.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Bizning oilamizda uch kishi bor.",
+            "ru": "В нашей семье трое человек.",
+            "tj": "Дар оилаи мо се нафар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda — yosh so'rash (bolalar)",
+        "ru": "В офисе — спрашиваем возраст (ребёнок)",
+        "tj": "Дар идора — пурсидани синну сол (кӯдак)"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你女儿几岁了？",
+          "pinyin": "Nǐ nǚ'ér jǐ suì le?",
+          "text": {
+            "uz": "Qizingiz necha yoshda?",
+            "ru": "Сколько лет вашей дочери?",
+            "tj": "Духтаратон чанд сол дорад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她今年四岁了。",
+          "pinyin": "Tā jīnnián sì suì le.",
+          "text": {
+            "uz": "U bu yil to'rt yoshga to'ldi.",
+            "ru": "Ей в этом году исполнилось четыре года.",
+            "tj": "Вай имсол чор сол шуд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Ofisda — kattalar yoshi",
+        "ru": "В офисе — возраст взрослых",
+        "tj": "Дар идора — синну соли калонсолон"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "李老师多大了？",
+          "pinyin": "Lǐ lǎoshī duō dà le?",
+          "text": {
+            "uz": "Muallima Li necha yoshda?",
+            "ru": "Сколько лет преподавателю Ли?",
+            "tj": "Муаллима Ли чанд сол дорад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她今年50岁了。",
+          "pinyin": "Tā jīnnián wǔshí suì le.",
+          "text": {
+            "uz": "U bu yil ellik yoshga kirdi.",
+            "ru": "В этом году ей исполнилось пятьдесят.",
+            "tj": "Вай имсол панҷоҳ сол шуд."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "她女儿呢？",
+          "pinyin": "Tā nǚ'ér ne?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Uning qizi-chi?",
+            "ru": "А её дочь?",
+            "tj": "Духтараш чӣ?"
           }
         },
         {
           "speaker": "B",
-          "zh": "这。",
-          "pinyin": "zhè.",
+          "zh": "她女儿今年20岁。",
+          "pinyin": "Tā nǚ'ér jīnnián èrshí suì.",
           "text": {
-            "uz": "这 — zhè deb o'qiladi.",
-            "ru": "这 читается как zhè.",
-            "tj": "这 ҳамчун zhè хонда мешавад."
+            "uz": "Uning qizi bu yil yigirma yoshda.",
+            "ru": "Её дочери в этом году двадцать лет.",
+            "tj": "Духтараш имсол бист сол дорад."
           }
         }
       ]
@@ -221,91 +416,140 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "这",
-            "pinyin": "zhè",
+            "no": 1,
+            "zh": "家",
+            "pinyin": "jiā",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "有",
+            "pinyin": "yǒu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "口",
+            "pinyin": "kǒu",
+            "pos": "m.",
+            "meaning": {
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "女儿",
+            "pinyin": "nǚ'ér",
+            "pos": "n.",
+            "meaning": {
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар (фарзанд)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "几",
+            "pinyin": "jǐ",
             "pos": "pron.",
             "meaning": {
-              "uz": "bu",
-              "ru": "это",
-              "tj": "ин"
+              "uz": "nechta (10 tagacha)",
+              "ru": "сколько (до 10)",
+              "tj": "чанд (то 10)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "那",
-            "pinyin": "nà",
-            "pos": "pron.",
+            "no": 6,
+            "zh": "岁",
+            "pinyin": "suì",
+            "pos": "m.",
             "meaning": {
-              "uz": "ana u, o‘sha",
-              "ru": "то, тот",
-              "tj": "он, ҳамон"
+              "uz": "yosh (o'lchov so'zi)",
+              "ru": "лет (счётное слово для возраста)",
+              "tj": "сол (барои синну сол)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "什么",
-            "pinyin": "shénme",
-            "pos": "pron.",
+            "no": 7,
+            "zh": "了",
+            "pinyin": "le",
+            "pos": "part.",
             "meaning": {
-              "uz": "nima",
-              "ru": "что",
-              "tj": "чӣ"
+              "uz": "holat o'zgarishi yuklamasi",
+              "ru": "частица изменения состояния",
+              "tj": "ҳарфи тағйири ҳолат"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "书",
-            "pinyin": "shū",
+            "no": 8,
+            "zh": "今年",
+            "pinyin": "jīnnián",
             "pos": "n.",
             "meaning": {
-              "uz": "kitob",
-              "ru": "книга",
-              "tj": "китоб"
+              "uz": "bu yil",
+              "ru": "в этом году",
+              "tj": "امسол، ин сол"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "杯子",
-            "pinyin": "bēizi",
-            "pos": "n.",
+            "no": 9,
+            "zh": "多",
+            "pinyin": "duō",
+            "pos": "adv.",
             "meaning": {
-              "uz": "stakan",
-              "ru": "стакан, чашка",
-              "tj": "пиёла, стакан"
+              "uz": "ko'p, qancha (daraja)",
+              "ru": "много, как (степень)",
+              "tj": "зиёд, чӣ қадар (дараҷа)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "手机",
-            "pinyin": "shǒujī",
-            "pos": "n.",
+            "no": 10,
+            "zh": "大",
+            "pinyin": "dà",
+            "pos": "adj.",
             "meaning": {
-              "uz": "telefon",
-              "ru": "мобильный телефон",
-              "tj": "телефон"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "桌子",
-            "pinyin": "zhuōzi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "stol",
-              "ru": "стол",
-              "tj": "миз"
+              "uz": "katta, ulug' (yoshda)",
+              "ru": "большой, старший (по возрасту)",
+              "tj": "калон, бузург (аз рӯи синну сол)"
             }
           }
         }
@@ -323,9 +567,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "这 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 这:",
-            "tj": "Маънои калимаи 这-ро интихоб кунед:"
+            "uz": "家 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 家:",
+            "tj": "Маънои калимаи 家-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +578,39 @@
           },
           "options": [
             {
-              "uz": "bu",
-              "ru": "это",
-              "tj": "ин"
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар (фарзанд)"
             },
             {
-              "uz": "ana u, o‘sha",
-              "ru": "то, тот",
-              "tj": "он, ҳамон"
+              "uz": "bor, ega bo'lmoq",
+              "ru": "иметь, есть",
+              "tj": "доштан, мавҷуд будан"
             },
             {
-              "uz": "nima",
-              "ru": "что",
-              "tj": "чӣ"
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
             },
             {
-              "uz": "kitob",
-              "ru": "книга",
-              "tj": "китоб"
+              "uz": "oila, uy",
+              "ru": "семья, дом",
+              "tj": "оила, хона"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "这 = bu (zhè)",
-            "ru": "这 = это (zhè)",
-            "tj": "这 = ин (zhè)"
+            "uz": "家 = oila, uy (jiā)",
+            "ru": "家 = семья, дом (jiā)",
+            "tj": "家 = оила, хона (jiā)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "这 talaffuzini tanlang:",
-            "ru": "Выберите произношение 这:",
-            "tj": "Талаффузи 这-ро интихоб кунед:"
+            "uz": "有 talaffuzini tanlang:",
+            "ru": "Выберите произношение 有:",
+            "tj": "Талаффузи 有-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +618,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zhè",
-            "nà",
-            "shénme",
-            "shū"
+            "yǒu",
+            "jiā",
+            "kǒu",
+            "nǚ'ér"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "这 — zhè",
-            "ru": "这 — zhè",
-            "tj": "这 — zhè"
+            "uz": "有 — yǒu",
+            "ru": "有 — yǒu",
+            "tj": "有 — yǒu"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'bu' xitoycha nima?",
-            "ru": "'это' по-китайски?",
-            "tj": "'ин' ба чинӣ чист?"
+            "uz": "'o'lchov so'zi (oila a'zolari uchun)' xitoycha qaysi?",
+            "ru": "'счётное слово (для членов семьи)' по-китайски?",
+            "tj": "'калимаи шуморавӣ (барои аъзоёни оила)' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "这",
-            "那",
-            "什么",
-            "书"
+            "口",
+            "有",
+            "家",
+            "女儿"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "这 = bu (zhè)",
-            "ru": "这 = это (zhè)",
-            "tj": "这 = ин (zhè)"
+            "uz": "o'lchov so'zi (oila a'zolari uchun) = 口 (kǒu)",
+            "ru": "счётное слово (для членов семьи) = 口 (kǒu)",
+            "tj": "калимаи шуморавӣ (барои аъзоёни оила) = 口 (kǒu)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "nà qaysi ieroglif?",
-            "ru": "Какой иероглиф читается nà?",
-            "tj": "nà кадом иероглиф аст?"
+            "uz": "nǚ'ér qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǚ'ér?",
+            "tj": "nǚ'ér кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,93 +668,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "那",
-            "这",
-            "什么",
-            "书"
+            "有",
+            "家",
+            "女儿",
+            "口"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "那 = ana u, o‘sha (nà)",
-            "ru": "那 = то, тот (nà)",
-            "tj": "那 = он, ҳамон (nà)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'这是什么' iborasini tuzing",
-            "ru": "Соберите фразу '这是什么'",
-            "tj": "Ибораи '这是什么'-ро созед"
-          },
-          "tokens": [
-            "这",
-            "是",
-            "什么",
-            "那",
-            "书"
-          ],
-          "answer_tokens": [
-            "这",
-            "是",
-            "什么"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 这 是 什么",
-            "ru": "Правильный порядок: 这 是 什么",
-            "tj": "Тартиби дуруст: 这 是 什么"
+            "uz": "女儿 = qiz farzand (nǚ'ér)",
+            "ru": "女儿 = дочь (nǚ'ér)",
+            "tj": "女儿 = духтар (фарзанд) (nǚ'ér)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "这",
+              "家",
               {
-                "uz": "bu",
-                "ru": "это",
-                "tj": "ин"
+                "uz": "oila, uy",
+                "ru": "семья, дом",
+                "tj": "оила, хона"
               }
             ],
             [
-              "那",
+              "有",
               {
-                "uz": "ana u, o‘sha",
-                "ru": "то, тот",
-                "tj": "он, ҳамон"
+                "uz": "bor, ega bo'lmoq",
+                "ru": "иметь, есть",
+                "tj": "доштан, мавҷуд будан"
               }
             ],
             [
-              "什么",
+              "口",
               {
-                "uz": "nima",
-                "ru": "что",
-                "tj": "чӣ"
+                "uz": "o'lchov so'zi (oila a'zolari uchun)",
+                "ru": "счётное слово (для членов семьи)",
+                "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
               }
             ],
             [
-              "书",
+              "女儿",
               {
-                "uz": "kitob",
-                "ru": "книга",
-                "tj": "китоб"
+                "uz": "qiz farzand",
+                "ru": "дочь",
+                "tj": "духтар (фарзанд)"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "她____几岁了？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "女儿",
+            "有",
+            "家",
+            "口"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 女儿 (nǚ'ér) — qiz farzand",
+            "ru": "Верно: 女儿 (nǚ'ér) — дочь",
+            "tj": "Дуруст: 女儿 (nǚ'ér) — духтар (фарзанд)"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "这是什么",
-          "pinyin": "zhè shì shénme",
+          "phrase": "家",
+          "pinyin": "jiā",
           "translation": {
-            "uz": "Narsalarni nomlash, 这 va 那",
-            "ru": "Названия предметов, 这 и 那",
-            "tj": "Номи ашё, 这 ва 那"
+            "uz": "oila, uy",
+            "ru": "семья, дом",
+            "tj": "оила, хона"
           }
         }
       ]
@@ -527,9 +767,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -537,41 +777,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "你家有几口人？",
+            "我家有三口人。",
+            "你女儿几岁了？",
+            "她今年四岁了。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 你家有几口人？",
+            "ru": "Правильный ответ: 你家有几口人？",
+            "tj": "Ҷавоби дуруст: 你家有几口人？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "这。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "你女儿几岁了？",
+            "她今年四岁了。",
+            "我家有三口人。",
+            "你家有几口人？"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "B javobi: 这。",
-            "ru": "Ответ B: 这。",
-            "tj": "Ҷавоби B: 这。"
+            "uz": "To'g'ri javob: 我家有三口人。",
+            "ru": "Правильный ответ: 我家有三口人。",
+            "tj": "Ҷавоби дуруст: 我家有三口人。"
           }
         }
       ]

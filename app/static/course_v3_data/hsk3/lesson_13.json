@@ -2,122 +2,210 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 13,
-  "title": "运动健康",
+  "title": "我是走回来的",
   "subtitle": {
-    "uz": "Mavzu: Sport va salomatlik. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Спорт и здоровье. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Варзиш ва саломатӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Murakkab yo'nalish to'ldiruvchisi, 'bir vaqtda ikki ish' va '是……的' ta'kidlovchi gaplar",
+    "ru": "Сложные направленные дополнения, 'два действия одновременно' и выделительная конструкция '是……的'",
+    "tj": "Пуркунандаи самти мураккаб, 'ду амал ҳамзамон' ва ҷумлаи таъкидии '是……的'"
   },
   "active_words": [
     {
-      "zh": "运动",
-      "pinyin": "yùndòng",
+      "no": 1,
+      "zh": "终于",
+      "pinyin": "zhōngyú",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "nihoyat, oxiri",
+        "ru": "наконец",
+        "tj": "ниҳоят"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "爷爷",
+      "pinyin": "yéye",
       "pos": "n.",
       "meaning": {
-        "uz": "sport, harakat",
-        "ru": "спорт, движение",
-        "tj": "варзиш, ҳаракат"
-      },
-      "no": 1
+        "uz": "bobo",
+        "ru": "дедушка",
+        "tj": "бобо"
+      }
     },
     {
-      "zh": "健康",
-      "pinyin": "jiànkāng",
+      "no": 3,
+      "zh": "礼物",
+      "pinyin": "lǐwù",
       "pos": "n.",
       "meaning": {
-        "uz": "salomatlik",
-        "ru": "здоровье",
-        "tj": "саломатӣ"
-      },
-      "no": 2
+        "uz": "sovg'a",
+        "ru": "подарок",
+        "tj": "туҳфа"
+      }
     },
     {
-      "zh": "锻炼",
-      "pinyin": "duànliàn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "mashq qilmoq",
-        "ru": "тренироваться",
-        "tj": "машқ кардан"
-      },
-      "no": 3
-    },
-    {
-      "zh": "跑步",
-      "pinyin": "pǎobù",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yugurmoq",
-        "ru": "бегать",
-        "tj": "давидан"
-      },
-      "no": 4
-    },
-    {
-      "zh": "游泳",
-      "pinyin": "yóuyǒng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "suzmoq",
-        "ru": "плавать",
-        "tj": "шино кардан"
-      },
-      "no": 5
-    },
-    {
-      "zh": "习惯",
-      "pinyin": "xíguàn",
+      "no": 4,
+      "zh": "奶奶",
+      "pinyin": "nǎinai",
       "pos": "n.",
       "meaning": {
-        "uz": "odat",
-        "ru": "привычка",
-        "tj": "одат"
-      },
-      "no": 6
+        "uz": "buvi",
+        "ru": "бабушка",
+        "tj": "биби"
+      }
     },
     {
-      "zh": "放松",
-      "pinyin": "fàngsōng",
+      "no": 5,
+      "zh": "遇到",
+      "pinyin": "yùdào",
       "pos": "v.",
       "meaning": {
-        "uz": "bo‘shashmoq, dam olmoq",
-        "ru": "расслабляться",
-        "tj": "ором шудан"
-      },
-      "no": 7
+        "uz": "duch kelmoq, uchratmoq",
+        "ru": "встретить, столкнуться",
+        "tj": "дучор шудан, вохӯрдан"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "一边",
+      "pinyin": "yìbiān",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "bir vaqtda, bir tarafdan",
+        "ru": "одновременно",
+        "tj": "ҳамзамон"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "过去",
+      "pinyin": "guòqù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'tmish",
+        "ru": "прошлое",
+        "tj": "гузашта"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "一般",
+      "pinyin": "yìbān",
+      "pos": "adj./adv.",
+      "meaning": {
+        "uz": "odatda; umumiy",
+        "ru": "обычно; общий",
+        "tj": "одатан; умумӣ"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "愿意",
+      "pinyin": "yuànyì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xohlamoq, rozi bo'lmoq",
+        "ru": "хотеть, быть готовым",
+        "tj": "хостан, розӣ будан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "起来",
+      "pinyin": "qǐlái",
+      "pos": "v.",
+      "meaning": {
+        "uz": "turmoq, yuqoriga harakatlanmoq",
+        "ru": "подниматься, вставать",
+        "tj": "бархостан, боло шудан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "应该",
+      "pinyin": "yīnggāi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kerak, lozim",
+        "ru": "следует, должен",
+        "tj": "бояд"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "生活",
+      "pinyin": "shēnghuó",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hayot",
+        "ru": "жизнь",
+        "tj": "зиндагӣ"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "校长",
+      "pinyin": "xiàozhǎng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maktab direktori",
+        "ru": "директор школы",
+        "tj": "директори мактаб"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "坏",
+      "pinyin": "huài",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "buzuq, yomon",
+        "ru": "испорченный, плохой",
+        "tj": "вайрон, бад"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "经常",
+      "pinyin": "jīngcháng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "tez-tez, ko'pincha",
+        "ru": "часто",
+        "tj": "зуд-зуд"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Murakkab yo'nalish to'ldiruvchisi",
+        "ru": "Сложное направленное дополнение",
+        "tj": "Пуркунандаи мураккаби самтӣ"
       },
-      "title_zh": "主题词语",
+      "title_zh": "复合趋向补语",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 运动健康. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“运动健康”。",
-        "ru": "Ключевая фраза урока: 运动健康. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“运动健康”。",
-        "tj": "Ибораи асосии дарс: 运动健康. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“运动健康”。"
+        "uz": "Murakkab yo'nalish to'ldiruvchisi ikki qismdan iborat: yo'nalish fe'li (上、下、进、出、回、过、起) + 来 yoki 去. Masalan: 回来 = qaytib kelmoq, 进去 = kirib ketmoq, 出来 = chiqib kelmoq.",
+        "ru": "Сложное направленное дополнение состоит из двух частей: глагол направления (上、下、进、出、回、过、起) + 来 или 去. Например: 回来 = вернуться (сюда), 进去 = войти (туда), 出来 = выйти (сюда).",
+        "tj": "Пуркунандаи мураккаби самтӣ аз ду қисм иборат аст: феъли самт (上、下、进、出、回、过、起) + 来 ё 去. Масалан: 回来 = баргаштан (ин ҷо), 进去 = даромадан (он ҷо), 出来 = баромадан (ин ҷо)."
       },
       "examples": [
         {
-          "zh": "今天我们学习“运动健康”。",
-          "pinyin": "Jīntiān wǒmen xuéxí yùndòng jiànkāng.",
+          "zh": "他走进来了。",
+          "pinyin": "Tā zǒu jìn lái le.",
           "translation": {
-            "uz": "Biz Sport va salomatlik mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Спорт и здоровье.",
-            "tj": "Мо мавзӯи Варзиш ва саломатӣ-ро меомӯзем."
+            "uz": "U yurib kirib keldi.",
+            "ru": "Он вошёл пешком.",
+            "tj": "Вай пиёда даромад."
           }
         },
         {
-          "zh": "这个词是运动。",
-          "pinyin": "Zhège cí shì yùndòng.",
+          "zh": "她跑出去了。",
+          "pinyin": "Tā pǎo chū qù le.",
           "translation": {
-            "uz": "Bu so'z: sport, harakat.",
-            "ru": "Это слово: спорт, движение.",
-            "tj": "Ин калима: варзиш, ҳаракат."
+            "uz": "U yugurib chiqib ketdi.",
+            "ru": "Она выбежала (туда).",
+            "tj": "Вай давон баромад (он ҷо)."
           }
         }
       ]
@@ -125,33 +213,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Bir vaqtda A qila turib B qilmoq",
+        "ru": "Одновременно делать A и B",
+        "tj": "Ҳамзамон A ва B кардан"
       },
-      "title_zh": "问答结构",
+      "title_zh": "一边……一边……",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'一边…一边…' tuzilmasi ikki harakatning bir vaqtda bajarilishini bildiradi. Ikki fe'l ham bir xil sub'ektga tegishli bo'lishi kerak. Masalan: 一边听音乐一边看书 = musiqa tinglab kitob o'qimoq.",
+        "ru": "Конструкция '一边…一边…' выражает два действия, выполняемых одновременно. Оба глагола относятся к одному подлежащему. Например: 一边听音乐一边看书 = слушать музыку и читать книгу одновременно.",
+        "tj": "Сохтори '一边…一边…' ду амали ҳамзаманро ифода мекунад. Ҳарду феъл ба як мубтадо тааллуқ доранд. Масалан: 一边听音乐一边看书 = ҳамзамон мусиқӣ гӯш кардан ва китоб хондан."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "我喜欢一边听音乐一边做作业。",
+          "pinyin": "Wǒ xǐhuān yībiān tīng yīnyuè yībiān zuò zuòyè.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Men musiqa tinglab uy vazifasini yaxshi ko'raman.",
+            "ru": "Мне нравится слушать музыку и одновременно делать домашнее задание.",
+            "tj": "Ман дӯст медорам ҳамзамон мусиқӣ гӯш кунам ва вазифаи хонагиро анҷом диҳам."
           }
         },
         {
-          "zh": "运动。",
-          "pinyin": "yùndòng.",
+          "zh": "他一边唱歌一边跳舞。",
+          "pinyin": "Tā yībiān chànggē yībiān tiàowǔ.",
           "translation": {
-            "uz": "运动 — yùndòng deb o'qiladi.",
-            "ru": "运动 читается как yùndòng.",
-            "tj": "运动 ҳамчун yùndòng хонда мешавад."
+            "uz": "U qo'shiq ayta turib raqsga tushmoqda.",
+            "ru": "Он поёт и одновременно танцует.",
+            "tj": "Вай ҳамзамон суруд мехонад ва рақс мекунад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "是……的 (o'tgan harakat usuli/vaqti/joyini ta'kidlash)",
+        "ru": "是……的 (акцент на способ/время/место прошлого действия)",
+        "tj": "是……的 (таъкид бар усул/вақт/ҷойи амали гузашта)"
+      },
+      "title_zh": "是……的（强调过去动作的方式/时间/地点）",
+      "rule": {
+        "uz": "'是……的' tuzilmasi o'tgan vaqtda yuz bergan harakatning QANday (usul), QACHON (vaqt) yoki QAERDA (joy) bo'lganini ta'kidlash uchun ishlatiladi. Ob'ekt ko'pincha 的 bilan 是 o'rtasida keladi.",
+        "ru": "Конструкция '是……的' используется для акцентирования КАК (способ), КОГДА (время) или ГДЕ (место) произошло прошлое действие. Объект часто стоит между 的 и 是.",
+        "tj": "Сохтори '是……的' барои таъкид бар ЧӢ ТАВРа (усул), КАЙ (вақт) ё ДАР КУҶо (ҷой) рух додани амали гузашта истифода мешавад. Объект аксаран байни 的 ва 是 меояд."
+      },
+      "examples": [
+        {
+          "zh": "我是走回来的。",
+          "pinyin": "Wǒ shì zǒu huílái de.",
+          "translation": {
+            "uz": "Men piyoda qaytib keldim. (usul ta'kidlangan)",
+            "ru": "Я вернулся пешком. (акцент на способ)",
+            "tj": "Ман пиёда баргаштам. (таъкид бар усул)"
+          }
+        },
+        {
+          "zh": "你是什么时候到的？",
+          "pinyin": "Nǐ shì shénme shíhou dào de?",
+          "translation": {
+            "uz": "Siz qachon keldingiz? (vaqt ta'kidlangan)",
+            "ru": "Когда ты прибыл? (акцент на время)",
+            "tj": "Шумо кай расидед? (таъкид бар вақт)"
           }
         }
       ]
@@ -160,49 +282,226 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Sport va salomatlik",
-        "ru": "Спорт и здоровье",
-        "tj": "Варзиш ва саломатӣ"
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
       },
       "dialogue": [
         {
-          "speaker": "A",
-          "zh": "今天我们学习“运动健康”。",
-          "pinyin": "Jīntiān wǒmen xuéxí yùndòng jiànkāng.",
+          "speaker": "小丽",
+          "zh": "你终于回来了！从哪儿买回来这么多东西啊？",
+          "pinyin": "Nǐ zhōngyú huílai le! Cóng nǎr mǎi huílai zhème duō dōngxi a?",
           "text": {
-            "uz": "Bugun Sport va salomatlik mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Спорт и здоровье.",
-            "tj": "Имрӯз мавзӯи Варзиш ва саломатӣ-ро меомӯзем."
+            "uz": "Nihoyat qaytding! Shuncha narsani qayerdan sotib olib kelding?",
+            "ru": "Наконец-то ты вернулся! Откуда ты купил столько вещей?",
+            "tj": "Ниҳоят баргаштӣ! Ин қадар чизро аз куҷо харида овардӣ?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "speaker": "小刚",
+          "zh": "都是从那边的商店买回来的。",
+          "pinyin": "Dōu shì cóng nàbiān de shāngdiàn mǎi huílai de.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Hammasini u yerdagi do'kondan sotib olib keldim.",
+            "ru": "Всё купил в магазине там.",
+            "tj": "Ҳамаро аз мағозаи он тараф харида овардам."
           }
         },
         {
-          "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "speaker": "小丽",
+          "zh": "怎么还买红酒回来了？谁喝啊？",
+          "pinyin": "Zěnme hái mǎi hóngjiǔ huílai le? Shéi hē a?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Nega vino ham sotib olib kelding? Kim ichadi?",
+            "ru": "Зачем ещё купил вино? Кто будет пить?",
+            "tj": "Чаро боз шароб харида овардӣ? Кӣ менӯшад?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "运动。",
-          "pinyin": "yùndòng.",
+          "speaker": "小刚",
+          "zh": "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。",
+          "pinyin": "Zhè shì gěi yéye de lǐwù, míngtiān wǒmen yìqǐ sòng guòqu, kànkan yéye nǎinai.",
           "text": {
-            "uz": "运动 — yùndòng deb o'qiladi.",
-            "ru": "运动 читается как yùndòng.",
-            "tj": "运动 ҳамчун yùndòng хонда мешавад."
+            "uz": "Bu bobomga sovg'a, ertaga birga olib borib, bobo-buvimni ko'ramiz.",
+            "ru": "Это подарок дедушке, завтра вместе отвезём и навестим бабушку с дедушкой.",
+            "tj": "Ин туҳфа барои бобо, пагоҳ якҷоя мебарем ва бобову бибиро мебинем."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "那我的礼物呢？快拿出来让我看看。",
+          "pinyin": "Nà wǒ de lǐwù ne? Kuài ná chūlai ràng wǒ kànkan.",
+          "text": {
+            "uz": "Unda mening sovg'am-chi? Tez olib chiq, ko'ray.",
+            "ru": "А мой подарок? Доставай скорее, дай посмотреть.",
+            "tj": "Пас туҳфаи ман чӣ? Зуд барор, бинам."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "我不是已经回来了吗？",
+          "pinyin": "Wǒ bú shì yǐjīng huílai le ma?",
+          "text": {
+            "uz": "Men allaqachon qaytib keldim-ku?",
+            "ru": "Разве я уже не вернулся?",
+            "tj": "Магар ман аллакай барнагаштам?"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "小丽",
+          "zh": "我今天看见你和一个女的进了咖啡店，她是谁啊？",
+          "pinyin": "Wǒ jīntiān kànjiàn nǐ hé yí ge nǚ de jìn le kāfēidiàn, tā shì shéi a?",
+          "text": {
+            "uz": "Bugun seni bir ayol bilan qahvaxonaga kirganingni ko'rdim, u kim?",
+            "ru": "Сегодня я видела, как ты вошёл в кафе с какой-то женщиной. Кто она?",
+            "tj": "Имрӯз дидам, ки бо як зан ба қаҳвахона даромадӣ, ӯ кист?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "她是我今天在路上遇到的一个老同学。",
+          "pinyin": "Tā shì wǒ jīntiān zài lùshang yùdào de yí ge lǎo tóngxué.",
+          "text": {
+            "uz": "U bugun yo'lda uchratgan eski sinfdoshim.",
+            "ru": "Это моя старая одноклассница, которую я встретил сегодня по дороге.",
+            "tj": "Ӯ ҳамсинфи пешинаам аст, ки имрӯз дар роҳ вохӯрдам."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "你们就一起去喝咖啡了？",
+          "pinyin": "Nǐmen jiù yìqǐ qù hē kāfēi le?",
+          "text": {
+            "uz": "Shunda birga qahva ichgani bordinglarmi?",
+            "ru": "И вы сразу пошли вместе пить кофе?",
+            "tj": "Пас якҷоя қаҳва нӯшидан рафтед?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "是啊，一边喝咖啡一边说了些过去的事。",
+          "pinyin": "Shì a, yìbiān hē kāfēi yìbiān shuō le xiē guòqù de shì.",
+          "text": {
+            "uz": "Ha, qahva ichib o'tmishdagi ba'zi gaplarni gaplashdik.",
+            "ru": "Да, пили кофе и говорили о прошлом.",
+            "tj": "Ҳа, қаҳва нӯшида аз баъзе корҳои гузашта гап задем."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "你回来得这么晚，是说了很多过去的事吗？",
+          "pinyin": "Nǐ huílai de zhème wǎn, shì shuō le hěn duō guòqù de shì ma?",
+          "text": {
+            "uz": "Bunchalik kech qaytganing, o'tmishdagi ko'p narsalarni gaplashganingdanmi?",
+            "ru": "Ты так поздно вернулся потому, что долго говорили о прошлом?",
+            "tj": "Ин қадар дер баргаштанат аз он буд, ки бисёр чизҳои гузаштаро гуфтед?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "不是。没有公共汽车了，我是走回来的。",
+          "pinyin": "Bú shì. Méiyǒu gōnggòng qìchē le, wǒ shì zǒu huílai de.",
+          "text": {
+            "uz": "Yo'q. Avtobus yo'q edi, men piyoda qaytib keldim.",
+            "ru": "Нет. Автобусов уже не было, я вернулся пешком.",
+            "tj": "Не. Автобус набуд, ман пиёда баргаштам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Telefonda",
+        "ru": "По телефону",
+        "tj": "Дар телефон"
+      },
+      "dialogue": [
+        {
+          "speaker": "同事",
+          "zh": "小丽，周末你一般跟小刚出去看电影吗？",
+          "pinyin": "Xiǎolì, zhōumò nǐ yìbān gēn Xiǎogāng chūqu kàn diànyǐng ma?",
+          "text": {
+            "uz": "Xiaoli, dam olish kunlari odatda Xiaogang bilan kinoga chiqasanmi?",
+            "ru": "Сяоли, по выходным ты обычно ходишь с Сяоганом в кино?",
+            "tj": "Сяоли, охири ҳафта одатан бо Сяоганг кино дидан меравӣ?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "我很少去电影院看电影，我更愿意在家看电视。",
+          "pinyin": "Wǒ hěn shǎo qù diànyǐngyuàn kàn diànyǐng, wǒ gèng yuànyì zài jiā kàn diànshì.",
+          "text": {
+            "uz": "Men kinoteatrga juda kam boraman, uyda televizor ko'rishni ko'proq xohlayman.",
+            "ru": "Я редко хожу в кинотеатр, больше предпочитаю смотреть телевизор дома.",
+            "tj": "Ман ба кинотеатр кам меравам, бештар дар хона телевизор диданро мехоҳам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "看电视有什么意思啊？",
+          "pinyin": "Kàn diànshì yǒu shénme yìsi a?",
+          "text": {
+            "uz": "Televizor ko'rishning nimasi qiziq?",
+            "ru": "Что интересного в телевизоре?",
+            "tj": "Телевизор дидан чӣ ҷолиб дорад?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "可以一边吃一边看，坐久了还可以站起来休息一会儿。",
+          "pinyin": "Kěyǐ yìbiān chī yìbiān kàn, zuò jiǔ le hái kěyǐ zhàn qǐlai xiūxi yíhuìr.",
+          "text": {
+            "uz": "Yeb turib ko'rsa bo'ladi, uzoq o'tirsang turib biroz dam olsa bo'ladi.",
+            "ru": "Можно есть и смотреть одновременно, а если долго сидишь, можно встать и отдохнуть.",
+            "tj": "Метавонӣ ҳамзамон хӯрӣ ва бинӣ, дер нишинӣ, бархеста каме истироҳат мекунӣ."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "你应该多出去走走，这样你们的生活会更有意思。",
+          "pinyin": "Nǐ yīnggāi duō chūqu zǒuzou, zhèyàng nǐmen de shēnghuó huì gèng yǒu yìsi.",
+          "text": {
+            "uz": "Ko'proq tashqariga chiqib sayr qilishing kerak, shunda hayotingiz qiziqroq bo'ladi.",
+            "ru": "Тебе надо чаще выходить гулять, так ваша жизнь будет интереснее.",
+            "tj": "Бояд бештар берун баромада сайр кунӣ, ҳамин тавр зиндагиятон ҷолибтар мешавад."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "有他在，我的生活已经很有意思了。",
+          "pinyin": "Yǒu tā zài, wǒ de shēnghuó yǐjīng hěn yǒu yìsi le.",
+          "text": {
+            "uz": "U bor ekan, hayotim allaqachon juda qiziq.",
+            "ru": "Когда он рядом, моя жизнь уже очень интересная.",
+            "tj": "Ӯ бошад, зиндагиям аллакай хеле ҷолиб аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Eri haqida matn",
+        "ru": "Текст о муже",
+        "tj": "Матн дар бораи шавҳар"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "刚结婚的时候，我丈夫是中学老师，他喜欢每天早上起床后，一边吃早饭一边看报纸。十年过去了，现在他已经是校长了，因为太忙，每天早上我起床后都看不到他，晚上很晚他才回到家。我真怕他累坏了。希望他能少一些会议，多一些休息，可以经常和我还有孩子在一起。",
+          "pinyin": "Gāng jiéhūn de shíhou, wǒ zhàngfu shì zhōngxué lǎoshī, tā xǐhuan měi tiān zǎoshang qǐ chuáng hòu, yìbiān chī zǎofàn yìbiān kàn bàozhǐ. Shí nián guòqù le, xiànzài tā yǐjīng shì xiàozhǎng le, yīnwèi tài máng, měi tiān zǎoshang wǒ qǐ chuáng hòu dōu kàn bu dào tā, wǎnshang hěn wǎn tā cái huí dào jiā. Wǒ zhēn pà tā lèi huài le. Xīwàng tā néng shǎo yìxiē huìyì, duō yìxiē xiūxi, kěyǐ jīngcháng hé wǒ hái yǒu háizi zài yìqǐ.",
+          "text": {
+            "uz": "Yangi turmush qurganimizda erim o'rta maktab o'qituvchisi edi. U har kuni ertalab turgach nonushta qilib gazeta o'qishni yaxshi ko'rardi. O'n yil o'tdi, hozir u allaqachon maktab direktori. Juda bandligi sababli men har kuni ertalab turganimda uni ko'rmayman, kechqurun juda kech uyga qaytadi. Uning charchab qolishidan juda qo'rqaman. U kamroq majlis qilib, ko'proq dam olsa, men va bolam bilan tez-tez birga bo'lsa, deb umid qilaman.",
+            "ru": "Когда мы только поженились, мой муж был учителем средней школы. Каждое утро после подъёма он любил завтракать и читать газету. Прошло десять лет, теперь он уже директор школы. Из-за занятости утром после подъёма я его не вижу, вечером он возвращается очень поздно. Я правда боюсь, что он переутомится. Надеюсь, у него будет меньше совещаний, больше отдыха, и он сможет чаще быть со мной и ребёнком.",
+            "tj": "Вақте нав оиладор шудем, шавҳарам муаллими мактаби миёна буд. Ӯ ҳар саҳар баъди хестан ҳамзамон наҳорӣ мехӯрд ва рӯзнома мехонд. Даҳ сол гузашт, ҳоло ӯ аллакай директори мактаб аст. Азбаски хеле банд аст, ҳар саҳар баъди хестанам ӯро намебинам, шаб хеле дер ба хона меояд. Ман воқеан метарсам, ки ӯ аз хастагӣ хароб шавад. Умед дорам, ки маҷлисҳояш камтар, истироҳаташ бештар шавад ва зуд-зуд бо ману фарзанд бошад."
           }
         }
       ]
@@ -221,91 +520,210 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "运动",
-            "pinyin": "yùndòng",
+            "no": 1,
+            "zh": "终于",
+            "pinyin": "zhōngyú",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "nihoyat, oxiri",
+              "ru": "наконец",
+              "tj": "ниҳоят"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "爷爷",
+            "pinyin": "yéye",
             "pos": "n.",
             "meaning": {
-              "uz": "sport, harakat",
-              "ru": "спорт, движение",
-              "tj": "варзиш, ҳаракат"
+              "uz": "bobo",
+              "ru": "дедушка",
+              "tj": "бобо"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "健康",
-            "pinyin": "jiànkāng",
+            "no": 3,
+            "zh": "礼物",
+            "pinyin": "lǐwù",
             "pos": "n.",
             "meaning": {
-              "uz": "salomatlik",
-              "ru": "здоровье",
-              "tj": "саломатӣ"
+              "uz": "sovg'a",
+              "ru": "подарок",
+              "tj": "туҳфа"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "锻炼",
-            "pinyin": "duànliàn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "mashq qilmoq",
-              "ru": "тренироваться",
-              "tj": "машқ кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "跑步",
-            "pinyin": "pǎobù",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yugurmoq",
-              "ru": "бегать",
-              "tj": "давидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "游泳",
-            "pinyin": "yóuyǒng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "suzmoq",
-              "ru": "плавать",
-              "tj": "шино кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "习惯",
-            "pinyin": "xíguàn",
+            "no": 4,
+            "zh": "奶奶",
+            "pinyin": "nǎinai",
             "pos": "n.",
             "meaning": {
-              "uz": "odat",
-              "ru": "привычка",
-              "tj": "одат"
+              "uz": "buvi",
+              "ru": "бабушка",
+              "tj": "биби"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "放松",
-            "pinyin": "fàngsōng",
+            "no": 5,
+            "zh": "遇到",
+            "pinyin": "yùdào",
             "pos": "v.",
             "meaning": {
-              "uz": "bo‘shashmoq, dam olmoq",
-              "ru": "расслабляться",
-              "tj": "ором шудан"
+              "uz": "duch kelmoq, uchratmoq",
+              "ru": "встретить, столкнуться",
+              "tj": "дучор шудан, вохӯрдан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "一边",
+            "pinyin": "yìbiān",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "bir vaqtda, bir tarafdan",
+              "ru": "одновременно",
+              "tj": "ҳамзамон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "过去",
+            "pinyin": "guòqù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'tmish",
+              "ru": "прошлое",
+              "tj": "гузашта"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "一般",
+            "pinyin": "yìbān",
+            "pos": "adj./adv.",
+            "meaning": {
+              "uz": "odatda; umumiy",
+              "ru": "обычно; общий",
+              "tj": "одатан; умумӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "愿意",
+            "pinyin": "yuànyì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xohlamoq, rozi bo'lmoq",
+              "ru": "хотеть, быть готовым",
+              "tj": "хостан, розӣ будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "起来",
+            "pinyin": "qǐlái",
+            "pos": "v.",
+            "meaning": {
+              "uz": "turmoq, yuqoriga harakatlanmoq",
+              "ru": "подниматься, вставать",
+              "tj": "бархостан, боло шудан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "应该",
+            "pinyin": "yīnggāi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kerak, lozim",
+              "ru": "следует, должен",
+              "tj": "бояд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "生活",
+            "pinyin": "shēnghuó",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hayot",
+              "ru": "жизнь",
+              "tj": "зиндагӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "校长",
+            "pinyin": "xiàozhǎng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maktab direktori",
+              "ru": "директор школы",
+              "tj": "директори мактаб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "坏",
+            "pinyin": "huài",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "buzuq, yomon",
+              "ru": "испорченный, плохой",
+              "tj": "вайрон, бад"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 15,
+            "zh": "经常",
+            "pinyin": "jīngcháng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "tez-tez, ko'pincha",
+              "ru": "часто",
+              "tj": "зуд-зуд"
             }
           }
         }
@@ -323,9 +741,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "运动 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 运动:",
-            "tj": "Маънои калимаи 运动-ро интихоб кунед:"
+            "uz": "终于 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 终于:",
+            "tj": "Маънои калимаи 终于-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +752,39 @@
           },
           "options": [
             {
-              "uz": "sport, harakat",
-              "ru": "спорт, движение",
-              "tj": "варзиш, ҳаракат"
+              "uz": "bobo",
+              "ru": "дедушка",
+              "tj": "бобо"
             },
             {
-              "uz": "salomatlik",
-              "ru": "здоровье",
-              "tj": "саломатӣ"
+              "uz": "sovg'a",
+              "ru": "подарок",
+              "tj": "туҳфа"
             },
             {
-              "uz": "mashq qilmoq",
-              "ru": "тренироваться",
-              "tj": "машқ кардан"
+              "uz": "buvi",
+              "ru": "бабушка",
+              "tj": "биби"
             },
             {
-              "uz": "yugurmoq",
-              "ru": "бегать",
-              "tj": "давидан"
+              "uz": "nihoyat, oxiri",
+              "ru": "наконец",
+              "tj": "ниҳоят"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "运动 = sport, harakat (yùndòng)",
-            "ru": "运动 = спорт, движение (yùndòng)",
-            "tj": "运动 = варзиш, ҳаракат (yùndòng)"
+            "uz": "终于 = nihoyat, oxiri (zhōngyú)",
+            "ru": "终于 = наконец (zhōngyú)",
+            "tj": "终于 = ниҳоят (zhōngyú)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "运动 talaffuzini tanlang:",
-            "ru": "Выберите произношение 运动:",
-            "tj": "Талаффузи 运动-ро интихоб кунед:"
+            "uz": "爷爷 talaffuzini tanlang:",
+            "ru": "Выберите произношение 爷爷:",
+            "tj": "Талаффузи 爷爷-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +792,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yùndòng",
-            "jiànkāng",
-            "duànliàn",
-            "pǎobù"
+            "lǐwù",
+            "yéye",
+            "zhōngyú",
+            "nǎinai"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "运动 — yùndòng",
-            "ru": "运动 — yùndòng",
-            "tj": "运动 — yùndòng"
+            "uz": "爷爷 — yéye",
+            "ru": "爷爷 — yéye",
+            "tj": "爷爷 — yéye"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'sport, harakat' xitoycha nima?",
-            "ru": "'спорт, движение' по-китайски?",
-            "tj": "'варзиш, ҳаракат' ба чинӣ чист?"
+            "uz": "'sovg'a' xitoycha qaysi?",
+            "ru": "'подарок' по-китайски?",
+            "tj": "'туҳфа' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "运动",
-            "健康",
-            "锻炼",
-            "跑步"
+            "奶奶",
+            "终于",
+            "爷爷",
+            "礼物"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "运动 = sport, harakat (yùndòng)",
-            "ru": "运动 = спорт, движение (yùndòng)",
-            "tj": "运动 = варзиш, ҳаракат (yùndòng)"
+            "uz": "sovg'a = 礼物 (lǐwù)",
+            "ru": "подарок = 礼物 (lǐwù)",
+            "tj": "туҳфа = 礼物 (lǐwù)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "jiànkāng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiànkāng?",
-            "tj": "jiànkāng кадом иероглиф аст?"
+            "uz": "nǎinai qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nǎinai?",
+            "tj": "nǎinai кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,91 +842,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "健康",
-            "运动",
-            "锻炼",
-            "跑步"
+            "礼物",
+            "终于",
+            "爷爷",
+            "奶奶"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "健康 = salomatlik (jiànkāng)",
-            "ru": "健康 = здоровье (jiànkāng)",
-            "tj": "健康 = саломатӣ (jiànkāng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'运动健康' iborasini tuzing",
-            "ru": "Соберите фразу '运动健康'",
-            "tj": "Ибораи '运动健康'-ро созед"
-          },
-          "tokens": [
-            "运动",
-            "健康",
-            "锻炼",
-            "跑步"
-          ],
-          "answer_tokens": [
-            "运动",
-            "健康"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 运动 健康",
-            "ru": "Правильный порядок: 运动 健康",
-            "tj": "Тартиби дуруст: 运动 健康"
+            "uz": "奶奶 = buvi (nǎinai)",
+            "ru": "奶奶 = бабушка (nǎinai)",
+            "tj": "奶奶 = биби (nǎinai)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "运动",
+              "终于",
               {
-                "uz": "sport, harakat",
-                "ru": "спорт, движение",
-                "tj": "варзиш, ҳаракат"
+                "uz": "nihoyat, oxiri",
+                "ru": "наконец",
+                "tj": "ниҳоят"
               }
             ],
             [
-              "健康",
+              "爷爷",
               {
-                "uz": "salomatlik",
-                "ru": "здоровье",
-                "tj": "саломатӣ"
+                "uz": "bobo",
+                "ru": "дедушка",
+                "tj": "бобо"
               }
             ],
             [
-              "锻炼",
+              "礼物",
               {
-                "uz": "mashq qilmoq",
-                "ru": "тренироваться",
-                "tj": "машқ кардан"
+                "uz": "sovg'a",
+                "ru": "подарок",
+                "tj": "туҳфа"
               }
             ],
             [
-              "跑步",
+              "奶奶",
               {
-                "uz": "yugurmoq",
-                "ru": "бегать",
-                "tj": "давидан"
+                "uz": "buvi",
+                "ru": "бабушка",
+                "tj": "биби"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我喜欢____听音乐一边做作业。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "礼物",
+            "终于",
+            "一边",
+            "爷爷"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 一边 (yìbiān) — bir vaqtda, bir tarafdan",
+            "ru": "Верно: 一边 (yìbiān) — одновременно",
+            "tj": "Дуруст: 一边 (yìbiān) — ҳамзамон"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "运动健康",
-          "pinyin": "yùndòng jiànkāng",
+          "phrase": "终于",
+          "pinyin": "zhōngyú",
           "translation": {
-            "uz": "Sport va salomatlik",
-            "ru": "Спорт и здоровье",
-            "tj": "Варзиш ва саломатӣ"
+            "uz": "nihoyat, oxiri",
+            "ru": "наконец",
+            "tj": "ниҳоят"
           }
         }
       ]
@@ -525,9 +941,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda 小丽 avval nima deydi?",
+            "ru": "Что 小丽 говорит в начале диалога?",
+            "tj": "Дар муколама 小丽 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -535,41 +951,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "怎么还买红酒回来了？谁喝啊？",
+            "你终于回来了！从哪儿买回来这么多东西啊？",
+            "都是从那边的商店买回来的。",
+            "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 你终于回来了！从哪儿买回来这么多东西啊？",
+            "ru": "Правильный ответ: 你终于回来了！从哪儿买回来这么多东西啊？",
+            "tj": "Ҷавоби дуруст: 你终于回来了！从哪儿买回来这么多东西啊？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida 小刚 nima deydi?",
+            "ru": "Что 小刚 говорит в конце диалога?",
+            "tj": "Дар охири муколама 小刚 чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "运动。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "怎么还买红酒回来了？谁喝啊？",
+            "都是从那边的商店买回来的。",
+            "你终于回来了！从哪儿买回来这么多东西啊？",
+            "我不是已经回来了吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 运动。",
-            "ru": "Ответ B: 运动。",
-            "tj": "Ҷавоби B: 运动。"
+            "uz": "To'g'ri javob: 我不是已经回来了吗？",
+            "ru": "Правильный ответ: 我不是已经回来了吗？",
+            "tj": "Ҷавоби дуруст: 我不是已经回来了吗？"
           }
         }
       ]

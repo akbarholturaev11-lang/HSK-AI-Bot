@@ -4,12 +4,13 @@
   "lesson_id": 2,
   "title": "谢谢你",
   "subtitle": {
-    "uz": "Mavzu: Minnatdorchilik va xayrlashuv. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Благодарность и прощание. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Сипосгузорӣ ва хайрухуш. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Xitoycha minnatdorchilik bildirish va xayrlashishni o'rganing",
+    "ru": "Научитесь выражать благодарность и прощаться по-китайски",
+    "tj": "Омӯзед, ки чӣ тавр ба забони чинӣ сипосгузорӣ кунед ва хайр гӯед"
   },
   "active_words": [
     {
+      "no": 1,
       "zh": "谢谢",
       "pinyin": "xièxie",
       "pos": "v.",
@@ -17,96 +18,82 @@
         "uz": "rahmat aytmoq, rahmat",
         "ru": "благодарить, спасибо",
         "tj": "ташаккур гуфтан, раҳмат"
-      },
-      "no": 1
+      }
     },
     {
-      "zh": "请",
-      "pinyin": "qǐng",
-      "pos": "v.",
+      "no": 2,
+      "zh": "不",
+      "pinyin": "bù",
+      "pos": "adv.",
       "meaning": {
-        "uz": "iltimos qilmoq, marhamat",
-        "ru": "просить; пожалуйста",
-        "tj": "хоҳиш кардан, марҳамат"
-      },
-      "no": 2
+        "uz": "yo'q, emas",
+        "ru": "нет, не",
+        "tj": "не, нест"
+      }
     },
     {
+      "no": 3,
       "zh": "不客气",
       "pinyin": "bú kèqi",
       "pos": "expr.",
       "meaning": {
-        "uz": "arzimaydi, iltimos",
-        "ru": "не за что, пожалуйста",
-        "tj": "ҳеҷ гап не, хоҳиш мекунам"
-      },
-      "no": 3
+        "uz": "iltimos, muammo yo'q",
+        "ru": "пожалуйста, не за что",
+        "tj": "хоҳиш мекунам, мушкиле нест"
+      }
     },
     {
+      "no": 4,
       "zh": "再见",
       "pinyin": "zàijiàn",
-      "pos": "expr.",
+      "pos": "v.",
       "meaning": {
         "uz": "xayr, ko'rishguncha",
         "ru": "до свидания, пока",
         "tj": "хайр, то дидан"
-      },
-      "no": 4
-    },
-    {
-      "zh": "明天",
-      "pinyin": "míngtiān",
-      "pos": "n.",
-      "meaning": {
-        "uz": "ertaga",
-        "ru": "завтра",
-        "tj": "пагоҳ"
-      },
-      "no": 5
-    },
-    {
-      "zh": "朋友",
-      "pinyin": "péngyou",
-      "pos": "n.",
-      "meaning": {
-        "uz": "do'st",
-        "ru": "друг",
-        "tj": "дӯст"
-      },
-      "no": 6
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "不 — inkor yuklamasi",
+        "ru": "不 — отрицательная частица",
+        "tj": "不 — ҳарфи инкорӣ"
       },
-      "title_zh": "主题词语",
+      "title_zh": "不 — inkor yuklamasi",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 谢谢你. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“谢谢你”。",
-        "ru": "Ключевая фраза урока: 谢谢你. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“谢谢你”。",
-        "tj": "Ибораи асосии дарс: 谢谢你. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“谢谢你”。"
+        "uz": "不(bù) — inkor yuklamasi (yo'q, emas).\nDiqqat: 不 4-ton, lekin keyingi bo'g'in ham 4-ton bo'lsa, 2-tonga o'zgaradi.\nbù + 4-ton → bú + 4-ton\nMisol: 不客气 → bú kèqi\n不谢 → bú xiè",
+        "ru": "不(bù) — отрицательная частица (нет, не).\nПримечание: 不 имеет 4-й тон, но меняется на 2-й перед другим слогом 4-го тона.\nbù + 4-й тон → bú + 4-й тон\nПример: 不客气 → bú kèqi\n不谢 → bú xiè",
+        "tj": "不(bù) — ҳарфи инкорӣ (не, нест).\nДиққат: 不 садои 4-ум дорад, аммо агар ҳиҷои баъдӣ ҳам садои 4-ум бошад, ба садои 2-юм иваз мешавад.\nbù + садои 4 → bú + садои 4\nМисол: 不客气 → bú kèqi\n不谢 → bú xiè"
       },
       "examples": [
         {
-          "zh": "今天我们学习“谢谢你”。",
-          "pinyin": "Jīntiān wǒmen xuéxí xièxie nǐ.",
+          "zh": "不谢",
+          "pinyin": "bú xiè",
           "translation": {
-            "uz": "Biz Minnatdorchilik va xayrlashuv mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Благодарность и прощание.",
-            "tj": "Мо мавзӯи Сипосгузорӣ ва хайрухуш-ро меомӯзем."
+            "uz": "iltimos (so'zma-so'z: rahmat yo'q)",
+            "ru": "пожалуйста (дословно: не благодари)",
+            "tj": "хоҳиш мекунам"
           }
         },
         {
-          "zh": "这个词是谢谢。",
-          "pinyin": "Zhège cí shì xièxie.",
+          "zh": "不客气",
+          "pinyin": "bú kèqi",
           "translation": {
-            "uz": "Bu so'z: rahmat aytmoq, rahmat.",
-            "ru": "Это слово: благодарить, спасибо.",
-            "tj": "Ин калима: ташаккур гуфтан, раҳмат."
+            "uz": "iltimos, muammo yo'q",
+            "ru": "не за что, пожалуйста",
+            "tj": "хоҳиш мекунам, мушкиле нест"
+          }
+        },
+        {
+          "zh": "不好",
+          "pinyin": "bù hǎo",
+          "translation": {
+            "uz": "yaxshi emas",
+            "ru": "нехорошо, плохо",
+            "tj": "хуб нест"
           }
         }
       ]
@@ -114,33 +101,51 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "轻声 — neytral ton",
+        "ru": "轻声 — нейтральный тон",
+        "tj": "轻声 — садои бетараф"
       },
-      "title_zh": "问答结构",
+      "title_zh": "轻声 — neytral ton",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "Xitoy tilida 5-ton ham bor — neytral ton (轻声).\nU qisqa va engil, ton belgisi yo'q.\nKo'pincha qarindoshlik atamalarida uchraydi.\nMisol: 妈妈(māma), 爸爸(bàba), 爷爷(yéye), 奶奶(nǎinai)",
+        "ru": "В китайском также есть 5-й тон — нейтральный (轻声).\nОн короткий и лёгкий, без знака тона.\nЧасто встречается в терминах родства.\nПример: 妈妈(māma), 爸爸(bàba), 爷爷(yéye), 奶奶(nǎinai)",
+        "tj": "Дар забони чинӣ садои 5-ум ҳам вуҷуд дорад — садои бетараф (轻声).\nОн кӯтоҳ ва сабук аст, бе нишонаи садо.\nБештар дар истилоҳоти хешутаборӣ истифода мешавад.\nМисол: 妈妈(māma), 爸爸(bàba), 爷爷(yéye), 奶奶(nǎinai)"
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "妈妈",
+          "pinyin": "māma",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "ona",
+            "ru": "мама",
+            "tj": "модар"
           }
         },
         {
-          "zh": "谢谢。",
-          "pinyin": "xièxie.",
+          "zh": "爸爸",
+          "pinyin": "bàba",
           "translation": {
-            "uz": "谢谢 — xièxie deb o'qiladi.",
-            "ru": "谢谢 читается как xièxie.",
-            "tj": "谢谢 ҳамчун xièxie хонда мешавад."
+            "uz": "ota",
+            "ru": "папа",
+            "tj": "падар"
+          }
+        },
+        {
+          "zh": "爷爷",
+          "pinyin": "yéye",
+          "translation": {
+            "uz": "bobo (otaning otasi)",
+            "ru": "дедушка (по отцу)",
+            "tj": "бобои падарӣ"
+          }
+        },
+        {
+          "zh": "奶奶",
+          "pinyin": "nǎinai",
+          "translation": {
+            "uz": "buvi (otaning onasi)",
+            "ru": "бабушка (по отцу)",
+            "tj": "модарбузурги падарӣ"
           }
         }
       ]
@@ -149,49 +154,87 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Minnatdorchilik va xayrlashuv",
-        "ru": "Благодарность и прощание",
-        "tj": "Сипосгузорӣ ва хайрухуш"
+        "uz": "Yordam uchun rahmat",
+        "ru": "Благодарность за помощь",
+        "tj": "Ташаккур барои ёрӣ"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“谢谢你”。",
-          "pinyin": "Jīntiān wǒmen xuéxí xièxie nǐ.",
+          "zh": "谢谢！",
+          "pinyin": "Xièxie!",
           "text": {
-            "uz": "Bugun Minnatdorchilik va xayrlashuv mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Благодарность и прощание.",
-            "tj": "Имрӯз мавзӯи Сипосгузорӣ ва хайрухуш-ро меомӯзем."
+            "uz": "Rahmat!",
+            "ru": "Спасибо!",
+            "tj": "Раҳмат!"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "不谢！",
+          "pinyin": "Bú xiè!",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Iltimos!",
+            "ru": "Пожалуйста!",
+            "tj": "Хоҳиш мекунам!"
           }
-        },
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Rasmiy rahmat",
+        "ru": "Официальная благодарность",
+        "tj": "Ташаккури расмӣ"
+      },
+      "dialogue": [
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "谢谢你！",
+          "pinyin": "Xièxie nǐ!",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Senga rahmat!",
+            "ru": "Спасибо тебе!",
+            "tj": "Аз ту ташаккур!"
           }
         },
         {
           "speaker": "B",
-          "zh": "谢谢。",
-          "pinyin": "xièxie.",
+          "zh": "不客气！",
+          "pinyin": "Bú kèqi!",
           "text": {
-            "uz": "谢谢 — xièxie deb o'qiladi.",
-            "ru": "谢谢 читается как xièxie.",
-            "tj": "谢谢 ҳамчун xièxie хонда мешавад."
+            "uz": "Iltimos (muammo yo'q)!",
+            "ru": "Не за что!",
+            "tj": "Хоҳиш мекунам!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xayrlashuv",
+        "ru": "Прощание",
+        "tj": "Хайр гуфтан"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "再见！",
+          "pinyin": "Zàijiàn!",
+          "text": {
+            "uz": "Xayr!",
+            "ru": "До свидания!",
+            "tj": "Хайр!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "再见！",
+          "pinyin": "Zàijiàn!",
+          "text": {
+            "uz": "Xayr!",
+            "ru": "До свидания!",
+            "tj": "Хайр!"
           }
         }
       ]
@@ -210,6 +253,7 @@
         {
           "type": "active_word",
           "word": {
+            "no": 1,
             "zh": "谢谢",
             "pinyin": "xièxie",
             "pos": "v.",
@@ -223,65 +267,42 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "请",
-            "pinyin": "qǐng",
-            "pos": "v.",
+            "no": 2,
+            "zh": "不",
+            "pinyin": "bù",
+            "pos": "adv.",
             "meaning": {
-              "uz": "iltimos qilmoq, marhamat",
-              "ru": "просить; пожалуйста",
-              "tj": "хоҳиш кардан, марҳамат"
+              "uz": "yo'q, emas",
+              "ru": "нет, не",
+              "tj": "не, нест"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
+            "no": 3,
             "zh": "不客气",
             "pinyin": "bú kèqi",
             "pos": "expr.",
             "meaning": {
-              "uz": "arzimaydi, iltimos",
-              "ru": "не за что, пожалуйста",
-              "tj": "ҳеҷ гап не, хоҳиш мекунам"
+              "uz": "iltimos, muammo yo'q",
+              "ru": "пожалуйста, не за что",
+              "tj": "хоҳиш мекунам, мушкиле нест"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
+            "no": 4,
             "zh": "再见",
             "pinyin": "zàijiàn",
-            "pos": "expr.",
+            "pos": "v.",
             "meaning": {
               "uz": "xayr, ko'rishguncha",
               "ru": "до свидания, пока",
               "tj": "хайр, то дидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "明天",
-            "pinyin": "míngtiān",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ertaga",
-              "ru": "завтра",
-              "tj": "пагоҳ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "朋友",
-            "pinyin": "péngyou",
-            "pos": "n.",
-            "meaning": {
-              "uz": "do'st",
-              "ru": "друг",
-              "tj": "дӯст"
             }
           }
         }
@@ -310,27 +331,27 @@
           },
           "options": [
             {
-              "uz": "rahmat aytmoq, rahmat",
-              "ru": "благодарить, спасибо",
-              "tj": "ташаккур гуфтан, раҳмат"
-            },
-            {
-              "uz": "iltimos qilmoq, marhamat",
-              "ru": "просить; пожалуйста",
-              "tj": "хоҳиш кардан, марҳамат"
-            },
-            {
-              "uz": "arzimaydi, iltimos",
-              "ru": "не за что, пожалуйста",
-              "tj": "ҳеҷ гап не, хоҳиш мекунам"
-            },
-            {
               "uz": "xayr, ko'rishguncha",
               "ru": "до свидания, пока",
               "tj": "хайр, то дидан"
+            },
+            {
+              "uz": "yo'q, emas",
+              "ru": "нет, не",
+              "tj": "не, нест"
+            },
+            {
+              "uz": "iltimos, muammo yo'q",
+              "ru": "пожалуйста, не за что",
+              "tj": "хоҳиш мекунам, мушкиле нест"
+            },
+            {
+              "uz": "rahmat aytmoq, rahmat",
+              "ru": "благодарить, спасибо",
+              "tj": "ташаккур гуфтан, раҳмат"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "谢谢 = rahmat aytmoq, rahmat (xièxie)",
             "ru": "谢谢 = благодарить, спасибо (xièxie)",
@@ -340,9 +361,9 @@
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "谢谢 talaffuzini tanlang:",
-            "ru": "Выберите произношение 谢谢:",
-            "tj": "Талаффузи 谢谢-ро интихоб кунед:"
+            "uz": "不 talaffuzini tanlang:",
+            "ru": "Выберите произношение 不:",
+            "tj": "Талаффузи 不-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -350,49 +371,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "zàijiàn",
             "xièxie",
-            "qǐng",
-            "bú kèqi",
-            "zàijiàn"
+            "bù",
+            "bú kèqi"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "谢谢 — xièxie",
-            "ru": "谢谢 — xièxie",
-            "tj": "谢谢 — xièxie"
+            "uz": "不 — bù",
+            "ru": "不 — bù",
+            "tj": "不 — bù"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'rahmat aytmoq, rahmat' xitoycha nima?",
-            "ru": "'благодарить, спасибо' по-китайски?",
-            "tj": "'ташаккур гуфтан, раҳмат' ба чинӣ чист?"
+            "uz": "'iltimos, muammo yo'q' xitoycha qaysi?",
+            "ru": "'пожалуйста, не за что' по-китайски?",
+            "tj": "'хоҳиш мекунам, мушкиле нест' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "谢谢",
-            "请",
+            "再见",
+            "不",
             "不客气",
-            "再见"
+            "谢谢"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "谢谢 = rahmat aytmoq, rahmat (xièxie)",
-            "ru": "谢谢 = благодарить, спасибо (xièxie)",
-            "tj": "谢谢 = ташаккур гуфтан, раҳмат (xièxie)"
+            "uz": "iltimos, muammo yo'q = 不客气 (bú kèqi)",
+            "ru": "пожалуйста, не за что = 不客气 (bú kèqi)",
+            "tj": "хоҳиш мекунам, мушкиле нест = 不客气 (bú kèqi)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "qǐng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается qǐng?",
-            "tj": "qǐng кадом иероглиф аст?"
+            "uz": "zàijiàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zàijiàn?",
+            "tj": "zàijiàn кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -400,39 +421,16 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "请",
+            "再见",
+            "不",
             "谢谢",
-            "不客气",
-            "再见"
+            "不客气"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "请 = iltimos qilmoq, marhamat (qǐng)",
-            "ru": "请 = просить; пожалуйста (qǐng)",
-            "tj": "请 = хоҳиш кардан, марҳамат (qǐng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'谢谢你' iborasini tuzing",
-            "ru": "Соберите фразу '谢谢你'",
-            "tj": "Ибораи '谢谢你'-ро созед"
-          },
-          "tokens": [
-            "谢谢",
-            "你",
-            "请",
-            "不客气"
-          ],
-          "answer_tokens": [
-            "谢谢",
-            "你"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 谢谢 你",
-            "ru": "Правильный порядок: 谢谢 你",
-            "tj": "Тартиби дуруст: 谢谢 你"
+            "uz": "再见 = xayr, ko'rishguncha (zàijiàn)",
+            "ru": "再见 = до свидания, пока (zàijiàn)",
+            "tj": "再见 = хайр, то дидан (zàijiàn)"
           }
         },
         {
@@ -447,19 +445,19 @@
               }
             ],
             [
-              "请",
+              "不",
               {
-                "uz": "iltimos qilmoq, marhamat",
-                "ru": "просить; пожалуйста",
-                "tj": "хоҳиш кардан, марҳамат"
+                "uz": "yo'q, emas",
+                "ru": "нет, не",
+                "tj": "не, нест"
               }
             ],
             [
               "不客气",
               {
-                "uz": "arzimaydi, iltimos",
-                "ru": "не за что, пожалуйста",
-                "tj": "ҳеҷ гап не, хоҳиш мекунам"
+                "uz": "iltimos, muammo yo'q",
+                "ru": "пожалуйста, не за что",
+                "tj": "хоҳиш мекунам, мушкиле нест"
               }
             ],
             [
@@ -472,19 +470,40 @@
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "再见",
+            "不客气",
+            "不",
+            "谢谢"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 不客气 (bú kèqi) — iltimos, muammo yo'q",
+            "ru": "Верно: 不客气 (bú kèqi) — пожалуйста, не за что",
+            "tj": "Дуруст: 不客气 (bú kèqi) — хоҳиш мекунам, мушкиле нест"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "谢谢你",
-          "pinyin": "xièxie nǐ",
+          "phrase": "谢谢",
+          "pinyin": "xièxie",
           "translation": {
-            "uz": "Minnatdorchilik va xayrlashuv",
-            "ru": "Благодарность и прощание",
-            "tj": "Сипосгузорӣ ва хайрухуш"
+            "uz": "rahmat aytmoq, rahmat",
+            "ru": "благодарить, спасибо",
+            "tj": "ташаккур гуфтан, раҳмат"
           }
         }
       ]
@@ -501,9 +520,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -511,41 +530,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "谢谢！",
+            "不谢！",
+            "谢谢你！",
+            "不客气！"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 谢谢！",
+            "ru": "Правильный ответ: 谢谢！",
+            "tj": "Ҷавоби дуруст: 谢谢！"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "谢谢。",
             "不客气！",
-            "我不知道。",
-            "再见！"
+            "谢谢你！",
+            "谢谢！",
+            "不谢！"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 谢谢。",
-            "ru": "Ответ B: 谢谢。",
-            "tj": "Ҷавоби B: 谢谢。"
+            "uz": "To'g'ri javob: 不谢！",
+            "ru": "Правильный ответ: 不谢！",
+            "tj": "Ҷавоби дуруст: 不谢！"
           }
         }
       ]

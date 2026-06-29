@@ -228,6 +228,50 @@ def admin_payload():
     }
 
 
+def admin_finance_payload():
+    def period(key, title, note):
+        return {
+            "key": key, "title": title, "note": note, "range_label": "01.01.2026 — 28.06.2026",
+            "finance": {
+                "revenue_text": "$120.00", "ai_cost_text": "$10.00", "expense_text": "$5.00",
+                "net_text": "$105.00", "net_positive": True, "ai_share_pct": 8.3, "margin_pct": 87.5,
+                "explain": "Sof foyda = daromad - AI xarajat - portfel rasxod.",
+            },
+            "unit": {
+                "arpu_text": "$1.00", "arppu_text": "$12.00", "avg_check_text": "$12.00",
+                "paying_users": 10, "total_users": 12, "approved_count": 10,
+                "explain": "ARPU va ARPPU izohi.",
+            },
+            "retention": {
+                "new_paying": 8, "renewals": 2, "renewal_share_pct": 20.0, "renewal_rate_pct": 20.0,
+                "churn_rate_pct": (15.0 if key == "all_time" else None),
+                "active_paid_now": 9, "paid_ever": 12, "renewed_ever": 2,
+                "explain": "Yangilash va churn izohi.",
+            },
+            "sources_paid": [
+                {"source": "v3_paywall", "label": "Course v3 - Paywall", "paying_users": 6, "payments": 7, "revenue_text": "$80.00"}
+            ],
+            "cards": [
+                {"label": "Daromad", "value": "$120.00", "note": "10 ta to'lov", "tone": "info"},
+                {"label": "AI xarajat", "value": "$10.00", "note": "daromadning 8.3%", "tone": "warn"},
+                {"label": "Portfel rasxod", "value": "$5.00", "note": "qo'lda", "tone": "warn"},
+                {"label": "Sof foyda", "value": "$105.00", "note": "marja 87.5%", "tone": "good"},
+                {"label": "ARPU", "value": "$1.00", "note": "har foydalanuvchi", "tone": "info"},
+                {"label": "ARPPU", "value": "$12.00", "note": "har pullik", "tone": "good"},
+                {"label": "Pullik foydalanuvchi", "value": 10, "note": "yangi 8 · yangilash 2", "tone": "good"},
+                {"label": "Yangilash", "value": "20.0%", "note": "qayta to'lov ulushi", "tone": "good"},
+            ],
+        }
+    return {
+        "ok": True, "generated_at": "28.06.2026 11:30", "tz": "Asia/Shanghai",
+        "periods": [
+            period("weekly", "Haftalik", "Oxirgi 7 kun"),
+            period("monthly", "Oylik", "Oxirgi 30 kun"),
+            period("all_time", "To'liq", "Butun davr"),
+        ],
+    }
+
+
 def test_admin_control_renders_real_api_payload_without_demo_data(page):
     page.add_init_script(
         """
@@ -236,22 +280,24 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
         """
     )
     page.route("**/api/admin-miniapp/overview", lambda route: json_response(route, admin_payload()))
+    page.route("**/api/admin-miniapp/finance-stats", lambda route: json_response(route, admin_finance_payload()))
     page.route("**/api/admin-miniapp/sub-entry-stats", lambda route: json_response(route, {"ok": True, "rows": []}))
+    page.route("**/api/admin-miniapp/management", lambda route: json_response(route, {"ok": True}))
     page.route(
         "**/api/admin-miniapp/notifications",
         lambda route: json_response(route, {"ok": True, "items": []}),
     )
     page.route("**/api/admin-miniapp/course-ads", lambda route: json_response(route, {"ok": True, "items": []}))
 
-    page.goto(app_url("/admin-control.html"), wait_until="networkidle")
+    page.goto(app_url("/admin.html"), wait_until="networkidle")
 
     expect(page.locator("#app")).to_be_visible()
-    expect(page.locator("#statsGrid")).to_contain_text("Foydalanuvchilar")
-    expect(page.locator("#statsGrid")).to_contain_text("12")
+    expect(page.locator("#summaryGrid")).to_contain_text("Foydalanuvchilar")
+    expect(page.locator("#summaryGrid")).to_contain_text("12")
     expect(page.locator("#reportText")).to_contain_text("Real hisobot")
     expect(page.locator("#userList")).to_contain_text("Ali")
     expect(page.locator("#paymentBoard")).to_contain_text("99 TJS")
-    expect(page.locator("#candleChart .candle")).to_have_count(2)
+    expect(page.locator("#financeCards")).to_contain_text("Sof foyda")
 
 
 def test_subscription_page_smoke(page):

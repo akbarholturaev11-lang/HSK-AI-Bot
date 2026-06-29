@@ -2,122 +2,188 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 10,
-  "title": "快点儿",
+  "title": "别找了，手机在桌子上呢",
   "subtitle": {
-    "uz": "Mavzu: Tezlik, intensivlik, 一点儿. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Скорость и 一点儿. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Суръат ва 一点儿. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Buyruq gaplarini ('别……了'), 'duì' old ko'makchisini va 'zhèngzài' davom ko'rsatkichini ishlatishni o'rganish.",
+    "ru": "Научиться использовать побудительные предложения ('别……了'), предлог 'duì' и показатель продолжения 'zhèngzài'.",
+    "tj": "Омӯзиши истифодаи ҷумлаҳои фармоишӣ ('别……了'), пешоянди 'duì' ва нишондиҳандаи давомнокии 'zhèngzài'."
   },
   "active_words": [
     {
-      "zh": "快",
-      "pinyin": "kuài",
-      "pos": "adj.",
+      "no": 1,
+      "zh": "课",
+      "pinyin": "kè",
+      "pos": "n.",
       "meaning": {
-        "uz": "tez",
-        "ru": "быстрый",
-        "tj": "тез"
-      },
-      "no": 1
+        "uz": "dars, mashg'ulot",
+        "ru": "урок, занятие",
+        "tj": "дарс, машғулот"
+      }
     },
     {
-      "zh": "点儿",
-      "pinyin": "diǎnr",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "biroz, -roq",
-        "ru": "немного",
-        "tj": "каме"
-      },
-      "no": 2
-    },
-    {
-      "zh": "慢点儿",
-      "pinyin": "màn diǎnr",
-      "pos": "expr.",
-      "meaning": {
-        "uz": "sekinroq",
-        "ru": "помедленнее",
-        "tj": "сусттар"
-      },
-      "no": 3
-    },
-    {
-      "zh": "早",
-      "pinyin": "zǎo",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "erta",
-        "ru": "рано",
-        "tj": "барвақт"
-      },
-      "no": 4
-    },
-    {
-      "zh": "晚",
-      "pinyin": "wǎn",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "kech",
-        "ru": "поздно",
-        "tj": "дер"
-      },
-      "no": 5
-    },
-    {
-      "zh": "马上",
-      "pinyin": "mǎshàng",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "hoziroq",
-        "ru": "сразу",
-        "tj": "ҳозир"
-      },
-      "no": 6
-    },
-    {
-      "zh": "等",
-      "pinyin": "děng",
+      "no": 2,
+      "zh": "帮助",
+      "pinyin": "bāngzhù",
       "pos": "v.",
       "meaning": {
-        "uz": "kutmoq",
-        "ru": "ждать",
-        "tj": "интизор шудан"
-      },
-      "no": 7
+        "uz": "yordam bermoq",
+        "ru": "помогать",
+        "tj": "кӯмак кардан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "别",
+      "pinyin": "bié",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "…qilma (taqiq)",
+        "ru": "не (запрет)",
+        "tj": "накун (манъ)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "哥哥",
+      "pinyin": "gēge",
+      "pos": "n.",
+      "meaning": {
+        "uz": "aka",
+        "ru": "старший брат",
+        "tj": "бародари калонӣ"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "鸡蛋",
+      "pinyin": "jīdàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tuxum",
+        "ru": "яйцо",
+        "tj": "тухм"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "西瓜",
+      "pinyin": "xīguā",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tarvuz",
+        "ru": "арбуз",
+        "tj": "тарбуз"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "正在",
+      "pinyin": "zhèngzài",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "hozir …qilmoqda (davom etayotgan harakat)",
+        "ru": "сейчас … (продолжающееся действие)",
+        "tj": "ҳоло …қилмоқда (амали ҷорӣ)"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "手机",
+      "pinyin": "shǒujī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mobil telefon",
+        "ru": "мобильный телефон",
+        "tj": "телефони мобилӣ"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "洗",
+      "pinyin": "xǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yuvmoq",
+        "ru": "мыть, стирать",
+        "tj": "шустан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "药",
+      "pinyin": "yào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dori-darmon",
+        "ru": "лекарство",
+        "tj": "дору"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "身体",
+      "pinyin": "shēntǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tana, sog'liq",
+        "ru": "тело, здоровье",
+        "tj": "тан, саломатӣ"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "准备",
+      "pinyin": "zhǔnbèi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tayyorlanmoq, tayyorlamoq",
+        "ru": "готовиться, подготавливать",
+        "tj": "омода шудан, тайёр кардан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "报纸",
+      "pinyin": "bàozhǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "gazeta",
+        "ru": "газета",
+        "tj": "рӯзнома"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Buyruq gapi: 不要……了; 别……了 (endi …qilma)",
+        "ru": "Побудительное предложение: 不要……了; 别……了 (хватит, не делай)",
+        "tj": "Ҷумлаи фармоишӣ: 不要……了; 别……了 (дигар накун)"
       },
-      "title_zh": "主题词语",
+      "title_zh": "祈使句：不要……了；别……了",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 快点儿. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“快点儿”。",
-        "ru": "Ключевая фраза урока: 快点儿. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“快点儿”。",
-        "tj": "Ибораи асосии дарс: 快点儿. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“快点儿”。"
+        "uz": "Biror harakatni to'xtatishni buyurish uchun 'bié……le' yoki 'búyào……le' ishlatiladi.\nBu ikkalasi ham 'endi …qilma' ma'nosini beradi.\n'Bié' so'zlashuv tilida ko'proq qo'llanadi.\nGap oxiridagi 'le' holatning o'zgarganligini yoki da'vatni kuchaytiradi.",
+        "ru": "Для приказания прекратить действие используется 'bié……le' или 'búyào……le'.\nОба означают 'больше не делай, хватит'.\n'Bié' чаще используется в разговорной речи.\nЧастица 'le' в конце предложения усиливает призыв или сигнализирует об изменении ситуации.",
+        "tj": "Барои дастур додан ба қатъи амал 'bié……le' ё 'búyào……le' истифода мешавад.\nҲар ду маъноии 'дигар накун' доранд.\n'Bié' дар забони гуфтугӯӣ бештар истифода мешавад.\nҶузъаи 'le' дар охири ҷумла даъватро тақвият медиҳад ё тағйири вазъиятро нишон медиҳад."
       },
       "examples": [
         {
-          "zh": "今天我们学习“快点儿”。",
-          "pinyin": "Jīntiān wǒmen xuéxí kuài diǎnr.",
+          "zh": "别看电视了，去睡觉吧。",
+          "pinyin": "Bié kàn diànshì le, qù shuìjiào ba.",
           "translation": {
-            "uz": "Biz Tezlik, intensivlik, 一点儿 mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Скорость и 一点儿.",
-            "tj": "Мо мавзӯи Суръат ва 一点儿-ро меомӯзем."
+            "uz": "Endi televizor ko'rma, uxlash vaqti.",
+            "ru": "Хватит смотреть телевизор, иди спать.",
+            "tj": "Дигар телевизор нагард, барав бихоб."
           }
         },
         {
-          "zh": "这个词是快。",
-          "pinyin": "Zhège cí shì kuài.",
+          "zh": "不要喝茶了，吃药吧。",
+          "pinyin": "Búyào hē chá le, chī yào ba.",
           "translation": {
-            "uz": "Bu so'z: tez.",
-            "ru": "Это слово: быстрый.",
-            "tj": "Ин калима: тез."
+            "uz": "Choy ichmay, dori ich.",
+            "ru": "Не пей чай, прими лекарство.",
+            "tj": "Дигар чой нанӯш, дору хӯр."
           }
         }
       ]
@@ -125,33 +191,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Old ko'makchi 对 (uchun, bo'yicha, nisbatan)",
+        "ru": "Предлог 对 (для, по отношению к, относительно)",
+        "tj": "Пешоянди 对 (барои, нисбат ба)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "介词\"对\"",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'Duì' old ko'makchisi 'uchun, bo'yicha, nisbatan' ma'nolarini beradi.\n'A duì B (yǒu) C' ko'rinishida: A B uchun C (ta'sirga ega/yaxshi/yomon).\nMasalan: 看电视对眼睛不好 (televizor ko'rish ko'z uchun yaxshi emas).",
+        "ru": "Предлог '对' означает 'для, по отношению к, относительно'.\nВ конструкции 'A 对 B (有) C': A для B (имеет влияние/хорошо/плохо).\nНапример: 看电视对眼睛不好 (смотреть телевизор вредно для глаз).",
+        "tj": "Пешоянди '对' маъноии 'барои, нисбат ба'-ро медиҳад.\nДар сохтори 'A 对 B (有) C': A барои B (таъсир дорад/хуб аст/бад аст).\nМасалан: 看电视对眼睛不好 (тамошои телевизор барои чашм зиёновар аст)."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "看电视对学汉语有帮助。",
+          "pinyin": "Kàn diànshì duì xué Hànyǔ yǒu bāngzhù.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Televizor ko'rish xitoy tili o'rganishga yordam beradi.",
+            "ru": "Просмотр телевизора помогает в изучении китайского.",
+            "tj": "Тамошои телевизор дар омӯхтани чинӣ кӯмак мекунад."
           }
         },
         {
-          "zh": "快。",
-          "pinyin": "kuài.",
+          "zh": "早睡早起对身体好。",
+          "pinyin": "Zǎo shuì zǎo qǐ duì shēntǐ hǎo.",
           "translation": {
-            "uz": "快 — kuài deb o'qiladi.",
-            "ru": "快 читается как kuài.",
-            "tj": "快 ҳамчун kuài хонда мешавад."
+            "uz": "Erta yotib erta turish sog'liq uchun foydali.",
+            "ru": "Ложиться и вставать рано полезно для здоровья.",
+            "tj": "Барвақт хобидан ва барвақт хестан барои саломатӣ хуб аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "'Zhèngzài' ravishi va 'ne' yuklama (davom etayotgan harakat)",
+        "ru": "Наречие 'zhèngzài' и частица 'ne' (продолжающееся действие)",
+        "tj": "Зарфи 'zhèngzài' ва зарраи 'ne' (амали ҷорӣ)"
+      },
+      "title_zh": "副词\"正在\"和语气助词\"呢\"",
+      "rule": {
+        "uz": "'正在' ravishi fe'l oldidan kelib, harakatning aynan hozir davom etayotganini bildiradi.\nIngliz tilidagi 'am/is/are …-ing' ga o'xshaydi.\nGap oxiriga '呢' yuklama qo'shilsa, davom etayotgan holat yanada ta'kidlanadi.\nTuzilish: 正在 + fe'l (+呢). Shuningdek, faqat '在 + fe'l' yoki 'fe'l + 着 + 呢' ham ishlatiladi.",
+        "ru": "Наречие '正在' стоит перед глаголом и указывает, что действие происходит прямо сейчас.\nАналог английского 'am/is/are …-ing'.\nЕсли в конце добавляется частица '呢', продолжение состояния подчёркивается.\nСтруктура: 正在 + глагол (+呢). Также используется: 在 + глагол или глагол + 着 + 呢.",
+        "tj": "Зарфи '正在' пеш аз феъл меояд ва нишон медиҳад амал айни ҳол ҷараён дорад.\nБа 'am/is/are …-ing' дар забони англисӣ монанд аст.\nАгар дар охири ҷумла зарраи '呢' илова шавад, ҷараёни ҳолат бештар таъкид мешавад.\nСохтор: 正在 + феъл (+呢). Инчунин: 在 + феъл ё феъл + 着 + 呢 истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "妈妈正在准备午饭呢！",
+          "pinyin": "Māma zhèngzài zhǔnbèi wǔfàn ne!",
+          "translation": {
+            "uz": "Ona hozir tushlikni tayyorlayapti!",
+            "ru": "Мама сейчас готовит обед!",
+            "tj": "Модар ҳоло нисфирӯзиро тайёр мекунад!"
+          }
+        },
+        {
+          "zh": "你在找什么？",
+          "pinyin": "Nǐ zài zhǎo shénme?",
+          "translation": {
+            "uz": "Siz nima qidiryapsiz?",
+            "ru": "Что ты ищешь?",
+            "tj": "Ту чӣ мекобӣ?"
           }
         }
       ]
@@ -160,49 +260,216 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Tezlik, intensivlik, 一点儿",
-        "ru": "Скорость и 一点儿",
-        "tj": "Суръат ва 一点儿"
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“快点儿”。",
-          "pinyin": "Jīntiān wǒmen xuéxí kuài diǎnr.",
+          "zh": "别看电视了，明天上午还有汉语课呢。",
+          "pinyin": "Bié kàn diànshì le，míngtiān shàngwǔ hái yǒu Hànyǔ kè ne.",
           "text": {
-            "uz": "Bugun Tezlik, intensivlik, 一点儿 mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Скорость и 一点儿.",
-            "tj": "Имрӯз мавзӯи Суръат ва 一点儿-ро меомӯзем."
+            "uz": "Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.",
+            "ru": "Хватит смотреть телевизор, завтра утром ещё есть урок китайского.",
+            "tj": "Дигар телевизор нагард, фардо субҳ боз дарси чинӣ аст."
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "看电视对学汉语有帮助。",
+          "pinyin": "Kàn diànshì duì xué Hànyǔ yǒu bāngzhù.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Televizor ko'rish xitoy tili o'rganishga yordam beradi.",
+            "ru": "Просмотр телевизора помогает в изучении китайского.",
+            "tj": "Тамошои телевизор дар омӯхтани чинӣ кӯмак мекунад."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "明天的课你都准备好了吗？",
+          "pinyin": "Míngtiān de kè nǐ dōu zhǔnbèi hǎo le ma?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Ertangi darsga to'liq tayyorlandingizmi?",
+            "ru": "Ты полностью подготовился к завтрашнему уроку?",
+            "tj": "Оё ту ба дарси фардо пурра омода шудӣ?"
           }
         },
         {
           "speaker": "B",
-          "zh": "快。",
-          "pinyin": "kuài.",
+          "zh": "都准备好了。",
+          "pinyin": "Dōu zhǔnbèi hǎo le.",
           "text": {
-            "uz": "快 — kuài deb o'qiladi.",
-            "ru": "快 читается как kuài.",
-            "tj": "快 ҳамчун kuài хонда мешавад."
+            "uz": "Hammasi tayyor.",
+            "ru": "Всё готово.",
+            "tj": "Ҳама омода."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kasalxonada",
+        "ru": "В больнице",
+        "tj": "Дар беморхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "别看报纸了，医生说你要多休息。",
+          "pinyin": "Bié kàn bàozhǐ le，yīshēng shuō nǐ yào duō xiūxi.",
+          "text": {
+            "uz": "Gazeta o'qishni bas qil, shifokor ko'proq dam olishing kerak dedi.",
+            "ru": "Хватит читать газету, доктор сказал, что тебе нужно больше отдыхать.",
+            "tj": "Дигар рӯзнома нахон, духтур гуфт, ки ту бояд бештар истироҳат кунӣ."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，不看了。给我一杯茶吧。",
+          "pinyin": "Hǎo，bù kàn le. Gěi wǒ yì bēi chá ba.",
+          "text": {
+            "uz": "Yaxshi, o'qimayman. Menga bir piyola choy bering.",
+            "ru": "Хорошо, не буду читать. Дайте мне чашку чая.",
+            "tj": "Хуб, нахонам. Ба ман як коса чой диҳед."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "医生说吃药后的两个小时不要喝茶。",
+          "pinyin": "Yīshēng shuō chī yàohòu de liǎng ge xiǎoshí búyào hē chá.",
+          "text": {
+            "uz": "Shifokor dori ichganidan keyin ikki soat choy ichmaslik kerak dedi.",
+            "ru": "Доктор сказал, что два часа после приёма лекарства нельзя пить чай.",
+            "tj": "Духтур гуфт, ки ду соат баъд аз доруи хӯрдан чой нӯшидан мумкин нест."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "医生还说什么了？",
+          "pinyin": "Yīshēng hái shuō shénme le?",
+          "text": {
+            "uz": "Shifokor yana nima dedi?",
+            "ru": "Что ещё сказал доктор?",
+            "tj": "Духтур боз чӣ гуфт?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "医生让你听我的。",
+          "pinyin": "Yīshēng ràng nǐ tīng wǒ de.",
+          "text": {
+            "uz": "Shifokor menga quloq soling dedi.",
+            "ru": "Доктор сказал слушаться меня.",
+            "tj": "Духтур гуфт, ки ба ман гӯш кун."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你怎么买了这么多东西啊？",
+          "pinyin": "Nǐ zěnme mǎi le zhème duō dōngxi a?",
+          "text": {
+            "uz": "Nima uchun bu qadar ko'p narsa sotib oldingiz?",
+            "ru": "Почему ты купил так много всего?",
+            "tj": "Чаро ту ин қадар зиёд чиз харидӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "哥哥今天中午回来吃饭。",
+          "pinyin": "Gēge jīntiān zhōngwǔ huílái chīfàn.",
+          "text": {
+            "uz": "Aka bugun tushlikka keladi.",
+            "ru": "Старший брат сегодня придёт на обед.",
+            "tj": "Бародари калонӣ имрӯз барои нисфирӯзӣ меояд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我看看买什么了。羊肉，鸡蛋，面条，西瓜……真不少！妈妈呢？",
+          "pinyin": "Wǒ kànkan mǎi shénme le. Yángròu，jīdàn，miàntiáo，xīguā…… zhēn bù shǎo! Māma ne?",
+          "text": {
+            "uz": "Ko'ray-chi nima olibsiz. Qo'y go'shti, tuxum, erişta, tarvuz… juda ko'p! Ona-chi?",
+            "ru": "Дай посмотрю, что купил. Баранина, яйца, лапша, арбуз… действительно много! А мама?",
+            "tj": "Биё бинам чӣ харидӣ. Гӯшти гӯсфанд, тухм, лоғмон, тарбуз… воқеан зиёд! Модар чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "正在准备午饭呢！",
+          "pinyin": "Zhèngzài zhǔnbèi wǔfàn ne!",
+          "text": {
+            "uz": "Hozir tushlikni tayyorlayapti!",
+            "ru": "Сейчас готовит обед!",
+            "tj": "Ҳоло нисфирӯзиро тайёр мекунад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在找什么？",
+          "pinyin": "Nǐ zài zhǎo shénme?",
+          "text": {
+            "uz": "Siz nima qidiryapsiz?",
+            "ru": "Что ты ищешь?",
+            "tj": "Ту чӣ мекобӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你看见我的手机了吗？白色的。",
+          "pinyin": "Nǐ kànjian wǒ de shǒujī le ma? Báisè de.",
+          "text": {
+            "uz": "Mening telefonim ko'rdingizmi? Oq rangli.",
+            "ru": "Ты видел мой телефон? Белый.",
+            "tj": "Ту телефони маро дидӣ? Сафеди."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "别找了，手机在桌子上呢，电脑旁边。",
+          "pinyin": "Bié zhǎo le，shǒujī zài zhuōzi shang ne，diànnǎo pángbiān.",
+          "text": {
+            "uz": "Qidirishni bas qil, telefon stol ustida, kompyuter yonida.",
+            "ru": "Хватит искать, телефон на столе, рядом с компьютером.",
+            "tj": "Дигар накоб, телефон рӯи мизи аст, паҳлӯи компютер."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你看见我的衣服了吗？红色的那件。",
+          "pinyin": "Nǐ kànjian wǒ de yīfu le ma? Hóngsè de nà jiàn.",
+          "text": {
+            "uz": "Kiyimlarimni ko'rdingizmi? O'sha qizil ranglisini.",
+            "ru": "Ты видел мою одежду? Ту красную.",
+            "tj": "Ту либосамро дидӣ? Онро, ки сурх аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那件衣服我帮你洗了，在外边呢。",
+          "pinyin": "Nà jiàn yīfu wǒ bāng nǐ xǐ le，zài wàibian ne.",
+          "text": {
+            "uz": "O'sha kiyimni sizga yuvib qo'ydim, tashqarida.",
+            "ru": "Я постирал ту одежду за тебя, она на улице.",
+            "tj": "Ман он либосро барои ту шустам, берун аст."
           }
         }
       ]
@@ -221,91 +488,182 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "快",
-            "pinyin": "kuài",
-            "pos": "adj.",
+            "no": 1,
+            "zh": "课",
+            "pinyin": "kè",
+            "pos": "n.",
             "meaning": {
-              "uz": "tez",
-              "ru": "быстрый",
-              "tj": "тез"
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "点儿",
-            "pinyin": "diǎnr",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "biroz, -roq",
-              "ru": "немного",
-              "tj": "каме"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "慢点儿",
-            "pinyin": "màn diǎnr",
-            "pos": "expr.",
-            "meaning": {
-              "uz": "sekinroq",
-              "ru": "помедленнее",
-              "tj": "сусттар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "早",
-            "pinyin": "zǎo",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "erta",
-              "ru": "рано",
-              "tj": "барвақт"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "晚",
-            "pinyin": "wǎn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "kech",
-              "ru": "поздно",
-              "tj": "дер"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "马上",
-            "pinyin": "mǎshàng",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "hoziroq",
-              "ru": "сразу",
-              "tj": "ҳозир"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "等",
-            "pinyin": "děng",
+            "no": 2,
+            "zh": "帮助",
+            "pinyin": "bāngzhù",
             "pos": "v.",
             "meaning": {
-              "uz": "kutmoq",
-              "ru": "ждать",
-              "tj": "интизор шудан"
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "别",
+            "pinyin": "bié",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "哥哥",
+            "pinyin": "gēge",
+            "pos": "n.",
+            "meaning": {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "鸡蛋",
+            "pinyin": "jīdàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tuxum",
+              "ru": "яйцо",
+              "tj": "тухм"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "西瓜",
+            "pinyin": "xīguā",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tarvuz",
+              "ru": "арбуз",
+              "tj": "тарбуз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "正在",
+            "pinyin": "zhèngzài",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "hozir …qilmoqda (davom etayotgan harakat)",
+              "ru": "сейчас … (продолжающееся действие)",
+              "tj": "ҳоло …қилмоқда (амали ҷорӣ)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "手机",
+            "pinyin": "shǒujī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mobil telefon",
+              "ru": "мобильный телефон",
+              "tj": "телефони мобилӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "洗",
+            "pinyin": "xǐ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yuvmoq",
+              "ru": "мыть, стирать",
+              "tj": "шустан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "药",
+            "pinyin": "yào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dori-darmon",
+              "ru": "лекарство",
+              "tj": "дору"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "身体",
+            "pinyin": "shēntǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tana, sog'liq",
+              "ru": "тело, здоровье",
+              "tj": "тан, саломатӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "准备",
+            "pinyin": "zhǔnbèi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tayyorlanmoq, tayyorlamoq",
+              "ru": "готовиться, подготавливать",
+              "tj": "омода шудан, тайёр кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "报纸",
+            "pinyin": "bàozhǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
             }
           }
         }
@@ -323,9 +681,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "快 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 快:",
-            "tj": "Маънои калимаи 快-ро интихоб кунед:"
+            "uz": "课 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 课:",
+            "tj": "Маънои калимаи 课-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +692,39 @@
           },
           "options": [
             {
-              "uz": "tez",
-              "ru": "быстрый",
-              "tj": "тез"
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
             },
             {
-              "uz": "biroz, -roq",
-              "ru": "немного",
-              "tj": "каме"
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
             },
             {
-              "uz": "sekinroq",
-              "ru": "помедленнее",
-              "tj": "сусттар"
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
             },
             {
-              "uz": "erta",
-              "ru": "рано",
-              "tj": "барвақт"
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "快 = tez (kuài)",
-            "ru": "快 = быстрый (kuài)",
-            "tj": "快 = тез (kuài)"
+            "uz": "课 = dars, mashg'ulot (kè)",
+            "ru": "课 = урок, занятие (kè)",
+            "tj": "课 = дарс, машғулот (kè)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "快 talaffuzini tanlang:",
-            "ru": "Выберите произношение 快:",
-            "tj": "Талаффузи 快-ро интихоб кунед:"
+            "uz": "帮助 talaffuzini tanlang:",
+            "ru": "Выберите произношение 帮助:",
+            "tj": "Талаффузи 帮助-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +732,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "kuài",
-            "diǎnr",
-            "màn diǎnr",
-            "zǎo"
+            "kè",
+            "bié",
+            "bāngzhù",
+            "gēge"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "快 — kuài",
-            "ru": "快 — kuài",
-            "tj": "快 — kuài"
+            "uz": "帮助 — bāngzhù",
+            "ru": "帮助 — bāngzhù",
+            "tj": "帮助 — bāngzhù"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'tez' xitoycha nima?",
-            "ru": "'быстрый' по-китайски?",
-            "tj": "'тез' ба чинӣ чист?"
+            "uz": "'…qilma (taqiq)' xitoycha qaysi?",
+            "ru": "'не (запрет)' по-китайски?",
+            "tj": "'накун (манъ)' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "快",
-            "点儿",
-            "慢点儿",
-            "早"
+            "别",
+            "课",
+            "哥哥",
+            "帮助"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "快 = tez (kuài)",
-            "ru": "快 = быстрый (kuài)",
-            "tj": "快 = тез (kuài)"
+            "uz": "…qilma (taqiq) = 别 (bié)",
+            "ru": "не (запрет) = 别 (bié)",
+            "tj": "накун (манъ) = 别 (bié)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "diǎnr qaysi ieroglif?",
-            "ru": "Какой иероглиф читается diǎnr?",
-            "tj": "diǎnr кадом иероглиф аст?"
+            "uz": "gēge qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gēge?",
+            "tj": "gēge кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,91 +782,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "点儿",
-            "快",
-            "慢点儿",
-            "早"
+            "课",
+            "哥哥",
+            "别",
+            "帮助"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "点儿 = biroz, -roq (diǎnr)",
-            "ru": "点儿 = немного (diǎnr)",
-            "tj": "点儿 = каме (diǎnr)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'快点儿' iborasini tuzing",
-            "ru": "Соберите фразу '快点儿'",
-            "tj": "Ибораи '快点儿'-ро созед"
-          },
-          "tokens": [
-            "快",
-            "点儿",
-            "慢点儿",
-            "早"
-          ],
-          "answer_tokens": [
-            "快",
-            "点儿"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 快 点儿",
-            "ru": "Правильный порядок: 快 点儿",
-            "tj": "Тартиби дуруст: 快 点儿"
+            "uz": "哥哥 = aka (gēge)",
+            "ru": "哥哥 = старший брат (gēge)",
+            "tj": "哥哥 = бародари калонӣ (gēge)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "快",
+              "课",
               {
-                "uz": "tez",
-                "ru": "быстрый",
-                "tj": "тез"
+                "uz": "dars, mashg'ulot",
+                "ru": "урок, занятие",
+                "tj": "дарс, машғулот"
               }
             ],
             [
-              "点儿",
+              "帮助",
               {
-                "uz": "biroz, -roq",
-                "ru": "немного",
-                "tj": "каме"
+                "uz": "yordam bermoq",
+                "ru": "помогать",
+                "tj": "кӯмак кардан"
               }
             ],
             [
-              "慢点儿",
+              "别",
               {
-                "uz": "sekinroq",
-                "ru": "помедленнее",
-                "tj": "сусттар"
+                "uz": "…qilma (taqiq)",
+                "ru": "не (запрет)",
+                "tj": "накун (манъ)"
               }
             ],
             [
-              "早",
+              "哥哥",
               {
-                "uz": "erta",
-                "ru": "рано",
-                "tj": "барвақт"
+                "uz": "aka",
+                "ru": "старший брат",
+                "tj": "бародари калонӣ"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "看电视对学汉语有____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "别",
+            "哥哥",
+            "课",
+            "帮助"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 帮助 (bāngzhù) — yordam bermoq",
+            "ru": "Верно: 帮助 (bāngzhù) — помогать",
+            "tj": "Дуруст: 帮助 (bāngzhù) — кӯмак кардан"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "快点儿",
-          "pinyin": "kuài diǎnr",
+          "phrase": "课",
+          "pinyin": "kè",
           "translation": {
-            "uz": "Tezlik, intensivlik, 一点儿",
-            "ru": "Скорость и 一点儿",
-            "tj": "Суръат ва 一点儿"
+            "uz": "dars, mashg'ulot",
+            "ru": "урок, занятие",
+            "tj": "дарс, машғулот"
           }
         }
       ]
@@ -525,9 +881,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -535,41 +891,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "都准备好了。",
+            "别看电视了，明天上午还有汉语课呢。",
+            "看电视对学汉语有帮助。",
+            "明天的课你都准备好了吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 别看电视了，明天上午还有汉语课呢。",
+            "ru": "Правильный ответ: 别看电视了，明天上午还有汉语课呢。",
+            "tj": "Ҷавоби дуруст: 别看电视了，明天上午还有汉语课呢。"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "快。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "别看电视了，明天上午还有汉语课呢。",
+            "都准备好了。",
+            "明天的课你都准备好了吗？",
+            "看电视对学汉语有帮助。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "B javobi: 快。",
-            "ru": "Ответ B: 快。",
-            "tj": "Ҷавоби B: 快。"
+            "uz": "To'g'ri javob: 都准备好了。",
+            "ru": "Правильный ответ: 都准备好了。",
+            "tj": "Ҷавоби дуруст: 都准备好了。"
           }
         }
       ]

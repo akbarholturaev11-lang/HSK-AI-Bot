@@ -1,6 +1,7 @@
 import json
 
 from app.bot.utils.i18n import t
+from app.bot.keyboards.course_miniapp import course_study_miniapp_button
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
@@ -8,6 +9,20 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 HSK4_UPPER_MAX_ORDER = 10
 HSK4_PART_UPPER = "upper"
 HSK4_PART_LOWER = "lower"
+_MINIAPP_LABELS = {
+    "uz": "📚 Mini Appda ochish",
+    "ru": "📚 Открыть в Mini App",
+    "tj": "📚 Дар Mini App кушодан",
+}
+
+
+def _with_miniapp(rows: list[list[InlineKeyboardButton]], lang: str) -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            *rows,
+            [course_study_miniapp_button(lang, text=_MINIAPP_LABELS.get(lang, _MINIAPP_LABELS["ru"]))],
+        ]
+    )
 
 
 def _parse_title(raw: str) -> str:
@@ -54,9 +69,10 @@ def course_intro_keyboard(lang: str) -> InlineKeyboardMarkup:
         "tj": "📖 Калимаҳоро меомӯзем",
         "ru": "📖 Изучаем слова",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_vocab")
-    ]])
+    return _with_miniapp(
+        [[InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_vocab")]],
+        lang,
+    )
 
 
 def course_vocab_keyboard(lang: str) -> InlineKeyboardMarkup:
@@ -65,9 +81,10 @@ def course_vocab_keyboard(lang: str) -> InlineKeyboardMarkup:
         "tj": "💬 Муколамаро меомӯзем",
         "ru": "💬 Изучаем диалог",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text=next_labels.get(lang, next_labels["ru"]), callback_data="course:go_dialogue")
-    ]])
+    return _with_miniapp(
+        [[InlineKeyboardButton(text=next_labels.get(lang, next_labels["ru"]), callback_data="course:go_dialogue")]],
+        lang,
+    )
 
 
 def course_dialogue_keyboard(lang: str) -> InlineKeyboardMarkup:
@@ -77,12 +94,15 @@ def course_dialogue_keyboard(lang: str) -> InlineKeyboardMarkup:
         "tj": "📐 Ба грамматика мегузарем",
         "ru": "📐 Переходим к грамматике",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[
+    return _with_miniapp(
         [
-            InlineKeyboardButton(text=audio_label, callback_data="course:audio_dialogue"),
-            InlineKeyboardButton(text=next_labels.get(lang, next_labels["ru"]), callback_data="course:go_grammar"),
-        ]
-    ])
+            [
+                InlineKeyboardButton(text=audio_label, callback_data="course:audio_dialogue"),
+                InlineKeyboardButton(text=next_labels.get(lang, next_labels["ru"]), callback_data="course:go_grammar"),
+            ]
+        ],
+        lang,
+    )
 
 
 def course_grammar_keyboard(lang: str) -> InlineKeyboardMarkup:
@@ -91,9 +111,10 @@ def course_grammar_keyboard(lang: str) -> InlineKeyboardMarkup:
         "tj": "✏️ Ба машқҳо мегузарем",
         "ru": "✏️ Переходим к упражнениям",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_exercise")
-    ]])
+    return _with_miniapp(
+        [[InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_exercise")]],
+        lang,
+    )
 
 
 def course_exercise_keyboard(lang: str) -> InlineKeyboardMarkup:
@@ -102,9 +123,10 @@ def course_exercise_keyboard(lang: str) -> InlineKeyboardMarkup:
         "tj": "📝 Ба quiz мегузарем",
         "ru": "📝 Переходим к quiz",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_quiz")
-    ]])
+    return _with_miniapp(
+        [[InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_quiz")]],
+        lang,
+    )
 
 
 def course_homework_keyboard(lang: str) -> InlineKeyboardMarkup:
@@ -113,14 +135,15 @@ def course_homework_keyboard(lang: str) -> InlineKeyboardMarkup:
         "tj": "✅ Дарс тамом шуд — Ба дарси навбатӣ",
         "ru": "✅ Урок завершён — К следующему уроку",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:start_next_lesson")
-    ]])
+    return _with_miniapp(
+        [[InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:start_next_lesson")]],
+        lang,
+    )
 
 
 def homework_retry_keyboard(lang: str) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
+    return _with_miniapp(
+        [
             [
                 InlineKeyboardButton(
                     text=t("course_reread_button", lang),
@@ -133,7 +156,8 @@ def homework_retry_keyboard(lang: str) -> InlineKeyboardMarkup:
                     callback_data="course:start_next_lesson",
                 ),
             ],
-        ]
+        ],
+        lang,
     )
 
 
@@ -144,9 +168,10 @@ def course_next_step_keyboard(lang: str) -> InlineKeyboardMarkup:
         "tj": "▶️ Идома медиҳем",
         "ru": "▶️ Продолжаем",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_next_step")
-    ]])
+    return _with_miniapp(
+        [[InlineKeyboardButton(text=labels.get(lang, labels["ru"]), callback_data="course:go_next_step")]],
+        lang,
+    )
 
 
 def course_vocab_v2_keyboard(lang: str) -> InlineKeyboardMarkup:
@@ -156,12 +181,15 @@ def course_vocab_v2_keyboard(lang: str) -> InlineKeyboardMarkup:
         "tj": "▶️ Идома медиҳем",
         "ru": "▶️ Продолжаем",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(
-            text=next_labels.get(lang, next_labels["ru"]),
-            callback_data="course:go_next_step",
-        ),
-    ]])
+    return _with_miniapp(
+        [[
+            InlineKeyboardButton(
+                text=next_labels.get(lang, next_labels["ru"]),
+                callback_data="course:go_next_step",
+            ),
+        ]],
+        lang,
+    )
 
 
 def course_dialogue_n_keyboard(lang: str, n: int) -> InlineKeyboardMarkup:
@@ -171,13 +199,16 @@ def course_dialogue_n_keyboard(lang: str, n: int) -> InlineKeyboardMarkup:
         "tj": "▶️ Идома медиҳем",
         "ru": "▶️ Продолжаем",
     }
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text="🔉", callback_data=f"course:audio_dialogue:{n}"),
-        InlineKeyboardButton(
-            text=next_labels.get(lang, next_labels["ru"]),
-            callback_data="course:go_next_step",
-        ),
-    ]])
+    return _with_miniapp(
+        [[
+            InlineKeyboardButton(text="🔉", callback_data=f"course:audio_dialogue:{n}"),
+            InlineKeyboardButton(
+                text=next_labels.get(lang, next_labels["ru"]),
+                callback_data="course:go_next_step",
+            ),
+        ]],
+        lang,
+    )
 
 
 def review_choice_keyboard(lang: str) -> InlineKeyboardMarkup:

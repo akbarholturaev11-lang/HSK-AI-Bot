@@ -2,133 +2,186 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 6,
-  "title": "多少钱",
+  "title": "我会说汉语",
   "subtitle": {
-    "uz": "Mavzu: Narx va sonlar 1-100. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Цена и числа 1-100. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Нарх ва рақамҳои 1-100. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Modal fe'l 会 yordamida qobiliyat va mahorat haqida gapirish",
+    "ru": "Говорить о способностях и умениях с помощью модального глагола 会",
+    "tj": "Дар бораи қобилият ва маҳорат бо ёрии феъли модалии 会 гап задан"
   },
   "active_words": [
     {
-      "zh": "钱",
-      "pinyin": "qián",
-      "pos": "n.",
+      "no": 1,
+      "zh": "会",
+      "pinyin": "huì",
+      "pos": "mod.",
       "meaning": {
-        "uz": "pul",
-        "ru": "деньги",
-        "tj": "пул"
-      },
-      "no": 1
+        "uz": "qila olmoq (o'rganish orqali)",
+        "ru": "мочь, уметь (через обучение)",
+        "tj": "тавонистан (тавассути омӯзиш)"
+      }
     },
     {
-      "zh": "多少",
-      "pinyin": "duōshao",
-      "pos": "pron.",
-      "meaning": {
-        "uz": "qancha, nechta",
-        "ru": "сколько",
-        "tj": "чанд, чӣ қадар"
-      },
-      "no": 2
-    },
-    {
-      "zh": "块",
-      "pinyin": "kuài",
-      "pos": "mw.",
-      "meaning": {
-        "uz": "yuan uchun hisob so‘zi",
-        "ru": "счётное слово для юаней",
-        "tj": "ҳисобкалима барои юан"
-      },
-      "no": 3
-    },
-    {
-      "zh": "一",
-      "pinyin": "yī",
-      "pos": "num.",
-      "meaning": {
-        "uz": "bir",
-        "ru": "один",
-        "tj": "як"
-      },
-      "no": 4
-    },
-    {
-      "zh": "十",
-      "pinyin": "shí",
-      "pos": "num.",
-      "meaning": {
-        "uz": "o'n",
-        "ru": "десять",
-        "tj": "даҳ"
-      },
-      "no": 5
-    },
-    {
-      "zh": "百",
-      "pinyin": "bǎi",
-      "pos": "num.",
-      "meaning": {
-        "uz": "yuz",
-        "ru": "сто",
-        "tj": "сад"
-      },
-      "no": 6
-    },
-    {
-      "zh": "买",
-      "pinyin": "mǎi",
+      "no": 2,
+      "zh": "说",
+      "pinyin": "shuō",
       "pos": "v.",
       "meaning": {
-        "uz": "sotib olmoq",
-        "ru": "покупать",
-        "tj": "харидан"
-      },
-      "no": 7
+        "uz": "gapirmoq, aytmoq",
+        "ru": "говорить, сказать",
+        "tj": "гап задан, гуфтан"
+      }
     },
     {
-      "zh": "贵",
-      "pinyin": "guì",
+      "no": 3,
+      "zh": "妈妈",
+      "pinyin": "māma",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ona, onaxon",
+        "ru": "мама",
+        "tj": "модар, модарҷон"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "菜",
+      "pinyin": "cài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "taom, sabzavot",
+        "ru": "блюдо, овощ",
+        "tj": "хӯрок, сабзавот"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "很",
+      "pinyin": "hěn",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda, ancha",
+        "ru": "очень, довольно",
+        "tj": "хеле, басо"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "好吃",
+      "pinyin": "hǎochī",
       "pos": "adj.",
       "meaning": {
-        "uz": "qimmat",
-        "ru": "дорогой",
-        "tj": "қимат"
-      },
-      "no": 8
+        "uz": "mazali, lazzatli",
+        "ru": "вкусный, аппетитный",
+        "tj": "болаззат, хуштаъм"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "做",
+      "pinyin": "zuò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qilmoq, tayyorlamoq",
+        "ru": "делать, готовить",
+        "tj": "кардан, тайёр кардан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "写",
+      "pinyin": "xiě",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yozmoq",
+        "ru": "писать",
+        "tj": "навиштан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "汉字",
+      "pinyin": "Hànzì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xitoy ierogliflari",
+        "ru": "китайские иероглифы",
+        "tj": "иероглифҳои чинӣ"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "字",
+      "pinyin": "zì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "belgi, harf, ieroglif",
+        "ru": "иероглиф, буква, знак",
+        "tj": "аломат, ҳарф, иероглиф"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "怎么",
+      "pinyin": "zěnme",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qanday, qay yo'l bilan",
+        "ru": "как, каким образом",
+        "tj": "чӣ тавр, ба кадом роҳ"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "读",
+      "pinyin": "dú",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o'qimoq (baland ovozda)",
+        "ru": "читать (вслух)",
+        "tj": "хондан (баланд)"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Modal fe'l 会",
+        "ru": "Модальный глагол 会",
+        "tj": "Феъли модалии 会"
       },
-      "title_zh": "主题词语",
+      "title_zh": "能愿动词 会",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 多少钱. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“多少钱”。",
-        "ru": "Ключевая фраза урока: 多少钱. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“多少钱”。",
-        "tj": "Ибораи асосии дарс: 多少钱. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“多少钱”。"
+        "uz": "会(huì) — o'rganish orqali erishilgan qobiliyatni ifodalaydi.\nTuzilma: Ega + (不)会 + Fe'l\n\nTasdiq: 我会说汉语。— Men xitoycha gapira olaman.\nInkor: 我不会做中国菜。— Men xitoy taomini tayyorlay olmayman.\nSavol: 你会写汉字吗？— Siz xitoy ierogliflarini yoza olasizmi?\n\nEslatma: Inkorda 不会, ha/yo'q savolda 吗 ishlatiladi.",
+        "ru": "会(huì) — выражает способность, приобретённую через обучение.\nСтруктура: Подлежащее + (不)会 + Глагол\n\nУтверждение: 我会说汉语。— Я умею говорить по-китайски.\nОтрицание: 我不会做中国菜。— Я не умею готовить китайскую еду.\nВопрос: 你会写汉字吗？— Вы умеете писать иероглифы?\n\nПримечание: для отрицания 不会, для вопроса — 吗.",
+        "tj": "会(huì) — қобилияти аз тариқи омӯзиш ба даст овардашударо ифода мекунад.\nСохтор: Мубтадо + (不)会 + Феъл\n\nТасдиқ: 我会说汉语。— Ман метавонам ба забони чинӣ гап бизанам.\nИнкор: 我不会做中国菜。— Ман наметавонам хӯроки чинӣ тайёр кунам.\nСавол: 你会写汉字吗？— Оё шумо метавонед иероглифҳо нависед?\n\nЭзоҳ: Барои инкор 不会, барои савол — 吗 истифода мешавад."
       },
       "examples": [
         {
-          "zh": "今天我们学习“多少钱”。",
-          "pinyin": "Jīntiān wǒmen xuéxí duōshao qián.",
+          "zh": "我会说汉语。",
+          "pinyin": "Wǒ huì shuō Hànyǔ.",
           "translation": {
-            "uz": "Biz Narx va sonlar 1-100 mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Цена и числа 1-100.",
-            "tj": "Мо мавзӯи Нарх ва рақамҳои 1-100-ро меомӯзем."
+            "uz": "Men xitoycha gapira olaman.",
+            "ru": "Я умею говорить по-китайски.",
+            "tj": "Ман метавонам ба забони чинӣ гап бизанам."
           }
         },
         {
-          "zh": "这个词是钱。",
-          "pinyin": "Zhège cí shì qián.",
+          "zh": "她不会做中国菜。",
+          "pinyin": "Tā bú huì zuò Zhōngguó cài.",
           "translation": {
-            "uz": "Bu so'z: pul.",
-            "ru": "Это слово: деньги.",
-            "tj": "Ин калима: пул."
+            "uz": "U xitoy taomini tayyorlay olmaydi.",
+            "ru": "Она не умеет готовить китайскую еду.",
+            "tj": "Вай наметавонад хӯроки чинӣ тайёр кунад."
+          }
+        },
+        {
+          "zh": "你会写汉字吗？",
+          "pinyin": "Nǐ huì xiě Hànzì ma?",
+          "translation": {
+            "uz": "Siz xitoy ierogliflarini yoza olasizmi?",
+            "ru": "Вы умеете писать иероглифы?",
+            "tj": "Оё шумо метавонед иероглифҳо нависед?"
           }
         }
       ]
@@ -136,33 +189,85 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Sifat kesimli gap",
+        "ru": "Предложение с прилагательным-сказуемым",
+        "tj": "Ҷумла бо сифати хабарӣ"
       },
-      "title_zh": "问答结构",
+      "title_zh": "形容词谓语句",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "Sifat kesimli gap: Ega + 很/不 + Sifat\n\nXitoy tilida sifat gap kesimi bo'la oladi.\nTasdiq gaplarda odatda 很(hěn) ishlatiladi:\n中国菜很好吃。— Xitoy taomlari juda mazali.\n\nInkor gaplarda 不 ishlatiladi (很 shart emas):\n我妈妈的汉语不好。— Onamning xitoy tili yaxshi emas.\n\nEslatma: 很 ko'pincha grammatik talab sifatida ishlatiladi.",
+        "ru": "Предложение с прилагательным: Подлежащее + 很/不 + Прилагательное\n\nВ китайском языке прилагательное может быть сказуемым.\nВ утвердительных предложениях обычно используется 很(hěn):\n中国菜很好吃。— Китайская еда очень вкусная.\n\nВ отрицательных предложениях используется 不 (很 не нужен):\n我妈妈的汉语不好。— Китайский мамы нехороший.\n\nПримечание: 很 часто семантически слабый, нужен по грамматике.",
+        "tj": "Ҷумла бо сифати хабарӣ: Мубтадо + 很/不 + Сифат\n\nДар забони чинӣ сифат метавонад хабар бошад.\nДар ҷумлаҳои тасдиқӣ одатан 很(hěn) истифода мешавад:\n中国菜很好吃。— Хӯроки чинӣ хеле болаззат аст.\n\nДар ҷумлаҳои инкорӣ 不 истифода мешавад (很 лозим нест):\n我妈妈的汉语不好。— Забони чинии модарам хуб нест.\n\nЭзоҳ: 很 аксар аз рӯи талаботи грамматикӣ истифода мешавад."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "中国菜很好吃。",
+          "pinyin": "Zhōngguó cài hěn hǎochī.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Xitoy taomlari juda mazali.",
+            "ru": "Китайская еда очень вкусная.",
+            "tj": "Хӯроки чинӣ хеле болаззат аст."
           }
         },
         {
-          "zh": "钱。",
-          "pinyin": "qián.",
+          "zh": "她的汉语很好。",
+          "pinyin": "Tā de Hànyǔ hěn hǎo.",
           "translation": {
-            "uz": "钱 — qián deb o'qiladi.",
-            "ru": "钱 читается как qián.",
-            "tj": "钱 ҳамчун qián хонда мешавад."
+            "uz": "Uning xitoy tili juda yaxshi.",
+            "ru": "Её китайский очень хороший.",
+            "tj": "Забони чинии вай хеле хуб аст."
+          }
+        },
+        {
+          "zh": "我妈妈的汉语不好。",
+          "pinyin": "Wǒ māma de Hànyǔ bù hǎo.",
+          "translation": {
+            "uz": "Onamning xitoy tili yaxshi emas.",
+            "ru": "Китайский мамы нехороший.",
+            "tj": "Забони чинии модарам хуб нест."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "怎么 — qanday so'roq olmoshi",
+        "ru": "怎么 — вопросительное наречие",
+        "tj": "怎么 — ҷонишини саволии тарзӣ"
+      },
+      "title_zh": "怎么 — qanday so'roq olmoshi",
+      "rule": {
+        "uz": "怎么(zěnme) — fe'l oldiga qo'yilib, harakat usulini so'raydi.\nTuzilma: Ega + 怎么 + Fe'l?\n\nMisol:\n这个字怎么写？— Bu ieroglif qanday yoziladi?\n这个字怎么读？— Bu ieroglif qanday o'qiladi?\n中国菜怎么做？— Xitoy taomini qanday tayyorlash kerak?",
+        "ru": "怎么(zěnme) — ставится перед глаголом, спрашивает о способе действия.\nСтруктура: Подлежащее + 怎么 + Глагол?\n\nПример:\n这个字怎么写？— Как пишется этот иероглиф?\n这个字怎么读？— Как читается этот иероглиф?\n中国菜怎么做？— Как готовить китайскую еду?",
+        "tj": "怎么(zěnme) — пеш аз феъл гузошта, тарзи амалро мепурсад.\nСохтор: Мубтадо + 怎么 + Феъл?\n\nМисол:\n这个字怎么写？— Ин иероглиф чӣ тавр навишта мешавад?\n这个字怎么读？— Ин иероглиф чӣ тавр хонда мешавад?\n中国菜怎么做？— Хӯроки чинӣ чӣ тавр тайёр карда мешавад?"
+      },
+      "examples": [
+        {
+          "zh": "这个字怎么写？",
+          "pinyin": "Zhège zì zěnme xiě?",
+          "translation": {
+            "uz": "Bu ieroglif qanday yoziladi?",
+            "ru": "Как пишется этот иероглиф?",
+            "tj": "Ин иероглиф чӣ тавр навишта мешавад?"
+          }
+        },
+        {
+          "zh": "这个字怎么读？",
+          "pinyin": "Zhège zì zěnme dú?",
+          "translation": {
+            "uz": "Bu ieroglif qanday o'qiladi?",
+            "ru": "Как читается этот иероглиф?",
+            "tj": "Ин иероглиф чӣ тавр хонда мешавад?"
+          }
+        },
+        {
+          "zh": "汉语怎么说？",
+          "pinyin": "Hànyǔ zěnme shuō?",
+          "translation": {
+            "uz": "Bu xitoycha qanday aytiladi?",
+            "ru": "Как это сказать по-китайски?",
+            "tj": "Ин ба забони чинӣ чӣ тавр гуфта мешавад?"
           }
         }
       ]
@@ -171,49 +276,147 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Narx va sonlar 1-100",
-        "ru": "Цена и числа 1-100",
-        "tj": "Нарх ва рақамҳои 1-100"
+        "uz": "Maktabda — xitoy tilida gapirish",
+        "ru": "В школе — разговор на китайском",
+        "tj": "Дар мактаб — гуфтугӯ ба забони чинӣ"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“多少钱”。",
-          "pinyin": "Jīntiān wǒmen xuéxí duōshao qián.",
+          "zh": "你会说汉语吗？",
+          "pinyin": "Nǐ huì shuō Hànyǔ ma?",
           "text": {
-            "uz": "Bugun Narx va sonlar 1-100 mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Цена и числа 1-100.",
-            "tj": "Имрӯз мавзӯи Нарх ва рақамҳои 1-100-ро меомӯзем."
+            "uz": "Siz xitoycha gapira olasizmi?",
+            "ru": "Вы умеете говорить по-китайски?",
+            "tj": "Оё шумо метавонед ба забони чинӣ гап бизанед?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "我会说汉语。",
+          "pinyin": "Wǒ huì shuō Hànyǔ.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Men xitoycha gapira olaman.",
+            "ru": "Я умею говорить по-китайски.",
+            "tj": "Ман метавонам ба забони чинӣ гап бизанам."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "你妈妈会说汉语吗？",
+          "pinyin": "Nǐ māma huì shuō Hànyǔ ma?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Onangi xitoycha gapira oladimi?",
+            "ru": "Ваша мама умеет говорить по-китайски?",
+            "tj": "Оё модаратон метавонад ба забони чинӣ гап бизанад?"
           }
         },
         {
           "speaker": "B",
-          "zh": "钱。",
-          "pinyin": "qián.",
+          "zh": "她不会说。",
+          "pinyin": "Tā bú huì shuō.",
           "text": {
-            "uz": "钱 — qián deb o'qiladi.",
-            "ru": "钱 читается как qián.",
-            "tj": "钱 ҳамчун qián хонда мешавад."
+            "uz": "U gapira olmaydi.",
+            "ru": "Она не умеет говорить.",
+            "tj": "Вай наметавонад гап бизанад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Oshxonada — xitoy taomi",
+        "ru": "На кухне — китайская еда",
+        "tj": "Дар ошхона — хӯроки чинӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "中国菜好吃吗？",
+          "pinyin": "Zhōngguó cài hǎochī ma?",
+          "text": {
+            "uz": "Xitoy taomlari mazalimi?",
+            "ru": "Китайская еда вкусная?",
+            "tj": "Оё хӯроки чинӣ болаззат аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "中国菜很好吃。",
+          "pinyin": "Zhōngguó cài hěn hǎochī.",
+          "text": {
+            "uz": "Xitoy taomlari juda mazali.",
+            "ru": "Китайская еда очень вкусная.",
+            "tj": "Хӯроки чинӣ хеле болаззат аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你会做中国菜吗？",
+          "pinyin": "Nǐ huì zuò Zhōngguó cài ma?",
+          "text": {
+            "uz": "Siz xitoy taomlarini tayyorlay olasizmi?",
+            "ru": "Вы умеете готовить китайскую еду?",
+            "tj": "Оё шумо метавонед хӯроки чинӣ тайёр кунед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我不会做。",
+          "pinyin": "Wǒ bú huì zuò.",
+          "text": {
+            "uz": "Men tayyorlay olmayman.",
+            "ru": "Я не умею готовить.",
+            "tj": "Ман наметавонам тайёр кунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kutubxonada — xitoy yozuvi",
+        "ru": "В библиотеке — китайские иероглифы",
+        "tj": "Дар китобхона — иероглифҳои чинӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你会写汉字吗？",
+          "pinyin": "Nǐ huì xiě Hànzì ma?",
+          "text": {
+            "uz": "Siz xitoy ierogliflarini yoza olasizmi?",
+            "ru": "Вы умеете писать иероглифы?",
+            "tj": "Оё шумо метавонед иероглифҳои чинӣ нависед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我会写。",
+          "pinyin": "Wǒ huì xiě.",
+          "text": {
+            "uz": "Men yoza olaman.",
+            "ru": "Я умею писать.",
+            "tj": "Ман метавонам нависам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这个字怎么写？",
+          "pinyin": "Zhège zì zěnme xiě?",
+          "text": {
+            "uz": "Bu ieroglif qanday yoziladi?",
+            "ru": "Как пишется этот иероглиф?",
+            "tj": "Ин иероглиф чӣ тавр навишта мешавад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "对不起，这个字我会读，不会写。",
+          "pinyin": "Duìbuqǐ, zhège zì wǒ huì dú, bú huì xiě.",
+          "text": {
+            "uz": "Kechirasiz, bu ieroglifni o'qiy olaman, lekin yoza olmayman.",
+            "ru": "Извините, этот иероглиф я умею читать, но не умею писать.",
+            "tj": "Бубахшед, ин иероглифро ман метавонам бихонам, аммо навишта наметавонам."
           }
         }
       ]
@@ -232,104 +435,168 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "钱",
-            "pinyin": "qián",
-            "pos": "n.",
+            "no": 1,
+            "zh": "会",
+            "pinyin": "huì",
+            "pos": "mod.",
             "meaning": {
-              "uz": "pul",
-              "ru": "деньги",
-              "tj": "пул"
+              "uz": "qila olmoq (o'rganish orqali)",
+              "ru": "мочь, уметь (через обучение)",
+              "tj": "тавонистан (тавассути омӯзиш)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "多少",
-            "pinyin": "duōshao",
-            "pos": "pron.",
-            "meaning": {
-              "uz": "qancha, nechta",
-              "ru": "сколько",
-              "tj": "чанд, чӣ қадар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "块",
-            "pinyin": "kuài",
-            "pos": "mw.",
-            "meaning": {
-              "uz": "yuan uchun hisob so‘zi",
-              "ru": "счётное слово для юаней",
-              "tj": "ҳисобкалима барои юан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "一",
-            "pinyin": "yī",
-            "pos": "num.",
-            "meaning": {
-              "uz": "bir",
-              "ru": "один",
-              "tj": "як"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "十",
-            "pinyin": "shí",
-            "pos": "num.",
-            "meaning": {
-              "uz": "o'n",
-              "ru": "десять",
-              "tj": "даҳ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "百",
-            "pinyin": "bǎi",
-            "pos": "num.",
-            "meaning": {
-              "uz": "yuz",
-              "ru": "сто",
-              "tj": "сад"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "买",
-            "pinyin": "mǎi",
+            "no": 2,
+            "zh": "说",
+            "pinyin": "shuō",
             "pos": "v.",
             "meaning": {
-              "uz": "sotib olmoq",
-              "ru": "покупать",
-              "tj": "харидан"
+              "uz": "gapirmoq, aytmoq",
+              "ru": "говорить, сказать",
+              "tj": "гап задан, гуфтан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "贵",
-            "pinyin": "guì",
+            "no": 3,
+            "zh": "妈妈",
+            "pinyin": "māma",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ona, onaxon",
+              "ru": "мама",
+              "tj": "модар, модарҷон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "菜",
+            "pinyin": "cài",
+            "pos": "n.",
+            "meaning": {
+              "uz": "taom, sabzavot",
+              "ru": "блюдо, овощ",
+              "tj": "хӯрок, сабзавот"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "很",
+            "pinyin": "hěn",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "juda, ancha",
+              "ru": "очень, довольно",
+              "tj": "хеле, басо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "好吃",
+            "pinyin": "hǎochī",
             "pos": "adj.",
             "meaning": {
-              "uz": "qimmat",
-              "ru": "дорогой",
-              "tj": "қимат"
+              "uz": "mazali, lazzatli",
+              "ru": "вкусный, аппетитный",
+              "tj": "болаззат, хуштаъм"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "做",
+            "pinyin": "zuò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qilmoq, tayyorlamoq",
+              "ru": "делать, готовить",
+              "tj": "кардан, тайёр кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "写",
+            "pinyin": "xiě",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yozmoq",
+              "ru": "писать",
+              "tj": "навиштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "汉字",
+            "pinyin": "Hànzì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xitoy ierogliflari",
+              "ru": "китайские иероглифы",
+              "tj": "иероглифҳои чинӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "字",
+            "pinyin": "zì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "belgi, harf, ieroglif",
+              "ru": "иероглиф, буква, знак",
+              "tj": "аломат, ҳарф, иероглиф"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "怎么",
+            "pinyin": "zěnme",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qanday, qay yo'l bilan",
+              "ru": "как, каким образом",
+              "tj": "чӣ тавр, ба кадом роҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "读",
+            "pinyin": "dú",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o'qimoq (baland ovozda)",
+              "ru": "читать (вслух)",
+              "tj": "хондан (баланд)"
             }
           }
         }
@@ -347,9 +614,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "钱 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 钱:",
-            "tj": "Маънои калимаи 钱-ро интихоб кунед:"
+            "uz": "会 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 会:",
+            "tj": "Маънои калимаи 会-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -358,39 +625,39 @@
           },
           "options": [
             {
-              "uz": "pul",
-              "ru": "деньги",
-              "tj": "пул"
+              "uz": "qila olmoq (o'rganish orqali)",
+              "ru": "мочь, уметь (через обучение)",
+              "tj": "тавонистан (тавассути омӯзиш)"
             },
             {
-              "uz": "qancha, nechta",
-              "ru": "сколько",
-              "tj": "чанд, чӣ қадар"
+              "uz": "ona, onaxon",
+              "ru": "мама",
+              "tj": "модар, модарҷон"
             },
             {
-              "uz": "yuan uchun hisob so‘zi",
-              "ru": "счётное слово для юаней",
-              "tj": "ҳисобкалима барои юан"
+              "uz": "taom, sabzavot",
+              "ru": "блюдо, овощ",
+              "tj": "хӯрок, сабзавот"
             },
             {
-              "uz": "bir",
-              "ru": "один",
-              "tj": "як"
+              "uz": "gapirmoq, aytmoq",
+              "ru": "говорить, сказать",
+              "tj": "гап задан, гуфтан"
             }
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "钱 = pul (qián)",
-            "ru": "钱 = деньги (qián)",
-            "tj": "钱 = пул (qián)"
+            "uz": "会 = qila olmoq (o'rganish orqali) (huì)",
+            "ru": "会 = мочь, уметь (через обучение) (huì)",
+            "tj": "会 = тавонистан (тавассути омӯзиш) (huì)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "钱 talaffuzini tanlang:",
-            "ru": "Выберите произношение 钱:",
-            "tj": "Талаффузи 钱-ро интихоб кунед:"
+            "uz": "说 talaffuzini tanlang:",
+            "ru": "Выберите произношение 说:",
+            "tj": "Талаффузи 说-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -398,49 +665,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qián",
-            "duōshao",
-            "kuài",
-            "yī"
+            "cài",
+            "huì",
+            "māma",
+            "shuō"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "钱 — qián",
-            "ru": "钱 — qián",
-            "tj": "钱 — qián"
+            "uz": "说 — shuō",
+            "ru": "说 — shuō",
+            "tj": "说 — shuō"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'pul' xitoycha nima?",
-            "ru": "'деньги' по-китайски?",
-            "tj": "'пул' ба чинӣ чист?"
+            "uz": "'ona, onaxon' xitoycha qaysi?",
+            "ru": "'мама' по-китайски?",
+            "tj": "'модар, модарҷон' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "钱",
-            "多少",
-            "块",
-            "一"
+            "会",
+            "菜",
+            "妈妈",
+            "说"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "钱 = pul (qián)",
-            "ru": "钱 = деньги (qián)",
-            "tj": "钱 = пул (qián)"
+            "uz": "ona, onaxon = 妈妈 (māma)",
+            "ru": "мама = 妈妈 (māma)",
+            "tj": "модар, модарҷон = 妈妈 (māma)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "duōshao qaysi ieroglif?",
-            "ru": "Какой иероглиф читается duōshao?",
-            "tj": "duōshao кадом иероглиф аст?"
+            "uz": "cài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается cài?",
+            "tj": "cài кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -448,91 +715,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "多少",
-            "钱",
-            "块",
-            "一"
+            "说",
+            "会",
+            "菜",
+            "妈妈"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "多少 = qancha, nechta (duōshao)",
-            "ru": "多少 = сколько (duōshao)",
-            "tj": "多少 = чанд, чӣ қадар (duōshao)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'多少钱' iborasini tuzing",
-            "ru": "Соберите фразу '多少钱'",
-            "tj": "Ибораи '多少钱'-ро созед"
-          },
-          "tokens": [
-            "多少",
-            "钱",
-            "块",
-            "一"
-          ],
-          "answer_tokens": [
-            "多少",
-            "钱"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 多少 钱",
-            "ru": "Правильный порядок: 多少 钱",
-            "tj": "Тартиби дуруст: 多少 钱"
+            "uz": "菜 = taom, sabzavot (cài)",
+            "ru": "菜 = блюдо, овощ (cài)",
+            "tj": "菜 = хӯрок, сабзавот (cài)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "钱",
+              "会",
               {
-                "uz": "pul",
-                "ru": "деньги",
-                "tj": "пул"
+                "uz": "qila olmoq (o'rganish orqali)",
+                "ru": "мочь, уметь (через обучение)",
+                "tj": "тавонистан (тавассути омӯзиш)"
               }
             ],
             [
-              "多少",
+              "说",
               {
-                "uz": "qancha, nechta",
-                "ru": "сколько",
-                "tj": "чанд, чӣ қадар"
+                "uz": "gapirmoq, aytmoq",
+                "ru": "говорить, сказать",
+                "tj": "гап задан, гуфтан"
               }
             ],
             [
-              "块",
+              "妈妈",
               {
-                "uz": "yuan uchun hisob so‘zi",
-                "ru": "счётное слово для юаней",
-                "tj": "ҳисобкалима барои юан"
+                "uz": "ona, onaxon",
+                "ru": "мама",
+                "tj": "модар, модарҷон"
               }
             ],
             [
-              "一",
+              "菜",
               {
-                "uz": "bir",
-                "ru": "один",
-                "tj": "як"
+                "uz": "taom, sabzavot",
+                "ru": "блюдо, овощ",
+                "tj": "хӯрок, сабзавот"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我____的汉语不好。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "会",
+            "妈妈",
+            "菜",
+            "说"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 妈妈 (māma) — ona, onaxon",
+            "ru": "Верно: 妈妈 (māma) — мама",
+            "tj": "Дуруст: 妈妈 (māma) — модар, модарҷон"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "多少钱",
-          "pinyin": "duōshao qián",
+          "phrase": "会",
+          "pinyin": "huì",
           "translation": {
-            "uz": "Narx va sonlar 1-100",
-            "ru": "Цена и числа 1-100",
-            "tj": "Нарх ва рақамҳои 1-100"
+            "uz": "qila olmoq (o'rganish orqali)",
+            "ru": "мочь, уметь (через обучение)",
+            "tj": "тавонистан (тавассути омӯзиш)"
           }
         }
       ]
@@ -549,9 +814,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -559,41 +824,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "你妈妈会说汉语吗？",
+            "你会说汉语吗？",
+            "她不会说。",
+            "我会说汉语。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 你会说汉语吗？",
+            "ru": "Правильный ответ: 你会说汉语吗？",
+            "tj": "Ҷавоби дуруст: 你会说汉语吗？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "钱。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "你妈妈会说汉语吗？",
+            "你会说汉语吗？",
+            "她不会说。",
+            "我会说汉语。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "B javobi: 钱。",
-            "ru": "Ответ B: 钱。",
-            "tj": "Ҷавоби B: 钱。"
+            "uz": "To'g'ri javob: 她不会说。",
+            "ru": "Правильный ответ: 她不会说。",
+            "tj": "Ҷавоби дуруст: 她不会说。"
           }
         }
       ]

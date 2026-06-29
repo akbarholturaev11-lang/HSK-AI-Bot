@@ -64,11 +64,17 @@ from app.bot.utils.workflow_message import (
     edit_callback_workflow_message,
     edit_stored_workflow_message,
 )
-from app.bot.utils.course_miniapp import admin_miniapp_url, admin_miniapp_v2_url
+from app.bot.utils.course_miniapp import admin_miniapp_url
 
 router = Router()
 
-ADMIN_MENU_TEXT = "<b>🛠 Admin panel</b>\n\nQuyidagi amallardan birini tanlang:"
+ADMIN_ENTRY_TEXT = (
+    "<b>🛠 Admin panel</b>\n\n"
+    "Kerakli rejimni tanlang:\n"
+    "• <b>Admin mini ilova</b> — to'liq grafik panel (statistika, sof foyda, to'lov, sozlash)\n"
+    "• <b>Ruchnoy panel</b> — chat ichidagi qo'lda boshqaruv bo'limlari"
+)
+ADMIN_MENU_TEXT = "<b>🛠 Ruchnoy panel</b>\n\nQuyidagi amallardan birini tanlang:"
 _ADMIN_FLOW_CHAT_ID = "admin_flow_chat_id"
 _ADMIN_FLOW_MSG_ID = "admin_flow_msg_id"
 ADMIN_STATS_TZ = ZoneInfo("Asia/Shanghai")
@@ -83,10 +89,17 @@ def _pct(part: int, total: int) -> float:
     return round(part / total * 100, 1) if total > 0 else 0.0
 
 
-def admin_menu_keyboard() -> InlineKeyboardMarkup:
+def admin_entry_keyboard() -> InlineKeyboardMarkup:
+    """/admin asosiy ekrani: 1) Admin mini ilova  2) Ruchnoy (qo'lda) panel."""
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🧭 Admin mini ilova", web_app=WebAppInfo(url=admin_miniapp_url()))],
-        [InlineKeyboardButton(text="🆕 Yangi admin panel (sinov)", web_app=WebAppInfo(url=admin_miniapp_v2_url()))],
+        [InlineKeyboardButton(text="🛠 Ruchnoy panel", callback_data="adm:menu")],
+    ])
+
+
+def admin_menu_keyboard() -> InlineKeyboardMarkup:
+    """Ruchnoy (qo'lda) panel: barcha bo'limlar chat ichida callback orqali."""
+    return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="📊 Statistika", callback_data="adm:stats")],
         [InlineKeyboardButton(text="🔎 Foydalanuvchi qidirish", callback_data="adm:user_search_info")],
         [InlineKeyboardButton(text="💼 Portfel", callback_data="adm:portfolio")],
@@ -101,6 +114,7 @@ def admin_menu_keyboard() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="🆘 Yordam sozlamalari", callback_data="adm:help_settings")],
         [InlineKeyboardButton(text="✅ Obuna berish", callback_data="adm:giveaccess_info")],
         [InlineKeyboardButton(text="🎵 Audio boshqaruv", callback_data="adm:audio_panel")],
+        [InlineKeyboardButton(text="⬅️ Asosiy menyu", callback_data="adm:entry")],
     ])
 
 
@@ -1000,8 +1014,23 @@ async def admin_menu_handler(message: Message, session):
     if not _is_admin(message.from_user.id):
         return
     await message.answer(
-        ADMIN_MENU_TEXT,
-        reply_markup=admin_menu_keyboard(),
+        ADMIN_ENTRY_TEXT,
+        reply_markup=admin_entry_keyboard(),
+        parse_mode="HTML",
+    )
+
+
+@router.callback_query(F.data == "adm:entry")
+async def admin_entry_callback(callback: CallbackQuery, state: FSMContext, session):
+    if not _is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+    await state.clear()
+    await callback.answer()
+    await _edit_callback_message(
+        callback,
+        ADMIN_ENTRY_TEXT,
+        reply_markup=admin_entry_keyboard(),
         parse_mode="HTML",
     )
 

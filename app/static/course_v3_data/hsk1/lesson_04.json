@@ -2,133 +2,164 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 4,
-  "title": "你是哪国人",
+  "title": "她是我的汉语老师",
   "subtitle": {
-    "uz": "Mavzu: Millat, davlat va kasb. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Национальность, страна и профессия. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Миллат, давлат ва касб. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Uchinchi shaxslar haqida gapirish, 的 bilan egalikni ifodalash va 谁/哪 so'roq so'zlarini ishlatish",
+    "ru": "Говорить о третьих лицах, выражать принадлежность с 的 и использовать вопросительные слова 谁/哪",
+    "tj": "Дар бораи шахсони сеюм гап задан, ифодаи моликият бо 的 ва истифодаи калимаҳои саволии 谁/哪"
   },
   "active_words": [
     {
-      "zh": "哪国",
-      "pinyin": "nǎ guó",
+      "no": 1,
+      "zh": "她",
+      "pinyin": "tā",
       "pos": "pron.",
       "meaning": {
-        "uz": "qaysi davlat",
-        "ru": "какая страна",
-        "tj": "кадом давлат"
-      },
-      "no": 1
+        "uz": "u (ayol)",
+        "ru": "она",
+        "tj": "вай (зан)"
+      }
     },
     {
-      "zh": "人",
-      "pinyin": "rén",
+      "no": 2,
+      "zh": "谁",
+      "pinyin": "shéi",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "kim",
+        "ru": "кто",
+        "tj": "кӣ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "的",
+      "pinyin": "de",
+      "pos": "part.",
+      "meaning": {
+        "uz": "ning (egalik yuklamasi)",
+        "ru": "-'s (показатель принадлежности)",
+        "tj": "и, -и (ҳарфи моликият)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "汉语",
+      "pinyin": "Hànyǔ",
       "pos": "n.",
       "meaning": {
-        "uz": "odam, kishi",
-        "ru": "человек",
-        "tj": "одам, инсон"
-      },
-      "no": 2
+        "uz": "xitoy tili",
+        "ru": "китайский язык",
+        "tj": "забони чинӣ"
+      }
     },
     {
-      "zh": "国家",
-      "pinyin": "guójiā",
+      "no": 5,
+      "zh": "哪",
+      "pinyin": "nǎ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qaysi, qayerdan",
+        "ru": "который, откуда",
+        "tj": "кадом, аз куҷо"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "国",
+      "pinyin": "guó",
       "pos": "n.",
       "meaning": {
         "uz": "davlat, mamlakat",
-        "ru": "государство, страна",
-        "tj": "давлат, кишвар"
-      },
-      "no": 3
+        "ru": "страна, государство",
+        "tj": "кишвар, давлат"
+      }
     },
     {
-      "zh": "中国",
-      "pinyin": "Zhōngguó",
+      "no": 7,
+      "zh": "呢",
+      "pinyin": "ne",
+      "pos": "part.",
+      "meaning": {
+        "uz": "xo'sh, -chi (qaytarma savol)",
+        "ru": "а, ну а (уточняющий вопрос)",
+        "tj": "чӣ (савол бозгашт)"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "他",
+      "pinyin": "tā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u (erkak)",
+        "ru": "он",
+        "tj": "вай (мард)"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "同学",
+      "pinyin": "tóngxué",
       "pos": "n.",
       "meaning": {
-        "uz": "Xitoy",
-        "ru": "Китай",
-        "tj": "Чин"
-      },
-      "no": 4
+        "uz": "sinfdosh, o'rtoq",
+        "ru": "одноклассник, однокурсник",
+        "tj": "ҳамсинф, ҳамдарс"
+      }
     },
     {
-      "zh": "美国",
-      "pinyin": "Měiguó",
+      "no": 10,
+      "zh": "朋友",
+      "pinyin": "péngyou",
       "pos": "n.",
       "meaning": {
-        "uz": "AQSH, Amerika",
-        "ru": "США, Америка",
-        "tj": "ИМА, Амрико"
-      },
-      "no": 5
-    },
-    {
-      "zh": "乌兹别克斯坦",
-      "pinyin": "Wūzībiékèsītǎn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "O'zbekiston",
-        "ru": "Узбекистан",
-        "tj": "Ӯзбекистон"
-      },
-      "no": 6
-    },
-    {
-      "zh": "医生",
-      "pinyin": "yīshēng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "shifokor",
-        "ru": "врач",
-        "tj": "духтур"
-      },
-      "no": 7
-    },
-    {
-      "zh": "工作",
-      "pinyin": "gōngzuò",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ishlamoq",
-        "ru": "работать",
-        "tj": "кор кардан"
-      },
-      "no": 8
+        "uz": "do'st",
+        "ru": "друг, подруга",
+        "tj": "дӯст"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "的 — egalik yuklamasi",
+        "ru": "的 — показатель принадлежности",
+        "tj": "的 — ҳарфи моликият"
       },
-      "title_zh": "主题词语",
+      "title_zh": "结构助词 的",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 你是哪国人. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你是哪国人”。",
-        "ru": "Ключевая фраза урока: 你是哪国人. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你是哪国人”。",
-        "tj": "Ибораи асосии дарс: 你是哪国人. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你是哪国人”。"
+        "uz": "的(de) — egalikni yoki bog'liqlikni ifodalaydi.\nTuzilma: Ot/Olmosh + 的 + Ot\n\nMisol:\n我的老师 — mening o'qituvchim\n她的朋友 — uning do'sti\n\nEslatma: Qarindoshlik va shaxsiy otlar oldida 的 tushirilishi mumkin:\n我(的)老师 ✓ — mening o'qituvchim\n我(的)朋友 ✓ — mening do'stim",
+        "ru": "的(de) — выражает принадлежность или ассоциацию.\nСтруктура: Существительное/Местоимение + 的 + Существительное\n\nПример:\n我的老师 — мой учитель\n她的朋友 — её подруга\n\nПримечание: 的 может опускаться перед терминами родства и личными существительными:\n我(的)老师 ✓ — мой учитель\n我(的)朋友 ✓ — мой друг",
+        "tj": "的(de) — моликият ё алоқаро ифода мекунад.\nСохтор: Исм/Ҷонишин + 的 + Исм\n\nМисол:\n我的老师 — муаллими ман\n她的朋友 — дӯсти вай\n\nЭзоҳ: 的 пеш аз истилоҳоти хешутаборӣ ва исмҳои шахсӣ метавонад ҳазф шавад:\n我(的)老师 ✓ — муаллими ман\n我(的)朋友 ✓ — дӯсти ман"
       },
       "examples": [
         {
-          "zh": "今天我们学习“你是哪国人”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ shì nǎ guó rén.",
+          "zh": "我的汉语老师",
+          "pinyin": "wǒ de Hànyǔ lǎoshī",
           "translation": {
-            "uz": "Biz Millat, davlat va kasb mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Национальность, страна и профессия.",
-            "tj": "Мо мавзӯи Миллат, давлат ва касб-ро меомӯзем."
+            "uz": "mening xitoy tili o'qituvchim",
+            "ru": "мой преподаватель китайского",
+            "tj": "муаллими забони чинии ман"
           }
         },
         {
-          "zh": "这个词是哪国。",
-          "pinyin": "Zhège cí shì nǎ guó.",
+          "zh": "他的同学",
+          "pinyin": "tā de tóngxué",
           "translation": {
-            "uz": "Bu so'z: qaysi davlat.",
-            "ru": "Это слово: какая страна.",
-            "tj": "Ин калима: кадом давлат."
+            "uz": "uning sinfdoshi",
+            "ru": "его одноклассник",
+            "tj": "ҳамсинфи вай"
+          }
+        },
+        {
+          "zh": "你的朋友",
+          "pinyin": "nǐ de péngyou",
+          "translation": {
+            "uz": "sening do'sting",
+            "ru": "твой друг",
+            "tj": "дӯсти ту"
           }
         }
       ]
@@ -136,33 +167,76 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "谁 — 'kim' so'roq olmoshi",
+        "ru": "谁 — вопросительное местоимение «кто»",
+        "tj": "谁 — ҷонишини саволии «кӣ»"
       },
-      "title_zh": "问答结构",
+      "title_zh": "谁 — kim so'roq olmoshi",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "谁(shéi) — 'kim?' ma'nosini bildiradi.\nGap ega yoki to'ldiruvchi bo'lib kelishi mumkin.\n\nMisol:\n她是谁？— U kim?\n谁是老师？— Kim o'qituvchi?\n他是谁的朋友？— U kimning do'sti?",
+        "ru": "谁(shéi) — означает «кто?».\nМожет выступать подлежащим или дополнением.\n\nПример:\n她是谁？— Кто она?\n谁是老师？— Кто учитель?\n他是谁的朋友？— Чей он друг?",
+        "tj": "谁(shéi) — маънои «кӣ?» дорад.\nМетавонад мубтадо ё пуркунанда бошад.\n\nМисол:\n她是谁？— Вай кӣ аст?\n谁是老师？— Кӣ муаллим аст?\n他是谁的朋友？— Дӯсти кӣ аст вай?"
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "她是谁？",
+          "pinyin": "Tā shì shéi?",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "U kim?",
+            "ru": "Кто она?",
+            "tj": "Вай кӣ аст?"
           }
         },
         {
-          "zh": "哪国。",
-          "pinyin": "nǎ guó.",
+          "zh": "谁是你的老师？",
+          "pinyin": "Shéi shì nǐ de lǎoshī?",
           "translation": {
-            "uz": "哪国 — nǎ guó deb o'qiladi.",
-            "ru": "哪国 читается как nǎ guó.",
-            "tj": "哪国 ҳамчун nǎ guó хонда мешавад."
+            "uz": "Kim sening o'qituvching?",
+            "ru": "Кто твой учитель?",
+            "tj": "Кӣ муаллими ту аст?"
+          }
+        },
+        {
+          "zh": "他是谁的同学？",
+          "pinyin": "Tā shì shéi de tóngxué?",
+          "translation": {
+            "uz": "U kimning sinfdoshi?",
+            "ru": "Чей он одноклассник?",
+            "tj": "Ҳамсинфи кӣ аст вай?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "呢 — qaytarma savol yuklamasi",
+        "ru": "呢 — уточняющая частица",
+        "tj": "呢 — ҳарфи савол бозгашт"
+      },
+      "title_zh": "呢 — qaytarma savol yuklamasi",
+      "rule": {
+        "uz": "呢(ne) — oldingi gapda tilga olingan mavzu bo'yicha so'rashda ishlatiladi.\nTuzilma: ...A... B呢？ (B-chi?)\n\nMisol:\n我是美国人。你呢？\nMen amerikalikman. Siz-chi?\n\n她叫李月。他呢？\nUning ismi Li Yue. U-chi?",
+        "ru": "呢(ne) — используется для вопроса о той же теме, упомянутой в предыдущем предложении.\nСтруктура: ...A... B呢？ (А как насчёт B?)\n\nПример:\n我是美国人。你呢？\nЯ американец. А вы?\n\n她叫李月。他呢？\nЕё зовут Ли Юэ. А его?",
+        "tj": "呢(ne) — барои пурсидан дар бораи мавзӯи қаблан зикршуда истифода мешавад.\nСохтор: ...A... B呢？ (Чӣ дар бораи B?)\n\nМисол:\n我是美国人。你呢？\nМан амрикоӣ ҳастам. Шумо чӣ?\n\n她叫李月。他呢？\nНомаш Ли Юэ аст. Вай чӣ?"
+      },
+      "examples": [
+        {
+          "zh": "我是学生。你呢？",
+          "pinyin": "Wǒ shì xuésheng. Nǐ ne?",
+          "translation": {
+            "uz": "Men talabaman. Siz-chi?",
+            "ru": "Я студент. А вы?",
+            "tj": "Ман донишҷӯ ҳастам. Шумо чӣ?"
+          }
+        },
+        {
+          "zh": "她是中国人。他呢？",
+          "pinyin": "Tā shì Zhōngguó rén. Tā ne?",
+          "translation": {
+            "uz": "U xitoylik. U-chi?",
+            "ru": "Она китаянка. А он?",
+            "tj": "Вай хитоӣ аст. Вай чӣ?"
           }
         }
       ]
@@ -171,49 +245,117 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Millat, davlat va kasb",
-        "ru": "Национальность, страна и профессия",
-        "tj": "Миллат, давлат ва касб"
+        "uz": "Sinfda — o'qituvchi haqida",
+        "ru": "В классе — о преподавателе",
+        "tj": "Дар синф — дар бораи муаллим"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“你是哪国人”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ shì nǎ guó rén.",
+          "zh": "她是谁？",
+          "pinyin": "Tā shì shéi?",
           "text": {
-            "uz": "Bugun Millat, davlat va kasb mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Национальность, страна и профессия.",
-            "tj": "Имрӯз мавзӯи Миллат, давлат ва касб-ро меомӯзем."
+            "uz": "U kim?",
+            "ru": "Кто она?",
+            "tj": "Вай кӣ аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "她是我的汉语老师，她叫李月。",
+          "pinyin": "Tā shì wǒ de Hànyǔ lǎoshī, tā jiào Lǐ Yuè.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "U mening xitoy tili o'qituvchim, uning ismi Li Yue.",
+            "ru": "Она моя преподаватель китайского, её зовут Ли Юэ.",
+            "tj": "Вай муаллимаи забони чинии ман аст, номаш Ли Юэ аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kutubxonada — millat so'rash",
+        "ru": "В библиотеке — спрашиваем о национальности",
+        "tj": "Дар китобхона — пурсидани миллат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你是哪国人？",
+          "pinyin": "Nǐ shì nǎ guó rén?",
+          "text": {
+            "uz": "Siz qaysi mamlakatdansiz?",
+            "ru": "Вы из какой страны?",
+            "tj": "Шумо аз кадом кишвар ҳастед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我是美国人。你呢？",
+          "pinyin": "Wǒ shì Měiguó rén. Nǐ ne?",
+          "text": {
+            "uz": "Men amerikalikman. Siz-chi?",
+            "ru": "Я американец. А вы?",
+            "tj": "Ман амрикоӣ ҳастам. Шумо чӣ?"
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "我是中国人。",
+          "pinyin": "Wǒ shì Zhōngguó rén.",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Men xitoylikman.",
+            "ru": "Я китаец.",
+            "tj": "Ман хитоӣ ҳастам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Fotoda — do'st va sinfdosh",
+        "ru": "На фото — друг и одноклассник",
+        "tj": "Дар акс — дӯст ва ҳамсинф"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "他是谁？",
+          "pinyin": "Tā shì shéi?",
+          "text": {
+            "uz": "U kim?",
+            "ru": "Кто он?",
+            "tj": "Вай кӣ аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "哪国。",
-          "pinyin": "nǎ guó.",
+          "zh": "他是我同学。",
+          "pinyin": "Tā shì wǒ tóngxué.",
           "text": {
-            "uz": "哪国 — nǎ guó deb o'qiladi.",
-            "ru": "哪国 читается как nǎ guó.",
-            "tj": "哪国 ҳамчун nǎ guó хонда мешавад."
+            "uz": "U mening sinfdoshim.",
+            "ru": "Он мой одноклассник.",
+            "tj": "Вай ҳамсинфи ман аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "她呢？她是你同学吗？",
+          "pinyin": "Tā ne? Tā shì nǐ tóngxué ma?",
+          "text": {
+            "uz": "U-chi? U ham sening sinfdoshing?",
+            "ru": "А она? Она тоже твой одноклассник?",
+            "tj": "Вай чӣ? Оё вай ҳам ҳамсинфи ту аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她不是我同学，她是我朋友。",
+          "pinyin": "Tā bú shì wǒ tóngxué, tā shì wǒ péngyou.",
+          "text": {
+            "uz": "U mening sinfdoshim emas, u mening do'stim.",
+            "ru": "Она не моя одноклассница, она моя подруга.",
+            "tj": "Вай ҳамсинфи ман нест, вай дӯсти ман аст."
           }
         }
       ]
@@ -232,104 +374,140 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "哪国",
-            "pinyin": "nǎ guó",
+            "no": 1,
+            "zh": "她",
+            "pinyin": "tā",
             "pos": "pron.",
             "meaning": {
-              "uz": "qaysi davlat",
-              "ru": "какая страна",
-              "tj": "кадом давлат"
+              "uz": "u (ayol)",
+              "ru": "она",
+              "tj": "вай (зан)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "人",
-            "pinyin": "rén",
+            "no": 2,
+            "zh": "谁",
+            "pinyin": "shéi",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "的",
+            "pinyin": "de",
+            "pos": "part.",
+            "meaning": {
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи моликият)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "汉语",
+            "pinyin": "Hànyǔ",
             "pos": "n.",
             "meaning": {
-              "uz": "odam, kishi",
-              "ru": "человек",
-              "tj": "одам, инсон"
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "国家",
-            "pinyin": "guójiā",
+            "no": 5,
+            "zh": "哪",
+            "pinyin": "nǎ",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qaysi, qayerdan",
+              "ru": "который, откуда",
+              "tj": "кадом, аз куҷо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "国",
+            "pinyin": "guó",
             "pos": "n.",
             "meaning": {
               "uz": "davlat, mamlakat",
-              "ru": "государство, страна",
-              "tj": "давлат, кишвар"
+              "ru": "страна, государство",
+              "tj": "кишвар, давлат"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "中国",
-            "pinyin": "Zhōngguó",
+            "no": 7,
+            "zh": "呢",
+            "pinyin": "ne",
+            "pos": "part.",
+            "meaning": {
+              "uz": "xo'sh, -chi (qaytarma savol)",
+              "ru": "а, ну а (уточняющий вопрос)",
+              "tj": "чӣ (савол бозгашт)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "他",
+            "pinyin": "tā",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u (erkak)",
+              "ru": "он",
+              "tj": "вай (мард)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "同学",
+            "pinyin": "tóngxué",
             "pos": "n.",
             "meaning": {
-              "uz": "Xitoy",
-              "ru": "Китай",
-              "tj": "Чин"
+              "uz": "sinfdosh, o'rtoq",
+              "ru": "одноклассник, однокурсник",
+              "tj": "ҳамсинф, ҳамдарс"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "美国",
-            "pinyin": "Měiguó",
+            "no": 10,
+            "zh": "朋友",
+            "pinyin": "péngyou",
             "pos": "n.",
             "meaning": {
-              "uz": "AQSH, Amerika",
-              "ru": "США, Америка",
-              "tj": "ИМА, Амрико"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "乌兹别克斯坦",
-            "pinyin": "Wūzībiékèsītǎn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "O'zbekiston",
-              "ru": "Узбекистан",
-              "tj": "Ӯзбекистон"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "医生",
-            "pinyin": "yīshēng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "shifokor",
-              "ru": "врач",
-              "tj": "духтур"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "工作",
-            "pinyin": "gōngzuò",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ishlamoq",
-              "ru": "работать",
-              "tj": "кор кардан"
+              "uz": "do'st",
+              "ru": "друг, подруга",
+              "tj": "дӯст"
             }
           }
         }
@@ -347,9 +525,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "哪国 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 哪国:",
-            "tj": "Маънои калимаи 哪国-ро интихоб кунед:"
+            "uz": "她 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 她:",
+            "tj": "Маънои калимаи 她-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -358,39 +536,39 @@
           },
           "options": [
             {
-              "uz": "qaysi davlat",
-              "ru": "какая страна",
-              "tj": "кадом давлат"
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
             },
             {
-              "uz": "odam, kishi",
-              "ru": "человек",
-              "tj": "одам, инсон"
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи моликият)"
             },
             {
-              "uz": "davlat, mamlakat",
-              "ru": "государство, страна",
-              "tj": "давлат, кишвар"
+              "uz": "u (ayol)",
+              "ru": "она",
+              "tj": "вай (зан)"
             },
             {
-              "uz": "Xitoy",
-              "ru": "Китай",
-              "tj": "Чин"
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "哪国 = qaysi davlat (nǎ guó)",
-            "ru": "哪国 = какая страна (nǎ guó)",
-            "tj": "哪国 = кадом давлат (nǎ guó)"
+            "uz": "她 = u (ayol) (tā)",
+            "ru": "她 = она (tā)",
+            "tj": "她 = вай (зан) (tā)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "哪国 talaffuzini tanlang:",
-            "ru": "Выберите произношение 哪国:",
-            "tj": "Талаффузи 哪国-ро интихоб кунед:"
+            "uz": "谁 talaffuzini tanlang:",
+            "ru": "Выберите произношение 谁:",
+            "tj": "Талаффузи 谁-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -398,49 +576,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "nǎ guó",
-            "rén",
-            "guójiā",
-            "Zhōngguó"
+            "de",
+            "shéi",
+            "Hànyǔ",
+            "tā"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "哪国 — nǎ guó",
-            "ru": "哪国 — nǎ guó",
-            "tj": "哪国 — nǎ guó"
+            "uz": "谁 — shéi",
+            "ru": "谁 — shéi",
+            "tj": "谁 — shéi"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'qaysi davlat' xitoycha nima?",
-            "ru": "'какая страна' по-китайски?",
-            "tj": "'кадом давлат' ба чинӣ чист?"
+            "uz": "'ning (egalik yuklamasi)' xitoycha qaysi?",
+            "ru": "'-'s (показатель принадлежности)' по-китайски?",
+            "tj": "'и, -и (ҳарфи моликият)' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "哪国",
-            "人",
-            "国家",
-            "中国"
+            "汉语",
+            "她",
+            "的",
+            "谁"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "哪国 = qaysi davlat (nǎ guó)",
-            "ru": "哪国 = какая страна (nǎ guó)",
-            "tj": "哪国 = кадом давлат (nǎ guó)"
+            "uz": "ning (egalik yuklamasi) = 的 (de)",
+            "ru": "-'s (показатель принадлежности) = 的 (de)",
+            "tj": "и, -и (ҳарфи моликият) = 的 (de)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "rén qaysi ieroglif?",
-            "ru": "Какой иероглиф читается rén?",
-            "tj": "rén кадом иероглиф аст?"
+            "uz": "Hànyǔ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается Hànyǔ?",
+            "tj": "Hànyǔ кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -448,95 +626,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "人",
-            "哪国",
-            "国家",
-            "中国"
+            "她",
+            "汉语",
+            "谁",
+            "的"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "人 = odam, kishi (rén)",
-            "ru": "人 = человек (rén)",
-            "tj": "人 = одам, инсон (rén)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'你是哪国人' iborasini tuzing",
-            "ru": "Соберите фразу '你是哪国人'",
-            "tj": "Ибораи '你是哪国人'-ро созед"
-          },
-          "tokens": [
-            "你",
-            "是",
-            "哪国",
-            "人",
-            "国家",
-            "中国"
-          ],
-          "answer_tokens": [
-            "你",
-            "是",
-            "哪国",
-            "人"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 你 是 哪国 人",
-            "ru": "Правильный порядок: 你 是 哪国 人",
-            "tj": "Тартиби дуруст: 你 是 哪国 人"
+            "uz": "汉语 = xitoy tili (Hànyǔ)",
+            "ru": "汉语 = китайский язык (Hànyǔ)",
+            "tj": "汉语 = забони чинӣ (Hànyǔ)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "哪国",
+              "她",
               {
-                "uz": "qaysi davlat",
-                "ru": "какая страна",
-                "tj": "кадом давлат"
+                "uz": "u (ayol)",
+                "ru": "она",
+                "tj": "вай (зан)"
               }
             ],
             [
-              "人",
+              "谁",
               {
-                "uz": "odam, kishi",
-                "ru": "человек",
-                "tj": "одам, инсон"
+                "uz": "kim",
+                "ru": "кто",
+                "tj": "кӣ"
               }
             ],
             [
-              "国家",
+              "的",
               {
-                "uz": "davlat, mamlakat",
-                "ru": "государство, страна",
-                "tj": "давлат, кишвар"
+                "uz": "ning (egalik yuklamasi)",
+                "ru": "-'s (показатель принадлежности)",
+                "tj": "и, -и (ҳарфи моликият)"
               }
             ],
             [
-              "中国",
+              "汉语",
               {
-                "uz": "Xitoy",
-                "ru": "Китай",
-                "tj": "Чин"
+                "uz": "xitoy tili",
+                "ru": "китайский язык",
+                "tj": "забони чинӣ"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我的____老师",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "的",
+            "她",
+            "汉语",
+            "谁"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 汉语 (Hànyǔ) — xitoy tili",
+            "ru": "Верно: 汉语 (Hànyǔ) — китайский язык",
+            "tj": "Дуруст: 汉语 (Hànyǔ) — забони чинӣ"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "你是哪国人",
-          "pinyin": "nǐ shì nǎ guó rén",
+          "phrase": "她",
+          "pinyin": "tā",
           "translation": {
-            "uz": "Millat, davlat va kasb",
-            "ru": "Национальность, страна и профессия",
-            "tj": "Миллат, давлат ва касб"
+            "uz": "u (ayol)",
+            "ru": "она",
+            "tj": "вай (зан)"
           }
         }
       ]
@@ -553,9 +725,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -563,41 +735,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "她是谁？",
+            "我是美国人。你呢？",
+            "你是哪国人？",
+            "她是我的汉语老师，她叫李月。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 她是谁？",
+            "ru": "Правильный ответ: 她是谁？",
+            "tj": "Ҷавоби дуруст: 她是谁？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "哪国。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "我是美国人。你呢？",
+            "你是哪国人？",
+            "她是谁？",
+            "她是我的汉语老师，她叫李月。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 哪国。",
-            "ru": "Ответ B: 哪国。",
-            "tj": "Ҷавоби B: 哪国。"
+            "uz": "To'g'ri javob: 她是我的汉语老师，她叫李月。",
+            "ru": "Правильный ответ: 她是我的汉语老师，她叫李月。",
+            "tj": "Ҷавоби дуруст: 她是我的汉语老师，她叫李月。"
           }
         }
       ]

@@ -2,133 +2,188 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 15,
-  "title": "复习 — HSK 2",
+  "title": "新年就要到了",
   "subtitle": {
-    "uz": "Mavzu: HSK 2 takrori va umumiy test. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Повторение HSK 2 и общий тест. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Такрори HSK 2 ва санҷиши умумӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Yaqin kelajakda bo'ladigan voqeani bildiruvchi '要……了' / '快要……了' va '都……了' konstruktsiyalarini o'rganish.",
+    "ru": "Изучение конструкций '要……了' / '快要……了' для выражения ближайшего будущего и конструкции '都……了'.",
+    "tj": "Омӯзиши конструксияҳои '要……了' / '快要……了' барои ифодаи оянда ва '都……了'."
   },
   "active_words": [
     {
-      "zh": "复习",
-      "pinyin": "fùxí",
+      "no": 1,
+      "zh": "日",
+      "pinyin": "rì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kun, sana",
+        "ru": "день, дата",
+        "tj": "рӯз, сана"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "新年",
+      "pinyin": "xīnnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yangi yil",
+        "ru": "новый год",
+        "tj": "соли нав"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "票",
+      "pinyin": "piào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "chipta, bilet",
+        "ru": "билет",
+        "tj": "чиптаи сафар"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "火车站",
+      "pinyin": "huǒchēzhàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "temir yo'l stantsiyasi, vokzal",
+        "ru": "железнодорожная станция, вокзал",
+        "tj": "истгоҳи роҳи оҳан, вокзал"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "大家",
+      "pinyin": "dàjiā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "hamma, barchalar",
+        "ru": "все, каждый",
+        "tj": "ҳама, тамоми"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "更",
+      "pinyin": "gèng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "yanada, bundan ham ko'proq",
+        "ru": "ещё более, ещё больше",
+        "tj": "ҳатто бештар, боз ҳам зиёдтар"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "妹妹",
+      "pinyin": "mèimei",
+      "pos": "n.",
+      "meaning": {
+        "uz": "singil",
+        "ru": "младшая сестра",
+        "tj": "хоҳари хурдӣ"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "阴",
+      "pinyin": "yīn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "bulutli, quyosh ko'rinmaydi",
+        "ru": "пасмурный, облачный",
+        "tj": "абрнок, офтоб намоён нест"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "旅游",
+      "pinyin": "lǚyóu",
       "pos": "v.",
       "meaning": {
-        "uz": "takrorlamoq",
-        "ru": "повторять",
-        "tj": "такрор кардан"
-      },
-      "no": 1
+        "uz": "sayohat qilmoq",
+        "ru": "путешествовать",
+        "tj": "сафар кардан, гашт кардан"
+      }
     },
     {
-      "zh": "交通",
-      "pinyin": "jiāotōng",
+      "no": 10,
+      "zh": "伞",
+      "pinyin": "sǎn",
       "pos": "n.",
       "meaning": {
-        "uz": "transport",
-        "ru": "транспорт",
-        "tj": "нақлиёт"
-      },
-      "no": 2
+        "uz": "soyabon, qoʻldagi yomg'irdan saqlash",
+        "ru": "зонт",
+        "tj": "чатр"
+      }
     },
     {
-      "zh": "购物",
-      "pinyin": "gòuwù",
+      "no": 11,
+      "zh": "月",
+      "pinyin": "yuè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oy (vaqt o'lchovi)",
+        "ru": "месяц",
+        "tj": "моҳ (вақти ченкунӣ)"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "节日",
+      "pinyin": "jiérì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bayram, tantana",
+        "ru": "праздник",
+        "tj": "ид, ҷашн"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "祝",
+      "pinyin": "zhù",
       "pos": "v.",
       "meaning": {
-        "uz": "xarid qilish",
-        "ru": "покупки",
-        "tj": "харид кардан"
-      },
-      "no": 3
-    },
-    {
-      "zh": "爱好",
-      "pinyin": "àihào",
-      "pos": "n.",
-      "meaning": {
-        "uz": "hobbi",
-        "ru": "хобби",
-        "tj": "шавқ"
-      },
-      "no": 4
-    },
-    {
-      "zh": "比较",
-      "pinyin": "bǐjiào",
-      "pos": "v.",
-      "meaning": {
-        "uz": "taqqoslamoq",
-        "ru": "сравнивать",
-        "tj": "муқоиса кардан"
-      },
-      "no": 5
-    },
-    {
-      "zh": "经验",
-      "pinyin": "jīngyàn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "tajriba",
-        "ru": "опыт",
-        "tj": "таҷриба"
-      },
-      "no": 6
-    },
-    {
-      "zh": "家庭",
-      "pinyin": "jiātíng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "oila",
-        "ru": "семья",
-        "tj": "оила"
-      },
-      "no": 7
-    },
-    {
-      "zh": "工作",
-      "pinyin": "gōngzuò",
-      "pos": "n.",
-      "meaning": {
-        "uz": "ish",
-        "ru": "работа",
-        "tj": "кор"
-      },
-      "no": 8
+        "uz": "tilak bildirmoq, tabriklamoq",
+        "ru": "желать, поздравлять",
+        "tj": "орзу кардан, табрик гуфтан"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "'Yào……le' yaqin kelajak konstruktsiyasi",
+        "ru": "Конструкция '要……了' ближайшего будущего",
+        "tj": "Конструксияи '要……了' ояндаи наздик"
       },
-      "title_zh": "主题词语",
+      "title_zh": "动作的状态\"要……了\"",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 复习 — HSK 2. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们复习HSK 2。",
-        "ru": "Ключевая фраза урока: 复习 — HSK 2. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们复习HSK 2。",
-        "tj": "Ибораи асосии дарс: 复习 — HSK 2. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们复习HSK 2。"
+        "uz": "'Yào……le' yoki 'jiù yào……le' yoki 'kuài yào……le' konstruktsiyasi yaqin kelajakda bo'ladigan voqeani bildiradi: 'tez orada …bo'ladi / …qilmoqchi'. 'Jiù yào' aniqroq vaqt bilan, 'kuài yào' esa umumiy 'tez orada' ma'nosida ishlatiladi. Gap oxiridagi 'le' o'zgarish yoki yangi holat yaqinligini ko'rsatadi.",
+        "ru": "Конструкции '要……了', '就要……了' или '快要……了' обозначают события ближайшего будущего: 'вот-вот произойдёт'. '就要' используется с более конкретным временем, '快要' — в общем смысле 'скоро'. Частица 'le' в конце указывает на близость изменения или нового состояния.",
+        "tj": "Конструксияҳои '要……了', '就要……了' ё '快要……了' рӯйдодҳои оянда наздикро нишон медиҳанд: 'зуд мешавад / қариб'. '就要' бо вақти мушаххастар, '快要' дар маъноии умумии 'зуд' истифода мешавад. Зарраи 'le' дар охири ҷумла наздикии тағйирот ё ҳолати навро нишон медиҳад."
       },
       "examples": [
         {
-          "zh": "今天我们复习HSK 2。",
-          "pinyin": "Jīntiān wǒmen fùxí HSK èr.",
+          "zh": "新年就要到了。",
+          "pinyin": "Xīnnián jiù yào dào le.",
           "translation": {
-            "uz": "Biz HSK 2 takrori va umumiy test mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Повторение HSK 2 и общий тест.",
-            "tj": "Мо мавзӯи Такрори HSK 2 ва санҷиши умумӣ-ро меомӯзем."
+            "uz": "Yangi yil yaqinlashib qoldi.",
+            "ru": "Новый год уже совсем близко.",
+            "tj": "Соли нав наздик шуд."
           }
         },
         {
-          "zh": "这个词是复习。",
-          "pinyin": "Zhège cí shì fùxí.",
+          "zh": "快要下雨了，带上伞吧。",
+          "pinyin": "Kuài yào xiàyǔ le, dài shàng sǎn ba.",
           "translation": {
-            "uz": "Bu so'z: takrorlamoq.",
-            "ru": "Это слово: повторять.",
-            "tj": "Ин калима: такрор кардан."
+            "uz": "Tez orada yomg'ir yog'adi, soyabon oling.",
+            "ru": "Скоро пойдёт дождь, возьмите зонт.",
+            "tj": "Зуд борон мешавад, чатр гиред."
           }
         }
       ]
@@ -136,33 +191,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "'Dōu……le' ta'kid konstruktsiyasi",
+        "ru": "Конструкция '都……了' для выражения удивления",
+        "tj": "Конструксияи '都……了' барои таъкид"
       },
-      "title_zh": "问答结构",
+      "title_zh": "\"都……了\"",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'Dōu……le' konstruktsiyasi ta'kid bildiradi: vaqt yoki miqdor allaqachon ancha ko'p yoki kutilgandan ortiq bo'lib qoldi. O'zbek tilidagi '…bo'lib ketdi!' yoki '…bo'lib qoldi-ku!' iborasiga o'xshaydi. Ko'pincha hayrat yoki norozilik ifodalamoqda qo'llanadi.",
+        "ru": "Конструкция '都……了' выражает акцент: время или количество уже достигло неожиданного или чрезмерного уровня. Аналог русского 'уже … же!' или 'ну и…!'. Часто выражает удивление или недовольство.",
+        "tj": "Конструксияи '都……了' таъкид мекунад: вақт ё миқдор аллакай ба сатҳи ғайричашмдошт ё аз ҳад зиёд расидааст. Ба ибораҳои '…шуду рафт!' ё '…шуд-ку!' дар тоҷикӣ монанд аст. Аксар вақт ҳайрат ё норозигиро ифода мекунад."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "都八点四十了！",
+          "pinyin": "Dōu bā diǎn sìshí le!",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Soat sakkiz qirq bo'lib qoldi!",
+            "ru": "Уже восемь сорок!",
+            "tj": "Дигар соати ҳашту чил шуд!"
           }
         },
         {
-          "zh": "复习。",
-          "pinyin": "fùxí.",
+          "zh": "都等她半个小时了！",
+          "pinyin": "Dōu děng tā bàn ge xiǎoshí le!",
           "translation": {
-            "uz": "复习 — fùxí deb o'qiladi.",
-            "ru": "复习 читается как fùxí.",
-            "tj": "复习 ҳамчун fùxí хонда мешавад."
+            "uz": "Uni yarim soatdan beri kutib turibmiz!",
+            "ru": "Мы уже полчаса её ждём!",
+            "tj": "Мо нимсоат интизораш шудем!"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "'Gèng' (yanada, bundan ham ko'proq) ravishining ishlatilishi",
+        "ru": "Использование наречия '更' (ещё более, ещё больше)",
+        "tj": "Истифодаи зарфи '更' (ҳатто бештар, боз ҳам зиёдтар)"
+      },
+      "title_zh": "副词\"更\"的用法",
+      "rule": {
+        "uz": "'更' ravishi sifat yoki ravish oldidan kelib, qiyoslashni kuchaytiradi: 'yanada, bundan ham ko'proq'.\nTuzilish: A 比 B 更 + sifat (A dan B dan yanada …).\n'更' mustaqil ham qo'llanadi: '我希望明年更好' (Umid qilamanki keyingi yil yanada yaxshi bo'lsin).\n'还' (hái) bilan almashtirib ham ishlatilishi mumkin.",
+        "ru": "Наречие '更' стоит перед прилагательным или наречием и усиливает сравнение: 'ещё более, ещё больше'.\nСтруктура: A 比 B 更 + прилагательное (A ещё более … чем B).\n'更' употребляется и самостоятельно: '我希望明年更好' (Надеюсь, в следующем году будет ещё лучше).\nМожет взаимозаменяться с '还' (hái) в некоторых контекстах.",
+        "tj": "Зарфи '更' пеш аз сифат ё зарф меояд ва муқоисаро тақвият медиҳад: 'ҳатто бештар, боз ҳам зиёдтар'.\nСохтор: A 比 B 更 + сифат (A аз B ҳатто … бештар).\n'更' мустақилона ҳам истифода мешавад: '我希望明年更好' (Умедворам соли оянда боз ҳам беҳтар шавад).\nДар баъзе контекстҳо бо '还' (hái) иваз шуда метавонад."
+      },
+      "examples": [
+        {
+          "zh": "希望我们的公司明年更好！",
+          "pinyin": "Xīwàng wǒmen de gōngsī míngnián gèng hǎo!",
+          "translation": {
+            "uz": "Umid qilamanki kompaniyamiz kelasi yil yanada yaxshilansin!",
+            "ru": "Надеюсь, в следующем году наша компания будет ещё лучше!",
+            "tj": "Умедворам ширкати мо соли оянда боз ҳам беҳтар шавад!"
+          }
+        },
+        {
+          "zh": "北京比这儿更好玩儿。",
+          "pinyin": "Běijīng bǐ zhèr gèng hǎo wánr.",
+          "translation": {
+            "uz": "Pekin bu yerdan yanada qiziqarliroq.",
+            "ru": "В Пекине ещё интереснее, чем здесь.",
+            "tj": "Пекин аз ин ҷо боз ҳам ҷолибтар аст."
           }
         }
       ]
@@ -171,49 +260,196 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "HSK 2 takrori va umumiy test",
-        "ru": "Повторение HSK 2 и общий тест",
-        "tj": "Такрори HSK 2 ва санҷиши умумӣ"
+        "uz": "Do'st uyida",
+        "ru": "В доме друга",
+        "tj": "Дар хонаи дӯст"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们复习HSK 2。",
-          "pinyin": "Jīntiān wǒmen fùxí HSK èr.",
+          "zh": "今天是12月20日，新年就要到了。",
+          "pinyin": "Jīntiān shì shí'èr yuè èrshí rì, xīnnián jiù yào dào le.",
           "text": {
-            "uz": "Bugun HSK 2 takrori va umumiy test mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Повторение HSK 2 и общий тест.",
-            "tj": "Имрӯз мавзӯи Такрори HSK 2 ва санҷиши умумӣ-ро меомӯзем."
+            "uz": "Bugun 20-dekabr, yangi yil yaqinlashib qoldi.",
+            "ru": "Сегодня 20 декабря, новый год уже совсем скоро.",
+            "tj": "Имрӯз 20 декабр аст, соли нав наздик шуд."
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "新年你准备做什么？",
+          "pinyin": "Xīnnián nǐ zhǔnbèi zuò shénme?",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Yangi yilda nima qilishni rejalashtirganmisiz?",
+            "ru": "Что ты планируешь делать на новый год?",
+            "tj": "Дар соли нав чӣ кор карданӣ ҳастед?"
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "我想去北京旅游，北京很不错，我去过一次。",
+          "pinyin": "Wǒ xiǎng qù Běijīng lǚyóu, Běijīng hěn búcuò, wǒ qùguo yí cì.",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Pekinga sayohat qilmoqchiman, Pekin juda yaxshi joy, bir marta borgan edim.",
+            "ru": "Хочу съездить в Пекин, там очень хорошо, я уже был(а) там один раз.",
+            "tj": "Мехоҳам ба Пекин сафар кунам, Пекин хеле хуб аст, як маротиба рафтаам."
           }
         },
         {
           "speaker": "B",
-          "zh": "复习。",
-          "pinyin": "fùxí.",
+          "zh": "你买票了吗？",
+          "pinyin": "Nǐ mǎi piào le ma?",
           "text": {
-            "uz": "复习 — fùxí deb o'qiladi.",
-            "ru": "复习 читается как fùxí.",
-            "tj": "复习 ҳамчун fùxí хонда мешавад."
+            "uz": "Chipta oldingizmi?",
+            "ru": "Ты уже купил(а) билет?",
+            "tj": "Оё шумо чиптаи сафар харидаед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "还没有呢，明天就去火车站买票。",
+          "pinyin": "Hái méiyǒu ne, míngtiān jiù qù huǒchēzhàn mǎi piào.",
+          "text": {
+            "uz": "Hali olmadim, ertaga vokzalga borib chipta olaman.",
+            "ru": "Ещё нет, завтра пойду на вокзал за билетом.",
+            "tj": "Ҳанӯз не, фардо ба вокзал мераваму чипта мехарам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada",
+        "ru": "В компании",
+        "tj": "Дар ширкат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "时间过得真快，新的一年快要到了！",
+          "pinyin": "Shíjiān guò de zhēn kuài, xīn de yì nián kuài yào dào le!",
+          "text": {
+            "uz": "Vaqt juda tez o'tar ekan, yangi yil ham tez orada keladi!",
+            "ru": "Время летит так быстро, новый год уже вот-вот!",
+            "tj": "Вақт хеле зуд мегузарад, соли нав ҳам наздик шуд!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，谢谢大家这一年对我的帮助！",
+          "pinyin": "Shì a, xièxie dàjiā zhè yì nián duì wǒ de bāngzhù!",
+          "text": {
+            "uz": "Ha, hammaga bu yil menga bergan yordamlari uchun katta rahmat!",
+            "ru": "Да, спасибо всем за помощь в этом году!",
+            "tj": "Бале, ташаккур ба ҳама барои ёрии ин сол!"
+          }
+        },
+        {
+          "speaker": "C",
+          "zh": "希望我们的公司明年更好！",
+          "pinyin": "Xīwàng wǒmen de gōngsī míngnián gèng hǎo!",
+          "text": {
+            "uz": "Umid qilamanki kompaniyamiz kelasi yil yanada yaxshilansin!",
+            "ru": "Надеюсь, в следующем году наша компания будет ещё лучше!",
+            "tj": "Умедворам ширкати мо соли оянда боз ҳам беҳтар шавад!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Stantsiyada",
+        "ru": "На станции",
+        "tj": "Дар истгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你妹妹怎么还没来？都八点四十了！",
+          "pinyin": "Nǐ mèimei zěnme hái méi lái? Dōu bā diǎn sìshí le!",
+          "text": {
+            "uz": "Singling nima uchun hali kelmadi? Soat sakkiz qirq bo'lib qoldi!",
+            "ru": "Почему твоя сестра ещё не пришла? Уже восемь сорок!",
+            "tj": "Чаро хоҳари хурдиат ҳанӯз наомад? Дигар соати ҳашту чил шуд!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我们再等她几分钟吧。",
+          "pinyin": "Wǒmen zài děng tā jǐ fēnzhōng ba.",
+          "text": {
+            "uz": "Uni yana bir necha daqiqa kutaylik.",
+            "ru": "Давай подождём её ещё несколько минут.",
+            "tj": "Биёед чанд дақиқаи дигар интизораш шавем."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "都等她半个小时了！",
+          "pinyin": "Dōu děng tā bàn ge xiǎoshí le!",
+          "text": {
+            "uz": "Uni yarim soatdan beri kutib turibmiz!",
+            "ru": "Мы уже полчаса её ждём!",
+            "tj": "Мо нимсоат интизораш шудем!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她来了，我听见她说话了。",
+          "pinyin": "Tā lái le, wǒ tīngjiàn tā shuōhuà le.",
+          "text": {
+            "uz": "U keldi, uning gapirayotganini eshitdim.",
+            "ru": "Она пришла, я слышу, как она говорит.",
+            "tj": "Вай омад, ман садои ӯро шунидам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxona oldida",
+        "ru": "У входа в кафе",
+        "tj": "Дар пеши қаҳвахона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "天阴了，我要回去了。",
+          "pinyin": "Tiān yīn le, wǒ yào huíqù le.",
+          "text": {
+            "uz": "Osmon bulutlandi, ketishim kerak.",
+            "ru": "Небо затянулось тучами, мне нужно идти.",
+            "tj": "Осмон абрнок шуд, бояд бираваm."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好的，快要下雨了，你路上慢点儿。",
+          "pinyin": "Hǎo de, kuài yào xiàyǔ le, nǐ lùshang màn diǎnr.",
+          "text": {
+            "uz": "Yaxshi, tez orada yomg'ir yog'adi, yo'lda ehtiyot bo'ling.",
+            "ru": "Хорошо, скоро пойдёт дождь, будьте осторожны в дороге.",
+            "tj": "Хуб, зуд борон мешавад, дар роҳ эҳтиёт шавед."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "没关系，我坐公共汽车。",
+          "pinyin": "Méi guānxi, wǒ zuò gōnggòng qìchē.",
+          "text": {
+            "uz": "Muammo yo'q, men avtobus bilan boraman.",
+            "ru": "Ничего, я поеду на автобусе.",
+            "tj": "Мушкил нест, ман бо автобус мераваm."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好的，再见。",
+          "pinyin": "Hǎo de, zàijiàn.",
+          "text": {
+            "uz": "Yaxshi, xayr.",
+            "ru": "Хорошо, до свидания.",
+            "tj": "Хуб, хайр."
           }
         }
       ]
@@ -232,104 +468,182 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "复习",
-            "pinyin": "fùxí",
+            "no": 1,
+            "zh": "日",
+            "pinyin": "rì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "新年",
+            "pinyin": "xīnnián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yangi yil",
+              "ru": "новый год",
+              "tj": "соли нав"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "票",
+            "pinyin": "piào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "chipta, bilet",
+              "ru": "билет",
+              "tj": "чиптаи сафар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "火车站",
+            "pinyin": "huǒchēzhàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "temir yo'l stantsiyasi, vokzal",
+              "ru": "железнодорожная станция, вокзал",
+              "tj": "истгоҳи роҳи оҳан, вокзал"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "大家",
+            "pinyin": "dàjiā",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "hamma, barchalar",
+              "ru": "все, каждый",
+              "tj": "ҳама, тамоми"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "更",
+            "pinyin": "gèng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "yanada, bundan ham ko'proq",
+              "ru": "ещё более, ещё больше",
+              "tj": "ҳатто бештар, боз ҳам зиёдтар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "妹妹",
+            "pinyin": "mèimei",
+            "pos": "n.",
+            "meaning": {
+              "uz": "singil",
+              "ru": "младшая сестра",
+              "tj": "хоҳари хурдӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "阴",
+            "pinyin": "yīn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "bulutli, quyosh ko'rinmaydi",
+              "ru": "пасмурный, облачный",
+              "tj": "абрнок, офтоб намоён нест"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "旅游",
+            "pinyin": "lǚyóu",
             "pos": "v.",
             "meaning": {
-              "uz": "takrorlamoq",
-              "ru": "повторять",
-              "tj": "такрор кардан"
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан, гашт кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "交通",
-            "pinyin": "jiāotōng",
+            "no": 10,
+            "zh": "伞",
+            "pinyin": "sǎn",
             "pos": "n.",
             "meaning": {
-              "uz": "transport",
-              "ru": "транспорт",
-              "tj": "нақлиёт"
+              "uz": "soyabon, qoʻldagi yomg'irdan saqlash",
+              "ru": "зонт",
+              "tj": "чатр"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "购物",
-            "pinyin": "gòuwù",
+            "no": 11,
+            "zh": "月",
+            "pinyin": "yuè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oy (vaqt o'lchovi)",
+              "ru": "месяц",
+              "tj": "моҳ (вақти ченкунӣ)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "节日",
+            "pinyin": "jiérì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bayram, tantana",
+              "ru": "праздник",
+              "tj": "ид, ҷашн"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "祝",
+            "pinyin": "zhù",
             "pos": "v.",
             "meaning": {
-              "uz": "xarid qilish",
-              "ru": "покупки",
-              "tj": "харид кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "爱好",
-            "pinyin": "àihào",
-            "pos": "n.",
-            "meaning": {
-              "uz": "hobbi",
-              "ru": "хобби",
-              "tj": "шавқ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "比较",
-            "pinyin": "bǐjiào",
-            "pos": "v.",
-            "meaning": {
-              "uz": "taqqoslamoq",
-              "ru": "сравнивать",
-              "tj": "муқоиса кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "经验",
-            "pinyin": "jīngyàn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "tajriba",
-              "ru": "опыт",
-              "tj": "таҷриба"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "家庭",
-            "pinyin": "jiātíng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "oila",
-              "ru": "семья",
-              "tj": "оила"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "工作",
-            "pinyin": "gōngzuò",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ish",
-              "ru": "работа",
-              "tj": "кор"
+              "uz": "tilak bildirmoq, tabriklamoq",
+              "ru": "желать, поздравлять",
+              "tj": "орзу кардан, табрик гуфтан"
             }
           }
         }
@@ -347,9 +661,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "复习 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 复习:",
-            "tj": "Маънои калимаи 复习-ро интихоб кунед:"
+            "uz": "日 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 日:",
+            "tj": "Маънои калимаи 日-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -358,39 +672,39 @@
           },
           "options": [
             {
-              "uz": "takrorlamoq",
-              "ru": "повторять",
-              "tj": "такрор кардан"
+              "uz": "chipta, bilet",
+              "ru": "билет",
+              "tj": "чиптаи сафар"
             },
             {
-              "uz": "transport",
-              "ru": "транспорт",
-              "tj": "нақлиёт"
+              "uz": "kun, sana",
+              "ru": "день, дата",
+              "tj": "рӯз, сана"
             },
             {
-              "uz": "xarid qilish",
-              "ru": "покупки",
-              "tj": "харид кардан"
+              "uz": "yangi yil",
+              "ru": "новый год",
+              "tj": "соли нав"
             },
             {
-              "uz": "hobbi",
-              "ru": "хобби",
-              "tj": "шавқ"
+              "uz": "temir yo'l stantsiyasi, vokzal",
+              "ru": "железнодорожная станция, вокзал",
+              "tj": "истгоҳи роҳи оҳан, вокзал"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "复习 = takrorlamoq (fùxí)",
-            "ru": "复习 = повторять (fùxí)",
-            "tj": "复习 = такрор кардан (fùxí)"
+            "uz": "日 = kun, sana (rì)",
+            "ru": "日 = день, дата (rì)",
+            "tj": "日 = рӯз, сана (rì)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "复习 talaffuzini tanlang:",
-            "ru": "Выберите произношение 复习:",
-            "tj": "Талаффузи 复习-ро интихоб кунед:"
+            "uz": "新年 talaffuzini tanlang:",
+            "ru": "Выберите произношение 新年:",
+            "tj": "Талаффузи 新年-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -398,49 +712,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "fùxí",
-            "jiāotōng",
-            "gòuwù",
-            "àihào"
+            "xīnnián",
+            "rì",
+            "piào",
+            "huǒchēzhàn"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "复习 — fùxí",
-            "ru": "复习 — fùxí",
-            "tj": "复习 — fùxí"
+            "uz": "新年 — xīnnián",
+            "ru": "新年 — xīnnián",
+            "tj": "新年 — xīnnián"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'takrorlamoq' xitoycha nima?",
-            "ru": "'повторять' по-китайски?",
-            "tj": "'такрор кардан' ба чинӣ чист?"
+            "uz": "'chipta, bilet' xitoycha qaysi?",
+            "ru": "'билет' по-китайски?",
+            "tj": "'чиптаи сафар' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "复习",
-            "交通",
-            "购物",
-            "爱好"
+            "票",
+            "新年",
+            "日",
+            "火车站"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "复习 = takrorlamoq (fùxí)",
-            "ru": "复习 = повторять (fùxí)",
-            "tj": "复习 = такрор кардан (fùxí)"
+            "uz": "chipta, bilet = 票 (piào)",
+            "ru": "билет = 票 (piào)",
+            "tj": "чиптаи сафар = 票 (piào)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "jiāotōng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiāotōng?",
-            "tj": "jiāotōng кадом иероглиф аст?"
+            "uz": "huǒchēzhàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается huǒchēzhàn?",
+            "tj": "huǒchēzhàn кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -448,90 +762,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "交通",
-            "复习",
-            "购物",
-            "爱好"
+            "票",
+            "新年",
+            "火车站",
+            "日"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "交通 = transport (jiāotōng)",
-            "ru": "交通 = транспорт (jiāotōng)",
-            "tj": "交通 = нақлиёт (jiāotōng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'复习' iborasini tuzing",
-            "ru": "Соберите фразу '复习'",
-            "tj": "Ибораи '复习'-ро созед"
-          },
-          "tokens": [
-            "复习",
-            "交通",
-            "购物",
-            "爱好"
-          ],
-          "answer_tokens": [
-            "复习"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 复习",
-            "ru": "Правильный порядок: 复习",
-            "tj": "Тартиби дуруст: 复习"
+            "uz": "火车站 = temir yo'l stantsiyasi, vokzal (huǒchēzhàn)",
+            "ru": "火车站 = железнодорожная станция, вокзал (huǒchēzhàn)",
+            "tj": "火车站 = истгоҳи роҳи оҳан, вокзал (huǒchēzhàn)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "复习",
+              "日",
               {
-                "uz": "takrorlamoq",
-                "ru": "повторять",
-                "tj": "такрор кардан"
+                "uz": "kun, sana",
+                "ru": "день, дата",
+                "tj": "рӯз, сана"
               }
             ],
             [
-              "交通",
+              "新年",
               {
-                "uz": "transport",
-                "ru": "транспорт",
-                "tj": "нақлиёт"
+                "uz": "yangi yil",
+                "ru": "новый год",
+                "tj": "соли нав"
               }
             ],
             [
-              "购物",
+              "票",
               {
-                "uz": "xarid qilish",
-                "ru": "покупки",
-                "tj": "харид кардан"
+                "uz": "chipta, bilet",
+                "ru": "билет",
+                "tj": "чиптаи сафар"
               }
             ],
             [
-              "爱好",
+              "火车站",
               {
-                "uz": "hobbi",
-                "ru": "хобби",
-                "tj": "шавқ"
+                "uz": "temir yo'l stantsiyasi, vokzal",
+                "ru": "железнодорожная станция, вокзал",
+                "tj": "истгоҳи роҳи оҳан, вокзал"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____就要到了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "票",
+            "火车站",
+            "日",
+            "新年"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 新年 (xīnnián) — yangi yil",
+            "ru": "Верно: 新年 (xīnnián) — новый год",
+            "tj": "Дуруст: 新年 (xīnnián) — соли нав"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "复习",
-          "pinyin": "fùxí HSK èr",
+          "phrase": "日",
+          "pinyin": "rì",
           "translation": {
-            "uz": "HSK 2 takrori va umumiy test",
-            "ru": "Повторение HSK 2 и общий тест",
-            "tj": "Такрори HSK 2 ва санҷиши умумӣ"
+            "uz": "kun, sana",
+            "ru": "день, дата",
+            "tj": "рӯз, сана"
           }
         }
       ]
@@ -548,9 +861,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -558,41 +871,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "今天是12月20日，新年就要到了。",
+            "新年你准备做什么？",
+            "你买票了吗？",
+            "我想去北京旅游，北京很不错，我去过一次。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 今天是12月20日，新年就要到了。",
+            "ru": "Правильный ответ: 今天是12月20日，新年就要到了。",
+            "tj": "Ҷавоби дуруст: 今天是12月20日，新年就要到了。"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida A nima deydi?",
+            "ru": "Что A говорит в конце диалога?",
+            "tj": "Дар охири муколама A чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "复习。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "今天是12月20日，新年就要到了。",
+            "新年你准备做什么？",
+            "还没有呢，明天就去火车站买票。",
+            "我想去北京旅游，北京很不错，我去过一次。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "B javobi: 复习。",
-            "ru": "Ответ B: 复习。",
-            "tj": "Ҷавоби B: 复习。"
+            "uz": "To'g'ri javob: 还没有呢，明天就去火车站买票。",
+            "ru": "Правильный ответ: 还没有呢，明天就去火车站买票。",
+            "tj": "Ҷавоби дуруст: 还没有呢，明天就去火车站买票。"
           }
         }
       ]

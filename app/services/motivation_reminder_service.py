@@ -3,11 +3,12 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta, timezone
 
 from aiogram import Bot
-from aiogram.types import FSInputFile
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types import FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.bot.utils.course_miniapp import course_study_miniapp_url
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
@@ -15,6 +16,7 @@ from app.services.course_gamification_service import CourseGamificationService
 from app.services.notification_template_service import (
     CAPTION_MAX,
     KEY_DAILY_GOAL,
+    KEY_LESSON_UNFINISHED,
     KEY_OVERTAKEN,
     KEY_STREAK,
     NotificationTemplateService,
@@ -30,23 +32,32 @@ DEFAULT_OFFSET_MIN = 5 * 60  # UTC+5
 # Evening window (local time) during which "daily goal" / "streak" reminders fire.
 GOAL_WINDOW_START_MIN = 20 * 60  # 20:00
 GOAL_WINDOW_END_MIN = 21 * 60 + 30  # 21:30
+LESSON_UNFINISHED_SENT_EVENT = "motivation_lesson_unfinished_sent"
+DAILY_GOAL_ACTIVITY_TYPES = ("lesson", "book_lesson")
 
 
 def _button(lang: str):
     labels = {
-        "uz": "📖 Darsni davom ettirish",
-        "ru": "📖 Продолжить урок",
-        "tj": "📖 Идома додани дарс",
+        "uz": "📚 Mini Appda davom ettirish",
+        "ru": "📚 Продолжить в Mini App",
+        "tj": "📚 Дар Mini App идома додан",
     }
-    builder = InlineKeyboardBuilder()
-    builder.button(text=labels.get(lang, labels["ru"]), callback_data="course:continue")
-    return builder.as_markup()
+    return InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=labels.get(lang, labels["ru"]),
+                    web_app=WebAppInfo(url=course_study_miniapp_url(lang=lang)),
+                )
+            ]
+        ]
+    )
 
 
 class MotivationReminderService:
-    """Sends the three motivational reminders (overtaken / daily goal / streak).
+    """Sends motivational reminders for rating, unfinished lessons, goals and streaks.
 
-    All three are gated to at most once per user per local day and pull their
+    All reminders are gated to at most once per user per local day and pull their
     text/media from admin-editable templates. Triggers are computed from real
     Mini App data (XP leaderboard, last_activity_date, current_streak).
     """
@@ -73,6 +84,33 @@ class MotivationReminderService:
     @staticmethod
     def _xp_gap_to_above(above_weekly_xp: int, my_weekly_xp: int) -> int:
         return max(1, int(above_weekly_xp or 0) - int(my_weekly_xp or 0))
+
+    @staticmethod
+    def _local_day_bounds_utc(local_day: date, offset_minutes: int) -> tuple[datetime, datetime]:
+        offset = timedelta(minutes=max(-720, min(840, int(offset_minutes or 0))))
+        day_start = datetime.combine(local_day, datetime.min.time(), tzinfo=timezone.utc) - offset
+        return day_start, day_start + timedelta(days=1)
+
+    @staticmethod
+    def _lesson_label(event: CourseMiniAppEvent, lang: str) -> str:
+        level = (getattr(event, "level", "") or "").strip().upper()
+        order = getattr(event, "lesson_order", None)
+        try:
+            lesson_no = int(order) if order else None
+        except (TypeError, ValueError):
+            lesson_no = None
+        if level and lesson_no:
+            if lang == "uz":
+                return f"{level} {lesson_no}-dars"
+            if lang == "tj":
+                return f"{level} дарси {lesson_no}"
+            return f"{level} урок {lesson_no}"
+        fallbacks = {
+            "uz": "Boshlangan dars",
+            "ru": "Начатый урок",
+            "tj": "Дарси оғозшуда",
+        }
+        return fallbacks.get(lang, fallbacks["ru"])
 
     async def send_due_reminders(self, bot: Bot) -> None:
         now = datetime.now(timezone.utc)
@@ -143,7 +181,6 @@ class MotivationReminderService:
             offset = offsets_by_user.get(int(profile.user_id), DEFAULT_OFFSET_MIN)
             local_now = self._local_now(offset, now)
             local_day = local_now.date()
-            studied_today = profile.last_activity_date == local_day
 
             current_rank, members = ranks.get(int(profile.user_id), (0, []))
 
@@ -159,9 +196,33 @@ class MotivationReminderService:
                     profile.last_known_rank = current_rank
                     changed = True
 
-            # 2/3) Evening goal/streak reminders — only if not studied today.
+            # 2/3/4) Evening goal/streak reminders — only if the daily lesson goal is not done.
             now_min = local_now.hour * 60 + local_now.minute
-            if studied_today or not (GOAL_WINDOW_START_MIN <= now_min <= GOAL_WINDOW_END_MIN):
+            if not (GOAL_WINDOW_START_MIN <= now_min <= GOAL_WINDOW_END_MIN):
+                continue
+
+            day_start, day_end = self._local_day_bounds_utc(local_day, offset)
+            if await self._daily_goal_completed_today(
+                user, local_day, day_start, day_end
+            ):
+                continue
+
+            minutes = int(profile.daily_minutes or 10)
+            unfinished_lesson = await self._unfinished_lesson_today(user, day_start, day_end)
+            if unfinished_lesson is not None:
+                resolved = await self.templates.resolve(KEY_LESSON_UNFINISHED, lang)
+                if resolved and await self._send(
+                    bot,
+                    user,
+                    resolved,
+                    lang,
+                    {
+                        "lesson": self._lesson_label(unfinished_lesson, lang),
+                        "minutes": minutes,
+                    },
+                ):
+                    self._mark_unfinished_lesson_sent(user, unfinished_lesson, local_day)
+                    changed = True
                 continue
 
             streak = int(profile.current_streak or 0)
@@ -179,7 +240,6 @@ class MotivationReminderService:
             else:
                 if profile.motivation_goal_date == local_day:
                     continue
-                minutes = int(profile.daily_minutes or 10)
                 resolved = await self.templates.resolve(KEY_DAILY_GOAL, lang)
                 if resolved and await self._send(
                     bot, user, resolved, lang, {"minutes": minutes}
@@ -189,6 +249,125 @@ class MotivationReminderService:
 
         if changed:
             await self.session.commit()
+
+    async def _daily_goal_completed_today(
+        self,
+        user: User,
+        local_day: date,
+        day_start: datetime,
+        day_end: datetime,
+    ) -> bool:
+        xp_done = (
+            await self.session.execute(
+                select(CourseXpEvent.id)
+                .where(
+                    CourseXpEvent.user_id == int(user.id),
+                    CourseXpEvent.activity_date == local_day,
+                    CourseXpEvent.activity_type.in_(DAILY_GOAL_ACTIVITY_TYPES),
+                )
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        if xp_done:
+            return True
+        event_done = (
+            await self.session.execute(
+                select(CourseMiniAppEvent.id)
+                .where(
+                    CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                    CourseMiniAppEvent.event_name.in_(("lesson_completed", "book_lesson_completed")),
+                    CourseMiniAppEvent.created_at >= day_start,
+                    CourseMiniAppEvent.created_at < day_end,
+                )
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        return bool(event_done)
+
+    async def _unfinished_lesson_today(
+        self,
+        user: User,
+        day_start: datetime,
+        day_end: datetime,
+    ) -> CourseMiniAppEvent | None:
+        started = (
+            await self.session.execute(
+                select(CourseMiniAppEvent)
+                .where(
+                    CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                    CourseMiniAppEvent.event_name == "lesson_started",
+                    CourseMiniAppEvent.created_at >= day_start,
+                    CourseMiniAppEvent.created_at < day_end,
+                )
+                .order_by(CourseMiniAppEvent.created_at.desc())
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        if started is None:
+            return None
+
+        already_sent = (
+            await self.session.execute(
+                select(CourseMiniAppEvent.id)
+                .where(
+                    CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+                    CourseMiniAppEvent.event_name == LESSON_UNFINISHED_SENT_EVENT,
+                    CourseMiniAppEvent.created_at >= day_start,
+                    CourseMiniAppEvent.created_at < day_end,
+                )
+                .limit(1)
+            )
+        ).scalar_one_or_none()
+        if already_sent:
+            return None
+
+        conditions = [
+            CourseMiniAppEvent.telegram_id == int(user.telegram_id),
+            CourseMiniAppEvent.event_name.in_(("lesson_completed", "book_lesson_completed")),
+            CourseMiniAppEvent.created_at >= started.created_at,
+        ]
+        if started.lesson_id is not None:
+            conditions.append(CourseMiniAppEvent.lesson_id == int(started.lesson_id))
+        elif started.level and started.lesson_order is not None:
+            conditions.extend(
+                [
+                    CourseMiniAppEvent.level == started.level,
+                    CourseMiniAppEvent.lesson_order == int(started.lesson_order),
+                ]
+            )
+
+        completed_after_start = (
+            await self.session.execute(
+                select(CourseMiniAppEvent.id).where(*conditions).limit(1)
+            )
+        ).scalar_one_or_none()
+        if completed_after_start:
+            return None
+        return started
+
+    def _mark_unfinished_lesson_sent(
+        self,
+        user: User,
+        started: CourseMiniAppEvent,
+        local_day: date,
+    ) -> None:
+        ref = started.lesson_id or (
+            f"{started.level}:{started.lesson_order}"
+            if started.level and started.lesson_order is not None
+            else "unknown"
+        )
+        self.session.add(
+            CourseMiniAppEvent(
+                user_id=int(user.id),
+                telegram_id=int(user.telegram_id),
+                event_name=LESSON_UNFINISHED_SENT_EVENT,
+                source="motivation_reminder",
+                level=started.level,
+                lesson_id=started.lesson_id,
+                lesson_order=started.lesson_order,
+                dedupe_key=f"{local_day.isoformat()}:{ref}",
+            )
+        )
 
     async def _maybe_overtaken(
         self, bot, profile, user, lang, current_rank, members, local_day

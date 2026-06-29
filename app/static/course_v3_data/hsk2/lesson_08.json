@@ -2,122 +2,188 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 8,
-  "title": "我比你高",
+  "title": "让我想想再告诉你",
   "subtitle": {
-    "uz": "Mavzu: Taqqoslash, 比. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Сравнение, 比. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Муқоиса, 比. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Taklif so'rash, ruxsat berish va harakatni keyinga qoldirish haqida gapira olish; '……好吗' savol qolipini, 再 ravishin, 让 pivotal fe'lni va fe'llarning takrorlanishini o'zlashtirish.",
+    "ru": "Научиться просить разрешения, откладывать действие; освоить вопросную конструкцию '……好吗', наречие 再, глагол-пивот 让 и удвоение глаголов.",
+    "tj": "Омӯзиши хостани иҷозат, ба баъд гузоштани амал; аз бар кардани сохтори саволии '……好吗', зарфи 再, феъли пивотии 让 ва такрори феълҳо."
   },
   "active_words": [
     {
-      "zh": "比",
-      "pinyin": "bǐ",
-      "pos": "prep.",
-      "meaning": {
-        "uz": "nisbatan",
-        "ru": "чем, по сравнению",
-        "tj": "нисбат ба"
-      },
-      "no": 1
-    },
-    {
-      "zh": "高",
-      "pinyin": "gāo",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "baland, bo‘yi uzun",
-        "ru": "высокий",
-        "tj": "баланд"
-      },
-      "no": 2
-    },
-    {
-      "zh": "矮",
-      "pinyin": "ǎi",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "past, bo‘yi qisqa",
-        "ru": "низкий",
-        "tj": "паст"
-      },
-      "no": 3
-    },
-    {
-      "zh": "快",
-      "pinyin": "kuài",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "tez",
-        "ru": "быстрый",
-        "tj": "тез"
-      },
-      "no": 4
-    },
-    {
-      "zh": "慢",
-      "pinyin": "màn",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "sekin",
-        "ru": "медленный",
-        "tj": "суст"
-      },
-      "no": 5
-    },
-    {
-      "zh": "更",
-      "pinyin": "gèng",
+      "no": 1,
+      "zh": "再",
+      "pinyin": "zài",
       "pos": "adv.",
       "meaning": {
-        "uz": "yanada",
-        "ru": "ещё более",
-        "tj": "боз ҳам"
-      },
-      "no": 6
+        "uz": "yana, keyin, qayta (kelajak uchun)",
+        "ru": "снова, потом, опять (о будущем)",
+        "tj": "боз, баъд, дубора (барои оянда)"
+      }
     },
     {
-      "zh": "一样",
-      "pinyin": "yíyàng",
+      "no": 2,
+      "zh": "让",
+      "pinyin": "ràng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+        "ru": "позволять, разрешать; приказывать",
+        "tj": "иҷозат додан; дастур додан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "告诉",
+      "pinyin": "gàosu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "aytib bermoq, xabar bermoq",
+        "ru": "сказать, сообщить",
+        "tj": "гуфтан, хабар додан"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "等",
+      "pinyin": "děng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kutmoq",
+        "ru": "ждать",
+        "tj": "интизор мондан"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "找",
+      "pinyin": "zhǎo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qidirmoq, izlamoq; topmoq",
+        "ru": "искать; найти",
+        "tj": "ҷустан, пайдо кардан"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "事情",
+      "pinyin": "shìqing",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ish, vazifa; voqea",
+        "ru": "дело, задача; событие",
+        "tj": "кор, вазифа; ҳодиса"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "服务员",
+      "pinyin": "fúwùyuán",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xizmatchi, ofitsiant",
+        "ru": "служащий, официант",
+        "tj": "хизматрасон, официант"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "白",
+      "pinyin": "bái",
       "pos": "adj.",
       "meaning": {
-        "uz": "bir xil",
-        "ru": "одинаковый",
-        "tj": "якхела"
-      },
-      "no": 7
+        "uz": "oq (rang)",
+        "ru": "белый (цвет)",
+        "tj": "сафед (ранг)"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "黑",
+      "pinyin": "hēi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qora (rang)",
+        "ru": "чёрный (цвет)",
+        "tj": "сиёҳ (ранг)"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "贵",
+      "pinyin": "guì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "qimmat, narxi yuqori",
+        "ru": "дорогой, высокая цена",
+        "tj": "гарон, нарх баланд"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "病",
+      "pinyin": "bìng",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "kasal bo'lmoq; kasallik",
+        "ru": "болеть; болезнь",
+        "tj": "бемор шудан; беморӣ"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "运动",
+      "pinyin": "yùndòng",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "sport qilmoq; sport, mashq",
+        "ru": "заниматься спортом; спорт, движение",
+        "tj": "варзиш кардан; варзиш"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "颜色",
+      "pinyin": "yánsè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "rang",
+        "ru": "цвет",
+        "tj": "ранг"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Savol qolipi '……，好吗' (bo'ladimi?, xopmi?)",
+        "ru": "Вопросная конструкция '……，好吗' (хорошо?, ладно?)",
+        "tj": "Сохтори саволии '……，好吗' (хуб аст?, розӣ?)"
       },
-      "title_zh": "主题词语",
+      "title_zh": "疑问句“……，好吗”",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 我比你高. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“我比你高”。",
-        "ru": "Ключевая фраза урока: 我比你高. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“我比你高”。",
-        "tj": "Ибораи асосии дарс: 我比你高. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“我比你高”。"
+        "uz": "'……，好吗？' qolipida biror taklif yoki iltimos yumshoq tarzda bildiriladi.\nGap oxirida '好吗？' qo'shiladi va 'bo'ladimi?, xopmi?' ma'nosini beradi.\nO'zbek tilidagi 'qilamizmi?, bo'ladimi?' iborasiga to'g'ri keladi.",
+        "ru": "Конструкция '……，好吗？' используется для мягкого предложения или просьбы.\nВ конце предложения добавляется '好吗？' со значением 'хорошо?, ладно?'.\nСоответствует русскому 'сделаем?, ладно?'.",
+        "tj": "Сохтори '……，好吗？' барои ба таври нарм пешниҳод ё илтимос кардан истифода мешавад.\nДар охири ҷумла '好吗？' илова мешавад бо маъноии 'хуб аст?, розӣ?'.\nБа тоҷикӣ 'мекунем?, розӣ?' мувофиқат мекунад."
       },
       "examples": [
         {
-          "zh": "今天我们学习“我比你高”。",
-          "pinyin": "Jīntiān wǒmen xuéxí wǒ bǐ nǐ gāo.",
+          "zh": "我们下午去看电影，好吗？",
+          "pinyin": "Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
           "translation": {
-            "uz": "Biz Taqqoslash, 比 mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Сравнение, 比.",
-            "tj": "Мо мавзӯи Муқоиса, 比-ро меомӯзем."
+            "uz": "Tushdan keyin kino ko'rgani boramizmi?",
+            "ru": "Давай сходим в кино после полудня, хорошо?",
+            "tj": "Баъд аз нисфирӯзӣ ба кино равем, хуб аст?"
           }
         },
         {
-          "zh": "这个词是比。",
-          "pinyin": "Zhège cí shì bǐ.",
+          "zh": "你等等我，好吗？",
+          "pinyin": "Nǐ děngdeng wǒ, hǎo ma?",
           "translation": {
-            "uz": "Bu so'z: nisbatan.",
-            "ru": "Это слово: чем, по сравнению.",
-            "tj": "Ин калима: нисбат ба."
+            "uz": "Menga bir kuting, bo'ladimi?",
+            "ru": "Подожди меня, хорошо?",
+            "tj": "Маро каме интизор шав, хуб аст?"
           }
         }
       ]
@@ -125,33 +191,101 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Ravish 再 (yana, keyin, qayta — kelajak uchun)",
+        "ru": "Наречие 再 (снова, потом, опять — о будущем)",
+        "tj": "Зарфи 再 (боз, баъд, дубора — барои оянда)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "副词“再”",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'再' ravishi 'yana, keyin, qayta' ma'nosini beradi.\nKelajakda takrorlanadigan yoki keyinga qoldirilgan harakatni bildiradi.\n又 dan farqi shundaki, 再 kelajak uchun, 又 esa o'tgan uchun ishlatiladi.",
+        "ru": "Наречие '再' означает 'снова, потом, опять'.\nОбозначает действие, которое будет повторяться или откладывается на потом.\nОтличие от 又: 再 — для будущего, 又 — для прошедшего.",
+        "tj": "Зарфи '再' маъноии 'боз, баъд, дубора'-ро медиҳад.\nАмалеро нишон медиҳад, ки дар оянда такрор мешавад ё ба баъд гузошта мешавад.\nФарқ аз 又: 再 — барои оянда, 又 — барои гузашта."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "明天下午再去吧。",
+          "pinyin": "Míngtiān xiàwǔ zài qù ba.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Ertaga tushdan keyin boramiz.",
+            "ru": "Пойдём завтра после полудня.",
+            "tj": "Фардо баъд аз нисфирӯзӣ равем."
           }
         },
         {
-          "zh": "比。",
-          "pinyin": "bǐ.",
+          "zh": "让我再看看。",
+          "pinyin": "Ràng wǒ zài kànkan.",
           "translation": {
-            "uz": "比 — bǐ deb o'qiladi.",
-            "ru": "比 читается как bǐ.",
-            "tj": "比 ҳамчун bǐ хонда мешавад."
+            "uz": "Yana bir qarayin.",
+            "ru": "Дай посмотрю ещё раз.",
+            "tj": "Бигзор боз бинам."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Pivotal gap (让/叫 + kishi + fe'l)",
+        "ru": "Пивотальное предложение (让/叫 + человек + глагол)",
+        "tj": "Ҷумлаи пивотӣ (让/叫 + шахс + феъл)"
+      },
+      "title_zh": "兼语句",
+      "rule": {
+        "uz": "Pivotal gapda birinchi fe'lning to'ldiruvchisi ikkinchi fe'lning egaligini bajaradi.\nMasalan, '让 + kishi + fe'l' qolipida: 让 — ruxsat bermoq/buyurmoq,\nkeyin boshqa kishi va uning harakati keladi.\n'叫 + kishi + fe'l' ham shu qolipga kiradi.",
+        "ru": "В пивотальном предложении дополнение первого глагола является подлежащим второго.\nВ конструкции '让 + человек + глагол': 让 — позволять/приказывать,\nзатем следует другой человек и его действие.\n'叫 + человек + глагол' тоже относится к этому типу.",
+        "tj": "Дар ҷумлаи пивотӣ пуркунандаи феъли аввал мубтадои феъли дуввум мегардад.\nДар сохтори '让 + шахс + феъл': 让 — иҷозат додан/дастур додан,\nбаъд шахси дигар ва амали ӯ меояд.\n'叫 + шахс + феъл' ҳам ба ҳамин намуд дохил мешавад."
+      },
+      "examples": [
+        {
+          "zh": "王老师让我给大卫打个电话。",
+          "pinyin": "Wáng lǎoshī ràng wǒ gěi Dàwèi dǎ ge diànhuà.",
+          "translation": {
+            "uz": "Vang o'qituvchi menga Devidga qo'ng'iroq qilishimni so'radi.",
+            "ru": "Учитель Ван попросил меня позвонить Дэвиду.",
+            "tj": "Устод Ван аз ман хост, ки ба Дэвид занг занам."
+          }
+        },
+        {
+          "zh": "我叫人去看看。",
+          "pinyin": "Wǒ jiào rén qù kànkan.",
+          "translation": {
+            "uz": "Birovni yuborib qarayman.",
+            "ru": "Пошлю кого-нибудь посмотреть.",
+            "tj": "Касеро мефиристам бинад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "Fe'lning takrorlanishi (kamaytirish ma'nosi)",
+        "ru": "Удвоение глагола (смягчение действия)",
+        "tj": "Такрори феъл (сабуктарини амал)"
+      },
+      "title_zh": "动词的重叠",
+      "rule": {
+        "uz": "Fe'lni takrorlash harakatning qisqa yoki engil bajarilishini bildiradi.\nBir bo'g'inli fe'l AB shaklida (看看, 想想),\nikki bo'g'inli fe'l ABAB shaklida (运动运动) takrorlanadi.\nBu usul muloyim yoki noaniq ifodalar uchun ishlatiladi.",
+        "ru": "Удвоение глагола означает краткое или лёгкое выполнение действия.\nОдносложный глагол удваивается по схеме AB (看看, 想想),\nдвусложный — по схеме ABAB (运动运动).\nИспользуется для смягчённых или неопределённых выражений.",
+        "tj": "Такрори феъл нишон медиҳад, ки амал кӯтоҳ ё сабук иҷро мешавад.\nФеъли яктаҳарфа бо схемаи AB такрор мешавад (看看, 想想),\nфеъли дутаҳарфа бо схемаи ABAB (运动运动).\nБарои ифодаҳои нарм ё ноаниқ истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "让我想想再告诉你。",
+          "pinyin": "Ràng wǒ xiǎngxiang zài gàosu nǐ.",
+          "translation": {
+            "uz": "Bir o'ylab, keyin aytaman.",
+            "ru": "Дай подумаю и потом скажу.",
+            "tj": "Бигзор андеша кунам, баъд мегӯям."
+          }
+        },
+        {
+          "zh": "我们出去运动运动吧。",
+          "pinyin": "Wǒmen chūqù yùndòng yùndòng ba.",
+          "translation": {
+            "uz": "Chiqib sport qilaylik.",
+            "ru": "Выйдем позанимаемся спортом.",
+            "tj": "Биёем берун чоре варзиш кунем."
           }
         }
       ]
@@ -160,49 +294,196 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Taqqoslash, 比",
-        "ru": "Сравнение, 比",
-        "tj": "Муқоиса, 比"
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“我比你高”。",
-          "pinyin": "Jīntiān wǒmen xuéxí wǒ bǐ nǐ gāo.",
+          "zh": "我们下午去看电影，好吗？",
+          "pinyin": "Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
           "text": {
-            "uz": "Bugun Taqqoslash, 比 mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Сравнение, 比.",
-            "tj": "Имрӯз мавзӯи Муқоиса, 比-ро меомӯзем."
+            "uz": "Tushdan keyin kino ko'rgani boramizmi?",
+            "ru": "Давай во второй половине дня сходим в кино, хорошо?",
+            "tj": "Биёед баъд аз нисфирӯзӣ ба кино равем, хуб аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "今天下午我没有时间，明天下午再去吧。",
+          "pinyin": "Jīntiān xiàwǔ wǒ méiyǒu shíjiān, míngtiān xiàwǔ zài qù ba.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Bugun tushdan keyin vaqtim yo'q, ertaga tushdan keyin boramiz.",
+            "ru": "Сегодня после полудня у меня нет времени, пойдём завтра.",
+            "tj": "Имрӯз баъд аз нисфирӯзӣ вақт надорам, фардо равем."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "你想看什么电影？",
+          "pinyin": "Nǐ xiǎng kàn shénme diànyǐng?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Qanday film ko'rmoqchisan?",
+            "ru": "Какой фильм ты хочешь посмотреть?",
+            "tj": "Ту чӣ филм дидан мехоҳӣ?"
           }
         },
         {
           "speaker": "B",
-          "zh": "比。",
-          "pinyin": "bǐ.",
+          "zh": "让我想想再告诉你。",
+          "pinyin": "Ràng wǒ xiǎngxiang zài gàosu nǐ.",
           "text": {
-            "uz": "比 — bǐ deb o'qiladi.",
-            "ru": "比 читается как bǐ.",
-            "tj": "比 ҳамчун bǐ хонда мешавад."
+            "uz": "Bir o'ylab, keyin aytaman.",
+            "ru": "Дай подумаю и потом скажу.",
+            "tj": "Бигзор андеша кунам, баъд мегӯям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yotoqxonada",
+        "ru": "В общежитии",
+        "tj": "Дар хобгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "外边天气很好，我们出去运动运动吧！",
+          "pinyin": "Wàibian tiānqì hěn hǎo, wǒmen chūqù yùndòng yùndòng ba!",
+          "text": {
+            "uz": "Tashqarida havo juda yaxshi, chiqib sport qilaylik!",
+            "ru": "На улице хорошая погода, выйдем позанимаемся спортом!",
+            "tj": "Берун хаво хуб аст, биёем чоре варзиш кунем!"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你等等我，好吗？王老师让我给大卫打个电话。",
+          "pinyin": "Nǐ děngdeng wǒ, hǎo ma? Wáng lǎoshī ràng wǒ gěi Dàwèi dǎ ge diànhuà.",
+          "text": {
+            "uz": "Menga bir kuting, bo'ladimi? Vang o'qituvchi Devidga qo'ng'iroq qilishimni so'radi.",
+            "ru": "Подожди меня, хорошо? Учитель Ван попросил меня позвонить Дэвиду.",
+            "tj": "Маро каме интизор шав, хуб аст? Устод Ван аз ман хост, ки ба Дэвид занг занам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "回来再打吧。找大卫有什么事情吗？",
+          "pinyin": "Huílái zài dǎ ba. Zhǎo Dàwèi yǒu shénme shìqing ma?",
+          "text": {
+            "uz": "Qaytib kelgach qo'ng'iroq qilarsiz. Devidga nima ish bor?",
+            "ru": "Позвони потом, когда вернёшься. Какое дело к Дэвиду?",
+            "tj": "Баъди баргашт занг зан. Бо Дэвид чӣ кор дорӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "听说大卫病了，我想找时间去看看他。",
+          "pinyin": "Tīngshuō Dàwèi bìng le, wǒ xiǎng zhǎo shíjiān qù kànkan tā.",
+          "text": {
+            "uz": "Eshitdim, Devid kasal, uни ko'rgani borishga vaqt topmoqchiman.",
+            "ru": "Говорят, Дэвид заболел, хочу найти время навестить его.",
+            "tj": "Шунидам, Дэвид бемор шуд, мехоҳам вақт ёбам ва ӯро бинам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonaning qabulida",
+        "ru": "На стойке регистрации гостиницы",
+        "tj": "Дар қабулгоҳи меҳмонхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "服务员，我房间的门打不开了。",
+          "pinyin": "Fúwùyuán, wǒ fángjiān de mén dǎ bù kāi le.",
+          "text": {
+            "uz": "Ofitsiant, xonamning eshigi ochmayapti.",
+            "ru": "Сотрудник, дверь моего номера не открывается.",
+            "tj": "Хизматрасон, дари хонаи ман намекушояд."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "您住哪个房间？",
+          "pinyin": "Nín zhù nǎ ge fángjiān?",
+          "text": {
+            "uz": "Siz qaysi xonada turasiz?",
+            "ru": "В каком номере вы проживаете?",
+            "tj": "Шумо дар кадом хона ҳастед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "317。",
+          "pinyin": "Sān yāo qī.",
+          "text": {
+            "uz": "317-xona.",
+            "ru": "317.",
+            "tj": "317."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好的，我叫人去看看。",
+          "pinyin": "Hǎo de, wǒ jiào rén qù kànkan.",
+          "text": {
+            "uz": "Xop, birovni yuborib qarayman.",
+            "ru": "Хорошо, пошлю кого-нибудь посмотреть.",
+            "tj": "Хуб, касеро мефиристам бинад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda",
+        "ru": "В магазине",
+        "tj": "Дар мағоза"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你看看这几件衣服怎么样。",
+          "pinyin": "Nǐ kànkan zhè jǐ jiàn yīfu zěnmeyàng.",
+          "text": {
+            "uz": "Bu bir nechta kiyimga bir qarab ber, qandayligini ayt.",
+            "ru": "Посмотри на эти несколько вещей, как они?",
+            "tj": "Ин чанд либосро каме бин, чӣ гуна?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这件白的有点儿长，那件黑的有点儿贵。",
+          "pinyin": "Zhè jiàn bái de yǒudiǎnr cháng, nà jiàn hēi de yǒudiǎnr guì.",
+          "text": {
+            "uz": "Bu oqi biroz uzun, u qorasi biroz qimmat.",
+            "ru": "Эта белая немного длинная, та чёрная немного дорогая.",
+            "tj": "Ин сафеда каме дароз, он сиёҳа каме гарон."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "这件红的呢？这是今天新来的。",
+          "pinyin": "Zhè jiàn hóng de ne? Zhè shì jīntiān xīn lái de.",
+          "text": {
+            "uz": "Bu qizilchi? Bu bugun yangi kelgan.",
+            "ru": "А эта красная? Это новинка сегодняшнего дня.",
+            "tj": "Ин сурхча чӣ? Ин имрӯз нав омадааст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "让我再看看。",
+          "pinyin": "Ràng wǒ zài kànkan.",
+          "text": {
+            "uz": "Yana bir qarayin.",
+            "ru": "Дай посмотрю ещё раз.",
+            "tj": "Бигзор боз бинам."
           }
         }
       ]
@@ -221,91 +502,182 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "比",
-            "pinyin": "bǐ",
-            "pos": "prep.",
-            "meaning": {
-              "uz": "nisbatan",
-              "ru": "чем, по сравнению",
-              "tj": "нисбат ба"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "高",
-            "pinyin": "gāo",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "baland, bo‘yi uzun",
-              "ru": "высокий",
-              "tj": "баланд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "矮",
-            "pinyin": "ǎi",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "past, bo‘yi qisqa",
-              "ru": "низкий",
-              "tj": "паст"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "快",
-            "pinyin": "kuài",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "tez",
-              "ru": "быстрый",
-              "tj": "тез"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "慢",
-            "pinyin": "màn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "sekin",
-              "ru": "медленный",
-              "tj": "суст"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "更",
-            "pinyin": "gèng",
+            "no": 1,
+            "zh": "再",
+            "pinyin": "zài",
             "pos": "adv.",
             "meaning": {
-              "uz": "yanada",
-              "ru": "ещё более",
-              "tj": "боз ҳам"
+              "uz": "yana, keyin, qayta (kelajak uchun)",
+              "ru": "снова, потом, опять (о будущем)",
+              "tj": "боз, баъд, дубора (барои оянда)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "一样",
-            "pinyin": "yíyàng",
+            "no": 2,
+            "zh": "让",
+            "pinyin": "ràng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+              "ru": "позволять, разрешать; приказывать",
+              "tj": "иҷозат додан; дастур додан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "告诉",
+            "pinyin": "gàosu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "aytib bermoq, xabar bermoq",
+              "ru": "сказать, сообщить",
+              "tj": "гуфтан, хабар додан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "等",
+            "pinyin": "děng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kutmoq",
+              "ru": "ждать",
+              "tj": "интизор мондан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "找",
+            "pinyin": "zhǎo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qidirmoq, izlamoq; topmoq",
+              "ru": "искать; найти",
+              "tj": "ҷустан, пайдо кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "事情",
+            "pinyin": "shìqing",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ish, vazifa; voqea",
+              "ru": "дело, задача; событие",
+              "tj": "кор, вазифа; ҳодиса"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "服务员",
+            "pinyin": "fúwùyuán",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xizmatchi, ofitsiant",
+              "ru": "служащий, официант",
+              "tj": "хизматрасон, официант"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "白",
+            "pinyin": "bái",
             "pos": "adj.",
             "meaning": {
-              "uz": "bir xil",
-              "ru": "одинаковый",
-              "tj": "якхела"
+              "uz": "oq (rang)",
+              "ru": "белый (цвет)",
+              "tj": "сафед (ранг)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "黑",
+            "pinyin": "hēi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qora (rang)",
+              "ru": "чёрный (цвет)",
+              "tj": "сиёҳ (ранг)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "贵",
+            "pinyin": "guì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "qimmat, narxi yuqori",
+              "ru": "дорогой, высокая цена",
+              "tj": "гарон, нарх баланд"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "病",
+            "pinyin": "bìng",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "kasal bo'lmoq; kasallik",
+              "ru": "болеть; болезнь",
+              "tj": "бемор шудан; беморӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "运动",
+            "pinyin": "yùndòng",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "sport qilmoq; sport, mashq",
+              "ru": "заниматься спортом; спорт, движение",
+              "tj": "варзиш кардан; варзиш"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "颜色",
+            "pinyin": "yánsè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "rang",
+              "ru": "цвет",
+              "tj": "ранг"
             }
           }
         }
@@ -323,9 +695,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "比 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 比:",
-            "tj": "Маънои калимаи 比-ро интихоб кунед:"
+            "uz": "再 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 再:",
+            "tj": "Маънои калимаи 再-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +706,39 @@
           },
           "options": [
             {
-              "uz": "nisbatan",
-              "ru": "чем, по сравнению",
-              "tj": "нисбат ба"
+              "uz": "aytib bermoq, xabar bermoq",
+              "ru": "сказать, сообщить",
+              "tj": "гуфтан, хабар додан"
             },
             {
-              "uz": "baland, bo‘yi uzun",
-              "ru": "высокий",
-              "tj": "баланд"
+              "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+              "ru": "позволять, разрешать; приказывать",
+              "tj": "иҷозат додан; дастур додан"
             },
             {
-              "uz": "past, bo‘yi qisqa",
-              "ru": "низкий",
-              "tj": "паст"
+              "uz": "kutmoq",
+              "ru": "ждать",
+              "tj": "интизор мондан"
             },
             {
-              "uz": "tez",
-              "ru": "быстрый",
-              "tj": "тез"
+              "uz": "yana, keyin, qayta (kelajak uchun)",
+              "ru": "снова, потом, опять (о будущем)",
+              "tj": "боз, баъд, дубора (барои оянда)"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "比 = nisbatan (bǐ)",
-            "ru": "比 = чем, по сравнению (bǐ)",
-            "tj": "比 = нисбат ба (bǐ)"
+            "uz": "再 = yana, keyin, qayta (kelajak uchun) (zài)",
+            "ru": "再 = снова, потом, опять (о будущем) (zài)",
+            "tj": "再 = боз, баъд, дубора (барои оянда) (zài)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "比 talaffuzini tanlang:",
-            "ru": "Выберите произношение 比:",
-            "tj": "Талаффузи 比-ро интихоб кунед:"
+            "uz": "让 talaffuzini tanlang:",
+            "ru": "Выберите произношение 让:",
+            "tj": "Талаффузи 让-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +746,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "bǐ",
-            "gāo",
-            "ǎi",
-            "kuài"
+            "děng",
+            "ràng",
+            "zài",
+            "gàosu"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "比 — bǐ",
-            "ru": "比 — bǐ",
-            "tj": "比 — bǐ"
+            "uz": "让 — ràng",
+            "ru": "让 — ràng",
+            "tj": "让 — ràng"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'nisbatan' xitoycha nima?",
-            "ru": "'чем, по сравнению' по-китайски?",
-            "tj": "'нисбат ба' ба чинӣ чист?"
+            "uz": "'aytib bermoq, xabar bermoq' xitoycha qaysi?",
+            "ru": "'сказать, сообщить' по-китайски?",
+            "tj": "'гуфтан, хабар додан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "比",
-            "高",
-            "矮",
-            "快"
+            "让",
+            "再",
+            "等",
+            "告诉"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "比 = nisbatan (bǐ)",
-            "ru": "比 = чем, по сравнению (bǐ)",
-            "tj": "比 = нисбат ба (bǐ)"
+            "uz": "aytib bermoq, xabar bermoq = 告诉 (gàosu)",
+            "ru": "сказать, сообщить = 告诉 (gàosu)",
+            "tj": "гуфтан, хабар додан = 告诉 (gàosu)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "gāo qaysi ieroglif?",
-            "ru": "Какой иероглиф читается gāo?",
-            "tj": "gāo кадом иероглиф аст?"
+            "uz": "děng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается děng?",
+            "tj": "děng кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,95 +796,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "高",
-            "比",
-            "矮",
-            "快"
+            "再",
+            "等",
+            "让",
+            "告诉"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "高 = baland, bo‘yi uzun (gāo)",
-            "ru": "高 = высокий (gāo)",
-            "tj": "高 = баланд (gāo)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'我比你高' iborasini tuzing",
-            "ru": "Соберите фразу '我比你高'",
-            "tj": "Ибораи '我比你高'-ро созед"
-          },
-          "tokens": [
-            "我",
-            "比",
-            "你",
-            "高",
-            "矮",
-            "快"
-          ],
-          "answer_tokens": [
-            "我",
-            "比",
-            "你",
-            "高"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 我 比 你 高",
-            "ru": "Правильный порядок: 我 比 你 高",
-            "tj": "Тартиби дуруст: 我 比 你 高"
+            "uz": "等 = kutmoq (děng)",
+            "ru": "等 = ждать (děng)",
+            "tj": "等 = интизор мондан (děng)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "比",
+              "再",
               {
-                "uz": "nisbatan",
-                "ru": "чем, по сравнению",
-                "tj": "нисбат ба"
+                "uz": "yana, keyin, qayta (kelajak uchun)",
+                "ru": "снова, потом, опять (о будущем)",
+                "tj": "боз, баъд, дубора (барои оянда)"
               }
             ],
             [
-              "高",
+              "让",
               {
-                "uz": "baland, bo‘yi uzun",
-                "ru": "высокий",
-                "tj": "баланд"
+                "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+                "ru": "позволять, разрешать; приказывать",
+                "tj": "иҷозат додан; дастур додан"
               }
             ],
             [
-              "矮",
+              "告诉",
               {
-                "uz": "past, bo‘yi qisqa",
-                "ru": "низкий",
-                "tj": "паст"
+                "uz": "aytib bermoq, xabar bermoq",
+                "ru": "сказать, сообщить",
+                "tj": "гуфтан, хабар додан"
               }
             ],
             [
-              "快",
+              "等",
               {
-                "uz": "tez",
-                "ru": "быстрый",
-                "tj": "тез"
+                "uz": "kutmoq",
+                "ru": "ждать",
+                "tj": "интизор мондан"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "让我想想再____你。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "等",
+            "再",
+            "告诉",
+            "让"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 告诉 (gàosu) — aytib bermoq, xabar bermoq",
+            "ru": "Верно: 告诉 (gàosu) — сказать, сообщить",
+            "tj": "Дуруст: 告诉 (gàosu) — гуфтан, хабар додан"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "我比你高",
-          "pinyin": "wǒ bǐ nǐ gāo",
+          "phrase": "再",
+          "pinyin": "zài",
           "translation": {
-            "uz": "Taqqoslash, 比",
-            "ru": "Сравнение, 比",
-            "tj": "Муқоиса, 比"
+            "uz": "yana, keyin, qayta (kelajak uchun)",
+            "ru": "снова, потом, опять (о будущем)",
+            "tj": "боз, баъд, дубора (барои оянда)"
           }
         }
       ]
@@ -529,9 +895,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -539,41 +905,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "让我想想再告诉你。",
+            "你想看什么电影？",
+            "我们下午去看电影，好吗？",
+            "今天下午我没有时间，明天下午再去吧。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 我们下午去看电影，好吗？",
+            "ru": "Правильный ответ: 我们下午去看电影，好吗？",
+            "tj": "Ҷавоби дуруст: 我们下午去看电影，好吗？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "比。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "让我想想再告诉你。",
+            "今天下午我没有时间，明天下午再去吧。",
+            "你想看什么电影？",
+            "我们下午去看电影，好吗？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "B javobi: 比。",
-            "ru": "Ответ B: 比。",
-            "tj": "Ҷавоби B: 比。"
+            "uz": "To'g'ri javob: 让我想想再告诉你。",
+            "ru": "Правильный ответ: 让我想想再告诉你。",
+            "tj": "Ҷавоби дуруст: 让我想想再告诉你。"
           }
         }
       ]

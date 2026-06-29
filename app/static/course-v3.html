@@ -105,6 +105,9 @@ button{cursor:pointer}
 .adcta:disabled{background:rgba(255,255,255,.14);color:rgba(255,255,255,.62)}
 .adsub{display:grid;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px}
 .adsub-t{margin:0 0 2px;font-size:13.5px;line-height:1.45;color:#fff;text-align:center;font-weight:500}
+.adsub-benefits{display:grid;gap:7px;margin:2px 0 4px}
+.adben{display:flex;align-items:center;gap:9px;font-size:13.5px;line-height:1.35;color:rgba(255,255,255,.94);text-align:left}
+.adben i{color:#7BE0B3;font-size:17px;flex-shrink:0}
 .adsub-pay{background:#fff;color:#211D17}
 .adcta.ghost{background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.2)}
 .ftop{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
@@ -404,6 +407,7 @@ button{cursor:pointer}
         <button class="adcta" id="ad-cta" disabled onclick="AdFlow.done()"></button>
         <div class="adsub" id="ad-sub" hidden>
           <p class="adsub-t" id="ad-sub-title"></p>
+          <div class="adsub-benefits" id="ad-sub-benefits"></div>
           <button class="adcta adsub-pay" id="ad-sub-pay" onclick="AdFlow.subscribe()"></button>
           <button class="adcta ghost" id="ad-sub-cont" onclick="AdFlow.done()"></button>
         </div>
@@ -785,8 +789,10 @@ function showCourseAd(placement,idx){
       var btn=$("#ad-cta"),count=$("#ad-count"),video=$("#ad-video");
       var sub=$("#ad-sub"),contBtn=$("#ad-sub-cont"),payBtn=$("#ad-sub-pay"),visit=$("#ad-visit");
       $("#ad-note").textContent=t.adNote;
-      /* obuna bloki matnlari (faqat oxirgi reklama tugagach ko'rinadi) */
+      /* obuna bloki matnlari + aniq foydalar ro'yxati
+         (faqat BARCHA reklamalar tugagach ko'rinadi) */
       $("#ad-sub-title").textContent=t.adSubTitle;
+      $("#ad-sub-benefits").innerHTML=["b1","b2","b3"].map(function(k){return '<div class="adben"><i class="ti ti-circle-check"></i><span>'+esc(t[k])+'</span></div>'}).join("");
       payBtn.innerHTML='<i class="ti ti-lock-open"></i> '+t.adSubPay;
       $("#adov").classList.add("on");$("#adov").setAttribute("aria-hidden","false");
       clearInterval(AD_STATE.timer);
@@ -800,6 +806,7 @@ function showCourseAd(placement,idx){
         $("#ad-title").textContent=ad.title||adPlacementTitle(placement);
         var hasLink=!!ad.link_url;
         if(hasLink){$("#ad-visit-t").textContent=t.adVisit;visit.hidden=false}else{visit.hidden=true}
+        $("#ad-video-wrap").style.display="";
         $("#ad-video-wrap").style.cursor=hasLink?"pointer":"default";
         contBtn.disabled=false;contBtn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
         sub.hidden=true;btn.style.display="";btn.disabled=true;
@@ -820,7 +827,11 @@ function showCourseAd(placement,idx){
             recordCourseAdView(ad,placement,l,duration).catch(function(){});
             playAd(i+1);
           }else{
-            /* barcha reklamalar tugadi — obuna/davom bloki */
+            /* BARCHA reklamalar tugadi — videoni to'xtatib yashiramiz, so'ng
+               obuna (aniq foydalar bilan) / reklama bilan davom etish bloki chiqadi */
+            try{video.pause()}catch(e){}
+            $("#ad-video-wrap").style.display="none";
+            $("#ad-label").textContent=t.adAllDone;count.textContent="";
             AD_STATE.ready=true;btn.style.display="none";sub.hidden=false;
           }
         }
@@ -1214,8 +1225,7 @@ function cardWordFlash(c){
   var w=c.word||{};$("#f-cta").style.display="flex";
   $("#f-body").innerHTML='<span class="kicker k-word"><i class="ti ti-sparkles"></i> '+T().newWord+'</span>'
     +'<div class="wc"><div class="big han">'+esc(w.zh||"")+'</div><div class="py">'+esc(w.pinyin||"")+'<button class="audio" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>'
-    +'<div><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div>'
-    +'<div class="duo-mini"><span>Pinyin<b>'+esc(w.pinyin||"")+'</b></span></div></div>';
+    +'<div><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div></div>';
   setTimeout(function(){speak(w.zh||"")},250);
 }
 function cardWordListen(c){

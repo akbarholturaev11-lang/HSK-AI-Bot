@@ -2,122 +2,166 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 11,
-  "title": "工作和学习",
+  "title": "他比我大三岁",
   "subtitle": {
-    "uz": "Mavzu: Ish, maktab va kasblar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Работа, учёба и профессии. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Кор, мактаб ва касбҳо. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "'Bǐ' qiyoslash konstruktsiyasini, fe'l sifatdoshini aniqlovchi sifatida ishlatishni va 'kěnéng' yordamchi fe'lini o'rganish.",
+    "ru": "Изучение конструкции сравнения 'bǐ', использования глагольных конструкций в роли определения и модального глагола 'kěnéng'.",
+    "tj": "Омӯзиши конструксияи муқоисавии 'bǐ', истифодаи сохторҳои феълӣ ҳамчун муайянкунанда ва феъли ёрирасони 'kěnéng'."
   },
   "active_words": [
     {
-      "zh": "工作",
-      "pinyin": "gōngzuò",
-      "pos": "n.",
-      "meaning": {
-        "uz": "ish",
-        "ru": "работа",
-        "tj": "кор"
-      },
-      "no": 1
-    },
-    {
-      "zh": "学习",
-      "pinyin": "xuéxí",
+      "no": 1,
+      "zh": "唱歌",
+      "pinyin": "chànggē",
       "pos": "v.",
       "meaning": {
-        "uz": "o‘qimoq, o‘rganmoq",
-        "ru": "учиться",
-        "tj": "омӯхтан"
-      },
-      "no": 2
+        "uz": "qo'shiq aytmoq",
+        "ru": "петь песню",
+        "tj": "суруд хондан"
+      }
     },
     {
-      "zh": "公司",
-      "pinyin": "gōngsī",
-      "pos": "n.",
-      "meaning": {
-        "uz": "kompaniya",
-        "ru": "компания",
-        "tj": "ширкат"
-      },
-      "no": 3
-    },
-    {
-      "zh": "学校",
-      "pinyin": "xuéxiào",
-      "pos": "n.",
-      "meaning": {
-        "uz": "maktab",
-        "ru": "школа",
-        "tj": "мактаб"
-      },
-      "no": 4
-    },
-    {
-      "zh": "同事",
-      "pinyin": "tóngshì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "hamkasb",
-        "ru": "коллега",
-        "tj": "ҳамкор"
-      },
-      "no": 5
-    },
-    {
-      "zh": "经理",
-      "pinyin": "jīnglǐ",
-      "pos": "n.",
-      "meaning": {
-        "uz": "menejer",
-        "ru": "менеджер",
-        "tj": "мудир"
-      },
-      "no": 6
-    },
-    {
-      "zh": "认真",
-      "pinyin": "rènzhēn",
+      "no": 2,
+      "zh": "男",
+      "pinyin": "nán",
       "pos": "adj.",
       "meaning": {
-        "uz": "jiddiy, mas’uliyatli",
-        "ru": "серьёзный, старательный",
-        "tj": "ҷиддӣ, масъул"
-      },
-      "no": 7
+        "uz": "erkak, o'g'il",
+        "ru": "мужской, мальчик",
+        "tj": "мард, писар"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "女",
+      "pinyin": "nǚ",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ayol, qiz",
+        "ru": "женский, девочка",
+        "tj": "зан, духтар"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "孩子",
+      "pinyin": "háizi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bola",
+        "ru": "ребёнок",
+        "tj": "кӯдак"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "右边",
+      "pinyin": "yòubian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'ng tomon",
+        "ru": "правая сторона",
+        "tj": "тарафи рост"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "比",
+      "pinyin": "bǐ",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "… dan (qiyoslash uchun)",
+        "ru": "чем… (для сравнения)",
+        "tj": "аз… (барои муқоиса)"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "便宜",
+      "pinyin": "piányi",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "arzon",
+        "ru": "дешёвый",
+        "tj": "арзон"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "说话",
+      "pinyin": "shuōhuà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gapirmoq, so'zlamoq",
+        "ru": "говорить, разговаривать",
+        "tj": "гап задан, сухан гуфтан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "可能",
+      "pinyin": "kěnéng",
+      "pos": "aux.",
+      "meaning": {
+        "uz": "ehtimol, mumkin",
+        "ru": "возможно, может быть",
+        "tj": "эҳтимол, мумкин аст"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "去年",
+      "pinyin": "qùnián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "o'tgan yil",
+        "ru": "в прошлом году",
+        "tj": "соли гузашта"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "姓",
+      "pinyin": "xìng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "familiyasi … bo'lmoq",
+        "ru": "иметь фамилию…",
+        "tj": "насабаш … буданаш"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Fe'l birikmasi aniqlovchi sifatida",
+        "ru": "Глагольная конструкция в роли определения",
+        "tj": "Сохтори феълӣ ҳамчун муайянкунанда"
       },
-      "title_zh": "主题词语",
+      "title_zh": "动词结构做定语",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 工作和学习. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“工作和学习”。",
-        "ru": "Ключевая фраза урока: 工作和学习. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“工作和学习”。",
-        "tj": "Ибораи асосии дарс: 工作和学习. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“工作和学习”。"
+        "uz": "Xitoy tilida fe'l birikmasi yoki gap bo'lagi ot oldidan aniqlovchi bo'lib kelishi mumkin. Bu holda aniqlovchi bilan ot orasiga '的' yuklamasi qo'yiladi. Masalan: '看报纸的女孩子' (gazeta o'qiyotgan qiz).",
+        "ru": "В китайском языке глагольная конструкция или часть предложения может выступать определением перед существительным. В этом случае между определением и существительным ставится частица '的'. Например: '看报纸的女孩子' (девушка, читающая газету).",
+        "tj": "Дар забони чинӣ сохтори феълӣ ё бахши ҷумла метавонад пеш аз исм ҳамчун муайянкунанда бояд. Дар ин ҳол байни муайянкунанда ва исм зарраи '的' гузошта мешавад. Масалан: '看报纸的女孩子' (духтаре ки рӯзнома мехонад)."
       },
       "examples": [
         {
-          "zh": "今天我们学习“工作和学习”。",
-          "pinyin": "Jīntiān wǒmen xuéxí gōngzuò hé xuéxí.",
+          "zh": "左边看报纸的女孩子是我姐姐。",
+          "pinyin": "Zuǒbian kàn bàozhǐ de nǚ háizi shì wǒ jiějie.",
           "translation": {
-            "uz": "Biz Ish, maktab va kasblar mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Работа, учёба и профессии.",
-            "tj": "Мо мавзӯи Кор, мактаб ва касбҳо-ро меомӯзем."
+            "uz": "Chap tomondagi gazeta o'qiyotgan qiz mening opam.",
+            "ru": "Девушка слева, читающая газету, — моя старшая сестра.",
+            "tj": "Духтаре ки тарафи чап рӯзнома мехонад хоҳари калонии ман аст."
           }
         },
         {
-          "zh": "这个词是工作。",
-          "pinyin": "Zhège cí shì gōngzuò.",
+          "zh": "前边说话的那个人是老师。",
+          "pinyin": "Qiánbian shuōhuà de nà ge rén shì lǎoshī.",
           "translation": {
-            "uz": "Bu so'z: ish.",
-            "ru": "Это слово: работа.",
-            "tj": "Ин калима: кор."
+            "uz": "Oldinda gapirgan odam o'qituvchi.",
+            "ru": "Тот человек впереди, который говорит, — учитель.",
+            "tj": "Он касе ки пеш гап мезанад муаллим аст."
           }
         }
       ]
@@ -125,33 +169,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "'Bǐ' qiyoslash gapi (1)",
+        "ru": "Предложения сравнения с 'bǐ' (1)",
+        "tj": "Ҷумлаи муқоисавӣ бо 'bǐ' (1)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "“比”字句（1）",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'Bǐ' qiyoslash gapi quyidagi tuzilishga ega: A + 比 + B + sifat (+ miqdor farqi). Bu 'A, B dan ko'proq/katta/yaxshi' ma'nosini beradi. Inkor shaklida '没有' ishlatiladi: A + 没有 + B + sifat.",
+        "ru": "Конструкция сравнения с 'bǐ' имеет структуру: A + 比 + B + прилагательное (+ разница в количестве). Означает 'A больше/старше/лучше, чем B'. В отрицательной форме используется '没有': A + 没有 + B + прилагательное.",
+        "tj": "Ҷумлаи муқоисавӣ бо 'bǐ' сохтори зеринро дорад: A + 比 + B + сифат (+ фарқи миқдорӣ). Маъниаш 'A аз B бештар/калонтар/беҳтар аст'. Дар шакли инкорӣ '没有' истифода мешавад: A + 没有 + B + сифат."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "他比我大三岁。",
+          "pinyin": "Tā bǐ wǒ dà sān suì.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "U mendan uch yosh katta.",
+            "ru": "Он старше меня на три года.",
+            "tj": "Ӯ аз ман се сол калонтар аст."
           }
         },
         {
-          "zh": "工作。",
-          "pinyin": "gōngzuò.",
+          "zh": "苹果没有西瓜大。",
+          "pinyin": "Píngguǒ méiyǒu xīguā dà.",
           "translation": {
-            "uz": "工作 — gōngzuò deb o'qiladi.",
-            "ru": "工作 читается как gōngzuò.",
-            "tj": "工作 ҳамчун gōngzuò хонда мешавад."
+            "uz": "Olma tarvuz kadar katta emas.",
+            "ru": "Яблоко не такое большое, как арбуз.",
+            "tj": "Себ ба андозаи тарбуз калон нест."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "'Kěnéng' yordamchi fe'li",
+        "ru": "Модальный глагол 'kěnéng'",
+        "tj": "Феъли ёрирасони 'kěnéng'"
+      },
+      "title_zh": "助动词“可能”",
+      "rule": {
+        "uz": "'Kěnéng' yordamchi fe'li 'ehtimol, mumkin' ma'nosini beradi va fe'l oldidan qo'yiladi. U ma'lum bo'lmagan holatlar haqida taxmin bildiradi. Inkor shakli: '不可能' (mumkin emas, aslo).",
+        "ru": "Модальный глагол 'kěnéng' означает 'возможно, может быть' и ставится перед глаголом. Выражает предположение о неизвестных ситуациях. Отрицательная форма: '不可能' (невозможно).",
+        "tj": "Феъли ёрирасони 'kěnéng' маъниаш 'эҳтимол, мумкин аст' буда пеш аз феъл меояд. Вай тахминро дар бораи вазъиятҳои номаълум ифода мекунад. Шакли инкорӣ: '不可能' (ғайриимкон аст)."
+      },
+      "examples": [
+        {
+          "zh": "你可能不认识她。",
+          "pinyin": "Nǐ kěnéng bù rènshi tā.",
+          "translation": {
+            "uz": "Siz uni tanimas ehtimol.",
+            "ru": "Возможно, ты её не знаешь.",
+            "tj": "Эҳтимол шумо ӯро намешиносед."
+          }
+        },
+        {
+          "zh": "他可能今天来。",
+          "pinyin": "Tā kěnéng jīntiān lái.",
+          "translation": {
+            "uz": "U ehtimol bugun keladi.",
+            "ru": "Возможно, он придёт сегодня.",
+            "tj": "Эҳтимол ӯ имрӯз меояд."
           }
         }
       ]
@@ -160,49 +238,196 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Ish, maktab va kasblar",
-        "ru": "Работа, учёба и профессии",
-        "tj": "Кор, мактаб ва касбҳо"
+        "uz": "Qo'shiq aytish zalida",
+        "ru": "В зале для пения",
+        "tj": "Дар толори сурудхонӣ"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“工作和学习”。",
-          "pinyin": "Jīntiān wǒmen xuéxí gōngzuò hé xuéxí.",
+          "zh": "王方，昨天和你一起唱歌的人是谁？",
+          "pinyin": "Wáng Fāng, zuótiān hé nǐ yìqǐ chànggē de rén shì shéi?",
           "text": {
-            "uz": "Bugun Ish, maktab va kasblar mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Работа, учёба и профессии.",
-            "tj": "Имрӯз мавзӯи Кор, мактаб ва касбҳо-ро меомӯзем."
+            "uz": "Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?",
+            "ru": "Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?",
+            "tj": "Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "一个朋友。",
+          "pinyin": "Yí ge péngyou.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Bir do'stim.",
+            "ru": "Один друг.",
+            "tj": "Як дӯстам."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "什么朋友？是不是男朋友？",
+          "pinyin": "Shénme péngyou? Shì bú shì nán péngyou?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Qanday do'st? Yigit do'stingizmi?",
+            "ru": "Что за друг? Это случайно не парень?",
+            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "工作。",
-          "pinyin": "gōngzuò.",
+          "zh": "不是不是，我同学介绍的，昨天第一次见。",
+          "pinyin": "Bú shì bú shì, wǒ tóngxué jièshào de, zuótiān dì yī cì jiàn.",
           "text": {
-            "uz": "工作 — gōngzuò deb o'qiladi.",
-            "ru": "工作 читается как gōngzuò.",
-            "tj": "工作 ҳамчун gōngzuò хонда мешавад."
+            "uz": "Yo'q yo'q, sinfdoshim tanishtirgan, kecha birinchi marta uchrashdik.",
+            "ru": "Нет-нет, познакомил однокурсник, вчера виделись первый раз.",
+            "tj": "Не не, ҳамсинфам шинос кард, дирӯз бори аввал дидем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yotoqxonada",
+        "ru": "В общежитии",
+        "tj": "Дар хобгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "左边这个看报纸的女孩子是你姐姐吗？",
+          "pinyin": "Zuǒbian zhège kàn bàozhǐ de nǚ háizi shì nǐ jiějie ma?",
+          "text": {
+            "uz": "Chap tomondagi gazeta o'qiyotgan qiz sizning opangizmi?",
+            "ru": "Та девушка слева, которая читает газету, это твоя старшая сестра?",
+            "tj": "Он духтаре ки тарафи чап рӯзнома мехонад хоҳари калонии туст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是，右边写字的那个人是我哥哥。",
+          "pinyin": "Shì, yòubian xiě zì de nà ge rén shì wǒ gēge.",
+          "text": {
+            "uz": "Ha, o'ng tomonda yozayotgan odam mening akam.",
+            "ru": "Да, а тот, кто справа пишет, это мой старший брат.",
+            "tj": "Бале, он касе ки тарафи рост менависад бародари калонии ман аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你哥哥多大？",
+          "pinyin": "Nǐ gēge duō dà?",
+          "text": {
+            "uz": "Akangiz necha yoshda?",
+            "ru": "Сколько лет твоему брату?",
+            "tj": "Бародари калониат чанд сол дорад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "25岁，他比我大三岁。",
+          "pinyin": "Èrshíwǔ suì, tā bǐ wǒ dà sān suì.",
+          "text": {
+            "uz": "25 yoshda, u mendan uch yosh katta.",
+            "ru": "25 лет, он старше меня на три года.",
+            "tj": "25 сол, ӯ аз ман се сол калонтар аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda",
+        "ru": "В магазине",
+        "tj": "Дар мағоза"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天的西瓜怎么卖？",
+          "pinyin": "Jīntiān de xīguā zěnme mài?",
+          "text": {
+            "uz": "Bugungi tarvuz qancha?",
+            "ru": "Сколько стоит сегодня арбуз?",
+            "tj": "Тарбузи имрӯза чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "三块五一斤。",
+          "pinyin": "Sān kuài wǔ yì jīn.",
+          "text": {
+            "uz": "Bir jin uchun uch yuan besh fen.",
+            "ru": "Три юаня пятьдесят за полкило.",
+            "tj": "Барои як ҷин се юан панҷ феник."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "比昨天便宜。",
+          "pinyin": "Bǐ zuótiān piányi.",
+          "text": {
+            "uz": "Kechaga qaraganda arzon.",
+            "ru": "Дешевле, чем вчера.",
+            "tj": "Аз дирӯз арзонтар аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是，苹果也比昨天便宜一些。您来点儿吧。",
+          "pinyin": "Shì, píngguǒ yě bǐ zuótiān piányi yìxiē. Nín lái diǎnr ba.",
+          "text": {
+            "uz": "Ha, olma ham kechaga qaraganda biroz arzon. Biroz oling.",
+            "ru": "Да, яблоки тоже немного дешевле, чем вчера. Берите немного.",
+            "tj": "Бале, себ ҳам аз дирӯз каме арзонтар аст. Каме гиред."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "前边说话的那个人是不是我的汉语老师？你可能不认识她。",
+          "pinyin": "Qiánbian shuōhuà de nà ge rén shì bú shì wǒ de Hànyǔ lǎoshī? Nǐ kěnéng bù rènshi tā.",
+          "text": {
+            "uz": "Oldinda gapirgan odam mening xitoy tili o'qituvchim emasmi? Siz uni tanimas ehtimol.",
+            "ru": "Тот человек впереди, который говорит, не мой ли преподаватель китайского? Ты, наверное, её не знаешь.",
+            "tj": "Оё он касе ки пеш гап мезанад муаллими забони чинии ман нест? Эҳтимол шумо ӯро намешиносед."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是新来的汉语老师吗？",
+          "pinyin": "Shì xīn lái de Hànyǔ lǎoshī ma?",
+          "text": {
+            "uz": "Yangi kelgan xitoy tili o'qituvchisimi?",
+            "ru": "Это новый преподаватель китайского?",
+            "tj": "Оё ин муаллими нави забони чинӣ аст?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "是去年来的，她姓王，28岁。",
+          "pinyin": "Shì qùnián lái de, tā xìng Wáng, èrshíbā suì.",
+          "text": {
+            "uz": "O'tgan yil kelgan, familiyasi Van, 28 yoshda.",
+            "ru": "Пришла в прошлом году, её фамилия Ван, 28 лет.",
+            "tj": "Соли гузашта омад, насабаш Ван аст, 28 сол дорад."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她比我们老师小两岁。",
+          "pinyin": "Tā bǐ wǒmen lǎoshī xiǎo liǎng suì.",
+          "text": {
+            "uz": "U bizning o'qituvchimizdan ikki yosh kichik.",
+            "ru": "Она на два года моложе нашего учителя.",
+            "tj": "Ӯ аз муаллими мо ду сол хурдтар аст."
           }
         }
       ]
@@ -221,91 +446,154 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "工作",
-            "pinyin": "gōngzuò",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ish",
-              "ru": "работа",
-              "tj": "кор"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "学习",
-            "pinyin": "xuéxí",
+            "no": 1,
+            "zh": "唱歌",
+            "pinyin": "chànggē",
             "pos": "v.",
             "meaning": {
-              "uz": "o‘qimoq, o‘rganmoq",
-              "ru": "учиться",
-              "tj": "омӯхтан"
+              "uz": "qo'shiq aytmoq",
+              "ru": "петь песню",
+              "tj": "суруд хондан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "公司",
-            "pinyin": "gōngsī",
-            "pos": "n.",
-            "meaning": {
-              "uz": "kompaniya",
-              "ru": "компания",
-              "tj": "ширкат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "学校",
-            "pinyin": "xuéxiào",
-            "pos": "n.",
-            "meaning": {
-              "uz": "maktab",
-              "ru": "школа",
-              "tj": "мактаб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "同事",
-            "pinyin": "tóngshì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "hamkasb",
-              "ru": "коллега",
-              "tj": "ҳамкор"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "经理",
-            "pinyin": "jīnglǐ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "menejer",
-              "ru": "менеджер",
-              "tj": "мудир"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "认真",
-            "pinyin": "rènzhēn",
+            "no": 2,
+            "zh": "男",
+            "pinyin": "nán",
             "pos": "adj.",
             "meaning": {
-              "uz": "jiddiy, mas’uliyatli",
-              "ru": "серьёзный, старательный",
-              "tj": "ҷиддӣ, масъул"
+              "uz": "erkak, o'g'il",
+              "ru": "мужской, мальчик",
+              "tj": "мард, писар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "女",
+            "pinyin": "nǚ",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "孩子",
+            "pinyin": "háizi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "右边",
+            "pinyin": "yòubian",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'ng tomon",
+              "ru": "правая сторона",
+              "tj": "тарафи рост"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "比",
+            "pinyin": "bǐ",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "… dan (qiyoslash uchun)",
+              "ru": "чем… (для сравнения)",
+              "tj": "аз… (барои муқоиса)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "便宜",
+            "pinyin": "piányi",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "arzon",
+              "ru": "дешёвый",
+              "tj": "арзон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "说话",
+            "pinyin": "shuōhuà",
+            "pos": "v.",
+            "meaning": {
+              "uz": "gapirmoq, so'zlamoq",
+              "ru": "говорить, разговаривать",
+              "tj": "гап задан, сухан гуфтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "可能",
+            "pinyin": "kěnéng",
+            "pos": "aux.",
+            "meaning": {
+              "uz": "ehtimol, mumkin",
+              "ru": "возможно, может быть",
+              "tj": "эҳтимол, мумкин аст"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "去年",
+            "pinyin": "qùnián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "o'tgan yil",
+              "ru": "в прошлом году",
+              "tj": "соли гузашта"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "姓",
+            "pinyin": "xìng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "familiyasi … bo'lmoq",
+              "ru": "иметь фамилию…",
+              "tj": "насабаш … буданаш"
             }
           }
         }
@@ -323,9 +611,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "工作 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 工作:",
-            "tj": "Маънои калимаи 工作-ро интихоб кунед:"
+            "uz": "唱歌 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 唱歌:",
+            "tj": "Маънои калимаи 唱歌-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +622,39 @@
           },
           "options": [
             {
-              "uz": "ish",
-              "ru": "работа",
-              "tj": "кор"
+              "uz": "bola",
+              "ru": "ребёнок",
+              "tj": "кӯдак"
             },
             {
-              "uz": "o‘qimoq, o‘rganmoq",
-              "ru": "учиться",
-              "tj": "омӯхтан"
+              "uz": "erkak, o'g'il",
+              "ru": "мужской, мальчик",
+              "tj": "мард, писар"
             },
             {
-              "uz": "kompaniya",
-              "ru": "компания",
-              "tj": "ширкат"
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
             },
             {
-              "uz": "maktab",
-              "ru": "школа",
-              "tj": "мактаб"
+              "uz": "qo'shiq aytmoq",
+              "ru": "петь песню",
+              "tj": "суруд хондан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "工作 = ish (gōngzuò)",
-            "ru": "工作 = работа (gōngzuò)",
-            "tj": "工作 = кор (gōngzuò)"
+            "uz": "唱歌 = qo'shiq aytmoq (chànggē)",
+            "ru": "唱歌 = петь песню (chànggē)",
+            "tj": "唱歌 = суруд хондан (chànggē)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "工作 talaffuzini tanlang:",
-            "ru": "Выберите произношение 工作:",
-            "tj": "Талаффузи 工作-ро интихоб кунед:"
+            "uz": "男 talaffuzini tanlang:",
+            "ru": "Выберите произношение 男:",
+            "tj": "Талаффузи 男-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +662,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "gōngzuò",
-            "xuéxí",
-            "gōngsī",
-            "xuéxiào"
+            "chànggē",
+            "nǚ",
+            "háizi",
+            "nán"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "工作 — gōngzuò",
-            "ru": "工作 — gōngzuò",
-            "tj": "工作 — gōngzuò"
+            "uz": "男 — nán",
+            "ru": "男 — nán",
+            "tj": "男 — nán"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'ish' xitoycha nima?",
-            "ru": "'работа' по-китайски?",
-            "tj": "'кор' ба чинӣ чист?"
+            "uz": "'ayol, qiz' xitoycha qaysi?",
+            "ru": "'женский, девочка' по-китайски?",
+            "tj": "'зан, духтар' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "工作",
-            "学习",
-            "公司",
-            "学校"
+            "唱歌",
+            "孩子",
+            "男",
+            "女"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "工作 = ish (gōngzuò)",
-            "ru": "工作 = работа (gōngzuò)",
-            "tj": "工作 = кор (gōngzuò)"
+            "uz": "ayol, qiz = 女 (nǚ)",
+            "ru": "женский, девочка = 女 (nǚ)",
+            "tj": "зан, духтар = 女 (nǚ)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "xuéxí qaysi ieroglif?",
-            "ru": "Какой иероглиф читается xuéxí?",
-            "tj": "xuéxí кадом иероглиф аст?"
+            "uz": "háizi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается háizi?",
+            "tj": "háizi кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,93 +712,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "学习",
-            "工作",
-            "公司",
-            "学校"
+            "女",
+            "男",
+            "唱歌",
+            "孩子"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "学习 = o‘qimoq, o‘rganmoq (xuéxí)",
-            "ru": "学习 = учиться (xuéxí)",
-            "tj": "学习 = омӯхтан (xuéxí)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'工作和学习' iborasini tuzing",
-            "ru": "Соберите фразу '工作和学习'",
-            "tj": "Ибораи '工作和学习'-ро созед"
-          },
-          "tokens": [
-            "工作",
-            "和",
-            "学习",
-            "公司",
-            "学校"
-          ],
-          "answer_tokens": [
-            "工作",
-            "和",
-            "学习"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 工作 和 学习",
-            "ru": "Правильный порядок: 工作 和 学习",
-            "tj": "Тартиби дуруст: 工作 和 学习"
+            "uz": "孩子 = bola (háizi)",
+            "ru": "孩子 = ребёнок (háizi)",
+            "tj": "孩子 = кӯдак (háizi)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "工作",
+              "唱歌",
               {
-                "uz": "ish",
-                "ru": "работа",
-                "tj": "кор"
+                "uz": "qo'shiq aytmoq",
+                "ru": "петь песню",
+                "tj": "суруд хондан"
               }
             ],
             [
-              "学习",
+              "男",
               {
-                "uz": "o‘qimoq, o‘rganmoq",
-                "ru": "учиться",
-                "tj": "омӯхтан"
+                "uz": "erkak, o'g'il",
+                "ru": "мужской, мальчик",
+                "tj": "мард, писар"
               }
             ],
             [
-              "公司",
+              "女",
               {
-                "uz": "kompaniya",
-                "ru": "компания",
-                "tj": "ширкат"
+                "uz": "ayol, qiz",
+                "ru": "женский, девочка",
+                "tj": "зан, духтар"
               }
             ],
             [
-              "学校",
+              "孩子",
               {
-                "uz": "maktab",
-                "ru": "школа",
-                "tj": "мактаб"
+                "uz": "bola",
+                "ru": "ребёнок",
+                "tj": "кӯдак"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "左边看报纸的女____是我姐姐。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "孩子",
+            "男",
+            "唱歌",
+            "女"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 孩子 (háizi) — bola",
+            "ru": "Верно: 孩子 (háizi) — ребёнок",
+            "tj": "Дуруст: 孩子 (háizi) — кӯдак"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "工作和学习",
-          "pinyin": "gōngzuò hé xuéxí",
+          "phrase": "唱歌",
+          "pinyin": "chànggē",
           "translation": {
-            "uz": "Ish, maktab va kasblar",
-            "ru": "Работа, учёба и профессии",
-            "tj": "Кор, мактаб ва касбҳо"
+            "uz": "qo'shiq aytmoq",
+            "ru": "петь песню",
+            "tj": "суруд хондан"
           }
         }
       ]
@@ -527,9 +811,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -537,41 +821,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "不是不是，我同学介绍的，昨天第一次见。",
+            "什么朋友？是不是男朋友？",
+            "王方，昨天和你一起唱歌的人是谁？",
+            "一个朋友。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 王方，昨天和你一起唱歌的人是谁？",
+            "ru": "Правильный ответ: 王方，昨天和你一起唱歌的人是谁？",
+            "tj": "Ҷавоби дуруст: 王方，昨天和你一起唱歌的人是谁？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "工作。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "一个朋友。",
+            "王方，昨天和你一起唱歌的人是谁？",
+            "什么朋友？是不是男朋友？",
+            "不是不是，我同学介绍的，昨天第一次见。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 工作。",
-            "ru": "Ответ B: 工作。",
-            "tj": "Ҷавоби B: 工作。"
+            "uz": "To'g'ri javob: 不是不是，我同学介绍的，昨天第一次见。",
+            "ru": "Правильный ответ: 不是不是，我同学介绍的，昨天第一次见。",
+            "tj": "Ҷавоби дуруст: 不是不是，我同学介绍的，昨天第一次见。"
           }
         }
       ]

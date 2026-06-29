@@ -2,122 +2,186 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 11,
-  "title": "你喝什么",
+  "title": "现在几点",
   "subtitle": {
-    "uz": "Mavzu: Ichimliklar va buyurtma. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Напитки и заказ. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Нӯшокиҳо ва фармоиш. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Vaqtni aytish va so'rash, vaqt ravishi, 前 so'zi",
+    "ru": "Говорить и спрашивать о времени, временные наречия, слово 前",
+    "tj": "Гуфтан ва пурсидани вақт, зарфҳои вақт, калимаи 前"
   },
   "active_words": [
     {
-      "zh": "喝",
-      "pinyin": "hē",
+      "no": 1,
+      "zh": "现在",
+      "pinyin": "xiànzài",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hozir, shu vaqtda",
+        "ru": "сейчас, в данный момент",
+        "tj": "ҳоло, дар ин лаҳза"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "点",
+      "pinyin": "diǎn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "soat (soat uchun o'lchov so'zi)",
+        "ru": "час (счётное слово для часов)",
+        "tj": "соат (вақт)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "分",
+      "pinyin": "fēn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "daqiqa",
+        "ru": "минута",
+        "tj": "дақиқа"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "中午",
+      "pinyin": "zhōngwǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tush, yarim kun",
+        "ru": "полдень",
+        "tj": "нисфирӯзӣ, нимрӯз"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "吃饭",
+      "pinyin": "chī fàn",
       "pos": "v.",
       "meaning": {
-        "uz": "ichmoq",
-        "ru": "пить",
-        "tj": "нӯшидан"
-      },
-      "no": 1
+        "uz": "ovqat yemoq, ovqatlanmoq",
+        "ru": "есть, обедать",
+        "tj": "хӯрдан, хӯрок хӯрдан"
+      }
     },
     {
-      "zh": "水",
-      "pinyin": "shuǐ",
+      "no": 6,
+      "zh": "时候",
+      "pinyin": "shíhou",
       "pos": "n.",
       "meaning": {
-        "uz": "suv",
-        "ru": "вода",
-        "tj": "об"
-      },
-      "no": 2
+        "uz": "vaqt, lahza",
+        "ru": "время, момент",
+        "tj": "вақт, лаҳза"
+      }
     },
     {
-      "zh": "茶",
-      "pinyin": "chá",
-      "pos": "n.",
-      "meaning": {
-        "uz": "choy",
-        "ru": "чай",
-        "tj": "чой"
-      },
-      "no": 3
-    },
-    {
-      "zh": "咖啡",
-      "pinyin": "kāfēi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "qahva",
-        "ru": "кофе",
-        "tj": "қаҳва"
-      },
-      "no": 4
-    },
-    {
-      "zh": "牛奶",
-      "pinyin": "niúnǎi",
-      "pos": "n.",
-      "meaning": {
-        "uz": "sut",
-        "ru": "молоко",
-        "tj": "шир"
-      },
-      "no": 5
-    },
-    {
-      "zh": "杯",
-      "pinyin": "bēi",
-      "pos": "mw.",
-      "meaning": {
-        "uz": "stakan, piyola",
-        "ru": "стакан, чашка",
-        "tj": "пиёла, стакан"
-      },
-      "no": 6
-    },
-    {
-      "zh": "要",
-      "pinyin": "yào",
+      "no": 7,
+      "zh": "回",
+      "pinyin": "huí",
       "pos": "v.",
       "meaning": {
-        "uz": "xohlamoq, olmoq",
-        "ru": "хотеть, брать",
-        "tj": "хостан, гирифтан"
-      },
-      "no": 7
+        "uz": "qaytmoq, orqaga kelmoq",
+        "ru": "возвращаться",
+        "tj": "баргаштан, бозгашт"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "我们",
+      "pinyin": "wǒmen",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "biz",
+        "ru": "мы",
+        "tj": "мо"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "电影",
+      "pinyin": "diànyǐng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kino, film",
+        "ru": "кино, фильм",
+        "tj": "кино, филм"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "住",
+      "pinyin": "zhù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yashash, turar joy",
+        "ru": "жить, проживать",
+        "tj": "зиндагӣ кардан, истиқомат кардан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "前",
+      "pinyin": "qián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oldin, avval",
+        "ru": "до, перед",
+        "tj": "пеш аз, қабл аз"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "北京",
+      "pinyin": "Běijīng",
+      "pos": "pn.",
+      "meaning": {
+        "uz": "Pekin",
+        "ru": "Пекин",
+        "tj": "Пекин"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Vaqtni ifodalash",
+        "ru": "Выражение времени",
+        "tj": "Баёни вақт"
       },
-      "title_zh": "主题词语",
+      "title_zh": "时间的表达",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 你喝什么. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你喝什么”。",
-        "ru": "Ключевая фраза урока: 你喝什么. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你喝什么”。",
-        "tj": "Ибораи асосии дарс: 你喝什么. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你喝什么”。"
+        "uz": "Soat: 点(diǎn)\nDaqiqa: 分(fēn)\nTuzilish: N点 yoki N点M分\n\n9:00 → 九点\n10:10 → 十点十分\n5:30 → 五点三十分\n2:05 → 两点零五分\n\nKun qismlari:\n上午 shàngwǔ — ertalab (AM)\n中午 zhōngwǔ — tush\n下午 xiàwǔ — tushdan keyin (PM)\n\nEslatma: 2:00 → 两点 (liǎng diǎn), 二点 emas!",
+        "ru": "Час: 点(diǎn)\nМинута: 分(fēn)\nСтруктура: N点 или N点M分\n\n9:00 → 九点\n10:10 → 十点十分\n5:30 → 五点三十分\n2:05 → 两点零五分\n\nЧасти суток:\n上午 shàngwǔ — утро (AM)\n中午 zhōngwǔ — полдень\n下午 xiàwǔ — послеполудень (PM)\n\nВнимание: 2:00 → 两点 (liǎng diǎn), не 二点!",
+        "tj": "Соат: 点(diǎn)\nДақиқа: 分(fēn)\nСохтор: N点 ё N点M分\n\n9:00 → 九点\n10:10 → 十点十分\n5:30 → 五点三十分\n2:05 → 两点零五分\n\nҚисмҳои шабонарӯз:\n上午 shàngwǔ — субҳ (AM)\n中午 zhōngwǔ — нисфирӯзӣ\n下午 xiàwǔ — баъдазнисфирӯзӣ (PM)\n\nЭзоҳ: 2:00 → 两点 (liǎng diǎn), на 二点!"
       },
       "examples": [
         {
-          "zh": "今天我们学习“你喝什么”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ hē shénme.",
+          "zh": "现在九点。",
+          "pinyin": "Xiànzài jiǔ diǎn.",
           "translation": {
-            "uz": "Biz Ichimliklar va buyurtma mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Напитки и заказ.",
-            "tj": "Мо мавзӯи Нӯшокиҳо ва фармоиш-ро меомӯзем."
+            "uz": "Hozir soat to'qqiz.",
+            "ru": "Сейчас девять часов.",
+            "tj": "Ҳоло соат нӯҳ аст."
           }
         },
         {
-          "zh": "这个词是喝。",
-          "pinyin": "Zhège cí shì hē.",
+          "zh": "下午三点十分。",
+          "pinyin": "Xiàwǔ sān diǎn shí fēn.",
           "translation": {
-            "uz": "Bu so'z: ichmoq.",
-            "ru": "Это слово: пить.",
-            "tj": "Ин калима: нӯшидан."
+            "uz": "Tushdan keyin soat uch o'nda.",
+            "ru": "Десять минут четвёртого дня.",
+            "tj": "Баъдазнисфирӯзӣ соати се ва даҳ дақиқа."
+          }
+        },
+        {
+          "zh": "上午两点半。",
+          "pinyin": "Shàngwǔ liǎng diǎn bàn.",
+          "translation": {
+            "uz": "Ertalab soat ikki yarim.",
+            "ru": "Половина третьего утра.",
+            "tj": "Субҳ соати ду ва ним."
           }
         }
       ]
@@ -125,33 +189,85 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Vaqt ravishi",
+        "ru": "Временное наречие",
+        "tj": "Зарфи вақт"
       },
-      "title_zh": "问答结构",
+      "title_zh": "时间词做状语",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "Vaqt so'zi gapda ravish vazifasini bajarishi mumkin.\nU odatda egadan keyin yoki egadan oldin keladi.\n\n1-tuzilish: Ega + Vaqt + Fe'l\n妈妈六点做饭。— Onam soat oltida ovqat pishiradi.\n\n2-tuzilish: Vaqt + Ega + Fe'l\n中午十二点我们吃饭。— Biz tushda soat o'n ikkida ovqatlanamiz.\n\nSavol: 什么时候 — qachon?",
+        "ru": "Слово времени может служить наречием в предложении.\nОбычно стоит после подлежащего или перед ним.\n\nСтруктура 1: Подлежащее + Время + Глагол\n妈妈六点做饭。— Мама готовит в шесть.\n\nСтруктура 2: Время + Подлежащее + Глагол\n中午十二点我们吃饭。— В полдень в двенадцать мы обедаем.\n\nВопрос: 什么时候 — когда?",
+        "tj": "Калимаи вақт дар ҷумла метавонад зарф бошад.\nОдатан баъд аз мубтадо ё пеш аз он меояд.\n\nСохтори 1: Муб. + Вақт + Феъл\n妈妈六点做饭。— Модар соати шаш хӯрок мепазад.\n\nСохтори 2: Вақт + Муб. + Феъл\n中午十二点我们吃饭。— Мо нисфирӯзӣ соати дувоздаҳ хӯрок мехӯрем.\n\nСавол: 什么时候 — кай?"
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "他们六点吃饭。",
+          "pinyin": "Tāmen liù diǎn chī fàn.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Ular soat oltida ovqatlanadi.",
+            "ru": "Они едят в шесть часов.",
+            "tj": "Онҳо соати шаш хӯрок мехӯранд."
           }
         },
         {
-          "zh": "喝。",
-          "pinyin": "hē.",
+          "zh": "我星期一去北京。",
+          "pinyin": "Wǒ xīngqī yī qù Běijīng.",
           "translation": {
-            "uz": "喝 — hē deb o'qiladi.",
-            "ru": "喝 читается как hē.",
-            "tj": "喝 ҳамчун hē хонда мешавад."
+            "uz": "Men dushanba kuni Pekinga boraman.",
+            "ru": "Я еду в Пекин в понедельник.",
+            "tj": "Ман рӯзи душанбе ба Пекин меравам."
+          }
+        },
+        {
+          "zh": "你什么时候回家？",
+          "pinyin": "Nǐ shénme shíhou huí jiā?",
+          "translation": {
+            "uz": "Qachon uyga qaytasiz?",
+            "ru": "Когда вы идёте домой?",
+            "tj": "Шумо кай ба хона бармегардед?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "前 vaqt belgisi",
+        "ru": "前 — временной маркер",
+        "tj": "前 — нишонаи вақт"
+      },
+      "title_zh": "名词 前",
+      "rule": {
+        "uz": "前(qián) — muayyan voqeadan oldingi vaqtni bildiradi.\n\n三天前 — uch kun oldin\n一个星期前 — bir hafta oldin\n四点前 — soat to'rtdan oldin\n星期五前 — juma kunidan oldin\n\nMisol:\n星期五前能回家吗？— Juma kunidan oldin uyga qayta olasizmi?\n八点前去学校。— Soat sakkizdan oldin maktabga boring.",
+        "ru": "前(qián) — указывает на момент времени до определённого события.\n\n三天前 — три дня назад\n一个星期前 — одну неделю назад\n四点前 — до четырёх часов\n星期五前 — до пятницы\n\nПример:\n星期五前能回家吗？— Вы сможете вернуться домой до пятницы?\n八点前去学校。— Идите в школу до восьми.",
+        "tj": "前(qián) — лаҳзаи вақтро пеш аз рӯйдоди муайян нишон медиҳад.\n\n三天前 — се рӯз пеш\n一个星期前 — як ҳафта пеш\n四点前 — пеш аз соати чор\n星期五前 — пеш аз ҷумъа\n\nНамуна:\n星期五前能回家吗？— Шумо метавонед пеш аз ҷумъа ба хона баргардед?\n八点前去学校。— Пеш аз соати ҳашт ба мактаб равед."
+      },
+      "examples": [
+        {
+          "zh": "星期五前能回家吗？",
+          "pinyin": "Xīngqī wǔ qián néng huí jiā ma?",
+          "translation": {
+            "uz": "Juma kunidan oldin uyga qayta olasizmi?",
+            "ru": "Сможете вернуться домой до пятницы?",
+            "tj": "Метавонед пеш аз ҷумъа ба хона баргардед?"
+          }
+        },
+        {
+          "zh": "三天前我在北京。",
+          "pinyin": "Sān tiān qián wǒ zài Běijīng.",
+          "translation": {
+            "uz": "Uch kun oldin men Pekinda edim.",
+            "ru": "Три дня назад я был в Пекине.",
+            "tj": "Се рӯз пеш ман дар Пекин будам."
+          }
+        },
+        {
+          "zh": "八点前来。",
+          "pinyin": "Bā diǎn qián lái.",
+          "translation": {
+            "uz": "Soat sakkizdan oldin keling.",
+            "ru": "Приходите до восьми.",
+            "tj": "Пеш аз соати ҳашт биёед."
           }
         }
       ]
@@ -160,49 +276,157 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Ichimliklar va buyurtma",
-        "ru": "Напитки и заказ",
-        "tj": "Нӯшокиҳо ва фармоиш"
+        "uz": "Kutubxonada — soat so'rash",
+        "ru": "В библиотеке — спрашивают время",
+        "tj": "Дар китобхона — пурсидани вақт"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“你喝什么”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ hē shénme.",
+          "zh": "现在几点？",
+          "pinyin": "Xiànzài jǐ diǎn?",
           "text": {
-            "uz": "Bugun Ichimliklar va buyurtma mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Напитки и заказ.",
-            "tj": "Имрӯз мавзӯи Нӯшокиҳо ва фармоиш-ро меомӯзем."
+            "uz": "Hozir soat necha?",
+            "ru": "Сколько сейчас времени?",
+            "tj": "Ҳоло соат чанд аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "现在十点十分。",
+          "pinyin": "Xiànzài shí diǎn shí fēn.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Hozir soat o'nda o'n daqiqa.",
+            "ru": "Сейчас десять минут одиннадцатого.",
+            "tj": "Ҳоло соат даҳ ва даҳ дақиқа аст."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "中午几点吃饭？",
+          "pinyin": "Zhōngwǔ jǐ diǎn chī fàn?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Tushda soat nechada ovqatlanasiz?",
+            "ru": "В котором часу вы обедаете?",
+            "tj": "Нисфирӯзӣ соат чанд хӯрок мехӯред?"
           }
         },
         {
           "speaker": "B",
-          "zh": "喝。",
-          "pinyin": "hē.",
+          "zh": "十二点吃饭。",
+          "pinyin": "Shí'èr diǎn chī fàn.",
           "text": {
-            "uz": "喝 — hē deb o'qiladi.",
-            "ru": "喝 читается как hē.",
-            "tj": "喝 ҳамчун hē хонда мешавад."
+            "uz": "Soat o'n ikkida ovqatlanamiz.",
+            "ru": "Мы обедаем в двенадцать.",
+            "tj": "Мо соат дувоздаҳ хӯрок мехӯрем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda — otani kutish",
+        "ru": "Дома — ждут папу",
+        "tj": "Дар хона — интизори падар"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "爸爸什么时候回家？",
+          "pinyin": "Bàba shénme shíhou huí jiā?",
+          "text": {
+            "uz": "Dada qachon uyga qaytadi?",
+            "ru": "Когда папа придёт домой?",
+            "tj": "Падар кай ба хона бармегардад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "下午五点。",
+          "pinyin": "Xiàwǔ wǔ diǎn.",
+          "text": {
+            "uz": "Tushdan keyin soat beshda.",
+            "ru": "В пять часов вечера.",
+            "tj": "Соати панҷи баъдазнисфирӯзӣ."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我们什么时候去看电影？",
+          "pinyin": "Wǒmen shénme shíhou qù kàn diànyǐng?",
+          "text": {
+            "uz": "Biz qachon kinoga boramiz?",
+            "ru": "Когда мы идём в кино?",
+            "tj": "Мо кай ба кино меравем?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "六点三十分。",
+          "pinyin": "Liù diǎn sānshí fēn.",
+          "text": {
+            "uz": "Soat olti yarimda.",
+            "ru": "В половине седьмого.",
+            "tj": "Соати шаш ва си дақиқа."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda — Pekin safari rejasi",
+        "ru": "Дома — план поездки в Пекин",
+        "tj": "Дар хона — нақшаи сафар ба Пекин"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "我星期一去北京。",
+          "pinyin": "Wǒ xīngqī yī qù Běijīng.",
+          "text": {
+            "uz": "Men dushanba kuni Pekinga boraman.",
+            "ru": "Я еду в Пекин в понедельник.",
+            "tj": "Ман рӯзи душанбе ба Пекин меравам."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "你想在北京住几天？",
+          "pinyin": "Nǐ xiǎng zài Běijīng zhù jǐ tiān?",
+          "text": {
+            "uz": "Pekinda necha kun qolmoqchisiz?",
+            "ru": "Сколько дней вы планируете пробыть в Пекине?",
+            "tj": "Шумо мехоҳед чанд рӯз дар Пекин бимонед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "住三天。",
+          "pinyin": "Zhù sān tiān.",
+          "text": {
+            "uz": "Uch kun.",
+            "ru": "Три дня.",
+            "tj": "Се рӯз."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "星期五前能回家吗？",
+          "pinyin": "Xīngqī wǔ qián néng huí jiā ma?",
+          "text": {
+            "uz": "Juma kunidan oldin uyga qayta olasizmi?",
+            "ru": "Вы сможете вернуться домой до пятницы?",
+            "tj": "Шумо метавонед пеш аз ҷумъа ба хона баргардед?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "能。",
+          "pinyin": "Néng.",
+          "text": {
+            "uz": "Ha, qila olaman.",
+            "ru": "Да, смогу.",
+            "tj": "Ҳа, метавонам."
           }
         }
       ]
@@ -221,91 +445,168 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "喝",
-            "pinyin": "hē",
+            "no": 1,
+            "zh": "现在",
+            "pinyin": "xiànzài",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "点",
+            "pinyin": "diǎn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "soat (soat uchun o'lchov so'zi)",
+              "ru": "час (счётное слово для часов)",
+              "tj": "соат (вақт)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "分",
+            "pinyin": "fēn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "中午",
+            "pinyin": "zhōngwǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tush, yarim kun",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ, нимрӯз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "吃饭",
+            "pinyin": "chī fàn",
             "pos": "v.",
             "meaning": {
-              "uz": "ichmoq",
-              "ru": "пить",
-              "tj": "нӯшидан"
+              "uz": "ovqat yemoq, ovqatlanmoq",
+              "ru": "есть, обедать",
+              "tj": "хӯрдан, хӯрок хӯрдан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "水",
-            "pinyin": "shuǐ",
+            "no": 6,
+            "zh": "时候",
+            "pinyin": "shíhou",
             "pos": "n.",
             "meaning": {
-              "uz": "suv",
-              "ru": "вода",
-              "tj": "об"
+              "uz": "vaqt, lahza",
+              "ru": "время, момент",
+              "tj": "вақт, лаҳза"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "茶",
-            "pinyin": "chá",
-            "pos": "n.",
-            "meaning": {
-              "uz": "choy",
-              "ru": "чай",
-              "tj": "чой"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "咖啡",
-            "pinyin": "kāfēi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "qahva",
-              "ru": "кофе",
-              "tj": "қаҳва"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "牛奶",
-            "pinyin": "niúnǎi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "sut",
-              "ru": "молоко",
-              "tj": "шир"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "杯",
-            "pinyin": "bēi",
-            "pos": "mw.",
-            "meaning": {
-              "uz": "stakan, piyola",
-              "ru": "стакан, чашка",
-              "tj": "пиёла, стакан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "要",
-            "pinyin": "yào",
+            "no": 7,
+            "zh": "回",
+            "pinyin": "huí",
             "pos": "v.",
             "meaning": {
-              "uz": "xohlamoq, olmoq",
-              "ru": "хотеть, брать",
-              "tj": "хостан, гирифтан"
+              "uz": "qaytmoq, orqaga kelmoq",
+              "ru": "возвращаться",
+              "tj": "баргаштан, бозгашт"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "我们",
+            "pinyin": "wǒmen",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "biz",
+              "ru": "мы",
+              "tj": "мо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "电影",
+            "pinyin": "diànyǐng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kino, film",
+              "ru": "кино, фильм",
+              "tj": "кино, филм"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "住",
+            "pinyin": "zhù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yashash, turar joy",
+              "ru": "жить, проживать",
+              "tj": "зиндагӣ кардан, истиқомат кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "前",
+            "pinyin": "qián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oldin, avval",
+              "ru": "до, перед",
+              "tj": "пеш аз, қабл аз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "北京",
+            "pinyin": "Běijīng",
+            "pos": "pn.",
+            "meaning": {
+              "uz": "Pekin",
+              "ru": "Пекин",
+              "tj": "Пекин"
             }
           }
         }
@@ -323,9 +624,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "喝 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 喝:",
-            "tj": "Маънои калимаи 喝-ро интихоб кунед:"
+            "uz": "现在 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 现在:",
+            "tj": "Маънои калимаи 现在-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +635,39 @@
           },
           "options": [
             {
-              "uz": "ichmoq",
-              "ru": "пить",
-              "tj": "нӯшидан"
+              "uz": "hozir, shu vaqtda",
+              "ru": "сейчас, в данный момент",
+              "tj": "ҳоло, дар ин лаҳза"
             },
             {
-              "uz": "suv",
-              "ru": "вода",
-              "tj": "об"
+              "uz": "daqiqa",
+              "ru": "минута",
+              "tj": "дақиқа"
             },
             {
-              "uz": "choy",
-              "ru": "чай",
-              "tj": "чой"
+              "uz": "tush, yarim kun",
+              "ru": "полдень",
+              "tj": "нисфирӯзӣ, нимрӯз"
             },
             {
-              "uz": "qahva",
-              "ru": "кофе",
-              "tj": "қаҳва"
+              "uz": "soat (soat uchun o'lchov so'zi)",
+              "ru": "час (счётное слово для часов)",
+              "tj": "соат (вақт)"
             }
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "喝 = ichmoq (hē)",
-            "ru": "喝 = пить (hē)",
-            "tj": "喝 = нӯшидан (hē)"
+            "uz": "现在 = hozir, shu vaqtda (xiànzài)",
+            "ru": "现在 = сейчас, в данный момент (xiànzài)",
+            "tj": "现在 = ҳоло, дар ин лаҳза (xiànzài)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "喝 talaffuzini tanlang:",
-            "ru": "Выберите произношение 喝:",
-            "tj": "Талаффузи 喝-ро интихоб кунед:"
+            "uz": "点 talaffuzini tanlang:",
+            "ru": "Выберите произношение 点:",
+            "tj": "Талаффузи 点-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +675,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "hē",
-            "shuǐ",
-            "chá",
-            "kāfēi"
+            "xiànzài",
+            "diǎn",
+            "fēn",
+            "zhōngwǔ"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "喝 — hē",
-            "ru": "喝 — hē",
-            "tj": "喝 — hē"
+            "uz": "点 — diǎn",
+            "ru": "点 — diǎn",
+            "tj": "点 — diǎn"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'ichmoq' xitoycha nima?",
-            "ru": "'пить' по-китайски?",
-            "tj": "'нӯшидан' ба чинӣ чист?"
+            "uz": "'daqiqa' xitoycha qaysi?",
+            "ru": "'минута' по-китайски?",
+            "tj": "'дақиқа' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "喝",
-            "水",
-            "茶",
-            "咖啡"
+            "分",
+            "点",
+            "现在",
+            "中午"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "喝 = ichmoq (hē)",
-            "ru": "喝 = пить (hē)",
-            "tj": "喝 = нӯшидан (hē)"
+            "uz": "daqiqa = 分 (fēn)",
+            "ru": "минута = 分 (fēn)",
+            "tj": "дақиқа = 分 (fēn)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "shuǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shuǐ?",
-            "tj": "shuǐ кадом иероглиф аст?"
+            "uz": "zhōngwǔ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhōngwǔ?",
+            "tj": "zhōngwǔ кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,95 +725,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "水",
-            "喝",
-            "茶",
-            "咖啡"
+            "中午",
+            "点",
+            "分",
+            "现在"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "水 = suv (shuǐ)",
-            "ru": "水 = вода (shuǐ)",
-            "tj": "水 = об (shuǐ)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'你喝什么' iborasini tuzing",
-            "ru": "Соберите фразу '你喝什么'",
-            "tj": "Ибораи '你喝什么'-ро созед"
-          },
-          "tokens": [
-            "你",
-            "喝",
-            "什",
-            "么",
-            "水",
-            "茶"
-          ],
-          "answer_tokens": [
-            "你",
-            "喝",
-            "什",
-            "么"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 你 喝 什 么",
-            "ru": "Правильный порядок: 你 喝 什 么",
-            "tj": "Тартиби дуруст: 你 喝 什 么"
+            "uz": "中午 = tush, yarim kun (zhōngwǔ)",
+            "ru": "中午 = полдень (zhōngwǔ)",
+            "tj": "中午 = нисфирӯзӣ, нимрӯз (zhōngwǔ)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "喝",
+              "现在",
               {
-                "uz": "ichmoq",
-                "ru": "пить",
-                "tj": "нӯшидан"
+                "uz": "hozir, shu vaqtda",
+                "ru": "сейчас, в данный момент",
+                "tj": "ҳоло, дар ин лаҳза"
               }
             ],
             [
-              "水",
+              "点",
               {
-                "uz": "suv",
-                "ru": "вода",
-                "tj": "об"
+                "uz": "soat (soat uchun o'lchov so'zi)",
+                "ru": "час (счётное слово для часов)",
+                "tj": "соат (вақт)"
               }
             ],
             [
-              "茶",
+              "分",
               {
-                "uz": "choy",
-                "ru": "чай",
-                "tj": "чой"
+                "uz": "daqiqa",
+                "ru": "минута",
+                "tj": "дақиқа"
               }
             ],
             [
-              "咖啡",
+              "中午",
               {
-                "uz": "qahva",
-                "ru": "кофе",
-                "tj": "қаҳва"
+                "uz": "tush, yarim kun",
+                "ru": "полдень",
+                "tj": "нисфирӯзӣ, нимрӯз"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____九点。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "点",
+            "现在",
+            "分",
+            "中午"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 现在 (xiànzài) — hozir, shu vaqtda",
+            "ru": "Верно: 现在 (xiànzài) — сейчас, в данный момент",
+            "tj": "Дуруст: 现在 (xiànzài) — ҳоло, дар ин лаҳза"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "你喝什么",
-          "pinyin": "nǐ hē shénme",
+          "phrase": "现在",
+          "pinyin": "xiànzài",
           "translation": {
-            "uz": "Ichimliklar va buyurtma",
-            "ru": "Напитки и заказ",
-            "tj": "Нӯшокиҳо ва фармоиш"
+            "uz": "hozir, shu vaqtda",
+            "ru": "сейчас, в данный момент",
+            "tj": "ҳоло, дар ин лаҳза"
           }
         }
       ]
@@ -529,9 +824,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -539,41 +834,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
+            "现在十点十分。",
             "现在几点？",
-            "你去哪儿？"
+            "中午几点吃饭？",
+            "十二点吃饭。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 现在几点？",
+            "ru": "Правильный ответ: 现在几点？",
+            "tj": "Ҷавоби дуруст: 现在几点？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "喝。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "中午几点吃饭？",
+            "现在几点？",
+            "现在十点十分。",
+            "十二点吃饭。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 喝。",
-            "ru": "Ответ B: 喝。",
-            "tj": "Ҷавоби B: 喝。"
+            "uz": "To'g'ri javob: 十二点吃饭。",
+            "ru": "Правильный ответ: 十二点吃饭。",
+            "tj": "Ҷавоби дуруст: 十二点吃饭。"
           }
         }
       ]

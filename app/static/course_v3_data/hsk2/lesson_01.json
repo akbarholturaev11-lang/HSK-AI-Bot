@@ -2,122 +2,188 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 1,
-  "title": "你去哪儿",
+  "title": "九月去北京旅游最好",
   "subtitle": {
-    "uz": "Mavzu: Transport va yo'nalish. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Транспорт и направление. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Нақлиёт ва самт. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Sayohat, sport va kundalik hayot mavzularida suhbat qurish; 要, 最 va taxminiy sonlarni ishlatishni o'rganish.",
+    "ru": "Научиться вести беседу о путешествиях, спорте и повседневной жизни; освоить вспомогательный глагол 要, наречие степени 最 и приблизительные числа.",
+    "tj": "Гуфтугӯ дар мавзӯи сафар, варзиш ва ҳаёти рӯзмарра; омӯхтани феъли ёрдамии 要, зарфи дараҷаи 最 ва рақамҳои тахминӣ."
   },
   "active_words": [
     {
-      "zh": "去",
-      "pinyin": "qù",
+      "no": 1,
+      "zh": "旅游",
+      "pinyin": "lǚyóu",
       "pos": "v.",
       "meaning": {
-        "uz": "bormoq",
-        "ru": "идти, ехать",
-        "tj": "рафтан"
-      },
-      "no": 1
+        "uz": "sayohat qilmoq",
+        "ru": "путешествовать",
+        "tj": "сафар кардан"
+      }
     },
     {
-      "zh": "车站",
-      "pinyin": "chēzhàn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "bekat, vokzal",
-        "ru": "станция, вокзал",
-        "tj": "истгоҳ"
-      },
-      "no": 2
-    },
-    {
-      "zh": "坐",
-      "pinyin": "zuò",
+      "no": 2,
+      "zh": "觉得",
+      "pinyin": "juéde",
       "pos": "v.",
       "meaning": {
-        "uz": "minmoq, o‘tirmoq",
-        "ru": "сидеть, ехать на транспорте",
-        "tj": "нишастан, савор шудан"
-      },
-      "no": 3
+        "uz": "deb o'ylash, his qilish",
+        "ru": "думать, считать, чувствовать",
+        "tj": "фикр кардан, ҳис кардан"
+      }
     },
     {
-      "zh": "公共汽车",
-      "pinyin": "gōnggòng qìchē",
-      "pos": "n.",
+      "no": 3,
+      "zh": "最",
+      "pinyin": "zuì",
+      "pos": "adv.",
       "meaning": {
-        "uz": "avtobus",
-        "ru": "автобус",
-        "tj": "автобус"
-      },
-      "no": 4
+        "uz": "eng, juda",
+        "ru": "самый, наиболее",
+        "tj": "аз ҳама, бештар"
+      }
     },
     {
-      "zh": "地铁",
-      "pinyin": "dìtiě",
-      "pos": "n.",
+      "no": 4,
+      "zh": "为什么",
+      "pinyin": "wèi shénme",
+      "pos": "conj./adv.",
       "meaning": {
-        "uz": "metro",
-        "ru": "метро",
-        "tj": "метро"
-      },
-      "no": 5
+        "uz": "nega, nima uchun",
+        "ru": "почему, зачем",
+        "tj": "чаро, барои чӣ"
+      }
     },
     {
-      "zh": "出租车",
-      "pinyin": "chūzūchē",
-      "pos": "n.",
+      "no": 5,
+      "zh": "也",
+      "pinyin": "yě",
+      "pos": "adv.",
       "meaning": {
-        "uz": "taksi",
-        "ru": "такси",
-        "tj": "таксӣ"
-      },
-      "no": 6
+        "uz": "ham",
+        "ru": "тоже, также",
+        "tj": "ҳам"
+      }
     },
     {
-      "zh": "机场",
-      "pinyin": "jīchǎng",
+      "no": 6,
+      "zh": "运动",
+      "pinyin": "yùndòng",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "sport; sport qilmoq",
+        "ru": "спорт; заниматься спортом",
+        "tj": "варзиш; варзиш кардан"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "踢足球",
+      "pinyin": "tī zúqiú",
+      "pos": "v.",
+      "meaning": {
+        "uz": "futbol o'ynamoq",
+        "ru": "играть в футбол",
+        "tj": "футбол бозӣ кардан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "一起",
+      "pinyin": "yìqǐ",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "birga, birgalikda",
+        "ru": "вместе",
+        "tj": "якҷо, бо ҳам"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "要",
+      "pinyin": "yào",
+      "pos": "aux.",
+      "meaning": {
+        "uz": "kerak, xohlamoq, bormoqchi",
+        "ru": "нужно, хотеть, собираться",
+        "tj": "лозим, хостан, қасд доштан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "新",
+      "pinyin": "xīn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "yangi",
+        "ru": "новый",
+        "tj": "нав"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "它",
+      "pinyin": "tā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u (hayvon yoki narsa haqida)",
+        "ru": "оно, он/она (о животных и предметах)",
+        "tj": "он/он (дар бораи ҳайвон ё чиз)"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "眼睛",
+      "pinyin": "yǎnjing",
       "pos": "n.",
       "meaning": {
-        "uz": "aeroport",
-        "ru": "аэропорт",
-        "tj": "фурудгоҳ"
-      },
-      "no": 7
+        "uz": "ko'z",
+        "ru": "глаза",
+        "tj": "чашм"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "花花",
+      "pinyin": "Huāhua",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Huahua (mushuk ismi)",
+        "ru": "Хуахуа (кличка кошки)",
+        "tj": "Хуахуа (номи гурба)"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Yordamchi fe'l: 要",
+        "ru": "Вспомогательный глагол: 要",
+        "tj": "Феъли ёрдамӣ: 要"
       },
-      "title_zh": "主题词语",
+      "title_zh": "助动词：要",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 你去哪儿. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你去哪儿”。",
-        "ru": "Ключевая фраза урока: 你去哪儿. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你去哪儿”。",
-        "tj": "Ибораи асосии дарс: 你去哪儿. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你去哪儿”。"
+        "uz": "'要' (yào) - istak yoki zaruriyatni bildiruvchi yordamchi fe'l. Fe'ldan oldin kelib, 'xohlamoq / bormoqchi / kerak' ma'nolarini beradi. Inkor shakli: 不要 (buyruq) yoki 不想 (istamaslik).",
+        "ru": "'要' (yào) — вспомогательный глагол, выражающий желание или необходимость. Ставится перед основным глаголом, означает «хотеть / собираться / нужно». Отрицание: 不要 (запрет) или 不想 (нежелание).",
+        "tj": "'要' (yào) — феъли ёрдамии ифодакунандаи хоҳиш ё зарурат. Пеш аз феъли асосӣ меояд ва маънои 'хостан / қасд доштан / лозим' дорад. Шакли инкорӣ: 不要 (манъ) ё 不想 (нахостан)."
       },
       "examples": [
         {
-          "zh": "今天我们学习“你去哪儿”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ qù nǎr.",
+          "zh": "我要去北京旅游。",
+          "pinyin": "Wǒ yào qù Běijīng lǚyóu.",
           "translation": {
-            "uz": "Biz Transport va yo'nalish mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Транспорт и направление.",
-            "tj": "Мо мавзӯи Нақлиёт ва самт-ро меомӯзем."
+            "uz": "Men Pekinga sayohat qilmoqchiman.",
+            "ru": "Я собираюсь поехать в Пекин.",
+            "tj": "Ман мехоҳам ба Пекин сафар кунам."
           }
         },
         {
-          "zh": "这个词是去。",
-          "pinyin": "Zhège cí shì qù.",
+          "zh": "我们要不要买新椅子？",
+          "pinyin": "Wǒmen yào bú yào mǎi xīn yǐzi?",
           "translation": {
-            "uz": "Bu so'z: bormoq.",
-            "ru": "Это слово: идти, ехать.",
-            "tj": "Ин калима: рафтан."
+            "uz": "Yangi stul sotib olishimiz kerakmi?",
+            "ru": "Нам купить новые стулья?",
+            "tj": "Мо бояд курсии нав харем?"
           }
         }
       ]
@@ -125,33 +191,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Daraja ravishi: 最",
+        "ru": "Наречие степени: 最",
+        "tj": "Зарфи дараҷа: 最"
       },
-      "title_zh": "问答结构",
+      "title_zh": "程度副词：最",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'最' (zuì) - 'eng' ma'nosini beruvchi daraja ravishi. Sifat yoki fe'ldan oldin kelib, eng yuqori darajani bildiradi.",
+        "ru": "'最' (zuì) — наречие степени, означающее «самый, наиболее». Ставится перед прилагательным или глаголом и обозначает наивысшую степень.",
+        "tj": "'最' (zuì) — зарфи дараҷа бо маънои 'аз ҳама, бештар'. Пеш аз сифат ё феъл меояд ва дараҷаи аълоро ифода мекунад."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "九月去北京旅游最好。",
+          "pinyin": "Jiǔ yuè qù Běijīng lǚyóu zuì hǎo.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Pekinga sent'abrda borish eng yaxshi.",
+            "ru": "Лучше всего ехать в Пекин в сентябре.",
+            "tj": "Дар моҳи сентябр сафар ба Пекин аз ҳама беҳтар аст."
           }
         },
         {
-          "zh": "去。",
-          "pinyin": "qù.",
+          "zh": "我最喜欢踢足球。",
+          "pinyin": "Wǒ zuì xǐhuan tī zúqiú.",
           "translation": {
-            "uz": "去 — qù deb o'qiladi.",
-            "ru": "去 читается как qù.",
-            "tj": "去 ҳамчун qù хонда мешавад."
+            "uz": "Men eng ko'p futbol o'ynashni yaxshi ko'raman.",
+            "ru": "Больше всего я люблю играть в футбол.",
+            "tj": "Ман аз ҳама бештар футбол бозӣ кардан ро дӯст медорам."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Taxminiy sonlar: 几、多",
+        "ru": "Приблизительные числа: 几、多",
+        "tj": "Рақамҳои тахминӣ: 几、多"
+      },
+      "title_zh": "概数的表达：几、多",
+      "rule": {
+        "uz": "Taxminiy sonni ifodalash usullari:\n• 几 (jǐ) — 'bir nechta' (odatda 10 gacha), noaniq miqdor.\n• 多 (duō) — son + ölçü + 多 shaklida 'dan ko'proq, ziyod' ma'nosini beradi.",
+        "ru": "Способы выражения приблизительного числа:\n• 几 (jǐ) — «несколько» (обычно до 10), неопределённое количество.\n• 多 (duō) — после числа + счётного слова означает «с лишним, больше».",
+        "tj": "Усулҳои ифодаи рақамҳои тахминӣ:\n• 几 (jǐ) — 'чанд' (одатан то 10), миқдори номуайян.\n• 多 (duō) — баъд аз рақам + воҳид маънои 'зиёда аз, бештар' дорад."
+      },
+      "examples": [
+        {
+          "zh": "这里有几个杯子。",
+          "pinyin": "Zhèlǐ yǒu jǐ ge bēizi.",
+          "translation": {
+            "uz": "Bu yerda bir nechta qadah bor.",
+            "ru": "Здесь есть несколько стаканов.",
+            "tj": "Инҷо чанд косача вуҷуд дорад."
+          }
+        },
+        {
+          "zh": "它六个多月了。",
+          "pinyin": "Tā liù ge duō yuè le.",
+          "translation": {
+            "uz": "U olti oydan ziyod bo'ldi.",
+            "ru": "Ей уже больше шести месяцев.",
+            "tj": "Вай зиёда аз шаш моҳ шудааст."
           }
         }
       ]
@@ -160,49 +260,226 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Transport va yo'nalish",
-        "ru": "Транспорт и направление",
-        "tj": "Нақлиёт ва самт"
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“你去哪儿”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ qù nǎr.",
+          "zh": "我想去北京旅游，你觉得什么时候去最好？",
+          "pinyin": "Wǒ xiǎng qù Běijīng lǚyóu, nǐ juéde shénme shíhou qù zuì hǎo?",
           "text": {
-            "uz": "Bugun Transport va yo'nalish mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Транспорт и направление.",
-            "tj": "Имрӯз мавзӯи Нақлиёт ва самт-ро меомӯзем."
+            "uz": "Men Pekinga sayohat qilmoqchiman, sen qachon borish eng yaxshi deb o'ylaysan?",
+            "ru": "Я хочу поехать в Пекин, как ты думаешь, когда лучше всего ехать?",
+            "tj": "Ман мехоҳам ба Пекин сафар кунам, ба назари ту кай рафтан беҳтар аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "九月去北京旅游最好。",
+          "pinyin": "Jiǔ yuè qù Běijīng lǚyóu zuì hǎo.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Sent'abrda Pekinga sayohat qilish eng yaxshi.",
+            "ru": "Лучше всего ехать в Пекин в сентябре.",
+            "tj": "Дар моҳи сентябр сафар ба Пекин аз ҳама беҳтар аст."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "为什么？",
+          "pinyin": "Wèi shénme?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Nega?",
+            "ru": "Почему?",
+            "tj": "Чаро?"
           }
         },
         {
           "speaker": "B",
-          "zh": "去。",
-          "pinyin": "qù.",
+          "zh": "九月的北京天气不冷也不热。",
+          "pinyin": "Jiǔ yuè de Běijīng tiānqì bù lěng yě bú rè.",
           "text": {
-            "uz": "去 — qù deb o'qiladi.",
-            "ru": "去 читается как qù.",
-            "tj": "去 ҳамчун qù хонда мешавад."
+            "uz": "Sent'abrda Pekingning ob-havosi sovuq ham emas, issiq ham emas.",
+            "ru": "В сентябре в Пекине погода ни холодная, ни жаркая.",
+            "tj": "Дар моҳи сентябр ҳавои Пекин на сард аст ва на гарм."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Suratlarni ko'rib",
+        "ru": "Рассматривая фотографии",
+        "tj": "Дар хонандани аксҳо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你喜欢什么运动？",
+          "pinyin": "Nǐ xǐhuan shénme yùndòng?",
+          "text": {
+            "uz": "Sen qanday sportni yaxshi ko'rasan?",
+            "ru": "Какой спорт ты любишь?",
+            "tj": "Ту кадом варзишро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我最喜欢踢足球。",
+          "pinyin": "Wǒ zuì xǐhuan tī zúqiú.",
+          "text": {
+            "uz": "Men futbol o'ynashni eng ko'p yaxshi ko'raman.",
+            "ru": "Больше всего я люблю играть в футбол.",
+            "tj": "Ман аз ҳама бештар футбол бозӣ кардан ро дӯст медорам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "下午我们一起去踢足球吧。",
+          "pinyin": "Xiàwǔ wǒmen yìqǐ qù tī zúqiú ba.",
+          "text": {
+            "uz": "Tushdan keyin birga futbol o'ynamizmi?",
+            "ru": "Давай после обеда вместе поиграем в футбол.",
+            "tj": "Баъд аз нисфирӯзӣ биёед якҷо футбол бозем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好啊！",
+          "pinyin": "Hǎo a!",
+          "text": {
+            "uz": "Ha, albatta!",
+            "ru": "Конечно!",
+            "tj": "Хуб, бале!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "我们要不要买几个新的椅子？",
+          "pinyin": "Wǒmen yào bú yào mǎi jǐ ge xīn de yǐzi?",
+          "text": {
+            "uz": "Bir nechta yangi stul sotib olishimiz kerakmi?",
+            "ru": "Нам купить несколько новых стульев?",
+            "tj": "Мо бояд чанд курсии нав харем?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好啊。什么时候去买？",
+          "pinyin": "Hǎo a. Shénme shíhou qù mǎi?",
+          "text": {
+            "uz": "Ha. Qachon boramiz?",
+            "ru": "Хорошо. Когда пойдём покупать?",
+            "tj": "Хуб. Кай меравем харидан?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "明天下午怎么样？",
+          "pinyin": "Míngtiān xiàwǔ zěnmeyàng?",
+          "text": {
+            "uz": "Ertaga tushdan keyin qanday?",
+            "ru": "Как насчёт завтра после обеда?",
+            "tj": "Фардо баъд аз нисфирӯзӣ чӣ тавр?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你明天几点能回来？",
+          "pinyin": "Nǐ míngtiān jǐ diǎn néng huílái?",
+          "text": {
+            "uz": "Ertaga sen necha da qaytib kelolasan?",
+            "ru": "В котором часу ты завтра сможешь вернуться?",
+            "tj": "Ту фардо соати чанд метавонӣ баргардӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "三点多。",
+          "pinyin": "Sān diǎn duō.",
+          "text": {
+            "uz": "Uchdan keyin (taxminan).",
+            "ru": "Около трёх (чуть после).",
+            "tj": "Каме баъд аз соати се."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "桌子下面有个猫。",
+          "pinyin": "Zhuōzi xiàmiàn yǒu ge māo.",
+          "text": {
+            "uz": "Stol ostida mushuk bor.",
+            "ru": "Под столом есть кошка.",
+            "tj": "Зери мӯия як гурба аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "那是我的猫，它叫花花。",
+          "pinyin": "Nà shì wǒ de māo, tā jiào Huāhua.",
+          "text": {
+            "uz": "Bu mening mushugim, u Huahua deb ataladi.",
+            "ru": "Это моя кошка, её зовут Хуахуа.",
+            "tj": "Ин гурбаи ман аст, номаш Хуахуа аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "它很漂亮。",
+          "pinyin": "Tā hěn piàoliang.",
+          "text": {
+            "uz": "U juda chiroyli.",
+            "ru": "Она очень красивая.",
+            "tj": "Вай хеле зебо аст."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "是啊，我觉得它的眼睛最漂亮。",
+          "pinyin": "Shì a, wǒ juéde tā de yǎnjing zuì piàoliang.",
+          "text": {
+            "uz": "Ha, menimcha uning ko'zlari eng chiroyli.",
+            "ru": "Да, я думаю, что её глаза самые красивые.",
+            "tj": "Бале, ба назари ман чашмонаш аз ҳама зеботаранд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "它多大了？",
+          "pinyin": "Tā duō dà le?",
+          "text": {
+            "uz": "U qancha yoshda?",
+            "ru": "Сколько ей лет?",
+            "tj": "Вай чанд сол дорад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "六个多月。",
+          "pinyin": "Liù ge duō yuè.",
+          "text": {
+            "uz": "Olti oydan ziyod.",
+            "ru": "Больше шести месяцев.",
+            "tj": "Зиёда аз шаш моҳ."
           }
         }
       ]
@@ -221,91 +498,182 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "去",
-            "pinyin": "qù",
+            "no": 1,
+            "zh": "旅游",
+            "pinyin": "lǚyóu",
             "pos": "v.",
             "meaning": {
-              "uz": "bormoq",
-              "ru": "идти, ехать",
-              "tj": "рафтан"
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "车站",
-            "pinyin": "chēzhàn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "bekat, vokzal",
-              "ru": "станция, вокзал",
-              "tj": "истгоҳ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "坐",
-            "pinyin": "zuò",
+            "no": 2,
+            "zh": "觉得",
+            "pinyin": "juéde",
             "pos": "v.",
             "meaning": {
-              "uz": "minmoq, o‘tirmoq",
-              "ru": "сидеть, ехать на транспорте",
-              "tj": "нишастан, савор шудан"
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "公共汽车",
-            "pinyin": "gōnggòng qìchē",
-            "pos": "n.",
+            "no": 3,
+            "zh": "最",
+            "pinyin": "zuì",
+            "pos": "adv.",
             "meaning": {
-              "uz": "avtobus",
-              "ru": "автобус",
-              "tj": "автобус"
+              "uz": "eng, juda",
+              "ru": "самый, наиболее",
+              "tj": "аз ҳама, бештар"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "地铁",
-            "pinyin": "dìtiě",
-            "pos": "n.",
+            "no": 4,
+            "zh": "为什么",
+            "pinyin": "wèi shénme",
+            "pos": "conj./adv.",
             "meaning": {
-              "uz": "metro",
-              "ru": "метро",
-              "tj": "метро"
+              "uz": "nega, nima uchun",
+              "ru": "почему, зачем",
+              "tj": "чаро, барои чӣ"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "出租车",
-            "pinyin": "chūzūchē",
-            "pos": "n.",
+            "no": 5,
+            "zh": "也",
+            "pinyin": "yě",
+            "pos": "adv.",
             "meaning": {
-              "uz": "taksi",
-              "ru": "такси",
-              "tj": "таксӣ"
+              "uz": "ham",
+              "ru": "тоже, также",
+              "tj": "ҳам"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "机场",
-            "pinyin": "jīchǎng",
+            "no": 6,
+            "zh": "运动",
+            "pinyin": "yùndòng",
+            "pos": "n./v.",
+            "meaning": {
+              "uz": "sport; sport qilmoq",
+              "ru": "спорт; заниматься спортом",
+              "tj": "варзиш; варзиш кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "踢足球",
+            "pinyin": "tī zúqiú",
+            "pos": "v.",
+            "meaning": {
+              "uz": "futbol o'ynamoq",
+              "ru": "играть в футбол",
+              "tj": "футбол бозӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "一起",
+            "pinyin": "yìqǐ",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "birga, birgalikda",
+              "ru": "вместе",
+              "tj": "якҷо, бо ҳам"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "要",
+            "pinyin": "yào",
+            "pos": "aux.",
+            "meaning": {
+              "uz": "kerak, xohlamoq, bormoqchi",
+              "ru": "нужно, хотеть, собираться",
+              "tj": "лозим, хостан, қасд доштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "新",
+            "pinyin": "xīn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "yangi",
+              "ru": "новый",
+              "tj": "нав"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "它",
+            "pinyin": "tā",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u (hayvon yoki narsa haqida)",
+              "ru": "оно, он/она (о животных и предметах)",
+              "tj": "он/он (дар бораи ҳайвон ё чиз)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "眼睛",
+            "pinyin": "yǎnjing",
             "pos": "n.",
             "meaning": {
-              "uz": "aeroport",
-              "ru": "аэропорт",
-              "tj": "фурудгоҳ"
+              "uz": "ko'z",
+              "ru": "глаза",
+              "tj": "чашм"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "花花",
+            "pinyin": "Huāhua",
+            "pos": "proper noun",
+            "meaning": {
+              "uz": "Huahua (mushuk ismi)",
+              "ru": "Хуахуа (кличка кошки)",
+              "tj": "Хуахуа (номи гурба)"
             }
           }
         }
@@ -323,9 +691,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "去 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 去:",
-            "tj": "Маънои калимаи 去-ро интихоб кунед:"
+            "uz": "旅游 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 旅游:",
+            "tj": "Маънои калимаи 旅游-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +702,39 @@
           },
           "options": [
             {
-              "uz": "bormoq",
-              "ru": "идти, ехать",
-              "tj": "рафтан"
+              "uz": "deb o'ylash, his qilish",
+              "ru": "думать, считать, чувствовать",
+              "tj": "фикр кардан, ҳис кардан"
             },
             {
-              "uz": "bekat, vokzal",
-              "ru": "станция, вокзал",
-              "tj": "истгоҳ"
+              "uz": "nega, nima uchun",
+              "ru": "почему, зачем",
+              "tj": "чаро, барои чӣ"
             },
             {
-              "uz": "minmoq, o‘tirmoq",
-              "ru": "сидеть, ехать на транспорте",
-              "tj": "нишастан, савор шудан"
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
             },
             {
-              "uz": "avtobus",
-              "ru": "автобус",
-              "tj": "автобус"
+              "uz": "eng, juda",
+              "ru": "самый, наиболее",
+              "tj": "аз ҳама, бештар"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "去 = bormoq (qù)",
-            "ru": "去 = идти, ехать (qù)",
-            "tj": "去 = рафтан (qù)"
+            "uz": "旅游 = sayohat qilmoq (lǚyóu)",
+            "ru": "旅游 = путешествовать (lǚyóu)",
+            "tj": "旅游 = сафар кардан (lǚyóu)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "去 talaffuzini tanlang:",
-            "ru": "Выберите произношение 去:",
-            "tj": "Талаффузи 去-ро интихоб кунед:"
+            "uz": "觉得 talaffuzini tanlang:",
+            "ru": "Выберите произношение 觉得:",
+            "tj": "Талаффузи 觉得-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +742,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qù",
-            "chēzhàn",
-            "zuò",
-            "gōnggòng qìchē"
+            "wèi shénme",
+            "juéde",
+            "zuì",
+            "lǚyóu"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "去 — qù",
-            "ru": "去 — qù",
-            "tj": "去 — qù"
+            "uz": "觉得 — juéde",
+            "ru": "觉得 — juéde",
+            "tj": "觉得 — juéde"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'bormoq' xitoycha nima?",
-            "ru": "'идти, ехать' по-китайски?",
-            "tj": "'рафтан' ба чинӣ чист?"
+            "uz": "'eng, juda' xitoycha qaysi?",
+            "ru": "'самый, наиболее' по-китайски?",
+            "tj": "'аз ҳама, бештар' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "去",
-            "车站",
-            "坐",
-            "公共汽车"
+            "旅游",
+            "觉得",
+            "为什么",
+            "最"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "去 = bormoq (qù)",
-            "ru": "去 = идти, ехать (qù)",
-            "tj": "去 = рафтан (qù)"
+            "uz": "eng, juda = 最 (zuì)",
+            "ru": "самый, наиболее = 最 (zuì)",
+            "tj": "аз ҳама, бештар = 最 (zuì)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "chēzhàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается chēzhàn?",
-            "tj": "chēzhàn кадом иероглиф аст?"
+            "uz": "wèi shénme qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wèi shénme?",
+            "tj": "wèi shénme кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,95 +792,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "车站",
-            "去",
-            "坐",
-            "公共汽车"
+            "觉得",
+            "最",
+            "旅游",
+            "为什么"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "车站 = bekat, vokzal (chēzhàn)",
-            "ru": "车站 = станция, вокзал (chēzhàn)",
-            "tj": "车站 = истгоҳ (chēzhàn)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'你去哪儿' iborasini tuzing",
-            "ru": "Соберите фразу '你去哪儿'",
-            "tj": "Ибораи '你去哪儿'-ро созед"
-          },
-          "tokens": [
-            "你",
-            "去",
-            "哪",
-            "儿",
-            "车站",
-            "坐"
-          ],
-          "answer_tokens": [
-            "你",
-            "去",
-            "哪",
-            "儿"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 你 去 哪 儿",
-            "ru": "Правильный порядок: 你 去 哪 儿",
-            "tj": "Тартиби дуруст: 你 去 哪 儿"
+            "uz": "为什么 = nega, nima uchun (wèi shénme)",
+            "ru": "为什么 = почему, зачем (wèi shénme)",
+            "tj": "为什么 = чаро, барои чӣ (wèi shénme)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "去",
+              "旅游",
               {
-                "uz": "bormoq",
-                "ru": "идти, ехать",
-                "tj": "рафтан"
+                "uz": "sayohat qilmoq",
+                "ru": "путешествовать",
+                "tj": "сафар кардан"
               }
             ],
             [
-              "车站",
+              "觉得",
               {
-                "uz": "bekat, vokzal",
-                "ru": "станция, вокзал",
-                "tj": "истгоҳ"
+                "uz": "deb o'ylash, his qilish",
+                "ru": "думать, считать, чувствовать",
+                "tj": "фикр кардан, ҳис кардан"
               }
             ],
             [
-              "坐",
+              "最",
               {
-                "uz": "minmoq, o‘tirmoq",
-                "ru": "сидеть, ехать на транспорте",
-                "tj": "нишастан, савор шудан"
+                "uz": "eng, juda",
+                "ru": "самый, наиболее",
+                "tj": "аз ҳама, бештар"
               }
             ],
             [
-              "公共汽车",
+              "为什么",
               {
-                "uz": "avtobus",
-                "ru": "автобус",
-                "tj": "автобус"
+                "uz": "nega, nima uchun",
+                "ru": "почему, зачем",
+                "tj": "чаро, барои чӣ"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我要去北京____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "为什么",
+            "最",
+            "觉得",
+            "旅游"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 旅游 (lǚyóu) — sayohat qilmoq",
+            "ru": "Верно: 旅游 (lǚyóu) — путешествовать",
+            "tj": "Дуруст: 旅游 (lǚyóu) — сафар кардан"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "你去哪儿",
-          "pinyin": "nǐ qù nǎr",
+          "phrase": "旅游",
+          "pinyin": "lǚyóu",
           "translation": {
-            "uz": "Transport va yo'nalish",
-            "ru": "Транспорт и направление",
-            "tj": "Нақлиёт ва самт"
+            "uz": "sayohat qilmoq",
+            "ru": "путешествовать",
+            "tj": "сафар кардан"
           }
         }
       ]
@@ -529,9 +891,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -539,41 +901,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "我想去北京旅游，你觉得什么时候去最好？",
+            "九月的北京天气不冷也不热。",
+            "为什么？",
+            "九月去北京旅游最好。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 我想去北京旅游，你觉得什么时候去最好？",
+            "ru": "Правильный ответ: 我想去北京旅游，你觉得什么时候去最好？",
+            "tj": "Ҷавоби дуруст: 我想去北京旅游，你觉得什么时候去最好？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "去。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "九月去北京旅游最好。",
+            "九月的北京天气不冷也不热。",
+            "我想去北京旅游，你觉得什么时候去最好？",
+            "为什么？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "B javobi: 去。",
-            "ru": "Ответ B: 去。",
-            "tj": "Ҷавоби B: 去。"
+            "uz": "To'g'ri javob: 九月的北京天气不冷也不热。",
+            "ru": "Правильный ответ: 九月的北京天气不冷也不热。",
+            "tj": "Ҷавоби дуруст: 九月的北京天气不冷也不热。"
           }
         }
       ]

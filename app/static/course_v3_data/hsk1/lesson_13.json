@@ -2,133 +2,175 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 13,
-  "title": "天气怎么样",
+  "title": "他在学做中国菜呢",
   "subtitle": {
-    "uz": "Mavzu: Ob-havo va fasllar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Погода и времена года. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Обу ҳаво ва фаслҳо. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Davom etayotgan harakatlarni ifodalash (在...呢), telefon raqamlari va 吧 yuklamasi",
+    "ru": "Выражение текущих действий (在...呢), телефонные номера и частица 吧",
+    "tj": "Баёни амалҳои ҷорӣ (在...呢), рақамҳои телефон ва зарраи 吧"
   },
   "active_words": [
     {
-      "zh": "天气",
-      "pinyin": "tiānqì",
-      "pos": "n.",
+      "no": 1,
+      "zh": "喂",
+      "pinyin": "wèi",
+      "pos": "int.",
       "meaning": {
-        "uz": "ob-havo",
-        "ru": "погода",
-        "tj": "обу ҳаво"
-      },
-      "no": 1
+        "uz": "allo (telefonda)",
+        "ru": "алло (по телефону)",
+        "tj": "алло (аз телефон)"
+      }
     },
     {
-      "zh": "怎么样",
-      "pinyin": "zěnmeyàng",
-      "pos": "pron.",
+      "no": 2,
+      "zh": "也",
+      "pinyin": "yě",
+      "pos": "adv.",
       "meaning": {
-        "uz": "qanday",
-        "ru": "как, какой",
-        "tj": "чӣ гуна"
-      },
-      "no": 2
+        "uz": "ham, shuningdek",
+        "ru": "тоже, также",
+        "tj": "ҳам, инчунин"
+      }
     },
     {
-      "zh": "热",
-      "pinyin": "rè",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "issiq",
-        "ru": "жарко, горячий",
-        "tj": "гарм"
-      },
-      "no": 3
-    },
-    {
-      "zh": "冷",
-      "pinyin": "lěng",
-      "pos": "adj.",
-      "meaning": {
-        "uz": "sovuq",
-        "ru": "холодно, холодный",
-        "tj": "сард"
-      },
-      "no": 4
-    },
-    {
-      "zh": "下雨",
-      "pinyin": "xià yǔ",
+      "no": 3,
+      "zh": "学习",
+      "pinyin": "xuéxí",
       "pos": "v.",
       "meaning": {
-        "uz": "yomg'ir yog'moq",
-        "ru": "идёт дождь",
-        "tj": "борон боридан"
-      },
-      "no": 5
+        "uz": "o'qimoq, o'rganmoq",
+        "ru": "учиться, изучать",
+        "tj": "хондан, омӯхтан"
+      }
     },
     {
-      "zh": "下雪",
-      "pinyin": "xià xuě",
+      "no": 4,
+      "zh": "上午",
+      "pinyin": "shàngwǔ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ertalab (tushgacha)",
+        "ru": "утро (до полудня)",
+        "tj": "субҳ (то нисфирӯзӣ)"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "睡觉",
+      "pinyin": "shuì jiào",
       "pos": "v.",
       "meaning": {
-        "uz": "qor yog‘moq",
-        "ru": "идёт снег",
-        "tj": "барф боридан"
-      },
-      "no": 6
+        "uz": "uxlamoq",
+        "ru": "спать",
+        "tj": "хобидан, хоб кардан"
+      }
     },
     {
-      "zh": "春天",
-      "pinyin": "chūntiān",
+      "no": 6,
+      "zh": "电视",
+      "pinyin": "diànshì",
       "pos": "n.",
       "meaning": {
-        "uz": "bahor",
-        "ru": "весна",
-        "tj": "баҳор"
-      },
-      "no": 7
+        "uz": "televizor",
+        "ru": "телевизор",
+        "tj": "телевизор"
+      }
     },
     {
-      "zh": "夏天",
-      "pinyin": "xiàtiān",
-      "pos": "n.",
+      "no": 7,
+      "zh": "喜欢",
+      "pinyin": "xǐhuan",
+      "pos": "v.",
       "meaning": {
-        "uz": "yoz",
-        "ru": "лето",
-        "tj": "тобистон"
-      },
-      "no": 8
+        "uz": "yoqtirmoq, yaxshi ko'rmoq",
+        "ru": "нравиться, любить",
+        "tj": "дӯст доштан, хуш доштан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "给",
+      "pinyin": "gěi",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "uchun, ga (birovga)",
+        "ru": "для, кому-то (кому)",
+        "tj": "барои, ба (касе)"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "打电话",
+      "pinyin": "dǎ diànhuà",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qo'ng'iroq qilmoq, telefon qilmoq",
+        "ru": "звонить по телефону",
+        "tj": "занг задан, телефон кардан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "吧",
+      "pinyin": "ba",
+      "pos": "part.",
+      "meaning": {
+        "uz": "yumshatuvchi yukla (taklif yoki maslahat uchun)",
+        "ru": "смягчающая частица (для предложений или советов)",
+        "tj": "зарраи мулоим (барои пешниҳод ё маслиҳат)"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "大卫",
+      "pinyin": "Dàwèi",
+      "pos": "pn.",
+      "meaning": {
+        "uz": "David (ism)",
+        "ru": "Дэвид (имя)",
+        "tj": "Дэвид (ном)"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Hozirgi davom harakat 在……呢",
+        "ru": "Продолжающееся действие 在……呢",
+        "tj": "Амали идомаёбандаи ҳозира 在……呢"
       },
-      "title_zh": "主题词语",
+      "title_zh": "在……呢",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 天气怎么样. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“天气怎么样”。",
-        "ru": "Ключевая фраза урока: 天气怎么样. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“天气怎么样”。",
-        "tj": "Ибораи асосии дарс: 天气怎么样. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“天气怎么样”。"
+        "uz": "Hozir davom etayotgan harakat uchun:\n1-tuzilish: 在 + Fe'l (+ To'ldiruvchi)\n2-tuzilish: Fe'l + To'ldiruvchi + 呢\n3-tuzilish: 在 + Fe'l + 呢 (ta'kidlash uchun)\n\nMisol:\n我在看书呢。— Men hozir kitob o'qiyapman.\n他在学做中国菜呢。— U hozir xitoy taomi pishirishni o'rganayapti.\n\nInkor: 没(在) + Fe'l, 呢 ishlatilmaydi\n他没看书。— U kitob o'qiyotgani yo'q.\n他们没在工作。— Ular ishlamayapti.",
+        "ru": "Для действия, происходящего прямо сейчас:\nСтруктура 1: 在 + Глагол (+ Дополнение)\nСтруктура 2: Глагол + Дополнение + 呢\nСтруктура 3: 在 + Глагол + 呢 (усиленная)\n\nПример:\n我在看书呢。— Я сейчас читаю книгу.\n他在学做中国菜呢。— Он сейчас учится готовить китайскую еду.\n\nОтрицание: 没(在) + Глагол, без 呢\n他没看书。— Он не читает.\n他们没在工作。— Они не работают.",
+        "tj": "Барои амали ҳоло ҷоришуда:\nСохтори 1: 在 + Феъл (+ Пуркунанда)\nСохтори 2: Феъл + Пуркунанда + 呢\nСохтори 3: 在 + Феъл + 呢 (таъкидӣ)\n\nНамуна:\n我在看书呢。— Ман ҳоло китоб мехонам.\n他在学做中国菜呢。— Ӯ ҳоло тарзи пухтани хӯроки чинӣро меомӯзад.\n\nИнкор: 没(在) + Феъл, бе 呢\n他没看书。— Ӯ китоб намехонад.\n他们没在工作。— Онҳо кор намекунанд."
       },
       "examples": [
         {
-          "zh": "今天我们学习“天气怎么样”。",
-          "pinyin": "Jīntiān wǒmen xuéxí tiānqì zěnmeyàng.",
+          "zh": "我在看书呢。",
+          "pinyin": "Wǒ zài kàn shū ne.",
           "translation": {
-            "uz": "Biz Ob-havo va fasllar mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Погода и времена года.",
-            "tj": "Мо мавзӯи Обу ҳаво ва фаслҳо-ро меомӯзем."
+            "uz": "Men hozir kitob o'qiyapman.",
+            "ru": "Я сейчас читаю книгу.",
+            "tj": "Ман ҳоло китоб мехонам."
           }
         },
         {
-          "zh": "这个词是天气。",
-          "pinyin": "Zhège cí shì tiānqì.",
+          "zh": "他在学做中国菜呢。",
+          "pinyin": "Tā zài xué zuò Zhōngguó cài ne.",
           "translation": {
-            "uz": "Bu so'z: ob-havo.",
-            "ru": "Это слово: погода.",
-            "tj": "Ин калима: обу ҳаво."
+            "uz": "U hozir xitoy taomi pishirishni o'rganayapti.",
+            "ru": "Он учится готовить китайскую еду.",
+            "tj": "Ӯ тарзи пухтани хӯроки чинӣро меомӯзад."
+          }
+        },
+        {
+          "zh": "她没在工作。",
+          "pinyin": "Tā méi zài gōngzuò.",
+          "translation": {
+            "uz": "U ishlamayapti.",
+            "ru": "Она не работает.",
+            "tj": "Ӯ кор намекунад."
           }
         }
       ]
@@ -136,33 +178,85 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "也 ravishi — ham",
+        "ru": "Наречие 也 — тоже",
+        "tj": "Зарфи 也 — ҳам"
       },
-      "title_zh": "问答结构",
+      "title_zh": "也",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "也(yě) — 'ham, shuningdek' ma'nosini bildiradi.\nHar doim fe'l yoki modal fe'ldan oldin keladi.\n\nMisol:\n大卫也在看书吗？— Devid ham kitob o'qiyaptimi?\n我也喜欢看电影。— Men ham kino ko'rishni yaxshi ko'raman.\n她也是老师。— U ham o'qituvchi.",
+        "ru": "也(yě) — означает 'тоже, также'.\nВсегда стоит перед глаголом или модальным глаголом.\n\nПример:\n大卫也在看书吗？— Дэвид тоже читает?\n我也喜欢看电影。— Мне тоже нравится кино.\n她也是老师。— Она тоже учитель.",
+        "tj": "也(yě) — маънои 'ҳам, инчунин' дорад.\nҲамеша пеш аз феъл ё феъли модалӣ меояд.\n\nНамуна:\n大卫也在看书吗？— Дэвид ҳам китоб мехонад?\n我也喜欢看电影。— Ман ҳам кино тамошо карданро дӯст дорам.\n她也是老师。— Ӯ ҳам омӯзгор аст."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "大卫也在看书吗？",
+          "pinyin": "Dàwèi yě zài kàn shū ma?",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Devid ham kitob o'qiyaptimi?",
+            "ru": "Дэвид тоже читает?",
+            "tj": "Дэвид ҳам китоб мехонад?"
           }
         },
         {
-          "zh": "天气。",
-          "pinyin": "tiānqì.",
+          "zh": "我也喜欢中国菜。",
+          "pinyin": "Wǒ yě xǐhuan Zhōngguó cài.",
           "translation": {
-            "uz": "天气 — tiānqì deb o'qiladi.",
-            "ru": "天气 читается как tiānqì.",
-            "tj": "天气 ҳамчун tiānqì хонда мешавад."
+            "uz": "Men ham xitoy taomini yaxshi ko'raman.",
+            "ru": "Мне тоже нравится китайская кухня.",
+            "tj": "Ман ҳам хӯроки чинӣро дӯст дорам."
+          }
+        },
+        {
+          "zh": "她也是学生。",
+          "pinyin": "Tā yě shì xuésheng.",
+          "translation": {
+            "uz": "U ham talaba.",
+            "ru": "Она тоже студентка.",
+            "tj": "Ӯ ҳам донишҷӯ аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "吧 — yumshatuvchi yukla",
+        "ru": "Частица 吧 — смягчение",
+        "tj": "Зарраи 吧 — мулоимкунӣ"
+      },
+      "title_zh": "吧",
+      "rule": {
+        "uz": "吧(ba) — taklif, maslahat yoki yumshatilgan buyruqni bildiradi.\nGapning oxirida keladi.\n\nMisol:\n你下午打吧。— Tushdan keyin qo'ng'iroq qiling.\n今天我们在家吃饭吧。— Bugun uyda ovqatlanaylik.\n请坐吧。— Marhamat, o'tiring.",
+        "ru": "吧(ba) — выражает предложение, совет или мягкую команду.\nСтоит в конце предложения.\n\nПример:\n你下午打吧。— Позвоните после обеда.\n今天我们在家吃饭吧。— Давайте сегодня поедим дома.\n请坐吧。— Пожалуйста, садитесь.",
+        "tj": "吧(ba) — пешниҳод, маслиҳат ё амри мулоимро баён мекунад.\nДар охири ҷумла меояд.\n\nНамуна:\n你下午打吧。— Баъдазнисфирӯзӣ занг бизанед.\n今天我们在家吃饭吧。— Имрӯз дар хона хӯрок хӯрем.\n请坐吧。— Хоҳиш мекунам, биниш."
+      },
+      "examples": [
+        {
+          "zh": "你下午打吧。",
+          "pinyin": "Nǐ xiàwǔ dǎ ba.",
+          "translation": {
+            "uz": "Tushdan keyin qo'ng'iroq qiling.",
+            "ru": "Позвоните после обеда.",
+            "tj": "Баъдазнисфирӯзӣ занг бизанед."
+          }
+        },
+        {
+          "zh": "我们一起去吧。",
+          "pinyin": "Wǒmen yīqǐ qù ba.",
+          "translation": {
+            "uz": "Keling birga boraylik.",
+            "ru": "Давайте пойдём вместе.",
+            "tj": "Биёед якҷоя равем."
+          }
+        },
+        {
+          "zh": "请坐吧。",
+          "pinyin": "Qǐng zuò ba.",
+          "translation": {
+            "uz": "Marhamat, o'tiring.",
+            "ru": "Пожалуйста, садитесь.",
+            "tj": "Хоҳиш мекунам, биниш."
           }
         }
       ]
@@ -171,49 +265,147 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Ob-havo va fasllar",
-        "ru": "Погода и времена года",
-        "tj": "Обу ҳаво ва фаслҳо"
+        "uz": "Telefonda — hozir nima qilyapsan",
+        "ru": "По телефону — что делаешь сейчас",
+        "tj": "Аз телефон — ҳоло чӣ мекунӣ"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“天气怎么样”。",
-          "pinyin": "Jīntiān wǒmen xuéxí tiānqì zěnmeyàng.",
+          "zh": "喂，你在做什么呢？",
+          "pinyin": "Wèi, nǐ zài zuò shénme ne?",
           "text": {
-            "uz": "Bugun Ob-havo va fasllar mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Погода и времена года.",
-            "tj": "Имрӯз мавзӯи Обу ҳаво ва фаслҳо-ро меомӯзем."
+            "uz": "Allo, hozir nima qilyapsiz?",
+            "ru": "Алло, что вы сейчас делаете?",
+            "tj": "Алло, ҳоло чӣ мекунед?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "我在看书呢。",
+          "pinyin": "Wǒ zài kàn shū ne.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Men hozir kitob o'qiyapman.",
+            "ru": "Я сейчас читаю книгу.",
+            "tj": "Ман ҳоло китоб мехонам."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "大卫也在看书吗？",
+          "pinyin": "Dàwèi yě zài kàn shū ma?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Devid ham kitob o'qiyaptimi?",
+            "ru": "Дэвид тоже читает?",
+            "tj": "Дэвид ҳам китоб мехонад?"
           }
         },
         {
           "speaker": "B",
-          "zh": "天气。",
-          "pinyin": "tiānqì.",
+          "zh": "他没看书，他在学做中国菜呢。",
+          "pinyin": "Tā méi kàn shū, tā zài xué zuò Zhōngguó cài ne.",
           "text": {
-            "uz": "天气 — tiānqì deb o'qiladi.",
-            "ru": "天气 читается как tiānqì.",
-            "tj": "天气 ҳамчун tiānqì хонда мешавад."
+            "uz": "U kitob o'qiyotgani yo'q, u hozir xitoy taomi pishirishni o'rganayapti.",
+            "ru": "Он не читает — он сейчас учится готовить китайскую еду.",
+            "tj": "Ӯ китоб намехонад, ӯ ҳоло тарзи пухтани хӯроки чинӣро меомӯзад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada — kecha nima qilding",
+        "ru": "В кафе — что делал вчера",
+        "tj": "Дар қаҳвахона — дирӯз чӣ кардӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天上午你在做什么呢？",
+          "pinyin": "Zuótiān shàngwǔ nǐ zài zuò shénme ne?",
+          "text": {
+            "uz": "Kecha ertalab nima qilyotgan edingiz?",
+            "ru": "Что вы делали вчера утром?",
+            "tj": "Дирӯз субҳ чӣ мекардед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我在睡觉呢。你呢？",
+          "pinyin": "Wǒ zài shuì jiào ne. Nǐ ne?",
+          "text": {
+            "uz": "Men uxlayotgan edim. Siz-chi?",
+            "ru": "Я спал. А вы?",
+            "tj": "Ман мехобидам. Шумо чӣ?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我在家看电视呢。你喜欢看电视吗？",
+          "pinyin": "Wǒ zài jiā kàn diànshì ne. Nǐ xǐhuan kàn diànshì ma?",
+          "text": {
+            "uz": "Men uyda televizor ko'rayotgan edim. Televizor ko'rishni yaxshi ko'rasizmi?",
+            "ru": "Я смотрел телевизор дома. Вам нравится смотреть телевизор?",
+            "tj": "Ман дар хона телевизор тамошо мекардам. Шумо телевизор тамошо карданро дӯст медоред?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我不喜欢看电视，我喜欢看电影。",
+          "pinyin": "Wǒ bù xǐhuan kàn diànshì, wǒ xǐhuan kàn diànyǐng.",
+          "text": {
+            "uz": "Men televizor ko'rishni yaxshi ko'rmayman, men kino ko'rishni yaxshi ko'raman.",
+            "ru": "Я не люблю смотреть телевизор — мне нравится кино.",
+            "tj": "Ман телевизор тамошо карданро дӯст надорам, ман кино тамошо карданро дӯст дорам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Maktab ofisida — telefon raqami",
+        "ru": "В школьном офисе — телефонный номер",
+        "tj": "Дар офиси мактаб — рақами телефон"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "82304155，这是李老师的电话吗？",
+          "pinyin": "Bā èr sān líng sì yāo wǔ wǔ, zhè shì Lǐ lǎoshī de diànhuà ma?",
+          "text": {
+            "uz": "82304155, bu O'qituvchi Li ning telefon raqamimi?",
+            "ru": "82304155 — это телефон учителя Ли?",
+            "tj": "82304155, ин рақами телефони устод Лӣ аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不是，她的电话是82304156。",
+          "pinyin": "Bú shì, tā de diànhuà shì bā èr sān líng sì yāo wǔ liù.",
+          "text": {
+            "uz": "Yo'q, uning telefon raqami 82304156.",
+            "ru": "Нет, её номер 82304156.",
+            "tj": "Не, рақами телефони ӯ 82304156 аст."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "好，我现在给她打电话。",
+          "pinyin": "Hǎo, wǒ xiànzài gěi tā dǎ diànhuà.",
+          "text": {
+            "uz": "Yaxshi, men hozir unga qo'ng'iroq qilaman.",
+            "ru": "Хорошо, я сейчас ей позвоню.",
+            "tj": "Хуб, ман ҳоло ба ӯ занг мезанам."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "她在工作呢，你下午打吧。",
+          "pinyin": "Tā zài gōngzuò ne, nǐ xiàwǔ dǎ ba.",
+          "text": {
+            "uz": "U hozir ishda, tushdan keyin qo'ng'iroq qiling.",
+            "ru": "Она сейчас на работе — позвоните после обеда.",
+            "tj": "Ӯ ҳоло дар кор аст, баъдазнисфирӯзӣ занг бизанед."
           }
         }
       ]
@@ -232,104 +424,154 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "天气",
-            "pinyin": "tiānqì",
-            "pos": "n.",
+            "no": 1,
+            "zh": "喂",
+            "pinyin": "wèi",
+            "pos": "int.",
             "meaning": {
-              "uz": "ob-havo",
-              "ru": "погода",
-              "tj": "обу ҳаво"
+              "uz": "allo (telefonda)",
+              "ru": "алло (по телефону)",
+              "tj": "алло (аз телефон)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "怎么样",
-            "pinyin": "zěnmeyàng",
-            "pos": "pron.",
+            "no": 2,
+            "zh": "也",
+            "pinyin": "yě",
+            "pos": "adv.",
             "meaning": {
-              "uz": "qanday",
-              "ru": "как, какой",
-              "tj": "чӣ гуна"
+              "uz": "ham, shuningdek",
+              "ru": "тоже, также",
+              "tj": "ҳам, инчунин"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "热",
-            "pinyin": "rè",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "issiq",
-              "ru": "жарко, горячий",
-              "tj": "гарм"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "冷",
-            "pinyin": "lěng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "sovuq",
-              "ru": "холодно, холодный",
-              "tj": "сард"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "下雨",
-            "pinyin": "xià yǔ",
+            "no": 3,
+            "zh": "学习",
+            "pinyin": "xuéxí",
             "pos": "v.",
             "meaning": {
-              "uz": "yomg'ir yog'moq",
-              "ru": "идёт дождь",
-              "tj": "борон боридан"
+              "uz": "o'qimoq, o'rganmoq",
+              "ru": "учиться, изучать",
+              "tj": "хондан, омӯхтан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "下雪",
-            "pinyin": "xià xuě",
+            "no": 4,
+            "zh": "上午",
+            "pinyin": "shàngwǔ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ertalab (tushgacha)",
+              "ru": "утро (до полудня)",
+              "tj": "субҳ (то нисфирӯзӣ)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "睡觉",
+            "pinyin": "shuì jiào",
             "pos": "v.",
             "meaning": {
-              "uz": "qor yog‘moq",
-              "ru": "идёт снег",
-              "tj": "барф боридан"
+              "uz": "uxlamoq",
+              "ru": "спать",
+              "tj": "хобидан, хоб кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "春天",
-            "pinyin": "chūntiān",
+            "no": 6,
+            "zh": "电视",
+            "pinyin": "diànshì",
             "pos": "n.",
             "meaning": {
-              "uz": "bahor",
-              "ru": "весна",
-              "tj": "баҳор"
+              "uz": "televizor",
+              "ru": "телевизор",
+              "tj": "телевизор"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "夏天",
-            "pinyin": "xiàtiān",
-            "pos": "n.",
+            "no": 7,
+            "zh": "喜欢",
+            "pinyin": "xǐhuan",
+            "pos": "v.",
             "meaning": {
-              "uz": "yoz",
-              "ru": "лето",
-              "tj": "тобистон"
+              "uz": "yoqtirmoq, yaxshi ko'rmoq",
+              "ru": "нравиться, любить",
+              "tj": "дӯст доштан, хуш доштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "给",
+            "pinyin": "gěi",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "uchun, ga (birovga)",
+              "ru": "для, кому-то (кому)",
+              "tj": "барои, ба (касе)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "打电话",
+            "pinyin": "dǎ diànhuà",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qo'ng'iroq qilmoq, telefon qilmoq",
+              "ru": "звонить по телефону",
+              "tj": "занг задан, телефон кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "吧",
+            "pinyin": "ba",
+            "pos": "part.",
+            "meaning": {
+              "uz": "yumshatuvchi yukla (taklif yoki maslahat uchun)",
+              "ru": "смягчающая частица (для предложений или советов)",
+              "tj": "зарраи мулоим (барои пешниҳод ё маслиҳат)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "大卫",
+            "pinyin": "Dàwèi",
+            "pos": "pn.",
+            "meaning": {
+              "uz": "David (ism)",
+              "ru": "Дэвид (имя)",
+              "tj": "Дэвид (ном)"
             }
           }
         }
@@ -347,9 +589,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "天气 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 天气:",
-            "tj": "Маънои калимаи 天气-ро интихоб кунед:"
+            "uz": "喂 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 喂:",
+            "tj": "Маънои калимаи 喂-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -358,39 +600,39 @@
           },
           "options": [
             {
-              "uz": "ob-havo",
-              "ru": "погода",
-              "tj": "обу ҳаво"
+              "uz": "o'qimoq, o'rganmoq",
+              "ru": "учиться, изучать",
+              "tj": "хондан, омӯхтан"
             },
             {
-              "uz": "qanday",
-              "ru": "как, какой",
-              "tj": "чӣ гуна"
+              "uz": "ham, shuningdek",
+              "ru": "тоже, также",
+              "tj": "ҳам, инчунин"
             },
             {
-              "uz": "issiq",
-              "ru": "жарко, горячий",
-              "tj": "гарм"
+              "uz": "allo (telefonda)",
+              "ru": "алло (по телефону)",
+              "tj": "алло (аз телефон)"
             },
             {
-              "uz": "sovuq",
-              "ru": "холодно, холодный",
-              "tj": "сард"
+              "uz": "ertalab (tushgacha)",
+              "ru": "утро (до полудня)",
+              "tj": "субҳ (то нисфирӯзӣ)"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "天气 = ob-havo (tiānqì)",
-            "ru": "天气 = погода (tiānqì)",
-            "tj": "天气 = обу ҳаво (tiānqì)"
+            "uz": "喂 = allo (telefonda) (wèi)",
+            "ru": "喂 = алло (по телефону) (wèi)",
+            "tj": "喂 = алло (аз телефон) (wèi)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "天气 talaffuzini tanlang:",
-            "ru": "Выберите произношение 天气:",
-            "tj": "Талаффузи 天气-ро интихоб кунед:"
+            "uz": "也 talaffuzini tanlang:",
+            "ru": "Выберите произношение 也:",
+            "tj": "Талаффузи 也-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -398,49 +640,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tiānqì",
-            "zěnmeyàng",
-            "rè",
-            "lěng"
+            "wèi",
+            "xuéxí",
+            "yě",
+            "shàngwǔ"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "天气 — tiānqì",
-            "ru": "天气 — tiānqì",
-            "tj": "天气 — tiānqì"
+            "uz": "也 — yě",
+            "ru": "也 — yě",
+            "tj": "也 — yě"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'ob-havo' xitoycha nima?",
-            "ru": "'погода' по-китайски?",
-            "tj": "'обу ҳаво' ба чинӣ чист?"
+            "uz": "'o'qimoq, o'rganmoq' xitoycha qaysi?",
+            "ru": "'учиться, изучать' по-китайски?",
+            "tj": "'хондан, омӯхтан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "天气",
-            "怎么样",
-            "热",
-            "冷"
+            "上午",
+            "也",
+            "喂",
+            "学习"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "天气 = ob-havo (tiānqì)",
-            "ru": "天气 = погода (tiānqì)",
-            "tj": "天气 = обу ҳаво (tiānqì)"
+            "uz": "o'qimoq, o'rganmoq = 学习 (xuéxí)",
+            "ru": "учиться, изучать = 学习 (xuéxí)",
+            "tj": "хондан, омӯхтан = 学习 (xuéxí)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "zěnmeyàng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zěnmeyàng?",
-            "tj": "zěnmeyàng кадом иероглиф аст?"
+            "uz": "shàngwǔ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shàngwǔ?",
+            "tj": "shàngwǔ кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -448,91 +690,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "怎么样",
-            "天气",
-            "热",
-            "冷"
+            "上午",
+            "喂",
+            "学习",
+            "也"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "怎么样 = qanday (zěnmeyàng)",
-            "ru": "怎么样 = как, какой (zěnmeyàng)",
-            "tj": "怎么样 = чӣ гуна (zěnmeyàng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'天气怎么样' iborasini tuzing",
-            "ru": "Соберите фразу '天气怎么样'",
-            "tj": "Ибораи '天气怎么样'-ро созед"
-          },
-          "tokens": [
-            "天气",
-            "怎么样",
-            "热",
-            "冷"
-          ],
-          "answer_tokens": [
-            "天气",
-            "怎么样"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 天气 怎么样",
-            "ru": "Правильный порядок: 天气 怎么样",
-            "tj": "Тартиби дуруст: 天气 怎么样"
+            "uz": "上午 = ertalab (tushgacha) (shàngwǔ)",
+            "ru": "上午 = утро (до полудня) (shàngwǔ)",
+            "tj": "上午 = субҳ (то нисфирӯзӣ) (shàngwǔ)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "天气",
+              "喂",
               {
-                "uz": "ob-havo",
-                "ru": "погода",
-                "tj": "обу ҳаво"
+                "uz": "allo (telefonda)",
+                "ru": "алло (по телефону)",
+                "tj": "алло (аз телефон)"
               }
             ],
             [
-              "怎么样",
+              "也",
               {
-                "uz": "qanday",
-                "ru": "как, какой",
-                "tj": "чӣ гуна"
+                "uz": "ham, shuningdek",
+                "ru": "тоже, также",
+                "tj": "ҳам, инчунин"
               }
             ],
             [
-              "热",
+              "学习",
               {
-                "uz": "issiq",
-                "ru": "жарко, горячий",
-                "tj": "гарм"
+                "uz": "o'qimoq, o'rganmoq",
+                "ru": "учиться, изучать",
+                "tj": "хондан, омӯхтан"
               }
             ],
             [
-              "冷",
+              "上午",
               {
-                "uz": "sovuq",
-                "ru": "холодно, холодный",
-                "tj": "сард"
+                "uz": "ertalab (tushgacha)",
+                "ru": "утро (до полудня)",
+                "tj": "субҳ (то нисфирӯзӣ)"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我也____中国菜。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "学习",
+            "也",
+            "喜欢",
+            "喂"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 喜欢 (xǐhuan) — yoqtirmoq, yaxshi ko'rmoq",
+            "ru": "Верно: 喜欢 (xǐhuan) — нравиться, любить",
+            "tj": "Дуруст: 喜欢 (xǐhuan) — дӯст доштан, хуш доштан"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "天气怎么样",
-          "pinyin": "tiānqì zěnmeyàng",
+          "phrase": "喂",
+          "pinyin": "wèi",
           "translation": {
-            "uz": "Ob-havo va fasllar",
-            "ru": "Погода и времена года",
-            "tj": "Обу ҳаво ва фаслҳо"
+            "uz": "allo (telefonda)",
+            "ru": "алло (по телефону)",
+            "tj": "алло (аз телефон)"
           }
         }
       ]
@@ -549,9 +789,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -559,41 +799,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "喂，你在做什么呢？",
+            "大卫也在看书吗？",
+            "他没看书，他在学做中国菜呢。",
+            "我在看书呢。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 喂，你在做什么呢？",
+            "ru": "Правильный ответ: 喂，你在做什么呢？",
+            "tj": "Ҷавоби дуруст: 喂，你在做什么呢？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "天气。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "喂，你在做什么呢？",
+            "大卫也在看书吗？",
+            "我在看书呢。",
+            "他没看书，他在学做中国菜呢。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 天气。",
-            "ru": "Ответ B: 天气。",
-            "tj": "Ҷавоби B: 天气。"
+            "uz": "To'g'ri javob: 他没看书，他在学做中国菜呢。",
+            "ru": "Правильный ответ: 他没看书，他在学做中国菜呢。",
+            "tj": "Ҷавоби дуруст: 他没看书，他在学做中国菜呢。"
           }
         }
       ]

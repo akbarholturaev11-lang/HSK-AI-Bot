@@ -2,133 +2,208 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 9,
-  "title": "你家在哪儿",
+  "title": "你儿子在哪儿工作",
   "subtitle": {
-    "uz": "Mavzu: Manzil va yo'l ko'rsatish. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Адрес и направление. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Суроға ва роҳ нишон додан. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Joylashuv va ish joyi haqida so'rash, fe'l va predlog 在",
+    "ru": "Спрашивать о местонахождении и месте работы, глагол и предлог 在",
+    "tj": "Пурсидан дар бораи ҷойгиршавӣ ва ҷои кор, феъл ва пешояндаи 在"
   },
   "active_words": [
     {
-      "zh": "家",
-      "pinyin": "jiā",
-      "pos": "n.",
+      "no": 1,
+      "zh": "小",
+      "pinyin": "xiǎo",
+      "pos": "adj.",
       "meaning": {
-        "uz": "uy, oila",
-        "ru": "дом, семья",
-        "tj": "хона, оила"
-      },
-      "no": 1
+        "uz": "kichik, mayda",
+        "ru": "маленький, небольшой",
+        "tj": "хурд, майда"
+      }
     },
     {
+      "no": 2,
+      "zh": "猫",
+      "pinyin": "māo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mushuk",
+        "ru": "кошка",
+        "tj": "гурба"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "在",
+      "pinyin": "zài",
+      "pos": "v./prep.",
+      "meaning": {
+        "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+        "ru": "находиться / в, на (показатель места)",
+        "tj": "будан / дар (нишондиҳандаи ҷой)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "那儿",
+      "pinyin": "nàr",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u yerda, ana o'sha yerda",
+        "ru": "там, вон там",
+        "tj": "он ҷо, дар он ҷо"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "狗",
+      "pinyin": "gǒu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "it",
+        "ru": "собака",
+        "tj": "саг"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "椅子",
+      "pinyin": "yǐzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "stul",
+        "ru": "стул",
+        "tj": "курсӣ"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "下面",
+      "pinyin": "xiàmian",
+      "pos": "n.",
+      "meaning": {
+        "uz": "pastda, ostida",
+        "ru": "внизу, под",
+        "tj": "дар поён, зери"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "在",
+      "pinyin": "zài",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "-da, -da (joy ko'rsatgich)",
+        "ru": "в, на (показатель места)",
+        "tj": "дар (нишондиҳандаи ҷой)"
+      }
+    },
+    {
+      "no": 9,
       "zh": "哪儿",
       "pinyin": "nǎr",
       "pos": "pron.",
       "meaning": {
-        "uz": "qayer",
-        "ru": "где, куда",
+        "uz": "qayerda",
+        "ru": "где",
         "tj": "куҷо"
-      },
-      "no": 2
+      }
     },
     {
-      "zh": "在",
-      "pinyin": "zài",
-      "pos": "v.",
+      "no": 10,
+      "zh": "工作",
+      "pinyin": "gōngzuò",
+      "pos": "v./n.",
       "meaning": {
-        "uz": "joylashgan bo‘lmoq",
-        "ru": "находиться",
-        "tj": "ҷойгир будан"
-      },
-      "no": 3
+        "uz": "ishlash / ish, mehnat",
+        "ru": "работать / работа",
+        "tj": "кор кардан / кор"
+      }
     },
     {
-      "zh": "前面",
-      "pinyin": "qiánmiàn",
+      "no": 11,
+      "zh": "儿子",
+      "pinyin": "érzi",
       "pos": "n.",
       "meaning": {
-        "uz": "old tomon",
-        "ru": "впереди",
-        "tj": "пеш"
-      },
-      "no": 4
+        "uz": "o'g'il",
+        "ru": "сын",
+        "tj": "писар"
+      }
     },
     {
-      "zh": "后面",
-      "pinyin": "hòumiàn",
+      "no": 12,
+      "zh": "医院",
+      "pinyin": "yīyuàn",
       "pos": "n.",
       "meaning": {
-        "uz": "orqa tomon",
-        "ru": "сзади",
-        "tj": "ақиб"
-      },
-      "no": 5
+        "uz": "kasalxona",
+        "ru": "больница",
+        "tj": "беморхона"
+      }
     },
     {
-      "zh": "旁边",
-      "pinyin": "pángbiān",
+      "no": 13,
+      "zh": "医生",
+      "pinyin": "yīshēng",
       "pos": "n.",
       "meaning": {
-        "uz": "yonida",
-        "ru": "рядом",
-        "tj": "дар паҳлӯ"
-      },
-      "no": 6
+        "uz": "shifokor",
+        "ru": "врач",
+        "tj": "духтур"
+      }
     },
     {
-      "zh": "走",
-      "pinyin": "zǒu",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yurmoq, ketmoq",
-        "ru": "идти",
-        "tj": "рафтан, роҳ рафтан"
-      },
-      "no": 7
-    },
-    {
-      "zh": "右边",
-      "pinyin": "yòubiān",
+      "no": 14,
+      "zh": "爸爸",
+      "pinyin": "bàba",
       "pos": "n.",
       "meaning": {
-        "uz": "o'ng tomon",
-        "ru": "правая сторона",
-        "tj": "тарафи рост"
-      },
-      "no": 8
+        "uz": "ota, dada",
+        "ru": "папа, отец",
+        "tj": "бобо, падар"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Fe'l 在 (joylashuv)",
+        "ru": "Глагол 在 (местонахождение)",
+        "tj": "Феъли 在 (ҷойгиршавӣ)"
       },
-      "title_zh": "主题词语",
+      "title_zh": "动词 在",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 你家在哪儿. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你家在哪儿”。",
-        "ru": "Ключевая фраза урока: 你家在哪儿. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你家在哪儿”。",
-        "tj": "Ибораи асосии дарс: 你家在哪儿. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你家在哪儿”。"
+        "uz": "在(zài) — fe'l sifatida biror narsa yoki kishining qayerda ekanligini bildiradi.\nTuzilish: Ega + 在 + Joy\n\nInkor: Ega + 不在 + Joy\n爸爸不在家。— Ota uyda emas.",
+        "ru": "在(zài) — как глагол указывает, где находится кто-то или что-то.\nСтруктура: Подлежащее + 在 + Место\n\nОтрицание: Подлежащее + 不在 + Место\n爸爸不在家。— Папа не дома.",
+        "tj": "在(zài) — ҳамчун феъл нишон медиҳад, ки чизе ё касе дар куҷо аст.\nСохтор: Муб. + 在 + Ҷой\n\nИнкор: Муб. + 不在 + Ҷой\n爸爸不在家。— Падар дар хона нест."
       },
       "examples": [
         {
-          "zh": "今天我们学习“你家在哪儿”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ jiā zài nǎr.",
+          "zh": "小猫在那儿。",
+          "pinyin": "Xiǎo māo zài nàr.",
           "translation": {
-            "uz": "Biz Manzil va yo'l ko'rsatish mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Адрес и направление.",
-            "tj": "Мо мавзӯи Суроға ва роҳ нишон додан-ро меомӯзем."
+            "uz": "Mushuk u yerda.",
+            "ru": "Кошка вон там.",
+            "tj": "Гурба он ҷост."
           }
         },
         {
-          "zh": "这个词是家。",
-          "pinyin": "Zhège cí shì jiā.",
+          "zh": "我朋友在学校。",
+          "pinyin": "Wǒ péngyou zài xuéxiào.",
           "translation": {
-            "uz": "Bu so'z: uy, oila.",
-            "ru": "Это слово: дом, семья.",
-            "tj": "Ин калима: хона, оила."
+            "uz": "Do'stim maktabda.",
+            "ru": "Мой друг в школе.",
+            "tj": "Дӯстам дар мактаб аст."
+          }
+        },
+        {
+          "zh": "爸爸不在家。",
+          "pinyin": "Bàba bú zài jiā.",
+          "translation": {
+            "uz": "Ota uyda emas.",
+            "ru": "Папа не дома.",
+            "tj": "Падар дар хона нест."
           }
         }
       ]
@@ -136,33 +211,85 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "哪儿 — joylashuv so'roq olmoshi",
+        "ru": "哪儿 — вопросительное местоимение места",
+        "tj": "哪儿 — зарфи истифсори ҷой"
       },
-      "title_zh": "问答结构",
+      "title_zh": "哪儿 — jo'ylashuv so'roq olmoshi",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "哪儿(nǎr) — joylashuvni so'rash uchun ishlatiladigan so'roq so'zi.\nTuzilish: Ega + 在 + 哪儿?\n\nMisol:\n小猫在哪儿？— Mushuk qayerda?\n你在哪儿工作？— Siz qaerda ishlaysiz?\n他在哪儿呢？— Xo'sh, u qayerda?",
+        "ru": "哪儿(nǎr) — вопросительное слово для уточнения места.\nСтруктура: Подлежащее + 在 + 哪儿?\n\nПример:\n小猫在哪儿？— Где кошка?\n你在哪儿工作？— Где вы работаете?\n他在哪儿呢？— Где же он?",
+        "tj": "哪儿(nǎr) — калимаи суол барои пурсидани ҷой.\nСохтор: Муб. + 在 + 哪儿?\n\nНамуна:\n小猫在哪儿？— Гурба куҷост?\n你在哪儿工作？— Шумо дар куҷо кор мекунед?\n他在哪儿呢？— Пас ӯ куҷост?"
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "你在哪儿工作？",
+          "pinyin": "Nǐ zài nǎr gōngzuò?",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Siz qaerda ishlaysiz?",
+            "ru": "Где вы работаете?",
+            "tj": "Шумо дар куҷо кор мекунед?"
           }
         },
         {
-          "zh": "家。",
-          "pinyin": "jiā.",
+          "zh": "小狗在哪儿？",
+          "pinyin": "Xiǎo gǒu zài nǎr?",
           "translation": {
-            "uz": "家 — jiā deb o'qiladi.",
-            "ru": "家 читается как jiā.",
-            "tj": "家 ҳамчун jiā хонда мешавад."
+            "uz": "It qayerda?",
+            "ru": "Где собака?",
+            "tj": "Саг куҷост?"
+          }
+        },
+        {
+          "zh": "他爸爸在哪儿呢？",
+          "pinyin": "Tā bàba zài nǎr ne?",
+          "translation": {
+            "uz": "Uning otasi qayerda?",
+            "ru": "Где же его папа?",
+            "tj": "Падари ӯ куҷост?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Predlog 在 (joy bildiradi)",
+        "ru": "Предлог 在 (указывает место действия)",
+        "tj": "Пешоянди 在 (ҷойи амал)"
+      },
+      "title_zh": "介词 在",
+      "rule": {
+        "uz": "在(zài) — predlog sifatida fe'ldan oldin kelib, harakatning qayerda sodir bo'lishini bildiradi.\nTuzilish: Ega + 在 + Joy + Fe'l\n\nFarq:\n她在医院。(Fe'l 在) — U kasalxonada.\n她在医院工作。(Predlog 在) — U kasalxonada ishlaydi.",
+        "ru": "在(zài) — как предлог стоит перед глаголом и указывает место действия.\nСтруктура: Подлежащее + 在 + Место + Глагол\n\nРазница:\n她在医院。(Глагол 在) — Она в больнице.\n她在医院工作。(Предлог 在) — Она работает в больнице.",
+        "tj": "在(zài) — ҳамчун пешоянд пеш аз феъл меояд ва ҷойи амалро нишон медиҳад.\nСохтор: Муб. + 在 + Ҷой + Феъл\n\nФарқ:\n她在医院。(Феъли 在) — Ӯ дар беморхона аст.\n她在医院工作。(Пешоянди 在) — Ӯ дар беморхона кор мекунад."
+      },
+      "examples": [
+        {
+          "zh": "我儿子在医院工作。",
+          "pinyin": "Wǒ érzi zài yīyuàn gōngzuò.",
+          "translation": {
+            "uz": "O'g'lim kasalxonada ishlaydi.",
+            "ru": "Мой сын работает в больнице.",
+            "tj": "Писарам дар беморхона кор мекунад."
+          }
+        },
+        {
+          "zh": "他们在学校看书。",
+          "pinyin": "Tāmen zài xuéxiào kàn shū.",
+          "translation": {
+            "uz": "Ular maktabda kitob o'qiydi.",
+            "ru": "Они читают в школе.",
+            "tj": "Онҳо дар мактаб китоб мехонанд."
+          }
+        },
+        {
+          "zh": "我在家喝茶。",
+          "pinyin": "Wǒ zài jiā hē chá.",
+          "translation": {
+            "uz": "Men uyda choy ichaman.",
+            "ru": "Я пью чай дома.",
+            "tj": "Ман дар хона чой менӯшам."
           }
         }
       ]
@@ -171,49 +298,147 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Manzil va yo'l ko'rsatish",
-        "ru": "Адрес и направление",
-        "tj": "Суроға ва роҳ нишон додан"
+        "uz": "Uyda — mushuk va it qayerda",
+        "ru": "Дома — где кошка и собака",
+        "tj": "Дар хона — гурба ва саг куҷост"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“你家在哪儿”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ jiā zài nǎr.",
+          "zh": "小猫在哪儿？",
+          "pinyin": "Xiǎo māo zài nǎr?",
           "text": {
-            "uz": "Bugun Manzil va yo'l ko'rsatish mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Адрес и направление.",
-            "tj": "Имрӯз мавзӯи Суроға ва роҳ нишон додан-ро меомӯзем."
+            "uz": "Mushuk qayerda?",
+            "ru": "Где кошка?",
+            "tj": "Гурба куҷост?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "小猫在那儿。",
+          "pinyin": "Xiǎo māo zài nàr.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Mushuk u yerda.",
+            "ru": "Кошка вон там.",
+            "tj": "Гурба он ҷост."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "小狗在哪儿？",
+          "pinyin": "Xiǎo gǒu zài nǎr?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "It qayerda?",
+            "ru": "Где собака?",
+            "tj": "Саг куҷост?"
           }
         },
         {
           "speaker": "B",
-          "zh": "家。",
-          "pinyin": "jiā.",
+          "zh": "小狗在椅子下面。",
+          "pinyin": "Xiǎo gǒu zài yǐzi xiàmian.",
           "text": {
-            "uz": "家 — jiā deb o'qiladi.",
-            "ru": "家 читается как jiā.",
-            "tj": "家 ҳамчун jiā хонда мешавад."
+            "uz": "It stulning ostida.",
+            "ru": "Собака под стулом.",
+            "tj": "Саг зери курсӣ аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Temir yo'l stansiyasida — ish joyi",
+        "ru": "На вокзале — место работы",
+        "tj": "Дар истгоҳи роҳи оҳан — ҷои кор"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在哪儿工作？",
+          "pinyin": "Nǐ zài nǎr gōngzuò?",
+          "text": {
+            "uz": "Siz qaerda ishlaysiz?",
+            "ru": "Где вы работаете?",
+            "tj": "Шумо дар куҷо кор мекунед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我在学校工作。",
+          "pinyin": "Wǒ zài xuéxiào gōngzuò.",
+          "text": {
+            "uz": "Men maktabda ishlaymen.",
+            "ru": "Я работаю в школе.",
+            "tj": "Ман дар мактаб кор мекунам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你儿子在哪儿工作？",
+          "pinyin": "Nǐ érzi zài nǎr gōngzuò?",
+          "text": {
+            "uz": "Sizning o'g'lingiz qaerda ishlaydi?",
+            "ru": "Где работает ваш сын?",
+            "tj": "Писари шумо дар куҷо кор мекунад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我儿子在医院工作，他是医生。",
+          "pinyin": "Wǒ érzi zài yīyuàn gōngzuò, tā shì yīshēng.",
+          "text": {
+            "uz": "O'g'lim kasalxonada ishlaydi, u shifokor.",
+            "ru": "Мой сын работает в больнице — он врач.",
+            "tj": "Писарам дар беморхона кор мекунад, ӯ духтур аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Telefonda — ota qayerda",
+        "ru": "По телефону — где папа",
+        "tj": "Аз телефон — падар куҷост"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你爸爸在家吗？",
+          "pinyin": "Nǐ bàba zài jiā ma?",
+          "text": {
+            "uz": "Otangiz uyda ekanmi?",
+            "ru": "Ваш папа дома?",
+            "tj": "Падари шумо дар хона аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "不在家。",
+          "pinyin": "Bú zài jiā.",
+          "text": {
+            "uz": "Uyda yo'q.",
+            "ru": "Нет, не дома.",
+            "tj": "Дар хона нест."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "他在哪儿呢？",
+          "pinyin": "Tā zài nǎr ne?",
+          "text": {
+            "uz": "Xo'sh, u qayerda?",
+            "ru": "Тогда где же он?",
+            "tj": "Пас ӯ куҷост?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "他在医院。",
+          "pinyin": "Tā zài yīyuàn.",
+          "text": {
+            "uz": "U kasalxonada.",
+            "ru": "Он в больнице.",
+            "tj": "Ӯ дар беморхона аст."
           }
         }
       ]
@@ -232,25 +457,125 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "家",
-            "pinyin": "jiā",
-            "pos": "n.",
+            "no": 1,
+            "zh": "小",
+            "pinyin": "xiǎo",
+            "pos": "adj.",
             "meaning": {
-              "uz": "uy, oila",
-              "ru": "дом, семья",
-              "tj": "хона, оила"
+              "uz": "kichik, mayda",
+              "ru": "маленький, небольшой",
+              "tj": "хурд, майда"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
+            "no": 2,
+            "zh": "猫",
+            "pinyin": "māo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "在",
+            "pinyin": "zài",
+            "pos": "v./prep.",
+            "meaning": {
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "那儿",
+            "pinyin": "nàr",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u yerda, ana o'sha yerda",
+              "ru": "там, вон там",
+              "tj": "он ҷо, дар он ҷо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "狗",
+            "pinyin": "gǒu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "it",
+              "ru": "собака",
+              "tj": "саг"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "椅子",
+            "pinyin": "yǐzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "stul",
+              "ru": "стул",
+              "tj": "курсӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "下面",
+            "pinyin": "xiàmian",
+            "pos": "n.",
+            "meaning": {
+              "uz": "pastda, ostida",
+              "ru": "внизу, под",
+              "tj": "дар поён, зери"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "在",
+            "pinyin": "zài",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "-da, -da (joy ko'rsatgich)",
+              "ru": "в, на (показатель места)",
+              "tj": "дар (нишондиҳандаи ҷой)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
             "zh": "哪儿",
             "pinyin": "nǎr",
             "pos": "pron.",
             "meaning": {
-              "uz": "qayer",
-              "ru": "где, куда",
+              "uz": "qayerda",
+              "ru": "где",
               "tj": "куҷо"
             }
           }
@@ -258,78 +583,70 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "在",
-            "pinyin": "zài",
-            "pos": "v.",
+            "no": 10,
+            "zh": "工作",
+            "pinyin": "gōngzuò",
+            "pos": "v./n.",
             "meaning": {
-              "uz": "joylashgan bo‘lmoq",
-              "ru": "находиться",
-              "tj": "ҷойгир будан"
+              "uz": "ishlash / ish, mehnat",
+              "ru": "работать / работа",
+              "tj": "кор кардан / кор"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "前面",
-            "pinyin": "qiánmiàn",
+            "no": 11,
+            "zh": "儿子",
+            "pinyin": "érzi",
             "pos": "n.",
             "meaning": {
-              "uz": "old tomon",
-              "ru": "впереди",
-              "tj": "пеш"
+              "uz": "o'g'il",
+              "ru": "сын",
+              "tj": "писар"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "后面",
-            "pinyin": "hòumiàn",
+            "no": 12,
+            "zh": "医院",
+            "pinyin": "yīyuàn",
             "pos": "n.",
             "meaning": {
-              "uz": "orqa tomon",
-              "ru": "сзади",
-              "tj": "ақиб"
+              "uz": "kasalxona",
+              "ru": "больница",
+              "tj": "беморхона"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "旁边",
-            "pinyin": "pángbiān",
+            "no": 13,
+            "zh": "医生",
+            "pinyin": "yīshēng",
             "pos": "n.",
             "meaning": {
-              "uz": "yonida",
-              "ru": "рядом",
-              "tj": "дар паҳлӯ"
+              "uz": "shifokor",
+              "ru": "врач",
+              "tj": "духтур"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "走",
-            "pinyin": "zǒu",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yurmoq, ketmoq",
-              "ru": "идти",
-              "tj": "рафтан, роҳ рафтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "右边",
-            "pinyin": "yòubiān",
+            "no": 14,
+            "zh": "爸爸",
+            "pinyin": "bàba",
             "pos": "n.",
             "meaning": {
-              "uz": "o'ng tomon",
-              "ru": "правая сторона",
-              "tj": "тарафи рост"
+              "uz": "ota, dada",
+              "ru": "папа, отец",
+              "tj": "бобо, падар"
             }
           }
         }
@@ -347,9 +664,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "家 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 家:",
-            "tj": "Маънои калимаи 家-ро интихоб кунед:"
+            "uz": "小 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 小:",
+            "tj": "Маънои калимаи 小-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -358,39 +675,39 @@
           },
           "options": [
             {
-              "uz": "uy, oila",
-              "ru": "дом, семья",
-              "tj": "хона, оила"
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
             },
             {
-              "uz": "qayer",
-              "ru": "где, куда",
-              "tj": "куҷо"
+              "uz": "u yerda, ana o'sha yerda",
+              "ru": "там, вон там",
+              "tj": "он ҷо, дар он ҷо"
             },
             {
-              "uz": "joylashgan bo‘lmoq",
-              "ru": "находиться",
-              "tj": "ҷойгир будан"
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
             },
             {
-              "uz": "old tomon",
-              "ru": "впереди",
-              "tj": "пеш"
+              "uz": "kichik, mayda",
+              "ru": "маленький, небольшой",
+              "tj": "хурд, майда"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "家 = uy, oila (jiā)",
-            "ru": "家 = дом, семья (jiā)",
-            "tj": "家 = хона, оила (jiā)"
+            "uz": "小 = kichik, mayda (xiǎo)",
+            "ru": "小 = маленький, небольшой (xiǎo)",
+            "tj": "小 = хурд, майда (xiǎo)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "家 talaffuzini tanlang:",
-            "ru": "Выберите произношение 家:",
-            "tj": "Талаффузи 家-ро интихоб кунед:"
+            "uz": "猫 talaffuzini tanlang:",
+            "ru": "Выберите произношение 猫:",
+            "tj": "Талаффузи 猫-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -398,49 +715,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiā",
-            "nǎr",
-            "zài",
-            "qiánmiàn"
+            "xiǎo",
+            "nàr",
+            "māo",
+            "zài"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "家 — jiā",
-            "ru": "家 — jiā",
-            "tj": "家 — jiā"
+            "uz": "猫 — māo",
+            "ru": "猫 — māo",
+            "tj": "猫 — māo"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'uy, oila' xitoycha nima?",
-            "ru": "'дом, семья' по-китайски?",
-            "tj": "'хона, оила' ба чинӣ чист?"
+            "uz": "'joylashmoq / -da, -da (joy ko'rsatgich)' xitoycha qaysi?",
+            "ru": "'находиться / в, на (показатель места)' по-китайски?",
+            "tj": "'будан / дар (нишондиҳандаи ҷой)' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "家",
-            "哪儿",
+            "那儿",
             "在",
-            "前面"
+            "猫",
+            "小"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "家 = uy, oila (jiā)",
-            "ru": "家 = дом, семья (jiā)",
-            "tj": "家 = хона, оила (jiā)"
+            "uz": "joylashmoq / -da, -da (joy ko'rsatgich) = 在 (zài)",
+            "ru": "находиться / в, на (показатель места) = 在 (zài)",
+            "tj": "будан / дар (нишондиҳандаи ҷой) = 在 (zài)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "nǎr qaysi ieroglif?",
-            "ru": "Какой иероглиф читается nǎr?",
-            "tj": "nǎr кадом иероглиф аст?"
+            "uz": "nàr qaysi ieroglif?",
+            "ru": "Какой иероглиф читается nàr?",
+            "tj": "nàr кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -448,95 +765,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "哪儿",
-            "家",
             "在",
-            "前面"
+            "小",
+            "那儿",
+            "猫"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "哪儿 = qayer (nǎr)",
-            "ru": "哪儿 = где, куда (nǎr)",
-            "tj": "哪儿 = куҷо (nǎr)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'你家在哪儿' iborasini tuzing",
-            "ru": "Соберите фразу '你家在哪儿'",
-            "tj": "Ибораи '你家在哪儿'-ро созед"
-          },
-          "tokens": [
-            "你",
-            "家",
-            "在",
-            "哪儿",
-            "前面",
-            "后面"
-          ],
-          "answer_tokens": [
-            "你",
-            "家",
-            "在",
-            "哪儿"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 你 家 在 哪儿",
-            "ru": "Правильный порядок: 你 家 在 哪儿",
-            "tj": "Тартиби дуруст: 你 家 在 哪儿"
+            "uz": "那儿 = u yerda, ana o'sha yerda (nàr)",
+            "ru": "那儿 = там, вон там (nàr)",
+            "tj": "那儿 = он ҷо, дар он ҷо (nàr)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "家",
+              "小",
               {
-                "uz": "uy, oila",
-                "ru": "дом, семья",
-                "tj": "хона, оила"
+                "uz": "kichik, mayda",
+                "ru": "маленький, небольшой",
+                "tj": "хурд, майда"
               }
             ],
             [
-              "哪儿",
+              "猫",
               {
-                "uz": "qayer",
-                "ru": "где, куда",
-                "tj": "куҷо"
+                "uz": "mushuk",
+                "ru": "кошка",
+                "tj": "гурба"
               }
             ],
             [
               "在",
               {
-                "uz": "joylashgan bo‘lmoq",
-                "ru": "находиться",
-                "tj": "ҷойгир будан"
+                "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+                "ru": "находиться / в, на (показатель места)",
+                "tj": "будан / дар (нишондиҳандаи ҷой)"
               }
             ],
             [
-              "前面",
+              "那儿",
               {
-                "uz": "old tomon",
-                "ru": "впереди",
-                "tj": "пеш"
+                "uz": "u yerda, ana o'sha yerda",
+                "ru": "там, вон там",
+                "tj": "он ҷо, дар он ҷо"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "小猫在____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "在",
+            "那儿",
+            "猫",
+            "小"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 那儿 (nàr) — u yerda, ana o'sha yerda",
+            "ru": "Верно: 那儿 (nàr) — там, вон там",
+            "tj": "Дуруст: 那儿 (nàr) — он ҷо, дар он ҷо"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "你家在哪儿",
-          "pinyin": "nǐ jiā zài nǎr",
+          "phrase": "小",
+          "pinyin": "xiǎo",
           "translation": {
-            "uz": "Manzil va yo'l ko'rsatish",
-            "ru": "Адрес и направление",
-            "tj": "Суроға ва роҳ нишон додан"
+            "uz": "kichik, mayda",
+            "ru": "маленький, небольшой",
+            "tj": "хурд, майда"
           }
         }
       ]
@@ -553,9 +864,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -563,41 +874,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "小狗在椅子下面。",
+            "小猫在哪儿？",
+            "小猫在那儿。",
+            "小狗在哪儿？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 小猫在哪儿？",
+            "ru": "Правильный ответ: 小猫在哪儿？",
+            "tj": "Ҷавоби дуруст: 小猫在哪儿？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "家。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "小狗在椅子下面。",
+            "小猫在那儿。",
+            "小狗在哪儿？",
+            "小猫在哪儿？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "B javobi: 家。",
-            "ru": "Ответ B: 家。",
-            "tj": "Ҷавоби B: 家。"
+            "uz": "To'g'ri javob: 小狗在椅子下面。",
+            "ru": "Правильный ответ: 小狗在椅子下面。",
+            "tj": "Ҷавоби дуруст: 小狗在椅子下面。"
           }
         }
       ]

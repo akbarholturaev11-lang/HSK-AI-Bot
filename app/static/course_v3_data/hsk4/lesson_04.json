@@ -2,122 +2,377 @@
   "schema_version": 2,
   "level": "hsk4",
   "lesson_id": 4,
-  "title": "文学艺术",
+  "title": "不要太着急赚钱",
   "subtitle": {
-    "uz": "Mavzu: Adabiyot va san’at. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Литература и искусство. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Адабиёт ва санъат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "ish, daromad va tajriba haqida gapirish; 以为, 原来, 并, 按照 va 甚至 grammatikalarini ishlatish",
+    "ru": "говорить о работе, доходе и опыте; использовать 以为, 原来, 并, 按照 и 甚至",
+    "tj": "дар бораи кор, даромад ва таҷриба гуфтугӯ кардан; истифодаи 以为, 原来, 并, 按照 ва 甚至"
   },
   "active_words": [
     {
-      "zh": "文学",
-      "pinyin": "wénxué",
-      "pos": "n.",
-      "meaning": {
-        "uz": "adabiyot",
-        "ru": "литература",
-        "tj": "адабиёт"
-      },
-      "no": 1
-    },
-    {
-      "zh": "艺术",
-      "pinyin": "yìshù",
-      "pos": "n.",
-      "meaning": {
-        "uz": "san’at",
-        "ru": "искусство",
-        "tj": "санъат"
-      },
-      "no": 2
-    },
-    {
-      "zh": "作品",
-      "pinyin": "zuòpǐn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "asar",
-        "ru": "произведение",
-        "tj": "асар"
-      },
-      "no": 3
-    },
-    {
-      "zh": "小说",
-      "pinyin": "xiǎoshuō",
-      "pos": "n.",
-      "meaning": {
-        "uz": "roman, hikoya",
-        "ru": "роман, рассказ",
-        "tj": "роман, ҳикоя"
-      },
-      "no": 4
-    },
-    {
-      "zh": "诗歌",
-      "pinyin": "shīgē",
-      "pos": "n.",
-      "meaning": {
-        "uz": "she’riyat",
-        "ru": "поэзия",
-        "tj": "шеър"
-      },
-      "no": 5
-    },
-    {
-      "zh": "表达",
-      "pinyin": "biǎodá",
+      "no": 1,
+      "zh": "提",
+      "pinyin": "tí",
       "pos": "v.",
       "meaning": {
-        "uz": "ifodalamoq",
-        "ru": "выражать",
-        "tj": "ифода кардан"
-      },
-      "no": 6
+        "uz": "tilga olmoq, aytmoq",
+        "ru": "упоминать, говорить",
+        "tj": "зикр кардан, гуфтан"
+      }
     },
     {
-      "zh": "灵感",
-      "pinyin": "línggǎn",
+      "no": 2,
+      "zh": "以为",
+      "pinyin": "yǐwéi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "deb o'ylamoq, yanglish hisoblamoq",
+        "ru": "думать, ошибочно полагать",
+        "tj": "фикр кардан, ғалат пиндоштан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "份",
+      "pinyin": "fèn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "ish kabi narsalar uchun hisob so'zi",
+        "ru": "счётное слово для работы и др.",
+        "tj": "ҳисобвожа барои кор ва ғайра"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "完全",
+      "pinyin": "wánquán",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "butunlay, to'liq",
+        "ru": "полностью, совершенно",
+        "tj": "пурра, комилан"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "赚",
+      "pinyin": "zhuàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "pul topmoq",
+        "ru": "зарабатывать",
+        "tj": "пул даромад кардан"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "调查",
+      "pinyin": "diàochá",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tekshirmoq, tadqiq qilmoq",
+        "ru": "исследовать, проводить опрос",
+        "tj": "таҳқиқ кардан, пурсиш гузаронидан"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "原来",
+      "pinyin": "yuánlái",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "asl, oldingi",
+        "ru": "первоначальный, прежний",
+        "tj": "аввала, пешина"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "计划",
+      "pinyin": "jìhuà",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "reja; rejalamoq",
+        "ru": "план; планировать",
+        "tj": "нақша; нақша кардан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "提前",
+      "pinyin": "tíqián",
+      "pos": "v.",
+      "meaning": {
+        "uz": "oldindan, muddatidan avval bajarmoq",
+        "ru": "сделать заранее, раньше срока",
+        "tj": "пешакӣ, пеш аз муҳлат кардан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "保证",
+      "pinyin": "bǎozhèng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kafolat bermoq",
+        "ru": "гарантировать",
+        "tj": "кафолат додан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "提醒",
+      "pinyin": "tíxǐng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "eslatmoq",
+        "ru": "напоминать",
+        "tj": "ёдрас кардан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "乱",
+      "pinyin": "luàn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "tartibsiz, chalkash",
+        "ru": "беспорядочный, спутанный",
+        "tj": "бетартиб, ошуфта"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "生意",
+      "pinyin": "shēngyi",
       "pos": "n.",
       "meaning": {
-        "uz": "ilhom",
-        "ru": "вдохновение",
-        "tj": "илҳом"
-      },
-      "no": 7
+        "uz": "biznes, savdo",
+        "ru": "бизнес, торговля",
+        "tj": "тиҷорат, савдо"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "谈",
+      "pinyin": "tán",
+      "pos": "v.",
+      "meaning": {
+        "uz": "gaplashmoq, muhokama qilmoq",
+        "ru": "разговаривать, обсуждать",
+        "tj": "гуфтугӯ кардан, муҳокима кардан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "并",
+      "pinyin": "bìng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "inkor oldida kuchaytiradi: umuman",
+        "ru": "усиливает отрицание: вовсе",
+        "tj": "инкорро таъкид мекунад: умуман"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "积累",
+      "pinyin": "jīlěi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "to'plamoq, yig'moq",
+        "ru": "накапливать",
+        "tj": "ҷамъ кардан"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "经验",
+      "pinyin": "jīngyàn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tajriba",
+        "ru": "опыт",
+        "tj": "таҷриба"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "一切",
+      "pinyin": "yíqiè",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "hammasi, barcha narsa",
+        "ru": "всё, всякий",
+        "tj": "ҳама чиз"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "按照",
+      "pinyin": "ànzhào",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "bo'yicha, muvofiq",
+        "ru": "согласно, по",
+        "tj": "мувофиқи, тибқи"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "成功",
+      "pinyin": "chénggōng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "muvaffaqiyatli",
+        "ru": "успешный",
+        "tj": "муваффақ"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "顺利",
+      "pinyin": "shùnlì",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "ravon, muammosiz",
+        "ru": "гладкий, успешный",
+        "tj": "равон, бе мушкил"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "感谢",
+      "pinyin": "gǎnxiè",
+      "pos": "v.",
+      "meaning": {
+        "uz": "minnatdor bo'lmoq, rahmat aytmoq",
+        "ru": "благодарить",
+        "tj": "ташаккур гуфтан"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "消息",
+      "pinyin": "xiāoxi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xabar, yangilik",
+        "ru": "новость, сообщение",
+        "tj": "хабар"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "按时",
+      "pinyin": "ànshí",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "o'z vaqtida",
+        "ru": "вовремя, по расписанию",
+        "tj": "дар вақташ"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "奖金",
+      "pinyin": "jiǎngjīn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mukofot puli, bonus",
+        "ru": "премия, бонус",
+        "tj": "мукофотпулӣ, бонус"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "工资",
+      "pinyin": "gōngzī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maosh",
+        "ru": "зарплата",
+        "tj": "маош"
+      }
+    },
+    {
+      "no": 27,
+      "zh": "方法",
+      "pinyin": "fāngfǎ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "usul, yo'l",
+        "ru": "метод, способ",
+        "tj": "усул, роҳ"
+      }
+    },
+    {
+      "no": 28,
+      "zh": "知识",
+      "pinyin": "zhīshi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bilim",
+        "ru": "знания",
+        "tj": "дониш"
+      }
+    },
+    {
+      "no": 29,
+      "zh": "不得不",
+      "pinyin": "bùdébù",
+      "pos": "",
+      "meaning": {
+        "uz": "majbur bo'lmoq",
+        "ru": "быть вынужденным",
+        "tj": "маҷбур шудан"
+      }
+    },
+    {
+      "no": 30,
+      "zh": "甚至",
+      "pinyin": "shènzhì",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "hatto, hattoki",
+        "ru": "даже",
+        "tj": "ҳатто"
+      }
+    },
+    {
+      "no": 31,
+      "zh": "责任",
+      "pinyin": "zérèn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "mas'uliyat, javobgarlik",
+        "ru": "ответственность",
+        "tj": "масъулият"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "deb o'ylamoq, lekin fakt boshqacha",
+        "ru": "думать, но факт другой",
+        "tj": "фикр кардан, вале воқеият дигар аст"
       },
-      "title_zh": "主题词语",
+      "title_zh": "以为",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 文学艺术. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“文学艺术”。",
-        "ru": "Ключевая фраза урока: 文学艺术. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“文学艺术”。",
-        "tj": "Ибораи асосии дарс: 文学艺术. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“文学艺术”。"
+        "uz": "Gapiruvchi avval bir narsani to'g'ri deb o'ylagan, keyin fakt boshqacha ekani bilinadi.",
+        "ru": "Говорящий сначала считал что-то верным, но потом выяснилось, что факт другой.",
+        "tj": "Гӯянда аввал чизеро дуруст пиндошт, баъд маълум шуд, ки воқеият дигар аст."
       },
       "examples": [
         {
-          "zh": "今天我们学习“文学艺术”。",
-          "pinyin": "Jīntiān wǒmen xuéxí wénxué yìshù.",
+          "zh": "我以为新工作比以前的好，没想到还没有以前好呢。",
+          "pinyin": "Wǒ yǐwéi xīn gōngzuò bǐ yǐqián de hǎo, méi xiǎngdào hái méiyǒu yǐqián hǎo ne.",
           "translation": {
-            "uz": "Biz Adabiyot va san’at mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Литература и искусство.",
-            "tj": "Мо мавзӯи Адабиёт ва санъат-ро меомӯзем."
-          }
-        },
-        {
-          "zh": "这个词是文学。",
-          "pinyin": "Zhège cí shì wénxué.",
-          "translation": {
-            "uz": "Bu so'z: adabiyot.",
-            "ru": "Это слово: литература.",
-            "tj": "Ин калима: адабиёт."
+            "uz": "Men yangi ish oldingisidan yaxshi deb o'ylagandim, kutilmaganda oldingisidan ham yaxshi emas ekan.",
+            "ru": "Я думал, новая работа лучше прежней, но оказалось, что она даже не лучше прежней.",
+            "tj": "Ман фикр мекардам кори нав аз пешина беҳтар аст, вале маълум шуд, ки ҳатто аз пешина беҳтар нест."
           }
         }
       ]
@@ -125,33 +380,99 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "oldingi, asl",
+        "ru": "прежний, первоначальный",
+        "tj": "пешина, аввала"
       },
-      "title_zh": "问答结构",
+      "title_zh": "原来",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "Ot oldida kelib oldingi yoki dastlabki holatni bildiradi; ko'pincha 的 bilan otni aniqlaydi.",
+        "ru": "Перед существительным показывает прежнее или первоначальное состояние; часто оформляется через 的.",
+        "tj": "Пеш аз исм ҳолати пешина ё аввалаеро нишон медиҳад; аксаран бо 的 меояд."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "按原来的计划应该是两周，但是我们可以提前完成。",
+          "pinyin": "Àn yuánlái de jìhuà yīnggāi shì liǎng zhōu, dànshì wǒmen kěyǐ tíqián wánchéng.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Oldingi rejaga ko'ra ikki hafta bo'lishi kerak edi, lekin biz oldinroq tugata olamiz.",
+            "ru": "По первоначальному плану должно быть две недели, но мы можем завершить раньше.",
+            "tj": "Мувофиқи нақшаи аввал бояд ду ҳафта мешуд, вале мо метавонем пеш аз муҳлат анҷом диҳем."
           }
-        },
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "inkorni kuchaytirish",
+        "ru": "усиление отрицания",
+        "tj": "таъкиди инкор"
+      },
+      "title_zh": "并",
+      "rule": {
+        "uz": "并 odatda 不 yoki 没 oldida kelib, 'aslida unday emas' ma'nosida inkorni kuchaytiradi.",
+        "ru": "并 обычно стоит перед 不 или 没 и усиливает отрицание: 'вовсе не'.",
+        "tj": "并 одатан пеш аз 不 ё 没 омада, маънои 'умуман не'-ро таъкид мекунад."
+      },
+      "examples": [
         {
-          "zh": "文学。",
-          "pinyin": "wénxué.",
+          "zh": "后来才发现其实并不容易。",
+          "pinyin": "Hòulái cái fāxiàn qíshí bìng bù róngyì.",
           "translation": {
-            "uz": "文学 — wénxué deb o'qiladi.",
-            "ru": "文学 читается как wénxué.",
-            "tj": "文学 ҳамчун wénxué хонда мешавад."
+            "uz": "Keyin bildimki, aslida bu umuman oson emas ekan.",
+            "ru": "Потом я понял, что на самом деле это вовсе не легко.",
+            "tj": "Баъд фаҳмидам, ки дар асл ин умуман осон нест."
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "bo'yicha, muvofiq",
+        "ru": "согласно, по",
+        "tj": "мувофиқи, тибқи"
+      },
+      "title_zh": "按照",
+      "rule": {
+        "uz": "按照 + reja/qoidaga ko'ra harakat bajarilishini bildiradi.",
+        "ru": "按照 + план/правило показывает, что действие выполняется согласно этому.",
+        "tj": "按照 + нақша/қоида нишон медиҳад, ки амал тибқи он иҷро мешавад."
+      },
+      "examples": [
+        {
+          "zh": "我们今年的工作都已经按照计划完成了。",
+          "pinyin": "Wǒmen jīnnián de gōngzuò dōu yǐjīng ànzhào jìhuà wánchéng le.",
+          "translation": {
+            "uz": "Bu yilgi ishlarimizning hammasi reja bo'yicha yakunlandi.",
+            "ru": "Наша работа за этот год уже завершена согласно плану.",
+            "tj": "Корҳои имсолаи мо ҳама мувофиқи нақша анҷом ёфтанд."
+          }
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": {
+        "uz": "hatto, hattoki",
+        "ru": "даже",
+        "tj": "ҳатто"
+      },
+      "title_zh": "甚至",
+      "rule": {
+        "uz": "Kuchaytirib sanashda oxirgi, kutilmagan yoki kuchliroq holatni kiritadi.",
+        "ru": "В перечислении усиливает последний, более неожиданный или сильный пункт.",
+        "tj": "Дар шумориш ҳолати охирин, ногаҳонтар ё қавитарро таъкид мекунад."
+      },
+      "examples": [
+        {
+          "zh": "我们不得不去做一些自己不愿意做甚至是非常不喜欢的工作。",
+          "pinyin": "Wǒmen bùdébù qù zuò yìxiē zìjǐ bú yuànyì zuò shènzhì shì fēicháng bù xǐhuan de gōngzuò.",
+          "translation": {
+            "uz": "Biz o'zimiz xohlamaydigan, hatto juda yoqtirmaydigan ishlarni ham qilishga majbur bo'lamiz.",
+            "ru": "Нам приходится делать работу, которую мы не хотим делать, даже очень не любим.",
+            "tj": "Мо маҷбур мешавем корҳоеро кунем, ки намехоҳем, ҳатто хеле дӯст намедорем."
           }
         }
       ]
@@ -160,49 +481,245 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Adabiyot va san’at",
-        "ru": "Литература и искусство",
-        "tj": "Адабиёт ва санъат"
+        "uz": "小林 va 小李 ish almashtirish haqida gaplashadi",
+        "ru": "小林 и 小李 говорят о смене работы",
+        "tj": "小林 ва 小李 дар бораи иваз кардани кор гуфтугӯ мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "A",
-          "zh": "今天我们学习“文学艺术”。",
-          "pinyin": "Jīntiān wǒmen xuéxí wénxué yìshù.",
+          "speaker": "小林",
+          "zh": "听说你又换工作了？今年已经换了三次工作了吧？",
+          "pinyin": "Tīngshuō nǐ yòu huàn gōngzuò le? Jīnnián yǐjīng huànle sān cì gōngzuò le ba?",
           "text": {
-            "uz": "Bugun Adabiyot va san’at mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Литература и искусство.",
-            "tj": "Имрӯз мавзӯи Адабиёт ва санъат-ро меомӯзем."
+            "uz": "Eshitishimcha yana ish almashtiribsan? Bu yil allaqachon uch marta ish almashtirding-a?",
+            "ru": "Слышал, ты снова сменил работу? В этом году уже три раза сменил работу, да?",
+            "tj": "Шунидам боз коратро иваз кардӣ? Имсол аллакай се бор кор иваз кардӣ, ҳа?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "speaker": "小李",
+          "zh": "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
+          "pinyin": "Biétí le! Wǒ yǐwéi xīn gōngzuò bǐ yǐqián de hǎo, méi xiǎngdào hái méiyǒu yǐqián hǎo ne.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Qo'y, gapirma! Yangi ish oldingisidan yaxshi deb o'ylagandim, kutilmaganda oldingisidan ham yaxshi emas ekan.",
+            "ru": "Не напоминай! Я думал, новая работа лучше прежней, но оказалось, что она даже не лучше прежней.",
+            "tj": "Нагӯй беҳтар! Ман фикр мекардам кори нав аз пешина беҳтар аст, вале маълум шуд, ки ҳатто беҳтар нест."
           }
         },
         {
-          "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "speaker": "小林",
+          "zh": "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
+          "pinyin": "Shàng cì nà fèn gōngzuò nǐ zhǐ zuòle liǎng ge yuè jiù líkāi le, qíshí, wánquán shìyìng yí ge xīn de gōngzuò xūyào yì nián shíjiān, suǒyǐ, jīngcháng huàn gōngzuò bù yídìng hǎo.",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "O'tgan safargi ishda atigi ikki oy ishlab ketding. Aslida yangi ishga to'liq moslashish uchun bir yil kerak, shuning uchun ishni tez-tez almashtirish shart emas yaxshi bo'lavermaydi.",
+            "ru": "На прошлой работе ты проработал всего два месяца и ушёл. На самом деле, чтобы полностью привыкнуть к новой работе, нужен год, поэтому часто менять работу не обязательно хорошо.",
+            "tj": "Дар кори пешина ҳамагӣ ду моҳ кор карда рафтӣ. Дар асл, барои пурра одат кардан ба кори нав як сол вақт лозим, бинобар ин зуд-зуд кор иваз кардан ҳатман хуб нест."
           }
         },
         {
-          "speaker": "B",
-          "zh": "文学。",
-          "pinyin": "wénxué.",
+          "speaker": "小李",
+          "zh": "我也明白。但是那份工作的收入太少了！",
+          "pinyin": "Wǒ yě míngbai. Dànshì nà fèn gōngzuò de shōurù tài shǎo le!",
           "text": {
-            "uz": "文学 — wénxué deb o'qiladi.",
-            "ru": "文学 читается как wénxué.",
-            "tj": "文学 ҳамчун wénxué хонда мешавад."
+            "uz": "Men ham tushunaman. Lekin u ishning daromadi juda kam edi!",
+            "ru": "Я тоже понимаю. Но доход на той работе был слишком маленький!",
+            "tj": "Ман ҳам мефаҳмам. Аммо даромади он кор хеле кам буд!"
+          }
+        },
+        {
+          "speaker": "小林",
+          "zh": "你才到新公司，不要太急着赚钱，多学习才是最重要的。",
+          "pinyin": "Nǐ cái dào xīn gōngsī, búyào tài jí zhe zhuàn qián, duō xuéxí cái shì zuì zhòngyào de.",
+          "text": {
+            "uz": "Sen yangi kompaniyaga endi kelding, pul topishga juda shoshilma, ko'proq o'rganish eng muhimi.",
+            "ru": "Ты только пришёл в новую компанию, не спеши зарабатывать деньги, важнее больше учиться.",
+            "tj": "Ту нав ба ширкати нав омадӣ, ба пул кор кардан зиёд шитоб накун, бештар омӯхтан муҳимтар аст."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "好。我一定会努力把现在这份工作做好。",
+          "pinyin": "Hǎo. Wǒ yídìng huì nǔlì bǎ xiànzài zhè fèn gōngzuò zuòhǎo.",
+          "text": {
+            "uz": "Yaxshi. Hozirgi ishni albatta astoydil yaxshi bajaraman.",
+            "ru": "Хорошо. Я обязательно постараюсь хорошо выполнять нынешнюю работу.",
+            "tj": "Хуб. Ман ҳатман кӯшиш мекунам кори ҳозираамро хуб анҷом диҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "王经理 va 小李 ish rejasi haqida gaplashadi",
+        "ru": "王经理 и 小李 говорят о рабочем плане",
+        "tj": "王经理 ва 小李 дар бораи нақшаи кор гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "王经理",
+          "zh": "那份调查还要多长时间才能做完？",
+          "pinyin": "Nà fèn diàochá hái yào duō cháng shíjiān cái néng zuòwán?",
+          "text": {
+            "uz": "U tadqiqotni tugatish uchun yana qancha vaqt kerak?",
+            "ru": "Сколько ещё времени нужно, чтобы закончить то исследование?",
+            "tj": "Барои анҷом додани он таҳқиқ боз чӣ қадар вақт лозим?"
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "按原来的计划应该是两周，但是我们可以提前完成，周末保证做完。",
+          "pinyin": "Àn yuánlái de jìhuà yīnggāi shì liǎng zhōu, dànshì wǒmen kěyǐ tíqián wánchéng, zhōumò bǎozhèng zuòwán.",
+          "text": {
+            "uz": "Oldingi rejaga ko'ra ikki hafta bo'lishi kerak edi, lekin biz oldinroq tugata olamiz, dam olish kunigacha albatta tugatamiz.",
+            "ru": "По первоначальному плану должно быть две недели, но мы можем завершить раньше, к выходным гарантированно закончим.",
+            "tj": "Мувофиқи нақшаи аввал бояд ду ҳафта мешуд, вале мо пештар анҷом дода метавонем, то охири ҳафта ҳатман тамом мекунем."
+          }
+        },
+        {
+          "speaker": "王经理",
+          "zh": "虽然最近工作很忙，但你们也要注意身体呀。",
+          "pinyin": "Suīrán zuìjìn gōngzuò hěn máng, dàn nǐmen yě yào zhùyì shēntǐ a.",
+          "text": {
+            "uz": "So'nggi payt ish juda band bo'lsa ham, sog'lig'ingizga ham e'tibor beringlar.",
+            "ru": "Хотя в последнее время работы много, вам тоже нужно беречь здоровье.",
+            "tj": "Ҳарчанд вақтҳои охир кор серкор аст, ба саломатиятон ҳам аҳамият диҳед."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "谢谢您！现在有很多事情等着我做，真不知道该先做哪个好。",
+          "pinyin": "Xièxie nín! Xiànzài yǒu hěn duō shìqing děngzhe wǒ zuò, zhēn bù zhīdào gāi xiān zuò nǎge hǎo.",
+          "text": {
+            "uz": "Rahmat! Hozir juda ko'p ish meni kutyapti, qaysisini avval qilishni bilmayapman.",
+            "ru": "Спасибо! Сейчас много дел ждут меня, я правда не знаю, что лучше сделать сначала.",
+            "tj": "Ташаккур! Ҳоло корҳои зиёд маро интизоранд, ростӣ намедонам кадомашро аввал кунам."
+          }
+        },
+        {
+          "speaker": "王经理",
+          "zh": "每天早上我都把当天计划要做的事情写在笔记本上，提醒自己安排好时间。你也可以试试这样做。",
+          "pinyin": "Měi tiān zǎoshang wǒ dōu bǎ dàngtiān jìhuà yào zuò de shìqing xiě zài bǐjìběn shang, tíxǐng zìjǐ ānpái hǎo shíjiān. Nǐ yě kěyǐ shìshi zhèyàng zuò.",
+          "text": {
+            "uz": "Men har kuni ertalab o'sha kuni qilishni rejalagan ishlarimni daftarimga yozib, vaqtni yaxshi taqsimlashni o'zimga eslataman. Sen ham shunday qilib ko'rishing mumkin.",
+            "ru": "Каждое утро я записываю в блокнот дела, которые планирую сделать в этот день, и напоминаю себе правильно распределить время. Ты тоже можешь попробовать так делать.",
+            "tj": "Ман ҳар саҳар корҳои ҳамон рӯзро ба дафтар менависам ва ба худ вақтро хуб тақсим карданро ёдрас мекунам. Ту ҳам метавонӣ ҳамин тавр санҷӣ."
+          }
+        },
+        {
+          "speaker": "小李",
+          "zh": "这个办法真不错！这样我就不会手忙脚乱了。",
+          "pinyin": "Zhège bànfǎ zhēn búcuò! Zhèyàng wǒ jiù bú huì shǒumáng-jiǎoluàn le.",
+          "text": {
+            "uz": "Bu usul juda yaxshi! Shunday qilsam, qo'lim-oyog'im chalkashib ketmaydi.",
+            "ru": "Этот способ правда хороший! Тогда я не буду суетиться и путаться.",
+            "tj": "Ин усул хеле хуб аст! Ҳамин тавр ман саросема ва парешон намешавам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "王经理 va 马经理 biznes kelishuvi haqida gaplashadi",
+        "ru": "王经理 и 马经理 говорят о деловой сделке",
+        "tj": "王经理 ва 马经理 дар бораи муомилаи тиҷорӣ гуфтугӯ мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "王经理",
+          "zh": "什么事让你这么高兴啊？",
+          "pinyin": "Shénme shì ràng nǐ zhème gāoxìng a?",
+          "text": {
+            "uz": "Nima seni bunchalik xursand qildi?",
+            "ru": "Что тебя так обрадовало?",
+            "tj": "Чӣ чиз туро ин қадар хурсанд кард?"
+          }
+        },
+        {
+          "speaker": "马经理",
+          "zh": "我和上次那个公司的生意终于谈成了。",
+          "pinyin": "Wǒmen hé shàng cì nàge gōngsī de shēngyi zhōngyú tánchéng le.",
+          "text": {
+            "uz": "O'tgan safargi kompaniya bilan biznesimiz nihoyat kelishildi.",
+            "ru": "Бизнес с той прошлой компанией наконец удалось согласовать.",
+            "tj": "Тиҷорат бо он ширкати дафъаи гузашта ниҳоят ба созиш расид."
+          }
+        },
+        {
+          "speaker": "王经理",
+          "zh": "太好了！你工作那么努力，公司会越来越好的。",
+          "pinyin": "Tài hǎo le! Nǐ gōngzuò nàme nǔlì, gōngsī huì yuè lái yuè hǎo de.",
+          "text": {
+            "uz": "Juda yaxshi! Sen shunchalik tirishib ishlaysan, kompaniya tobora yaxshilanadi.",
+            "ru": "Отлично! Ты так стараешься на работе, компания будет становиться всё лучше.",
+            "tj": "Бисёр хуб! Ту ин қадар меҳнат мекунӣ, ширкат рӯз ба рӯз беҳтар мешавад."
+          }
+        },
+        {
+          "speaker": "马经理",
+          "zh": "我原来以为做生意很简单，后来才发现其实并不容易，现在赚钱越来越难了。",
+          "pinyin": "Wǒ yuánlái yǐwéi zuò shēngyi hěn jiǎndān, hòulái cái fāxiàn qíshí bìng bù róngyì, xiànzài zhuàn qián yuè lái yuè nán le.",
+          "text": {
+            "uz": "Avval biznes qilish juda oddiy deb o'ylagandim, keyin bildimki aslida umuman oson emas, hozir pul topish tobora qiyinlashyapti.",
+            "ru": "Раньше я думал, что заниматься бизнесом очень просто, но потом понял, что это вовсе не легко; сейчас зарабатывать деньги всё труднее.",
+            "tj": "Аввал фикр мекардам тиҷорат хеле осон аст, баъд фаҳмидам, ки умуман осон нест; ҳоло пул даромад кардан рӯз ба рӯз душвортар мешавад."
+          }
+        },
+        {
+          "speaker": "王经理",
+          "zh": "慢慢来，万事开头难，重要的是要多积累经验。",
+          "pinyin": "Mànman lái, wànshì kāitóu nán, zhòngyào de shì yào duō jīlěi jīngyàn.",
+          "text": {
+            "uz": "Shoshilma, har ishning boshi qiyin, muhimi ko'proq tajriba yig'ish.",
+            "ru": "Не спеши, в любом деле начало трудно, главное - больше накапливать опыт.",
+            "tj": "Оҳиста-оҳиста, оғози ҳар кор душвор аст, муҳимаш таҷрибаи зиёд ҷамъ кардан."
+          }
+        },
+        {
+          "speaker": "马经理",
+          "zh": "我相信经过我们大家的努力，公司的生意会越做越大，一切都会好的。",
+          "pinyin": "Wǒ xiāngxìn jīngguò wǒmen dàjiā de nǔlì, gōngsī de shēngyi huì yuè zuò yuè dà, yíqiè dōu huì hǎo de.",
+          "text": {
+            "uz": "Hammamizning mehnatimiz bilan kompaniyaning biznesi tobora kattalashishiga va hammasi yaxshi bo'lishiga ishonaman.",
+            "ru": "Я верю, что благодаря усилиям всех нас бизнес компании будет расти, и всё будет хорошо.",
+            "tj": "Бовар дорам бо кӯшиши ҳамаи мо тиҷорати ширкат калонтар мешавад ва ҳама чиз хуб мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Reja bo'yicha yakunlangan ish haqida nutq",
+        "ru": "Речь о работе, завершённой по плану",
+        "tj": "Суханронӣ дар бораи кори тибқи нақша анҷомёфта"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "我们今年的工作都已经按照计划完成了。这一段时间，尽管工作很紧张，中间也遇到了很多困难，但是因为有大家的努力，我们成功地解决了问题，顺利地完成了工作，非常感谢大家对我的帮助！另外，马经理让我告诉大家一个好消息，因为大家按时完成了工作，公司决定这个月给每个人多发三千元奖金。感谢大家这三个月的努力工作，希望明年能有更大的成绩！",
+          "pinyin": "Wǒmen jīnnián de gōngzuò dōu yǐjīng ànzhào jìhuà wánchéng le. Zhè yí duàn shíjiān, jǐnguǎn gōngzuò hěn jǐnzhāng, zhōngjiān yě yùdàole hěn duō kùnnan, dànshì yīnwèi yǒu dàjiā de nǔlì, wǒmen chénggōng de jiějuéle wèntí, shùnlì de wánchéngle gōngzuò, fēicháng gǎnxiè dàjiā duì wǒ de bāngzhù! Lìngwài, Mǎ jīnglǐ ràng wǒ gàosu dàjiā yí ge hǎo xiāoxi, yīnwèi dàjiā ànshí wánchéngle gōngzuò, gōngsī juédìng zhège yuè gěi měi rén duō fā sānqiān yuán jiǎngjīn. Gǎnxiè dàjiā zhè sān ge duō yuè de nǔlì gōngzuò, xīwàng míngnián néng yǒu gèng dà de chéngjì!",
+          "text": {
+            "uz": "Bu yilgi ishlarimizning hammasi reja bo'yicha yakunlandi. Shu davrda ish juda tig'iz bo'ldi, o'rtada ko'p qiyinchiliklar ham uchradi, lekin hammaning mehnati bilan muammolarni muvaffaqiyatli hal qildik va ishni muammosiz yakunladik. Yordamlaringiz uchun juda minnatdorman! Bundan tashqari, Ma menejer hammaga yaxshi xabar aytishimni so'radi: hamma ishni vaqtida tugatgani uchun kompaniya bu oy har bir kishiga qo'shimcha uch ming yuan bonus berishga qaror qildi. Shu uch oycha davomida qilgan mehnatingiz uchun rahmat, kelasi yili yanada katta natija bo'lishini tilayman!",
+            "ru": "Наша работа за этот год уже завершена согласно плану. В этот период работа была очень напряжённой, возникло много трудностей, но благодаря усилиям всех мы успешно решили проблемы и гладко завершили работу. Большое спасибо всем за помощь! Кроме того, менеджер Ма попросил передать хорошую новость: поскольку все завершили работу вовремя, компания решила в этом месяце выдать каждому дополнительно по три тысячи юаней премии. Спасибо всем за упорную работу за эти три с лишним месяца, надеюсь, в следующем году будут ещё большие результаты!",
+            "tj": "Корҳои имсолаи мо ҳама мувофиқи нақша анҷом ёфтанд. Дар ин муддат кор хеле пуршиддат буд, мушкилоти зиёд ҳам пеш омад, аммо бо кӯшиши ҳама мо мушкилотро муваффақона ҳал карда, корро равон анҷом додем. Барои ёрии ҳамаатон хеле миннатдорам! Ғайр аз ин, менеҷер Ма гуфт ба ҳама як хабари хуб расонам: чун ҳама корро дар вақташ анҷом доданд, ширкат қарор кард ин моҳ ба ҳар кас иловатан се ҳазор юан мукофот диҳад. Барои кори сахти ин се моҳи зиёдатон ташаккур, умедворам соли оянда натиҷаҳои калонтар хоҳем дошт!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yoshlar, ish tajribasi va mas'uliyat haqida matn",
+        "ru": "Текст о молодёжи, опыте работы и ответственности",
+        "tj": "Матн дар бораи ҷавонон, таҷрибаи кор ва масъулият"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "年轻人刚开始工作的时候，不要太急着赚钱，不要眼睛里只有工资和奖金。在工作的前几年，重要的是丰富自己的工作经验，学习与同事交流的方法，积累专业知识，这些比收入重要多了。但是很多时候，我们不得不去做一些自己不愿意做甚至是非常不喜欢的工作。这时，我们最需要的就是对工作的责任心。一个人即使能力再高，经验再丰富，如果对工作没有责任心，也很难把工作做好。",
+          "pinyin": "Niánqīng rén gāng kāishǐ gōngzuò de shíhou, búyào tài jízhe zhuàn qián, búyào yǎnjing lǐ zhǐyǒu gōngzī hé jiǎngjīn. Zài gōngzuò de qián jǐ nián, zhòngyào de shì fēngfù zìjǐ de gōngzuò jīngyàn, xuéxí yǔ tóngshì jiāoliú de fāngfǎ, jīlěi zhuānyè zhīshi, zhèxiē bǐ shōurù zhòngyào duō le. Dànshì hěn duō shíhou, wǒmen bùdébù qù zuò yìxiē zìjǐ bú yuànyì zuò shènzhì shì fēicháng bù xǐhuan de gōngzuò. Zhè shí, wǒmen zuì xūyào de jiù shì duì gōngzuò de zérènxīn. Yí ge rén jíshǐ nénglì zài gāo, jīngyàn zài fēngfù, rúguǒ duì gōngzuò méiyǒu zérènxīn, yě hěn nán bǎ gōngzuò zuòhǎo.",
+          "text": {
+            "uz": "Yoshlar endi ish boshlagan paytda pul topishga juda shoshilmasligi, ko'zida faqat maosh va bonus bo'lmasligi kerak. Ishning dastlabki yillarida o'z ish tajribasini boyitish, hamkasblar bilan muloqot qilish usullarini o'rganish va professional bilim to'plash muhimroq, bular daromaddan ancha muhim. Lekin ko'p hollarda biz o'zimiz xohlamaydigan, hatto juda yoqtirmaydigan ishlarni qilishga majbur bo'lamiz. Bunday paytda eng kerak narsa - ishga mas'uliyat bilan qarash. Insonning qobiliyati qanchalik yuqori, tajribasi qanchalik boy bo'lmasin, ishga mas'uliyati bo'lmasa, ishni yaxshi bajarishi qiyin.",
+            "ru": "Когда молодые люди только начинают работать, не нужно слишком спешить зарабатывать деньги, не нужно видеть только зарплату и премии. В первые годы работы важнее обогащать свой рабочий опыт, учиться общаться с коллегами и накапливать профессиональные знания; это гораздо важнее дохода. Но во многих случаях нам приходится делать работу, которую мы не хотим делать, даже очень не любим. В такой момент больше всего нужна ответственность к работе. Какими бы высокими ни были способности человека и каким бы богатым ни был опыт, если у него нет ответственности к работе, хорошо выполнить работу трудно.",
+            "tj": "Вақте ҷавонон нав ба кор оғоз мекунанд, набояд ба пул кор кардан зиёд шитоб кунанд ва дар назарашон танҳо маошу мукофот бошад. Дар солҳои аввали кор муҳимтар он аст, ки таҷрибаи кориро бой кунанд, усули муошират бо ҳамкоронро омӯзанд ва донишҳои касбӣ ҷамъ кунанд; инҳо аз даромад хеле муҳимтаранд. Аммо бисёр вақт мо маҷбур мешавем корҳое кунем, ки намехоҳем, ҳатто хеле дӯст намедорем. Дар ин вақт аз ҳама бештар масъулият ба кор лозим аст. Қобилияти инсон ҳар қадар баланд ва таҷрибааш ҳар қадар бой бошад ҳам, агар ба кор масъулият надошта бошад, корро хуб анҷом додан душвор аст."
           }
         }
       ]
@@ -221,91 +738,434 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "文学",
-            "pinyin": "wénxué",
-            "pos": "n.",
-            "meaning": {
-              "uz": "adabiyot",
-              "ru": "литература",
-              "tj": "адабиёт"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "艺术",
-            "pinyin": "yìshù",
-            "pos": "n.",
-            "meaning": {
-              "uz": "san’at",
-              "ru": "искусство",
-              "tj": "санъат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "作品",
-            "pinyin": "zuòpǐn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "asar",
-              "ru": "произведение",
-              "tj": "асар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "小说",
-            "pinyin": "xiǎoshuō",
-            "pos": "n.",
-            "meaning": {
-              "uz": "roman, hikoya",
-              "ru": "роман, рассказ",
-              "tj": "роман, ҳикоя"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "诗歌",
-            "pinyin": "shīgē",
-            "pos": "n.",
-            "meaning": {
-              "uz": "she’riyat",
-              "ru": "поэзия",
-              "tj": "шеър"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "表达",
-            "pinyin": "biǎodá",
+            "no": 1,
+            "zh": "提",
+            "pinyin": "tí",
             "pos": "v.",
             "meaning": {
-              "uz": "ifodalamoq",
-              "ru": "выражать",
-              "tj": "ифода кардан"
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "灵感",
-            "pinyin": "línggǎn",
+            "no": 2,
+            "zh": "以为",
+            "pinyin": "yǐwéi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "份",
+            "pinyin": "fèn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "完全",
+            "pinyin": "wánquán",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "butunlay, to'liq",
+              "ru": "полностью, совершенно",
+              "tj": "пурра, комилан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "赚",
+            "pinyin": "zhuàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "pul topmoq",
+              "ru": "зарабатывать",
+              "tj": "пул даромад кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "调查",
+            "pinyin": "diàochá",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tekshirmoq, tadqiq qilmoq",
+              "ru": "исследовать, проводить опрос",
+              "tj": "таҳқиқ кардан, пурсиш гузаронидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "原来",
+            "pinyin": "yuánlái",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "asl, oldingi",
+              "ru": "первоначальный, прежний",
+              "tj": "аввала, пешина"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "计划",
+            "pinyin": "jìhuà",
+            "pos": "n./v.",
+            "meaning": {
+              "uz": "reja; rejalamoq",
+              "ru": "план; планировать",
+              "tj": "нақша; нақша кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "提前",
+            "pinyin": "tíqián",
+            "pos": "v.",
+            "meaning": {
+              "uz": "oldindan, muddatidan avval bajarmoq",
+              "ru": "сделать заранее, раньше срока",
+              "tj": "пешакӣ, пеш аз муҳлат кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "保证",
+            "pinyin": "bǎozhèng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kafolat bermoq",
+              "ru": "гарантировать",
+              "tj": "кафолат додан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "提醒",
+            "pinyin": "tíxǐng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "eslatmoq",
+              "ru": "напоминать",
+              "tj": "ёдрас кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "乱",
+            "pinyin": "luàn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "tartibsiz, chalkash",
+              "ru": "беспорядочный, спутанный",
+              "tj": "бетартиб, ошуфта"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "生意",
+            "pinyin": "shēngyi",
             "pos": "n.",
             "meaning": {
-              "uz": "ilhom",
-              "ru": "вдохновение",
-              "tj": "илҳом"
+              "uz": "biznes, savdo",
+              "ru": "бизнес, торговля",
+              "tj": "тиҷорат, савдо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "谈",
+            "pinyin": "tán",
+            "pos": "v.",
+            "meaning": {
+              "uz": "gaplashmoq, muhokama qilmoq",
+              "ru": "разговаривать, обсуждать",
+              "tj": "гуфтугӯ кардан, муҳокима кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 15,
+            "zh": "并",
+            "pinyin": "bìng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "inkor oldida kuchaytiradi: umuman",
+              "ru": "усиливает отрицание: вовсе",
+              "tj": "инкорро таъкид мекунад: умуман"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 16,
+            "zh": "积累",
+            "pinyin": "jīlěi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "to'plamoq, yig'moq",
+              "ru": "накапливать",
+              "tj": "ҷамъ кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 17,
+            "zh": "经验",
+            "pinyin": "jīngyàn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tajriba",
+              "ru": "опыт",
+              "tj": "таҷриба"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 18,
+            "zh": "一切",
+            "pinyin": "yíqiè",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "hammasi, barcha narsa",
+              "ru": "всё, всякий",
+              "tj": "ҳама чиз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 19,
+            "zh": "按照",
+            "pinyin": "ànzhào",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "bo'yicha, muvofiq",
+              "ru": "согласно, по",
+              "tj": "мувофиқи, тибқи"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 20,
+            "zh": "成功",
+            "pinyin": "chénggōng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "muvaffaqiyatli",
+              "ru": "успешный",
+              "tj": "муваффақ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 21,
+            "zh": "顺利",
+            "pinyin": "shùnlì",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "ravon, muammosiz",
+              "ru": "гладкий, успешный",
+              "tj": "равон, бе мушкил"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 22,
+            "zh": "感谢",
+            "pinyin": "gǎnxiè",
+            "pos": "v.",
+            "meaning": {
+              "uz": "minnatdor bo'lmoq, rahmat aytmoq",
+              "ru": "благодарить",
+              "tj": "ташаккур гуфтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 23,
+            "zh": "消息",
+            "pinyin": "xiāoxi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xabar, yangilik",
+              "ru": "новость, сообщение",
+              "tj": "хабар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 24,
+            "zh": "按时",
+            "pinyin": "ànshí",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "o'z vaqtida",
+              "ru": "вовремя, по расписанию",
+              "tj": "дар вақташ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 25,
+            "zh": "奖金",
+            "pinyin": "jiǎngjīn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mukofot puli, bonus",
+              "ru": "премия, бонус",
+              "tj": "мукофотпулӣ, бонус"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 26,
+            "zh": "工资",
+            "pinyin": "gōngzī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maosh",
+              "ru": "зарплата",
+              "tj": "маош"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 27,
+            "zh": "方法",
+            "pinyin": "fāngfǎ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "usul, yo'l",
+              "ru": "метод, способ",
+              "tj": "усул, роҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 28,
+            "zh": "知识",
+            "pinyin": "zhīshi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bilim",
+              "ru": "знания",
+              "tj": "дониш"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 29,
+            "zh": "不得不",
+            "pinyin": "bùdébù",
+            "pos": "",
+            "meaning": {
+              "uz": "majbur bo'lmoq",
+              "ru": "быть вынужденным",
+              "tj": "маҷбур шудан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 30,
+            "zh": "甚至",
+            "pinyin": "shènzhì",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "hatto, hattoki",
+              "ru": "даже",
+              "tj": "ҳатто"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 31,
+            "zh": "责任",
+            "pinyin": "zérèn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "mas'uliyat, javobgarlik",
+              "ru": "ответственность",
+              "tj": "масъулият"
             }
           }
         }
@@ -323,9 +1183,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "文学 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 文学:",
-            "tj": "Маънои калимаи 文学-ро интихоб кунед:"
+            "uz": "提 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 提:",
+            "tj": "Маънои калимаи 提-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +1194,39 @@
           },
           "options": [
             {
-              "uz": "adabiyot",
-              "ru": "литература",
-              "tj": "адабиёт"
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
             },
             {
-              "uz": "san’at",
-              "ru": "искусство",
-              "tj": "санъат"
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
             },
             {
-              "uz": "asar",
-              "ru": "произведение",
-              "tj": "асар"
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
             },
             {
-              "uz": "roman, hikoya",
-              "ru": "роман, рассказ",
-              "tj": "роман, ҳикоя"
+              "uz": "butunlay, to'liq",
+              "ru": "полностью, совершенно",
+              "tj": "пурра, комилан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "文学 = adabiyot (wénxué)",
-            "ru": "文学 = литература (wénxué)",
-            "tj": "文学 = адабиёт (wénxué)"
+            "uz": "提 = tilga olmoq, aytmoq (tí)",
+            "ru": "提 = упоминать, говорить (tí)",
+            "tj": "提 = зикр кардан, гуфтан (tí)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "文学 talaffuzini tanlang:",
-            "ru": "Выберите произношение 文学:",
-            "tj": "Талаффузи 文学-ро интихоб кунед:"
+            "uz": "以为 talaffuzini tanlang:",
+            "ru": "Выберите произношение 以为:",
+            "tj": "Талаффузи 以为-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +1234,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "wénxué",
-            "yìshù",
-            "zuòpǐn",
-            "xiǎoshuō"
+            "wánquán",
+            "yǐwéi",
+            "tí",
+            "fèn"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "文学 — wénxué",
-            "ru": "文学 — wénxué",
-            "tj": "文学 — wénxué"
+            "uz": "以为 — yǐwéi",
+            "ru": "以为 — yǐwéi",
+            "tj": "以为 — yǐwéi"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'adabiyot' xitoycha nima?",
-            "ru": "'литература' по-китайски?",
-            "tj": "'адабиёт' ба чинӣ чист?"
+            "uz": "'ish kabi narsalar uchun hisob so'zi' xitoycha qaysi?",
+            "ru": "'счётное слово для работы и др.' по-китайски?",
+            "tj": "'ҳисобвожа барои кор ва ғайра' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "文学",
-            "艺术",
-            "作品",
-            "小说"
+            "提",
+            "以为",
+            "完全",
+            "份"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "文学 = adabiyot (wénxué)",
-            "ru": "文学 = литература (wénxué)",
-            "tj": "文学 = адабиёт (wénxué)"
+            "uz": "ish kabi narsalar uchun hisob so'zi = 份 (fèn)",
+            "ru": "счётное слово для работы и др. = 份 (fèn)",
+            "tj": "ҳисобвожа барои кор ва ғайра = 份 (fèn)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "yìshù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yìshù?",
-            "tj": "yìshù кадом иероглиф аст?"
+            "uz": "wánquán qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wánquán?",
+            "tj": "wánquán кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,91 +1284,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "艺术",
-            "文学",
-            "作品",
-            "小说"
+            "以为",
+            "份",
+            "完全",
+            "提"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "艺术 = san’at (yìshù)",
-            "ru": "艺术 = искусство (yìshù)",
-            "tj": "艺术 = санъат (yìshù)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'文学艺术' iborasini tuzing",
-            "ru": "Соберите фразу '文学艺术'",
-            "tj": "Ибораи '文学艺术'-ро созед"
-          },
-          "tokens": [
-            "文学",
-            "艺术",
-            "作品",
-            "小说"
-          ],
-          "answer_tokens": [
-            "文学",
-            "艺术"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 文学 艺术",
-            "ru": "Правильный порядок: 文学 艺术",
-            "tj": "Тартиби дуруст: 文学 艺术"
+            "uz": "完全 = butunlay, to'liq (wánquán)",
+            "ru": "完全 = полностью, совершенно (wánquán)",
+            "tj": "完全 = пурра, комилан (wánquán)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "文学",
+              "提",
               {
-                "uz": "adabiyot",
-                "ru": "литература",
-                "tj": "адабиёт"
+                "uz": "tilga olmoq, aytmoq",
+                "ru": "упоминать, говорить",
+                "tj": "зикр кардан, гуфтан"
               }
             ],
             [
-              "艺术",
+              "以为",
               {
-                "uz": "san’at",
-                "ru": "искусство",
-                "tj": "санъат"
+                "uz": "deb o'ylamoq, yanglish hisoblamoq",
+                "ru": "думать, ошибочно полагать",
+                "tj": "фикр кардан, ғалат пиндоштан"
               }
             ],
             [
-              "作品",
+              "份",
               {
-                "uz": "asar",
-                "ru": "произведение",
-                "tj": "асар"
+                "uz": "ish kabi narsalar uchun hisob so'zi",
+                "ru": "счётное слово для работы и др.",
+                "tj": "ҳисобвожа барои кор ва ғайра"
               }
             ],
             [
-              "小说",
+              "完全",
               {
-                "uz": "roman, hikoya",
-                "ru": "роман, рассказ",
-                "tj": "роман, ҳикоя"
+                "uz": "butunlay, to'liq",
+                "ru": "полностью, совершенно",
+                "tj": "пурра, комилан"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我____新工作比以前的好，没想到还没有以前好呢。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "以为",
+            "完全",
+            "份",
+            "提"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 以为 (yǐwéi) — deb o'ylamoq, yanglish hisoblamoq",
+            "ru": "Верно: 以为 (yǐwéi) — думать, ошибочно полагать",
+            "tj": "Дуруст: 以为 (yǐwéi) — фикр кардан, ғалат пиндоштан"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "文学艺术",
-          "pinyin": "wénxué yìshù",
+          "phrase": "提",
+          "pinyin": "tí",
           "translation": {
-            "uz": "Adabiyot va san’at",
-            "ru": "Литература и искусство",
-            "tj": "Адабиёт ва санъат"
+            "uz": "tilga olmoq, aytmoq",
+            "ru": "упоминать, говорить",
+            "tj": "зикр кардан, гуфтан"
           }
         }
       ]
@@ -525,9 +1383,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda 小林 avval nima deydi?",
+            "ru": "Что 小林 говорит в начале диалога?",
+            "tj": "Дар муколама 小林 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -535,41 +1393,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "听说你又换工作了？今年已经换了三次工作了吧？",
+            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
+            "我也明白。但是那份工作的收入太少了！",
+            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 听说你又换工作了？今年已经换了三次工作了吧？",
+            "ru": "Правильный ответ: 听说你又换工作了？今年已经换了三次工作了吧？",
+            "tj": "Ҷавоби дуруст: 听说你又换工作了？今年已经换了三次工作了吧？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida 小李 nima deydi?",
+            "ru": "Что 小李 говорит в конце диалога?",
+            "tj": "Дар охири муколама 小李 чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "文学。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "好。我一定会努力把现在这份工作做好。",
+            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
+            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
+            "听说你又换工作了？今年已经换了三次工作了吧？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "B javobi: 文学。",
-            "ru": "Ответ B: 文学。",
-            "tj": "Ҷавоби B: 文学。"
+            "uz": "To'g'ri javob: 好。我一定会努力把现在这份工作做好。",
+            "ru": "Правильный ответ: 好。我一定会努力把现在这份工作做好。",
+            "tj": "Ҷавоби дуруст: 好。我一定会努力把现在这份工作做好。"
           }
         }
       ]

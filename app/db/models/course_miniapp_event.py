@@ -40,6 +40,7 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "xp_earned",
     "streak_updated",
     "league_points_earned",
+    "motivation_lesson_unfinished_sent",
 )
 
 CLIENT_COURSE_MINIAPP_EVENT_NAMES = (

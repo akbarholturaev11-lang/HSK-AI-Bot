@@ -13,55 +13,55 @@
     {
       "no": 1,
       "title": {
-        "uz": "Iqtisod va texnologiya",
-        "ru": "Экономика и технологии",
-        "tj": "Иқтисод ва технология"
+        "uz": "1-bo'lim",
+        "ru": "Раздел 1",
+        "tj": "Боби 1"
       },
       "lessons": [
         {
           "n": 1,
-          "zh": "经济全球化",
-          "py": "jīngjì quánqiúhuà",
+          "zh": "简单的爱情",
+          "py": "jiǎndān de àiqíng",
           "tr": {
-            "uz": "Globallashuv va iqtisodiyot",
-            "ru": "Глобализация и экономика",
-            "tj": "Ҷаҳонишавӣ ва иқтисод"
+            "uz": "sevgi va munosabatlar haqida gapirish; 不仅, 从来, 刚, 即使 va (在)...上 grammatikalarini ishlatish",
+            "ru": "говорить о любви и отношениях; использовать 不仅, 从来, 刚, 即使 и (在)...上",
+            "tj": "дар бораи муҳаббат ва муносибатҳо гуфтугӯ кардан; истифодаи 不仅, 从来, 刚, 即使 ва (在)...上"
           },
           "status": "current",
           "content": "lesson_01"
         },
         {
           "n": 2,
-          "zh": "科技发展",
-          "py": "kējì fāzhǎn",
+          "zh": "真正的朋友",
+          "py": "zhēnzhèng de péngyou",
           "tr": {
-            "uz": "Texnologiya va innovatsiya",
-            "ru": "Технологии и инновации",
-            "tj": "Технология ва навоварӣ"
+            "uz": "do'stlik, aloqa va haqiqiy do'st haqida gapirish; 正好, 差不多, 尽管, 却, 而 grammatikalarini ishlatish",
+            "ru": "говорить о дружбе, связи и настоящих друзьях; использовать 正好, 差不多, 尽管, 却, 而",
+            "tj": "дар бораи дӯстӣ, иртибот ва дӯсти ҳақиқӣ гуфтугӯ кардан; истифодаи 正好, 差不多, 尽管, 却, 而"
           },
           "status": "locked",
           "content": "lesson_02"
         },
         {
           "n": 3,
-          "zh": "教育制度",
-          "py": "jiàoyù zhìdù",
+          "zh": "经理对我印象不错",
+          "py": "jīnglǐ duì wǒ yìnxiàng búcuò",
           "tr": {
-            "uz": "Ta’lim tizimi",
-            "ru": "Система образования",
-            "tj": "Низоми таълим"
+            "uz": "intervyu, ishga qabul qilish va birinchi taassurot haqida gapirish; 挺, 本来, 另外, 首先, 不管 grammatikalarini ishlatish",
+            "ru": "говорить о собеседовании, найме и первом впечатлении; использовать 挺, 本来, 另外, 首先, 不管",
+            "tj": "дар бораи мусоҳиба, қабул ба кор ва таассуроти аввал гуфтугӯ кардан; истифодаи 挺, 本来, 另外, 首先, 不管"
           },
           "status": "locked",
           "content": "lesson_03"
         },
         {
           "n": 4,
-          "zh": "文学艺术",
-          "py": "wénxué yìshù",
+          "zh": "不要太着急赚钱",
+          "py": "bù yào tài zháojí zhuàn qián",
           "tr": {
-            "uz": "Adabiyot va san’at",
-            "ru": "Литература и искусство",
-            "tj": "Адабиёт ва санъат"
+            "uz": "ish, daromad va tajriba haqida gapirish; 以为, 原来, 并, 按照 va 甚至 grammatikalarini ishlatish",
+            "ru": "говорить о работе, доходе и опыте; использовать 以为, 原来, 并, 按照 и 甚至",
+            "tj": "дар бораи кор, даромад ва таҷриба гуфтугӯ кардан; истифодаи 以为, 原来, 并, 按照 ва 甚至"
           },
           "status": "locked",
           "content": "lesson_04",
@@ -69,12 +69,12 @@
         },
         {
           "n": 5,
-          "zh": "政治社会",
-          "py": "zhèngzhì shèhuì",
+          "zh": "只买对的，不买贵的",
+          "py": "zhǐ mǎi duì de bù mǎi guì de",
           "tr": {
-            "uz": "Jamiyat va siyosat",
-            "ru": "Общество и политика",
-            "tj": "Ҷомеа ва сиёсат"
+            "uz": "xarid, narx, sifat va onlayn savdo haqida gapirish; 肯定, 再说, 实际, 对……来说 va 尤其 grammatikalarini ishlatish",
+            "ru": "говорить о покупках, цене, качестве и онлайн-покупках; использовать 肯定, 再说, 实际, 对……来说 и 尤其",
+            "tj": "дар бораи харид, нарх, сифат ва хариди онлайн гуфтугӯ кардан; истифодаи 肯定, 再说, 实际, 对……来说 ва 尤其"
           },
           "status": "locked",
           "content": "lesson_05",
@@ -93,19 +93,19 @@
     {
       "no": 2,
       "title": {
-        "uz": "Jamiyat va qonun",
-        "ru": "Общество и право",
-        "tj": "Ҷомеа ва қонун"
+        "uz": "2-bo'lim",
+        "ru": "Раздел 2",
+        "tj": "Боби 2"
       },
       "lessons": [
         {
           "n": 6,
-          "zh": "环境问题",
-          "py": "huánjìng wèntí",
+          "zh": "一分钱一分货",
+          "py": "yī fēn qián yī fēn huò",
           "tr": {
-            "uz": "Ekologik muammolar",
-            "ru": "Экологические проблемы",
-            "tj": "Мушкилоти экологӣ"
+            "uz": "narx va sifat, chegirma, xizmat va savdo aksiyalari haqida gapirish; 竟然, 倍, 值得, 其中 va （在）……下 grammatikalarini ishlatish",
+            "ru": "говорить о цене и качестве, скидках, сервисе и торговых акциях; использовать 竟然, 倍, 值得, 其中 и （在）……下",
+            "tj": "дар бораи нарх ва сифат, тахфиф, хизмат ва чорабиниҳои савдо гуфтугӯ кардан; истифодаи 竟然, 倍, 值得, 其中 ва （在）……下"
           },
           "status": "locked",
           "content": "lesson_06",
@@ -113,12 +113,12 @@
         },
         {
           "n": 7,
-          "zh": "医疗卫生",
-          "py": "yīliáo wèishēng",
+          "zh": "最好的医生是自己",
+          "py": "zuìhǎo de yīshēng shì zìjǐ",
           "tr": {
-            "uz": "Tibbiyot va sog‘liqni saqlash",
-            "ru": "Медицина и здравоохранение",
-            "tj": "Тиб ва ҳифзи саломатӣ"
+            "uz": "sog'liq, odatlar va sport haqida gapirish; 估计, 来不及, 离合词重叠, 要是 va 既...又 grammatikalarini ishlatish",
+            "ru": "говорить о здоровье, привычках и спорте; использовать 估计, 来不及, удвоение разделяемых слов, 要是 и 既...又",
+            "tj": "дар бораи саломатӣ, одатҳо ва варзиш гуфтугӯ кардан; истифодаи 估计, 来不及, такрори калимаҳои ҷудошаванда, 要是 ва 既...又"
           },
           "status": "locked",
           "content": "lesson_07",
@@ -126,12 +126,12 @@
         },
         {
           "n": 8,
-          "zh": "法律法规",
-          "py": "fǎlǜ fǎguī",
+          "zh": "生活中不缺少美",
+          "py": "shēnghuó zhōng bù quēshǎo měi",
           "tr": {
-            "uz": "Qonun va huquq",
-            "ru": "Закон и право",
-            "tj": "Қонун ва ҳуқуқ"
+            "uz": "kayfiyat, go'zallik va hayotga munosabat haqida gapirish; 使, 只要, 可不是, 因此 va 往往 grammatikalarini ishlatish",
+            "ru": "говорить о настроении, красоте и отношении к жизни; использовать 使, 只要, 可不是, 因此 и 往往",
+            "tj": "дар бораи кайфият, зебоӣ ва муносибат ба зиндагӣ гуфтугӯ кардан; истифодаи 使, 只要, 可不是, 因此 ва 往往"
           },
           "status": "locked",
           "content": "lesson_08",
@@ -139,12 +139,12 @@
         },
         {
           "n": 9,
-          "zh": "商业谈判",
-          "py": "shāngyè tánpàn",
+          "zh": "阳光总在风雨后",
+          "py": "yángguāng zǒng zài fēng yǔ hòu",
           "tr": {
-            "uz": "Biznes muzokaralar",
-            "ru": "Деловые переговоры",
-            "tj": "Музокироти тиҷорӣ"
+            "uz": "urinish, muvaffaqiyat va qiyinchiliklarga munosabat haqida gapirish; 难道, 通过, 可是, 结果 va 上 grammatikalarini ishlatish",
+            "ru": "говорить об усилиях, успехе и отношении к трудностям; использовать 难道, 通过, 可是, 结果 и 上",
+            "tj": "дар бораи кӯшиш, муваффақият ва муносибат ба мушкилӣ гуфтугӯ кардан; истифодаи 难道, 通过, 可是, 结果 ва 上"
           },
           "status": "locked",
           "content": "lesson_09",
@@ -152,12 +152,12 @@
         },
         {
           "n": 10,
-          "zh": "文化交流",
-          "py": "wénhuà jiāoliú",
+          "zh": "幸福的标准",
+          "py": "xìngfú de biāozhǔn",
           "tr": {
-            "uz": "Madaniy almashinuv",
-            "ru": "Культурный обмен",
-            "tj": "Мубодилаи фарҳангӣ"
+            "uz": "baxt, oila, ish tanlovi va hayot sharoiti haqida gapirish; 不过, 确实, 在...看来, 由于 va 比如 grammatikalarini ishlatish",
+            "ru": "говорить о счастье, семье, выборе работы и условиях жизни; использовать 不过, 确实, 在...看来, 由于 и 比如",
+            "tj": "дар бораи хушбахтӣ, оила, интихоби кор ва шароити зиндагӣ гуфтугӯ кардан; истифодаи 不过, 确实, 在...看来, 由于 ва 比如"
           },
           "status": "locked",
           "content": "lesson_10",
@@ -177,19 +177,19 @@
     {
       "no": 3,
       "title": {
-        "uz": "Madaniyat va salomatlik",
-        "ru": "Культура и здоровье",
-        "tj": "Фарҳанг ва саломатӣ"
+        "uz": "3-bo'lim",
+        "ru": "Раздел 3",
+        "tj": "Боби 3"
       },
       "lessons": [
         {
           "n": 11,
-          "zh": "历史传统",
-          "py": "lìshǐ chuántǒng",
+          "zh": "读书好，读好书，好读书",
+          "py": "dú shū hǎo dú hǎo shū hǎo dú shū",
           "tr": {
-            "uz": "Tarix va an’analar",
-            "ru": "История и традиции",
-            "tj": "Таърих ва анъанаҳо"
+            "uz": "o'qish odati, imtihon va kitob tanlash haqida gapirish; 连, 否则, 无论, 然而 va 同时 grammatikalarini ishlatish",
+            "ru": "говорить о чтении, экзаменах и выборе книг; использовать 连, 否则, 无论, 然而 и 同时",
+            "tj": "дар бораи мутолиа, имтиҳон ва интихоби китоб гуфтугӯ кардан; истифодаи 连, 否则, 无论, 然而 ва 同时"
           },
           "status": "locked",
           "content": "lesson_11",
@@ -197,12 +197,12 @@
         },
         {
           "n": 12,
-          "zh": "心理健康",
-          "py": "xīnlǐ jiànkāng",
+          "zh": "用心发现世界",
+          "py": "yòng xīn fāxiàn shìjiè",
           "tr": {
-            "uz": "Psixologiya va ruhiy salomatlik",
-            "ru": "Психология и психическое здоровье",
-            "tj": "Психология ва саломатии рӯҳӣ"
+            "uz": "hayotdan yechim topish, tajribani yangilash va to'g'ri usul tanlash haqida gapirish; 并且, 再……也……, 对于, o'lchov so'zi takrori va 相反 grammatikalarini ishlatish",
+            "ru": "говорить о поиске решений в жизни, пересмотре опыта и выборе метода; использовать 并且, 再……也……, 对于, повтор счётных слов и 相反",
+            "tj": "дар бораи ёфтани роҳ аз зиндагӣ, нав кардани таҷриба ва интихоби усули дуруст гуфтугӯ кардан; истифодаи 并且, 再……也……, 对于, такрори шуморкалима ва 相反"
           },
           "status": "locked",
           "content": "lesson_12",
@@ -210,12 +210,12 @@
         },
         {
           "n": 13,
-          "zh": "体育竞技",
-          "py": "tǐyù jìngjì",
+          "zh": "喝着茶看京剧",
+          "py": "hē zhe chá kàn jīngjù",
           "tr": {
-            "uz": "Musobaqa sporti",
-            "ru": "Соревновательный спорт",
-            "tj": "Варзиши мусобиқаӣ"
+            "uz": "Pekin operasi, an'anaviy madaniyat, chopstik va choy haqida gapirish; 大概, 偶尔, 由, 进行 va 随着 grammatikalarini ishlatish",
+            "ru": "говорить о пекинской опере, традиционной культуре, палочках и чае; использовать 大概, 偶尔, 由, 进行 и 随着",
+            "tj": "дар бораи операи Пекин, фарҳанги суннатӣ, чӯбчаҳои хӯрок ва чой гуфтугӯ кардан; истифодаи 大概, 偶尔, 由, 进行 ва 随着"
           },
           "status": "locked",
           "content": "lesson_13",
@@ -223,12 +223,12 @@
         },
         {
           "n": 14,
-          "zh": "饮食文化",
-          "py": "yǐnshí wénhuà",
+          "zh": "保护地球母亲",
+          "py": "bǎohù dìqiú mǔqīn",
           "tr": {
-            "uz": "Ovqat madaniyati",
-            "ru": "Культура питания",
-            "tj": "Фарҳанги ғизо"
+            "uz": "atrof-muhitni himoya qilish, tejash va ekologik odatlar haqida gapirish; 够, 以, 既然, 于是/因此 va 只有...才 grammatikalarini ishlatish",
+            "ru": "говорить о защите окружающей среды, экономии и экологичных привычках; использовать 够, 以, 既然, 于是/因此 и 只有...才",
+            "tj": "дар бораи ҳифзи муҳити зист, сарфа ва одатҳои экологӣ гуфтугӯ кардан; истифодаи 够, 以, 既然, 于是/因此 ва 只有...才"
           },
           "status": "locked",
           "content": "lesson_14",
@@ -236,12 +236,12 @@
         },
         {
           "n": 15,
-          "zh": "城乡发展",
-          "py": "chéngxiāng fāzhǎn",
+          "zh": "教育孩子的艺术",
+          "py": "jiàoyù háizi de yìshù",
           "tr": {
-            "uz": "Shahar va qishloq rivojlanishi",
-            "ru": "Развитие города и села",
-            "tj": "Рушди шаҳр ва деҳот"
+            "uz": "bolani tarbiyalash, odat, vaqtni boshqarish, maqtash va mos usul tanlash haqida gapirish; 想起来, 弄, 千万, 来 va 左右 grammatikalarini ishlatish",
+            "ru": "говорить о воспитании детей, привычках, управлении временем, похвале и выборе метода; использовать 想起来, 弄, 千万, 来 и 左右",
+            "tj": "дар бораи тарбияи кӯдак, одат, идораи вақт, таъриф ва интихоби усул гуфтугӯ кардан; истифодаи 想起来, 弄, 千万, 来 ва 左右"
           },
           "status": "locked",
           "content": "lesson_15",
@@ -261,19 +261,19 @@
     {
       "no": 4,
       "title": {
-        "uz": "An’analar va kelajak",
-        "ru": "Традиции и будущее",
-        "tj": "Анъанаҳо ва оянда"
+        "uz": "4-bo'lim",
+        "ru": "Раздел 4",
+        "tj": "Боби 4"
       },
       "lessons": [
         {
           "n": 16,
-          "zh": "人际关系",
-          "py": "rénjì guānxi",
+          "zh": "生活可以更美好",
+          "py": "shēnghuó kěyǐ gèng měi hǎo",
           "tr": {
-            "uz": "Shaxslararo munosabatlar",
-            "ru": "Межличностные отношения",
-            "tj": "Муносибатҳои байни одамон"
+            "uz": "o'qish/ish rejasi, imkoniyat, rad etish, hozir boshlash va kamtarlik haqida gapirish; 可, 恐怕, 到底, 拿...来说 va 敢 grammatikalarini ishlatish",
+            "ru": "говорить о планах учёбы и работы, шансах, отказе, начале сейчас и скромности; использовать 可, 恐怕, 到底, 拿...来说 и 敢",
+            "tj": "дар бораи нақшаи таҳсил/кор, имконият, рад кардан, аз ҳозир оғоз кардан ва фурӯтанӣ гуфтугӯ кардан; истифодаи 可, 恐怕, 到底, 拿...来说 ва 敢"
           },
           "status": "locked",
           "content": "lesson_16",
@@ -281,12 +281,12 @@
         },
         {
           "n": 17,
-          "zh": "哲学思想",
-          "py": "zhéxué sīxiǎng",
+          "zh": "人与自然",
+          "py": "rén yǔ zìrán",
           "tr": {
-            "uz": "Falsafa va tafakkur",
-            "ru": "Философия и мышление",
-            "tj": "Фалсафа ва тафаккур"
+            "uz": "tabiat, hayvonlar, o'simliklar va okean haqida gapirish; 倒, 干, 趟, 为了...而... va 仍然 grammatikalarini ishlatish",
+            "ru": "говорить о природе, животных, растениях и океане; использовать 倒, 干, 趟, 为了...而... и 仍然",
+            "tj": "дар бораи табиат, ҳайвонот, растаниҳо ва уқёнус гуфтугӯ кардан; истифодаи 倒, 干, 趟, 为了...而... ва 仍然"
           },
           "status": "locked",
           "content": "lesson_17",
@@ -294,12 +294,12 @@
         },
         {
           "n": 18,
-          "zh": "传统医学",
-          "py": "chuántǒng yīxué",
+          "zh": "科技与世界",
+          "py": "kē jì yǔ shìjiè",
           "tr": {
-            "uz": "An’anaviy tibbiyot va akupunktura",
-            "ru": "Традиционная медицина и иглоукалывание",
-            "tj": "Тиби анъанавӣ ва сӯзандорӣ"
+            "uz": "ilm-fan, texnologiya, kompyuter, internet va telefon haqida gapirish; 是否, 受不了, 接着, 除此以外 va 把...叫作... grammatikalarini ishlatish",
+            "ru": "говорить о науке, технологиях, компьютере, интернете и телефоне; использовать 是否, 受不了, 接着, 除此以外 и 把...叫作...",
+            "tj": "дар бораи илм, технология, компютер, интернет ва телефон гуфтугӯ кардан; истифодаи 是否, 受不了, 接着, 除此以外 ва 把...叫作..."
           },
           "status": "locked",
           "content": "lesson_18",
@@ -307,12 +307,12 @@
         },
         {
           "n": 19,
-          "zh": "未来展望",
-          "py": "wèilái zhǎnwàng",
+          "zh": "生活的味道",
+          "py": "shēnghuó de wèidào",
           "tr": {
-            "uz": "Kelajak rejalar va orzular",
-            "ru": "Планы на будущее и мечты",
-            "tj": "Нақшаҳои оянда ва орзуҳо"
+            "uz": "anketa, pasport, ovqat, raqs, ijara va sport haqida gapirish; so'roq olmoshlari, 上, 出来, 总的来说 va 在于 grammatikalarini ishlatish",
+            "ru": "говорить об анкетах, паспорте, еде, танцах, аренде и спорте; использовать вопросительные местоимения, 上, 出来, 总的来说 и 在于",
+            "tj": "дар бораи варақа, шиноснома, хӯрок, рақс, иҷора ва варзиш гуфтугӯ кардан; истифодаи ҷонишинҳои саволӣ, 上, 出来, 总的来说 ва 在于"
           },
           "status": "locked",
           "content": "lesson_19",
@@ -320,12 +320,12 @@
         },
         {
           "n": 20,
-          "zh": "复习 — HSK 4",
-          "py": "fùxí HSK sì",
+          "zh": "路上的风景",
+          "py": "lù shàng de fēng jǐng",
           "tr": {
-            "uz": "HSK 4 takrori va umumiy test",
-            "ru": "Повторение HSK 4 и общий тест",
-            "tj": "Такрори HSK 4 ва санҷиши умумӣ"
+            "uz": "yo'l, safar, aeroport, janub-shimol farqi va sayohat ta'mlari haqida gapirish; V+着+V+着, 一...就..., 究竟, 起来 va V+起 grammatikalarini ishlatish",
+            "ru": "говорить о дороге, поездке, аэропорте, различиях севера и юга и вкусах путешествий; использовать V+着+V+着, 一...就..., 究竟, 起来 и V+起",
+            "tj": "дар бораи роҳ, сафар, фурудгоҳ, фарқи шимол ва ҷануб ва таъми сафар гуфтугӯ кардан; истифодаи V+着+V+着, 一...就..., 究竟, 起来 ва V+起"
           },
           "status": "locked",
           "content": "lesson_20",

@@ -2,122 +2,210 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 10,
-  "title": "工作面试",
+  "title": "数学比历史难多了",
   "subtitle": {
-    "uz": "Mavzu: Ish intervyusi. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Собеседование. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Мусоҳибаи корӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Aniq taqqoslash iboralarini o'rganish: B dan A qiyin/oson, taxminiy sonlar",
+    "ru": "Изучить точные сравнения: A намного сложнее B, приблизительные числа",
+    "tj": "Омӯхтани муқоисаҳои дақиқ: A аз B хеле душвортар, рақамҳои тахминӣ"
   },
   "active_words": [
     {
-      "zh": "面试",
-      "pinyin": "miànshì",
+      "no": 1,
+      "zh": "个子",
+      "pinyin": "gèzi",
       "pos": "n.",
       "meaning": {
-        "uz": "intervyu",
-        "ru": "собеседование",
-        "tj": "мусоҳиба"
-      },
-      "no": 1
+        "uz": "bo'y, gavda balandligi",
+        "ru": "рост",
+        "tj": "қад"
+      }
     },
     {
-      "zh": "简历",
-      "pinyin": "jiǎnlì",
-      "pos": "n.",
+      "no": 2,
+      "zh": "矮",
+      "pinyin": "ǎi",
+      "pos": "adj.",
       "meaning": {
-        "uz": "rezyume",
-        "ru": "резюме",
-        "tj": "резюме"
-      },
-      "no": 2
+        "uz": "past bo'yli",
+        "ru": "низкий, невысокий",
+        "tj": "пастқад"
+      }
     },
     {
-      "zh": "经验",
-      "pinyin": "jīngyàn",
+      "no": 3,
+      "zh": "历史",
+      "pinyin": "lìshǐ",
       "pos": "n.",
       "meaning": {
-        "uz": "tajriba",
-        "ru": "опыт",
-        "tj": "таҷриба"
-      },
-      "no": 3
+        "uz": "tarix",
+        "ru": "история",
+        "tj": "таърих"
+      }
     },
     {
-      "zh": "职位",
-      "pinyin": "zhíwèi",
+      "no": 4,
+      "zh": "体育",
+      "pinyin": "tǐyù",
       "pos": "n.",
       "meaning": {
-        "uz": "lavozim",
-        "ru": "должность",
-        "tj": "вазифа"
-      },
-      "no": 4
+        "uz": "jismoniy tarbiya",
+        "ru": "физкультура, спорт",
+        "tj": "тарбияи ҷисмонӣ"
+      }
     },
     {
-      "zh": "工资",
-      "pinyin": "gōngzī",
+      "no": 5,
+      "zh": "数学",
+      "pinyin": "shùxué",
       "pos": "n.",
       "meaning": {
-        "uz": "maosh",
-        "ru": "зарплата",
-        "tj": "маош"
-      },
-      "no": 5
+        "uz": "matematika",
+        "ru": "математика",
+        "tj": "математика"
+      }
     },
     {
-      "zh": "优点",
-      "pinyin": "yōudiǎn",
-      "pos": "n.",
+      "no": 6,
+      "zh": "方便",
+      "pinyin": "fāngbiàn",
+      "pos": "adj.",
       "meaning": {
-        "uz": "ustunlik",
-        "ru": "сильная сторона",
-        "tj": "бартарӣ"
-      },
-      "no": 6
+        "uz": "qulay",
+        "ru": "удобный",
+        "tj": "қулай"
+      }
     },
     {
-      "zh": "机会",
-      "pinyin": "jīhuì",
+      "no": 7,
+      "zh": "自行车",
+      "pinyin": "zìxíngchē",
       "pos": "n.",
       "meaning": {
-        "uz": "imkoniyat",
-        "ru": "возможность",
-        "tj": "имконият"
-      },
-      "no": 7
+        "uz": "velosiped",
+        "ru": "велосипед",
+        "tj": "дучарха"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "骑",
+      "pinyin": "qí",
+      "pos": "v.",
+      "meaning": {
+        "uz": "minmoq",
+        "ru": "ехать верхом, ездить",
+        "tj": "савор шудан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "旧",
+      "pinyin": "jiù",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "eski",
+        "ru": "старый, бывший в употреблении",
+        "tj": "кӯҳна"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "换",
+      "pinyin": "huàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "almashtirmoq",
+        "ru": "менять, заменять",
+        "tj": "иваз кардан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "地方",
+      "pinyin": "dìfang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "joy",
+        "ru": "место",
+        "tj": "ҷой"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "中介",
+      "pinyin": "zhōngjiè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "vositachi, agent",
+        "ru": "посредник, агент",
+        "tj": "миёнарав, агент"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "主要",
+      "pinyin": "zhǔyào",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "asosiy, muhim",
+        "ru": "главный, основной",
+        "tj": "асосӣ"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "环境",
+      "pinyin": "huánjìng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "muhit, atrof-muhit",
+        "ru": "среда, окружение",
+        "tj": "муҳит"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "附近",
+      "pinyin": "fùjìn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yaqin atrof",
+        "ru": "поблизости, окрестности",
+        "tj": "наздикӣ"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Taqqoslash②: A B dan + sifat + ancha",
+        "ru": "Сравнение②: A намного + прилагательное + чем B",
+        "tj": "Муқоиса②: A аз B + сифат + хеле"
       },
-      "title_zh": "主题词语",
+      "title_zh": "比较句②：A比B + 形容词 + 多了",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 工作面试. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“工作面试”。",
-        "ru": "Ключевая фраза урока: 工作面试. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“工作面试”。",
-        "tj": "Ибораи асосии дарс: 工作面试. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“工作面试”。"
+        "uz": "'A比B+Adj+多了' — A ning B dan ancha farqli ekanini ta'kidlaydi. '多了' yoki '得多' = ancha, juda ko'p. Oddiy 'A比B+Adj' dan kuchliroq ifoda.",
+        "ru": "'A比B+Adj+多了' подчёркивает, что разница между A и B очень велика. '多了' или '得多' = намного. Это более сильное выражение, чем обычное 'A比B+Adj'.",
+        "tj": "'A比B+Adj+多了' таъкид мекунад, ки фарқи байни A ва B хеле бузург аст. '多了' ё '得多' = хеле. Ин аз 'A比B+Adj'-и оддӣ ифодаи қавитар аст."
       },
       "examples": [
         {
-          "zh": "今天我们学习“工作面试”。",
-          "pinyin": "Jīntiān wǒmen xuéxí gōngzuò miànshì.",
+          "zh": "数学比历史难多了！",
+          "pinyin": "Shùxué bǐ lìshǐ nán duō le!",
           "translation": {
-            "uz": "Biz Ish intervyusi mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Собеседование.",
-            "tj": "Мо мавзӯи Мусоҳибаи корӣ-ро меомӯзем."
+            "uz": "Matematika tarixdan ancha qiyin!",
+            "ru": "Математика намного сложнее истории!",
+            "tj": "Математика аз таърих хеле душвортар аст!"
           }
         },
         {
-          "zh": "这个词是面试。",
-          "pinyin": "Zhège cí shì miànshì.",
+          "zh": "你比我好多了！",
+          "pinyin": "Nǐ bǐ wǒ hǎo duō le!",
           "translation": {
-            "uz": "Bu so'z: intervyu.",
-            "ru": "Это слово: собеседование.",
-            "tj": "Ин калима: мусоҳиба."
+            "uz": "Siz mendan ancha yaxshisiz!",
+            "ru": "Ты намного лучше меня!",
+            "tj": "Шумо аз ман хеле беҳтаред!"
           }
         }
       ]
@@ -125,33 +213,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Taxminiy sonlar①: son + 多 / 几",
+        "ru": "Приблизительные числа①: число + 多 / 几",
+        "tj": "Рақамҳои тахминӣ①: рақам + 多 / 几"
       },
-      "title_zh": "问答结构",
+      "title_zh": "概数①：数词 + 多 / 几",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'数词+多' = shu sondan ko'proq (masalan: 三十多 = 30 dan ortiq). '几+量词' = bir necha (masalan: 几天 = bir necha kun, 几百 = bir necha yuz). Ikkalasi ham aniq bo'lmagan miqdorni bildiradi.",
+        "ru": "'数词+多' = больше указанного числа (например: 三十多 = больше тридцати). '几+счётное слово' = несколько (например: 几天 = несколько дней, 几百 = несколько сотен). Оба выражают неточное количество.",
+        "tj": "'数词+多' = аз рақами зикршуда бештар (масалан: 三十多 = аз сӣ бештар). '几+ададӣ' = чанд (масалан: 几天 = чанд рӯз, 几百 = чанд сад). Ҳарду миқдори ғайридақиқро ифода мекунанд."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "我考了九十多分。",
+          "pinyin": "Wǒ kǎo le jiǔshí duō fēn.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Men to'qson dan ortiq ball oldim.",
+            "ru": "Я набрал больше девяноста баллов.",
+            "tj": "Ман наваду чанд балл гирифтам."
           }
         },
         {
-          "zh": "面试。",
-          "pinyin": "miànshì.",
+          "zh": "历史需要记几百个年代。",
+          "pinyin": "Lìshǐ xūyào jì jǐ bǎi gè niándài.",
           "translation": {
-            "uz": "面试 — miànshì deb o'qiladi.",
-            "ru": "面试 читается как miànshì.",
-            "tj": "面试 ҳамчун miànshì хонда мешавад."
+            "uz": "Tarix uchun bir necha yuz yilni eslab qolish kerak.",
+            "ru": "В истории нужно запомнить несколько сотен дат.",
+            "tj": "Дар таърих чанд садсолаи таърихро ёд кардан лозим аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "A B kadar + sifat emas (A B dan yomonroq)",
+        "ru": "A не так хорош, как B (A хуже B)",
+        "tj": "A ба монанди B нест (A аз B камтар)"
+      },
+      "title_zh": "A不如B（+ 形容词）",
+      "rule": {
+        "uz": "'A不如B' = A B kadar yaxshi emas, A B dan yomonroq. Sifat bilan: 'A不如B+Adj'. 'A没有B那么+Adj' bilan sinonim.",
+        "ru": "'A不如B' = A не так хорош, как B, A хуже B. С прилагательным: 'A不如B+Adj'. Синоним 'A没有B那么+Adj'.",
+        "tj": "'A不如B' = A ба монанди B хуб нест, A аз B камтар. Бо сифат: 'A不如B+Adj'. Ҳаммаъно бо 'A没有B那么+Adj'."
+      },
+      "examples": [
+        {
+          "zh": "物理不如化学难。",
+          "pinyin": "Wùlǐ bùrú huàxué nán.",
+          "translation": {
+            "uz": "Fizika kimyo kadar qiyin emas.",
+            "ru": "Физика не такая сложная, как химия.",
+            "tj": "Физика ба монанди химия душвор нест."
+          }
+        },
+        {
+          "zh": "今天的天气不如昨天好。",
+          "pinyin": "Jīntiān de tiānqì bùrú zuótiān hǎo.",
+          "translation": {
+            "uz": "Bugungi havo kechagidek yaxshi emas.",
+            "ru": "Сегодняшняя погода не такая хорошая, как вчера.",
+            "tj": "Ҳавои имрӯза ба монанди дирӯзии хуб нест."
           }
         }
       ]
@@ -160,49 +282,276 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Ish intervyusi",
-        "ru": "Собеседование",
-        "tj": "Мусоҳибаи корӣ"
+        "uz": "Sinfda",
+        "ru": "В классе",
+        "tj": "Дар синф"
       },
       "dialogue": [
         {
-          "speaker": "A",
-          "zh": "今天我们学习“工作面试”。",
-          "pinyin": "Jīntiān wǒmen xuéxí gōngzuò miànshì.",
+          "speaker": "朋友",
+          "zh": "大山，你和马可谁个子高？",
+          "pinyin": "Dàshān, nǐ hé Mǎkě shéi gèzi gāo?",
           "text": {
-            "uz": "Bugun Ish intervyusi mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Собеседование.",
-            "tj": "Имрӯз мавзӯи Мусоҳибаи корӣ-ро меомӯзем."
+            "uz": "Dashan, sen bilan Make, kimning bo'yi balandroq?",
+            "ru": "Дашань, кто выше ростом, ты или Марк?",
+            "tj": "Дашан, ту ё Маке, қади кӣ баландтар аст?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "speaker": "大山",
+          "zh": "马可比我高，我比马可矮一点儿。",
+          "pinyin": "Mǎkě bǐ wǒ gāo, wǒ bǐ Mǎkě ǎi yìdiǎnr.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Make mendan baland, men Makedan biroz pastroqman.",
+            "ru": "Марк выше меня, я немного ниже Марка.",
+            "tj": "Маке аз ман баландтар аст, ман аз Маке каме пасттарам."
           }
         },
         {
-          "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "speaker": "朋友",
+          "zh": "那你们谁大？",
+          "pinyin": "Nà nǐmen shéi dà?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Unda sizlardan kim kattaroq?",
+            "ru": "Тогда кто из вас старше?",
+            "tj": "Пас кадоматон калонтар аст?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "面试。",
-          "pinyin": "miànshì.",
+          "speaker": "大山",
+          "zh": "我比马可大两岁。",
+          "pinyin": "Wǒ bǐ Mǎkě dà liǎng suì.",
           "text": {
-            "uz": "面试 — miànshì deb o'qiladi.",
-            "ru": "面试 читается как miànshì.",
-            "tj": "面试 ҳамчун miànshì хонда мешавад."
+            "uz": "Men Makedan ikki yosh kattaman.",
+            "ru": "Я старше Марка на два года.",
+            "tj": "Ман аз Маке ду сол калонтарам."
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "你们谁的汉语说得更好？",
+          "pinyin": "Nǐmen shéi de Hànyǔ shuō de gèng hǎo?",
+          "text": {
+            "uz": "Sizlardan kim xitoychani yaxshiroq gapiradi?",
+            "ru": "Кто из вас лучше говорит по-китайски?",
+            "tj": "Кадоматон забони чиниро беҳтар ҳарф мезанед?"
+          }
+        },
+        {
+          "speaker": "大山",
+          "zh": "马可比我说得好一些，我的汉语没有他好。",
+          "pinyin": "Mǎkě bǐ wǒ shuō de hǎo yìxiē, wǒ de Hànyǔ méiyǒu tā hǎo.",
+          "text": {
+            "uz": "Make mendan biroz yaxshiroq gapiradi, mening xitoycham unikidek yaxshi emas.",
+            "ru": "Марк говорит немного лучше меня, мой китайский не так хорош, как его.",
+            "tj": "Маке аз ман каме беҳтар ҳарф мезанад, забони чинии ман мисли ӯ хуб нест."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda",
+        "ru": "В классе",
+        "tj": "Дар синф"
+      },
+      "dialogue": [
+        {
+          "speaker": "小明",
+          "zh": "我喜欢历史课、体育课，不喜欢数学课。",
+          "pinyin": "Wǒ xǐhuan lìshǐ kè, tǐyù kè, bù xǐhuan shùxué kè.",
+          "text": {
+            "uz": "Men tarix va jismoniy tarbiya darslarini yaxshi ko'raman, matematikani yoqtirmayman.",
+            "ru": "Я люблю историю и физкультуру, не люблю математику.",
+            "tj": "Ман дарси таърих ва тарбияи ҷисмониро дӯст медорам, математикаро дӯст намедорам."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "为什么？数学也很有意思啊。",
+          "pinyin": "Wèi shénme? Shùxué yě hěn yǒu yìsi a.",
+          "text": {
+            "uz": "Nega? Matematika ham juda qiziqarli-ku.",
+            "ru": "Почему? Математика тоже интересная.",
+            "tj": "Чаро? Математика ҳам хеле ҷолиб аст."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "我觉得数学比历史难多了，我听不懂。",
+          "pinyin": "Wǒ juéde shùxué bǐ lìshǐ nán duō le, wǒ tīng bu dǒng.",
+          "text": {
+            "uz": "Menimcha matematika tarixdan ancha qiyin, tushunmayman.",
+            "ru": "По-моему, математика гораздо труднее истории, я не понимаю.",
+            "tj": "Ба фикрам математика аз таърих хеле душвортар аст, намефаҳмам."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "别担心，我可以帮你。",
+          "pinyin": "Bié dānxīn, wǒ kěyǐ bāng nǐ.",
+          "text": {
+            "uz": "Xavotir olma, men yordam bera olaman.",
+            "ru": "Не волнуйся, я могу помочь.",
+            "tj": "Нигарон нашав, ман ёрӣ дода метавонам."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "好啊，我们每天学多长时间？",
+          "pinyin": "Hǎo a, wǒmen měi tiān xué duō cháng shíjiān?",
+          "text": {
+            "uz": "Yaxshi, har kuni qancha vaqt o'qiymiz?",
+            "ru": "Хорошо, сколько времени будем заниматься каждый день?",
+            "tj": "Хуб, ҳар рӯз чанд вақт мехонем?"
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "一两个小时吧。",
+          "pinyin": "Yì liǎng ge xiǎoshí ba.",
+          "text": {
+            "uz": "Bir-ikki soat.",
+            "ru": "Один-два часа.",
+            "tj": "Як-ду соат."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Dam olish xonasida",
+        "ru": "В комнате отдыха",
+        "tj": "Дар ҳуҷраи истироҳат"
+      },
+      "dialogue": [
+        {
+          "speaker": "同事",
+          "zh": "你最近比以前来得早多了，搬家了？",
+          "pinyin": "Nǐ zuìjìn bǐ yǐqián lái de zǎo duō le, bān jiā le?",
+          "text": {
+            "uz": "Oxirgi paytda oldingidan ancha erta kelyapsan, ko'chdingmi?",
+            "ru": "В последнее время ты приходишь намного раньше, переехала?",
+            "tj": "Вақтҳои охир аз пеш хеле барвақт меоӣ, кӯчидӣ?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "是啊，你不知道？我上个月就搬家了，走路二十分钟就到。",
+          "pinyin": "Shì a, nǐ bù zhīdào? Wǒ shàng ge yuè jiù bān jiā le, zǒu lù èrshí fēnzhōng jiù dào.",
+          "text": {
+            "uz": "Ha, bilmaysanmi? O'tgan oydayoq ko'chdim, piyoda yigirma daqiqada yetaman.",
+            "ru": "Да, ты не знал? Я ещё в прошлом месяце переехала, пешком за двадцать минут дохожу.",
+            "tj": "Ҳа, намедонӣ? Моҳи гузашта кӯчидам, пиёда дар бист дақиқа мерасам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "那很方便啊。",
+          "pinyin": "Nà hěn fāngbiàn a.",
+          "text": {
+            "uz": "Bu juda qulay ekan.",
+            "ru": "Это очень удобно.",
+            "tj": "Ин хеле қулай аст."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "我还打算买辆自行车，骑车七八分钟就能到。",
+          "pinyin": "Wǒ hái dǎsuàn mǎi liàng zìxíngchē, qí chē qī bā fēnzhōng jiù néng dào.",
+          "text": {
+            "uz": "Yana velosiped olmoqchiman, velosipedda yetti-sakkiz daqiqada yetaman.",
+            "ru": "Ещё собираюсь купить велосипед, на велосипеде можно добраться за семь-восемь минут.",
+            "tj": "Боз мехоҳам дучарха харам, бо дучарха дар ҳафт-ҳашт дақиқа мерасам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "你不是有一辆吗？",
+          "pinyin": "Nǐ bú shì yǒu yí liàng ma?",
+          "text": {
+            "uz": "Senda bittasi bor emasmi?",
+            "ru": "Разве у тебя уже нет одного?",
+            "tj": "Магар якто надорӣ?"
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "那辆太旧了，要换一辆，很便宜，两三百块钱。",
+          "pinyin": "Nà liàng tài jiù le, yào huàn yí liàng, hěn piányi, liǎng sān bǎi kuài qián.",
+          "text": {
+            "uz": "U juda eski, boshqasiga almashtirish kerak, juda arzon, ikki-uch yuz yuan.",
+            "ru": "Тот слишком старый, нужно поменять, очень дешево, двести-триста юаней.",
+            "tj": "Он хеле кӯҳна аст, бояд дигар кунам, хеле арзон, дусад-се сад юан."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uy ko'rishda",
+        "ru": "Осмотр квартиры",
+        "tj": "Тамошои хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "大山",
+          "zh": "这两个地方的房子一样吗？",
+          "pinyin": "Zhè liǎng ge dìfang de fángzi yíyàng ma?",
+          "text": {
+            "uz": "Bu ikki joydagi uylar bir xilmi?",
+            "ru": "Квартиры в этих двух местах одинаковые?",
+            "tj": "Хонаҳои ин ду ҷой якхелаанд?"
+          }
+        },
+        {
+          "speaker": "中介",
+          "zh": "不一样。您看，学校外边的房子比学校里边的大一些。",
+          "pinyin": "Bù yíyàng. Nín kàn, xuéxiào wàibian de fángzi bǐ xuéxiào lǐbian de dà yìxiē.",
+          "text": {
+            "uz": "Bir xil emas. Qarang, maktab tashqarisidagi uy maktab ichkarisidagidan biroz kattaroq.",
+            "ru": "Не одинаковые. Смотрите, квартира за пределами школы немного больше, чем внутри школы.",
+            "tj": "Якхела нест. Бубинед, хонаи берун аз мактаб аз хонаи дохили мактаб каме калонтар аст."
+          }
+        },
+        {
+          "speaker": "大山",
+          "zh": "大小没关系，主要是环境，哪个更安静？",
+          "pinyin": "Dàxiǎo méi guānxi, zhǔyào shì huánjìng, nǎ ge gèng ānjìng?",
+          "text": {
+            "uz": "Kattaligi muhim emas, asosiysi muhit, qaysisi tinchroq?",
+            "ru": "Размер не важен, главное окружение, где тише?",
+            "tj": "Андоза муҳим нест, асосӣ муҳит аст, кадомаш оромтар?"
+          }
+        },
+        {
+          "speaker": "中介",
+          "zh": "学校里边的没有学校外边的那么安静。",
+          "pinyin": "Xuéxiào lǐbian de méiyǒu xuéxiào wàibian de nàme ānjìng.",
+          "text": {
+            "uz": "Maktab ichkarisidagisi maktab tashqarisidagidek tinch emas.",
+            "ru": "Внутри школы не так тихо, как за её пределами.",
+            "tj": "Дохили мактаб мисли беруни мактаб ором нест."
+          }
+        },
+        {
+          "speaker": "大山",
+          "zh": "哪个方便一些呢？",
+          "pinyin": "Nǎ ge fāngbiàn yìxiē ne?",
+          "text": {
+            "uz": "Qaysisi biroz qulayroq?",
+            "ru": "Какая немного удобнее?",
+            "tj": "Кадомаш каме қулайтар?"
+          }
+        },
+        {
+          "speaker": "中介",
+          "zh": "学校里边比学校外边方便，附近有三四个车站。",
+          "pinyin": "Xuéxiào lǐbian bǐ xuéxiào wàibian fāngbiàn, fùjìn yǒu sān sì ge chēzhàn.",
+          "text": {
+            "uz": "Maktab ichkarisidagisi tashqarisidagidan qulayroq, yaqin atrofda uch-to'rt bekat bor.",
+            "ru": "Внутри школы удобнее, чем за её пределами, рядом есть три-четыре остановки.",
+            "tj": "Дохили мактаб аз беруни мактаб қулайтар аст, дар наздикӣ се-чор истгоҳ ҳаст."
           }
         }
       ]
@@ -221,91 +570,210 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "面试",
-            "pinyin": "miànshì",
+            "no": 1,
+            "zh": "个子",
+            "pinyin": "gèzi",
             "pos": "n.",
             "meaning": {
-              "uz": "intervyu",
-              "ru": "собеседование",
-              "tj": "мусоҳиба"
+              "uz": "bo'y, gavda balandligi",
+              "ru": "рост",
+              "tj": "қад"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "简历",
-            "pinyin": "jiǎnlì",
-            "pos": "n.",
+            "no": 2,
+            "zh": "矮",
+            "pinyin": "ǎi",
+            "pos": "adj.",
             "meaning": {
-              "uz": "rezyume",
-              "ru": "резюме",
-              "tj": "резюме"
+              "uz": "past bo'yli",
+              "ru": "низкий, невысокий",
+              "tj": "пастқад"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "经验",
-            "pinyin": "jīngyàn",
+            "no": 3,
+            "zh": "历史",
+            "pinyin": "lìshǐ",
             "pos": "n.",
             "meaning": {
-              "uz": "tajriba",
-              "ru": "опыт",
-              "tj": "таҷриба"
+              "uz": "tarix",
+              "ru": "история",
+              "tj": "таърих"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "职位",
-            "pinyin": "zhíwèi",
+            "no": 4,
+            "zh": "体育",
+            "pinyin": "tǐyù",
             "pos": "n.",
             "meaning": {
-              "uz": "lavozim",
-              "ru": "должность",
-              "tj": "вазифа"
+              "uz": "jismoniy tarbiya",
+              "ru": "физкультура, спорт",
+              "tj": "тарбияи ҷисмонӣ"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "工资",
-            "pinyin": "gōngzī",
+            "no": 5,
+            "zh": "数学",
+            "pinyin": "shùxué",
             "pos": "n.",
             "meaning": {
-              "uz": "maosh",
-              "ru": "зарплата",
-              "tj": "маош"
+              "uz": "matematika",
+              "ru": "математика",
+              "tj": "математика"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "优点",
-            "pinyin": "yōudiǎn",
-            "pos": "n.",
+            "no": 6,
+            "zh": "方便",
+            "pinyin": "fāngbiàn",
+            "pos": "adj.",
             "meaning": {
-              "uz": "ustunlik",
-              "ru": "сильная сторона",
-              "tj": "бартарӣ"
+              "uz": "qulay",
+              "ru": "удобный",
+              "tj": "қулай"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "机会",
-            "pinyin": "jīhuì",
+            "no": 7,
+            "zh": "自行车",
+            "pinyin": "zìxíngchē",
             "pos": "n.",
             "meaning": {
-              "uz": "imkoniyat",
-              "ru": "возможность",
-              "tj": "имконият"
+              "uz": "velosiped",
+              "ru": "велосипед",
+              "tj": "дучарха"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "骑",
+            "pinyin": "qí",
+            "pos": "v.",
+            "meaning": {
+              "uz": "minmoq",
+              "ru": "ехать верхом, ездить",
+              "tj": "савор шудан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "旧",
+            "pinyin": "jiù",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "eski",
+              "ru": "старый, бывший в употреблении",
+              "tj": "кӯҳна"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "换",
+            "pinyin": "huàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "almashtirmoq",
+              "ru": "менять, заменять",
+              "tj": "иваз кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "地方",
+            "pinyin": "dìfang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "joy",
+              "ru": "место",
+              "tj": "ҷой"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "中介",
+            "pinyin": "zhōngjiè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "vositachi, agent",
+              "ru": "посредник, агент",
+              "tj": "миёнарав, агент"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "主要",
+            "pinyin": "zhǔyào",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "asosiy, muhim",
+              "ru": "главный, основной",
+              "tj": "асосӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "环境",
+            "pinyin": "huánjìng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "muhit, atrof-muhit",
+              "ru": "среда, окружение",
+              "tj": "муҳит"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 15,
+            "zh": "附近",
+            "pinyin": "fùjìn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yaqin atrof",
+              "ru": "поблизости, окрестности",
+              "tj": "наздикӣ"
             }
           }
         }
@@ -323,9 +791,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "面试 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 面试:",
-            "tj": "Маънои калимаи 面试-ро интихоб кунед:"
+            "uz": "个子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 个子:",
+            "tj": "Маънои калимаи 个子-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +802,39 @@
           },
           "options": [
             {
-              "uz": "intervyu",
-              "ru": "собеседование",
-              "tj": "мусоҳиба"
+              "uz": "past bo'yli",
+              "ru": "низкий, невысокий",
+              "tj": "пастқад"
             },
             {
-              "uz": "rezyume",
-              "ru": "резюме",
-              "tj": "резюме"
+              "uz": "tarix",
+              "ru": "история",
+              "tj": "таърих"
             },
             {
-              "uz": "tajriba",
-              "ru": "опыт",
-              "tj": "таҷриба"
+              "uz": "bo'y, gavda balandligi",
+              "ru": "рост",
+              "tj": "қад"
             },
             {
-              "uz": "lavozim",
-              "ru": "должность",
-              "tj": "вазифа"
+              "uz": "jismoniy tarbiya",
+              "ru": "физкультура, спорт",
+              "tj": "тарбияи ҷисмонӣ"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "面试 = intervyu (miànshì)",
-            "ru": "面试 = собеседование (miànshì)",
-            "tj": "面试 = мусоҳиба (miànshì)"
+            "uz": "个子 = bo'y, gavda balandligi (gèzi)",
+            "ru": "个子 = рост (gèzi)",
+            "tj": "个子 = қад (gèzi)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "面试 talaffuzini tanlang:",
-            "ru": "Выберите произношение 面试:",
-            "tj": "Талаффузи 面试-ро интихоб кунед:"
+            "uz": "矮 talaffuzini tanlang:",
+            "ru": "Выберите произношение 矮:",
+            "tj": "Талаффузи 矮-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +842,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "miànshì",
-            "jiǎnlì",
-            "jīngyàn",
-            "zhíwèi"
+            "lìshǐ",
+            "tǐyù",
+            "gèzi",
+            "ǎi"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "面试 — miànshì",
-            "ru": "面试 — miànshì",
-            "tj": "面试 — miànshì"
+            "uz": "矮 — ǎi",
+            "ru": "矮 — ǎi",
+            "tj": "矮 — ǎi"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'intervyu' xitoycha nima?",
-            "ru": "'собеседование' по-китайски?",
-            "tj": "'мусоҳиба' ба чинӣ чист?"
+            "uz": "'tarix' xitoycha qaysi?",
+            "ru": "'история' по-китайски?",
+            "tj": "'таърих' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "面试",
-            "简历",
-            "经验",
-            "职位"
+            "历史",
+            "个子",
+            "体育",
+            "矮"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "面试 = intervyu (miànshì)",
-            "ru": "面试 = собеседование (miànshì)",
-            "tj": "面试 = мусоҳиба (miànshì)"
+            "uz": "tarix = 历史 (lìshǐ)",
+            "ru": "история = 历史 (lìshǐ)",
+            "tj": "таърих = 历史 (lìshǐ)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "jiǎnlì qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiǎnlì?",
-            "tj": "jiǎnlì кадом иероглиф аст?"
+            "uz": "tǐyù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tǐyù?",
+            "tj": "tǐyù кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,93 +892,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "简历",
-            "面试",
-            "经验",
-            "职位"
+            "体育",
+            "矮",
+            "历史",
+            "个子"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "简历 = rezyume (jiǎnlì)",
-            "ru": "简历 = резюме (jiǎnlì)",
-            "tj": "简历 = резюме (jiǎnlì)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'工作面试' iborasini tuzing",
-            "ru": "Соберите фразу '工作面试'",
-            "tj": "Ибораи '工作面试'-ро созед"
-          },
-          "tokens": [
-            "工",
-            "作",
-            "面试",
-            "简历",
-            "经验"
-          ],
-          "answer_tokens": [
-            "工",
-            "作",
-            "面试"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 工 作 面试",
-            "ru": "Правильный порядок: 工 作 面试",
-            "tj": "Тартиби дуруст: 工 作 面试"
+            "uz": "体育 = jismoniy tarbiya (tǐyù)",
+            "ru": "体育 = физкультура, спорт (tǐyù)",
+            "tj": "体育 = тарбияи ҷисмонӣ (tǐyù)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "面试",
+              "个子",
               {
-                "uz": "intervyu",
-                "ru": "собеседование",
-                "tj": "мусоҳиба"
+                "uz": "bo'y, gavda balandligi",
+                "ru": "рост",
+                "tj": "қад"
               }
             ],
             [
-              "简历",
+              "矮",
               {
-                "uz": "rezyume",
-                "ru": "резюме",
-                "tj": "резюме"
+                "uz": "past bo'yli",
+                "ru": "низкий, невысокий",
+                "tj": "пастқад"
               }
             ],
             [
-              "经验",
+              "历史",
               {
-                "uz": "tajriba",
-                "ru": "опыт",
-                "tj": "таҷриба"
+                "uz": "tarix",
+                "ru": "история",
+                "tj": "таърих"
               }
             ],
             [
-              "职位",
+              "体育",
               {
-                "uz": "lavozim",
-                "ru": "должность",
-                "tj": "вазифа"
+                "uz": "jismoniy tarbiya",
+                "ru": "физкультура, спорт",
+                "tj": "тарбияи ҷисмонӣ"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "数学比____难多了！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "个子",
+            "历史",
+            "矮",
+            "体育"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 历史 (lìshǐ) — tarix",
+            "ru": "Верно: 历史 (lìshǐ) — история",
+            "tj": "Дуруст: 历史 (lìshǐ) — таърих"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "工作面试",
-          "pinyin": "gōngzuò miànshì",
+          "phrase": "个子",
+          "pinyin": "gèzi",
           "translation": {
-            "uz": "Ish intervyusi",
-            "ru": "Собеседование",
-            "tj": "Мусоҳибаи корӣ"
+            "uz": "bo'y, gavda balandligi",
+            "ru": "рост",
+            "tj": "қад"
           }
         }
       ]
@@ -527,9 +991,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda 朋友 avval nima deydi?",
+            "ru": "Что 朋友 говорит в начале диалога?",
+            "tj": "Дар муколама 朋友 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -537,41 +1001,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "马可比我高，我比马可矮一点儿。",
+            "那你们谁大？",
+            "大山，你和马可谁个子高？",
+            "我比马可大两岁。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 大山，你和马可谁个子高？",
+            "ru": "Правильный ответ: 大山，你和马可谁个子高？",
+            "tj": "Ҷавоби дуруст: 大山，你和马可谁个子高？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida 大山 nima deydi?",
+            "ru": "Что 大山 говорит в конце диалога?",
+            "tj": "Дар охири муколама 大山 чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "面试。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "马可比我高，我比马可矮一点儿。",
+            "大山，你和马可谁个子高？",
+            "那你们谁大？",
+            "马可比我说得好一些，我的汉语没有他好。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 面试。",
-            "ru": "Ответ B: 面试。",
-            "tj": "Ҷавоби B: 面试。"
+            "uz": "To'g'ri javob: 马可比我说得好一些，我的汉语没有他好。",
+            "ru": "Правильный ответ: 马可比我说得好一些，我的汉语没有他好。",
+            "tj": "Ҷавоби дуруст: 马可比我说得好一些，我的汉语没有他好。"
           }
         }
       ]

@@ -1,8 +1,15 @@
 import unittest
+from datetime import date, datetime, timezone
 from types import SimpleNamespace
 
-from app.services.motivation_reminder_service import MotivationReminderService
-from app.services.notification_template_service import MOTIVATION_KEYS
+from app.bot.keyboards.course import course_intro_keyboard
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.services.motivation_reminder_service import MotivationReminderService, _button
+from app.services.notification_template_service import (
+    KEY_LESSON_UNFINISHED,
+    MOTIVATION_KEYS,
+    default_text,
+)
 
 
 class _EmptyRows:
@@ -49,6 +56,38 @@ class MotivationReminderServiceTests(unittest.TestCase):
             ),
             300,
         )
+
+    def test_lesson_unfinished_template_is_registered(self):
+        self.assertIn(KEY_LESSON_UNFINISHED, MOTIVATION_KEYS)
+        self.assertIn("{lesson}", default_text(KEY_LESSON_UNFINISHED, "uz"))
+
+    def test_lesson_label_uses_level_and_order(self):
+        event = CourseMiniAppEvent(
+            telegram_id=1001,
+            event_name="lesson_started",
+            level="hsk2",
+            lesson_order=4,
+        )
+        self.assertEqual(
+            MotivationReminderService._lesson_label(event, "uz"),
+            "HSK2 4-dars",
+        )
+
+    def test_local_day_bounds_respect_offset(self):
+        start, end = MotivationReminderService._local_day_bounds_utc(
+            date(2026, 6, 29),
+            300,
+        )
+        self.assertEqual(start, datetime(2026, 6, 28, 19, 0, tzinfo=timezone.utc))
+        self.assertEqual(end, datetime(2026, 6, 29, 19, 0, tzinfo=timezone.utc))
+
+    def test_reminder_button_opens_miniapp(self):
+        markup = _button("uz")
+        self.assertIsNotNone(markup.inline_keyboard[0][0].web_app)
+
+    def test_course_block_keyboard_has_miniapp_button(self):
+        markup = course_intro_keyboard("uz")
+        self.assertIsNotNone(markup.inline_keyboard[-1][0].web_app)
 
 
 class MotivationReminderServiceQueryTests(unittest.IsolatedAsyncioTestCase):

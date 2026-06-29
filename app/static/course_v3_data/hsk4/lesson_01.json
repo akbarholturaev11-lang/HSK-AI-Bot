@@ -2,133 +2,388 @@
   "schema_version": 2,
   "level": "hsk4",
   "lesson_id": 1,
-  "title": "经济全球化",
+  "title": "简单的爱情",
   "subtitle": {
-    "uz": "Mavzu: Globallashuv va iqtisodiyot. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Глобализация и экономика. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Ҷаҳонишавӣ ва иқтисод. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "sevgi va munosabatlar haqida gapirish; 不仅, 从来, 刚, 即使 va (在)...上 grammatikalarini ishlatish",
+    "ru": "говорить о любви и отношениях; использовать 不仅, 从来, 刚, 即使 и (在)...上",
+    "tj": "дар бораи муҳаббат ва муносибатҳо гуфтугӯ кардан; истифодаи 不仅, 从来, 刚, 即使 ва (在)...上"
   },
   "active_words": [
     {
-      "zh": "经济",
-      "pinyin": "jīngjì",
+      "no": 1,
+      "zh": "法律",
+      "pinyin": "fǎlǜ",
       "pos": "n.",
       "meaning": {
-        "uz": "iqtisodiyot",
-        "ru": "экономика",
-        "tj": "иқтисод"
-      },
-      "no": 1
+        "uz": "qonun, huquq",
+        "ru": "закон, право",
+        "tj": "қонун, ҳуқуқ"
+      }
     },
     {
-      "zh": "全球化",
-      "pinyin": "quánqiúhuà",
+      "no": 2,
+      "zh": "俩",
+      "pinyin": "liǎ",
+      "pos": "num.-m.",
+      "meaning": {
+        "uz": "ikkalasi, ikki kishi",
+        "ru": "двое, оба",
+        "tj": "ду нафар, ҳарду"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "印象",
+      "pinyin": "yìnxiàng",
       "pos": "n.",
       "meaning": {
-        "uz": "globallashuv",
-        "ru": "глобализация",
-        "tj": "ҷаҳонишавӣ"
-      },
-      "no": 2
+        "uz": "taassurot",
+        "ru": "впечатление",
+        "tj": "таассурот"
+      }
     },
     {
-      "zh": "市场",
-      "pinyin": "shìchǎng",
-      "pos": "n.",
+      "no": 4,
+      "zh": "深",
+      "pinyin": "shēn",
+      "pos": "adj.",
       "meaning": {
-        "uz": "bozor",
-        "ru": "рынок",
-        "tj": "бозор"
-      },
-      "no": 3
+        "uz": "chuqur",
+        "ru": "глубокий",
+        "tj": "чуқур"
+      }
     },
     {
-      "zh": "贸易",
-      "pinyin": "màoyì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "savdo",
-        "ru": "торговля",
-        "tj": "тиҷорат"
-      },
-      "no": 4
-    },
-    {
-      "zh": "发展",
-      "pinyin": "fāzhǎn",
+      "no": 5,
+      "zh": "熟悉",
+      "pinyin": "shúxī",
       "pos": "v.",
       "meaning": {
-        "uz": "rivojlanmoq",
-        "ru": "развиваться",
-        "tj": "рушд кардан"
-      },
-      "no": 5
+        "uz": "tanish bo'lmoq, yaxshi bilmoq",
+        "ru": "быть знакомым, хорошо знать",
+        "tj": "шинос будан, хуб донистан"
+      }
     },
     {
-      "zh": "影响",
-      "pinyin": "yǐngxiǎng",
+      "no": 6,
+      "zh": "不仅",
+      "pinyin": "bùjǐn",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "nafaqat",
+        "ru": "не только",
+        "tj": "на танҳо"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "性格",
+      "pinyin": "xìnggé",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xarakter, fe'l-atvor",
+        "ru": "характер",
+        "tj": "хислат, характер"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "开玩笑",
+      "pinyin": "kāi wánxiào",
       "pos": "v.",
       "meaning": {
-        "uz": "ta’sir qilmoq",
-        "ru": "влиять",
+        "uz": "hazil qilmoq",
+        "ru": "шутить",
+        "tj": "шӯхӣ кардан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "从来",
+      "pinyin": "cónglái",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "doim; hech qachon (inkor bilan)",
+        "ru": "всегда; никогда (с отрицанием)",
+        "tj": "ҳамеша; ҳеч вақт (бо инкор)"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "最好",
+      "pinyin": "zuìhǎo",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "eng yaxshisi, yaxshisi",
+        "ru": "лучше всего, лучше бы",
+        "tj": "беҳтараш, беҳтарин"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "共同",
+      "pinyin": "gòngtóng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "umumiy, birgalikdagi",
+        "ru": "общий, совместный",
+        "tj": "умумӣ, муштарак"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "适合",
+      "pinyin": "shìhé",
+      "pos": "v.",
+      "meaning": {
+        "uz": "mos kelmoq",
+        "ru": "подходить",
+        "tj": "мувофиқ будан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "幸福",
+      "pinyin": "xìngfú",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "baxtli",
+        "ru": "счастливый; счастье",
+        "tj": "хушбахт; хушбахтӣ"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "生活",
+      "pinyin": "shēnghuó",
+      "pos": "n./v.",
+      "meaning": {
+        "uz": "hayot; yashamoq",
+        "ru": "жизнь; жить",
+        "tj": "зиндагӣ; зиндагӣ кардан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "刚",
+      "pinyin": "gāng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "endi, hozirgina",
+        "ru": "только что, недавно",
+        "tj": "ҳозир, нав"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "浪漫",
+      "pinyin": "làngmàn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "romantik",
+        "ru": "романтичный",
+        "tj": "романтикӣ"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "够",
+      "pinyin": "gòu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yetarli bo'lmoq",
+        "ru": "быть достаточным",
+        "tj": "кофӣ будан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "缺点",
+      "pinyin": "quēdiǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kamchilik",
+        "ru": "недостаток",
+        "tj": "камбудӣ"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "接受",
+      "pinyin": "jiēshòu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qabul qilmoq",
+        "ru": "принимать",
+        "tj": "қабул кардан"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "羡慕",
+      "pinyin": "xiànmù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "havas qilmoq, qoyil qolmoq",
+        "ru": "завидовать, восхищаться",
+        "tj": "ҳавас кардан, ҳасад бурдан"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "爱情",
+      "pinyin": "àiqíng",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sevgi, muhabbat",
+        "ru": "любовь",
+        "tj": "муҳаббат"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "星星",
+      "pinyin": "xīngxing",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yulduz",
+        "ru": "звезда",
+        "tj": "ситора"
+      }
+    },
+    {
+      "no": 23,
+      "zh": "即使",
+      "pinyin": "jíshǐ",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "hatto ... bo'lsa ham",
+        "ru": "даже если",
+        "tj": "ҳатто агар"
+      }
+    },
+    {
+      "no": 24,
+      "zh": "加班",
+      "pinyin": "jiā bān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qo'shimcha ishlamoq",
+        "ru": "работать сверхурочно",
+        "tj": "аз вақти кор зиёд кор кардан"
+      }
+    },
+    {
+      "no": 25,
+      "zh": "亮",
+      "pinyin": "liàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yorishmoq, chiroq yonmoq",
+        "ru": "светиться, гореть",
+        "tj": "равшан будан, фурӯзон будан"
+      }
+    },
+    {
+      "no": 26,
+      "zh": "感动",
+      "pinyin": "gǎndòng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ta'sirlantirmoq",
+        "ru": "тронуть, растрогать",
         "tj": "таъсир кардан"
-      },
-      "no": 6
+      }
     },
     {
-      "zh": "竞争",
-      "pinyin": "jìngzhēng",
+      "no": 27,
+      "zh": "自然",
+      "pinyin": "zìrán",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "tabiiy ravishda",
+        "ru": "естественно",
+        "tj": "табиӣ равишда"
+      }
+    },
+    {
+      "no": 28,
+      "zh": "原因",
+      "pinyin": "yuányīn",
       "pos": "n.",
       "meaning": {
-        "uz": "raqobat",
-        "ru": "конкуренция",
-        "tj": "рақобат"
-      },
-      "no": 7
+        "uz": "sabab",
+        "ru": "причина",
+        "tj": "сабаб"
+      }
     },
     {
-      "zh": "合作",
-      "pinyin": "hézuò",
+      "no": 29,
+      "zh": "互相",
+      "pinyin": "hùxiāng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "o'zaro, bir-biriga",
+        "ru": "взаимно, друг друга",
+        "tj": "якдигарро, мутақобилан"
+      }
+    },
+    {
+      "no": 30,
+      "zh": "吸引",
+      "pinyin": "xīyǐn",
       "pos": "v.",
       "meaning": {
-        "uz": "hamkorlik qilmoq",
-        "ru": "сотрудничать",
-        "tj": "ҳамкорӣ кардан"
-      },
-      "no": 8
+        "uz": "jalb qilmoq",
+        "ru": "привлекать",
+        "tj": "ҷалб кардан"
+      }
+    },
+    {
+      "no": 31,
+      "zh": "幽默",
+      "pinyin": "yōumò",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "hazilkash, yumorga boy",
+        "ru": "с юмором, остроумный",
+        "tj": "шӯхтабъ, ҳазломез"
+      }
+    },
+    {
+      "no": 32,
+      "zh": "脾气",
+      "pinyin": "píqi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "fe'l, mijoz, xarakter",
+        "ru": "характер, нрав",
+        "tj": "феъл, хулқ"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "nafaqat..., balki/ham...",
+        "ru": "不仅...也/还/而且... — не только..., но и...",
+        "tj": "不仅...也/还/而且... — на танҳо..., балки..."
       },
-      "title_zh": "主题词语",
+      "title_zh": "不仅……也/还/而且……",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 经济全球化. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“经济全球化”。",
-        "ru": "Ключевая фраза урока: 经济全球化. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“经济全球化”。",
-        "tj": "Ибораи асосии дарс: 经济全球化. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“经济全球化”。"
+        "uz": "Ikki ijobiy xususiyatni bog'lab, ikkinchi qismni kuchaytiradi.",
+        "ru": "Связывает два положительных признака: первая часть вводится 不仅, вторая усиливается 也, 还 или 而且.",
+        "tj": "Ду хусусияти мусбатро мепайвандад: қисми аввал бо 不仅, қисми дуюм бо 也, 还 ё 而且 қавитар мешавад."
       },
       "examples": [
         {
-          "zh": "今天我们学习“经济全球化”。",
-          "pinyin": "Jīntiān wǒmen xuéxí jīngjì quánqiúhuà.",
+          "zh": "他不仅足球踢得好，性格也不错。",
+          "pinyin": "Tā bùjǐn zúqiú tī de hǎo, xìnggé yě búcuò.",
           "translation": {
-            "uz": "Biz Globallashuv va iqtisodiyot mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Глобализация и экономика.",
-            "tj": "Мо мавзӯи Ҷаҳонишавӣ ва иқтисод-ро меомӯзем."
-          }
-        },
-        {
-          "zh": "这个词是经济。",
-          "pinyin": "Zhège cí shì jīngjì.",
-          "translation": {
-            "uz": "Bu so'z: iqtisodiyot.",
-            "ru": "Это слово: экономика.",
-            "tj": "Ин калима: иқтисод."
+            "uz": "U nafaqat futbolni yaxshi o'ynaydi, xarakteri ham yaxshi.",
+            "ru": "Он не только хорошо играет в футбол, но и характер у него хороший.",
+            "tj": "Ӯ на танҳо футболро хуб бозӣ мекунад, хислаташ ҳам хуб аст."
           }
         }
       ]
@@ -136,33 +391,99 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "doim; hech qachon (inkor bilan)",
+        "ru": "从来 — всегда; никогда (с отрицанием)",
+        "tj": "从来 — ҳамеша; ҳеч вақт (бо инкор)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "从来",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "Odatda inkor bilan kelib, 'hech qachon bunday bo'lmagan' ma'nosini beradi.",
+        "ru": "Чаще всего стоит с отрицанием 不 или 没 и подчеркивает, что такого никогда не было.",
+        "tj": "Одатан бо 不 ё 没 меояд ва таъкид мекунад, ки чунин ҳолат ҳеҷ вақт набудааст."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "我从来没这么快乐过。",
+          "pinyin": "Wǒ cónglái méi zhème kuàilè guo.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Men hech qachon bunchalik xursand bo'lmaganman.",
+            "ru": "Я никогда не была такой счастливой.",
+            "tj": "Ман ҳеч вақт ин қадар хушбахт набудам."
           }
-        },
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "endi, hozirgina",
+        "ru": "刚 — только что, недавно",
+        "tj": "刚 — ҳозир, нав"
+      },
+      "title_zh": "刚",
+      "rule": {
+        "uz": "Harakat yaqinda yoki endi bo'lganini bildiradi.",
+        "ru": "Показывает, что действие произошло совсем недавно или только началось.",
+        "tj": "Нишон медиҳад, ки амал нав рӯй додааст ё нав оғоз шудааст."
+      },
+      "examples": [
         {
-          "zh": "经济。",
-          "pinyin": "jīngjì.",
+          "zh": "我和丈夫刚结婚的时候，每天都觉得很新鲜。",
+          "pinyin": "Wǒ hé zhàngfu gāng jiéhūn de shíhou, měi tiān dōu juéde hěn xīnxiān.",
           "translation": {
-            "uz": "经济 — jīngjì deb o'qiladi.",
-            "ru": "经济 читается как jīngjì.",
-            "tj": "经济 ҳамчун jīngjì хонда мешавад."
+            "uz": "Erim bilan endi turmush qurgan paytimda har kuni hamma narsa yangi tuyulardi.",
+            "ru": "Когда мы с мужем только поженились, каждый день казался новым.",
+            "tj": "Вақте ману шавҳарам нав издивоҷ карда будем, ҳар рӯз ҳама чиз нав менамуд."
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "hatto ... bo'lsa ham",
+        "ru": "即使...也... — даже если..., все равно...",
+        "tj": "即使...也... — ҳатто агар..., боз ҳам..."
+      },
+      "title_zh": "即使……也……",
+      "rule": {
+        "uz": "Shart kuchli bo'lsa ham natija o'zgarmasligini bildiradi.",
+        "ru": "Показывает, что результат не меняется даже при сильном условии.",
+        "tj": "Нишон медиҳад, ки натиҷа ҳатто бо шарти қавӣ ҳам тағйир намеёбад."
+      },
+      "examples": [
+        {
+          "zh": "即使晚上加班到零点，到家时，自己家里也还亮着灯。",
+          "pinyin": "Jíshǐ wǎnshang jiābān dào língdiǎn, dào jiā shí, zìjǐ jiā lǐ yě hái liàngzhe dēng.",
+          "translation": {
+            "uz": "Hatto kechasi yarimgacha ishlasa ham, uyga kelganda uyida chiroq yonib turadi.",
+            "ru": "Даже если работаешь сверхурочно до полуночи, дома все равно горит свет.",
+            "tj": "Ҳатто агар шаб то нисфи шаб изофакорӣ кунӣ, ҳангоми ба хона расидан чароғи хона ҳанӯз фурӯзон аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 5,
+      "title": {
+        "uz": "... jihatdan, ... borasida",
+        "ru": "（在）...上 — в плане..., с точки зрения...",
+        "tj": "（在）...上 — аз ҷиҳати..., дар масъалаи..."
+      },
+      "title_zh": "（在）……上",
+      "rule": {
+        "uz": "Mavzu yoki sohani ko'rsatadi: xarakter jihatidan, ish borasida kabi.",
+        "ru": "Указывает область или аспект: в характере, в работе, в учебе и т.д.",
+        "tj": "Соҳа ё ҷиҳатро нишон медиҳад: аз ҷиҳати хислат, кор, таҳсил ва ғайра."
+      },
+      "examples": [
+        {
+          "zh": "更需要性格上互相吸引。",
+          "pinyin": "Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
+          "translation": {
+            "uz": "Xarakter jihatidan bir-birini jalb qilish yanada kerak.",
+            "ru": "Еще важнее взаимное притяжение характеров.",
+            "tj": "Ҷалби ҳамдигар аз ҷиҳати хислат боз ҳам муҳимтар аст."
           }
         }
       ]
@@ -171,49 +492,265 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Globallashuv va iqtisodiyot",
-        "ru": "Глобализация и экономика",
-        "tj": "Ҷаҳонишавӣ ва иқтисод"
+        "uz": "孙月 va 王静 uning yigit do'sti haqida gaplashadi",
+        "ru": "孙月 и 王静 разговаривают о ее парне",
+        "tj": "孙月 ва 王静 дар бораи дӯстписари ӯ суҳбат мекунанд"
       },
       "dialogue": [
         {
-          "speaker": "A",
-          "zh": "今天我们学习“经济全球化”。",
-          "pinyin": "Jīntiān wǒmen xuéxí jīngjì quánqiúhuà.",
+          "speaker": "孙月",
+          "zh": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+          "pinyin": "Tīngshuō nǐ nánpéngyou Lǐ Jìn gēn nǐ shì yí ge xuéxiào de, shì nǐ tóngxué ma?",
           "text": {
-            "uz": "Bugun Globallashuv va iqtisodiyot mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Глобализация и экономика.",
-            "tj": "Имрӯз мавзӯи Ҷаҳонишавӣ ва иқтисод-ро меомӯзем."
+            "uz": "Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?",
+            "ru": "Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?",
+            "tj": "Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "speaker": "王静",
+          "zh": "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+          "pinyin": "Shì de, tā xué de shì xīnwén, wǒ xué de shì fǎlǜ, wǒ hé tā bú shì yí ge bān.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Ha, u jurnalistika o'qiydi, men huquq o'qiyman, biz bir guruhda emasmiz.",
+            "ru": "Да, он изучает журналистику, а я право; мы не в одной группе.",
+            "tj": "Ҳа, ӯ журналистика мехонад, ман ҳуқуқ мехонам; мо дар як гурӯҳ нестем."
           }
         },
         {
-          "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "speaker": "孙月",
+          "zh": "那你们俩是怎么认识的？",
+          "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Unda siz ikkalangiz qanday tanishgansiz?",
+            "ru": "Тогда как вы двое познакомились?",
+            "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "经济。",
-          "pinyin": "jīngjì.",
+          "speaker": "王静",
+          "zh": "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+          "pinyin": "Wǒmen shì zài yí cì zúqiú bǐsài zhōng rènshi de. Wǒmen bān gēn tāmen bān bǐsài, tā yí ge rén tī jìn liǎng ge qiú, wǒ duì tā yìnxiàng hěn shēn, hòulái jiù mànmàn shúxī le.",
           "text": {
-            "uz": "经济 — jīngjì deb o'qiladi.",
-            "ru": "经济 читается как jīngjì.",
-            "tj": "经济 ҳамчун jīngjì хонда мешавад."
+            "uz": "Biz bir futbol musobaqasida tanishganmiz. Bizning guruh ular guruhi bilan o'ynagan, u bir o'zi ikkita gol urgan, menda chuqur taassurot qoldirgan, keyin asta-sekin tanishib ketdik.",
+            "ru": "Мы познакомились на футбольном матче. Наша группа играла с их группой, он один забил два гола, и у меня осталось сильное впечатление; потом мы постепенно познакомились ближе.",
+            "tj": "Мо дар як мусобиқаи футбол шинос шудем. Гурӯҳи мо бо гурӯҳи онҳо бозӣ кард, ӯ танҳо ду гол зад, ба ман таассуроти амиқ гузошт; баъд оҳиста-оҳиста наздик шинос шудем."
+          }
+        },
+        {
+          "speaker": "孙月",
+          "zh": "你为什么喜欢他？",
+          "pinyin": "Nǐ wèishénme xǐhuan tā?",
+          "text": {
+            "uz": "Nega uni yoqtirasan?",
+            "ru": "Почему он тебе нравится?",
+            "tj": "Чаро ӯро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "他不仅足球踢得好，性格也不错。",
+          "pinyin": "Tā bùjǐn zúqiú tī de hǎo, xìnggé yě búcuò.",
+          "text": {
+            "uz": "U nafaqat futbolni yaxshi o'ynaydi, xarakteri ham yaxshi.",
+            "ru": "Он не только хорошо играет в футбол, но и характер у него хороший.",
+            "tj": "Ӯ на танҳо футболро хуб бозӣ мекунад, хислаташ ҳам хуб аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "王静 Li o'qituvchi bilan turmush qurishi haqida gaplashadi",
+        "ru": "王静 говорит с учителем Ли о свадьбе",
+        "tj": "王静 бо муаллими Ли дар бораи издивоҷ суҳбат мекунад"
+      },
+      "dialogue": [
+        {
+          "speaker": "王静",
+          "zh": "李老师，我下个月5号就要结婚了。",
+          "pinyin": "Lǐ lǎoshī, wǒ xià ge yuè wǔ hào jiù yào jiéhūn le.",
+          "text": {
+            "uz": "Li ustoz, men keyingi oyning 5-kuni turmushga chiqaman.",
+            "ru": "Учитель Ли, пятого числа следующего месяца я выхожу замуж.",
+            "tj": "Муаллими Ли, рӯзи 5-уми моҳи оянда ман издивоҷ мекунам."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "你是在开玩笑吧？你们不是才认识一个月？",
+          "pinyin": "Nǐ shì zài kāi wánxiào ba? Nǐmen bú shì cái rènshi yí ge yuè?",
+          "text": {
+            "uz": "Hazil qilyapsanmi? Sizlar endigina bir oy oldin tanishgansiz-ku?",
+            "ru": "Ты шутишь? Разве вы не познакомились всего месяц назад?",
+            "tj": "Шӯхӣ мекунӣ? Магар шумо ҳамагӣ як моҳ пеш шинос нашудед?"
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "虽然我们认识的时间不长，但我从来没这么快乐过。",
+          "pinyin": "Suīrán wǒmen rènshi de shíjiān bù cháng, dàn wǒ cónglái méi zhème kuàilè guo.",
+          "text": {
+            "uz": "Tanishganimizga ko'p bo'lmagan bo'lsa ham, men hech qachon bunchalik xursand bo'lmaganman.",
+            "ru": "Хотя мы знакомы недолго, я никогда не была такой счастливой.",
+            "tj": "Гарчанде мо дер боз шинос нестем, ман ҳеч вақт ин қадар хушбахт набудам."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "两个人在一起，最好能有共同的兴趣和爱好。",
+          "pinyin": "Liǎng ge rén zài yìqǐ, zuìhǎo néng yǒu gòngtóng de xìngqù hé àihào.",
+          "text": {
+            "uz": "Ikki kishi birga bo'lsa, umumiy qiziqish va hobbilari bo'lgani yaxshi.",
+            "ru": "Когда два человека вместе, лучше всего иметь общие интересы и увлечения.",
+            "tj": "Вақте ду нафар якҷо ҳастанд, беҳтараш шавқ ва ҳавасҳои умумӣ дошта бошанд."
+          }
+        },
+        {
+          "speaker": "王静",
+          "zh": "我们有很多共同的爱好，经常一起打球、唱歌、做菜。",
+          "pinyin": "Wǒmen yǒu hěn duō gòngtóng de àihào, jīngcháng yìqǐ dǎqiú, chànggē, zuò cài.",
+          "text": {
+            "uz": "Bizning umumiy qiziqishlarimiz ko'p, ko'pincha birga to'p o'ynaymiz, qo'shiq aytamiz, ovqat qilamiz.",
+            "ru": "У нас много общих увлечений: мы часто вместе играем в мяч, поем и готовим.",
+            "tj": "Мо ҳавасҳои муштараки зиёд дорем: бисёр вақт якҷо тӯббозӣ, сурудхонӣ ва хӯрокпазӣ мекунем."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "看来你真的找到适合你的人了。祝你们幸福！",
+          "pinyin": "Kànlái nǐ zhēn de zhǎodào shìhé nǐ de rén le. Zhù nǐmen xìngfú!",
+          "text": {
+            "uz": "Demak sen haqiqatan ham o'zingga mos odamni topibsan. Sizlarga baxt tilayman!",
+            "ru": "Похоже, ты действительно нашла подходящего человека. Желаю вам счастья!",
+            "tj": "Ба назар мерасад, ки ту воқеан шахси мувофиқро ёфтаӣ. Ба шумо хушбахтӣ мехоҳам!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "高老师 va 李老师 turmush hayoti haqida gaplashadi",
+        "ru": "Учитель Гао и учитель Ли говорят о семейной жизни",
+        "tj": "Муаллими Гао ва муаллими Ли дар бораи зиндагии оилавӣ суҳбат мекунанд"
+      },
+      "dialogue": [
+        {
+          "speaker": "高老师",
+          "zh": "听说您跟妻子结婚快二十年了？",
+          "pinyin": "Tīngshuō nín gēn qīzi jiéhūn kuài èrshí nián le?",
+          "text": {
+            "uz": "Eshitishimcha, siz rafiqangiz bilan turmush qurganingizga deyarli yigirma yil bo'libdi?",
+            "ru": "Слышал, вы с женой женаты почти двадцать лет?",
+            "tj": "Шунидам, ки шумо бо ҳамсаратон қариб бист сол боз издивоҷ кардаед?"
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "到6月9号，我们就结婚二十年了。这么多年，我们的生活一直挺幸福的。",
+          "pinyin": "Dào liù yuè jiǔ hào, wǒmen jiù jiéhūn èrshí nián le. Zhème duō nián, wǒmen de shēnghuó yìzhí tǐng xìngfú de.",
+          "text": {
+            "uz": "6-iyunga kelib turmush qurganimizga yigirma yil bo'ladi. Shu yillar davomida hayotimiz doim ancha baxtli bo'lgan.",
+            "ru": "К 9 июня будет двадцать лет со дня нашей свадьбы. Все эти годы наша жизнь была довольно счастливой.",
+            "tj": "То 9-уми июн издивоҷи мо бистсола мешавад. Дар ин солҳо зиндагии мо ҳамеша хеле хушбахтона буд."
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "我和丈夫刚结婚的时候，每天都觉得很新鲜，在一起有说不完的话。但是现在……",
+          "pinyin": "Wǒ hé zhàngfu gāng jiéhūn de shíhou, měi tiān dōu juéde hěn xīnxiān, zài yìqǐ yǒu shuō bu wán de huà. Dànshì xiànzài...",
+          "text": {
+            "uz": "Erim bilan endi turmush qurgan paytimda har kuni hamma narsa yangi tuyulardi, birga bo'lsak gapimiz tugamasdi. Lekin hozir...",
+            "ru": "Когда мы с мужем только поженились, каждый день казался новым, и нам было о чем говорить без конца. Но сейчас...",
+            "tj": "Вақте ману шавҳарам нав издивоҷ карда будем, ҳар рӯз ҳама чиз нав менамуд ва суханамон тамом намешуд. Аммо ҳоло..."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "两个人共同生活，只有浪漫和新鲜感是不够的。",
+          "pinyin": "Liǎng ge rén gòngtóng shēnghuó, zhǐyǒu làngmàn hé xīnxiāngǎn shì bú gòu de.",
+          "text": {
+            "uz": "Ikki kishi birga yashasa, faqat romantika va yangilik hissi yetarli emas.",
+            "ru": "Для совместной жизни двух людей одной романтики и новизны недостаточно.",
+            "tj": "Барои зиндагии муштараки ду нафар танҳо романтика ва ҳисси навӣ кофӣ нест."
+          }
+        },
+        {
+          "speaker": "高老师",
+          "zh": "您说的对！我现在每天看到的都是他的缺点。",
+          "pinyin": "Nín shuō de duì! Wǒ xiànzài měi tiān kàndào de dōu shì tā de quēdiǎn.",
+          "text": {
+            "uz": "To'g'ri aytasiz! Men hozir har kuni faqat uning kamchiliklarini ko'raman.",
+            "ru": "Вы правы! Сейчас я каждый день вижу только его недостатки.",
+            "tj": "Шумо дуруст мегӯед! Ҳоло ман ҳар рӯз фақат камбудиҳои ӯро мебинам."
+          }
+        },
+        {
+          "speaker": "李老师",
+          "zh": "两个人在一起时间长了，就会有很多问题。只有接受了他的缺点，你们才能更好地一起生活。",
+          "pinyin": "Liǎng ge rén zài yìqǐ shíjiān cháng le, jiù huì yǒu hěn duō wèntí. Zhǐyǒu jiēshòu le tā de quēdiǎn, nǐmen cái néng gèng hǎo de yìqǐ shēnghuó.",
+          "text": {
+            "uz": "Ikki kishi uzoq vaqt birga bo'lsa, ko'p muammo bo'ladi. Faqat uning kamchiliklarini qabul qilgandagina yaxshiroq birga yashay olasizlar.",
+            "ru": "Когда два человека долго вместе, появляется много проблем. Только приняв его недостатки, вы сможете лучше жить вместе.",
+            "tj": "Вақте ду нафар муддати дароз якҷо бошанд, мушкилоти зиёд пайдо мешавад. Танҳо баъд аз қабул кардани камбудиҳои ӯ шумо метавонед беҳтар якҷо зиндагӣ кунед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Romantik sevgi haqida matn",
+        "ru": "Текст о романтической любви",
+        "tj": "Матн дар бораи муҳаббати романтикӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "很多女孩子羡慕浪漫的爱情。",
+          "pinyin": "Hěn duō nǚháizi xiànmù làngmàn de àiqíng.",
+          "text": {
+            "uz": "Ko'p qizlar romantik sevgiga havas qiladi.",
+            "ru": "Многие девушки восхищаются романтической любовью.",
+            "tj": "Бисёр духтарон ба муҳаббати романтикӣ ҳавас мекунанд."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "那什么是浪漫呢？年轻人说：浪漫是她想要月亮时，你不会给她星星；中年人说：浪漫是即使晚上加班到零点，到家时，自己家里也还亮着灯；老年人说：浪漫其实就像歌中唱的那样，“我能想到最浪漫的事，就是和你一起慢慢变老。”其实，让我们感动的，就是生活中简单的爱情。有时候，简单就是最大的幸福。",
+          "pinyin": "Nà shénme shì làngmàn ne? Niánqīngrén shuō: làngmàn shì tā xiǎng yào yuèliang shí, nǐ bú huì gěi tā xīngxing; zhōngnián rén shuō: làngmàn shì jíshǐ wǎnshang jiābān dào língdiǎn, dào jiā shí, zìjǐ jiā lǐ yě hái liàngzhe dēng; lǎonián rén shuō: làngmàn qíshí jiù xiàng gē zhōng chàng de nàyàng, 'wǒ néng xiǎngdào zuì làngmàn de shì, jiùshì hé nǐ yìqǐ mànmàn biàn lǎo.' Qíshí, ràng wǒmen gǎndòng de, jiùshì shēnghuó zhōng jiǎndān de àiqíng. Yǒu shíhou, jiǎndān jiùshì zuì dà de xìngfú.",
+          "text": {
+            "uz": "Romantika nima o'zi? Yoshlar aytadi: romantika - u oy so'rasa, unga yulduz bermaslik; o'rta yoshlilar aytadi: romantika - hatto kechasi yarimgacha ishlasa ham, uyga kelganda uy chirog'i yonib turishi; keksalar aytadi: romantika qo'shiqdagi kabi, 'men tasavvur qila oladigan eng romantik ish - sen bilan birga asta qarish'. Aslida bizni ta'sirlantiradigan narsa hayotdagi oddiy sevgi. Ba'zan oddiylik eng katta baxtdir.",
+            "ru": "Так что такое романтика? Молодые говорят: романтика - это когда она просит луну, а ты не даешь ей звезды; люди среднего возраста говорят: романтика - это когда даже после сверхурочной работы до полуночи дома все еще горит свет; пожилые говорят: романтика похожа на слова песни: 'самое романтичное, что я могу представить, - медленно стареть вместе с тобой'. На самом деле нас трогает простая любовь в повседневной жизни. Иногда простота и есть самое большое счастье.",
+            "tj": "Пас романтика чист? Ҷавонон мегӯянд: романтика он аст, ки вақте ӯ моҳро мехоҳад, ту ба ӯ ситора намедиҳӣ; миёнсолон мегӯянд: романтика он аст, ки ҳатто шаб то нисфи шаб изофакорӣ кунӣ, вақте ба хона мерасӣ, чароғи хонаат ҳанӯз фурӯзон аст; пиронсолон мегӯянд: романтика мисли суруд аст: 'романтиктарин чизе, ки тасаввур мекунам, ин бо ту оҳиста пир шудан аст'. Дар асл, чизе ки моро таъсир мекунад, муҳаббати одии зиндагист. Баъзан одӣ будан бузургтарин хушбахтист."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Turmush va xarakter haqida matn",
+        "ru": "Текст о браке и характере",
+        "tj": "Матн дар бораи издивоҷ ва хислат"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "说到结婚，人们就会很自然地想起爱情。爱情是结婚的重要原因，但两个人共同生活，不仅需要浪漫的爱情，更需要性格上互相吸引。",
+          "pinyin": "Shuō dào jiéhūn, rénmen jiù huì hěn zìrán de xiǎngqǐ àiqíng. Àiqíng shì jiéhūn de zhòngyào yuányīn, dàn liǎng ge rén gòngtóng shēnghuó, bùjǐn xūyào làngmàn de àiqíng, gèng xūyào xìnggé shang hùxiāng xīyǐn.",
+          "text": {
+            "uz": "Turmush qurish haqida gap ketganda, odamlar tabiiy ravishda sevgini eslaydi. Sevgi turmushning muhim sababi, lekin ikki kishi birga yashashi uchun nafaqat romantik sevgi, balki xarakter jihatidan o'zaro jalb qilishi ham ko'proq kerak.",
+            "ru": "Когда речь заходит о браке, люди естественно вспоминают любовь. Любовь - важная причина брака, но для совместной жизни двух людей нужна не только романтическая любовь, еще важнее взаимное притяжение характеров.",
+            "tj": "Вақте сухан дар бораи издивоҷ меравад, одамон табиатан муҳаббатро ба ёд меоранд. Муҳаббат сабаби муҳими издивоҷ аст, аммо барои зиндагии муштараки ду нафар на танҳо муҳаббати романтикӣ, балки ҷалби ҳамдигар аз ҷиҳати хислат бештар лозим аст."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "我丈夫是个很幽默的人。即使是很普通的事情，从他嘴里说出来也会变得很有意思。在我难过的时候，他总是有办法让我高兴起来。而且他的脾气也不错，结婚快十年了，我们俩几乎没因为什么事红过脸，很多人都特别羡慕我们。",
+          "pinyin": "Wǒ zhàngfu shì ge hěn yōumò de rén. Jíshǐ shì hěn pǔtōng de shìqing, cóng tā zuǐ lǐ shuō chūlai yě huì biàn de hěn yǒu yìsi. Zài wǒ nánguò de shíhou, tā zǒng shì yǒu bànfǎ ràng wǒ gāoxìng qǐlai. Érqiě tā de píqi yě búcuò, jiéhūn kuài shí nián le, wǒmen liǎ jīhū méi yīnwèi shénme shì hóng guo liǎn, hěn duō rén dōu tèbié xiànmù wǒmen.",
+          "text": {
+            "uz": "Erim juda hazilkash odam. Hatto juda oddiy narsalar ham uning og'zidan chiqqanda qiziqarli bo'lib ketadi. Men xafa bo'lganimda u meni xursand qilishning yo'lini topadi. Bundan tashqari fe'li ham yaxshi: turmush qurganimizga qariyb o'n yil bo'ldi, deyarli hech narsa uchun yuzimiz qizargancha urishmaganmiz, ko'p odamlar bizga juda havas qiladi.",
+            "ru": "Мой муж очень остроумный человек. Даже обычные вещи из его уст становятся интересными. Когда мне грустно, он всегда находит способ поднять мне настроение. Кроме того, у него хороший характер: мы женаты почти десять лет и почти ни разу не ссорились до красноты лица, многие нам особенно завидуют.",
+            "tj": "Шавҳарам шахси хеле шӯхтабъ аст. Ҳатто чизҳои одӣ аз даҳони ӯ ҷолиб мешаванд. Вақте ман ғамгин мешавам, ӯ ҳамеша роҳи хурсанд кардани маро меёбад. Ғайр аз ин, хулқаш ҳам хуб аст: қариб даҳ сол боз оиладорем ва қариб барои ҳеҷ чиз ҷанҷоли сахт накардаем, бисёр одамон ба мо ҳавас мекунанд."
           }
         }
       ]
@@ -232,77 +769,363 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "经济",
-            "pinyin": "jīngjì",
+            "no": 1,
+            "zh": "法律",
+            "pinyin": "fǎlǜ",
             "pos": "n.",
             "meaning": {
-              "uz": "iqtisodiyot",
-              "ru": "экономика",
-              "tj": "иқтисод"
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "全球化",
-            "pinyin": "quánqiúhuà",
-            "pos": "n.",
+            "no": 2,
+            "zh": "俩",
+            "pinyin": "liǎ",
+            "pos": "num.-m.",
             "meaning": {
-              "uz": "globallashuv",
-              "ru": "глобализация",
-              "tj": "ҷаҳонишавӣ"
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "市场",
-            "pinyin": "shìchǎng",
+            "no": 3,
+            "zh": "印象",
+            "pinyin": "yìnxiàng",
             "pos": "n.",
             "meaning": {
-              "uz": "bozor",
-              "ru": "рынок",
-              "tj": "бозор"
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "贸易",
-            "pinyin": "màoyì",
-            "pos": "n.",
+            "no": 4,
+            "zh": "深",
+            "pinyin": "shēn",
+            "pos": "adj.",
             "meaning": {
-              "uz": "savdo",
-              "ru": "торговля",
-              "tj": "тиҷорат"
+              "uz": "chuqur",
+              "ru": "глубокий",
+              "tj": "чуқур"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "发展",
-            "pinyin": "fāzhǎn",
+            "no": 5,
+            "zh": "熟悉",
+            "pinyin": "shúxī",
             "pos": "v.",
             "meaning": {
-              "uz": "rivojlanmoq",
-              "ru": "развиваться",
-              "tj": "рушд кардан"
+              "uz": "tanish bo'lmoq, yaxshi bilmoq",
+              "ru": "быть знакомым, хорошо знать",
+              "tj": "шинос будан, хуб донистан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "影响",
-            "pinyin": "yǐngxiǎng",
+            "no": 6,
+            "zh": "不仅",
+            "pinyin": "bùjǐn",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "nafaqat",
+              "ru": "не только",
+              "tj": "на танҳо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "性格",
+            "pinyin": "xìnggé",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xarakter, fe'l-atvor",
+              "ru": "характер",
+              "tj": "хислат, характер"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "开玩笑",
+            "pinyin": "kāi wánxiào",
             "pos": "v.",
             "meaning": {
-              "uz": "ta’sir qilmoq",
-              "ru": "влиять",
+              "uz": "hazil qilmoq",
+              "ru": "шутить",
+              "tj": "шӯхӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "从来",
+            "pinyin": "cónglái",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "doim; hech qachon (inkor bilan)",
+              "ru": "всегда; никогда (с отрицанием)",
+              "tj": "ҳамеша; ҳеч вақт (бо инкор)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "最好",
+            "pinyin": "zuìhǎo",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "eng yaxshisi, yaxshisi",
+              "ru": "лучше всего, лучше бы",
+              "tj": "беҳтараш, беҳтарин"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "共同",
+            "pinyin": "gòngtóng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "umumiy, birgalikdagi",
+              "ru": "общий, совместный",
+              "tj": "умумӣ, муштарак"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "适合",
+            "pinyin": "shìhé",
+            "pos": "v.",
+            "meaning": {
+              "uz": "mos kelmoq",
+              "ru": "подходить",
+              "tj": "мувофиқ будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "幸福",
+            "pinyin": "xìngfú",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "baxtli",
+              "ru": "счастливый; счастье",
+              "tj": "хушбахт; хушбахтӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "生活",
+            "pinyin": "shēnghuó",
+            "pos": "n./v.",
+            "meaning": {
+              "uz": "hayot; yashamoq",
+              "ru": "жизнь; жить",
+              "tj": "зиндагӣ; зиндагӣ кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 15,
+            "zh": "刚",
+            "pinyin": "gāng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "endi, hozirgina",
+              "ru": "только что, недавно",
+              "tj": "ҳозир, нав"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 16,
+            "zh": "浪漫",
+            "pinyin": "làngmàn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "romantik",
+              "ru": "романтичный",
+              "tj": "романтикӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 17,
+            "zh": "够",
+            "pinyin": "gòu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yetarli bo'lmoq",
+              "ru": "быть достаточным",
+              "tj": "кофӣ будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 18,
+            "zh": "缺点",
+            "pinyin": "quēdiǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kamchilik",
+              "ru": "недостаток",
+              "tj": "камбудӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 19,
+            "zh": "接受",
+            "pinyin": "jiēshòu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qabul qilmoq",
+              "ru": "принимать",
+              "tj": "қабул кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 20,
+            "zh": "羡慕",
+            "pinyin": "xiànmù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "havas qilmoq, qoyil qolmoq",
+              "ru": "завидовать, восхищаться",
+              "tj": "ҳавас кардан, ҳасад бурдан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 21,
+            "zh": "爱情",
+            "pinyin": "àiqíng",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sevgi, muhabbat",
+              "ru": "любовь",
+              "tj": "муҳаббат"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 22,
+            "zh": "星星",
+            "pinyin": "xīngxing",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yulduz",
+              "ru": "звезда",
+              "tj": "ситора"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 23,
+            "zh": "即使",
+            "pinyin": "jíshǐ",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "hatto ... bo'lsa ham",
+              "ru": "даже если",
+              "tj": "ҳатто агар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 24,
+            "zh": "加班",
+            "pinyin": "jiā bān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qo'shimcha ishlamoq",
+              "ru": "работать сверхурочно",
+              "tj": "аз вақти кор зиёд кор кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 25,
+            "zh": "亮",
+            "pinyin": "liàng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yorishmoq, chiroq yonmoq",
+              "ru": "светиться, гореть",
+              "tj": "равшан будан, фурӯзон будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 26,
+            "zh": "感动",
+            "pinyin": "gǎndòng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ta'sirlantirmoq",
+              "ru": "тронуть, растрогать",
               "tj": "таъсир кардан"
             }
           }
@@ -310,26 +1133,84 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "竞争",
-            "pinyin": "jìngzhēng",
-            "pos": "n.",
+            "no": 27,
+            "zh": "自然",
+            "pinyin": "zìrán",
+            "pos": "adv.",
             "meaning": {
-              "uz": "raqobat",
-              "ru": "конкуренция",
-              "tj": "рақобат"
+              "uz": "tabiiy ravishda",
+              "ru": "естественно",
+              "tj": "табиӣ равишда"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "合作",
-            "pinyin": "hézuò",
+            "no": 28,
+            "zh": "原因",
+            "pinyin": "yuányīn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sabab",
+              "ru": "причина",
+              "tj": "сабаб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 29,
+            "zh": "互相",
+            "pinyin": "hùxiāng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "o'zaro, bir-biriga",
+              "ru": "взаимно, друг друга",
+              "tj": "якдигарро, мутақобилан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 30,
+            "zh": "吸引",
+            "pinyin": "xīyǐn",
             "pos": "v.",
             "meaning": {
-              "uz": "hamkorlik qilmoq",
-              "ru": "сотрудничать",
-              "tj": "ҳамкорӣ кардан"
+              "uz": "jalb qilmoq",
+              "ru": "привлекать",
+              "tj": "ҷалб кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 31,
+            "zh": "幽默",
+            "pinyin": "yōumò",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "hazilkash, yumorga boy",
+              "ru": "с юмором, остроумный",
+              "tj": "шӯхтабъ, ҳазломез"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 32,
+            "zh": "脾气",
+            "pinyin": "píqi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "fe'l, mijoz, xarakter",
+              "ru": "характер, нрав",
+              "tj": "феъл, хулқ"
             }
           }
         }
@@ -347,9 +1228,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "经济 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 经济:",
-            "tj": "Маънои калимаи 经济-ро интихоб кунед:"
+            "uz": "法律 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 法律:",
+            "tj": "Маънои калимаи 法律-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -358,39 +1239,39 @@
           },
           "options": [
             {
-              "uz": "iqtisodiyot",
-              "ru": "экономика",
-              "tj": "иқтисод"
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
             },
             {
-              "uz": "globallashuv",
-              "ru": "глобализация",
-              "tj": "ҷаҳонишавӣ"
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
             },
             {
-              "uz": "bozor",
-              "ru": "рынок",
-              "tj": "бозор"
+              "uz": "chuqur",
+              "ru": "глубокий",
+              "tj": "чуқур"
             },
             {
-              "uz": "savdo",
-              "ru": "торговля",
-              "tj": "тиҷорат"
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "经济 = iqtisodiyot (jīngjì)",
-            "ru": "经济 = экономика (jīngjì)",
-            "tj": "经济 = иқтисод (jīngjì)"
+            "uz": "法律 = qonun, huquq (fǎlǜ)",
+            "ru": "法律 = закон, право (fǎlǜ)",
+            "tj": "法律 = қонун, ҳуқуқ (fǎlǜ)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "经济 talaffuzini tanlang:",
-            "ru": "Выберите произношение 经济:",
-            "tj": "Талаффузи 经济-ро интихоб кунед:"
+            "uz": "俩 talaffuzini tanlang:",
+            "ru": "Выберите произношение 俩:",
+            "tj": "Талаффузи 俩-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -398,49 +1279,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jīngjì",
-            "quánqiúhuà",
-            "shìchǎng",
-            "màoyì"
+            "fǎlǜ",
+            "liǎ",
+            "shēn",
+            "yìnxiàng"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "经济 — jīngjì",
-            "ru": "经济 — jīngjì",
-            "tj": "经济 — jīngjì"
+            "uz": "俩 — liǎ",
+            "ru": "俩 — liǎ",
+            "tj": "俩 — liǎ"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'iqtisodiyot' xitoycha nima?",
-            "ru": "'экономика' по-китайски?",
-            "tj": "'иқтисод' ба чинӣ чист?"
+            "uz": "'taassurot' xitoycha qaysi?",
+            "ru": "'впечатление' по-китайски?",
+            "tj": "'таассурот' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "经济",
-            "全球化",
-            "市场",
-            "贸易"
+            "深",
+            "印象",
+            "法律",
+            "俩"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "经济 = iqtisodiyot (jīngjì)",
-            "ru": "经济 = экономика (jīngjì)",
-            "tj": "经济 = иқтисод (jīngjì)"
+            "uz": "taassurot = 印象 (yìnxiàng)",
+            "ru": "впечатление = 印象 (yìnxiàng)",
+            "tj": "таассурот = 印象 (yìnxiàng)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "quánqiúhuà qaysi ieroglif?",
-            "ru": "Какой иероглиф читается quánqiúhuà?",
-            "tj": "quánqiúhuà кадом иероглиф аст?"
+            "uz": "shēn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shēn?",
+            "tj": "shēn кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -448,91 +1329,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "全球化",
-            "经济",
-            "市场",
-            "贸易"
+            "深",
+            "印象",
+            "法律",
+            "俩"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "全球化 = globallashuv (quánqiúhuà)",
-            "ru": "全球化 = глобализация (quánqiúhuà)",
-            "tj": "全球化 = ҷаҳонишавӣ (quánqiúhuà)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'经济全球化' iborasini tuzing",
-            "ru": "Соберите фразу '经济全球化'",
-            "tj": "Ибораи '经济全球化'-ро созед"
-          },
-          "tokens": [
-            "经济",
-            "全球化",
-            "市场",
-            "贸易"
-          ],
-          "answer_tokens": [
-            "经济",
-            "全球化"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 经济 全球化",
-            "ru": "Правильный порядок: 经济 全球化",
-            "tj": "Тартиби дуруст: 经济 全球化"
+            "uz": "深 = chuqur (shēn)",
+            "ru": "深 = глубокий (shēn)",
+            "tj": "深 = чуқур (shēn)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "经济",
+              "法律",
               {
-                "uz": "iqtisodiyot",
-                "ru": "экономика",
-                "tj": "иқтисод"
+                "uz": "qonun, huquq",
+                "ru": "закон, право",
+                "tj": "қонун, ҳуқуқ"
               }
             ],
             [
-              "全球化",
+              "俩",
               {
-                "uz": "globallashuv",
-                "ru": "глобализация",
-                "tj": "ҷаҳонишавӣ"
+                "uz": "ikkalasi, ikki kishi",
+                "ru": "двое, оба",
+                "tj": "ду нафар, ҳарду"
               }
             ],
             [
-              "市场",
+              "印象",
               {
-                "uz": "bozor",
-                "ru": "рынок",
-                "tj": "бозор"
+                "uz": "taassurot",
+                "ru": "впечатление",
+                "tj": "таассурот"
               }
             ],
             [
-              "贸易",
+              "深",
               {
-                "uz": "savdo",
-                "ru": "торговля",
-                "tj": "тиҷорат"
+                "uz": "chuqur",
+                "ru": "глубокий",
+                "tj": "чуқур"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "他____足球踢得好，性格也不错。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "不仅",
+            "俩",
+            "印象",
+            "法律"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 不仅 (bùjǐn) — nafaqat",
+            "ru": "Верно: 不仅 (bùjǐn) — не только",
+            "tj": "Дуруст: 不仅 (bùjǐn) — на танҳо"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "经济全球化",
-          "pinyin": "jīngjì quánqiúhuà",
+          "phrase": "法律",
+          "pinyin": "fǎlǜ",
           "translation": {
-            "uz": "Globallashuv va iqtisodiyot",
-            "ru": "Глобализация и экономика",
-            "tj": "Ҷаҳонишавӣ ва иқтисод"
+            "uz": "qonun, huquq",
+            "ru": "закон, право",
+            "tj": "қонун, ҳуқуқ"
           }
         }
       ]
@@ -549,9 +1428,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda 孙月 avval nima deydi?",
+            "ru": "Что 孙月 говорит в начале диалога?",
+            "tj": "Дар муколама 孙月 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -559,41 +1438,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "那你们俩是怎么认识的？"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "ru": "Правильный ответ: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "tj": "Ҷавоби дуруст: 听说你男朋友李进跟你是一个学校的，是你同学吗？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida 王静 nima deydi?",
+            "ru": "Что 王静 говорит в конце диалога?",
+            "tj": "Дар охири муколама 王静 чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "经济。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+            "他不仅足球踢得好，性格也不错。",
+            "那你们俩是怎么认识的？"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "B javobi: 经济。",
-            "ru": "Ответ B: 经济。",
-            "tj": "Ҷавоби B: 经济。"
+            "uz": "To'g'ri javob: 他不仅足球踢得好，性格也不错。",
+            "ru": "Правильный ответ: 他不仅足球踢得好，性格也不错。",
+            "tj": "Ҷавоби дуруст: 他不仅足球踢得好，性格也不错。"
           }
         }
       ]

@@ -2,122 +2,232 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 14,
-  "title": "节日习俗",
+  "title": "你把水果拿过来",
   "subtitle": {
-    "uz": "Mavzu: Bayram odatlari. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Праздничные обычаи. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Одатҳои идона. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "'把'-konstruktsiyasi 3-qism (natija/yo'nalish to'ldiruvchisi bilan), 'avval...keyin...so'ng...' va 'xuddi...kabi' iboralari",
+    "ru": "Конструкция '把' часть 3 (с результатным/направленным дополнением), 'сначала...потом...затем...' и 'как/словно'",
+    "tj": "Сохтори '把' қисми 3 (бо пуркунандаи натиҷа/самт), 'аввал...баъд...пас...' ва 'монанди...' "
   },
   "active_words": [
     {
-      "zh": "节日",
-      "pinyin": "jiérì",
-      "pos": "n.",
-      "meaning": {
-        "uz": "bayram",
-        "ru": "праздник",
-        "tj": "ид"
-      },
-      "no": 1
-    },
-    {
-      "zh": "习俗",
-      "pinyin": "xísú",
-      "pos": "n.",
-      "meaning": {
-        "uz": "urf-odat",
-        "ru": "обычай",
-        "tj": "урфу одат"
-      },
-      "no": 2
-    },
-    {
-      "zh": "中秋节",
-      "pinyin": "Zhōngqiūjié",
-      "pos": "n.",
-      "meaning": {
-        "uz": "O‘rta kuz bayrami",
-        "ru": "Праздник середины осени",
-        "tj": "Иди миёнаи тирамоҳ"
-      },
-      "no": 3
-    },
-    {
-      "zh": "月饼",
-      "pinyin": "yuèbǐng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "oy pirogi",
-        "ru": "лунный пряник",
-        "tj": "кулчаи моҳ"
-      },
-      "no": 4
-    },
-    {
-      "zh": "团圆",
-      "pinyin": "tuányuán",
+      "no": 1,
+      "zh": "打扫",
+      "pinyin": "dǎsǎo",
       "pos": "v.",
       "meaning": {
-        "uz": "jam bo‘lmoq",
-        "ru": "воссоединяться",
-        "tj": "ҷамъ шудан"
-      },
-      "no": 5
+        "uz": "tozalamoq, supurmoq",
+        "ru": "убирать, подметать",
+        "tj": "тоза кардан, рӯфтан"
+      }
     },
     {
-      "zh": "庆祝",
-      "pinyin": "qìngzhù",
-      "pos": "v.",
+      "no": 2,
+      "zh": "干净",
+      "pinyin": "gānjìng",
+      "pos": "adj.",
       "meaning": {
-        "uz": "nishonlamoq",
-        "ru": "праздновать",
-        "tj": "ҷашн гирифтан"
-      },
-      "no": 6
+        "uz": "toza",
+        "ru": "чистый",
+        "tj": "тоза"
+      }
     },
     {
-      "zh": "客人",
-      "pinyin": "kèrén",
+      "no": 3,
+      "zh": "然后",
+      "pinyin": "ránhòu",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "keyin, undan so'ng",
+        "ru": "потом, затем",
+        "tj": "баъд, сипас"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "冰箱",
+      "pinyin": "bīngxiāng",
       "pos": "n.",
       "meaning": {
-        "uz": "mehmon",
-        "ru": "гость",
-        "tj": "меҳмон"
-      },
-      "no": 7
+        "uz": "muzlatkich",
+        "ru": "холодильник",
+        "tj": "яхдон"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "洗澡",
+      "pinyin": "xǐ zǎo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "cho'milmoq, dush qabul qilmoq",
+        "ru": "принимать ванну/душ",
+        "tj": "оббозӣ кардан, душ гирифтан"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "节目",
+      "pinyin": "jiémù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dastur, ko'rsatuv",
+        "ru": "программа, передача",
+        "tj": "барнома"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "月亮",
+      "pinyin": "yuèliang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "oy",
+        "ru": "луна",
+        "tj": "моҳ"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "像",
+      "pinyin": "xiàng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o'xshamoq",
+        "ru": "быть похожим",
+        "tj": "монанд будан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "盘子",
+      "pinyin": "pánzi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "tarelka, lagan",
+        "ru": "тарелка",
+        "tj": "табақ"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "刮风",
+      "pinyin": "guā fēng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "shamol esmoq",
+        "ru": "быть ветреным",
+        "tj": "шамол вазидан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "叔叔",
+      "pinyin": "shūshu",
+      "pos": "n.",
+      "meaning": {
+        "uz": "amaki",
+        "ru": "дядя",
+        "tj": "амак"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "阿姨",
+      "pinyin": "āyí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xola, amma",
+        "ru": "тётя",
+        "tj": "хола, амма"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "故事",
+      "pinyin": "gùshi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hikoya",
+        "ru": "история, рассказ",
+        "tj": "ҳикоя"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "声音",
+      "pinyin": "shēngyīn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ovoz, tovush",
+        "ru": "звук, голос",
+        "tj": "овоз, садо"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "菜单",
+      "pinyin": "càidān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "menyu",
+        "ru": "меню",
+        "tj": "меню"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "简单",
+      "pinyin": "jiǎndān",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "oson, oddiy",
+        "ru": "простой",
+        "tj": "содда"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "香蕉",
+      "pinyin": "xiāngjiāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "banan",
+        "ru": "банан",
+        "tj": "банан"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "把-konstruktsiyasi③: 把 + OB + F + natija/yo'nalish to'ldiruvchisi",
+        "ru": "Конструкция 把③: 把 + объект + Гл + результатное/направленное дополнение",
+        "tj": "Сохтори 把③: 把 + объект + Ф + пуркунандаи натиҷа/самт"
       },
-      "title_zh": "主题词语",
+      "title_zh": "把字句③：把 + O + V + 结果补语/趋向补语",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 节日习俗. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“节日习俗”。",
-        "ru": "Ключевая фраза урока: 节日习俗. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“节日习俗”。",
-        "tj": "Ибораи асосии дарс: 节日习俗. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“节日习俗”。"
+        "uz": "'把'-konstruktsiyasida fe'ldan keyin natija to'ldiruvchisi (好、完、干净、成 kabi) yoki yo'nalish to'ldiruvchisi (过来、过去、进来 kabi) keladi. Bu harakatning natijasini yoki yo'nalishini ta'kidlaydi.",
+        "ru": "В конструкции '把' после глагола следует результатное дополнение (好、完、干净、成 и т.д.) или направленное дополнение (过来、过去、进来 и т.д.). Это акцентирует результат или направление действия.",
+        "tj": "Дар сохтори '把' баъди феъл пуркунандаи натиҷа (好、完、干净、成 ва ғайра) ё пуркунандаи самт (过来、过去、进来 ва ғайра) меояд. Ин натиҷа ё самти амалро таъкид мекунад."
       },
       "examples": [
         {
-          "zh": "今天我们学习“节日习俗”。",
-          "pinyin": "Jīntiān wǒmen xuéxí jiérì xísú.",
+          "zh": "把苹果洗干净了！",
+          "pinyin": "Bǎ píngguǒ xǐ gānjìng le!",
           "translation": {
-            "uz": "Biz Bayram odatlari mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Праздничные обычаи.",
-            "tj": "Мо мавзӯи Одатҳои идона-ро меомӯзем."
+            "uz": "Olmani yaxshilab yuvib!",
+            "ru": "Тщательно помой яблоки!",
+            "tj": "Себро хуб бишӯй!"
           }
         },
         {
-          "zh": "这个词是节日。",
-          "pinyin": "Zhège cí shì jiérì.",
+          "zh": "你把水果拿过来。",
+          "pinyin": "Nǐ bǎ shuǐguǒ ná guò lái.",
           "translation": {
-            "uz": "Bu so'z: bayram.",
-            "ru": "Это слово: праздник.",
-            "tj": "Ин калима: ид."
+            "uz": "Mevalarni bu yerga olib keling.",
+            "ru": "Принеси фрукты сюда.",
+            "tj": "Меваҳоро ин ҷо биёр."
           }
         }
       ]
@@ -125,33 +235,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Avval……keyin/yana……so'ng……",
+        "ru": "Сначала……потом/снова……затем……",
+        "tj": "Аввал……баъд/боз……сипас……"
       },
-      "title_zh": "问答结构",
+      "title_zh": "先……再/又……然后……",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'先…再…然后…' tuzilmasi bir nechta harakatning ketma-ketligini bildiradi. '先' = avval, '再' = keyin (shu sub'ekt bajaradi), '然后' = so'ng, keyingi qadam. '先…再…' = A dan keyin B.",
+        "ru": "Конструкция '先…再…然后…' выражает последовательность нескольких действий. '先' = сначала, '再' = потом (тот же субъект), '然后' = затем, следующий шаг. '先…再…' = A, потом B.",
+        "tj": "Сохтори '先…再…然后…' пайдарпаии чанд амалро ифода мекунад. '先' = аввал, '再' = баъд (ҳамон мубтадо), '然后' = сипас, қадами навбатӣ. '先…再…' = A, баъд B."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "先把肉切了，再放油，然后加蔬菜。",
+          "pinyin": "Xiān bǎ ròu qiē le, zài fàng yóu, ránhòu jiā shūcài.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Avval go'shtni kesing, keyin yog' soling, so'ng sabzavot qo'shing.",
+            "ru": "Сначала нарежьте мясо, потом добавьте масло, затем положите овощи.",
+            "tj": "Аввал гӯштро буред, баъд равған рехта, сипас сабзавот илова кунед."
           }
         },
         {
-          "zh": "节日。",
-          "pinyin": "jiérì.",
+          "zh": "先洗手，再吃饭。",
+          "pinyin": "Xiān xǐ shǒu, zài chī fàn.",
           "translation": {
-            "uz": "节日 — jiérì deb o'qiladi.",
-            "ru": "节日 читается как jiérì.",
-            "tj": "节日 ҳамчун jiérì хонда мешавад."
+            "uz": "Avval qo'l yuvib, keyin ovqat ye.",
+            "ru": "Сначала вымой руки, потом ешь.",
+            "tj": "Аввал дастро бишӯй, баъд хӯрок бихӯр."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Xuddi……kabi (taqqoslash/tavsif)",
+        "ru": "Как/Словно……（сравнение/описание）",
+        "tj": "Ба монанди……（муқоиса/тавсиф）"
+      },
+      "title_zh": "像……一样（比较/描述）",
+      "rule": {
+        "uz": "'像…一样' tuzilmasi ikki narsani taqqoslash yoki o'xshatish uchun ishlatiladi. '像+narsA+一样+sifat/fe'l'. 'A跟B一样' bilan o'xshash, lekin ko'proq tasvir uchun ishlatiladi.",
+        "ru": "Конструкция '像…一样' используется для сравнения двух вещей или описания. '像+предметA+一样+прилагательное/глагол'. Похоже на 'A跟B一样', но чаще используется для описания.",
+        "tj": "Сохтори '像…一样' барои муқоисаи ду чиз ё тавсиф истифода мешавад. '像+чизиА+一样+сифат/феъл'. Ба 'A跟B一样' монанд аст, аммо бештар барои тавсиф истифода мешавад."
+      },
+      "examples": [
+        {
+          "zh": "像你这样做，肯定很好吃！",
+          "pinyin": "Xiàng nǐ zhèyàng zuò, kěndìng hěn hǎochī!",
+          "translation": {
+            "uz": "Sizning usulda pishirsam, albatta juda mazali bo'ladi!",
+            "ru": "Если готовить так, как ты, обязательно будет вкусно!",
+            "tj": "Агар ба монанди шумо пазем, албатта хеле хушмаза мешавад!"
+          }
+        },
+        {
+          "zh": "她唱歌像专业歌手一样好。",
+          "pinyin": "Tā chànggē xiàng zhuānyè gēshǒu yīyàng hǎo.",
+          "translation": {
+            "uz": "U qo'shiq aytishi professional qo'shiqchi kabi yaxshi.",
+            "ru": "Она поёт так же хорошо, как профессиональный певец.",
+            "tj": "Вай суруд хондани профессионал хонандаро монанд хуб аст."
           }
         }
       ]
@@ -160,49 +304,206 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Bayram odatlari",
-        "ru": "Праздничные обычаи",
-        "tj": "Одатҳои идона"
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
       },
       "dialogue": [
         {
-          "speaker": "A",
-          "zh": "今天我们学习“节日习俗”。",
-          "pinyin": "Jīntiān wǒmen xuéxí jiérì xísú.",
+          "speaker": "周太太",
+          "zh": "客人就要来了，你怎么还不打扫房间啊？",
+          "pinyin": "Kèrén jiù yào lái le, nǐ zěnme hái bù dǎsǎo fángjiān a?",
           "text": {
-            "uz": "Bugun Bayram odatlari mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Праздничные обычаи.",
-            "tj": "Имрӯз мавзӯи Одатҳои идона-ро меомӯзем."
+            "uz": "Mehmonlar hozir keladi, nega hali xonani tozalamayapsiz?",
+            "ru": "Гости вот-вот придут, почему ты ещё не убираешь комнату?",
+            "tj": "Меҳмонон ҳозир меоянд, чаро ҳоло ҳам хонаро тоза намекунӣ?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "speaker": "周明",
+          "zh": "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。",
+          "pinyin": "Bié zháojí, wǒ ràng háizimen dǎsǎo ne, kèrén lái de shíhou, tāmen huì bǎ fángjiān dǎsǎo gānjìng.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Shoshilmang, bolalarga tozalatayapman, mehmonlar kelganda ular xonani tozalab qo'yishadi.",
+            "ru": "Не волнуйся, я велел детям убирать, когда гости придут, они уберут комнату чисто.",
+            "tj": "Шитоб накун, ба кӯдакон тоза кардан фармудам, вақте меҳмонон оянд, онҳо хонаро тоза мекунанд."
           }
         },
         {
-          "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "speaker": "周太太",
+          "zh": "那你也不能看电视啊。",
+          "pinyin": "Nà nǐ yě bù néng kàn diànshì a.",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Unda siz ham televizor ko'rib o'tirmasligingiz kerak.",
+            "ru": "Но и ты не должен смотреть телевизор.",
+            "tj": "Пас ту ҳам набояд телевизор бинӣ."
           }
         },
         {
-          "speaker": "B",
-          "zh": "节日。",
-          "pinyin": "jiérì.",
+          "speaker": "周明",
+          "zh": "你让我做什么？",
+          "pinyin": "Nǐ ràng wǒ zuò shénme?",
           "text": {
-            "uz": "节日 — jiérì deb o'qiladi.",
-            "ru": "节日 читается как jiérì.",
-            "tj": "节日 ҳамчун jiérì хонда мешавад."
+            "uz": "Menga nima qilishni buyurasiz?",
+            "ru": "Что ты хочешь, чтобы я сделал?",
+            "tj": "Ба ман чӣ кор карданро мегӯӣ?"
+          }
+        },
+        {
+          "speaker": "周太太",
+          "zh": "先把茶和杯子放好，然后把冰箱里的西瓜拿出来。",
+          "pinyin": "Xiān bǎ chá hé bēizi fàng hǎo, ránhòu bǎ bīngxiāng li de xīguā ná chūlai.",
+          "text": {
+            "uz": "Avval choy va piyolalarni qo'yib chiqing, keyin muzlatkichdagi tarvuzni olib chiqing.",
+            "ru": "Сначала расставь чай и чашки, затем достань арбуз из холодильника.",
+            "tj": "Аввал чой ва пиёлаҳоро ҷо ба ҷо кун, баъд тарбузро аз яхдон барор."
+          }
+        },
+        {
+          "speaker": "周明",
+          "zh": "太热了，我还是先把空调打开吧。",
+          "pinyin": "Tài rè le, wǒ háishi xiān bǎ kōngtiáo dǎ kāi ba.",
+          "text": {
+            "uz": "Juda issiq, yaxshisi avval konditsionerni yoqay.",
+            "ru": "Слишком жарко, я лучше сначала включу кондиционер.",
+            "tj": "Хеле гарм аст, беҳтараш аввал кондитсионерро мекушоям."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Telefonda",
+        "ru": "По телефону",
+        "tj": "Дар телефон"
+      },
+      "dialogue": [
+        {
+          "speaker": "同事",
+          "zh": "你在忙什么呢？刚才打你的手机你也不接。",
+          "pinyin": "Nǐ zài máng shénme ne? Gāngcái dǎ nǐ de shǒujī nǐ yě bù jiē.",
+          "text": {
+            "uz": "Nima bilan bandsan? Hozirgina telefoningga qo'ng'iroq qildim, olmading.",
+            "ru": "Чем ты занят? Я только что звонил тебе на мобильный, ты не ответил.",
+            "tj": "Бо чӣ бандӣ? Ҳозир ба телефони дастият занг задам, нагирифтӣ."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "对不起，我刚洗了个澡，没听见。有什么事吗？",
+          "pinyin": "Duìbuqǐ, wǒ gāng xǐ le ge zǎo, méi tīngjiàn. Yǒu shénme shì ma?",
+          "text": {
+            "uz": "Kechirasiz, hozirgina cho'milgan edim, eshitmadim. Nima ish bor edi?",
+            "ru": "Извини, я только что принимал душ и не услышал. Что случилось?",
+            "tj": "Бубахшед, ҳозир оббозӣ карда будам, нашунидам. Чӣ кор буд?"
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "我想问问你公司里的一些事情。",
+          "pinyin": "Wǒ xiǎng wènwen nǐ gōngsī li de yìxiē shìqing.",
+          "text": {
+            "uz": "Kompaniyangizdagi ba'zi narsalarni so'ramoqchi edim.",
+            "ru": "Я хотел спросить кое-что о твоей компании.",
+            "tj": "Мехостам баъзе чизҳоро дар бораи ширкатат пурсам."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "你先等一下，我去把电视关了。",
+          "pinyin": "Nǐ xiān děng yíxià, wǒ qù bǎ diànshì guān le.",
+          "text": {
+            "uz": "Avval bir oz kut, televizorni o'chirib kelay.",
+            "ru": "Подожди немного, я пойду выключу телевизор.",
+            "tj": "Каме интизор шав, телевизорро хомӯш карда меоям."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "没关系，你先把电视节目看完吧，然后再给我回电话。",
+          "pinyin": "Méi guānxi, nǐ xiān bǎ diànshì jiémù kàn wán ba, ránhòu zài gěi wǒ huí diànhuà.",
+          "text": {
+            "uz": "Hechqisi yo'q, avval televizor dasturini ko'rib tugat, keyin menga qayta qo'ng'iroq qil.",
+            "ru": "Ничего, сначала досмотри телепередачу, потом перезвони мне.",
+            "tj": "Ҳеҷ гап не, аввал барномаи телевизорро тамом кун, баъд ба ман занг зан."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Xiaomingning uyida",
+        "ru": "У Сяомина дома",
+        "tj": "Дар хонаи Сяоминг"
+      },
+      "dialogue": [
+        {
+          "speaker": "同学",
+          "zh": "今晚的月亮真漂亮，像白色的盘子一样。",
+          "pinyin": "Jīn wǎn de yuèliang zhēn piàoliang, xiàng báisè de pánzi yíyàng.",
+          "text": {
+            "uz": "Bugungi oyning ko'rinishi juda chiroyli, oq tarelkaga o'xshaydi.",
+            "ru": "Сегодняшняя луна очень красивая, как белая тарелка.",
+            "tj": "Моҳи имшаб хеле зебо аст, мисли табақи сафед."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "是啊，外边也不刮风，我们坐在外边一边看月亮一边吃东西，怎么样？",
+          "pinyin": "Shì a, wàibian yě bù guā fēng, wǒmen zuò zài wàibian yìbiān kàn yuèliang yìbiān chī dōngxi, zěnmeyàng?",
+          "text": {
+            "uz": "Ha, tashqarida shamol ham yo'q, tashqarida o'tirib oyga qarab ovqat yeymiz, qalay?",
+            "ru": "Да, на улице и ветра нет. Посидим снаружи, будем смотреть на луну и есть, как тебе?",
+            "tj": "Ҳа, берун шамол ҳам нест, берун нишаста ҳам моҳро бинему ҳам чизе бихӯрем, чӣ хел?"
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "好啊，我先把桌椅搬出去，然后你把水果拿过来，我们听叔叔阿姨讲讲他们年轻时候的故事。",
+          "pinyin": "Hǎo a, wǒ xiān bǎ zhuōyǐ bān chūqu, ránhòu nǐ bǎ shuǐguǒ ná guòlai, wǒmen tīng shūshu āyí jiǎngjiang tāmen niánqīng shíhou de gùshi.",
+          "text": {
+            "uz": "Yaxshi, men avval stol-stullarni tashqariga olib chiqaman, keyin sen mevalarni olib kel, amaki va xoladan yoshlikdagi hikoyalarini eshitamiz.",
+            "ru": "Хорошо, я сначала вынесу стол и стулья, потом ты принеси фрукты, послушаем истории дяди и тёти о молодости.",
+            "tj": "Хуб, ман аввал мизу курсиҳоро берун мебарам, баъд ту меваҳоро биёр, ҳикояҳои амаку холаро аз ҷавониашон мешунавем."
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "太好了！记得给大山打个电话，让他马上过来。",
+          "pinyin": "Tài hǎo le! Jìde gěi Dàshān dǎ ge diànhuà, ràng tā mǎshàng guòlai.",
+          "text": {
+            "uz": "Juda yaxshi! Dashanga telefon qilishni unutma, darhol kelsin.",
+            "ru": "Отлично! Не забудь позвонить Дашаню, пусть сразу приходит.",
+            "tj": "Хеле хуб! Ба Дашан занг заданро фаромӯш накун, бигзор фавран ояд."
+          }
+        },
+        {
+          "speaker": "同学",
+          "zh": "不用打了，你听外边的声音，一定是大山。",
+          "pinyin": "Búyòng dǎ le, nǐ tīng wàibian de shēngyīn, yídìng shì Dàshān.",
+          "text": {
+            "uz": "Telefon qilish shart emas, tashqaridagi ovozni eshit, albatta Dashan.",
+            "ru": "Не надо звонить, послушай звук снаружи, это наверняка Дашань.",
+            "tj": "Занг задан лозим нест, овози берунро гӯш кун, албатта Дашан аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mevali guruch haqida matn",
+        "ru": "Текст о рисе с фруктами",
+        "tj": "Матн дар бораи биринҷи мевадор"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "你吃过水果饭吗？你在饭馆的菜单上见过水果饭吗？你想学着做水果饭吗？其实做水果饭很简单，先把米饭做好，然后再把一块块新鲜的水果放进去，水果饭就做好了。你可以做苹果饭、香蕉饭，要是你愿意，还可以做西瓜饭。多吃新鲜水果对身体好。",
+          "pinyin": "Nǐ chī guo shuǐguǒ fàn ma? Nǐ zài fànguǎn de càidān shang jiàn guo shuǐguǒ fàn ma? Nǐ xiǎng xuézhe zuò shuǐguǒ fàn ma? Qíshí zuò shuǐguǒ fàn hěn jiǎndān, xiān bǎ mǐfàn zuò hǎo, ránhòu zài bǎ yí kuài kuài xīnxiān de shuǐguǒ fàng jìnqu, shuǐguǒ fàn jiù zuò hǎo le. Nǐ kěyǐ zuò píngguǒ fàn, xiāngjiāo fàn, yàoshi nǐ yuànyì, hái kěyǐ zuò xīguā fàn. Duō chī xīnxiān shuǐguǒ duì shēntǐ hǎo.",
+          "text": {
+            "uz": "Mevali guruch yeb ko'rganmisiz? Restoran menyusida mevali guruchni ko'rganmisiz? Mevali guruch tayyorlashni o'rganmoqchimisiz? Aslida mevali guruch tayyorlash juda oson: avval guruchni pishiring, keyin bo'lak-bo'lak yangi mevalarni ichiga soling, mevali guruch tayyor bo'ladi. Olmali guruch, bananli guruch qilishingiz mumkin, xohlasangiz tarvuzli guruch ham qilsa bo'ladi. Yangi mevalarni ko'p yeyish sog'liq uchun foydali.",
+            "ru": "Вы ели фруктовый рис? Видели фруктовый рис в меню ресторана? Хотите научиться его готовить? На самом деле готовить фруктовый рис очень просто: сначала приготовьте рис, затем положите внутрь кусочки свежих фруктов, и фруктовый рис готов. Можно сделать рис с яблоком, с бананом, а если хотите, ещё и с арбузом. Есть больше свежих фруктов полезно для здоровья.",
+            "tj": "Биринҷи мевадор хӯрдаед? Дар менюи тарабхона биринҷи мевадорро дидаед? Мехоҳед тайёр карданашро ёд гиред? Дар асл тайёр кардани он хеле содда аст: аввал биринҷро пазед, баъд пора-пора меваи тару тозаро дар он гузоред, биринҷи мевадор тайёр мешавад. Метавонед биринҷи себдор, банандор кунед, агар хоҳед, тарбуздор ҳам мешавад. Бисёр хӯрдани меваи тару тоза барои саломатӣ хуб аст."
           }
         }
       ]
@@ -221,91 +522,238 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "节日",
-            "pinyin": "jiérì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "bayram",
-              "ru": "праздник",
-              "tj": "ид"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "习俗",
-            "pinyin": "xísú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "urf-odat",
-              "ru": "обычай",
-              "tj": "урфу одат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "中秋节",
-            "pinyin": "Zhōngqiūjié",
-            "pos": "n.",
-            "meaning": {
-              "uz": "O‘rta kuz bayrami",
-              "ru": "Праздник середины осени",
-              "tj": "Иди миёнаи тирамоҳ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "月饼",
-            "pinyin": "yuèbǐng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "oy pirogi",
-              "ru": "лунный пряник",
-              "tj": "кулчаи моҳ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "团圆",
-            "pinyin": "tuányuán",
+            "no": 1,
+            "zh": "打扫",
+            "pinyin": "dǎsǎo",
             "pos": "v.",
             "meaning": {
-              "uz": "jam bo‘lmoq",
-              "ru": "воссоединяться",
-              "tj": "ҷамъ шудан"
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "庆祝",
-            "pinyin": "qìngzhù",
-            "pos": "v.",
+            "no": 2,
+            "zh": "干净",
+            "pinyin": "gānjìng",
+            "pos": "adj.",
             "meaning": {
-              "uz": "nishonlamoq",
-              "ru": "праздновать",
-              "tj": "ҷашн гирифтан"
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "客人",
-            "pinyin": "kèrén",
+            "no": 3,
+            "zh": "然后",
+            "pinyin": "ránhòu",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "冰箱",
+            "pinyin": "bīngxiāng",
             "pos": "n.",
             "meaning": {
-              "uz": "mehmon",
-              "ru": "гость",
-              "tj": "меҳмон"
+              "uz": "muzlatkich",
+              "ru": "холодильник",
+              "tj": "яхдон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "洗澡",
+            "pinyin": "xǐ zǎo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "cho'milmoq, dush qabul qilmoq",
+              "ru": "принимать ванну/душ",
+              "tj": "оббозӣ кардан, душ гирифтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "节目",
+            "pinyin": "jiémù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dastur, ko'rsatuv",
+              "ru": "программа, передача",
+              "tj": "барнома"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "月亮",
+            "pinyin": "yuèliang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "oy",
+              "ru": "луна",
+              "tj": "моҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "像",
+            "pinyin": "xiàng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o'xshamoq",
+              "ru": "быть похожим",
+              "tj": "монанд будан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "盘子",
+            "pinyin": "pánzi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "tarelka, lagan",
+              "ru": "тарелка",
+              "tj": "табақ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "刮风",
+            "pinyin": "guā fēng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "shamol esmoq",
+              "ru": "быть ветреным",
+              "tj": "шамол вазидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "叔叔",
+            "pinyin": "shūshu",
+            "pos": "n.",
+            "meaning": {
+              "uz": "amaki",
+              "ru": "дядя",
+              "tj": "амак"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "阿姨",
+            "pinyin": "āyí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xola, amma",
+              "ru": "тётя",
+              "tj": "хола, амма"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "故事",
+            "pinyin": "gùshi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hikoya",
+              "ru": "история, рассказ",
+              "tj": "ҳикоя"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "声音",
+            "pinyin": "shēngyīn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ovoz, tovush",
+              "ru": "звук, голос",
+              "tj": "овоз, садо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 15,
+            "zh": "菜单",
+            "pinyin": "càidān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "menyu",
+              "ru": "меню",
+              "tj": "меню"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 16,
+            "zh": "简单",
+            "pinyin": "jiǎndān",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "oson, oddiy",
+              "ru": "простой",
+              "tj": "содда"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 17,
+            "zh": "香蕉",
+            "pinyin": "xiāngjiāo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "banan",
+              "ru": "банан",
+              "tj": "банан"
             }
           }
         }
@@ -323,9 +771,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "节日 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 节日:",
-            "tj": "Маънои калимаи 节日-ро интихоб кунед:"
+            "uz": "打扫 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 打扫:",
+            "tj": "Маънои калимаи 打扫-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +782,39 @@
           },
           "options": [
             {
-              "uz": "bayram",
-              "ru": "праздник",
-              "tj": "ид"
+              "uz": "muzlatkich",
+              "ru": "холодильник",
+              "tj": "яхдон"
             },
             {
-              "uz": "urf-odat",
-              "ru": "обычай",
-              "tj": "урфу одат"
+              "uz": "keyin, undan so'ng",
+              "ru": "потом, затем",
+              "tj": "баъд, сипас"
             },
             {
-              "uz": "O‘rta kuz bayrami",
-              "ru": "Праздник середины осени",
-              "tj": "Иди миёнаи тирамоҳ"
+              "uz": "tozalamoq, supurmoq",
+              "ru": "убирать, подметать",
+              "tj": "тоза кардан, рӯфтан"
             },
             {
-              "uz": "oy pirogi",
-              "ru": "лунный пряник",
-              "tj": "кулчаи моҳ"
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "节日 = bayram (jiérì)",
-            "ru": "节日 = праздник (jiérì)",
-            "tj": "节日 = ид (jiérì)"
+            "uz": "打扫 = tozalamoq, supurmoq (dǎsǎo)",
+            "ru": "打扫 = убирать, подметать (dǎsǎo)",
+            "tj": "打扫 = тоза кардан, рӯфтан (dǎsǎo)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "节日 talaffuzini tanlang:",
-            "ru": "Выберите произношение 节日:",
-            "tj": "Талаффузи 节日-ро интихоб кунед:"
+            "uz": "干净 talaffuzini tanlang:",
+            "ru": "Выберите произношение 干净:",
+            "tj": "Талаффузи 干净-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +822,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiérì",
-            "xísú",
-            "Zhōngqiūjié",
-            "yuèbǐng"
+            "gānjìng",
+            "ránhòu",
+            "dǎsǎo",
+            "bīngxiāng"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "节日 — jiérì",
-            "ru": "节日 — jiérì",
-            "tj": "节日 — jiérì"
+            "uz": "干净 — gānjìng",
+            "ru": "干净 — gānjìng",
+            "tj": "干净 — gānjìng"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'bayram' xitoycha nima?",
-            "ru": "'праздник' по-китайски?",
-            "tj": "'ид' ба чинӣ чист?"
+            "uz": "'keyin, undan so'ng' xitoycha qaysi?",
+            "ru": "'потом, затем' по-китайски?",
+            "tj": "'баъд, сипас' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "节日",
-            "习俗",
-            "中秋节",
-            "月饼"
+            "冰箱",
+            "然后",
+            "干净",
+            "打扫"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "节日 = bayram (jiérì)",
-            "ru": "节日 = праздник (jiérì)",
-            "tj": "节日 = ид (jiérì)"
+            "uz": "keyin, undan so'ng = 然后 (ránhòu)",
+            "ru": "потом, затем = 然后 (ránhòu)",
+            "tj": "баъд, сипас = 然后 (ránhòu)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "xísú qaysi ieroglif?",
-            "ru": "Какой иероглиф читается xísú?",
-            "tj": "xísú кадом иероглиф аст?"
+            "uz": "bīngxiāng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bīngxiāng?",
+            "tj": "bīngxiāng кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,91 +872,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "习俗",
-            "节日",
-            "中秋节",
-            "月饼"
+            "然后",
+            "打扫",
+            "干净",
+            "冰箱"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "习俗 = urf-odat (xísú)",
-            "ru": "习俗 = обычай (xísú)",
-            "tj": "习俗 = урфу одат (xísú)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'节日习俗' iborasini tuzing",
-            "ru": "Соберите фразу '节日习俗'",
-            "tj": "Ибораи '节日习俗'-ро созед"
-          },
-          "tokens": [
-            "节日",
-            "习俗",
-            "中秋节",
-            "月饼"
-          ],
-          "answer_tokens": [
-            "节日",
-            "习俗"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 节日 习俗",
-            "ru": "Правильный порядок: 节日 习俗",
-            "tj": "Тартиби дуруст: 节日 习俗"
+            "uz": "冰箱 = muzlatkich (bīngxiāng)",
+            "ru": "冰箱 = холодильник (bīngxiāng)",
+            "tj": "冰箱 = яхдон (bīngxiāng)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "节日",
+              "打扫",
               {
-                "uz": "bayram",
-                "ru": "праздник",
-                "tj": "ид"
+                "uz": "tozalamoq, supurmoq",
+                "ru": "убирать, подметать",
+                "tj": "тоза кардан, рӯфтан"
               }
             ],
             [
-              "习俗",
+              "干净",
               {
-                "uz": "urf-odat",
-                "ru": "обычай",
-                "tj": "урфу одат"
+                "uz": "toza",
+                "ru": "чистый",
+                "tj": "тоза"
               }
             ],
             [
-              "中秋节",
+              "然后",
               {
-                "uz": "O‘rta kuz bayrami",
-                "ru": "Праздник середины осени",
-                "tj": "Иди миёнаи тирамоҳ"
+                "uz": "keyin, undan so'ng",
+                "ru": "потом, затем",
+                "tj": "баъд, сипас"
               }
             ],
             [
-              "月饼",
+              "冰箱",
               {
-                "uz": "oy pirogi",
-                "ru": "лунный пряник",
-                "tj": "кулчаи моҳ"
+                "uz": "muzlatkich",
+                "ru": "холодильник",
+                "tj": "яхдон"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "把苹果洗____了！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "然后",
+            "冰箱",
+            "打扫",
+            "干净"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 干净 (gānjìng) — toza",
+            "ru": "Верно: 干净 (gānjìng) — чистый",
+            "tj": "Дуруст: 干净 (gānjìng) — тоза"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "节日习俗",
-          "pinyin": "jiérì xísú",
+          "phrase": "打扫",
+          "pinyin": "dǎsǎo",
           "translation": {
-            "uz": "Bayram odatlari",
-            "ru": "Праздничные обычаи",
-            "tj": "Одатҳои идона"
+            "uz": "tozalamoq, supurmoq",
+            "ru": "убирать, подметать",
+            "tj": "тоза кардан, рӯфтан"
           }
         }
       ]
@@ -525,9 +971,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda 周太太 avval nima deydi?",
+            "ru": "Что 周太太 говорит в начале диалога?",
+            "tj": "Дар муколама 周太太 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -535,41 +981,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "那你也不能看电视啊。",
+            "客人就要来了，你怎么还不打扫房间啊？",
+            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。",
+            "你让我做什么？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 客人就要来了，你怎么还不打扫房间啊？",
+            "ru": "Правильный ответ: 客人就要来了，你怎么还不打扫房间啊？",
+            "tj": "Ҷавоби дуруст: 客人就要来了，你怎么还不打扫房间啊？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida 周明 nima deydi?",
+            "ru": "Что 周明 говорит в конце диалога?",
+            "tj": "Дар охири муколама 周明 чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "节日。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。",
+            "太热了，我还是先把空调打开吧。",
+            "客人就要来了，你怎么还不打扫房间啊？",
+            "那你也不能看电视啊。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "B javobi: 节日。",
-            "ru": "Ответ B: 节日。",
-            "tj": "Ҷавоби B: 节日。"
+            "uz": "To'g'ri javob: 太热了，我还是先把空调打开吧。",
+            "ru": "Правильный ответ: 太热了，我还是先把空调打开吧。",
+            "tj": "Ҷавоби дуруст: 太热了，我还是先把空调打开吧。"
           }
         }
       ]

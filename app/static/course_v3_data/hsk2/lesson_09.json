@@ -2,122 +2,166 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 9,
-  "title": "你看过吗",
+  "title": "题太多，我没做完",
   "subtitle": {
-    "uz": "Mavzu: Tajriba, 过 yuklamasi. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Опыт, частица 过. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Таҷриба, ҳиссачаи 过. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Natija fe'llari, 'cóng' old ko'makchisi va 'dì' tartib ko'rsatkichi yordamida gaplar tuzishni o'rganish.",
+    "ru": "Научиться строить предложения с результативными глаголами, предлогом 'cóng' и порядковым показателем 'dì'.",
+    "tj": "Омӯзиши тартиб додани ҷумлаҳо бо феълҳои натиҷавӣ, пешоянди 'cóng' ва нишондиҳандаи тартиби 'dì'."
   },
   "active_words": [
     {
-      "zh": "过",
-      "pinyin": "guò",
-      "pos": "expr.",
+      "no": 1,
+      "zh": "错",
+      "pinyin": "cuò",
+      "pos": "adj.",
       "meaning": {
-        "uz": "tajriba bildiruvchi yuklama",
-        "ru": "частица опыта",
-        "tj": "ҳиссачаи таҷриба"
-      },
-      "no": 1
+        "uz": "xato, noto'g'ri",
+        "ru": "неправильный, ошибочный",
+        "tj": "хато, нодуруст"
+      }
     },
     {
-      "zh": "看过",
-      "pinyin": "kàn guò",
+      "no": 2,
+      "zh": "从",
+      "pinyin": "cóng",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "dan, boshlab (joy yoki vaqt)",
+        "ru": "от, с, начиная с (место или время)",
+        "tj": "аз, аз ибтидои (ҷой ё вақт)"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "跳舞",
+      "pinyin": "tiàowǔ",
       "pos": "v.",
       "meaning": {
-        "uz": "ko‘rgan bo‘lmoq",
-        "ru": "видел когда-либо",
-        "tj": "дида будан"
-      },
-      "no": 2
+        "uz": "raqs tushmoq",
+        "ru": "танцевать",
+        "tj": "рақс кардан"
+      }
     },
     {
-      "zh": "去过",
-      "pinyin": "qù guò",
+      "no": 4,
+      "zh": "第一",
+      "pinyin": "dìyī",
+      "pos": "num.",
+      "meaning": {
+        "uz": "birinchi",
+        "ru": "первый",
+        "tj": "аввалин, якум"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "希望",
+      "pinyin": "xīwàng",
       "pos": "v.",
       "meaning": {
-        "uz": "borgan bo‘lmoq",
-        "ru": "бывал",
-        "tj": "рафта будан"
-      },
-      "no": 3
+        "uz": "umid qilmoq, xohlamoq",
+        "ru": "надеяться, желать",
+        "tj": "умед доштан, орзу кардан"
+      }
     },
     {
-      "zh": "吃过",
-      "pinyin": "chī guò",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yegan bo‘lmoq",
-        "ru": "ел когда-либо",
-        "tj": "хӯрда будан"
-      },
-      "no": 4
-    },
-    {
-      "zh": "北京",
-      "pinyin": "Běijīng",
+      "no": 6,
+      "zh": "问题",
+      "pinyin": "wèntí",
       "pos": "n.",
       "meaning": {
-        "uz": "Pekin",
-        "ru": "Пекин",
-        "tj": "Пекин"
-      },
-      "no": 5
+        "uz": "savol, muammo",
+        "ru": "вопрос, проблема",
+        "tj": "савол, мушкил"
+      }
     },
     {
-      "zh": "以前",
-      "pinyin": "yǐqián",
+      "no": 7,
+      "zh": "欢迎",
+      "pinyin": "huānyíng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "xush kelibsiz, kutib olmoq",
+        "ru": "добро пожаловать, приветствовать",
+        "tj": "хуш омадед, пешвоз гирифтан"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "上班",
+      "pinyin": "shàngbān",
+      "pos": "v.",
+      "meaning": {
+        "uz": "ishga bormoq, ishlamoq",
+        "ru": "идти на работу, работать",
+        "tj": "ба кор рафтан, кор кардан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "懂",
+      "pinyin": "dǒng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tushunmoq",
+        "ru": "понимать",
+        "tj": "фаҳмидан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "完",
+      "pinyin": "wán",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tugamoq, tamomlamoq",
+        "ru": "заканчивать, завершать",
+        "tj": "тамом кардан, ба охир расидан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "题",
+      "pinyin": "tí",
       "pos": "n.",
       "meaning": {
-        "uz": "ilgari, oldin",
-        "ru": "раньше",
-        "tj": "пештар"
-      },
-      "no": 6
-    },
-    {
-      "zh": "从来",
-      "pinyin": "cónglái",
-      "pos": "adv.",
-      "meaning": {
-        "uz": "hech qachon",
-        "ru": "никогда",
-        "tj": "ҳеҷ гоҳ"
-      },
-      "no": 7
+        "uz": "savol, topshiriq, masala",
+        "ru": "вопрос, задание, задача",
+        "tj": "савол, супориш, масъала"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Natija to'ldiruvchisi (结果补语)",
+        "ru": "Результативное дополнение (结果补语)",
+        "tj": "Пуркунандаи натиҷавӣ (结果补语)"
       },
-      "title_zh": "主题词语",
+      "title_zh": "结果补语",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 你看过吗. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你看过吗”。",
-        "ru": "Ключевая фраза урока: 你看过吗. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你看过吗”。",
-        "tj": "Ибораи асосии дарс: 你看过吗. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你看过吗”。"
+        "uz": "Natija to'ldiruvchisi (结果补语) fe'ldan keyin qo'shilib, harakatning natijasini bildiradi.\nMasalan: 听懂 (eshitib tushunmoq), 做完 (tamomlamoq), 找到 (topmoq).\nInkor shaklida 没 yoki 没有 ishlatiladi: 没做完 (tamomlaolmadim).",
+        "ru": "Результативное дополнение (结果补语) добавляется после глагола и выражает результат действия.\nНапример: 听懂 (услышать и понять), 做完 (закончить), 找到 (найти).\nВ отрицании используется 没 или 没有: 没做完 (не успел закончить).",
+        "tj": "Пуркунандаи натиҷавӣ (结果补语) баъд аз феъл илова мешавад ва натиҷаи амалро нишон медиҳад.\nМасалан: 听懂 (шунида фаҳмидан), 做完 (тамом кардан), 找到 (ёфтан).\nДар инкор 没 ё 没有 истифода мешавад: 没做完 (нарасидам тамом кунам)."
       },
       "examples": [
         {
-          "zh": "今天我们学习“你看过吗”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ kàn guò ma.",
+          "zh": "我听懂了。",
+          "pinyin": "Wǒ tīngdǒng le.",
           "translation": {
-            "uz": "Biz Tajriba, 过 yuklamasi mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Опыт, частица 过.",
-            "tj": "Мо мавзӯи Таҷриба, ҳиссачаи 过-ро меомӯзем."
+            "uz": "Men eshitib tushundim.",
+            "ru": "Я понял на слух.",
+            "tj": "Ман шунида фаҳмидам."
           }
         },
         {
-          "zh": "这个词是过。",
-          "pinyin": "Zhège cí shì guò.",
+          "zh": "题太多，我没做完。",
+          "pinyin": "Tí tài duō, wǒ méi zuòwán.",
           "translation": {
-            "uz": "Bu so'z: tajriba bildiruvchi yuklama.",
-            "ru": "Это слово: частица опыта.",
-            "tj": "Ин калима: ҳиссачаи таҷриба."
+            "uz": "Savollar ko'p edi, men tamomlaolmadim.",
+            "ru": "Заданий было много, я не успел закончить.",
+            "tj": "Саволҳо зиёд буданд, ман нарасидам тамом кунам."
           }
         }
       ]
@@ -125,33 +169,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Old ko'makchi 从 (dan, boshlab)",
+        "ru": "Предлог 从 (от, с, начиная с)",
+        "tj": "Пешоянди 从 (аз, аз ибтидои)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "介词\"从\"",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'从' old ko'makchisi joy yoki vaqtni bildiradi va 'dan/boshlab' ma'nosini beradi.\nOdatda 'cóng … kāishǐ' (…dan boshlab) yoki 'cóng … dào …' (…dan …gacha) ko'rinishida ishlatiladi.",
+        "ru": "Предлог '从' обозначает место или время и означает 'от/с/начиная с'.\nОбычно используется в форме 'cóng … kāishǐ' (начиная с …) или 'cóng … dào …' (от … до …).",
+        "tj": "Пешоянди '从' ҷой ё вақтро нишон медиҳад ва маъноии 'аз/аз ибтидои'-ро медиҳад.\nОдатан дар шакли 'cóng … kāishǐ' (аз … оғоз) ё 'cóng … dào …' (аз … то …) истифода мешавад."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "他从下个星期一开始上班。",
+          "pinyin": "Tā cóng xià ge xīngqīyī kāishǐ shàngbān.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "U kelasi dushanba kundan boshlab ishga chiqadi.",
+            "ru": "Он начнёт работать с ближайшего понедельника.",
+            "tj": "Вай аз душанбаи оянда кор мекунад."
           }
         },
         {
-          "zh": "过。",
-          "pinyin": "guò.",
+          "zh": "您从几岁开始学跳舞？",
+          "pinyin": "Nín cóng jǐ suì kāishǐ xué tiàowǔ?",
           "translation": {
-            "uz": "过 — guò deb o'qiladi.",
-            "ru": "过 читается как guò.",
-            "tj": "过 ҳамчун guò хонда мешавад."
+            "uz": "Siz necha yoshdan raqs o'rganishni boshladingiz?",
+            "ru": "С какого возраста вы начали учиться танцевать?",
+            "tj": "Шумо аз чанд солагӣ рақс омӯхтанро оғоз кардед?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Tartib ko'rsatkichi 第 (birinchi, ikkinchi...)",
+        "ru": "Порядковый показатель 第 (первый, второй...)",
+        "tj": "Нишондиҳандаи тартиби 第 (аввалин, дуввум...)"
+      },
+      "title_zh": "\"第\"表示顺序",
+      "rule": {
+        "uz": "'第' prefiksi raqamlardan oldin qo'yilib tartib sonlarini hosil qiladi:\n第一 (birinchi), 第二 (ikkinchi) va h.k.\nBu inglizcha '-th' qo'shimchasiga o'xshaydi.\nOdiy sanoq sonlardan farqli ravishda narsa-predmetning tartibini bildiradi.",
+        "ru": "Префикс '第' перед числами образует порядковые числительные:\n第一 (первый), 第二 (второй) и т.д.\nАналог английского суффикса '-th'.\nВ отличие от количественных числительных, обозначает порядок предметов.",
+        "tj": "Пешванди '第' пеш аз ададҳо ададҳои тартибиро месозад:\n第一 (якум/аввалин), 第二 (дуввум) ва ғ.\nБа суффикси '-um' дар тоҷикӣ монанд аст.\nДар фарқ аз ададҳои шуморавӣ, тартиби ашёро нишон медиҳад."
+      },
+      "examples": [
+        {
+          "zh": "这是他的第一个工作。",
+          "pinyin": "Zhè shì tā de dì yī ge gōngzuò.",
+          "translation": {
+            "uz": "Bu uning birinchi ishi.",
+            "ru": "Это его первая работа.",
+            "tj": "Ин кори аввалинаш аст."
+          }
+        },
+        {
+          "zh": "我第一次跳舞是在七岁的时候。",
+          "pinyin": "Wǒ dì yī cì tiàowǔ shì zài qī suì de shíhou.",
+          "translation": {
+            "uz": "Men birinchi marta etti yoshimda raqs tushganman.",
+            "ru": "Я впервые танцевал в семь лет.",
+            "tj": "Ман бори аввал дар ҳафт солагӣ рақс кардам."
           }
         }
       ]
@@ -160,49 +238,186 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Tajriba, 过 yuklamasi",
-        "ru": "Опыт, частица 过",
-        "tj": "Таҷриба, ҳиссачаи 过"
+        "uz": "Telefon qo'ng'iroqi",
+        "ru": "Телефонный разговор",
+        "tj": "Занги телефон"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“你看过吗”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ kàn guò ma.",
+          "zh": "你好！请问张欢在吗？",
+          "pinyin": "Nǐ hǎo! Qǐngwèn Zhāng Huān zài ma?",
           "text": {
-            "uz": "Bugun Tajriba, 过 yuklamasi mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Опыт, частица 过.",
-            "tj": "Имрӯз мавзӯи Таҷриба, ҳиссачаи 过-ро меомӯзем."
+            "uz": "Salom! Iltimos, Chjan Xuan bormi?",
+            "ru": "Здравствуйте! Скажите, Чжан Хуань здесь?",
+            "tj": "Салом! Лутфан, Чжан Хуан ҳаст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "你打错了，我们这儿没有叫张欢的。",
+          "pinyin": "Nǐ dǎ cuò le, wǒmen zhèr méiyǒu jiào Zhāng Huān de.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Siz xato raqamga terdingiz, bizda Chjan Xuan ismli odam yo'q.",
+            "ru": "Вы набрали неправильный номер, у нас нет человека по имени Чжан Хуань.",
+            "tj": "Шумо рақами хато зададед, дар ин ҷо Чжан Хуан нест."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "对不起。",
+          "pinyin": "Duìbuqǐ.",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Kechirasiz.",
+            "ru": "Извините.",
+            "tj": "Бубахшед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Maktabda",
+        "ru": "В школе",
+        "tj": "Дар мактаб"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "您从几岁开始学跳舞？",
+          "pinyin": "Nín cóng jǐ suì kāishǐ xué tiàowǔ?",
+          "text": {
+            "uz": "Siz necha yoshdan raqs o'rganishni boshladingiz?",
+            "ru": "С какого возраста вы начали учиться танцевать?",
+            "tj": "Шумо аз чанд солагӣ рақс омӯхтанро оғоз кардед?"
           }
         },
         {
           "speaker": "B",
-          "zh": "过。",
-          "pinyin": "guò.",
+          "zh": "我第一次跳舞是在七岁的时候。",
+          "pinyin": "Wǒ dì yī cì tiàowǔ shì zài qī suì de shíhou.",
           "text": {
-            "uz": "过 — guò deb o'qiladi.",
-            "ru": "过 читается как guò.",
-            "tj": "过 ҳамчун guò хонда мешавад."
+            "uz": "Men birinchi marta etti yoshimda raqs tushganman.",
+            "ru": "Я впервые станцевал в семь лет.",
+            "tj": "Ман бори аввал дар ҳафт солагӣ рақс кардам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我女儿今年七岁了。我希望她能跟您学跳舞，可以吗？",
+          "pinyin": "Wǒ nǚ'ér jīnnián qī suì le. Wǒ xīwàng tā néng gēn nín xué tiàowǔ, kěyǐ ma?",
+          "text": {
+            "uz": "Mening qizim bu yil etti yoshga kirdi. Umid qilamanki u sizdan raqs o'rgansa bo'ladimi?",
+            "ru": "Моей дочери в этом году исполнилось семь лет. Я надеюсь, она сможет учиться танцевать у вас, можно?",
+            "tj": "Духтарам имсол ҳафт сола шуд. Умедворам, ки вай метавонад назди шумо рақс ёд гирад, мумкин?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "没问题，非常欢迎。",
+          "pinyin": "Méi wèntí, fēicháng huānyíng.",
+          "text": {
+            "uz": "Muammo yo'q, juda xush kelibsiz.",
+            "ru": "Нет проблем, очень рады.",
+            "tj": "Мушкил нест, хуш омадед."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你知道吗？大卫找到工作了。",
+          "pinyin": "Nǐ zhīdào ma? Dàwèi zhǎodào gōngzuò le.",
+          "text": {
+            "uz": "Bilasizmi? Devid ish topdi.",
+            "ru": "Знаешь? Дэвид нашёл работу.",
+            "tj": "Медонӣ? Дэвид кор ёфт."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "太好了！他从什么时候开始上班？",
+          "pinyin": "Tài hǎo le! Tā cóng shénme shíhou kāishǐ shàngbān?",
+          "text": {
+            "uz": "Juda yaxshi! U qachondan boshlab ishga chiqadi?",
+            "ru": "Отлично! С какого времени он начнёт работать?",
+            "tj": "Аъло! Вай аз кай кор мекунад?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "从下个星期一开始。",
+          "pinyin": "Cóng xià ge xīngqīyī kāishǐ.",
+          "text": {
+            "uz": "Kelasi dushanba kundan boshlab.",
+            "ru": "С ближайшего понедельника.",
+            "tj": "Аз душанбаи оянда."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "这是他的第一个工作，希望他能喜欢。",
+          "pinyin": "Zhè shì tā de dì yī ge gōngzuò, xīwàng tā néng xǐhuan.",
+          "text": {
+            "uz": "Bu uning birinchi ishi, umid qilamanki yoqadi.",
+            "ru": "Это его первая работа, надеюсь, ему понравится.",
+            "tj": "Ин кори аввалинаш аст, умедворам, ки писандаш ояд."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天的考试怎么样？你都听懂了吗？",
+          "pinyin": "Zuótiān de kǎoshì zěnmeyàng? Nǐ dōu tīngdǒng le ma?",
+          "text": {
+            "uz": "Kechagi imtihon qanday o'tdi? Hamma narsani eshitib tushundingizmi?",
+            "ru": "Как вчерашний экзамен? Ты всё понял на слух?",
+            "tj": "Имтиҳони дирӯз чӣ тавр гузашт? Оё ту ҳама чизро шунида фаҳмидӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "听懂了。",
+          "pinyin": "Tīngdǒng le.",
+          "text": {
+            "uz": "Eshitib tushundim.",
+            "ru": "Всё понял на слух.",
+            "tj": "Шунида фаҳмидам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你都做完了没有？",
+          "pinyin": "Nǐ dōu zuòwán le méiyǒu?",
+          "text": {
+            "uz": "Hammasini bajardingizmi?",
+            "ru": "Ты всё выполнил?",
+            "tj": "Оё ту ҳамаро иҷро кардӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "题太多，我没做完。",
+          "pinyin": "Tí tài duō, wǒ méi zuòwán.",
+          "text": {
+            "uz": "Savollar juda ko'p edi, men tamomlab ulgurmadim.",
+            "ru": "Заданий было слишком много, я не успел сделать всё.",
+            "tj": "Саволҳо бисёр буданд, ман нарасидам тамом кунам."
           }
         }
       ]
@@ -221,91 +436,154 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "过",
-            "pinyin": "guò",
-            "pos": "expr.",
+            "no": 1,
+            "zh": "错",
+            "pinyin": "cuò",
+            "pos": "adj.",
             "meaning": {
-              "uz": "tajriba bildiruvchi yuklama",
-              "ru": "частица опыта",
-              "tj": "ҳиссачаи таҷриба"
+              "uz": "xato, noto'g'ri",
+              "ru": "неправильный, ошибочный",
+              "tj": "хато, нодуруст"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "看过",
-            "pinyin": "kàn guò",
+            "no": 2,
+            "zh": "从",
+            "pinyin": "cóng",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "dan, boshlab (joy yoki vaqt)",
+              "ru": "от, с, начиная с (место или время)",
+              "tj": "аз, аз ибтидои (ҷой ё вақт)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "跳舞",
+            "pinyin": "tiàowǔ",
             "pos": "v.",
             "meaning": {
-              "uz": "ko‘rgan bo‘lmoq",
-              "ru": "видел когда-либо",
-              "tj": "дида будан"
+              "uz": "raqs tushmoq",
+              "ru": "танцевать",
+              "tj": "рақс кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "去过",
-            "pinyin": "qù guò",
+            "no": 4,
+            "zh": "第一",
+            "pinyin": "dìyī",
+            "pos": "num.",
+            "meaning": {
+              "uz": "birinchi",
+              "ru": "первый",
+              "tj": "аввалин, якум"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "希望",
+            "pinyin": "xīwàng",
             "pos": "v.",
             "meaning": {
-              "uz": "borgan bo‘lmoq",
-              "ru": "бывал",
-              "tj": "рафта будан"
+              "uz": "umid qilmoq, xohlamoq",
+              "ru": "надеяться, желать",
+              "tj": "умед доштан, орзу кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "吃过",
-            "pinyin": "chī guò",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yegan bo‘lmoq",
-              "ru": "ел когда-либо",
-              "tj": "хӯрда будан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "北京",
-            "pinyin": "Běijīng",
+            "no": 6,
+            "zh": "问题",
+            "pinyin": "wèntí",
             "pos": "n.",
             "meaning": {
-              "uz": "Pekin",
-              "ru": "Пекин",
-              "tj": "Пекин"
+              "uz": "savol, muammo",
+              "ru": "вопрос, проблема",
+              "tj": "савол, мушкил"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "以前",
-            "pinyin": "yǐqián",
+            "no": 7,
+            "zh": "欢迎",
+            "pinyin": "huānyíng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "xush kelibsiz, kutib olmoq",
+              "ru": "добро пожаловать, приветствовать",
+              "tj": "хуш омадед, пешвоз гирифтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "上班",
+            "pinyin": "shàngbān",
+            "pos": "v.",
+            "meaning": {
+              "uz": "ishga bormoq, ishlamoq",
+              "ru": "идти на работу, работать",
+              "tj": "ба кор рафтан, кор кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "懂",
+            "pinyin": "dǒng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tushunmoq",
+              "ru": "понимать",
+              "tj": "фаҳмидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "完",
+            "pinyin": "wán",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tugamoq, tamomlamoq",
+              "ru": "заканчивать, завершать",
+              "tj": "тамом кардан, ба охир расидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "题",
+            "pinyin": "tí",
             "pos": "n.",
             "meaning": {
-              "uz": "ilgari, oldin",
-              "ru": "раньше",
-              "tj": "пештар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "从来",
-            "pinyin": "cónglái",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "hech qachon",
-              "ru": "никогда",
-              "tj": "ҳеҷ гоҳ"
+              "uz": "savol, topshiriq, masala",
+              "ru": "вопрос, задание, задача",
+              "tj": "савол, супориш, масъала"
             }
           }
         }
@@ -323,9 +601,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "过 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 过:",
-            "tj": "Маънои калимаи 过-ро интихоб кунед:"
+            "uz": "错 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 错:",
+            "tj": "Маънои калимаи 错-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +612,39 @@
           },
           "options": [
             {
-              "uz": "tajriba bildiruvchi yuklama",
-              "ru": "частица опыта",
-              "tj": "ҳиссачаи таҷриба"
+              "uz": "dan, boshlab (joy yoki vaqt)",
+              "ru": "от, с, начиная с (место или время)",
+              "tj": "аз, аз ибтидои (ҷой ё вақт)"
             },
             {
-              "uz": "ko‘rgan bo‘lmoq",
-              "ru": "видел когда-либо",
-              "tj": "дида будан"
+              "uz": "birinchi",
+              "ru": "первый",
+              "tj": "аввалин, якум"
             },
             {
-              "uz": "borgan bo‘lmoq",
-              "ru": "бывал",
-              "tj": "рафта будан"
+              "uz": "raqs tushmoq",
+              "ru": "танцевать",
+              "tj": "рақс кардан"
             },
             {
-              "uz": "yegan bo‘lmoq",
-              "ru": "ел когда-либо",
-              "tj": "хӯрда будан"
+              "uz": "xato, noto'g'ri",
+              "ru": "неправильный, ошибочный",
+              "tj": "хато, нодуруст"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "过 = tajriba bildiruvchi yuklama (guò)",
-            "ru": "过 = частица опыта (guò)",
-            "tj": "过 = ҳиссачаи таҷриба (guò)"
+            "uz": "错 = xato, noto'g'ri (cuò)",
+            "ru": "错 = неправильный, ошибочный (cuò)",
+            "tj": "错 = хато, нодуруст (cuò)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "过 talaffuzini tanlang:",
-            "ru": "Выберите произношение 过:",
-            "tj": "Талаффузи 过-ро интихоб кунед:"
+            "uz": "从 talaffuzini tanlang:",
+            "ru": "Выберите произношение 从:",
+            "tj": "Талаффузи 从-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +652,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "guò",
-            "kàn guò",
-            "qù guò",
-            "chī guò"
+            "cóng",
+            "tiàowǔ",
+            "dìyī",
+            "cuò"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "过 — guò",
-            "ru": "过 — guò",
-            "tj": "过 — guò"
+            "uz": "从 — cóng",
+            "ru": "从 — cóng",
+            "tj": "从 — cóng"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'tajriba bildiruvchi yuklama' xitoycha nima?",
-            "ru": "'частица опыта' по-китайски?",
-            "tj": "'ҳиссачаи таҷриба' ба чинӣ чист?"
+            "uz": "'raqs tushmoq' xitoycha qaysi?",
+            "ru": "'танцевать' по-китайски?",
+            "tj": "'рақс кардан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "过",
-            "看过",
-            "去过",
-            "吃过"
+            "第一",
+            "跳舞",
+            "错",
+            "从"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "过 = tajriba bildiruvchi yuklama (guò)",
-            "ru": "过 = частица опыта (guò)",
-            "tj": "过 = ҳиссачаи таҷриба (guò)"
+            "uz": "raqs tushmoq = 跳舞 (tiàowǔ)",
+            "ru": "танцевать = 跳舞 (tiàowǔ)",
+            "tj": "рақс кардан = 跳舞 (tiàowǔ)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "kàn guò qaysi ieroglif?",
-            "ru": "Какой иероглиф читается kàn guò?",
-            "tj": "kàn guò кадом иероглиф аст?"
+            "uz": "dìyī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dìyī?",
+            "tj": "dìyī кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,93 +702,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "看过",
-            "过",
-            "去过",
-            "吃过"
+            "错",
+            "跳舞",
+            "第一",
+            "从"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "看过 = ko‘rgan bo‘lmoq (kàn guò)",
-            "ru": "看过 = видел когда-либо (kàn guò)",
-            "tj": "看过 = дида будан (kàn guò)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'你看过吗' iborasini tuzing",
-            "ru": "Соберите фразу '你看过吗'",
-            "tj": "Ибораи '你看过吗'-ро созед"
-          },
-          "tokens": [
-            "你",
-            "看过",
-            "吗",
-            "过",
-            "去过"
-          ],
-          "answer_tokens": [
-            "你",
-            "看过",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 你 看过 吗",
-            "ru": "Правильный порядок: 你 看过 吗",
-            "tj": "Тартиби дуруст: 你 看过 吗"
+            "uz": "第一 = birinchi (dìyī)",
+            "ru": "第一 = первый (dìyī)",
+            "tj": "第一 = аввалин, якум (dìyī)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "过",
+              "错",
               {
-                "uz": "tajriba bildiruvchi yuklama",
-                "ru": "частица опыта",
-                "tj": "ҳиссачаи таҷриба"
+                "uz": "xato, noto'g'ri",
+                "ru": "неправильный, ошибочный",
+                "tj": "хато, нодуруст"
               }
             ],
             [
-              "看过",
+              "从",
               {
-                "uz": "ko‘rgan bo‘lmoq",
-                "ru": "видел когда-либо",
-                "tj": "дида будан"
+                "uz": "dan, boshlab (joy yoki vaqt)",
+                "ru": "от, с, начиная с (место или время)",
+                "tj": "аз, аз ибтидои (ҷой ё вақт)"
               }
             ],
             [
-              "去过",
+              "跳舞",
               {
-                "uz": "borgan bo‘lmoq",
-                "ru": "бывал",
-                "tj": "рафта будан"
+                "uz": "raqs tushmoq",
+                "ru": "танцевать",
+                "tj": "рақс кардан"
               }
             ],
             [
-              "吃过",
+              "第一",
               {
-                "uz": "yegan bo‘lmoq",
-                "ru": "ел когда-либо",
-                "tj": "хӯрда будан"
+                "uz": "birinchi",
+                "ru": "первый",
+                "tj": "аввалин, якум"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "您从几岁开始学____？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "第一",
+            "跳舞",
+            "错",
+            "从"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 跳舞 (tiàowǔ) — raqs tushmoq",
+            "ru": "Верно: 跳舞 (tiàowǔ) — танцевать",
+            "tj": "Дуруст: 跳舞 (tiàowǔ) — рақс кардан"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "你看过吗",
-          "pinyin": "nǐ kàn guò ma",
+          "phrase": "错",
+          "pinyin": "cuò",
           "translation": {
-            "uz": "Tajriba, 过 yuklamasi",
-            "ru": "Опыт, частица 过",
-            "tj": "Таҷриба, ҳиссачаи 过"
+            "uz": "xato, noto'g'ri",
+            "ru": "неправильный, ошибочный",
+            "tj": "хато, нодуруст"
           }
         }
       ]
@@ -527,9 +801,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -537,41 +811,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "您从几岁开始学跳舞？",
+            "你好！请问张欢在吗？",
+            "对不起。",
+            "你打错了，我们这儿没有叫张欢的。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 你好！请问张欢在吗？",
+            "ru": "Правильный ответ: 你好！请问张欢在吗？",
+            "tj": "Ҷавоби дуруст: 你好！请问张欢在吗？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida A nima deydi?",
+            "ru": "Что A говорит в конце диалога?",
+            "tj": "Дар охири муколама A чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "过。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "对不起。",
+            "您从几岁开始学跳舞？",
+            "你打错了，我们这儿没有叫张欢的。",
+            "你好！请问张欢在吗？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "B javobi: 过。",
-            "ru": "Ответ B: 过。",
-            "tj": "Ҷавоби B: 过。"
+            "uz": "To'g'ri javob: 对不起。",
+            "ru": "Правильный ответ: 对不起。",
+            "tj": "Ҷавоби дуруст: 对不起。"
           }
         }
       ]

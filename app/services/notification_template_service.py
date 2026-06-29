@@ -10,10 +10,11 @@ from app.db.models.notification_template import NotificationTemplate
 
 # Reminder keys handled by MotivationReminderService.
 KEY_OVERTAKEN = "rating_overtaken"
+KEY_LESSON_UNFINISHED = "lesson_unfinished"
 KEY_DAILY_GOAL = "daily_goal"
 KEY_STREAK = "streak_risk"
 
-MOTIVATION_KEYS = (KEY_OVERTAKEN, KEY_DAILY_GOAL, KEY_STREAK)
+MOTIVATION_KEYS = (KEY_OVERTAKEN, KEY_LESSON_UNFINISHED, KEY_DAILY_GOAL, KEY_STREAK)
 
 # Human-facing metadata for the admin Mini App editor: title, short note and the
 # placeholders available for each reminder. Placeholders are filled per-user when
@@ -24,9 +25,14 @@ TEMPLATE_META: dict[str, dict] = {
         "note": "Mini App reytingida foydalanuvchini kimdir ortda qoldirsa yuboriladi.",
         "placeholders": ["{name}", "{league}", "{rank}", "{xp_gap}"],
     },
+    KEY_LESSON_UNFINISHED: {
+        "title": "📚 Dars yakunlanmagan",
+        "note": "Kun oxirida bugun dars boshlab, uni tugatmagan foydalanuvchiga yuboriladi.",
+        "placeholders": ["{lesson}", "{minutes}"],
+    },
     KEY_DAILY_GOAL: {
         "title": "⏳ Kunlik maqsad bajarilmadi",
-        "note": "Kun oxirida foydalanuvchi bugun hali shug'ullanmagan bo'lsa yuboriladi.",
+        "note": "Kun oxirida foydalanuvchi bugun hali dars yakunlamagan bo'lsa yuboriladi.",
         "placeholders": ["{minutes}"],
     },
     KEY_STREAK: {
@@ -56,20 +62,37 @@ DEFAULT_TEXTS: dict[str, dict[str, str]] = {
             "Фарқ ҳамагӣ <b>{xp_gap} XP</b>. Бо як дарс ҷои худро баргардонед 💪"
         ),
     },
+    KEY_LESSON_UNFINISHED: {
+        "uz": (
+            "📚 <b>{lesson} hali yakunlanmadi</b>\n"
+            "Kun tugashiga oz qoldi. Boshlagan darsingizni tugatib qo'ying.\n"
+            "Atigi <b>{minutes} daqiqa</b> — dars yopiladi va XP olinadi 🎯"
+        ),
+        "ru": (
+            "📚 <b>{lesson} ещё не завершён</b>\n"
+            "День скоро закончится. Завершите начатый урок.\n"
+            "Всего <b>{minutes} минут</b> — закройте урок и получите XP 🎯"
+        ),
+        "tj": (
+            "📚 <b>{lesson} ҳанӯз анҷом нашуд</b>\n"
+            "Рӯз ба охир мерасад. Дарси оғозкардаатонро анҷом диҳед.\n"
+            "Ҳамагӣ <b>{minutes} дақиқа</b> — дарс пӯшида мешавад ва XP мегиред 🎯"
+        ),
+    },
     KEY_DAILY_GOAL: {
         "uz": (
             "⏳ <b>Bugungi maqsad hali bajarilmadi</b>\n"
-            "Kun tugashiga oz qoldi, siz bugun hali shug'ullanmadingiz.\n"
+            "Kun tugashiga oz qoldi, siz bugun hali dars yakunlamadingiz.\n"
             "Atigi <b>{minutes} daqiqa</b> — kunlik maqsadingizni yoping 🎯"
         ),
         "ru": (
             "⏳ <b>Сегодняшняя цель ещё не выполнена</b>\n"
-            "День заканчивается, а вы ещё не занимались.\n"
+            "День заканчивается, а урок за сегодня ещё не завершён.\n"
             "Всего <b>{minutes} минут</b> — закройте дневную цель 🎯"
         ),
         "tj": (
             "⏳ <b>Ҳадафи имрӯза ҳанӯз иҷро нашуд</b>\n"
-            "Рӯз ба охир мерасад, шумо имрӯз ҳанӯз машғул нашудед.\n"
+            "Рӯз ба охир мерасад, дарси имрӯза ҳанӯз анҷом нашуд.\n"
             "Ҳамагӣ <b>{minutes} дақиқа</b> — ҳадафи рӯзонаатонро пӯшонед 🎯"
         ),
     },

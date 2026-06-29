@@ -13,9 +13,9 @@
     {
       "no": 1,
       "title": {
-        "uz": "Boshlang'ich muloqot",
-        "ru": "Базовое общение",
-        "tj": "Муоширати аввалия"
+        "uz": "1-bo'lim",
+        "ru": "Раздел 1",
+        "tj": "Боби 1"
       },
       "lessons": [
         {
@@ -23,9 +23,9 @@
           "zh": "你好",
           "py": "nǐ hǎo",
           "tr": {
-            "uz": "Salomlashish va uzr so'rash",
-            "ru": "Приветствие и извинение",
-            "tj": "Салом ва узрхоҳӣ"
+            "uz": "Xitoycha salomlashish va uzr so'rashni o'rganing",
+            "ru": "Научитесь здороваться и извиняться по-китайски",
+            "tj": "Омӯзед, ки чӣ тавр ба забони чинӣ салом гӯед ва узр пурсед"
           },
           "status": "current",
           "content": "lesson_01"
@@ -35,9 +35,9 @@
           "zh": "谢谢你",
           "py": "xièxie nǐ",
           "tr": {
-            "uz": "Minnatdorchilik va xayrlashuv",
-            "ru": "Благодарность и прощание",
-            "tj": "Сипосгузорӣ ва хайрухуш"
+            "uz": "Xitoycha minnatdorchilik bildirish va xayrlashishni o'rganing",
+            "ru": "Научитесь выражать благодарность и прощаться по-китайски",
+            "tj": "Омӯзед, ки чӣ тавр ба забони чинӣ сипосгузорӣ кунед ва хайр гӯед"
           },
           "status": "locked",
           "content": "lesson_02"
@@ -47,21 +47,21 @@
           "zh": "你叫什么名字",
           "py": "nǐ jiào shénme míngzi",
           "tr": {
-            "uz": "Ismni so'rash va tanishish",
-            "ru": "Как спросить имя и познакомиться",
-            "tj": "Пурсидани ном ва шиносоӣ"
+            "uz": "Xitoycha ismingizni, millatingizni va kasbingizni aytishni o'rganing",
+            "ru": "Научитесь называть своё имя, национальность и профессию по-китайски",
+            "tj": "Омӯзед, ки чӣ тавр исм, миллат ва касби худро ба забони чинӣ гӯед"
           },
           "status": "locked",
           "content": "lesson_03"
         },
         {
           "n": 4,
-          "zh": "你是哪国人",
-          "py": "nǐ shì nǎ guó rén",
+          "zh": "她是我的汉语老师",
+          "py": "tā shì wǒ de Hànyǔ lǎoshī",
           "tr": {
-            "uz": "Millat, davlat va kasb",
-            "ru": "Национальность, страна и профессия",
-            "tj": "Миллат, давлат ва касб"
+            "uz": "Uchinchi shaxslar haqida gapirish, 的 bilan egalikni ifodalash va 谁/哪 so'roq so'zlarini ishlatish",
+            "ru": "Говорить о третьих лицах, выражать принадлежность с 的 и использовать вопросительные слова 谁/哪",
+            "tj": "Дар бораи шахсони сеюм гап задан, ифодаи моликият бо 的 ва истифодаи калимаҳои саволии 谁/哪"
           },
           "status": "locked",
           "content": "lesson_04",
@@ -69,12 +69,12 @@
         },
         {
           "n": 5,
-          "zh": "这是什么",
-          "py": "zhè shì shénme",
+          "zh": "她女儿今年二十岁",
+          "py": "tā nǚ'ér jīnnián èr shí suì",
           "tr": {
-            "uz": "Narsalarni nomlash, 这 va 那",
-            "ru": "Названия предметов, 这 и 那",
-            "tj": "Номи ашё, 这 ва 那"
+            "uz": "Yosh va oila a'zolari haqida gapirish, 100 gacha raqamlarni o'rganing",
+            "ru": "Говорить о возрасте и членах семьи, выучить числа до 100",
+            "tj": "Дар бораи синну сол ва аъзоёни оила гап задан, рақамҳоро то 100 омӯхтан"
           },
           "status": "locked",
           "content": "lesson_05",
@@ -93,19 +93,19 @@
     {
       "no": 2,
       "title": {
-        "uz": "Kundalik hayot",
-        "ru": "Повседневная жизнь",
-        "tj": "Ҳаёти ҳаррӯза"
+        "uz": "2-bo'lim",
+        "ru": "Раздел 2",
+        "tj": "Боби 2"
       },
       "lessons": [
         {
           "n": 6,
-          "zh": "多少钱",
-          "py": "duōshao qián",
+          "zh": "我会说汉语",
+          "py": "wǒ huì shuō Hànyǔ",
           "tr": {
-            "uz": "Narx va sonlar 1-100",
-            "ru": "Цена и числа 1-100",
-            "tj": "Нарх ва рақамҳои 1-100"
+            "uz": "Modal fe'l 会 yordamida qobiliyat va mahorat haqida gapirish",
+            "ru": "Говорить о способностях и умениях с помощью модального глагола 会",
+            "tj": "Дар бораи қобилият ва маҳорат бо ёрии феъли модалии 会 гап задан"
           },
           "status": "locked",
           "content": "lesson_06",
@@ -113,12 +113,12 @@
         },
         {
           "n": 7,
-          "zh": "现在几点",
-          "py": "xiànzài jǐ diǎn",
+          "zh": "今天几号",
+          "py": "jīntiān jǐ hào",
           "tr": {
-            "uz": "Vaqt va soat",
-            "ru": "Время и часы",
-            "tj": "Вақт ва соат"
+            "uz": "Sanalar, haftaning kunlari va ketma-ket fe'l gaplarini o'rganish",
+            "ru": "Изучение дат, дней недели и предложений с последовательными глаголами",
+            "tj": "Омӯзиши санаҳо, рӯзҳои ҳафта ва ҷумлаҳо бо феъли пайдарпай"
           },
           "status": "locked",
           "content": "lesson_07",
@@ -126,12 +126,12 @@
         },
         {
           "n": 8,
-          "zh": "今天星期几",
-          "py": "jīntiān xīngqī jǐ",
+          "zh": "我想喝茶",
+          "py": "wǒ xiǎng hē chá",
           "tr": {
-            "uz": "Hafta kunlari va sana",
-            "ru": "Дни недели и дата",
-            "tj": "Рӯзҳои ҳафта ва сана"
+            "uz": "Istak bildirish, narx so'rash va o'lchov so'zlarini o'rganish",
+            "ru": "Выражение желаний, спрашивание цены и изучение счётных слов",
+            "tj": "Ифодаи орзуҳо, пурсидани нарх ва омӯзиши калимаҳои шуморавӣ"
           },
           "status": "locked",
           "content": "lesson_08",
@@ -139,12 +139,12 @@
         },
         {
           "n": 9,
-          "zh": "你家在哪儿",
-          "py": "nǐ jiā zài nǎr",
+          "zh": "你儿子在哪儿工作",
+          "py": "nǐ érzi zài nǎr gōngzuò",
           "tr": {
-            "uz": "Manzil va yo'l ko'rsatish",
-            "ru": "Адрес и направление",
-            "tj": "Суроға ва роҳ нишон додан"
+            "uz": "Joylashuv va ish joyi haqida so'rash, fe'l va predlog 在",
+            "ru": "Спрашивать о местонахождении и месте работы, глагол и предлог 在",
+            "tj": "Пурсидан дар бораи ҷойгиршавӣ ва ҷои кор, феъл ва пешояндаи 在"
           },
           "status": "locked",
           "content": "lesson_09",
@@ -152,12 +152,12 @@
         },
         {
           "n": 10,
-          "zh": "你吃什么",
-          "py": "nǐ chī shénme",
+          "zh": "我能坐这儿吗",
+          "py": "wǒ néng zuò zhèr ma",
           "tr": {
-            "uz": "Taom va ovqatlanish",
-            "ru": "Еда и питание",
-            "tj": "Хӯрок ва таомхӯрӣ"
+            "uz": "Joylashuvni ifodalash, 有-gaplar, modal fe'l 能 va bog'lovchi 和",
+            "ru": "Выражение местонахождения, предложения с 有, модальный глагол 能 и союз 和",
+            "tj": "Баёни ҷойгиршавӣ, ҷумлаҳои 有, феъли модалии 能 ва пайвандаки 和"
           },
           "status": "locked",
           "content": "lesson_10",
@@ -177,19 +177,19 @@
     {
       "no": 3,
       "title": {
-        "uz": "Miqdor, tabiat va takror",
-        "ru": "Количество, природа и повторение",
-        "tj": "Миқдор, табиат ва такрор"
+        "uz": "3-bo'lim",
+        "ru": "Раздел 3",
+        "tj": "Боби 3"
       },
       "lessons": [
         {
           "n": 11,
-          "zh": "你喝什么",
-          "py": "nǐ hē shénme",
+          "zh": "现在几点",
+          "py": "xiànzài jǐ diǎn",
           "tr": {
-            "uz": "Ichimliklar va buyurtma",
-            "ru": "Напитки и заказ",
-            "tj": "Нӯшокиҳо ва фармоиш"
+            "uz": "Vaqtni aytish va so'rash, vaqt ravishi, 前 so'zi",
+            "ru": "Говорить и спрашивать о времени, временные наречия, слово 前",
+            "tj": "Гуфтан ва пурсидани вақт, зарфҳои вақт, калимаи 前"
           },
           "status": "locked",
           "content": "lesson_11",
@@ -197,12 +197,12 @@
         },
         {
           "n": 12,
-          "zh": "你有几个",
-          "py": "nǐ yǒu jǐ gè",
+          "zh": "明天天气怎么样",
+          "py": "míngtiān tiānqì zěnmeyàng",
           "tr": {
-            "uz": "Miqdor, 有 va 没有",
-            "ru": "Количество, 有 и 没有",
-            "tj": "Миқдор, 有 ва 没有"
+            "uz": "Ob-havo haqida gaplashish, 怎么样 so'roq so'zi va 太...了 tuzilmasi",
+            "ru": "Говорить о погоде, вопросительное слово 怎么样 и конструкция 太...了",
+            "tj": "Сухан дар бораи обу ҳаво, калимаи суолии 怎么样 ва сохтори 太...了"
           },
           "status": "locked",
           "content": "lesson_12",
@@ -210,12 +210,12 @@
         },
         {
           "n": 13,
-          "zh": "天气怎么样",
-          "py": "tiānqì zěnmeyàng",
+          "zh": "他在学做中国菜呢",
+          "py": "tā zài xué zuò Zhōngguó cài ne",
           "tr": {
-            "uz": "Ob-havo va fasllar",
-            "ru": "Погода и времена года",
-            "tj": "Обу ҳаво ва фаслҳо"
+            "uz": "Davom etayotgan harakatlarni ifodalash (在...呢), telefon raqamlari va 吧 yuklamasi",
+            "ru": "Выражение текущих действий (在...呢), телефонные номера и частица 吧",
+            "tj": "Баёни амалҳои ҷорӣ (在...呢), рақамҳои телефон ва зарраи 吧"
           },
           "status": "locked",
           "content": "lesson_13",
@@ -223,12 +223,12 @@
         },
         {
           "n": 14,
-          "zh": "你身体好吗",
-          "py": "nǐ shēntǐ hǎo ma",
+          "zh": "她买了不少衣服",
+          "py": "tā mǎi le bù shǎo yīfu",
           "tr": {
-            "uz": "Salomatlik va his-tuyg‘ular",
-            "ru": "Здоровье и самочувствие",
-            "tj": "Саломатӣ ва эҳсосот"
+            "uz": "Tugallangan harakatlar uchun 了 yuklamasi, vaqt ko'rsatkichi sifatida 后 va ravish 都",
+            "ru": "Частица 了 для завершённых действий, 后 как временной маркер и наречие 都",
+            "tj": "Зарраи 了 барои амалҳои анҷомшуда, 后 ҳамчун нишонаи вақт ва зарфи 都"
           },
           "status": "locked",
           "content": "lesson_14",
@@ -236,12 +236,12 @@
         },
         {
           "n": 15,
-          "zh": "复习 — HSK 1",
-          "py": "fùxí HSK yī",
+          "zh": "我是坐飞机来的",
+          "py": "wǒ shì zuò fēijī lái de",
           "tr": {
-            "uz": "HSK 1 takrori va umumiy test",
-            "ru": "Повторение HSK 1 и общий тест",
-            "tj": "Такрори HSK 1 ва санҷиши умумӣ"
+            "uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash",
+            "ru": "Конструкция 是……的 — выделение времени, места и способа действия",
+            "tj": "Сохтори 是……的 — таъкиди вақт, ҷой ва усули амал"
           },
           "status": "locked",
           "content": "lesson_15",

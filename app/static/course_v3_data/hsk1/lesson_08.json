@@ -2,122 +2,219 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 8,
-  "title": "今天星期几",
+  "title": "我想喝茶",
   "subtitle": {
-    "uz": "Mavzu: Hafta kunlari va sana. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Дни недели и дата. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Рӯзҳои ҳафта ва сана. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Istak bildirish, narx so'rash va o'lchov so'zlarini o'rganish",
+    "ru": "Выражение желаний, спрашивание цены и изучение счётных слов",
+    "tj": "Ифодаи орзуҳо, пурсидани нарх ва омӯзиши калимаҳои шуморавӣ"
   },
   "active_words": [
     {
-      "zh": "今天",
-      "pinyin": "jīntiān",
-      "pos": "n.",
+      "no": 1,
+      "zh": "想",
+      "pinyin": "xiǎng",
+      "pos": "mod.",
       "meaning": {
-        "uz": "bugun",
-        "ru": "сегодня",
-        "tj": "имрӯз"
-      },
-      "no": 1
+        "uz": "xohlamoq, istаmoq",
+        "ru": "хотеть, желать",
+        "tj": "хостан, орзу доштан"
+      }
     },
     {
-      "zh": "星期",
-      "pinyin": "xīngqī",
-      "pos": "n.",
+      "no": 2,
+      "zh": "喝",
+      "pinyin": "hē",
+      "pos": "v.",
       "meaning": {
-        "uz": "hafta, hafta kuni",
-        "ru": "неделя; день недели",
-        "tj": "ҳафта, рӯзи ҳафта"
-      },
-      "no": 2
+        "uz": "ichmoq",
+        "ru": "пить",
+        "tj": "нӯшидан"
+      }
     },
     {
-      "zh": "星期一",
-      "pinyin": "xīngqīyī",
+      "no": 3,
+      "zh": "茶",
+      "pinyin": "chá",
       "pos": "n.",
       "meaning": {
-        "uz": "dushanba",
-        "ru": "понедельник",
-        "tj": "душанбе"
-      },
-      "no": 3
+        "uz": "choy",
+        "ru": "чай",
+        "tj": "чой"
+      }
     },
     {
-      "zh": "星期天",
-      "pinyin": "xīngqītiān",
-      "pos": "n.",
+      "no": 4,
+      "zh": "吃",
+      "pinyin": "chī",
+      "pos": "v.",
       "meaning": {
-        "uz": "yakshanba",
-        "ru": "воскресенье",
-        "tj": "якшанбе"
-      },
-      "no": 4
+        "uz": "yemoq",
+        "ru": "есть, кушать",
+        "tj": "хӯрдан"
+      }
     },
     {
-      "zh": "日",
-      "pinyin": "rì",
+      "no": 5,
+      "zh": "米饭",
+      "pinyin": "mǐfàn",
       "pos": "n.",
       "meaning": {
-        "uz": "kun, sana",
-        "ru": "день, число",
-        "tj": "рӯз, сана"
-      },
-      "no": 5
+        "uz": "guruch, pishirilgan guruch",
+        "ru": "рис, варёный рис",
+        "tj": "биринҷ, биринҷи пухта"
+      }
     },
     {
-      "zh": "月",
-      "pinyin": "yuè",
+      "no": 6,
+      "zh": "下午",
+      "pinyin": "xiàwǔ",
       "pos": "n.",
       "meaning": {
-        "uz": "oy",
-        "ru": "месяц",
-        "tj": "моҳ"
-      },
-      "no": 6
+        "uz": "tushdan keyin",
+        "ru": "после полудня, вторая половина дня",
+        "tj": "баъд аз нисфирӯзӣ"
+      }
     },
     {
-      "zh": "号",
-      "pinyin": "hào",
+      "no": 7,
+      "zh": "商店",
+      "pinyin": "shāngdiàn",
       "pos": "n.",
       "meaning": {
-        "uz": "sana raqami",
-        "ru": "число месяца",
-        "tj": "рақами сана"
-      },
-      "no": 7
+        "uz": "do'kon, magazin",
+        "ru": "магазин",
+        "tj": "мағоза, дӯкон"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "买",
+      "pinyin": "mǎi",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sotib olmoq",
+        "ru": "покупать",
+        "tj": "харидан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "个",
+      "pinyin": "gè",
+      "pos": "m.",
+      "meaning": {
+        "uz": "umumiy o'lchov so'z (dona/birlik)",
+        "ru": "общее счётное слово (штука/единица)",
+        "tj": "калимаи шуморавии умумӣ (дона/воҳид)"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "杯子",
+      "pinyin": "bēizi",
+      "pos": "n.",
+      "meaning": {
+        "uz": "stakan, piyola",
+        "ru": "стакан, кружка",
+        "tj": "косаи пиёла"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "这",
+      "pinyin": "zhè",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "bu (ko'rsatish olmoshi)",
+        "ru": "этот, это (указательное местоимение)",
+        "tj": "ин (исми ишора)"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "多少",
+      "pinyin": "duōshao",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "qancha, nechta (10 dan ortiq)",
+        "ru": "сколько (больше 10)",
+        "tj": "чанд (аз 10 зиёд)"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "钱",
+      "pinyin": "qián",
+      "pos": "n.",
+      "meaning": {
+        "uz": "pul",
+        "ru": "деньги",
+        "tj": "пул"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "块",
+      "pinyin": "kuài",
+      "pos": "m.",
+      "meaning": {
+        "uz": "yuan (so'zlashuv)",
+        "ru": "юань (разговорный)",
+        "tj": "юан (забони гуфтугӯӣ)"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "那",
+      "pinyin": "nà",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "u, o'sha (ko'rsatish olmoshi)",
+        "ru": "тот, та (указательное местоимение)",
+        "tj": "он, он (исми ишора)"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Modal fe'l 想 (xohlamoq)",
+        "ru": "Модальный глагол 想 (хотеть)",
+        "tj": "Феъли модалии 想 (хостан)"
       },
-      "title_zh": "主题词语",
+      "title_zh": "能愿动词 想 — Modal fe'l 想",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 今天星期几. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“今天星期几”。",
-        "ru": "Ключевая фраза урока: 今天星期几. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“今天星期几”。",
-        "tj": "Ибораи асосии дарс: 今天星期几. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“今天星期几”。"
+        "uz": "想 (xiǎng) — istak yoki niyatni bildiradi.\nTuzilishi: Ega + 想 + Fe'l + To'ldiruvchi\n\nTasdiq: 我想喝茶。— Men choy ichmoqchiman.\nSavol: 你想做什么？— Nima qilmoqchisiz?\n\n想 va 会:\n我想说汉语。— Men xitoycha gapirmoqchiman (istak).\n我会说汉语。— Men xitoycha gapira olaman (qobiliyat).",
+        "ru": "想 (xiǎng) — выражает желание или намерение.\nСтруктура: Подлежащее + 想 + Глагол + Дополнение\n\nУтверждение: 我想喝茶。— Я хочу выпить чай.\nВопрос: 你想做什么？— Что вы хотите делать?\n\n想 и 会:\n我想说汉语。— Я хочу говорить по-китайски (желание).\n我会说汉语。— Я умею говорить по-китайски (способность).",
+        "tj": "想 (xiǎng) — орзу ё ниятро ифода мекунад.\nСохтор: Мубтадо + 想 + Феъл + Пуркунанда\n\nТасдиқ: 我想喝茶。— Ман чой нӯшидан мехоҳам.\nСавол: 你想做什么？— Шумо чӣ кардан мехоҳед?\n\n想 ва 会:\n我想说汉语。— Ман забони чинӣ гап задан мехоҳам (орзу).\n我会说汉语。— Ман забони чинӣ гап зада метавонам (тавоноӣ)."
       },
       "examples": [
         {
-          "zh": "今天我们学习“今天星期几”。",
-          "pinyin": "Jīntiān wǒmen xuéxí jīntiān xīngqī jǐ.",
+          "zh": "我想喝茶。",
+          "pinyin": "Wǒ xiǎng hē chá.",
           "translation": {
-            "uz": "Biz Hafta kunlari va sana mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Дни недели и дата.",
-            "tj": "Мо мавзӯи Рӯзҳои ҳафта ва сана-ро меомӯзем."
+            "uz": "Men choy ichmoqchiman.",
+            "ru": "Я хочу выпить чай.",
+            "tj": "Ман чой нӯшидан мехоҳам."
           }
         },
         {
-          "zh": "这个词是今天。",
-          "pinyin": "Zhège cí shì jīntiān.",
+          "zh": "她想去学校看书。",
+          "pinyin": "Tā xiǎng qù xuéxiào kàn shū.",
           "translation": {
-            "uz": "Bu so'z: bugun.",
-            "ru": "Это слово: сегодня.",
-            "tj": "Ин калима: имрӯз."
+            "uz": "U maktabga kitob o'qigani bormoqchi.",
+            "ru": "Она хочет пойти в школу почитать.",
+            "tj": "Вай мехоҳад ба мактаб рафта китоб хонад."
+          }
+        },
+        {
+          "zh": "你想买什么？",
+          "pinyin": "Nǐ xiǎng mǎi shénme?",
+          "translation": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Шумо чӣ харидан мехоҳед?"
           }
         }
       ]
@@ -125,33 +222,128 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "多少 — Miqdor savoli (10 dan ortiq)",
+        "ru": "多少 — Вопрос о количестве (больше 10)",
+        "tj": "多少 — Савол дар бораи миқдор (аз 10 зиёд)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "多少 — Qancha so'rog'i (10+)",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "多少 (duōshao) — 10 dan ortiq sonlar uchun savol so'zi.\nEslatma: 几 (jǐ) 10 gacha, 多少 (duōshao) 10 dan ortiq.\n\nNarx so'rash: ……多少钱？\n这个杯子多少钱？— Bu piyola qancha turadi?\n\nMiqdor so'rash:\n你们学校有多少学生？— Maktabingizda nechta o'quvchi bor?\n你有多少钱？— Sizda qancha pul bor?",
+        "ru": "多少 (duōshao) — вопросительное слово для чисел больше 10.\nПримечание: 几 (jǐ) для чисел до 10; 多少 (duōshao) для чисел больше 10.\n\nСпросить цену: ……多少钱？\n这个杯子多少钱？— Сколько стоит этот стакан?\n\nСпросить количество:\n你们学校有多少学生？— Сколько учеников в вашей школе?\n你有多少钱？— Сколько у вас денег?",
+        "tj": "多少 (duōshao) — калимаи саволии барои ададҳои аз 10 зиёд.\nҚайд: 几 (jǐ) барои ададҳо то 10; 多少 (duōshao) барои аз 10 зиёд.\n\nПурсидани нарх: ……多少钱？\n这个杯子多少钱？— Ин пиёла чанд пул аст?\n\nПурсидани миқдор:\n你们学校有多少学生？— Дар мактаби шумо чанд нафар шогирд аст?\n你有多少钱？— Шумо чанд пул доред?"
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "这个杯子多少钱？",
+          "pinyin": "Zhège bēizi duōshao qián?",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Bu piyola qancha turadi?",
+            "ru": "Сколько стоит этот стакан?",
+            "tj": "Ин пиёла чанд пул аст?"
           }
         },
         {
-          "zh": "今天。",
-          "pinyin": "jīntiān.",
+          "zh": "你家有多少口人？",
+          "pinyin": "Nǐ jiā yǒu duōshao kǒu rén?",
           "translation": {
-            "uz": "今天 — jīntiān deb o'qiladi.",
-            "ru": "今天 читается как jīntiān.",
-            "tj": "今天 ҳамчун jīntiān хонда мешавад."
+            "uz": "Sizning oilangizda nechta kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
+          }
+        },
+        {
+          "zh": "一个苹果多少钱？",
+          "pinyin": "Yī gè píngguǒ duōshao qián?",
+          "translation": {
+            "uz": "Bitta olma qancha turadi?",
+            "ru": "Сколько стоит одно яблоко?",
+            "tj": "Як дона себ чанд пул аст?"
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "O'lchov so'zlar 个/口",
+        "ru": "Счётные слова 个/口",
+        "tj": "Калимаҳои шуморавӣ 个/口"
+      },
+      "title_zh": "量词 个/口 — O'lchov so'zlar",
+      "rule": {
+        "uz": "Xitoy tilida son va otning orasida o'lchov so'z kerak.\n\n个 (gè) — eng umumiy o'lchov so'z:\n一个杯子 — bir piyola\n三个学生 — uch o'quvchi\n两个老师 — ikki o'qituvchi\n\n口 (kǒu) — oila a'zolari uchun:\n三口人 — uch kishilik oila\n六口人 — olti kishilik oila",
+        "ru": "В китайском языке между числом и существительным необходимо счётное слово.\n\n个 (gè) — наиболее общее счётное слово:\n一个杯子 — один стакан\n三个学生 — три ученика\n两个老师 — два учителя\n\n口 (kǒu) — для членов семьи:\n三口人 — семья из трёх человек\n六口人 — семья из шести человек",
+        "tj": "Дар забони чинӣ байни адад ва исм калимаи шуморавӣ лозим аст.\n\n个 (gè) — умумитарин калимаи шуморавӣ:\n一个杯子 — як дона пиёла\n三个学生 — се нафар шогирд\n两个老师 — ду нафар устод\n\n口 (kǒu) — барои аъзоёни оила:\n三口人 — оилаи се нафара\n六口人 — оилаи шаш нафара"
+      },
+      "examples": [
+        {
+          "zh": "一个杯子",
+          "pinyin": "yī gè bēizi",
+          "translation": {
+            "uz": "bir piyola",
+            "ru": "один стакан",
+            "tj": "як дона пиёла"
+          }
+        },
+        {
+          "zh": "五个学生",
+          "pinyin": "wǔ gè xuésheng",
+          "translation": {
+            "uz": "besh o'quvchi",
+            "ru": "пять учеников",
+            "tj": "панҷ нафар шогирд"
+          }
+        },
+        {
+          "zh": "三口人",
+          "pinyin": "sān kǒu rén",
+          "translation": {
+            "uz": "uch kishilik oila",
+            "ru": "семья из трёх человек",
+            "tj": "оилаи се нафара"
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "Pul miqdorini ifodalash",
+        "ru": "Выражение денежных сумм",
+        "tj": "Ифодаи маблағи пул"
+      },
+      "title_zh": "钱数的表达 — Pul miqdori",
+      "rule": {
+        "uz": "Xitoy valyutasi: 人民币 (Renminbi, RMB)\nRasmiy: 元 (yuán)\nSo'zlashuv: 块 (kuài)\n\nMisol:\n28块 = 28元 — 28 yuan\n18块钱 — 18 yuan (so'zlashuv shakli)\n\n这个杯子多少钱？— Bu piyola qancha turadi?\n28块。— 28 yuan.",
+        "ru": "Китайская валюта: 人民币 (Жэньминьби, RMB)\nОфициально: 元 (yuán)\nРазговорно: 块 (kuài)\n\nПример:\n28块 = 28元 — 28 юаней\n18块钱 — 18 юаней (разговорная форма)\n\n这个杯子多少钱？— Сколько стоит этот стакан?\n28块。— 28 юаней.",
+        "tj": "Асъори чинӣ: 人民币 (Жэньминьби, RMB)\nРасмӣ: 元 (yuán)\nГуфтугӯӣ: 块 (kuài)\n\nМисол:\n28块 = 28元 — 28 юан\n18块钱 — 18 юан (шакли гуфтугӯӣ)\n\n这个杯子多少钱？— Ин пиёла чанд пул аст?\n28块。— 28 юан."
+      },
+      "examples": [
+        {
+          "zh": "这个多少钱？",
+          "pinyin": "Zhège duōshao qián?",
+          "translation": {
+            "uz": "Bu qancha turadi?",
+            "ru": "Сколько это стоит?",
+            "tj": "Ин чанд пул аст?"
+          }
+        },
+        {
+          "zh": "28块钱。",
+          "pinyin": "Èrshíbā kuài qián.",
+          "translation": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          }
+        },
+        {
+          "zh": "一百块。",
+          "pinyin": "Yìbǎi kuài.",
+          "translation": {
+            "uz": "100 yuan.",
+            "ru": "100 юаней.",
+            "tj": "100 юан."
           }
         }
       ]
@@ -160,49 +352,147 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Hafta kunlari va sana",
-        "ru": "Дни недели и дата",
-        "tj": "Рӯзҳои ҳафта ва сана"
+        "uz": "Restoranda — nima ichish/yeyish",
+        "ru": "В ресторане — что пить/есть",
+        "tj": "Дар тарабхона — чӣ нӯшидан/хӯрдан"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“今天星期几”。",
-          "pinyin": "Jīntiān wǒmen xuéxí jīntiān xīngqī jǐ.",
+          "zh": "你想喝什么？",
+          "pinyin": "Nǐ xiǎng hē shénme?",
           "text": {
-            "uz": "Bugun Hafta kunlari va sana mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Дни недели и дата.",
-            "tj": "Имрӯз мавзӯи Рӯзҳои ҳафта ва сана-ро меомӯзем."
+            "uz": "Nima ichmoqchisiz?",
+            "ru": "Что вы хотите выпить?",
+            "tj": "Шумо чӣ нӯшидан мехоҳед?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "我想喝茶。",
+          "pinyin": "Wǒ xiǎng hē chá.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Men choy ichmoqchiman.",
+            "ru": "Я хочу выпить чай.",
+            "tj": "Ман чой нӯшидан мехоҳам."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "你想吃什么？",
+          "pinyin": "Nǐ xiǎng chī shénme?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Nima yemoqchisiz?",
+            "ru": "Что вы хотите поесть?",
+            "tj": "Шумо чӣ хӯрдан мехоҳед?"
           }
         },
         {
           "speaker": "B",
-          "zh": "今天。",
-          "pinyin": "jīntiān.",
+          "zh": "我想吃米饭。",
+          "pinyin": "Wǒ xiǎng chī mǐfàn.",
           "text": {
-            "uz": "今天 — jīntiān deb o'qiladi.",
-            "ru": "今天 читается как jīntiān.",
-            "tj": "今天 ҳамчун jīntiān хонда мешавад."
+            "uz": "Men guruch yemoqchiman.",
+            "ru": "Я хочу поесть риса.",
+            "tj": "Ман биринҷ хӯрдан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Mehmonxonada — tushdan keyingi reja",
+        "ru": "В гостинице — планы на вторую половину дня",
+        "tj": "Дар меҳмонхона — нақшаи баъд аз нисфирӯзӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "下午你想做什么？",
+          "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+          "text": {
+            "uz": "Tushdan keyin nima qilmoqchisiz?",
+            "ru": "Что вы хотите делать во второй половине дня?",
+            "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "下午我想去商店。",
+          "pinyin": "Xiàwǔ wǒ xiǎng qù shāngdiàn.",
+          "text": {
+            "uz": "Tushdan keyin do'konga bormoqchiman.",
+            "ru": "После полудня я хочу сходить в магазин.",
+            "tj": "Баъд аз нисфирӯзӣ ба мағоза рафтан мехоҳам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你想买什么？",
+          "pinyin": "Nǐ xiǎng mǎi shénme?",
+          "text": {
+            "uz": "Nima sotib olmoqchisiz?",
+            "ru": "Что вы хотите купить?",
+            "tj": "Шумо чӣ харидан мехоҳед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我想买一个杯子。",
+          "pinyin": "Wǒ xiǎng mǎi yī gè bēizi.",
+          "text": {
+            "uz": "Bir dona piyola sotib olmoqchiman.",
+            "ru": "Я хочу купить одну кружку.",
+            "tj": "Ман як дона пиёла харидан мехоҳам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda — narx so'rash",
+        "ru": "В магазине — спрашиваем цену",
+        "tj": "Дар мағоза — пурсидани нарх"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你好！这个杯子多少钱？",
+          "pinyin": "Nǐ hǎo! Zhège bēizi duōshao qián?",
+          "text": {
+            "uz": "Salom! Bu piyola qancha turadi?",
+            "ru": "Здравствуйте! Сколько стоит этот стакан?",
+            "tj": "Салом! Ин пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "28块。",
+          "pinyin": "Èrshíbā kuài.",
+          "text": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "那个杯子多少钱？",
+          "pinyin": "Nàge bēizi duōshao qián?",
+          "text": {
+            "uz": "U piyola qancha turadi?",
+            "ru": "Сколько стоит тот стакан?",
+            "tj": "Он пиёла чанд пул аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "那个杯子18块钱。",
+          "pinyin": "Nàge bēizi shíbā kuài qián.",
+          "text": {
+            "uz": "U piyola 18 yuan.",
+            "ru": "Тот стакан стоит 18 юаней.",
+            "tj": "Он пиёла 18 юан аст."
           }
         }
       ]
@@ -221,91 +511,210 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "今天",
-            "pinyin": "jīntiān",
-            "pos": "n.",
+            "no": 1,
+            "zh": "想",
+            "pinyin": "xiǎng",
+            "pos": "mod.",
             "meaning": {
-              "uz": "bugun",
-              "ru": "сегодня",
-              "tj": "имрӯз"
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "星期",
-            "pinyin": "xīngqī",
-            "pos": "n.",
+            "no": 2,
+            "zh": "喝",
+            "pinyin": "hē",
+            "pos": "v.",
             "meaning": {
-              "uz": "hafta, hafta kuni",
-              "ru": "неделя; день недели",
-              "tj": "ҳафта, рӯзи ҳафта"
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "星期一",
-            "pinyin": "xīngqīyī",
+            "no": 3,
+            "zh": "茶",
+            "pinyin": "chá",
             "pos": "n.",
             "meaning": {
-              "uz": "dushanba",
-              "ru": "понедельник",
-              "tj": "душанбе"
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "星期天",
-            "pinyin": "xīngqītiān",
-            "pos": "n.",
+            "no": 4,
+            "zh": "吃",
+            "pinyin": "chī",
+            "pos": "v.",
             "meaning": {
-              "uz": "yakshanba",
-              "ru": "воскресенье",
-              "tj": "якшанбе"
+              "uz": "yemoq",
+              "ru": "есть, кушать",
+              "tj": "хӯрдан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "日",
-            "pinyin": "rì",
+            "no": 5,
+            "zh": "米饭",
+            "pinyin": "mǐfàn",
             "pos": "n.",
             "meaning": {
-              "uz": "kun, sana",
-              "ru": "день, число",
-              "tj": "рӯз, сана"
+              "uz": "guruch, pishirilgan guruch",
+              "ru": "рис, варёный рис",
+              "tj": "биринҷ, биринҷи пухта"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "月",
-            "pinyin": "yuè",
+            "no": 6,
+            "zh": "下午",
+            "pinyin": "xiàwǔ",
             "pos": "n.",
             "meaning": {
-              "uz": "oy",
-              "ru": "месяц",
-              "tj": "моҳ"
+              "uz": "tushdan keyin",
+              "ru": "после полудня, вторая половина дня",
+              "tj": "баъд аз нисфирӯзӣ"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "号",
-            "pinyin": "hào",
+            "no": 7,
+            "zh": "商店",
+            "pinyin": "shāngdiàn",
             "pos": "n.",
             "meaning": {
-              "uz": "sana raqami",
-              "ru": "число месяца",
-              "tj": "рақами сана"
+              "uz": "do'kon, magazin",
+              "ru": "магазин",
+              "tj": "мағоза, дӯкон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "买",
+            "pinyin": "mǎi",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sotib olmoq",
+              "ru": "покупать",
+              "tj": "харидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "个",
+            "pinyin": "gè",
+            "pos": "m.",
+            "meaning": {
+              "uz": "umumiy o'lchov so'z (dona/birlik)",
+              "ru": "общее счётное слово (штука/единица)",
+              "tj": "калимаи шуморавии умумӣ (дона/воҳид)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "杯子",
+            "pinyin": "bēizi",
+            "pos": "n.",
+            "meaning": {
+              "uz": "stakan, piyola",
+              "ru": "стакан, кружка",
+              "tj": "косаи пиёла"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "这",
+            "pinyin": "zhè",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "bu (ko'rsatish olmoshi)",
+              "ru": "этот, это (указательное местоимение)",
+              "tj": "ин (исми ишора)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "多少",
+            "pinyin": "duōshao",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "qancha, nechta (10 dan ortiq)",
+              "ru": "сколько (больше 10)",
+              "tj": "чанд (аз 10 зиёд)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "钱",
+            "pinyin": "qián",
+            "pos": "n.",
+            "meaning": {
+              "uz": "pul",
+              "ru": "деньги",
+              "tj": "пул"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "块",
+            "pinyin": "kuài",
+            "pos": "m.",
+            "meaning": {
+              "uz": "yuan (so'zlashuv)",
+              "ru": "юань (разговорный)",
+              "tj": "юан (забони гуфтугӯӣ)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 15,
+            "zh": "那",
+            "pinyin": "nà",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "u, o'sha (ko'rsatish olmoshi)",
+              "ru": "тот, та (указательное местоимение)",
+              "tj": "он, он (исми ишора)"
             }
           }
         }
@@ -323,9 +732,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "今天 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 今天:",
-            "tj": "Маънои калимаи 今天-ро интихоб кунед:"
+            "uz": "想 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 想:",
+            "tj": "Маънои калимаи 想-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +743,39 @@
           },
           "options": [
             {
-              "uz": "bugun",
-              "ru": "сегодня",
-              "tj": "имрӯз"
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
             },
             {
-              "uz": "hafta, hafta kuni",
-              "ru": "неделя; день недели",
-              "tj": "ҳафта, рӯзи ҳафта"
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
             },
             {
-              "uz": "dushanba",
-              "ru": "понедельник",
-              "tj": "душанбе"
+              "uz": "yemoq",
+              "ru": "есть, кушать",
+              "tj": "хӯрдан"
             },
             {
-              "uz": "yakshanba",
-              "ru": "воскресенье",
-              "tj": "якшанбе"
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "今天 = bugun (jīntiān)",
-            "ru": "今天 = сегодня (jīntiān)",
-            "tj": "今天 = имрӯз (jīntiān)"
+            "uz": "想 = xohlamoq, istаmoq (xiǎng)",
+            "ru": "想 = хотеть, желать (xiǎng)",
+            "tj": "想 = хостан, орзу доштан (xiǎng)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "今天 talaffuzini tanlang:",
-            "ru": "Выберите произношение 今天:",
-            "tj": "Талаффузи 今天-ро интихоб кунед:"
+            "uz": "喝 talaffuzini tanlang:",
+            "ru": "Выберите произношение 喝:",
+            "tj": "Талаффузи 喝-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +783,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jīntiān",
-            "xīngqī",
-            "xīngqīyī",
-            "xīngqītiān"
+            "chá",
+            "hē",
+            "chī",
+            "xiǎng"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "今天 — jīntiān",
-            "ru": "今天 — jīntiān",
-            "tj": "今天 — jīntiān"
+            "uz": "喝 — hē",
+            "ru": "喝 — hē",
+            "tj": "喝 — hē"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'bugun' xitoycha nima?",
-            "ru": "'сегодня' по-китайски?",
-            "tj": "'имрӯз' ба чинӣ чист?"
+            "uz": "'choy' xitoycha qaysi?",
+            "ru": "'чай' по-китайски?",
+            "tj": "'чой' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "今天",
-            "星期",
-            "星期一",
-            "星期天"
+            "想",
+            "吃",
+            "喝",
+            "茶"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "今天 = bugun (jīntiān)",
-            "ru": "今天 = сегодня (jīntiān)",
-            "tj": "今天 = имрӯз (jīntiān)"
+            "uz": "choy = 茶 (chá)",
+            "ru": "чай = 茶 (chá)",
+            "tj": "чой = 茶 (chá)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "xīngqī qaysi ieroglif?",
-            "ru": "Какой иероглиф читается xīngqī?",
-            "tj": "xīngqī кадом иероглиф аст?"
+            "uz": "chī qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chī?",
+            "tj": "chī кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,93 +833,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "星期",
-            "今天",
-            "星期一",
-            "星期天"
+            "喝",
+            "吃",
+            "茶",
+            "想"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "星期 = hafta, hafta kuni (xīngqī)",
-            "ru": "星期 = неделя; день недели (xīngqī)",
-            "tj": "星期 = ҳафта, рӯзи ҳафта (xīngqī)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'今天星期几' iborasini tuzing",
-            "ru": "Соберите фразу '今天星期几'",
-            "tj": "Ибораи '今天星期几'-ро созед"
-          },
-          "tokens": [
-            "今天",
-            "星期",
-            "几",
-            "星期一",
-            "星期天"
-          ],
-          "answer_tokens": [
-            "今天",
-            "星期",
-            "几"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 今天 星期 几",
-            "ru": "Правильный порядок: 今天 星期 几",
-            "tj": "Тартиби дуруст: 今天 星期 几"
+            "uz": "吃 = yemoq (chī)",
+            "ru": "吃 = есть, кушать (chī)",
+            "tj": "吃 = хӯрдан (chī)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "今天",
+              "想",
               {
-                "uz": "bugun",
-                "ru": "сегодня",
-                "tj": "имрӯз"
+                "uz": "xohlamoq, istаmoq",
+                "ru": "хотеть, желать",
+                "tj": "хостан, орзу доштан"
               }
             ],
             [
-              "星期",
+              "喝",
               {
-                "uz": "hafta, hafta kuni",
-                "ru": "неделя; день недели",
-                "tj": "ҳафта, рӯзи ҳафта"
+                "uz": "ichmoq",
+                "ru": "пить",
+                "tj": "нӯшидан"
               }
             ],
             [
-              "星期一",
+              "茶",
               {
-                "uz": "dushanba",
-                "ru": "понедельник",
-                "tj": "душанбе"
+                "uz": "choy",
+                "ru": "чай",
+                "tj": "чой"
               }
             ],
             [
-              "星期天",
+              "吃",
               {
-                "uz": "yakshanba",
-                "ru": "воскресенье",
-                "tj": "якшанбе"
+                "uz": "yemoq",
+                "ru": "есть, кушать",
+                "tj": "хӯрдан"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "这个____多少钱？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "杯子",
+            "想",
+            "茶",
+            "喝"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 杯子 (bēizi) — stakan, piyola",
+            "ru": "Верно: 杯子 (bēizi) — стакан, кружка",
+            "tj": "Дуруст: 杯子 (bēizi) — косаи пиёла"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "今天星期几",
-          "pinyin": "jīntiān xīngqī jǐ",
+          "phrase": "想",
+          "pinyin": "xiǎng",
           "translation": {
-            "uz": "Hafta kunlari va sana",
-            "ru": "Дни недели и дата",
-            "tj": "Рӯзҳои ҳафта ва сана"
+            "uz": "xohlamoq, istаmoq",
+            "ru": "хотеть, желать",
+            "tj": "хостан, орзу доштан"
           }
         }
       ]
@@ -527,9 +932,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -537,41 +942,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "我想吃米饭。",
+            "你想喝什么？",
+            "我想喝茶。",
+            "你想吃什么？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 你想喝什么？",
+            "ru": "Правильный ответ: 你想喝什么？",
+            "tj": "Ҷавоби дуруст: 你想喝什么？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "今天。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "我想喝茶。",
+            "你想喝什么？",
+            "你想吃什么？",
+            "我想吃米饭。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 今天。",
-            "ru": "Ответ B: 今天。",
-            "tj": "Ҷавоби B: 今天。"
+            "uz": "To'g'ri javob: 我想吃米饭。",
+            "ru": "Правильный ответ: 我想吃米饭。",
+            "tj": "Ҷавоби дуруст: 我想吃米饭。"
           }
         }
       ]

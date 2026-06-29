@@ -2,122 +2,188 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 4,
-  "title": "你喜欢什么",
+  "title": "这个工作是他帮我介绍的",
   "subtitle": {
-    "uz": "Mavzu: Sevimli narsalar va dam olish. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Любимые вещи и отдых. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Чизҳои дӯстдошта ва истироҳат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "O'tgan hodisalarning vaqti, joyi va usulini ta'kidlab gapira olish; '是……的' qolipini, 给 old ko'makchisini va 已经 ravishini o'zlashtirish.",
+    "ru": "Научиться делать акцент на времени, месте и способе совершения прошедшего действия; освоить конструкцию 是……的, предлог 给 и наречие 已经.",
+    "tj": "Таъкид кардан ба вақт, ҷой ва усули амали гузашта; азхудкунии конструксияи 是……的, пешоянди 给 ва зарфи 已经."
   },
   "active_words": [
     {
-      "zh": "喜欢",
-      "pinyin": "xǐhuan",
-      "pos": "v.",
-      "meaning": {
-        "uz": "yoqtirmoq",
-        "ru": "любить, нравиться",
-        "tj": "дӯст доштан"
-      },
-      "no": 1
-    },
-    {
-      "zh": "电影",
-      "pinyin": "diànyǐng",
+      "no": 1,
+      "zh": "生日",
+      "pinyin": "shēngrì",
       "pos": "n.",
       "meaning": {
-        "uz": "kino",
-        "ru": "фильм",
-        "tj": "филм"
-      },
-      "no": 2
+        "uz": "tug'ilgan kun",
+        "ru": "день рождения",
+        "tj": "рӯзи таваллуд"
+      }
     },
     {
-      "zh": "音乐",
-      "pinyin": "yīnyuè",
-      "pos": "n.",
-      "meaning": {
-        "uz": "musiqa",
-        "ru": "музыка",
-        "tj": "мусиқӣ"
-      },
-      "no": 3
-    },
-    {
-      "zh": "旅游",
-      "pinyin": "lǚyóu",
-      "pos": "v.",
-      "meaning": {
-        "uz": "sayohat qilmoq",
-        "ru": "путешествовать",
-        "tj": "сафар кардан"
-      },
-      "no": 4
-    },
-    {
-      "zh": "休息",
-      "pinyin": "xiūxi",
-      "pos": "v.",
-      "meaning": {
-        "uz": "dam olmoq",
-        "ru": "отдыхать",
-        "tj": "истироҳат кардан"
-      },
-      "no": 5
-    },
-    {
-      "zh": "周末",
-      "pinyin": "zhōumò",
-      "pos": "n.",
-      "meaning": {
-        "uz": "dam olish kunlari",
-        "ru": "выходные",
-        "tj": "рӯзҳои истироҳат"
-      },
-      "no": 6
-    },
-    {
-      "zh": "有意思",
-      "pinyin": "yǒu yìsi",
+      "no": 2,
+      "zh": "快乐",
+      "pinyin": "kuàilè",
       "pos": "adj.",
       "meaning": {
-        "uz": "qiziqarli",
-        "ru": "интересный",
-        "tj": "шавқовар"
-      },
-      "no": 7
+        "uz": "baxtli, xursand",
+        "ru": "счастливый, радостный",
+        "tj": "хушбахт, шод"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "给",
+      "pinyin": "gěi",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+        "ru": "для, кому (давать или направлять)",
+        "tj": "барои, ба (додан ё равона кардан)"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "接",
+      "pinyin": "jiē",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+        "ru": "принимать, получать; отвечать на телефон",
+        "tj": "қабул кардан; ба телефон ҷавоб додан"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "晚上",
+      "pinyin": "wǎnshang",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kecha, kechqurun",
+        "ru": "вечер, вечером",
+        "tj": "шом, шабонгоҳ"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "问",
+      "pinyin": "wèn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "so'ramoq",
+        "ru": "спрашивать",
+        "tj": "пурсидан"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "非常",
+      "pinyin": "fēicháng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda, nihoyatda",
+        "ru": "очень, чрезвычайно",
+        "tj": "хеле, бағоят"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "开始",
+      "pinyin": "kāishǐ",
+      "pos": "v.",
+      "meaning": {
+        "uz": "boshlamoq, boshlanmoq",
+        "ru": "начинать, начинаться",
+        "tj": "оғоз кардан, шурӯъ кардан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "已经",
+      "pinyin": "yǐjīng",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "allaqachon, avvaldan",
+        "ru": "уже",
+        "tj": "аллакай, пешакӣ"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "长",
+      "pinyin": "cháng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "uzun; (vaqt) uzoq",
+        "ru": "длинный; (о времени) долгий",
+        "tj": "дароз; (вақт) тӯлонӣ"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "两",
+      "pinyin": "liǎng",
+      "pos": "num.",
+      "meaning": {
+        "uz": "ikki (ko'makchi bilan birga ishlatiladi)",
+        "ru": "два (используется со счётным словом)",
+        "tj": "ду (бо воҳид истифода мешавад)"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "帮",
+      "pinyin": "bāng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yordam bermoq",
+        "ru": "помогать",
+        "tj": "кӯмак кардан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "介绍",
+      "pinyin": "jièshào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tanishtirmoq, tavsiya qilmoq",
+        "ru": "знакомить, представлять; рекомендовать",
+        "tj": "шинос кардан; тавсия додан"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "'是……的' qolipi: ta'kidlash",
+        "ru": "Конструкция 是……的: выделение",
+        "tj": "Конструксияи 是……的: таъкид"
       },
-      "title_zh": "主题词语",
+      "title_zh": "“是……的”句：强调施事",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 你喜欢什么. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“你喜欢什么”。",
-        "ru": "Ключевая фраза урока: 你喜欢什么. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“你喜欢什么”。",
-        "tj": "Ибораи асосии дарс: 你喜欢什么. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“你喜欢什么”。"
+        "uz": "'是……的' qolipida o'tgan hodisaning vaqti, joyi yoki usuli ta'kidlanadi. Gap tuzilishi: 是 + ta'kidlanadigan ma'lumot + fe'l + 的. Bu qolip hodisaning o'zi emas, balki uning qanday, qachon yoki kim tomonidan bajarilgani muhim bo'lganda ishlatiladi.",
+        "ru": "Конструкция 是……的 подчёркивает время, место или способ совершения прошедшего действия. Структура: 是 + выделяемая информация + глагол + 的. Используется, когда важен не сам факт действия, а то как, когда или кем оно было выполнено.",
+        "tj": "Конструксияи 是……的 вақт, ҷой ё усули амали гузаштаро таъкид мекунад. Сохтор: 是 + маълумоти таъкидшаванда + феъл + 的. Вақте истифода мешавад, ки на худи амал, балки чӣ тавр, кай ё аз ҷониби кӣ иҷро шудани он муҳим аст."
       },
       "examples": [
         {
-          "zh": "今天我们学习“你喜欢什么”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ xǐhuan shénme.",
+          "zh": "这个工作是他帮我介绍的。",
+          "pinyin": "Zhège gōngzuò shì tā bāng wǒ jièshào de.",
           "translation": {
-            "uz": "Biz Sevimli narsalar va dam olish mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Любимые вещи и отдых.",
-            "tj": "Мо мавзӯи Чизҳои дӯстдошта ва истироҳат-ро меомӯзем."
+            "uz": "Bu ishni u menga tavsiya qilgan edi.",
+            "ru": "Именно он порекомендовал мне эту работу.",
+            "tj": "Ин корро ӯ ба ман тавсия кард."
           }
         },
         {
-          "zh": "这个词是喜欢。",
-          "pinyin": "Zhège cí shì xǐhuan.",
+          "zh": "我是2011年来的。",
+          "pinyin": "Wǒ shì èr líng yī yī nián lái de.",
           "translation": {
-            "uz": "Bu so'z: yoqtirmoq.",
-            "ru": "Это слово: любить, нравиться.",
-            "tj": "Ин калима: дӯст доштан."
+            "uz": "Men 2011-yilda kelgan edim.",
+            "ru": "Я приехал именно в 2011 году.",
+            "tj": "Ман маҳз соли 2011 омадам."
           }
         }
       ]
@@ -125,33 +191,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Vaqtni ifodalash: ……的时候",
+        "ru": "Выражение времени: ……的时候",
+        "tj": "Ифодаи вақт: ……的时候"
       },
-      "title_zh": "问答结构",
+      "title_zh": "表示时间：……的时候",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'……的时候' qolipida biror ish yuz bergan vaqt ko'rsatiladi. O'zbek tilidagi '……paytida, ……vaqtida' iborasiga to'g'ri keladi.",
+        "ru": "Конструкция ……的时候 указывает на момент, когда произошло действие. Соответствует русскому «когда…, в то время как…».",
+        "tj": "Конструксияи ……的时候 вақти вуқӯи амалро нишон медиҳад. Ба ибораи тоҷикии '……вақте ки, дар вақти……' мувофиқ аст."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "我十一岁的时候开始踢足球。",
+          "pinyin": "Wǒ shíyī suì de shíhou kāishǐ tī zúqiú.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Men o'n bir yoshimda futbol o'ynashni boshladim.",
+            "ru": "Я начал играть в футбол, когда мне было одиннадцать лет.",
+            "tj": "Ман дар синни ёздаҳсолагӣ футбол бозӣ карданро оғоз кардам."
           }
         },
         {
-          "zh": "喜欢。",
-          "pinyin": "xǐhuan.",
+          "zh": "刚结婚的时候，每天都很浪漫。",
+          "pinyin": "Gāng jiéhūn de shíhou, měitiān dōu hěn làngmàn.",
           "translation": {
-            "uz": "喜欢 — xǐhuan deb o'qiladi.",
-            "ru": "喜欢 читается как xǐhuan.",
-            "tj": "喜欢 ҳамчун xǐhuan хонда мешавад."
+            "uz": "Yangi turmush qurgan paytimizda har kun romantik edi.",
+            "ru": "Когда мы только поженились, каждый день был романтичным.",
+            "tj": "Вақте ки тоза издивоҷ кардем, ҳар рӯз романтикӣ буд."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Vaqt ravishi '已经'",
+        "ru": "Наречие времени 已经",
+        "tj": "Зарфи вақт 已经"
+      },
+      "title_zh": "时间副词“已经”",
+      "rule": {
+        "uz": "'已经' ravishi 'allaqachon' ma'nosini beradi. U fe'ldan oldin keladi va ko'pincha '了' bilan birga ishlatiladi. Biror harakatning avvalroq bajarilganini ta'kidlaydi.",
+        "ru": "Наречие 已经 означает «уже». Ставится перед глаголом и часто используется в связке с 了. Подчёркивает, что действие совершилось ранее.",
+        "tj": "Зарфи 已经 маънои 'аллакай' дорад. Пеш аз феъл меояд ва аксар бо 了 дар якҷоягӣ истифода мешавад. Таъкид мекунад, ки амал пешак иҷро шудааст."
+      },
+      "examples": [
+        {
+          "zh": "已经踢了十年了。",
+          "pinyin": "Yǐjīng tī le shí nián le.",
+          "translation": {
+            "uz": "Allaqachon o'n yil bo'ldi.",
+            "ru": "Уже прошло десять лет.",
+            "tj": "Аллакай даҳ сол шудааст."
+          }
+        },
+        {
+          "zh": "我已经吃饭了。",
+          "pinyin": "Wǒ yǐjīng chīfàn le.",
+          "translation": {
+            "uz": "Men allaqachon ovqatlandim.",
+            "ru": "Я уже поел.",
+            "tj": "Ман аллакай хӯрок хӯрдам."
           }
         }
       ]
@@ -160,49 +260,196 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Sevimli narsalar va dam olish",
-        "ru": "Любимые вещи и отдых",
-        "tj": "Чизҳои дӯстдошта ва истироҳат"
+        "uz": "Darsxonada",
+        "ru": "В классе",
+        "tj": "Дар синфхона"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“你喜欢什么”。",
-          "pinyin": "Jīntiān wǒmen xuéxí nǐ xǐhuan shénme.",
+          "zh": "生日快乐！这是送给你的！",
+          "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
           "text": {
-            "uz": "Bugun Sevimli narsalar va dam olish mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Любимые вещи и отдых.",
-            "tj": "Имрӯз мавзӯи Чизҳои дӯстдошта ва истироҳат-ро меомӯзем."
+            "uz": "Tug'ilgan kuning bilan! Bu senga sovg'a!",
+            "ru": "С днём рождения! Это тебе подарок!",
+            "tj": "Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "是什么？是一本书吗？",
+          "pinyin": "Shì shénme? Shì yì běn shū ma?",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Bu nima? Kitobmi?",
+            "ru": "Что это? Книга?",
+            "tj": "Ин чист? Китоб аст?"
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "对，这本书是我写给你的。",
+          "pinyin": "Duì, zhè běn shū shì wǒ xiě gěi nǐ de.",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Ha, bu kitobni men sen uchun yozdim.",
+            "ru": "Да, эту книгу я написал для тебя.",
+            "tj": "Бале, ин китобро ман барои ту навиштам."
           }
         },
         {
           "speaker": "B",
-          "zh": "喜欢。",
-          "pinyin": "xǐhuan.",
+          "zh": "太谢谢你了！",
+          "pinyin": "Tài xièxie nǐ le!",
           "text": {
-            "uz": "喜欢 — xǐhuan deb o'qiladi.",
-            "ru": "喜欢 читается как xǐhuan.",
-            "tj": "喜欢 ҳамчун xǐhuan хонда мешавад."
+            "uz": "Juda rahmat!",
+            "ru": "Огромное спасибо!",
+            "tj": "Хеле ташаккур!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "早上有你一个电话。",
+          "pinyin": "Zǎoshang yǒu nǐ yí ge diànhuà.",
+          "text": {
+            "uz": "Ertalab seni bir kishi qo'ng'iroq qildi.",
+            "ru": "Утром тебе звонили.",
+            "tj": "Субҳ ба ту як нафар занг зад."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "电话是谁打的？",
+          "pinyin": "Diànhuà shì shéi dǎ de?",
+          "text": {
+            "uz": "Telefon kimdan edi?",
+            "ru": "Кто звонил?",
+            "tj": "Занг аз кӣ буд?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "不知道，是儿子接的。",
+          "pinyin": "Bù zhīdào, shì érzi jiē de.",
+          "text": {
+            "uz": "Bilmadim, o'g'lim qabul qildi.",
+            "ru": "Не знаю, трубку взял сын.",
+            "tj": "Намедонам, писарам ҷавоб дод."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好，晚上我问一下儿子。",
+          "pinyin": "Hǎo, wǎnshang wǒ wèn yíxià érzi.",
+          "text": {
+            "uz": "Yaxshi, kechqurun o'g'limdan so'rayman.",
+            "ru": "Хорошо, вечером спрошу у сына.",
+            "tj": "Хуб, шом аз писарам мепурсам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport maydonchasida",
+        "ru": "На спортивной площадке",
+        "tj": "Дар майдони варзишӣ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你喜欢踢足球吗？",
+          "pinyin": "Nǐ xǐhuan tī zúqiú ma?",
+          "text": {
+            "uz": "Futbol o'ynashni yaxshi ko'rasanmi?",
+            "ru": "Тебе нравится играть в футбол?",
+            "tj": "Оё ту футбол бозӣ кардан ро дӯст медорӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "非常喜欢。",
+          "pinyin": "Fēicháng xǐhuan.",
+          "text": {
+            "uz": "Juda yaxshi ko'raman.",
+            "ru": "Очень нравится.",
+            "tj": "Хеле дӯст медорам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你是什么时候开始踢足球的？",
+          "pinyin": "Nǐ shì shénme shíhou kāishǐ tī zúqiú de?",
+          "text": {
+            "uz": "Sen qachon futbol o'ynashni boshlagansan?",
+            "ru": "Когда ты начал играть в футбол?",
+            "tj": "Ту кай футбол бозӣ карданро оғоз кардӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我十一岁的时候开始踢足球，已经踢了十年了。",
+          "pinyin": "Wǒ shíyī suì de shíhou kāishǐ tī zúqiú, yǐjīng tī le shí nián le.",
+          "text": {
+            "uz": "Men o'n bir yoshimda futbol o'ynashni boshladim, allaqachon o'n yil bo'ldi.",
+            "ru": "Я начал играть в футбол в одиннадцать лет, уже прошло десять лет.",
+            "tj": "Ман дар синни ёздаҳсолагӣ футбол бозӣ карданро оғоз кардам, аллакай даҳ сол шудааст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada",
+        "ru": "В компании",
+        "tj": "Дар ширкат"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你在这儿工作多长时间了？",
+          "pinyin": "Nǐ zài zhèr gōngzuò duō cháng shíjiān le?",
+          "text": {
+            "uz": "Bu yerda qancha vaqtdan beri ishlayapsan?",
+            "ru": "Сколько времени ты здесь работаешь?",
+            "tj": "Ту аз кай инҷо кор мекунӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "已经两年多了，我是2011年来的。",
+          "pinyin": "Yǐjīng liǎng nián duō le, wǒ shì èr líng yī yī nián lái de.",
+          "text": {
+            "uz": "Allaqachon ikki yildan oshdi, men 2011-yilda kelgan edim.",
+            "ru": "Уже больше двух лет, я приехал в 2011 году.",
+            "tj": "Аллакай зиёда аз ду сол, ман соли 2011 омадам."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你认识谢先生吗？",
+          "pinyin": "Nǐ rènshi Xiè xiānsheng ma?",
+          "text": {
+            "uz": "Xie janobini tanaysanmi?",
+            "ru": "Вы знакомы с господином Се?",
+            "tj": "Оё шумо ҷаноби Ксиеро мешиносед?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "认识，我们是大学同学，这个工作是他帮我介绍的。",
+          "pinyin": "Rènshi, wǒmen shì dàxué tóngxué, zhège gōngzuò shì tā bāng wǒ jièshào de.",
+          "text": {
+            "uz": "Ha, biz universitetda bir guruhda o'qiganmiz, bu ishni u menga tavsiya qilgan edi.",
+            "ru": "Знаком, мы однокурсники в университете, именно он порекомендовал мне эту работу.",
+            "tj": "Мешиносам, мо дар донишгоҳ ҳамгурӯҳ будем, ӯ ин корро ба ман тавсия кард."
           }
         }
       ]
@@ -221,91 +468,182 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "喜欢",
-            "pinyin": "xǐhuan",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yoqtirmoq",
-              "ru": "любить, нравиться",
-              "tj": "дӯст доштан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "电影",
-            "pinyin": "diànyǐng",
+            "no": 1,
+            "zh": "生日",
+            "pinyin": "shēngrì",
             "pos": "n.",
             "meaning": {
-              "uz": "kino",
-              "ru": "фильм",
-              "tj": "филм"
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "音乐",
-            "pinyin": "yīnyuè",
-            "pos": "n.",
-            "meaning": {
-              "uz": "musiqa",
-              "ru": "музыка",
-              "tj": "мусиқӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "旅游",
-            "pinyin": "lǚyóu",
-            "pos": "v.",
-            "meaning": {
-              "uz": "sayohat qilmoq",
-              "ru": "путешествовать",
-              "tj": "сафар кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "休息",
-            "pinyin": "xiūxi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "dam olmoq",
-              "ru": "отдыхать",
-              "tj": "истироҳат кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "周末",
-            "pinyin": "zhōumò",
-            "pos": "n.",
-            "meaning": {
-              "uz": "dam olish kunlari",
-              "ru": "выходные",
-              "tj": "рӯзҳои истироҳат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "有意思",
-            "pinyin": "yǒu yìsi",
+            "no": 2,
+            "zh": "快乐",
+            "pinyin": "kuàilè",
             "pos": "adj.",
             "meaning": {
-              "uz": "qiziqarli",
-              "ru": "интересный",
-              "tj": "шавқовар"
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "给",
+            "pinyin": "gěi",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "接",
+            "pinyin": "jiē",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+              "ru": "принимать, получать; отвечать на телефон",
+              "tj": "қабул кардан; ба телефон ҷавоб додан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "晚上",
+            "pinyin": "wǎnshang",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kecha, kechqurun",
+              "ru": "вечер, вечером",
+              "tj": "шом, шабонгоҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "问",
+            "pinyin": "wèn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "非常",
+            "pinyin": "fēicháng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "juda, nihoyatda",
+              "ru": "очень, чрезвычайно",
+              "tj": "хеле, бағоят"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "开始",
+            "pinyin": "kāishǐ",
+            "pos": "v.",
+            "meaning": {
+              "uz": "boshlamoq, boshlanmoq",
+              "ru": "начинать, начинаться",
+              "tj": "оғоз кардан, шурӯъ кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "已经",
+            "pinyin": "yǐjīng",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "allaqachon, avvaldan",
+              "ru": "уже",
+              "tj": "аллакай, пешакӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "长",
+            "pinyin": "cháng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "uzun; (vaqt) uzoq",
+              "ru": "длинный; (о времени) долгий",
+              "tj": "дароз; (вақт) тӯлонӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "两",
+            "pinyin": "liǎng",
+            "pos": "num.",
+            "meaning": {
+              "uz": "ikki (ko'makchi bilan birga ishlatiladi)",
+              "ru": "два (используется со счётным словом)",
+              "tj": "ду (бо воҳид истифода мешавад)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "帮",
+            "pinyin": "bāng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "介绍",
+            "pinyin": "jièshào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tanishtirmoq, tavsiya qilmoq",
+              "ru": "знакомить, представлять; рекомендовать",
+              "tj": "шинос кардан; тавсия додан"
             }
           }
         }
@@ -323,9 +661,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "喜欢 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 喜欢:",
-            "tj": "Маънои калимаи 喜欢-ро интихоб кунед:"
+            "uz": "生日 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 生日:",
+            "tj": "Маънои калимаи 生日-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +672,39 @@
           },
           "options": [
             {
-              "uz": "yoqtirmoq",
-              "ru": "любить, нравиться",
-              "tj": "дӯст доштан"
+              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+              "ru": "принимать, получать; отвечать на телефон",
+              "tj": "қабул кардан; ба телефон ҷавоб додан"
             },
             {
-              "uz": "kino",
-              "ru": "фильм",
-              "tj": "филм"
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
             },
             {
-              "uz": "musiqa",
-              "ru": "музыка",
-              "tj": "мусиқӣ"
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
             },
             {
-              "uz": "sayohat qilmoq",
-              "ru": "путешествовать",
-              "tj": "сафар кардан"
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "喜欢 = yoqtirmoq (xǐhuan)",
-            "ru": "喜欢 = любить, нравиться (xǐhuan)",
-            "tj": "喜欢 = дӯст доштан (xǐhuan)"
+            "uz": "生日 = tug'ilgan kun (shēngrì)",
+            "ru": "生日 = день рождения (shēngrì)",
+            "tj": "生日 = рӯзи таваллуд (shēngrì)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "喜欢 talaffuzini tanlang:",
-            "ru": "Выберите произношение 喜欢:",
-            "tj": "Талаффузи 喜欢-ро интихоб кунед:"
+            "uz": "快乐 talaffuzini tanlang:",
+            "ru": "Выберите произношение 快乐:",
+            "tj": "Талаффузи 快乐-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +712,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xǐhuan",
-            "diànyǐng",
-            "yīnyuè",
-            "lǚyóu"
+            "kuàilè",
+            "gěi",
+            "shēngrì",
+            "jiē"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "喜欢 — xǐhuan",
-            "ru": "喜欢 — xǐhuan",
-            "tj": "喜欢 — xǐhuan"
+            "uz": "快乐 — kuàilè",
+            "ru": "快乐 — kuàilè",
+            "tj": "快乐 — kuàilè"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'yoqtirmoq' xitoycha nima?",
-            "ru": "'любить, нравиться' по-китайски?",
-            "tj": "'дӯст доштан' ба чинӣ чист?"
+            "uz": "'uchun, ga (kimgadir berish yoki yo'naltirish)' xitoycha qaysi?",
+            "ru": "'для, кому (давать или направлять)' по-китайски?",
+            "tj": "'барои, ба (додан ё равона кардан)' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "喜欢",
-            "电影",
-            "音乐",
-            "旅游"
+            "快乐",
+            "接",
+            "生日",
+            "给"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "喜欢 = yoqtirmoq (xǐhuan)",
-            "ru": "喜欢 = любить, нравиться (xǐhuan)",
-            "tj": "喜欢 = дӯст доштан (xǐhuan)"
+            "uz": "uchun, ga (kimgadir berish yoki yo'naltirish) = 给 (gěi)",
+            "ru": "для, кому (давать или направлять) = 给 (gěi)",
+            "tj": "барои, ба (додан ё равона кардан) = 给 (gěi)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "diànyǐng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается diànyǐng?",
-            "tj": "diànyǐng кадом иероглиф аст?"
+            "uz": "jiē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiē?",
+            "tj": "jiē кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,95 +762,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "电影",
-            "喜欢",
-            "音乐",
-            "旅游"
+            "快乐",
+            "给",
+            "接",
+            "生日"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "电影 = kino (diànyǐng)",
-            "ru": "电影 = фильм (diànyǐng)",
-            "tj": "电影 = филм (diànyǐng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'你喜欢什么' iborasini tuzing",
-            "ru": "Соберите фразу '你喜欢什么'",
-            "tj": "Ибораи '你喜欢什么'-ро созед"
-          },
-          "tokens": [
-            "你",
-            "喜欢",
-            "什",
-            "么",
-            "电影",
-            "音乐"
-          ],
-          "answer_tokens": [
-            "你",
-            "喜欢",
-            "什",
-            "么"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 你 喜欢 什 么",
-            "ru": "Правильный порядок: 你 喜欢 什 么",
-            "tj": "Тартиби дуруст: 你 喜欢 什 么"
+            "uz": "接 = qabul qilmoq, olmoq; telefonga javob bermoq (jiē)",
+            "ru": "接 = принимать, получать; отвечать на телефон (jiē)",
+            "tj": "接 = қабул кардан; ба телефон ҷавоб додан (jiē)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "喜欢",
+              "生日",
               {
-                "uz": "yoqtirmoq",
-                "ru": "любить, нравиться",
-                "tj": "дӯст доштан"
+                "uz": "tug'ilgan kun",
+                "ru": "день рождения",
+                "tj": "рӯзи таваллуд"
               }
             ],
             [
-              "电影",
+              "快乐",
               {
-                "uz": "kino",
-                "ru": "фильм",
-                "tj": "филм"
+                "uz": "baxtli, xursand",
+                "ru": "счастливый, радостный",
+                "tj": "хушбахт, шод"
               }
             ],
             [
-              "音乐",
+              "给",
               {
-                "uz": "musiqa",
-                "ru": "музыка",
-                "tj": "мусиқӣ"
+                "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+                "ru": "для, кому (давать или направлять)",
+                "tj": "барои, ба (додан ё равона кардан)"
               }
             ],
             [
-              "旅游",
+              "接",
               {
-                "uz": "sayohat qilmoq",
-                "ru": "путешествовать",
-                "tj": "сафар кардан"
+                "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
+                "ru": "принимать, получать; отвечать на телефон",
+                "tj": "қабул кардан; ба телефон ҷавоб додан"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我十一岁的时候____踢足球。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "快乐",
+            "生日",
+            "开始",
+            "给"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 开始 (kāishǐ) — boshlamoq, boshlanmoq",
+            "ru": "Верно: 开始 (kāishǐ) — начинать, начинаться",
+            "tj": "Дуруст: 开始 (kāishǐ) — оғоз кардан, шурӯъ кардан"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "你喜欢什么",
-          "pinyin": "nǐ xǐhuan shénme",
+          "phrase": "生日",
+          "pinyin": "shēngrì",
           "translation": {
-            "uz": "Sevimli narsalar va dam olish",
-            "ru": "Любимые вещи и отдых",
-            "tj": "Чизҳои дӯстдошта ва истироҳат"
+            "uz": "tug'ilgan kun",
+            "ru": "день рождения",
+            "tj": "рӯзи таваллуд"
           }
         }
       ]
@@ -529,9 +861,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -539,41 +871,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "对，这本书是我写给你的。",
+            "生日快乐！这是送给你的！",
+            "太谢谢你了！",
+            "是什么？是一本书吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 生日快乐！这是送给你的！",
+            "ru": "Правильный ответ: 生日快乐！这是送给你的！",
+            "tj": "Ҷавоби дуруст: 生日快乐！这是送给你的！"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "喜欢。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "生日快乐！这是送给你的！",
+            "是什么？是一本书吗？",
+            "太谢谢你了！",
+            "对，这本书是我写给你的。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "B javobi: 喜欢。",
-            "ru": "Ответ B: 喜欢。",
-            "tj": "Ҷавоби B: 喜欢。"
+            "uz": "To'g'ri javob: 太谢谢你了！",
+            "ru": "Правильный ответ: 太谢谢你了！",
+            "tj": "Ҷавоби дуруст: 太谢谢你了！"
           }
         }
       ]

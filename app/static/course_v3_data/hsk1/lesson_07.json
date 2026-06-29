@@ -2,122 +2,186 @@
   "schema_version": 2,
   "level": "hsk1",
   "lesson_id": 7,
-  "title": "现在几点",
+  "title": "今天几号",
   "subtitle": {
-    "uz": "Mavzu: Vaqt va soat. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Время и часы. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Вақт ва соат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Sanalar, haftaning kunlari va ketma-ket fe'l gaplarini o'rganish",
+    "ru": "Изучение дат, дней недели и предложений с последовательными глаголами",
+    "tj": "Омӯзиши санаҳо, рӯзҳои ҳафта ва ҷумлаҳо бо феъли пайдарпай"
   },
   "active_words": [
     {
-      "zh": "现在",
-      "pinyin": "xiànzài",
+      "no": 1,
+      "zh": "请",
+      "pinyin": "qǐng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "iltimos, marhamat",
+        "ru": "пожалуйста, разрешите спросить",
+        "tj": "лутфан, иҷозат диҳед"
+      }
+    },
+    {
+      "no": 2,
+      "zh": "问",
+      "pinyin": "wèn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "so'ramoq",
+        "ru": "спрашивать",
+        "tj": "пурсидан"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "今天",
+      "pinyin": "jīntiān",
       "pos": "n.",
       "meaning": {
-        "uz": "hozir",
-        "ru": "сейчас",
-        "tj": "ҳозир"
-      },
-      "no": 1
+        "uz": "bugun",
+        "ru": "сегодня",
+        "tj": "имрӯз"
+      }
     },
     {
-      "zh": "几",
-      "pinyin": "jǐ",
-      "pos": "pron.",
-      "meaning": {
-        "uz": "necha",
-        "ru": "сколько",
-        "tj": "чанд"
-      },
-      "no": 2
-    },
-    {
-      "zh": "点",
-      "pinyin": "diǎn",
-      "pos": "mw.",
-      "meaning": {
-        "uz": "soat",
-        "ru": "час (время)",
-        "tj": "соат"
-      },
-      "no": 3
-    },
-    {
-      "zh": "分",
-      "pinyin": "fēn",
-      "pos": "mw.",
-      "meaning": {
-        "uz": "daqiqa",
-        "ru": "минута",
-        "tj": "дақиқа"
-      },
-      "no": 4
-    },
-    {
-      "zh": "上午",
-      "pinyin": "shàngwǔ",
+      "no": 4,
+      "zh": "号",
+      "pinyin": "hào",
       "pos": "n.",
       "meaning": {
-        "uz": "ertalab, tushgacha",
-        "ru": "утро, до полудня",
-        "tj": "субҳ, пеш аз нисфирӯзӣ"
-      },
-      "no": 5
+        "uz": "oy kuni (sana)",
+        "ru": "число (день месяца)",
+        "tj": "рӯзи моҳ (сана)"
+      }
     },
     {
-      "zh": "下午",
-      "pinyin": "xiàwǔ",
+      "no": 5,
+      "zh": "月",
+      "pinyin": "yuè",
       "pos": "n.",
       "meaning": {
-        "uz": "tushdan keyin",
-        "ru": "после полудня",
-        "tj": "баъд аз нисфирӯзӣ"
-      },
-      "no": 6
+        "uz": "oy (yanvar, fevral va h.k.)",
+        "ru": "месяц (январь, февраль и т.д.)",
+        "tj": "моҳ (январ, феврал ва ғ.)"
+      }
     },
     {
-      "zh": "半",
-      "pinyin": "bàn",
-      "pos": "num.",
+      "no": 6,
+      "zh": "星期",
+      "pinyin": "xīngqī",
+      "pos": "n.",
       "meaning": {
-        "uz": "yarim",
-        "ru": "половина",
-        "tj": "ним"
-      },
-      "no": 7
+        "uz": "hafta, haftaning kuni",
+        "ru": "неделя, день недели",
+        "tj": "ҳафта, рӯзи ҳафта"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "昨天",
+      "pinyin": "zuótiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kecha",
+        "ru": "вчера",
+        "tj": "дирӯз"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "明天",
+      "pinyin": "míngtiān",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ertaga",
+        "ru": "завтра",
+        "tj": "фардо"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "去",
+      "pinyin": "qù",
+      "pos": "v.",
+      "meaning": {
+        "uz": "bormoq",
+        "ru": "идти, ехать",
+        "tj": "рафтан"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "学校",
+      "pinyin": "xuéxiào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "maktab",
+        "ru": "школа",
+        "tj": "мактаб"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "看",
+      "pinyin": "kàn",
+      "pos": "v.",
+      "meaning": {
+        "uz": "qaramoq, ko'rmoq, o'qimoq",
+        "ru": "смотреть, читать",
+        "tj": "нигоҳ кардан, хондан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "书",
+      "pinyin": "shū",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kitob",
+        "ru": "книга",
+        "tj": "китоб"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Sanani ifodalash",
+        "ru": "Выражение даты",
+        "tj": "Ифодаи сана"
       },
-      "title_zh": "主题词语",
+      "title_zh": "日期的表达 — Sana ifodalash",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 现在几点. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“现在几点”。",
-        "ru": "Ключевая фраза урока: 现在几点. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“现在几点”。",
-        "tj": "Ибораи асосии дарс: 现在几点. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“现在几点”。"
+        "uz": "Xitoy tilida sanalar eng kattadan eng kichigiga qadar ifodalanadi:\nYil → Oy → Kun → Haftaning kuni\n\nOy: 一月 (yanvar) ~ 十二月 (dekabr)\nKun: 1号 (1-chi) ~ 31号 (31-chi)\n\nHaftaning kunlari:\n星期一 Dushanba\n星期二 Seshanba\n星期三 Chorshanba\n星期四 Payshanba\n星期五 Juma\n星期六 Shanba\n星期日/星期天 Yakshanba\n\nMisol: 9月1号，星期三 — 1-sentabr, chorshanba",
+        "ru": "В китайском языке даты выражаются от большего к меньшему:\nГод → Месяц → День → День недели\n\nМесяц: 一月 (январь) ~ 十二月 (декабрь)\nДень: 1号 (1-е) ~ 31号 (31-е)\n\nДни недели:\n星期一 Понедельник\n星期二 Вторник\n星期三 Среда\n星期四 Четверг\n星期五 Пятница\n星期六 Суббота\n星期日/星期天 Воскресенье\n\nПример: 9月1号，星期三 — 1 сентября, среда",
+        "tj": "Дар забони чинӣ санаҳо аз калон ба хурд ифода мешаванд:\nСол → Моҳ → Рӯз → Рӯзи ҳафта\n\nМоҳ: 一月 (январ) ~ 十二月 (декабр)\nРӯз: 1号 (1-ум) ~ 31号 (31-ум)\n\nРӯзҳои ҳафта:\n星期一 Душанбе\n星期二 Сешанбе\n星期三 Чоршанбе\n星期四 Панҷшанбе\n星期五 Ҷумъа\n星期六 Шанбе\n星期日/星期天 Якшанбе\n\nМисол: 9月1号，星期三 — 1-уми сентябр, чоршанбе"
       },
       "examples": [
         {
-          "zh": "今天我们学习“现在几点”。",
-          "pinyin": "Jīntiān wǒmen xuéxí xiànzài jǐ diǎn.",
+          "zh": "今天9月1号，星期三。",
+          "pinyin": "Jīntiān jiǔ yuè yī hào, xīngqī sān.",
           "translation": {
-            "uz": "Biz Vaqt va soat mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Время и часы.",
-            "tj": "Мо мавзӯи Вақт ва соат-ро меомӯзем."
+            "uz": "Bugun 1-sentabr, chorshanba.",
+            "ru": "Сегодня 1 сентября, среда.",
+            "tj": "Имрӯз 1-уми сентябр, чоршанбе."
           }
         },
         {
-          "zh": "这个词是现在。",
-          "pinyin": "Zhège cí shì xiànzài.",
+          "zh": "明天星期六。",
+          "pinyin": "Míngtiān xīngqī liù.",
           "translation": {
-            "uz": "Bu so'z: hozir.",
-            "ru": "Это слово: сейчас.",
-            "tj": "Ин калима: ҳозир."
+            "uz": "Ertaga shanba.",
+            "ru": "Завтра суббота.",
+            "tj": "Фардо шанбе аст."
+          }
+        },
+        {
+          "zh": "昨天8月31号。",
+          "pinyin": "Zuótiān bā yuè sānshíyī hào.",
+          "translation": {
+            "uz": "Kecha 31-avgust edi.",
+            "ru": "Вчера было 31 августа.",
+            "tj": "Дирӯз 31-уми август буд."
           }
         }
       ]
@@ -125,33 +189,85 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Ot kesimli gap",
+        "ru": "Предложение с именным сказуемым",
+        "tj": "Ҷумлаи бо исми хабар"
       },
-      "title_zh": "问答结构",
+      "title_zh": "名词谓语句 — Ot kesimli gap",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "Ot yoki raqam kesim bo'lib kela oladi (是 talab etilmaydi).\nKo'pincha yosh, sana va vaqtni ifodalashda ishlatiladi.\n\nMisol:\n今天9月1号。— Bugun 1-sentabr. (9月1号 — ot kesim)\n明天星期三。— Ertaga chorshanba.\n我的汉语老师33岁。— Mening xitoy tili o'qituvchim 33 yoshda.",
+        "ru": "Существительное или числительное может выступать сказуемым (是 не требуется).\nЧасто используется для выражения возраста, дат и времени.\n\nПример:\n今天9月1号。— Сегодня 1 сентября. (9月1号 — именное сказуемое)\n明天星期三。— Завтра среда.\n我的汉语老师33岁。— Моему учителю китайского 33 года.",
+        "tj": "Исм ё рақам метавонад хабар бошад (是 лозим нест).\nАксар вақт барои ифодаи синну сол, сана ва вақт истифода мешавад.\n\nМисол:\n今天9月1号。— Имрӯз 1-уми сентябр аст. (9月1号 — хабари исмӣ)\n明天星期三。— Фардо чоршанбе аст.\n我的汉语老师33岁。— Устоди забони чинии ман 33 сола аст."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "今天9月1号。",
+          "pinyin": "Jīntiān jiǔ yuè yī hào.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Bugun 1-sentabr.",
+            "ru": "Сегодня 1 сентября.",
+            "tj": "Имрӯз 1-уми сентябр аст."
           }
         },
         {
-          "zh": "现在。",
-          "pinyin": "xiànzài.",
+          "zh": "明天星期三。",
+          "pinyin": "Míngtiān xīngqī sān.",
           "translation": {
-            "uz": "现在 — xiànzài deb o'qiladi.",
-            "ru": "现在 читается как xiànzài.",
-            "tj": "现在 ҳамчун xiànzài хонда мешавад."
+            "uz": "Ertaga chorshanba.",
+            "ru": "Завтра среда.",
+            "tj": "Фардо чоршанбе аст."
+          }
+        },
+        {
+          "zh": "她今年二十岁。",
+          "pinyin": "Tā jīnnián èrshí suì.",
+          "translation": {
+            "uz": "U bu yil yigirma yoshda.",
+            "ru": "Ей в этом году двадцать лет.",
+            "tj": "Вай имсол бист сола аст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Ketma-ket fe'l gapi: 去+joy+harakat",
+        "ru": "Последовательный глагольный оборот: 去+место+действие",
+        "tj": "Ҷумлаи пайдарпайи феълӣ: 去+ҷой+амал"
+      },
+      "title_zh": "连动句 — 去+joy+nima qilish",
+      "rule": {
+        "uz": "Ketma-ket fe'l gap: birinchi harakat ikkinchisining maqsadini bildiradi.\nTuzilishi: Ega + 去 + Joy + Fe'l + To'ldiruvchi\n\nMisol:\n我去学校看书。— Men maktabga kitob o'qigani boraman.\n我去中国学习汉语。— Men Xitoyga xitoy tili o'rganishga boraman.\n\nSavol: 你去哪儿做什么？— Qayerga va nima qilgani borasan?",
+        "ru": "Последовательный глагольный оборот: первое действие выражает цель второго.\nСтруктура: Подлежащее + 去 + Место + Глагол + Дополнение\n\nПример:\n我去学校看书。— Я иду в школу читать.\n我去中国学习汉语。— Я еду в Китай учить китайский.\n\nВопрос: 你去哪儿做什么？— Куда ты идёшь и что будешь делать?",
+        "tj": "Ҷумлаи пайдарпайи феълӣ: амали аввал мақсади дуввумро ифода мекунад.\nСохтор: Мубтадо + 去 + Ҷой + Феъл + Пуркунанда\n\nМисол:\n我去学校看书。— Ман ба мактаб рафта китоб мехонам.\n我去中国学习汉语。— Ман ба Чин рафта забони чинӣ меомӯзам.\n\nСавол: 你去哪儿做什么？— Ту ба куҷо рафта чӣ мекунӣ?"
+      },
+      "examples": [
+        {
+          "zh": "我去学校看书。",
+          "pinyin": "Wǒ qù xuéxiào kàn shū.",
+          "translation": {
+            "uz": "Men maktabga kitob o'qigani boraman.",
+            "ru": "Я иду в школу читать.",
+            "tj": "Ман ба мактаб рафта китоб мехонам."
+          }
+        },
+        {
+          "zh": "她去学校学汉语。",
+          "pinyin": "Tā qù xuéxiào xué Hànyǔ.",
+          "translation": {
+            "uz": "U maktabga xitoy tili o'rganishga boradi.",
+            "ru": "Она идёт в школу учить китайский.",
+            "tj": "Вай ба мактаб рафта забони чинӣ меомӯзад."
+          }
+        },
+        {
+          "zh": "你去哪儿做什么？",
+          "pinyin": "Nǐ qù nǎr zuò shénme?",
+          "translation": {
+            "uz": "Qayerga va nima qilgani borasan?",
+            "ru": "Куда ты идёшь и что будешь делать?",
+            "tj": "Ту ба куҷо рафта чӣ мекунӣ?"
           }
         }
       ]
@@ -160,49 +276,147 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Vaqt va soat",
-        "ru": "Время и часы",
-        "tj": "Вақт ва соат"
+        "uz": "Bankda — bugungi sana",
+        "ru": "В банке — сегодняшняя дата",
+        "tj": "Дар бонк — санаи имрӯз"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“现在几点”。",
-          "pinyin": "Jīntiān wǒmen xuéxí xiànzài jǐ diǎn.",
+          "zh": "请问，今天几号？",
+          "pinyin": "Qǐngwèn, jīntiān jǐ hào?",
           "text": {
-            "uz": "Bugun Vaqt va soat mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Время и часы.",
-            "tj": "Имрӯз мавзӯи Вақт ва соат-ро меомӯзем."
+            "uz": "Kechirasiz, bugun nechanchi sana?",
+            "ru": "Извините, какое сегодня число?",
+            "tj": "Бубахшед, имрӯз чанди сана аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "今天9月1号。",
+          "pinyin": "Jīntiān jiǔ yuè yī hào.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Bugun 1-sentabr.",
+            "ru": "Сегодня 1 сентября.",
+            "tj": "Имрӯз 1-уми сентябр аст."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "今天星期几？",
+          "pinyin": "Jīntiān xīngqī jǐ?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Bugun haftaning nechanchi kuni?",
+            "ru": "Какой сегодня день недели?",
+            "tj": "Имрӯз кадом рӯзи ҳафта аст?"
           }
         },
         {
           "speaker": "B",
-          "zh": "现在。",
-          "pinyin": "xiànzài.",
+          "zh": "星期三。",
+          "pinyin": "Xīngqī sān.",
           "text": {
-            "uz": "现在 — xiànzài deb o'qiladi.",
-            "ru": "现在 читается как xiànzài.",
-            "tj": "现在 ҳамчун xiànzài хонда мешавад."
+            "uz": "Chorshanba.",
+            "ru": "Среда.",
+            "tj": "Чоршанбе."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Taqvimga qarab — kecha va ertaga",
+        "ru": "По календарю — вчера и завтра",
+        "tj": "Тибқи тақвим — дирӯз ва фардо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "昨天是几月几号？",
+          "pinyin": "Zuótiān shì jǐ yuè jǐ hào?",
+          "text": {
+            "uz": "Kecha nechanchi oy, nechanchi sana edi?",
+            "ru": "Какое число какого месяца было вчера?",
+            "tj": "Дирӯз чанди моҳ ва чанди сана буд?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "昨天是8月31号，星期二。",
+          "pinyin": "Zuótiān shì bā yuè sānshíyī hào, xīngqī èr.",
+          "text": {
+            "uz": "Kecha 31-avgust, seshanba edi.",
+            "ru": "Вчера было 31 августа, вторник.",
+            "tj": "Дирӯз 31-уми август, сешанбе буд."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "明天呢？",
+          "pinyin": "Míngtiān ne?",
+          "text": {
+            "uz": "Ertaga-chi?",
+            "ru": "А завтра?",
+            "tj": "Фардо чӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "明天是9月2号，星期四。",
+          "pinyin": "Míngtiān shì jiǔ yuè èr hào, xīngqī sì.",
+          "text": {
+            "uz": "Ertaga 2-sentabr, payshanba.",
+            "ru": "Завтра 2 сентября, четверг.",
+            "tj": "Фардо 2-юми сентябр, панҷшанбе аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Qahvaxonada — ertangi reja",
+        "ru": "В кафе — планы на завтра",
+        "tj": "Дар қаҳвахона — нақшаи фардо"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "明天星期六，你去学校吗？",
+          "pinyin": "Míngtiān xīngqī liù, nǐ qù xuéxiào ma?",
+          "text": {
+            "uz": "Ertaga shanba — maktabga borасанmi?",
+            "ru": "Завтра суббота — ты идёшь в школу?",
+            "tj": "Фардо шанбе — ту ба мактаб меравӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我去学校。",
+          "pinyin": "Wǒ qù xuéxiào.",
+          "text": {
+            "uz": "Men maktabga boraman.",
+            "ru": "Я иду в школу.",
+            "tj": "Ман ба мактаб мераваm."
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "你去学校做什么？",
+          "pinyin": "Nǐ qù xuéxiào zuò shénme?",
+          "text": {
+            "uz": "Maktabga nima qilgani borasan?",
+            "ru": "Зачем ты идёшь в школу?",
+            "tj": "Ту ба мактаб барои чӣ меравӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "我去学校看书。",
+          "pinyin": "Wǒ qù xuéxiào kàn shū.",
+          "text": {
+            "uz": "Men maktabga kitob o'qigani boraman.",
+            "ru": "Я иду в школу читать книги.",
+            "tj": "Ман ба мактаб рафта китоб мехонам."
           }
         }
       ]
@@ -221,91 +435,168 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "现在",
-            "pinyin": "xiànzài",
+            "no": 1,
+            "zh": "请",
+            "pinyin": "qǐng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "iltimos, marhamat",
+              "ru": "пожалуйста, разрешите спросить",
+              "tj": "лутфан, иҷозат диҳед"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 2,
+            "zh": "问",
+            "pinyin": "wèn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "今天",
+            "pinyin": "jīntiān",
             "pos": "n.",
             "meaning": {
-              "uz": "hozir",
-              "ru": "сейчас",
-              "tj": "ҳозир"
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "几",
-            "pinyin": "jǐ",
-            "pos": "pron.",
-            "meaning": {
-              "uz": "necha",
-              "ru": "сколько",
-              "tj": "чанд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "点",
-            "pinyin": "diǎn",
-            "pos": "mw.",
-            "meaning": {
-              "uz": "soat",
-              "ru": "час (время)",
-              "tj": "соат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "分",
-            "pinyin": "fēn",
-            "pos": "mw.",
-            "meaning": {
-              "uz": "daqiqa",
-              "ru": "минута",
-              "tj": "дақиқа"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "上午",
-            "pinyin": "shàngwǔ",
+            "no": 4,
+            "zh": "号",
+            "pinyin": "hào",
             "pos": "n.",
             "meaning": {
-              "uz": "ertalab, tushgacha",
-              "ru": "утро, до полудня",
-              "tj": "субҳ, пеш аз нисфирӯзӣ"
+              "uz": "oy kuni (sana)",
+              "ru": "число (день месяца)",
+              "tj": "рӯзи моҳ (сана)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "下午",
-            "pinyin": "xiàwǔ",
+            "no": 5,
+            "zh": "月",
+            "pinyin": "yuè",
             "pos": "n.",
             "meaning": {
-              "uz": "tushdan keyin",
-              "ru": "после полудня",
-              "tj": "баъд аз нисфирӯзӣ"
+              "uz": "oy (yanvar, fevral va h.k.)",
+              "ru": "месяц (январь, февраль и т.д.)",
+              "tj": "моҳ (январ, феврал ва ғ.)"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "半",
-            "pinyin": "bàn",
-            "pos": "num.",
+            "no": 6,
+            "zh": "星期",
+            "pinyin": "xīngqī",
+            "pos": "n.",
             "meaning": {
-              "uz": "yarim",
-              "ru": "половина",
-              "tj": "ним"
+              "uz": "hafta, haftaning kuni",
+              "ru": "неделя, день недели",
+              "tj": "ҳафта, рӯзи ҳафта"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "昨天",
+            "pinyin": "zuótiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kecha",
+              "ru": "вчера",
+              "tj": "дирӯз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "明天",
+            "pinyin": "míngtiān",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ertaga",
+              "ru": "завтра",
+              "tj": "фардо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "去",
+            "pinyin": "qù",
+            "pos": "v.",
+            "meaning": {
+              "uz": "bormoq",
+              "ru": "идти, ехать",
+              "tj": "рафтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "学校",
+            "pinyin": "xuéxiào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "maktab",
+              "ru": "школа",
+              "tj": "мактаб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "看",
+            "pinyin": "kàn",
+            "pos": "v.",
+            "meaning": {
+              "uz": "qaramoq, ko'rmoq, o'qimoq",
+              "ru": "смотреть, читать",
+              "tj": "нигоҳ кардан, хондан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "书",
+            "pinyin": "shū",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kitob",
+              "ru": "книга",
+              "tj": "китоб"
             }
           }
         }
@@ -323,9 +614,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "现在 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 现在:",
-            "tj": "Маънои калимаи 现在-ро интихоб кунед:"
+            "uz": "请 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 请:",
+            "tj": "Маънои калимаи 请-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +625,39 @@
           },
           "options": [
             {
-              "uz": "hozir",
-              "ru": "сейчас",
-              "tj": "ҳозир"
+              "uz": "so'ramoq",
+              "ru": "спрашивать",
+              "tj": "пурсидан"
             },
             {
-              "uz": "necha",
-              "ru": "сколько",
-              "tj": "чанд"
+              "uz": "iltimos, marhamat",
+              "ru": "пожалуйста, разрешите спросить",
+              "tj": "лутфан, иҷозат диҳед"
             },
             {
-              "uz": "soat",
-              "ru": "час (время)",
-              "tj": "соат"
+              "uz": "bugun",
+              "ru": "сегодня",
+              "tj": "имрӯз"
             },
             {
-              "uz": "daqiqa",
-              "ru": "минута",
-              "tj": "дақиқа"
+              "uz": "oy kuni (sana)",
+              "ru": "число (день месяца)",
+              "tj": "рӯзи моҳ (сана)"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "现在 = hozir (xiànzài)",
-            "ru": "现在 = сейчас (xiànzài)",
-            "tj": "现在 = ҳозир (xiànzài)"
+            "uz": "请 = iltimos, marhamat (qǐng)",
+            "ru": "请 = пожалуйста, разрешите спросить (qǐng)",
+            "tj": "请 = лутфан, иҷозат диҳед (qǐng)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "现在 talaffuzini tanlang:",
-            "ru": "Выберите произношение 现在:",
-            "tj": "Талаффузи 现在-ро интихоб кунед:"
+            "uz": "问 talaffuzini tanlang:",
+            "ru": "Выберите произношение 问:",
+            "tj": "Талаффузи 问-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +665,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "xiànzài",
-            "jǐ",
-            "diǎn",
-            "fēn"
+            "hào",
+            "wèn",
+            "qǐng",
+            "jīntiān"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "现在 — xiànzài",
-            "ru": "现在 — xiànzài",
-            "tj": "现在 — xiànzài"
+            "uz": "问 — wèn",
+            "ru": "问 — wèn",
+            "tj": "问 — wèn"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'hozir' xitoycha nima?",
-            "ru": "'сейчас' по-китайски?",
-            "tj": "'ҳозир' ба чинӣ чист?"
+            "uz": "'bugun' xitoycha qaysi?",
+            "ru": "'сегодня' по-китайски?",
+            "tj": "'имрӯз' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "现在",
-            "几",
-            "点",
-            "分"
+            "请",
+            "号",
+            "问",
+            "今天"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "现在 = hozir (xiànzài)",
-            "ru": "现在 = сейчас (xiànzài)",
-            "tj": "现在 = ҳозир (xiànzài)"
+            "uz": "bugun = 今天 (jīntiān)",
+            "ru": "сегодня = 今天 (jīntiān)",
+            "tj": "имрӯз = 今天 (jīntiān)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "jǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jǐ?",
-            "tj": "jǐ кадом иероглиф аст?"
+            "uz": "hào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hào?",
+            "tj": "hào кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,93 +715,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "几",
-            "现在",
-            "点",
-            "分"
+            "请",
+            "问",
+            "号",
+            "今天"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "几 = necha (jǐ)",
-            "ru": "几 = сколько (jǐ)",
-            "tj": "几 = чанд (jǐ)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'现在几点' iborasini tuzing",
-            "ru": "Соберите фразу '现在几点'",
-            "tj": "Ибораи '现在几点'-ро созед"
-          },
-          "tokens": [
-            "现在",
-            "几",
-            "点",
-            "分",
-            "上午"
-          ],
-          "answer_tokens": [
-            "现在",
-            "几",
-            "点"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 现在 几 点",
-            "ru": "Правильный порядок: 现在 几 点",
-            "tj": "Тартиби дуруст: 现在 几 点"
+            "uz": "号 = oy kuni (sana) (hào)",
+            "ru": "号 = число (день месяца) (hào)",
+            "tj": "号 = рӯзи моҳ (сана) (hào)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "现在",
+              "请",
               {
-                "uz": "hozir",
-                "ru": "сейчас",
-                "tj": "ҳозир"
+                "uz": "iltimos, marhamat",
+                "ru": "пожалуйста, разрешите спросить",
+                "tj": "лутфан, иҷозат диҳед"
               }
             ],
             [
-              "几",
+              "问",
               {
-                "uz": "necha",
-                "ru": "сколько",
-                "tj": "чанд"
+                "uz": "so'ramoq",
+                "ru": "спрашивать",
+                "tj": "пурсидан"
               }
             ],
             [
-              "点",
+              "今天",
               {
-                "uz": "soat",
-                "ru": "час (время)",
-                "tj": "соат"
+                "uz": "bugun",
+                "ru": "сегодня",
+                "tj": "имрӯз"
               }
             ],
             [
-              "分",
+              "号",
               {
-                "uz": "daqiqa",
-                "ru": "минута",
-                "tj": "дақиқа"
+                "uz": "oy kuni (sana)",
+                "ru": "число (день месяца)",
+                "tj": "рӯзи моҳ (сана)"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____9月1号，星期三。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "请",
+            "号",
+            "今天",
+            "问"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 今天 (jīntiān) — bugun",
+            "ru": "Верно: 今天 (jīntiān) — сегодня",
+            "tj": "Дуруст: 今天 (jīntiān) — имрӯз"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "现在几点",
-          "pinyin": "xiànzài jǐ diǎn",
+          "phrase": "请",
+          "pinyin": "qǐng",
           "translation": {
-            "uz": "Vaqt va soat",
-            "ru": "Время и часы",
-            "tj": "Вақт ва соат"
+            "uz": "iltimos, marhamat",
+            "ru": "пожалуйста, разрешите спросить",
+            "tj": "лутфан, иҷозат диҳед"
           }
         }
       ]
@@ -527,9 +814,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -537,41 +824,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "请问，今天几号？",
+            "今天星期几？",
+            "今天9月1号。",
+            "星期三。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 请问，今天几号？",
+            "ru": "Правильный ответ: 请问，今天几号？",
+            "tj": "Ҷавоби дуруст: 请问，今天几号？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "现在。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "请问，今天几号？",
+            "今天星期几？",
+            "星期三。",
+            "今天9月1号。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "B javobi: 现在。",
-            "ru": "Ответ B: 现在。",
-            "tj": "Ҷавоби B: 现在。"
+            "uz": "To'g'ri javob: 星期三。",
+            "ru": "Правильный ответ: 星期三。",
+            "tj": "Ҷавоби дуруст: 星期三。"
           }
         }
       ]

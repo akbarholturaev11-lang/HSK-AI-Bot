@@ -71,6 +71,22 @@ def course_study_miniapp_button(
     )
 
 
+_MAIN_MINIAPP_LABELS = {
+    "uz": "📚 Mini Appda ochish",
+    "ru": "📚 Открыть в Mini App",
+    "tj": "📚 Дар Mini App кушодан",
+}
+
+
+def _main_miniapp_row(lang: str) -> list[InlineKeyboardButton]:
+    return [
+        course_study_miniapp_button(
+            lang,
+            text=_MAIN_MINIAPP_LABELS.get(lang, _MAIN_MINIAPP_LABELS["ru"]),
+        )
+    ]
+
+
 def course_quiz_miniapp_keyboard(lang: str, lesson, block_no: int | None = None) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
@@ -129,6 +145,7 @@ def course_vocab_stroke_order_keyboard(
                     callback_data=next_callback,
                 )
             ],
+            _main_miniapp_row(lang),
         ]
     )
 
@@ -162,6 +179,7 @@ def course_miniapp_understood_keyboard(
             ),
         ]
     )
+    rows.append(_main_miniapp_row(lang))
     return InlineKeyboardMarkup(
         inline_keyboard=rows
     )
@@ -183,6 +201,7 @@ def course_miniapp_continue_keyboard(
             )
         ]
     )
+    rows.append(_main_miniapp_row(lang))
     return InlineKeyboardMarkup(
         inline_keyboard=rows
     )
@@ -227,6 +246,7 @@ def course_miniapp_quiz_result_keyboard(
                 ),
             ]
         )
+    rows.append(_main_miniapp_row(lang))
 
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -246,5 +266,6 @@ def course_homework_done_keyboard(lang: str) -> InlineKeyboardMarkup:
                     callback_data="course:homework_reread",
                 )
             ],
+            _main_miniapp_row(lang),
         ]
     )

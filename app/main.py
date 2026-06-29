@@ -725,13 +725,8 @@ async def hsk_data_script():
     return static_asset_response("app/static/hsk-data.js", "application/javascript")
 
 
-@app.get("/admin-control.html")
-async def admin_control_miniapp():
-    return miniapp_file_response("app/static/admin-control.html")
-
-
 @app.get("/admin.html")
-async def admin_miniapp_v2():
+async def admin_control_miniapp():
     return miniapp_file_response("app/static/admin.html")
 
 

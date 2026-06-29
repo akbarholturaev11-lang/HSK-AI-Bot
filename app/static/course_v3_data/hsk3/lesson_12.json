@@ -2,122 +2,199 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 12,
-  "title": "环境保护",
+  "title": "把重要的东西放在我这儿吧",
   "subtitle": {
-    "uz": "Mavzu: Ekologiya va tabiat. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Экология и природа. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Экология ва табиат. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "'才' va '就' farqi, '把'-konstruktsiyasi 2-qism va '让+odam+F' iborasi",
+    "ru": "Разница '才' и '就', конструкция '把' часть 2, выражение '让+человек+Гл'",
+    "tj": "Фарқи '才' ва '就', сохтори '把' қисми 2, ибораи '让+одам+Ф'"
   },
   "active_words": [
     {
-      "zh": "环境",
-      "pinyin": "huánjìng",
+      "no": 1,
+      "zh": "太阳",
+      "pinyin": "tàiyáng",
       "pos": "n.",
       "meaning": {
-        "uz": "atrof-muhit",
-        "ru": "окружающая среда",
-        "tj": "муҳити зист"
-      },
-      "no": 1
+        "uz": "quyosh",
+        "ru": "солнце",
+        "tj": "офтоб"
+      }
     },
     {
-      "zh": "保护",
-      "pinyin": "bǎohù",
+      "no": 2,
+      "zh": "西",
+      "pinyin": "xī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "g'arb",
+        "ru": "запад",
+        "tj": "ғарб"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "生气",
+      "pinyin": "shēng qì",
       "pos": "v.",
       "meaning": {
-        "uz": "himoya qilmoq",
-        "ru": "защищать",
-        "tj": "ҳифз кардан"
-      },
-      "no": 2
+        "uz": "jahli chiqmoq",
+        "ru": "сердиться",
+        "tj": "хашмгин шудан"
+      }
     },
     {
-      "zh": "垃圾",
-      "pinyin": "lājī",
+      "no": 4,
+      "zh": "行李箱",
+      "pinyin": "xínglixiāng",
       "pos": "n.",
       "meaning": {
-        "uz": "chiqindi",
-        "ru": "мусор",
-        "tj": "партов"
-      },
-      "no": 3
+        "uz": "jomadon, chamadon",
+        "ru": "чемодан",
+        "tj": "ҷомадон"
+      }
     },
     {
-      "zh": "分类",
-      "pinyin": "fēnlèi",
+      "no": 5,
+      "zh": "自己",
+      "pinyin": "zìjǐ",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "o'zi",
+        "ru": "сам",
+        "tj": "худ"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "包",
+      "pinyin": "bāo",
+      "pos": "n.",
+      "meaning": {
+        "uz": "sumka, xalta",
+        "ru": "сумка, пакет",
+        "tj": "халта, сумка"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "发现",
+      "pinyin": "fāxiàn",
       "pos": "v.",
       "meaning": {
-        "uz": "saralamoq",
-        "ru": "сортировать",
-        "tj": "ҷудо кардан"
-      },
-      "no": 4
+        "uz": "payqamoq, aniqlamoq",
+        "ru": "обнаружить",
+        "tj": "пай бурдан"
+      }
     },
     {
-      "zh": "节约",
-      "pinyin": "jiéyuē",
+      "no": 8,
+      "zh": "护照",
+      "pinyin": "hùzhào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "pasport",
+        "ru": "паспорт",
+        "tj": "шиноснома"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "起飞",
+      "pinyin": "qǐfēi",
       "pos": "v.",
       "meaning": {
-        "uz": "tejamoq",
-        "ru": "экономить",
-        "tj": "сарфа кардан"
-      },
-      "no": 5
+        "uz": "uchib ketmoq",
+        "ru": "взлетать",
+        "tj": "парвоз кардан"
+      }
     },
     {
-      "zh": "污染",
-      "pinyin": "wūrǎn",
+      "no": 10,
+      "zh": "司机",
+      "pinyin": "sījī",
       "pos": "n.",
       "meaning": {
-        "uz": "ifloslanish",
-        "ru": "загрязнение",
-        "tj": "ифлосшавӣ"
-      },
-      "no": 6
+        "uz": "haydovchi",
+        "ru": "водитель",
+        "tj": "ронанда"
+      }
     },
     {
-      "zh": "自然",
-      "pinyin": "zìrán",
+      "no": 11,
+      "zh": "教",
+      "pinyin": "jiāo",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o'qitmoq, o'rgatmoq",
+        "ru": "учить, преподавать",
+        "tj": "омӯзондан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "画",
+      "pinyin": "huà",
+      "pos": "v./n.",
+      "meaning": {
+        "uz": "chizmoq; rasm",
+        "ru": "рисовать; рисунок",
+        "tj": "расм кашидан; расм"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "需要",
+      "pinyin": "xūyào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "kerak bo'lmoq, ehtiyoj sezmoq",
+        "ru": "нуждаться, требоваться",
+        "tj": "лозим шудан"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "黑板",
+      "pinyin": "hēibǎn",
       "pos": "n.",
       "meaning": {
-        "uz": "tabiat",
-        "ru": "природа",
-        "tj": "табиат"
-      },
-      "no": 7
+        "uz": "doska",
+        "ru": "классная доска",
+        "tj": "тахтаи синф"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "\"才\" va \"就\" farqi",
+        "ru": "Разница между \"才\" и \"就\"",
+        "tj": "Фарқи \"才\" ва \"就\""
       },
-      "title_zh": "主题词语",
+      "title_zh": "\"才\"和\"就\"的区别",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 环境保护. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“环境保护”。",
-        "ru": "Ключевая фраза урока: 环境保护. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“环境保护”。",
-        "tj": "Ибораи асосии дарс: 环境保护. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“环境保护”。"
+        "uz": "'就' kutilganidan erta yoki tez bo'lganini bildiradi (erta keldi = soat to'qqizda keldi). '才' kutilganidan kech yoki qiyin bo'lganini bildiradi (soat o'n birda keldi). Ikkalasi ham taqqoslash asosida baholanadi.",
+        "ru": "'就' выражает, что что-то произошло раньше или быстрее ожидаемого (рано пришёл = в девять). '才' выражает, что что-то произошло позже или сложнее ожидаемого (пришёл только в одиннадцать). Оба оцениваются на основе сравнения.",
+        "tj": "'就' ифода мекунад, ки чизе зудтар ё барвақттар аз интизорӣ рух дод (барвақт омад = соати нӯҳ). '才' ифода мекунад, ки чизе дертар ё мушкилтар аз интизорӣ рух дод (фақат соати ёздаҳ омад). Ҳарду дар асоси муқоиса арзёбӣ мешаванд."
       },
       "examples": [
         {
-          "zh": "今天我们学习“环境保护”。",
-          "pinyin": "Jīntiān wǒmen xuéxí huánjìng bǎohù.",
+          "zh": "他八点就来了，真早！",
+          "pinyin": "Tā bā diǎn jiù lái le, zhēn zǎo!",
           "translation": {
-            "uz": "Biz Ekologiya va tabiat mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Экология и природа.",
-            "tj": "Мо мавзӯи Экология ва табиат-ро меомӯзем."
+            "uz": "U soat sakkizda keldi, juda erta!",
+            "ru": "Он пришёл уже в восемь, так рано!",
+            "tj": "Вай соати ҳашт омад, хеле барвақт!"
           }
         },
         {
-          "zh": "这个词是环境。",
-          "pinyin": "Zhège cí shì huánjìng.",
+          "zh": "他十一点才来，太晚了！",
+          "pinyin": "Tā shíyī diǎn cái lái, tài wǎn le!",
           "translation": {
-            "uz": "Bu so'z: atrof-muhit.",
-            "ru": "Это слово: окружающая среда.",
-            "tj": "Ин калима: муҳити зист."
+            "uz": "U soat o'n birda keldi, juda kech!",
+            "ru": "Он пришёл только в одиннадцать, так поздно!",
+            "tj": "Вай соати ёздаҳ омад, хеле дер!"
           }
         }
       ]
@@ -125,33 +202,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "把-konstruktsiyasi②: 把 + OB + F + 在/到/给",
+        "ru": "Конструкция 把②: 把 + объект + Гл + 在/到/给",
+        "tj": "Сохтори 把②: 把 + объект + Ф + 在/到/给"
       },
-      "title_zh": "问答结构",
+      "title_zh": "把字句②：把 + O + V + 在/到/给",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'把'-konstruktsiyasida fe'ldan keyin '在' (joyda), '到' (joyga) yoki '给' (kimgadir) qo'shilishi mumkin. Bu ob'ektning qayerda, qayerga yoki kimga taalluqli ekanini bildiradi.",
+        "ru": "В конструкции '把' после глагола может следовать '在' (на/в месте), '到' (к месту) или '给' (кому-то). Это указывает на место, пункт назначения или получателя объекта.",
+        "tj": "Дар сохтори '把' баъди феъл '在' (дар ҷое), '到' (ба ҷое) ё '给' (ба касе) омада метавонад. Ин ҷойгоҳ, мақсади ҳаракат ё гирандаи объектро нишон медиҳад."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "把钥匙交给你。",
+          "pinyin": "Bǎ yàoshi jiāo gěi nǐ.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Kalitni sizga topshiraman.",
+            "ru": "Отдаю ключ тебе.",
+            "tj": "Калидро ба шумо медиҳам."
           }
         },
         {
-          "zh": "环境。",
-          "pinyin": "huánjìng.",
+          "zh": "把书放在桌子上。",
+          "pinyin": "Bǎ shū fàng zài zhuōzi shàng.",
           "translation": {
-            "uz": "环境 — huánjìng deb o'qiladi.",
-            "ru": "环境 читается как huánjìng.",
-            "tj": "环境 ҳамчун huánjìng хонда мешавад."
+            "uz": "Kitobni stolda qoldiring.",
+            "ru": "Положи книгу на стол.",
+            "tj": "Китобро ба болои миз монд."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "让 + odam + fe'l (majbur qilmoq)",
+        "ru": "让 + человек + глагол (каузатив)",
+        "tj": "让 + одам + феъл (маҷбур кардан)"
+      },
+      "title_zh": "让 + 人 + 动词（使役句）",
+      "rule": {
+        "uz": "'让' = biror kishini biror narsa qilishiga ruxsat bermoq yoki uni shunday qilishga majbur qilmoq. Tuzilma: subekt + 让 + odam + fe'l. Salbiy: 让……别……",
+        "ru": "'让' = позволять кому-то сделать что-то или заставлять кого-то это делать. Структура: подлежащее + 让 + человек + глагол. Отрицание: 让……别……",
+        "tj": "'让' = иҷозат додан ба касе барои кардани чизе ё маҷбур кардани вай ба ин амал. Сохтор: мубтадо + 让 + одам + феъл. Манфӣ: 让……别……"
+      },
+      "examples": [
+        {
+          "zh": "你让我放心多了。",
+          "pinyin": "Nǐ ràng wǒ fàngxīn duō le.",
+          "translation": {
+            "uz": "Siz meni ancha xotirjam qildingiz.",
+            "ru": "Ты меня очень успокоил.",
+            "tj": "Шумо маро хеле хотирҷамъ кардед."
+          }
+        },
+        {
+          "zh": "别让我等太久！",
+          "pinyin": "Bié ràng wǒ děng tài jiǔ!",
+          "translation": {
+            "uz": "Meni uzoq kutdirmang!",
+            "ru": "Не заставляй меня долго ждать!",
+            "tj": "Маро дер интизор нагузор!"
           }
         }
       ]
@@ -160,49 +271,226 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Ekologiya va tabiat",
-        "ru": "Экология и природа",
-        "tj": "Экология ва табиат"
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
       },
       "dialogue": [
         {
-          "speaker": "A",
-          "zh": "今天我们学习“环境保护”。",
-          "pinyin": "Jīntiān wǒmen xuéxí huánjìng bǎohù.",
+          "speaker": "小丽",
+          "zh": "今天太阳从西边出来了吗？",
+          "pinyin": "Jīntiān tàiyáng cóng xībian chūlai le ma?",
           "text": {
-            "uz": "Bugun Ekologiya va tabiat mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Экология и природа.",
-            "tj": "Имрӯз мавзӯи Экология ва табиат-ро меомӯзем."
+            "uz": "Bugun quyosh g'arbdan chiqdimi?",
+            "ru": "Сегодня солнце взошло на западе?",
+            "tj": "Имрӯз офтоб аз ғарб баромад?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "speaker": "小刚",
+          "zh": "怎么了？",
+          "pinyin": "Zěnme le?",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Nima bo'ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ шуд?"
           }
         },
         {
-          "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "speaker": "小丽",
+          "zh": "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。",
+          "pinyin": "Nǐ zěnme zhème zǎo jiù yào shuìjiào le? Yǐqián dōu yào shí'èr diǎn yǐhòu cái shuìjiào.",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Nega bunchalik erta uxlashga yotyapsan? Oldin doim soat 12 dan keyin uxlar eding.",
+            "ru": "Почему ты так рано собираешься спать? Раньше ты всегда ложился после 12.",
+            "tj": "Чаро ин қадар барвақт хоб карданӣ ҳастӣ? Пештар ҳамеша баъд аз соати 12 мехобидӣ."
           }
         },
         {
-          "speaker": "B",
-          "zh": "环境。",
-          "pinyin": "huánjìng.",
+          "speaker": "小刚",
+          "zh": "我明天8点就要到公司。",
+          "pinyin": "Wǒ míngtiān bā diǎn jiù yào dào gōngsī.",
           "text": {
-            "uz": "环境 — huánjìng deb o'qiladi.",
-            "ru": "环境 читается как huánjìng.",
-            "tj": "环境 ҳамчун huánjìng хонда мешавад."
+            "uz": "Men ertaga soat 8 dayoq kompaniyaga yetib borishim kerak.",
+            "ru": "Завтра мне уже в 8 нужно быть в компании.",
+            "tj": "Ман пагоҳ соати 8 бояд ба ширкат расам."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "有事吗？",
+          "pinyin": "Yǒu shì ma?",
+          "text": {
+            "uz": "Biror ish bormi?",
+            "ru": "Есть дела?",
+            "tj": "Коре ҳаст?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "经理生气了，他告诉我，明天8点不到，以后就别来了。",
+          "pinyin": "Jīnglǐ shēng qì le, tā gàosu wǒ, míngtiān bā diǎn bú dào, yǐhòu jiù bié lái le.",
+          "text": {
+            "uz": "Menejer jahli chiqdi, u menga: ertaga soat 8 da kelmasang, keyin umuman kelma, dedi.",
+            "ru": "Менеджер рассердился и сказал мне: если завтра к 8 не придёшь, больше не приходи.",
+            "tj": "Мудир хашмгин шуд, гуфт: агар пагоҳ соати 8 нарасӣ, дигар наё."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
+      },
+      "dialogue": [
+        {
+          "speaker": "小刚",
+          "zh": "我要跟周经理去外地办事，明天的飞机。",
+          "pinyin": "Wǒ yào gēn Zhōu jīnglǐ qù wàidì bàn shì, míngtiān de fēijī.",
+          "text": {
+            "uz": "Men menejer Zhou bilan boshqa joyga ishga boraman, ertaga samolyot.",
+            "ru": "Я еду с менеджером Чжоу в другой город по делам, самолёт завтра.",
+            "tj": "Ман бо мудир Чжоу ба ҷои дигар барои кор меравам, ҳавопаймо пагоҳ аст."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "那我帮你把衣服放到行李箱里吧。什么时候回来？",
+          "pinyin": "Nà wǒ bāng nǐ bǎ yīfu fàng dào xínglixiāng lǐ ba. Shénme shíhou huílai?",
+          "text": {
+            "uz": "Unda kiyimlaringni jomadonga solishga yordam beraman. Qachon qaytasan?",
+            "ru": "Тогда я помогу положить одежду в чемодан. Когда вернёшься?",
+            "tj": "Пас ба ту ёрӣ медиҳам, либосҳоро ба ҷомадон гузорем. Кай бармегардӣ?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "一个星期就回来。",
+          "pinyin": "Yí ge xīngqī jiù huílai.",
+          "text": {
+            "uz": "Bir haftadayoq qaytaman.",
+            "ru": "Вернусь уже через неделю.",
+            "tj": "Як ҳафта пас бармегардам."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "啊？一个星期以后才回来？",
+          "pinyin": "A? Yí ge xīngqī yǐhòu cái huílai?",
+          "text": {
+            "uz": "A? Faqat bir haftadan keyin qaytasanmi?",
+            "ru": "А? Только через неделю вернёшься?",
+            "tj": "А? Танҳо баъд аз як ҳафта бармегардӣ?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "你要自己照顾好自己，我已经给你准备好吃的和喝的了。",
+          "pinyin": "Nǐ yào zìjǐ zhàogù hǎo zìjǐ, wǒ yǐjīng gěi nǐ zhǔnbèi hǎo chī de hé hē de le.",
+          "text": {
+            "uz": "O'zingga yaxshi qarashing kerak, men senga yegulik va ichimliklarni tayyorlab qo'ydim.",
+            "ru": "Ты должна сама хорошо о себе заботиться, я уже приготовил тебе еду и напитки.",
+            "tj": "Бояд худатро хуб нигоҳубин кунӣ, ман барои ту хӯроку нӯшокиро тайёр кардаам."
+          }
+        },
+        {
+          "speaker": "小丽",
+          "zh": "好吧。我已经把我的照片放在你的包里了。",
+          "pinyin": "Hǎo ba. Wǒ yǐjīng bǎ wǒ de zhàopiàn fàng zài nǐ de bāo lǐ le.",
+          "text": {
+            "uz": "Mayli. Men allaqachon rasmimni sumkangga solib qo'ydim.",
+            "ru": "Ладно. Я уже положила свою фотографию в твою сумку.",
+            "tj": "Хуб. Ман аллакай сурати худро ба сумкаат гузоштам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroportda",
+        "ru": "В аэропорту",
+        "tj": "Дар фурудгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "周明",
+          "zh": "你怎么才来？",
+          "pinyin": "Nǐ zěnme cái lái?",
+          "text": {
+            "uz": "Nega endi kelding?",
+            "ru": "Почему ты только сейчас пришёл?",
+            "tj": "Чаро танҳо ҳоло омадӣ?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "对不起，周经理，来机场的路上我才发现忘带护照了。",
+          "pinyin": "Duìbuqǐ, Zhōu jīnglǐ, lái jīchǎng de lùshang wǒ cái fāxiàn wàng dài hùzhào le.",
+          "text": {
+            "uz": "Kechirasiz, menejer Zhou, aeroportga kelayotgan yo'lda pasportimni unutganimni payqadim.",
+            "ru": "Извините, менеджер Чжоу, по дороге в аэропорт я только обнаружил, что забыл паспорт.",
+            "tj": "Бубахшед, мудир Чжоу, дар роҳи фурудгоҳ танҳо фаҳмидам, ки шиносномаро фаромӯш кардаам."
+          }
+        },
+        {
+          "speaker": "周明",
+          "zh": "快点儿吧，飞机就要起飞了。",
+          "pinyin": "Kuài diǎnr ba, fēijī jiù yào qǐfēi le.",
+          "text": {
+            "uz": "Tezroq bo'l, samolyot uchish arafasida.",
+            "ru": "Поторопись, самолёт вот-вот взлетит.",
+            "tj": "Зудтар, ҳавопаймо ҳозир парвоз мекунад."
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "您有钱吗？司机把我送到机场的时候，我才发现忘记带钱包了。",
+          "pinyin": "Nín yǒu qián ma? Sījī bǎ wǒ sòng dào jīchǎng de shíhou, wǒ cái fāxiàn wàngjì dài qiánbāo le.",
+          "text": {
+            "uz": "Sizda pul bormi? Haydovchi meni aeroportga olib kelganda, hamyonimni unutganimni payqadim.",
+            "ru": "У вас есть деньги? Когда водитель довёз меня до аэропорта, я только понял, что забыл кошелёк.",
+            "tj": "Шумо пул доред? Вақте ронанда маро ба фурудгоҳ овард, танҳо фаҳмидам, ки ҳамёнро фаромӯш кардаам."
+          }
+        },
+        {
+          "speaker": "周明",
+          "zh": "我看你还是把重要的东西放在我这儿吧。",
+          "pinyin": "Wǒ kàn nǐ háishi bǎ zhòngyào de dōngxi fàng zài wǒ zhèr ba.",
+          "text": {
+            "uz": "Menimcha, muhim narsalaringni baribir mening oldimga qo'yganing yaxshi.",
+            "ru": "Думаю, важные вещи тебе всё-таки лучше оставить у меня.",
+            "tj": "Ба фикрам, чизҳои муҳиматро беҳтараш назди ман гузор."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "O'qituvchi hikoyasi",
+        "ru": "Рассказ учителя",
+        "tj": "Ҳикояи омӯзгор"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "我是一个中学老师，教学生画画儿。",
+          "pinyin": "Wǒ shì yí ge zhōngxué lǎoshī, jiāo xuésheng huà huàr.",
+          "text": {
+            "uz": "Men o'rta maktab o'qituvchisiman, o'quvchilarga rasm chizishni o'rgataman.",
+            "ru": "Я учитель средней школы, учу учеников рисовать.",
+            "tj": "Ман омӯзгори мактаби миёна ҳастам, ба донишомӯзон расмкашӣ меомӯзонам."
+          }
+        },
+        {
+          "speaker": "旁白",
+          "zh": "每次下课前，我都会把下次学生需要带的东西写在黑板上，但是每次上课时，总会有学生忘了拿铅笔，所以我有点儿生气，不是因为他们没带铅笔，是因为他们没有好的学习习惯。",
+          "pinyin": "Měi cì xià kè qián, wǒ dōu huì bǎ xià cì xuésheng xūyào dài de dōngxi xiě zài hēibǎn shang, dànshì měi cì shàng kè shí, zǒng huì yǒu xuésheng wàng le ná qiānbǐ, suǒyǐ wǒ yǒudiǎnr shēng qì, bú shì yīnwèi tāmen méi dài qiānbǐ, shì yīnwèi tāmen méiyǒu hǎo de xuéxí xíguàn.",
+          "text": {
+            "uz": "Har safar dars tugashidan oldin keyingi safar o'quvchilar olib kelishi kerak bo'lgan narsalarni doskaga yozaman, lekin har safar darsda baribir kimdir qalam olib kelishni unutadi, shuning uchun biroz jahlim chiqadi. Bu ular qalam olib kelmagani uchun emas, yaxshi o'qish odati yo'qligi uchun.",
+            "ru": "Каждый раз перед окончанием урока я пишу на доске, что ученикам нужно принести в следующий раз, но каждый раз на уроке кто-то забывает взять карандаш, поэтому я немного сержусь. Не потому, что они не принесли карандаш, а потому, что у них нет хорошей учебной привычки.",
+            "tj": "Ҳар дафъа пеш аз анҷоми дарс чизҳоеро, ки дафъаи дигар донишомӯзон бояд биёранд, дар тахта менависам, аммо ҳар дафъа дар дарс донишомӯзе қалам оварданро фаромӯш мекунад, барои ҳамин каме хашмгин мешавам. На барои он ки қалам наоварданд, балки барои он ки одати хуби омӯзишӣ надоранд."
           }
         }
       ]
@@ -221,91 +509,196 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "环境",
-            "pinyin": "huánjìng",
+            "no": 1,
+            "zh": "太阳",
+            "pinyin": "tàiyáng",
             "pos": "n.",
             "meaning": {
-              "uz": "atrof-muhit",
-              "ru": "окружающая среда",
-              "tj": "муҳити зист"
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "保护",
-            "pinyin": "bǎohù",
+            "no": 2,
+            "zh": "西",
+            "pinyin": "xī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "生气",
+            "pinyin": "shēng qì",
             "pos": "v.",
             "meaning": {
-              "uz": "himoya qilmoq",
-              "ru": "защищать",
-              "tj": "ҳифз кардан"
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "хашмгин шудан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "垃圾",
-            "pinyin": "lājī",
+            "no": 4,
+            "zh": "行李箱",
+            "pinyin": "xínglixiāng",
             "pos": "n.",
             "meaning": {
-              "uz": "chiqindi",
-              "ru": "мусор",
-              "tj": "партов"
+              "uz": "jomadon, chamadon",
+              "ru": "чемодан",
+              "tj": "ҷомадон"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "分类",
-            "pinyin": "fēnlèi",
+            "no": 5,
+            "zh": "自己",
+            "pinyin": "zìjǐ",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "o'zi",
+              "ru": "сам",
+              "tj": "худ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "包",
+            "pinyin": "bāo",
+            "pos": "n.",
+            "meaning": {
+              "uz": "sumka, xalta",
+              "ru": "сумка, пакет",
+              "tj": "халта, сумка"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "发现",
+            "pinyin": "fāxiàn",
             "pos": "v.",
             "meaning": {
-              "uz": "saralamoq",
-              "ru": "сортировать",
-              "tj": "ҷудо кардан"
+              "uz": "payqamoq, aniqlamoq",
+              "ru": "обнаружить",
+              "tj": "пай бурдан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "节约",
-            "pinyin": "jiéyuē",
+            "no": 8,
+            "zh": "护照",
+            "pinyin": "hùzhào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "pasport",
+              "ru": "паспорт",
+              "tj": "шиноснома"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "起飞",
+            "pinyin": "qǐfēi",
             "pos": "v.",
             "meaning": {
-              "uz": "tejamoq",
-              "ru": "экономить",
-              "tj": "сарфа кардан"
+              "uz": "uchib ketmoq",
+              "ru": "взлетать",
+              "tj": "парвоз кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "污染",
-            "pinyin": "wūrǎn",
+            "no": 10,
+            "zh": "司机",
+            "pinyin": "sījī",
             "pos": "n.",
             "meaning": {
-              "uz": "ifloslanish",
-              "ru": "загрязнение",
-              "tj": "ифлосшавӣ"
+              "uz": "haydovchi",
+              "ru": "водитель",
+              "tj": "ронанда"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "自然",
-            "pinyin": "zìrán",
+            "no": 11,
+            "zh": "教",
+            "pinyin": "jiāo",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o'qitmoq, o'rgatmoq",
+              "ru": "учить, преподавать",
+              "tj": "омӯзондан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "画",
+            "pinyin": "huà",
+            "pos": "v./n.",
+            "meaning": {
+              "uz": "chizmoq; rasm",
+              "ru": "рисовать; рисунок",
+              "tj": "расм кашидан; расм"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "需要",
+            "pinyin": "xūyào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "kerak bo'lmoq, ehtiyoj sezmoq",
+              "ru": "нуждаться, требоваться",
+              "tj": "лозим шудан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "黑板",
+            "pinyin": "hēibǎn",
             "pos": "n.",
             "meaning": {
-              "uz": "tabiat",
-              "ru": "природа",
-              "tj": "табиат"
+              "uz": "doska",
+              "ru": "классная доска",
+              "tj": "тахтаи синф"
             }
           }
         }
@@ -323,9 +716,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "环境 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 环境:",
-            "tj": "Маънои калимаи 环境-ро интихоб кунед:"
+            "uz": "太阳 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 太阳:",
+            "tj": "Маънои калимаи 太阳-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +727,39 @@
           },
           "options": [
             {
-              "uz": "atrof-muhit",
-              "ru": "окружающая среда",
-              "tj": "муҳити зист"
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
             },
             {
-              "uz": "himoya qilmoq",
-              "ru": "защищать",
-              "tj": "ҳифз кардан"
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
             },
             {
-              "uz": "chiqindi",
-              "ru": "мусор",
-              "tj": "партов"
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "хашмгин шудан"
             },
             {
-              "uz": "saralamoq",
-              "ru": "сортировать",
-              "tj": "ҷудо кардан"
+              "uz": "jomadon, chamadon",
+              "ru": "чемодан",
+              "tj": "ҷомадон"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "环境 = atrof-muhit (huánjìng)",
-            "ru": "环境 = окружающая среда (huánjìng)",
-            "tj": "环境 = муҳити зист (huánjìng)"
+            "uz": "太阳 = quyosh (tàiyáng)",
+            "ru": "太阳 = солнце (tàiyáng)",
+            "tj": "太阳 = офтоб (tàiyáng)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "环境 talaffuzini tanlang:",
-            "ru": "Выберите произношение 环境:",
-            "tj": "Талаффузи 环境-ро интихоб кунед:"
+            "uz": "西 talaffuzini tanlang:",
+            "ru": "Выберите произношение 西:",
+            "tj": "Талаффузи 西-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +767,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "huánjìng",
-            "bǎohù",
-            "lājī",
-            "fēnlèi"
+            "xī",
+            "shēng qì",
+            "xínglixiāng",
+            "tàiyáng"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "环境 — huánjìng",
-            "ru": "环境 — huánjìng",
-            "tj": "环境 — huánjìng"
+            "uz": "西 — xī",
+            "ru": "西 — xī",
+            "tj": "西 — xī"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'atrof-muhit' xitoycha nima?",
-            "ru": "'окружающая среда' по-китайски?",
-            "tj": "'муҳити зист' ба чинӣ чист?"
+            "uz": "'jahli chiqmoq' xitoycha qaysi?",
+            "ru": "'сердиться' по-китайски?",
+            "tj": "'хашмгин шудан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "环境",
-            "保护",
-            "垃圾",
-            "分类"
+            "太阳",
+            "生气",
+            "行李箱",
+            "西"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "环境 = atrof-muhit (huánjìng)",
-            "ru": "环境 = окружающая среда (huánjìng)",
-            "tj": "环境 = муҳити зист (huánjìng)"
+            "uz": "jahli chiqmoq = 生气 (shēng qì)",
+            "ru": "сердиться = 生气 (shēng qì)",
+            "tj": "хашмгин шудан = 生气 (shēng qì)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "bǎohù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается bǎohù?",
-            "tj": "bǎohù кадом иероглиф аст?"
+            "uz": "xínglixiāng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xínglixiāng?",
+            "tj": "xínglixiāng кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,91 +817,68 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "保护",
-            "环境",
-            "垃圾",
-            "分类"
+            "生气",
+            "西",
+            "行李箱",
+            "太阳"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "保护 = himoya qilmoq (bǎohù)",
-            "ru": "保护 = защищать (bǎohù)",
-            "tj": "保护 = ҳифз кардан (bǎohù)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'环境保护' iborasini tuzing",
-            "ru": "Соберите фразу '环境保护'",
-            "tj": "Ибораи '环境保护'-ро созед"
-          },
-          "tokens": [
-            "环境",
-            "保护",
-            "垃圾",
-            "分类"
-          ],
-          "answer_tokens": [
-            "环境",
-            "保护"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 环境 保护",
-            "ru": "Правильный порядок: 环境 保护",
-            "tj": "Тартиби дуруст: 环境 保护"
+            "uz": "行李箱 = jomadon, chamadon (xínglixiāng)",
+            "ru": "行李箱 = чемодан (xínglixiāng)",
+            "tj": "行李箱 = ҷомадон (xínglixiāng)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "环境",
+              "太阳",
               {
-                "uz": "atrof-muhit",
-                "ru": "окружающая среда",
-                "tj": "муҳити зист"
+                "uz": "quyosh",
+                "ru": "солнце",
+                "tj": "офтоб"
               }
             ],
             [
-              "保护",
+              "西",
               {
-                "uz": "himoya qilmoq",
-                "ru": "защищать",
-                "tj": "ҳифз кардан"
+                "uz": "g'arb",
+                "ru": "запад",
+                "tj": "ғарб"
               }
             ],
             [
-              "垃圾",
+              "生气",
               {
-                "uz": "chiqindi",
-                "ru": "мусор",
-                "tj": "партов"
+                "uz": "jahli chiqmoq",
+                "ru": "сердиться",
+                "tj": "хашмгин шудан"
               }
             ],
             [
-              "分类",
+              "行李箱",
               {
-                "uz": "saralamoq",
-                "ru": "сортировать",
-                "tj": "ҷудо кардан"
+                "uz": "jomadon, chamadon",
+                "ru": "чемодан",
+                "tj": "ҷомадон"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "环境保护",
-          "pinyin": "huánjìng bǎohù",
+          "phrase": "太阳",
+          "pinyin": "tàiyáng",
           "translation": {
-            "uz": "Ekologiya va tabiat",
-            "ru": "Экология и природа",
-            "tj": "Экология ва табиат"
+            "uz": "quyosh",
+            "ru": "солнце",
+            "tj": "офтоб"
           }
         }
       ]
@@ -525,9 +895,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda 小丽 avval nima deydi?",
+            "ru": "Что 小丽 говорит в начале диалога?",
+            "tj": "Дар муколама 小丽 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -535,41 +905,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "怎么了？",
+            "我明天8点就要到公司。",
+            "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。",
+            "今天太阳从西边出来了吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 今天太阳从西边出来了吗？",
+            "ru": "Правильный ответ: 今天太阳从西边出来了吗？",
+            "tj": "Ҷавоби дуруст: 今天太阳从西边出来了吗？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida 小刚 nima deydi?",
+            "ru": "Что 小刚 говорит в конце диалога?",
+            "tj": "Дар охири муколама 小刚 чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "环境。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "今天太阳从西边出来了吗？",
+            "经理生气了，他告诉我，明天8点不到，以后就别来了。",
+            "怎么了？",
+            "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "B javobi: 环境。",
-            "ru": "Ответ B: 环境。",
-            "tj": "Ҷавоби B: 环境。"
+            "uz": "To'g'ri javob: 经理生气了，他告诉我，明天8点不到，以后就别来了。",
+            "ru": "Правильный ответ: 经理生气了，他告诉我，明天8点不到，以后就别来了。",
+            "tj": "Ҷавоби дуруст: 经理生气了，他告诉我，明天8点不到，以后就别来了。"
           }
         }
       ]

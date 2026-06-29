@@ -2,122 +2,287 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 15,
-  "title": "交通出行",
+  "title": "其他都没什么问题",
   "subtitle": {
-    "uz": "Mavzu: Transport va yo‘l qoidalari. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Транспорт и правила движения. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Нақлиёт ва қоидаҳои роҳ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "'Bundan tashqari ham/yana' iboralari, so'roq olmoshlarining umumlashtiruvchi qo'llanishi va 'juda' ifodalovchi '极了' o'rganish",
+    "ru": "Выражения 'помимо/кроме', обобщающее использование вопросительных местоимений и '极了' (очень)",
+    "tj": "Ибораҳои 'ғайр аз/ба ҷуз', истифодаи умумикунандаи зомирҳои саволӣ ва '极了' (хеле)"
   },
   "active_words": [
     {
-      "zh": "交通",
-      "pinyin": "jiāotōng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "transport, yo‘l harakati",
-        "ru": "транспорт, движение",
-        "tj": "нақлиёт, ҳаракат"
-      },
-      "no": 1
-    },
-    {
-      "zh": "红绿灯",
-      "pinyin": "hónglǜdēng",
-      "pos": "n.",
-      "meaning": {
-        "uz": "svetofor",
-        "ru": "светофор",
-        "tj": "чароғак"
-      },
-      "no": 2
-    },
-    {
-      "zh": "过马路",
-      "pinyin": "guò mǎlù",
+      "no": 1,
+      "zh": "留学",
+      "pinyin": "liú xué",
       "pos": "v.",
       "meaning": {
-        "uz": "yo‘lni kesib o‘tmoq",
-        "ru": "переходить дорогу",
-        "tj": "аз роҳ гузаштан"
-      },
-      "no": 3
+        "uz": "chet elda o'qimoq",
+        "ru": "учиться за границей",
+        "tj": "дар хориҷ таҳсил кардан"
+      }
     },
     {
-      "zh": "安全",
-      "pinyin": "ānquán",
-      "pos": "adj.",
+      "no": 2,
+      "zh": "水平",
+      "pinyin": "shuǐpíng",
+      "pos": "n.",
       "meaning": {
-        "uz": "xavfsiz",
-        "ru": "безопасный",
-        "tj": "бехатар"
-      },
-      "no": 4
+        "uz": "daraja, saviya",
+        "ru": "уровень, стандарт",
+        "tj": "сатҳ, дараҷа"
+      }
     },
     {
-      "zh": "堵车",
-      "pinyin": "dǔchē",
+      "no": 3,
+      "zh": "提高",
+      "pinyin": "tí gāo",
       "pos": "v.",
       "meaning": {
-        "uz": "tirbandlik bo‘lmoq",
-        "ru": "пробка на дороге",
-        "tj": "бандшавии роҳ"
-      },
-      "no": 5
+        "uz": "oshirmoq, yaxshilamoq",
+        "ru": "повышать, улучшать",
+        "tj": "баланд кардан, беҳтар кардан"
+      }
     },
     {
-      "zh": "司机",
-      "pinyin": "sījī",
+      "no": 4,
+      "zh": "练习",
+      "pinyin": "liànxí",
       "pos": "n.",
       "meaning": {
-        "uz": "haydovchi",
-        "ru": "водитель",
-        "tj": "ронанда"
-      },
-      "no": 6
+        "uz": "mashq",
+        "ru": "упражнение",
+        "tj": "машқ"
+      }
     },
     {
-      "zh": "规则",
-      "pinyin": "guīzé",
+      "no": 5,
+      "zh": "完成",
+      "pinyin": "wán chéng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "tugatmoq, yakunlamoq",
+        "ru": "закончить, завершить",
+        "tj": "тамом кардан"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "句子",
+      "pinyin": "jùzi",
       "pos": "n.",
       "meaning": {
-        "uz": "qoida",
-        "ru": "правило",
-        "tj": "қоида"
-      },
-      "no": 7
+        "uz": "gap, jumla",
+        "ru": "предложение",
+        "tj": "ҷумла"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "其他",
+      "pinyin": "qítā",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "boshqalar, qolganlari",
+        "ru": "остальное, другие",
+        "tj": "дигарон, боқимонда"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "发",
+      "pinyin": "fā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yubormoq",
+        "ru": "отправлять",
+        "tj": "фиристодан"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "要求",
+      "pinyin": "yāoqiú",
+      "pos": "n.",
+      "meaning": {
+        "uz": "talab",
+        "ru": "требование",
+        "tj": "талаб"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "注意",
+      "pinyin": "zhù yì",
+      "pos": "v.",
+      "meaning": {
+        "uz": "e'tibor bermoq",
+        "ru": "обращать внимание",
+        "tj": "диққат додан"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "上网",
+      "pinyin": "shàng wǎng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "internetga kirmoq",
+        "ru": "выходить в интернет",
+        "tj": "ба интернет даромадан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "除了",
+      "pinyin": "chúle",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "dan tashqari",
+        "ru": "кроме",
+        "tj": "ба ғайр аз"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "新闻",
+      "pinyin": "xīnwén",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yangiliklar",
+        "ru": "новости",
+        "tj": "хабарҳо"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "花",
+      "pinyin": "huā",
+      "pos": "v.",
+      "meaning": {
+        "uz": "sarflamoq",
+        "ru": "тратить",
+        "tj": "сарф кардан"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "极（了）",
+      "pinyin": "jí (le)",
+      "pos": "adv.",
+      "meaning": {
+        "uz": "juda, nihoyatda",
+        "ru": "крайне, чрезвычайно",
+        "tj": "ниҳоят"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "节日",
+      "pinyin": "jiérì",
+      "pos": "n.",
+      "meaning": {
+        "uz": "bayram",
+        "ru": "праздник",
+        "tj": "ид"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "举行",
+      "pinyin": "jǔxíng",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o'tkazmoq",
+        "ru": "проводить",
+        "tj": "баргузор кардан"
+      }
+    },
+    {
+      "no": 18,
+      "zh": "世界",
+      "pinyin": "shìjiè",
+      "pos": "n.",
+      "meaning": {
+        "uz": "dunyo",
+        "ru": "мир",
+        "tj": "ҷаҳон"
+      }
+    },
+    {
+      "no": 19,
+      "zh": "街道",
+      "pinyin": "jiēdào",
+      "pos": "n.",
+      "meaning": {
+        "uz": "ko'cha",
+        "ru": "улица",
+        "tj": "кӯча"
+      }
+    },
+    {
+      "no": 20,
+      "zh": "各",
+      "pinyin": "gè",
+      "pos": "pron.",
+      "meaning": {
+        "uz": "har bir",
+        "ru": "каждый",
+        "tj": "ҳар"
+      }
+    },
+    {
+      "no": 21,
+      "zh": "文化",
+      "pinyin": "wénhuà",
+      "pos": "n.",
+      "meaning": {
+        "uz": "madaniyat",
+        "ru": "культура",
+        "tj": "фарҳанг"
+      }
+    },
+    {
+      "no": 22,
+      "zh": "小云",
+      "pinyin": "Xiǎoyún",
+      "pos": "proper noun",
+      "meaning": {
+        "uz": "Xiaoyun (ism)",
+        "ru": "Сяоюнь (имя)",
+        "tj": "Сяоюн (ном)"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "……dan tashqari, hammasi/ham/yana……",
+        "ru": "Кроме……, всё/тоже/ещё……",
+        "tj": "Ба ғайр аз……, ҳама/ҳам/боз……"
       },
-      "title_zh": "主题词语",
+      "title_zh": "除了……以外，都/还/也……",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 交通出行. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“交通出行”。",
-        "ru": "Ключевая фраза урока: 交通出行. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“交通出行”。",
-        "tj": "Ибораи асосии дарс: 交通出行. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“交通出行”。"
+        "uz": "'除了A以外，都/还/也+B' tuzilmasi ikki ma'noda ishlatiladi: (1) A dan tashqari hamma narsa B (都) — istisno; (2) A dan tashqari B ham (还/也) — qo'shimcha. Farqni '都' va '还/也' orqali tushunish kerak.",
+        "ru": "Конструкция '除了A以外，都/还/也+B' имеет два значения: (1) Кроме A всё является B (都) — исключение; (2) Кроме A, B тоже (还/也) — добавление. Разницу нужно понять через '都' и '还/也'.",
+        "tj": "Сохтори '除了A以外，都/还/也+B' ду маъно дорад: (1) Ба ғайр аз A ҳама B аст (都) — истисно; (2) Ба ғайр аз A, B ҳам (还/也) — илова. Фарқро тавассути '都' ва '还/也' фаҳмидан лозим аст."
       },
       "examples": [
         {
-          "zh": "今天我们学习“交通出行”。",
-          "pinyin": "Jīntiān wǒmen xuéxí jiāotōng chūxíng.",
+          "zh": "除了血压以外，其他都没问题。",
+          "pinyin": "Chúle xuèyā yǐwài, qítā dōu méi wèntí.",
           "translation": {
-            "uz": "Biz Transport va yo‘l qoidalari mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Транспорт и правила движения.",
-            "tj": "Мо мавзӯи Нақлиёт ва қоидаҳои роҳ-ро меомӯзем."
+            "uz": "Qon bosimdan tashqari, boshqa hamma narsa muammosiz.",
+            "ru": "Кроме давления, всё остальное без проблем.",
+            "tj": "Ба ғайр аз фишори хун, ҳама чизи дигар мушкиле нест."
           }
         },
         {
-          "zh": "这个词是交通。",
-          "pinyin": "Zhège cí shì jiāotōng.",
+          "zh": "除了汉语，她还会说日语。",
+          "pinyin": "Chúle Hànyǔ, tā hái huì shuō Rìyǔ.",
           "translation": {
-            "uz": "Bu so'z: transport, yo‘l harakati.",
-            "ru": "Это слово: транспорт, движение.",
-            "tj": "Ин калима: нақлиёт, ҳаракат."
+            "uz": "Xitoy tilidan tashqari, u yapon tilini ham biladi.",
+            "ru": "Кроме китайского, она ещё умеет говорить по-японски.",
+            "tj": "Ба ғайр аз чинӣ, вай ҳам ба ҷопонӣ ҳарф мезанад."
           }
         }
       ]
@@ -125,33 +290,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "So'roq olmoshlarining maxsus qo'llanishi②: hech qayerda/hech narsa (inkor)",
+        "ru": "Особое употребление вопросительных местоимений②: нигде/ничего (отрицание)",
+        "tj": "Истифодаи хоси зомирҳои саволӣ②: ҳеҷ куҷо/ҳеҷ чиз (манфӣ)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "疑问代词活用②：哪儿都/什么都（否定）",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "So'roq olmoshlari + 都 + inkor fe'l = mutlaq inkor. Masalan: 什么都不 = hech narsani emas; 哪儿都不 = hech qayerda emas; 谁都不 = hech kim emas. Bular kuchli umumlashtiruvchi inkorlar.",
+        "ru": "Вопросительное местоимение + 都 + отрицательный глагол = абсолютное отрицание. Например: 什么都不 = ничего не; 哪儿都不 = нигде не; 谁都不 = никто не. Это сильные обобщающие отрицания.",
+        "tj": "Зомири саволӣ + 都 + феъли манфӣ = инкори мутлақ. Масалан: 什么都不 = ҳеҷ чизро не; 哪儿都不 = ҳеҷ куҷо не; 谁都不 = ҳеҷ кас не. Инҳо инкорҳои умумикунандаи қавӣ ҳастанд."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "什么都不如健康重要！",
+          "pinyin": "Shénme dōu bùrú jiànkāng zhòngyào!",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Hech narsa sog'liqdan muhim emas!",
+            "ru": "Ничто не важнее здоровья!",
+            "tj": "Ҳеҷ чиз аз саломатӣ муҳимтар нест!"
           }
         },
         {
-          "zh": "交通。",
-          "pinyin": "jiāotōng.",
+          "zh": "他哪儿都不想去。",
+          "pinyin": "Tā nǎr dōu bù xiǎng qù.",
           "translation": {
-            "uz": "交通 — jiāotōng deb o'qiladi.",
-            "ru": "交通 читается как jiāotōng.",
-            "tj": "交通 ҳамчун jiāotōng хонда мешавад."
+            "uz": "U hech qayerga bormoqchi emas.",
+            "ru": "Он никуда не хочет идти.",
+            "tj": "Вай ҳеҷ куҷо рафтан намехоҳад."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Sifat/Fe'l + 极了 (juda, nihoyatda)",
+        "ru": "Прилагательное/Глагол + 极了 (очень, крайне)",
+        "tj": "Сифат/Феъл + 极了 (хеле, ниҳоят)"
+      },
+      "title_zh": "形容词/动词 + 极了",
+      "rule": {
+        "uz": "'极了' sifat yoki fe'ldan keyin kelib, eng yuqori darajani bildiradi. '非常' dan kuchliroq. Masalan: 好极了 = zo'r (juda ajoyib), 满意极了 = nihoyatda mamnun.",
+        "ru": "'极了' следует за прилагательным или глаголом и выражает высшую степень. Сильнее, чем '非常'. Например: 好极了 = отлично (очень здорово), 满意极了 = чрезвычайно доволен.",
+        "tj": "'极了' баъди сифат ё феъл омада, дараҷаи олиро ифода мекунад. Аз '非常' қавитар. Масалан: 好极了 = олӣ (хеле аҷоиб), 满意极了 = ниҳоят қаноатманд."
+      },
+      "examples": [
+        {
+          "zh": "好极了！就这样做！",
+          "pinyin": "Hǎo jí le! Jiù zhèyàng zuò!",
+          "translation": {
+            "uz": "Zo'r! Xuddi shunday qiling!",
+            "ru": "Отлично! Именно так и делайте!",
+            "tj": "Олӣ! Маҳз ҳамин тавр кунед!"
+          }
+        },
+        {
+          "zh": "你写得认真极了！",
+          "pinyin": "Nǐ xiě de rènzhēn jí le!",
+          "translation": {
+            "uz": "Siz juda puxta yozdingiz!",
+            "ru": "Вы написали крайне добросовестно!",
+            "tj": "Шумо ниҳоят масъулиятшиносона навиштед!"
           }
         }
       ]
@@ -160,49 +359,216 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Transport va yo‘l qoidalari",
-        "ru": "Транспорт и правила движения",
-        "tj": "Нақлиёт ва қоидаҳои роҳ"
+        "uz": "Ofisda",
+        "ru": "В офисе",
+        "tj": "Дар идора"
       },
       "dialogue": [
         {
-          "speaker": "A",
-          "zh": "今天我们学习“交通出行”。",
-          "pinyin": "Jīntiān wǒmen xuéxí jiāotōng chūxíng.",
+          "speaker": "大山",
+          "zh": "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+          "pinyin": "Lǎoshī, wǒ lái Zhōngguó liú xué liǎng nián le, dànshì wǒ de Hànyǔ shuǐpíng tí gāo de yìdiǎnr yě bù kuài a.",
           "text": {
-            "uz": "Bugun Transport va yo‘l qoidalari mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Транспорт и правила движения.",
-            "tj": "Имрӯз мавзӯи Нақлиёт ва қоидаҳои роҳ-ро меомӯзем."
+            "uz": "Ustoz, Xitoyga o'qishga kelganimga ikki yil bo'ldi, lekin xitoy tili darajam deyarli tez oshmayapti.",
+            "ru": "Учитель, я приехал в Китай учиться уже два года назад, но мой уровень китайского совсем не быстро растёт.",
+            "tj": "Устод, ду сол шуд, ки ба Чин барои таҳсил омадам, аммо сатҳи забони чиниям тамоман зуд баланд намешавад."
           }
         },
         {
-          "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "speaker": "老师",
+          "zh": "你每天认真学习，做练习、完成作业，一直不错啊。",
+          "pinyin": "Nǐ měi tiān rènzhēn xuéxí, zuò liànxí, wán chéng zuòyè, yìzhí búcuò a.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Sen har kuni jiddiy o'qiysan, mashq qilasan, uy vazifasini tugatasan, doim yaxshi-ku.",
+            "ru": "Ты каждый день серьёзно учишься, делаешь упражнения, выполняешь домашнее задание, всё время неплохо.",
+            "tj": "Ту ҳар рӯз ҷиддӣ мехонӣ, машқ мекунӣ, вазифаи хонагиро анҷом медиҳӣ, ҳамеша хуб аст."
           }
         },
         {
-          "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "speaker": "大山",
+          "zh": "这是我昨天的作业，您帮我看看对不对？",
+          "pinyin": "Zhè shì wǒ zuótiān de zuòyè, nín bāng wǒ kànkan duì bu duì?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Bu kechagi uy vazifam, to'g'ri yoki yo'qligini ko'rib bera olasizmi?",
+            "ru": "Это моё вчерашнее домашнее задание, посмотрите, правильно ли?",
+            "tj": "Ин вазифаи хонагии дирӯзаам аст, мебинед дуруст аст ё не?"
           }
         },
         {
-          "speaker": "B",
-          "zh": "交通。",
-          "pinyin": "jiāotōng.",
+          "speaker": "老师",
+          "zh": "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
+          "pinyin": "Xiě de búcuò, chúle zhè ge jùzi yìsi yǒuxiē bù qīngchu wài, qítā dōu méi shénme wèntí.",
           "text": {
-            "uz": "交通 — jiāotōng deb o'qiladi.",
-            "ru": "交通 читается как jiāotōng.",
-            "tj": "交通 ҳамчун jiāotōng хонда мешавад."
+            "uz": "Yaxshi yozilgan, faqat bu gapning ma'nosi biroz noaniq, qolganlarida muammo yo'q.",
+            "ru": "Написано неплохо, кроме того, что смысл этого предложения немного неясен, с остальным проблем нет.",
+            "tj": "Хуб навишта шудааст, ба ғайр аз он ки маънои ин ҷумла каме норавшан аст, боқимонда мушкил надорад."
+          }
+        },
+        {
+          "speaker": "大山",
+          "zh": "谢谢老师！",
+          "pinyin": "Xièxie lǎoshī!",
+          "text": {
+            "uz": "Rahmat, ustoz!",
+            "ru": "Спасибо, учитель!",
+            "tj": "Ташаккур, устод!"
+          }
+        },
+        {
+          "speaker": "老师",
+          "zh": "以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
+          "pinyin": "Yǐhòu yǒu shénme bù míngbai de dìfang, kěyǐ gěi wǒ dǎ diànhuà huòzhě fā diànzǐ yóujiàn.",
+          "text": {
+            "uz": "Keyin tushunmagan joying bo'lsa, menga qo'ng'iroq qilishing yoki email yuborishing mumkin.",
+            "ru": "Если потом что-то будет непонятно, можешь позвонить мне или отправить электронное письмо.",
+            "tj": "Баъд агар чизе нофаҳмо бошад, метавонӣ ба ман занг занӣ ё почтаи электронӣ фиристӣ."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sinfda",
+        "ru": "В классе",
+        "tj": "Дар синф"
+      },
+      "dialogue": [
+        {
+          "speaker": "学生",
+          "zh": "老师，除了小云，其他人都来了。",
+          "pinyin": "Lǎoshī, chúle Xiǎoyún, qítā rén dōu lái le.",
+          "text": {
+            "uz": "Ustoz, Xiaoyundan tashqari hamma keldi.",
+            "ru": "Учитель, кроме Сяоюнь, все пришли.",
+            "tj": "Устод, ба ғайр аз Сяоюн ҳама омаданд."
+          }
+        },
+        {
+          "speaker": "老师",
+          "zh": "比赛马上就要开始了，小云怎么还没来？",
+          "pinyin": "Bǐsài mǎshàng jiù yào kāishǐ le, Xiǎoyún zěnme hái méi lái?",
+          "text": {
+            "uz": "Musobaqa hozir boshlanadi, Xiaoyun nega hali kelmadi?",
+            "ru": "Соревнование вот-вот начнётся, почему Сяоюнь ещё не пришла?",
+            "tj": "Мусобиқа ҳозир сар мешавад, чаро Сяоюн ҳоло наомад?"
+          }
+        },
+        {
+          "speaker": "学生",
+          "zh": "刚才给她打电话了，她在路上呢。",
+          "pinyin": "Gāngcái gěi tā dǎ diànhuà le, tā zài lùshang ne.",
+          "text": {
+            "uz": "Hozirgina unga qo'ng'iroq qildim, u yo'lda.",
+            "ru": "Я только что звонил ей, она в пути.",
+            "tj": "Ҳозир ба ӯ занг задам, дар роҳ аст."
+          }
+        },
+        {
+          "speaker": "老师",
+          "zh": "不等她了，我先给大家讲讲这次比赛的要求和一些需要注意的地方。",
+          "pinyin": "Bù děng tā le, wǒ xiān gěi dàjiā jiǎngjiang zhè cì bǐsài de yāoqiú hé yìxiē xūyào zhù yì de dìfang.",
+          "text": {
+            "uz": "Uni kutmaymiz, avval hammaga bu musobaqaning talablarini va e'tibor berish kerak bo'lgan joylarini tushuntirib beraman.",
+            "ru": "Не будем ждать её, сначала я расскажу всем требования этого соревнования и моменты, на которые нужно обратить внимание.",
+            "tj": "Ӯро интизор намешавем, аввал ба ҳама талабҳои ин мусобиқа ва ҷойҳои лозими диққатро мефаҳмонам."
+          }
+        },
+        {
+          "speaker": "学生",
+          "zh": "老师，您放心，今天的比赛我们一定能拿第一。",
+          "pinyin": "Lǎoshī, nín fàngxīn, jīntiān de bǐsài wǒmen yídìng néng ná dì yī.",
+          "text": {
+            "uz": "Ustoz, xavotir olmang, bugungi musobaqada albatta birinchi o'rinni olamiz.",
+            "ru": "Учитель, не волнуйтесь, сегодня мы обязательно займём первое место.",
+            "tj": "Устод, хотирҷамъ бошед, дар мусобиқаи имрӯз мо ҳатман ҷойи аввалро мегирем."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Dam olish xonasida",
+        "ru": "В комнате отдыха",
+        "tj": "Дар утоқи истироҳат"
+      },
+      "dialogue": [
+        {
+          "speaker": "同事",
+          "zh": "现在用电脑上网真方便啊！",
+          "pinyin": "Xiànzài yòng diànnǎo shàng wǎng zhēn fāngbiàn a!",
+          "text": {
+            "uz": "Hozir kompyuterda internetga kirish juda qulay!",
+            "ru": "Сейчас пользоваться интернетом на компьютере очень удобно!",
+            "tj": "Ҳоло бо компютер ба интернет даромадан хеле қулай аст!"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "是啊，除了看新闻，人们还可以在网上听歌、看电影、买东西。",
+          "pinyin": "Shì a, chúle kàn xīnwén, rénmen hái kěyǐ zài wǎngshang tīng gē, kàn diànyǐng, mǎi dōngxi.",
+          "text": {
+            "uz": "Ha, yangilik ko'rishdan tashqari, odamlar internetda qo'shiq tinglash, film ko'rish va narsa sotib olishlari ham mumkin.",
+            "ru": "Да, кроме просмотра новостей, люди могут в интернете слушать песни, смотреть фильмы и покупать вещи.",
+            "tj": "Ҳа, ба ғайр аз дидани хабарҳо, одамон дар интернет суруд мешунаванд, кино мебинанд ва чиз мехаранд."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "对了，你从网上买的那件衣服呢？怎么没见你穿？",
+          "pinyin": "Duì le, nǐ cóng wǎngshang mǎi de nà jiàn yīfu ne? Zěnme méi jiàn nǐ chuān?",
+          "text": {
+            "uz": "Aytgancha, internetdan olgan o'sha kiyiming-chi? Nega kiyganingni ko'rmadim?",
+            "ru": "Кстати, где та одежда, которую ты купил в интернете? Почему я не видел, чтобы ты её носил?",
+            "tj": "Дар омади гап, он либосе, ки аз интернет харидӣ, куҷост? Чаро туро дар он надидам?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "那件衣服我穿着有点儿小，给我弟弟了。",
+          "pinyin": "Nà jiàn yīfu wǒ chuānzhe yǒudiǎnr xiǎo, gěi wǒ dìdi le.",
+          "text": {
+            "uz": "U kiyim menga biroz kichik bo'ldi, ukamga berdim.",
+            "ru": "Эта одежда на мне была немного мала, я отдал её младшему брату.",
+            "tj": "Он либос ба ман каме хурд буд, ба додарам додам."
+          }
+        },
+        {
+          "speaker": "同事",
+          "zh": "他满意吗？",
+          "pinyin": "Tā mǎnyì ma?",
+          "text": {
+            "uz": "U rozi bo'ldimi?",
+            "ru": "Он доволен?",
+            "tj": "Ӯ қаноатманд аст?"
+          }
+        },
+        {
+          "speaker": "小刚",
+          "zh": "不用花钱，还有新衣服穿，他满意极了。",
+          "pinyin": "Búyòng huā qián, hái yǒu xīn yīfu chuān, tā mǎnyì jí le.",
+          "text": {
+            "uz": "Pul sarflamaydi, yangi kiyim ham kiyadi, u nihoyatda mamnun.",
+            "ru": "Не нужно тратить деньги, и есть новая одежда, он очень доволен.",
+            "tj": "Пул сарф намекунад, либоси нав ҳам мепӯшад, хеле қаноатманд аст."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Pivo bayrami haqida matn",
+        "ru": "Текст о пивном фестивале",
+        "tj": "Матн дар бораи ҷашни пиво"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "除了春节、中秋节以外，啤酒节也是这里很重要的一个节日。这个地方每年夏天都要举行一次啤酒节。在啤酒节上，你可以喝到世界上不同地方的啤酒。除了喝啤酒，你还可以在街道两边看到世界上不同地方的歌舞，你想不想了解世界各个地方的啤酒文化？来这里的啤酒节看看吧。",
+          "pinyin": "Chúle Chūnjié, Zhōngqiū Jié yǐwài, píjiǔ jié yě shì zhèlǐ hěn zhòngyào de yí ge jiérì. Zhège dìfang měi nián xiàtiān dōu yào jǔxíng yí cì píjiǔ jié. Zài píjiǔ jié shang, nǐ kěyǐ hēdào shìjiè shang bùtóng dìfang de píjiǔ. Chúle hē píjiǔ, nǐ hái kěyǐ zài jiēdào liǎng biān kàndào shìjiè shang bùtóng dìfang de gēwǔ, nǐ xiǎng bu xiǎng liǎojiě shìjiè gè ge dìfang de píjiǔ wénhuà? Lái zhèlǐ de píjiǔ jié kànkan ba.",
+          "text": {
+            "uz": "Bahor bayrami va O'rta kuz bayramidan tashqari, pivo festivali ham bu yerda juda muhim bayram. Bu joyda har yili yozda bir marta pivo festivali o'tkaziladi. Pivo festivalida dunyoning turli joylaridagi pivolarni ichib ko'rishingiz mumkin. Pivo ichishdan tashqari, ko'chaning ikki tomonida dunyoning turli joylaridagi qo'shiq va raqslarni ham ko'rishingiz mumkin. Dunyoning turli joylaridagi pivo madaniyatini bilishni xohlaysizmi? Bu yerdagi pivo festivaliga kelib ko'ring.",
+            "ru": "Кроме Праздника весны и Праздника середины осени, пивной фестиваль здесь тоже очень важный праздник. В этом месте каждое лето проводят пивной фестиваль. На фестивале можно попробовать пиво из разных мест мира. Кроме пива, по обе стороны улицы можно увидеть песни и танцы разных стран. Хотите узнать пивную культуру разных мест мира? Приезжайте посмотреть местный пивной фестиваль.",
+            "tj": "Ба ғайр аз Иди баҳор ва Иди миёнаи тирамоҳ, ҷашни пиво ҳам дар ин ҷо иди хеле муҳим аст. Ин ҷо ҳар тобистон як бор ҷашни пиво баргузор мешавад. Дар ҷашни пиво метавонед пивои ҷойҳои гуногуни ҷаҳонро бинӯшед. Ба ғайр аз пиво нӯшидан, дар ду тарафи кӯча метавонед суруду рақси ҷойҳои гуногуни ҷаҳонро бинед. Мехоҳед фарҳанги пивои ҷойҳои гуногуни ҷаҳонро фаҳмед? Ба ҷашни пивои ин ҷо омада бинед."
           }
         }
       ]
@@ -221,91 +587,308 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "交通",
-            "pinyin": "jiāotōng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "transport, yo‘l harakati",
-              "ru": "транспорт, движение",
-              "tj": "нақлиёт, ҳаракат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "红绿灯",
-            "pinyin": "hónglǜdēng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "svetofor",
-              "ru": "светофор",
-              "tj": "чароғак"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "过马路",
-            "pinyin": "guò mǎlù",
+            "no": 1,
+            "zh": "留学",
+            "pinyin": "liú xué",
             "pos": "v.",
             "meaning": {
-              "uz": "yo‘lni kesib o‘tmoq",
-              "ru": "переходить дорогу",
-              "tj": "аз роҳ гузаштан"
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "安全",
-            "pinyin": "ānquán",
-            "pos": "adj.",
+            "no": 2,
+            "zh": "水平",
+            "pinyin": "shuǐpíng",
+            "pos": "n.",
             "meaning": {
-              "uz": "xavfsiz",
-              "ru": "безопасный",
-              "tj": "бехатар"
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "堵车",
-            "pinyin": "dǔchē",
+            "no": 3,
+            "zh": "提高",
+            "pinyin": "tí gāo",
             "pos": "v.",
             "meaning": {
-              "uz": "tirbandlik bo‘lmoq",
-              "ru": "пробка на дороге",
-              "tj": "бандшавии роҳ"
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "司机",
-            "pinyin": "sījī",
+            "no": 4,
+            "zh": "练习",
+            "pinyin": "liànxí",
             "pos": "n.",
             "meaning": {
-              "uz": "haydovchi",
-              "ru": "водитель",
-              "tj": "ронанда"
+              "uz": "mashq",
+              "ru": "упражнение",
+              "tj": "машқ"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "规则",
-            "pinyin": "guīzé",
+            "no": 5,
+            "zh": "完成",
+            "pinyin": "wán chéng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "tugatmoq, yakunlamoq",
+              "ru": "закончить, завершить",
+              "tj": "тамом кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "句子",
+            "pinyin": "jùzi",
             "pos": "n.",
             "meaning": {
-              "uz": "qoida",
-              "ru": "правило",
-              "tj": "қоида"
+              "uz": "gap, jumla",
+              "ru": "предложение",
+              "tj": "ҷумла"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "其他",
+            "pinyin": "qítā",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "boshqalar, qolganlari",
+              "ru": "остальное, другие",
+              "tj": "дигарон, боқимонда"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "发",
+            "pinyin": "fā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yubormoq",
+              "ru": "отправлять",
+              "tj": "фиристодан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "要求",
+            "pinyin": "yāoqiú",
+            "pos": "n.",
+            "meaning": {
+              "uz": "talab",
+              "ru": "требование",
+              "tj": "талаб"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "注意",
+            "pinyin": "zhù yì",
+            "pos": "v.",
+            "meaning": {
+              "uz": "e'tibor bermoq",
+              "ru": "обращать внимание",
+              "tj": "диққат додан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "上网",
+            "pinyin": "shàng wǎng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "internetga kirmoq",
+              "ru": "выходить в интернет",
+              "tj": "ба интернет даромадан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "除了",
+            "pinyin": "chúle",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "dan tashqari",
+              "ru": "кроме",
+              "tj": "ба ғайр аз"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "新闻",
+            "pinyin": "xīnwén",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yangiliklar",
+              "ru": "новости",
+              "tj": "хабарҳо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "花",
+            "pinyin": "huā",
+            "pos": "v.",
+            "meaning": {
+              "uz": "sarflamoq",
+              "ru": "тратить",
+              "tj": "сарф кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 15,
+            "zh": "极（了）",
+            "pinyin": "jí (le)",
+            "pos": "adv.",
+            "meaning": {
+              "uz": "juda, nihoyatda",
+              "ru": "крайне, чрезвычайно",
+              "tj": "ниҳоят"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 16,
+            "zh": "节日",
+            "pinyin": "jiérì",
+            "pos": "n.",
+            "meaning": {
+              "uz": "bayram",
+              "ru": "праздник",
+              "tj": "ид"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 17,
+            "zh": "举行",
+            "pinyin": "jǔxíng",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o'tkazmoq",
+              "ru": "проводить",
+              "tj": "баргузор кардан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 18,
+            "zh": "世界",
+            "pinyin": "shìjiè",
+            "pos": "n.",
+            "meaning": {
+              "uz": "dunyo",
+              "ru": "мир",
+              "tj": "ҷаҳон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 19,
+            "zh": "街道",
+            "pinyin": "jiēdào",
+            "pos": "n.",
+            "meaning": {
+              "uz": "ko'cha",
+              "ru": "улица",
+              "tj": "кӯча"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 20,
+            "zh": "各",
+            "pinyin": "gè",
+            "pos": "pron.",
+            "meaning": {
+              "uz": "har bir",
+              "ru": "каждый",
+              "tj": "ҳар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 21,
+            "zh": "文化",
+            "pinyin": "wénhuà",
+            "pos": "n.",
+            "meaning": {
+              "uz": "madaniyat",
+              "ru": "культура",
+              "tj": "фарҳанг"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 22,
+            "zh": "小云",
+            "pinyin": "Xiǎoyún",
+            "pos": "proper noun",
+            "meaning": {
+              "uz": "Xiaoyun (ism)",
+              "ru": "Сяоюнь (имя)",
+              "tj": "Сяоюн (ном)"
             }
           }
         }
@@ -323,9 +906,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "交通 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 交通:",
-            "tj": "Маънои калимаи 交通-ро интихоб кунед:"
+            "uz": "留学 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 留学:",
+            "tj": "Маънои калимаи 留学-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +917,39 @@
           },
           "options": [
             {
-              "uz": "transport, yo‘l harakati",
-              "ru": "транспорт, движение",
-              "tj": "нақлиёт, ҳаракат"
+              "uz": "mashq",
+              "ru": "упражнение",
+              "tj": "машқ"
             },
             {
-              "uz": "svetofor",
-              "ru": "светофор",
-              "tj": "чароғак"
+              "uz": "daraja, saviya",
+              "ru": "уровень, стандарт",
+              "tj": "сатҳ, дараҷа"
             },
             {
-              "uz": "yo‘lni kesib o‘tmoq",
-              "ru": "переходить дорогу",
-              "tj": "аз роҳ гузаштан"
+              "uz": "chet elda o'qimoq",
+              "ru": "учиться за границей",
+              "tj": "дар хориҷ таҳсил кардан"
             },
             {
-              "uz": "xavfsiz",
-              "ru": "безопасный",
-              "tj": "бехатар"
+              "uz": "oshirmoq, yaxshilamoq",
+              "ru": "повышать, улучшать",
+              "tj": "баланд кардан, беҳтар кардан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "交通 = transport, yo‘l harakati (jiāotōng)",
-            "ru": "交通 = транспорт, движение (jiāotōng)",
-            "tj": "交通 = нақлиёт, ҳаракат (jiāotōng)"
+            "uz": "留学 = chet elda o'qimoq (liú xué)",
+            "ru": "留学 = учиться за границей (liú xué)",
+            "tj": "留学 = дар хориҷ таҳсил кардан (liú xué)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "交通 talaffuzini tanlang:",
-            "ru": "Выберите произношение 交通:",
-            "tj": "Талаффузи 交通-ро интихоб кунед:"
+            "uz": "水平 talaffuzini tanlang:",
+            "ru": "Выберите произношение 水平:",
+            "tj": "Талаффузи 水平-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +957,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiāotōng",
-            "hónglǜdēng",
-            "guò mǎlù",
-            "ānquán"
+            "shuǐpíng",
+            "liànxí",
+            "tí gāo",
+            "liú xué"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "交通 — jiāotōng",
-            "ru": "交通 — jiāotōng",
-            "tj": "交通 — jiāotōng"
+            "uz": "水平 — shuǐpíng",
+            "ru": "水平 — shuǐpíng",
+            "tj": "水平 — shuǐpíng"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'transport, yo‘l harakati' xitoycha nima?",
-            "ru": "'транспорт, движение' по-китайски?",
-            "tj": "'нақлиёт, ҳаракат' ба чинӣ чист?"
+            "uz": "'oshirmoq, yaxshilamoq' xitoycha qaysi?",
+            "ru": "'повышать, улучшать' по-китайски?",
+            "tj": "'баланд кардан, беҳтар кардан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "交通",
-            "红绿灯",
-            "过马路",
-            "安全"
+            "留学",
+            "提高",
+            "水平",
+            "练习"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "交通 = transport, yo‘l harakati (jiāotōng)",
-            "ru": "交通 = транспорт, движение (jiāotōng)",
-            "tj": "交通 = нақлиёт, ҳаракат (jiāotōng)"
+            "uz": "oshirmoq, yaxshilamoq = 提高 (tí gāo)",
+            "ru": "повышать, улучшать = 提高 (tí gāo)",
+            "tj": "баланд кардан, беҳтар кардан = 提高 (tí gāo)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "hónglǜdēng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается hónglǜdēng?",
-            "tj": "hónglǜdēng кадом иероглиф аст?"
+            "uz": "liànxí qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liànxí?",
+            "tj": "liànxí кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,93 +1007,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "红绿灯",
-            "交通",
-            "过马路",
-            "安全"
+            "留学",
+            "水平",
+            "提高",
+            "练习"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "红绿灯 = svetofor (hónglǜdēng)",
-            "ru": "红绿灯 = светофор (hónglǜdēng)",
-            "tj": "红绿灯 = чароғак (hónglǜdēng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'交通出行' iborasini tuzing",
-            "ru": "Соберите фразу '交通出行'",
-            "tj": "Ибораи '交通出行'-ро созед"
-          },
-          "tokens": [
-            "交通",
-            "出",
-            "行",
-            "红绿灯",
-            "过马路"
-          ],
-          "answer_tokens": [
-            "交通",
-            "出",
-            "行"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 交通 出 行",
-            "ru": "Правильный порядок: 交通 出 行",
-            "tj": "Тартиби дуруст: 交通 出 行"
+            "uz": "练习 = mashq (liànxí)",
+            "ru": "练习 = упражнение (liànxí)",
+            "tj": "练习 = машқ (liànxí)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "交通",
+              "留学",
               {
-                "uz": "transport, yo‘l harakati",
-                "ru": "транспорт, движение",
-                "tj": "нақлиёт, ҳаракат"
+                "uz": "chet elda o'qimoq",
+                "ru": "учиться за границей",
+                "tj": "дар хориҷ таҳсил кардан"
               }
             ],
             [
-              "红绿灯",
+              "水平",
               {
-                "uz": "svetofor",
-                "ru": "светофор",
-                "tj": "чароғак"
+                "uz": "daraja, saviya",
+                "ru": "уровень, стандарт",
+                "tj": "сатҳ, дараҷа"
               }
             ],
             [
-              "过马路",
+              "提高",
               {
-                "uz": "yo‘lni kesib o‘tmoq",
-                "ru": "переходить дорогу",
-                "tj": "аз роҳ гузаштан"
+                "uz": "oshirmoq, yaxshilamoq",
+                "ru": "повышать, улучшать",
+                "tj": "баланд кардан, беҳтар кардан"
               }
             ],
             [
-              "安全",
+              "练习",
               {
-                "uz": "xavfsiz",
-                "ru": "безопасный",
-                "tj": "бехатар"
+                "uz": "mashq",
+                "ru": "упражнение",
+                "tj": "машқ"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "除了血压以外，____都没问题。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "留学",
+            "其他",
+            "提高",
+            "水平"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 其他 (qítā) — boshqalar, qolganlari",
+            "ru": "Верно: 其他 (qítā) — остальное, другие",
+            "tj": "Дуруст: 其他 (qítā) — дигарон, боқимонда"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "交通出行",
-          "pinyin": "jiāotōng chūxíng",
+          "phrase": "留学",
+          "pinyin": "liú xué",
           "translation": {
-            "uz": "Transport va yo‘l qoidalari",
-            "ru": "Транспорт и правила движения",
-            "tj": "Нақлиёт ва қоидаҳои роҳ"
+            "uz": "chet elda o'qimoq",
+            "ru": "учиться за границей",
+            "tj": "дар хориҷ таҳсил кардан"
           }
         }
       ]
@@ -527,9 +1106,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda 大山 avval nima deydi?",
+            "ru": "Что 大山 говорит в начале диалога?",
+            "tj": "Дар муколама 大山 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -537,41 +1116,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+            "写得不错，除了这个句子意思有些不清楚外，其他都没什么问题。",
+            "这是我昨天的作业，您帮我看看对不对？",
+            "你每天认真学习，做练习、完成作业，一直不错啊。"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+            "ru": "Правильный ответ: 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+            "tj": "Ҷавоби дуруст: 老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida 老师 nima deydi?",
+            "ru": "Что 老师 говорит в конце диалога?",
+            "tj": "Дар охири муколама 老师 чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "交通。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "你每天认真学习，做练习、完成作业，一直不错啊。",
+            "老师，我来中国留学两年了，但是我的汉语水平提高得一点儿也不快啊。",
+            "这是我昨天的作业，您帮我看看对不对？",
+            "以后有什么不明白的地方，可以给我打电话或者发电子邮件。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "B javobi: 交通。",
-            "ru": "Ответ B: 交通。",
-            "tj": "Ҷавоби B: 交通。"
+            "uz": "To'g'ri javob: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
+            "ru": "Правильный ответ: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。",
+            "tj": "Ҷавоби дуруст: 以后有什么不明白的地方，可以给我打电话或者发电子邮件。"
           }
         }
       ]

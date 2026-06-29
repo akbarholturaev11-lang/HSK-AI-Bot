@@ -2,122 +2,232 @@
   "schema_version": 2,
   "level": "hsk3",
   "lesson_id": 18,
-  "title": "社交媒体",
+  "title": "我相信他们会同意的",
   "subtitle": {
-    "uz": "Mavzu: Ijtimoiy tarmoqlar. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Социальные сети. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Шабакаҳои иҷтимоӣ. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "'Faqat…bo'lsa ham…' shartli gap, '关于' predlogi va 'nafaqat…balki…' biriktiruv bog'lovchisi",
+    "ru": "Условное 'только если…то…', предлог '关于' и союз 'не только…но и…'",
+    "tj": "Шартии 'танҳо агар…пас…', пешоянди '关于' ва пайвандаки 'на танҳо…балки ҳам…'"
   },
   "active_words": [
     {
-      "zh": "社交媒体",
-      "pinyin": "shèjiāo méitǐ",
-      "pos": "n.",
+      "no": 1,
+      "zh": "向",
+      "pinyin": "xiàng",
+      "pos": "prep.",
       "meaning": {
-        "uz": "ijtimoiy tarmoq",
-        "ru": "социальные сети",
-        "tj": "шабакаҳои иҷтимоӣ"
-      },
-      "no": 1
+        "uz": "tomon, ga",
+        "ru": "к, по направлению к",
+        "tj": "ба сӯи, ба"
+      }
     },
     {
-      "zh": "发布",
-      "pinyin": "fābù",
+      "no": 2,
+      "zh": "万",
+      "pinyin": "wàn",
+      "pos": "num.",
+      "meaning": {
+        "uz": "o'n ming",
+        "ru": "десять тысяч",
+        "tj": "даҳ ҳазор"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "只",
+      "pinyin": "zhī",
+      "pos": "m.",
+      "meaning": {
+        "uz": "ayrim hayvonlar uchun hisob so'zi",
+        "ru": "счетное слово для некоторых животных",
+        "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "嘴",
+      "pinyin": "zuǐ",
+      "pos": "n.",
+      "meaning": {
+        "uz": "og'iz",
+        "ru": "рот",
+        "tj": "даҳон"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "动物",
+      "pinyin": "dòngwù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "hayvon",
+        "ru": "животное",
+        "tj": "ҳайвон"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "段",
+      "pinyin": "duàn",
+      "pos": "m.",
+      "meaning": {
+        "uz": "davr, qism uchun hisob so'zi",
+        "ru": "отрезок, период; счетное слово для частей",
+        "tj": "давра, қисм; ҳисобвожа"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "不但……而且……",
+      "pinyin": "bùdàn... érqiě...",
+      "pos": "conj.",
+      "meaning": {
+        "uz": "nafaqat..., balki...",
+        "ru": "не только..., но и...",
+        "tj": "на танҳо..., балки..."
+      }
+    },
+    {
+      "no": 8,
+      "zh": "有名",
+      "pinyin": "yǒumíng",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "mashhur",
+        "ru": "известный",
+        "tj": "машҳур"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "同意",
+      "pinyin": "tóngyì",
       "pos": "v.",
       "meaning": {
-        "uz": "e’lon qilmoq",
-        "ru": "публиковать",
-        "tj": "нашр кардан"
-      },
-      "no": 2
+        "uz": "rozi bo'lmoq",
+        "ru": "соглашаться",
+        "tj": "розӣ шудан"
+      }
     },
     {
-      "zh": "评论",
-      "pinyin": "pínglùn",
-      "pos": "n.",
-      "meaning": {
-        "uz": "izoh",
-        "ru": "комментарий",
-        "tj": "шарҳ"
-      },
-      "no": 3
-    },
-    {
-      "zh": "点赞",
-      "pinyin": "diǎnzàn",
+      "no": 10,
+      "zh": "相信",
+      "pinyin": "xiāngxìn",
       "pos": "v.",
       "meaning": {
-        "uz": "layk bosmoq",
-        "ru": "ставить лайк",
-        "tj": "лайк мондан"
-      },
-      "no": 4
+        "uz": "ishonmoq",
+        "ru": "верить",
+        "tj": "бовар кардан"
+      }
     },
     {
-      "zh": "粉丝",
-      "pinyin": "fěnsī",
+      "no": 11,
+      "zh": "关于",
+      "pinyin": "guānyú",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "haqida, to'g'risida",
+        "ru": "о, относительно",
+        "tj": "дар бораи"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "机会",
+      "pinyin": "jīhuì",
       "pos": "n.",
       "meaning": {
-        "uz": "obunachi, muxlis",
-        "ru": "подписчик, фанат",
-        "tj": "обуначӣ, мухлис"
-      },
-      "no": 5
+        "uz": "imkoniyat",
+        "ru": "возможность, шанс",
+        "tj": "имконият"
+      }
     },
     {
-      "zh": "分享",
-      "pinyin": "fēnxiǎng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ulashmoq",
-        "ru": "делиться",
-        "tj": "мубодила кардан"
-      },
-      "no": 6
-    },
-    {
-      "zh": "隐私",
-      "pinyin": "yǐnsī",
+      "no": 13,
+      "zh": "国家",
+      "pinyin": "guójiā",
       "pos": "n.",
       "meaning": {
-        "uz": "maxfiylik",
-        "ru": "приватность",
-        "tj": "махфият"
-      },
-      "no": 7
+        "uz": "davlat, mamlakat",
+        "ru": "страна, государство",
+        "tj": "давлат, кишвар"
+      }
+    },
+    {
+      "no": 14,
+      "zh": "种",
+      "pinyin": "zhǒng",
+      "pos": "m.",
+      "meaning": {
+        "uz": "tur, xil",
+        "ru": "вид, тип",
+        "tj": "навъ, гуна"
+      }
+    },
+    {
+      "no": 15,
+      "zh": "特点",
+      "pinyin": "tèdiǎn",
+      "pos": "n.",
+      "meaning": {
+        "uz": "xususiyat",
+        "ru": "особенность",
+        "tj": "хусусият"
+      }
+    },
+    {
+      "no": 16,
+      "zh": "奇怪",
+      "pinyin": "qíguài",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "g'alati",
+        "ru": "странный",
+        "tj": "аҷиб, ғалатӣ"
+      }
+    },
+    {
+      "no": 17,
+      "zh": "地",
+      "pinyin": "de",
+      "pos": "part.",
+      "meaning": {
+        "uz": "ravish yasovchi yuklama",
+        "ru": "частица между обстоятельством и глаголом",
+        "tj": "ҳиссача байни ҳол ва феъл"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Faqat……bo'lsa/qilsa……",
+        "ru": "Только если……то……",
+        "tj": "Танҳо агар……пас……"
       },
-      "title_zh": "主题词语",
+      "title_zh": "只要……就……",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 社交媒体. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“社交媒体”。",
-        "ru": "Ключевая фраза урока: 社交媒体. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“社交媒体”。",
-        "tj": "Ибораи асосии дарс: 社交媒体. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“社交媒体”。"
+        "uz": "'只要…就…' tuzilmasi shartni ifodalaydi, lekin '如果' dan farqli ravishda '只要' = 'faqat shu shart bajarilsa bo'ladi, boshqa narsa kerak emas' ma'nosini bildiradi. Yengilroq va optimistik shart.",
+        "ru": "Конструкция '只要…就…' выражает условие, но в отличие от '如果', '只要' = 'достаточно выполнить только это условие, ничего другого не нужно'. Более лёгкое и оптимистичное условие.",
+        "tj": "Сохтори '只要…就…' шартро ифода мекунад, аммо баръакси '如果', '只要' = 'танҳо ин шарт иҷро шавад, дигар ҳеҷ чиз лозим нест' маъно медиҳад. Шарти осонтар ва хушбинонатар."
       },
       "examples": [
         {
-          "zh": "今天我们学习“社交媒体”。",
-          "pinyin": "Jīntiān wǒmen xuéxí shèjiāo méitǐ.",
+          "zh": "只要你努力，就能成功！",
+          "pinyin": "Zhǐyào nǐ nǔlì, jiù néng chénggōng!",
           "translation": {
-            "uz": "Biz Ijtimoiy tarmoqlar mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Социальные сети.",
-            "tj": "Мо мавзӯи Шабакаҳои иҷтимоӣ-ро меомӯзем."
+            "uz": "Faqat harakat qilsangiz, muvaffaqiyat qozonasiz!",
+            "ru": "Только старайся, и добьёшься успеха!",
+            "tj": "Танҳо кӯшиш кунед, муваффақ мешавед!"
           }
         },
         {
-          "zh": "这个词是社交媒体。",
-          "pinyin": "Zhège cí shì shèjiāo méitǐ.",
+          "zh": "只要大家参加，活动就会成功！",
+          "pinyin": "Zhǐyào dàjiā cānjiā, huódòng jiù huì chénggōng!",
           "translation": {
-            "uz": "Bu so'z: ijtimoiy tarmoq.",
-            "ru": "Это слово: социальные сети.",
-            "tj": "Ин калима: шабакаҳои иҷтимоӣ."
+            "uz": "Faqat hamma qatnashsa, tadbir muvaffaqiyatli bo'ladi!",
+            "ru": "Только бы все участвовали, мероприятие будет успешным!",
+            "tj": "Танҳо ҳама иштирок кунанд, тадбир муваффақ мешавад!"
           }
         }
       ]
@@ -125,33 +235,67 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "'关于' predlogi (关于 + ot + ...)",
+        "ru": "Предлог '关于' (关于 + сущ. + ...)",
+        "tj": "Пешоянди '关于' (关于 + исм + ...)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "介词\"关于\"（关于 + N + ……）",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'关于' = haqida, to'g'risida. Tuzilma: 关于 + mavzu + gapning qolgan qismi. Gap boshida yoki sub'ektdan keyin kelishi mumkin. Ingilizcha 'about / regarding' ga o'xshaydi.",
+        "ru": "'关于' = о, насчёт, относительно. Структура: 关于 + тема + остаток предложения. Может стоять в начале предложения или после подлежащего. Похоже на английское 'about / regarding'.",
+        "tj": "'关于' = дар бораи, оид ба. Сохтор: 关于 + мавзӯ + қисми боқии ҷумла. Дар аввали ҷумла ё баъди мубтадо омада метавонад. Ба 'about / regarding'-и инглисӣ монанд аст."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "关于这次活动，你有什么想法？",
+          "pinyin": "Guānyú zhè cì huódòng, nǐ yǒu shénme xiǎngfǎ?",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Bu tadbir haqida qanday fikrlaringiz bor?",
+            "ru": "Насчёт этого мероприятия, какие у тебя мысли?",
+            "tj": "Дар бораи ин тадбир, чӣ фикр доред?"
           }
         },
         {
-          "zh": "社交媒体。",
-          "pinyin": "shèjiāo méitǐ.",
+          "zh": "我写了一篇关于健康的文章。",
+          "pinyin": "Wǒ xiě le yī piān guānyú jiànkāng de wénzhāng.",
           "translation": {
-            "uz": "社交媒体 — shèjiāo méitǐ deb o'qiladi.",
-            "ru": "社交媒体 читается как shèjiāo méitǐ.",
-            "tj": "社交媒体 ҳамчун shèjiāo méitǐ хонда мешавад."
+            "uz": "Men sog'liq haqida bir maqola yozdim.",
+            "ru": "Я написал статью о здоровье.",
+            "tj": "Ман мақолае дар бораи саломатӣ навиштам."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Nafaqat……balki ham……",
+        "ru": "Не только……но и……",
+        "tj": "На танҳо……балки ҳам……"
+      },
+      "title_zh": "不但……而且……",
+      "rule": {
+        "uz": "'不但…而且…' tuzilmasi ikkita ijobiy holatni kuchaytirib bog'laydi. '不但' = nafaqat, '而且' = balki ham. Birinchi jumladan ikkinchisi yanada kuchli yoki qo'shimcha ma'no qo'shadi.",
+        "ru": "Конструкция '不但…而且…' усиленно соединяет два положительных факта. '不但' = не только, '而且' = но и. Второе предложение добавляет ещё более сильный или дополнительный смысл.",
+        "tj": "Сохтори '不但…而且…' ду ҳолати мусбатро бо таъкид мепайвандад. '不但' = на танҳо, '而且' = балки ҳам. Ҷумлаи дуввум маъноеро ҳам қавитар ё иловагӣ илова мекунад."
+      },
+      "examples": [
+        {
+          "zh": "这门课不但有用，而且很有意思！",
+          "pinyin": "Zhè mén kè búdàn yǒuyòng, érqiě hěn yǒu yìsi!",
+          "translation": {
+            "uz": "Bu kurs nafaqat foydali, balki juda qiziqarli ham!",
+            "ru": "Этот курс не только полезный, но и очень интересный!",
+            "tj": "Ин курс на танҳо муфид, балки хеле ҷолиб ҳам аст!"
+          }
+        },
+        {
+          "zh": "他不但会说汉语，而且还会说日语！",
+          "pinyin": "Tā búdàn huì shuō Hànyǔ, érqiě hái huì shuō Rìyǔ!",
+          "translation": {
+            "uz": "U nafaqat xitoy tilini, balki yapon tilini ham biladi!",
+            "ru": "Он умеет говорить не только по-китайски, но и по-японски!",
+            "tj": "Вай на танҳо чинӣ, балки ба ҷопонӣ ҳам гап мезанад!"
           }
         }
       ]
@@ -160,49 +304,216 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "Ijtimoiy tarmoqlar",
-        "ru": "Социальные сети",
-        "tj": "Шабакаҳои иҷтимоӣ"
+        "uz": "Telefonda qarz so'rash",
+        "ru": "Просьба занять деньги по телефону",
+        "tj": "Дар телефон қарз пурсидан"
       },
       "dialogue": [
         {
-          "speaker": "A",
-          "zh": "今天我们学习“社交媒体”。",
-          "pinyin": "Jīntiān wǒmen xuéxí shèjiāo méitǐ.",
+          "speaker": "朋友",
+          "zh": "老周，我打算买房子了，想向你借点儿钱。",
+          "pinyin": "Lǎo Zhōu, wǒ dǎsuàn mǎi fángzi le, xiǎng xiàng nǐ jiè diǎnr qián.",
           "text": {
-            "uz": "Bugun Ijtimoiy tarmoqlar mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Социальные сети.",
-            "tj": "Имрӯз мавзӯи Шабакаҳои иҷтимоӣ-ро меомӯзем."
+            "uz": "Lao Zhou, uy sotib olmoqchiman, sendan ozgina pul qarz olmoqchiman.",
+            "ru": "Лао Чжоу, я собираюсь купить дом и хочу занять у тебя немного денег.",
+            "tj": "Лао Чжоу, хона хариданӣ ҳастам, мехоҳам аз ту каме пул қарз гирам."
           }
         },
         {
-          "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "speaker": "周明",
+          "zh": "没问题，只要我有，就一定会借给你的。还差多少？",
+          "pinyin": "Méi wèntí, zhǐyào wǒ yǒu, jiù yídìng huì jiè gěi nǐ de. Hái chà duōshao?",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Muammo yo'q, menda bo'lsa, albatta senga qarz beraman. Yana qancha yetmayapti?",
+            "ru": "Без проблем, если у меня есть, я обязательно одолжу тебе. Сколько еще не хватает?",
+            "tj": "Мушкил нест, агар дошта бошам, ҳатман ба ту қарз медиҳам. Боз чанд камӣ дорад?"
           }
         },
         {
-          "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "speaker": "朋友",
+          "zh": "还差5万块钱。",
+          "pinyin": "Hái chà wǔ wàn kuài qián.",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Yana 50 ming yuan yetmayapti.",
+            "ru": "Не хватает еще 50 тысяч юаней.",
+            "tj": "Боз 50 ҳазор юан камӣ дорад."
           }
         },
         {
-          "speaker": "B",
-          "zh": "社交媒体。",
-          "pinyin": "shèjiāo méitǐ.",
+          "speaker": "周明",
+          "zh": "好，钱下午打给你。你打算在哪儿买房？",
+          "pinyin": "Hǎo, qián xiàwǔ dǎ gěi nǐ. Nǐ dǎsuàn zài nǎr mǎi fáng?",
           "text": {
-            "uz": "社交媒体 — shèjiāo méitǐ deb o'qiladi.",
-            "ru": "社交媒体 читается как shèjiāo méitǐ.",
-            "tj": "社交媒体 ҳамчун shèjiāo méitǐ хонда мешавад."
+            "uz": "Xo'p, pulni tushdan keyin o'tkazaman. Qayerdan uy olmoqchisan?",
+            "ru": "Хорошо, деньги переведу тебе днем. Где ты собираешься покупать дом?",
+            "tj": "Хуб, пулро баъд аз нисфирӯзӣ мегузаронам. Дар куҷо хона хариданӣ ҳастӣ?"
+          }
+        },
+        {
+          "speaker": "朋友",
+          "zh": "就在我们医院前面。",
+          "pinyin": "Jiù zài wǒmen yīyuàn qiánmiàn.",
+          "text": {
+            "uz": "Aynan kasalxonamizning oldida.",
+            "ru": "Прямо перед нашей больницей.",
+            "tj": "Ҳамон пеши беморхонаи мо."
+          }
+        },
+        {
+          "speaker": "周明",
+          "zh": "那你以后去医院就方便了。",
+          "pinyin": "Nà nǐ yǐhòu qù yīyuàn jiù fāngbiàn le.",
+          "text": {
+            "uz": "Unda keyin kasalxonaga borishing qulay bo'ladi.",
+            "ru": "Тогда тебе потом будет удобно ходить в больницу.",
+            "tj": "Пас баъд ба беморхона рафтанат қулай мешавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Do'konda kuchuk haqida",
+        "ru": "В магазине о собаке",
+        "tj": "Дар мағоза дар бораи саг"
+      },
+      "dialogue": [
+        {
+          "speaker": "小明",
+          "zh": "妈妈，你看那只狗多可爱，眼睛大大的，嘴小小的，我们买回去吧。",
+          "pinyin": "Māma, nǐ kàn nà zhī gǒu duō kě'ài, yǎnjing dàdà de, zuǐ xiǎoxiǎo de, wǒmen mǎi huíqu ba.",
+          "text": {
+            "uz": "Oyi, qarang anavi kuchuk naqadar shirin, ko'zlari katta-katta, og'zi kichkina, olib ketaylik.",
+            "ru": "Мама, посмотри, какая милая собака: глаза большие, ротик маленький, давай купим ее.",
+            "tj": "Оча, бинед он саг чӣ қадар ширин аст, чашмонаш калон-калон, даҳонаш хурд, биё харем."
+          }
+        },
+        {
+          "speaker": "妈妈",
+          "zh": "动物和小孩儿一样，都需要人照顾。买回家去，谁照顾它呀？",
+          "pinyin": "Dòngwù hé xiǎoháir yíyàng, dōu xūyào rén zhàogu. Mǎi huí jiā qù, shéi zhàogu tā ya?",
+          "text": {
+            "uz": "Hayvonlar ham bolalarga o'xshaydi, ularga qaraydigan odam kerak. Uyga olib borsak, unga kim qaraydi?",
+            "ru": "Животные, как дети, нуждаются в уходе. Если купим и принесем домой, кто будет за ней ухаживать?",
+            "tj": "Ҳайвонҳо мисли кӯдаконанд, ба нигоҳубин ниёз доранд. Агар ба хона барем, кӣ нигоҳубин мекунад?"
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "我照顾啊。",
+          "pinyin": "Wǒ zhàogu a.",
+          "text": {
+            "uz": "Men qarayman-da.",
+            "ru": "Я буду ухаживать.",
+            "tj": "Ман нигоҳубин мекунам."
+          }
+        },
+        {
+          "speaker": "妈妈",
+          "zh": "这段时间你自己的衣服都没洗，你能照顾好它吗？",
+          "pinyin": "Zhè duàn shíjiān nǐ zìjǐ de yīfu dōu méi xǐ, nǐ néng zhàogu hǎo tā ma?",
+          "text": {
+            "uz": "Bu davrda o'zingning kiyimingni ham yuvmading, uni yaxshi qaray olasanmi?",
+            "ru": "В последнее время ты даже свою одежду не стирал, сможешь ли хорошо за ней ухаживать?",
+            "tj": "Ин муддат либоси худатро ҳам нашустаӣ, ӯро хуб нигоҳубин карда метавонӣ?"
+          }
+        },
+        {
+          "speaker": "小明",
+          "zh": "只要你给我买，我就能照顾好它。",
+          "pinyin": "Zhǐyào nǐ gěi wǒ mǎi, wǒ jiù néng zhàogu hǎo tā.",
+          "text": {
+            "uz": "Agar menga olib bersangiz, uni yaxshi qaray olaman.",
+            "ru": "Если ты мне ее купишь, я смогу хорошо за ней ухаживать.",
+            "tj": "Агар барои ман харед, ман ӯро хуб нигоҳубин карда метавонам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Kompaniyada ish suhbati",
+        "ru": "Собеседование в компании",
+        "tj": "Мусоҳибаи корӣ дар ширкат"
+      },
+      "dialogue": [
+        {
+          "speaker": "经理",
+          "zh": "说说你为什么选择来我们公司工作。",
+          "pinyin": "Shuōshuo nǐ wèi shénme xuǎnzé lái wǒmen gōngsī gōngzuò.",
+          "text": {
+            "uz": "Nega bizning kompaniyamizda ishlashni tanlaganingizni aytib bering.",
+            "ru": "Расскажите, почему вы решили работать в нашей компании.",
+            "tj": "Бигӯед, чаро кор дар ширкати моро интихоб кардед."
+          }
+        },
+        {
+          "speaker": "学生",
+          "zh": "贵公司不但很有名，而且工作环境好。",
+          "pinyin": "Guì gōngsī bùdàn hěn yǒumíng, érqiě gōngzuò huánjìng hǎo.",
+          "text": {
+            "uz": "Sizning kompaniyangiz nafaqat mashhur, balki ish muhiti ham yaxshi.",
+            "ru": "Ваша компания не только известна, но и рабочая среда хорошая.",
+            "tj": "Ширкати шумо на танҳо машҳур аст, балки муҳити корӣ ҳам хуб аст."
+          }
+        },
+        {
+          "speaker": "经理",
+          "zh": "做这个工作有点儿累，需要经常去外地。你家人同意吗？",
+          "pinyin": "Zuò zhège gōngzuò yǒudiǎnr lèi, xūyào jīngcháng qù wàidì. Nǐ jiārén tóngyì ma?",
+          "text": {
+            "uz": "Bu ish biroz charchatadi, tez-tez boshqa joyga borish kerak. Oilangiz rozi bo'ladimi?",
+            "ru": "Эта работа немного утомительная, нужно часто ездить в другие места. Ваша семья согласна?",
+            "tj": "Ин кор каме хастакунанда аст, бояд зуд-зуд ба ҷойҳои дигар рафт. Оилаатон розӣ аст?"
+          }
+        },
+        {
+          "speaker": "学生",
+          "zh": "只要我愿意，我相信他们就会同意的。",
+          "pinyin": "Zhǐyào wǒ yuànyì, wǒ xiāngxìn tāmen jiù huì tóngyì de.",
+          "text": {
+            "uz": "Agar o'zim xohlasam, ular rozi bo'lishiga ishonaman.",
+            "ru": "Если я сам этого хочу, я верю, что они согласятся.",
+            "tj": "Агар худам хоҳам, бовар дорам онҳо розӣ мешаванд."
+          }
+        },
+        {
+          "speaker": "经理",
+          "zh": "好，那你明天来上班吧。关于这个工作，还有什么问题吗？",
+          "pinyin": "Hǎo, nà nǐ míngtiān lái shàng bān ba. Guānyú zhège gōngzuò, hái yǒu shénme wèntí ma?",
+          "text": {
+            "uz": "Yaxshi, unda ertaga ishga keling. Bu ish haqida yana savolingiz bormi?",
+            "ru": "Хорошо, тогда завтра приходите на работу. Есть еще вопросы по поводу этой работы?",
+            "tj": "Хуб, пас пагоҳ ба кор биёед. Дар бораи ин кор боз саволе доред?"
+          }
+        },
+        {
+          "speaker": "学生",
+          "zh": "没有了，谢谢您给我这个机会，我会努力的。",
+          "pinyin": "Méiyǒu le, xièxie nín gěi wǒ zhège jīhuì, wǒ huì nǔlì de.",
+          "text": {
+            "uz": "Yo'q, bu imkoniyatni berganingiz uchun rahmat, men harakat qilaman.",
+            "ru": "Нет, спасибо, что дали мне эту возможность, я буду стараться.",
+            "tj": "Не, ташаккур, ки ба ман ин имкониятро додед, ман кӯшиш мекунам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Turli madaniyatlar haqida matn",
+        "ru": "Текст о разных культурах",
+        "tj": "Матн дар бораи фарҳангҳои гуногун"
+      },
+      "dialogue": [
+        {
+          "speaker": "旁白",
+          "zh": "不同的国家有不同的文化，每种文化都有自己的特点。到了一个新环境，你会觉得什么都很新鲜，而且还会觉得有点儿奇怪：有些国家的人名写在姓前面，有些国家的人名写在姓后面，但是只要经过一段时间，就会慢慢地习惯。",
+          "pinyin": "Bùtóng de guójiā yǒu bùtóng de wénhuà, měi zhǒng wénhuà dōu yǒu zìjǐ de tèdiǎn. Dào le yí ge xīn huánjìng, nǐ huì juéde shénme dōu hěn xīnxiān, érqiě hái huì juéde yǒudiǎnr qíguài: yǒuxiē guójiā de rénmíng xiě zài xìng qiánmiàn, yǒuxiē guójiā de rénmíng xiě zài xìng hòumiàn, dànshì zhǐyào jīngguò yí duàn shíjiān, jiù huì mànmàn de xíguàn.",
+          "text": {
+            "uz": "Turli mamlakatlarda turli madaniyatlar bor, har bir madaniyatning o'z xususiyati bor. Yangi muhitga borganda hamma narsa yangi tuyuladi, hatto biroz g'alati ham ko'rinadi: ba'zi mamlakatlarda odam ismi familiyadan oldin yoziladi, ba'zilarida familiyadan keyin yoziladi, lekin biroz vaqt o'tsa, asta-sekin ko'nikib ketasiz.",
+            "ru": "В разных странах разные культуры, у каждой культуры есть свои особенности. Попав в новую среду, вы почувствуете, что все свежее и новое, а также немного странное: в некоторых странах имя пишут перед фамилией, в других - после фамилии, но если пройдет некоторое время, постепенно привыкнешь.",
+            "tj": "Дар кишварҳои гуногун фарҳангҳои гуногун ҳастанд, ҳар фарҳанг хусусияти худро дорад. Ба муҳити нав равед, ҳама чиз нав менамояд ва каме аҷиб ҳам метобад: дар баъзе кишварҳо номи одам пеш аз насаб навишта мешавад, дар баъзе кишварҳо баъд аз насаб, аммо агар каме вақт гузарад, оҳиста-оҳиста одат мекунед."
           }
         }
       ]
@@ -221,91 +532,238 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "社交媒体",
-            "pinyin": "shèjiāo méitǐ",
-            "pos": "n.",
+            "no": 1,
+            "zh": "向",
+            "pinyin": "xiàng",
+            "pos": "prep.",
             "meaning": {
-              "uz": "ijtimoiy tarmoq",
-              "ru": "социальные сети",
-              "tj": "шабакаҳои иҷтимоӣ"
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "发布",
-            "pinyin": "fābù",
+            "no": 2,
+            "zh": "万",
+            "pinyin": "wàn",
+            "pos": "num.",
+            "meaning": {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "只",
+            "pinyin": "zhī",
+            "pos": "m.",
+            "meaning": {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "嘴",
+            "pinyin": "zuǐ",
+            "pos": "n.",
+            "meaning": {
+              "uz": "og'iz",
+              "ru": "рот",
+              "tj": "даҳон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "动物",
+            "pinyin": "dòngwù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "hayvon",
+              "ru": "животное",
+              "tj": "ҳайвон"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "段",
+            "pinyin": "duàn",
+            "pos": "m.",
+            "meaning": {
+              "uz": "davr, qism uchun hisob so'zi",
+              "ru": "отрезок, период; счетное слово для частей",
+              "tj": "давра, қисм; ҳисобвожа"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "不但……而且……",
+            "pinyin": "bùdàn... érqiě...",
+            "pos": "conj.",
+            "meaning": {
+              "uz": "nafaqat..., balki...",
+              "ru": "не только..., но и...",
+              "tj": "на танҳо..., балки..."
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "有名",
+            "pinyin": "yǒumíng",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "mashhur",
+              "ru": "известный",
+              "tj": "машҳур"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "同意",
+            "pinyin": "tóngyì",
             "pos": "v.",
             "meaning": {
-              "uz": "e’lon qilmoq",
-              "ru": "публиковать",
-              "tj": "нашр кардан"
+              "uz": "rozi bo'lmoq",
+              "ru": "соглашаться",
+              "tj": "розӣ шудан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "评论",
-            "pinyin": "pínglùn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "izoh",
-              "ru": "комментарий",
-              "tj": "шарҳ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "点赞",
-            "pinyin": "diǎnzàn",
+            "no": 10,
+            "zh": "相信",
+            "pinyin": "xiāngxìn",
             "pos": "v.",
             "meaning": {
-              "uz": "layk bosmoq",
-              "ru": "ставить лайк",
-              "tj": "лайк мондан"
+              "uz": "ishonmoq",
+              "ru": "верить",
+              "tj": "бовар кардан"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "粉丝",
-            "pinyin": "fěnsī",
+            "no": 11,
+            "zh": "关于",
+            "pinyin": "guānyú",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "haqida, to'g'risida",
+              "ru": "о, относительно",
+              "tj": "дар бораи"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "机会",
+            "pinyin": "jīhuì",
             "pos": "n.",
             "meaning": {
-              "uz": "obunachi, muxlis",
-              "ru": "подписчик, фанат",
-              "tj": "обуначӣ, мухлис"
+              "uz": "imkoniyat",
+              "ru": "возможность, шанс",
+              "tj": "имконият"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "分享",
-            "pinyin": "fēnxiǎng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ulashmoq",
-              "ru": "делиться",
-              "tj": "мубодила кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "隐私",
-            "pinyin": "yǐnsī",
+            "no": 13,
+            "zh": "国家",
+            "pinyin": "guójiā",
             "pos": "n.",
             "meaning": {
-              "uz": "maxfiylik",
-              "ru": "приватность",
-              "tj": "махфият"
+              "uz": "davlat, mamlakat",
+              "ru": "страна, государство",
+              "tj": "давлат, кишвар"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 14,
+            "zh": "种",
+            "pinyin": "zhǒng",
+            "pos": "m.",
+            "meaning": {
+              "uz": "tur, xil",
+              "ru": "вид, тип",
+              "tj": "навъ, гуна"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 15,
+            "zh": "特点",
+            "pinyin": "tèdiǎn",
+            "pos": "n.",
+            "meaning": {
+              "uz": "xususiyat",
+              "ru": "особенность",
+              "tj": "хусусият"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 16,
+            "zh": "奇怪",
+            "pinyin": "qíguài",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "g'alati",
+              "ru": "странный",
+              "tj": "аҷиб, ғалатӣ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 17,
+            "zh": "地",
+            "pinyin": "de",
+            "pos": "part.",
+            "meaning": {
+              "uz": "ravish yasovchi yuklama",
+              "ru": "частица между обстоятельством и глаголом",
+              "tj": "ҳиссача байни ҳол ва феъл"
             }
           }
         }
@@ -323,9 +781,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "社交媒体 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 社交媒体:",
-            "tj": "Маънои калимаи 社交媒体-ро интихоб кунед:"
+            "uz": "向 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 向:",
+            "tj": "Маънои калимаи 向-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +792,39 @@
           },
           "options": [
             {
-              "uz": "ijtimoiy tarmoq",
-              "ru": "социальные сети",
-              "tj": "шабакаҳои иҷтимоӣ"
+              "uz": "og'iz",
+              "ru": "рот",
+              "tj": "даҳон"
             },
             {
-              "uz": "e’lon qilmoq",
-              "ru": "публиковать",
-              "tj": "нашр кардан"
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
             },
             {
-              "uz": "izoh",
-              "ru": "комментарий",
-              "tj": "шарҳ"
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
             },
             {
-              "uz": "layk bosmoq",
-              "ru": "ставить лайк",
-              "tj": "лайк мондан"
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "社交媒体 = ijtimoiy tarmoq (shèjiāo méitǐ)",
-            "ru": "社交媒体 = социальные сети (shèjiāo méitǐ)",
-            "tj": "社交媒体 = шабакаҳои иҷтимоӣ (shèjiāo méitǐ)"
+            "uz": "向 = tomon, ga (xiàng)",
+            "ru": "向 = к, по направлению к (xiàng)",
+            "tj": "向 = ба сӯи, ба (xiàng)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "社交媒体 talaffuzini tanlang:",
-            "ru": "Выберите произношение 社交媒体:",
-            "tj": "Талаффузи 社交媒体-ро интихоб кунед:"
+            "uz": "万 talaffuzini tanlang:",
+            "ru": "Выберите произношение 万:",
+            "tj": "Талаффузи 万-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +832,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shèjiāo méitǐ",
-            "fābù",
-            "pínglùn",
-            "diǎnzàn"
+            "xiàng",
+            "zuǐ",
+            "wàn",
+            "zhī"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "社交媒体 — shèjiāo méitǐ",
-            "ru": "社交媒体 — shèjiāo méitǐ",
-            "tj": "社交媒体 — shèjiāo méitǐ"
+            "uz": "万 — wàn",
+            "ru": "万 — wàn",
+            "tj": "万 — wàn"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'ijtimoiy tarmoq' xitoycha nima?",
-            "ru": "'социальные сети' по-китайски?",
-            "tj": "'шабакаҳои иҷтимоӣ' ба чинӣ чист?"
+            "uz": "'ayrim hayvonlar uchun hisob so'zi' xitoycha qaysi?",
+            "ru": "'счетное слово для некоторых животных' по-китайски?",
+            "tj": "'ҳисобвожа барои баъзе ҳайвонҳо' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "社交媒体",
-            "发布",
-            "评论",
-            "点赞"
+            "万",
+            "只",
+            "嘴",
+            "向"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "社交媒体 = ijtimoiy tarmoq (shèjiāo méitǐ)",
-            "ru": "社交媒体 = социальные сети (shèjiāo méitǐ)",
-            "tj": "社交媒体 = шабакаҳои иҷтимоӣ (shèjiāo méitǐ)"
+            "uz": "ayrim hayvonlar uchun hisob so'zi = 只 (zhī)",
+            "ru": "счетное слово для некоторых животных = 只 (zhī)",
+            "tj": "ҳисобвожа барои баъзе ҳайвонҳо = 只 (zhī)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "fābù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается fābù?",
-            "tj": "fābù кадом иероглиф аст?"
+            "uz": "zuǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zuǐ?",
+            "tj": "zuǐ кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,90 +882,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "发布",
-            "社交媒体",
-            "评论",
-            "点赞"
+            "向",
+            "万",
+            "嘴",
+            "只"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "发布 = e’lon qilmoq (fābù)",
-            "ru": "发布 = публиковать (fābù)",
-            "tj": "发布 = нашр кардан (fābù)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'社交媒体' iborasini tuzing",
-            "ru": "Соберите фразу '社交媒体'",
-            "tj": "Ибораи '社交媒体'-ро созед"
-          },
-          "tokens": [
-            "社交媒体",
-            "发布",
-            "评论",
-            "点赞"
-          ],
-          "answer_tokens": [
-            "社交媒体"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 社交媒体",
-            "ru": "Правильный порядок: 社交媒体",
-            "tj": "Тартиби дуруст: 社交媒体"
+            "uz": "嘴 = og'iz (zuǐ)",
+            "ru": "嘴 = рот (zuǐ)",
+            "tj": "嘴 = даҳон (zuǐ)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "社交媒体",
+              "向",
               {
-                "uz": "ijtimoiy tarmoq",
-                "ru": "социальные сети",
-                "tj": "шабакаҳои иҷтимоӣ"
+                "uz": "tomon, ga",
+                "ru": "к, по направлению к",
+                "tj": "ба сӯи, ба"
               }
             ],
             [
-              "发布",
+              "万",
               {
-                "uz": "e’lon qilmoq",
-                "ru": "публиковать",
-                "tj": "нашр кардан"
+                "uz": "o'n ming",
+                "ru": "десять тысяч",
+                "tj": "даҳ ҳазор"
               }
             ],
             [
-              "评论",
+              "只",
               {
-                "uz": "izoh",
-                "ru": "комментарий",
-                "tj": "шарҳ"
+                "uz": "ayrim hayvonlar uchun hisob so'zi",
+                "ru": "счетное слово для некоторых животных",
+                "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
               }
             ],
             [
-              "点赞",
+              "嘴",
               {
-                "uz": "layk bosmoq",
-                "ru": "ставить лайк",
-                "tj": "лайк мондан"
+                "uz": "og'iz",
+                "ru": "рот",
+                "tj": "даҳон"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____这次活动，你有什么想法？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "关于",
+            "只",
+            "向",
+            "万"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 关于 (guānyú) — haqida, to'g'risida",
+            "ru": "Верно: 关于 (guānyú) — о, относительно",
+            "tj": "Дуруст: 关于 (guānyú) — дар бораи"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "社交媒体",
-          "pinyin": "shèjiāo méitǐ",
+          "phrase": "向",
+          "pinyin": "xiàng",
           "translation": {
-            "uz": "Ijtimoiy tarmoqlar",
-            "ru": "Социальные сети",
-            "tj": "Шабакаҳои иҷтимоӣ"
+            "uz": "tomon, ga",
+            "ru": "к, по направлению к",
+            "tj": "ба сӯи, ба"
           }
         }
       ]
@@ -524,9 +981,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda 朋友 avval nima deydi?",
+            "ru": "Что 朋友 говорит в начале диалога?",
+            "tj": "Дар муколама 朋友 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -534,41 +991,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "老周，我打算买房子了，想向你借点儿钱。",
+            "好，钱下午打给你。你打算在哪儿买房？",
+            "还差5万块钱。",
+            "没问题，只要我有，就一定会借给你的。还差多少？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 老周，我打算买房子了，想向你借点儿钱。",
+            "ru": "Правильный ответ: 老周，我打算买房子了，想向你借点儿钱。",
+            "tj": "Ҷавоби дуруст: 老周，我打算买房子了，想向你借点儿钱。"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida 周明 nima deydi?",
+            "ru": "Что 周明 говорит в конце диалога?",
+            "tj": "Дар охири муколама 周明 чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "社交媒体。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "老周，我打算买房子了，想向你借点儿钱。",
+            "那你以后去医院就方便了。",
+            "还差5万块钱。",
+            "没问题，只要我有，就一定会借给你的。还差多少？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "B javobi: 社交媒体。",
-            "ru": "Ответ B: 社交媒体。",
-            "tj": "Ҷавоби B: 社交媒体。"
+            "uz": "To'g'ri javob: 那你以后去医院就方便了。",
+            "ru": "Правильный ответ: 那你以后去医院就方便了。",
+            "tj": "Ҷавоби дуруст: 那你以后去医院就方便了。"
           }
         }
       ]

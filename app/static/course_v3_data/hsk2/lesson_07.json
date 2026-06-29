@@ -2,122 +2,188 @@
   "schema_version": 2,
   "level": "hsk2",
   "lesson_id": 7,
-  "title": "昨天你做了什么",
+  "title": "你家离公司远吗",
   "subtitle": {
-    "uz": "Mavzu: O‘tgan zamon, 了 yuklamasi. Asosiy so'zlar, grammatika va dialog orqali o'rganing.",
-    "ru": "Тема: Прошедшее действие, частица 了. Изучайте через ключевые слова, грамматику и диалог.",
-    "tj": "Мавзуъ: Замони гузашта, ҳиссачаи 了. Бо калимаҳои асосӣ, грамматика ва муколама омӯзед."
+    "uz": "Masofa, yo'l vaqti va joylashuv haqida gapira olish; 还 ravishining ikkinchi ma'nosini, 就 vaqt ravishinini, 离 old ko'makchisini va 呢 yuklamasini o'zlashtirish.",
+    "ru": "Научиться говорить о расстоянии, времени в пути и местонахождении; освоить второе значение 还, наречие времени 就, предлог 离 и частицу 呢.",
+    "tj": "Омӯзиши гуфтан дар бораи масофа, вақти роҳ ва ҷойгиршавӣ; аз бар кардани маъноии дуввуми 还, зарфи вақтии 就, пешояндии 离 ва ҷузъаи 呢."
   },
   "active_words": [
     {
-      "zh": "昨天",
-      "pinyin": "zuótiān",
+      "no": 1,
+      "zh": "教室",
+      "pinyin": "jiàoshì",
       "pos": "n.",
       "meaning": {
-        "uz": "kecha",
-        "ru": "вчера",
-        "tj": "дирӯз"
-      },
-      "no": 1
+        "uz": "darsxona, sinf xonasi",
+        "ru": "классная комната, аудитория",
+        "tj": "синфхона, толори дарс"
+      }
     },
     {
-      "zh": "了",
-      "pinyin": "le",
-      "pos": "expr.",
-      "meaning": {
-        "uz": "tugallangan ish belgisi",
-        "ru": "частица завершения",
-        "tj": "нишонаи анҷоми амал"
-      },
-      "no": 2
-    },
-    {
-      "zh": "做饭",
-      "pinyin": "zuòfàn",
-      "pos": "v.",
-      "meaning": {
-        "uz": "ovqat pishirmoq",
-        "ru": "готовить еду",
-        "tj": "хӯрок пухтан"
-      },
-      "no": 3
-    },
-    {
-      "zh": "看电影",
-      "pinyin": "kàn diànyǐng",
-      "pos": "v.",
-      "meaning": {
-        "uz": "kino ko‘rmoq",
-        "ru": "смотреть фильм",
-        "tj": "филм дидан"
-      },
-      "no": 4
-    },
-    {
-      "zh": "买东西",
-      "pinyin": "mǎi dōngxi",
-      "pos": "v.",
-      "meaning": {
-        "uz": "xarid qilmoq",
-        "ru": "покупать вещи",
-        "tj": "харид кардан"
-      },
-      "no": 5
-    },
-    {
-      "zh": "回家",
-      "pinyin": "huí jiā",
-      "pos": "v.",
-      "meaning": {
-        "uz": "uyga qaytmoq",
-        "ru": "возвращаться домой",
-        "tj": "ба хона баргаштан"
-      },
-      "no": 6
-    },
-    {
-      "zh": "晚上",
-      "pinyin": "wǎnshang",
+      "no": 2,
+      "zh": "机场",
+      "pinyin": "jīchǎng",
       "pos": "n.",
       "meaning": {
-        "uz": "kechqurun",
-        "ru": "вечер",
-        "tj": "бегоҳ"
-      },
-      "no": 7
+        "uz": "aeroport",
+        "ru": "аэропорт",
+        "tj": "фурудгоҳ"
+      }
+    },
+    {
+      "no": 3,
+      "zh": "路",
+      "pinyin": "lù",
+      "pos": "n.",
+      "meaning": {
+        "uz": "yo'l, ko'cha",
+        "ru": "дорога, улица",
+        "tj": "роҳ, кӯча"
+      }
+    },
+    {
+      "no": 4,
+      "zh": "离",
+      "pinyin": "lí",
+      "pos": "prep.",
+      "meaning": {
+        "uz": "dan (masofa ifodalash uchun)",
+        "ru": "от, до (для выражения расстояния)",
+        "tj": "аз (барои ифодаи масофа)"
+      }
+    },
+    {
+      "no": 5,
+      "zh": "公司",
+      "pinyin": "gōngsī",
+      "pos": "n.",
+      "meaning": {
+        "uz": "kompaniya, firma",
+        "ru": "компания, фирма",
+        "tj": "ширкат, корхона"
+      }
+    },
+    {
+      "no": 6,
+      "zh": "远",
+      "pinyin": "yuǎn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "uzoq (masofa haqida)",
+        "ru": "далёкий, дальний",
+        "tj": "дур (дар бораи масофа)"
+      }
+    },
+    {
+      "no": 7,
+      "zh": "公共汽车",
+      "pinyin": "gōnggòng qìchē",
+      "pos": "n.",
+      "meaning": {
+        "uz": "avtobus (jamoat transporti)",
+        "ru": "автобус (общественный транспорт)",
+        "tj": "автобус (нақлиёти ҷамъиятӣ)"
+      }
+    },
+    {
+      "no": 8,
+      "zh": "小时",
+      "pinyin": "xiǎoshí",
+      "pos": "n.",
+      "meaning": {
+        "uz": "soat (vaqt o'lchovi)",
+        "ru": "час (единица времени)",
+        "tj": "соат (воҳиди вақт)"
+      }
+    },
+    {
+      "no": 9,
+      "zh": "慢",
+      "pinyin": "màn",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "sekin, asta",
+        "ru": "медленный",
+        "tj": "суст, оҳиста"
+      }
+    },
+    {
+      "no": 10,
+      "zh": "快",
+      "pinyin": "kuài",
+      "pos": "adj.",
+      "meaning": {
+        "uz": "tez, shoshilinch",
+        "ru": "быстрый",
+        "tj": "тез, чолок"
+      }
+    },
+    {
+      "no": 11,
+      "zh": "过",
+      "pinyin": "guò",
+      "pos": "v.",
+      "meaning": {
+        "uz": "o'tmoq; o'tkazmoq (bayramni)",
+        "ru": "проходить; отмечать (праздник)",
+        "tj": "гузаштан; ҷашн гирифтан"
+      }
+    },
+    {
+      "no": 12,
+      "zh": "走",
+      "pinyin": "zǒu",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yurib bormoq, ketmoq",
+        "ru": "идти пешком, уходить",
+        "tj": "пиёда рафтан, рафтан"
+      }
+    },
+    {
+      "no": 13,
+      "zh": "到",
+      "pinyin": "dào",
+      "pos": "v.",
+      "meaning": {
+        "uz": "yetib bormoq, kelmoq",
+        "ru": "добираться, прибывать",
+        "tj": "расидан, омадан"
+      }
     }
   ],
   "grammar": [
     {
       "no": 1,
       "title": {
-        "uz": "Asosiy mavzu iborasi",
-        "ru": "Ключевая фраза темы",
-        "tj": "Ибораи асосии мавзуъ"
+        "uz": "Ravish 还 — ikkinchi ma'nosi (hali, hanuz)",
+        "ru": "Наречие 还 — второе значение (ещё, по-прежнему)",
+        "tj": "Зарф 还 — маъноии дуввум (ҳанӯз, то ҳол)"
       },
-      "title_zh": "主题词语",
+      "title_zh": "语气副词“还”（2）",
       "rule": {
-        "uz": "Darsdagi asosiy ibora: 昨天你做了什么. Uni avval alohida o'qing, keyin gapda mavzu sifatida ishlating: 今天我们学习“昨天你做了什么”。",
-        "ru": "Ключевая фраза урока: 昨天你做了什么. Сначала прочитайте её отдельно, затем используйте как тему в предложении: 今天我们学习“昨天你做了什么”。",
-        "tj": "Ибораи асосии дарс: 昨天你做了什么. Аввал онро ҷудо хонед, баъд ҳамчун мавзуъ дар ҷумла истифода баред: 今天我们学习“昨天你做了什么”。"
+        "uz": "'还' ravishining ikkinchi ma'nosi — 'hali, hanuz'.\nBiror holat davom etayotganini yoki biror narsa hali sodir bo'lmaganini bildiradi.\nKo'pincha 呢 yuklama bilan birga keladi.",
+        "ru": "Второе значение наречия '还' — 'ещё, по-прежнему'.\nОбозначает продолжение какого-либо состояния или то, что что-то ещё не произошло.\nЧасто используется вместе с частицей 呢.",
+        "tj": "Маъноии дуввуми зарфи '还' — 'ҳанӯз, то ҳол'.\nНишон медиҳад, ки ягон ҳолат идома дорад ё ягон чиз ҳанӯз рӯй надодааст.\nАксар вақт бо ҷузъаи 呢 якҷоя истифода мешавад."
       },
       "examples": [
         {
-          "zh": "今天我们学习“昨天你做了什么”。",
-          "pinyin": "Jīntiān wǒmen xuéxí zuótiān nǐ zuò le shénme.",
+          "zh": "他还在教室学习呢。",
+          "pinyin": "Tā hái zài jiàoshì xuéxí ne.",
           "translation": {
-            "uz": "Biz O‘tgan zamon, 了 yuklamasi mavzusini o'rganamiz.",
-            "ru": "Мы изучаем тему: Прошедшее действие, частица 了.",
-            "tj": "Мо мавзӯи Замони гузашта, ҳиссачаи 了-ро меомӯзем."
+            "uz": "U hali darsxonada o'qiyapti.",
+            "ru": "Он ещё занимается в классе.",
+            "tj": "Вай ҳанӯз дар синфхона дарс мехонад."
           }
         },
         {
-          "zh": "这个词是昨天。",
-          "pinyin": "Zhège cí shì zuótiān.",
+          "zh": "离我的生日还有一个多星期。",
+          "pinyin": "Lí wǒ de shēngrì hái yǒu yí ge duō xīngqī.",
           "translation": {
-            "uz": "Bu so'z: kecha.",
-            "ru": "Это слово: вчера.",
-            "tj": "Ин калима: дирӯз."
+            "uz": "Tug'ilgan kunim hali bir haftadan ko'proq bor.",
+            "ru": "До моего дня рождения ещё больше недели.",
+            "tj": "То таваллуди ман ҳанӯз аз як ҳафта зиёд мемонад."
           }
         }
       ]
@@ -125,33 +191,101 @@
     {
       "no": 2,
       "title": {
-        "uz": "Savol-javob qolipi",
-        "ru": "Модель вопрос-ответ",
-        "tj": "Қолаби саволу ҷавоб"
+        "uz": "Vaqt ravishi 就 (tez, yaqinda, darhol)",
+        "ru": "Наречие времени 就 (скоро, быстро, сразу)",
+        "tj": "Зарфи вақт 就 (зуд, ба зудӣ, дарҳол)"
       },
-      "title_zh": "问答结构",
+      "title_zh": "时间副词“就”",
       "rule": {
-        "uz": "怎么读 savoli talaffuzni so'raydi. Javobda avval ieroglifni ko'rsatib, pinyin orqali to'g'ri o'qilishini eslab qoling.",
-        "ru": "Вопрос 怎么读 спрашивает произношение. В ответе сначала смотрите на иероглиф, затем запоминайте чтение через пиньинь.",
-        "tj": "Саволи 怎么读 талаффузро мепурсад. Дар ҷавоб аввал ба иероглиф нигоҳ кунед, баъд хондашро бо пинйин дар хотир доред."
+        "uz": "'就' ravishi vaqt ifodasida 'tez, yaqinda, darhol' ma'nosini beradi.\nBiror hodisa kutilgandan tezroq yoki yaqinroq bo'lishini ta'kidlaydi.",
+        "ru": "Наречие '就' в выражении времени означает 'скоро, быстро, сразу'.\nПодчёркивает, что событие произойдёт быстрее или ближе, чем ожидалось.",
+        "tj": "Зарфи '就' дар ифодаи вақт маъноии 'зуд, ба зудӣ, дарҳол'-ро медиҳад.\nТаъкид мекунад, ки ягон ҳодиса тезтар ё наздиктар аз он ки интизор буданд рӯй медиҳад."
       },
       "examples": [
         {
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "二十分钟就到。",
+          "pinyin": "Èrshí fēnzhōng jiù dào.",
           "translation": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Yigirma daqiqada yetib boraman.",
+            "ru": "Через двадцать минут буду.",
+            "tj": "Дар бист дақиқа мерасам."
           }
         },
         {
-          "zh": "昨天。",
-          "pinyin": "zuótiān.",
+          "zh": "走几分钟就到了。",
+          "pinyin": "Zǒu jǐ fēnzhōng jiù dào le.",
           "translation": {
-            "uz": "昨天 — zuótiān deb o'qiladi.",
-            "ru": "昨天 читается как zuótiān.",
-            "tj": "昨天 ҳамчун zuótiān хонда мешавад."
+            "uz": "Bir necha daqiqa yursak yetib boramiz.",
+            "ru": "Несколько минут пешком — и на месте.",
+            "tj": "Чанд дақиқа пиёда равем — мерасем."
+          }
+        }
+      ]
+    },
+    {
+      "no": 3,
+      "title": {
+        "uz": "Old ko'makchi 离 (masofani ifodalash)",
+        "ru": "Предлог 离 (выражение расстояния)",
+        "tj": "Пешоянди 离 (ифодаи масофа)"
+      },
+      "title_zh": "离",
+      "rule": {
+        "uz": "'离' old ko'makchisi ikki joy yoki ikki vaqt o'rtasidagi masofani bildiradi.\nGap tuzilishi: A + 离 + B + masofa/vaqt.\nO'zbek tilidagi '...dan (qancha uzoqlikda)' iborasiga to'g'ri keladi.",
+        "ru": "Предлог '离' выражает расстояние между двумя местами или промежуток времени.\nСтруктура предложения: A + 离 + B + расстояние/время.\nСоответствует русскому 'от ... (на каком расстоянии)'.",
+        "tj": "Пешоянди '离' масофаро байни ду ҷой ё фосилаи вақтиро нишон медиҳад.\nСохтори ҷумла: A + 离 + B + масофа/вақт.\nБа тоҷикӣ 'аз ... (дар чанд масофа)' мувофиқат мекунад."
+      },
+      "examples": [
+        {
+          "zh": "你家离公司远吗？",
+          "pinyin": "Nǐ jiā lí gōngsī yuǎn ma?",
+          "translation": {
+            "uz": "Uying kompaniyadan uzoqmi?",
+            "ru": "Ваш дом далеко от компании?",
+            "tj": "Хонаи ту аз ширкат дур аст?"
+          }
+        },
+        {
+          "zh": "离这儿不远有一个中国饭馆。",
+          "pinyin": "Lí zhèr bù yuǎn yǒu yí ge Zhōngguó fànguǎn.",
+          "translation": {
+            "uz": "Bu yerdan uzoq bo'lmagan yerda xitoy restoran bor.",
+            "ru": "Недалеко отсюда есть китайский ресторан.",
+            "tj": "Аз ин ҷо дур нест як тарабхонаи чинӣ ҳаст."
+          }
+        }
+      ]
+    },
+    {
+      "no": 4,
+      "title": {
+        "uz": "Modal yuklamasi 呢 (davomiylik, ta'kid, -chi?)",
+        "ru": "Модальная частица 呢 (продолжение, усиление, -а?)",
+        "tj": "Ҷузъаи оҳангии 呢 (давомнокӣ, таъкид, -чӣ?)"
+      },
+      "title_zh": "语气助词“呢”",
+      "rule": {
+        "uz": "'呢' yuklama gap oxirida kelib davomiylik yoki ta'kidlash bildiradigan ohang hosil qiladi.\nKo'pincha hayrat yoki ta'kid ifodalaydi.\nSavol gapida esa qisqa 'a, -chi?' ma'nosini beradi.",
+        "ru": "Частица '呢' в конце предложения создаёт интонацию продолжения или усиления.\nЧасто выражает удивление или подчёркивание.\nВ вопросительном предложении имеет значение 'а?, ну?'.",
+        "tj": "Ҷузъаи '呢' дар охири ҷумла оҳанги давомнокӣ ё таъкидро ба вуҷуд меорад.\nАксар вақт шигифт ё таъкидро ифода мекунад.\nДар ҷумлаи саволӣ маъноии '-чӣ? -а?' дорад."
+      },
+      "examples": [
+        {
+          "zh": "坐公共汽车要一个多小时呢！",
+          "pinyin": "Zuò gōnggòng qìchē yào yí ge duō xiǎoshí ne!",
+          "translation": {
+            "uz": "Avtobus bilan bir soatdan ko'proq vaqt ketadi!",
+            "ru": "На автобусе больше часа!",
+            "tj": "Бо автобус аз як соат зиёд лозим!"
+          }
+        },
+        {
+          "zh": "你现在在哪儿呢？",
+          "pinyin": "Nǐ xiànzài zài nǎr ne?",
+          "translation": {
+            "uz": "Hozir qayerdasen?",
+            "ru": "Где ты сейчас?",
+            "tj": "Ту ҳоло куҷоӣ?"
           }
         }
       ]
@@ -160,49 +294,196 @@
   "dialogues": [
     {
       "scene": {
-        "uz": "O‘tgan zamon, 了 yuklamasi",
-        "ru": "Прошедшее действие, частица 了",
-        "tj": "Замони гузашта, ҳиссачаи 了"
+        "uz": "Uyda",
+        "ru": "Дома",
+        "tj": "Дар хона"
       },
       "dialogue": [
         {
           "speaker": "A",
-          "zh": "今天我们学习“昨天你做了什么”。",
-          "pinyin": "Jīntiān wǒmen xuéxí zuótiān nǐ zuò le shénme.",
+          "zh": "大卫回来了吗？",
+          "pinyin": "Dàwèi huílái le ma?",
           "text": {
-            "uz": "Bugun O‘tgan zamon, 了 yuklamasi mavzusini o'rganamiz.",
-            "ru": "Сегодня изучаем тему: Прошедшее действие, частица 了.",
-            "tj": "Имрӯз мавзӯи Замони гузашта, ҳиссачаи 了-ро меомӯзем."
+            "uz": "Devid qaytib keldimi?",
+            "ru": "Дэвид вернулся?",
+            "tj": "Дэвид баргашт?"
           }
         },
         {
           "speaker": "B",
-          "zh": "好，这个话题很有用。",
-          "pinyin": "Hǎo, zhège huàtí hěn yǒuyòng.",
+          "zh": "没有，他还在教室学习呢。",
+          "pinyin": "Méiyǒu, tā hái zài jiàoshì xuéxí ne.",
           "text": {
-            "uz": "Yaxshi, bu mavzu juda foydali.",
-            "ru": "Хорошо, эта тема очень полезна.",
-            "tj": "Хуб, ин мавзуъ хеле фоиданок аст."
+            "uz": "Yo'q, u hali darsxonada o'qiyapti.",
+            "ru": "Нет, он ещё занимается в классе.",
+            "tj": "Не, вай ҳанӯз дар синфхона дарс мехонад."
           }
         },
         {
           "speaker": "A",
-          "zh": "这个词怎么读？",
-          "pinyin": "Zhège cí zěnme dú?",
+          "zh": "已经9点多了，他怎么还在学习？",
+          "pinyin": "Yǐjīng jiǔ diǎn duō le, tā zěnme hái zài xuéxí?",
           "text": {
-            "uz": "Bu so‘z qanday o‘qiladi?",
-            "ru": "Как читается это слово?",
-            "tj": "Ин калима чӣ хел хонда мешавад?"
+            "uz": "Soat to'qqizdan oshdi, u nega hali ham o'qiyapti?",
+            "ru": "Уже больше девяти, почему он ещё занимается?",
+            "tj": "Аллакай аз соати нӯҳ гузашт, чаро вай ҳанӯз дарс мехонад?"
           }
         },
         {
           "speaker": "B",
-          "zh": "昨天。",
-          "pinyin": "zuótiān.",
+          "zh": "明天有考试，他说今天要好好准备。",
+          "pinyin": "Míngtiān yǒu kǎoshì, tā shuō jīntiān yào hǎohǎo zhǔnbèi.",
           "text": {
-            "uz": "昨天 — zuótiān deb o'qiladi.",
-            "ru": "昨天 читается как zuótiān.",
-            "tj": "昨天 ҳамчун zuótiān хонда мешавад."
+            "uz": "Ertaga imtihon bor, u bugun yaxshilab tayyorlanaman, dedi.",
+            "ru": "Завтра экзамен, он сказал, что сегодня хочет хорошо подготовиться.",
+            "tj": "Фардо имтиҳон аст, вай гуфт, ки имрӯз мехоҳад хуб омода шавад."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Aeroportga yo'lda",
+        "ru": "По дороге в аэропорт",
+        "tj": "Дар роҳ ба фурудгоҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你现在在哪儿呢？",
+          "pinyin": "Nǐ xiànzài zài nǎr ne?",
+          "text": {
+            "uz": "Hozir qayerdasen?",
+            "ru": "Где ты сейчас?",
+            "tj": "Ту ҳоло куҷоӣ?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "在去机场的路上。你已经到了吗？",
+          "pinyin": "Zài qù jīchǎng de lùshang. Nǐ yǐjīng dào le ma?",
+          "text": {
+            "uz": "Aeroportga ketayotgan yo'ldaman. Sen allaqachon yetib kelding mi?",
+            "ru": "На пути в аэропорт. Ты уже добрался?",
+            "tj": "Дар роҳ ба фурудгоҳам. Оё ту аллакай расидӣ?"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "我下飞机了。你还有多长时间能到这儿？",
+          "pinyin": "Wǒ xià fēijī le. Nǐ hái yǒu duō cháng shíjiān néng dào zhèr?",
+          "text": {
+            "uz": "Men samolyotdan tushdim. Sening yetib kelishingga qancha vaqt qoldi?",
+            "ru": "Я уже вышел из самолёта. Сколько тебе ещё ехать?",
+            "tj": "Ман аз ҳавопаймо фаромадам. То ба ин ҷо расидани ту чанд вақт мемонад?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "二十分钟就到。",
+          "pinyin": "Èrshí fēnzhōng jiù dào.",
+          "text": {
+            "uz": "Yigirma daqiqada yetib boraman.",
+            "ru": "Через двадцать минут буду.",
+            "tj": "Дар бист дақиқа мерасам."
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Sport zalida",
+        "ru": "В спортзале",
+        "tj": "Дар толори варзиш"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "你家离公司远吗？",
+          "pinyin": "Nǐ jiā lí gōngsī yuǎn ma?",
+          "text": {
+            "uz": "Uying kompaniyadan uzoqmi?",
+            "ru": "Ваш дом далеко от компании?",
+            "tj": "Хонаи ту аз ширкат дур аст?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "很远，坐公共汽车要一个多小时呢！",
+          "pinyin": "Hěn yuǎn, zuò gōnggòng qìchē yào yí ge duō xiǎoshí ne!",
+          "text": {
+            "uz": "Juda uzoq, avtobus bilan bir soatdan ko'proq vaqt ketadi!",
+            "ru": "Очень далеко, на автобусе больше часа!",
+            "tj": "Бисёр дур, бо автобус аз як соат зиёд лозим!"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "坐公共汽车太慢了，你怎么不开车？",
+          "pinyin": "Zuò gōnggòng qìchē tài màn le, nǐ zěnme bù kāi chē?",
+          "text": {
+            "uz": "Avtobus juda sekin, nega mashina haydamaysan?",
+            "ru": "На автобусе слишком медленно, почему ты не едешь на машине?",
+            "tj": "Бо автобус хеле суст, чаро ту мошин намерони?"
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "开车也不快，路上车太多了！",
+          "pinyin": "Kāi chē yě bù kuài, lùshang chē tài duō le!",
+          "text": {
+            "uz": "Mashina ham tez emas, yo'lda mashina juda ko'p!",
+            "ru": "На машине тоже не быстро, на дороге слишком много машин!",
+            "tj": "Мошин ҳам тез нест, дар роҳ мошин бисёр зиёд!"
+          }
+        }
+      ]
+    },
+    {
+      "scene": {
+        "uz": "Yo'lda",
+        "ru": "В дороге",
+        "tj": "Дар роҳ"
+      },
+      "dialogue": [
+        {
+          "speaker": "A",
+          "zh": "今天晚上我们一起吃饭吧，给你过生日。",
+          "pinyin": "Jīntiān wǎnshang wǒmen yìqǐ chīfàn ba, gěi nǐ guò shēngrì.",
+          "text": {
+            "uz": "Bugun kechqurun birga ovqatlanaylik, senga tug'ilgan kunni nishonlaymiz.",
+            "ru": "Давай сегодня вечером вместе поужинаем, отметим твой день рождения.",
+            "tj": "Биёед имшаб якҷоя шом бихӯрем, таваллуди туро ҷашн мегирем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "今天？离我的生日还有一个多星期呢！",
+          "pinyin": "Jīntiān? Lí wǒ de shēngrì hái yǒu yí ge duō xīngqī ne!",
+          "text": {
+            "uz": "Bugunmi? Mening tug'ilgan kunim hali bir haftadan ko'proq bor!",
+            "ru": "Сегодня? До моего дня рождения ещё больше недели!",
+            "tj": "Имрӯз? То таваллуди ман ҳанӯз аз як ҳафта зиёд мемонад!"
+          }
+        },
+        {
+          "speaker": "A",
+          "zh": "下个星期我要去北京，今天过吧。",
+          "pinyin": "Xià ge xīngqī wǒ yào qù Běijīng, jīntiān guò ba.",
+          "text": {
+            "uz": "Kelgusi hafta men Pekinga ketaman, shuning uchun bugun nishonlaymiz.",
+            "ru": "На следующей неделе я еду в Пекин, давай отметим сегодня.",
+            "tj": "Ҳафтаи оянда ман ба Пекин меравам, биёед имрӯз ҷашн гирем."
+          }
+        },
+        {
+          "speaker": "B",
+          "zh": "好吧，离这儿不远有一个中国饭馆，走几分钟就到了。",
+          "pinyin": "Hǎo ba, lí zhèr bù yuǎn yǒu yí ge Zhōngguó fànguǎn, zǒu jǐ fēnzhōng jiù dào le.",
+          "text": {
+            "uz": "Mayli, bu yerdan uzoq bo'lmagan yerda xitoy restoran bor, bir necha daqiqa yursak yetib boramiz.",
+            "ru": "Хорошо, недалеко отсюда есть китайский ресторан, пешком несколько минут.",
+            "tj": "Хуб, аз ин ҷо дур нест як тарабхонаи чинӣ ҳаст, чанд дақиқа пиёда рафтем мерасем."
           }
         }
       ]
@@ -221,91 +502,182 @@
         {
           "type": "active_word",
           "word": {
-            "zh": "昨天",
-            "pinyin": "zuótiān",
+            "no": 1,
+            "zh": "教室",
+            "pinyin": "jiàoshì",
             "pos": "n.",
             "meaning": {
-              "uz": "kecha",
-              "ru": "вчера",
-              "tj": "дирӯз"
+              "uz": "darsxona, sinf xonasi",
+              "ru": "классная комната, аудитория",
+              "tj": "синфхона, толори дарс"
             }
           }
         },
         {
           "type": "active_word",
           "word": {
-            "zh": "了",
-            "pinyin": "le",
-            "pos": "expr.",
-            "meaning": {
-              "uz": "tugallangan ish belgisi",
-              "ru": "частица завершения",
-              "tj": "нишонаи анҷоми амал"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "做饭",
-            "pinyin": "zuòfàn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ovqat pishirmoq",
-              "ru": "готовить еду",
-              "tj": "хӯрок пухтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "看电影",
-            "pinyin": "kàn diànyǐng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "kino ko‘rmoq",
-              "ru": "смотреть фильм",
-              "tj": "филм дидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "买东西",
-            "pinyin": "mǎi dōngxi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "xarid qilmoq",
-              "ru": "покупать вещи",
-              "tj": "харид кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "回家",
-            "pinyin": "huí jiā",
-            "pos": "v.",
-            "meaning": {
-              "uz": "uyga qaytmoq",
-              "ru": "возвращаться домой",
-              "tj": "ба хона баргаштан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "zh": "晚上",
-            "pinyin": "wǎnshang",
+            "no": 2,
+            "zh": "机场",
+            "pinyin": "jīchǎng",
             "pos": "n.",
             "meaning": {
-              "uz": "kechqurun",
-              "ru": "вечер",
-              "tj": "бегоҳ"
+              "uz": "aeroport",
+              "ru": "аэропорт",
+              "tj": "фурудгоҳ"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 3,
+            "zh": "路",
+            "pinyin": "lù",
+            "pos": "n.",
+            "meaning": {
+              "uz": "yo'l, ko'cha",
+              "ru": "дорога, улица",
+              "tj": "роҳ, кӯча"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 4,
+            "zh": "离",
+            "pinyin": "lí",
+            "pos": "prep.",
+            "meaning": {
+              "uz": "dan (masofa ifodalash uchun)",
+              "ru": "от, до (для выражения расстояния)",
+              "tj": "аз (барои ифодаи масофа)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 5,
+            "zh": "公司",
+            "pinyin": "gōngsī",
+            "pos": "n.",
+            "meaning": {
+              "uz": "kompaniya, firma",
+              "ru": "компания, фирма",
+              "tj": "ширкат, корхона"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 6,
+            "zh": "远",
+            "pinyin": "yuǎn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "uzoq (masofa haqida)",
+              "ru": "далёкий, дальний",
+              "tj": "дур (дар бораи масофа)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 7,
+            "zh": "公共汽车",
+            "pinyin": "gōnggòng qìchē",
+            "pos": "n.",
+            "meaning": {
+              "uz": "avtobus (jamoat transporti)",
+              "ru": "автобус (общественный транспорт)",
+              "tj": "автобус (нақлиёти ҷамъиятӣ)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 8,
+            "zh": "小时",
+            "pinyin": "xiǎoshí",
+            "pos": "n.",
+            "meaning": {
+              "uz": "soat (vaqt o'lchovi)",
+              "ru": "час (единица времени)",
+              "tj": "соат (воҳиди вақт)"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 9,
+            "zh": "慢",
+            "pinyin": "màn",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "sekin, asta",
+              "ru": "медленный",
+              "tj": "суст, оҳиста"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 10,
+            "zh": "快",
+            "pinyin": "kuài",
+            "pos": "adj.",
+            "meaning": {
+              "uz": "tez, shoshilinch",
+              "ru": "быстрый",
+              "tj": "тез, чолок"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 11,
+            "zh": "过",
+            "pinyin": "guò",
+            "pos": "v.",
+            "meaning": {
+              "uz": "o'tmoq; o'tkazmoq (bayramni)",
+              "ru": "проходить; отмечать (праздник)",
+              "tj": "гузаштан; ҷашн гирифтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 12,
+            "zh": "走",
+            "pinyin": "zǒu",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yurib bormoq, ketmoq",
+              "ru": "идти пешком, уходить",
+              "tj": "пиёда рафтан, рафтан"
+            }
+          }
+        },
+        {
+          "type": "active_word",
+          "word": {
+            "no": 13,
+            "zh": "到",
+            "pinyin": "dào",
+            "pos": "v.",
+            "meaning": {
+              "uz": "yetib bormoq, kelmoq",
+              "ru": "добираться, прибывать",
+              "tj": "расидан, омадан"
             }
           }
         }
@@ -323,9 +695,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "昨天 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 昨天:",
-            "tj": "Маънои калимаи 昨天-ро интихоб кунед:"
+            "uz": "教室 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 教室:",
+            "tj": "Маънои калимаи 教室-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -334,39 +706,39 @@
           },
           "options": [
             {
-              "uz": "kecha",
-              "ru": "вчера",
-              "tj": "дирӯз"
+              "uz": "yo'l, ko'cha",
+              "ru": "дорога, улица",
+              "tj": "роҳ, кӯча"
             },
             {
-              "uz": "tugallangan ish belgisi",
-              "ru": "частица завершения",
-              "tj": "нишонаи анҷоми амал"
+              "uz": "aeroport",
+              "ru": "аэропорт",
+              "tj": "фурудгоҳ"
             },
             {
-              "uz": "ovqat pishirmoq",
-              "ru": "готовить еду",
-              "tj": "хӯрок пухтан"
+              "uz": "dan (masofa ifodalash uchun)",
+              "ru": "от, до (для выражения расстояния)",
+              "tj": "аз (барои ифодаи масофа)"
             },
             {
-              "uz": "kino ko‘rmoq",
-              "ru": "смотреть фильм",
-              "tj": "филм дидан"
+              "uz": "darsxona, sinf xonasi",
+              "ru": "классная комната, аудитория",
+              "tj": "синфхона, толори дарс"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "昨天 = kecha (zuótiān)",
-            "ru": "昨天 = вчера (zuótiān)",
-            "tj": "昨天 = дирӯз (zuótiān)"
+            "uz": "教室 = darsxona, sinf xonasi (jiàoshì)",
+            "ru": "教室 = классная комната, аудитория (jiàoshì)",
+            "tj": "教室 = синфхона, толори дарс (jiàoshì)"
           }
         },
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "昨天 talaffuzini tanlang:",
-            "ru": "Выберите произношение 昨天:",
-            "tj": "Талаффузи 昨天-ро интихоб кунед:"
+            "uz": "机场 talaffuzini tanlang:",
+            "ru": "Выберите произношение 机场:",
+            "tj": "Талаффузи 机场-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -374,49 +746,49 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zuótiān",
-            "le",
-            "zuòfàn",
-            "kàn diànyǐng"
+            "jiàoshì",
+            "jīchǎng",
+            "lù",
+            "lí"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "昨天 — zuótiān",
-            "ru": "昨天 — zuótiān",
-            "tj": "昨天 — zuótiān"
+            "uz": "机场 — jīchǎng",
+            "ru": "机场 — jīchǎng",
+            "tj": "机场 — jīchǎng"
           }
         },
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'kecha' xitoycha nima?",
-            "ru": "'вчера' по-китайски?",
-            "tj": "'дирӯз' ба чинӣ чист?"
+            "uz": "'yo'l, ko'cha' xitoycha qaysi?",
+            "ru": "'дорога, улица' по-китайски?",
+            "tj": "'роҳ, кӯча' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
             "ru": "Как по-китайски?",
-            "tj": "Ба чинӣ чӣ тавр?"
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "昨天",
-            "了",
-            "做饭",
-            "看电影"
+            "路",
+            "机场",
+            "离",
+            "教室"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "昨天 = kecha (zuótiān)",
-            "ru": "昨天 = вчера (zuótiān)",
-            "tj": "昨天 = дирӯз (zuótiān)"
+            "uz": "yo'l, ko'cha = 路 (lù)",
+            "ru": "дорога, улица = 路 (lù)",
+            "tj": "роҳ, кӯча = 路 (lù)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "le qaysi ieroglif?",
-            "ru": "Какой иероглиф читается le?",
-            "tj": "le кадом иероглиф аст?"
+            "uz": "lí qaysi ieroglif?",
+            "ru": "Какой иероглиф читается lí?",
+            "tj": "lí кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -424,99 +796,89 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "了",
-            "昨天",
-            "做饭",
-            "看电影"
+            "教室",
+            "离",
+            "路",
+            "机场"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "了 = tugallangan ish belgisi (le)",
-            "ru": "了 = частица завершения (le)",
-            "tj": "了 = нишонаи анҷоми амал (le)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "'昨天你做了什么' iborasini tuzing",
-            "ru": "Соберите фразу '昨天你做了什么'",
-            "tj": "Ибораи '昨天你做了什么'-ро созед"
-          },
-          "tokens": [
-            "昨天",
-            "你",
-            "做",
-            "了",
-            "什",
-            "么",
-            "做饭",
-            "看电影"
-          ],
-          "answer_tokens": [
-            "昨天",
-            "你",
-            "做",
-            "了",
-            "什",
-            "么"
-          ],
-          "explanation": {
-            "uz": "To'g'ri tartib: 昨天 你 做 了 什 么",
-            "ru": "Правильный порядок: 昨天 你 做 了 什 么",
-            "tj": "Тартиби дуруст: 昨天 你 做 了 什 么"
+            "uz": "离 = dan (masofa ifodalash uchun) (lí)",
+            "ru": "离 = от, до (для выражения расстояния) (lí)",
+            "tj": "离 = аз (барои ифодаи масофа) (lí)"
           }
         },
         {
           "type": "match_pairs",
           "pairs": [
             [
-              "昨天",
+              "教室",
               {
-                "uz": "kecha",
-                "ru": "вчера",
-                "tj": "дирӯз"
+                "uz": "darsxona, sinf xonasi",
+                "ru": "классная комната, аудитория",
+                "tj": "синфхона, толори дарс"
               }
             ],
             [
-              "了",
+              "机场",
               {
-                "uz": "tugallangan ish belgisi",
-                "ru": "частица завершения",
-                "tj": "нишонаи анҷоми амал"
+                "uz": "aeroport",
+                "ru": "аэропорт",
+                "tj": "фурудгоҳ"
               }
             ],
             [
-              "做饭",
+              "路",
               {
-                "uz": "ovqat pishirmoq",
-                "ru": "готовить еду",
-                "tj": "хӯрок пухтан"
+                "uz": "yo'l, ko'cha",
+                "ru": "дорога, улица",
+                "tj": "роҳ, кӯча"
               }
             ],
             [
-              "看电影",
+              "离",
               {
-                "uz": "kino ko‘rmoq",
-                "ru": "смотреть фильм",
-                "tj": "филм дидан"
+                "uz": "dan (masofa ifodalash uchun)",
+                "ru": "от, до (для выражения расстояния)",
+                "tj": "аз (барои ифодаи масофа)"
               }
             ]
           ],
           "explanation": {
-            "uz": "Juftliklar darsdagi asosiy so‘zlardan olindi.",
-            "ru": "Пары взяты из ключевых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои асосии дарс гирифта шудаанд."
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "他还在____学习呢。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "离",
+            "路",
+            "教室",
+            "机场"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 教室 (jiàoshì) — darsxona, sinf xonasi",
+            "ru": "Верно: 教室 (jiàoshì) — классная комната, аудитория",
+            "tj": "Дуруст: 教室 (jiàoshì) — синфхона, толори дарс"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "昨天你做了什么",
-          "pinyin": "zuótiān nǐ zuò le shénme",
+          "phrase": "教室",
+          "pinyin": "jiàoshì",
           "translation": {
-            "uz": "O‘tgan zamon, 了 yuklamasi",
-            "ru": "Прошедшее действие, частица 了",
-            "tj": "Замони гузашта, ҳиссачаи 了"
+            "uz": "darsxona, sinf xonasi",
+            "ru": "классная комната, аудитория",
+            "tj": "синфхона, толори дарс"
           }
         }
       ]
@@ -533,9 +895,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A qaysi savolni beradi?",
-            "ru": "Какой вопрос задаёт A в диалоге?",
-            "tj": "Дар муколама A кадом саволро медиҳад?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -543,41 +905,41 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "这个词怎么读？",
-            "你叫什么名字？",
-            "现在几点？",
-            "你去哪儿？"
+            "大卫回来了吗？",
+            "没有，他还在教室学习呢。",
+            "明天有考试，他说今天要好好准备。",
+            "已经9点多了，他怎么还在学习？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "A savoli: 这个词怎么读？",
-            "ru": "Вопрос A: 这个词怎么读？",
-            "tj": "Саволи A: 这个词怎么读？"
+            "uz": "To'g'ri javob: 大卫回来了吗？",
+            "ru": "Правильный ответ: 大卫回来了吗？",
+            "tj": "Ҷавоби дуруст: 大卫回来了吗？"
           }
         },
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "B qanday javob beradi?",
-            "ru": "Как отвечает B?",
-            "tj": "B чӣ ҷавоб медиҳад?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
           },
           "title": {
-            "uz": "Dialog javobi:",
-            "ru": "Ответ из диалога:",
-            "tj": "Ҷавоб аз муколама:"
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "昨天。",
-            "不客气！",
-            "我不知道。",
-            "再见！"
+            "没有，他还在教室学习呢。",
+            "明天有考试，他说今天要好好准备。",
+            "大卫回来了吗？",
+            "已经9点多了，他怎么还在学习？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "B javobi: 昨天。",
-            "ru": "Ответ B: 昨天。",
-            "tj": "Ҷавоби B: 昨天。"
+            "uz": "To'g'ri javob: 明天有考试，他说今天要好好准备。",
+            "ru": "Правильный ответ: 明天有考试，他说今天要好好准备。",
+            "tj": "Ҷавоби дуруст: 明天有考试，他说今天要好好准备。"
           }
         }
       ]

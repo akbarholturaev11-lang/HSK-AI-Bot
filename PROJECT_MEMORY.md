@@ -207,6 +207,43 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-29 — New admin Mini App (admin.html) + deep finance stats; old admin-control.html removed
+
+Changed:
+- Replaced the old admin Mini App (`admin-control.html`) with a redesigned `admin.html`
+  (dark, bot-styled, full-screen on iPhone bottom-nav + Mac sidebar). It reuses ALL existing
+  `/api/admin-miniapp/*` endpoints (overview, management, users, payments, prices, channels,
+  help, portfolio, broadcast, campaigns, partners, audio, notifications, course-ads) with the
+  same payload contracts, so backend mutation logic is unchanged.
+- Added `AdminFinanceStatsService` (`app/services/admin_finance_stats_service.py`) and
+  `POST /api/admin-miniapp/finance-stats`. Returns 3 periods (weekly 7d / monthly 30d /
+  all_time), each with: net profit (revenue − real AI cost from `ai_usage_events.cost_usd` −
+  manual portfolio expense, all USD), ARPU/ARPPU/avg check, renewal & churn %, and source→paid
+  (which entry source brings real revenue). Every block ships an Uzbek `explain` string.
+  Revenue→USD uses the same TJS/USD/CNY constants as PortfolioService (decoupled so the stats
+  module does not import the OpenAI chain).
+- `/admin` now shows a 2-button entry: "🧭 Admin mini ilova" (WebApp → admin.html) and
+  "🛠 Ruchnoy panel" (callback `adm:menu` → in-chat manual admin sections). New callback
+  `adm:entry`; manual menu lost its WebApp buttons and gained a "⬅️ Asosiy menyu" back button.
+- `admin_miniapp_url()` now points to `admin.html`; `admin_miniapp_v2_url()` removed;
+  `/admin-control.html` route and file deleted.
+
+Why:
+- Old admin Mini App was hard to use and only showed "revenue", not real "net profit". Admin
+  needed net profit, ARPU/ARPPU, churn/renewal, source→revenue, and detailed Uzbek stats split
+  by 7d/30d/all-time in one consistent layout.
+
+Files touched:
+- New: `app/services/admin_finance_stats_service.py`, `app/static/admin.html`
+- Edited: `app/main.py`, `app/bot/utils/course_miniapp.py`, `app/bot/handlers/admin.py`,
+  `tests/e2e/test_miniapp_smoke.py`
+- Deleted: `app/static/admin-control.html`
+
+Risk:
+- Read-only analytics + UI/entry-flow change; no payment/subscription/access logic changed.
+  finance-stats verified against a SQLite dataset (net profit, ARPU/ARPPU, churn, source→paid
+  all correct). Real Telegram admin smoke-test after deploy still recommended.
+
 ### 2026-06-29 — Course Mini App motivation reminder delivery/timezone fix
 
 Changed:
