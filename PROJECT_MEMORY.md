@@ -3073,6 +3073,34 @@ Follow-up:
 
 ---
 
+### 2026-06-29 — Course reminder goal and Mini App CTA update
+
+Changed:
+- Motivation reminders now support `lesson_unfinished`: if a user starts a lesson but does not finish it before the 20:00-21:30 local evening window, they get one reminder for that local day.
+- Daily goal reminders now treat lesson/book-lesson completion as the goal signal instead of closing the goal on any small activity.
+- Motivation reminder buttons open the Course Mini App directly, and Telegram course block keyboards include a Mini App button under the normal action row.
+
+Why:
+- Users who partly study but do not finish a lesson need a different nudge from users who did not start at all.
+- Course CTA should reliably send users back to the Mini App without breaking the old callback-based Telegram lesson flow.
+
+Files touched:
+- `app/services/motivation_reminder_service.py`
+- `app/services/notification_template_service.py`
+- `app/db/models/course_miniapp_event.py`
+- `app/bot/keyboards/course.py`
+- `app/bot/keyboards/course_context.py`
+- `app/bot/keyboards/course_miniapp.py`
+
+Risk:
+- No DB migration. The new once-per-day gate uses `course_miniapp_events` with `motivation_lesson_unfinished_sent`.
+- More messages can be sent in the evening window, but the unfinished lesson reminder suppresses the daily/streak reminder in the same run to avoid stacking.
+
+Follow-up:
+- After deploy, verify one real user with an unfinished lesson receives only one evening reminder and every course block shows the Mini App button.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
