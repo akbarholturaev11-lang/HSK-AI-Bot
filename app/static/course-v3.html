@@ -1424,7 +1424,7 @@ function adoptServerLang(d){
 function loadLevel(lv){
   lv=setSelectedLevel(lv);
   if(!INIT_DATA){showAuthGate();return;}
-  fetch("/api/v3/map?lang="+LANG+"&level="+lv,{headers:{"X-Telegram-Init-Data":INIT_DATA}})
+  fetch("/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset()),{headers:{"X-Telegram-Init-Data":INIT_DATA}})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d||d.authenticated===false||d._status===401){showAuthGate();return;}
@@ -2009,7 +2009,7 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.sta
 (function(){
   var bootLevel=getSelectedLevel();
   if(!INIT_DATA){showAuthGate();return;}
-  var url="/api/v3/map?lang="+LANG+"&level="+bootLevel;
+  var url="/api/v3/map?lang="+LANG+"&level="+bootLevel+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset());
   fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
     if(!d||d.authenticated===false||d._status===401){showAuthGate();return;}
     hideAuthGate();MAP=d;adoptServerLang(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();

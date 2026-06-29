@@ -207,6 +207,29 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-29 — Course Mini App motivation reminder delivery/timezone fix
+
+Changed:
+- Course Mini App motivational reminders (`rating_overtaken`, `daily_goal`, `streak_risk`) now target all non-blocked Mini App profile users instead of only `status="active"` users.
+- Reminder day/window calculations now use each profile's saved `timezone_offset_minutes` from the Mini App, with UTC+5 only as a fallback when no offset exists.
+- `/api/v3/map` stores the client `tz` query value so existing Course v3 users update their profile timezone when opening the Mini App.
+
+Why:
+- Course Mini users are often `trial`, `free`, or `expired` after the access-state migration; the old `User.status == "active"` query made the reminder service skip most users.
+- Hardcoded Tajikistan time made evening reminders wrong for users outside UTC+5 even though the project already stores Mini App timezone offsets.
+
+Files touched:
+- `app/services/motivation_reminder_service.py`
+- `app/main.py`
+- `app/static/course-v3.html`
+- `tests/test_motivation_reminder_service.py`
+
+Risk:
+- Low/medium: user-facing notification delivery timing changes. Payment, subscription, lesson, quiz, and access limits are unchanged.
+
+Follow-up:
+- After deploy, wait for the 20:00-21:30 Tajikistan-time window or create a controlled test profile to confirm a real Telegram reminder is delivered.
+
 ### 2026-06-29 — Course Mini App practice/ad daily limits (server-side paywall)
 
 Changed (access/payment logic — handle with care):

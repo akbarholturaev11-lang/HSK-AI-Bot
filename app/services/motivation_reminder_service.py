@@ -23,9 +23,9 @@ from app.services.notification_template_service import (
 # On-disk root for admin-uploaded reminder media (see /uploads/notifications route).
 MEDIA_ROOT = "app/static/uploads/notifications"
 
-# All reminders use Tajikistan local time (UTC+5), regardless of the per-profile
-# offset stored during onboarding.
-TJ_OFFSET_MIN = 5 * 60  # UTC+5
+# Fallback when a profile has no saved timezone. Saved Mini App offsets come
+# from the user's device and must be respected, including real UTC (0).
+DEFAULT_OFFSET_MIN = 5 * 60  # UTC+5
 
 # Evening window (local time) during which "daily goal" / "streak" reminders fire.
 GOAL_WINDOW_START_MIN = 20 * 60  # 20:00
@@ -60,29 +60,46 @@ class MotivationReminderService:
         return now + timedelta(minutes=max(-720, min(840, int(offset_minutes or 0))))
 
     @staticmethod
+    def _profile_offset(profile) -> int:
+        raw = getattr(profile, "timezone_offset_minutes", None)
+        if raw is None:
+            raw = DEFAULT_OFFSET_MIN
+        try:
+            offset = int(raw)
+        except (TypeError, ValueError):
+            offset = DEFAULT_OFFSET_MIN
+        return max(-720, min(840, offset))
+
+    @staticmethod
     def _xp_gap_to_above(above_weekly_xp: int, my_weekly_xp: int) -> int:
         return max(1, int(above_weekly_xp or 0) - int(my_weekly_xp or 0))
 
     async def send_due_reminders(self, bot: Bot) -> None:
         now = datetime.now(timezone.utc)
-        week_start_by_day: dict[date, date] = {}
 
-        # One query: all active users that have a Mini App profile.
+        # One query: all non-blocked users that have a Mini App profile.
+        # Course Mini App reminders are a learning loop, not a paid-only feature:
+        # trial/free/expired users can still use the limited course surfaces.
         rows = (
             await self.session.execute(
                 select(CourseMiniAppProfile, User)
                 .join(User, CourseMiniAppProfile.user_id == User.id)
-                .where(User.status == "active")
+                .where(User.status != "blocked")
             )
         ).all()
         if not rows:
             return
 
+        offsets_by_user = {
+            int(profile.user_id): self._profile_offset(profile)
+            for profile, _ in rows
+        }
+
         # Weekly XP per user for the current week (drives league ranking).
         weekly_xp: dict[int, int] = {}
         days = {
-            CourseGamificationService._local_day(TJ_OFFSET_MIN, now)
-            for p, _ in rows
+            CourseGamificationService._local_day(offset, now)
+            for offset in offsets_by_user.values()
         }
         week_starts = {CourseGamificationService._week_start(d) for d in days}
         if week_starts:
@@ -123,7 +140,7 @@ class MotivationReminderService:
             if not getattr(profile, "notifications_enabled", True):
                 continue
             lang = user.language if user.language in ("uz", "ru", "tj") else "ru"
-            offset = TJ_OFFSET_MIN
+            offset = offsets_by_user.get(int(profile.user_id), DEFAULT_OFFSET_MIN)
             local_now = self._local_now(offset, now)
             local_day = local_now.date()
             studied_today = profile.last_activity_date == local_day

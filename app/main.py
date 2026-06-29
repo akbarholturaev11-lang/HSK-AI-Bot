@@ -912,6 +912,12 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
 
         profile_svc = CourseMiniAppProfileService(session)
         profile = await profile_svc.get_or_create(user.id)
+        tz_raw = request.query_params.get("tz")
+        if tz_raw is not None:
+            try:
+                profile.timezone_offset_minutes = max(-720, min(840, int(tz_raw)))
+            except (TypeError, ValueError):
+                pass
         gamification = await CourseGamificationService(session).snapshot(user, profile=profile)
         is_paid = StudyMiniAppService.is_paid_user(user)
 
