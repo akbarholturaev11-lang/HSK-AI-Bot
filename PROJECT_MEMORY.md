@@ -233,6 +233,7 @@ Risk:
 Follow-up:
 - Smoke-test on real Telegram WebView with microphone permission because local browser cannot provide real STT audio.
 
+
 ### 2026-06-29 — Course ad video upload root compatibility fix
 
 Changed:
@@ -269,6 +270,7 @@ Risk:
 
 Follow-up:
 - Real Telegram WebView smoke test recommended because local Playwright runtime was unavailable in this session.
+
 
 ### 2026-06-29 — Xatolar ustida ishlash (Mistake Review) frontendi ulandi
 
