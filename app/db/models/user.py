@@ -74,6 +74,19 @@ class User(Base):
         DateTime(timezone=True),
         nullable=True,
     )
+    subscription_expired_offer_sent_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    subscription_churn_followup_sent_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    subscription_churn_responded_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+    subscription_churn_reason: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
 
     referrer_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
 

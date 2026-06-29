@@ -1115,6 +1115,117 @@ FEEDBACK_I18N = {
     },
 }
 
+SUBSCRIPTION_CHURN_I18N = {
+    "tj": {
+        "subscription_expired_soft_text": (
+            "<b>Муҳлати обуна ба анҷом расид</b>\n\n"
+            "<blockquote>Progress-и шумо нигоҳ дошта мешавад. Ҳар вақт хоҳед, аз ҳамон ҷо давом медиҳед.\n\n"
+            "Ҳоло метавонед обунаро давом диҳед ё баъдтар баргардед.</blockquote>"
+        ),
+        "subscription_expired_continue_button": "💎 Давом додани обуна",
+        "subscription_expired_later_button": "Баъдтар",
+        "subscription_churn_followup_text": (
+            "<b>Progress-и шумо нигоҳ дошта мешавад</b>\n\n"
+            "<blockquote>Хоҳед, баъдтар давом медиҳед. Агар 1 фикр гузоред, ботро ба шумо мувофиқтар мекунем.</blockquote>"
+        ),
+        "subscription_churn_feedback_button": "✍️ 1 фикр гузоштан",
+        "subscription_churn_reason_prompt": (
+            "<b>Барои мо як ишора кифоя аст</b>\n\n"
+            "<blockquote>Кадом чизро беҳтар кунем, то бот ба шумо мувофиқтар шавад?</blockquote>"
+        ),
+        "subscription_churn_reason_budget": "Ҳоло бюджет надорам",
+        "subscription_churn_reason_price": "Нарх бароям баланд аст",
+        "subscription_churn_reason_ai_quality": "AI ҷавобҳо кофӣ нестанд",
+        "subscription_churn_reason_course_fit": "Курс ба ман мувофиқ нашуд",
+        "subscription_churn_reason_trial_more": "Ҳоло боз санҷидан мехоҳам",
+        "subscription_churn_reason_other": "Сабаби дигар",
+        "subscription_churn_discount_ready_text": (
+            "<b>Фикратонро гирифтем 🙏</b>\n\n"
+            "<blockquote>Агар ҳоло нарх ё бюджет масъала бошад, барои шумо <b>20% тахфиф</b> кушодем.</blockquote>"
+        ),
+        "subscription_churn_feedback_thanks": (
+            "<b>Раҳмат, фикратонро гирифтем 🙏</b>\n\n"
+            "<blockquote>Инро ба admin мерасонем ва беҳтар мекунем. Progress-и шумо нигоҳ дошта мешавад.</blockquote>"
+        ),
+        "subscription_churn_trial_more_text": (
+            "<b>Метавонед ройгон ҳам давом диҳед</b>\n\n"
+            "<blockquote>Курс preview, саволҳои матнӣ ва баъзе машқҳо бо лимити ройгон кор мекунанд.</blockquote>"
+        ),
+    },
+    "ru": {
+        "subscription_expired_soft_text": (
+            "<b>Срок подписки закончился</b>\n\n"
+            "<blockquote>Ваш прогресс сохранён. Когда захотите, сможете продолжить с того же места.\n\n"
+            "Можете продлить подписку сейчас или вернуться позже.</blockquote>"
+        ),
+        "subscription_expired_continue_button": "💎 Продлить подписку",
+        "subscription_expired_later_button": "Позже",
+        "subscription_churn_followup_text": (
+            "<b>Ваш прогресс сохранён</b>\n\n"
+            "<blockquote>Можно продолжить позже. Если оставите 1 короткий ответ, мы сделаем бот более подходящим для вас.</blockquote>"
+        ),
+        "subscription_churn_feedback_button": "✍️ Оставить 1 ответ",
+        "subscription_churn_reason_prompt": (
+            "<b>Нам достаточно одного короткого ответа</b>\n\n"
+            "<blockquote>Что стоит улучшить, чтобы бот был полезнее именно для вас?</blockquote>"
+        ),
+        "subscription_churn_reason_budget": "Сейчас нет бюджета",
+        "subscription_churn_reason_price": "Цена для меня высокая",
+        "subscription_churn_reason_ai_quality": "AI-ответы недостаточно хорошие",
+        "subscription_churn_reason_course_fit": "Курс мне не подошёл",
+        "subscription_churn_reason_trial_more": "Хочу ещё попробовать бесплатно",
+        "subscription_churn_reason_other": "Другая причина",
+        "subscription_churn_discount_ready_text": (
+            "<b>Спасибо, мы приняли ваш ответ 🙏</b>\n\n"
+            "<blockquote>Если сейчас вопрос в цене или бюджете, мы открыли для вас <b>скидку 20%</b>.</blockquote>"
+        ),
+        "subscription_churn_feedback_thanks": (
+            "<b>Спасибо, мы приняли ваш ответ 🙏</b>\n\n"
+            "<blockquote>Передадим это админу и улучшим. Ваш прогресс сохранён.</blockquote>"
+        ),
+        "subscription_churn_trial_more_text": (
+            "<b>Можно продолжать и бесплатно</b>\n\n"
+            "<blockquote>Preview курса, текстовые вопросы и часть упражнений работают с бесплатным лимитом.</blockquote>"
+        ),
+    },
+    "uz": {
+        "subscription_expired_soft_text": (
+            "<b>Obuna muddati tugadi</b>\n\n"
+            "<blockquote>Progressingiz saqlanadi. Xohlagan paytingiz shu joydan davom etasiz.\n\n"
+            "Hozir obunani davom ettirishingiz yoki keyinroq qaytishingiz mumkin.</blockquote>"
+        ),
+        "subscription_expired_continue_button": "💎 Obunani davom ettirish",
+        "subscription_expired_later_button": "Keyinroq",
+        "subscription_churn_followup_text": (
+            "<b>Progressingiz saqlanib turibdi</b>\n\n"
+            "<blockquote>Xohlasangiz keyin davom etasiz. Bizga 1 ta fikr qoldirsangiz, botni sizga mosroq qilamiz.</blockquote>"
+        ),
+        "subscription_churn_feedback_button": "✍️ 1 ta fikr qoldirish",
+        "subscription_churn_reason_prompt": (
+            "<b>Bizga bitta belgi yetadi</b>\n\n"
+            "<blockquote>Bot sizga mosroq bo'lishi uchun qaysi joyini yaxshilash kerak?</blockquote>"
+        ),
+        "subscription_churn_reason_budget": "Hozir budjetim yo'q",
+        "subscription_churn_reason_price": "Narx menga qimmat",
+        "subscription_churn_reason_ai_quality": "AI javoblari yetarli emas",
+        "subscription_churn_reason_course_fit": "Kurs menga mos kelmadi",
+        "subscription_churn_reason_trial_more": "Hali bepul sinab ko'rmoqchiman",
+        "subscription_churn_reason_other": "Boshqa sabab",
+        "subscription_churn_discount_ready_text": (
+            "<b>Fikringizni oldik 🙏</b>\n\n"
+            "<blockquote>Agar hozir narx yoki budjet masala bo'lsa, siz uchun <b>20% chegirma</b> ochdik.</blockquote>"
+        ),
+        "subscription_churn_feedback_thanks": (
+            "<b>Rahmat, fikringizni oldik 🙏</b>\n\n"
+            "<blockquote>Buni adminga yetkazamiz va yaxshilaymiz. Progressingiz saqlanib turadi.</blockquote>"
+        ),
+        "subscription_churn_trial_more_text": (
+            "<b>Bepul rejimda ham davom etishingiz mumkin</b>\n\n"
+            "<blockquote>Kurs preview, matn savollari va ayrim mashqlar bepul limit bilan ishlaydi.</blockquote>"
+        ),
+    },
+}
+
 PARTNER_I18N = {
     "tj": {
         "partner_not_partner_text": (
@@ -1389,6 +1500,9 @@ for _lang, _texts in MINIAPP_COURSE_I18N.items():
     COURSE_I18N.setdefault(_lang, {}).update(_texts)
 
 for _lang, _texts in FEEDBACK_I18N.items():
+    TEXTS.setdefault(_lang, {}).update(_texts)
+
+for _lang, _texts in SUBSCRIPTION_CHURN_I18N.items():
     TEXTS.setdefault(_lang, {}).update(_texts)
 
 for _lang, _texts in PARTNER_I18N.items():

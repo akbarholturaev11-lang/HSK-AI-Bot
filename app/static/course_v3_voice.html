@@ -42,6 +42,8 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 .mic.rec:after{content:"";position:absolute;width:80px;height:80px;border-radius:50%;border:3px solid var(--cin);animation:pr 1.2s ease-out infinite}
 @keyframes pr{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.5);opacity:0}}
 .end{position:absolute;right:40px;top:14px;width:52px;height:52px;border-radius:50%;background:rgba(251,247,239,.85);border:1px solid rgba(120,95,60,.3);color:var(--cin);font-size:23px}
+.sct{position:absolute;left:40px;top:14px;width:52px;height:52px;border-radius:50%;background:rgba(251,247,239,.85);border:1px solid rgba(120,95,60,.3);color:var(--cin);font-size:23px}
+.sct.off{color:var(--ink3)}
 .done{position:absolute;inset:0;background:rgba(33,25,15,.55);backdrop-filter:blur(3px);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;z-index:10}
 .done.on{display:flex}
 .dcard{background:var(--paper);border-radius:22px;padding:26px 22px;width:100%}
@@ -103,7 +105,7 @@ var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()
 /* ---- subtitle (hanzi/pinyin/translation) visibility toggle ---- */
 var SUB_KEY="hsk_voice_sub";
 function subOn(){try{return localStorage.getItem(SUB_KEY)!=="0"}catch(e){return true}}
-function applySub(){var on=subOn();document.body.classList.toggle("nosub",!on);var ic=document.querySelector("#subToggle i");if(ic)ic.className="ti "+(on?"ti-eye":"ti-eye-off");}
+function applySub(){var on=subOn();document.body.classList.toggle("nosub",!on);var b=document.getElementById("subToggle");if(b)b.classList.toggle("off",!on);}
 function toggleSub(){try{localStorage.setItem(SUB_KEY,subOn()?"0":"1")}catch(e){}applySub();}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=voice"}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}

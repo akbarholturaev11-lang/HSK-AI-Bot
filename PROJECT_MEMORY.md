@@ -207,6 +207,44 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-29 — Course Mini App practice/ad daily limits (server-side paywall)
+
+Changed (access/payment logic — handle with care):
+- Free users now get **1 full session per day** on each "Mashq" section: Ieroglif tanish (`recognition`), Talaffuz (`pronunciation`), Yodlash (`memorize`), Test markazi (`training_test`/`placement`). Dictionary lookup (`hsk-lugat`) stays free. AI Voice stays at 1 lifetime (`FREE_TOTAL_SESSIONS=1`, unchanged).
+- Free users can open at most **2 premium lessons per day via the "Reklama bilan davom etish" path** (`ad_lesson`); after that the ad button is hidden and `adDailyLimit` text is shown until tomorrow.
+- Course ads: `/api/v3/ad` now returns **all** active creatives (`ads[]`); `showCourseAd` plays them sequentially (each its mandatory time, `adNext` between them) then shows the subscribe/continue block after the last one.
+
+How it works (no DB migration):
+- New `CourseMiniAppAccessService.consume_daily_use(user, feature_key, ref=...)` / `daily_status(...)` count today's rows in the existing `course_miniapp_events` table (`event_name="practice_daily_used"`, `session_id=feature`, per-UTC-day). `ref` makes a use idempotent (reload-safe; `ref`=session token for sections, `ref`=lesson_order for ad lessons). Limits in `COURSE_DAILY_FREE_LIMITS`.
+- New endpoint `POST /api/v3/practice/daily-gate` (features recognition/memorize/pronunciation/training_test/placement) is the gate for the section pages; returns 403 → page shows a limit/Premium screen. Server-side, so clearing localStorage / reloading cannot bypass it.
+- Authoritative ad-lesson cap is enforced in `POST /api/v3/lesson/complete` (free + premium lesson → `consume_daily_use(feature_key="ad_lesson", ref=lesson_order)`); `/api/v3/map` returns `ad_lessons` status for the UI.
+- Pronunciation: `FREE_PRONOUNCE_DAILY` raised 3→25 as a pure STT cost ceiling (the 1/day session gate is the real access control).
+
+Risk/follow-up:
+- Legacy `/api/miniapp/practice/start|complete` (CourseMiniAppPracticeService) switched test/training from lifetime-1 to daily-1 too (looser, consistent). Course v3 test page does NOT use that flow (client-side exams + daily-gate).
+- All new user-facing strings added in uz/ru/tj.
+
+### 2026-06-29 — Soft subscription-expiry churn flow
+
+Changed:
+- Paid users whose subscription expires now receive a softer expiry offer with `Obunani davom ettirish` and `Keyinroq` instead of only a hard course-access notice.
+- Expired paid users who do not interact get one 24-hour follow-up asking for a short feedback signal; repeated follow-up spam is prevented with user-level timestamps.
+- `Keyinroq` / feedback choices record churn reasons through `BotFeedback`; only price/budget reasons immediately unlock the existing 20% feedback-discount checkout path.
+
+Why:
+- Expiry messaging needed to reduce pressure while still capturing why users do not renew and only discounting price-sensitive users.
+
+Files touched:
+- `app/services/subscription_churn_service.py`, `app/bot/handlers/subscription_churn.py`, `app/bot/keyboards/subscription_churn.py`
+- `app/main.py`, `app/services/access_service.py`, `app/services/subscription_service.py`, `app/db/models/user.py`
+- `alembic/versions/0060_subscription_churn_flow.py`
+
+Risk:
+- Medium: user-facing subscription/access-adjacent flow changed. Paid activation and payment approval rules are unchanged; a migration adds churn tracking columns on `users`.
+
+Follow-up:
+- Deploy migration `0060_subscription_churn_flow`; smoke-test real Telegram expiry message, `Keyinroq`, price/budget discount, non-discount feedback, and 24-hour follow-up.
+
 ### 2026-06-29 — Admin Mini App weekly/monthly/all-time statistics
 
 Changed:
@@ -2929,6 +2967,30 @@ Follow-up:
 
 ---
 
+### 2026-06-29 — Feedback notifications to admin group
+
+Changed:
+- Bot feedback, subscription churn feedback, and release feedback ratings/comments now notify both configured admins and configured feedback notification chat IDs.
+- `FEEDBACK_NOTIFY_CHAT_IDS` controls extra feedback recipients; `.env.example` documents it.
+
+Why:
+- Admin needs reviews, update ratings, and similar feedback visible in the team feedback group, not only private admin chats.
+
+Files touched:
+- `app/config.py`
+- `app/services/admin_notify_service.py`
+- `app/bot/handlers/release_feedback.py`
+- `.env.example`
+- `tests/test_admin_notify_service.py`
+
+Risk:
+- Feedback-only notification routing changed; payment review routing is unchanged.
+
+Follow-up:
+- Confirm the bot is a member/admin in the configured feedback group so Telegram accepts messages to that chat.
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1
@@ -2967,7 +3029,7 @@ Required:
 - `ADMIN_IDS`
 
 Optional:
-- Unknown / needs inspection
+- `FEEDBACK_NOTIFY_CHAT_IDS`
 
 ---
 

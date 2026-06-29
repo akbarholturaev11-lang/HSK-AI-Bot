@@ -228,21 +228,21 @@ class AccessService:
         )
         users = list(result.scalars().all())
         changed = 0
-        ejected_course_telegram_ids = []
+        expired_paid_telegram_ids = []
 
         for user in users:
             if not self._is_date_expired(user.end_date):
                 continue
-            was_in_course = getattr(user, "learning_mode", "qa") == "course"
+            was_paid = getattr(user, "payment_status", "") == "approved"
             await self._normalize_expired_active_user(user)
-            if was_in_course:
-                ejected_course_telegram_ids.append(user.telegram_id)
+            if was_paid:
+                expired_paid_telegram_ids.append(user.telegram_id)
             changed += 1
 
         if changed:
             await self.session.commit()
 
-        return changed, ejected_course_telegram_ids
+        return changed, expired_paid_telegram_ids
 
     async def can_use_text_ai(
         self,

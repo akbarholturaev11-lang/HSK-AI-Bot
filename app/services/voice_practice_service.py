@@ -24,10 +24,12 @@ from app.services.course_miniapp_lesson_service import CourseMiniAppLessonServic
 logger = logging.getLogger(__name__)
 
 FREE_TOTAL_SESSIONS = 1
-# Bepul (obunasiz) userlar uchun talaffuz baholash kunlik kvotasi.
-# Har bir urinish OpenAI STT (Whisper) chaqiradi va bizga pul turadi, shuning
-# uchun bepul userga kunlik chegara qo'yiladi; pullik userlar AI byudjet orqali.
-FREE_PRONOUNCE_DAILY = 3
+# Bepul (obunasiz) userlar uchun talaffuz baholash kunlik STT kvotasi.
+# ASOSIY kirish nazorati — Course Mini App "pronunciation" kunlik gate'i
+# (kuniga 1 to'liq sessiya, /api/v3/practice/daily-gate). Bu yerdagi kvota esa
+# faqat XARAJAT himoyasi: bitta sessiya (≈10 so'z + qayta urinishlar) bemalol
+# sig'adi, lekin cheksiz qayta urinish OpenAI STT xarajatini cheklaydi.
+FREE_PRONOUNCE_DAILY = 25
 PAID_DAILY_SESSIONS = 5
 MAX_DIALOGS_PER_SESSION = 7
 MAX_AUDIO_BYTES = 5 * 1024 * 1024

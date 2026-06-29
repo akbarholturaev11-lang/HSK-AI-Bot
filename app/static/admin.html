@@ -1,0 +1,954 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>HSK AI — Admin panel</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{
+      --bg:#0f1216;
+      --bg-soft:#161b22;
+      --surface:#1b212b;
+      --surface-2:#232b37;
+      --ink:#f3f6fb;
+      --muted:#97a3b6;
+      --line:#2b3340;
+      --line-soft:#222a35;
+      --accent:#3b82f6;
+      --accent-soft:rgba(59,130,246,.16);
+      --green:#34d399;
+      --green-soft:rgba(52,211,153,.14);
+      --amber:#fbbf24;
+      --amber-soft:rgba(251,191,36,.14);
+      --red:#fb7185;
+      --red-soft:rgba(251,113,133,.14);
+      --violet:#a78bfa;
+      --violet-soft:rgba(167,139,250,.14);
+      --radius:14px;
+      --radius-sm:10px;
+      --shadow:0 20px 50px rgba(0,0,0,.45);
+      --safe-top:env(safe-area-inset-top,0px);
+      --safe-bottom:env(safe-area-inset-bottom,0px);
+      --app-h:100dvh;
+      color-scheme:dark;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;width:100%;min-height:100%;overflow-x:hidden;background:var(--bg);color:var(--ink);
+      font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+    body{padding:var(--safe-top) 0 var(--safe-bottom)}
+    body.locked{overflow:hidden}
+    button,input,select,textarea{font:inherit;color:inherit}
+    button{border:0;background:none;cursor:pointer}
+    [hidden]{display:none !important}
+    a{color:var(--accent)}
+    h1,h2,h3,p{margin:0}
+    .app{min-height:var(--app-h);display:grid;grid-template-rows:auto 1fr;grid-template-columns:minmax(0,1fr)}
+    /* Topbar */
+    /* Eslatma: .topbar da backdrop-filter ISHLATILMAYDI — u position:fixed pastki
+       navigatsiya (.tabs) uchun containing-block yaratib, uni viewport pastiga emas,
+       topbar ichiga bog'lab qo'yadi. Shuning uchun to'q (opaque) fon. */
+    .topbar{position:sticky;top:0;z-index:20;background:var(--bg-soft);border-bottom:1px solid var(--line)}
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0}
+    .brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#1d4ed8,#0ea5e9 55%,#10b981);display:grid;place-items:center;color:#fff;font-weight:900;font-size:12px;flex:none}
+    .brand h1{font-size:16px;font-weight:850;line-height:1.05}
+    .brand p{margin-top:2px;color:var(--muted);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .top-actions{display:flex;align-items:center;gap:8px}
+    .pill{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:11px;font-weight:800;white-space:nowrap}
+    .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px var(--green-soft)}
+    .reload{width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;font-size:16px}
+    /* Tabs */
+    .tabs{position:fixed;left:10px;right:10px;bottom:calc(8px + var(--safe-bottom));z-index:40;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:6px;background:rgba(27,33,43,.94);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+    .tab{height:50px;border-radius:11px;color:var(--muted);font-size:10px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+    .tab .ic{font-size:17px;line-height:1}
+    .tab.active{background:var(--accent);color:#fff}
+    main{padding:14px 14px calc(96px + var(--safe-bottom));min-width:0;overflow-x:hidden}
+    .view{display:none;min-width:0}
+    .view.active{display:block;animation:fade .2s ease}
+    @keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+    /* Sections */
+    .sec{margin-bottom:18px}
+    .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:0 2px 10px}
+    .sec-title{font-size:15px;font-weight:850}
+    .sec-note{margin-top:3px;color:var(--muted);font-size:12px;line-height:1.4}
+    .link-btn{font-size:12px;color:var(--accent);font-weight:800;white-space:nowrap;background:none}
+    /* Cards grid */
+    .grid{display:grid;gap:10px}
+    .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;min-height:96px;display:flex;flex-direction:column;justify-content:space-between}
+    .stat .lab{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:850}
+    .stat .val{font-size:24px;font-weight:950;line-height:1;margin:10px 0 6px;overflow-wrap:anywhere}
+    .stat .sub{font-size:11.5px;color:var(--muted);font-weight:700;line-height:1.3}
+    .stat.good{border-color:rgba(52,211,153,.32);background:linear-gradient(180deg,var(--surface),var(--green-soft))}
+    .stat.warn{border-color:rgba(251,191,36,.32);background:linear-gradient(180deg,var(--surface),var(--amber-soft))}
+    .stat.danger{border-color:rgba(251,113,133,.32);background:linear-gradient(180deg,var(--surface),var(--red-soft))}
+    .stat.info{border-color:rgba(59,130,246,.32);background:linear-gradient(180deg,var(--surface),var(--accent-soft))}
+    /* Explain box */
+    .explain{background:var(--surface-2);border:1px solid var(--line-soft);border-left:3px solid var(--accent);border-radius:var(--radius-sm);padding:11px 13px;font-size:12.5px;line-height:1.55;color:#d6deeb;margin-top:10px}
+    .explain b{color:#fff}
+    .block{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:14px}
+    .block-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+    .block-head .bi{width:30px;height:30px;border-radius:9px;background:var(--surface-2);display:grid;place-items:center;font-size:15px;flex:none}
+    .block-head h3{font-size:14.5px;font-weight:850}
+    .block-head p{font-size:11.5px;color:var(--muted);margin-top:1px}
+    /* Period tabs */
+    .periods{display:flex;gap:7px;overflow:auto;padding-bottom:2px;margin-bottom:12px;-webkit-overflow-scrolling:touch}
+    .period{flex:none;height:38px;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:0 15px;font-size:12.5px;font-weight:850;color:var(--muted);white-space:nowrap}
+    .period.active{background:var(--ink);color:#0f1216;border-color:var(--ink)}
+    .range-lab{font-size:11.5px;color:var(--muted);margin:-4px 2px 12px;font-weight:700}
+    /* Segment chips */
+    .chips{display:flex;gap:7px;overflow:auto;padding-bottom:3px;-webkit-overflow-scrolling:touch}
+    .chip{flex:none;height:34px;border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:0 13px;color:var(--muted);font-size:12px;font-weight:800;white-space:nowrap}
+    .chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    /* Source table */
+    .tbl{width:100%;border-collapse:collapse;font-size:12.5px}
+    .tbl th{text-align:left;color:var(--muted);font-weight:800;padding:7px 8px;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+    .tbl td{padding:9px 8px;border-top:1px solid var(--line-soft);vertical-align:top}
+    .tbl td.r,.tbl th.r{text-align:right}
+    .tbl tr:nth-child(even){background:rgba(255,255,255,.02)}
+    .tbl b{font-weight:850}
+    /* Search & inputs */
+    .toolbar{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:10px}
+    .input,.select,.textarea{width:100%;border:1px solid var(--line);border-radius:11px;background:var(--surface);padding:0 13px;outline:none;font-size:16px}
+    .input,.select{height:46px}
+    .textarea{min-height:96px;padding:11px 13px;resize:vertical;line-height:1.45}
+    .input:focus,.select:focus,.textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+    .icon-btn{width:46px;height:46px;border-radius:11px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:18px;font-weight:900}
+    /* User cards */
+    .list{display:grid;gap:10px}
+    .ucard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;text-align:left;display:grid;gap:10px}
+    .uhead{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start}
+    .uname{font-size:15px;font-weight:900}
+    .usub{font-size:11.5px;color:var(--muted);line-height:1.4;margin-top:2px}
+    .tags{display:flex;gap:6px;flex-wrap:wrap}
+    .tag{display:inline-flex;align-items:center;height:24px;border-radius:999px;padding:0 9px;font-size:11px;font-weight:800;background:var(--surface-2);color:var(--muted)}
+    .tag.green{background:var(--green-soft);color:var(--green)}
+    .tag.blue{background:var(--accent-soft);color:#93c5fd}
+    .tag.red{background:var(--red-soft);color:var(--red)}
+    .tag.amber{background:var(--amber-soft);color:var(--amber)}
+    .tag.violet{background:var(--violet-soft);color:var(--violet)}
+    .mini2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .mini{background:var(--surface-2);border-radius:10px;padding:9px}
+    .mini b{display:block;font-size:14px;font-weight:850}
+    .mini span{display:block;margin-top:2px;color:var(--muted);font-size:10.5px;font-weight:700}
+    /* Payments */
+    .pcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;display:grid;gap:10px}
+    .phead{display:grid;grid-template-columns:1fr auto;gap:10px}
+    .amount{font-size:19px;font-weight:950}
+    /* Buttons */
+    .btn{height:44px;border-radius:11px;background:var(--accent);color:#fff;font-size:13px;font-weight:850;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+    .btn.sec{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+    .btn.danger{background:var(--red);color:#1a0d10}
+    .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .frow{display:grid;gap:7px;margin-bottom:11px}
+    .frow.two{grid-template-columns:1fr 1fr}
+    .frow label{font-size:11px;font-weight:850;color:var(--muted)}
+    /* Setting rows */
+    .srow{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left;width:100%}
+    .srow h3{font-size:14px;font-weight:850}
+    .srow p{margin-top:3px;color:var(--muted);font-size:11.5px;line-height:1.35}
+    .danger-note{border:1px solid rgba(251,113,133,.35);background:var(--red-soft);color:#fecdd3;border-radius:11px;padding:11px 13px;font-size:12px;font-weight:700;line-height:1.45}
+    /* Drawer */
+    .scrim{position:fixed;inset:0;z-index:49;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .2s}
+    .scrim.open{opacity:1;pointer-events:auto}
+    .drawer{position:fixed;inset:auto 0 0 0;z-index:50;background:var(--bg-soft);border-top:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:var(--shadow);transform:translateY(106%);transition:transform .24s ease;max-height:92dvh;display:grid;grid-template-rows:auto 1fr}
+    .drawer.open{transform:translateY(0)}
+    .dhead{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+    .dtitle{font-size:17px;font-weight:900}
+    .dsub{margin-top:3px;color:var(--muted);font-size:12px}
+    .close{width:38px;height:38px;border-radius:11px;background:var(--surface-2);font-size:18px;font-weight:900}
+    .dbody{overflow:auto;padding:14px 16px calc(18px + var(--safe-bottom));-webkit-overflow-scrolling:touch}
+    .panel{display:grid;gap:11px}
+    .mcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px;display:grid;gap:9px}
+    .mcard h3{font-size:13.5px;font-weight:850}
+    .mcard p{color:var(--muted);font-size:12px;line-height:1.45}
+    .kv{display:grid;grid-template-columns:minmax(110px,.85fr) 1fr;gap:6px 10px;font-size:13px}
+    .kv span{color:var(--muted)}
+    .kv b{font-weight:800;overflow-wrap:anywhere}
+    .dtitle-sm{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:900;margin-bottom:9px}
+    .dsec{border-bottom:1px solid var(--line-soft);padding-bottom:13px;margin-bottom:13px}
+    .dsec:last-child{border-bottom:0;margin-bottom:0}
+    /* Notif/ads cards */
+    .ncard{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:11px}
+    .nchead{display:flex;justify-content:space-between;gap:10px;align-items:start}
+    .nctitle{font-size:14px;font-weight:850}
+    .ncnote{color:var(--muted);font-size:11.5px;line-height:1.4;margin-top:2px}
+    .ncph{color:#93c5fd;font-size:11px;font-weight:800;margin-top:2px;word-break:break-word}
+    .ncsw{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
+    .nclang label{font-size:11px;font-weight:800;color:var(--muted);display:block;margin-bottom:4px}
+    .nclang textarea{width:100%;min-height:72px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:9px 11px;font:inherit;font-size:13px;line-height:1.4;resize:vertical;outline:none}
+    .ncmedia img,.ncmedia video{width:100%;max-width:260px;border-radius:11px;border:1px solid var(--line)}
+    /* Conversion bars */
+    .bar{display:grid;grid-template-columns:92px 1fr 44px;gap:8px;align-items:center;margin:9px 0;font-size:12px;color:var(--muted)}
+    .track{height:9px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+    .track span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--green))}
+    /* State + toast */
+    .state{min-height:72dvh;display:grid;place-items:center;padding:22px}
+    .state-card{max-width:420px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center}
+    .state-card h2{font-size:19px;margin-bottom:8px}
+    .state-card p{color:var(--muted);font-size:13px;line-height:1.5}
+    .toast{position:fixed;left:14px;right:14px;bottom:calc(86px + var(--safe-bottom));z-index:100;background:var(--ink);color:#0f1216;border-radius:12px;padding:13px 15px;font-size:13px;font-weight:850;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(24px);transition:opacity .2s,transform .2s,visibility .2s}
+    .toast.show{opacity:1;visibility:visible;transform:translateY(0)}
+    .empty{color:var(--muted);font-size:12.5px;padding:14px;text-align:center}
+    /* Desktop / Mac */
+    @media (min-width:860px){
+      body{padding:0;overflow:hidden}
+      .app{grid-template-columns:280px minmax(0,1fr);grid-template-rows:1fr;height:var(--app-h);overflow:hidden}
+      .topbar{height:var(--app-h);border-bottom:0;border-right:1px solid var(--line);position:static;display:grid;grid-template-rows:auto auto 1fr;align-content:start;overflow:auto}
+      .topbar-inner{flex-direction:column;align-items:stretch;gap:14px;padding:22px}
+      .brand p{white-space:normal}
+      .top-actions{justify-content:space-between}
+      .tabs{position:static;grid-template-columns:1fr;gap:6px;padding:0 14px 16px;background:transparent;border:0;border-radius:0;box-shadow:none;backdrop-filter:none}
+      .tab{height:48px;flex-direction:row;justify-content:flex-start;gap:11px;padding:0 15px;font-size:13.5px;border-radius:12px}
+      .tab .ic{font-size:18px}
+      main{height:var(--app-h);overflow:auto;padding:26px 30px 40px}
+      .g2{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .stat .val{font-size:30px}
+      .list{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+      .pboard{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:12px}
+      .settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .drawer{left:auto;top:0;right:0;bottom:0;width:min(560px,42vw);max-height:none;border-top:0;border-left:1px solid var(--line);border-radius:0;transform:translateX(106%)}
+      .drawer.open{transform:translateX(0)}
+      .toast{left:auto;right:30px;bottom:30px;width:max-content;max-width:520px}
+      .sec-head{align-items:center}
+    }
+    @media (min-width:1280px){
+      .list{grid-template-columns:repeat(4,minmax(0,1fr))}
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" class="state">
+    <div class="state-card">
+      <h2>Kirish tekshirilmoqda…</h2>
+      <p>Bu panel faqat Telegram admin tugmasi orqali ochilgan tekshirilgan sessiyada ishlaydi.</p>
+    </div>
+  </div>
+
+  <div id="app" class="app" hidden>
+    <aside class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">HSK</div>
+          <div>
+            <h1>Admin panel</h1>
+            <p id="brandSub">Bot · foydalanuvchi · obuna · pul markazi</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="pill"><span class="dot"></span><span id="liveLabel">Jonli</span></span>
+          <button class="reload" data-act="reload" title="Yangilash">⟳</button>
+        </div>
+      </div>
+      <nav class="tabs" id="tabs">
+        <button class="tab active" data-tab="dashboard"><span class="ic">🏠</span>Bosh</button>
+        <button class="tab" data-tab="statistics"><span class="ic">📊</span>Statistika</button>
+        <button class="tab" data-tab="users"><span class="ic">👥</span>Odamlar</button>
+        <button class="tab" data-tab="payments"><span class="ic">💳</span>To'lov</button>
+        <button class="tab" data-tab="settings"><span class="ic">⚙️</span>Boshqaruv</button>
+      </nav>
+    </aside>
+
+    <main>
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="view active">
+        <div class="sec">
+          <div class="sec-head">
+            <div><div class="sec-title">Umumiy holat</div><div class="sec-note" id="generatedAt">—</div></div>
+          </div>
+          <div class="grid g2" id="summaryGrid"></div>
+        </div>
+        <div class="sec">
+          <div class="sec-head"><div class="sec-title">Segmentlar</div><button class="link-btn" data-tab-jump="users">Hammasi →</button></div>
+          <div class="chips" id="segmentChips"></div>
+        </div>
+        <div class="sec">
+          <div class="sec-head"><div><div class="sec-title">Tezkor moliya</div><div class="sec-note">To'liq davr bo'yicha sof foyda</div></div><button class="link-btn" data-tab-jump="statistics">Batafsil →</button></div>
+          <div class="grid g2" id="financeQuick"></div>
+        </div>
+        <div class="sec">
+          <div class="sec-head"><div class="sec-title">Bugungi vazifalar</div></div>
+          <div class="list" id="queueList"></div>
+        </div>
+      </section>
+
+      <!-- STATISTICS -->
+      <section id="statistics" class="view">
+        <div class="sec-head" style="margin-bottom:8px">
+          <div><div class="sec-title">Chuqur statistika</div><div class="sec-note">Har bo'lim oddiy o'zbek tilida izohlangan</div></div>
+          <button class="link-btn" data-act="copy-report">Nusxa olish</button>
+        </div>
+        <div class="periods" id="periodTabs"></div>
+        <div class="range-lab" id="rangeLabel"></div>
+
+        <!-- Finance -->
+        <div class="block">
+          <div class="block-head"><span class="bi">💰</span><div><h3>Sof foyda va xarajat</h3><p>Daromad − AI xarajat − portfel rasxod</p></div></div>
+          <div class="grid g2" id="financeCards"></div>
+          <div class="explain" id="financeExplain"></div>
+        </div>
+
+        <!-- Unit economics -->
+        <div class="block">
+          <div class="block-head"><span class="bi">📐</span><div><h3>Birlik iqtisodi</h3><p>ARPU, ARPPU, o'rtacha chek</p></div></div>
+          <div class="grid g2" id="unitCards"></div>
+          <div class="explain" id="unitExplain"></div>
+        </div>
+
+        <!-- Retention -->
+        <div class="block">
+          <div class="block-head"><span class="bi">🔁</span><div><h3>Obuna yangilash va churn</h3><p>Qayta to'lov va yo'qotish darajasi</p></div></div>
+          <div class="grid g2" id="retentionCards"></div>
+          <div class="explain" id="retentionExplain"></div>
+        </div>
+
+        <!-- Sources -> paid -->
+        <div class="block">
+          <div class="block-head"><span class="bi">🧲</span><div><h3>Manba → pul</h3><p>Qaysi manba real pul olib keladi</p></div></div>
+          <div id="sourcesPaid"></div>
+          <div class="explain">Bu jadval — har bir kirish manbasidan kelgan foydalanuvchilarning <b>real to'lovi</b>. Bu yerda faqat traffik emas, balki haqiqiy pul ko'rsatiladi: shu manbadan necha kishi to'lagan va qancha USD daromad bergan. Eng tepadagi manba — eng foydali kanal.</div>
+        </div>
+
+        <!-- General overview report -->
+        <div class="block">
+          <div class="block-head"><span class="bi">📋</span><div><h3>Umumiy ko'rsatkichlar</h3><p>Foydalanuvchi, to'lov va kurs faolligi</p></div></div>
+          <div class="grid g2" id="overviewCards"></div>
+          <div style="margin-top:12px">
+            <div class="dtitle-sm">Konversiya voronkasi</div>
+            <div id="conversionBars"></div>
+          </div>
+        </div>
+
+        <!-- Source traffic (entry events) -->
+        <div class="block">
+          <div class="block-head"><span class="bi">🚪</span><div><h3>Obuna oynasiga kirish manbalari</h3><p>Traffik: kim obuna oynasini ochgan</p></div></div>
+          <div id="subEntryStats"><p class="empty">Yuklanmoqda…</p></div>
+          <div class="explain">Bu — obuna sahifasini <b>ochgan</b> odamlar (hali to'lamagan bo'lishi mumkin). Yuqoridagi "Manba → pul" esa real to'lovni ko'rsatadi. Ikkalasini solishtirsangiz: ko'p kirgan, lekin kam to'lagan manba — kuchsiz; kam kirgan, ko'p to'lagan manba — kuchli.</div>
+        </div>
+
+        <div class="block">
+          <div class="block-head"><span class="bi">📝</span><div><h3>To'liq matnli hisobot</h3><p>Nusxalab tashqariga yuborish uchun</p></div></div>
+          <pre id="reportText" style="white-space:pre-wrap;margin:0;font-size:12.5px;line-height:1.5;color:#d6deeb;font-family:inherit"></pre>
+        </div>
+      </section>
+
+      <!-- USERS -->
+      <section id="users" class="view">
+        <div class="toolbar">
+          <input id="search" class="input" placeholder="Ism, @username yoki ID bo'yicha qidirish" autocomplete="off">
+          <button class="icon-btn" data-act="clear-search">✕</button>
+        </div>
+        <div class="chips" id="userFilters" style="margin-bottom:12px"></div>
+        <div class="list" id="userList"></div>
+      </section>
+
+      <!-- PAYMENTS -->
+      <section id="payments" class="view">
+        <div id="paymentBoard"></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="settings" class="view">
+        <div class="sec">
+          <div class="sec-head"><div class="sec-title">Boshqaruv bo'limlari</div></div>
+          <div class="grid settings-grid" id="moduleGrid"></div>
+        </div>
+        <div class="sec">
+          <div class="sec-head"><div><div class="sec-title">🔔 Motivatsion eslatmalar</div><div class="sec-note">UZ/RU/TJ matn, yoqish/o'chirish, media</div></div></div>
+          <div class="grid" id="notifTemplates"><p class="empty">Yuklanmoqda…</p></div>
+        </div>
+        <div class="sec">
+          <div class="sec-head"><div><div class="sec-title">🎬 Kurs reklama videolari</div><div class="sec-note">Bepul foydalanuvchi uchun ad-supported dars</div></div></div>
+          <div class="mcard" style="margin-bottom:11px">
+            <div class="frow two">
+              <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
+              <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7"></div>
+            </div>
+            <div class="frow"><label>Havola (ixtiyoriy)</label><input id="caLink" class="input" placeholder="https://..."></div>
+            <button class="btn" data-act="upload-ca">📎 Video yuklash</button>
+            <input id="caFile" type="file" accept="video/*" hidden>
+          </div>
+          <div class="grid" id="courseAds"><p class="empty">Yuklanmoqda…</p></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="scrim" class="scrim" data-act="close-drawer"></div>
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <div class="dhead">
+      <div><div class="dtitle" id="drawerTitle">—</div><div class="dsub" id="drawerSub"></div></div>
+      <button class="close" data-act="close-drawer">✕</button>
+    </div>
+    <div class="dbody" id="drawerBody"></div>
+  </aside>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const tg = window.Telegram ? window.Telegram.WebApp : null;
+    const $ = (id) => document.getElementById(id);
+    const state = {
+      tab:"dashboard", filter:"all", search:"", statsPeriod:"all_time",
+      overview:null, finance:null, management:null, remoteUsers:null, activeModule:null
+    };
+
+    /* ---------- Telegram full-screen ---------- */
+    function applyViewport(){
+      const h = (tg && (tg.viewportStableHeight || tg.viewportHeight)) || window.innerHeight;
+      if(h) document.documentElement.style.setProperty("--app-h", h + "px");
+    }
+    if(tg){
+      try{ tg.ready(); }catch(e){}
+      try{ tg.expand(); }catch(e){}
+      try{ tg.requestFullscreen && tg.requestFullscreen(); }catch(e){}
+      try{ tg.setHeaderColor && tg.setHeaderColor("#0f1216"); tg.setBackgroundColor && tg.setBackgroundColor("#0f1216"); }catch(e){}
+      try{ tg.onEvent("viewportChanged", applyViewport); }catch(e){}
+    }
+    applyViewport();
+    window.addEventListener("resize", applyViewport);
+
+    /* ---------- helpers ---------- */
+    function esc(v){ return String(v==null?"":v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c])); }
+    function tag(label,color){ return `<span class="tag ${color||""}">${esc(label)}</span>`; }
+    function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(window.tt); window.tt=setTimeout(()=>t.classList.remove("show"),2000); }
+    function setError(title,text){ $("loading").innerHTML=`<div class="state-card"><h2>${esc(title)}</h2><p>${esc(text)}</p></div>`; $("loading").hidden=false; $("app").hidden=true; }
+
+    async function apiPost(url,payload){
+      const r = await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","X-Telegram-Init-Data":tg&&tg.initData?tg.initData:""},body:JSON.stringify(payload||{})});
+      const d = await r.json().catch(()=>({}));
+      if(!r.ok || !d.ok) throw {status:r.status,data:d};
+      return d;
+    }
+    async function apiUpload(url,formData){
+      if(tg&&tg.initData) formData.append("initData",tg.initData);
+      const r = await fetch(url,{method:"POST",headers:{"X-Telegram-Init-Data":tg&&tg.initData?tg.initData:""},body:formData});
+      const d = await r.json().catch(()=>({}));
+      if(!r.ok || !d.ok) throw {status:r.status,data:d};
+      return d;
+    }
+    function apiErr(e,fallback){
+      const k = e&&e.data&&e.data.error ? e.data.error : "";
+      const m = {
+        invalid_telegram_init_data:"Telegram sessiya noto'g'ri", admin_only:"Admin ruxsati yo'q",
+        payment_already_reviewed:"Bu to'lov allaqachon ko'rilgan", payment_not_found:"To'lov topilmadi",
+        user_not_found:"Foydalanuvchi topilmadi", invalid_price_payload:"Narx ma'lumoti noto'g'ri",
+        invalid_channel_payload:"Kanal ma'lumoti noto'g'ri", delete_confirmation_required:"O'chirish uchun IDni tasdiq maydoniga yozing",
+        invalid_help_url:"Yordam linki noto'g'ri", invalid_contact:"Admin kontakt noto'g'ri",
+        invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas"
+      };
+      return m[k] || fallback || "Amal bajarilmadi";
+    }
+
+    const segmentLabels = {
+      all:["Hammasi","butun baza"], paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","to'lov kutyapti"],
+      wants_pay:["Issiq mijoz","obunaga yaqin"], trial:["Sinov","trial"], free:["Bepul","free"],
+      expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Bot blok","botni bloklagan"]
+    };
+
+    /* ---------- load ---------- */
+    async function loadData(){
+      $("loading").hidden = false;
+      try{
+        const [ov, fin] = await Promise.all([
+          apiPost("/api/admin-miniapp/overview",{}),
+          apiPost("/api/admin-miniapp/finance-stats",{}).catch(()=>null)
+        ]);
+        state.overview = ov; state.finance = fin;
+        $("loading").hidden = true; $("app").hidden = false;
+        renderAll();
+      }catch(e){
+        const c = e&&e.status;
+        if(c===401) setError("Kirish rad etildi","Mini ilovani Telegram ichidan admin tugmasi orqali oching.");
+        else if(c===403) setError("Admin ruxsati yo'q","Bu panel faqat adminlar uchun.");
+        else setError("Ulanish xatosi","Serverdan ma'lumot olib bo'lmadi. Keyinroq qayta oching.");
+      }
+    }
+    async function loadManagement(force){
+      if(state.management && !force) return state.management;
+      const d = await apiPost("/api/admin-miniapp/management",{});
+      state.management = d; return d;
+    }
+
+    function renderAll(){
+      renderDashboard();
+      renderStatistics();
+      renderUserFilters(); renderUsers();
+      renderPayments();
+      renderModules();
+      loadSubEntry(); loadNotifications(); loadCourseAds();
+      loadManagement(true).catch(()=>{});
+    }
+
+    /* ---------- DASHBOARD ---------- */
+    function financeAll(){ const f=state.finance; if(!f||!f.periods) return null; return f.periods.find(p=>p.key==="all_time")||f.periods[f.periods.length-1]; }
+    function renderDashboard(){
+      const ov = state.overview;
+      $("generatedAt").textContent = "Oxirgi yangilanish: " + (ov.generated_at || "—");
+      $("summaryGrid").innerHTML = (ov.summary||[]).map(i=>`
+        <article class="stat ${i.tone||""}"><div class="lab">${esc(i.label)}</div>
+          <div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`).join("");
+      const c = ov.segments||{};
+      $("segmentChips").innerHTML = Object.keys(segmentLabels).map(k=>`
+        <button class="chip ${state.filter===k?"active":""}" data-seg="${k}"><span>${segmentLabels[k][0]} ${c[k]||0}</span></button>`).join("");
+      const fa = financeAll();
+      if(fa){
+        const f=fa.finance, u=fa.unit;
+        $("financeQuick").innerHTML = [
+          {l:"Daromad",v:f.revenue_text,s:fa.unit.approved_count+" ta to'lov",t:"info"},
+          {l:"AI xarajat",v:f.ai_cost_text,s:"daromadning "+f.ai_share_pct+"%",t:"warn"},
+          {l:"Sof foyda",v:f.net_text,s:"marja "+f.margin_pct+"%",t:f.net_positive?"good":"danger"},
+          {l:"ARPPU",v:u.arppu_text,s:"har pullik",t:"good"}
+        ].map(i=>`<article class="stat ${i.t}"><div class="lab">${i.l}</div><div><div class="val">${esc(i.v)}</div><div class="sub">${esc(i.s)}</div></div></article>`).join("");
+      }
+      $("queueList").innerHTML = (ov.queue||[]).map((i,idx)=>`
+        <button class="srow" data-tab-jump="${i.section==="payments"?"payments":i.section==="ads"?"settings":"users"}">
+          <div><h3>${idx+1}. ${esc(i.title)}</h3><p>${esc(i.note)}</p></div>
+          <span class="tag ${i.priority==="hozir"||i.priority==="иссиқ"||i.priority==="ҳозир"?"amber":"green"}">${esc(i.priority)}</span>
+        </button>`).join("");
+    }
+
+    /* ---------- STATISTICS ---------- */
+    function financePeriod(){ const f=state.finance; if(!f||!f.periods) return null; return f.periods.find(p=>p.key===state.statsPeriod)||f.periods[0]; }
+    function overviewReport(){ const r=state.overview&&state.overview.statistics_reports; if(!Array.isArray(r)) return null; return r.find(x=>x.key===state.statsPeriod)||r[0]; }
+    function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(i.label)}</div><div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`; }
+
+    function renderStatistics(){
+      const fin = state.finance;
+      const periods = (fin&&fin.periods)||[];
+      $("periodTabs").innerHTML = periods.map(p=>`<button class="period ${p.key===state.statsPeriod?"active":""}" data-period="${esc(p.key)}">${esc(p.title)} · ${esc(p.note)}</button>`).join("");
+      const fp = financePeriod();
+      if(!fp){ $("financeCards").innerHTML="<p class='empty'>Moliyaviy ma'lumot yo'q</p>"; }
+      else{
+        $("rangeLabel").textContent = "Davr: " + (fp.range_label||fp.note);
+        $("financeCards").innerHTML = [
+          {label:"Daromad",value:fp.finance.revenue_text,note:fp.unit.approved_count+" ta to'lov",tone:"info"},
+          {label:"AI xarajat",value:fp.finance.ai_cost_text,note:"daromadning "+fp.finance.ai_share_pct+"%",tone:"warn"},
+          {label:"Portfel rasxod",value:fp.finance.expense_text,note:"qo'lda kiritilgan",tone:"warn"},
+          {label:"Sof foyda",value:fp.finance.net_text,note:"marja "+fp.finance.margin_pct+"%",tone:fp.finance.net_positive?"good":"danger"}
+        ].map(cardHtml).join("");
+        $("financeExplain").innerHTML = esc(fp.finance.explain);
+        $("unitCards").innerHTML = [
+          {label:"ARPU",value:fp.unit.arpu_text,note:"har foydalanuvchi",tone:"info"},
+          {label:"ARPPU",value:fp.unit.arppu_text,note:"har pullik",tone:"good"},
+          {label:"O'rtacha chek",value:fp.unit.avg_check_text,note:"har to'lov",tone:"info"},
+          {label:"Pullik",value:fp.unit.paying_users,note:fp.unit.total_users+" jami baza",tone:"good"}
+        ].map(cardHtml).join("");
+        $("unitExplain").innerHTML = esc(fp.unit.explain);
+        const r=fp.retention;
+        $("retentionCards").innerHTML = [
+          {label:"Yangi to'lov",value:r.new_paying,note:"birinchi marta",tone:"info"},
+          {label:"Yangilash",value:r.renewals,note:"qayta to'lov",tone:"good"},
+          {label:"Yangilash ulushi",value:r.renewal_share_pct+"%",note:"shu davr",tone:"good"},
+          (r.churn_rate_pct!=null
+            ? {label:"Churn",value:r.churn_rate_pct+"%",note:"yo'qolgan obunachi",tone:"danger"}
+            : {label:"Faol obuna",value:r.active_paid_now,note:"hozir to'lovli",tone:"good"})
+        ].map(cardHtml).join("");
+        $("retentionExplain").innerHTML = esc(r.explain);
+        const sp = fp.sources_paid||[];
+        $("sourcesPaid").innerHTML = sp.length ? `<table class="tbl"><thead><tr>
+            <th>Manba</th><th class="r">Pullik</th><th class="r">To'lov</th><th class="r">Daromad</th></tr></thead>
+          <tbody>${sp.map(x=>`<tr><td><b>${esc(x.label)}</b></td><td class="r">${x.paying_users}</td><td class="r">${x.payments}</td><td class="r"><b>${esc(x.revenue_text)}</b></td></tr>`).join("")}</tbody></table>`
+          : "<p class='empty'>Bu davrda manbadan kelgan to'lov yo'q.</p>";
+      }
+      // overview report cards + bars + text
+      const orep = overviewReport();
+      $("overviewCards").innerHTML = ((orep&&orep.cards)||(state.overview.summary)||[]).map(cardHtml).join("");
+      $("reportText").textContent = (orep&&orep.text) || state.overview.report_text || "";
+      const course = (orep&&orep.course)||state.overview.course||{};
+      const metrics = (orep&&orep.metrics)||state.overview.counts||{};
+      const opened = Math.max(Number(course.opened_users||0),1);
+      const bars = [
+        ["Ochildi",course.opened_users||0,100],
+        ["Dars",course.lesson_users||0,Math.round((course.lesson_users||0)/opened*100)],
+        ["Tugatdi",course.completed_users||0,Math.round((course.completed_users||0)/opened*100)],
+        ["To'lovli",metrics.approved_payment_users||metrics.paid_users||0,Math.round((metrics.approved_payment_users||metrics.paid_users||0)/opened*100)]
+      ];
+      $("conversionBars").innerHTML = bars.map(b=>`<div class="bar"><span>${b[0]}</span><div class="track"><span style="width:${Math.min(b[2],100)}%"></span></div><b>${b[1]}</b></div>`).join("");
+    }
+
+    async function loadSubEntry(){
+      try{
+        const d = await apiPost("/api/admin-miniapp/sub-entry-stats",{});
+        if(!d.rows||!d.rows.length){ $("subEntryStats").innerHTML="<p class='empty'>Ma'lumot yo'q</p>"; return; }
+        $("subEntryStats").innerHTML = `<table class="tbl"><thead><tr><th>Manba</th><th class="r">Hafta<br><small>kirish/odam</small></th><th class="r">Jami<br><small>kirish/odam</small></th></tr></thead>
+          <tbody>${d.rows.map(r=>`<tr><td><b>${esc(r.label)}</b></td><td class="r"><b>${r.total_week}</b>/${r.unique_week}</td><td class="r">${r.total_all}/${r.unique_all}</td></tr>`).join("")}</tbody></table>`;
+      }catch(e){ $("subEntryStats").innerHTML="<p class='empty'>Xatolik</p>"; }
+    }
+
+    /* ---------- USERS ---------- */
+    function statusTone(u){
+      if(u.payment_status==="approved"&&u.status==="active") return ["Obunachi","green"];
+      if(u.payment_status==="pending") return ["To'lov tekshiruvda","amber"];
+      if(u.bot_blocked) return ["Bot bloklangan","red"];
+      if(u.status==="expired") return ["Muddati tugagan","red"];
+      if(u.status==="blocked") return ["Bloklangan","red"];
+      return [u.status_label||"Holat yo'q","violet"];
+    }
+    function filterUsers(){
+      const q = state.search.trim().toLowerCase();
+      const src = (state.search.trim().length>=2 && state.remoteUsers) ? state.remoteUsers : (state.overview.users||[]);
+      return src.filter(u=>{
+        const f = state.filter==="all"
+          || (state.filter==="paid"&&u.payment_status==="approved"&&u.status==="active")
+          || (state.filter==="pending"&&u.payment_status==="pending")
+          || (state.filter==="wants_pay"&&["none","draft","rejected"].includes(u.payment_status)&&u.status!=="blocked")
+          || (state.filter==="trial"&&u.status==="trial")
+          || (state.filter==="free"&&u.status==="free")
+          || (state.filter==="expired"&&u.status==="expired")
+          || (state.filter==="blocked"&&u.status==="blocked")
+          || (state.filter==="bot_blocked"&&u.bot_blocked);
+        const hay = `${u.id} ${u.name} ${u.username||""} ${u.language} ${u.level} ${u.status_label} ${u.payment_label} ${u.plan} ${u.method}`.toLowerCase();
+        return f && (!q || hay.includes(q));
+      });
+    }
+    function renderUserFilters(){
+      const c = state.overview.segments||{};
+      $("userFilters").innerHTML = Object.keys(segmentLabels).map(k=>`<button class="chip ${state.filter===k?"active":""}" data-seg="${k}"><span>${segmentLabels[k][0]} ${c[k]||0}</span></button>`).join("");
+    }
+    function renderUsers(){
+      const rows = filterUsers();
+      $("userList").innerHTML = rows.length ? rows.map(u=>{
+        const t = statusTone(u);
+        return `<button class="ucard" data-user="${u.id}">
+          <div class="uhead"><div><div class="uname">${esc(u.name)}</div>
+            <div class="usub">${u.username?"@"+esc(u.username)+" · ":""}${u.id}<br>${esc(u.language)} · ${esc(u.level)} · ${esc(u.last_active)}</div></div>
+            ${tag(t[0],t[1])}</div>
+          <div class="tags">${tag(u.plan,"blue")}${tag(u.method,"")}${u.bot_blocked?tag("Telegram blok","red"):""}${tag(u.end_date?"tugaydi "+u.end_date:"faol obuna yo'q",u.end_date?"green":"red")}</div>
+          <div class="mini2"><div class="mini"><b>${esc(u.questions)}</b><span>AI savollar</span></div><div class="mini"><b>${esc(u.streak)}</b><span>seriya</span></div></div>
+        </button>`;
+      }).join("") : "<p class='empty'>Bu saralash bo'yicha foydalanuvchi topilmadi.</p>";
+    }
+    async function remoteSearch(q){
+      if(q.trim().length<2){ state.remoteUsers=null; renderUsers(); return; }
+      try{ const d=await apiPost("/api/admin-miniapp/users/search",{query:q}); state.remoteUsers=d.users||[]; renderUsers(); }
+      catch(e){ toast(apiErr(e,"Qidiruv ishlamadi")); }
+    }
+
+    /* ---------- PAYMENTS ---------- */
+    function renderPayments(){
+      const latest = (state.overview.payments&&state.overview.payments.latest)||[];
+      const groups = [
+        ["To'lov tekshiruvda",latest.filter(p=>p.status==="pending")],
+        ["Oxirgi tasdiqlanganlar",latest.filter(p=>p.status==="approved")],
+        ["Rad etilganlar",latest.filter(p=>p.status==="rejected")]
+      ];
+      $("paymentBoard").innerHTML = groups.map(g=>`
+        <div class="sec">
+          <div class="sec-head"><div class="sec-title">${g[0]} <span style="color:var(--muted);font-weight:700">${g[1].length}</span></div></div>
+          <div class="grid pboard">
+            ${g[1].map(p=>`<article class="pcard">
+              <div class="phead"><div><div class="uname">${esc(p.name)}</div>
+                <div class="usub">${p.username?"@"+esc(p.username)+" · ":""}${p.telegram_id}<br>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.submitted_at||"—")}</div></div>
+                <div class="amount">${esc(p.amount)}</div></div>
+              <div class="tags">${tag(p.status_label,p.status==="approved"?"green":p.status==="pending"?"amber":"red")}${tag(p.has_screenshot?"rasm bor":"rasm yo'q","")}</div>
+              ${p.status==="pending"?`<div class="row"><button class="btn" data-pay="${p.id}" data-pact="approve">Tasdiqlash</button><button class="btn sec" data-pay="${p.id}" data-pact="reject">Rad etish</button></div>`:""}
+            </article>`).join("") || "<p class='empty'>Hozircha bo'sh.</p>"}
+          </div>
+        </div>`).join("");
+    }
+    async function reviewPayment(btn){
+      const id=Number(btn.dataset.pay||0), action=btn.dataset.pact;
+      if(!id||!action) return;
+      let reason="";
+      if(action==="reject"){ reason=prompt("Rad sababini yozing","admin panel orqali rad etildi")||""; if(!reason.trim()) return; }
+      btn.disabled=true;
+      try{ await apiPost("/api/admin-miniapp/payments/review",{payment_id:id,action,reason}); await reloadAll(action==="approve"?"To'lov tasdiqlandi":"To'lov rad etildi"); }
+      catch(e){ toast(apiErr(e,"To'lovni ko'rib bo'lmadi")); btn.disabled=false; }
+    }
+
+    async function reloadAll(msg){ state.management=null; await loadData(); if(msg) toast(msg); }
+
+    /* ---------- USER DETAIL ---------- */
+    function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); }
+    function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; }
+
+    async function openUser(id){
+      const u = ((state.remoteUsers||[]).concat(state.overview.users||[])).find(x=>String(x.id)===String(id));
+      if(!u) return;
+      openDrawer(u.name, `${u.username?"@"+u.username+" · ":""}${u.id} · ${u.last_active}`, "<p class='empty'>Yuklanmoqda…</p>");
+      let detail=null;
+      try{ detail=await apiPost("/api/admin-miniapp/users/detail",{telegram_id:u.id}); }catch(e){ toast(apiErr(e,"Tafsilot yuklanmadi")); }
+      const f=(detail&&detail.user)||u, pays=(detail&&detail.payments)||[];
+      $("drawerBody").innerHTML = `
+        <section class="dsec"><div class="dtitle-sm">Ruxsat va obuna</div><div class="kv">
+          <span>Holat</span><b>${esc(f.status_label||f.status)}</b>
+          <span>Telegram blok</span><b>${f.bot_blocked?"ha":"yo'q"}</b>
+          <span>To'lov</span><b>${esc(f.payment_label||f.payment_status)}</b>
+          <span>Tarif</span><b>${esc(f.plan||f.selected_plan_type||"—")}</b>
+          <span>Usul</span><b>${esc(f.method||f.payment_method||"—")}</b>
+          <span>Boshlangan</span><b>${esc(f.start_date||"—")}</b>
+          <span>Tugash sanasi</span><b>${esc(f.end_date||"yo'q")}</b></div></section>
+        <section class="dsec"><div class="dtitle-sm">O'qish</div><div class="kv">
+          <span>Til</span><b>${esc(f.language)}</b><span>Daraja</span><b>${esc(f.level)}</b>
+          <span>Rejim</span><b>${esc(f.mode||f.learning_mode)}</b><span>Savollar</span><b>${esc(f.questions)}</b>
+          <span>Bonus</span><b>${esc(f.bonus_left)}</b><span>Seriya</span><b>${esc(f.streak)} kun</b>
+          <span>Referal</span><b>${esc(f.referral_code||"—")}</b></div></section>
+        <section class="dsec"><div class="dtitle-sm">To'lov tarixi</div><div class="panel">
+          ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>${esc(p.submitted_at)} ${p.comment?"· "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>To'lov tarixi yo'q.</p>"}
+        </div></section>
+        <section class="dsec"><div class="dtitle-sm">Admin amallari</div><div class="panel">
+          <div class="frow"><label>Qo'lda obuna berish</label><div class="row">
+            <select id="qaPlan" class="select" style="max-width:160px"><option value="10_days">10 kun</option><option value="1_month">1 oy</option></select>
+            <button class="btn" data-uaccess="${f.id}">Obuna berish</button></div></div>
+          <button class="btn danger" data-module="delete_user" data-prefill="${f.id}">Foydalanuvchini o'chirish</button>
+        </div></section>`;
+    }
+
+    /* ---------- MODULES (settings) ---------- */
+    function renderModules(){
+      $("moduleGrid").innerHTML = (state.overview.modules||[]).map(m=>`<button class="srow" data-module="${m.key}"><div><h3>${m.icon} ${esc(m.title)}</h3><p>${esc(m.note)}</p></div><span class="tag green">ochish</span></button>`).join("");
+    }
+    function moduleTitle(key){ const m=(state.overview.modules||[]).find(x=>x.key===key); return m?`${m.icon} ${m.title}`:"Boshqaruv"; }
+
+    async function openModule(key,prefill){
+      state.activeModule=key;
+      if(key==="stats"){ closeDrawer(); switchTab("statistics"); return; }
+      if(key==="user_search"){ closeDrawer(); switchTab("users"); $("search").focus(); return; }
+      openDrawer(moduleTitle(key),"Panel ichidagi real boshqaruv","<p class='empty'>Yuklanmoqda…</p>");
+      let d;
+      try{ d=await loadManagement(false); }catch(e){ $("drawerBody").innerHTML="<p class='empty'>Ma'lumot yuklanmadi.</p>"; return; }
+      const map={prices:renderPrices,channels:renderChannels,help:renderHelp,portfolio:renderPortfolio,ads:()=>renderCampaign(d,"ad"),release_feedback:()=>renderCampaign(d,"release_feedback"),discount:()=>renderCampaign(d,"discount"),partners:()=>renderPartners(d),audio:()=>renderAudio(d)};
+      if(key==="broadcast") return renderBroadcast();
+      if(key==="give_access") return renderGiveAccess(prefill);
+      if(key==="delete_user") return renderDeleteUser(prefill);
+      if(map[key]) return map[key](d);
+      $("drawerBody").innerHTML="<p class='empty'>Bu bo'lim uchun panel tayyor emas.</p>";
+    }
+
+    function renderPrices(d){
+      openDrawer("💳 Obuna narxlari","Narxlar darhol subscription Mini Appda ishlaydi",`<div class="panel">
+        ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
+          <h3>${esc(p.method_label)} · ${esc(p.plan_label)}</h3><p>Joriy: ${esc(p.text)}</p>
+          <div class="row"><input class="input" data-pamount type="number" min="1" max="1000000" value="${p.amount}" style="max-width:170px"><button class="btn" data-psave>Saqlash</button></div></div>`).join("")}
+        <div class="mcard"><h3>Karta rekviziti</h3><textarea id="payDetails" class="textarea" maxlength="1500">${esc(d.payment_details||"")}</textarea><button class="btn" data-pdsave>Rekvizitni saqlash</button></div>
+        <p class="empty">Alipay/WeChat QR file_id oqimi chat admin bo'limida saqlanadi.</p></div>`);
+    }
+    function renderChannels(d){
+      const ch=d.channels||{};
+      openDrawer("📣 Majburiy kanal","Kanal majburiyligini panel ichida boshqarish",`<div class="panel">
+        <div class="mcard"><h3>Majburiy obuna holati</h3><p>Hozir: ${ch.enabled?"yoqilgan":"o'chirilgan"}</p>
+          <button class="btn ${ch.enabled?"sec":""}" data-chmode="${ch.enabled?"0":"1"}">${ch.enabled?"O'chirish":"Yoqish"}</button></div>
+        <div class="mcard"><h3>Kanal qo'shish</h3>
+          <div class="frow"><label>Kanal nomi</label><input id="chTitle" class="input" placeholder="HSK AI kanal"></div>
+          <div class="frow"><label>@username yoki chat_id</label><input id="chId" class="input" placeholder="@channel yoki -100..."></div>
+          <div class="frow"><label>Taklif linki</label><input id="chInvite" class="input" placeholder="https://t.me/..."></div>
+          <button class="btn" data-chadd>Kanalni saqlash</button></div>
+        ${(ch.items||[]).map(i=>`<div class="mcard"><h3>${esc(i.title)}</h3><p>${esc(i.chat_id)}<br>${esc(i.invite_link||"link yo'q")}</p>
+          <div class="row">${tag(i.active?"faol":"o'chirilgan",i.active?"green":"red")}
+          <button class="btn sec" data-chtoggle="${i.id}" data-active="${i.active?"0":"1"}">${i.active?"O'chirish":"Yoqish"}</button>
+          <button class="btn danger" data-chdel="${i.id}">O'chirish</button></div></div>`).join("")||"<p class='empty'>Kanal qo'shilmagan.</p>"}</div>`);
+    }
+    function renderHelp(d){
+      const h=d.help||{};
+      openDrawer("🆘 Yordam sozlamalari","Admin aloqa va 3 tildagi video linklar",`<div class="panel">
+        <div class="mcard"><h3>Admin aloqa</h3><input id="adminContact" class="input" value="${esc(h.admin_contact||"")}" placeholder="@username yoki t.me/link"><button class="btn" data-hcontact>Saqlash</button></div>
+        ${(h.links||[]).map(i=>`<div class="mcard" data-hrow data-key="${i.key}" data-lang="${i.lang}"><h3>${esc(i.icon)} ${esc(i.label)} · ${esc(i.lang.toUpperCase())}</h3>
+          <input class="input" data-hvalue value="${esc(i.value||"")}" placeholder="https://..."><button class="btn" data-hsave>Saqlash</button></div>`).join("")}</div>`);
+    }
+    function renderPortfolio(d){
+      const p=d.portfolio||{}, s=p.summary||{};
+      openDrawer("💼 Portfel","Tushum, xarajat va sof foyda",`<div class="panel">
+        <div class="mcard"><h3>Joriy holat</h3><div class="kv">
+          <span>Tasdiqlangan to'lov</span><b>${esc(s.approved_payments||0)}</b>
+          <span>Yalpi tushum</span><b>${esc(s.gross_revenue_usd||"$0.00")}</b>
+          <span>Qo'lda foyda</span><b>${esc(s.manual_profit_usd||"$0.00")}</b>
+          <span>Qo'lda rasxod</span><b>${esc(s.manual_expense_usd||"$0.00")}</b>
+          <span>Sof foyda</span><b>${esc(s.net_usd||"$0.00")}</b></div></div>
+        <div class="mcard"><h3>Amaliyot qo'shish</h3>
+          <div class="frow two"><div><label>Tur</label><select id="pfType" class="select"><option value="profit">Foyda</option><option value="expense">Rasxod</option></select></div>
+            <div><label>Valyuta</label><select id="pfCurrency" class="select"><option value="usd">USD</option><option value="tjs">TJS</option><option value="¥">CNY/¥</option></select></div></div>
+          <div class="frow"><label>Summa</label><input id="pfAmount" class="input" type="number" step="0.01" min="0"></div>
+          <div class="frow"><label>Sabab</label><input id="pfNote" class="input" placeholder="OpenAI to'lov, reklama, ..."></div>
+          <button class="btn" data-pfsave>Saqlash</button></div>
+        ${(p.history||[]).map(i=>`<div class="mcard"><h3>${i.type==="profit"?"+":"−"} ${esc(i.amount_usd)}</h3><p>${esc(i.source)} · ${esc(i.created_at)}<br>${esc(i.original||"")} ${esc(i.note||"")}</p></div>`).join("")||"<p class='empty'>Tarix bo'sh.</p>"}</div>`);
+    }
+    function renderBroadcast(){
+      openDrawer("📢 Ommaviy xabar","Matnli xabarni segmentga darhol yuborish",`<div class="panel">
+        <div class="danger-note">Bu real yuborish. Tugmani bosgandan keyin xabar foydalanuvchilarga ketadi.</div>
+        <div class="mcard"><div class="frow"><label>Segment</label><select id="bcSeg" class="select"><option value="all">Barcha (blokланмаган)</option><option value="paid">To'lovli faol</option><option value="trial">Sinov</option><option value="expired">Muddati tugagan</option></select></div>
+          <div class="frow"><label>Xabar</label><textarea id="bcText" class="textarea" maxlength="3500"></textarea></div>
+          <button class="btn danger" data-bcsend>Yuborish</button></div></div>`);
+    }
+    function renderCampaign(d,kind){
+      const cfg={ad:["📣 Reklama kampaniyasi","ads","Matnli reklama rejalashtiriladi."],release_feedback:["🆕 Yangilik fikri","release_feedback","Yangilik fikri baholash oqimi bilan."],discount:["🎁 Chegirma","discounts","Chegirma kampaniyasi yaratiladi."]}[kind];
+      const rows=((d.campaigns||{})[cfg[1]]||[]);
+      openDrawer(cfg[0],cfg[2],`<div class="panel">
+        <div class="mcard"><div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
+          <div class="frow"><label>Matn / sabab</label><textarea id="cmText" class="textarea" maxlength="3500"></textarea></div>
+          <div class="frow two"><div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div>
+            ${kind==="discount"?'<div><label>Chegirma %</label><input id="cmPercent" class="input" type="number" min="1" max="90" value="20"></div>':'<div><label>Xususiyat kaliti</label><input id="cmFeature" class="input" value="general"></div>'}</div>
+          <button class="btn" data-cmcreate="${kind}">Yaratish</button></div>
+        ${rows.map(i=>`<div class="mcard"><h3>#${i.id} · ${esc(i.title)}</h3><p>${esc(i.status||(i.active?"active":"inactive"))} · ${esc(i.send_at||i.starts_at||"")}<br>${esc(i.text||"")}</p></div>`).join("")||"<p class='empty'>Hali yozuv yo'q.</p>"}</div>`);
+    }
+    function renderPartners(d){
+      const p=d.partners||{}, s=p.stats||{};
+      openDrawer("🤝 Hamkorlar","Ariza, to'lov va statistika",`<div class="panel">
+        <div class="mcard"><h3>Statistika</h3><p>Kutilmoqda: ${esc(s.pending||0)} · Faol: ${esc(s.active||0)} · Referal: ${esc(s.referrals||0)} · To'langan: ${esc(s.paid_referrals||0)}</p></div>
+        ${(p.pending||[]).map(i=>`<div class="mcard"><h3>Ariza #${i.id}</h3><p>${esc(i.telegram_id)} · ${esc(i.contact_username)}<br>${esc(i.promotion_channel)} · ${esc(i.audience_size)}</p><button class="btn" data-partner="approve" data-pid="${i.id}">Tasdiqlash</button></div>`).join("")||"<p class='empty'>Kutilayotgan ariza yo'q.</p>"}
+        ${(p.payouts||[]).map(i=>`<div class="mcard"><h3>To'lov #${i.id} · ${esc(i.amount_usd)}</h3><p>${esc(i.status)} · ${esc(i.local_amount)}<br>${esc(i.method)} · ${esc(i.account)}</p></div>`).join("")}</div>`);
+    }
+    function renderGiveAccess(prefill){
+      openDrawer("✅ Obuna berish","Foydalanuvchi ID va tarifni tanlang",`<div class="panel"><div class="mcard">
+        <div class="frow"><label>Telegram ID</label><input id="gaId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
+        <div class="frow"><label>Tarif</label><select id="gaPlan" class="select"><option value="10_days">10 kun</option><option value="1_month">1 oy</option></select></div>
+        <button class="btn" data-gasave>Obuna berish</button></div></div>`);
+    }
+    function renderDeleteUser(prefill){
+      openDrawer("🗑 Foydalanuvchini o'chirish","Xavfli amal: ID bilan tasdiqlanadi",`<div class="panel">
+        <div class="danger-note">Bu foydalanuvchi va unga bog'liq kurs/xabar/fikr ma'lumotlarini o'chiradi. Qaytarib bo'lmaydi.</div>
+        <div class="mcard"><div class="frow"><label>Telegram ID</label><input id="delId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
+          <div class="frow"><label>Tasdiq uchun shu IDni qayta yozing</label><input id="delConfirm" class="input" inputmode="numeric"></div>
+          <button class="btn danger" data-deluser>O'chirish</button></div></div>`);
+    }
+    function renderAudio(d){
+      const rows=d.audio||[];
+      openDrawer("🎵 Audio boshqaruvi","Audio ro'yxatini tekshirish",`<div class="panel">
+        <div class="mcard"><h3>Qamrov</h3><p>${rows.map(r=>`${r.level}: ${r.lessons} dars`).join(" · ")}</p></div>
+        <div class="mcard"><div class="frow two"><div><label>Daraja</label><select id="auLevel" class="select"><option value="hsk1">HSK1</option><option value="hsk2">HSK2</option><option value="hsk3">HSK3</option><option value="hsk4">HSK4</option></select></div>
+          <div><label>Dars</label><input id="auLesson" class="input" type="number" min="1" value="1"></div></div>
+          <button class="btn" data-aulist>Ro'yxatni ko'rish</button></div>
+        <div id="auResult" class="panel"></div></div>`);
+    }
+
+    /* ---------- module actions ---------- */
+    async function afterModule(msg){ const m=state.activeModule; state.management=null; await loadData(); if(m && $("drawer").classList.contains("open")) await openModule(m); toast(msg||"Saqlandi"); }
+
+    async function grantAccess(id,plan){ await apiPost("/api/admin-miniapp/users/give-access",{telegram_id:Number(id),plan}); await afterModule("Obuna berildi"); }
+
+    /* ---------- notifications ---------- */
+    function notifMedia(i){ if(!i.media_url) return "<span class='empty'>Media biriktirilmagan</span>"; return i.media_type==="video"?`<video src="${i.media_url}" controls></video>`:`<img src="${i.media_url}" alt="media">`; }
+    function notifCard(i){
+      return `<div class="ncard" data-nkey="${i.key}">
+        <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${esc(i.note)}</div><div class="ncph">O'zgaruvchilar: ${esc((i.placeholders||[]).join("  "))}</div></div>
+          <label class="ncsw"><input type="checkbox" data-nc="enabled" ${i.enabled?"checked":""}> Yoqilgan</label></div>
+        <div class="nclang"><label>🇺🇿 O'zbekcha</label><textarea data-nc="text_uz" maxlength="3500" placeholder="${esc(i.default_uz)}">${esc(i.text_uz)}</textarea></div>
+        <div class="nclang"><label>🇷🇺 Ruscha</label><textarea data-nc="text_ru" maxlength="3500" placeholder="${esc(i.default_ru)}">${esc(i.text_ru)}</textarea></div>
+        <div class="nclang"><label>🇹🇯 Tojikcha</label><textarea data-nc="text_tj" maxlength="3500" placeholder="${esc(i.default_tj)}">${esc(i.text_tj)}</textarea></div>
+        <div class="ncmedia" data-ncmedia>${notifMedia(i)}</div>
+        <div class="row"><button class="btn" data-nact="save">Saqlash</button><button class="btn sec" data-nact="upload">📎 Media yuklash</button>
+          <button class="btn sec" data-nact="clear" ${i.media_url?"":"hidden"}>Mediani o'chirish</button>
+          <input type="file" accept="image/*,video/*" data-nfile hidden></div>
+        <p class="empty" style="text-align:left">Media bilan izoh max ${i.caption_max}, mediasiz matn max ${i.text_max} belgi.</p></div>`;
+    }
+    async function loadNotifications(){
+      const host=$("notifTemplates"); if(!host) return;
+      try{ const d=await apiPost("/api/admin-miniapp/notifications",{}); host.innerHTML=(d.items||[]).map(notifCard).join(""); host.querySelectorAll(".ncard").forEach(bindNotif); }
+      catch(e){ host.innerHTML="<p class='empty'>Eslatmalarni yuklab bo'lmadi.</p>"; }
+    }
+    function bindNotif(card){
+      const key=card.dataset.nkey, file=card.querySelector("[data-nfile]");
+      card.querySelector('[data-nact="save"]').onclick=()=>saveNotif(card,key);
+      card.querySelector('[data-nact="upload"]').onclick=()=>file.click();
+      card.querySelector('[data-nact="clear"]').onclick=()=>clearNotif(card,key);
+      file.onchange=()=>uploadNotif(card,key,file);
+    }
+    async function saveNotif(card,key){
+      const b=card.querySelector('[data-nact="save"]'); b.disabled=true;
+      try{ await apiPost("/api/admin-miniapp/notifications/save",{key,enabled:card.querySelector('[data-nc="enabled"]').checked,text_uz:card.querySelector('[data-nc="text_uz"]').value,text_ru:card.querySelector('[data-nc="text_ru"]').value,text_tj:card.querySelector('[data-nc="text_tj"]').value}); toast("Eslatma saqlandi"); }
+      catch(e){ toast("Saqlashda xato"); } finally{ b.disabled=false; }
+    }
+    async function uploadNotif(card,key,file){
+      const f=file.files&&file.files[0]; if(!f) return;
+      if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); file.value=""; return; }
+      const fd=new FormData(); fd.append("key",key); fd.append("media",f);
+      try{ const d=await apiUpload("/api/admin-miniapp/notifications/media",fd); card.querySelector("[data-ncmedia]").innerHTML=notifMedia({media_url:d.media_url+"?v="+Date.now(),media_type:d.media_type}); card.querySelector('[data-nact="clear"]').hidden=false; toast("Media biriktirildi"); }
+      catch(e){ toast("Media yuklashda xato"); } finally{ file.value=""; }
+    }
+    async function clearNotif(card,key){
+      try{ await apiPost("/api/admin-miniapp/notifications/media/clear",{key}); card.querySelector("[data-ncmedia]").innerHTML=notifMedia({media_url:null}); card.querySelector('[data-nact="clear"]').hidden=true; toast("Media o'chirildi"); }
+      catch(e){ toast("O'chirishda xato"); }
+    }
+
+    /* ---------- course ads ---------- */
+    function caCard(i){
+      return `<div class="ncard" data-ca="${i.id}">
+        <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s majburiy ko'rish · ${esc(i.created_at||"—")}</div>
+          ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}</div>
+          ${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}</div>
+        <div class="ncmedia">${i.media_url?`<video src="${i.media_url}" controls muted playsinline></video>`:"<span class='empty'>Video yo'q</span>"}</div>
+        <div class="row"><button class="btn sec" data-catoggle="${i.id}" data-active="${i.is_active?"0":"1"}">${i.is_active?"Faolsizlantirish":"Faollashtirish"}</button>
+          <button class="btn danger" data-cadel="${i.id}">Butunlay o'chirish</button></div></div>`;
+    }
+    async function loadCourseAds(){
+      const host=$("courseAds"); if(!host) return;
+      try{ const d=await apiPost("/api/admin-miniapp/course-ads",{}); const it=d.items||[]; host.innerHTML=it.length?it.map(caCard).join(""):"<p class='empty'>Hali reklama video yuklanmagan.</p>"; }
+      catch(e){ host.innerHTML="<p class='empty'>Kurs reklamalarni yuklab bo'lmadi.</p>"; }
+    }
+    async function submitCourseAd(){
+      const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
+      if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("media",f);
+      try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
+      catch(e){ toast("Reklama yuklashda xato"); } finally{ input.value=""; }
+    }
+
+    /* ---------- tabs ---------- */
+    function switchTab(tab){
+      state.tab=tab;
+      document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+      document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===tab));
+      const main=document.querySelector("main"); if(main) main.scrollTo({top:0,behavior:"smooth"}); window.scrollTo({top:0});
+    }
+
+    async function copyReport(){
+      const orep=overviewReport();
+      const text=(orep&&orep.text)||(state.overview&&state.overview.report_text)||"";
+      try{ if(navigator.clipboard) await navigator.clipboard.writeText(text); }catch(e){}
+      toast("Hisobot nusxalandi");
+    }
+
+    /* ---------- delegated clicks ---------- */
+    document.addEventListener("click",(e)=>{
+      const T=(s)=>e.target.closest(s);
+      let el;
+      if((el=T("[data-pay]"))) return reviewPayment(el);
+      if((el=T("[data-module]"))) return openModule(el.dataset.module,el.dataset.prefill);
+      if((el=T("[data-uaccess]"))) return grantAccess(el.dataset.uaccess,$("qaPlan").value).catch(x=>toast(apiErr(x,"Obuna berilmadi")));
+      if((el=T("[data-user]"))) return openUser(el.dataset.user);
+      if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-pdsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$("payDetails").value}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-chmode]"))) return saveChannel({action:"mode",enabled:el.dataset.chmode==="1"},el);
+      if((el=T("[data-chadd]"))) return saveChannel({action:"add",title:$("chTitle").value,chat_id:$("chId").value,invite_link:$("chInvite").value},el);
+      if((el=T("[data-chtoggle]"))) return saveChannel({action:"toggle",channel_id:Number(el.dataset.chtoggle),active:el.dataset.active==="1"},el);
+      if((el=T("[data-chdel]"))){ if(confirm("Kanal o'chirilsinmi?")) return saveChannel({action:"delete",channel_id:Number(el.dataset.chdel)},el); return; }
+      if((el=T("[data-hcontact]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/help/save",{target:"admin_contact",value:$("adminContact").value}).then(()=>afterModule("Saqlandi")).catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-hsave]"))){ const r=el.closest("[data-hrow]"); el.disabled=true; return apiPost("/api/admin-miniapp/help/save",{key:r.dataset.key,lang:r.dataset.lang,value:r.querySelector("[data-hvalue]").value}).then(()=>afterModule("Yordam linki saqlandi")).catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-pfsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/portfolio/transaction",{type:$("pfType").value,amount:$("pfAmount").value,currency:$("pfCurrency").value,note:$("pfNote").value}).then(()=>afterModule("Portfel saqlandi")).catch(x=>{toast(apiErr(x,"Portfel saqlanmadi"));el.disabled=false;}); }
+      if((el=T("[data-bcsend]"))){ if(!confirm("Xabar foydalanuvchilarga hozir yuboriladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/broadcast/send",{segment:$("bcSeg").value,text:$("bcText").value}).then(d=>toast(`Yuborildi: ${d.sent}, xato: ${d.failed}`)).catch(x=>toast(apiErr(x,"Yuborilmadi"))).finally(()=>el.disabled=false); }
+      if((el=T("[data-cmcreate]"))){ if(!confirm("Kampaniya rejalashtiriladi. Davom etasizmi?")) return; const kind=el.dataset.cmcreate; el.disabled=true; return apiPost("/api/admin-miniapp/campaigns/create",{kind,title:$("cmTitle").value,text:$("cmText").value,hours:$("cmHours").value,percent:$("cmPercent")?$("cmPercent").value:undefined,feature_key:$("cmFeature")?$("cmFeature").value:undefined}).then(()=>afterModule("Kampaniya yaratildi")).catch(x=>{toast(apiErr(x,"Yaratilmadi"));el.disabled=false;}); }
+      if((el=T("[data-partner]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/partners/action",{partner_id:Number(el.dataset.pid||0),action:el.dataset.partner}).then(()=>afterModule("Hamkor holati yangilandi")).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
+      if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaPlan").value).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>el.disabled=false); }
+      if((el=T("[data-deluser]"))){ if(!confirm("Foydalanuvchi o'chiriladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/delete",{telegram_id:$("delId").value,confirm:$("delConfirm").value}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Foydalanuvchi o'chirildi")).catch(x=>{toast(apiErr(x,"O'chirilmadi"));el.disabled=false;}); }
+      if((el=T("[data-aulist]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/audio/list",{level:$("auLevel").value,lesson_order:$("auLesson").value}).then(d=>{$("auResult").innerHTML=(d.items||[]).length?d.items.map(i=>`<div class="mcard"><h3>${esc(i.audio_type)}</h3><p>${esc(i.file_id)}</p></div>`).join(""):"<p class='empty'>Bu dars uchun audio yo'q.</p>";}).catch(x=>toast(apiErr(x,"Audio olinmadi"))).finally(()=>el.disabled=false); }
+      if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Reklama yoqildi":"Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("Holatni o'zgartirib bo'lmadi");el.disabled=false;}); }
+      if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Bu reklamani butunlay o'chirasizmi? Video fayl ham o'chadi.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("O'chirib bo'lmadi");el.disabled=false;}); }
+      if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; renderDashboard(); renderUserFilters(); renderUsers(); switchTab("users"); return; }
+      if((el=T("[data-period]"))){ state.statsPeriod=el.dataset.period||"all_time"; renderStatistics(); return; }
+      if((el=T("[data-tab]"))) return switchTab(el.dataset.tab);
+      if((el=T("[data-tab-jump]"))) return switchTab(el.dataset.tabJump);
+      if((el=T("[data-act]"))){
+        const n=el.dataset.act;
+        if(n==="reload") return loadData();
+        if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; renderUsers(); return; }
+        if(n==="copy-report") return copyReport();
+        if(n==="upload-ca"){ $("caFile").click(); return; }
+        if(n==="close-drawer") return closeDrawer();
+      }
+    });
+
+    $("search").addEventListener("input",(e)=>{ state.search=e.target.value; clearTimeout(window.st); window.st=setTimeout(()=>remoteSearch(state.search),260); renderUsers(); });
+    $("caFile").addEventListener("change",submitCourseAd);
+    document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeDrawer(); });
+
+    async function saveChannel(payload,btn){ if(btn) btn.disabled=true; try{ await apiPost("/api/admin-miniapp/channels/save",payload); await afterModule("Kanal sozlamasi saqlandi"); }catch(e){ toast(apiErr(e,"Kanal saqlanmadi")); if(btn) btn.disabled=false; } }
+
+    loadData();
+  </script>
+</body>
+</html>

@@ -30,6 +30,7 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "training_completed",
     "voice_started",
     "voice_completed",
+    "practice_daily_used",
     "mistake_review_started",
     "mistake_review_completed",
     "course_ad_viewed",

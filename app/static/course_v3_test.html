@@ -83,15 +83,29 @@ h1{font-size:23px}
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{title:"Тест-центр",sub:"Проверьте себя в формате реального HSK",pTitle:"Не знаете свой уровень?",pSub:"Пройдите короткий тест — мы определим подходящий уровень HSK.",pBtn:"Тест на уровень · ~10 мин",exHead:"Экзамены HSK",eTitle:"Материал готовится",eSub:"Экзаменационные вопросы будут добавлены позже и подгружены из заданного источника.",eBack:"К списку",listen:"听力 Аудир.",read:"阅读 Чтение",write:"书写 Письмо",q:"вопросов",min:"мин",start:"Начать"},
-  uz:{title:"Test markazi",sub:"O'zingizni haqiqiy HSK formatida sinang",pTitle:"Darajangizni bilmaysizmi?",pSub:"Qisqa testdan o'ting — sizga mos HSK darajasini aytamiz.",pBtn:"Daraja aniqlash testi · ~10 daq",exHead:"HSK imtihonlari",eTitle:"Material tayyorlanmoqda",eSub:"Imtihon savollari keyinroq qo'shiladi va belgilangan manbadan yuklanadi.",eBack:"Ro'yxatga",listen:"听力 Tinglash",read:"阅读 O'qish",write:"书写 Yozish",q:"savol",min:"daq",start:"Boshlash"},
-  tj:{title:"Маркази тест",sub:"Худро дар формати HSK санҷед",pTitle:"Сатҳи худро намедонед?",pSub:"Тести кӯтоҳро гузаред — сатҳи мувофиқи HSK-ро муайян мекунем.",pBtn:"Тести муайянкунии сатҳ",exHead:"Имтиҳонҳои HSK",eTitle:"Мавод омода мешавад",eSub:"Саволҳои имтиҳон баъдтар илова ва аз манбаи муайян бор карда мешаванд.",eBack:"Ба рӯйхат",listen:"听力 Шунидан",read:"阅读 Хондан",write:"书写 Навиштан",q:"савол",min:"дақ",start:"Оғоз"}}[LANG];
+var L={ru:{title:"Тест-центр",sub:"Проверьте себя в формате реального HSK",pTitle:"Не знаете свой уровень?",pSub:"Пройдите короткий тест — мы определим подходящий уровень HSK.",pBtn:"Тест на уровень · ~10 мин",exHead:"Экзамены HSK",eTitle:"Материал готовится",eSub:"Экзаменационные вопросы будут добавлены позже и подгружены из заданного источника.",eBack:"К списку",listen:"听力 Аудир.",read:"阅读 Чтение",write:"书写 Письмо",q:"вопросов",min:"мин",start:"Начать",limTitle:"Бесплатный тест на сегодня исчерпан",limSub:"В бесплатном режиме тест доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",limPay:"Открыть Premium",limBack:"Назад"},
+  uz:{title:"Test markazi",sub:"O'zingizni haqiqiy HSK formatida sinang",pTitle:"Darajangizni bilmaysizmi?",pSub:"Qisqa testdan o'ting — sizga mos HSK darajasini aytamiz.",pBtn:"Daraja aniqlash testi · ~10 daq",exHead:"HSK imtihonlari",eTitle:"Material tayyorlanmoqda",eSub:"Imtihon savollari keyinroq qo'shiladi va belgilangan manbadan yuklanadi.",eBack:"Ro'yxatga",listen:"听力 Tinglash",read:"阅读 O'qish",write:"书写 Yozish",q:"savol",min:"daq",start:"Boshlash",limTitle:"Bugungi bepul test tugadi",limSub:"Bepul rejimda test kuniga 1 marta ochiladi. Cheksiz test uchun Premium oching yoki ertaga qaytib keling.",limPay:"Premium ochish",limBack:"Orqaga"},
+  tj:{title:"Маркази тест",sub:"Худро дар формати HSK санҷед",pTitle:"Сатҳи худро намедонед?",pSub:"Тести кӯтоҳро гузаред — сатҳи мувофиқи HSK-ро муайян мекунем.",pBtn:"Тести муайянкунии сатҳ",exHead:"Имтиҳонҳои HSK",eTitle:"Мавод омода мешавад",eSub:"Саволҳои имтиҳон баъдтар илова ва аз манбаи муайян бор карда мешаванд.",eBack:"Ба рӯйхат",listen:"听力 Шунидан",read:"阅读 Хондан",write:"书写 Навиштан",q:"савол",min:"дақ",start:"Оғоз",limTitle:"Тести ройгони имрӯза тамом шуд",limSub:"Дар ҳолати ройгон тест рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",limPay:"Кушодани Premium",limBack:"Бозгашт"}}[LANG];
 var EM={ru:{tfTrue:"Верно",tfFalse:"Неверно",listen:"Прослушать",q:"Вопрос",of:"из",result:"Результат",passed:"Тест пройден!",failed:"Пока не пройден",passSub:"Вы готовы к уровню HSK ",failSub:"Продолжайте подготовку к HSK ",again:"Пройти заново",toList:"К списку экзаменов",sec:{listening:"Аудирование",reading:"Чтение",writing:"Письмо"}},
   uz:{tfTrue:"To'g'ri",tfFalse:"Noto'g'ri",listen:"Tinglash",q:"Savol",of:"/",result:"Natija",passed:"Test topshirildi!",failed:"Hozircha o'tilmadi",passSub:"Siz HSK darajasiga tayyorsiz: HSK ",failSub:"Tayyorgarlikni davom ettiring: HSK ",again:"Qayta topshirish",toList:"Imtihonlar ro'yxatiga",sec:{listening:"Tinglash",reading:"O'qish",writing:"Yozish"}},
   tj:{tfTrue:"Дуруст",tfFalse:"Нодуруст",listen:"Шунидан",q:"Савол",of:"аз",result:"Натиҷа",passed:"Тест супорида шуд!",failed:"Ҳоло гузаронида нашуд",passSub:"Шумо ба сатҳи HSK тайёред: HSK ",failSub:"Омодагиро давом диҳед: HSK ",again:"Аз нав супоридан",toList:"Ба рӯйхати имтиҳонҳо",sec:{listening:"Шунидан",reading:"Хондан",writing:"Навиштан"}}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
+/* Kunlik limit gate: bepulga kuniga 1 test sessiya (server tomonda). */
+function initData(){return (tg&&tg.initData)?tg.initData:""}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_test_limit&mode=subscription"}
+function gateRef(key,create){try{var k="hsk_gate_"+key;var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
+function runGate(feature,ref){
+  return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:feature,ref:ref})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
+}
+function showLimit(){
+  $("hub").style.display="none";$("placement").classList.remove("on");$("exam").classList.remove("on");
+  var e=$("empty");
+  e.innerHTML='<div class="ic"><i class="ti ti-lock"></i></div><h3>'+L.limTitle+'</h3><p>'+L.limSub+'</p><button onclick="goPremium()"><i class="ti ti-crown"></i> '+L.limPay+'</button><button onclick="goBack()" style="margin-top:8px;background:transparent;border:1px solid var(--line);color:var(--ink2)">'+L.limBack+'</button>';
+  e.classList.add("on");
+}
 function $(id){return document.getElementById(id)}
 var EXAMS=[
   {lvl:"1",q:14,min:25,tags:["listen","read"]},
@@ -111,11 +125,31 @@ function renderHub(){
 }
 function showHub(){$("hub").style.display="block";$("empty").classList.remove("on");$("placement").classList.remove("on");$("exam").classList.remove("on")}
 function openExam(which){
+  var feature=which==="placement"?"placement":"training_test";
+  runGate(feature,gateRef(feature,true)).then(function(o){
+    if(o.status===403){showLimit();return}
+    _openExam(which);
+  }).catch(function(){_openExam(which)});
+}
+function _openExam(which){
   if(which==="placement"){return runPlacement();}
   fetch("/course_v3_data/exams/"+which+".json").then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(data){
     if(!data||!data.sections||!data.sections.length)return showEmpty();
     runExam(data);
   }).catch(function(){showEmpty()});
+}
+/* Qayta topshirish — yangi sessiya, yangi slot (bepulga 1/kun). */
+function replayExam(){
+  runGate("training_test","replay:"+Date.now()).then(function(o){
+    if(o.status===403){showLimit();return}
+    if(EXD)runExam(EXD);
+  }).catch(function(){if(EXD)runExam(EXD)});
+}
+function replayPlacement(){
+  runGate("placement","replay:"+Date.now()).then(function(o){
+    if(o.status===403){showLimit();return}
+    runPlacement();
+  }).catch(function(){runPlacement()});
 }
 function showEmpty(){$("hub").style.display="none";$("empty").classList.add("on")}
 
@@ -192,7 +226,7 @@ function exResult(){
   $("exam").innerHTML='<div class="res"><div class="lvl"><small>'+EM.result+'</small><b>'+pct+'%</b></div>'
     +'<h3>'+(pass?EM.passed:EM.failed)+'</h3><p>'+(pass?EM.passSub:EM.failSub)+lv+'.</p>'
     +'<div class="meter">'+meter+'</div>'
-    +'<button class="cta" onclick="runExam(EXD)"><i class="ti ti-refresh"></i> '+EM.again+'</button>'
+    +'<button class="cta" onclick="replayExam()"><i class="ti ti-refresh"></i> '+EM.again+'</button>'
     +'<button class="ghost" onclick="showHub()">'+EM.toList+'</button></div>';
 }
 
@@ -228,7 +262,7 @@ function pResult(){
   var rec=1;for(var Lv=1;Lv<=4;Lv++){var p=per[Lv][1]?per[Lv][0]/per[Lv][1]:0;if(p>=0.5)rec=Lv;else break;}
   var meter="";[1,2,3,4].forEach(function(Lv){var p=per[Lv][1]?Math.round(per[Lv][0]/per[Lv][1]*100):0;meter+='<div class="mrow '+(Lv===rec?"rec":"")+'"><span class="ml">'+PT.lvl+" "+Lv+'</span><span class="mb"><i style="width:'+p+'%"></i></span><span class="mv">'+p+'%</span></div>'});
   var startTxt=LANG==="uz"?(PT.start+rec+PT.startEnd):(PT.start+rec);
-  $("placement").innerHTML='<div class="res"><div class="lvl"><small>'+PT.rec+'</small><b>'+PT.lvl+" "+rec+'</b></div><h3>'+PT.rec+": "+PT.lvl+" "+rec+'</h3><p>'+PT.recSub+rec+'.</p><div class="meter">'+meter+'</div><button class="cta" onclick="startLevel('+rec+')"><i class="ti ti-player-play"></i> '+startTxt+'</button><button class="ghost" onclick="runPlacement()"><i class="ti ti-refresh"></i> '+PT.retake+'</button></div>';
+  $("placement").innerHTML='<div class="res"><div class="lvl"><small>'+PT.rec+'</small><b>'+PT.lvl+" "+rec+'</b></div><h3>'+PT.rec+": "+PT.lvl+" "+rec+'</h3><p>'+PT.recSub+rec+'.</p><div class="meter">'+meter+'</div><button class="cta" onclick="startLevel('+rec+')"><i class="ti ti-player-play"></i> '+startTxt+'</button><button class="ghost" onclick="replayPlacement()"><i class="ti ti-refresh"></i> '+PT.retake+'</button></div>';
 }
 function startLevel(lv){location.href="/course-v3.html?lang="+LANG+"&tab=course"}
 

@@ -118,6 +118,18 @@ class CourseAdService:
         ad = await self.get_active_ad()
         return self.payload(ad) if ad else None
 
+    async def list_active(self) -> list[CourseAdCreative]:
+        """Barcha aktiv reklamalar — ketma-ket ko'rsatish uchun (eskisidan yangisiga)."""
+        result = await self.session.execute(
+            select(CourseAdCreative)
+            .where(CourseAdCreative.is_active.is_(True))
+            .order_by(CourseAdCreative.created_at.asc(), CourseAdCreative.id.asc())
+        )
+        return list(result.scalars().all())
+
+    async def list_active_payloads(self) -> list[dict]:
+        return [self.payload(ad) for ad in await self.list_active()]
+
     async def record_view(
         self,
         *,

@@ -1,8 +1,5 @@
 import json
 
-from sqlalchemy import select
-
-from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.user_repo import UserRepository
 from app.services.course_miniapp_access_service import CourseMiniAppAccessService
@@ -39,18 +36,6 @@ class CourseMiniAppPracticeService:
     @staticmethod
     def _feature(mode: str) -> str:
         return "placement" if mode == "placement" else "training_test"
-
-    async def _is_completed(self, telegram_id: int, feature: str) -> bool:
-        result = await self.session.execute(
-            select(CourseMiniAppEvent.id)
-            .where(
-                CourseMiniAppEvent.telegram_id == telegram_id,
-                CourseMiniAppEvent.event_name.in_(("test_completed", "training_completed")),
-                CourseMiniAppEvent.dedupe_key == f"practice:{feature}:completed",
-            )
-            .limit(1)
-        )
-        return result.scalar_one_or_none() is not None
 
     @staticmethod
     def _choice_question(question: dict, *, level: str, lesson_order: int, index: int) -> dict | None:
@@ -184,14 +169,13 @@ class CourseMiniAppPracticeService:
         if not user:
             return {"ok": False, "error": "access_start_first"}
         feature = self._feature(mode)
-        if not self.access.is_paid_user(user) and await self._is_completed(telegram_id, feature):
-            return {"ok": False, "error": "free_feature_limit_reached"}
         session_scope = skill or level
-        usage_ref = f"practice:{feature}:{mode}:{session_scope}:v{PRACTICE_VERSION}"
-        access = await self.access.consume_free_use(
+        # Bepul userga KUNIGA 1 ta test/training sessiya (har kuni qayta ochiladi).
+        # ref orqali bir xil sessiyaning qayta yuklanishi qo'shimcha slot egallamaydi.
+        access = await self.access.consume_daily_use(
             user,
             feature_key=feature,
-            usage_ref=usage_ref,
+            ref=f"{mode}:{session_scope}",
         )
         if not access.get("allowed"):
             return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}
@@ -248,10 +232,12 @@ class CourseMiniAppPracticeService:
         expected_session = f"practice:{user.id}:{feature}:{mode}:{session_scope}:v{PRACTICE_VERSION}"
         if str(session_id or "") != expected_session:
             return {"ok": False, "error": "invalid_practice_session"}
-        access = await self.access.consume_free_use(
+        # Start'da band qilingan kunlik sessiya bilan bir xil ref — idempotent,
+        # ya'ni yakunlash qo'shimcha slot egallamaydi.
+        access = await self.access.consume_daily_use(
             user,
             feature_key=feature,
-            usage_ref=f"practice:{feature}:{mode}:{session_scope}:v{PRACTICE_VERSION}",
+            ref=f"{mode}:{session_scope}",
         )
         if not access.get("allowed"):
             return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}

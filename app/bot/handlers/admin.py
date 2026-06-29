@@ -64,7 +64,7 @@ from app.bot.utils.workflow_message import (
     edit_callback_workflow_message,
     edit_stored_workflow_message,
 )
-from app.bot.utils.course_miniapp import admin_miniapp_url
+from app.bot.utils.course_miniapp import admin_miniapp_url, admin_miniapp_v2_url
 
 router = Router()
 
@@ -86,6 +86,7 @@ def _pct(part: int, total: int) -> float:
 def admin_menu_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🧭 Admin mini ilova", web_app=WebAppInfo(url=admin_miniapp_url()))],
+        [InlineKeyboardButton(text="🆕 Yangi admin panel (sinov)", web_app=WebAppInfo(url=admin_miniapp_v2_url()))],
         [InlineKeyboardButton(text="📊 Statistika", callback_data="adm:stats")],
         [InlineKeyboardButton(text="🔎 Foydalanuvchi qidirish", callback_data="adm:user_search_info")],
         [InlineKeyboardButton(text="💼 Portfel", callback_data="adm:portfolio")],

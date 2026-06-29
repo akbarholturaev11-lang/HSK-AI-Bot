@@ -46,11 +46,37 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз"},
-  uz:{lead:"O'xshashlardan to'g'risini toping",done:"to'g'ri",doneSub:"O'xshash ieroglyflarni yaxshi farqlaysiz!",again:"Yana mashq"},
-  tj:{lead:"Аз байни монандҳо дурустро ёбед",done:"дуруст",doneSub:"Шумо иероглифҳои монандро хуб фарқ мекунед!",again:"Боз"}}[LANG];
+var L={ru:{lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад"},
+  uz:{lead:"O'xshashlardan to'g'risini toping",done:"to'g'ri",doneSub:"O'xshash ieroglyflarni yaxshi farqlaysiz!",again:"Yana mashq",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga"},
+  tj:{lead:"Аз байни монандҳо дурустро ёбед",done:"дуруст",doneSub:"Шумо иероглифҳои монандро хуб фарқ мекунед!",again:"Боз",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
+function initData(){return (tg&&tg.initData)?tg.initData:""}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_recognition_limit&mode=subscription"}
+/* Kunlik limit gate: bepul userga kuniga 1 to'liq sessiya. Server tomonda
+   hisoblanadi — sahifani qayta yuklab aylanib o'tib bo'lmaydi. */
+function gateRef(create){try{var k="hsk_gate_recognition";var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
+function runGate(ref){
+  return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"recognition",ref:ref})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
+}
+function showLimit(){
+  document.getElementById("body").innerHTML='<div class="done"><div class="st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+L.limitSub+'</p><button onclick="goPremium()"><i class="ti ti-crown"></i> '+L.premiumBtn+'</button><button onclick="goBack()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;margin-top:8px">'+L.back+'</button></div>';
+}
+/* Sessiya ochish (sahifa yuklanganda) — reload xavfsiz token bilan. */
+function gateStart(){
+  runGate(gateRef(true)).then(function(o){
+    if(o.status===403){showLimit();return}
+    start();
+  }).catch(function(){start()});
+}
+/* "Yana mashq" — bu yangi sessiya, yangi slot so'raydi (bepulga 1/kun). */
+function replay(){
+  runGate("replay:"+Date.now()).then(function(o){
+    if(o.status===403){showLimit();return}
+    start();
+  }).catch(function(){start()});
+}
 function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
 function haptic(ok){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
@@ -96,11 +122,11 @@ function pick(k){
 }
 function finish(){
   document.getElementById("prog").style.width="100%";
-  document.getElementById("body").innerHTML='<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><p>'+L.doneSub+'</p><button onclick="start()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';
+  document.getElementById("body").innerHTML='<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><p>'+L.doneSub+'</p><button onclick="replay()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';
   beep([523,659,784,1046]);haptic(true);
 }
 function start(){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}makeQuiz();qi=0;score=0;document.getElementById("score").textContent="0 ✓";render()}
-start();
+gateStart();
 </script>
 </body>
 </html>

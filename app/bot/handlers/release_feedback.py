@@ -38,6 +38,7 @@ from app.services.broadcast_translation_service import (
     encode_localized_broadcast_text,
     localized_broadcast_preview,
 )
+from app.services.admin_notify_service import AdminNotifyService
 from app.services.release_feedback_service import (
     ReleaseFeedbackService,
     release_feedback_discount_text,
@@ -1124,6 +1125,13 @@ async def release_feedback_user_callback(callback: CallbackQuery, state: FSMCont
             rating=rating,
         )
         await session.commit()
+        await AdminNotifyService().notify_release_feedback_response(
+            callback.bot,
+            campaign=campaign,
+            response=response,
+            user=user,
+            event="rating",
+        )
         text = release_feedback_discount_text(lang) if discount_campaign_id else release_feedback_optional_comment_text(lang)
         await callback.answer()
         await _edit_user_feedback_message(
@@ -1195,6 +1203,13 @@ async def release_feedback_required_comment(message: Message, state: FSMContext,
         attachment_type=attachment_type,
     )
     await session.commit()
+    await AdminNotifyService().notify_release_feedback_response(
+        message.bot,
+        campaign=campaign,
+        response=response,
+        user=user,
+        event="rating",
+    )
     await state.clear()
     text = release_feedback_discount_text(lang) if discount_campaign_id else release_feedback_thanks_text(lang)
     keyboard = (
@@ -1218,6 +1233,7 @@ async def release_feedback_optional_comment(message: Message, state: FSMContext,
     message_id = int(data.get("release_feedback_message_id") or message.message_id)
     repo = ReleaseFeedbackRepository(session)
     response = await repo.get_response(campaign_id=campaign_id, user_telegram_id=message.from_user.id)
+    campaign = await repo.get_campaign(campaign_id)
     user = await UserRepository(session).get_by_telegram_id(message.from_user.id)
     lang = user.language if user and user.language else "ru"
     comment_text, attachment_file_id, attachment_type = _extract_comment(message)
@@ -1240,6 +1256,13 @@ async def release_feedback_optional_comment(message: Message, state: FSMContext,
         attachment_type=attachment_type,
     )
     await session.commit()
+    await AdminNotifyService().notify_release_feedback_response(
+        message.bot,
+        campaign=campaign,
+        response=response,
+        user=user,
+        event="comment",
+    )
     await state.clear()
     keyboard = (
         release_feedback_discount_keyboard(response.discount_campaign_id, lang)

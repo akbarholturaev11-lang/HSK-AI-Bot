@@ -35,6 +35,7 @@ from app.services.daily_reset_service import DailyResetService
 from app.services.expiry_reminder_service import ExpiryReminderService
 from app.services.course_reminder_service import CourseReminderService
 from app.services.bot_feedback_service import BotFeedbackService
+from app.services.subscription_churn_service import SubscriptionChurnService
 from app.services.ad_campaign_service import AdCampaignService
 from app.services.release_feedback_service import ReleaseFeedbackService
 from app.services.discount_notification_service import DiscountNotificationService
@@ -65,6 +66,7 @@ from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.admin_miniapp_service import AdminMiniAppService
+from app.services.admin_finance_stats_service import AdminFinanceStatsService
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 from app.services.help_settings_service import HELP_LANGS, HELP_VIDEO_FIELDS, normalize_help_url
 from app.services.support_contact_service import ADMIN_CONTACT_KEY, admin_contact_url, normalize_admin_contact
@@ -81,7 +83,7 @@ from app.repositories.course_lesson_repo import CourseLessonRepository
 from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.course_pilot_event_repo import CoursePilotEventRepository
 from app.services.course_miniapp_profile_service import CourseMiniAppProfileService
-from app.bot.keyboards.main_menu import main_menu_keyboard
+from app.bot.keyboards.subscription_churn import subscription_expired_offer_keyboard
 from app.bot.keyboards.course import homework_retry_keyboard
 from app.bot.keyboards.subscription import subscription_miniapp_keyboard
 from app.bot.utils.i18n import t
@@ -110,32 +112,25 @@ def _positive_int(value) -> int | None:
     return parsed if parsed > 0 else None
 
 
-async def _send_course_access_expired_offer(session, telegram_id: int) -> None:
+async def _send_subscription_expired_offer(session, telegram_id: int) -> None:
     user = await UserRepository(session).get_by_telegram_id(telegram_id)
     if not user:
+        return
+    if getattr(user, "subscription_expired_offer_sent_at", None):
         return
 
     lang = user.language if user.language else "ru"
     try:
         await bot.send_message(
             chat_id=telegram_id,
-            text=t("course_only_active_users", lang),
-            reply_markup=main_menu_keyboard(lang),
+            text=t("subscription_expired_soft_text", lang),
+            reply_markup=subscription_expired_offer_keyboard(lang),
             parse_mode="HTML",
         )
-        await bot.send_message(
-            chat_id=telegram_id,
-            text=t("subscription_miniapp_entry_text", lang),
-            reply_markup=subscription_miniapp_keyboard(
-                lang,
-                source="course_expired",
-                mode="subscription",
-                include_free_mode=True,
-            ),
-            parse_mode="HTML",
-        )
+        await SubscriptionChurnService(session).mark_expired_offer_sent(user)
+        await session.commit()
     except Exception as error:
-        logger.warning("Failed to notify expired course user %s: %s", telegram_id, error)
+        logger.warning("Failed to notify expired subscription user %s: %s", telegram_id, error)
 
 
 def _track_study_ai_task(task) -> None:
@@ -211,9 +206,9 @@ async def _background_scheduler(bot: Bot) -> None:
         await asyncio.sleep(60)
         try:
             async with async_session_maker() as session:
-                _, expired_course_user_ids = await AccessService(session).downgrade_expired_active_users()
-                for telegram_id in expired_course_user_ids:
-                    await _send_course_access_expired_offer(session, telegram_id)
+                _, expired_paid_user_ids = await AccessService(session).downgrade_expired_active_users()
+                for telegram_id in expired_paid_user_ids:
+                    await _send_subscription_expired_offer(session, telegram_id)
             async with async_session_maker() as session:
                 await DailyResetService(session).send_daily_reset_notifications(bot)
             async with async_session_maker() as session:
@@ -238,6 +233,8 @@ async def _background_scheduler(bot: Bot) -> None:
                 await ReleaseFeedbackService(session).send_due_campaigns(bot)
             async with async_session_maker() as session:
                 await BotFeedbackService(session).send_due_feedback_requests(bot)
+            async with async_session_maker() as session:
+                await SubscriptionChurnService(session).send_due_followups(bot)
             async with async_session_maker() as session:
                 await BotBlockStatusService(session).scan_due_users(bot, limit=100)
         except Exception as e:
@@ -733,6 +730,11 @@ async def admin_control_miniapp():
     return miniapp_file_response("app/static/admin-control.html")
 
 
+@app.get("/admin.html")
+async def admin_miniapp_v2():
+    return miniapp_file_response("app/static/admin.html")
+
+
 @app.get("/subscription.html")
 async def subscription_miniapp():
     return miniapp_file_response("app/static/subscription.html")
@@ -953,6 +955,17 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
 
         _apply_course_v3_access_policy(data, level=resolved_level, completed=completed, is_paid=is_paid)
 
+        # Reklama bilan ochiladigan darslarning bugungi holati (UI tugmani
+        # ko'rsatish/yashirish va "N/2" matni uchun). Pullik userlar uchun
+        # limitsiz (remaining=None).
+        ad_lesson_status = await CourseMiniAppAccessService(session).daily_status(user, "ad_lesson")
+        data["ad_lessons"] = {
+            "used_today": int(ad_lesson_status.get("used") or 0),
+            "limit": int(ad_lesson_status.get("limit") or 0),
+            "remaining": ad_lesson_status.get("remaining"),
+            "is_paid": bool(ad_lesson_status.get("is_paid")),
+        }
+
         await CourseMiniAppAnalyticsService(session).record_server_event(
             event_name="miniapp_opened",
             telegram_id=telegram_id,
@@ -1070,13 +1083,15 @@ async def v3_course_ad(request: Request, placement: str = "start", level: str = 
 
     async with async_session_maker() as session:
         service = CourseAdService(session)
-        ad = await service.get_active_payload()
-        if not ad:
+        ads = await service.list_active_payloads()
+        if not ads:
             return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
         return JSONResponse(
             content={
                 "ok": True,
-                "ad": ad,
+                # Eski klientlar uchun moslik: birinchi reklama "ad" sifatida ham qoladi.
+                "ad": ads[0],
+                "ads": ads,
                 "placement": service.normalize_placement(placement),
                 "level": resolved_level,
                 "lesson_order": lesson_order,
@@ -1134,6 +1149,63 @@ async def v3_course_ad_view(request: Request):
         await session.commit()
         status = 200 if result.get("ok") else 400
         return JSONResponse(status_code=status, content=result)
+
+
+_COURSE_DAILY_GATE_FEATURES = {
+    "recognition",
+    "memorize",
+    "pronunciation",
+    "placement",
+    "training_test",
+}
+
+
+@app.post("/api/v3/practice/daily-gate")
+async def v3_practice_daily_gate(request: Request):
+    """Mashq bo'limlari uchun kunlik limit (bepul userga kuniga 1 ta to'liq
+    sessiya). Sessiya boshlanishida chaqiriladi; limit tugagan bo'lsa 403 +
+    paywall. Hisob server tomonda — user aylanib o'tolmaydi."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    if not init_data:
+        init_data = str(payload.get("initData") or "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+
+    feature = str(payload.get("feature") or "").strip().lower()
+    if feature not in _COURSE_DAILY_GATE_FEATURES:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_feature"})
+    ref_raw = payload.get("ref")
+    ref = str(ref_raw).strip()[:48] if ref_raw else None
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
+        access = CourseMiniAppAccessService(session)
+        result = await access.consume_daily_use(user, feature_key=feature, ref=ref)
+        await session.commit()
+        if not result.get("allowed"):
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "ok": False,
+                    "error": result.get("error") or "free_feature_limit_reached",
+                    "is_paid": bool(result.get("is_paid", False)),
+                },
+            )
+        return JSONResponse(
+            content={
+                "ok": True,
+                "allowed": True,
+                "is_paid": bool(result.get("is_paid", False)),
+                "remaining": result.get("remaining"),
+            }
+        )
 
 
 @app.post("/api/v3/lesson/unlock")
@@ -1247,7 +1319,10 @@ async def v3_course_lesson_complete(request: Request):
         access = CourseMiniAppAccessService(session)
         is_paid = access.is_paid_user(user)
         ad_supported = False
-        if not is_paid and CourseMiniAppAccessService.lesson_requires_premium(resolved_level, lesson_order):
+        premium_ad_lesson = not is_paid and CourseMiniAppAccessService.lesson_requires_premium(
+            resolved_level, lesson_order
+        )
+        if premium_ad_lesson:
             ad_service = CourseAdService(session)
             has_active_ad = await ad_service.get_active_ad() is not None
             if has_active_ad:
@@ -1292,6 +1367,24 @@ async def v3_course_lesson_complete(request: Request):
             )
         if lesson_order != completed + 1:
             return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
+
+        # Reklama bilan ochiladigan premium darslar bepul userga KUNIGA 2 ta.
+        # Bu serverdagi asosiy chegara — klient buzilgan bo'lsa ham aylanib
+        # o'tib bo'lmaydi. ref=dars tartibi: bir darsni qayta yakunlash qo'shimcha
+        # slot egallamaydi (idempotent).
+        if premium_ad_lesson:
+            ad_lesson_gate = await access.consume_daily_use(
+                user, feature_key="ad_lesson", ref=str(lesson_order)
+            )
+            if not ad_lesson_gate.get("allowed"):
+                return JSONResponse(
+                    status_code=403,
+                    content={
+                        "ok": False,
+                        "error": ad_lesson_gate.get("error") or "ad_lesson_daily_limit_reached",
+                        "reason": "ad_lesson_daily_limit",
+                    },
+                )
 
         await progress_repo.set_current_lesson_and_step(
             progress=progress,
@@ -1538,6 +1631,17 @@ async def admin_miniapp_overview(request: Request):
 
     async with async_session_maker() as session:
         payload = await AdminMiniAppService(session).overview()
+    return JSONResponse(content=payload)
+
+
+@app.post("/api/admin-miniapp/finance-stats")
+async def admin_miniapp_finance_stats(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    async with async_session_maker() as session:
+        payload = await AdminFinanceStatsService(session).build()
     return JSONResponse(content=payload)
 
 
@@ -2788,21 +2892,23 @@ async def subscription_miniapp_overview(request: Request):
         )
         if result.get("ok"):
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            source = str(payload.get("source") or payload.get("mode") or "subscription_miniapp")
             await SubscriptionEntryAnalyticsService(session).record_entry(
                 telegram_id=telegram_id,
                 user=user,
-                source=str(payload.get("source") or payload.get("mode") or "subscription_miniapp"),
+                source=source,
                 mode=str(payload.get("mode") or ""),
                 plan_type=str(payload.get("plan") or "") or None,
                 payment_method=str(payload.get("method") or "") or None,
                 campaign_id=_positive_int(payload.get("campaign_id")),
                 feedback_id=_positive_int(payload.get("feedback_id")),
             )
+            await SubscriptionChurnService(session).mark_subscription_miniapp_opened(telegram_id, source)
             await ConversionFunnelService().record(
                 event_name="checkout_opened",
                 user=user,
                 telegram_id=telegram_id,
-                source=str(payload.get("source") or payload.get("mode") or "subscription_miniapp"),
+                source=source,
                 payload={
                     "mode": str(payload.get("mode") or ""),
                     "campaign_id": _positive_int(payload.get("campaign_id")),
@@ -2971,7 +3077,7 @@ async def miniapp_event(request: Request):
             result = await service.save_quiz_result(telegram_id, payload)
             if result.get("error_key"):
                 if result["error_key"] == "course_only_active_users":
-                    await _send_course_access_expired_offer(session, telegram_id)
+                    await _send_subscription_expired_offer(session, telegram_id)
                 return {"ok": False, "error": result["error_key"]}
 
             user = result["user"]
@@ -3034,7 +3140,7 @@ async def miniapp_event(request: Request):
                             parse_mode="HTML",
                         )
                     else:
-                        await _send_course_access_expired_offer(session, telegram_id)
+                        await _send_subscription_expired_offer(session, telegram_id)
                 elif processing_message:
                     try:
                         await processing_message.edit_text(

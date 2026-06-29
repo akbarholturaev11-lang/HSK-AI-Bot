@@ -9,9 +9,13 @@ from app.services.user_access_state_service import UserAccessState, UserAccessSt
 
 
 class _Session:
-    def __init__(self):
+    def __init__(self, rows=None):
+        self.rows = rows or []
         self.flush_count = 0
         self.commit_count = 0
+
+    async def execute(self, _stmt):
+        return SimpleNamespace(scalars=lambda: SimpleNamespace(all=lambda: self.rows))
 
     async def flush(self):
         self.flush_count += 1
@@ -126,6 +130,36 @@ class AccessServiceFreeTierTests(unittest.IsolatedAsyncioTestCase):
         service, _ = self._service(user)
         self.assertEqual(await service.can_use_text_ai(123), (True, ""))
         self.assertEqual(user.status, "expired")
+
+    async def test_downgrade_expired_active_users_returns_paid_expired_ids_only(self):
+        paid = self._user(
+            telegram_id=1,
+            status="active",
+            payment_status="approved",
+            end_date=datetime.now(timezone.utc) - timedelta(seconds=1),
+        )
+        temp = self._user(
+            telegram_id=2,
+            status="active",
+            payment_status="none",
+            end_date=datetime.now(timezone.utc) - timedelta(seconds=1),
+        )
+        future_paid = self._user(
+            telegram_id=3,
+            status="active",
+            payment_status="approved",
+            end_date=datetime.now(timezone.utc) + timedelta(days=1),
+        )
+        session = _Session(rows=[paid, temp, future_paid])
+        service = AccessService(session)
+
+        changed, expired_paid_ids = await service.downgrade_expired_active_users()
+
+        self.assertEqual(changed, 2)
+        self.assertEqual(expired_paid_ids, [1])
+        self.assertEqual(paid.status, "expired")
+        self.assertEqual(temp.status, "free")
+        self.assertEqual(session.commit_count, 1)
 
 
 class CourseTrialLifecycleTests(unittest.IsolatedAsyncioTestCase):

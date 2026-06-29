@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     REDIS_URL: str = "redis://localhost:6379/0"
 
     ADMIN_IDS: str = "7965751363"
+    FEEDBACK_NOTIFY_CHAT_IDS: str = "-1004311413349"
     PAYMENT_DETAILS: str = ""
     BOT_USERNAME: str = ""
     MINI_APP_BASE_URL: str = "https://telegram-chinese-bot-production.up.railway.app/course-v3.html"
@@ -35,6 +36,10 @@ class Settings(BaseSettings):
     @property
     def admin_id_list(self) -> List[int]:
         return [int(x.strip()) for x in self.ADMIN_IDS.split(",") if x.strip()]
+
+    @property
+    def feedback_notify_chat_id_list(self) -> List[int]:
+        return [int(x.strip()) for x in self.FEEDBACK_NOTIFY_CHAT_IDS.split(",") if x.strip()]
 
 
 settings = Settings()

@@ -13,6 +13,7 @@ from app.bot.utils.i18n import t
 class AdminNotifyService:
     def __init__(self):
         self.admin_ids = self._parse_admin_ids(settings.ADMIN_IDS)
+        self.feedback_notify_chat_ids = self._parse_admin_ids(settings.FEEDBACK_NOTIFY_CHAT_IDS)
 
     def _parse_admin_ids(self, raw_value: str):
         if not raw_value:
@@ -26,6 +27,20 @@ class AdminNotifyService:
                 except ValueError:
                     continue
         return result
+
+    def _unique_chat_ids(self, *groups) -> list[int]:
+        result = []
+        seen = set()
+        for group in groups:
+            for chat_id in group or []:
+                if chat_id in seen:
+                    continue
+                seen.add(chat_id)
+                result.append(chat_id)
+        return result
+
+    def _feedback_recipient_ids(self) -> list[int]:
+        return self._unique_chat_ids(self.admin_ids, self.feedback_notify_chat_ids)
 
     def build_payment_review_text(
         self,
@@ -282,52 +297,168 @@ class AdminNotifyService:
             ]
         )
 
+    def build_release_feedback_response_text(
+        self,
+        *,
+        campaign,
+        response,
+        user,
+        event: str = "rating",
+    ) -> str:
+        heading = (
+            "💬 <b>Yangilik fikriga izoh qo'shildi</b>"
+            if event == "comment"
+            else "🆕 <b>Yangi yangilik bahosi</b>"
+        )
+        title = escape(
+            str(getattr(campaign, "title", None) or f"Campaign #{getattr(campaign, 'id', '-')}")
+        )
+        feature_key = str(getattr(campaign, "feature_key", None) or "general")
+        feature = escape(
+            {
+                "general": "Umumiy",
+                "qa": "Oddiy AI savol",
+                "image": "Foto tahlil",
+                "course": "Kurs rejimi",
+                "profile": "Profil",
+                "subscription": "Obuna/Chegirma",
+            }.get(feature_key, feature_key)
+        )
+        comment = escape(str(getattr(response, "comment_text", None) or "-"))
+        full_name = escape(str(getattr(user, "full_name", None) or "-"))
+        language = escape(str(getattr(user, "language", None) or "-"))
+        level = escape(self._feedback_level_label(user))
+        mode = escape(self._feedback_mode_label(user))
+        discount_campaign_id = getattr(response, "discount_campaign_id", None)
+        discount = f"#{discount_campaign_id}" if discount_campaign_id else "yo'q"
+
+        return "\n".join(
+            [
+                heading,
+                "",
+                f"🧾 Campaign ID: <b>#{getattr(campaign, 'id', '-')}</b>",
+                f"📌 Yangilik: <b>{title}</b>",
+                f"🎯 Feature: <b>{feature}</b>",
+                "",
+                f"👤 User: <b>{full_name}</b>",
+                f"🆔 Telegram ID: <code>{getattr(user, 'telegram_id', '-')}</code>",
+                f"🌐 Til: <b>{language}</b>",
+                f"📚 Urven: <b>{level}</b>",
+                f"🎛 Rejim: <b>{mode}</b>",
+                "",
+                f"⭐ Baho: <b>{getattr(response, 'rating', '-')}/5</b>",
+                "",
+                f"💬 Izoh:\n{comment}",
+                "",
+                f"🎁 Chegirma: <b>{discount}</b>",
+            ]
+        )
+
     async def notify_bot_feedback(
         self,
         bot: Bot,
         feedback,
         user,
     ) -> None:
-        if not self.admin_ids:
+        recipient_ids = self._feedback_recipient_ids()
+        if not recipient_ids:
             return
 
         text = self.build_bot_feedback_text(feedback, user)
         keyboard = admin_bot_feedback_keyboard(feedback.id)
         attachment_file_id = getattr(feedback, "disliked_attachment_file_id", None)
         attachment_type = getattr(feedback, "disliked_attachment_type", None)
+        admin_id_set = set(self.admin_ids)
 
-        for admin_id in self.admin_ids:
+        for chat_id in recipient_ids:
             try:
+                reply_markup = keyboard if chat_id in admin_id_set else None
                 if attachment_file_id and attachment_type == "photo" and len(text) <= 1000:
                     await bot.send_photo(
-                        chat_id=admin_id,
+                        chat_id=chat_id,
                         photo=attachment_file_id,
                         caption=text,
-                        reply_markup=keyboard,
+                        reply_markup=reply_markup,
                         parse_mode="HTML",
                     )
                     continue
 
                 if attachment_file_id and attachment_type == "document" and len(text) <= 1000:
                     await bot.send_document(
-                        chat_id=admin_id,
+                        chat_id=chat_id,
                         document=attachment_file_id,
                         caption=text,
-                        reply_markup=keyboard,
+                        reply_markup=reply_markup,
                         parse_mode="HTML",
                     )
                     continue
 
                 if attachment_file_id:
                     if attachment_type == "photo":
-                        await bot.send_photo(chat_id=admin_id, photo=attachment_file_id)
+                        await bot.send_photo(chat_id=chat_id, photo=attachment_file_id)
                     elif attachment_type == "document":
-                        await bot.send_document(chat_id=admin_id, document=attachment_file_id)
+                        await bot.send_document(chat_id=chat_id, document=attachment_file_id)
 
                 await bot.send_message(
-                    chat_id=admin_id,
+                    chat_id=chat_id,
                     text=text,
-                    reply_markup=keyboard,
+                    reply_markup=reply_markup,
+                    parse_mode="HTML",
+                )
+            except Exception:
+                pass
+
+    async def notify_release_feedback_response(
+        self,
+        bot: Bot,
+        *,
+        campaign,
+        response,
+        user,
+        event: str = "rating",
+    ) -> None:
+        recipient_ids = self._feedback_recipient_ids()
+        if not recipient_ids:
+            return
+
+        text = self.build_release_feedback_response_text(
+            campaign=campaign,
+            response=response,
+            user=user,
+            event=event,
+        )
+        attachment_file_id = getattr(response, "attachment_file_id", None)
+        attachment_type = getattr(response, "attachment_type", None)
+
+        for chat_id in recipient_ids:
+            try:
+                if attachment_file_id and attachment_type == "photo" and len(text) <= 1000:
+                    await bot.send_photo(
+                        chat_id=chat_id,
+                        photo=attachment_file_id,
+                        caption=text,
+                        parse_mode="HTML",
+                    )
+                    continue
+
+                if attachment_file_id and attachment_type == "document" and len(text) <= 1000:
+                    await bot.send_document(
+                        chat_id=chat_id,
+                        document=attachment_file_id,
+                        caption=text,
+                        parse_mode="HTML",
+                    )
+                    continue
+
+                if attachment_file_id:
+                    if attachment_type == "photo":
+                        await bot.send_photo(chat_id=chat_id, photo=attachment_file_id)
+                    elif attachment_type == "document":
+                        await bot.send_document(chat_id=chat_id, document=attachment_file_id)
+
+                await bot.send_message(
+                    chat_id=chat_id,
+                    text=text,
                     parse_mode="HTML",
                 )
             except Exception:
