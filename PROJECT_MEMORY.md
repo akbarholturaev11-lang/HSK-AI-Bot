@@ -207,6 +207,23 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-29 — Course ad video upload root compatibility fix
+
+Changed:
+- Course ad uploads now store ads as browser-safe `.mp4` files. Uploads are transcoded to H.264/AAC/yuv420p with `+faststart`; if `ffmpeg` is missing, upload is rejected instead of saving a video that may show a black screen in Telegram WebView.
+- Course ad media responses now set explicit video media types and range support; new uploads are always `.mp4`.
+- Added `nixpacks.toml` so Railway/Nixpacks installs `ffmpeg` during deploy.
+
+Why:
+- Telegram iOS/WebView can show black video for `.mov`, `.webm`, HEVC/H.265, or MP4 files without WebView-safe encoding. Fixing upload/transcode is the root fix; frontend loading/error UI remains only a fallback.
+
+Files touched:
+- `app/main.py`
+- `nixpacks.toml`
+
+Risk:
+- Existing already-uploaded ad files are not converted automatically. Re-upload ads after deploy to guarantee safe MP4 encoding.
+
 ### 2026-06-29 — Xatolar ustida ishlash (Mistake Review) frontendi ulandi
 
 Changed:
