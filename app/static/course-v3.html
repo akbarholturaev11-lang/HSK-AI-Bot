@@ -104,6 +104,7 @@ button{cursor:pointer}
 .adcta{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;background:#fff;color:#211D17;display:flex;align-items:center;justify-content:center;gap:8px}
 .adcta:disabled{background:rgba(255,255,255,.14);color:rgba(255,255,255,.62)}
 .adsub{display:grid;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px}
+.adsub[hidden]{display:none!important}
 .adsub-t{margin:0 0 2px;font-size:13.5px;line-height:1.45;color:#fff;text-align:center;font-weight:500}
 .adsub-benefits{display:grid;gap:7px;margin:2px 0 4px}
 .adben{display:flex;align-items:center;gap:9px;font-size:13.5px;line-height:1.35;color:rgba(255,255,255,.94);text-align:left}
@@ -748,6 +749,7 @@ function recordCourseAdView(ad,placement,l,watched){
 }
 /* Davomiylik adminda 5–120s oralig'ida boshqariladi (backend bilan bir xil clamp). */
 function adDuration(ad){return Math.max(5,Math.min(120,Number(ad&&ad.duration_seconds)||7))}
+function setAdSubscribeVisible(visible){var sub=$("#ad-sub");if(!sub)return;sub.hidden=!visible;sub.style.display=visible?"grid":"none"}
 function _closeAdOverlay(){clearInterval(AD_STATE.timer);try{$("#ad-video").pause()}catch(e){}$("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true")}
 function _resetAdState(){AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false}}
 var AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
@@ -787,7 +789,7 @@ function showCourseAd(placement,idx){
     fetchCourseAds(placement,l).then(function(ads){
       var t=T();
       var btn=$("#ad-cta"),count=$("#ad-count"),video=$("#ad-video");
-      var sub=$("#ad-sub"),contBtn=$("#ad-sub-cont"),payBtn=$("#ad-sub-pay"),visit=$("#ad-visit");
+      var contBtn=$("#ad-sub-cont"),payBtn=$("#ad-sub-pay"),visit=$("#ad-visit");
       $("#ad-note").textContent=t.adNote;
       /* obuna bloki matnlari + aniq foydalar ro'yxati
          (faqat BARCHA reklamalar tugagach ko'rinadi) */
@@ -809,7 +811,7 @@ function showCourseAd(placement,idx){
         $("#ad-video-wrap").style.display="";
         $("#ad-video-wrap").style.cursor=hasLink?"pointer":"default";
         contBtn.disabled=false;contBtn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
-        sub.hidden=true;btn.style.display="";btn.disabled=true;
+        setAdSubscribeVisible(false);btn.style.display="";btn.disabled=true;
         btn.textContent=t.adWait.replace("{s}",duration);
         count.textContent=duration+"s";
         video.removeAttribute("src");video.load();video.src=ad.media_url;video.loop=true;video.muted=true;
@@ -817,7 +819,7 @@ function showCourseAd(placement,idx){
         function draw(){
           count.textContent=left>0?left+"s":"OK";
           if(left>0){
-            btn.style.display="";btn.disabled=true;sub.hidden=true;
+            btn.style.display="";btn.disabled=true;setAdSubscribeVisible(false);
             /* oxirgi bo'lmasa "Keyingisi {s}s", aks holda "... keyin davom etish" */
             btn.textContent=isLast?t.adWait.replace("{s}",left):t.adNext.replace("{s}",left);
             return;
@@ -832,7 +834,7 @@ function showCourseAd(placement,idx){
             try{video.pause()}catch(e){}
             $("#ad-video-wrap").style.display="none";
             $("#ad-label").textContent=t.adAllDone;count.textContent="";
-            AD_STATE.ready=true;btn.style.display="none";sub.hidden=false;
+            AD_STATE.ready=true;btn.style.display="none";setAdSubscribeVisible(true);
           }
         }
         draw();
