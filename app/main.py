@@ -2,7 +2,10 @@ import asyncio
 import contextlib
 import logging
 import os
+import shutil
+import subprocess
 import time
+import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 
@@ -102,6 +105,12 @@ logger = logging.getLogger(__name__)
 
 bot, dp = create_bot(settings)
 _study_ai_tasks = set()
+COURSE_AD_MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+COURSE_AD_ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".mov", ".webm", ".m4v"}
+
+
+class CourseAdVideoError(Exception):
+    pass
 
 
 def _positive_int(value) -> int | None:
@@ -110,6 +119,76 @@ def _positive_int(value) -> int | None:
     except (TypeError, ValueError):
         return None
     return parsed if parsed > 0 else None
+
+
+def _prepare_course_ad_video_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
+    """Store course ad video as Telegram WebView-safe MP4.
+
+    ffmpeg is expected in production (see nixpacks.toml). Without ffmpeg we
+    reject uploads instead of saving a video that may render black in Telegram
+    WebView.
+    """
+    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
+    token = uuid.uuid4().hex[:10]
+    final_name = f"course_ad_{telegram_id}_{int(time.time())}_{token}.mp4"
+    final_path = os.path.join(COURSE_AD_MEDIA_ROOT, final_name)
+    source_ext = raw_ext if raw_ext in COURSE_AD_ALLOWED_VIDEO_EXTENSIONS else ".mp4"
+    ffmpeg = shutil.which("ffmpeg")
+
+    if not ffmpeg:
+        raise CourseAdVideoError("ffmpeg_not_available")
+
+    source_path = os.path.join(COURSE_AD_MEDIA_ROOT, f".course_ad_upload_{token}{source_ext}")
+    with open(source_path, "wb") as handle:
+        handle.write(data)
+
+    try:
+        subprocess.run(
+            [
+                ffmpeg,
+                "-y",
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-i",
+                source_path,
+                "-map",
+                "0:v:0",
+                "-map",
+                "0:a?",
+                "-vf",
+                "scale='min(720,iw)':-2:force_original_aspect_ratio=decrease,format=yuv420p",
+                "-c:v",
+                "libx264",
+                "-preset",
+                "veryfast",
+                "-profile:v",
+                "main",
+                "-level",
+                "3.1",
+                "-c:a",
+                "aac",
+                "-b:a",
+                "128k",
+                "-movflags",
+                "+faststart",
+                "-shortest",
+                final_path,
+            ],
+            check=True,
+            timeout=120,
+        )
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
+        with contextlib.suppress(OSError):
+            os.remove(final_path)
+        raise CourseAdVideoError("video_transcode_failed") from exc
+    finally:
+        with contextlib.suppress(OSError):
+            os.remove(source_path)
+
+    if not os.path.exists(final_path) or os.path.getsize(final_path) <= 0:
+        raise CourseAdVideoError("video_transcode_failed")
+    return final_name
 
 
 async def _send_subscription_expired_offer(session, telegram_id: int) -> None:
@@ -1571,6 +1650,7 @@ async def voice_practice_pronounce(request: Request):
             return await VoicePracticeService(session).score_pronunciation(
                 telegram_id,
                 target=str(form.get("target") or ""),
+                target_pinyin=str(form.get("target_pinyin") or ""),
                 audio_bytes=audio_bytes,
                 filename=str(getattr(audio, "filename", None) or "voice.webm"),
                 language=str(form.get("language") or ""),
@@ -2288,18 +2368,24 @@ async def admin_miniapp_course_ads_upload(request: Request):
     raw_name = str(getattr(media, "filename", "") or "").lower()
     content_type = str(getattr(media, "content_type", "") or "").lower()
     _, raw_ext = os.path.splitext(raw_name)
-    ext = raw_ext if raw_ext in {".mp4", ".webm", ".mov"} else ".mp4"
-    if not (content_type.startswith("video") or raw_name.endswith((".mp4", ".webm", ".mov"))):
+    if raw_ext not in COURSE_AD_ALLOWED_VIDEO_EXTENSIONS:
+        raw_ext = ".mp4"
+    if not (content_type.startswith("video") or raw_name.endswith(tuple(COURSE_AD_ALLOWED_VIDEO_EXTENSIONS))):
         return JSONResponse(status_code=400, content={"ok": False, "error": "unsupported_media"})
 
-    data = await media.read(25 * 1024 * 1024 + 1)
-    if len(data) > 25 * 1024 * 1024:
+    data = await media.read(COURSE_AD_MAX_UPLOAD_BYTES + 1)
+    if len(data) > COURSE_AD_MAX_UPLOAD_BYTES:
         return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
 
-    os.makedirs(COURSE_AD_MEDIA_ROOT, exist_ok=True)
-    filename = f"course_ad_{telegram_id}_{int(time.time())}{ext}"
-    with open(os.path.join(COURSE_AD_MEDIA_ROOT, filename), "wb") as handle:
-        handle.write(data)
+    try:
+        filename = await asyncio.to_thread(
+            _prepare_course_ad_video_file,
+            data,
+            raw_ext=raw_ext,
+            telegram_id=telegram_id,
+        )
+    except CourseAdVideoError as exc:
+        return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
 
     title = str(form.get("title") or "Course ad").strip()[:120] or "Course ad"
     duration_seconds = CourseAdService.normalize_duration(form.get("duration_seconds"))
@@ -2380,7 +2466,14 @@ async def serve_course_ad_media(filename: str):
     path = os.path.join(COURSE_AD_MEDIA_ROOT, safe)
     if not os.path.exists(path):
         return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
-    return FileResponse(path)
+    ext = os.path.splitext(safe.lower())[1]
+    media_type = {
+        ".mp4": "video/mp4",
+        ".m4v": "video/mp4",
+        ".mov": "video/quicktime",
+        ".webm": "video/webm",
+    }.get(ext, "application/octet-stream")
+    return FileResponse(path, media_type=media_type, headers={"Accept-Ranges": "bytes"})
 
 
 @app.post("/api/miniapp/access")

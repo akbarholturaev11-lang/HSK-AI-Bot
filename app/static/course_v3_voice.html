@@ -30,6 +30,8 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 .sub .zh{font-size:23px;line-height:1.35;color:var(--ink)}
 .sub .py{font-size:15px;color:var(--cin2);font-weight:500;margin:6px 0 5px}
 .sub .tr{font-size:14px;color:var(--ink2)}
+.sub .usr{font-size:12px;color:var(--ink2);background:rgba(194,64,58,.08);border:1px solid rgba(194,64,58,.14);border-radius:11px;padding:6px 8px;margin-bottom:8px;line-height:1.35;text-align:left}
+.sub .usr:empty{display:none}
 .dots{display:flex;justify-content:center;gap:5px;height:13px;margin-top:6px}
 .dots i{width:7px;height:7px;border-radius:50%;background:#b3a382;opacity:.4}
 .dots.rec i{background:var(--cin);animation:bl .9s ease-in-out infinite}
@@ -71,6 +73,7 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
     <div class="st" id="status"></div>
   </div>
   <div class="sub">
+    <div class="usr" id="usr"></div>
     <div class="zh han" id="zh"></div>
     <div class="py" id="py"></div>
     <div class="tr" id="tr"></div>
@@ -98,9 +101,9 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analyzing:"Анализирую…",connecting:"Соединение…",tapStart:"Нажмите микрофон и говорите",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",replWord:"реплик",corrTitle:"Что подправить",again:"Ещё разговор",exit:"Выйти",micDeny:"Разрешите доступ к микрофону в настройках Telegram.",sendErr:"Ошибка. Попробуйте ещё раз.",tooShort:"Слишком коротко. Скажите ещё раз.",noSupport:"Запись голоса недоступна на этом устройстве.",startBot:"Сначала откройте бота и нажмите /start.",limitTitle:"Лимит достигнут",limitSub:"Бесплатный разговор использован. Откройте Premium для безлимита.",premiumBtn:"Открыть Premium"},
-  uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",tapStart:"Mikrofonni bosing va gapiring",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Limit tugadi",limitSub:"Bepul suhbat ishlatildi. Cheksiz uchun Premium oching.",premiumBtn:"Premium ochish"},
-  tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",tapStart:"Микрофонро пахш карда гап занед",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Лимит ба охир расид",limitSub:"Сӯҳбати ройгон истифода шуд. Барои бепоён Premium кушоед.",premiumBtn:"Кушодани Premium"}}[LANG];
+var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analyzing:"Анализирую…",connecting:"Соединение…",tapStart:"Нажмите микрофон и говорите",heard:"Вы:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",replWord:"реплик",corrTitle:"Что подправить",again:"Ещё разговор",exit:"Выйти",micDeny:"Разрешите доступ к микрофону в настройках Telegram.",sendErr:"Ошибка. Попробуйте ещё раз.",tooShort:"Слишком коротко. Скажите ещё раз.",noSupport:"Запись голоса недоступна на этом устройстве.",startBot:"Сначала откройте бота и нажмите /start.",limitTitle:"Лимит достигнут",limitSub:"Бесплатный разговор использован. Откройте Premium для безлимита.",premiumBtn:"Открыть Premium"},
+  uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",tapStart:"Mikrofonni bosing va gapiring",heard:"Siz:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Limit tugadi",limitSub:"Bepul suhbat ishlatildi. Cheksiz uchun Premium oching.",premiumBtn:"Premium ochish"},
+  tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",tapStart:"Микрофонро пахш карда гап занед",heard:"Шумо:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Лимит ба охир расид",limitSub:"Сӯҳбати ройгон истифода шуд. Барои бепоён Premium кушоед.",premiumBtn:"Кушодани Premium"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 /* ---- subtitle (hanzi/pinyin/translation) visibility toggle ---- */
 var SUB_KEY="hsk_voice_sub";
@@ -149,13 +152,14 @@ function setDots(c){$("dots").className=c}
 function setMicRec(on){if(on)$("mic").classList.add("rec");else $("mic").classList.remove("rec")}
 function setCnt(){$("cnt").textContent="对话 "+Math.min(turn+1,maxDialogs)+" / "+maxDialogs}
 function showLine(zh,py,trx){$("zh").textContent=zh||"";$("py").textContent=py||"";$("tr").textContent=trx||""}
+function showUserLine(text){$("usr").textContent=text?(L.heard+" "+text):""}
 function setName(){$("nm").textContent=PERS[persona].name}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]})}
 function jr(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}})}
 
 function init(){
   applySub();
-  setName();setChar("talk");setStatus(L.connecting);setCnt();showLine("","",L.tapStart);
+  setName();setChar("talk");setStatus(L.connecting);setCnt();showUserLine("");showLine("","",L.tapStart);
   fetch("/api/voice-practice/me?initData="+encodeURIComponent(initData())).then(jr)
     .then(function(o){if(o.ok&&o.j){ME.level=o.j.level||"hsk1";ME.language=o.j.language||LANG;ME.is_paid=!!o.j.is_paid}
       setChar("happy");setStatus(L.tapStart);})
@@ -229,6 +233,7 @@ function renderReply(res){
   if(!res){setStatus("");return;}
   if(res.correction)corrections.push(res.correction);
   turn=Number(res.turn_count)||turn+1;if(res.max_dialogs)maxDialogs=Number(res.max_dialogs);setCnt();
+  showUserLine(res.transcription||"");
   showLine(res.chinese_reply||"",res.pinyin||"",res.translation||"");
   setChar("talk");setStatus(L.speaking);speak(res.chinese_reply||"");ring(persona==="li"?[523,659]:[587,740]);
   if(res.session_should_end){setTimeout(endCall,1300);return;}
@@ -260,14 +265,14 @@ function showPaywall(){
 function goPremium(){location.href="/subscription.html?lang="+LANG}
 function reset(){
   $("done").classList.remove("on");started=false;sess=null;turn=0;corrections=[];
-  setName();setChar("happy");setStatus(L.tapStart);setDots("dots");showLine("","",L.tapStart);setCnt();
+  setName();setChar("happy");setStatus(L.tapStart);setDots("dots");showUserLine("");showLine("","",L.tapStart);setCnt();
 }
 function swap(){
   if(busy)return;
   stopHard();
   if(sess){fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),session_id:sess})}).catch(function(){})}
   persona=(persona==="bao"?"li":"bao");started=false;sess=null;turn=0;corrections=[];
-  setName();setChar("happy");setStatus(L.tapStart);setDots("dots");showLine("","",L.tapStart);setCnt();
+  setName();setChar("happy");setStatus(L.tapStart);setDots("dots");showUserLine("");showLine("","",L.tapStart);setCnt();
 }
 init();
 </script>

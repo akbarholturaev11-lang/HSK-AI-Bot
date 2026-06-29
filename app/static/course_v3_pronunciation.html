@@ -28,6 +28,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 .mn{font-size:15px;color:var(--ink2);margin-top:4px;text-align:center}
 .fb{height:22px;margin-top:12px;font-size:14px;font-weight:500}
 .fb.ok{color:var(--jade)}.fb.bad{color:var(--cin2)}
+.heard{min-height:18px;margin-top:7px;font-size:12px;color:var(--ink3);text-align:center;max-width:330px;line-height:1.35}
 .listen{margin-top:14px;display:inline-flex;align-items:center;gap:7px;background:var(--cinbg);color:var(--cin2);border:none;border-radius:20px;padding:9px 16px;font-family:inherit;font-size:14px;font-weight:500}
 .ctrl{padding:8px 0 calc(30px + var(--safe-b));display:flex;flex-direction:column;align-items:center;gap:9px}
 .micwrap{position:relative;width:84px;height:84px;display:flex;align-items:center;justify-content:center}
@@ -64,9 +65,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме произношение доступно 1 полную сессию в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад"},
-  uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Aniq emas, yana urinib ko'ring",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq",listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi, qayta urining",needTg:"Telegram'da oching",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda talaffuz kuniga 1 to'liq sessiya ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga"},
-  tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон талаффуз рӯзе 1 сессияи пурра дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт"}}[LANG];
+var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",heard:"Я услышал:",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме произношение доступно 1 полную сессию в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад"},
+  uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Aniq emas, yana urinib ko'ring",heard:"Men shunday eshitdim:",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq",listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi, qayta urining",needTg:"Telegram'da oching",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda talaffuz kuniga 1 to'liq sessiya ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga"},
+  tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",heard:"Ман чунин шунидам:",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон талаффуз рӯзе 1 сессияи пурра дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription"}
@@ -96,7 +97,7 @@ function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()
 var TOTAL=10,list=[],i=0,okCount=0,busy=false;
 function rain(){var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'];var stage=document.getElementById('stage');for(var n=0;n<22;n++){(function(){var c=document.createElement('span');c.className='conf';c.style.left=(5+Math.random()*90)+'%';c.style.background=cols[n%5];stage.appendChild(c);var dx=Math.random()*60-30,rot=Math.random()*540-270;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,520px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1450)})()}}
 function load(){var w=list[i];
-  document.getElementById('stage').innerHTML='<div class="word han" id="word">'+w.h+'</div><div class="py">'+w.p+'</div><div class="mn">'+tr(w.m)+'</div><div class="fb" id="fb"></div><button class="listen" onclick="speak(\''+w.h+'\')"><i class="ti ti-volume"></i> '+L.listen+'</button>';
+  document.getElementById('stage').innerHTML='<div class="word han" id="word">'+w.h+'</div><div class="py">'+w.p+'</div><div class="mn">'+tr(w.m)+'</div><div class="fb" id="fb"></div><div class="heard" id="heard"></div><button class="listen" onclick="speak(\''+w.h+'\')"><i class="ti ti-volume"></i> '+L.listen+'</button>';
   document.getElementById('cnt').textContent=(i+1)+' / '+list.length;document.getElementById('hint').textContent=L.hint;
 }
 function toast(t){var el=document.getElementById('toast');el.textContent=t;el.classList.add('show');setTimeout(function(){el.classList.remove('show')},1100)}
@@ -131,15 +132,16 @@ function onStopped(){
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
   if(blob.size<MIN_BYTES){setHint(L.retry);return;}
   busy=true;var w=list[i],fd=new FormData();
-  fd.append("initData",initData());fd.append("target",w.h);fd.append("language",LANG);fd.append("level",(params.get("level")||""));fd.append("audio",blob,"voice.webm");
+  fd.append("initData",initData());fd.append("target",w.h);fd.append("target_pinyin",w.p||"");fd.append("language",LANG);fd.append("level",(params.get("level")||""));fd.append("audio",blob,"voice.webm");
   fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
-    .then(function(o){busy=false;if(!o.ok||!o.j||o.j.ok!==true){onErr(o);return;}applyScore(Number(o.j.score)||0)})
+    .then(function(o){busy=false;if(!o.ok||!o.j||o.j.ok!==true){onErr(o);return;}applyScore(Number(o.j.score)||0,o.j.heard||"")})
     .catch(function(){busy=false;setHint(L.netErr)});
 }
 	function onErr(o){var code=o&&o.j&&o.j.code;if(code==="PRONOUNCE_LIMIT_EXCEEDED"){showLimit();return;}setHint(code==="INVALID_INIT_DATA"?L.needTg:(o&&o.j&&o.j.message)||L.netErr)}
-function applyScore(score){
+function applyScore(score,heard){
   var ok=score>=60,word=document.getElementById('word'),fb=document.getElementById('fb');
+  var he=document.getElementById('heard');if(he)he.textContent=heard?(L.heard+' '+heard):"";
   if(ok){okCount++;word.classList.add('ok','pop');rain();toast('+10 XP · '+score+'%');beep([523,659,784]);haptic(true);fb.className='fb ok';fb.textContent='✓ '+L.ok+' '+score+'%';
     document.getElementById('prog').style.width=Math.round((i+1)/list.length*100)+'%';
     setTimeout(function(){i++;if(i>=list.length){finish()}else{load()}},1100);

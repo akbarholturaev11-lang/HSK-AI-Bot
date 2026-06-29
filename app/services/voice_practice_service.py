@@ -1,6 +1,9 @@
 import asyncio
+import difflib
 import json
 import logging
+import re
+import unicodedata
 import uuid
 from collections import Counter
 from datetime import datetime, time, timezone
@@ -22,6 +25,21 @@ from app.services.course_miniapp_lesson_service import CourseMiniAppLessonServic
 
 
 logger = logging.getLogger(__name__)
+
+PINYIN_UMLAUT_TRANSLATION = str.maketrans(
+    {
+        "ü": "v",
+        "ǖ": "v",
+        "ǘ": "v",
+        "ǚ": "v",
+        "ǜ": "v",
+        "Ü": "v",
+        "Ǖ": "v",
+        "Ǘ": "v",
+        "Ǚ": "v",
+        "Ǜ": "v",
+    }
+)
 
 FREE_TOTAL_SESSIONS = 1
 # Bepul (obunasiz) userlar uchun talaffuz baholash kunlik STT kvotasi.
@@ -425,24 +443,47 @@ class VoicePracticeService:
     def _cjk_chars(text: str) -> list[str]:
         return [c for c in str(text or "") if "一" <= c <= "鿿"]
 
+    @staticmethod
+    def _normalize_pinyin(text: str) -> str:
+        raw = str(text or "").translate(PINYIN_UMLAUT_TRANSLATION).lower().replace("u:", "v")
+        decomposed = unicodedata.normalize("NFKD", raw)
+        without_marks = "".join(ch for ch in decomposed if not unicodedata.combining(ch))
+        return re.sub(r"[^a-z0-9]+", " ", without_marks).strip()
+
     @classmethod
-    def _pronunciation_score(cls, target: str, heard: str) -> int:
-        target_chars = cls._cjk_chars(target)
-        if not target_chars:
+    def _pinyin_score(cls, target_pinyin: str, heard: str) -> int:
+        target = re.sub(r"[^a-z]+", "", cls._normalize_pinyin(target_pinyin))
+        heard_norm = cls._normalize_pinyin(heard)
+        heard_compact = re.sub(r"[^a-z]+", "", heard_norm)
+        if not target or not heard_compact:
             return 0
-        heard_counts = Counter(cls._cjk_chars(heard))
-        matched = 0
-        for ch in target_chars:
-            if heard_counts.get(ch, 0) > 0:
-                heard_counts[ch] -= 1
-                matched += 1
-        return int(round(matched / len(target_chars) * 100))
+        if target == heard_compact or target in heard_compact or heard_compact in target:
+            shorter = min(len(target), len(heard_compact))
+            longer = max(len(target), len(heard_compact))
+            if longer and shorter / longer >= 0.72:
+                return 100
+        return int(round(difflib.SequenceMatcher(None, target, heard_compact).ratio() * 100))
+
+    @classmethod
+    def _pronunciation_score(cls, target: str, heard: str, target_pinyin: str = "") -> int:
+        target_chars = cls._cjk_chars(target)
+        hanzi_score = 0
+        if target_chars:
+            heard_counts = Counter(cls._cjk_chars(heard))
+            matched = 0
+            for ch in target_chars:
+                if heard_counts.get(ch, 0) > 0:
+                    heard_counts[ch] -= 1
+                    matched += 1
+            hanzi_score = int(round(matched / len(target_chars) * 100))
+        return max(hanzi_score, cls._pinyin_score(target_pinyin, heard))
 
     async def score_pronunciation(
         self,
         telegram_id: int,
         *,
         target: str,
+        target_pinyin: str = "",
         audio_bytes: bytes,
         filename: str,
         language: str,
@@ -480,6 +521,7 @@ class VoicePracticeService:
                     filename=filename,
                     user_language=(language or "ru"),
                     user_level=(level or "hsk1"),
+                    speech_hint=f"{target} ({target_pinyin})" if target_pinyin else target,
                 ),
                 timeout=35,
             )
@@ -498,13 +540,14 @@ class VoicePracticeService:
             raise VoicePracticeError("AI_FAILED", "Voice AI failed. Try again.", 502) from error
 
         heard = (transcription_result.content or "").strip()
-        score = self._pronunciation_score(target, heard)
+        score = self._pronunciation_score(target, heard, target_pinyin)
         return {
             "ok": True,
             "score": score,
             "passed": score >= 60,
             "heard": heard,
             "target": target,
+            "target_pinyin": target_pinyin,
             "budget_notice": self._budget_notice_payload(record),
         }
 

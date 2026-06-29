@@ -207,6 +207,69 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-29 — Voice pronunciation transcript + tolerant pinyin scoring
+
+Changed:
+- Pronunciation scoring now keeps exact Hanzi matching but also accepts pinyin-like STT transcripts using normalized pinyin similarity when the frontend sends `target_pinyin`.
+- Pronunciation Mini App and in-lesson pronunciation cards send target pinyin and show "heard transcript" feedback, so users can see what STT recognized.
+- AI Voice Mini App now shows the user's recognized speech in the subtitle/CC block when CC is enabled.
+- STT prompt for pronunciation checks includes a bounded target hint to reduce false mishearing without forcing the target text.
+
+Why:
+- Users were getting false "wrong" results because the old scorer only compared exact Chinese characters and hid the STT transcript.
+
+Files touched:
+- `app/services/ai_service.py`
+- `app/services/voice_practice_service.py`
+- `app/main.py`
+- `app/static/course_v3_pronunciation.html`
+- `app/static/course-v3.html`
+- `app/static/course_v3_voice.html`
+- `tests/test_voice_practice_course_context.py`
+
+Risk:
+- Low/medium: user-facing voice scoring and transcript UX changed. Lesson order, quiz/homework logic, subscription/payment/access logic, and referral logic were not changed.
+
+Follow-up:
+- Smoke-test on real Telegram WebView with microphone permission because local browser cannot provide real STT audio.
+
+### 2026-06-29 — Course ad video upload root compatibility fix
+
+Changed:
+- Course ad uploads now store ads as browser-safe `.mp4` files. Uploads are transcoded to H.264/AAC/yuv420p with `+faststart`; if `ffmpeg` is missing, upload is rejected instead of saving a video that may show a black screen in Telegram WebView.
+- Course ad media responses now set explicit video media types and range support; new uploads are always `.mp4`.
+- Added `nixpacks.toml` so Railway/Nixpacks installs `ffmpeg` during deploy.
+
+Why:
+- Telegram iOS/WebView can show black video for `.mov`, `.webm`, HEVC/H.265, or MP4 files without WebView-safe encoding. Fixing upload/transcode is the root fix; frontend loading/error UI remains only a fallback.
+
+Files touched:
+- `app/main.py`
+- `nixpacks.toml`
+
+Risk:
+- Existing already-uploaded ad files are not converted automatically. Re-upload ads after deploy to guarantee safe MP4 encoding.
+
+### 2026-06-29 — Course Mini App section entry speedup
+
+Changed:
+- `course-v3.html` now caches lesson JSON per level/lesson and prefetches current + next lesson after map load, so lesson start / skip-test reuse already loaded data instead of fetching every click.
+- Writer overlay now opens `hsk-lugat.html?fast=1`, a lightweight mode that skips the 2.9MB dictionary script and memo data for single-character writing practice.
+- `hsk-lugat.html` full dictionary still works, but `memo.js` loads lazily only when detail/memo content is needed.
+
+Why:
+- Telegram WebView was slow when entering sections because dictionary/memo assets and lesson JSON were loaded on demand for every entry.
+
+Files touched:
+- `app/static/course-v3.html`
+- `app/static/hsk-lugat.html`
+
+Risk:
+- Frontend-only performance/navigation change. Course order, quiz scoring, homework, subscription/payment/access backend logic were not changed. Fast writer depends on HanziWriter stroke data CDN with a 2.5s timeout and plain-character fallback.
+
+Follow-up:
+- Real Telegram WebView smoke test recommended because local Playwright runtime was unavailable in this session.
+
 ### 2026-06-29 — Xatolar ustida ishlash (Mistake Review) frontendi ulandi
 
 Changed:

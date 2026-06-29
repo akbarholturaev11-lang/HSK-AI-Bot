@@ -99,6 +99,8 @@ button{cursor:pointer}
 .advideo-wrap{position:relative;min-height:0;height:100%;display:block}
 .advideo{width:100%;height:100%;min-height:280px;max-height:68dvh;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}
 .advisit{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.24);color:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.adstatus{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-radius:16px;background:rgba(0,0,0,.58);color:#fff;font-size:14px;font-weight:600;line-height:1.35}
+.adstatus[hidden]{display:none!important}
 .admeta{display:grid;gap:8px}
 .admeta b{font-size:15px;font-weight:600}.admeta small{font-size:12px;color:rgba(255,255,255,.68);line-height:1.4}
 .adcta{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;background:#fff;color:#211D17;display:flex;align-items:center;justify-content:center;gap:8px}
@@ -406,6 +408,7 @@ button{cursor:pointer}
       <div class="adtop"><span id="ad-label"></span><span class="adcount" id="ad-count"></span></div>
       <div class="advideo-wrap" id="ad-video-wrap" onclick="AdFlow.openAdLink()">
         <video class="advideo" id="ad-video" muted playsinline webkit-playsinline></video>
+        <div class="adstatus" id="ad-status" hidden></div>
         <span class="advisit" id="ad-visit" hidden><i class="ti ti-external-link"></i> <span id="ad-visit-t"></span></span>
       </div>
       <div class="admeta">
@@ -812,9 +815,26 @@ function recordCourseAdView(ad,placement,l,watched){
 /* Davomiylik adminda 5–120s oralig'ida boshqariladi (backend bilan bir xil clamp). */
 function adDuration(ad){return Math.max(5,Math.min(120,Number(ad&&ad.duration_seconds)||7))}
 function setAdSubscribeVisible(visible){var sub=$("#ad-sub");if(!sub)return;sub.hidden=!visible;sub.style.display=visible?"grid":"none"}
-function _closeAdOverlay(){clearInterval(AD_STATE.timer);try{$("#ad-video").pause()}catch(e){}$("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true")}
-function _resetAdState(){AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false}}
-var AD_STATE={timer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
+function adUiText(key){
+  var m={
+    ru:{loading:"Загрузка рекламы...",failed:"Видео рекламы не загрузилось",retry:"Повторить загрузку",failedNote:"Если экран остаётся чёрным, нужен MP4 H.264/AAC."},
+    uz:{loading:"Reklama yuklanmoqda...",failed:"Reklama videosi yuklanmadi",retry:"Qayta yuklash",failedNote:"Ekran qora qolsa, video MP4 H.264/AAC formatida bo'lishi kerak."},
+    tj:{loading:"Реклама бор мешавад...",failed:"Видеои реклама бор нашуд",retry:"Боз бор кардан",failedNote:"Агар экран сиёҳ монад, видео бояд MP4 H.264/AAC бошад."}
+  }[LANG]||{};
+  return m[key]||key;
+}
+function setAdStatus(text){var el=$("#ad-status");if(!el)return;el.hidden=!text;el.textContent=text||""}
+function resetAdVideo(video){
+  if(!video)return;
+  video.onloadeddata=video.oncanplay=video.onplaying=video.onerror=video.onstalled=null;
+}
+function _closeAdOverlay(){
+  clearInterval(AD_STATE.timer);clearTimeout(AD_STATE.loadTimer);
+  try{var v=$("#ad-video");resetAdVideo(v);v.pause()}catch(e){}
+  setAdStatus("");$("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true")
+}
+function _resetAdState(){AD_STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false}}
+var AD_STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
 var AdFlow={
   /* "Reklama bilan davom etish" — rolik tugagach darsni davom ettiradi.
      Yozuv saqlanmasa ham userni obunaga MAJBURLAMAYMIZ, shunchaki davom etadi. */
@@ -864,20 +884,21 @@ function showCourseAd(placement,idx){
          Oxirgisi tugagach — "Obuna ol / Reklama bilan davom etish" bloki. */
       function playAd(i){
         var ad=ads[i],duration=adDuration(ad),isLast=(i>=ads.length-1),multi=ads.length>1;
-        clearInterval(AD_STATE.timer);
-        AD_STATE={timer:null,resolve:resolve,reject:reject,ad:ad,lesson:l,placement:placement,watched:0,ready:false,busy:false};
+        clearInterval(AD_STATE.timer);clearTimeout(AD_STATE.loadTimer);resetAdVideo(video);
+        AD_STATE={timer:null,loadTimer:null,resolve:resolve,reject:reject,ad:ad,lesson:l,placement:placement,watched:0,ready:false,busy:false};
         $("#ad-label").textContent=adPlacementTitle(placement)+(multi?" · "+(i+1)+"/"+ads.length:"");
         $("#ad-title").textContent=ad.title||adPlacementTitle(placement);
+        $("#ad-note").textContent=t.adNote;
         var hasLink=!!ad.link_url;
         if(hasLink){$("#ad-visit-t").textContent=t.adVisit;visit.hidden=false}else{visit.hidden=true}
         $("#ad-video-wrap").style.display="";
         $("#ad-video-wrap").style.cursor=hasLink?"pointer":"default";
         contBtn.disabled=false;contBtn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
-        setAdSubscribeVisible(false);btn.style.display="";btn.disabled=true;
-        btn.textContent=t.adWait.replace("{s}",duration);
-        count.textContent=duration+"s";
+        setAdSubscribeVisible(false);btn.style.display="";btn.disabled=true;btn.onclick=function(){AdFlow.done()};
+        btn.textContent=adUiText("loading");count.textContent="...";
+        setAdStatus(adUiText("loading"));
         video.removeAttribute("src");video.load();video.src=ad.media_url;video.loop=true;video.muted=true;
-        var left=duration,timer=null;
+        var left=duration,timer=null,started=false,failed=false;
         function draw(){
           count.textContent=left>0?left+"s":"OK";
           if(left>0){
@@ -899,14 +920,37 @@ function showCourseAd(placement,idx){
             AD_STATE.ready=true;btn.style.display="none";setAdSubscribeVisible(true);
           }
         }
-        draw();
-        timer=setInterval(function(){
-          left=Math.max(0,left-1);AD_STATE.watched=duration-left;
-          if(left<=0)clearInterval(timer);
+        function startCountdown(){
+          if(started||failed||AD_STATE.ad!==ad)return;
+          started=true;clearTimeout(AD_STATE.loadTimer);setAdStatus("");
           draw();
-        },1000);
-        AD_STATE.timer=timer;
-        var play=video.play();if(play&&play.catch)play.catch(function(){});
+          timer=setInterval(function(){
+            left=Math.max(0,left-1);AD_STATE.watched=duration-left;
+            if(left<=0)clearInterval(timer);
+            draw();
+          },1000);
+          AD_STATE.timer=timer;
+        }
+        function mediaFailed(){
+          if(started||failed||AD_STATE.ad!==ad)return;
+          failed=true;
+          clearTimeout(AD_STATE.loadTimer);clearInterval(AD_STATE.timer);
+          AD_STATE.ready=false;AD_STATE.watched=0;
+          try{video.pause()}catch(e){}
+          setAdStatus(adUiText("failed"));
+          $("#ad-note").textContent=adUiText("failedNote");
+          count.textContent="!";
+          btn.style.display="";btn.disabled=false;
+          btn.innerHTML='<i class="ti ti-refresh"></i> '+adUiText("retry");
+          btn.onclick=function(ev){if(ev)ev.stopPropagation();playAd(i)};
+        }
+        video.onloadeddata=startCountdown;
+        video.oncanplay=startCountdown;
+        video.onplaying=startCountdown;
+        video.onerror=mediaFailed;
+        video.onstalled=function(){clearTimeout(AD_STATE.loadTimer);AD_STATE.loadTimer=setTimeout(mediaFailed,5000)};
+        AD_STATE.loadTimer=setTimeout(mediaFailed,8000);
+        var play=video.play();if(play&&play.then)play.then(startCountdown).catch(mediaFailed);else if(play&&play.catch)play.catch(mediaFailed);
       }
       playAd(0);
     }).catch(function(){reject(new Error("course_ad_not_found"))});
@@ -1390,9 +1434,9 @@ function cardMatch(c){
 }
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 var PRON_L={
-  ru:{listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети",needTg:"Откройте в Telegram",retry:"Нажмите и произнесите снова"},
-  uz:{listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi",needTg:"Telegram'da oching",retry:"Bosing va yana ayting"},
-  tj:{listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака",needTg:"Дар Telegram кушоед",retry:"Пахш карда боз гӯед"}
+  ru:{listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети",needTg:"Откройте в Telegram",retry:"Нажмите и произнесите снова",heard:"Я услышал:"},
+  uz:{listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi",needTg:"Telegram'da oching",retry:"Bosing va yana ayting",heard:"Men shunday eshitdim:"},
+  tj:{listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака",needTg:"Дар Telegram кушоед",retry:"Пахш карда боз гӯед",heard:"Ман чунин шунидам:"}
 };
 function _prL(){return PRON_L[LANG]||PRON_L.ru}
 function cardPron(c){
@@ -1417,7 +1461,7 @@ function cardPron(c){
       st.rec.onstop=function(){
         var blob=new Blob(st.chunks,{type:(st.rec&&st.rec.mimeType)||"audio/webm"});release();
         if(blob.size<1200){setBtn(T().say);hint(_prL().retry);return;}
-        var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice.webm");
+        var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("target_pinyin",c.pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice.webm");
         fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
           .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
           .then(function(o){
@@ -1426,10 +1470,10 @@ function cardPron(c){
               if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){App.openPaywall("pronLimit");return;}
               hint((o.j&&o.j.code==="INVALID_INIT_DATA")?_prL().needTg:(o.j&&o.j.message)||_prL().netErr);return;
             }
-            var sc=Number(o.j.score)||0,pass=sc>=60;
+            var sc=Number(o.j.score)||0,pass=sc>=60,heard=o.j.heard?(_prL().heard+" "+esc(o.j.heard)):"";
             Flow.answered=true;Flow.graded=(Flow.graded||0)+1;if(pass)Flow.correct=(Flow.correct||0)+1;
             beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
-            showBar(pass,(pass?T().correct:T().wrong)+" "+sc+"%",pass?"":esc(c.phrase));
+            showBar(pass,(pass?T().correct:T().wrong)+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
           })
           .catch(function(){setBtn(T().say);hint(_prL().netErr)});
       };

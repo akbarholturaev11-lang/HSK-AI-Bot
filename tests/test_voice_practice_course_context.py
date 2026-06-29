@@ -250,6 +250,46 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(ctx.exception.status_code, 403)
         ai_cls.assert_not_called()
 
+    async def test_pronunciation_score_accepts_pinyin_transcript(self):
+        session = SimpleNamespace(commit=AsyncMock())
+        service = VoicePracticeService(session)
+        service._is_paid_telegram_user = AsyncMock(return_value=False)
+        service._pronounce_count_today = AsyncMock(return_value=0)
+        transcribe_usage = AIUsageResult(
+            content="ni hao",
+            model="gpt-4o-mini-transcribe",
+            prompt_tokens=50,
+            completion_tokens=0,
+            total_tokens=50,
+        )
+        ok_record = SimpleNamespace(
+            cooldown_started=False,
+            budget_depleted=False,
+            message_key="",
+            cooldown_hours=6,
+        )
+
+        with patch("app.services.voice_practice_service.settings.OPENAI_API_KEY", "test-key"), patch(
+            "app.services.voice_practice_service.AIService"
+        ) as ai_cls, patch("app.services.voice_practice_service.AIUsageBudgetService") as budget_cls:
+            ai_cls.return_value.transcribe_voice_with_usage = AsyncMock(return_value=transcribe_usage)
+            budget_cls.return_value.record_usage = AsyncMock(return_value=ok_record)
+
+            result = await service.score_pronunciation(
+                123,
+                target="你好",
+                target_pinyin="nǐ hǎo",
+                audio_bytes=b"audio-bytes",
+                filename="voice.webm",
+                language="uz",
+                level="hsk1",
+            )
+
+        self.assertEqual(result["score"], 100)
+        self.assertTrue(result["passed"])
+        self.assertEqual(result["heard"], "ni hao")
+        self.assertIn("你好", ai_cls.return_value.transcribe_voice_with_usage.await_args.kwargs["speech_hint"])
+
 
 if __name__ == "__main__":
     unittest.main()

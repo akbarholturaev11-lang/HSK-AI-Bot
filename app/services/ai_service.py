@@ -189,6 +189,7 @@ class AIService:
         filename: str,
         user_language: str,
         user_level: str,
+        speech_hint: str | None = None,
     ) -> AIUsageResult:
         lang_labels = {
             "tj": "Tajik",
@@ -201,6 +202,11 @@ class AIService:
             f"Likely {primary_lang} or Chinese, level {user_level}. "
             "Keep Chinese, pinyin, names, numbers, and short mixed-language phrases."
         )
+        if speech_hint:
+            prompt += (
+                f" Pronunciation target hint: {speech_hint[:180]}. "
+                "Use the hint only to resolve unclear Chinese sounds; do not copy it if it was not spoken."
+            )
 
         model = "gpt-4o-mini-transcribe"
         mime_type = {
@@ -232,12 +238,14 @@ class AIService:
         filename: str,
         user_language: str,
         user_level: str,
+        speech_hint: str | None = None,
     ) -> str:
         result = await self.transcribe_voice_with_usage(
             audio_bytes=audio_bytes,
             filename=filename,
             user_language=user_language,
             user_level=user_level,
+            speech_hint=speech_hint,
         )
         return result.content
 
