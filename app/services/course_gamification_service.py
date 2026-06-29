@@ -262,6 +262,8 @@ class CourseGamificationService:
                         "is_current_user": int(user_id) == int(user.id),
                     }
                 )
+        if current_rank and profile.last_known_rank is None:
+            profile.last_known_rank = current_rank
         return {**snapshot, "rank": current_rank or 1, "league_size": len(rows), "leaderboard": ranked}
 
     async def open_reward_chest(self, user) -> dict:

@@ -10,10 +10,11 @@ from app.db.models.notification_template import NotificationTemplate
 
 # Reminder keys handled by MotivationReminderService.
 KEY_OVERTAKEN = "rating_overtaken"
+KEY_PASSED = "rating_passed"
 KEY_DAILY_GOAL = "daily_goal"
 KEY_STREAK = "streak_risk"
 
-MOTIVATION_KEYS = (KEY_OVERTAKEN, KEY_DAILY_GOAL, KEY_STREAK)
+MOTIVATION_KEYS = (KEY_OVERTAKEN, KEY_PASSED, KEY_DAILY_GOAL, KEY_STREAK)
 
 # Human-facing metadata for the admin Mini App editor: title, short note and the
 # placeholders available for each reminder. Placeholders are filled per-user when
@@ -22,6 +23,11 @@ TEMPLATE_META: dict[str, dict] = {
     KEY_OVERTAKEN: {
         "title": "🥇 Reytingda o'tib ketishdi",
         "note": "Mini App reytingida foydalanuvchini kimdir ortda qoldirsa yuboriladi.",
+        "placeholders": ["{name}", "{league}", "{rank}", "{xp_gap}"],
+    },
+    KEY_PASSED: {
+        "title": "🚀 Reytingda oldinga o'tdi",
+        "note": "Mini App reytingida foydalanuvchi kimnidir ortda qoldirsa yuboriladi.",
         "placeholders": ["{name}", "{league}", "{rank}", "{xp_gap}"],
     },
     KEY_DAILY_GOAL: {
@@ -54,6 +60,23 @@ DEFAULT_TEXTS: dict[str, dict[str, str]] = {
             "🥇 <b>{name} аз шумо пеш гузашт!</b>\n"
             "Шумо ба <b>ҷои {rank} дар лигаи {league}</b> фаромадед.\n"
             "Фарқ ҳамагӣ <b>{xp_gap} XP</b>. Бо як дарс ҷои худро баргардонед 💪"
+        ),
+    },
+    KEY_PASSED: {
+        "uz": (
+            "🚀 <b>Siz {name}ni ortda qoldirdingiz!</b>\n"
+            "Endi <b>{league} ligasida {rank}-o'rindasiz</b>.\n"
+            "Farq <b>{xp_gap} XP</b>. Tempni tushirmang 💪"
+        ),
+        "ru": (
+            "🚀 <b>Вы обошли {name}!</b>\n"
+            "Теперь вы на <b>{rank}-м месте в лиге {league}</b>.\n"
+            "Разница <b>{xp_gap} XP</b>. Держите темп 💪"
+        ),
+        "tj": (
+            "🚀 <b>Шумо аз {name} пеш гузаштед!</b>\n"
+            "Ҳоло шумо дар <b>ҷои {rank} дар лигаи {league}</b> ҳастед.\n"
+            "Фарқ <b>{xp_gap} XP</b>. Ҳамин суръатро нигоҳ доред 💪"
         ),
     },
     KEY_DAILY_GOAL: {
@@ -122,7 +145,7 @@ class NotificationTemplateService:
         return row
 
     async def list_for_admin(self) -> list[dict]:
-        """Return the 3 templates merged with defaults for the admin editor."""
+        """Return the motivation templates merged with defaults for the admin editor."""
         rows = {
             row.key: row
             for row in (
