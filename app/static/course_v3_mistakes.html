@@ -35,6 +35,45 @@ h1{font-size:23px}
 .empty h3{font-size:19px;font-weight:500;margin:0 0 6px}
 .empty p{font-size:14px;color:var(--ink2);margin:0 0 22px;line-height:1.5}
 .empty button{background:var(--cin);color:#fff;border:none;border-radius:13px;padding:13px 22px;font-family:inherit;font-size:14px;font-weight:500}
+/* review overlay */
+.rv{position:fixed;inset:0;background:var(--paper);z-index:50;display:flex;flex-direction:column;max-width:480px;margin:0 auto}
+.rv[hidden]{display:none}
+.rv-top{display:flex;align-items:center;gap:12px;padding:calc(12px + var(--safe-t)) 16px 8px}
+.rv-bar{flex:1;height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+.rv-bar span{display:block;height:100%;width:0;background:var(--cin);border-radius:4px;transition:width .25s ease}
+.rv-body{flex:1;overflow-y:auto;padding:14px 16px 8px}
+.rv-cat{font-size:12px;font-weight:600;color:var(--cin);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}
+.rv-prompt{font-size:26px;font-weight:600;line-height:1.35;margin-bottom:20px;word-break:break-word}
+.rv-opts{display:flex;flex-direction:column;gap:10px}
+.rv-opt{display:flex;align-items:center;gap:11px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-family:inherit;font-size:16px;color:var(--ink);text-align:left;width:100%;transition:border-color .15s,background .15s}
+.rv-opt .rk{width:26px;height:26px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--ink2);flex-shrink:0}
+.rv-opt.ok{border-color:var(--jade);background:var(--jadebg)}.rv-opt.ok .rk{background:var(--jade);border-color:var(--jade);color:#fff}
+.rv-opt.no{border-color:var(--cin);background:var(--cinbg)}.rv-opt.no .rk{background:var(--cin);border-color:var(--cin);color:#fff}
+.rv-opt:disabled{opacity:1}
+.rv-fb{margin-top:18px;border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5}
+.rv-fb.ok{background:var(--jadebg);color:var(--jade)}.rv-fb.no{background:var(--cinbg);color:var(--cin2)}
+.rv-fb b{display:flex;align-items:center;gap:7px;font-size:15px;font-weight:600;margin-bottom:4px}
+.rv-fb .ex{color:var(--ink2);margin-top:6px}
+.rv-foot{padding:10px 16px calc(16px + var(--safe-b))}
+.rv-foot button{width:100%;background:var(--ink);color:#fff;border:none;border-radius:14px;padding:16px;font-family:inherit;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.rv-foot button[disabled]{opacity:.4}
+/* result */
+.rv-res{display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px}
+.rv-res .ic{width:88px;height:88px;border-radius:24px;background:var(--jadebg);color:var(--jade);display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:18px}
+.rv-res h3{font-size:22px;font-weight:600;margin-bottom:8px}
+.rv-res .sc{font-size:40px;font-weight:700;color:var(--cin);margin:4px 0}
+.rv-res .xp{font-size:14px;font-weight:600;color:var(--gold);background:#FBF3DF;border-radius:10px;padding:5px 12px;margin:8px 0}
+.rv-res .rm{font-size:14px;color:var(--ink2);margin-top:6px}
+/* limit sheet */
+.lim{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.lim[hidden]{display:none}
+.lim .bd{position:absolute;inset:0;background:rgba(33,29,23,.45)}
+.lim .sh{position:relative;background:var(--card);width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:26px 20px calc(22px + var(--safe-b));text-align:center}
+.lim .sh .ic{width:64px;height:64px;border-radius:18px;background:var(--cinbg);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px}
+.lim .sh h3{font-size:19px;font-weight:600;margin-bottom:7px}
+.lim .sh p{font-size:14px;color:var(--ink2);line-height:1.5;margin-bottom:18px}
+.lim .sh .go{width:100%;background:var(--cin);color:#fff;border:none;border-radius:13px;padding:15px;font-family:inherit;font-size:15px;font-weight:500;margin-bottom:9px}
+.lim .sh .lt{width:100%;background:none;border:none;color:var(--ink2);font-family:inherit;font-size:14px;padding:9px}
 </style>
 </head>
 <body>
@@ -43,12 +82,39 @@ h1{font-size:23px}
   <div class="sub" id="m-sub"></div>
   <div id="content"></div>
 </div>
+<div id="review" class="rv" hidden>
+  <div class="rv-top"><button class="ix" onclick="closeReview()" aria-label="close"><i class="ti ti-x"></i></button><div class="rv-bar"><span id="rv-fill"></span></div></div>
+  <div class="rv-body" id="rv-body"></div>
+  <div class="rv-foot" id="rv-foot"></div>
+</div>
+<div id="limit" class="lim" hidden>
+  <div class="bd" onclick="closeLimit()"></div>
+  <div class="sh">
+    <div class="ic"><i class="ti ti-lock"></i></div>
+    <h3 id="lim-title"></h3>
+    <p id="lim-text"></p>
+    <button class="go" onclick="goPay()"><i class="ti ti-crown"></i> <span id="lim-btn"></span></button>
+    <button class="lt" onclick="closeLimit()" id="lim-later"></button>
+  </div>
+</div>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{title:"Мои ошибки",sub:"Собираются автоматически из уроков, тестов и экзаменов",emptyTitle:"Пока ошибок нет",emptySub:"Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.",toCourse:"К урокам",review:"Работа над ошибками",reviewSub:"Исправьте слабые места",start:"Начать"},
-  uz:{title:"Xatolarim",sub:"Darslar, testlar va imtihonlardan avtomatik yig'iladi",emptyTitle:"Hozircha xato yo'q",emptySub:"Darslar va testlardan o'ting — xatolar shu yerda paydo bo'ladi va ularni mashq qila olasiz.",toCourse:"Darslarga",review:"Xatolar ustida ishlash",reviewSub:"Zaif joylarni tuzating",start:"Boshlash"},
-  tj:{title:"Хатоҳои ман",sub:"Аз дарсҳо, тестҳо ва имтиҳонҳо худкор ҷамъ мешаванд",emptyTitle:"Ҳоло хато нест",emptySub:"Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.",toCourse:"Ба дарсҳо",review:"Кор бар хатоҳо",reviewSub:"Ҷойҳои заифро ислоҳ кунед",start:"Оғоз"}}[LANG];
+var L={ru:{title:"Мои ошибки",sub:"Собираются автоматически из уроков, тестов и экзаменов",emptyTitle:"Пока ошибок нет",emptySub:"Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.",toCourse:"К урокам",review:"Работа над ошибками",reviewSub:"Исправьте слабые места",start:"Начать",
+    q:"Вопрос",of:"из",correct:"Верно!",wrong:"Неверно",exp:"Пояснение",next:"Дальше",finish:"Завершить",
+    resTitle:"Отличная работа!",resScore:"верно",resRemaining:"Осталось ошибок",resAll:"Вы исправили все свои ошибки!",done:"Готово",
+    limitTitle:"Бесплатная практика на сегодня закончилась",limitText:"Оформите Premium для безлимитной работы над ошибками.",limitBtn:"Оформить Premium",later:"Позже",
+    loading:"Загрузка…",err:"Произошла ошибка. Попробуйте снова."},
+  uz:{title:"Xatolarim",sub:"Darslar, testlar va imtihonlardan avtomatik yig'iladi",emptyTitle:"Hozircha xato yo'q",emptySub:"Darslar va testlardan o'ting — xatolar shu yerda paydo bo'ladi va ularni mashq qila olasiz.",toCourse:"Darslarga",review:"Xatolar ustida ishlash",reviewSub:"Zaif joylarni tuzating",start:"Boshlash",
+    q:"Savol",of:"/",correct:"To'g'ri!",wrong:"Noto'g'ri",exp:"Izoh",next:"Keyingi",finish:"Yakunlash",
+    resTitle:"Ajoyib ish!",resScore:"to'g'ri",resRemaining:"Qolgan xatolar",resAll:"Barcha xatolaringizni tuzatdingiz!",done:"Tayyor",
+    limitTitle:"Bugungi bepul mashq tugadi",limitText:"Xatolar ustida cheksiz ishlash uchun Premium oling.",limitBtn:"Premium olish",later:"Keyinroq",
+    loading:"Yuklanmoqda…",err:"Xatolik yuz berdi. Qayta urinib ko'ring."},
+  tj:{title:"Хатоҳои ман",sub:"Аз дарсҳо, тестҳо ва имтиҳонҳо худкор ҷамъ мешаванд",emptyTitle:"Ҳоло хато нест",emptySub:"Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.",toCourse:"Ба дарсҳо",review:"Кор бар хатоҳо",reviewSub:"Ҷойҳои заифро ислоҳ кунед",start:"Оғоз",
+    q:"Савол",of:"аз",correct:"Дуруст!",wrong:"Нодуруст",exp:"Шарҳ",next:"Минбаъд",finish:"Анҷом",
+    resTitle:"Кори аъло!",resScore:"дуруст",resRemaining:"Хатоҳои боқимонда",resAll:"Шумо ҳамаи хатоҳоятонро ислоҳ кардед!",done:"Тайёр",
+    limitTitle:"Машқи ройгони имрӯза тамом шуд",limitText:"Барои кори бемаҳдуд бар хатоҳо Premium гиред.",limitBtn:"Premium гирифтан",later:"Дертар",
+    loading:"Боргирӣ…",err:"Хатогӣ рух дод. Боз кӯшиш кунед."}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 var INIT_DATA=(tg&&tg.initData)||"";
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
@@ -59,13 +125,80 @@ $("m-title").textContent=L.title;$("m-sub").textContent=L.sub;
 // Mistakes are user data from the server (Mistake Engine). Render list when present; otherwise the empty state.
 function renderList(items){
   var chips='<div class="chips"><button class="on">'+L.title+'</button></div>';
-  var cta='<div class="cta"><span class="gw han">错</span><b><i class="ti ti-refresh"></i> '+L.review+'</b><p>'+items.length+' · '+L.reviewSub+'</p><button><i class="ti ti-player-play"></i> '+L.start+'</button></div>';
+  var cta='<div class="cta"><span class="gw han">错</span><b><i class="ti ti-refresh"></i> '+L.review+'</b><p>'+items.length+' · '+L.reviewSub+'</p><button onclick="startReview()"><i class="ti ti-player-play"></i> '+L.start+'</button></div>';
   var list=items.map(function(it){var wrong=it.user_answer?'<span class="x">✗ '+esc(it.user_answer)+'</span> ':'';return '<div class="item"><span class="tl"><i class="ti ti-book"></i></span><span class="mid"><span class="w"><b>'+esc(it.question)+'</b></span><span class="err">'+wrong+'<span class="c">✓ '+esc(it.correct_answer)+'</span></span></span><span class="cnt">'+(it.count||1)+'×</span></div>'}).join("");
   $("content").innerHTML=cta+chips+list;
 }
 function renderEmpty(){
   $("content").innerHTML='<div class="empty"><div class="ic"><i class="ti ti-circle-check"></i></div><h3>'+L.emptyTitle+'</h3><p>'+L.emptySub+'</p><button onclick="location.href=\'/course-v3.html?lang='+LANG+'&tab=course\'"><i class="ti ti-arrow-right"></i> '+L.toCourse+'</button></div>';
 }
+// ---- Review flow (Mistake Engine) ----
+$("lim-title").textContent=L.limitTitle;$("lim-text").textContent=L.limitText;$("lim-btn").textContent=L.limitBtn;$("lim-later").textContent=L.later;
+var RV=null;function busy(){return RV&&RV.loading}
+function haptic(t){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(t)}catch(e){}}
+function LETTERS(i){return["A","B","C","D"][i]||(i+1)}
+function startReview(){
+  if(busy())return;RV={loading:true};
+  fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA}})
+  .then(function(r){return r.json().then(function(d){return{status:r.status,d:d}})})
+  .then(function(res){
+    var d=res.d||{};
+    if(res.status===403||(d.error==="free_feature_limit_reached")){RV=null;showLimit();return}
+    if(!d.ok||!d.session||!d.session.questions||!d.session.questions.length){RV=null;
+      if(d.error==="mistake_review_empty"){location.reload()}else{alert(L.err)}return}
+    RV={loading:false,session:d.session.id,questions:d.session.questions,idx:0,answers:[]};
+    openReview();renderQuestion();
+  }).catch(function(){RV=null;alert(L.err)});
+}
+function openReview(){$("review").hidden=false;document.body.style.overflow="hidden"}
+function closeReview(){$("review").hidden=true;document.body.style.overflow="";RV=null}
+function renderQuestion(){
+  var q=RV.questions[RV.idx],n=RV.questions.length;
+  $("rv-fill").style.width=Math.round((RV.idx/n)*100)+"%";
+  var opts=q.options.map(function(o,i){return '<button class="rv-opt" data-i="'+i+'" onclick="pickOption('+i+')"><span class="rk">'+LETTERS(i)+'</span><span>'+esc(o)+'</span></button>'}).join("");
+  $("rv-body").innerHTML='<div class="rv-cat">'+L.q+' '+(RV.idx+1)+' '+L.of+' '+n+'</div><div class="rv-prompt">'+esc(q.prompt)+'</div><div class="rv-opts" id="rv-opts">'+opts+'</div><div id="rv-fb"></div>';
+  $("rv-foot").innerHTML="";
+}
+function pickOption(i){
+  var q=RV.questions[RV.idx];if(RV.locked)return;RV.locked=true;
+  var correct=i===q.answer_index;
+  RV.answers.push({question_id:q.id,selected_index:i});
+  haptic(correct?"success":"error");
+  var btns=$("rv-opts").querySelectorAll(".rv-opt");
+  for(var k=0;k<btns.length;k++){btns[k].disabled=true;var bi=+btns[k].getAttribute("data-i");
+    if(bi===q.answer_index)btns[k].classList.add("ok");else if(bi===i)btns[k].classList.add("no");}
+  var ex=q.explanation&&q.explanation!==q.options[q.answer_index]?'<div class="ex">'+esc(q.explanation)+'</div>':"";
+  $("rv-fb").innerHTML='<div class="rv-fb '+(correct?"ok":"no")+'"><b><i class="ti ti-'+(correct?"circle-check":"alert-circle")+'"></i> '+(correct?L.correct:L.wrong)+'</b>'+(correct?"":'<div>'+L.exp+': '+esc(q.options[q.answer_index])+'</div>')+ex+'</div>';
+  var last=RV.idx>=RV.questions.length-1;
+  $("rv-foot").innerHTML='<button onclick="nextQuestion()">'+(last?'<i class="ti ti-check"></i> '+L.finish:L.next+' <i class="ti ti-arrow-right"></i>')+'</button>';
+}
+function nextQuestion(){
+  RV.locked=false;
+  if(RV.idx>=RV.questions.length-1){finishReview();return}
+  RV.idx++;renderQuestion();
+}
+function finishReview(){
+  if(RV.loading)return;RV.loading=true;
+  $("rv-fill").style.width="100%";
+  $("rv-foot").innerHTML='<button disabled>'+L.loading+'</button>';
+  fetch("/api/miniapp/mistakes/review/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},
+    body:JSON.stringify({session_id:RV.session,answers:RV.answers})})
+  .then(function(r){return r.json()}).then(function(d){
+    if(!d||!d.ok){alert(L.err);closeReview();location.reload();return}
+    renderResult(d);
+  }).catch(function(){alert(L.err);closeReview();location.reload()});
+}
+function renderResult(d){
+  var xp=(d.reward&&d.reward.awarded_xp)||0;
+  var rm=d.remaining>0?'<div class="rm">'+L.resRemaining+': '+d.remaining+'</div>':'<div class="rm">'+L.resAll+'</div>';
+  $("rv-body").innerHTML='<div class="rv-res"><div class="ic"><i class="ti ti-trophy"></i></div><h3>'+L.resTitle+'</h3><div class="sc">'+d.score+' / '+d.total+'</div><div style="font-size:13px;color:var(--ink2)">'+L.resScore+'</div>'+(xp>0?'<div class="xp">+'+xp+' XP</div>':'')+rm+'</div>';
+  $("rv-foot").innerHTML='<button onclick="closeReview();location.reload()"><i class="ti ti-check"></i> '+L.done+'</button>';
+  haptic("success");
+}
+function showLimit(){$("limit").hidden=false}
+function closeLimit(){$("limit").hidden=true}
+function goPay(){location.href="/subscription.html?lang="+LANG+"&mode=subscription&source=v3_mistake_review"}
+
 fetch("/api/miniapp/mistakes",{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
   var items=(d&&d.items)||[];if(items.length)renderList(items);else renderEmpty();
 }).catch(function(){renderEmpty()});

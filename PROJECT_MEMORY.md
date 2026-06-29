@@ -207,6 +207,31 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-29 — Xatolar ustida ishlash (Mistake Review) frontendi ulandi
+
+Changed:
+- `course_v3_mistakes.html` "Xatolar ustida ishlash" CTA'sidagi "Boshlash" tugmasi
+  ilgari hech narsa qilmasdi (onclick yo'q edi) — endi to'liq review oqimi ulandi.
+- Tugma `POST /api/miniapp/mistakes/review/start` (10 ta savol, ko'p variantli) ni
+  chaqiradi, sahifa ichida quiz overlay ochadi: savol → variant tanlash → darhol
+  to'g'ri/noto'g'ri + izoh feedback → keyingi → yakunda `POST .../review/complete`
+  bilan natija (ball, +XP, qolgan xatolar) ko'rsatiladi. Backend (CourseMistakeService)
+  oldindan bor edi va o'zgartirilmadi.
+- Kunlik bepul limit (403 `free_feature_limit_reached`) bo'lsa Premium taklif sheet'i
+  chiqadi → `subscription.html?source=v3_mistake_review`. Yangi manba yorlig'i
+  `subscription_entry_analytics_service.SOURCE_LABELS` ga qo'shildi.
+- Barcha yangi matnlar uz/ru/tj 3 tilda.
+
+Files touched:
+- `app/static/course_v3_mistakes.html`
+- `app/services/subscription_entry_analytics_service.py`
+
+Risk:
+- Faqat frontend wiring + 1 ta analytics yorlig'i. To'lov/obuna/ruxsat va review
+  scoring/XP backend mantig'i o'zgarmadi. Mavjud `start_review`/`complete_review`
+  endpointlari ishlatildi. Statik preview'da 3 ekran (savol/feedback/natija) va
+  limit sheet vizual tekshirildi; real Telegram WebView smoke-test tavsiya etiladi.
+
 ### 2026-06-29 — New admin Mini App (admin.html) + deep finance stats; old admin-control.html removed
 
 Changed:

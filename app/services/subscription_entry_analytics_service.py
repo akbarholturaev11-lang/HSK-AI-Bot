@@ -48,6 +48,7 @@ class SubscriptionEntryAnalyticsService:
         "v3_qa_limit": "Course v3 — QA limit",
         "v3_voice_trial_used": "Course v3 — Voice trial tugadi",
         "v3_pronunciation_limit": "Course v3 — Talaffuz limiti",
+        "v3_mistake_review": "Course v3 — Xatolar mashqi limiti",
         "course_voice": "Kurs voice",
         "admin_discount": "Admin chegirma",
         "release_feedback_try": "Release feedback",
