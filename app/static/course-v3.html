@@ -324,6 +324,11 @@ button{cursor:pointer}
 .writeov.on{display:block}
 .writeov iframe{width:100%;height:100%;border:none;display:block}
 .writeov-x{position:absolute;top:calc(10px + var(--safe-t));right:12px;z-index:2;width:36px;height:36px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-size:20px;display:flex;align-items:center;justify-content:center}
+.writeov-loading{position:absolute;inset:0;z-index:1;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:var(--paper);color:var(--ink2);font-size:14px;font-weight:600}
+.writeov.loading .writeov-loading{display:flex}
+.writeov.loading iframe{opacity:0}
+.wspin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--cin);animation:wspin .8s linear infinite}
+@keyframes wspin{to{transform:rotate(360deg)}}
 .levelup{position:fixed;inset:0;background:var(--ink);z-index:50;display:none;flex-direction:column;max-width:480px;margin:0 auto;color:#fff;overflow:hidden;padding-top:var(--safe-t)}
 .levelup.on{display:flex}
 .lu-rays{position:absolute;top:130px;left:50%;width:520px;height:520px;transform:translate(-50%,-50%);opacity:.5;animation:luspin 28s linear infinite}
@@ -416,7 +421,7 @@ button{cursor:pointer}
     </div>
   </div>
 
-  <div class="writeov" id="writeov"><button class="writeov-x" onclick="App.closeWriter()" aria-label="Yopish"><i class="ti ti-chevron-down"></i></button><iframe id="writeframe" title="Ieroglif yozilishi"></iframe></div>
+  <div class="writeov" id="writeov"><button class="writeov-x" onclick="App.closeWriter()" aria-label="Yopish"><i class="ti ti-chevron-down"></i></button><div class="writeov-loading" id="write-loading"><span class="wspin"></span><b id="write-loading-text">Yuklanmoqda...</b></div><iframe id="writeframe" title="Ieroglif yozilishi"></iframe></div>
 
   <div class="levelup" id="levelup"><svg class="lu-rays" id="lu-rays" viewBox="0 0 200 200"></svg><div class="lu-panda" id="lu-panda"></div><div class="lu-stage" id="lu-stage"></div><button class="lu-cta" id="lu-cta" onclick="App.closeLevelUp()"></button></div>
 
@@ -500,8 +505,18 @@ var App={
     location.href=url;
   },
   exitFlow:function(){$("#flow").classList.remove("on")},
-  openWriter:function(ch){if(!ch)return;$("#writeframe").src="/hsk-lugat.html?theme=light&char="+encodeURIComponent(ch)+"&lang="+LANG;$("#writeov").classList.add("on")},
-  closeWriter:function(){$("#writeov").classList.remove("on");try{$("#writeframe").src="about:blank"}catch(e){}},
+  openWriter:function(ch){
+    if(!ch)return;
+    var url="/hsk-lugat.html?theme=light&fast=1&char="+encodeURIComponent(ch)+"&lang="+LANG;
+    if(writeMeta&&writeMeta.pinyin)url+="&pinyin="+encodeURIComponent(writeMeta.pinyin);
+    if(writeMeta&&writeMeta.meaning)url+="&meaning="+encodeURIComponent(writeMeta.meaning);
+    var ov=$("#writeov"),fr=$("#writeframe"),lt=$("#write-loading-text");
+    if(lt)lt.textContent=LANG==="ru"?"Загрузка...":LANG==="tj"?"Бор шуда истодааст...":"Yuklanmoqda...";
+    ov.classList.add("on");ov.classList.add("loading");
+    fr.onload=function(){ov.classList.remove("loading");fr.onload=null};
+    fr.src=url;
+  },
+  closeWriter:function(){var ov=$("#writeov"),fr=$("#writeframe");ov.classList.remove("on");ov.classList.remove("loading");try{fr.onload=null;fr.src="about:blank"}catch(e){}},
   showLevelUp:function(type,data){
     var lu={ru:{cont:"Продолжить",lessonH:"Урок завершён!",lessonP:"Отличная работа! Следующий этап ждёт.",acc:"точность",combo:"комбо",levelH:"HSK 1 пройден!",levelP:"Поздравляем! Открыт HSK 2.",opened:"открыт",xpH:"Уровень 5!",xpP:"Так держать! Новый уровень — новые возможности.",lvl:"Уровень",bonusXp:"бонус XP",chest:"новый сундук"},
       uz:{cont:"Davom etish",lessonH:"Dars tugadi!",lessonP:"Ajoyib! Keyingi bosqich kutyapti.",acc:"aniqlik",combo:"combo",levelH:"HSK 1 tugadi!",levelP:"Tabriklaymiz! HSK 2 ochildi.",opened:"ochildi",xpH:"5-daraja!",xpP:"Zo'r! Yangi daraja — yangi imkoniyatlar.",lvl:"Daraja",bonusXp:"bonus XP",chest:"yangi sandiq"},
@@ -674,6 +689,53 @@ function navInit(){document.querySelectorAll("#nav button").forEach(function(b){
 
 /* ---------- Course (hybrid path) ---------- */
 function allLessons(){var a=[];(MAP.units||[]).forEach(function(u){(u.lessons||[]).forEach(function(l){a.push(l)})});return a}
+var LESSON_DATA_CACHE={},LESSON_DATA_PROMISES={},PRACTICE_PREFETCHED=false;
+function cloneJson(v){return JSON.parse(JSON.stringify(v))}
+function lessonDataKey(lv,n){return normalizeLevel(lv)+"-"+String(Number(n)||0)}
+function lessonDataUrl(lv,n){return "/course_v3_data/"+normalizeLevel(lv)+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json"}
+function loadLessonData(lv,n){
+  var key=lessonDataKey(lv,n);
+  if(LESSON_DATA_CACHE[key])return Promise.resolve(cloneJson(LESSON_DATA_CACHE[key]));
+  if(LESSON_DATA_PROMISES[key])return LESSON_DATA_PROMISES[key].then(cloneJson);
+  LESSON_DATA_PROMISES[key]=fetch(lessonDataUrl(lv,n)).then(function(r){
+    if(!r.ok)throw new Error("not_found");
+    return r.json();
+  }).then(function(d){
+    LESSON_DATA_CACHE[key]=d;
+    delete LESSON_DATA_PROMISES[key];
+    return d;
+  }).catch(function(err){
+    delete LESSON_DATA_PROMISES[key];
+    throw err;
+  });
+  return LESSON_DATA_PROMISES[key].then(cloneJson);
+}
+function idleRun(fn){
+  if("requestIdleCallback" in window)return requestIdleCallback(fn,{timeout:1400});
+  return setTimeout(fn,450);
+}
+function prefetchPracticeAssets(){
+  if(PRACTICE_PREFETCHED)return;
+  PRACTICE_PREFETCHED=true;
+  idleRun(function(){
+    ["hsk-data.js?v=20260625","course_v3_data/memo.js?v=20260628"].forEach(function(href){
+      try{var l=document.createElement("link");l.rel="prefetch";l.as="script";l.href=href;document.head.appendChild(l)}catch(e){}
+    });
+  });
+}
+function prefetchNearbyLessons(){
+  if(!MAP)return;
+  var lv=MAP.level||getSelectedLevel();
+  var lessons=allLessons();
+  var current=-1;
+  lessons.forEach(function(l,i){if(current<0&&(l.status==="current"||l.status==="locked"&&!isPremiumLocked(l)))current=i});
+  if(current<0)current=lessons.findIndex(function(l){return l.status!=="done"});
+  if(current<0)current=0;
+  [lessons[current],lessons[current+1]].forEach(function(l){
+    if(l&&l.n)idleRun(function(){loadLessonData(lv,l.n).catch(function(){})});
+  });
+  prefetchPracticeAssets();
+}
 function isPaidUser(){return !!(PROF&&PROF.is_paid||MAP&&MAP.user&&MAP.user.is_paid)}
 function isPremiumLocked(l){return !!(l&&l.locked_premium&&!isPaidUser())}
 function serverSaveErrorText(code){
@@ -982,8 +1044,7 @@ function buildTestQueue(d){
 function startSkipTest(idx){
   var l=allLessons()[idx];App.closeSheet();if(!l)return;
   if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
-  var lv=MAP.level||"hsk1",pad=String(l.n).padStart(2,"0");
-  fetch("/course_v3_data/"+lv+"/lesson_"+pad+".json").then(function(r){if(!r.ok)throw new Error("nf");return r.json()}).then(function(d){
+  loadLessonData(MAP.level||"hsk1",l.n).then(function(d){
     var q=buildTestQueue(d);
     if(!q.length){completeSkipUnlock(100,idx);return}
     Flow.queue=q;Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test={idx:idx};Flow.challenge=null;Flow.lessonIdx=null;Flow.ad=null;HP=5;$("#f-hp").textContent=HP;
@@ -1120,12 +1181,7 @@ function startLesson(idx,opts){
   if(isPremiumLocked(l)&&!opts.adSupported){openLockedLessonSheet(idx);return}
   if(l.status==="locked"&&!opts.adSupported){return}
   var lv=MAP.level||"hsk1";
-  var pad=String(l.n).padStart(2,"0");
-  var url="/course_v3_data/"+lv+"/lesson_"+pad+".json";
-  fetch(url).then(function(r){
-    if(!r.ok)throw new Error("not_found");
-    return r.json();
-  }).then(function(d){
+  loadLessonData(lv,l.n).then(function(d){
     Flow.queue=buildQueue(d);Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;
     Flow.ad=opts.adSupported?{lessonIdx:idx,middle:false,end:false,middleAt:Math.max(1,Math.floor(Flow.queue.length/2))}:null;
     trackCourseEvent("lesson_started",{
@@ -1189,15 +1245,26 @@ function comboPop(n){
   el.classList.add("on");beep([784,988,1318,1568]);haptic("ok");
   clearTimeout(comboPop._t);comboPop._t=setTimeout(function(){el.classList.remove("on")},1350);
 }
-var writeChar="";
-function setWriteBtn(ch){writeChar=ch||"";var b=$("#writebtn");if(b)b.style.display=writeChar?"flex":"none";}
+var writeChar="",writeMeta={};
+function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writebtn");if(b)b.style.display=writeChar?"flex":"none";}
 function renderFlowCard(){
   Flow.answered=false;hideBar();flowProg();
   if(Flow.i>=Flow.queue.length){return flowDone()}
   var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:T().check);
   var t=c.type;
   trackFlowCard(c);
-  setWriteBtn((t==="active_word"||t==="_word_flash"||t==="_word_listen"||t==="_word_pick_meaning"||t==="_word_pick_hanzi")?(c.word&&c.word.zh):t==="pronunciation"?c.phrase:t==="listening_choice"?c.audio_text:(c.source_words&&c.source_words.length?c.source_words[0]:""));
+  var w=(c&&c.word)||null,writeTarget="",writeInfo={};
+  if(t==="active_word"||t==="_word_flash"||t==="_word_listen"||t==="_word_pick_meaning"||t==="_word_pick_hanzi"){
+    writeTarget=w&&w.zh;
+    writeInfo={pinyin:(w&&w.pinyin)||"",meaning:w?tr(w.meaning):""};
+  }else if(t==="pronunciation"){
+    writeTarget=c.phrase;writeInfo={pinyin:c.pinyin||"",meaning:""};
+  }else if(t==="listening_choice"){
+    writeTarget=c.audio_text;writeInfo={pinyin:c.pinyin||"",meaning:tr(c.translation||c.meaning||"")};
+  }else if(c.source_words&&c.source_words.length){
+    writeTarget=c.source_words[0];writeInfo={pinyin:"",meaning:""};
+  }
+  setWriteBtn(writeTarget,writeInfo);
   var stEl=$("#f-stage");if(stEl)stEl.innerHTML=c._sNo?'<span>'+(Flow.i+1)+' / '+Flow.queue.length+'</span><b>'+esc(c._sTitle||"")+'</b>':'';
   if(t==="active_word")return cardWord(c);
   if(t==="_word_flash")return cardWordFlash(c);
@@ -1440,7 +1507,7 @@ function loadLevel(lv){
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d||d.authenticated===false||d._status===401){showAuthGate();return;}
-      hideAuthGate();MAP=d;adoptServerLang(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");
+      hideAuthGate();MAP=d;adoptServerLang(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");prefetchNearbyLessons();
     }).catch(function(){showAuthGate()});
 }
 function applyLessonDone(cur,d){
@@ -2026,6 +2093,7 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.sta
     if(!d||d.authenticated===false||d._status===401){showAuthGate();return;}
     hideAuthGate();MAP=d;adoptServerLang(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
     renderAll();
+    prefetchNearbyLessons();
     var sp=new URLSearchParams(location.search);
     App.show(sp.get("tab")||"course");
     var initialLesson=Number(sp.get("lesson")||0);
