@@ -2,7 +2,11 @@ import unittest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
-from app.services.admin_stats_service import feature_usage_stats, miniapp_course_stats
+from app.services.admin_stats_service import (
+    feature_usage_stats,
+    miniapp_course_stats,
+    top_referrers,
+)
 from app.services.admin_miniapp_service import AdminMiniAppService
 
 
@@ -52,6 +56,58 @@ class AdminStatsServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(top.label, "🤖 AI savol-javob")
         self.assertEqual(top.today_users, 8)
         self.assertEqual(top.week_users, 80)
+
+
+class _FetchResult:
+    def __init__(self, rows):
+        self._rows = list(rows)
+
+    def fetchall(self):
+        return self._rows
+
+
+class _ScalarsResult:
+    def __init__(self, values):
+        self._values = list(values)
+
+    def scalars(self):
+        return self
+
+    def all(self):
+        return self._values
+
+
+class _QueuedSession:
+    def __init__(self, results):
+        self.results = list(results)
+
+    async def execute(self, _stmt):
+        return self.results.pop(0)
+
+
+class TopReferrersTests(unittest.IsolatedAsyncioTestCase):
+    async def test_top_referrers_prefers_username_then_full_name(self):
+        rows = [
+            SimpleNamespace(tid=101, total=9, activated=5),
+            SimpleNamespace(tid=102, total=4, activated=4),
+            SimpleNamespace(tid=103, total=2, activated=0),
+        ]
+        users = [
+            SimpleNamespace(telegram_id=101, username="alisher", full_name="Alisher A"),
+            SimpleNamespace(telegram_id=102, username=None, full_name="Bobur B"),
+            # 103 ataylab yo'q — telegram_id ko'rsatilishi kerak
+        ]
+        session = _QueuedSession([_FetchResult(rows), _ScalarsResult(users)])
+
+        result = await top_referrers(session, limit=5)
+
+        self.assertEqual([r.name for r in result], ["@alisher", "Bobur B", "103"])
+        self.assertEqual([r.total for r in result], [9, 4, 2])
+        self.assertEqual(result[0].activated, 5)
+
+    async def test_top_referrers_empty(self):
+        session = _QueuedSession([_FetchResult([])])
+        self.assertEqual(await top_referrers(session), [])
 
 
 class AdminMiniAppServiceTests(unittest.TestCase):
