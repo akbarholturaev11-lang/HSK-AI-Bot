@@ -228,6 +228,24 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
             CourseAdService.normalize_link("https://t.me/foo"), "https://t.me/foo"
         )
 
+    def test_course_ad_language_is_normalized(self):
+        self.assertEqual(CourseAdService.normalize_language("uz"), "uz")
+        self.assertEqual(CourseAdService.normalize_language("RU"), "ru")
+        self.assertEqual(CourseAdService.normalize_language("tj"), "tj")
+        # Noma'lum/bo'sh til "all" (barcha tillar) ga tushadi.
+        self.assertEqual(CourseAdService.normalize_language(""), "all")
+        self.assertEqual(CourseAdService.normalize_language(None), "all")
+        self.assertEqual(CourseAdService.normalize_language("en"), "all")
+
+    def test_course_ad_payload_exposes_language(self):
+        from app.db.models.course_ad import CourseAdCreative
+
+        ad = CourseAdCreative(
+            id=1, title="x", media_path="course_ad_1.mp4", media_type="video",
+            language="uz", duration_seconds=7, is_active=True,
+        )
+        self.assertEqual(CourseAdService.payload(ad)["language"], "uz")
+
     async def test_delete_removes_ad_and_returns_media_path(self):
         from app.db.models.course_ad import CourseAdCreative
 

@@ -9,6 +9,9 @@ COURSE_AD_MIN_SECONDS = 5
 COURSE_AD_MAX_SECONDS = 120
 COURSE_AD_DEFAULT_SECONDS = 7
 COURSE_AD_MEDIA_ROOT = "app/static/uploads/course_ads"
+# Reklama tillari. "all" — barcha tillardagi foydalanuvchilarga ko'rsatiladi.
+COURSE_AD_LANGUAGES = ("uz", "ru", "tj")
+COURSE_AD_ALL_LANGUAGES = "all"
 
 
 class CourseAdService:
@@ -31,6 +34,14 @@ class CourseAdService:
         return min(max(duration, COURSE_AD_MIN_SECONDS), COURSE_AD_MAX_SECONDS)
 
     @staticmethod
+    def normalize_language(value) -> str:
+        """Reklama tilini normallashtiradi: uz/ru/tj yoki "all" (barchasi)."""
+        lang = str(value or "").strip().lower()
+        if lang in COURSE_AD_LANGUAGES:
+            return lang
+        return COURSE_AD_ALL_LANGUAGES
+
+    @staticmethod
     def normalize_link(value) -> str | None:
         link = str(value or "").strip()
         if not link:
@@ -47,6 +58,7 @@ class CourseAdService:
             "media_type": ad.media_type,
             "media_url": f"/uploads/course_ads/{ad.media_path}",
             "link_url": getattr(ad, "link_url", None) or None,
+            "language": cls.normalize_language(getattr(ad, "language", None)),
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
             "is_active": bool(ad.is_active),
             "created_at": ad.created_at.isoformat() if ad.created_at else None,
@@ -65,6 +77,7 @@ class CourseAdService:
         media_path: str,
         duration_seconds: int = COURSE_AD_DEFAULT_SECONDS,
         link_url: str | None = None,
+        language: str = COURSE_AD_ALL_LANGUAGES,
         created_by_telegram_id: int | None = None,
     ) -> CourseAdCreative:
         ad = CourseAdCreative(
@@ -72,6 +85,7 @@ class CourseAdService:
             media_path=media_path,
             media_type="video",
             link_url=self.normalize_link(link_url),
+            language=self.normalize_language(language),
             duration_seconds=self.normalize_duration(duration_seconds),
             is_active=True,
             created_by_telegram_id=created_by_telegram_id,
@@ -105,30 +119,44 @@ class CourseAdService:
         await self.session.flush()
         return media_path
 
-    async def get_active_ad(self) -> CourseAdCreative | None:
-        result = await self.session.execute(
-            select(CourseAdCreative)
-            .where(CourseAdCreative.is_active.is_(True))
-            .order_by(CourseAdCreative.created_at.desc(), CourseAdCreative.id.desc())
-            .limit(1)
-        )
+    @classmethod
+    def _language_filter(cls, language: str | None):
+        """Foydalanuvchi tili uchun mos reklamalarni filterlash sharti.
+        Til berilsa: shu tildagi YOKI "all" (barcha tillar) reklamalar.
+        Til berilmasa: filtersiz (barcha aktivlar)."""
+        if not language:
+            return None
+        target = cls.normalize_language(language)
+        return CourseAdCreative.language.in_((target, COURSE_AD_ALL_LANGUAGES))
+
+    async def get_active_ad(self, language: str | None = None) -> CourseAdCreative | None:
+        stmt = select(CourseAdCreative).where(CourseAdCreative.is_active.is_(True))
+        lang_filter = self._language_filter(language)
+        if lang_filter is not None:
+            stmt = stmt.where(lang_filter)
+        stmt = stmt.order_by(
+            CourseAdCreative.created_at.desc(), CourseAdCreative.id.desc()
+        ).limit(1)
+        result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
-    async def get_active_payload(self) -> dict | None:
-        ad = await self.get_active_ad()
+    async def get_active_payload(self, language: str | None = None) -> dict | None:
+        ad = await self.get_active_ad(language=language)
         return self.payload(ad) if ad else None
 
-    async def list_active(self) -> list[CourseAdCreative]:
-        """Barcha aktiv reklamalar — ketma-ket ko'rsatish uchun (eskisidan yangisiga)."""
-        result = await self.session.execute(
-            select(CourseAdCreative)
-            .where(CourseAdCreative.is_active.is_(True))
-            .order_by(CourseAdCreative.created_at.asc(), CourseAdCreative.id.asc())
-        )
+    async def list_active(self, language: str | None = None) -> list[CourseAdCreative]:
+        """Aktiv reklamalar — ketma-ket ko'rsatish uchun (eskisidan yangisiga).
+        `language` berilsa, faqat shu til + "all" reklamalari qaytadi."""
+        stmt = select(CourseAdCreative).where(CourseAdCreative.is_active.is_(True))
+        lang_filter = self._language_filter(language)
+        if lang_filter is not None:
+            stmt = stmt.where(lang_filter)
+        stmt = stmt.order_by(CourseAdCreative.created_at.asc(), CourseAdCreative.id.asc())
+        result = await self.session.execute(stmt)
         return list(result.scalars().all())
 
-    async def list_active_payloads(self) -> list[dict]:
-        return [self.payload(ad) for ad in await self.list_active()]
+    async def list_active_payloads(self, language: str | None = None) -> list[dict]:
+        return [self.payload(ad) for ad in await self.list_active(language=language)]
 
     async def record_view(
         self,

@@ -152,6 +152,7 @@ _BOOTSTRAP_COLUMNS: dict[str, dict[str, str]] = {
     },
     "course_ad_creatives": {
         "link_url": "VARCHAR(512)",
+        "language": "VARCHAR(8) DEFAULT 'all' NOT NULL",
     },
 }
 

@@ -97,7 +97,7 @@ button{cursor:pointer}
 .adtop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.78);font-weight:600}
 .adcount{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:7px 10px;white-space:nowrap}
 .advideo-wrap{position:relative;min-height:0;height:100%;display:block}
-.advideo{width:100%;height:100%;min-height:280px;max-height:68dvh;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}
+.advideo{width:100%;height:100%;min-height:320px;max-height:none;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}
 .advisit{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.24);color:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .adstatus{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-radius:16px;background:rgba(0,0,0,.58);color:#fff;font-size:14px;font-weight:600;line-height:1.35}
 .adstatus[hidden]{display:none!important}
@@ -815,7 +815,7 @@ function openLockedLessonSheet(idx){
 /* Admin bir nechta reklama joylagan bo'lsa — barchasini qaytaramiz (ketma-ket
    ko'rsatish uchun). Eski "ad" maydoni ham qoladi (zaxira). */
 function fetchCourseAds(placement,l){
-  var url="/api/v3/ad?placement="+encodeURIComponent(placement)+"&level="+encodeURIComponent(MAP&&MAP.level||"hsk1")+"&lesson="+encodeURIComponent(l&&l.n||0);
+  var url="/api/v3/ad?placement="+encodeURIComponent(placement)+"&level="+encodeURIComponent(MAP&&MAP.level||"hsk1")+"&lesson="+encodeURIComponent(l&&l.n||0)+"&lang="+encodeURIComponent(LANG);
   return _apiGet(url).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
     var ads=(d&&d.ads&&d.ads.length)?d.ads:(d&&d.ad?[d.ad]:[]);
     if(!d.ok||!ads.length)throw new Error(d.error||"course_ad_not_found");
@@ -917,17 +917,18 @@ function showCourseAd(placement,idx){
         $("#ad-video-wrap").style.display="";
         $("#ad-video-wrap").style.cursor=hasLink?"pointer":"default";
         contBtn.disabled=false;contBtn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
-        setAdSubscribeVisible(false);btn.style.display="";btn.disabled=true;btn.onclick=function(){AdFlow.done()};
-        btn.textContent=adUiText("loading");count.textContent="...";
+        /* Pastdagi tugma normal oqimda ko'rinmaydi — faqat xatolikda "qayta yuklash"
+           bo'lib chiqadi. Sanoq faqat tepada (#ad-count) ko'rsatiladi. */
+        setAdSubscribeVisible(false);btn.style.display="none";btn.disabled=true;
+        count.textContent="...";
         setAdStatus(adUiText("loading"));
         video.removeAttribute("src");video.load();video.src=ad.media_url;video.loop=true;video.muted=true;
         var left=duration,timer=null,started=false,failed=false;
         function draw(){
           count.textContent=left>0?left+"s":"OK";
           if(left>0){
-            btn.style.display="";btn.disabled=true;setAdSubscribeVisible(false);
-            /* oxirgi bo'lmasa "Keyingisi {s}s", aks holda "... keyin davom etish" */
-            btn.textContent=isLast?t.adWait.replace("{s}",left):t.adNext.replace("{s}",left);
+            /* Sanoq davom etmoqda — pastda tugma yo'q, faqat tepadagi sekund. */
+            btn.style.display="none";setAdSubscribeVisible(false);
             return;
           }
           if(!isLast){

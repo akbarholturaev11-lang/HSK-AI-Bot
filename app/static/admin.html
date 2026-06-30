@@ -369,10 +369,14 @@
               <div><label>Sarlavha</label><input id="caTitle" class="input" placeholder="Kurs reklama"></div>
               <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7"></div>
             </div>
-            <div class="frow"><label>Havola (ixtiyoriy)</label><input id="caLink" class="input" placeholder="https://..."></div>
+            <div class="frow two">
+              <div><label>Havola (ixtiyoriy)</label><input id="caLink" class="input" placeholder="https://..."></div>
+              <div><label>Til</label><select id="caLang" class="select"><option value="all">Barcha tillar</option><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
+            </div>
             <button class="btn" data-act="upload-ca">📎 Video yuklash</button>
             <input id="caFile" type="file" accept="video/*" hidden>
           </div>
+          <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
           <div class="grid" id="courseAds"><p class="empty">Yuklanmoqda…</p></div>
         </div>
       </section>
@@ -894,23 +898,136 @@
       }catch(e){ toast(apiErr(e,"Yuborilmadi")); }
       finally{ b.disabled=false; }
     }
+    function cmLangChips(){ return BC_LANGS.map(l=>`<button type="button" class="chip" data-cmlang="${l[0]}"><span>${l[1]}</span></button>`).join(""); }
+    function campaignCard(i,kind){
+      if(kind==="ad") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"faol":"tugagan",i.active?"green":"")}</h3>
+        <div class="kv"><span>Yuborilgan rounds</span><b>${esc(i.rounds_sent||0)}/${esc(i.send_count_total||1)}</b>
+          <span>Jami yuborilgan</span><b>${esc(i.send_count_total||0)}</b><span>Tillar</span><b>${esc((i.languages||[]).join(", ")||"hammasi")}</b>
+          <span>Boshlanish</span><b>${esc(i.starts_at||"—")}</b><span>Tugash</span><b>${esc(i.ends_at||"—")}</b></div>
+        <p>${esc(i.text||"")}</p></div>`;
+      if(kind==="discount") return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.active?"faol":"tugagan",i.active?"green":"")}</h3>
+        <div class="kv"><span>Chegirma</span><b>${esc(i.percent)}%</b><span>Ishlatilgan</span><b>${esc(i.used||0)}</b>
+          <span>Status</span><b>${esc(i.audience_status||"barcha")}</b><span>Til</span><b>${esc(i.language||"barcha")}</b>
+          <span>To'lov usuli</span><b>${esc(i.payment_method||"barcha")}</b><span>Tarif</span><b>${esc(i.plan_type||"barcha")}</b>
+          <span>Boshlanish</span><b>${esc(i.starts_at||"—")}</b><span>Tugash</span><b>${esc(i.ends_at||"—")}</b></div></div>`;
+      return `<div class="mcard"><h3>#${i.id} · ${esc(i.title)} ${tag(i.status||"—","")}</h3>
+        <div class="kv"><span>Yuborildi</span><b>${esc(i.sent||0)}</b><span>Xato</span><b>${esc(i.failed||0)}</b><span>Vaqt</span><b>${esc(i.send_at||"—")}</b></div>
+        <p>${esc(i.text||"")}</p></div>`;
+    }
     function renderCampaign(d,kind){
-      const cfg={ad:["📣 Reklama kampaniyasi","ads","Matnli reklama rejalashtiriladi."],release_feedback:["🆕 Yangilik fikri","release_feedback","Yangilik fikri baholash oqimi bilan."],discount:["🎁 Chegirma","discounts","Chegirma kampaniyasi yaratiladi."]}[kind];
+      state.cm={content_type:"text",media_file_id:null};
+      const cfg={ad:["📣 Reklama kampaniyasi","ads","Segment + media + knopka bilan reklama."],release_feedback:["🆕 Yangilik fikri","release_feedback","Yangilik fikri baholash oqimi bilan."],discount:["🎁 Chegirma","discounts","Segment auditoriyaga chegirma."]}[kind];
       const rows=((d.campaigns||{})[cfg[1]]||[]);
-      openDrawer(cfg[0],cfg[2],`<div class="panel">
-        <div class="mcard"><div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
-          <div class="frow"><label>Matn / sabab</label><textarea id="cmText" class="textarea" maxlength="3500"></textarea></div>
+      const sel=(id,label,opts)=>`<div class="frow"><label>${label}</label><select id="${id}" class="select">${opts.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>`;
+      let form="";
+      if(kind==="ad"){
+        form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
+          <div class="frow"><label>Reklama matni</label><textarea id="cmText" class="textarea" maxlength="3500"></textarea></div>
+          <div class="frow"><label>🌐 Til (bo'sh = hammasi)</label><div class="row">${cmLangChips()}</div></div>
+          <label class="ncsw"><input type="checkbox" id="cmActiveSubs"> Faol obunachilarga ham yuborilsin</label>
+          <div class="frow"><label>📎 Foto/Video (ixtiyoriy)</label>
+            <div class="row"><button class="btn sec" type="button" id="cmMediaBtn">Media tanlash</button>
+              <button class="btn sec" type="button" id="cmMediaClear" hidden>O'chirish</button>
+              <input type="file" accept="image/*,video/*" id="cmMediaFile" hidden></div>
+            <div class="ncnote" id="cmMediaInfo">Media biriktirilmagan</div></div>
+          <div class="frow"><label>🔘 Knopka (ixtiyoriy)</label><select id="cmBtn" class="select">${BC_BUTTONS.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>
+          <div class="frow" id="cmBtnTextRow" hidden><label>Knopka nomi</label><input id="cmBtnText" class="input" maxlength="64"></div>
+          <div class="frow" id="cmBtnUrlRow" hidden><label>Havola</label><input id="cmBtnUrl" class="input"></div>
+          <div class="frow two"><div><label>Necha marta (rounds)</label><input id="cmRounds" class="input" type="number" min="1" max="10" value="1"></div>
+            <div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div></div>`;
+      } else if(kind==="discount"){
+        form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
+          <div class="frow"><label>Sabab / matn</label><textarea id="cmText" class="textarea" maxlength="500"></textarea></div>
+          <div class="frow two"><div><label>Chegirma %</label><input id="cmPercent" class="input" type="number" min="1" max="90" value="20"></div>
+            <div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div></div>
+          ${sel("cm_status","👤 Auditoriya status",[["","Hammasi"],["free","Bepul"],["trial","Sinov"],["active","Faol"],["expired","Tugagan"]])}
+          ${sel("cm_language","🌐 Til",[["","Hammasi"],["tj","TJ"],["uz","UZ"],["ru","RU"]])}
+          ${sel("cm_level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"]])}
+          ${sel("cm_payment_method","🏦 To'lov usuli",[["","Hammasi"],["visa","Visa"],["alipay","Alipay"],["wechat","WeChat"]])}
+          ${sel("cm_plan","📦 Tarif",[["","Hammasi"],["10_days","10 kun"],["1_month","1 oy"]])}
+          <div class="frow"><label>Kvota (0 = cheksiz)</label><input id="cmQuota" class="input" type="number" min="0" value="0"></div>`;
+      } else {
+        form=`<div class="frow"><label>Nomi</label><input id="cmTitle" class="input" maxlength="120"></div>
+          <div class="frow"><label>Matn</label><textarea id="cmText" class="textarea" maxlength="3500"></textarea></div>
           <div class="frow two"><div><label>Davomiyligi (soat)</label><input id="cmHours" class="input" type="number" min="1" max="720" value="24"></div>
-            ${kind==="discount"?'<div><label>Chegirma %</label><input id="cmPercent" class="input" type="number" min="1" max="90" value="20"></div>':'<div><label>Xususiyat kaliti</label><input id="cmFeature" class="input" value="general"></div>'}</div>
+            <div><label>Xususiyat kaliti</label><input id="cmFeature" class="input" value="general"></div></div>`;
+      }
+      openDrawer(cfg[0],cfg[2],`<div class="panel">
+        <div class="mcard"><h3>➕ Yangi ${kind==="discount"?"chegirma":kind==="ad"?"reklama":"kampaniya"}</h3>${form}
           <button class="btn" data-cmcreate="${kind}">Yaratish</button></div>
-        ${rows.map(i=>`<div class="mcard"><h3>#${i.id} · ${esc(i.title)}</h3><p>${esc(i.status||(i.active?"active":"inactive"))} · ${esc(i.send_at||i.starts_at||"")}<br>${esc(i.text||"")}</p></div>`).join("")||"<p class='empty'>Hali yozuv yo'q.</p>"}</div>`);
+        ${rows.map(i=>campaignCard(i,kind)).join("")||"<p class='empty'>Hali yozuv yo'q.</p>"}</div>`);
+      bindCampaign(kind);
+    }
+    function bindCampaign(kind){
+      if(kind!=="ad") return;
+      document.querySelectorAll("[data-cmlang]").forEach(c=>c.onclick=()=>c.classList.toggle("active"));
+      const btn=$("cmBtn"); btn.onchange=()=>{ const v=btn.value; $("cmBtnTextRow").hidden=!v; $("cmBtnUrlRow").hidden=v!=="url"; };
+      const file=$("cmMediaFile");
+      $("cmMediaBtn").onclick=()=>file.click();
+      $("cmMediaClear").onclick=()=>{ state.cm={content_type:"text",media_file_id:null}; $("cmMediaInfo").textContent="Media biriktirilmagan"; $("cmMediaClear").hidden=true; file.value=""; };
+      file.onchange=()=>cmUploadMedia(file);
+    }
+    async function cmUploadMedia(file){
+      const f=file.files&&file.files[0]; if(!f) return;
+      if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); file.value=""; return; }
+      $("cmMediaInfo").textContent="Yuklanmoqda…";
+      const fd=new FormData(); fd.append("media",f);
+      try{ const dd=await apiUpload("/api/admin-miniapp/broadcast/upload-media",fd);
+        state.cm={content_type:dd.content_type,media_file_id:dd.media_file_id};
+        $("cmMediaInfo").textContent=(dd.content_type==="video"?"🎬 Video":"🖼 Foto")+" biriktirildi"; $("cmMediaClear").hidden=false;
+      }catch(e){ $("cmMediaInfo").textContent="Media yuklab bo'lmadi"; toast(apiErr(e,"Media yuklanmadi")); }
+      finally{ file.value=""; }
+    }
+    function cmCreate(kind){
+      const p={kind,title:$("cmTitle").value.trim(),text:$("cmText").value.trim(),hours:$("cmHours").value};
+      if(kind==="ad"){
+        p.languages=[...document.querySelectorAll("[data-cmlang].active")].map(x=>x.dataset.cmlang);
+        p.include_active_subscribers=$("cmActiveSubs").checked;
+        p.content_type=state.cm.content_type; p.media_file_id=state.cm.media_file_id;
+        const act=$("cmBtn").value; if(act){ const b={action:act}; const t=$("cmBtnText").value.trim(); if(t)b.text=t; const u=$("cmBtnUrl").value.trim(); if(u)b.url=u; p.button=b; }
+        p.rounds=$("cmRounds").value;
+      } else if(kind==="discount"){
+        p.percent=$("cmPercent").value;
+        p.status=$("cm_status").value; const lng=$("cm_language").value; p.languages=lng?[lng]:[];
+        p.level=$("cm_level").value; p.payment_method=$("cm_payment_method").value; p.plan=$("cm_plan").value;
+        p.quota_total=$("cmQuota").value;
+      } else { p.feature_key=$("cmFeature").value; }
+      return apiPost("/api/admin-miniapp/campaigns/create",p);
     }
     function renderPartners(d){
       const p=d.partners||{}, s=p.stats||{};
-      openDrawer("🤝 Hamkorlar","Ariza, to'lov va statistika",`<div class="panel">
-        <div class="mcard"><h3>Statistika</h3><p>Kutilmoqda: ${esc(s.pending||0)} · Faol: ${esc(s.active||0)} · Referal: ${esc(s.referrals||0)} · To'langan: ${esc(s.paid_referrals||0)}</p></div>
-        ${(p.pending||[]).map(i=>`<div class="mcard"><h3>Ariza #${i.id}</h3><p>${esc(i.telegram_id)} · ${esc(i.contact_username)}<br>${esc(i.promotion_channel)} · ${esc(i.audience_size)}</p><button class="btn" data-partner="approve" data-pid="${i.id}">Tasdiqlash</button></div>`).join("")||"<p class='empty'>Kutilayotgan ariza yo'q.</p>"}
-        ${(p.payouts||[]).map(i=>`<div class="mcard"><h3>To'lov #${i.id} · ${esc(i.amount_usd)}</h3><p>${esc(i.status)} · ${esc(i.local_amount)}<br>${esc(i.method)} · ${esc(i.account)}</p></div>`).join("")}</div>`);
+      const stat=(k,def)=>esc(s[k]!=null?s[k]:def);
+      const head=(t)=>`<div class="dtitle-sm" style="margin-top:14px">${t}</div>`;
+      openDrawer("🤝 Hamkorlar","Statistika, arizalar va boshqaruv",`<div class="panel">
+        <div class="mcard"><h3>📊 Umumiy statistika</h3><div class="kv">
+          <span>Kutilmoqda</span><b>${stat("pending",0)}</b><span>Faol</span><b>${stat("active",0)}</b>
+          <span>Bloklangan</span><b>${stat("blocked",0)}</b><span>Jami referal</span><b>${stat("referrals",0)}</b>
+          <span>To'lagan referal</span><b>${stat("paid_referrals",0)}</b><span>Savol ishlatgan</span><b>${stat("question_users",0)}</b>
+          <span>Kurs rejimida</span><b>${stat("course_users",0)}</b><span>Sinovda</span><b>${stat("trial_users",0)}</b>
+          <span>Hisoblangan</span><b>$${stat("credited_usd",0)}</b><span>Rezervda</span><b>$${stat("reserved_usd",0)}</b>
+          <span>To'langan</span><b>$${stat("withdrawn_usd",0)}</b></div></div>
+        ${head("⏳ Yangi arizalar")}
+        ${(p.pending||[]).map(i=>`<div class="mcard"><h3>Ariza #${i.id} · @${esc(i.contact_username||"—")}</h3>
+          <div class="kv"><span>Telegram ID</span><b>${esc(i.telegram_id)}</b><span>Kanal</span><b>${esc(i.promotion_channel)}</b>
+            <span>Auditoriya</span><b>${esc(i.audience_size)}</b><span>Sana</span><b>${esc(i.created_at)}</b></div>
+          <div class="row"><button class="btn" data-partner="approve" data-pid="${i.id}">Tasdiqlash</button>
+            <button class="btn danger" data-partner="reject" data-pid="${i.id}">Rad etish</button></div></div>`).join("")||"<p class='empty'>Yangi ariza yo'q.</p>"}
+        ${head("✅ Faol hamkorlar")}
+        ${(p.active||[]).map(i=>`<div class="mcard"><h3>#${i.id} · @${esc(i.contact_username||"—")}</h3>
+          <div class="kv"><span>Telegram ID</span><b>${esc(i.telegram_id)}</b><span>Referal</span><b>${esc(i.referrals)}</b>
+            <span>To'lagan referal</span><b>${esc(i.paid_referrals)}</b><span>Balans</span><b>$${esc(i.balance_usd)}</b>
+            <span>Rezervda</span><b>$${esc(i.in_progress_usd)}</b><span>Yechilgan</span><b>$${esc(i.withdrawn_usd)}</b>
+            <span>Kanal</span><b>${esc(i.promotion_channel)}</b><span>Tasdiq</span><b>${esc(i.approved_at||"—")}</b></div>
+          <button class="btn danger" data-partner="block" data-pid="${i.id}">Bloklash</button></div>`).join("")||"<p class='empty'>Faol hamkor yo'q.</p>"}
+        ${head("🚫 Bloklanganlar")}
+        ${(p.blocked||[]).map(i=>`<div class="mcard"><h3>#${i.id} · @${esc(i.contact_username||"—")}</h3>
+          <div class="kv"><span>Telegram ID</span><b>${esc(i.telegram_id)}</b><span>Bloklangan</span><b>${esc(i.blocked_at||"—")}</b></div>
+          <button class="btn sec" data-partner="unblock" data-pid="${i.id}">Blokdan chiqarish</button></div>`).join("")||"<p class='empty'>Bloklangan yo'q.</p>"}
+        ${head("💸 To'lov so'rovlari (faqat ko'rish)")}
+        ${(p.payouts||[]).map(i=>`<div class="mcard"><h3>To'lov #${i.id} · $${esc(i.amount_usd)}</h3>
+          <div class="kv"><span>Holat</span><b>${esc(i.status)}</b><span>Mahalliy</span><b>${esc(i.local_amount)}</b>
+            <span>Usul</span><b>${esc(i.method)}</b><span>Hisob</span><b>${esc(i.account)}</b><span>Sana</span><b>${esc(i.created_at)}</b></div></div>`).join("")||"<p class='empty'>Ochiq to'lov so'rovi yo'q.</p>"}
+      </div>`);
     }
     function renderGiveAccess(prefill){
       openDrawer("✅ Obuna berish","Foydalanuvchi ID va tarifni tanlang",`<div class="panel"><div class="mcard">
@@ -985,24 +1102,41 @@
     }
 
     /* ---------- course ads ---------- */
+    const CA_LANGS={all:"Barcha tillar",uz:"O'zbekcha",ru:"Ruscha",tj:"Tojikcha"};
+    function caLangLabel(l){ return CA_LANGS[l]||CA_LANGS.all; }
+    let caItems=[], caFilter="all";
     function caCard(i){
+      const lang=i.language||"all";
       return `<div class="ncard" data-ca="${i.id}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s majburiy ko'rish · ${esc(i.created_at||"—")}</div>
           ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}</div>
-          ${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}</div>
+          <div style="display:flex;gap:5px;align-items:center">${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}</div></div>
         <div class="ncmedia">${i.media_url?`<video src="${i.media_url}" controls muted playsinline></video>`:"<span class='empty'>Video yo'q</span>"}</div>
         <div class="row"><button class="btn sec" data-catoggle="${i.id}" data-active="${i.is_active?"0":"1"}">${i.is_active?"Faolsizlantirish":"Faollashtirish"}</button>
           <button class="btn danger" data-cadel="${i.id}">Butunlay o'chirish</button></div></div>`;
     }
+    function renderCaLangFilter(){
+      const host=$("caLangFilter"); if(!host) return;
+      const keys=["all","uz","ru","tj"];
+      const count=l=>l==="all"?caItems.length:caItems.filter(i=>(i.language||"all")===l).length;
+      host.innerHTML=keys.map(l=>`<button class="chip ${caFilter===l?"active":""}" data-cafilter="${l}"><span>${caLangLabel(l)} ${count(l)}</span></button>`).join("");
+    }
+    function renderCourseAds(){
+      const host=$("courseAds"); if(!host) return;
+      const list=caFilter==="all"?caItems:caItems.filter(i=>(i.language||"all")===caFilter);
+      host.innerHTML=list.length?list.map(caCard).join(""):"<p class='empty'>Bu til uchun reklama yo'q.</p>";
+    }
     async function loadCourseAds(){
       const host=$("courseAds"); if(!host) return;
-      try{ const d=await apiPost("/api/admin-miniapp/course-ads",{}); const it=d.items||[]; host.innerHTML=it.length?it.map(caCard).join(""):"<p class='empty'>Hali reklama video yuklanmagan.</p>"; }
+      try{ const d=await apiPost("/api/admin-miniapp/course-ads",{}); caItems=d.items||[];
+        if(!caItems.length){ host.innerHTML="<p class='empty'>Hali reklama video yuklanmagan.</p>"; renderCaLangFilter(); return; }
+        renderCaLangFilter(); renderCourseAds(); }
       catch(e){ host.innerHTML="<p class='empty'>Kurs reklamalarni yuklab bo'lmadi.</p>"; }
     }
     async function submitCourseAd(){
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
-      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("media",f);
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
       catch(e){ toast("Reklama yuklashda xato"); } finally{ input.value=""; }
     }
@@ -1039,13 +1173,14 @@
       if((el=T("[data-hcontact]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/help/save",{target:"admin_contact",value:$("adminContact").value}).then(()=>afterModule("Saqlandi")).catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-hsave]"))){ const r=el.closest("[data-hrow]"); el.disabled=true; return apiPost("/api/admin-miniapp/help/save",{key:r.dataset.key,lang:r.dataset.lang,value:r.querySelector("[data-hvalue]").value}).then(()=>afterModule("Yordam linki saqlandi")).catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pfsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/portfolio/transaction",{type:$("pfType").value,amount:$("pfAmount").value,currency:$("pfCurrency").value,note:$("pfNote").value}).then(()=>afterModule("Portfel saqlandi")).catch(x=>{toast(apiErr(x,"Portfel saqlanmadi"));el.disabled=false;}); }
-      if((el=T("[data-cmcreate]"))){ if(!confirm("Kampaniya rejalashtiriladi. Davom etasizmi?")) return; const kind=el.dataset.cmcreate; el.disabled=true; return apiPost("/api/admin-miniapp/campaigns/create",{kind,title:$("cmTitle").value,text:$("cmText").value,hours:$("cmHours").value,percent:$("cmPercent")?$("cmPercent").value:undefined,feature_key:$("cmFeature")?$("cmFeature").value:undefined}).then(()=>afterModule("Kampaniya yaratildi")).catch(x=>{toast(apiErr(x,"Yaratilmadi"));el.disabled=false;}); }
-      if((el=T("[data-partner]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/partners/action",{partner_id:Number(el.dataset.pid||0),action:el.dataset.partner}).then(()=>afterModule("Hamkor holati yangilandi")).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
+      if((el=T("[data-cmcreate]"))){ if(!confirm("Kampaniya rejalashtiriladi. Davom etasizmi?")) return; el.disabled=true; return cmCreate(el.dataset.cmcreate).then(()=>afterModule("Kampaniya yaratildi")).catch(x=>{toast(apiErr(x,"Yaratilmadi"));el.disabled=false;}); }
+      if((el=T("[data-partner]"))){ const act=el.dataset.partner; if((act==="reject"||act==="block")&&!confirm("Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/partners/action",{partner_id:Number(el.dataset.pid||0),action:act}).then(()=>afterModule("Hamkor holati yangilandi")).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
       if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaPlan").value).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>el.disabled=false); }
       if((el=T("[data-deluser]"))){ if(!confirm("Foydalanuvchi o'chiriladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/delete",{telegram_id:$("delId").value,confirm:$("delConfirm").value}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Foydalanuvchi o'chirildi")).catch(x=>{toast(apiErr(x,"O'chirilmadi"));el.disabled=false;}); }
       if((el=T("[data-aulist]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/audio/list",{level:$("auLevel").value,lesson_order:$("auLesson").value}).then(d=>{$("auResult").innerHTML=(d.items||[]).length?d.items.map(i=>`<div class="mcard"><h3>${esc(i.audio_type)}</h3><p>${esc(i.file_id)}</p></div>`).join(""):"<p class='empty'>Bu dars uchun audio yo'q.</p>";}).catch(x=>toast(apiErr(x,"Audio olinmadi"))).finally(()=>el.disabled=false); }
       if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Reklama yoqildi":"Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("Holatni o'zgartirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Bu reklamani butunlay o'chirasizmi? Video fayl ham o'chadi.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("O'chirib bo'lmadi");el.disabled=false;}); }
+      if((el=T("[data-cafilter]"))){ caFilter=el.dataset.cafilter; renderCaLangFilter(); renderCourseAds(); return; }
       if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; renderDashboard(); renderUserFilters(); renderUsers(); switchTab("users"); return; }
       if((el=T("[data-period]"))){ state.statsPeriod=el.dataset.period||"all_time"; renderStatistics(); return; }
       if((el=T("[data-tab]"))) return switchTab(el.dataset.tab);

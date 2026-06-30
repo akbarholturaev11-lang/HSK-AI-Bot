@@ -82,6 +82,7 @@ from app.services.payment_qr_code_service import (
     SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
     SUBSCRIPTION_QR_SCOPE,
 )
+from app.bot.keyboards.promo_button import encode_promo_button_config
 from app.services.help_settings_service import HELP_LANGS, HELP_VIDEO_FIELDS, normalize_help_url
 from app.services.support_contact_service import ADMIN_CONTACT_KEY, admin_contact_url, normalize_admin_contact
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
@@ -477,8 +478,37 @@ async def _admin_miniapp_management_payload(session) -> dict:
     discount_repo = DiscountCampaignRepository(session)
     partner_service = PartnerService(session)
     partner_stats = await partner_service.overall_stats()
-    pending_partners = await partner_service.repo.list_by_status("pending", limit=8)
-    open_payouts = await partner_service.repo.list_open_payouts(limit=8)
+    pending_partners = await partner_service.repo.list_by_status("pending", limit=12)
+    active_partners = await partner_service.repo.list_by_status("active", limit=30)
+    blocked_partners = await partner_service.repo.list_by_status("blocked", limit=20)
+    open_payouts = await partner_service.repo.list_open_payouts(limit=12)
+
+    active_partner_rows = []
+    for item in active_partners:
+        balance = await partner_service.get_balance(item)
+        active_partner_rows.append({
+            "id": item.id,
+            "telegram_id": item.user_telegram_id,
+            "contact_username": item.contact_username,
+            "promotion_channel": item.promotion_channel,
+            "audience_size": item.audience_size,
+            "referrals": int(balance.referrals),
+            "paid_referrals": int(balance.paid_referrals),
+            "balance_usd": _mini_usd(balance.balance_usd),
+            "in_progress_usd": _mini_usd(balance.in_progress_usd),
+            "withdrawn_usd": _mini_usd(balance.withdrawn_usd),
+            "approved_at": _mini_dt(item.approved_at),
+        })
+    blocked_partner_rows = [
+        {
+            "id": item.id,
+            "telegram_id": item.user_telegram_id,
+            "contact_username": item.contact_username,
+            "promotion_channel": item.promotion_channel,
+            "blocked_at": _mini_dt(item.blocked_at),
+        }
+        for item in blocked_partners
+    ]
     audio_repo = CourseAudioRepository(session)
 
     help_links = []
@@ -622,6 +652,8 @@ async def _admin_miniapp_management_payload(session) -> dict:
         },
         "partners": {
             "stats": {key: str(value) for key, value in partner_stats.items()},
+            "active": active_partner_rows,
+            "blocked": blocked_partner_rows,
             "pending": [
                 {
                     "id": item.id,
@@ -1181,15 +1213,35 @@ async def v3_set_language(request: Request):
 
 
 @app.get("/api/v3/ad")
-async def v3_course_ad(request: Request, placement: str = "start", level: str = "hsk1", lesson: int = 0):
+async def v3_course_ad(
+    request: Request,
+    placement: str = "start",
+    level: str = "hsk1",
+    lesson: int = 0,
+    lang: str = "",
+):
     resolved_level = _course_v3_level(level)
     lesson_order = _positive_int(lesson) or 0
     if lesson_order <= 0:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
+    # Foydalanuvchining tiliga mos reklamalarni (shu til + "all") qaytaramiz.
+    # initData bo'lsa — kanonik user.language; bo'lmasa — query `lang`.
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+
     async with async_session_maker() as session:
+        ad_language = None
+        if telegram_id:
+            user = await UserRepository(session).get_by_telegram_id(telegram_id)
+            if user and getattr(user, "language", None):
+                ad_language = user.language
+        if not ad_language and lang:
+            ad_language = lang
+        ad_language = CourseAdService.normalize_language(ad_language)
+
         service = CourseAdService(session)
-        ads = await service.list_active_payloads()
+        ads = await service.list_active_payloads(language=ad_language)
         if not ads:
             return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
         return JSONResponse(
@@ -1430,7 +1482,12 @@ async def v3_course_lesson_complete(request: Request):
         )
         if premium_ad_lesson:
             ad_service = CourseAdService(session)
-            has_active_ad = await ad_service.get_active_ad() is not None
+            # Gate foydalanuvchi tiliga mos reklama bilan bir xil bo'lishi kerak:
+            # boshqa tildagi reklama bo'lsa-yu, bu til uchun bo'lmasa, gate
+            # talab qilmasligi (frontend ham reklama olmagani) uchun til bo'yicha tekshiramiz.
+            has_active_ad = await ad_service.get_active_ad(
+                language=getattr(user, "language", None)
+            ) is not None
             if has_active_ad:
                 ad_supported = await ad_service.has_completed_required_views(
                     user_telegram_id=telegram_id,
@@ -2284,40 +2341,61 @@ async def admin_miniapp_campaign_create(request: Request):
     title = str(payload.get("title") or "").strip()[:120]
     text = str(payload.get("text") or "").strip()
     hours = max(1, min(int(payload.get("hours") or 24), 24 * 30))
-    if not title or len(text) < 2 or len(text) > 3500:
+    filters = parse_broadcast_filters(payload)
+    content_type = str(payload.get("content_type") or "text").strip()
+    if content_type not in {"text", "photo", "video"}:
+        content_type = "text"
+    media_file_id = str(payload.get("media_file_id") or "").strip() or None
+    if content_type in {"photo", "video"} and not media_file_id:
+        content_type, media_file_id = "text", None
+    has_media = bool(media_file_id)
+    max_text = 1024 if has_media else 3500
+    if not title or len(text) > max_text or (len(text) < 2 and not has_media):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_campaign_payload"})
     now = datetime.now(timezone.utc)
     async with async_session_maker() as session:
         if kind == "ad":
+            button_config = encode_promo_button_config(parse_button_config(payload.get("button")))
+            rounds = max(1, min(int(payload.get("rounds") or 1), 10))
             await AdCampaignRepository(session).create(
                 title=title,
-                message_text=text,
-                content_type="text",
-                media_file_id=None,
+                message_text=text or None,
+                content_type=content_type,
+                media_file_id=media_file_id,
                 starts_at=now,
                 ends_at=now + timedelta(hours=hours),
-                send_count_total=1,
+                send_count_total=rounds,
+                target_languages=filters.get("languages"),
+                include_active_subscribers=bool(payload.get("include_active_subscribers")),
+                button_config=button_config,
                 created_by_telegram_id=telegram_id,
             )
         elif kind == "release_feedback":
             await ReleaseFeedbackRepository(session).create_campaign(
                 title=title,
                 message_text=text,
-                content_type="text",
-                media_file_id=None,
+                content_type=content_type,
+                media_file_id=media_file_id,
                 send_at=now,
                 feature_key=str(payload.get("feature_key") or "general").strip()[:32] or "general",
                 created_by_telegram_id=telegram_id,
             )
         elif kind == "discount":
             percent = max(1, min(int(payload.get("percent") or 20), 90))
+            languages = filters.get("languages") or []
+            quota_raw = int(payload.get("quota_total") or 0)
             await DiscountCampaignRepository(session).create(
                 title=title,
                 reason=text[:500],
                 percent=percent,
                 starts_at=now,
                 ends_at=now + timedelta(hours=hours),
-                audience_status=str(payload.get("audience_status") or "").strip() or None,
+                audience_status=filters.get("status"),
+                audience_language=languages[0] if languages else None,
+                audience_level=filters.get("level"),
+                payment_method=filters.get("payment_method"),
+                plan_type=filters.get("plan"),
+                quota_total=quota_raw if quota_raw > 0 else None,
                 created_by_telegram_id=telegram_id,
             )
         else:
@@ -2347,6 +2425,8 @@ async def admin_miniapp_partners_action(request: Request):
             await service.approve(partner, telegram_id)
             with contextlib.suppress(Exception):
                 await service.notify_partner(bot, partner, "partner_approved_notification")
+        elif action == "reject":
+            await service.repo.set_status(partner, "rejected", telegram_id)
         elif action == "block":
             await service.block(partner, telegram_id)
         elif action == "unblock":
@@ -2574,12 +2654,14 @@ async def admin_miniapp_course_ads_upload(request: Request):
     title = str(form.get("title") or "Course ad").strip()[:120] or "Course ad"
     duration_seconds = CourseAdService.normalize_duration(form.get("duration_seconds"))
     link_url = CourseAdService.normalize_link(form.get("link_url"))
+    language = CourseAdService.normalize_language(form.get("language"))
     async with async_session_maker() as session:
         ad = await CourseAdService(session).create_video(
             title=title,
             media_path=filename,
             duration_seconds=duration_seconds,
             link_url=link_url,
+            language=language,
             created_by_telegram_id=telegram_id,
         )
         await session.commit()
