@@ -14,6 +14,8 @@ class CourseAdCreative(Base):
     title: Mapped[str] = mapped_column(String(120), nullable=False)
     media_path: Mapped[str] = mapped_column(String(512), nullable=False)
     media_type: Mapped[str] = mapped_column(String(16), default="video", nullable=False)
+    # Reklama tili: "all" (barcha tillar), "uz", "ru", "tj".
+    language: Mapped[str] = mapped_column(String(8), default="all", index=True, nullable=False)
     link_url: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
     duration_seconds: Mapped[int] = mapped_column(Integer, default=7, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True, nullable=False)

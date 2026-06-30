@@ -207,6 +207,34 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-30 — Kurs reklamasi tilga moslandi (per-language) + admin filter
+
+Changed:
+- `course_ad_creatives` ga `language` ustuni qo'shildi (uz/ru/tj yoki "all" = barcha
+  tillar; default "all"). Migration `0061_course_ad_language` + `db/session.py` bootstrap.
+- `CourseAdService`: `normalize_language()`, `create_video(language=...)`, payload'da
+  `language`. `get_active_ad/list_active/list_active_payloads` endi ixtiyoriy `language`
+  qabul qiladi va `language IN (user_lang, "all")` bo'yicha filterlaydi (None = barchasi).
+- `/api/v3/ad` foydalanuvchi tiliga mos reklama qaytaradi: initData bo'lsa kanonik
+  `user.language`, bo'lmasa query `lang` (frontend `fetchCourseAds` endi `&lang=LANG`
+  yuboradi). `/api/v3/lesson/complete` ad-gate ham `get_active_ad(language=user.language)`
+  ishlatadi — boshqa tildagi reklama bu til userini bloklamasligi uchun.
+- Admin upload formasiga "Til" select qo'shildi; admin reklama ro'yxati ustida til
+  bo'yicha filter chiplari (Barcha/UZ/RU/TJ + son) va kartada til tegi.
+
+Files touched:
+- `app/db/models/course_ad.py`, `alembic/versions/0061_course_ad_language.py`,
+  `app/db/session.py`, `app/services/course_ad_service.py`, `app/main.py`,
+  `app/static/course-v3.html`, `app/static/admin.html`,
+  `tests/test_course_miniapp_foundation.py`
+
+Risk:
+- Access-adjacent: ad-supported dars gate'i endi tilga bog'liq. Mavjud reklamalar (NULL/
+  default) "all" sifatida hammaga ko'rinadi — orqaga moslik saqlangan. To'lov/obuna
+  mantig'i tegilmadi. Deploy'da migration `0061_course_ad_language` ishga tushsin.
+  Real Telegram smoke-test: har til uchun reklama yuklab, mos til userida ko'rinishini
+  va boshqa til userida ko'rinmasligini tekshirish.
+
 ### 2026-06-30 — Course v3 grammatika "ustoz" + interaktiv dialog (passiv matn olib tashlandi)
 
 Changed:

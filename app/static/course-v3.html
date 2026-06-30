@@ -97,7 +97,7 @@ button{cursor:pointer}
 .adtop{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:rgba(255,255,255,.78);font-weight:600}
 .adcount{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:7px 10px;white-space:nowrap}
 .advideo-wrap{position:relative;min-height:0;height:100%;display:block}
-.advideo{width:100%;height:100%;min-height:280px;max-height:68dvh;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}
+.advideo{width:100%;height:100%;min-height:320px;max-height:none;object-fit:contain;background:#000;border-radius:16px;border:1px solid rgba(255,255,255,.12)}
 .advisit{position:absolute;left:10px;bottom:10px;display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.24);color:#fff;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:600;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .adstatus{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:20px;border-radius:16px;background:rgba(0,0,0,.58);color:#fff;font-size:14px;font-weight:600;line-height:1.35}
 .adstatus[hidden]{display:none!important}
@@ -430,7 +430,7 @@ button{cursor:pointer}
     <div class="adbox">
       <div class="adtop"><span id="ad-label"></span><span class="adcount" id="ad-count"></span></div>
       <div class="advideo-wrap" id="ad-video-wrap" onclick="AdFlow.openAdLink()">
-        <video class="advideo" id="ad-video" muted playsinline webkit-playsinline></video>
+        <video class="advideo" id="ad-video" muted playsinline webkit-playsinline preload="auto"></video>
         <div class="adstatus" id="ad-status" hidden></div>
         <span class="advisit" id="ad-visit" hidden><i class="ti ti-external-link"></i> <span id="ad-visit-t"></span></span>
       </div>
@@ -815,7 +815,7 @@ function openLockedLessonSheet(idx){
 /* Admin bir nechta reklama joylagan bo'lsa — barchasini qaytaramiz (ketma-ket
    ko'rsatish uchun). Eski "ad" maydoni ham qoladi (zaxira). */
 function fetchCourseAds(placement,l){
-  var url="/api/v3/ad?placement="+encodeURIComponent(placement)+"&level="+encodeURIComponent(MAP&&MAP.level||"hsk1")+"&lesson="+encodeURIComponent(l&&l.n||0);
+  var url="/api/v3/ad?placement="+encodeURIComponent(placement)+"&level="+encodeURIComponent(MAP&&MAP.level||"hsk1")+"&lesson="+encodeURIComponent(l&&l.n||0)+"&lang="+encodeURIComponent(LANG);
   return _apiGet(url).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
     var ads=(d&&d.ads&&d.ads.length)?d.ads:(d&&d.ad?[d.ad]:[]);
     if(!d.ok||!ads.length)throw new Error(d.error||"course_ad_not_found");
@@ -849,7 +849,7 @@ function adUiText(key){
 function setAdStatus(text){var el=$("#ad-status");if(!el)return;el.hidden=!text;el.textContent=text||""}
 function resetAdVideo(video){
   if(!video)return;
-  video.onloadeddata=video.oncanplay=video.onplaying=video.ontimeupdate=video.onerror=video.onstalled=null;
+  video.onloadedmetadata=video.onloadeddata=video.oncanplay=video.onplaying=video.ontimeupdate=video.onerror=video.onstalled=video.onwaiting=null;
 }
 function _closeAdOverlay(){
   clearInterval(AD_STATE.timer);clearTimeout(AD_STATE.loadTimer);
@@ -917,17 +917,45 @@ function showCourseAd(placement,idx){
         $("#ad-video-wrap").style.display="";
         $("#ad-video-wrap").style.cursor=hasLink?"pointer":"default";
         contBtn.disabled=false;contBtn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
-        setAdSubscribeVisible(false);btn.style.display="";btn.disabled=true;btn.onclick=function(){AdFlow.done()};
-        btn.textContent=adUiText("loading");count.textContent="...";
+        /* Pastdagi tugma normal oqimda ko'rinmaydi — faqat xatolikda "qayta yuklash"
+           bo'lib chiqadi. Sanoq faqat tepada (#ad-count) ko'rsatiladi. */
+        setAdSubscribeVisible(false);btn.style.display="none";btn.disabled=true;
+        count.textContent="...";
         setAdStatus(adUiText("loading"));
-        video.removeAttribute("src");video.load();video.src=ad.media_url;video.loop=true;video.muted=true;
+        var srcBase=ad.media_url,loadAttempt=0;
         var left=duration,timer=null,started=false,failed=false;
+        /* Videoni o'rnatish. bust=true bo'lsa cache'ni chetlab o'tish uchun
+           ?r=timestamp qo'shadi (buzilgan/yarim keshlangan javobni aylanib o'tish). */
+        function setSrc(bust){
+          try{video.pause()}catch(e){}
+          video.removeAttribute("src");try{video.load()}catch(e){}
+          video.src=bust?srcBase+(srcBase.indexOf("?")>=0?"&":"?")+"r="+Date.now():srcBase;
+          video.loop=true;video.muted=true;
+          try{video.load()}catch(e){}
+        }
+        function armGuard(ms){clearTimeout(AD_STATE.loadTimer);AD_STATE.loadTimer=setTimeout(onLoadTimeout,ms)}
+        function tryPlay(){var p;try{p=video.play()}catch(e){}if(p&&p.then)p.then(startCountdown).catch(function(){if(video.readyState>=2)startCountdown()})}
+        /* Guard ishga tushdi: video hali tayyor emas. Sekin tarmoq bo'lishi mumkin,
+           shuning uchun DARROV xato bermaymiz — 2 martagacha jimgina (cache-bust bilan)
+           qayta yuklab, uzunroq kutamiz; shundan keyingina manual "qayta yuklash". */
+        function onLoadTimeout(){
+          if(started||failed||AD_STATE.ad!==ad)return;
+          if(video.readyState>=2){startCountdown();return}
+          if(loadAttempt<2){loadAttempt++;setAdStatus(adUiText("loading"));setSrc(true);armGuard(loadAttempt>=2?16000:12000);tryPlay();return}
+          mediaFailed();
+        }
+        /* Qattiq <video> error hodisasi — avval bir marta cache-bust bilan qayta
+           urinib ko'ramiz (vaqtinchalik tarmoq uzilishi), keyin manual retry. */
+        function onMediaError(){
+          if(started||failed||AD_STATE.ad!==ad)return;
+          if(loadAttempt<2){loadAttempt++;setAdStatus(adUiText("loading"));setSrc(true);armGuard(12000);tryPlay();return}
+          mediaFailed();
+        }
         function draw(){
           count.textContent=left>0?left+"s":"OK";
           if(left>0){
-            btn.style.display="";btn.disabled=true;setAdSubscribeVisible(false);
-            /* oxirgi bo'lmasa "Keyingisi {s}s", aks holda "... keyin davom etish" */
-            btn.textContent=isLast?t.adWait.replace("{s}",left):t.adNext.replace("{s}",left);
+            /* Sanoq davom etmoqda — pastda tugma yo'q, faqat tepadagi sekund. */
+            btn.style.display="none";setAdSubscribeVisible(false);
             return;
           }
           if(!isLast){
@@ -967,22 +995,25 @@ function showCourseAd(placement,idx){
           btn.innerHTML='<i class="ti ti-refresh"></i> '+adUiText("retry");
           btn.onclick=function(ev){if(ev)ev.stopPropagation();playAd(i)};
         }
+        video.onloadedmetadata=tryPlay;
         video.onloadeddata=startCountdown;
         video.oncanplay=startCountdown;
         video.onplaying=startCountdown;
         video.ontimeupdate=startCountdown;
-        video.onerror=mediaFailed;
-        video.onstalled=function(){clearTimeout(AD_STATE.loadTimer);AD_STATE.loadTimer=setTimeout(mediaFailed,5000)};
-        AD_STATE.loadTimer=setTimeout(mediaFailed,8000);
-        /* Cache'dan qayta ochilganda (2-3-reklama) loadeddata/canplay qayta otilmasligi
+        video.onerror=onMediaError;
+        /* stalled/waiting — bu buferlash, MEDIA xatosi EMAS: faqat guard'ni uzaytiramiz.
+           Ma'lumot kelishi bilan load hodisalari sanoqni boshlaydi va guard'ni tozalaydi. */
+        video.onstalled=video.onwaiting=function(){if(started||failed||AD_STATE.ad!==ad)return;armGuard(12000)};
+        setSrc(false);
+        /* Birinchi guard 12s (eski 8s soxta xato berardi). Tayyor bo'lmasa onLoadTimeout
+           cache-bust bilan 2 marta jimgina qayta uradi (12s/16s), shundan keyin manual. */
+        armGuard(12000);
+        /* Cache'dan qayta ochilganda (2-3-reklama) load hodisalari qayta otilmasligi
            mumkin — agar media allaqachon tayyor bo'lsa, sanoqni darhol boshlaymiz. */
         if(video.readyState>=2)startCountdown();
-        /* Muted autoplay bloklanishi (ayniqsa o'rta/yakuniy reklama, Telegram WebView'da
-           user gesture'siz) — bu MEDIA xatosi EMAS. Shu sababli .catch'da darrov
-           mediaFailed chaqirmaymiz: video baribir yuklanib, load hodisalari yoki 8s
-           timeout orqali hal bo'ladi. Aks holda user qora ekranda qotib qolardi. */
-        var play=video.play();
-        if(play&&play.then)play.then(startCountdown).catch(function(){if(video.readyState>=2)startCountdown()});
+        /* Muted autoplay bloklanishi (Telegram WebView'da gesture'siz) MEDIA xatosi EMAS:
+           catch'da darrov xato bermaymiz, video baribir load hodisalari/guard orqali hal bo'ladi. */
+        tryPlay();
       }
       playAd(0);
     }).catch(function(){reject(new Error("course_ad_not_found"))});
