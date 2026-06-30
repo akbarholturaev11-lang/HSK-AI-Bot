@@ -91,6 +91,8 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .plans{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .plan{position:relative;min-height:130px;text-align:left;border:1px solid var(--line);border-radius:var(--radius);background:rgba(255,255,255,.04);padding:14px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s}
 .plan.selected,.choice.selected{border-color:var(--emerald);box-shadow:0 0 0 1px var(--emerald),0 10px 30px rgba(52,227,164,.22);background:linear-gradient(160deg,rgba(52,227,164,.14),rgba(52,227,164,.05))}
+.plan.wide{grid-column:1/-1;min-height:auto}
+.plan-note{margin-top:6px;color:var(--muted);font-size:12px;font-weight:800}
 .plan-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .plan-name{font-size:13px;color:var(--muted);font-weight:850}
 .badge{display:inline-flex;align-items:center;justify-content:center;min-height:22px;border-radius:999px;padding:3px 9px;background:linear-gradient(135deg,rgba(255,210,125,.22),rgba(255,186,77,.16));color:var(--gold);font-size:11px;font-weight:900;border:1px solid rgba(255,210,125,.3)}
@@ -358,7 +360,7 @@ const API={
 };
 const PARAMS=new URLSearchParams(window.location.search);
 const INIT_DATA=tg?.initData||"";
-const PLAN_ORDER=["10_days","1_month"];
+const PLAN_ORDER=["10_days","1_month","3_months"];
 const METHOD_ORDER=["visa","alipay","wechat"];
 const COUNTRY_ORDER=["tj","uz","ru","other"];
 const CARD_BANK_NAME="Dushanbe City";
@@ -406,7 +408,7 @@ const I18N={
     methodsTitle:"To'lov usuli",
     discountReady:"20% chegirma qo'llanadi",
     discountProgress:"20% chegirma: {count}/{required} referral",
-    planLabels:{ten:"10 kun",month:"1 oy",fast:"Tez start",best:"Eng foydali"},
+    planLabels:{ten:"10 kun",month:"1 oy",quarter:"3 oy",fast:"Tez start",best:"Eng foydali",quarterBadge:"Foydali",quarterNote:"≈ 2 TJS/kun"},
     methods:{
       visa:["Bank karta / VISA","Tojik, o'zbek, rus yoki boshqa davlat kartasi"],
       alipay:["Alipay","QR orqali yuan to'lovi"],
@@ -503,7 +505,7 @@ const I18N={
     methodsTitle:"Способ оплаты",
     discountReady:"Скидка 20% применится",
     discountProgress:"Скидка 20%: {count}/{required} реферала",
-    planLabels:{ten:"10 дней",month:"1 месяц",fast:"Быстрый старт",best:"Выгодно"},
+    planLabels:{ten:"10 дней",month:"1 месяц",quarter:"3 месяца",fast:"Быстрый старт",best:"Выгодно",quarterBadge:"Выгодно",quarterNote:"≈ 2 TJS/день"},
     methods:{
       visa:["Банковская карта / VISA","Карта Таджикистана, Узбекистана, России или другой страны"],
       alipay:["Alipay","Оплата в юанях через QR"],
@@ -600,7 +602,7 @@ const I18N={
     methodsTitle:"Усули пардохт",
     discountReady:"20% тахфиф ҳисоб мешавад",
     discountProgress:"20% тахфиф: {count}/{required} referral",
-    planLabels:{ten:"10 рӯз",month:"1 моҳ",fast:"Оғози тез",best:"Фоиданок"},
+    planLabels:{ten:"10 рӯз",month:"1 моҳ",quarter:"3 моҳ",fast:"Оғози тез",best:"Фоиданок",quarterBadge:"Фоиданок",quarterNote:"≈ 2 TJS/рӯз"},
     methods:{
       visa:["Корти бонкӣ / VISA","Корти тоҷик, ӯзбек, рус ё дигар давлат"],
       alipay:["Alipay","Пардохти юан бо QR"],
@@ -713,6 +715,14 @@ function money(amount){
   if(Number.isFinite(numeric))return numeric.toLocaleString("ru-RU");
   return raw||"...";
 }
+function planName(text,plan){
+  const labels=text.planLabels||{};
+  return ({"10_days":labels.ten,"1_month":labels.month,"3_months":labels.quarter})[plan]||plan;
+}
+function planBadge(text,plan){
+  const labels=text.planLabels||{};
+  return ({"10_days":labels.fast,"1_month":labels.best,"3_months":labels.quarterBadge})[plan]||labels.best;
+}
 function priceInfo(method=state.method,plan=state.plan){
   const real=state.overview?.prices?.[method]?.[plan];
   if(real)return real;
@@ -794,15 +804,18 @@ function mockOverview(){
     prices:{
       visa:{
         "10_days":apply({base_amount:29,final_amount:29,currency:"TJS",discount_applied:false,discount_percent:0}),
-        "1_month":apply({base_amount:89,final_amount:89,currency:"TJS",discount_applied:false,discount_percent:0})
+        "1_month":apply({base_amount:89,final_amount:89,currency:"TJS",discount_applied:false,discount_percent:0}),
+        "3_months":apply({base_amount:179,final_amount:179,currency:"TJS",discount_applied:false,discount_percent:0})
       },
       alipay:{
         "10_days":apply({base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0}),
-        "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0})
+        "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0}),
+        "3_months":apply({base_amount:179,final_amount:179,currency:"¥",discount_applied:false,discount_percent:0})
       },
       wechat:{
         "10_days":apply({base_amount:29,final_amount:29,currency:"¥",discount_applied:false,discount_percent:0}),
-        "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0})
+        "1_month":apply({base_amount:66,final_amount:66,currency:"¥",discount_applied:false,discount_percent:0}),
+        "3_months":apply({base_amount:179,final_amount:179,currency:"¥",discount_applied:false,discount_percent:0})
       }
     }
   };
@@ -986,13 +999,16 @@ function renderStart(text){
     if(!info)return "";
     const selected=state.plan===plan?"selected":"";
     const discounted=info.discount_applied?"discounted":"";
-    const name=plan==="10_days"?text.planLabels.ten:text.planLabels.month;
-    const badge=plan==="10_days"?text.planLabels.fast:text.planLabels.best;
-    return `<button class="plan ${selected} ${discounted}" type="button" data-plan="${plan}">
+    const wide=plan==="3_months"?"wide":"";
+    const name=planName(text,plan);
+    const badge=planBadge(text,plan);
+    const note=(plan==="3_months"&&!info.discount_applied&&text.planLabels.quarterNote)?`<span class="plan-note">${text.planLabels.quarterNote}</span>`:"";
+    return `<button class="plan ${selected} ${discounted} ${wide}" type="button" data-plan="${plan}">
       <span class="plan-top"><span class="plan-name">${name}</span><span class="badge">${badge}</span></span>
       <span>
         <span class="price">${money(info.final_amount)}<small>${info.currency}</small></span>
         <span class="old-price">${money(info.base_amount)} ${info.currency}</span>
+        ${note}
       </span>
     </button>`;
   }).join("") || `<div class="detail-empty">${text.offerExpired}</div>`;
@@ -1101,7 +1117,7 @@ function renderPay(text){
   const hasOldAmount=Boolean(quote.discount_applied&&oldAmount&&(`${oldAmount}`!==`${quote.pay_amount}`||oldCurrency!==quote.pay_currency));
   $("#amountOld").textContent=hasOldAmount?`${money(oldAmount)} ${oldCurrency}`:"";
   $("#amountOld").classList.toggle("show",hasOldAmount);
-  const planText=state.plan==="10_days"?text.planLabels.ten:text.planLabels.month;
+  const planText=planName(text,state.plan);
   const methodText=text.methods[state.method][0];
   const rows=[
     [text.rows.plan,planText],

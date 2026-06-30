@@ -432,7 +432,7 @@ def _mini_label(value: str | None, labels: dict[str, str]) -> str:
 
 
 def _mini_plan_label(value: str | None) -> str:
-    return _mini_label(value, {"10_days": "10 kun", "1_month": "1 oy"})
+    return _mini_label(value, {"10_days": "10 kun", "1_month": "1 oy", "3_months": "3 oy"})
 
 
 def _mini_method_label(value: str | None) -> str:

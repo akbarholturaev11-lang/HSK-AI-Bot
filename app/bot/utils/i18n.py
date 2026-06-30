@@ -81,6 +81,7 @@ TEXTS = {
         "subscription_referral_discount_button": "🎁 Тахфиф гирифтан",
         "subscription_button_10_days": "10 рӯз",
         "subscription_button_1_month": "1 моҳ",
+        "subscription_button_3_months": "3 моҳ",
         "subscription_referral_hint": "🎁 3 дӯсти нав даъват кунед ва 20% тахфиф гиред.",
         "subscription_admin_discount_block": (
             "🔥 <b>Тахфифи махсус фаъол аст!</b>\n\n"
@@ -244,6 +245,7 @@ TEXTS = {
         "subscription_referral_discount_button": "🎁 Получить скидку",
         "subscription_button_10_days": "10 дней",
         "subscription_button_1_month": "1 месяц",
+        "subscription_button_3_months": "3 месяца",
         "subscription_referral_hint": "🎁 Пригласите 3 новых друзей и получите скидку 20%.",
         "subscription_admin_discount_block": (
             "🔥 <b>Специальная скидка активна!</b>\n\n"
@@ -400,6 +402,7 @@ TEXTS = {
         "subscription_referral_discount_button": "🎁 Chegirma olish",
         "subscription_button_10_days": "10 kunlik",
         "subscription_button_1_month": "1 oylik",
+        "subscription_button_3_months": "3 oylik",
         "subscription_referral_hint": "🎁 3 ta yangi do‘st taklif qiling va 20% chegirma oling.",
         "subscription_admin_discount_block": (
             "🔥 <b>Maxsus chegirma ketmoqda!</b>\n\n"

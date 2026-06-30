@@ -1032,7 +1032,7 @@
     function renderGiveAccess(prefill){
       openDrawer("✅ Obuna berish","Foydalanuvchi ID va tarifni tanlang",`<div class="panel"><div class="mcard">
         <div class="frow"><label>Telegram ID</label><input id="gaId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
-        <div class="frow"><label>Tarif</label><select id="gaPlan" class="select"><option value="10_days">10 kun</option><option value="1_month">1 oy</option></select></div>
+        <div class="frow"><label>Tarif</label><select id="gaPlan" class="select"><option value="10_days">10 kun</option><option value="1_month">1 oy</option><option value="3_months">3 oy</option></select></div>
         <button class="btn" data-gasave>Obuna berish</button></div></div>`);
     }
     function renderDeleteUser(prefill){

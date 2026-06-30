@@ -5,15 +5,18 @@ from app.services.subscription_currency_service import normalize_visa_price
 
 
 PAYMENT_METHODS = ("visa", "alipay", "wechat")
-PLANS = ("10_days", "1_month")
+PLANS = ("10_days", "1_month", "3_months")
 
 DEFAULT_SUBSCRIPTION_PRICES: dict[tuple[str, str], tuple[int, str]] = {
     ("visa", "10_days"): (29, "TJS"),
     ("visa", "1_month"): (89, "TJS"),
+    ("visa", "3_months"): (179, "TJS"),
     ("alipay", "10_days"): (29, "¥"),
     ("alipay", "1_month"): (66, "¥"),
+    ("alipay", "3_months"): (179, "¥"),
     ("wechat", "10_days"): (29, "¥"),
     ("wechat", "1_month"): (66, "¥"),
+    ("wechat", "3_months"): (179, "¥"),
 }
 
 

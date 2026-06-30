@@ -11,6 +11,7 @@ from app.services.subscription_churn_service import SubscriptionChurnService
 PLAN_DURATIONS = {
     "10_days": 10,
     "1_month": 30,
+    "3_months": 90,
 }
 
 
