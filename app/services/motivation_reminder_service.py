@@ -174,9 +174,18 @@ class MotivationReminderService:
                 ranks[int(profile.user_id)] = (index, members)
 
         changed = False
+        # Diagnostic funnel: counts why each profile was reached or skipped so the
+        # production logs explain "not everyone gets it". Printed once per cycle.
+        stats: dict[str, int] = {}
+
+        def bump(key: str) -> None:
+            stats[key] = stats.get(key, 0) + 1
+
+        stats["considered"] = len(rows)
         for profile, user in rows:
             # Master switch: the user turned notifications off in the Mini App.
             if not getattr(profile, "notifications_enabled", True):
+                bump("skip_notifications_off")
                 continue
             lang = user.language if user.language in ("uz", "ru", "tj") else "ru"
             offset = offsets_by_user.get(int(profile.user_id), DEFAULT_OFFSET_MIN)
@@ -189,6 +198,7 @@ class MotivationReminderService:
             if current_rank and await self._maybe_overtaken(
                 bot, profile, user, lang, current_rank, members, local_day
             ):
+                bump("sent_overtaken")
                 changed = True
                 profile.last_known_rank = current_rank
                 continue
@@ -200,19 +210,23 @@ class MotivationReminderService:
             # 2/3/4) Evening goal/streak reminders — only if the daily lesson goal is not done.
             now_min = local_now.hour * 60 + local_now.minute
             if not (GOAL_WINDOW_START_MIN <= now_min <= GOAL_WINDOW_END_MIN):
+                bump("skip_outside_evening_window")
                 continue
 
             day_start, day_end = self._local_day_bounds_utc(local_day, offset)
             if await self._daily_goal_completed_today(
                 user, local_day, day_start, day_end
             ):
+                bump("skip_daily_goal_done")
                 continue
 
             minutes = int(profile.daily_minutes or 10)
             unfinished_lesson = await self._unfinished_lesson_today(user, day_start, day_end)
             if unfinished_lesson is not None:
                 resolved = await self.templates.resolve(KEY_LESSON_UNFINISHED, lang)
-                if resolved and await self._send(
+                if not resolved:
+                    bump("skip_template_disabled_lesson_unfinished")
+                elif await self._send(
                     bot,
                     user,
                     resolved,
@@ -222,8 +236,11 @@ class MotivationReminderService:
                         "minutes": minutes,
                     },
                 ):
+                    bump("sent_lesson_unfinished")
                     self._mark_unfinished_lesson_sent(user, unfinished_lesson, local_day)
                     changed = True
+                else:
+                    bump("send_failed_lesson_unfinished")
                 continue
 
             streak = int(profile.current_streak or 0)
@@ -231,23 +248,36 @@ class MotivationReminderService:
 
             if has_live_streak:
                 if profile.motivation_streak_date == local_day:
+                    bump("skip_streak_already_sent_today")
                     continue
                 resolved = await self.templates.resolve(KEY_STREAK, lang)
-                if resolved and await self._send(
+                if not resolved:
+                    bump("skip_template_disabled_streak")
+                elif await self._send(
                     bot, user, resolved, lang, {"streak": streak}
                 ):
+                    bump("sent_streak")
                     profile.motivation_streak_date = local_day
                     changed = True
+                else:
+                    bump("send_failed_streak")
             else:
                 if profile.motivation_goal_date == local_day:
+                    bump("skip_goal_already_sent_today")
                     continue
                 resolved = await self.templates.resolve(KEY_DAILY_GOAL, lang)
-                if resolved and await self._send(
+                if not resolved:
+                    bump("skip_template_disabled_daily_goal")
+                elif await self._send(
                     bot, user, resolved, lang, {"minutes": minutes}
                 ):
+                    bump("sent_daily_goal")
                     profile.motivation_goal_date = local_day
                     changed = True
+                else:
+                    bump("send_failed_daily_goal")
 
+        print("MotivationReminderService funnel:", stats)
         if changed:
             await self.session.commit()
 
