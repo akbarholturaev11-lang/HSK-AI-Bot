@@ -1,8 +1,9 @@
 import json
 import logging
+from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.exc import IntegrityError
 
 from app.db.models.course_miniapp_event import (
@@ -10,6 +11,7 @@ from app.db.models.course_miniapp_event import (
     COURSE_MINIAPP_EVENT_NAMES,
     CourseMiniAppEvent,
 )
+from app.db.models.user import User
 
 
 MAX_EVENT_PAYLOAD_CHARS = 8000
@@ -54,6 +56,11 @@ class CourseMiniAppAnalyticsService:
             return {"ok": False, "error": "course_event_not_allowed"}
         if not telegram_id:
             return {"ok": False, "error": "course_event_user_required"}
+
+        # Mini App'dagi har qanday haqiqiy faollik ham "aktiv" deb hisoblansin.
+        # (Bot chat last_active_at'ni middleware yangilaydi; Mini App esa
+        # FastAPI orqali kelgani uchun shu yerda yangilanadi.)
+        await self._touch_user_active(telegram_id)
 
         source = str(source or "course_miniapp").strip()[:40] or "course_miniapp"
         level = (str(level).strip()[:32] if level else None) or None
@@ -100,6 +107,16 @@ class CourseMiniAppAnalyticsService:
                     return {"ok": True, "recorded": False, "duplicate": True}
             raise
         return {"ok": True, "recorded": True, "duplicate": False}
+
+    async def _touch_user_active(self, telegram_id: int) -> None:
+        try:
+            await self.session.execute(
+                update(User)
+                .where(User.telegram_id == int(telegram_id))
+                .values(last_active_at=datetime.now(timezone.utc))
+            )
+        except Exception:
+            logger.exception("Failed to update last_active_at for %s", telegram_id)
 
     async def record_client_event(self, **kwargs) -> dict:
         if kwargs.get("event_name") not in self.CLIENT_EVENT_NAMES:
