@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, select
 
 from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.referral import Referral
+from app.db.models.user import User
 from app.db.models.voice_practice_session import VoicePracticeSession
 
 
@@ -24,6 +26,71 @@ class FeatureUsage:
     label: str
     today_users: int
     week_users: int
+
+
+@dataclass(frozen=True)
+class TopReferrer:
+    """Eng ko'p odam taklif qilgan foydalanuvchi."""
+
+    telegram_id: int
+    name: str
+    total: int
+    activated: int
+
+
+async def top_referrers(session, limit: int = 5) -> list[TopReferrer]:
+    """Eng ko'p referal chaqirgan foydalanuvchilarni qaytaradi.
+
+    Jami chaqirilganlar soni bo'yicha kamayish tartibida; ism sifatida
+    @username, bo'lmasa to'liq ism, u ham bo'lmasa telegram_id ko'rsatiladi.
+    """
+    activated_expr = func.sum(case((Referral.status == "active", 1), else_=0))
+    rows = (
+        await session.execute(
+            select(
+                Referral.referrer_telegram_id.label("tid"),
+                func.count().label("total"),
+                activated_expr.label("activated"),
+            )
+            .where(Referral.referrer_telegram_id.is_not(None))
+            .group_by(Referral.referrer_telegram_id)
+            .order_by(func.count().desc(), activated_expr.desc())
+            .limit(max(1, int(limit or 1)))
+        )
+    ).fetchall()
+
+    if not rows:
+        return []
+
+    telegram_ids = [int(row.tid) for row in rows]
+    users = {
+        u.telegram_id: u
+        for u in (
+            await session.execute(select(User).where(User.telegram_id.in_(telegram_ids)))
+        ).scalars().all()
+    }
+
+    result: list[TopReferrer] = []
+    for row in rows:
+        tid = int(row.tid)
+        user = users.get(tid)
+        username = getattr(user, "username", None)
+        full_name = getattr(user, "full_name", None)
+        if username:
+            name = f"@{username}"
+        elif full_name:
+            name = full_name
+        else:
+            name = str(tid)
+        result.append(
+            TopReferrer(
+                telegram_id=tid,
+                name=name,
+                total=int(row.total or 0),
+                activated=int(row.activated or 0),
+            )
+        )
+    return result
 
 
 def _event_conditions(event_names: tuple[str, ...], since: datetime | None = None) -> list:

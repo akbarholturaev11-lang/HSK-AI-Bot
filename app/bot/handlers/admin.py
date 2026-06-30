@@ -23,7 +23,7 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
-from app.services.admin_stats_service import feature_usage_stats, miniapp_course_stats
+from app.services.admin_stats_service import feature_usage_stats, top_referrers
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
@@ -2022,8 +2022,8 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     # --- Qaysi bo'lim ko'proq ishlatilmoqda ---
     feature_usage = await feature_usage_stats(session, today_start, week_ago)
 
-    # --- Kurs Mini App ---
-    miniapp_course = await miniapp_course_stats(session)
+    # --- Eng ko'p taklif qilganlar ---
+    top_referrers_list = await top_referrers(session, limit=5)
 
     # --- Referallar ---
     ref_total = (await session.execute(
@@ -2071,11 +2071,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         select(func.count()).select_from(User).where(User.questions_used > 0)
     )).scalar() or 0
     engagement  = _pct(qa_users, total)
-    avg_lessons = (
-        round(miniapp_course.completed_sections / miniapp_course.completed_users, 1)
-        if miniapp_course.completed_users > 0
-        else 0
-    )
     level_order = ["beginner", "hsk1", "hsk2", "hsk3", "hsk4"]
     level_str   = "  " + "   ".join(
         f"{l.upper()}: {level_counts.get(l, 0)}" for l in level_order
@@ -2085,6 +2080,13 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  {item.label}: <b>{item.today_users}</b> / <b>{item.week_users}</b>"
         for item in feature_usage
     )
+    if top_referrers_list:
+        top_ref_str = "\n".join(
+            f"  {idx}. {escape(item.name)} — <b>{item.total}</b> ta (faol: {item.activated})"
+            for idx, item in enumerate(top_referrers_list, start=1)
+        )
+    else:
+        top_ref_str = "  —"
     now_str  = now.astimezone(ADMIN_STATS_TZ).strftime("%d.%m.%Y %H:%M Asia/Shanghai")
 
     text = (
@@ -2096,6 +2098,9 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Faol status: <b>{active_cnt}</b>   To'lovli: <b>{paid_user_cnt}</b>\n"
         f"  Tarixiy tasdiqlangan: <b>{historical_approved_users}</b>\n"
         f"  Tugagan: <b>{expired_cnt}</b>   Bloklangan: <b>{blocked_cnt}</b>\n\n"
+
+        f"<b>🏆 ENG KO'P TAKLIF QILGANLAR</b>\n"
+        f"{top_ref_str}\n\n"
 
         f"<b>📅 FAOLLIK</b>\n"
         f"  Yangi:  bugun <b>+{new_today}</b>  |  hafta <b>+{new_week}</b>  |  oy <b>+{new_month}</b>\n"
@@ -2116,11 +2121,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Jami daromad: <b>{approved_sum:,}</b> so'm\n\n"
 
         f"{subscription_sources_text}\n\n"
-
-        f"<b>📚 KURS</b>\n"
-        f"  Mini App ochgan: <b>{miniapp_course.opened_users}</b>   Dars boshlaganlar: <b>{miniapp_course.lesson_users}</b>\n"
-        f"  Dars tugatganlar: <b>{miniapp_course.completed_users}</b>   Tugatilgan qismlar: <b>{miniapp_course.completed_sections}</b>\n"
-        f"  Tugatilgan kitob darslari: <b>{miniapp_course.completed_book_lessons}</b>   O'rtacha qism: <b>{avg_lessons}</b>\n\n"
 
         f"{course_miniapp_text}\n\n"
 
