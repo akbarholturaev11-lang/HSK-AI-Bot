@@ -4,7 +4,7 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
-from sqlalchemy import select, func
+from sqlalchemy import and_, or_, select, func
 from datetime import datetime, timezone, timedelta
 from decimal import Decimal, InvalidOperation
 from html import escape
@@ -22,7 +22,13 @@ from app.db.models.payment import Payment
 from app.db.models.course_progress import CourseProgress
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
-from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
+from app.db.models.ai_usage import AIUsageBudget
+from app.services.ai_usage_budget_service import (
+    REFERRAL_TRIAL_PLAN_TYPE,
+    USD_TO_SOMONI,
+    USD_TO_YUAN,
+)
+from app.services.referral_service import REFERRAL_TRIAL_ACCESS_DAYS
 from app.services.admin_stats_service import feature_usage_stats, top_referrers
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
@@ -766,6 +772,39 @@ async def _admin_user_info_text(session, user: User) -> str:
     )
     progress = progress_result.scalar_one_or_none()
 
+    now = datetime.now(timezone.utc)
+
+    # Botda necha kundan beri (ro'yxatdan o'tgandan beri)
+    days_in_bot = None
+    if user.created_at:
+        created = user.created_at
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        days_in_bot = max((now - created).days, 0)
+
+    # Oxirgi tasdiqlangan to'lov tarifi (selected_plan_type ko'pincha bo'sh bo'ladi)
+    latest_approved_plan = (await session.execute(
+        select(Payment.plan_type)
+        .where(
+            Payment.user_telegram_id == user.telegram_id,
+            Payment.payment_status == "approved",
+        )
+        .order_by(Payment.submitted_at.desc())
+        .limit(1)
+    )).scalar_one_or_none()
+
+    # Referral sovg'asi orqali faollikni aniqlash (3 kunlik trial budjeti)
+    referral_trial_budget = (await session.execute(
+        select(AIUsageBudget)
+        .where(
+            AIUsageBudget.user_telegram_id == user.telegram_id,
+            AIUsageBudget.plan_type == REFERRAL_TRIAL_PLAN_TYPE,
+            AIUsageBudget.ends_at > now,
+        )
+        .order_by(AIUsageBudget.id.desc())
+        .limit(1)
+    )).scalar_one_or_none()
+
     status_labels = {
         "active": "Faol",
         "trial": "Sinov rejimi",
@@ -785,6 +824,32 @@ async def _admin_user_info_text(session, user: User) -> str:
     plan_labels = {"10_days": "10 kunlik", "1_month": "1 oylik"}
     bonus_balance = max((user.bonus_questions or 0) - (user.bonus_questions_used or 0), 0)
 
+    # Access turi (tarif) — selected_plan_type ko'pincha bo'sh, shuning uchun
+    # haqiqiy holatdan kelib chiqib aniqlanadi.
+    end_date = user.end_date
+    if end_date is not None and end_date.tzinfo is None:
+        end_date = end_date.replace(tzinfo=timezone.utc)
+    is_paid_active = (
+        user.payment_status == "approved"
+        and user.status == "active"
+        and end_date is not None
+        and end_date > now
+    )
+    if is_paid_active:
+        plan_lbl = _admin_label(latest_approved_plan or user.selected_plan_type, plan_labels)
+        access_type = f"💳 Pullik obuna ({plan_lbl})"
+    elif referral_trial_budget is not None and user.status == "active":
+        access_type = f"🎁 Referral sovg'asi ({REFERRAL_TRIAL_ACCESS_DAYS} kunlik)"
+    elif user.status == "active":
+        access_type = "✅ Faol (boshqa trial)"
+    elif user.status == "trial":
+        access_type = "🆓 Sinov rejimi"
+    elif user.status == "expired":
+        access_type = "⌛️ Obuna tugagan"
+    else:
+        access_type = "🆓 Bepul"
+    days_in_bot_str = f"{days_in_bot} kun" if days_in_bot is not None else "—"
+
     lines = [
         "🔎 <b>Foydalanuvchi ma'lumoti</b>",
         "",
@@ -795,9 +860,11 @@ async def _admin_user_info_text(session, user: User) -> str:
         f"Til: <b>{_admin_label(user.language, language_labels)}</b>",
         f"Daraja: <b>{escape(user.level or '—')}</b>",
         f"Ro'yxatdan o'tgan: <code>{_fmt_dt(user.created_at)}</code>",
+        f"Botda: <b>{days_in_bot_str}</b> dan beri",
         f"Oxirgi faollik: <code>{_fmt_dt(user.last_active_at)}</code>",
         "",
         "🔐 <b>Kirish va obuna</b>",
+        f"Access turi: <b>{access_type}</b>",
         f"Holat: <b>{_admin_label(user.status, status_labels)}</b>",
         f"Telegram bot blok: <b>{_yes_no(BotBlockStatusService.is_bot_blocked(user))}</b>",
         f"Bot bloklangan vaqt: <code>{_fmt_dt(user.bot_blocked_at)}</code>",
@@ -824,6 +891,11 @@ async def _admin_user_info_text(session, user: User) -> str:
         f"Chaqirganlari jami: <b>{referral_total}</b>",
         f"Faollashgan: <b>{referral_counts.get('active', 0)}</b>",
         f"Kutilmoqda: <b>{referral_counts.get('pending', 0)}</b>",
+        (
+            f"Referral sovg'asi: <b>🎁 FAOL</b> (tugaydi: <code>{_fmt_dt(referral_trial_budget.ends_at)}</code>)"
+            if referral_trial_budget is not None
+            else "Referral sovg'asi: <b>—</b>"
+        ),
         f"Chegirma hisobi: <b>{user.discount_referral_count}/3</b>",
         f"Chegirmaga tayyor: <b>{_yes_no(user.discount_eligible)}</b>",
         f"Chegirma ishlatilgan: <b>{_yes_no(user.discount_used)}</b>",
@@ -2002,6 +2074,41 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         select(func.count()).select_from(User).where(User.last_active_at >= week_ago)
     )).scalar() or 0
 
+    # --- Botni bloklaganlar (haqiqiy Telegram blok: bot_blocked_at orqali, status emas) ---
+    bot_block_condition = and_(
+        User.bot_blocked_at.is_not(None),
+        or_(
+            User.bot_unblocked_at.is_(None),
+            User.bot_unblocked_at < User.bot_blocked_at,
+        ),
+    )
+    bot_blocked_now = (await session.execute(
+        select(func.count()).select_from(User).where(bot_block_condition)
+    )).scalar() or 0
+    bot_blocked_week = (await session.execute(
+        select(func.count()).select_from(User).where(
+            bot_block_condition, User.bot_blocked_at >= week_ago
+        )
+    )).scalar() or 0
+
+    # --- Issiq mijozlar (kunlik faol dars o'quvchilar — daily practice) ---
+    today_date = now.astimezone(ADMIN_STATS_TZ).date()
+    yesterday_date = today_date - timedelta(days=1)
+    learners_today = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_last_day == today_date)
+    )).scalar() or 0
+    learners_active = (await session.execute(
+        select(func.count()).select_from(User).where(
+            User.daily_practice_last_day >= yesterday_date
+        )
+    )).scalar() or 0
+    streak_3 = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_streak >= 3)
+    )).scalar() or 0
+    streak_7 = (await session.execute(
+        select(func.count()).select_from(User).where(User.daily_practice_streak >= 7)
+    )).scalar() or 0
+
     # --- To'lovlar ---
     pay_rows = (await session.execute(
         select(
@@ -2047,7 +2154,6 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     trial_cnt   = status_counts.get("trial", 0)
     active_cnt  = status_counts.get("active", 0)
     expired_cnt = status_counts.get("expired", 0)
-    blocked_cnt = status_counts.get("blocked", 0)
 
     pending_cnt,  _            = pay_by_status.get("pending",  (0, 0))
     approved_cnt, approved_sum = pay_by_status.get("approved", (0, 0))
@@ -2097,7 +2203,8 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"  Bepul: <b>{free_cnt}</b>   Sinov: <b>{trial_cnt}</b>\n"
         f"  Faol status: <b>{active_cnt}</b>   To'lovli: <b>{paid_user_cnt}</b>\n"
         f"  Tarixiy tasdiqlangan: <b>{historical_approved_users}</b>\n"
-        f"  Tugagan: <b>{expired_cnt}</b>   Bloklangan: <b>{blocked_cnt}</b>\n\n"
+        f"  Obunasi tugagan: <b>{expired_cnt}</b>\n"
+        f"  🚫 Botni bloklagan: <b>{bot_blocked_now}</b>  (hafta ichida +{bot_blocked_week})\n\n"
 
         f"<b>🏆 ENG KO'P TAKLIF QILGANLAR</b>\n"
         f"{top_ref_str}\n\n"
@@ -2105,6 +2212,10 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"<b>📅 FAOLLIK</b>\n"
         f"  Yangi:  bugun <b>+{new_today}</b>  |  hafta <b>+{new_week}</b>  |  oy <b>+{new_month}</b>\n"
         f"  Aktiv:  bugun <b>{active_today}</b>  |  24 soat <b>{active_24h}</b>  |  hafta <b>{active_week}</b>\n\n"
+
+        f"<b>🔥 ISSIQ MIJOZLAR</b>  <i>(kunlik dars o'quvchilar)</i>\n"
+        f"  Bugun dars qildi: <b>{learners_today}</b>   So'nggi 2 kun: <b>{learners_active}</b>\n"
+        f"  3+ kun streak: <b>{streak_3}</b>   7+ kun streak: <b>{streak_7}</b>\n\n"
 
         f"<b>🔥 QAYSI BO'LIM KO'PROQ ISHLATILMOQDA</b>  <i>(aktiv user: bugun / hafta)</i>\n"
         f"{feature_usage_str}\n\n"

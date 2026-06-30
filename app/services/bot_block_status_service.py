@@ -93,6 +93,7 @@ class BotBlockStatusService:
             try:
                 await bot.get_chat(user.telegram_id)
             except TelegramForbiddenError:
+                # Hisob o'chirilgan / bot bloklangan — bu ishonchli blok signali.
                 await self.mark_user_blocked(user, reason="daily_get_chat_forbidden", checked_at=now)
             except TelegramBadRequest:
                 user.last_bot_block_check_at = now
@@ -100,7 +101,13 @@ class BotBlockStatusService:
             except Exception:
                 continue
             else:
-                await self.mark_user_unblocked(user, checked_at=now)
+                # MUHIM: get_chat muvaffaqiyati blokdan chiqqanini ANGLATMAYDI —
+                # Telegram getChat user botni bloklagan bo'lsa ham OK qaytaradi.
+                # Shuning uchun bu yerda blokni olib tashlamaymiz (avval shu xato bor edi:
+                # har kungi skaner haqiqiy bloklarni o'chirib yuborardi).
+                # Haqiqiy blokdan chiqish middleware orqali, user botga yozganda belgilanadi.
+                user.last_bot_block_check_at = now
+                await self.session.flush()
             checked += 1
             if pause_seconds:
                 await asyncio.sleep(pause_seconds)

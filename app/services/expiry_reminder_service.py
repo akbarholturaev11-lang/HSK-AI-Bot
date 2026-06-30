@@ -4,6 +4,7 @@ from aiogram import Bot
 
 from app.repositories.user_repo import UserRepository
 from app.bot.utils.i18n import t
+from app.services.bot_block_status_service import BotBlockStatusService
 
 
 class ExpiryReminderService:
@@ -14,6 +15,7 @@ class ExpiryReminderService:
     async def send_expiry_reminders(self, bot: Bot) -> int:
         tomorrow = (datetime.now(timezone.utc) + timedelta(days=1)).date()
         users = await self.user_repo.list_active_users_expiring_on(tomorrow)
+        block_service = BotBlockStatusService(self.session)
 
         sent_count = 0
 
@@ -31,8 +33,10 @@ class ExpiryReminderService:
                 )
                 user.expiry_reminder_sent_at = datetime.now(timezone.utc)
                 sent_count += 1
-            except Exception:
-                pass
+            except Exception as exc:
+                await block_service.handle_send_exception(
+                    user.telegram_id, exc, reason="expiry_reminder"
+                )
 
         await self.session.commit()
         return sent_count

@@ -5,6 +5,7 @@ from sqlalchemy import select
 
 from app.db.models.user import User
 from app.bot.utils.i18n import t
+from app.services.bot_block_status_service import BotBlockStatusService
 
 
 class DailyResetService:
@@ -14,6 +15,7 @@ class DailyResetService:
     async def send_daily_reset_notifications(self, bot: Bot) -> int:
         today = datetime.now(timezone.utc).date()
         now = datetime.now(timezone.utc)
+        block_service = BotBlockStatusService(self.session)
 
         result = await self.session.execute(
             select(User).where(User.status == "trial")
@@ -43,8 +45,10 @@ class DailyResetService:
                         text=t("daily_limit_renewed", lang),
                     )
                     sent_count += 1
-                except Exception:
-                    pass
+                except Exception as exc:
+                    await block_service.handle_send_exception(
+                        user.telegram_id, exc, reason="daily_reset"
+                    )
 
         await self.session.commit()
         return sent_count
