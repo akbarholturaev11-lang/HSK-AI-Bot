@@ -696,13 +696,13 @@
             "tj": "Ман мехоҳам ба Пекин сафар кунам."
           },
           "tokens": [
-            "我",
-            "最",
             "要",
+            "去",
+            "我",
             "北京",
             "旅游",
-            "觉得",
-            "去"
+            "最",
+            "觉得"
           ],
           "answer_tokens": [
             "我",
@@ -727,11 +727,11 @@
           },
           "options": [
             "为什么",
-            "旅游",
             "最",
+            "旅游",
             "觉得"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 旅游 (lǚyóu) — sayohat qilmoq",
             "ru": "Верно: 旅游 (lǚyóu) — путешествовать",
@@ -763,14 +763,14 @@
           },
           "options": [
             {
-              "uz": "nega, nima uchun",
-              "ru": "почему, зачем",
-              "tj": "чаро, барои чӣ"
-            },
-            {
               "uz": "eng, juda",
               "ru": "самый, наиболее",
               "tj": "аз ҳама, бештар"
+            },
+            {
+              "uz": "sayohat qilmoq",
+              "ru": "путешествовать",
+              "tj": "сафар кардан"
             },
             {
               "uz": "deb o'ylash, his qilish",
@@ -778,12 +778,12 @@
               "tj": "фикр кардан, ҳис кардан"
             },
             {
-              "uz": "sayohat qilmoq",
-              "ru": "путешествовать",
-              "tj": "сафар кардан"
+              "uz": "nega, nima uchun",
+              "ru": "почему, зачем",
+              "tj": "чаро, барои чӣ"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "旅游 = sayohat qilmoq (lǚyóu)",
             "ru": "旅游 = путешествовать (lǚyóu)",
@@ -803,12 +803,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "lǚyóu",
-            "zuì",
             "juéde",
-            "wèi shénme"
+            "wèi shénme",
+            "lǚyóu",
+            "zuì"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "觉得 — juéde",
             "ru": "觉得 — juéde",
@@ -823,12 +823,12 @@
             "tj": "Ту кадом варзишро дӯст медорӣ?"
           },
           "tokens": [
-            "觉得",
-            "你",
             "旅游",
+            "你",
+            "喜欢",
             "运动",
             "什么",
-            "喜欢"
+            "觉得"
           ],
           "answer_tokens": [
             "你",
@@ -852,12 +852,12 @@
           "audio_text": "我想去北京旅游，你觉得什么时候去最好？",
           "pinyin": "Wǒ xiǎng qù Běijīng lǚyóu, nǐ juéde shénme shíhou qù zuì hǎo?",
           "options": [
-            "九月的北京天气不冷也不热。",
             "九月去北京旅游最好。",
             "我想去北京旅游，你觉得什么时候去最好？",
-            "为什么？"
+            "为什么？",
+            "九月的北京天气不冷也不热。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "我想去北京旅游，你觉得什么时候去最好？ — Men Pekinga sayohat qilmoqchiman, sen qachon borish eng yaxshi deb o'ylaysan?",
             "ru": "我想去北京旅游，你觉得什么时候去最好？ — Я хочу поехать в Пекин, как ты думаешь, когда лучше всего ехать?",
@@ -928,6 +928,49 @@
       "section_purpose": "dialog",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "我想去北京旅游，你觉得什么时候去最好？",
+          "pinyin": "Wǒ xiǎng qù Běijīng lǚyóu, nǐ juéde shénme shíhou qù zuì hǎo?",
+          "options": [
+            "九月去北京旅游最好。",
+            "九月的北京天气不冷也不热。",
+            "为什么？",
+            "我想去北京旅游，你觉得什么时候去最好？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我想去北京旅游，你觉得什么时候去最好？ — Men Pekinga sayohat qilmoqchiman, sen qachon borish eng yaxshi deb o'ylaysan?",
+            "ru": "我想去北京旅游，你觉得什么时候去最好？ — Я хочу поехать в Пекин, как ты думаешь, когда лучше всего ехать?",
+            "tj": "我想去北京旅游，你觉得什么时候去最好？ — Ман мехоҳам ба Пекин сафар кунам, ба назари ту кай рафтан беҳтар аст?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____想去北京旅游，你觉得什么时候去最好？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "我",
+            "西",
+            "儿",
+            "新"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我想去北京旅游，你觉得什么时候去最好？ (Men Pekinga sayohat qilmoqchiman, sen qachon borish eng yaxshi deb o'ylaysan?)",
+            "ru": "Верно: 我 — 我想去北京旅游，你觉得什么时候去最好？ (Я хочу поехать в Пекин, как ты думаешь, когда лучше всего ехать?)",
+            "tj": "Дуруст: 我 — 我想去北京旅游，你觉得什么时候去最好？ (Ман мехоҳам ба Пекин сафар кунам, ба назари ту кай рафтан беҳтар аст?)"
+          }
+        },
+        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -957,12 +1000,12 @@
             }
           ],
           "options": [
-            "为什么？",
             "九月去北京旅游最好。",
-            "九月的北京天气不冷也不热。",
-            "我想去北京旅游，你觉得什么时候去最好？"
+            "我想去北京旅游，你觉得什么时候去最好？",
+            "为什么？",
+            "九月的北京天气不冷也不热。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 九月的北京天气不冷也不热。",
             "ru": "Правильный ответ: 九月的北京天气不冷也不热。",
@@ -984,8 +1027,8 @@
           "options": [
             "我想去北京旅游，你觉得什么时候去最好？",
             "为什么？",
-            "九月的北京天气不冷也不热。",
-            "九月去北京旅游最好。"
+            "九月去北京旅游最好。",
+            "九月的北京天气不冷也不热。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1007,12 +1050,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "我想去北京旅游，你觉得什么时候去最好？",
+            "九月的北京天气不冷也不热。",
             "为什么？",
             "九月去北京旅游最好。",
-            "九月的北京天气不冷也不热。"
+            "我想去北京旅游，你觉得什么时候去最好？"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 九月的北京天气不冷也不热。",
             "ru": "Правильный ответ: 九月的北京天气不冷也不热。",

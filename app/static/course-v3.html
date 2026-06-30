@@ -153,6 +153,28 @@ button{cursor:pointer}
 .gc .exrow .z2+div{grid-column:1;grid-row:2;min-width:0}
 .gc .exrow .p2{font-size:14px;color:var(--cin2);font-weight:500;line-height:1.35}.gc .exrow .t2{font-size:12px;color:var(--ink2);line-height:1.35}
 .gc .exrow .au{grid-column:2;grid-row:1/3;justify-self:end;margin-left:0;width:32px;height:32px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:15px}
+/* Grammar "teacher" step-by-step UI */
+.gtitle{font-size:19px;font-weight:700;margin:2px 0 12px;display:flex;align-items:center;gap:9px;flex-wrap:wrap}.gtitle .zh{color:var(--cin2)}
+.teach{display:flex;gap:11px;align-items:flex-start;margin-bottom:14px}
+.teach-pd{width:52px;height:52px;flex:0 0 52px;border-radius:50%;background:#E7F0F8;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.teach-pd svg{width:42px;height:42px}
+.teach-bub{position:relative;background:#E7F0F8;border:1px solid #D2E2F0;border-radius:4px 16px 16px 16px;padding:11px 14px;flex:1}
+.teach-bub b{font-size:12px;color:#2F6F9E;display:block;margin-bottom:3px}
+.teach-bub .teach-say{font-size:15px;line-height:1.5;color:var(--ink)}
+.gsteps{display:flex;flex-direction:column}
+.gsteps-item{animation:gfade .28s ease}
+@keyframes gfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.gstep{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:10px}
+.gstep-lbl{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--jade);background:var(--jadebg);border-radius:7px;padding:2px 9px;margin-bottom:8px}
+.gstep-lbl.neg{color:var(--cin2);background:var(--cinbg)}
+.gformula{font-size:20px;line-height:1.4;color:var(--ink)}
+.gnote{font-size:13px;line-height:1.55;color:var(--ink2);padding:2px 4px 10px}
+.gsteps .exrow{display:grid;grid-template-columns:minmax(0,1fr) 34px;align-items:center;column-gap:12px;row-gap:3px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-bottom:8px}
+.gsteps .exrow .z2{grid-column:1;grid-row:1;font-size:24px;line-height:1.35;text-align:left;overflow-wrap:anywhere}
+.gsteps .exrow .z2+div{grid-column:1;grid-row:2;min-width:0}
+.gsteps .exrow .p2{font-size:14px;color:var(--cin2);font-weight:500;line-height:1.35}.gsteps .exrow .t2{font-size:12px;color:var(--ink2);line-height:1.35}
+.gsteps .exrow .au{grid-column:2;grid-row:1/3;justify-self:end;width:32px;height:32px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:15px}
+.gnext{margin-top:6px;align-self:flex-start;background:#2F6F9E;color:#fff;border:none;border-radius:12px;padding:11px 20px;font-size:15px;font-weight:600;font-family:inherit;display:inline-flex;align-items:center;gap:7px}
 .dia .scene{font-size:13px;color:var(--ink2);margin-bottom:14px;display:flex;align-items:center;gap:7px}
 .dia .line{display:flex;gap:9px;margin-bottom:13px;align-items:flex-end}
 .dia .line.B{flex-direction:row-reverse}
@@ -1261,9 +1283,7 @@ function buildQueue(d){
       var gc=d.grammar.map(function(g){return {type:"_grammar",g:g}});
       cards=gc.concat(cards);
     }
-    if(sec.section_purpose==="dialog" && d.dialogues && d.dialogues.length){
-      cards=[{type:"_dialogue",d:d.dialogues[0]}].concat(cards);
-    }
+    /* Dialog is now fully interactive (audio/cloze/char-gap) — no passive dump. */
     var sNo=sec.section_no||0, sTitle=tr(sec.section_title)||(secNames()[(sec.section_no||1)-1]||"");
     cards.forEach(function(c){c._sNo=sNo;c._sTitle=sTitle;q.push(c)});
   });
@@ -1367,11 +1387,57 @@ function cardWord(c){
     +'<div><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div></div>';
   setTimeout(function(){speak(w.zh)},250);
 }
+function GRT(){return ({
+  uz:{teacher:"Li ustoz",structure:"Tuzilma",negation:"Inkor",next:"Davom etish",done:"Tushundim",intro:"Keling, birga o'rganamiz:"},
+  ru:{teacher:"Учитель Ли",structure:"Структура",negation:"Отрицание",next:"Дальше",done:"Понятно",intro:"Давайте разберём вместе:"},
+  tj:{teacher:"Устод Ли",structure:"Сохтор",negation:"Инкор",next:"Идома",done:"Фаҳмидам",intro:"Биёед якҷоя меомӯзем:"}
+})[LANG]||({teacher:"Li ustoz",structure:"Tuzilma",negation:"Inkor",next:"Davom etish",done:"Tushundim",intro:"Keling, birga o'rganamiz:"})}
+function parseRule(t){
+  var lines=String(t||"").split("\n").map(function(s){return s.trim()}).filter(Boolean);
+  var KW={struct:["Tuzilma:","Структура:","Сохтор:"],neg:["Inkor:","Отрицание:","Инкор:"],ex:["Misol:","Misollar:","Пример:","Примеры:","Мисол:","Мисолҳо:"]};
+  var R={lead:"",structure:"",negation:"",notes:[]},hitEx=false;
+  lines.forEach(function(ln){
+    if(KW.ex.some(function(k){return ln.indexOf(k)===0})){hitEx=true;return}
+    if(hitEx)return;
+    var sm=KW.struct.filter(function(k){return ln.indexOf(k)===0})[0];
+    var nm=KW.neg.filter(function(k){return ln.indexOf(k)===0})[0];
+    if(sm){R.structure=ln.slice(sm.length).trim();return}
+    if(nm){R.negation=ln.slice(nm.length).trim();return}
+    if(!R.lead){R.lead=ln;return}
+    R.notes.push(ln);
+  });
+  return R;
+}
 function cardGrammar(g){
-  $("#f-cta").style.display="flex";
-  var ex=(g.examples||[]).map(function(e){return '<div class="exrow"><div class="z2 han">'+esc(e.zh)+'</div><div><div class="p2">'+esc(e.pinyin)+'</div><div class="t2">'+esc(tr(e.translation))+'</div></div><button class="au" onclick="speak(\''+esc(e.zh)+'\')"><i class="ti ti-volume"></i></button></div>'}).join("");
+  $("#f-cta").style.display="none";
+  var gt=GRT(),R=parseRule(tr(g.rule));
+  var steps=[];
+  var struct="";
+  if(R.structure)struct+='<div class="gstep"><span class="gstep-lbl">'+esc(gt.structure)+'</span><div class="gformula han">'+esc(R.structure)+'</div></div>';
+  if(R.negation)struct+='<div class="gstep"><span class="gstep-lbl neg">'+esc(gt.negation)+'</span><div class="gformula neg han">'+esc(R.negation)+'</div></div>';
+  R.notes.forEach(function(n){struct+='<div class="gnote">'+esc(n)+'</div>'});
+  if(struct)steps.push(struct);
+  (g.examples||[]).forEach(function(e){
+    steps.push('<div class="exrow"><div class="z2 han">'+esc(e.zh)+'</div><div><div class="p2">'+esc(e.pinyin)+'</div><div class="t2">'+esc(tr(e.translation))+'</div></div><button class="au" onclick="speak(\''+esc(e.zh)+'\')"><i class="ti ti-volume"></i></button></div>');
+  });
+  var lead=R.lead||tr(g.title);
   $("#f-body").innerHTML='<span class="kicker k-gram"><i class="ti ti-bulb"></i> '+T().grammar+'</span>'
-    +'<div class="gc"><h3><span class="han zh">'+esc(g.title_zh||"")+'</span> '+esc(tr(g.title))+'</h3><div class="rule">'+esc(tr(g.rule))+'</div>'+ex+'</div>';
+    +'<div class="gtitle"><span class="han zh">'+esc(g.title_zh||"")+'</span> '+esc(tr(g.title))+'</div>'
+    +'<div class="teach"><div class="teach-pd">'+pandaSvg()+'</div><div class="teach-bub"><b>'+esc(gt.teacher)+'</b><div class="teach-say">'+esc(lead)+'</div></div></div>'
+    +'<div class="gsteps" id="gsteps"></div>'
+    +'<button class="gnext" id="gnext" onclick="window._grNext()">'+esc(gt.next)+' <i class="ti ti-arrow-right"></i></button>';
+  var gi=0;
+  window._grNext=function(){
+    if(gi<steps.length){
+      var it=document.createElement("div");it.className="gsteps-item";it.innerHTML=steps[gi];$("#gsteps").appendChild(it);
+      var z=it.querySelector(".z2");if(z)speak(z.textContent);
+      gi++;
+    }
+    var b=$("#gnext");
+    if(gi>=steps.length){ if(b)b.style.display="none"; teachContinue(); }
+    else if(gi===steps.length-1 && b){ b.innerHTML=esc(gt.done)+' <i class="ti ti-check"></i>'; }
+  };
+  window._grNext(); /* reveal the first step right away */
 }
 function cardDialogue(d){
   $("#f-cta").style.display="flex";

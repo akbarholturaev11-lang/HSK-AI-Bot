@@ -737,13 +737,13 @@
           },
           "tokens": [
             "运动",
-            "是",
-            "你",
-            "喜欢",
-            "不",
-            "生病",
             "每",
-            "是"
+            "生病",
+            "你",
+            "是",
+            "是",
+            "喜欢",
+            "不"
           ],
           "answer_tokens": [
             "你",
@@ -768,12 +768,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "每",
-            "跑步",
+            "生病",
             "早上",
-            "生病"
+            "跑步",
+            "每"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 早上 (zǎoshang) — ertalab",
             "ru": "Верно: 早上 (zǎoshang) — утро, утром",
@@ -804,12 +804,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shēngbìng",
-            "zǎoshang",
             "měi",
-            "pǎobù"
+            "shēngbìng",
+            "pǎobù",
+            "zǎoshang"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "每 — měi",
             "ru": "每 — měi",
@@ -830,8 +830,8 @@
           },
           "options": [
             "每",
-            "生病",
             "跑步",
+            "生病",
             "早上"
           ],
           "correct_index": 3,
@@ -849,15 +849,15 @@
             "tj": "Оё дору хӯрдӣ? Ҳоло саломатиат чӣ тавр аст?"
           },
           "tokens": [
-            "生病",
-            "了",
-            "身体",
-            "吗",
             "吃",
+            "药",
+            "身体",
             "现在",
-            "怎么样",
             "每",
-            "药"
+            "吗",
+            "了",
+            "生病",
+            "怎么样"
           ],
           "answer_tokens": [
             "吃",
@@ -884,12 +884,12 @@
           "audio_text": "你很少生病，是不是喜欢运动？",
           "pinyin": "Nǐ hěn shǎo shēngbìng, shì bú shì xǐhuan yùndòng?",
           "options": [
+            "你每天几点起床？",
             "你很少生病，是不是喜欢运动？",
             "是啊，我每天早上都要出去跑步。",
-            "我每天六点起床。",
-            "你每天几点起床？"
+            "我每天六点起床。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "你很少生病，是不是喜欢运动？ — Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?",
             "ru": "你很少生病，是不是喜欢运动？ — Ты редко болеешь, ты любишь спорт?",
@@ -960,6 +960,49 @@
       "section_purpose": "dialog",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "你很少生病，是不是喜欢运动？",
+          "pinyin": "Nǐ hěn shǎo shēngbìng, shì bú shì xǐhuan yùndòng?",
+          "options": [
+            "你很少生病，是不是喜欢运动？",
+            "是啊，我每天早上都要出去跑步。",
+            "你每天几点起床？",
+            "我每天六点起床。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你很少生病，是不是喜欢运动？ — Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?",
+            "ru": "你很少生病，是不是喜欢运动？ — Ты редко болеешь, ты любишь спорт?",
+            "tj": "你很少生病，是不是喜欢运动？ — Ту кам касал мешавӣ, оё варзишро дӯст медорӣ?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____很少生病，是不是喜欢运动？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "你",
+            "西",
+            "新",
+            "儿"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你很少生病，是不是喜欢运动？ (Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?)",
+            "ru": "Верно: 你 — 你很少生病，是不是喜欢运动？ (Ты редко болеешь, ты любишь спорт?)",
+            "tj": "Дуруст: 你 — 你很少生病，是不是喜欢运动？ (Ту кам касал мешавӣ, оё варзишро дӯст медорӣ?)"
+          }
+        },
+        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -989,12 +1032,12 @@
             }
           ],
           "options": [
-            "你很少生病，是不是喜欢运动？",
-            "我每天六点起床。",
             "你每天几点起床？",
-            "是啊，我每天早上都要出去跑步。"
+            "是啊，我每天早上都要出去跑步。",
+            "我每天六点起床。",
+            "你很少生病，是不是喜欢运动？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 我每天六点起床。",
             "ru": "Правильный ответ: 我每天六点起床。",
@@ -1039,12 +1082,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你每天几点起床？",
             "我每天六点起床。",
             "你很少生病，是不是喜欢运动？",
+            "你每天几点起床？",
             "是啊，我每天早上都要出去跑步。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 我每天六点起床。",
             "ru": "Правильный ответ: 我每天六点起床。",

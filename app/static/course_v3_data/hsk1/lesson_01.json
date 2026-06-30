@@ -558,6 +558,49 @@
       "section_purpose": "dialog",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "你好！",
+          "pinyin": "Nǐ hǎo!",
+          "options": [
+            "对不起！",
+            "您好！",
+            "你们好！",
+            "你好！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "你好！ — Salom!",
+            "ru": "你好！ — Привет!",
+            "tj": "你好！ — Салом!"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____好！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "系",
+            "不",
+            "你",
+            "好"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你好！ (Salom!)",
+            "ru": "Верно: 你 — 你好！ (Привет!)",
+            "tj": "Дуруст: 你 — 你好！ (Салом!)"
+          }
+        },
+        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -578,11 +621,11 @@
           ],
           "options": [
             "对不起！",
-            "您好！",
             "你们好！",
-            "你好！"
+            "你好！",
+            "您好！"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 你好！",
             "ru": "Правильный ответ: 你好！",
@@ -602,12 +645,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "对不起！",
-            "您好！",
             "你好！",
-            "你们好！"
+            "你们好！",
+            "您好！",
+            "对不起！"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 你好！",
             "ru": "Правильный ответ: 你好！",

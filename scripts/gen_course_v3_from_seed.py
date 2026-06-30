@@ -317,6 +317,44 @@ def make_cloze_card(block, distractor_lines) -> dict | None:
     }
 
 
+def make_char_gap_card(line, known_chars) -> dict | None:
+    """Hide ONE character of a real dialogue line; pick the right hanzi.
+    Distractor characters are drawn only from already-learned vocabulary."""
+    zh = line.get("zh", "")
+    han = [ch for ch in zh if "一" <= ch <= "鿿"]
+    if len(han) < 2:
+        return None
+    # prefer a character that occurs exactly once (unambiguous blank)
+    once = [ch for ch in han if zh.count(ch) == 1]
+    target = (once or han)[0]
+    opts = [target]
+    for ch in known_chars:
+        if len(opts) >= 4:
+            break
+        if ch != target and ch not in opts:
+            opts.append(ch)
+    if len(opts) < 3:
+        return None
+    RNG.shuffle(opts)
+    tr = t3(line)
+    return {
+        "type": "gap_fill",
+        "sentence": zh.replace(target, "____", 1),
+        "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:",
+        },
+        "options": opts,
+        "correct_index": opts.index(target),
+        "explanation": {
+            "uz": f"To'g'ri: {target} — {zh} ({tr['uz']})",
+            "ru": f"Верно: {target} — {zh} ({tr['ru']})",
+            "tj": f"Дуруст: {target} — {zh} ({tr['tj']})",
+        },
+    }
+
+
 def build_grammar_section(grammar_raw, vocab, known_prior) -> list[dict]:
     """Interactive grammar practice: build a real example sentence from tiles,
     plus one gap-fill of a current-lesson word inside a grammar example."""
@@ -597,22 +635,44 @@ def build_dialog_quizzes(blocks: list[dict]) -> list[dict]:
     return cards
 
 
-def build_dialog_section(blocks: list[dict]) -> list[dict]:
-    """Interactive dialogue section: a 'complete the dialogue' (dialog_cloze)
-    card first, then the existing comprehension quick_quiz cards."""
+def build_dialog_section(blocks: list[dict], pool: list[dict]) -> list[dict]:
+    """Fully interactive dialogue section (no passive text dump): hear a line
+    and pick what was said, fill a missing character, complete the dialogue,
+    then a comprehension question. Everything stays level-gated."""
     cards: list[dict] = []
     if not blocks:
         return cards
-    # Distractor lines: every distinct line across all blocks (gated by build).
-    line_pool: list[str] = []
-    for b in blocks:
-        for ln in b.get("dialogue", []):
-            z = ln.get("zh", "")
-            if z and z not in line_pool:
-                line_pool.append(z)
+    line_objs = [ln for b in blocks for ln in b.get("dialogue", []) if ln.get("zh")]
+    line_pool = []
+    for ln in line_objs:
+        if ln["zh"] not in line_pool:
+            line_pool.append(ln["zh"])
+
+    # 1) Audio first: "listen — what did they say?"
+    if line_objs:
+        lc = make_listen_card(line_objs[0], line_objs)
+        if lc:
+            lc["title"] = {
+                "uz": "Tinglang — nima dedi?",
+                "ru": "Послушайте — что сказали?",
+                "tj": "Гӯш кунед — чӣ гуфт?",
+            }
+            cards.append(lc)
+
+    # 2) Fill the missing character in a real dialogue line.
+    known_chars = {ch for w in pool for ch in w.get("zh", "") if "一" <= ch <= "鿿"}
+    for ln in line_objs:
+        cg = make_char_gap_card(ln, known_chars)
+        if cg:
+            cards.append(cg)
+            break
+
+    # 3) Complete the dialogue (pick the missing reply).
     cloze = make_cloze_card(blocks[0], line_pool)
     if cloze:
         cards.append(cloze)
+
+    # 4) Comprehension question(s).
     cards.extend(build_dialog_quizzes(blocks))
     return cards
 
@@ -635,7 +695,7 @@ def build_v3_lesson(level: str, order: int, seed: dict, known_prior: list[dict])
     intro_cards = [{"type": "active_word", "word": w} for w in active_words]
     grammar_cards = build_grammar_section(grammar_raw, vocab, known_prior)
     practice_cards = build_practice(vocab, known_prior, grammar_raw, dialogue_raw, order)
-    dialog_cards = build_dialog_section(dialogue_raw)
+    dialog_cards = build_dialog_section(dialogue_raw, vocab + known_prior)
 
     sections = [
         {

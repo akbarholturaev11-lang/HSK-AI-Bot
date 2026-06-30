@@ -902,12 +902,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "疼",
-            "办公室",
             "脚",
-            "腿"
+            "疼",
+            "腿",
+            "办公室"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 办公室 (bàngōngshì) — ofis, idora",
             "ru": "Верно: 办公室 (bàngōngshì) — офис, кабинет",
@@ -938,12 +938,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "tuǐ",
-            "jiǎo",
             "téng",
-            "shù"
+            "shù",
+            "tuǐ",
+            "jiǎo"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "疼 — téng",
             "ru": "疼 — téng",
@@ -963,12 +963,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "脚",
+            "疼",
             "树",
-            "腿",
-            "疼"
+            "脚",
+            "腿"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "oyoq panjasi = 脚 (jiǎo)",
             "ru": "стопа, нога = 脚 (jiǎo)",
@@ -1010,12 +1010,12 @@
           "audio_text": "休息一下吧。",
           "pinyin": "Xiūxi yíxià ba.",
           "options": [
+            "好，那边树多，我们过去坐一下吧。",
             "怎么了？",
             "休息一下吧。",
-            "好，那边树多，我们过去坐一下吧。",
             "我现在腿也疼，脚也疼。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "休息一下吧。 — Bir oz dam olaylik.",
             "ru": "休息一下吧。 — Давай немного отдохнём.",
@@ -1086,6 +1086,49 @@
       "section_purpose": "dialog",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — nima dedi?",
+            "ru": "Послушайте — что сказали?",
+            "tj": "Гӯш кунед — чӣ гуфт?"
+          },
+          "audio_text": "休息一下吧。",
+          "pinyin": "Xiūxi yíxià ba.",
+          "options": [
+            "怎么了？",
+            "我现在腿也疼，脚也疼。",
+            "休息一下吧。",
+            "好，那边树多，我们过去坐一下吧。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "休息一下吧。 — Bir oz dam olaylik.",
+            "ru": "休息一下吧。 — Давай немного отдохнём.",
+            "tj": "休息一下吧。 — Каме истироҳат кунем."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____息一下吧。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "斤",
+            "新",
+            "国",
+            "休"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 休 — 休息一下吧。 (Bir oz dam olaylik.)",
+            "ru": "Верно: 休 — 休息一下吧。 (Давай немного отдохнём.)",
+            "tj": "Дуруст: 休 — 休息一下吧。 (Каме истироҳат кунем.)"
+          }
+        },
+        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -1125,12 +1168,12 @@
             }
           ],
           "options": [
-            "休息一下吧。",
             "我现在腿也疼，脚也疼。",
-            "上山容易下山难，你不知道？",
-            "怎么了？"
+            "休息一下吧。",
+            "怎么了？",
+            "上山容易下山难，你不知道？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 上山容易下山难，你不知道？",
             "ru": "Правильный ответ: 上山容易下山难，你不知道？",
@@ -1150,12 +1193,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
+            "好，那边树多，我们过去坐一下吧。",
             "我现在腿也疼，脚也疼。",
             "怎么了？",
-            "休息一下吧。",
-            "好，那边树多，我们过去坐一下吧。"
+            "休息一下吧。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 休息一下吧。",
             "ru": "Правильный ответ: 休息一下吧。",
@@ -1175,12 +1218,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "上山容易下山难，你不知道？",
-            "怎么了？",
+            "我现在腿也疼，脚也疼。",
             "休息一下吧。",
-            "我现在腿也疼，脚也疼。"
+            "怎么了？",
+            "上山容易下山难，你不知道？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 上山容易下山难，你不知道？",
             "ru": "Правильный ответ: 上山容易下山难，你不知道？",

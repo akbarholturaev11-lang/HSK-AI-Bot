@@ -207,6 +207,31 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-30 — Course v3 grammatika "ustoz" + interaktiv dialog (passiv matn olib tashlandi)
+
+Changed:
+- Grammatika kartasi (`cardGrammar`, course-v3.html) endi katta matn o'rniga qadam-baqadam
+  "ustoz" oqimi: panda 李老师 ("Li ustoz") suhbat pufagi + qoidani bo'laklarga ajratish
+  (`parseRule`: lead concept, Tuzilma/Inkor formulalari, izohlar) + misollar bittalab
+  "Davom etish" bilan ochiladi (audio bilan). Oxirgi qadamdan keyin global CTA chiqadi.
+  3 til kalit so'zlari bilan parse qilinadi (Tuzilma/Структура/Сохтор, Inkor/Отрицание/Инкор,
+  Misol/Пример/Мисол); parse bo'lmasa lead = sarlavha (fallback).
+- Dialog bo'limi endi to'liq interaktiv, passiv "katta matn" (`_dialogue` reading card)
+  butunlay olib tashlandi (buildQueue'dan prepend o'chirildi). Yangi tartib:
+  `listening_choice` ("Tinglang — nima dedi?", audio→variant) → `gap_fill` (dialog satridan
+  1 ieroglif berkitiladi, `make_char_gap_card`) → `dialog_cloze` → `quick_quiz`.
+- `make_char_gap_card`: dialog satridagi bitta (bir marta uchraydigan) ieroglifni berkitadi,
+  chalg'ituvchi ierogliflar faqat o'rganilgan so'zlardagi belgilardan (gated).
+
+Files touched:
+- `app/static/course-v3.html` (cardGrammar + parseRule + GRT i18n + teach/gstep/gnext CSS,
+  buildQueue'dan `_dialogue` olib tashlandi), `scripts/gen_course_v3_from_seed.py`
+  (`make_char_gap_card`, `build_dialog_section` qayta yozildi), 70 dars qayta generatsiya.
+
+Risk:
+- Faqat statik kontent + frontend; backend (to'lov/obuna/XP/progress) tegilmadi. Barcha matn
+  uz/ru/tj. Lokalda flow eval + screenshot bilan tekshirildi; real Telegram smoke-test tavsiya.
+
 ### 2026-06-30 — Course v3 Duolingo uslubidagi interaktiv dars formati
 
 Changed:
