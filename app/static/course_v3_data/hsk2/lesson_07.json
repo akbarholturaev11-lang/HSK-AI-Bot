@@ -686,78 +686,75 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U hali darsxonada o'qiyapti.",
+            "ru": "Он ещё занимается в классе.",
+            "tj": "Вай ҳанӯз дар синфхона дарс мехонад."
+          },
+          "tokens": [
+            "机场",
+            "呢",
+            "路",
+            "在",
+            "教室",
+            "学习",
+            "他",
+            "还"
+          ],
+          "answer_tokens": [
+            "他",
+            "还",
+            "在",
+            "教室",
+            "学习",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "他还在教室学习呢。 — Tā hái zài jiàoshì xuéxí ne.",
+            "ru": "他还在教室学习呢。 — Tā hái zài jiàoshì xuéxí ne.",
+            "tj": "他还在教室学习呢。 — Tā hái zài jiàoshì xuéxí ne."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "他还在____学习呢。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "教室",
+            "离",
+            "路",
+            "机场"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 教室 (jiàoshì) — darsxona, sinf xonasi",
+            "ru": "Верно: 教室 (jiàoshì) — классная комната, аудитория",
+            "tj": "Дуруст: 教室 (jiàoshì) — синфхона, толори дарс"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "教室 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 教室:",
-            "tj": "Маънои калимаи 教室-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "yo'l, ko'cha",
-              "ru": "дорога, улица",
-              "tj": "роҳ, кӯча"
-            },
-            {
-              "uz": "aeroport",
-              "ru": "аэропорт",
-              "tj": "фурудгоҳ"
-            },
-            {
-              "uz": "dan (masofa ifodalash uchun)",
-              "ru": "от, до (для выражения расстояния)",
-              "tj": "аз (барои ифодаи масофа)"
-            },
-            {
-              "uz": "darsxona, sinf xonasi",
-              "ru": "классная комната, аудитория",
-              "tj": "синфхона, толори дарс"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "教室 = darsxona, sinf xonasi (jiàoshì)",
-            "ru": "教室 = классная комната, аудитория (jiàoshì)",
-            "tj": "教室 = синфхона, толори дарс (jiàoshì)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "机场 talaffuzini tanlang:",
-            "ru": "Выберите произношение 机场:",
-            "tj": "Талаффузи 机场-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jiàoshì",
-            "jīchǎng",
-            "lù",
-            "lí"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "机场 — jīchǎng",
-            "ru": "机场 — jīchǎng",
-            "tj": "机场 — jīchǎng"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -771,12 +768,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "教室",
             "路",
             "机场",
-            "离",
-            "教室"
+            "离"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "yo'l, ko'cha = 路 (lù)",
             "ru": "дорога, улица = 路 (lù)",
@@ -796,16 +793,65 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "教室",
-            "离",
             "路",
-            "机场"
+            "机场",
+            "教室",
+            "离"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "离 = dan (masofa ifodalash uchun) (lí)",
             "ru": "离 = от, до (для выражения расстояния) (lí)",
             "tj": "离 = аз (барои ифодаи масофа) (lí)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Devid qaytib keldimi?",
+            "ru": "Дэвид вернулся?",
+            "tj": "Дэвид баргашт?"
+          },
+          "tokens": [
+            "回来",
+            "吗",
+            "教室",
+            "了",
+            "大卫",
+            "机场"
+          ],
+          "answer_tokens": [
+            "大卫",
+            "回来",
+            "了",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "大卫回来了吗？ — Dàwèi huílái le ma?",
+            "ru": "大卫回来了吗？ — Dàwèi huílái le ma?",
+            "tj": "大卫回来了吗？ — Dàwèi huílái le ma?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "大卫回来了吗？",
+          "pinyin": "Dàwèi huílái le ma?",
+          "options": [
+            "明天有考试，他说今天要好好准备。",
+            "大卫回来了吗？",
+            "已经9点多了，他怎么还在学习？",
+            "没有，他还在教室学习呢。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "大卫回来了吗？ — Devid qaytib keldimi?",
+            "ru": "大卫回来了吗？ — Дэвид вернулся?",
+            "tj": "大卫回来了吗？ — Дэвид баргашт?"
           }
         },
         {
@@ -851,27 +897,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "他还在____学习呢。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "离",
-            "路",
-            "教室",
-            "机场"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 教室 (jiàoshì) — darsxona, sinf xonasi",
-            "ru": "Верно: 教室 (jiàoshì) — классная комната, аудитория",
-            "tj": "Дуруст: 教室 (jiàoshì) — синфхона, толори дарс"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "教室",
           "pinyin": "jiàoshì",
@@ -884,7 +909,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -892,6 +917,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "大卫回来了吗？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "没有，他还在教室学习呢。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "已经9点多了，他怎么还在学习？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "大卫回来了吗？",
+            "没有，他还在教室学习呢。",
+            "明天有考试，他说今天要好好准备。",
+            "已经9点多了，他怎么还在学习？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 明天有考试，他说今天要好好准备。",
+            "ru": "Правильный ответ: 明天有考试，他说今天要好好准备。",
+            "tj": "Ҷавоби дуруст: 明天有考试，他说今天要好好准备。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -905,12 +972,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "大卫回来了吗？",
             "没有，他还在教室学习呢。",
-            "明天有考试，他说今天要好好准备。",
-            "已经9点多了，他怎么还在学习？"
+            "已经9点多了，他怎么还在学习？",
+            "大卫回来了吗？",
+            "明天有考试，他说今天要好好准备。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 大卫回来了吗？",
             "ru": "Правильный ответ: 大卫回来了吗？",
@@ -931,11 +998,11 @@
           },
           "options": [
             "没有，他还在教室学习呢。",
-            "明天有考试，他说今天要好好准备。",
             "大卫回来了吗？",
+            "明天有考试，他说今天要好好准备。",
             "已经9点多了，他怎么还在学习？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 明天有考试，他说今天要好好准备。",
             "ru": "Правильный ответ: 明天有考试，他说今天要好好准备。",

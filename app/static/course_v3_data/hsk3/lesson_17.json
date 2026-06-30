@@ -737,6 +737,71 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Keling, do'stimni tanishtirib qo'yay.",
+            "ru": "Позвольте немного представить моего друга.",
+            "tj": "Биё дӯстамро каме муаррифӣ кунам."
+          },
+          "tokens": [
+            "我",
+            "来",
+            "请假",
+            "的",
+            "介绍",
+            "一共",
+            "介绍",
+            "我",
+            "朋友"
+          ],
+          "answer_tokens": [
+            "我",
+            "来",
+            "介绍",
+            "介绍",
+            "我",
+            "的",
+            "朋友"
+          ],
+          "explanation": {
+            "uz": "我来介绍介绍我的朋友。 — Wǒ lái jièshào jièshào wǒ de péngyou.",
+            "ru": "我来介绍介绍我的朋友。 — Wǒ lái jièshào jièshào wǒ de péngyou.",
+            "tj": "我来介绍介绍我的朋友。 — Wǒ lái jièshào jièshào wǒ de péngyou."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "谁都有____解决这个问题。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "一共",
+            "办法",
+            "请假",
+            "邻居"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 办法 (bànfǎ) — usul, chora, yo'l",
+            "ru": "Верно: 办法 (bànfǎ) — способ, метод",
+            "tj": "Дуруст: 办法 (bànfǎ) — усул, роҳ, чора"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -757,14 +822,9 @@
           },
           "options": [
             {
-              "uz": "jami, hammasi bo'lib",
-              "ru": "всего, в общей сложности",
-              "tj": "ҳамагӣ, ҷамъ"
-            },
-            {
-              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
-              "ru": "просить отпуск, отпрашиваться",
-              "tj": "рухсат пурсидан, рухсатӣ хостан"
+              "uz": "qo'shni",
+              "ru": "сосед",
+              "tj": "ҳамсоя"
             },
             {
               "uz": "keyin, keyinchalik",
@@ -772,12 +832,17 @@
               "tj": "баъдтар, баъдан"
             },
             {
-              "uz": "qo'shni",
-              "ru": "сосед",
-              "tj": "ҳамсоя"
+              "uz": "ruxsat so'ramoq, ta'til so'ramoq",
+              "ru": "просить отпуск, отпрашиваться",
+              "tj": "рухсат пурсидан, рухсатӣ хостан"
+            },
+            {
+              "uz": "jami, hammasi bo'lib",
+              "ru": "всего, в общей сложности",
+              "tj": "ҳамагӣ, ҷамъ"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "请假 = ruxsat so'ramoq, ta'til so'ramoq (qǐng jià)",
             "ru": "请假 = просить отпуск, отпрашиваться (qǐng jià)",
@@ -797,12 +862,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "qǐng jià",
-            "línjū",
             "yígòng",
-            "hòulái"
+            "hòulái",
+            "línjū",
+            "qǐng jià"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "一共 — yígòng",
             "ru": "一共 — yígòng",
@@ -810,53 +875,54 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'qo'shni' xitoycha qaysi?",
-            "ru": "'сосед' по-китайски?",
-            "tj": "'ҳамсоя' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U odatda nima qilishni yoqtiradi?",
+            "ru": "Что он обычно любит делать?",
+            "tj": "Ӯ одатан чӣ кор карданро дӯст медорад?"
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "后来",
+          "tokens": [
+            "他",
             "请假",
-            "邻居",
-            "一共"
+            "一般",
+            "做",
+            "一共",
+            "什么",
+            "喜欢"
           ],
-          "correct_index": 2,
+          "answer_tokens": [
+            "他",
+            "一般",
+            "喜欢",
+            "做",
+            "什么"
+          ],
           "explanation": {
-            "uz": "qo'shni = 邻居 (línjū)",
-            "ru": "сосед = 邻居 (línjū)",
-            "tj": "ҳамсоя = 邻居 (línjū)"
+            "uz": "他一般喜欢做什么？ — Tā yìbān xǐhuan zuò shénme?",
+            "ru": "他一般喜欢做什么？ — Tā yìbān xǐhuan zuò shénme?",
+            "tj": "他一般喜欢做什么？ — Tā yìbān xǐhuan zuò shénme?"
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "hòulái qaysi ieroglif?",
-            "ru": "Какой иероглиф читается hòulái?",
-            "tj": "hòulái кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "周经理，下个星期我可以请几天假吗？",
+          "pinyin": "Zhōu jīnglǐ, xià ge xīngqī wǒ kěyǐ qǐng jǐ tiān jià ma?",
           "options": [
-            "请假",
-            "后来",
-            "一共",
-            "邻居"
+            "你有什么事？",
+            "你一共想请几天假？",
+            "我的一个老朋友结婚，我跟他两年没见了。",
+            "周经理，下个星期我可以请几天假吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "后来 = keyin, keyinchalik (hòulái)",
-            "ru": "后来 = позже, впоследствии (hòulái)",
-            "tj": "后来 = баъдтар, баъдан (hòulái)"
+            "uz": "周经理，下个星期我可以请几天假吗？ — Menejer Zhou, keyingi hafta bir necha kun ruxsat olsam bo'ladimi?",
+            "ru": "周经理，下个星期我可以请几天假吗？ — Менеджер Чжоу, могу я на следующей неделе взять несколько дней отпуска?",
+            "tj": "周经理，下个星期我可以请几天假吗？ — Менеҷер Чжоу, ҳафтаи оянда чанд рӯз рухсат гирам мешавад?"
           }
         },
         {
@@ -902,27 +968,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "谁都有____解决这个问题。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "一共",
-            "邻居",
-            "办法",
-            "请假"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 办法 (bànfǎ) — usul, chora, yo'l",
-            "ru": "Верно: 办法 (bànfǎ) — способ, метод",
-            "tj": "Дуруст: 办法 (bànfǎ) — усул, роҳ, чора"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "请假",
           "pinyin": "qǐng jià",
@@ -935,7 +980,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -943,6 +988,53 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "小丽",
+              "zh": "周经理，下个星期我可以请几天假吗？",
+              "blank": false
+            },
+            {
+              "speaker": "周明",
+              "zh": "你有什么事？",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "我的一个老朋友结婚，我跟他两年没见了。",
+              "blank": false
+            },
+            {
+              "speaker": "周明",
+              "zh": "你一共想请几天假？",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "周经理，下个星期我可以请几天假吗？",
+            "三天。",
+            "你有什么事？",
+            "我的一个老朋友结婚，我跟他两年没见了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 三天。",
+            "ru": "Правильный ответ: 三天。",
+            "tj": "Ҷавоби дуруст: 三天。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -956,12 +1048,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你一共想请几天假？",
-            "你有什么事？",
             "周经理，下个星期我可以请几天假吗？",
-            "我的一个老朋友结婚，我跟他两年没见了。"
+            "我的一个老朋友结婚，我跟他两年没见了。",
+            "你一共想请几天假？",
+            "你有什么事？"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 周经理，下个星期我可以请几天假吗？",
             "ru": "Правильный ответ: 周经理，下个星期我可以请几天假吗？",
@@ -981,12 +1073,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你有什么事？",
-            "三天。",
             "我的一个老朋友结婚，我跟他两年没见了。",
-            "周经理，下个星期我可以请几天假吗？"
+            "周经理，下个星期我可以请几天假吗？",
+            "三天。",
+            "你有什么事？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 三天。",
             "ru": "Правильный ответ: 三天。",

@@ -580,6 +580,67 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men hozir kitob o'qiyapman.",
+            "ru": "Я сейчас читаю книгу.",
+            "tj": "Ман ҳоло китоб мехонам."
+          },
+          "tokens": [
+            "书",
+            "喂",
+            "在",
+            "看",
+            "我",
+            "也",
+            "呢"
+          ],
+          "answer_tokens": [
+            "我",
+            "在",
+            "看",
+            "书",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "我在看书呢。 — Wǒ zài kàn shū ne.",
+            "ru": "我在看书呢。 — Wǒ zài kàn shū ne.",
+            "tj": "我在看书呢。 — Wǒ zài kàn shū ne."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我也____中国菜。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "学习",
+            "也",
+            "喜欢",
+            "喂"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 喜欢 (xǐhuan) — yoqtirmoq, yaxshi ko'rmoq",
+            "ru": "Верно: 喜欢 (xǐhuan) — нравиться, любить",
+            "tj": "Дуруст: 喜欢 (xǐhuan) — дӯст доштан, хуш доштан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -600,14 +661,9 @@
           },
           "options": [
             {
-              "uz": "o'qimoq, o'rganmoq",
-              "ru": "учиться, изучать",
-              "tj": "хондан, омӯхтан"
-            },
-            {
-              "uz": "ham, shuningdek",
-              "ru": "тоже, также",
-              "tj": "ҳам, инчунин"
+              "uz": "ertalab (tushgacha)",
+              "ru": "утро (до полудня)",
+              "tj": "субҳ (то нисфирӯзӣ)"
             },
             {
               "uz": "allo (telefonda)",
@@ -615,12 +671,17 @@
               "tj": "алло (аз телефон)"
             },
             {
-              "uz": "ertalab (tushgacha)",
-              "ru": "утро (до полудня)",
-              "tj": "субҳ (то нисфирӯзӣ)"
+              "uz": "ham, shuningdek",
+              "ru": "тоже, также",
+              "tj": "ҳам, инчунин"
+            },
+            {
+              "uz": "o'qimoq, o'rganmoq",
+              "ru": "учиться, изучать",
+              "tj": "хондан, омӯхтан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "喂 = allo (telefonda) (wèi)",
             "ru": "喂 = алло (по телефону) (wèi)",
@@ -641,11 +702,11 @@
           },
           "options": [
             "wèi",
-            "xuéxí",
             "yě",
+            "xuéxí",
             "shàngwǔ"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "也 — yě",
             "ru": "也 — yě",
@@ -653,53 +714,56 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'o'qimoq, o'rganmoq' xitoycha qaysi?",
-            "ru": "'учиться, изучать' по-китайски?",
-            "tj": "'хондан, омӯхтан' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Allo, hozir nima qilyapsiz?",
+            "ru": "Алло, что вы сейчас делаете?",
+            "tj": "Алло, ҳоло чӣ мекунед?"
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "上午",
-            "也",
+          "tokens": [
+            "学习",
             "喂",
-            "学习"
+            "在",
+            "呢",
+            "也",
+            "你",
+            "做",
+            "什么"
           ],
-          "correct_index": 3,
+          "answer_tokens": [
+            "喂",
+            "你",
+            "在",
+            "做",
+            "什么",
+            "呢"
+          ],
           "explanation": {
-            "uz": "o'qimoq, o'rganmoq = 学习 (xuéxí)",
-            "ru": "учиться, изучать = 学习 (xuéxí)",
-            "tj": "хондан, омӯхтан = 学习 (xuéxí)"
+            "uz": "喂，你在做什么呢？ — Wèi, nǐ zài zuò shénme ne?",
+            "ru": "喂，你在做什么呢？ — Wèi, nǐ zài zuò shénme ne?",
+            "tj": "喂，你在做什么呢？ — Wèi, nǐ zài zuò shénme ne?"
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shàngwǔ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shàngwǔ?",
-            "tj": "shàngwǔ кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "喂，你在做什么呢？",
+          "pinyin": "Wèi, nǐ zài zuò shénme ne?",
           "options": [
-            "上午",
-            "喂",
-            "学习",
-            "也"
+            "他没看书，他在学做中国菜呢。",
+            "大卫也在看书吗？",
+            "我在看书呢。",
+            "喂，你在做什么呢？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "上午 = ertalab (tushgacha) (shàngwǔ)",
-            "ru": "上午 = утро (до полудня) (shàngwǔ)",
-            "tj": "上午 = субҳ (то нисфирӯзӣ) (shàngwǔ)"
+            "uz": "喂，你在做什么呢？ — Allo, hozir nima qilyapsiz?",
+            "ru": "喂，你在做什么呢？ — Алло, что вы сейчас делаете?",
+            "tj": "喂，你在做什么呢？ — Алло, ҳоло чӣ мекунед?"
           }
         },
         {
@@ -745,27 +809,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "我也____中国菜。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "学习",
-            "也",
-            "喜欢",
-            "喂"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 喜欢 (xǐhuan) — yoqtirmoq, yaxshi ko'rmoq",
-            "ru": "Верно: 喜欢 (xǐhuan) — нравиться, любить",
-            "tj": "Дуруст: 喜欢 (xǐhuan) — дӯст доштан, хуш доштан"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "喂",
           "pinyin": "wèi",
@@ -778,7 +821,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -786,6 +829,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "喂，你在做什么呢？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "我在看书呢。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "大卫也在看书吗？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "他没看书，他在学做中国菜呢。",
+            "我在看书呢。",
+            "喂，你在做什么呢？",
+            "大卫也在看书吗？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 他没看书，他在学做中国菜呢。",
+            "ru": "Правильный ответ: 他没看书，他在学做中国菜呢。",
+            "tj": "Ҷавоби дуруст: 他没看书，他在学做中国菜呢。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -799,12 +884,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "喂，你在做什么呢？",
             "大卫也在看书吗？",
             "他没看书，他在学做中国菜呢。",
-            "我在看书呢。"
+            "我在看书呢。",
+            "喂，你在做什么呢？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 喂，你在做什么呢？",
             "ru": "Правильный ответ: 喂，你在做什么呢？",
@@ -824,12 +909,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "喂，你在做什么呢？",
-            "大卫也在看书吗？",
             "我在看书呢。",
-            "他没看书，他在学做中国菜呢。"
+            "大卫也在看书吗？",
+            "他没看书，他在学做中国菜呢。",
+            "喂，你在做什么呢？"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 他没看书，他在学做中国菜呢。",
             "ru": "Правильный ответ: 他没看书，他在学做中国菜呢。",

@@ -75,6 +75,60 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertIn("AdFlow", html)
         self.assertIn('"&level="+sel+"&onboarded=1&tour=1"', onboarding)
 
+    def test_interactive_cards_present_and_level_gated(self):
+        """New Duolingo-style cards (sentence_builder, listening_choice,
+        dialog_cloze) appear and only use already-learned vocabulary."""
+        order = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
+        known_words: set[str] = set()
+        known_lines: set[str] = set()
+        for level, count in order:
+            for n in range(1, count + 1):
+                data = json.loads(
+                    (BASE / level / f"lesson_{n:02d}.json").read_text(encoding="utf-8")
+                )
+                where = f"{level}/lesson_{n:02d}"
+                lesson_words = {w["zh"] for w in data["active_words"]}
+                lesson_lines = {
+                    ln["zh"]
+                    for b in data["dialogues"]
+                    for ln in b["dialogue"]
+                    if ln.get("zh")
+                }
+                gate_words = known_words | lesson_words
+                gate_lines = known_lines | lesson_lines
+
+                types = set()
+                for sec in data["sections"]:
+                    for c in sec["cards"]:
+                        types.add(c["type"])
+                        if c["type"] == "sentence_builder":
+                            ans = c["answer_tokens"]
+                            self.assertTrue(2 <= len(ans) <= 8, where)
+                            for tok in ans:
+                                self.assertIn(tok, c["tokens"], where)
+                                self.assertIn(tok, gate_words, f"ungated builder token in {where}")
+                            for lang in ("uz", "ru", "tj"):
+                                self.assertTrue(c["sentence"].get(lang), where)
+                        elif c["type"] == "listening_choice":
+                            self.assertEqual(
+                                c["options"][c["correct_index"]], c["audio_text"], where
+                            )
+                            for op in c["options"]:
+                                self.assertIn(op, gate_lines, f"ungated listen option in {where}")
+                        elif c["type"] == "dialog_cloze":
+                            blanks = [ln for ln in c["lines"] if ln["blank"]]
+                            self.assertEqual(len(blanks), 1, where)
+                            self.assertIn(
+                                c["options"][c["correct_index"]], gate_lines, where
+                            )
+
+                # Every lesson is interactive: listening + dialogue completion.
+                self.assertIn("listening_choice", types, where)
+                self.assertIn("dialog_cloze", types, where)
+
+                known_words |= lesson_words
+                known_lines |= lesson_lines
+
     def test_hsk_exam_options_hide_pinyin_and_hint_labels(self):
         html = Path("app/static/course_v3_test.html").read_text(encoding="utf-8")
 

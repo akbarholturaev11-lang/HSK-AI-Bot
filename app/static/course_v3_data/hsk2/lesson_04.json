@@ -652,103 +652,73 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men 2011-yilda kelgan edim.",
+            "ru": "Я приехал именно в 2011 году.",
+            "tj": "Ман маҳз соли 2011 омадам."
+          },
+          "tokens": [
+            "快乐",
+            "我",
+            "是",
+            "来",
+            "的",
+            "年",
+            "生日"
+          ],
+          "answer_tokens": [
+            "我",
+            "是",
+            "年",
+            "来",
+            "的"
+          ],
+          "explanation": {
+            "uz": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de.",
+            "ru": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de.",
+            "tj": "我是2011年来的。 — Wǒ shì èr líng yī yī nián lái de."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我十一岁的时候____踢足球。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "生日",
+            "开始",
+            "快乐",
+            "给"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 开始 (kāishǐ) — boshlamoq, boshlanmoq",
+            "ru": "Верно: 开始 (kāishǐ) — начинать, начинаться",
+            "tj": "Дуруст: 开始 (kāishǐ) — оғоз кардан, шурӯъ кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "生日 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 生日:",
-            "tj": "Маънои калимаи 生日-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qabul qilmoq, olmoq; telefonga javob bermoq",
-              "ru": "принимать, получать; отвечать на телефон",
-              "tj": "қабул кардан; ба телефон ҷавоб додан"
-            },
-            {
-              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
-              "ru": "для, кому (давать или направлять)",
-              "tj": "барои, ба (додан ё равона кардан)"
-            },
-            {
-              "uz": "baxtli, xursand",
-              "ru": "счастливый, радостный",
-              "tj": "хушбахт, шод"
-            },
-            {
-              "uz": "tug'ilgan kun",
-              "ru": "день рождения",
-              "tj": "рӯзи таваллуд"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "生日 = tug'ilgan kun (shēngrì)",
-            "ru": "生日 = день рождения (shēngrì)",
-            "tj": "生日 = рӯзи таваллуд (shēngrì)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "快乐 talaffuzini tanlang:",
-            "ru": "Выберите произношение 快乐:",
-            "tj": "Талаффузи 快乐-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "kuàilè",
-            "gěi",
-            "shēngrì",
-            "jiē"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "快乐 — kuàilè",
-            "ru": "快乐 — kuàilè",
-            "tj": "快乐 — kuàilè"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'uchun, ga (kimgadir berish yoki yo'naltirish)' xitoycha qaysi?",
-            "ru": "'для, кому (давать или направлять)' по-китайски?",
-            "tj": "'барои, ба (додан ё равона кардан)' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "快乐",
-            "接",
-            "生日",
-            "给"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "uchun, ga (kimgadir berish yoki yo'naltirish) = 给 (gěi)",
-            "ru": "для, кому (давать или направлять) = 给 (gěi)",
-            "tj": "барои, ба (додан ё равона кардан) = 给 (gěi)"
-          }
-        },
         {
           "type": "hanzi_choice",
           "prompt": {
@@ -762,16 +732,114 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "快乐",
+            "生日",
             "给",
-            "接",
-            "生日"
+            "快乐",
+            "接"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "接 = qabul qilmoq, olmoq; telefonga javob bermoq (jiē)",
             "ru": "接 = принимать, получать; отвечать на телефон (jiē)",
             "tj": "接 = қабул кардан; ба телефон ҷавоб додан (jiē)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "晚上 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 晚上:",
+            "tj": "Маънои калимаи 晚上-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kecha, kechqurun",
+              "ru": "вечер, вечером",
+              "tj": "шом, шабонгоҳ"
+            },
+            {
+              "uz": "baxtli, xursand",
+              "ru": "счастливый, радостный",
+              "tj": "хушбахт, шод"
+            },
+            {
+              "uz": "uchun, ga (kimgadir berish yoki yo'naltirish)",
+              "ru": "для, кому (давать или направлять)",
+              "tj": "барои, ба (додан ё равона кардан)"
+            },
+            {
+              "uz": "tug'ilgan kun",
+              "ru": "день рождения",
+              "tj": "рӯзи таваллуд"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "晚上 = kecha, kechqurun (wǎnshang)",
+            "ru": "晚上 = вечер, вечером (wǎnshang)",
+            "tj": "晚上 = шом, шабонгоҳ (wǎnshang)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Tug'ilgan kuning bilan! Bu senga sovg'a!",
+            "ru": "С днём рождения! Это тебе подарок!",
+            "tj": "Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
+          },
+          "tokens": [
+            "送",
+            "快乐",
+            "晚上",
+            "这",
+            "你",
+            "接",
+            "给",
+            "的",
+            "是",
+            "生日"
+          ],
+          "answer_tokens": [
+            "生日",
+            "快乐",
+            "这",
+            "是",
+            "送",
+            "给",
+            "你",
+            "的"
+          ],
+          "explanation": {
+            "uz": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+            "ru": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+            "tj": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "生日快乐！这是送给你的！",
+          "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+          "options": [
+            "太谢谢你了！",
+            "生日快乐！这是送给你的！",
+            "对，这本书是我写给你的。",
+            "是什么？是一本书吗？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "生日快乐！这是送给你的！ — Tug'ilgan kuning bilan! Bu senga sovg'a!",
+            "ru": "生日快乐！这是送给你的！ — С днём рождения! Это тебе подарок!",
+            "tj": "生日快乐！这是送给你的！ — Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
           }
         },
         {
@@ -817,27 +885,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "我十一岁的时候____踢足球。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "快乐",
-            "生日",
-            "开始",
-            "给"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 开始 (kāishǐ) — boshlamoq, boshlanmoq",
-            "ru": "Верно: 开始 (kāishǐ) — начинать, начинаться",
-            "tj": "Дуруст: 开始 (kāishǐ) — оғоз кардан, шурӯъ кардан"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "生日",
           "pinyin": "shēngrì",
@@ -850,7 +897,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -858,6 +905,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "生日快乐！这是送给你的！",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "是什么？是一本书吗？",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "对，这本书是我写给你的。",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "生日快乐！这是送给你的！",
+            "太谢谢你了！",
+            "是什么？是一本书吗？",
+            "对，这本书是我写给你的。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 太谢谢你了！",
+            "ru": "Правильный ответ: 太谢谢你了！",
+            "tj": "Ҷавоби дуруст: 太谢谢你了！"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -871,9 +960,9 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "对，这本书是我写给你的。",
-            "生日快乐！这是送给你的！",
             "太谢谢你了！",
+            "生日快乐！这是送给你的！",
+            "对，这本书是我写给你的。",
             "是什么？是一本书吗？"
           ],
           "correct_index": 1,
@@ -897,11 +986,11 @@
           },
           "options": [
             "生日快乐！这是送给你的！",
-            "是什么？是一本书吗？",
             "太谢谢你了！",
-            "对，这本书是我写给你的。"
+            "对，这本书是我写给你的。",
+            "是什么？是一本书吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 太谢谢你了！",
             "ru": "Правильный ответ: 太谢谢你了！",

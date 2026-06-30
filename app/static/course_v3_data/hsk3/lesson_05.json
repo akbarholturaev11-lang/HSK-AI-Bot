@@ -747,6 +747,73 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Isitma chiqdi, tanasim tobora yomonlashmoqda.",
+            "ru": "Поднялась температура, самочувствие всё хуже.",
+            "tj": "Таб баромад, ҳолатам рӯ ба рӯ бадтар мешавад."
+          },
+          "tokens": [
+            "发烧",
+            "为",
+            "越",
+            "来",
+            "身体",
+            "了",
+            "照顾",
+            "越",
+            "舒服",
+            "不"
+          ],
+          "answer_tokens": [
+            "发烧",
+            "了",
+            "身体",
+            "越",
+            "来",
+            "越",
+            "不",
+            "舒服"
+          ],
+          "explanation": {
+            "uz": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu.",
+            "ru": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu.",
+            "tj": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____了，身体越来越不舒服。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "发烧",
+            "为",
+            "照顾",
+            "用"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 发烧 (fāshāo) — isitmasi chiqmoq",
+            "ru": "Верно: 发烧 (fāshāo) — температурить",
+            "tj": "Дуруст: 发烧 (fāshāo) — таб кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -772,11 +839,6 @@
               "tj": "барои"
             },
             {
-              "uz": "qaramoq, parvarish qilmoq",
-              "ru": "заботиться, ухаживать",
-              "tj": "нигоҳубин кардан"
-            },
-            {
               "uz": "isitmasi chiqmoq",
               "ru": "температурить",
               "tj": "таб кардан"
@@ -785,9 +847,14 @@
               "uz": "kerak bo'lmoq, ishlatmoq",
               "ru": "нужно; использовать",
               "tj": "лозим шудан; истифода бурдан"
+            },
+            {
+              "uz": "qaramoq, parvarish qilmoq",
+              "ru": "заботиться, ухаживать",
+              "tj": "нигоҳубин кардан"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "发烧 = isitmasi chiqmoq (fāshāo)",
             "ru": "发烧 = температурить (fāshāo)",
@@ -808,11 +875,11 @@
           },
           "options": [
             "zhàogù",
-            "fāshāo",
             "wèi",
+            "fāshāo",
             "yòng"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "为 — wèi",
             "ru": "为 — wèi",
@@ -820,53 +887,48 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'qaramoq, parvarish qilmoq' xitoycha qaysi?",
-            "ru": "'заботиться, ухаживать' по-китайски?",
-            "tj": "'нигоҳубин кардан' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Xo'p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "照顾",
+          "tokens": [
             "发烧",
-            "用",
-            "为"
+            "好",
+            "为",
+            "的"
           ],
-          "correct_index": 0,
+          "answer_tokens": [
+            "好",
+            "的"
+          ],
           "explanation": {
-            "uz": "qaramoq, parvarish qilmoq = 照顾 (zhàogù)",
-            "ru": "заботиться, ухаживать = 照顾 (zhàogù)",
-            "tj": "нигоҳубин кардан = 照顾 (zhàogù)"
+            "uz": "好的。 — Hǎo de.",
+            "ru": "好的。 — Hǎo de.",
+            "tj": "好的。 — Hǎo de."
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yòng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yòng?",
-            "tj": "yòng кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "我听说你身体不舒服，怎么了？",
+          "pinyin": "Wǒ tīngshuō nǐ shēntǐ bù shūfu, zěnme le?",
           "options": [
-            "照顾",
-            "为",
-            "发烧",
-            "用"
+            "前几天有点儿发烧，现在好多了。",
+            "谢谢，我要吃药，不喝茶了。",
+            "我听说你身体不舒服，怎么了？",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "用 = kerak bo'lmoq, ishlatmoq (yòng)",
-            "ru": "用 = нужно; использовать (yòng)",
-            "tj": "用 = лозим шудан; истифода бурдан (yòng)"
+            "uz": "我听说你身体不舒服，怎么了？ — Eshitishimcha, mazang yo'q ekan, nima bo'ldi?",
+            "ru": "我听说你身体不舒服，怎么了？ — Я слышал, ты плохо себя чувствуешь, что случилось?",
+            "tj": "我听说你身体不舒服，怎么了？ — Шунидам, ки худро хуб ҳис намекунӣ, чӣ шуд?"
           }
         },
         {
@@ -912,27 +974,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____了，身体越来越不舒服。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "为",
-            "照顾",
-            "发烧",
-            "用"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 发烧 (fāshāo) — isitmasi chiqmoq",
-            "ru": "Верно: 发烧 (fāshāo) — температурить",
-            "tj": "Дуруст: 发烧 (fāshāo) — таб кардан"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "发烧",
           "pinyin": "fāshāo",
@@ -945,7 +986,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -953,6 +994,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "朋友",
+              "zh": "我听说你身体不舒服，怎么了？",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "前几天有点儿发烧，现在好多了。",
+              "blank": false
+            },
+            {
+              "speaker": "朋友",
+              "zh": "喝杯茶吧，这是我为你买的绿茶，很不错。",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "谢谢，我要吃药，不喝茶了。",
+              "blank": false
+            },
+            {
+              "speaker": "朋友",
+              "zh": "那喝杯水吧。",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "前几天有点儿发烧，现在好多了。",
+            "好的。",
+            "我听说你身体不舒服，怎么了？",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 好的。",
+            "ru": "Правильный ответ: 好的。",
+            "tj": "Ҷавоби дуруст: 好的。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -966,10 +1059,10 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "前几天有点儿发烧，现在好多了。",
+            "谢谢，我要吃药，不喝茶了。",
             "我听说你身体不舒服，怎么了？",
-            "喝杯茶吧，这是我为你买的绿茶，很不错。",
-            "谢谢，我要吃药，不喝茶了。"
+            "前几天有点儿发烧，现在好多了。",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。"
           ],
           "correct_index": 1,
           "explanation": {
@@ -991,12 +1084,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "好的。",
             "我听说你身体不舒服，怎么了？",
             "前几天有点儿发烧，现在好多了。",
-            "喝杯茶吧，这是我为你买的绿茶，很不错。"
+            "喝杯茶吧，这是我为你买的绿茶，很不错。",
+            "好的。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 好的。",
             "ru": "Правильный ответ: 好的。",

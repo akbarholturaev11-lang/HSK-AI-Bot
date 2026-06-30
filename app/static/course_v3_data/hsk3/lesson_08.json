@@ -842,6 +842,44 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U yana kechikdi! (o'tgan)",
+            "ru": "Он снова опоздал! (прошлое)",
+            "tj": "Вай боз дер омад! (гузашта)"
+          },
+          "tokens": [
+            "电梯",
+            "满意",
+            "他",
+            "迟到",
+            "又",
+            "了"
+          ],
+          "answer_tokens": [
+            "他",
+            "又",
+            "迟到",
+            "了"
+          ],
+          "explanation": {
+            "uz": "他又迟到了！ — Tā yòu chídào le!",
+            "ru": "他又迟到了！ — Tā yòu chídào le!",
+            "tj": "他又迟到了！ — Tā yòu chídào le!"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -849,11 +887,36 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "céng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается céng?",
+            "tj": "céng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "又",
+            "满意",
+            "层",
+            "电梯"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "层 = qavatlar uchun hisob so'zi (céng)",
+            "ru": "层 = счётное слово для этажей (céng)",
+            "tj": "层 = ҳисобвожа барои ошёна (céng)"
+          }
+        },
+        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "又 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 又:",
-            "tj": "Маънои калимаи 又-ро интихоб кунед:"
+            "uz": "害怕 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 害怕:",
+            "tj": "Маънои калимаи 害怕-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -877,91 +940,65 @@
               "tj": "лифт"
             },
             {
-              "uz": "qavatlar uchun hisob so'zi",
-              "ru": "счётное слово для этажей",
-              "tj": "ҳисобвожа барои ошёна"
+              "uz": "qo'rqmoq",
+              "ru": "бояться",
+              "tj": "тарсидан"
             }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "又 = yana (amal allaqachon takrorlangan) (yòu)",
-            "ru": "又 = снова (действие уже повторилось) (yòu)",
-            "tj": "又 = боз (амал аллакай такрор шуд) (yòu)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "满意 talaffuzini tanlang:",
-            "ru": "Выберите произношение 满意:",
-            "tj": "Талаффузи 满意-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "yòu",
-            "céng",
-            "diàntī",
-            "mǎnyì"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "满意 — mǎnyì",
-            "ru": "满意 — mǎnyì",
-            "tj": "满意 — mǎnyì"
+            "uz": "害怕 = qo'rqmoq (hàipà)",
+            "ru": "害怕 = бояться (hàipà)",
+            "tj": "害怕 = тарсидан (hàipà)"
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'lift' xitoycha qaysi?",
-            "ru": "'лифт' по-китайски?",
-            "tj": "'лифт' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hech biridan mamnun emasmisan?",
+            "ru": "Всеми недовольна?",
+            "tj": "Аз ҳеҷ кадом қаноатманд нестӣ?"
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
+          "tokens": [
+            "不",
             "电梯",
-            "层",
             "满意",
+            "吗",
+            "都",
             "又"
           ],
-          "correct_index": 0,
+          "answer_tokens": [
+            "都",
+            "不",
+            "满意",
+            "吗"
+          ],
           "explanation": {
-            "uz": "lift = 电梯 (diàntī)",
-            "ru": "лифт = 电梯 (diàntī)",
-            "tj": "лифт = 电梯 (diàntī)"
+            "uz": "都不满意吗？ — Dōu bù mǎnyì ma?",
+            "ru": "都不满意吗？ — Dōu bù mǎnyì ma?",
+            "tj": "都不满意吗？ — Dōu bù mǎnyì ma?"
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "céng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается céng?",
-            "tj": "céng кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "听说你最近打算买房子？",
+          "pinyin": "Tīngshuō nǐ zuìjìn dǎsuàn mǎi fángzi?",
           "options": [
-            "满意",
-            "层",
-            "又",
-            "电梯"
+            "都不满意吗？",
+            "听说你最近打算买房子？",
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
+            "一个没有电梯，不方便。一个有电梯，但是在二十层。"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "层 = qavatlar uchun hisob so'zi (céng)",
-            "ru": "层 = счётное слово для этажей (céng)",
-            "tj": "层 = ҳисобвожа барои ошёна (céng)"
+            "uz": "听说你最近打算买房子？ — Eshitishimcha, oxirgi paytda uy olmoqchisan?",
+            "ru": "听说你最近打算买房子？ — Слышал, ты в последнее время собираешься купить квартиру?",
+            "tj": "听说你最近打算买房子？ — Шунидам, ки вақтҳои охир хона хариданӣ ҳастӣ?"
           }
         },
         {
@@ -1019,7 +1056,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -1027,6 +1064,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "同事",
+              "zh": "听说你最近打算买房子？",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
+              "blank": false
+            },
+            {
+              "speaker": "同事",
+              "zh": "都不满意吗？",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "一个没有电梯，不方便。一个有电梯，但是在二十层。",
+              "blank": false
+            },
+            {
+              "speaker": "同事",
+              "zh": "二十层怎么了？",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "都不满意吗？",
+            "太高了，往下看多害怕啊！",
+            "听说你最近打算买房子？",
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 太高了，往下看多害怕啊！",
+            "ru": "Правильный ответ: 太高了，往下看多害怕啊！",
+            "tj": "Ҷавоби дуруст: 太高了，往下看多害怕啊！"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1042,8 +1131,8 @@
           "options": [
             "听说你最近打算买房子？",
             "一个没有电梯，不方便。一个有电梯，但是在二十层。",
-            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "都不满意吗？"
+            "都不满意吗？",
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1065,12 +1154,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "太高了，往下看多害怕啊！",
-            "都不满意吗？",
             "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "听说你最近打算买房子？"
+            "听说你最近打算买房子？",
+            "太高了，往下看多害怕啊！",
+            "都不满意吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 太高了，往下看多害怕啊！",
             "ru": "Правильный ответ: 太高了，往下看多害怕啊！",

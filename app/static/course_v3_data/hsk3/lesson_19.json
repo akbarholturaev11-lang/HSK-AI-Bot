@@ -697,78 +697,77 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U menga boshqalarga aytmaslikni buyurdi.",
+            "ru": "Он велел мне никому не говорить.",
+            "tj": "Вай ба ман фармод, ки ба дигарон нагӯям."
+          },
+          "tokens": [
+            "不",
+            "告诉",
+            "耳朵",
+            "要",
+            "他",
+            "别人",
+            "叫",
+            "脸",
+            "我"
+          ],
+          "answer_tokens": [
+            "他",
+            "叫",
+            "我",
+            "不",
+            "要",
+            "告诉",
+            "别人"
+          ],
+          "explanation": {
+            "uz": "他叫我不要告诉别人。 — Tā jiào wǒ bú yào gàosù biérén.",
+            "ru": "他叫我不要告诉别人。 — Tā jiào wǒ bú yào gàosù biérén.",
+            "tj": "他叫我不要告诉别人。 — Tā jiào wǒ bú yào gàosù biérén."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我____那条街道来的。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "短",
+            "脸",
+            "经过",
+            "耳朵"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 经过 (jīngguò) — yonidan o'tmoq, boshdan kechirmoq",
+            "ru": "Верно: 经过 (jīngguò) — проходить мимо, переживать",
+            "tj": "Дуруст: 经过 (jīngguò) — аз назди чизе гузаштан, аз сар гузаронидан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "耳朵 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 耳朵:",
-            "tj": "Маънои калимаи 耳朵-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "yuz",
-              "ru": "лицо",
-              "tj": "рӯй"
-            },
-            {
-              "uz": "quloq",
-              "ru": "ухо",
-              "tj": "гӯш"
-            },
-            {
-              "uz": "ot",
-              "ru": "лошадь",
-              "tj": "асп"
-            },
-            {
-              "uz": "kalta, qisqa",
-              "ru": "короткий",
-              "tj": "кӯтоҳ"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "耳朵 = quloq (ěrduo)",
-            "ru": "耳朵 = ухо (ěrduo)",
-            "tj": "耳朵 = гӯш (ěrduo)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "脸 talaffuzini tanlang:",
-            "ru": "Выберите произношение 脸:",
-            "tj": "Талаффузи 脸-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "ěrduo",
-            "mǎ",
-            "liǎn",
-            "duǎn"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "脸 — liǎn",
-            "ru": "脸 — liǎn",
-            "tj": "脸 — liǎn"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -782,12 +781,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "脸",
             "耳朵",
             "短",
-            "马"
+            "马",
+            "脸"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "kalta, qisqa = 短 (duǎn)",
             "ru": "короткий = 短 (duǎn)",
@@ -807,16 +806,71 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "马",
             "脸",
+            "马",
             "耳朵",
             "短"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "马 = ot (mǎ)",
             "ru": "马 = лошадь (mǎ)",
             "tj": "马 = асп (mǎ)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U nimani yoqtiradi? Men unga sovg'a qilaman.",
+            "ru": "Что она любит? Я подарю ей.",
+            "tj": "Ӯ чиро дӯст медорад? Ман ба ӯ медиҳам."
+          },
+          "tokens": [
+            "我",
+            "什么",
+            "她",
+            "耳朵",
+            "送",
+            "喜欢",
+            "脸",
+            "她",
+            "给"
+          ],
+          "answer_tokens": [
+            "她",
+            "喜欢",
+            "什么",
+            "我",
+            "送",
+            "给",
+            "她"
+          ],
+          "explanation": {
+            "uz": "她喜欢什么？我送给她。 — Tā xǐhuan shénme? Wǒ sòng gěi tā.",
+            "ru": "她喜欢什么？我送给她。 — Tā xǐhuan shénme? Wǒ sòng gěi tā.",
+            "tj": "她喜欢什么？我送给她。 — Tā xǐhuan shénme? Wǒ sòng gěi tā."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+          "pinyin": "Nǚ'ér zuìjìn xǐhuan bǎ tóufa fàng zài ěrduo hòumiàn, nǐ zhīdào wèi shénme ma?",
+          "options": [
+            "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
+            "这样可以使她的脸看上去漂亮一些。",
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "我最近觉得她和以前不太一样了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Qizimiz yaqinda sochini qulog'ining orqasiga qo'yishni yoqtirib qoldi, nima uchunligini bilasanmi?",
+            "ru": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Дочь в последнее время любит убирать волосы за уши, знаешь почему?",
+            "tj": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Духтарамон вақтҳои охир мӯяшро пушти гӯш мегузорад, медонӣ чаро?"
           }
         },
         {
@@ -862,27 +916,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "我____那条街道来的。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "耳朵",
-            "脸",
-            "经过",
-            "短"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 经过 (jīngguò) — yonidan o'tmoq, boshdan kechirmoq",
-            "ru": "Верно: 经过 (jīngguò) — проходить мимо, переживать",
-            "tj": "Дуруст: 经过 (jīngguò) — аз назди чизе гузаштан, аз сар гузаронидан"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "耳朵",
           "pinyin": "ěrduo",
@@ -895,7 +928,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -903,6 +936,53 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "爸爸",
+              "zh": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+              "blank": false
+            },
+            {
+              "speaker": "妈妈",
+              "zh": "这样可以使她的脸看上去漂亮一些。",
+              "blank": false
+            },
+            {
+              "speaker": "爸爸",
+              "zh": "我最近觉得她和以前不太一样了。",
+              "blank": false
+            },
+            {
+              "speaker": "妈妈",
+              "zh": "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
+              "blank": false
+            },
+            {
+              "speaker": "爸爸",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "这样可以使她的脸看上去漂亮一些。",
+            "我也想起来了。她现在慢慢地开始像个女孩子了。",
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "我最近觉得她和以前不太一样了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我也想起来了。她现在慢慢地开始像个女孩子了。",
+            "ru": "Правильный ответ: 我也想起来了。她现在慢慢地开始像个女孩子了。",
+            "tj": "Ҷавоби дуруст: 我也想起来了。她现在慢慢地开始像个女孩子了。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -916,12 +996,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
             "这样可以使她的脸看上去漂亮一些。",
             "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
             "我最近觉得她和以前不太一样了。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
             "ru": "Правильный ответ: 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
@@ -942,9 +1022,9 @@
           },
           "options": [
             "我也想起来了。她现在慢慢地开始像个女孩子了。",
-            "这样可以使她的脸看上去漂亮一些。",
             "我最近觉得她和以前不太一样了。",
-            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？"
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "这样可以使她的脸看上去漂亮一些。"
           ],
           "correct_index": 0,
           "explanation": {

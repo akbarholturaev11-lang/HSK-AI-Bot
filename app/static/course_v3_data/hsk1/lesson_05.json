@@ -558,6 +558,69 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sizning oilangizda necha kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
+          },
+          "tokens": [
+            "口",
+            "岁",
+            "人",
+            "有",
+            "你",
+            "几",
+            "女儿",
+            "家"
+          ],
+          "answer_tokens": [
+            "你",
+            "家",
+            "有",
+            "几",
+            "口",
+            "人"
+          ],
+          "explanation": {
+            "uz": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
+            "ru": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
+            "tj": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "她____几岁了？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "口",
+            "女儿",
+            "有",
+            "家"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 女儿 (nǚ'ér) — qiz farzand",
+            "ru": "Верно: 女儿 (nǚ'ér) — дочь",
+            "tj": "Дуруст: 女儿 (nǚ'ér) — духтар (фарзанд)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -578,27 +641,27 @@
           },
           "options": [
             {
-              "uz": "qiz farzand",
-              "ru": "дочь",
-              "tj": "духтар (фарзанд)"
-            },
-            {
               "uz": "bor, ega bo'lmoq",
               "ru": "иметь, есть",
               "tj": "доштан, мавҷуд будан"
             },
             {
-              "uz": "o'lchov so'zi (oila a'zolari uchun)",
-              "ru": "счётное слово (для членов семьи)",
-              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
-            },
-            {
               "uz": "oila, uy",
               "ru": "семья, дом",
               "tj": "оила, хона"
+            },
+            {
+              "uz": "qiz farzand",
+              "ru": "дочь",
+              "tj": "духтар (фарзанд)"
+            },
+            {
+              "uz": "o'lchov so'zi (oila a'zolari uchun)",
+              "ru": "счётное слово (для членов семьи)",
+              "tj": "калимаи шуморавӣ (барои аъзоёни оила)"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "家 = oila, uy (jiā)",
             "ru": "家 = семья, дом (jiā)",
@@ -618,12 +681,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yǒu",
+            "nǚ'ér",
             "jiā",
-            "kǒu",
-            "nǚ'ér"
+            "yǒu",
+            "kǒu"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "有 — yǒu",
             "ru": "有 — yǒu",
@@ -631,53 +694,56 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'o'lchov so'zi (oila a'zolari uchun)' xitoycha qaysi?",
-            "ru": "'счётное слово (для членов семьи)' по-китайски?",
-            "tj": "'калимаи шуморавӣ (барои аъзоёни оила)' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sizning oilangizda necha kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "口",
+          "tokens": [
+            "几",
+            "你",
+            "岁",
             "有",
             "家",
+            "人",
+            "口",
             "女儿"
           ],
-          "correct_index": 0,
+          "answer_tokens": [
+            "你",
+            "家",
+            "有",
+            "几",
+            "口",
+            "人"
+          ],
           "explanation": {
-            "uz": "o'lchov so'zi (oila a'zolari uchun) = 口 (kǒu)",
-            "ru": "счётное слово (для членов семьи) = 口 (kǒu)",
-            "tj": "калимаи шуморавӣ (барои аъзоёни оила) = 口 (kǒu)"
+            "uz": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
+            "ru": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
+            "tj": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?"
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "nǚ'ér qaysi ieroglif?",
-            "ru": "Какой иероглиф читается nǚ'ér?",
-            "tj": "nǚ'ér кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "你家有几口人？",
+          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
           "options": [
-            "有",
-            "家",
-            "女儿",
-            "口"
+            "我家有三口人。",
+            "她今年四岁了。",
+            "你女儿几岁了？",
+            "你家有几口人？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "女儿 = qiz farzand (nǚ'ér)",
-            "ru": "女儿 = дочь (nǚ'ér)",
-            "tj": "女儿 = духтар (фарзанд) (nǚ'ér)"
+            "uz": "你家有几口人？ — Sizning oilangizda necha kishi bor?",
+            "ru": "你家有几口人？ — Сколько человек в вашей семье?",
+            "tj": "你家有几口人？ — Дар оилаи шумо чанд нафар аст?"
           }
         },
         {
@@ -723,27 +789,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "她____几岁了？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "女儿",
-            "有",
-            "家",
-            "口"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 女儿 (nǚ'ér) — qiz farzand",
-            "ru": "Верно: 女儿 (nǚ'ér) — дочь",
-            "tj": "Дуруст: 女儿 (nǚ'ér) — духтар (фарзанд)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "家",
           "pinyin": "jiā",
@@ -756,7 +801,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -764,6 +809,38 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "你家有几口人？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "你家有几口人？",
+            "你女儿几岁了？",
+            "我家有三口人。",
+            "她今年四岁了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 我家有三口人。",
+            "ru": "Правильный ответ: 我家有三口人。",
+            "tj": "Ҷавоби дуруст: 我家有三口人。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -777,12 +854,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你家有几口人？",
             "我家有三口人。",
-            "你女儿几岁了？",
-            "她今年四岁了。"
+            "她今年四岁了。",
+            "你家有几口人？",
+            "你女儿几岁了？"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 你家有几口人？",
             "ru": "Правильный ответ: 你家有几口人？",
@@ -802,12 +879,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你女儿几岁了？",
-            "她今年四岁了。",
             "我家有三口人。",
-            "你家有几口人？"
+            "你女儿几岁了？",
+            "你家有几口人？",
+            "她今年四岁了。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 我家有三口人。",
             "ru": "Правильный ответ: 我家有三口人。",

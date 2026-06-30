@@ -1254,103 +1254,75 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Oxiri nima qilmoqchisan o'zi?",
+            "ru": "Так что ты всё-таки собираешься делать?",
+            "tj": "Охир ту чӣ нақша дорӣ?"
+          },
+          "tokens": [
+            "博士",
+            "的",
+            "你",
+            "到底",
+            "打算",
+            "怎么",
+            "呀",
+            "签证"
+          ],
+          "answer_tokens": [
+            "你",
+            "到底",
+            "怎么",
+            "打算",
+            "的",
+            "呀"
+          ],
+          "explanation": {
+            "uz": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?",
+            "ru": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?",
+            "tj": "你到底怎么打算的呀？ — Nǐ dàodǐ zěnme dǎsuàn de ya?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "听完我的回答，____你已经知道我的答案了吧。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "报名",
+            "恐怕",
+            "博士",
+            "签证"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 恐怕 (kǒngpà) — ehtimol, qo'rqaman-ki",
+            "ru": "Верно: 恐怕 (kǒngpà) — боюсь, вероятно",
+            "tj": "Дуруст: 恐怕 (kǒngpà) — метарсам ки, эҳтимол"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "博士 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 博士:",
-            "tj": "Маънои калимаи 博士-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ro'yxatdan o'tmoq",
-              "ru": "записываться, регистрироваться",
-              "tj": "номнавис шудан"
-            },
-            {
-              "uz": "forma, jadval",
-              "ru": "форма, таблица",
-              "tj": "варақа, ҷадвал"
-            },
-            {
-              "uz": "viza",
-              "ru": "виза",
-              "tj": "раводид"
-            },
-            {
-              "uz": "doktorantura darajasi",
-              "ru": "доктор наук, докторская степень",
-              "tj": "доктор, дараҷаи илмӣ"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "博士 = doktorantura darajasi (bóshì)",
-            "ru": "博士 = доктор наук, докторская степень (bóshì)",
-            "tj": "博士 = доктор, дараҷаи илмӣ (bóshì)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "签证 talaffuzini tanlang:",
-            "ru": "Выберите произношение 签证:",
-            "tj": "Талаффузи 签证-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "bào míng",
-            "biǎogé",
-            "bóshì",
-            "qiānzhèng"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "签证 — qiānzhèng",
-            "ru": "签证 — qiānzhèng",
-            "tj": "签证 — qiānzhèng"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ro'yxatdan o'tmoq' xitoycha qaysi?",
-            "ru": "'записываться, регистрироваться' по-китайски?",
-            "tj": "'номнавис шудан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "签证",
-            "报名",
-            "博士",
-            "表格"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "ro'yxatdan o'tmoq = 报名 (bào míng)",
-            "ru": "записываться, регистрироваться = 报名 (bào míng)",
-            "tj": "номнавис шудан = 报名 (bào míng)"
-          }
-        },
         {
           "type": "hanzi_choice",
           "prompt": {
@@ -1364,16 +1336,110 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "表格",
-            "签证",
             "博士",
-            "报名"
+            "报名",
+            "表格",
+            "签证"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "表格 = forma, jadval (biǎogé)",
             "ru": "表格 = форма, таблица (biǎogé)",
             "tj": "表格 = варақа, ҷадвал (biǎogé)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "传真 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 传真:",
+            "tj": "Маънои калимаи 传真-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "faks orqali yubormoq",
+              "ru": "отправлять факсом",
+              "tj": "бо факс фиристодан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "传真 = faks orqali yubormoq (chuánzhēn)",
+            "ru": "传真 = отправлять факсом (chuánzhēn)",
+            "tj": "传真 = бо факс фиристодан (chuánzhēn)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hozir hujjatlar tayyorgarligi qanday?",
+            "ru": "Как сейчас с подготовкой документов?",
+            "tj": "Ҳоло омодагии ҳуҷҷатҳо чӣ хел аст?"
+          },
+          "tokens": [
+            "签证",
+            "材料",
+            "得",
+            "现在",
+            "准备",
+            "博士",
+            "怎么样",
+            "了"
+          ],
+          "answer_tokens": [
+            "现在",
+            "材料",
+            "准备",
+            "得",
+            "怎么样",
+            "了"
+          ],
+          "explanation": {
+            "uz": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?",
+            "ru": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?",
+            "tj": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你马上就要硕士毕业了吧？将来有什么打算？",
+          "pinyin": "Nǐ mǎshàng jiù yào shuòshì bìyè le ba? Jiānglái yǒu shénme dǎsuàn?",
+          "options": [
+            "你马上就要硕士毕业了吧？将来有什么打算？",
+            "现在材料准备得怎么样了？",
+            "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
+            "我想出国读博士，一直在准备办签证需要的材料。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你马上就要硕士毕业了吧？将来有什么打算？ — Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?",
+            "ru": "你马上就要硕士毕业了吧？将来有什么打算？ — Ты скоро заканчиваешь магистратуру? Какие планы на будущее?",
+            "tj": "你马上就要硕士毕业了吧？将来有什么打算？ — Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?"
           }
         },
         {
@@ -1419,27 +1485,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "听完我的回答，____你已经知道我的答案了吧。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "报名",
-            "签证",
-            "恐怕",
-            "博士"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 恐怕 (kǒngpà) — ehtimol, qo'rqaman-ki",
-            "ru": "Верно: 恐怕 (kǒngpà) — боюсь, вероятно",
-            "tj": "Дуруст: 恐怕 (kǒngpà) — метарсам ки, эҳтимол"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "博士",
           "pinyin": "bóshì",
@@ -1452,7 +1497,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -1460,6 +1505,63 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "小雨",
+              "zh": "你马上就要硕士毕业了吧？将来有什么打算？",
+              "blank": false
+            },
+            {
+              "speaker": "小夏",
+              "zh": "我想出国读博士，一直在准备办签证需要的材料。",
+              "blank": false
+            },
+            {
+              "speaker": "小雨",
+              "zh": "现在材料准备得怎么样了？",
+              "blank": false
+            },
+            {
+              "speaker": "小夏",
+              "zh": "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
+              "blank": false
+            },
+            {
+              "speaker": "小雨",
+              "zh": "还应该有国外大学给你的邀请信吧？他们把邀请信传真给你了吗？",
+              "blank": false
+            },
+            {
+              "speaker": "小夏",
+              "zh": "没有啊，下个星期我就要去使馆办签证了，这可怎么办？",
+              "blank": false
+            },
+            {
+              "speaker": "小雨",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "我想出国读博士，一直在准备办签证需要的材料。",
+            "你马上就要硕士毕业了吧？将来有什么打算？",
+            "这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
+            "现在材料准备得怎么样了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
+            "ru": "Правильный ответ: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
+            "tj": "Ҷавоби дуруст: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1473,12 +1575,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "我想出国读博士，一直在准备办签证需要的材料。",
+            "现在材料准备得怎么样了？",
             "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
-            "你马上就要硕士毕业了吧？将来有什么打算？",
-            "现在材料准备得怎么样了？"
+            "我想出国读博士，一直在准备办签证需要的材料。",
+            "你马上就要硕士毕业了吧？将来有什么打算？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 你马上就要硕士毕业了吧？将来有什么打算？",
             "ru": "Правильный ответ: 你马上就要硕士毕业了吧？将来有什么打算？",

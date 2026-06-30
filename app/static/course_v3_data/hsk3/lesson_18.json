@@ -772,53 +772,44 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "gap_fill",
+          "sentence": "____这次活动，你有什么想法？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "只",
+            "关于",
+            "向",
+            "万"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 关于 (guānyú) — haqida, to'g'risida",
+            "ru": "Верно: 关于 (guānyú) — о, относительно",
+            "tj": "Дуруст: 关于 (guānyú) — дар бораи"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "向 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 向:",
-            "tj": "Маънои калимаи 向-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "og'iz",
-              "ru": "рот",
-              "tj": "даҳон"
-            },
-            {
-              "uz": "tomon, ga",
-              "ru": "к, по направлению к",
-              "tj": "ба сӯи, ба"
-            },
-            {
-              "uz": "ayrim hayvonlar uchun hisob so'zi",
-              "ru": "счетное слово для некоторых животных",
-              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
-            },
-            {
-              "uz": "o'n ming",
-              "ru": "десять тысяч",
-              "tj": "даҳ ҳазор"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "向 = tomon, ga (xiàng)",
-            "ru": "向 = к, по направлению к (xiàng)",
-            "tj": "向 = ба сӯи, ба (xiàng)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -832,12 +823,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "zhī",
             "xiàng",
             "zuǐ",
-            "wàn",
-            "zhī"
+            "wàn"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "万 — wàn",
             "ru": "万 — wàn",
@@ -857,12 +848,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "向",
             "万",
-            "只",
             "嘴",
-            "向"
+            "只"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "ayrim hayvonlar uchun hisob so'zi = 只 (zhī)",
             "ru": "счетное слово для некоторых животных = 只 (zhī)",
@@ -870,28 +861,54 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zuǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zuǐ?",
-            "tj": "zuǐ кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yana 50 ming yuan yetmayapti.",
+            "ru": "Не хватает еще 50 тысяч юаней.",
+            "tj": "Боз 50 ҳазор юан камӣ дорад."
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "向",
+          "tokens": [
+            "还",
+            "差",
             "万",
-            "嘴",
-            "只"
+            "只",
+            "向",
+            "块",
+            "钱"
+          ],
+          "answer_tokens": [
+            "还",
+            "差",
+            "万",
+            "块",
+            "钱"
+          ],
+          "explanation": {
+            "uz": "还差5万块钱。 — Hái chà wǔ wàn kuài qián.",
+            "ru": "还差5万块钱。 — Hái chà wǔ wàn kuài qián.",
+            "tj": "还差5万块钱。 — Hái chà wǔ wàn kuài qián."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "老周，我打算买房子了，想向你借点儿钱。",
+          "pinyin": "Lǎo Zhōu, wǒ dǎsuàn mǎi fángzi le, xiǎng xiàng nǐ jiè diǎnr qián.",
+          "options": [
+            "好，钱下午打给你。你打算在哪儿买房？",
+            "没问题，只要我有，就一定会借给你的。还差多少？",
+            "老周，我打算买房子了，想向你借点儿钱。",
+            "还差5万块钱。"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "嘴 = og'iz (zuǐ)",
-            "ru": "嘴 = рот (zuǐ)",
-            "tj": "嘴 = даҳон (zuǐ)"
+            "uz": "老周，我打算买房子了，想向你借点儿钱。 — Lao Zhou, uy sotib olmoqchiman, sendan ozgina pul qarz olmoqchiman.",
+            "ru": "老周，我打算买房子了，想向你借点儿钱。 — Лао Чжоу, я собираюсь купить дом и хочу занять у тебя немного денег.",
+            "tj": "老周，我打算买房子了，想向你借点儿钱。 — Лао Чжоу, хона хариданӣ ҳастам, мехоҳам аз ту каме пул қарз гирам."
           }
         },
         {
@@ -937,27 +954,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____这次活动，你有什么想法？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "关于",
-            "只",
-            "向",
-            "万"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 关于 (guānyú) — haqida, to'g'risida",
-            "ru": "Верно: 关于 (guānyú) — о, относительно",
-            "tj": "Дуруст: 关于 (guānyú) — дар бораи"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "向",
           "pinyin": "xiàng",
@@ -970,7 +966,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -978,6 +974,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "朋友",
+              "zh": "老周，我打算买房子了，想向你借点儿钱。",
+              "blank": false
+            },
+            {
+              "speaker": "周明",
+              "zh": "没问题，只要我有，就一定会借给你的。还差多少？",
+              "blank": false
+            },
+            {
+              "speaker": "朋友",
+              "zh": "还差5万块钱。",
+              "blank": false
+            },
+            {
+              "speaker": "周明",
+              "zh": "好，钱下午打给你。你打算在哪儿买房？",
+              "blank": false
+            },
+            {
+              "speaker": "朋友",
+              "zh": "就在我们医院前面。",
+              "blank": false
+            },
+            {
+              "speaker": "周明",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "那你以后去医院就方便了。",
+            "还差5万块钱。",
+            "老周，我打算买房子了，想向你借点儿钱。",
+            "没问题，只要我有，就一定会借给你的。还差多少？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 那你以后去医院就方便了。",
+            "ru": "Правильный ответ: 那你以后去医院就方便了。",
+            "tj": "Ҷавоби дуруст: 那你以后去医院就方便了。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -991,12 +1039,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "老周，我打算买房子了，想向你借点儿钱。",
+            "没问题，只要我有，就一定会借给你的。还差多少？",
             "好，钱下午打给你。你打算在哪儿买房？",
             "还差5万块钱。",
-            "没问题，只要我有，就一定会借给你的。还差多少？"
+            "老周，我打算买房子了，想向你借点儿钱。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 老周，我打算买房子了，想向你借点儿钱。",
             "ru": "Правильный ответ: 老周，我打算买房子了，想向你借点儿钱。",
@@ -1018,8 +1066,8 @@
           "options": [
             "老周，我打算买房子了，想向你借点儿钱。",
             "那你以后去医院就方便了。",
-            "还差5万块钱。",
-            "没问题，只要我有，就一定会借给你的。还差多少？"
+            "没问题，只要我有，就一定会借给你的。还差多少？",
+            "还差5万块钱。"
           ],
           "correct_index": 1,
           "explanation": {

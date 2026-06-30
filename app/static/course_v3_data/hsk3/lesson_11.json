@@ -852,78 +852,71 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Konditsionerni o'chir!",
+            "ru": "Выключи кондиционер!",
+            "tj": "Кондитсионерро хомӯш кун!"
+          },
+          "tokens": [
+            "图书馆",
+            "把",
+            "空调",
+            "关",
+            "借",
+            "了"
+          ],
+          "answer_tokens": [
+            "把",
+            "空调",
+            "关",
+            "了"
+          ],
+          "explanation": {
+            "uz": "把空调关了！ — Bǎ kōngtiáo guān le!",
+            "ru": "把空调关了！ — Bǎ kōngtiáo guān le!",
+            "tj": "把空调关了！ — Bǎ kōngtiáo guān le!"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "把____关了！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "空调",
+            "图书馆",
+            "词典",
+            "借"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 空调 (kōngtiáo) — konditsioner",
+            "ru": "Верно: 空调 (kōngtiáo) — кондиционер",
+            "tj": "Дуруст: 空调 (kōngtiáo) — кондитсионер"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "图书馆 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 图书馆:",
-            "tj": "Маънои калимаи 图书馆-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "kutubxona",
-              "ru": "библиотека",
-              "tj": "китобхона"
-            },
-            {
-              "uz": "qarzga olmoq, qarzga bermoq",
-              "ru": "брать в долг, одалживать",
-              "tj": "қарз гирифтан, қарз додан"
-            },
-            {
-              "uz": "qaytarmoq",
-              "ru": "возвращать",
-              "tj": "баргардондан"
-            },
-            {
-              "uz": "lug'at",
-              "ru": "словарь",
-              "tj": "луғат"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "图书馆 = kutubxona (túshūguǎn)",
-            "ru": "图书馆 = библиотека (túshūguǎn)",
-            "tj": "图书馆 = китобхона (túshūguǎn)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "借 talaffuzini tanlang:",
-            "ru": "Выберите произношение 借:",
-            "tj": "Талаффузи 借-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jiè",
-            "cídiǎn",
-            "huán",
-            "túshūguǎn"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "借 — jiè",
-            "ru": "借 — jiè",
-            "tj": "借 — jiè"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -937,12 +930,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "词典",
-            "借",
             "图书馆",
-            "还"
+            "还",
+            "词典",
+            "借"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "lug'at = 词典 (cídiǎn)",
             "ru": "словарь = 词典 (cídiǎn)",
@@ -962,9 +955,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "图书馆",
             "借",
             "词典",
+            "图书馆",
             "还"
           ],
           "correct_index": 3,
@@ -972,6 +965,55 @@
             "uz": "还 = qaytarmoq (huán)",
             "ru": "还 = возвращать (huán)",
             "tj": "还 = баргардондан (huán)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men avval ketdim.",
+            "ru": "Я сначала пойду.",
+            "tj": "Ман аввал меравам."
+          },
+          "tokens": [
+            "走",
+            "我",
+            "了",
+            "图书馆",
+            "借",
+            "先"
+          ],
+          "answer_tokens": [
+            "我",
+            "先",
+            "走",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我先走了。 — Wǒ xiān zǒu le.",
+            "ru": "我先走了。 — Wǒ xiān zǒu le.",
+            "tj": "我先走了。 — Wǒ xiān zǒu le."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我先走了。",
+          "pinyin": "Wǒ xiān zǒu le.",
+          "options": [
+            "我先走了。",
+            "帮我把这本词典还了吧。",
+            "你去哪儿？",
+            "我去图书馆借本书。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我先走了。 — Men avval ketdim.",
+            "ru": "我先走了。 — Я сначала пойду.",
+            "tj": "我先走了。 — Ман аввал меравам."
           }
         },
         {
@@ -1017,27 +1059,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "把____关了！",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "词典",
-            "图书馆",
-            "空调",
-            "借"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 空调 (kōngtiáo) — konditsioner",
-            "ru": "Верно: 空调 (kōngtiáo) — кондиционер",
-            "tj": "Дуруст: 空调 (kōngtiáo) — кондитсионер"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "图书馆",
           "pinyin": "túshūguǎn",
@@ -1050,7 +1071,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -1058,6 +1079,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "小明",
+              "zh": "我先走了。",
+              "blank": false
+            },
+            {
+              "speaker": "同学",
+              "zh": "你去哪儿？",
+              "blank": false
+            },
+            {
+              "speaker": "小明",
+              "zh": "我去图书馆借本书。",
+              "blank": false
+            },
+            {
+              "speaker": "同学",
+              "zh": "帮我把这本词典还了吧。",
+              "blank": false
+            },
+            {
+              "speaker": "小明",
+              "zh": "好，等一会儿你离开教室的时候，记得把灯关了。",
+              "blank": false
+            },
+            {
+              "speaker": "同学",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "你去哪儿？",
+            "我去图书馆借本书。",
+            "我先走了。",
+            "好的，放心吧。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 好的，放心吧。",
+            "ru": "Правильный ответ: 好的，放心吧。",
+            "tj": "Ҷавоби дуруст: 好的，放心吧。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1071,12 +1144,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "帮我把这本词典还了吧。",
-            "我先走了。",
             "你去哪儿？",
-            "我去图书馆借本书。"
+            "我去图书馆借本书。",
+            "我先走了。",
+            "帮我把这本词典还了吧。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 我先走了。",
             "ru": "Правильный ответ: 我先走了。",
@@ -1096,12 +1169,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你去哪儿？",
-            "好的，放心吧。",
             "我先走了。",
-            "我去图书馆借本书。"
+            "我去图书馆借本书。",
+            "你去哪儿？",
+            "好的，放心吧。"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 好的，放心吧。",
             "ru": "Правильный ответ: 好的，放心吧。",

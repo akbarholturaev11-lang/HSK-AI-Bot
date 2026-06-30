@@ -1174,78 +1174,71 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bundan tashqari, daromadi ham yaxshi.",
+            "ru": "Кроме того, доход тоже неплохой.",
+            "tj": "Ғайр аз ин, даромад ҳам хуб аст."
+          },
+          "tokens": [
+            "挺",
+            "不错",
+            "收入",
+            "紧张",
+            "另外",
+            "也"
+          ],
+          "answer_tokens": [
+            "另外",
+            "收入",
+            "也",
+            "不错"
+          ],
+          "explanation": {
+            "uz": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò.",
+            "ru": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò.",
+            "tj": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "本来是小李____的，但是他突然生病住院了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "紧张",
+            "信心",
+            "挺",
+            "负责"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 负责 (fùzé) — mas'ul bo'lmoq",
+            "ru": "Верно: 负责 (fùzé) — отвечать за, быть ответственным",
+            "tj": "Дуруст: 负责 (fùzé) — масъул будан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "挺 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 挺:",
-            "tj": "Маънои калимаи 挺-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ancha, juda",
-              "ru": "довольно, весьма",
-              "tj": "хеле, анча"
-            },
-            {
-              "uz": "qobiliyat",
-              "ru": "способность, умение",
-              "tj": "қобилият"
-            },
-            {
-              "uz": "ishonch",
-              "ru": "уверенность",
-              "tj": "боварӣ"
-            },
-            {
-              "uz": "hayajonlangan, asabiy",
-              "ru": "нервный, напряженный",
-              "tj": "изтиробнок, асабӣ"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "挺 = ancha, juda (tǐng)",
-            "ru": "挺 = довольно, весьма (tǐng)",
-            "tj": "挺 = хеле, анча (tǐng)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "紧张 talaffuzini tanlang:",
-            "ru": "Выберите произношение 紧张:",
-            "tj": "Талаффузи 紧张-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "jǐnzhāng",
-            "nénglì",
-            "tǐng",
-            "xìnxīn"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "紧张 — jǐnzhāng",
-            "ru": "紧张 — jǐnzhāng",
-            "tj": "紧张 — jǐnzhāng"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -1260,9 +1253,9 @@
           },
           "options": [
             "信心",
+            "能力",
             "挺",
-            "紧张",
-            "能力"
+            "紧张"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1284,16 +1277,38 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "挺",
-            "能力",
             "信心",
-            "紧张"
+            "挺",
+            "紧张",
+            "能力"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "能力 = qobiliyat (nénglì)",
             "ru": "能力 = способность, умение (nénglì)",
             "tj": "能力 = қобилият (nénglì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你上午的面试怎么样？",
+          "pinyin": "Nǐ shàngwǔ de miànshì zěnmeyàng?",
+          "options": [
+            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
+            "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？",
+            "面试的时候，一定要对自己有信心，要相信自己的能力。",
+            "你上午的面试怎么样？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "你上午的面试怎么样？ — Ertalabki intervyuing qanday bo'ldi?",
+            "ru": "你上午的面试怎么样？ — Как прошло твое утреннее собеседование?",
+            "tj": "你上午的面试怎么样？ — Мусоҳибаи саҳарият чӣ хел гузашт?"
           }
         },
         {
@@ -1339,27 +1354,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "本来是小李____的，但是他突然生病住院了。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "紧张",
-            "负责",
-            "挺",
-            "信心"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 负责 (fùzé) — mas'ul bo'lmoq",
-            "ru": "Верно: 负责 (fùzé) — отвечать за, быть ответственным",
-            "tj": "Дуруст: 负责 (fùzé) — масъул будан"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "挺",
           "pinyin": "tǐng",
@@ -1372,7 +1366,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -1380,6 +1374,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "小夏",
+              "zh": "你上午的面试怎么样？",
+              "blank": false
+            },
+            {
+              "speaker": "小雨",
+              "zh": "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
+              "blank": false
+            },
+            {
+              "speaker": "小夏",
+              "zh": "面试的时候，一定要对自己有信心，要相信自己的能力。",
+              "blank": false
+            },
+            {
+              "speaker": "小雨",
+              "zh": "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？",
+              "blank": false
+            },
+            {
+              "speaker": "小夏",
+              "zh": "我还没决定呢。",
+              "blank": false
+            },
+            {
+              "speaker": "小雨",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
+            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
+            "面试的时候，一定要对自己有信心，要相信自己的能力。",
+            "你上午的面试怎么样？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
+            "ru": "Правильный ответ: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
+            "tj": "Ҷавоби дуруст: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1393,12 +1439,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "面试的时候，一定要对自己有信心，要相信自己的能力。",
-            "你上午的面试怎么样？",
+            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
             "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？",
-            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。"
+            "你上午的面试怎么样？",
+            "面试的时候，一定要对自己有信心，要相信自己的能力。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 你上午的面试怎么样？",
             "ru": "Правильный ответ: 你上午的面试怎么样？",
@@ -1419,11 +1465,11 @@
           },
           "options": [
             "你上午的面试怎么样？",
+            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
             "面试的时候，一定要对自己有信心，要相信自己的能力。",
-            "听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
-            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。"
+            "听说这次招聘会提供的工作机会很多，我们一起去看看吧。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
             "ru": "Правильный ответ: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",

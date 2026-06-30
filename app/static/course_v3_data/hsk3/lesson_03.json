@@ -822,78 +822,75 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ertaga yomg'ir yog'sa kerak, soyabon olishni yodda tuting!",
+            "ru": "Завтра, наверное, будет дождь — возьмите зонт!",
+            "tj": "Фардо шояд борон борад, чатр гиред!"
+          },
+          "tokens": [
+            "还是",
+            "伞",
+            "记得",
+            "下雨",
+            "会",
+            "带",
+            "明天",
+            "爬山"
+          ],
+          "answer_tokens": [
+            "明天",
+            "会",
+            "下雨",
+            "记得",
+            "带",
+            "伞"
+          ],
+          "explanation": {
+            "uz": "明天会下雨，记得带伞！ — Míngtiān huì xiàyǔ, jìde dài sǎn!",
+            "ru": "明天会下雨，记得带伞！ — Míngtiān huì xiàyǔ, jìde dài sǎn!",
+            "tj": "明天会下雨，记得带伞！ — Míngtiān huì xiàyǔ, jìde dài sǎn!"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "你想喝茶____果汁？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "还是",
+            "小心",
+            "条",
+            "爬山"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 还是 (háishi) — yoki (savolda tanlov)",
+            "ru": "Верно: 还是 (háishi) — или (в вопросе выбора)",
+            "tj": "Дуруст: 还是 (háishi) — ё (дар саволи интихобӣ)"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "还是 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 还是:",
-            "tj": "Маънои калимаи 还是-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ehtiyotkor, ehtiyot bo'lmoq",
-              "ru": "осторожный, быть осторожным",
-              "tj": "эҳтиёткор, эҳтиёт шудан"
-            },
-            {
-              "uz": "shim/ko'ylak kabi narsalar uchun hisob so'zi",
-              "ru": "счётное слово для брюк, платьев и т.п.",
-              "tj": "ҳисобвожа барои шим, курта ва ғ."
-            },
-            {
-              "uz": "toqqa chiqmoq",
-              "ru": "подниматься в гору",
-              "tj": "ба кӯҳ баромадан"
-            },
-            {
-              "uz": "yoki (savolda tanlov)",
-              "ru": "или (в вопросе выбора)",
-              "tj": "ё (дар саволи интихобӣ)"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "还是 = yoki (savolda tanlov) (háishi)",
-            "ru": "还是 = или (в вопросе выбора) (háishi)",
-            "tj": "还是 = ё (дар саволи интихобӣ) (háishi)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "爬山 talaffuzini tanlang:",
-            "ru": "Выберите произношение 爬山:",
-            "tj": "Талаффузи 爬山-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "tiáo",
-            "xiǎoxīn",
-            "pá shān",
-            "háishi"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "爬山 — pá shān",
-            "ru": "爬山 — pá shān",
-            "tj": "爬山 — pá shān"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -908,11 +905,11 @@
           },
           "options": [
             "还是",
-            "爬山",
             "小心",
-            "条"
+            "条",
+            "爬山"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "ehtiyotkor, ehtiyot bo'lmoq = 小心 (xiǎoxīn)",
             "ru": "осторожный, быть осторожным = 小心 (xiǎoxīn)",
@@ -933,15 +930,66 @@
           },
           "options": [
             "还是",
+            "小心",
             "爬山",
-            "条",
-            "小心"
+            "条"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "条 = shim/ko'ylak kabi narsalar uchun hisob so'zi (tiáo)",
             "ru": "条 = счётное слово для брюк, платьев и т.п. (tiáo)",
             "tj": "条 = ҳисобвожа барои шим, курта ва ғ. (tiáo)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Xo'p, sen ham borasanmi?",
+            "ru": "Хорошо, ты тоже пойдёшь?",
+            "tj": "Хуб, ту ҳам меравӣ?"
+          },
+          "tokens": [
+            "吗",
+            "去",
+            "好",
+            "你",
+            "还是",
+            "爬山",
+            "也"
+          ],
+          "answer_tokens": [
+            "好",
+            "你",
+            "也",
+            "去",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "好，你也去吗？ — Hǎo, nǐ yě qù ma?",
+            "ru": "好，你也去吗？ — Hǎo, nǐ yě qù ma?",
+            "tj": "好，你也去吗？ — Hǎo, nǐ yě qù ma?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "明天是晴天还是阴天？",
+          "pinyin": "Míngtiān shì qíngtiān háishi yīntiān?",
+          "options": [
+            "爬山的时候要小心点儿。",
+            "没事，我们明天要去爬山。",
+            "阴天，电视上说多云。怎么了？有事？",
+            "明天是晴天还是阴天？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "明天是晴天还是阴天？ — Ertaga havo ochiq bo'ladimi yoki bulutlimi?",
+            "ru": "明天是晴天还是阴天？ — Завтра будет ясно или пасмурно?",
+            "tj": "明天是晴天还是阴天？ — Пагоҳ ҳаво офтобӣ мешавад ё абрнок?"
           }
         },
         {
@@ -987,27 +1035,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "你想喝茶____果汁？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "小心",
-            "爬山",
-            "还是",
-            "条"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 还是 (háishi) — yoki (savolda tanlov)",
-            "ru": "Верно: 还是 (háishi) — или (в вопросе выбора)",
-            "tj": "Дуруст: 还是 (háishi) — ё (дар саволи интихобӣ)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "还是",
           "pinyin": "háishi",
@@ -1020,7 +1047,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -1028,6 +1055,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "小刚",
+              "zh": "明天是晴天还是阴天？",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "阴天，电视上说多云。怎么了？有事？",
+              "blank": false
+            },
+            {
+              "speaker": "小刚",
+              "zh": "没事，我们明天要去爬山。",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "爬山的时候要小心点儿。",
+              "blank": false
+            },
+            {
+              "speaker": "小刚",
+              "zh": "好，你也去吗？",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "明天是晴天还是阴天？",
+            "我不去，我有事。",
+            "阴天，电视上说多云。怎么了？有事？",
+            "没事，我们明天要去爬山。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我不去，我有事。",
+            "ru": "Правильный ответ: 我不去，我有事。",
+            "tj": "Ҷавоби дуруст: 我不去，我有事。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1041,12 +1120,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "爬山的时候要小心点儿。",
-            "没事，我们明天要去爬山。",
             "阴天，电视上说多云。怎么了？有事？",
-            "明天是晴天还是阴天？"
+            "没事，我们明天要去爬山。",
+            "明天是晴天还是阴天？",
+            "爬山的时候要小心点儿。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 明天是晴天还是阴天？",
             "ru": "Правильный ответ: 明天是晴天还是阴天？",
@@ -1066,10 +1145,10 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "阴天，电视上说多云。怎么了？有事？",
+            "明天是晴天还是阴天？",
             "我不去，我有事。",
             "没事，我们明天要去爬山。",
-            "明天是晴天还是阴天？"
+            "阴天，电视上说多云。怎么了？有事？"
           ],
           "correct_index": 1,
           "explanation": {

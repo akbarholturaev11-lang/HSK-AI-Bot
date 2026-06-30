@@ -677,6 +677,67 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Mana shuni olavering.",
+            "ru": "Вот это и покупай.",
+            "tj": "Маҳз ҳамин харед."
+          },
+          "tokens": [
+            "件",
+            "买",
+            "就",
+            "准备",
+            "这",
+            "吧",
+            "外面"
+          ],
+          "answer_tokens": [
+            "就",
+            "买",
+            "这",
+            "件",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "就买这件吧。 — Jiù mǎi zhè jiàn ba.",
+            "ru": "就买这件吧。 — Jiù mǎi zhè jiàn ba.",
+            "tj": "就买这件吧。 — Jiù mǎi zhè jiàn ba."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "颜色还____，就是有点儿大。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "就",
+            "准备",
+            "外面",
+            "可以"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 可以 (kěyǐ) — mumkin, yaxshi, qabul qilarli",
+            "ru": "Верно: 可以 (kěyǐ) — можно, хорошо, приемлемо",
+            "tj": "Дуруст: 可以 (kěyǐ) — мумкин, қабул аст"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -697,27 +758,27 @@
           },
           "options": [
             {
-              "uz": "baliq",
-              "ru": "рыба",
-              "tj": "моҳӣ"
-            },
-            {
-              "uz": "aynan, shu, xuddi shunday; darhol",
-              "ru": "именно, вот; сразу, тут же",
-              "tj": "маҳз, ҳамин; фавран"
-            },
-            {
               "uz": "tashqarida, tashqi tomon",
               "ru": "снаружи, на улице",
               "tj": "берун, берунӣ"
             },
             {
+              "uz": "baliq",
+              "ru": "рыба",
+              "tj": "моҳӣ"
+            },
+            {
               "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
               "ru": "готовить, готовиться",
               "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "外面 = tashqarida, tashqi tomon (wàimiàn)",
             "ru": "外面 = снаружи, на улице (wàimiàn)",
@@ -738,9 +799,9 @@
           },
           "options": [
             "zhǔnbèi",
-            "jiù",
+            "wàimiàn",
             "yú",
-            "wàimiàn"
+            "jiù"
           ],
           "correct_index": 0,
           "explanation": {
@@ -750,53 +811,56 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'aynan, shu, xuddi shunday; darhol' xitoycha qaysi?",
-            "ru": "'именно, вот; сразу, тут же' по-китайски?",
-            "tj": "'маҳз, ҳамин; фавран' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Unda nima pishirmoqchisan?",
+            "ru": "Тогда что ты собираешься готовить?",
+            "tj": "Пас ту чӣ пухтан мехоҳӣ?"
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "就",
+          "tokens": [
+            "那",
+            "准备",
+            "呢",
+            "什么",
             "外面",
-            "鱼",
-            "准备"
+            "你",
+            "做",
+            "就"
           ],
-          "correct_index": 0,
+          "answer_tokens": [
+            "那",
+            "你",
+            "准备",
+            "做",
+            "什么",
+            "呢"
+          ],
           "explanation": {
-            "uz": "aynan, shu, xuddi shunday; darhol = 就 (jiù)",
-            "ru": "именно, вот; сразу, тут же = 就 (jiù)",
-            "tj": "маҳз, ҳамин; фавран = 就 (jiù)"
+            "uz": "那你准备做什么呢？ — Nà nǐ zhǔnbèi zuò shénme ne?",
+            "ru": "那你准备做什么呢？ — Nà nǐ zhǔnbèi zuò shénme ne?",
+            "tj": "那你准备做什么呢？ — Nà nǐ zhǔnbèi zuò shénme ne?"
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yú qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yú?",
-            "tj": "yú кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "晚上我们去饭馆吃饭，怎么样？",
+          "pinyin": "Wǎnshang wǒmen qù fànguǎn chīfàn, zěnmeyàng?",
           "options": [
-            "准备",
-            "外面",
-            "鱼",
-            "就"
+            "我不想去外面吃，我想在家吃。",
+            "那你准备做什么呢？",
+            "晚上我们去饭馆吃饭，怎么样？",
+            "就做你爱吃的鱼吧。"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "鱼 = baliq (yú)",
-            "ru": "鱼 = рыба (yú)",
-            "tj": "鱼 = моҳӣ (yú)"
+            "uz": "晚上我们去饭馆吃饭，怎么样？ — Kechqurun restoranga borib ovqatlansak qanday?",
+            "ru": "晚上我们去饭馆吃饭，怎么样？ — Как насчёт того, чтобы вечером пойти поесть в ресторан?",
+            "tj": "晚上我们去饭馆吃饭，怎么样？ — Шом мо ба тарабхона рафта хӯрок хӯрем, чӣ тавр?"
           }
         },
         {
@@ -842,27 +906,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "颜色还____，就是有点儿大。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "可以",
-            "就",
-            "准备",
-            "外面"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 可以 (kěyǐ) — mumkin, yaxshi, qabul qilarli",
-            "ru": "Верно: 可以 (kěyǐ) — можно, хорошо, приемлемо",
-            "tj": "Дуруст: 可以 (kěyǐ) — мумкин, қабул аст"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "外面",
           "pinyin": "wàimiàn",
@@ -875,7 +918,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -883,6 +926,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "晚上我们去饭馆吃饭，怎么样？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "我不想去外面吃，我想在家吃。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "那你准备做什么呢？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "我不想去外面吃，我想在家吃。",
+            "那你准备做什么呢？",
+            "就做你爱吃的鱼吧。",
+            "晚上我们去饭馆吃饭，怎么样？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 就做你爱吃的鱼吧。",
+            "ru": "Правильный ответ: 就做你爱吃的鱼吧。",
+            "tj": "Ҷавоби дуруст: 就做你爱吃的鱼吧。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -896,12 +981,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "那你准备做什么呢？",
             "就做你爱吃的鱼吧。",
-            "晚上我们去饭馆吃饭，怎么样？",
-            "我不想去外面吃，我想在家吃。"
+            "我不想去外面吃，我想在家吃。",
+            "那你准备做什么呢？",
+            "晚上我们去饭馆吃饭，怎么样？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 晚上我们去饭馆吃饭，怎么样？",
             "ru": "Правильный ответ: 晚上我们去饭馆吃饭，怎么样？",
@@ -921,12 +1006,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "就做你爱吃的鱼吧。",
-            "我不想去外面吃，我想在家吃。",
             "那你准备做什么呢？",
-            "晚上我们去饭馆吃饭，怎么样？"
+            "就做你爱吃的鱼吧。",
+            "晚上我们去饭馆吃饭，怎么样？",
+            "我不想去外面吃，我想在家吃。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 就做你爱吃的鱼吧。",
             "ru": "Правильный ответ: 就做你爱吃的鱼吧。",

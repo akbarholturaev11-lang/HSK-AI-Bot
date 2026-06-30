@@ -1219,6 +1219,69 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Xarakter jihatidan bir-birini jalb qilish yanada kerak.",
+            "ru": "Еще важнее взаимное притяжение характеров.",
+            "tj": "Ҷалби ҳамдигар аз ҷиҳати хислат боз ҳам муҳимтар аст."
+          },
+          "tokens": [
+            "需要",
+            "上",
+            "俩",
+            "互相",
+            "更",
+            "法律",
+            "性格",
+            "吸引"
+          ],
+          "answer_tokens": [
+            "更",
+            "需要",
+            "性格",
+            "上",
+            "互相",
+            "吸引"
+          ],
+          "explanation": {
+            "uz": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
+            "ru": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
+            "tj": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "他____足球踢得好，性格也不错。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "俩",
+            "法律",
+            "不仅",
+            "印象"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 不仅 (bùjǐn) — nafaqat",
+            "ru": "Верно: 不仅 (bùjǐn) — не только",
+            "tj": "Дуруст: 不仅 (bùjǐn) — на танҳо"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -1279,10 +1342,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "fǎlǜ",
-            "liǎ",
             "shēn",
-            "yìnxiàng"
+            "liǎ",
+            "yìnxiàng",
+            "fǎlǜ"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1292,53 +1355,58 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'taassurot' xitoycha qaysi?",
-            "ru": "'впечатление' по-китайски?",
-            "tj": "'таассурот' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Unda siz ikkalangiz qanday tanishgansiz?",
+            "ru": "Тогда как вы двое познакомились?",
+            "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "深",
-            "印象",
+          "tokens": [
             "法律",
+            "认识",
+            "怎么",
+            "你们",
+            "印象",
+            "是",
+            "的",
+            "那",
             "俩"
           ],
-          "correct_index": 1,
+          "answer_tokens": [
+            "那",
+            "你们",
+            "俩",
+            "是",
+            "怎么",
+            "认识",
+            "的"
+          ],
           "explanation": {
-            "uz": "taassurot = 印象 (yìnxiàng)",
-            "ru": "впечатление = 印象 (yìnxiàng)",
-            "tj": "таассурот = 印象 (yìnxiàng)"
+            "uz": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?",
+            "ru": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?",
+            "tj": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?"
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shēn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shēn?",
-            "tj": "shēn кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+          "pinyin": "Tīngshuō nǐ nánpéngyou Lǐ Jìn gēn nǐ shì yí ge xuéxiào de, shì nǐ tóngxué ma?",
           "options": [
-            "深",
-            "印象",
-            "法律",
-            "俩"
+            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "那你们俩是怎么认识的？",
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "深 = chuqur (shēn)",
-            "ru": "深 = глубокий (shēn)",
-            "tj": "深 = чуқур (shēn)"
+            "uz": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?",
+            "ru": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?",
+            "tj": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?"
           }
         },
         {
@@ -1384,27 +1452,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "他____足球踢得好，性格也不错。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "不仅",
-            "俩",
-            "印象",
-            "法律"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 不仅 (bùjǐn) — nafaqat",
-            "ru": "Верно: 不仅 (bùjǐn) — не только",
-            "tj": "Дуруст: 不仅 (bùjǐn) — на танҳо"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "法律",
           "pinyin": "fǎlǜ",
@@ -1417,7 +1464,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -1425,6 +1472,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "孙月",
+              "zh": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+              "blank": false
+            },
+            {
+              "speaker": "王静",
+              "zh": "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+              "blank": false
+            },
+            {
+              "speaker": "孙月",
+              "zh": "那你们俩是怎么认识的？",
+              "blank": false
+            },
+            {
+              "speaker": "王静",
+              "zh": "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+              "blank": false
+            },
+            {
+              "speaker": "孙月",
+              "zh": "你为什么喜欢他？",
+              "blank": false
+            },
+            {
+              "speaker": "王静",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "他不仅足球踢得好，性格也不错。",
+            "那你们俩是怎么认识的？",
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 他不仅足球踢得好，性格也不错。",
+            "ru": "Правильный ответ: 他不仅足球踢得好，性格也不错。",
+            "tj": "Ҷавоби дуруст: 他不仅足球踢得好，性格也不错。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1438,12 +1537,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+            "那你们俩是怎么认识的？",
             "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "那你们俩是怎么认识的？"
+            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
             "ru": "Правильный ответ: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
@@ -1463,12 +1562,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
             "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
             "他不仅足球踢得好，性格也不错。",
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
             "那你们俩是怎么认识的？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 他不仅足球踢得好，性格也不错。",
             "ru": "Правильный ответ: 他不仅足球踢得好，性格也不错。",

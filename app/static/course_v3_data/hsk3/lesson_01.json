@@ -782,6 +782,67 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Barcha uy vazifalari bajarildi!",
+            "ru": "Все домашние задания сделаны!",
+            "tj": "Ҳамаи вазифаҳои хонагӣ иҷро шуд!"
+          },
+          "tokens": [
+            "打算",
+            "作业",
+            "做",
+            "好",
+            "都",
+            "了",
+            "周末"
+          ],
+          "answer_tokens": [
+            "作业",
+            "都",
+            "做",
+            "好",
+            "了"
+          ],
+          "explanation": {
+            "uz": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
+            "ru": "作业都做好了！ — Zuòyè dōu zuò hǎo le!",
+            "tj": "作业都做好了！ — Zuòyè dōu zuò hǎo le!"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____都做好了！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "周末",
+            "作业",
+            "啊",
+            "打算"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 作业 (zuòyè) — uy vazifasi",
+            "ru": "Верно: 作业 (zuòyè) — домашнее задание",
+            "tj": "Дуруст: 作业 (zuòyè) — вазифаи хонагӣ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -802,9 +863,9 @@
           },
           "options": [
             {
-              "uz": "hafta oxiri, dam olish kuni",
-              "ru": "выходные, конец недели",
-              "tj": "охири ҳафта, рӯзи истироҳат"
+              "uz": "reja; rejalamoq, niyat qilmoq",
+              "ru": "план; планировать, намереваться",
+              "tj": "нақша; нақша кардан"
             },
             {
               "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama",
@@ -812,17 +873,17 @@
               "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ"
             },
             {
+              "uz": "hafta oxiri, dam olish kuni",
+              "ru": "выходные, конец недели",
+              "tj": "охири ҳафта, рӯзи истироҳат"
+            },
+            {
               "uz": "bilan",
               "ru": "с, вместе с",
               "tj": "бо"
-            },
-            {
-              "uz": "reja; rejalamoq, niyat qilmoq",
-              "ru": "план; планировать, намереваться",
-              "tj": "нақша; нақша кардан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "周末 = hafta oxiri, dam olish kuni (zhōumò)",
             "ru": "周末 = выходные, конец недели (zhōumò)",
@@ -843,9 +904,9 @@
           },
           "options": [
             "gēn",
-            "a",
+            "zhōumò",
             "dǎsuàn",
-            "zhōumò"
+            "a"
           ],
           "correct_index": 2,
           "explanation": {
@@ -855,53 +916,54 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama' xitoycha qaysi?",
-            "ru": "'частица в конце предложения для подтверждения или пояснения' по-китайски?",
-            "tj": "'зарра дар охири ҷумла барои тасдиқ ё шарҳ' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hafta oxiri nima rejang bor?",
+            "ru": "Какие у тебя планы на выходные?",
+            "tj": "Охири ҳафта чӣ нақша дорӣ?"
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "跟",
+          "tokens": [
             "啊",
+            "有",
             "周末",
+            "你",
+            "什么",
+            "跟",
             "打算"
           ],
-          "correct_index": 1,
+          "answer_tokens": [
+            "周末",
+            "你",
+            "有",
+            "什么",
+            "打算"
+          ],
           "explanation": {
-            "uz": "gap oxirida tasdiq yoki himoya ohangini bildiruvchi yuklama = 啊 (a)",
-            "ru": "частица в конце предложения для подтверждения или пояснения = 啊 (a)",
-            "tj": "зарра дар охири ҷумла барои тасдиқ ё шарҳ = 啊 (a)"
+            "uz": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?",
+            "ru": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?",
+            "tj": "周末你有什么打算？ — Zhōumò nǐ yǒu shénme dǎsuàn?"
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "gēn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается gēn?",
-            "tj": "gēn кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "周末你有什么打算？",
+          "pinyin": "Zhōumò nǐ yǒu shénme dǎsuàn?",
           "options": [
-            "周末",
-            "啊",
-            "打算",
-            "跟"
+            "请我？",
+            "周末你有什么打算？",
+            "我早就想好了，请你吃饭、看电影、喝咖啡。",
+            "是啊，我已经找好饭馆了，电影票也买好了。"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "跟 = bilan (gēn)",
-            "ru": "跟 = с, вместе с (gēn)",
-            "tj": "跟 = бо (gēn)"
+            "uz": "周末你有什么打算？ — Hafta oxiri nima rejang bor?",
+            "ru": "周末你有什么打算？ — Какие у тебя планы на выходные?",
+            "tj": "周末你有什么打算？ — Охири ҳафта чӣ нақша дорӣ?"
           }
         },
         {
@@ -947,27 +1009,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____都做好了！",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "啊",
-            "作业",
-            "周末",
-            "打算"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 作业 (zuòyè) — uy vazifasi",
-            "ru": "Верно: 作业 (zuòyè) — домашнее задание",
-            "tj": "Дуруст: 作业 (zuòyè) — вазифаи хонагӣ"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "周末",
           "pinyin": "zhōumò",
@@ -980,7 +1021,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -988,6 +1029,53 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "小丽",
+              "zh": "周末你有什么打算？",
+              "blank": false
+            },
+            {
+              "speaker": "小刚",
+              "zh": "我早就想好了，请你吃饭、看电影、喝咖啡。",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "请我？",
+              "blank": false
+            },
+            {
+              "speaker": "小刚",
+              "zh": "是啊，我已经找好饭馆了，电影票也买好了。",
+              "blank": false
+            },
+            {
+              "speaker": "小丽",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "请我？",
+            "周末你有什么打算？",
+            "我还没想好要不要跟你去呢。",
+            "我早就想好了，请你吃饭、看电影、喝咖啡。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 我还没想好要不要跟你去呢。",
+            "ru": "Правильный ответ: 我还没想好要不要跟你去呢。",
+            "tj": "Ҷавоби дуруст: 我还没想好要不要跟你去呢。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1001,9 +1089,9 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
+            "我早就想好了，请你吃饭、看电影、喝咖啡。",
             "请我？",
             "是啊，我已经找好饭馆了，电影票也买好了。",
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
             "周末你有什么打算？"
           ],
           "correct_index": 3,
@@ -1026,12 +1114,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "我早就想好了，请你吃饭、看电影、喝咖啡。",
-            "我还没想好要不要跟你去呢。",
+            "周末你有什么打算？",
             "请我？",
-            "周末你有什么打算？"
+            "我还没想好要不要跟你去呢。",
+            "我早就想好了，请你吃饭、看电影、喝咖啡。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 我还没想好要不要跟你去呢。",
             "ru": "Правильный ответ: 我还没想好要不要跟你去呢。",

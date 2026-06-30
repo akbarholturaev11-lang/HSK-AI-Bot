@@ -686,103 +686,77 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Tushdan keyin kino ko'rgani boramizmi?",
+            "ru": "Давай сходим в кино после полудня, хорошо?",
+            "tj": "Баъд аз нисфирӯзӣ ба кино равем, хуб аст?"
+          },
+          "tokens": [
+            "电影",
+            "让",
+            "吗",
+            "去",
+            "下午",
+            "看",
+            "再",
+            "好",
+            "我们"
+          ],
+          "answer_tokens": [
+            "我们",
+            "下午",
+            "去",
+            "看",
+            "电影",
+            "好",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
+            "ru": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
+            "tj": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "让我想想再____你。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "再",
+            "告诉",
+            "让",
+            "等"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 告诉 (gàosu) — aytib bermoq, xabar bermoq",
+            "ru": "Верно: 告诉 (gàosu) — сказать, сообщить",
+            "tj": "Дуруст: 告诉 (gàosu) — гуфтан, хабар додан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "再 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 再:",
-            "tj": "Маънои калимаи 再-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "aytib bermoq, xabar bermoq",
-              "ru": "сказать, сообщить",
-              "tj": "гуфтан, хабар додан"
-            },
-            {
-              "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
-              "ru": "позволять, разрешать; приказывать",
-              "tj": "иҷозат додан; дастур додан"
-            },
-            {
-              "uz": "kutmoq",
-              "ru": "ждать",
-              "tj": "интизор мондан"
-            },
-            {
-              "uz": "yana, keyin, qayta (kelajak uchun)",
-              "ru": "снова, потом, опять (о будущем)",
-              "tj": "боз, баъд, дубора (барои оянда)"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "再 = yana, keyin, qayta (kelajak uchun) (zài)",
-            "ru": "再 = снова, потом, опять (о будущем) (zài)",
-            "tj": "再 = боз, баъд, дубора (барои оянда) (zài)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "让 talaffuzini tanlang:",
-            "ru": "Выберите произношение 让:",
-            "tj": "Талаффузи 让-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "děng",
-            "ràng",
-            "zài",
-            "gàosu"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "让 — ràng",
-            "ru": "让 — ràng",
-            "tj": "让 — ràng"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'aytib bermoq, xabar bermoq' xitoycha qaysi?",
-            "ru": "'сказать, сообщить' по-китайски?",
-            "tj": "'гуфтан, хабар додан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "让",
-            "再",
-            "等",
-            "告诉"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "aytib bermoq, xabar bermoq = 告诉 (gàosu)",
-            "ru": "сказать, сообщить = 告诉 (gàosu)",
-            "tj": "гуфтан, хабар додан = 告诉 (gàosu)"
-          }
-        },
         {
           "type": "hanzi_choice",
           "prompt": {
@@ -796,16 +770,112 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "再",
-            "等",
+            "告诉",
             "让",
-            "告诉"
+            "等",
+            "再"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "等 = kutmoq (děng)",
             "ru": "等 = ждать (děng)",
             "tj": "等 = интизор мондан (děng)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "找 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 找:",
+            "tj": "Маънои калимаи 找-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qidirmoq, izlamoq; topmoq",
+              "ru": "искать; найти",
+              "tj": "ҷустан, пайдо кардан"
+            },
+            {
+              "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+              "ru": "позволять, разрешать; приказывать",
+              "tj": "иҷозат додан; дастур додан"
+            },
+            {
+              "uz": "yana, keyin, qayta (kelajak uchun)",
+              "ru": "снова, потом, опять (о будущем)",
+              "tj": "боз, баъд, дубора (барои оянда)"
+            },
+            {
+              "uz": "aytib bermoq, xabar bermoq",
+              "ru": "сказать, сообщить",
+              "tj": "гуфтан, хабар додан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "找 = qidirmoq, izlamoq; topmoq (zhǎo)",
+            "ru": "找 = искать; найти (zhǎo)",
+            "tj": "找 = ҷустан, пайдо кардан (zhǎo)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Tushdan keyin kino ko'rgani boramizmi?",
+            "ru": "Давай во второй половине дня сходим в кино, хорошо?",
+            "tj": "Биёед баъд аз нисфирӯзӣ ба кино равем, хуб аст?"
+          },
+          "tokens": [
+            "让",
+            "再",
+            "电影",
+            "下午",
+            "好",
+            "我们",
+            "看",
+            "去",
+            "吗"
+          ],
+          "answer_tokens": [
+            "我们",
+            "下午",
+            "去",
+            "看",
+            "电影",
+            "好",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
+            "ru": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
+            "tj": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我们下午去看电影，好吗？",
+          "pinyin": "Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
+          "options": [
+            "今天下午我没有时间，明天下午再去吧。",
+            "你想看什么电影？",
+            "让我想想再告诉你。",
+            "我们下午去看电影，好吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我们下午去看电影，好吗？ — Tushdan keyin kino ko'rgani boramizmi?",
+            "ru": "我们下午去看电影，好吗？ — Давай во второй половине дня сходим в кино, хорошо?",
+            "tj": "我们下午去看电影，好吗？ — Биёед баъд аз нисфирӯзӣ ба кино равем, хуб аст?"
           }
         },
         {
@@ -851,27 +921,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "让我想想再____你。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "等",
-            "再",
-            "告诉",
-            "让"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 告诉 (gàosu) — aytib bermoq, xabar bermoq",
-            "ru": "Верно: 告诉 (gàosu) — сказать, сообщить",
-            "tj": "Дуруст: 告诉 (gàosu) — гуфтан, хабар додан"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "再",
           "pinyin": "zài",
@@ -884,7 +933,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -892,6 +941,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "我们下午去看电影，好吗？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "今天下午我没有时间，明天下午再去吧。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "你想看什么电影？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "让我想想再告诉你。",
+            "我们下午去看电影，好吗？",
+            "你想看什么电影？",
+            "今天下午我没有时间，明天下午再去吧。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 让我想想再告诉你。",
+            "ru": "Правильный ответ: 让我想想再告诉你。",
+            "tj": "Ҷавоби дуруст: 让我想想再告诉你。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -905,12 +996,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "让我想想再告诉你。",
             "你想看什么电影？",
-            "我们下午去看电影，好吗？",
-            "今天下午我没有时间，明天下午再去吧。"
+            "今天下午我没有时间，明天下午再去吧。",
+            "让我想想再告诉你。",
+            "我们下午去看电影，好吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 我们下午去看电影，好吗？",
             "ru": "Правильный ответ: 我们下午去看电影，好吗？",

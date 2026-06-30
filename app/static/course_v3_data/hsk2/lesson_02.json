@@ -722,53 +722,75 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sen sportni yaxshi ko'rasanmi?",
+            "ru": "Ты любишь спорт?",
+            "tj": "Оё ту варзишро дӯст медорӣ?"
+          },
+          "tokens": [
+            "运动",
+            "是",
+            "你",
+            "喜欢",
+            "不",
+            "生病",
+            "每",
+            "是"
+          ],
+          "answer_tokens": [
+            "你",
+            "是",
+            "不",
+            "是",
+            "喜欢",
+            "运动"
+          ],
+          "explanation": {
+            "uz": "你是不是喜欢运动？ — Nǐ shì bú shì xǐhuan yùndòng?",
+            "ru": "你是不是喜欢运动？ — Nǐ shì bú shì xǐhuan yùndòng?",
+            "tj": "你是不是喜欢运动？ — Nǐ shì bú shì xǐhuan yùndòng?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我每天____都要跑步。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "每",
+            "跑步",
+            "早上",
+            "生病"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 早上 (zǎoshang) — ertalab",
+            "ru": "Верно: 早上 (zǎoshang) — утро, утром",
+            "tj": "Дуруст: 早上 (zǎoshang) — субҳ, субҳгоҳ"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "生病 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 生病:",
-            "tj": "Маънои калимаи 生病-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ertalab",
-              "ru": "утро, утром",
-              "tj": "субҳ, субҳгоҳ"
-            },
-            {
-              "uz": "har (bir), har qaysi",
-              "ru": "каждый",
-              "tj": "ҳар (як), ҳар кадом"
-            },
-            {
-              "uz": "kasal bo'lmoq",
-              "ru": "заболевать, болеть",
-              "tj": "бемор шудан, касал шудан"
-            },
-            {
-              "uz": "yugurmoq, chopmoq",
-              "ru": "бегать, бежать",
-              "tj": "давидан"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "生病 = kasal bo'lmoq (shēngbìng)",
-            "ru": "生病 = заболевать, болеть (shēngbìng)",
-            "tj": "生病 = бемор шудан, касал шудан (shēngbìng)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -782,12 +804,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "měi",
-            "zǎoshang",
             "shēngbìng",
+            "zǎoshang",
+            "měi",
             "pǎobù"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "每 — měi",
             "ru": "每 — měi",
@@ -809,10 +831,10 @@
           "options": [
             "每",
             "生病",
-            "早上",
-            "跑步"
+            "跑步",
+            "早上"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "ertalab = 早上 (zǎoshang)",
             "ru": "утро, утром = 早上 (zǎoshang)",
@@ -820,28 +842,58 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "pǎobù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается pǎobù?",
-            "tj": "pǎobù кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Dori ichdingmi? Hozir sog'liqing qanday?",
+            "ru": "Ты принял лекарство? Как сейчас самочувствие?",
+            "tj": "Оё дору хӯрдӣ? Ҳоло саломатиат чӣ тавр аст?"
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "早上",
-            "跑步",
+          "tokens": [
             "生病",
-            "每"
+            "了",
+            "身体",
+            "吗",
+            "吃",
+            "现在",
+            "怎么样",
+            "每",
+            "药"
           ],
-          "correct_index": 1,
+          "answer_tokens": [
+            "吃",
+            "药",
+            "了",
+            "吗",
+            "现在",
+            "身体",
+            "怎么样"
+          ],
           "explanation": {
-            "uz": "跑步 = yugurmoq, chopmoq (pǎobù)",
-            "ru": "跑步 = бегать, бежать (pǎobù)",
-            "tj": "跑步 = давидан (pǎobù)"
+            "uz": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
+            "ru": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
+            "tj": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你很少生病，是不是喜欢运动？",
+          "pinyin": "Nǐ hěn shǎo shēngbìng, shì bú shì xǐhuan yùndòng?",
+          "options": [
+            "你很少生病，是不是喜欢运动？",
+            "是啊，我每天早上都要出去跑步。",
+            "我每天六点起床。",
+            "你每天几点起床？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "你很少生病，是不是喜欢运动？ — Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?",
+            "ru": "你很少生病，是不是喜欢运动？ — Ты редко болеешь, ты любишь спорт?",
+            "tj": "你很少生病，是不是喜欢运动？ — Ту кам касал мешавӣ, оё варзишро дӯст медорӣ?"
           }
         },
         {
@@ -887,27 +939,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "我每天____都要跑步。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "跑步",
-            "每",
-            "生病",
-            "早上"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 早上 (zǎoshang) — ertalab",
-            "ru": "Верно: 早上 (zǎoshang) — утро, утром",
-            "tj": "Дуруст: 早上 (zǎoshang) — субҳ, субҳгоҳ"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "生病",
           "pinyin": "shēngbìng",
@@ -920,7 +951,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -928,6 +959,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "你很少生病，是不是喜欢运动？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "是啊，我每天早上都要出去跑步。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "你每天几点起床？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "你很少生病，是不是喜欢运动？",
+            "我每天六点起床。",
+            "你每天几点起床？",
+            "是啊，我每天早上都要出去跑步。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我每天六点起床。",
+            "ru": "Правильный ответ: 我每天六点起床。",
+            "tj": "Ҷавоби дуруст: 我每天六点起床。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -942,11 +1015,11 @@
           },
           "options": [
             "你每天几点起床？",
+            "我每天六点起床。",
             "是啊，我每天早上都要出去跑步。",
-            "你很少生病，是不是喜欢运动？",
-            "我每天六点起床。"
+            "你很少生病，是不是喜欢运动？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 你很少生病，是不是喜欢运动？",
             "ru": "Правильный ответ: 你很少生病，是不是喜欢运动？",
@@ -967,11 +1040,11 @@
           },
           "options": [
             "你每天几点起床？",
-            "是啊，我每天早上都要出去跑步。",
             "我每天六点起床。",
-            "你很少生病，是不是喜欢运动？"
+            "你很少生病，是不是喜欢运动？",
+            "是啊，我每天早上都要出去跑步。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 我每天六点起床。",
             "ru": "Правильный ответ: 我每天六点起床。",

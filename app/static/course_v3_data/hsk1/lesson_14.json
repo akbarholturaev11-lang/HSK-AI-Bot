@@ -730,53 +730,71 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men do'konga bordim.",
+            "ru": "Я ходил в магазин.",
+            "tj": "Ман ба дӯкон рафтам."
+          },
+          "tokens": [
+            "一点儿",
+            "东西",
+            "我",
+            "商店",
+            "去",
+            "了"
+          ],
+          "answer_tokens": [
+            "我",
+            "去",
+            "商店",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我去商店了。 — Wǒ qù shāngdiàn le.",
+            "ru": "我去商店了。 — Wǒ qù shāngdiàn le.",
+            "tj": "我去商店了。 — Wǒ qù shāngdiàn le."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "这些都是王方的____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "苹果",
+            "东西",
+            "看见",
+            "一点儿"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 东西 (dōngxi) — narsa, buyum",
+            "ru": "Верно: 东西 (dōngxi) — вещь, предмет",
+            "tj": "Дуруст: 东西 (dōngxi) — чиз, асбоб"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "东西 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 东西:",
-            "tj": "Маънои калимаи 东西-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "narsa, buyum",
-              "ru": "вещь, предмет",
-              "tj": "чиз, асбоб"
-            },
-            {
-              "uz": "ko'rmoq, ko'rib qolmoq",
-              "ru": "увидеть, заметить",
-              "tj": "дидан, мушоҳида кардан"
-            },
-            {
-              "uz": "bir oz, biroz",
-              "ru": "немного, чуть-чуть",
-              "tj": "каме, андаке"
-            },
-            {
-              "uz": "olma",
-              "ru": "яблоко",
-              "tj": "себ"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "东西 = narsa, buyum (dōngxi)",
-            "ru": "东西 = вещь, предмет (dōngxi)",
-            "tj": "东西 = чиз, асбоб (dōngxi)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -790,12 +808,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "dōngxi",
             "píngguǒ",
             "kànjiàn",
-            "yīdiǎnr",
-            "dōngxi"
+            "yīdiǎnr"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "一点儿 — yīdiǎnr",
             "ru": "一点儿 — yīdiǎnr",
@@ -816,11 +834,11 @@
           },
           "options": [
             "看见",
+            "苹果",
             "一点儿",
-            "东西",
-            "苹果"
+            "东西"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "olma = 苹果 (píngguǒ)",
             "ru": "яблоко = 苹果 (píngguǒ)",
@@ -828,28 +846,56 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "kànjiàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается kànjiàn?",
-            "tj": "kànjiàn кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Kecha ertalab qayerga bordingiz?",
+            "ru": "Куда вы ходили вчера утром?",
+            "tj": "Дирӯз субҳ шумо куҷо рафтед?"
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "苹果",
+          "tokens": [
+            "哪儿",
+            "上午",
+            "昨天",
+            "去",
             "一点儿",
-            "看见",
-            "东西"
+            "东西",
+            "你",
+            "了"
           ],
-          "correct_index": 2,
+          "answer_tokens": [
+            "昨天",
+            "上午",
+            "你",
+            "去",
+            "哪儿",
+            "了"
+          ],
           "explanation": {
-            "uz": "看见 = ko'rmoq, ko'rib qolmoq (kànjiàn)",
-            "ru": "看见 = увидеть, заметить (kànjiàn)",
-            "tj": "看见 = дидан, мушоҳида кардан (kànjiàn)"
+            "uz": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?",
+            "ru": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?",
+            "tj": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "昨天上午你去哪儿了？",
+          "pinyin": "Zuótiān shàngwǔ nǐ qù nǎr le?",
+          "options": [
+            "昨天上午你去哪儿了？",
+            "我买了一点儿苹果。",
+            "你买什么了？",
+            "我去商店买东西了。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "昨天上午你去哪儿了？ — Kecha ertalab qayerga bordingiz?",
+            "ru": "昨天上午你去哪儿了？ — Куда вы ходили вчера утром?",
+            "tj": "昨天上午你去哪儿了？ — Дирӯз субҳ шумо куҷо рафтед?"
           }
         },
         {
@@ -895,27 +941,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "这些都是王方的____。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "看见",
-            "一点儿",
-            "东西",
-            "苹果"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 东西 (dōngxi) — narsa, buyum",
-            "ru": "Верно: 东西 (dōngxi) — вещь, предмет",
-            "tj": "Дуруст: 东西 (dōngxi) — чиз, асбоб"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "东西",
           "pinyin": "dōngxi",
@@ -928,7 +953,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -936,6 +961,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "昨天上午你去哪儿了？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "我去商店买东西了。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "你买什么了？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "我去商店买东西了。",
+            "你买什么了？",
+            "我买了一点儿苹果。",
+            "昨天上午你去哪儿了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 我买了一点儿苹果。",
+            "ru": "Правильный ответ: 我买了一点儿苹果。",
+            "tj": "Ҷавоби дуруст: 我买了一点儿苹果。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -949,12 +1016,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你买什么了？",
-            "我去商店买东西了。",
             "昨天上午你去哪儿了？",
-            "我买了一点儿苹果。"
+            "你买什么了？",
+            "我买了一点儿苹果。",
+            "我去商店买东西了。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 昨天上午你去哪儿了？",
             "ru": "Правильный ответ: 昨天上午你去哪儿了？",
@@ -974,12 +1041,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你买什么了？",
-            "昨天上午你去哪儿了？",
             "我买了一点儿苹果。",
-            "我去商店买东西了。"
+            "你买什么了？",
+            "我去商店买东西了。",
+            "昨天上午你去哪儿了？"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 我买了一点儿苹果。",
             "ru": "Правильный ответ: 我买了一点儿苹果。",

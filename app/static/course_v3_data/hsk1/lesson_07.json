@@ -605,78 +605,69 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Kecha 31-avgust edi.",
+            "ru": "Вчера было 31 августа.",
+            "tj": "Дирӯз 31-уми август буд."
+          },
+          "tokens": [
+            "号",
+            "请",
+            "月",
+            "昨天",
+            "问"
+          ],
+          "answer_tokens": [
+            "昨天",
+            "月",
+            "号"
+          ],
+          "explanation": {
+            "uz": "昨天8月31号。 — Zuótiān bā yuè sānshíyī hào.",
+            "ru": "昨天8月31号。 — Zuótiān bā yuè sānshíyī hào.",
+            "tj": "昨天8月31号。 — Zuótiān bā yuè sānshíyī hào."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____9月1号，星期三。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "请",
+            "号",
+            "今天",
+            "问"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 今天 (jīntiān) — bugun",
+            "ru": "Верно: 今天 (jīntiān) — сегодня",
+            "tj": "Дуруст: 今天 (jīntiān) — имрӯз"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "请 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 请:",
-            "tj": "Маънои калимаи 请-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "so'ramoq",
-              "ru": "спрашивать",
-              "tj": "пурсидан"
-            },
-            {
-              "uz": "iltimos, marhamat",
-              "ru": "пожалуйста, разрешите спросить",
-              "tj": "лутфан, иҷозат диҳед"
-            },
-            {
-              "uz": "bugun",
-              "ru": "сегодня",
-              "tj": "имрӯз"
-            },
-            {
-              "uz": "oy kuni (sana)",
-              "ru": "число (день месяца)",
-              "tj": "рӯзи моҳ (сана)"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "请 = iltimos, marhamat (qǐng)",
-            "ru": "请 = пожалуйста, разрешите спросить (qǐng)",
-            "tj": "请 = лутфан, иҷозат диҳед (qǐng)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "问 talaffuzini tanlang:",
-            "ru": "Выберите произношение 问:",
-            "tj": "Талаффузи 问-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "hào",
-            "wèn",
-            "qǐng",
-            "jīntiān"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "问 — wèn",
-            "ru": "问 — wèn",
-            "tj": "问 — wèn"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -690,12 +681,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "请",
             "号",
-            "问",
-            "今天"
+            "今天",
+            "请",
+            "问"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "bugun = 今天 (jīntiān)",
             "ru": "сегодня = 今天 (jīntiān)",
@@ -715,16 +706,67 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "请",
-            "问",
             "号",
-            "今天"
+            "问",
+            "今天",
+            "请"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "号 = oy kuni (sana) (hào)",
             "ru": "号 = число (день месяца) (hào)",
             "tj": "号 = рӯзи моҳ (сана) (hào)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Kechirasiz, bugun nechanchi sana?",
+            "ru": "Извините, какое сегодня число?",
+            "tj": "Бубахшед, имрӯз чанди сана аст?"
+          },
+          "tokens": [
+            "星期",
+            "问",
+            "请",
+            "几",
+            "号",
+            "今天",
+            "月"
+          ],
+          "answer_tokens": [
+            "请",
+            "问",
+            "今天",
+            "几",
+            "号"
+          ],
+          "explanation": {
+            "uz": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?",
+            "ru": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?",
+            "tj": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "请问，今天几号？",
+          "pinyin": "Qǐngwèn, jīntiān jǐ hào?",
+          "options": [
+            "星期三。",
+            "今天星期几？",
+            "请问，今天几号？",
+            "今天9月1号。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "请问，今天几号？ — Kechirasiz, bugun nechanchi sana?",
+            "ru": "请问，今天几号？ — Извините, какое сегодня число?",
+            "tj": "请问，今天几号？ — Бубахшед, имрӯз чанди сана аст?"
           }
         },
         {
@@ -770,27 +812,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____9月1号，星期三。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "请",
-            "号",
-            "今天",
-            "问"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 今天 (jīntiān) — bugun",
-            "ru": "Верно: 今天 (jīntiān) — сегодня",
-            "tj": "Дуруст: 今天 (jīntiān) — имрӯз"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "请",
           "pinyin": "qǐng",
@@ -803,7 +824,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -811,6 +832,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "请问，今天几号？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "今天9月1号。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "今天星期几？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "请问，今天几号？",
+            "星期三。",
+            "今天9月1号。",
+            "今天星期几？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 星期三。",
+            "ru": "Правильный ответ: 星期三。",
+            "tj": "Ҷавоби дуруст: 星期三。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -824,12 +887,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "请问，今天几号？",
-            "今天星期几？",
             "今天9月1号。",
+            "今天星期几？",
+            "请问，今天几号？",
             "星期三。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 请问，今天几号？",
             "ru": "Правильный ответ: 请问，今天几号？",
@@ -849,12 +912,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "请问，今天几号？",
-            "今天星期几？",
             "星期三。",
+            "今天星期几？",
+            "请问，今天几号？",
             "今天9月1号。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 星期三。",
             "ru": "Правильный ответ: 星期三。",

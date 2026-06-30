@@ -655,53 +655,71 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Maktabda do'kon yo'q.",
+            "ru": "В школе нет магазина.",
+            "tj": "Дар мактаб дӯкон нест."
+          },
+          "tokens": [
+            "没有",
+            "商店",
+            "学校",
+            "桌子",
+            "上",
+            "里"
+          ],
+          "answer_tokens": [
+            "学校",
+            "里",
+            "没有",
+            "商店"
+          ],
+          "explanation": {
+            "uz": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn.",
+            "ru": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn.",
+            "tj": "学校里没有商店。 — Xuéxiào lǐ méiyǒu shāngdiàn."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____上有一个电脑。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "上",
+            "桌子",
+            "和",
+            "电脑"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 桌子 (zhuōzi) — stol, parta",
+            "ru": "Верно: 桌子 (zhuōzi) — стол",
+            "tj": "Дуруст: 桌子 (zhuōzi) — мӣз"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "桌子 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 桌子:",
-            "tj": "Маънои калимаи 桌子-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "stol, parta",
-              "ru": "стол",
-              "tj": "мӣз"
-            },
-            {
-              "uz": "ustida, tepasida",
-              "ru": "сверху, на",
-              "tj": "болои, дар болои"
-            },
-            {
-              "uz": "va, bilan",
-              "ru": "и, с",
-              "tj": "ва, бо"
-            },
-            {
-              "uz": "kompyuter",
-              "ru": "компьютер",
-              "tj": "компютер"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "桌子 = stol, parta (zhuōzi)",
-            "ru": "桌子 = стол (zhuōzi)",
-            "tj": "桌子 = мӣз (zhuōzi)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -715,12 +733,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "diànnǎo",
             "shàng",
             "hé",
+            "diànnǎo",
             "zhuōzi"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "上 — shàng",
             "ru": "上 — shàng",
@@ -740,12 +758,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "上",
             "和",
             "电脑",
-            "桌子"
+            "桌子",
+            "上"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "kompyuter = 电脑 (diànnǎo)",
             "ru": "компьютер = 电脑 (diànnǎo)",
@@ -753,28 +771,52 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "hé qaysi ieroglif?",
-            "ru": "Какой иероглиф читается hé?",
-            "tj": "hé кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Stol ustida nima bor?",
+            "ru": "Что на столе?",
+            "tj": "Болои мӣз чӣ аст?"
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "上",
+          "tokens": [
+            "什么",
             "电脑",
-            "桌子",
-            "和"
+            "上",
+            "和",
+            "有",
+            "桌子"
           ],
-          "correct_index": 3,
+          "answer_tokens": [
+            "桌子",
+            "上",
+            "有",
+            "什么"
+          ],
           "explanation": {
-            "uz": "和 = va, bilan (hé)",
-            "ru": "和 = и, с (hé)",
-            "tj": "和 = ва, бо (hé)"
+            "uz": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?",
+            "ru": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?",
+            "tj": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "桌子上有什么？",
+          "pinyin": "Zhuōzi shàng yǒu shénme?",
+          "options": [
+            "杯子在桌子里。",
+            "杯子在哪儿？",
+            "桌子上有什么？",
+            "桌子上有一个电脑和一本书。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "桌子上有什么？ — Stol ustida nima bor?",
+            "ru": "桌子上有什么？ — Что на столе?",
+            "tj": "桌子上有什么？ — Болои мӣз чӣ аст?"
           }
         },
         {
@@ -820,27 +862,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____上有一个电脑。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "桌子",
-            "电脑",
-            "和",
-            "上"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 桌子 (zhuōzi) — stol, parta",
-            "ru": "Верно: 桌子 (zhuōzi) — стол",
-            "tj": "Дуруст: 桌子 (zhuōzi) — мӣз"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "桌子",
           "pinyin": "zhuōzi",
@@ -853,7 +874,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -861,6 +882,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "桌子上有什么？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "桌子上有一个电脑和一本书。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "杯子在哪儿？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "杯子在哪儿？",
+            "桌子上有什么？",
+            "杯子在桌子里。",
+            "桌子上有一个电脑和一本书。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 杯子在桌子里。",
+            "ru": "Правильный ответ: 杯子在桌子里。",
+            "tj": "Ҷавоби дуруст: 杯子在桌子里。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -874,12 +937,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "桌子上有什么？",
-            "杯子在桌子里。",
+            "杯子在哪儿？",
             "桌子上有一个电脑和一本书。",
-            "杯子在哪儿？"
+            "桌子上有什么？",
+            "杯子在桌子里。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 桌子上有什么？",
             "ru": "Правильный ответ: 桌子上有什么？",
@@ -899,12 +962,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
+            "杯子在哪儿？",
             "桌子上有什么？",
             "杯子在桌子里。",
-            "杯子在哪儿？",
             "桌子上有一个电脑和一本书。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 杯子在桌子里。",
             "ru": "Правильный ответ: 杯子在桌子里。",

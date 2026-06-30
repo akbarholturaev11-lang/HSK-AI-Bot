@@ -782,53 +782,79 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U juda tez gapiradi, men tushunolmayman.",
+            "ru": "Он говорит слишком быстро — я не понимаю.",
+            "tj": "Вай хеле тез гап мезанад, ман фаҳмида наметавонам."
+          },
+          "tokens": [
+            "突然",
+            "懂",
+            "眼镜",
+            "太",
+            "我",
+            "听",
+            "说话",
+            "不",
+            "他",
+            "快"
+          ],
+          "answer_tokens": [
+            "他",
+            "说话",
+            "太",
+            "快",
+            "我",
+            "听",
+            "不",
+            "懂"
+          ],
+          "explanation": {
+            "uz": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng.",
+            "ru": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng.",
+            "tj": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____找不到了，你帮我找得到吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "突然",
+            "眼镜",
+            "离开",
+            "清楚"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 眼镜 (yǎnjing) — ko'zoynak",
+            "ru": "Верно: 眼镜 (yǎnjing) — очки",
+            "tj": "Дуруст: 眼镜 (yǎnjing) — айнак"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "眼镜 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 眼镜:",
-            "tj": "Маънои калимаи 眼镜-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "aniq, ravshan",
-              "ru": "ясный, чёткий",
-              "tj": "равшан, аниқ"
-            },
-            {
-              "uz": "tark etmoq, ajralmoq",
-              "ru": "покидать, расставаться",
-              "tj": "тарк кардан, ҷудо шудан"
-            },
-            {
-              "uz": "to'satdan",
-              "ru": "вдруг, внезапно",
-              "tj": "ногаҳон"
-            },
-            {
-              "uz": "ko'zoynak",
-              "ru": "очки",
-              "tj": "айнак"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "眼镜 = ko'zoynak (yǎnjing)",
-            "ru": "眼镜 = очки (yǎnjing)",
-            "tj": "眼镜 = айнак (yǎnjing)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -842,12 +868,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yǎnjing",
             "tūrán",
-            "qīngchu",
-            "líkāi"
+            "líkāi",
+            "yǎnjing",
+            "qīngchu"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "突然 — tūrán",
             "ru": "突然 — tūrán",
@@ -867,12 +893,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "眼镜",
             "离开",
             "突然",
-            "清楚"
+            "清楚",
+            "眼镜"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "tark etmoq, ajralmoq = 离开 (líkāi)",
             "ru": "покидать, расставаться = 离开 (líkāi)",
@@ -880,28 +906,60 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "qīngchu qaysi ieroglif?",
-            "ru": "Какой иероглиф читается qīngchu?",
-            "tj": "qīngchu кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Mayli, qidirishga yordam beraman.",
+            "ru": "Ладно, помогу тебе поискать.",
+            "tj": "Хуб, ба ту дар ҷустуҷӯ ёрӣ медиҳам."
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "突然",
-            "离开",
+          "tokens": [
+            "你",
             "眼镜",
-            "清楚"
+            "吧",
+            "帮",
+            "我",
+            "找",
+            "找",
+            "好",
+            "去",
+            "突然"
           ],
-          "correct_index": 3,
+          "answer_tokens": [
+            "好",
+            "吧",
+            "我",
+            "帮",
+            "你",
+            "去",
+            "找",
+            "找"
+          ],
           "explanation": {
-            "uz": "清楚 = aniq, ravshan (qīngchu)",
-            "ru": "清楚 = ясный, чёткий (qīngchu)",
-            "tj": "清楚 = равшан, аниқ (qīngchu)"
+            "uz": "好吧，我帮你去找找。 — Hǎo ba, wǒ bāng nǐ qù zhǎozhao.",
+            "ru": "好吧，我帮你去找找。 — Hǎo ba, wǒ bāng nǐ qù zhǎozhao.",
+            "tj": "好吧，我帮你去找找。 — Hǎo ba, wǒ bāng nǐ qù zhǎozhao."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我的眼镜呢？怎么突然找不到了？你看见了吗？",
+          "pinyin": "Wǒ de yǎnjing ne? Zěnme tūrán zhǎo bu dào le? Nǐ kànjiàn le ma?",
+          "options": [
+            "你去房间找找，是不是刚才放在桌子上了？",
+            "我没看见啊。",
+            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
+            "我离不开眼镜，没有眼镜，我一个字也看不清楚。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我的眼镜呢？怎么突然找不到了？你看见了吗？ — Ko'zoynagim qani? Qanday qilib birdan topolmay qoldim? Ko'rdingmi?",
+            "ru": "我的眼镜呢？怎么突然找不到了？你看见了吗？ — Где мои очки? Почему вдруг не могу их найти? Ты видела?",
+            "tj": "我的眼镜呢？怎么突然找不到了？你看见了吗？ — Айнакам куҷост? Чаро ногаҳон ёфта наметавонам? Дидӣ?"
           }
         },
         {
@@ -947,27 +1005,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____找不到了，你帮我找得到吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "离开",
-            "眼镜",
-            "清楚",
-            "突然"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 眼镜 (yǎnjing) — ko'zoynak",
-            "ru": "Верно: 眼镜 (yǎnjing) — очки",
-            "tj": "Дуруст: 眼镜 (yǎnjing) — айнак"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "眼镜",
           "pinyin": "yǎnjing",
@@ -980,7 +1017,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -988,6 +1025,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "周明",
+              "zh": "我的眼镜呢？怎么突然找不到了？你看见了吗？",
+              "blank": false
+            },
+            {
+              "speaker": "周太太",
+              "zh": "我没看见啊。",
+              "blank": false
+            },
+            {
+              "speaker": "周明",
+              "zh": "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
+              "blank": false
+            },
+            {
+              "speaker": "周太太",
+              "zh": "你去房间找找，是不是刚才放在桌子上了？",
+              "blank": false
+            },
+            {
+              "speaker": "周明",
+              "zh": "我怎么看得到啊？你快过来帮忙啊。",
+              "blank": false
+            },
+            {
+              "speaker": "周太太",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "好吧，我帮你去找找。",
+            "我没看见啊。",
+            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
+            "我离不开眼镜，没有眼镜，我一个字也看不清楚。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 好吧，我帮你去找找。",
+            "ru": "Правильный ответ: 好吧，我帮你去找找。",
+            "tj": "Ҷавоби дуруст: 好吧，我帮你去找找。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1002,11 +1091,11 @@
           },
           "options": [
             "你去房间找找，是不是刚才放在桌子上了？",
-            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
             "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
-            "我没看见啊。"
+            "我没看见啊。",
+            "我的眼镜呢？怎么突然找不到了？你看见了吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 我的眼镜呢？怎么突然找不到了？你看见了吗？",
             "ru": "Правильный ответ: 我的眼镜呢？怎么突然找不到了？你看见了吗？",
@@ -1026,12 +1115,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "好吧，我帮你去找找。",
-            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
             "我没看见啊。",
-            "我离不开眼镜，没有眼镜，我一个字也看不清楚。"
+            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
+            "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
+            "好吧，我帮你去找找。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 好吧，我帮你去找找。",
             "ru": "Правильный ответ: 好吧，我帮你去找找。",

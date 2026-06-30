@@ -782,53 +782,75 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Matematika tarixdan ancha qiyin!",
+            "ru": "Математика намного сложнее истории!",
+            "tj": "Математика аз таърих хеле душвортар аст!"
+          },
+          "tokens": [
+            "数学",
+            "多",
+            "个子",
+            "难",
+            "了",
+            "矮",
+            "历史",
+            "比"
+          ],
+          "answer_tokens": [
+            "数学",
+            "比",
+            "历史",
+            "难",
+            "多",
+            "了"
+          ],
+          "explanation": {
+            "uz": "数学比历史难多了！ — Shùxué bǐ lìshǐ nán duō le!",
+            "ru": "数学比历史难多了！ — Shùxué bǐ lìshǐ nán duō le!",
+            "tj": "数学比历史难多了！ — Shùxué bǐ lìshǐ nán duō le!"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "数学比____难多了！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "矮",
+            "历史",
+            "体育",
+            "个子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 历史 (lìshǐ) — tarix",
+            "ru": "Верно: 历史 (lìshǐ) — история",
+            "tj": "Дуруст: 历史 (lìshǐ) — таърих"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "个子 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 个子:",
-            "tj": "Маънои калимаи 个子-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "past bo'yli",
-              "ru": "низкий, невысокий",
-              "tj": "пастқад"
-            },
-            {
-              "uz": "tarix",
-              "ru": "история",
-              "tj": "таърих"
-            },
-            {
-              "uz": "bo'y, gavda balandligi",
-              "ru": "рост",
-              "tj": "қад"
-            },
-            {
-              "uz": "jismoniy tarbiya",
-              "ru": "физкультура, спорт",
-              "tj": "тарбияи ҷисмонӣ"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "个子 = bo'y, gavda balandligi (gèzi)",
-            "ru": "个子 = рост (gèzi)",
-            "tj": "个子 = қад (gèzi)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -842,12 +864,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "lìshǐ",
+            "ǎi",
             "tǐyù",
-            "gèzi",
-            "ǎi"
+            "lìshǐ",
+            "gèzi"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "矮 — ǎi",
             "ru": "矮 — ǎi",
@@ -867,12 +889,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "历史",
             "个子",
-            "体育",
-            "矮"
+            "历史",
+            "矮",
+            "体育"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "tarix = 历史 (lìshǐ)",
             "ru": "история = 历史 (lìshǐ)",
@@ -880,28 +902,58 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "tǐyù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается tǐyù?",
-            "tj": "tǐyù кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Dashan, sen bilan Make, kimning bo'yi balandroq?",
+            "ru": "Дашань, кто выше ростом, ты или Марк?",
+            "tj": "Дашан, ту ё Маке, қади кӣ баландтар аст?"
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "体育",
-            "矮",
+          "tokens": [
             "历史",
-            "个子"
+            "谁",
+            "个子",
+            "和",
+            "马可",
+            "高",
+            "大山",
+            "矮",
+            "你"
+          ],
+          "answer_tokens": [
+            "大山",
+            "你",
+            "和",
+            "马可",
+            "谁",
+            "个子",
+            "高"
+          ],
+          "explanation": {
+            "uz": "大山，你和马可谁个子高？ — Dàshān, nǐ hé Mǎkě shéi gèzi gāo?",
+            "ru": "大山，你和马可谁个子高？ — Dàshān, nǐ hé Mǎkě shéi gèzi gāo?",
+            "tj": "大山，你和马可谁个子高？ — Dàshān, nǐ hé Mǎkě shéi gèzi gāo?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "大山，你和马可谁个子高？",
+          "pinyin": "Dàshān, nǐ hé Mǎkě shéi gèzi gāo?",
+          "options": [
+            "大山，你和马可谁个子高？",
+            "我比马可大两岁。",
+            "马可比我高，我比马可矮一点儿。",
+            "那你们谁大？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "体育 = jismoniy tarbiya (tǐyù)",
-            "ru": "体育 = физкультура, спорт (tǐyù)",
-            "tj": "体育 = тарбияи ҷисмонӣ (tǐyù)"
+            "uz": "大山，你和马可谁个子高？ — Dashan, sen bilan Make, kimning bo'yi balandroq?",
+            "ru": "大山，你和马可谁个子高？ — Дашань, кто выше ростом, ты или Марк?",
+            "tj": "大山，你和马可谁个子高？ — Дашан, ту ё Маке, қади кӣ баландтар аст?"
           }
         },
         {
@@ -947,27 +999,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "数学比____难多了！",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "个子",
-            "历史",
-            "矮",
-            "体育"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 历史 (lìshǐ) — tarix",
-            "ru": "Верно: 历史 (lìshǐ) — история",
-            "tj": "Дуруст: 历史 (lìshǐ) — таърих"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "个子",
           "pinyin": "gèzi",
@@ -980,7 +1011,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -988,6 +1019,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "朋友",
+              "zh": "大山，你和马可谁个子高？",
+              "blank": false
+            },
+            {
+              "speaker": "大山",
+              "zh": "马可比我高，我比马可矮一点儿。",
+              "blank": false
+            },
+            {
+              "speaker": "朋友",
+              "zh": "那你们谁大？",
+              "blank": false
+            },
+            {
+              "speaker": "大山",
+              "zh": "我比马可大两岁。",
+              "blank": false
+            },
+            {
+              "speaker": "朋友",
+              "zh": "你们谁的汉语说得更好？",
+              "blank": false
+            },
+            {
+              "speaker": "大山",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "马可比我说得好一些，我的汉语没有他好。",
+            "马可比我高，我比马可矮一点儿。",
+            "那你们谁大？",
+            "大山，你和马可谁个子高？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 马可比我说得好一些，我的汉语没有他好。",
+            "ru": "Правильный ответ: 马可比我说得好一些，我的汉语没有他好。",
+            "tj": "Ҷавоби дуруст: 马可比我说得好一些，我的汉语没有他好。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1001,8 +1084,8 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "马可比我高，我比马可矮一点儿。",
             "那你们谁大？",
+            "马可比我高，我比马可矮一点儿。",
             "大山，你和马可谁个子高？",
             "我比马可大两岁。"
           ],
@@ -1026,12 +1109,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "马可比我高，我比马可矮一点儿。",
             "大山，你和马可谁个子高？",
             "那你们谁大？",
-            "马可比我说得好一些，我的汉语没有他好。"
+            "马可比我说得好一些，我的汉语没有他好。",
+            "马可比我高，我比马可矮一点儿。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 马可比我说得好一些，我的汉语没有他好。",
             "ru": "Правильный ответ: 马可比我说得好一些，我的汉语没有他好。",

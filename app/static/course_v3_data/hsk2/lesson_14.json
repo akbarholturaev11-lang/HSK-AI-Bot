@@ -652,53 +652,77 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz o'sha filmni ko'rganmisiz?",
+            "ru": "Ты смотрел(а) тот фильм?",
+            "tj": "Оё шумо он филмро дидаед?"
+          },
+          "tokens": [
+            "吗",
+            "你",
+            "看",
+            "有意思",
+            "但是",
+            "电影",
+            "过",
+            "那",
+            "个"
+          ],
+          "answer_tokens": [
+            "你",
+            "看",
+            "过",
+            "那",
+            "个",
+            "电影",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你看过那个电影吗？ — Nǐ kànguo nàge diànyǐng ma?",
+            "ru": "你看过那个电影吗？ — Nǐ kànguo nàge diànyǐng ma?",
+            "tj": "你看过那个电影吗？ — Nǐ kànguo nàge diànyǐng ma?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "虽然是晴天，____很冷。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "次",
+            "虽然",
+            "有意思",
+            "但是"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 但是 (dànshì) — lekin, ammo",
+            "ru": "Верно: 但是 (dànshì) — но, однако",
+            "tj": "Дуруст: 但是 (dànshì) — аммо, вале"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "有意思 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 有意思:",
-            "tj": "Маънои калимаи 有意思-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "marta, safar (harakat o'lchovi)",
-              "ru": "раз (счётное слово для действий)",
-              "tj": "маротиба, бор (воҳиди шуморавӣ)"
-            },
-            {
-              "uz": "qiziqarli, maroqli",
-              "ru": "интересный, занимательный",
-              "tj": "ҷолиб, хонанданӣ"
-            },
-            {
-              "uz": "garchi, garchanda",
-              "ru": "хотя, несмотря на то что",
-              "tj": "гарчи, ҳарчанд"
-            },
-            {
-              "uz": "lekin, ammo",
-              "ru": "но, однако",
-              "tj": "аммо, вале"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "有意思 = qiziqarli, maroqli (yǒu yìsi)",
-            "ru": "有意思 = интересный, занимательный (yǒu yìsi)",
-            "tj": "有意思 = ҷолиб, хонанданӣ (yǒu yìsi)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -712,12 +736,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yǒu yìsi",
-            "dànshì",
             "cì",
-            "suīrán"
+            "suīrán",
+            "dànshì",
+            "yǒu yìsi"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "但是 — dànshì",
             "ru": "但是 — dànshì",
@@ -738,9 +762,9 @@
           },
           "options": [
             "虽然",
+            "但是",
             "有意思",
-            "次",
-            "但是"
+            "次"
           ],
           "correct_index": 0,
           "explanation": {
@@ -750,28 +774,58 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "cì qaysi ieroglif?",
-            "ru": "Какой иероглиф читается cì?",
-            "tj": "cì кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz u filmni ko'rganmisiz?",
+            "ru": "Ты смотрел(а) тот фильм?",
+            "tj": "Оё шумо он филмро дидаед?"
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "但是",
-            "虽然",
+          "tokens": [
             "有意思",
-            "次"
+            "个",
+            "看",
+            "没有",
+            "那",
+            "电影",
+            "你",
+            "但是",
+            "过"
           ],
-          "correct_index": 3,
+          "answer_tokens": [
+            "你",
+            "看",
+            "过",
+            "那",
+            "个",
+            "电影",
+            "没有"
+          ],
           "explanation": {
-            "uz": "次 = marta, safar (harakat o'lchovi) (cì)",
-            "ru": "次 = раз (счётное слово для действий) (cì)",
-            "tj": "次 = маротиба, бор (воҳиди шуморавӣ) (cì)"
+            "uz": "你看过那个电影没有？ — Nǐ kànguo nàge diànyǐng méiyǒu?",
+            "ru": "你看过那个电影没有？ — Nǐ kànguo nàge diànyǐng méiyǒu?",
+            "tj": "你看过那个电影没有？ — Nǐ kànguo nàge diànyǐng méiyǒu?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你看过那个电影没有？",
+          "pinyin": "Nǐ kànguo nàge diànyǐng méiyǒu?",
+          "options": [
+            "那我们下个星期一一起去看吧？",
+            "你看过那个电影没有？",
+            "没看过，听说很有意思。",
+            "可以，但是我女朋友也想去。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你看过那个电影没有？ — Siz u filmni ko'rganmisiz?",
+            "ru": "你看过那个电影没有？ — Ты смотрел(а) тот фильм?",
+            "tj": "你看过那个电影没有？ — Оё шумо он филмро дидаед?"
           }
         },
         {
@@ -817,27 +871,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "虽然是晴天，____很冷。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "但是",
-            "有意思",
-            "虽然",
-            "次"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 但是 (dànshì) — lekin, ammo",
-            "ru": "Верно: 但是 (dànshì) — но, однако",
-            "tj": "Дуруст: 但是 (dànshì) — аммо, вале"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "有意思",
           "pinyin": "yǒu yìsi",
@@ -850,7 +883,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -858,6 +891,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "你看过那个电影没有？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "没看过，听说很有意思。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "那我们下个星期一一起去看吧？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "没看过，听说很有意思。",
+            "可以，但是我女朋友也想去。",
+            "你看过那个电影没有？",
+            "那我们下个星期一一起去看吧？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 可以，但是我女朋友也想去。",
+            "ru": "Правильный ответ: 可以，但是我女朋友也想去。",
+            "tj": "Ҷавоби дуруст: 可以，但是我女朋友也想去。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -871,12 +946,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你看过那个电影没有？",
             "可以，但是我女朋友也想去。",
             "没看过，听说很有意思。",
+            "你看过那个电影没有？",
             "那我们下个星期一一起去看吧？"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 你看过那个电影没有？",
             "ru": "Правильный ответ: 你看过那个电影没有？",
@@ -897,9 +972,9 @@
           },
           "options": [
             "可以，但是我女朋友也想去。",
-            "你看过那个电影没有？",
             "那我们下个星期一一起去看吧？",
-            "没看过，听说很有意思。"
+            "没看过，听说很有意思。",
+            "你看过那个电影没有？"
           ],
           "correct_index": 0,
           "explanation": {

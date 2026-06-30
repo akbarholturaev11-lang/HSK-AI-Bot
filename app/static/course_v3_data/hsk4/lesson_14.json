@@ -1259,53 +1259,79 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men albatta eng tez sur'atda tugataman.",
+            "ru": "Я обязательно выполню с максимальной скоростью.",
+            "tj": "Ман ҳатман бо суръати баландтарин анҷом медиҳам."
+          },
+          "tokens": [
+            "我",
+            "毛巾",
+            "最",
+            "速度",
+            "以",
+            "出差",
+            "完成",
+            "的",
+            "一定",
+            "快"
+          ],
+          "answer_tokens": [
+            "我",
+            "一定",
+            "以",
+            "最",
+            "快",
+            "的",
+            "速度",
+            "完成"
+          ],
+          "explanation": {
+            "uz": "我一定以最快的速度完成。 — Wǒ yídìng yǐ zuì kuài de sùdù wánchéng.",
+            "ru": "我一定以最快的速度完成。 — Wǒ yídìng yǐ zuì kuài de sùdù wánchéng.",
+            "tj": "我一定以最快的速度完成。 — Wǒ yídìng yǐ zuì kuài de sùdù wánchéng."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "只有大家共同努力，减少____，保护环境，才能使我们的家变得更美丽。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "污染",
+            "毛巾",
+            "牙膏",
+            "出差"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 污染 (wūrǎn) — ifloslantirmoq",
+            "ru": "Верно: 污染 (wūrǎn) — загрязнять",
+            "tj": "Дуруст: 污染 (wūrǎn) — ифлос кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "出差 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 出差:",
-            "tj": "Маънои калимаи 出差-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "tish pastasi",
-              "ru": "зубная паста",
-              "tj": "хамираи дандон"
-            },
-            {
-              "uz": "xizmat safariga bormoq",
-              "ru": "ехать в командировку",
-              "tj": "ба сафари хизматӣ рафтан"
-            },
-            {
-              "uz": "og'ir",
-              "ru": "тяжёлый",
-              "tj": "вазнин"
-            },
-            {
-              "uz": "sochiq",
-              "ru": "полотенце",
-              "tj": "дастмол"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "出差 = xizmat safariga bormoq (chūchāi)",
-            "ru": "出差 = ехать в командировку (chūchāi)",
-            "tj": "出差 = ба сафари хизматӣ рафтан (chūchāi)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -1319,12 +1345,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "yágāo",
             "chūchāi",
+            "máojīn",
             "zhòng",
-            "máojīn"
+            "yágāo"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "毛巾 — máojīn",
             "ru": "毛巾 — máojīn",
@@ -1345,11 +1371,11 @@
           },
           "options": [
             "毛巾",
-            "重",
+            "牙膏",
             "出差",
-            "牙膏"
+            "重"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "tish pastasi = 牙膏 (yágāo)",
             "ru": "зубная паста = 牙膏 (yágāo)",
@@ -1357,28 +1383,56 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zhòng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zhòng?",
-            "tj": "zhòng кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yaxshi, unda sen aytgandek qilaman.",
+            "ru": "Хорошо, тогда послушаю тебя.",
+            "tj": "Хуб, пас ба гапи ту мекунам."
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
+          "tokens": [
+            "听",
+            "就",
+            "的",
+            "好",
+            "你",
             "出差",
-            "牙膏",
-            "重",
+            "那",
             "毛巾"
+          ],
+          "answer_tokens": [
+            "好",
+            "那",
+            "就",
+            "听",
+            "你",
+            "的"
+          ],
+          "explanation": {
+            "uz": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de.",
+            "ru": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de.",
+            "tj": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
+          "pinyin": "Zhè shì míngtiān nǐ chūchāi yào dài de máojīn, yágāo hé yáshuā, bǎ tāmen fàngdào xiāngzi li ba.",
+          "options": [
+            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
+            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
+            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
+            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "重 = og'ir (zhòng)",
-            "ru": "重 = тяжёлый (zhòng)",
-            "tj": "重 = вазнин (zhòng)"
+            "uz": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.",
+            "ru": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.",
+            "tj": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор."
           }
         },
         {
@@ -1424,27 +1478,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "只有大家共同努力，减少____，保护环境，才能使我们的家变得更美丽。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "毛巾",
-            "出差",
-            "污染",
-            "牙膏"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 污染 (wūrǎn) — ifloslantirmoq",
-            "ru": "Верно: 污染 (wūrǎn) — загрязнять",
-            "tj": "Дуруст: 污染 (wūrǎn) — ифлос кардан"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "出差",
           "pinyin": "chūchāi",
@@ -1457,7 +1490,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -1465,6 +1498,58 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "王静",
+              "zh": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
+              "blank": false
+            },
+            {
+              "speaker": "李进",
+              "zh": "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
+              "blank": false
+            },
+            {
+              "speaker": "王静",
+              "zh": "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
+              "blank": false
+            },
+            {
+              "speaker": "李进",
+              "zh": "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
+              "blank": false
+            },
+            {
+              "speaker": "王静",
+              "zh": "那个时间路上堵车多严重啊！你还是坐地铁去机场吧。这样不仅省油钱，而且还不会污染空气。",
+              "blank": false
+            },
+            {
+              "speaker": "李进",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
+            "好，那就听你的。",
+            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
+            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 好，那就听你的。",
+            "ru": "Правильный ответ: 好，那就听你的。",
+            "tj": "Ҷавоби дуруст: 好，那就听你的。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -1478,10 +1563,10 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
+            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
             "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
             "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。"
+            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1503,12 +1588,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "好，那就听你的。",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
+            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
             "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。"
+            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
+            "好，那就听你的。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 好，那就听你的。",
             "ru": "Правильный ответ: 好，那就听你的。",

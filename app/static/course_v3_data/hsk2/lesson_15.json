@@ -652,78 +652,73 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yangi yil yaqinlashib qoldi.",
+            "ru": "Новый год уже совсем близко.",
+            "tj": "Соли нав наздик шуд."
+          },
+          "tokens": [
+            "日",
+            "要",
+            "新年",
+            "就",
+            "了",
+            "到",
+            "票"
+          ],
+          "answer_tokens": [
+            "新年",
+            "就",
+            "要",
+            "到",
+            "了"
+          ],
+          "explanation": {
+            "uz": "新年就要到了。 — Xīnnián jiù yào dào le.",
+            "ru": "新年就要到了。 — Xīnnián jiù yào dào le.",
+            "tj": "新年就要到了。 — Xīnnián jiù yào dào le."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____就要到了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "票",
+            "火车站",
+            "日",
+            "新年"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 新年 (xīnnián) — yangi yil",
+            "ru": "Верно: 新年 (xīnnián) — новый год",
+            "tj": "Дуруст: 新年 (xīnnián) — соли нав"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "日 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 日:",
-            "tj": "Маънои калимаи 日-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "chipta, bilet",
-              "ru": "билет",
-              "tj": "чиптаи сафар"
-            },
-            {
-              "uz": "kun, sana",
-              "ru": "день, дата",
-              "tj": "рӯз, сана"
-            },
-            {
-              "uz": "yangi yil",
-              "ru": "новый год",
-              "tj": "соли нав"
-            },
-            {
-              "uz": "temir yo'l stantsiyasi, vokzal",
-              "ru": "железнодорожная станция, вокзал",
-              "tj": "истгоҳи роҳи оҳан, вокзал"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "日 = kun, sana (rì)",
-            "ru": "日 = день, дата (rì)",
-            "tj": "日 = рӯз, сана (rì)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "新年 talaffuzini tanlang:",
-            "ru": "Выберите произношение 新年:",
-            "tj": "Талаффузи 新年-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "xīnnián",
-            "rì",
-            "piào",
-            "huǒchēzhàn"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "新年 — xīnnián",
-            "ru": "新年 — xīnnián",
-            "tj": "新年 — xīnnián"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -738,9 +733,9 @@
           },
           "options": [
             "票",
+            "火车站",
             "新年",
-            "日",
-            "火车站"
+            "日"
           ],
           "correct_index": 0,
           "explanation": {
@@ -762,16 +757,67 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "票",
             "新年",
-            "火车站",
-            "日"
+            "日",
+            "票",
+            "火车站"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "火车站 = temir yo'l stantsiyasi, vokzal (huǒchēzhàn)",
             "ru": "火车站 = железнодорожная станция, вокзал (huǒchēzhàn)",
             "tj": "火车站 = истгоҳи роҳи оҳан, вокзал (huǒchēzhàn)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yangi yilda nima qilishni rejalashtirganmisiz?",
+            "ru": "Что ты планируешь делать на новый год?",
+            "tj": "Дар соли нав чӣ кор карданӣ ҳастед?"
+          },
+          "tokens": [
+            "准备",
+            "票",
+            "新年",
+            "日",
+            "做",
+            "你",
+            "什么"
+          ],
+          "answer_tokens": [
+            "新年",
+            "你",
+            "准备",
+            "做",
+            "什么"
+          ],
+          "explanation": {
+            "uz": "新年你准备做什么？ — Xīnnián nǐ zhǔnbèi zuò shénme?",
+            "ru": "新年你准备做什么？ — Xīnnián nǐ zhǔnbèi zuò shénme?",
+            "tj": "新年你准备做什么？ — Xīnnián nǐ zhǔnbèi zuò shénme?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "今天是12月20日，新年就要到了。",
+          "pinyin": "Jīntiān shì shí'èr yuè èrshí rì, xīnnián jiù yào dào le.",
+          "options": [
+            "新年你准备做什么？",
+            "你买票了吗？",
+            "我想去北京旅游，北京很不错，我去过一次。",
+            "今天是12月20日，新年就要到了。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "今天是12月20日，新年就要到了。 — Bugun 20-dekabr, yangi yil yaqinlashib qoldi.",
+            "ru": "今天是12月20日，新年就要到了。 — Сегодня 20 декабря, новый год уже совсем скоро.",
+            "tj": "今天是12月20日，新年就要到了。 — Имрӯз 20 декабр аст, соли нав наздик шуд."
           }
         },
         {
@@ -817,27 +863,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____就要到了。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "票",
-            "火车站",
-            "日",
-            "新年"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 新年 (xīnnián) — yangi yil",
-            "ru": "Верно: 新年 (xīnnián) — новый год",
-            "tj": "Дуруст: 新年 (xīnnián) — соли нав"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "日",
           "pinyin": "rì",
@@ -850,7 +875,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -858,6 +883,53 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "今天是12月20日，新年就要到了。",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "新年你准备做什么？",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "我想去北京旅游，北京很不错，我去过一次。",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "你买票了吗？",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "新年你准备做什么？",
+            "还没有呢，明天就去火车站买票。",
+            "我想去北京旅游，北京很不错，我去过一次。",
+            "今天是12月20日，新年就要到了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 还没有呢，明天就去火车站买票。",
+            "ru": "Правильный ответ: 还没有呢，明天就去火车站买票。",
+            "tj": "Ҷавоби дуруст: 还没有呢，明天就去火车站买票。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -871,12 +943,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
+            "我想去北京旅游，北京很不错，我去过一次。",
             "今天是12月20日，新年就要到了。",
-            "新年你准备做什么？",
             "你买票了吗？",
-            "我想去北京旅游，北京很不错，我去过一次。"
+            "新年你准备做什么？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 今天是12月20日，新年就要到了。",
             "ru": "Правильный ответ: 今天是12月20日，新年就要到了。",
@@ -896,12 +968,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "今天是12月20日，新年就要到了。",
-            "新年你准备做什么？",
             "还没有呢，明天就去火车站买票。",
+            "新年你准备做什么？",
+            "今天是12月20日，新年就要到了。",
             "我想去北京旅游，北京很不错，我去过一次。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 还没有呢，明天就去火车站买票。",
             "ru": "Правильный ответ: 还没有呢，明天就去火车站买票。",

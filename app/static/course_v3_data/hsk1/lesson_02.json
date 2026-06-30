@@ -311,53 +311,67 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "yaxshi emas",
+            "ru": "нехорошо, плохо",
+            "tj": "хуб нест"
+          },
+          "tokens": [
+            "不客气",
+            "谢谢",
+            "不",
+            "好"
+          ],
+          "answer_tokens": [
+            "不",
+            "好"
+          ],
+          "explanation": {
+            "uz": "不好 — bù hǎo",
+            "ru": "不好 — bù hǎo",
+            "tj": "不好 — bù hǎo"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "不客气",
+            "不",
+            "谢谢",
+            "再见"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 不客气 (bú kèqi) — iltimos, muammo yo'q",
+            "ru": "Верно: 不客气 (bú kèqi) — пожалуйста, не за что",
+            "tj": "Дуруст: 不客气 (bú kèqi) — хоҳиш мекунам, мушкиле нест"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "谢谢 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 谢谢:",
-            "tj": "Маънои калимаи 谢谢-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "xayr, ko'rishguncha",
-              "ru": "до свидания, пока",
-              "tj": "хайр, то дидан"
-            },
-            {
-              "uz": "yo'q, emas",
-              "ru": "нет, не",
-              "tj": "не, нест"
-            },
-            {
-              "uz": "iltimos, muammo yo'q",
-              "ru": "пожалуйста, не за что",
-              "tj": "хоҳиш мекунам, мушкиле нест"
-            },
-            {
-              "uz": "rahmat aytmoq, rahmat",
-              "ru": "благодарить, спасибо",
-              "tj": "ташаккур гуфтан, раҳмат"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "谢谢 = rahmat aytmoq, rahmat (xièxie)",
-            "ru": "谢谢 = благодарить, спасибо (xièxie)",
-            "tj": "谢谢 = ташаккур гуфтан, раҳмат (xièxie)"
-          }
-        },
         {
           "type": "pinyin_choice",
           "prompt": {
@@ -372,11 +386,11 @@
           },
           "options": [
             "zàijiàn",
-            "xièxie",
             "bù",
-            "bú kèqi"
+            "bú kèqi",
+            "xièxie"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "不 — bù",
             "ru": "不 — bù",
@@ -396,12 +410,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "再见",
-            "不",
             "不客气",
-            "谢谢"
+            "谢谢",
+            "不",
+            "再见"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "iltimos, muammo yo'q = 不客气 (bú kèqi)",
             "ru": "пожалуйста, не за что = 不客气 (bú kèqi)",
@@ -409,28 +423,48 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zàijiàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zàijiàn?",
-            "tj": "zàijiàn кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Senga rahmat!",
+            "ru": "Спасибо тебе!",
+            "tj": "Аз ту ташаккур!"
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "再见",
+          "tokens": [
+            "不客气",
             "不",
-            "谢谢",
-            "不客气"
+            "你",
+            "谢谢"
           ],
-          "correct_index": 0,
+          "answer_tokens": [
+            "谢谢",
+            "你"
+          ],
           "explanation": {
-            "uz": "再见 = xayr, ko'rishguncha (zàijiàn)",
-            "ru": "再见 = до свидания, пока (zàijiàn)",
-            "tj": "再见 = хайр, то дидан (zàijiàn)"
+            "uz": "谢谢你！ — Xièxie nǐ!",
+            "ru": "谢谢你！ — Xièxie nǐ!",
+            "tj": "谢谢你！ — Xièxie nǐ!"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "谢谢！",
+          "pinyin": "Xièxie!",
+          "options": [
+            "谢谢你！",
+            "谢谢！",
+            "不客气！",
+            "不谢！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "谢谢！ — Rahmat!",
+            "ru": "谢谢！ — Спасибо!",
+            "tj": "谢谢！ — Раҳмат!"
           }
         },
         {
@@ -476,27 +510,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "再见",
-            "不客气",
-            "不",
-            "谢谢"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 不客气 (bú kèqi) — iltimos, muammo yo'q",
-            "ru": "Верно: 不客气 (bú kèqi) — пожалуйста, не за что",
-            "tj": "Дуруст: 不客气 (bú kèqi) — хоҳиш мекунам, мушкиле нест"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "谢谢",
           "pinyin": "xièxie",
@@ -509,7 +522,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -517,6 +530,38 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "谢谢！",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "谢谢！",
+            "不谢！",
+            "谢谢你！",
+            "不客气！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 不谢！",
+            "ru": "Правильный ответ: 不谢！",
+            "tj": "Ҷавоби дуруст: 不谢！"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -530,12 +575,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "谢谢！",
             "不谢！",
             "谢谢你！",
+            "谢谢！",
             "不客气！"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 谢谢！",
             "ru": "Правильный ответ: 谢谢！",
@@ -555,9 +600,9 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "不客气！",
-            "谢谢你！",
             "谢谢！",
+            "谢谢你！",
+            "不客气！",
             "不谢！"
           ],
           "correct_index": 3,

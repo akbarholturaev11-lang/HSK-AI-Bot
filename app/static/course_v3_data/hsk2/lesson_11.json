@@ -602,78 +602,71 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Olma tarvuz kadar katta emas.",
+            "ru": "Яблоко не такое большое, как арбуз.",
+            "tj": "Себ ба андозаи тарбуз калон нест."
+          },
+          "tokens": [
+            "西瓜",
+            "没有",
+            "苹果",
+            "男",
+            "大",
+            "唱歌"
+          ],
+          "answer_tokens": [
+            "苹果",
+            "没有",
+            "西瓜",
+            "大"
+          ],
+          "explanation": {
+            "uz": "苹果没有西瓜大。 — Píngguǒ méiyǒu xīguā dà.",
+            "ru": "苹果没有西瓜大。 — Píngguǒ méiyǒu xīguā dà.",
+            "tj": "苹果没有西瓜大。 — Píngguǒ méiyǒu xīguā dà."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "左边看报纸的女____是我姐姐。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "女",
+            "孩子",
+            "唱歌",
+            "男"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 孩子 (háizi) — bola",
+            "ru": "Верно: 孩子 (háizi) — ребёнок",
+            "tj": "Дуруст: 孩子 (háizi) — кӯдак"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "唱歌 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 唱歌:",
-            "tj": "Маънои калимаи 唱歌-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "bola",
-              "ru": "ребёнок",
-              "tj": "кӯдак"
-            },
-            {
-              "uz": "erkak, o'g'il",
-              "ru": "мужской, мальчик",
-              "tj": "мард, писар"
-            },
-            {
-              "uz": "ayol, qiz",
-              "ru": "женский, девочка",
-              "tj": "зан, духтар"
-            },
-            {
-              "uz": "qo'shiq aytmoq",
-              "ru": "петь песню",
-              "tj": "суруд хондан"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "唱歌 = qo'shiq aytmoq (chànggē)",
-            "ru": "唱歌 = петь песню (chànggē)",
-            "tj": "唱歌 = суруд хондан (chànggē)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "男 talaffuzini tanlang:",
-            "ru": "Выберите произношение 男:",
-            "tj": "Талаффузи 男-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "chànggē",
-            "nǚ",
-            "háizi",
-            "nán"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "男 — nán",
-            "ru": "男 — nán",
-            "tj": "男 — nán"
-          }
-        },
         {
           "type": "translation_choice",
           "prompt": {
@@ -689,10 +682,10 @@
           "options": [
             "唱歌",
             "孩子",
-            "男",
-            "女"
+            "女",
+            "男"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "ayol, qiz = 女 (nǚ)",
             "ru": "женский, девочка = 女 (nǚ)",
@@ -712,16 +705,71 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "女",
             "男",
-            "唱歌",
-            "孩子"
+            "孩子",
+            "女",
+            "唱歌"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "孩子 = bola (háizi)",
             "ru": "孩子 = ребёнок (háizi)",
             "tj": "孩子 = кӯдак (háizi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Qanday do'st? Yigit do'stingizmi?",
+            "ru": "Что за друг? Это случайно не парень?",
+            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
+          },
+          "tokens": [
+            "朋友",
+            "男",
+            "是",
+            "是",
+            "朋友",
+            "女",
+            "不",
+            "唱歌",
+            "什么"
+          ],
+          "answer_tokens": [
+            "什么",
+            "朋友",
+            "是",
+            "不",
+            "是",
+            "男",
+            "朋友"
+          ],
+          "explanation": {
+            "uz": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
+            "ru": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
+            "tj": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "王方，昨天和你一起唱歌的人是谁？",
+          "pinyin": "Wáng Fāng, zuótiān hé nǐ yìqǐ chànggē de rén shì shéi?",
+          "options": [
+            "不是不是，我同学介绍的，昨天第一次见。",
+            "一个朋友。",
+            "什么朋友？是不是男朋友？",
+            "王方，昨天和你一起唱歌的人是谁？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "王方，昨天和你一起唱歌的人是谁？ — Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?",
+            "ru": "王方，昨天和你一起唱歌的人是谁？ — Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?",
+            "tj": "王方，昨天和你一起唱歌的人是谁？ — Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?"
           }
         },
         {
@@ -767,27 +815,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "左边看报纸的女____是我姐姐。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "孩子",
-            "男",
-            "唱歌",
-            "女"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 孩子 (háizi) — bola",
-            "ru": "Верно: 孩子 (háizi) — ребёнок",
-            "tj": "Дуруст: 孩子 (háizi) — кӯдак"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "唱歌",
           "pinyin": "chànggē",
@@ -800,7 +827,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -808,6 +835,48 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "王方，昨天和你一起唱歌的人是谁？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "一个朋友。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "什么朋友？是不是男朋友？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "什么朋友？是不是男朋友？",
+            "王方，昨天和你一起唱歌的人是谁？",
+            "一个朋友。",
+            "不是不是，我同学介绍的，昨天第一次见。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 不是不是，我同学介绍的，昨天第一次见。",
+            "ru": "Правильный ответ: 不是不是，我同学介绍的，昨天第一次见。",
+            "tj": "Ҷавоби дуруст: 不是不是，我同学介绍的，昨天第一次见。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -821,10 +890,10 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "不是不是，我同学介绍的，昨天第一次见。",
+            "一个朋友。",
             "什么朋友？是不是男朋友？",
             "王方，昨天和你一起唱歌的人是谁？",
-            "一个朋友。"
+            "不是不是，我同学介绍的，昨天第一次见。"
           ],
           "correct_index": 2,
           "explanation": {
@@ -847,8 +916,8 @@
           },
           "options": [
             "一个朋友。",
-            "王方，昨天和你一起唱歌的人是谁？",
             "什么朋友？是不是男朋友？",
+            "王方，昨天和你一起唱歌的人是谁？",
             "不是不是，我同学介绍的，昨天第一次见。"
           ],
           "correct_index": 3,

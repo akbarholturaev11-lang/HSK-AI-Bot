@@ -207,6 +207,40 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-06-30 — Course v3 Duolingo uslubidagi interaktiv dars formati
+
+Changed:
+- Har dars endi 4 bo'lim: `intro` → YANGI `grammar` (interaktiv) → `practice` → interaktiv `dialog`.
+  Avval har dars bir xil shablon edi (`intro` + aynan bir xil 7 MC + quick_quiz); grammatika
+  va dialog faqat passiv o'qish kartasi edi.
+- 3 ta yangi card turi generatsiya qilinadi va frontendda renderlanadi:
+  `sentence_builder` (so'z plitkalaridan gap yig'ish, 116 ta), `listening_choice`
+  ("eshitganini tanla", har darsda), `dialog_cloze` ("dialogni to'ldir", har darsda).
+- Eski MC drillar kamaytirildi (meaning/pinyin/translation/hanzi: 70→~34, har darsda 2 ta,
+  dars tartibiga qarab aylanadi), interaktiv turlar bilan aralashtirildi. `gap_fill` endi
+  grammatika bo'limida.
+- Xitoy gapini so'zlarga bo'lish uchun lug'at-asosidagi greedy-longest-match tokenizer
+  (`segment_zh`) qo'shildi; barcha plitka/variant qat'iy level-gated (faqat o'rganilgan so'z/satr).
+  HSK4'da 8 ta darsda gap 8 tokendan uzun bo'lgani uchun `sentence_builder` o'tkazib yuborilgan
+  (listening + cloze baribir bor).
+- `cardBuilder` (course-v3.html) qiymat o'rniga bank-indeksini saqlaydigan qilib qayta yozildi
+  (takroriy plitka, masalan 越×2, endi to'g'ri baholanadi).
+
+Files touched:
+- `scripts/gen_course_v3_from_seed.py` (tokenizer + 3 yangi builder + grammar/dialog bo'limlari +
+  build_practice rotatsiyasi), `app/static/course-v3.html` (buildQueue grammar bo'limi,
+  dialog_cloze render, cardBuilder fix, .cloze-gap CSS), 70 ta `course_v3_data/**/lesson_*.json`
+  qayta generatsiya, `tests/test_course_v3_static_data.py` (yangi
+  `test_interactive_cards_present_and_level_gated`).
+
+Risk:
+- Faqat statik kontent + frontend render; to'lov/obuna/ruxsat/XP/progress backend tegilmadi.
+- Barcha matn uz/ru/tj to'liq (seed'dan verbatim; tokenizer yangi tarjima yaratmaydi).
+- Real Telegram WebView smoke-test tavsiya etiladi (lokalda flow eval orqali tekshirildi).
+- Eslatma: `tests/test_course_v3_static_data.py::...real_invite_format` testi AVVALDAN
+  yiqilgan (eski `"/course_v3_data/"+lv+...` literalini qidiradi; html endi `lessonDataUrl()`
+  ishlatadi) — bu o'zgarishga aloqasiz, alohida tuzatish kerak.
+
 ### 2026-06-29 — Voice pronunciation transcript + tolerant pinyin scoring
 
 Changed:

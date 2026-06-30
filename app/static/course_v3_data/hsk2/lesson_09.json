@@ -592,6 +592,65 @@
     {
       "section_no": 2,
       "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men eshitib tushundim.",
+            "ru": "Я понял на слух.",
+            "tj": "Ман шунида фаҳмидам."
+          },
+          "tokens": [
+            "错",
+            "懂",
+            "听",
+            "我",
+            "了",
+            "从"
+          ],
+          "answer_tokens": [
+            "我",
+            "听",
+            "懂",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我听懂了。 — Wǒ tīngdǒng le.",
+            "ru": "我听懂了。 — Wǒ tīngdǒng le.",
+            "tj": "我听懂了。 — Wǒ tīngdǒng le."
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "您从几岁开始学____？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "错",
+            "从",
+            "跳舞",
+            "第一"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 跳舞 (tiàowǔ) — raqs tushmoq",
+            "ru": "Верно: 跳舞 (tiàowǔ) — танцевать",
+            "tj": "Дуруст: 跳舞 (tiàowǔ) — рақс кардан"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
         "uz": "Mashq",
         "ru": "Упражнение",
         "tj": "Машқ"
@@ -617,9 +676,9 @@
               "tj": "аз, аз ибтидои (ҷой ё вақт)"
             },
             {
-              "uz": "birinchi",
-              "ru": "первый",
-              "tj": "аввалин, якум"
+              "uz": "xato, noto'g'ri",
+              "ru": "неправильный, ошибочный",
+              "tj": "хато, нодуруст"
             },
             {
               "uz": "raqs tushmoq",
@@ -627,12 +686,12 @@
               "tj": "рақс кардан"
             },
             {
-              "uz": "xato, noto'g'ri",
-              "ru": "неправильный, ошибочный",
-              "tj": "хато, нодуруст"
+              "uz": "birinchi",
+              "ru": "первый",
+              "tj": "аввалин, якум"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "错 = xato, noto'g'ri (cuò)",
             "ru": "错 = неправильный, ошибочный (cuò)",
@@ -653,9 +712,9 @@
           },
           "options": [
             "cóng",
+            "cuò",
             "tiàowǔ",
-            "dìyī",
-            "cuò"
+            "dìyī"
           ],
           "correct_index": 0,
           "explanation": {
@@ -665,53 +724,60 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'raqs tushmoq' xitoycha qaysi?",
-            "ru": "'танцевать' по-китайски?",
-            "tj": "'рақс кардан' ба хитоӣ кадом аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bilasizmi? Devid ish topdi.",
+            "ru": "Знаешь? Дэвид нашёл работу.",
+            "tj": "Медонӣ? Дэвид кор ёфт."
           },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "第一",
-            "跳舞",
-            "错",
-            "从"
+          "tokens": [
+            "了",
+            "你",
+            "工作",
+            "找",
+            "吗",
+            "到",
+            "大卫",
+            "知道",
+            "从",
+            "错"
           ],
-          "correct_index": 1,
+          "answer_tokens": [
+            "你",
+            "知道",
+            "吗",
+            "大卫",
+            "找",
+            "到",
+            "工作",
+            "了"
+          ],
           "explanation": {
-            "uz": "raqs tushmoq = 跳舞 (tiàowǔ)",
-            "ru": "танцевать = 跳舞 (tiàowǔ)",
-            "tj": "рақс кардан = 跳舞 (tiàowǔ)"
+            "uz": "你知道吗？大卫找到工作了。 — Nǐ zhīdào ma? Dàwèi zhǎodào gōngzuò le.",
+            "ru": "你知道吗？大卫找到工作了。 — Nǐ zhīdào ma? Dàwèi zhǎodào gōngzuò le.",
+            "tj": "你知道吗？大卫找到工作了。 — Nǐ zhīdào ma? Dàwèi zhǎodào gōngzuò le."
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "dìyī qaysi ieroglif?",
-            "ru": "Какой иероглиф читается dìyī?",
-            "tj": "dìyī кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "你好！请问张欢在吗？",
+          "pinyin": "Nǐ hǎo! Qǐngwèn Zhāng Huān zài ma?",
           "options": [
-            "错",
-            "跳舞",
-            "第一",
-            "从"
+            "你打错了，我们这儿没有叫张欢的。",
+            "你好！请问张欢在吗？",
+            "对不起。",
+            "您从几岁开始学跳舞？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "第一 = birinchi (dìyī)",
-            "ru": "第一 = первый (dìyī)",
-            "tj": "第一 = аввалин, якум (dìyī)"
+            "uz": "你好！请问张欢在吗？ — Salom! Iltimos, Chjan Xuan bormi?",
+            "ru": "你好！请问张欢在吗？ — Здравствуйте! Скажите, Чжан Хуань здесь?",
+            "tj": "你好！请问张欢在吗？ — Салом! Лутфан, Чжан Хуан ҳаст?"
           }
         },
         {
@@ -757,27 +823,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "您从几岁开始学____？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "第一",
-            "跳舞",
-            "错",
-            "从"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 跳舞 (tiàowǔ) — raqs tushmoq",
-            "ru": "Верно: 跳舞 (tiàowǔ) — танцевать",
-            "tj": "Дуруст: 跳舞 (tiàowǔ) — рақс кардан"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "错",
           "pinyin": "cuò",
@@ -790,7 +835,7 @@
       ]
     },
     {
-      "section_no": 3,
+      "section_no": 4,
       "section_title": {
         "uz": "Dialog",
         "ru": "Диалог",
@@ -798,6 +843,43 @@
       },
       "section_purpose": "dialog",
       "cards": [
+        {
+          "type": "dialog_cloze",
+          "title": {
+            "uz": "Dialogni to'ldiring",
+            "ru": "Дополните диалог",
+            "tj": "Муколамаро пурра кунед"
+          },
+          "lines": [
+            {
+              "speaker": "A",
+              "zh": "你好！请问张欢在吗？",
+              "blank": false
+            },
+            {
+              "speaker": "B",
+              "zh": "你打错了，我们这儿没有叫张欢的。",
+              "blank": false
+            },
+            {
+              "speaker": "A",
+              "zh": "",
+              "blank": true
+            }
+          ],
+          "options": [
+            "你打错了，我们这儿没有叫张欢的。",
+            "您从几岁开始学跳舞？",
+            "你好！请问张欢在吗？",
+            "对不起。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 对不起。",
+            "ru": "Правильный ответ: 对不起。",
+            "tj": "Ҷавоби дуруст: 对不起。"
+          }
+        },
         {
           "type": "quick_quiz",
           "prompt": {
@@ -811,9 +893,9 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "您从几岁开始学跳舞？",
-            "你好！请问张欢在吗？",
             "对不起。",
+            "你好！请问张欢在吗？",
+            "您从几岁开始学跳舞？",
             "你打错了，我们这儿没有叫张欢的。"
           ],
           "correct_index": 1,
@@ -836,12 +918,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "对不起。",
             "您从几岁开始学跳舞？",
+            "对不起。",
             "你打错了，我们这儿没有叫张欢的。",
             "你好！请问张欢在吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 对不起。",
             "ru": "Правильный ответ: 对不起。",
