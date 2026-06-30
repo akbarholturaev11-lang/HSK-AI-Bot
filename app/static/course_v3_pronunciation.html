@@ -38,6 +38,8 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 .micwrap.rec:after{animation-delay:.7s}
 @keyframes pr{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.7);opacity:0}}
 .hint{font-size:13px;color:var(--ink3)}
+.skip{background:none;border:none;color:var(--ink3);font-family:inherit;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;margin-top:2px}
+.skip:active{opacity:.6}
 .toast{position:absolute;top:54px;left:50%;transform:translateX(-50%) translateY(-12px);background:var(--jade);color:#fff;font-size:14px;font-weight:500;padding:7px 15px;border-radius:18px;opacity:0;transition:all .3s;z-index:6}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .conf{position:absolute;top:-14px;width:9px;height:13px;border-radius:2px;opacity:0;z-index:5}
@@ -58,6 +60,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="ctrl" id="ctrl" style="display:none">
     <div class="micwrap" id="micwrap"><button class="mic" id="mic" onclick="rec()" aria-label="Gapirish"><i class="ti ti-microphone"></i></button></div>
     <div class="hint" id="hint"></div>
+    <button class="skip" id="skip" onclick="skipWord()"><span id="skiptxt"></span> <i class="ti ti-player-skip-forward"></i></button>
   </div>
   <div class="done" id="done"><div class="st han">音</div><h3 id="dh"></h3><p id="dp"></p><button onclick="replay()"><i class="ti ti-refresh"></i> <span id="db"></span></button></div>
 </div>
@@ -65,9 +68,9 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",heard:"Я услышал:",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме произношение доступно 1 полную сессию в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад"},
-  uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Aniq emas, yana urinib ko'ring",heard:"Men shunday eshitdim:",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq",listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi, qayta urining",needTg:"Telegram'da oching",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda talaffuz kuniga 1 to'liq sessiya ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga"},
-  tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",heard:"Ман чунин шунидам:",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон талаффуз рӯзе 1 сессияи пурра дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт"}}[LANG];
+var L={ru:{hint:"Нажмите на микрофон и произнесите слово",listen:"Прослушать",ok:"Точно произнесено!",bad:"Неточно, попробуйте снова",heard:"Я услышал:",retry:"Нажмите ещё раз",done:"правильно",doneSub:"Ваше произношение становится лучше!",again:"Ещё раз",listening:"Слушаю…",analyzing:"Проверяю…",micDeny:"Разрешите доступ к микрофону",noSupport:"Микрофон не поддерживается",netErr:"Ошибка сети, попробуйте снова",needTg:"Откройте в Telegram",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме произношение доступно 1 полную сессию в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",skip:"Пропустить"},
+  uz:{hint:"Mikrofonni bosib, so'zni ayting",listen:"Tinglash",ok:"Aniq talaffuz!",bad:"Aniq emas, yana urinib ko'ring",heard:"Men shunday eshitdim:",retry:"Qayta bosing",done:"to'g'ri",doneSub:"Talaffuzing yaxshilanyapti!",again:"Yana mashq",listening:"Eshityapman…",analyzing:"Tekshiryapman…",micDeny:"Mikrofonga ruxsat bering",noSupport:"Mikrofon qo'llab-quvvatlanmaydi",netErr:"Tarmoq xatosi, qayta urining",needTg:"Telegram'da oching",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda talaffuz kuniga 1 to'liq sessiya ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga",skip:"O'tkazib yuborish"},
+  tj:{hint:"Микрофонро пахш карда, калимаро гӯед",listen:"Гӯш кардан",ok:"Талаффузи дақиқ!",bad:"Дақиқ нест, боз кӯшиш кунед",heard:"Ман чунин шунидам:",retry:"Боз пахш кунед",done:"дуруст",doneSub:"Талаффузи шумо беҳтар мешавад!",again:"Боз",listening:"Гӯш мекунам…",analyzing:"Месанҷам…",micDeny:"Ба микрофон иҷозат диҳед",noSupport:"Микрофон дастгирӣ намешавад",netErr:"Хатои шабака, бозкӯшӣ кунед",needTg:"Дар Telegram кушоед",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон талаффуз рӯзе 1 сессияи пурра дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт",skip:"Гузарондан"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription"}
@@ -149,6 +152,13 @@ function applyScore(score,heard){
     setTimeout(function(){word.classList.remove('bad')},450);
   }
 }
+function skipWord(){
+  if(busy)return;
+  try{clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){mediaRecorder.onstop=null;mediaRecorder.stop()}}catch(e){}
+  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;setRec(false);
+  i++;document.getElementById('prog').style.width=Math.round(i/list.length*100)+'%';
+  if(i>=list.length){finish()}else{load()}
+}
 function finish(){document.getElementById('ctrl').style.display='none';document.getElementById('prog').style.width='100%';
   document.getElementById('dh').textContent=okCount+' / '+list.length+' '+L.done;document.getElementById('dp').textContent=L.doneSub;document.getElementById('db').textContent=L.again;
   document.getElementById('done').classList.add('on');beep([523,659,784,1046]);haptic(true);}
@@ -157,6 +167,7 @@ function start(){
   if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
   list=shuffle(pool.slice()).slice(0,TOTAL);i=0;okCount=0;busy=false;
   document.getElementById('done').classList.remove('on');document.getElementById('ctrl').style.display='flex';document.getElementById('prog').style.width='0';
+  document.getElementById('skiptxt').textContent=L.skip;
   load();
 }
 gateStart();
