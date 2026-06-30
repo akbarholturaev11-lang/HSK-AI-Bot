@@ -849,7 +849,7 @@ function adUiText(key){
 function setAdStatus(text){var el=$("#ad-status");if(!el)return;el.hidden=!text;el.textContent=text||""}
 function resetAdVideo(video){
   if(!video)return;
-  video.onloadeddata=video.oncanplay=video.onplaying=video.onerror=video.onstalled=null;
+  video.onloadeddata=video.oncanplay=video.onplaying=video.ontimeupdate=video.onerror=video.onstalled=null;
 }
 function _closeAdOverlay(){
   clearInterval(AD_STATE.timer);clearTimeout(AD_STATE.loadTimer);
@@ -970,10 +970,19 @@ function showCourseAd(placement,idx){
         video.onloadeddata=startCountdown;
         video.oncanplay=startCountdown;
         video.onplaying=startCountdown;
+        video.ontimeupdate=startCountdown;
         video.onerror=mediaFailed;
         video.onstalled=function(){clearTimeout(AD_STATE.loadTimer);AD_STATE.loadTimer=setTimeout(mediaFailed,5000)};
         AD_STATE.loadTimer=setTimeout(mediaFailed,8000);
-        var play=video.play();if(play&&play.then)play.then(startCountdown).catch(mediaFailed);else if(play&&play.catch)play.catch(mediaFailed);
+        /* Cache'dan qayta ochilganda (2-3-reklama) loadeddata/canplay qayta otilmasligi
+           mumkin — agar media allaqachon tayyor bo'lsa, sanoqni darhol boshlaymiz. */
+        if(video.readyState>=2)startCountdown();
+        /* Muted autoplay bloklanishi (ayniqsa o'rta/yakuniy reklama, Telegram WebView'da
+           user gesture'siz) — bu MEDIA xatosi EMAS. Shu sababli .catch'da darrov
+           mediaFailed chaqirmaymiz: video baribir yuklanib, load hodisalari yoki 8s
+           timeout orqali hal bo'ladi. Aks holda user qora ekranda qotib qolardi. */
+        var play=video.play();
+        if(play&&play.then)play.then(startCountdown).catch(function(){if(video.readyState>=2)startCountdown()});
       }
       playAd(0);
     }).catch(function(){reject(new Error("course_ad_not_found"))});
