@@ -12,6 +12,7 @@ from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.course_miniapp_profile import CourseMiniAppProfile
 from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.user import User
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.notification_template_service import (
     CAPTION_MAX,
@@ -427,4 +428,7 @@ class MotivationReminderService:
             return True
         except Exception as exc:  # noqa: BLE001 - blocked/deleted users are expected
             print(f"MotivationReminderService: failed to notify {user.telegram_id}: {exc}")
+            await BotBlockStatusService(self.session).handle_send_exception(
+                user.telegram_id, exc, reason="motivation_reminder"
+            )
             return False

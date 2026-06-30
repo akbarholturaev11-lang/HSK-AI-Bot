@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.course_progress import CourseProgress
 from app.db.models.user import User
 from app.bot.utils.i18n import t
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
 
 
@@ -79,6 +80,9 @@ class CourseReminderService:
                 print(f"CourseReminderService: sent reminder to {user.telegram_id}")
             except Exception as e:
                 print(f"CourseReminderService: failed to notify {user.telegram_id}: {e}")
+                await BotBlockStatusService(self.session).handle_send_exception(
+                    user.telegram_id, e, reason="course_reminder"
+                )
 
         await self.session.commit()
 
@@ -139,5 +143,8 @@ class CourseReminderService:
                 print(f"CourseReminderService: sent weekly progress to {user.telegram_id}")
             except Exception as e:
                 print(f"CourseReminderService: failed weekly progress for {user.telegram_id}: {e}")
+                await BotBlockStatusService(self.session).handle_send_exception(
+                    user.telegram_id, e, reason="course_weekly_progress"
+                )
 
         await self.session.commit()
