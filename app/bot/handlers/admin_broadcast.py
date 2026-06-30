@@ -10,6 +10,7 @@ from aiogram.types import Message, CallbackQuery
 
 from app.config import settings
 from app.repositories.user_repo import UserRepository
+from app.services.bot_block_status_service import BotBlockStatusService
 from app.bot.fsm.admin_broadcast import BroadcastStates
 from app.bot.keyboards.admin_broadcast import broadcast_panel_keyboard, broadcast_confirm_keyboard
 from app.bot.keyboards.promo_button import (
@@ -812,6 +813,8 @@ async def bc_confirm(callback: CallbackQuery, state: FSMContext, session):
 
     sent_count = 0
     failed_count = 0
+    blocked_count = 0
+    block_service = BotBlockStatusService(session)
     last_update = time.monotonic()
     button_contact_url = None
     if (decode_promo_button_config(button_config) or {}).get("action") == "contact":
@@ -867,8 +870,17 @@ async def bc_confirm(callback: CallbackQuery, state: FSMContext, session):
                     ),
                 )
             sent_count += 1
-        except Exception:
+            # Avval bloklangan user endi xabarni qabul qildi — blokdan chiqaramiz.
+            if BotBlockStatusService.is_bot_blocked(user):
+                await block_service.mark_user_unblocked(user)
+        except Exception as exc:
             failed_count += 1
+            # Foydalanuvchi botni bloklagan bo'lsa (TelegramForbiddenError) — darhol belgilab qo'yamiz.
+            try:
+                if await block_service.handle_send_exception(user.telegram_id, exc, reason="broadcast"):
+                    blocked_count += 1
+            except Exception:
+                pass
         await asyncio.sleep(0.05)
 
         now = time.monotonic()
@@ -879,9 +891,16 @@ async def bc_confirm(callback: CallbackQuery, state: FSMContext, session):
             except Exception:
                 pass
 
-    await callback.message.edit_text(
-        f"✅ Yuborildi: {sent_count}, ❌ Xato: {failed_count}"
-    )
+    # Blok holatidagi o'zgarishlarni saqlaymiz (handle_send_exception faqat flush qiladi).
+    try:
+        await session.commit()
+    except Exception:
+        await session.rollback()
+
+    result_text = f"✅ Yuborildi: {sent_count}, ❌ Xato: {failed_count}"
+    if blocked_count:
+        result_text += f"\n🚫 Botni bloklaganlar: {blocked_count}"
+    await callback.message.edit_text(result_text)
 
 
 @router.callback_query(F.data == "bc:cancel")

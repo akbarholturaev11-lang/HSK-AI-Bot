@@ -1,7 +1,8 @@
 import unittest
+from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
-from app.services.admin_stats_service import miniapp_course_stats
+from app.services.admin_stats_service import feature_usage_stats, miniapp_course_stats
 from app.services.admin_miniapp_service import AdminMiniAppService
 
 
@@ -35,6 +36,22 @@ class AdminStatsServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(stats.completed_sections, 24)
         self.assertEqual(stats.completed_book_lessons, 4)
         self.assertEqual(session.execute_count, 5)
+
+    async def test_feature_usage_stats_sorted_by_week_users(self):
+        # Chaqiruv tartibi: har bo'lim uchun (bugun, hafta) — 6 ta bo'lim = 12 ta query.
+        # Darslar, Testlar, Mashqlar, Xatolar, Voice, AI
+        session = _Session([5, 50, 2, 20, 1, 10, 0, 5, 3, 30, 8, 80])
+        now = datetime.now(timezone.utc)
+
+        features = await feature_usage_stats(session, now, now - timedelta(days=7))
+
+        self.assertEqual(session.execute_count, 12)
+        # Haftalik aktiv user bo'yicha kamayish tartibida saralanishi kerak.
+        self.assertEqual([f.week_users for f in features], [80, 50, 30, 20, 10, 5])
+        top = features[0]
+        self.assertEqual(top.label, "🤖 AI savol-javob")
+        self.assertEqual(top.today_users, 8)
+        self.assertEqual(top.week_users, 80)
 
 
 class AdminMiniAppServiceTests(unittest.TestCase):

@@ -23,7 +23,7 @@ from app.db.models.course_progress import CourseProgress
 from app.db.models.referral import Referral
 from app.db.models.bot_feedback import BotFeedback
 from app.services.ai_usage_budget_service import USD_TO_SOMONI, USD_TO_YUAN
-from app.services.admin_stats_service import miniapp_course_stats
+from app.services.admin_stats_service import feature_usage_stats, miniapp_course_stats
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_miniapp_admin_analytics_service import CourseMiniAppAdminAnalyticsService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
@@ -2019,6 +2019,9 @@ async def admin_stats_callback(callback: CallbackQuery, session):
     )).fetchall()
     pay_by_plan = {r.plan_type: r.cnt for r in pay_plan_rows}
 
+    # --- Qaysi bo'lim ko'proq ishlatilmoqda ---
+    feature_usage = await feature_usage_stats(session, today_start, week_ago)
+
     # --- Kurs Mini App ---
     miniapp_course = await miniapp_course_stats(session)
 
@@ -2078,6 +2081,10 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"{l.upper()}: {level_counts.get(l, 0)}" for l in level_order
     )
     lang_str = "  " + " | ".join(f"{k}: {v}" for k, v in sorted(lang_counts.items()))
+    feature_usage_str = "\n".join(
+        f"  {item.label}: <b>{item.today_users}</b> / <b>{item.week_users}</b>"
+        for item in feature_usage
+    )
     now_str  = now.astimezone(ADMIN_STATS_TZ).strftime("%d.%m.%Y %H:%M Asia/Shanghai")
 
     text = (
@@ -2093,6 +2100,9 @@ async def admin_stats_callback(callback: CallbackQuery, session):
         f"<b>📅 FAOLLIK</b>\n"
         f"  Yangi:  bugun <b>+{new_today}</b>  |  hafta <b>+{new_week}</b>  |  oy <b>+{new_month}</b>\n"
         f"  Aktiv:  bugun <b>{active_today}</b>  |  24 soat <b>{active_24h}</b>  |  hafta <b>{active_week}</b>\n\n"
+
+        f"<b>🔥 QAYSI BO'LIM KO'PROQ ISHLATILMOQDA</b>  <i>(aktiv user: bugun / hafta)</i>\n"
+        f"{feature_usage_str}\n\n"
 
         f"<b>📊 DARAJALAR</b>\n"
         f"{level_str}\n\n"
