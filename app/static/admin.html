@@ -440,7 +440,10 @@
         user_not_found:"Foydalanuvchi topilmadi", invalid_price_payload:"Narx ma'lumoti noto'g'ri",
         invalid_channel_payload:"Kanal ma'lumoti noto'g'ri", delete_confirmation_required:"O'chirish uchun IDni tasdiq maydoniga yozing",
         invalid_help_url:"Yordam linki noto'g'ri", invalid_contact:"Admin kontakt noto'g'ri",
-        invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas"
+        invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas",
+        broadcast_text_too_long:"Matn juda uzun (media bilan max 1024)", media_too_large:"Fayl 25MB dan katta",
+        unsupported_media:"Fayl turi qo'llab-quvvatlanmaydi", media_upload_failed:"Media yuklab bo'lmadi",
+        qr_upload_failed:"QR yuklab bo'lmadi", invalid_qr_target:"QR uchun usul/tarif noto'g'ri", price_not_set:"Avval narxni saqlang"
       };
       return m[k] || fallback || "Amal bajarilmadi";
     }
@@ -721,13 +724,40 @@
       $("drawerBody").innerHTML="<p class='empty'>Bu bo'lim uchun panel tayyor emas.</p>";
     }
 
+    function priceQrHtml(p){
+      if(!p.qr_method) return "";
+      return `<div class="frow"><label>📱 QR kodlar ${p.qr_set?tag("asosiy bor","green"):tag("asosiy yo'q","red")}</label>
+        <div class="row">
+          <button class="btn sec" type="button" data-qrbtn data-scope="main">Asosiy QR</button>
+          <button class="btn sec" type="button" data-qrbtn data-scope="discount20">20% chegirma QR</button>
+          <input type="file" accept="image/*" data-qrfile hidden></div>
+        <div class="ncnote" data-qrinfo>Mos narxdagi to'lov QR rasmini yuklang (foydalanuvchi to'lov ekranida ko'radi).</div></div>`;
+    }
     function renderPrices(d){
       openDrawer("💳 Obuna narxlari","Narxlar darhol subscription Mini Appda ishlaydi",`<div class="panel">
         ${(d.prices||[]).map(p=>`<div class="mcard" data-prow data-method="${p.method}" data-plan="${p.plan}">
           <h3>${esc(p.method_label)} · ${esc(p.plan_label)}</h3><p>Joriy: ${esc(p.text)}</p>
-          <div class="row"><input class="input" data-pamount type="number" min="1" max="1000000" value="${p.amount}" style="max-width:170px"><button class="btn" data-psave>Saqlash</button></div></div>`).join("")}
-        <div class="mcard"><h3>Karta rekviziti</h3><textarea id="payDetails" class="textarea" maxlength="1500">${esc(d.payment_details||"")}</textarea><button class="btn" data-pdsave>Rekvizitni saqlash</button></div>
-        <p class="empty">Alipay/WeChat QR file_id oqimi chat admin bo'limida saqlanadi.</p></div>`);
+          <div class="row"><input class="input" data-pamount type="number" min="1" max="1000000" value="${p.amount}" style="max-width:170px"><button class="btn" data-psave>Saqlash</button></div>
+          ${priceQrHtml(p)}</div>`).join("")}
+        <div class="mcard"><h3>Karta rekviziti</h3><textarea id="payDetails" class="textarea" maxlength="1500">${esc(d.payment_details||"")}</textarea><button class="btn" data-pdsave>Rekvizitni saqlash</button></div></div>`);
+      bindPriceQr();
+    }
+    function bindPriceQr(){
+      document.querySelectorAll("[data-prow]").forEach(row=>{
+        const file=row.querySelector("[data-qrfile]"); if(!file) return;
+        let scope="main";
+        row.querySelectorAll("[data-qrbtn]").forEach(b=>b.onclick=()=>{ scope=b.dataset.scope; file.click(); });
+        file.onchange=()=>uploadPriceQr(row,file,scope);
+      });
+    }
+    async function uploadPriceQr(row,file,scope){
+      const f=file.files&&file.files[0]; if(!f) return;
+      if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); file.value=""; return; }
+      const info=row.querySelector("[data-qrinfo]"); if(info) info.textContent="Yuklanmoqda…";
+      const fd=new FormData(); fd.append("method",row.dataset.method); fd.append("plan",row.dataset.plan); fd.append("scope",scope); fd.append("media",f);
+      try{ await apiUpload("/api/admin-miniapp/prices/qr-upload",fd); toast("QR saqlandi"); if(info) info.textContent="QR saqlandi ✅"; await afterModule("QR saqlandi"); }
+      catch(e){ if(info) info.textContent="QR yuklanmadi"; toast(apiErr(e,"QR yuklanmadi")); }
+      finally{ file.value=""; }
     }
     function renderChannels(d){
       const ch=d.channels||{};
@@ -768,12 +798,101 @@
           <button class="btn" data-pfsave>Saqlash</button></div>
         ${(p.history||[]).map(i=>`<div class="mcard"><h3>${i.type==="profit"?"+":"−"} ${esc(i.amount_usd)}</h3><p>${esc(i.source)} · ${esc(i.created_at)}<br>${esc(i.original||"")} ${esc(i.note||"")}</p></div>`).join("")||"<p class='empty'>Tarix bo'sh.</p>"}</div>`);
     }
+    const BC_LANGS=[["tj","TJ"],["uz","UZ"],["ru","RU"]];
+    const BC_FILTERS=[
+      ["status","👤 Status",[["","Hammasi"],["free","Bepul"],["trial","Sinov"],["active","Faol"],["expired","Tugagan"],["blocked","Blok"]]],
+      ["level","📚 Daraja",[["","Hammasi"],["beginner","Boshlang'ich"],["hsk1","HSK1"],["hsk2","HSK2"],["hsk3","HSK3"],["hsk4","HSK4"]]],
+      ["mode","🎯 Rejim",[["","Hammasi"],["qa","Savol-javob"],["course","Kurs"]]],
+      ["payment_status","💳 To'lov statusi",[["","Hammasi"],["none","Yo'q"],["pending","Kutilmoqda"],["approved","Tasdiqlangan"],["rejected","Rad etilgan"]]],
+      ["payment_method","🏦 To'lov usuli",[["","Hammasi"],["visa","Visa"],["alipay","Alipay"],["wechat","WeChat"]]],
+      ["plan","📦 Tarif",[["","Hammasi"],["10_days","10 kun"],["1_month","1 oy"]]],
+      ["discount","🎁 Chegirma",[["","Hammasi"],["eligible","Chegirma bor"],["used","Ishlatilgan"],["none","Yo'q"]]],
+      ["course_promo","📣 Kurs promo",[["","Hammasi"],["sent","Yuborilgan"],["not_sent","Yuborilmagan"]]],
+      ["activity","⚡ Aktivlik",[["","Hammasi"],["active_7d","7 kun aktiv"],["inactive_7d","7 kun sovuq"],["new_7d","7 kun yangi"]]]
+    ];
+    const BC_BUTTONS=[["","Knopkasiz"],["subscription","💎 Obuna"],["partner","🤝 Partnyor"],["course","📚 Kurs rejimi"],["reminder","⏰ Eslatma vaqti"],["help","❓ Yordam"],["contact","👤 Admin kontakti"],["profile","👤 Profil"],["url","🔗 Tashqi link"]];
+
     function renderBroadcast(){
-      openDrawer("📢 Ommaviy xabar","Matnli xabarni segmentga darhol yuborish",`<div class="panel">
-        <div class="danger-note">Bu real yuborish. Tugmani bosgandan keyin xabar foydalanuvchilarga ketadi.</div>
-        <div class="mcard"><div class="frow"><label>Segment</label><select id="bcSeg" class="select"><option value="all">Barcha (blokланмаган)</option><option value="paid">To'lovli faol</option><option value="trial">Sinov</option><option value="expired">Muddati tugagan</option></select></div>
-          <div class="frow"><label>Xabar</label><textarea id="bcText" class="textarea" maxlength="3500"></textarea></div>
-          <button class="btn danger" data-bcsend>Yuborish</button></div></div>`);
+      state.bc={content_type:"text",media_file_id:null};
+      const filterHtml=BC_FILTERS.map(([k,label,opts])=>`<div class="frow"><label>${label}</label>
+        <select id="bc_${k}" class="select" data-bcfilter>${opts.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>`).join("");
+      openDrawer("📢 Ommaviy xabar","To'liq segment + media + knopka + AI tarjima",`<div class="panel">
+        <div class="danger-note">Bu real yuborish. «Yuborish»dan oldin «Test» bilan o'zingizga ko'ring.</div>
+        <div class="mcard"><h3>🎯 Segment</h3>
+          <div class="frow"><label>🌐 Til (bo'sh = hammasi)</label><div class="row" id="bcLangs">
+            ${BC_LANGS.map(l=>`<button type="button" class="chip" data-bclang="${l[0]}"><span>${l[1]}</span></button>`).join("")}</div></div>
+          ${filterHtml}
+          <div class="ncnote" id="bcCount">Auditoriya: hisoblanmoqda…</div></div>
+        <div class="mcard"><h3>✉️ Xabar</h3>
+          <div class="frow"><label>Matn (manba — tojikcha)</label><textarea id="bcText" class="textarea" maxlength="3500"></textarea></div>
+          <label class="ncsw"><input type="checkbox" id="bcTranslate" checked> 🌐 UZ/RU ga AI tarjima qilinsin</label>
+          <div class="frow"><label>📎 Foto/Video (ixtiyoriy)</label>
+            <div class="row"><button class="btn sec" type="button" id="bcMediaBtn">Media tanlash</button>
+              <button class="btn sec" type="button" id="bcMediaClear" hidden>O'chirish</button>
+              <input type="file" accept="image/*,video/*" id="bcMediaFile" hidden></div>
+            <div class="ncnote" id="bcMediaInfo">Media biriktirilmagan</div></div></div>
+        <div class="mcard"><h3>🔘 Knopka (ixtiyoriy)</h3>
+          <div class="frow"><label>Tur</label><select id="bcBtn" class="select">${BC_BUTTONS.map(o=>`<option value="${o[0]}">${esc(o[1])}</option>`).join("")}</select></div>
+          <div class="frow" id="bcBtnTextRow" hidden><label>Knopka nomi (bo'sh = default)</label><input id="bcBtnText" class="input" maxlength="64"></div>
+          <div class="frow" id="bcBtnUrlRow" hidden><label>Havola (https://… yoki @username)</label><input id="bcBtnUrl" class="input"></div></div>
+        <div class="row"><button class="btn sec" id="bcTest" type="button">👁 Test (o'zimga)</button>
+          <button class="btn danger" id="bcSend" type="button">📢 Yuborish</button></div></div>`);
+      bindBroadcast();
+    }
+    function bcCollect(){
+      const f={};
+      BC_FILTERS.forEach(([k])=>{ const v=$("bc_"+k).value; if(v) f[k]=v; });
+      f.languages=[...document.querySelectorAll("[data-bclang].active")].map(x=>x.dataset.bclang);
+      f.text=$("bcText").value.trim();
+      f.translate=$("bcTranslate").checked;
+      f.content_type=state.bc.content_type; f.media_file_id=state.bc.media_file_id;
+      const act=$("bcBtn").value;
+      if(act){ const b={action:act}; const t=$("bcBtnText").value.trim(); if(t) b.text=t; const u=$("bcBtnUrl").value.trim(); if(u) b.url=u; f.button=b; }
+      return f;
+    }
+    async function bcRefreshCount(){
+      const el=$("bcCount"); if(!el) return;
+      const f={}; BC_FILTERS.forEach(([k])=>{ const v=$("bc_"+k).value; if(v) f[k]=v; });
+      f.languages=[...document.querySelectorAll("[data-bclang].active")].map(x=>x.dataset.bclang);
+      try{ const d=await apiPost("/api/admin-miniapp/broadcast/count",f); el.textContent=`Auditoriya: ${d.count} ta foydalanuvchi`; }
+      catch(e){ el.textContent="Auditoriyani hisoblab bo'lmadi"; }
+    }
+    function bindBroadcast(){
+      document.querySelectorAll("[data-bclang]").forEach(c=>c.onclick=()=>{ c.classList.toggle("active"); bcRefreshCount(); });
+      document.querySelectorAll("[data-bcfilter]").forEach(s=>s.onchange=bcRefreshCount);
+      const btn=$("bcBtn");
+      btn.onchange=()=>{ const v=btn.value; $("bcBtnTextRow").hidden=!v; $("bcBtnUrlRow").hidden=v!=="url"; };
+      const file=$("bcMediaFile");
+      $("bcMediaBtn").onclick=()=>file.click();
+      $("bcMediaClear").onclick=()=>{ state.bc={content_type:"text",media_file_id:null}; $("bcMediaInfo").textContent="Media biriktirilmagan"; $("bcMediaClear").hidden=true; file.value=""; };
+      file.onchange=()=>bcUploadMedia(file);
+      $("bcTest").onclick=()=>bcSubmit("test");
+      $("bcSend").onclick=()=>bcSubmit("send");
+      bcRefreshCount();
+    }
+    async function bcUploadMedia(file){
+      const f=file.files&&file.files[0]; if(!f) return;
+      if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); file.value=""; return; }
+      $("bcMediaInfo").textContent="Yuklanmoqda…";
+      const fd=new FormData(); fd.append("media",f);
+      try{ const d=await apiUpload("/api/admin-miniapp/broadcast/upload-media",fd);
+        state.bc={content_type:d.content_type,media_file_id:d.media_file_id};
+        $("bcMediaInfo").textContent=(d.content_type==="video"?"🎬 Video":"🖼 Foto")+" biriktirildi";
+        $("bcMediaClear").hidden=false;
+      }catch(e){ $("bcMediaInfo").textContent="Media yuklab bo'lmadi"; toast(apiErr(e,"Media yuklanmadi")); }
+      finally{ file.value=""; }
+    }
+    async function bcSubmit(mode){
+      const f=bcCollect();
+      if(!f.text && !f.media_file_id){ toast("Matn yoki media kiriting"); return; }
+      const btnId=mode==="test"?"bcTest":"bcSend", b=$(btnId);
+      if(mode==="send" && !confirm("Xabar tanlangan segmentga hozir yuboriladi. Davom etasizmi?")) return;
+      b.disabled=true;
+      try{
+        if(mode==="test"){ await apiPost("/api/admin-miniapp/broadcast/test",f); toast("Test yuborildi"); }
+        else{ const d=await apiPost("/api/admin-miniapp/broadcast/send",f); toast(`Yuborildi: ${d.sent}, xato: ${d.failed}${d.blocked?", blok: "+d.blocked:""}`); }
+      }catch(e){ toast(apiErr(e,"Yuborilmadi")); }
+      finally{ b.disabled=false; }
     }
     function renderCampaign(d,kind){
       const cfg={ad:["📣 Reklama kampaniyasi","ads","Matnli reklama rejalashtiriladi."],release_feedback:["🆕 Yangilik fikri","release_feedback","Yangilik fikri baholash oqimi bilan."],discount:["🎁 Chegirma","discounts","Chegirma kampaniyasi yaratiladi."]}[kind];
@@ -920,7 +1039,6 @@
       if((el=T("[data-hcontact]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/help/save",{target:"admin_contact",value:$("adminContact").value}).then(()=>afterModule("Saqlandi")).catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-hsave]"))){ const r=el.closest("[data-hrow]"); el.disabled=true; return apiPost("/api/admin-miniapp/help/save",{key:r.dataset.key,lang:r.dataset.lang,value:r.querySelector("[data-hvalue]").value}).then(()=>afterModule("Yordam linki saqlandi")).catch(x=>{toast(apiErr(x,"Saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pfsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/portfolio/transaction",{type:$("pfType").value,amount:$("pfAmount").value,currency:$("pfCurrency").value,note:$("pfNote").value}).then(()=>afterModule("Portfel saqlandi")).catch(x=>{toast(apiErr(x,"Portfel saqlanmadi"));el.disabled=false;}); }
-      if((el=T("[data-bcsend]"))){ if(!confirm("Xabar foydalanuvchilarga hozir yuboriladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/broadcast/send",{segment:$("bcSeg").value,text:$("bcText").value}).then(d=>toast(`Yuborildi: ${d.sent}, xato: ${d.failed}`)).catch(x=>toast(apiErr(x,"Yuborilmadi"))).finally(()=>el.disabled=false); }
       if((el=T("[data-cmcreate]"))){ if(!confirm("Kampaniya rejalashtiriladi. Davom etasizmi?")) return; const kind=el.dataset.cmcreate; el.disabled=true; return apiPost("/api/admin-miniapp/campaigns/create",{kind,title:$("cmTitle").value,text:$("cmText").value,hours:$("cmHours").value,percent:$("cmPercent")?$("cmPercent").value:undefined,feature_key:$("cmFeature")?$("cmFeature").value:undefined}).then(()=>afterModule("Kampaniya yaratildi")).catch(x=>{toast(apiErr(x,"Yaratilmadi"));el.disabled=false;}); }
       if((el=T("[data-partner]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/partners/action",{partner_id:Number(el.dataset.pid||0),action:el.dataset.partner}).then(()=>afterModule("Hamkor holati yangilandi")).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
       if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaPlan").value).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>el.disabled=false); }

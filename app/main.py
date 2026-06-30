@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 
 from aiogram import Bot
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import BufferedInputFile, InlineKeyboardButton, InlineKeyboardMarkup
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
 from sqlalchemy import select
@@ -71,6 +71,17 @@ from app.services.subscription_entry_analytics_service import SubscriptionEntryA
 from app.services.admin_miniapp_service import AdminMiniAppService
 from app.services.admin_finance_stats_service import AdminFinanceStatsService
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
+from app.services.admin_broadcast_service import (
+    AdminBroadcastService,
+    BROADCAST_FILTER_OPTIONS,
+    parse_broadcast_filters,
+    parse_button_config,
+)
+from app.services.payment_qr_code_service import (
+    PaymentQrCodeService,
+    SUBSCRIPTION_DISCOUNT_20_QR_SCOPE,
+    SUBSCRIPTION_QR_SCOPE,
+)
 from app.services.help_settings_service import HELP_LANGS, HELP_VIDEO_FIELDS, normalize_help_url
 from app.services.support_contact_service import ADMIN_CONTACT_KEY, admin_contact_url, normalize_admin_contact
 from app.services.voice_practice_service import VoicePracticeError, VoicePracticeService
@@ -531,20 +542,35 @@ async def _admin_miniapp_management_payload(session) -> dict:
             "lessons": int(await audio_repo.count_uploaded_lessons(level)),
         })
 
+    qr_service = PaymentQrCodeService(session)
+    price_items = []
+    for price in prices:
+        is_qr = PaymentQrCodeService.is_qr_method(price.payment_method)
+        qr_set = False
+        if is_qr:
+            file_id = await qr_service.get_file_id(
+                scope=SUBSCRIPTION_QR_SCOPE,
+                payment_method=price.payment_method,
+                plan_type=price.plan_type,
+                amount=int(price.amount),
+                currency=price.currency,
+            )
+            qr_set = bool(file_id)
+        price_items.append({
+            "method": price.payment_method,
+            "method_label": _mini_method_label(price.payment_method),
+            "plan": price.plan_type,
+            "plan_label": _mini_plan_label(price.plan_type),
+            "amount": int(price.amount),
+            "currency": price.currency,
+            "text": format_subscription_price(price.amount, price.currency),
+            "qr_method": is_qr,
+            "qr_set": qr_set,
+        })
+
     return {
         "ok": True,
-        "prices": [
-            {
-                "method": price.payment_method,
-                "method_label": _mini_method_label(price.payment_method),
-                "plan": price.plan_type,
-                "plan_label": _mini_plan_label(price.plan_type),
-                "amount": int(price.amount),
-                "currency": price.currency,
-                "text": format_subscription_price(price.amount, price.currency),
-            }
-            for price in prices
-        ],
+        "prices": price_items,
         "payment_details": (await setting_repo.get(PAYMENT_DETAILS_KEY) or settings.PAYMENT_DETAILS or "").strip(),
         "channels": {
             "enabled": await channels_service.is_enabled(),
@@ -1910,6 +1936,66 @@ async def admin_miniapp_prices_save(request: Request):
     })
 
 
+@app.post("/api/admin-miniapp/prices/qr-upload")
+async def admin_miniapp_prices_qr_upload(request: Request):
+    form = await request.form()
+    telegram_id = extract_verified_webapp_user_id(
+        str(form.get("initData") or ""), settings.BOT_TOKEN
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    method = str(form.get("method") or "").strip()
+    plan = str(form.get("plan") or "").strip()
+    scope_kind = str(form.get("scope") or "main").strip()
+    if not PaymentQrCodeService.is_qr_method(method) or plan not in PLANS:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_qr_target"})
+    media = form.get("media")
+    if media is None or not hasattr(media, "read"):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "empty_media"})
+    content_type = str(getattr(media, "content_type", "") or "").lower()
+    raw_name = str(getattr(media, "filename", "") or "").lower()
+    if not (content_type.startswith("image") or raw_name.endswith((".jpg", ".jpeg", ".png", ".webp"))):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "unsupported_media"})
+    data = await media.read(25 * 1024 * 1024 + 1)
+    if len(data) > 25 * 1024 * 1024:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
+    async with async_session_maker() as session:
+        price = await SubscriptionPriceService(session).get_price(payment_method=method, plan_type=plan)
+        amount = int(price.amount) if price else 0
+        currency = price.currency if price else "¥"
+        if amount <= 0:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "price_not_set"})
+        if scope_kind == "discount20":
+            scope = SUBSCRIPTION_DISCOUNT_20_QR_SCOPE
+            amount = int(round(amount * 0.8))
+        else:
+            scope = SUBSCRIPTION_QR_SCOPE
+        try:
+            sent = await bot.send_photo(
+                telegram_id,
+                BufferedInputFile(data, "qr.jpg"),
+                caption=f"📱 QR yuklandi · {PaymentQrCodeService.method_label(method)} · {plan} · {scope_kind}",
+            )
+            file_id = sent.photo[-1].file_id
+        except Exception:
+            return JSONResponse(status_code=400, content={"ok": False, "error": "qr_upload_failed"})
+        await PaymentQrCodeService(session).save_qr_codes(
+            [{
+                "scope": scope,
+                "payment_method": method,
+                "plan_type": plan,
+                "amount": amount,
+                "currency": currency,
+                "file_id": file_id,
+            }],
+            created_by_telegram_id=telegram_id,
+        )
+        await session.commit()
+    return JSONResponse(content={"ok": True})
+
+
 @app.post("/api/admin-miniapp/payment-details/save")
 async def admin_miniapp_payment_details_save(request: Request):
     telegram_id = _admin_miniapp_user_id(request)
@@ -2044,6 +2130,113 @@ async def admin_miniapp_portfolio_transaction(request: Request):
     return JSONResponse(content={"ok": True})
 
 
+def _broadcast_validate_message(payload: dict) -> tuple[str, str, str | None] | JSONResponse:
+    """(text, content_type, media_file_id) ni tekshiradi yoki xato qaytaradi."""
+    text = str(payload.get("text") or "").strip()
+    content_type = str(payload.get("content_type") or "text").strip()
+    if content_type not in {"text", "photo", "video"}:
+        content_type = "text"
+    media_file_id = str(payload.get("media_file_id") or "").strip() or None
+    if content_type in {"photo", "video"} and not media_file_id:
+        content_type, media_file_id = "text", None
+    has_media = bool(media_file_id)
+    if not has_media and len(text) < 2:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_broadcast_text"})
+    max_len = 1024 if has_media else 3500
+    if len(text) > max_len:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "broadcast_text_too_long"})
+    return text, content_type, media_file_id
+
+
+@app.post("/api/admin-miniapp/broadcast/upload-media")
+async def admin_miniapp_broadcast_upload_media(request: Request):
+    form = await request.form()
+    telegram_id = extract_verified_webapp_user_id(
+        str(form.get("initData") or ""), settings.BOT_TOKEN
+    )
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    if not _is_admin_id(telegram_id):
+        return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
+    media = form.get("media")
+    if media is None or not hasattr(media, "read"):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "empty_media"})
+    raw_name = str(getattr(media, "filename", "") or "").lower()
+    content_type = str(getattr(media, "content_type", "") or "").lower()
+    if content_type.startswith("video") or raw_name.endswith((".mp4", ".mov", ".webm")):
+        kind, fname = "video", "broadcast.mp4"
+    elif content_type.startswith("image") or raw_name.endswith((".jpg", ".jpeg", ".png", ".webp")):
+        kind, fname = "photo", "broadcast.jpg"
+    else:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "unsupported_media"})
+    data = await media.read(25 * 1024 * 1024 + 1)
+    if len(data) > 25 * 1024 * 1024:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "media_too_large"})
+    try:
+        sent = (
+            await bot.send_video(telegram_id, BufferedInputFile(data, fname), caption="📤 Broadcast media tayyor (preview)")
+            if kind == "video"
+            else await bot.send_photo(telegram_id, BufferedInputFile(data, fname), caption="📤 Broadcast media tayyor (preview)")
+        )
+        file_id = sent.video.file_id if kind == "video" else sent.photo[-1].file_id
+    except Exception:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "media_upload_failed"})
+    return JSONResponse(content={"ok": True, "content_type": kind, "media_file_id": file_id})
+
+
+@app.post("/api/admin-miniapp/broadcast/count")
+async def admin_miniapp_broadcast_count(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    filters = parse_broadcast_filters(payload)
+    admin_ids = set(settings.admin_id_list)
+    async with async_session_maker() as session:
+        service = AdminBroadcastService(bot, session)
+        users = await service.target_users(filters)
+        count = service.deliverable_count(users, admin_ids)
+    return JSONResponse(content={"ok": True, "count": count, "total": len(users)})
+
+
+@app.post("/api/admin-miniapp/broadcast/test")
+async def admin_miniapp_broadcast_test(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+    except ValueError:
+        payload = {}
+    checked = _broadcast_validate_message(payload)
+    if isinstance(checked, JSONResponse):
+        return checked
+    text, content_type, media_file_id = checked
+    filters = parse_broadcast_filters(payload)
+    button_config = parse_button_config(payload.get("button"))
+    translate = bool(payload.get("translate"))
+    async with async_session_maker() as session:
+        service = AdminBroadcastService(bot, session)
+        try:
+            await service.send_test(
+                telegram_id,
+                text=text,
+                content_type=content_type,
+                media_file_id=media_file_id,
+                button_config=button_config,
+                translate=translate,
+                languages=filters.get("languages"),
+            )
+        except Exception as exc:
+            return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)[:120]})
+    return JSONResponse(content={"ok": True})
+
+
 @app.post("/api/admin-miniapp/broadcast/send")
 async def admin_miniapp_broadcast_send(request: Request):
     telegram_id = _admin_miniapp_user_id(request)
@@ -2054,36 +2247,27 @@ async def admin_miniapp_broadcast_send(request: Request):
         payload = await request.json()
     except ValueError:
         payload = {}
-    text = str(payload.get("text") or "").strip()
-    segment = str(payload.get("segment") or "all").strip()
-    if len(text) < 2 or len(text) > 3500:
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_broadcast_text"})
-    async with async_session_maker() as session:
-        repo = UserRepository(session)
-        if segment == "paid":
-            users = await repo.get_filtered_users(status="active", payment_status="approved")
-        elif segment == "trial":
-            users = await repo.get_filtered_users(status="trial")
-        elif segment == "expired":
-            users = await repo.get_filtered_users(status="expired")
-        else:
-            users = await repo.get_filtered_users()
-    sent = 0
-    failed = 0
+    checked = _broadcast_validate_message(payload)
+    if isinstance(checked, JSONResponse):
+        return checked
+    text, content_type, media_file_id = checked
+    filters = parse_broadcast_filters(payload)
+    button_config = parse_button_config(payload.get("button"))
+    translate = bool(payload.get("translate"))
     admin_ids = set(settings.admin_id_list)
-    for user in users:
-        if user.status == "blocked" or user.telegram_id in admin_ids:
-            continue
-        try:
-            await bot.send_message(
-                chat_id=user.telegram_id,
-                text=localized_broadcast_text_for_language(text, user.language),
-            )
-            sent += 1
-        except Exception:
-            failed += 1
-        await asyncio.sleep(0.03)
-    return JSONResponse(content={"ok": True, "sent": sent, "failed": failed})
+    async with async_session_maker() as session:
+        service = AdminBroadcastService(bot, session)
+        users = await service.target_users(filters)
+        sent, failed, blocked = await service.deliver(
+            users,
+            admin_ids=admin_ids,
+            text=text,
+            content_type=content_type,
+            media_file_id=media_file_id,
+            button_config=button_config,
+            translate=translate,
+        )
+    return JSONResponse(content={"ok": True, "sent": sent, "failed": failed, "blocked": blocked})
 
 
 @app.post("/api/admin-miniapp/campaigns/create")
