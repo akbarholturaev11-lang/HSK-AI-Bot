@@ -90,6 +90,7 @@ class CourseAdService:
             "language": cls.normalize_language(getattr(ad, "language", None)),
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
             "is_active": bool(ad.is_active),
+            "media_available": cls.media_available(ad),
             "created_at": ad.created_at.isoformat() if ad.created_at else None,
         }
 

@@ -207,6 +207,25 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-02 — Course ad black-screen fail-safe + persistent media visibility
+
+Changed:
+- Course v3 ad player now exits the full-screen ad overlay and falls back to the existing lesson continuation path if a video cannot load/play after retries, preventing users from being stuck on a black screen.
+- Admin Mini App course-ad cards now show whether the actual video file is present on server storage. Missing files are labeled with a re-upload / persistent `MEDIA_ROOT` warning.
+- `.env.example` documents optional `MEDIA_ROOT` for persistent uploaded media; Railway Volume / `RAILWAY_VOLUME_MOUNT_PATH` remains supported by the service.
+
+Why:
+- A DB ad row can survive deploy/restart while its uploaded media file disappears on ephemeral storage, making the admin think an ad exists while users receive no playable ad. Video load failure also previously left the Promise unresolved and could trap users in the ad overlay.
+
+Files touched:
+- `app/static/course-v3.html`, `app/static/admin.html`, `app/services/course_ad_service.py`, `.env.example`, `tests/test_course_miniapp_foundation.py`, `tests/test_course_v3_static_data.py`
+
+Risk:
+- Frontend/ad-admin/deployment-config only. Payment/subscription/access approval rules are unchanged. If existing ad files are already missing or old pre-transcode files are black, admin must re-upload after deploy with persistent media storage configured.
+
+Follow-up:
+- On Railway, attach persistent Volume or set `MEDIA_ROOT`, redeploy, then re-upload course ads and smoke-test one free premium lesson path in Telegram WebView.
+
 ### 2026-07-01 — Admin People hot lead + today-active segments
 
 Changed:

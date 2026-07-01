@@ -245,7 +245,9 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
             id=1, title="x", media_path="course_ad_1.mp4", media_type="video",
             language="uz", duration_seconds=7, is_active=True,
         )
-        self.assertEqual(CourseAdService.payload(ad)["language"], "uz")
+        payload = CourseAdService.payload(ad)
+        self.assertEqual(payload["language"], "uz")
+        self.assertFalse(payload["media_available"])
 
     def test_media_available_reflects_file_on_disk(self):
         """Fayli diskda yo'q reklama (ephemeral disk restartda o'chgan) media_available=False
