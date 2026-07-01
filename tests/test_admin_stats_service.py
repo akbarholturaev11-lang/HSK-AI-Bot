@@ -7,7 +7,13 @@ from app.services.admin_stats_service import (
     miniapp_course_stats,
     top_referrers,
 )
-from app.services.admin_miniapp_service import AdminMiniAppService
+from app.services.admin_miniapp_service import (
+    HOT_LEAD_ACTIVITY_WINDOW,
+    AdminMiniAppService,
+    admin_miniapp_today_start,
+    is_admin_active_today,
+    is_admin_hot_lead,
+)
 
 
 class _ScalarResult:
@@ -111,6 +117,52 @@ class TopReferrersTests(unittest.IsolatedAsyncioTestCase):
 
 
 class AdminMiniAppServiceTests(unittest.TestCase):
+    def test_hot_lead_requires_unpaid_recent_active_unblocked_user(self):
+        now = datetime(2026, 7, 1, 8, 0, tzinfo=timezone.utc)
+        hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
+        hot = SimpleNamespace(
+            status="trial",
+            payment_status="none",
+            last_active_at=now - timedelta(hours=12),
+            bot_blocked_at=None,
+            bot_unblocked_at=None,
+        )
+        cold = SimpleNamespace(
+            status="trial",
+            payment_status="none",
+            last_active_at=now - timedelta(days=3),
+            bot_blocked_at=None,
+            bot_unblocked_at=None,
+        )
+        paid = SimpleNamespace(
+            status="active",
+            payment_status="approved",
+            last_active_at=now - timedelta(hours=1),
+            bot_blocked_at=None,
+            bot_unblocked_at=None,
+        )
+        blocked = SimpleNamespace(
+            status="free",
+            payment_status="none",
+            last_active_at=now - timedelta(hours=1),
+            bot_blocked_at=now - timedelta(minutes=30),
+            bot_unblocked_at=None,
+        )
+
+        self.assertTrue(is_admin_hot_lead(hot, hot_since))
+        self.assertFalse(is_admin_hot_lead(cold, hot_since))
+        self.assertFalse(is_admin_hot_lead(paid, hot_since))
+        self.assertFalse(is_admin_hot_lead(blocked, hot_since))
+
+    def test_active_today_uses_admin_timezone_day_start(self):
+        now = datetime(2026, 7, 1, 8, 0, tzinfo=timezone.utc)
+        today_start = admin_miniapp_today_start(now)
+        active = SimpleNamespace(last_active_at=today_start)
+        yesterday = SimpleNamespace(last_active_at=today_start - timedelta(seconds=1))
+
+        self.assertTrue(is_admin_active_today(active, today_start))
+        self.assertFalse(is_admin_active_today(yesterday, today_start))
+
     def test_monitor_chart_uses_real_payload_bars(self):
         course_stats = SimpleNamespace(
             opened_users=12,

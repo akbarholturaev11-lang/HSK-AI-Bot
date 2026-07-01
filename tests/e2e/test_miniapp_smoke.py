@@ -151,6 +151,7 @@ def admin_payload():
         },
         "segments": {
             "all": 12,
+            "active_today": 5,
             "paid": 3,
             "pending": 2,
             "wants_pay": 4,
@@ -206,6 +207,8 @@ def admin_payload():
                 "method": "Alipay",
                 "end_date": "01.07.2026 12:00",
                 "last_active": "hozir",
+                "active_today": True,
+                "hot_lead": False,
                 "questions": "2/5",
                 "bonus_left": 0,
                 "streak": 4,

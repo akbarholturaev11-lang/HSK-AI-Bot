@@ -68,7 +68,13 @@ from app.services.subscription_currency_service import format_subscription_price
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
 from app.services.subscription_miniapp_service import PAYMENT_DETAILS_KEY
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
-from app.services.admin_miniapp_service import AdminMiniAppService
+from app.services.admin_miniapp_service import (
+    HOT_LEAD_ACTIVITY_WINDOW,
+    AdminMiniAppService,
+    admin_miniapp_today_start,
+    is_admin_active_today,
+    is_admin_hot_lead,
+)
 from app.services.admin_finance_stats_service import AdminFinanceStatsService
 from app.services.broadcast_translation_service import localized_broadcast_text_for_language
 from app.services.admin_broadcast_service import (
@@ -685,6 +691,9 @@ async def _admin_miniapp_management_payload(session) -> dict:
 
 async def _admin_user_payload(session, user) -> dict:
     payments = await PaymentRepository(session).list_by_user(user.telegram_id, limit=10)
+    now = datetime.now(timezone.utc)
+    today_start = admin_miniapp_today_start(now)
+    hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
     return {
         "ok": True,
         "user": {
@@ -710,6 +719,8 @@ async def _admin_user_payload(session, user) -> dict:
             "streak": user.daily_practice_streak or 0,
             "created_at": _mini_dt(user.created_at),
             "last_active_at": _mini_dt(user.last_active_at),
+            "active_today": is_admin_active_today(user, today_start),
+            "hot_lead": is_admin_hot_lead(user, hot_since),
             "referral_code": user.referral_code or "",
             "referred_by_telegram_id": user.referred_by_telegram_id,
         },
@@ -729,7 +740,10 @@ async def _admin_user_payload(session, user) -> dict:
     }
 
 
-def _admin_user_card_payload(user) -> dict:
+def _admin_user_card_payload(user, *, now: datetime | None = None) -> dict:
+    now = now or datetime.now(timezone.utc)
+    today_start = admin_miniapp_today_start(now)
+    hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
     bonus_left = max((user.bonus_questions or 0) - (user.bonus_questions_used or 0), 0)
     return {
         "id": user.telegram_id,
@@ -750,6 +764,8 @@ def _admin_user_card_payload(user) -> dict:
         "method": _mini_method_label(user.payment_method),
         "end_date": _mini_dt(user.end_date) if user.end_date else "",
         "last_active": _mini_dt(user.last_active_at),
+        "active_today": is_admin_active_today(user, today_start),
+        "hot_lead": is_admin_hot_lead(user, hot_since),
         "questions": f"{user.questions_used}/{user.question_limit}",
         "bonus_left": bonus_left,
         "streak": user.daily_practice_streak or 0,
@@ -1866,7 +1882,8 @@ async def admin_miniapp_users_search(request: Request):
             users = (await session.execute(
                 select(User).order_by(User.last_active_at.desc()).limit(30)
             )).scalars().all()
-    return JSONResponse(content={"ok": True, "users": [_admin_user_card_payload(user) for user in users]})
+    now = datetime.now(timezone.utc)
+    return JSONResponse(content={"ok": True, "users": [_admin_user_card_payload(user, now=now) for user in users]})
 
 
 @app.post("/api/admin-miniapp/users/detail")

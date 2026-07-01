@@ -453,8 +453,9 @@
     }
 
     const segmentLabels = {
-      all:["Hammasi","butun baza"], paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","to'lov kutyapti"],
-      wants_pay:["Issiq mijoz","obunaga yaqin"], trial:["Sinov","trial"], free:["Bepul","free"],
+      all:["Hammasi","butun baza"], active_today:["Bugun aktiv","bugun botga kirgan"],
+      paid:["Obunachi","faol to'lov"], pending:["Tekshiruvda","to'lov kutyapti"],
+      wants_pay:["Issiq mijoz","48 soat ichida aktiv"], trial:["Sinov","trial"], free:["Bepul","free"],
       expired:["Tugagan","muddati o'tgan"], blocked:["Bloklangan","admin blok"], bot_blocked:["Bot blok","botni bloklagan"]
     };
 
@@ -603,8 +604,9 @@
       return src.filter(u=>{
         const f = state.filter==="all"
           || (state.filter==="paid"&&u.payment_status==="approved"&&u.status==="active")
+          || (state.filter==="active_today"&&u.active_today===true)
           || (state.filter==="pending"&&u.payment_status==="pending")
-          || (state.filter==="wants_pay"&&["none","draft","rejected"].includes(u.payment_status)&&u.status!=="blocked")
+          || (state.filter==="wants_pay"&&u.hot_lead===true)
           || (state.filter==="trial"&&u.status==="trial")
           || (state.filter==="free"&&u.status==="free")
           || (state.filter==="expired"&&u.status==="expired")

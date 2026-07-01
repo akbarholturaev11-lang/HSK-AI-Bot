@@ -207,6 +207,24 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-01 — Admin People hot lead + today-active segments
+
+Changed:
+- Admin Mini App People segmentida `Issiq mijoz` endi deyarli butun unpaid bazani emas, faqat unpaid (`free/trial/expired` + `none/draft/rejected`) va botni bloklamagan, oxirgi 48 soat ichida aktiv userlarni sanaydi/filtrlaydi.
+- `Bugun aktiv` segmenti qo'shildi; backend payload user cardlarga `active_today` va `hot_lead` flaglarini beradi, frontend filterlar shu flaglarga tayanadi.
+
+Why:
+- Admin uchun real follow-up segment kerak: har kuni yoki kunora botga kirayotgan, lekin hali to'lamagan userlar alohida ko'rinishi kerak.
+
+Files touched:
+- `app/services/admin_miniapp_service.py`, `app/main.py`, `app/static/admin.html`, `tests/test_admin_stats_service.py`, `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- Faqat admin analytics/filter logikasi o'zgardi. Payment/subscription/access flow tegilmadi. `Issiq mijoz` soni deploydan keyin keskin kamayishi normal, chunki eski hisob broad edi.
+
+Follow-up:
+- Agar keyin haqiqiy cadence kerak bo'lsa, `last_active_at` o'rniga activity event history bo'yicha "2 kunda kamida 2 aktiv kun" segmentini alohida hisoblash mumkin.
+
 ### 2026-06-30 — Kurs reklamasi tilga moslandi (per-language) + admin filter
 
 Changed:

@@ -20,6 +20,9 @@ from app.services.subscription_currency_service import format_subscription_price
 
 
 ADMIN_MINIAPP_TZ = ZoneInfo("Asia/Shanghai")
+HOT_LEAD_ACTIVITY_WINDOW = timedelta(days=2)
+HOT_LEAD_STATUSES = ("free", "trial", "expired")
+HOT_LEAD_PAYMENT_STATUSES = ("none", "draft", "rejected")
 
 
 def _pct(part: int, total: int) -> float:
@@ -36,6 +39,8 @@ def _dt(value: datetime | None) -> str | None:
 
 
 def _ago(value: datetime | None, *, now: datetime) -> str:
+    value = _as_utc(value)
+    now = _as_utc(now) or now
     if not value:
         return "ҳали йўқ"
     delta = now - value
@@ -101,6 +106,57 @@ def _bot_block_filter():
     )
 
 
+def _bot_not_blocked_filter():
+    return or_(
+        User.bot_blocked_at.is_(None),
+        User.bot_unblocked_at >= User.bot_blocked_at,
+    )
+
+
+def admin_miniapp_today_start(now: datetime) -> datetime:
+    return now.astimezone(ADMIN_MINIAPP_TZ).replace(
+        hour=0,
+        minute=0,
+        second=0,
+        microsecond=0,
+    ).astimezone(timezone.utc)
+
+
+def _as_utc(value: datetime | None) -> datetime | None:
+    if not value:
+        return None
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value.astimezone(timezone.utc)
+
+
+def _is_at_or_after(value: datetime | None, cutoff: datetime) -> bool:
+    value = _as_utc(value)
+    return bool(value and value >= cutoff)
+
+
+def is_admin_active_today(user, today_start: datetime) -> bool:
+    return _is_at_or_after(getattr(user, "last_active_at", None), today_start)
+
+
+def is_admin_hot_lead(user, hot_since: datetime) -> bool:
+    return (
+        str(getattr(user, "status", "") or "").lower() in HOT_LEAD_STATUSES
+        and str(getattr(user, "payment_status", "") or "none").lower() in HOT_LEAD_PAYMENT_STATUSES
+        and not BotBlockStatusService.is_bot_blocked(user)
+        and _is_at_or_after(getattr(user, "last_active_at", None), hot_since)
+    )
+
+
+def _hot_lead_filter(hot_since: datetime):
+    return (
+        User.status.in_(HOT_LEAD_STATUSES),
+        User.payment_status.in_(HOT_LEAD_PAYMENT_STATUSES),
+        User.last_active_at >= hot_since,
+        _bot_not_blocked_filter(),
+    )
+
+
 def _plan_label(value: str | None) -> str:
     labels = {"10_days": "10 кун", "1_month": "1 ой"}
     return labels.get(str(value or "").lower(), value or "—")
@@ -126,15 +182,11 @@ class AdminMiniAppService:
 
     async def overview(self) -> dict:
         now = datetime.now(timezone.utc)
-        today_start = now.astimezone(ADMIN_MINIAPP_TZ).replace(
-            hour=0,
-            minute=0,
-            second=0,
-            microsecond=0,
-        ).astimezone(timezone.utc)
+        today_start = admin_miniapp_today_start(now)
         last_24h = now - timedelta(hours=24)
         week_ago = now - timedelta(days=7)
         month_ago = now - timedelta(days=30)
+        hot_since = now - HOT_LEAD_ACTIVITY_WINDOW
 
         total = await self._count_users()
         status_counts = await self._group_counts(User.status)
@@ -172,7 +224,7 @@ class AdminMiniAppService:
         feedback_summary = await self._feedback_summary()
         source_rows = await self._subscription_sources(week_ago)
         price_rows = await self._price_rows()
-        latest_users = await self._latest_users(now)
+        latest_users = await self._latest_users(now, today_start=today_start, hot_since=hot_since)
         latest_payments = await self._latest_payments()
 
         expired_hot = await self._count_users(
@@ -185,10 +237,7 @@ class AdminMiniAppService:
             User.end_date > now,
             User.end_date <= now + timedelta(days=3),
         )
-        wants_pay = await self._count_users(
-            User.status.in_(("free", "trial", "expired")),
-            User.payment_status.in_(("none", "draft", "rejected")),
-        )
+        hot_leads = await self._count_users(*_hot_lead_filter(hot_since))
         qa_users = await self._count_users(User.questions_used > 0)
         conversion = _pct(paid_users, total)
         engagement = _pct(qa_users, total)
@@ -241,7 +290,7 @@ class AdminMiniAppService:
                 {"label": "Фойдаланувчилар", "value": total, "note": f"{active_today} бугун фаол", "tone": "info"},
                 {"label": "Фаол обуна", "value": paid_users, "note": "ҳозир тўловли", "tone": "good"},
                 {"label": "Тўлов текширувда", "value": pending_payments, "note": "админ кўриши керак", "tone": "warn"},
-                {"label": "Иссиқ мижозлар", "value": wants_pay + expired_hot, "note": "обунага яқин", "tone": "danger"},
+                {"label": "Иссиқ мижозлар", "value": hot_leads, "note": "48 соат ичида фаол", "tone": "danger"},
             ],
             "counts": {
                 "users_total": total,
@@ -256,6 +305,7 @@ class AdminMiniAppService:
                 "active_24h": active_24h,
                 "active_week": active_week,
                 "expired_hot": expired_hot,
+                "hot_leads": hot_leads,
                 "expiring_soon": expiring_soon,
                 "bot_blocked_users": bot_blocked_users,
                 "conversion": conversion,
@@ -263,9 +313,10 @@ class AdminMiniAppService:
             },
             "segments": {
                 "all": total,
+                "active_today": active_today,
                 "paid": paid_users,
                 "pending": pending_payments,
-                "wants_pay": wants_pay,
+                "wants_pay": hot_leads,
                 "trial": int(status_counts.get("trial", 0)),
                 "free": int(status_counts.get("free", 0)),
                 "expired": int(status_counts.get("expired", 0)),
@@ -601,7 +652,7 @@ class AdminMiniAppService:
             for item in prices
         ]
 
-    async def _latest_users(self, now: datetime) -> list[dict]:
+    async def _latest_users(self, now: datetime, *, today_start: datetime, hot_since: datetime) -> list[dict]:
         rows = (await self.session.execute(
             select(User).order_by(User.last_active_at.desc()).limit(120)
         )).scalars().all()
@@ -625,6 +676,8 @@ class AdminMiniAppService:
                 "method": _method_label(item.payment_method),
                 "end_date": _dt(item.end_date),
                 "last_active": _ago(item.last_active_at, now=now),
+                "active_today": is_admin_active_today(item, today_start),
+                "hot_lead": is_admin_hot_lead(item, hot_since),
                 "questions": f"{item.questions_used}/{item.question_limit}",
                 "bonus_left": max((item.bonus_questions or 0) - (item.bonus_questions_used or 0), 0),
                 "streak": item.daily_practice_streak or 0,
