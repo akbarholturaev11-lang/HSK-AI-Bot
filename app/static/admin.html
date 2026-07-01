@@ -147,6 +147,9 @@
     .frow{display:grid;gap:7px;margin-bottom:11px}
     .frow.two{grid-template-columns:1fr 1fr}
     .frow label{font-size:11px;font-weight:850;color:var(--muted)}
+    .qr-price{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+    .qr-price span{border:1px solid var(--line-soft);border-radius:10px;background:var(--surface-2);padding:8px 10px;color:var(--muted);font-size:11.5px;font-weight:800;line-height:1.35}
+    .qr-price b{display:block;margin-top:2px;color:var(--ink);font-size:13px;font-weight:950}
     /* Setting rows */
     .srow{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;text-align:left;width:100%}
     .srow h3{font-size:14px;font-weight:850}
@@ -730,14 +733,33 @@
       $("drawerBody").innerHTML="<p class='empty'>Bu bo'lim uchun panel tayyor emas.</p>";
     }
 
+    function moneyText(amount,currency){
+      const value = Math.round(Number(amount)||0);
+      return `${value} ${currency||""}`.trim();
+    }
+    function discount20Text(p){
+      return moneyText(Math.round((Number(p.amount)||0)*0.8), p.currency);
+    }
+    function qrInfoText(scope,box){
+      const main = box&&box.dataset ? box.dataset.mainPrice : "";
+      const discount = box&&box.dataset ? box.dataset.discountPrice : "";
+      if(scope==="discount20") return `20% chegirma QR: ${discount} uchun to'lov QR rasmini yuklang.`;
+      return `Asosiy QR: ${main} uchun to'lov QR rasmini yuklang.`;
+    }
     function priceQrHtml(p){
       if(!p.qr_method) return "";
-      return `<div class="frow"><label>📱 QR kodlar ${p.qr_set?tag("asosiy bor","green"):tag("asosiy yo'q","red")}</label>
+      const mainPrice = p.text || moneyText(p.amount,p.currency);
+      const discountPrice = discount20Text(p);
+      return `<div class="frow" data-qrbox data-main-price="${esc(mainPrice)}" data-discount-price="${esc(discountPrice)}"><label>📱 QR kodlar ${p.qr_set?tag("asosiy bor","green"):tag("asosiy yo'q","red")}</label>
+        <div class="qr-price">
+          <span>Asosiy narx<b>${esc(mainPrice)}</b></span>
+          <span>20% chegirma narxi<b>${esc(discountPrice)}</b></span>
+        </div>
         <div class="row">
           <button class="btn sec" type="button" data-qrbtn data-scope="main">Asosiy QR</button>
           <button class="btn sec" type="button" data-qrbtn data-scope="discount20">20% chegirma QR</button>
           <input type="file" accept="image/*" data-qrfile hidden></div>
-        <div class="ncnote" data-qrinfo>Mos narxdagi to'lov QR rasmini yuklang (foydalanuvchi to'lov ekranida ko'radi).</div></div>`;
+        <div class="ncnote" data-qrinfo>Asosiy QR uchun ${esc(mainPrice)}, 20% chegirma QR uchun ${esc(discountPrice)} rasm yuklang.</div></div>`;
     }
     function renderPrices(d){
       openDrawer("💳 Obuna narxlari","Narxlar darhol subscription Mini Appda ishlaydi",`<div class="panel">
@@ -751,17 +773,19 @@
     function bindPriceQr(){
       document.querySelectorAll("[data-prow]").forEach(row=>{
         const file=row.querySelector("[data-qrfile]"); if(!file) return;
+        const box=row.querySelector("[data-qrbox]");
         let scope="main";
-        row.querySelectorAll("[data-qrbtn]").forEach(b=>b.onclick=()=>{ scope=b.dataset.scope; file.click(); });
+        row.querySelectorAll("[data-qrbtn]").forEach(b=>b.onclick=()=>{ scope=b.dataset.scope; const info=box&&box.querySelector("[data-qrinfo]"); if(info) info.textContent=qrInfoText(scope,box); file.click(); });
         file.onchange=()=>uploadPriceQr(row,file,scope);
       });
     }
     async function uploadPriceQr(row,file,scope){
       const f=file.files&&file.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); file.value=""; return; }
+      const box=row.querySelector("[data-qrbox]");
       const info=row.querySelector("[data-qrinfo]"); if(info) info.textContent="Yuklanmoqda…";
       const fd=new FormData(); fd.append("method",row.dataset.method); fd.append("plan",row.dataset.plan); fd.append("scope",scope); fd.append("media",f);
-      try{ await apiUpload("/api/admin-miniapp/prices/qr-upload",fd); toast("QR saqlandi"); if(info) info.textContent="QR saqlandi ✅"; await afterModule("QR saqlandi"); }
+      try{ await apiUpload("/api/admin-miniapp/prices/qr-upload",fd); toast("QR saqlandi"); if(info) info.textContent=`QR saqlandi ✅ ${qrInfoText(scope,box)}`; await afterModule("QR saqlandi"); }
       catch(e){ if(info) info.textContent="QR yuklanmadi"; toast(apiErr(e,"QR yuklanmadi")); }
       finally{ file.value=""; }
     }
