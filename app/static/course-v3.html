@@ -103,16 +103,17 @@ button{cursor:pointer}
 .adstatus[hidden]{display:none!important}
 .admeta{display:grid;gap:8px}
 .admeta b{font-size:15px;font-weight:600}.admeta small{font-size:12px;color:rgba(255,255,255,.68);line-height:1.4}
-.adcta{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;background:#fff;color:#211D17;display:flex;align-items:center;justify-content:center;gap:8px}
+.adcta{width:100%;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:600;background:#fff;color:#211D17;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s ease,box-shadow .2s ease,background .2s ease}
 .adcta:disabled{background:rgba(255,255,255,.14);color:rgba(255,255,255,.62)}
-.adsub{display:grid;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px}
+.adcta:active:not(:disabled){transform:translateY(1px)}
+.adsub{display:grid;gap:11px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.035));border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:18px 16px;box-shadow:0 12px 34px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.08)}
 .adsub[hidden]{display:none!important}
-.adsub-t{margin:0 0 2px;font-size:13.5px;line-height:1.45;color:#fff;text-align:center;font-weight:500}
-.adsub-benefits{display:grid;gap:7px;margin:2px 0 4px}
-.adben{display:flex;align-items:center;gap:9px;font-size:13.5px;line-height:1.35;color:rgba(255,255,255,.94);text-align:left}
-.adben i{color:#7BE0B3;font-size:17px;flex-shrink:0}
-.adsub-pay{background:#fff;color:#211D17}
-.adcta.ghost{background:rgba(255,255,255,.10);color:#fff;border:1px solid rgba(255,255,255,.2)}
+.adsub-t{margin:2px 0 4px;font-size:15px;line-height:1.42;color:#fff;text-align:center;font-weight:700;letter-spacing:-.01em}
+.adsub-benefits{display:grid;gap:10px;margin:0 0 4px;padding:13px 13px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);border-radius:15px}
+.adben{display:flex;align-items:center;gap:11px;font-size:14px;line-height:1.35;color:rgba(255,255,255,.95);text-align:left}
+.adben i{color:#7BE0B3;font-size:20px;flex-shrink:0}
+.adsub-pay{background:linear-gradient(180deg,#ffffff,#f1eee9);color:#211D17;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.5) inset}
+.adcta.ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.16);font-weight:600}
 .ftop{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
 .fx{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
 .fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
