@@ -1,3 +1,5 @@
+import contextlib
+import hashlib
 import os
 
 from sqlalchemy import distinct, select
@@ -29,6 +31,11 @@ COURSE_AD_ALL_LANGUAGES = "all"
 class CourseAdService:
     def __init__(self, session: AsyncSession):
         self.session = session
+        self._media_backup_changed = False
+
+    @property
+    def media_backup_changed(self) -> bool:
+        return self._media_backup_changed
 
     @staticmethod
     def normalize_placement(value: str | None) -> str:
@@ -63,6 +70,93 @@ class CourseAdService:
         return link[:512]
 
     @staticmethod
+    def media_checksum(data: bytes) -> str:
+        return hashlib.sha256(data).hexdigest()
+
+    @classmethod
+    def _backup_bytes(cls, ad: CourseAdCreative) -> bytes | None:
+        data = getattr(ad, "media_blob", None)
+        if isinstance(data, memoryview):
+            data = data.tobytes()
+        if not data:
+            return None
+        checksum = getattr(ad, "media_checksum", None)
+        if checksum and cls.media_checksum(data) != checksum:
+            return None
+        return bytes(data)
+
+    @staticmethod
+    def _media_full_path(media_path: str | None) -> str | None:
+        if not media_path:
+            return None
+        return os.path.join(COURSE_AD_MEDIA_ROOT, os.path.basename(str(media_path)))
+
+    @staticmethod
+    def _file_available(path: str | None) -> bool:
+        if not path:
+            return False
+        try:
+            return os.path.exists(path) and os.path.getsize(path) > 0
+        except OSError:
+            return False
+
+    @classmethod
+    def read_media_file(cls, media_path: str) -> bytes:
+        full_path = cls._media_full_path(media_path)
+        if not cls._file_available(full_path):
+            raise OSError("course ad media file is missing")
+        with open(str(full_path), "rb") as handle:
+            return handle.read()
+
+    @classmethod
+    def attach_media_backup(cls, ad: CourseAdCreative, data: bytes | None) -> bool:
+        if not data:
+            return False
+        checksum = cls.media_checksum(data)
+        if (
+            getattr(ad, "media_blob", None) == data
+            and getattr(ad, "media_checksum", None) == checksum
+        ):
+            return False
+        ad.media_blob = data
+        ad.media_size = len(data)
+        ad.media_checksum = checksum
+        return True
+
+    @classmethod
+    def ensure_media_available(cls, ad: CourseAdCreative) -> tuple[bool, bool]:
+        path = cls._media_full_path(getattr(ad, "media_path", None))
+        if cls._file_available(path):
+            return True, False
+        data = cls._backup_bytes(ad)
+        if not data or not path:
+            return False, False
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        tmp_path = f"{path}.restore"
+        try:
+            with open(tmp_path, "wb") as handle:
+                handle.write(data)
+            os.replace(tmp_path, path)
+        except OSError:
+            with contextlib.suppress(OSError):
+                os.remove(tmp_path)
+            return False, False
+        return cls._file_available(path), True
+
+    async def ensure_media_backup(self, ad: CourseAdCreative) -> bool:
+        if self._backup_bytes(ad):
+            return False
+        try:
+            data = self.read_media_file(getattr(ad, "media_path", ""))
+        except OSError:
+            return False
+        if not self.attach_media_backup(ad, data):
+            return False
+        self._media_backup_changed = True
+        await self.session.flush()
+        return True
+
+    @staticmethod
     def media_available(ad: CourseAdCreative) -> bool:
         """Reklama media fayli diskda haqiqatan mavjudmi.
 
@@ -70,17 +164,11 @@ class CourseAdService:
         yo'qolishi mumkin. Bunday reklamani foydalanuvchiga KO'RSATMAYMIZ, aks holda
         <video> 404 oladi va mini app'da qora ekran ("video yuklanmadi") chiqadi.
         """
-        media_path = getattr(ad, "media_path", None)
-        if not media_path:
-            return False
-        try:
-            full = os.path.join(COURSE_AD_MEDIA_ROOT, os.path.basename(str(media_path)))
-            return os.path.exists(full) and os.path.getsize(full) > 0
-        except OSError:
-            return False
+        return CourseAdService.ensure_media_available(ad)[0]
 
     @classmethod
     def payload(cls, ad: CourseAdCreative) -> dict:
+        media_available, media_restored = cls.ensure_media_available(ad)
         return {
             "id": int(ad.id),
             "title": ad.title,
@@ -90,7 +178,10 @@ class CourseAdService:
             "language": cls.normalize_language(getattr(ad, "language", None)),
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
             "is_active": bool(ad.is_active),
-            "media_available": cls.media_available(ad),
+            "media_available": media_available,
+            "media_restored": media_restored,
+            "media_backed_up": bool(cls._backup_bytes(ad)),
+            "media_size": getattr(ad, "media_size", None) or None,
             "created_at": ad.created_at.isoformat() if ad.created_at else None,
         }
 
@@ -98,7 +189,10 @@ class CourseAdService:
         result = await self.session.execute(
             select(CourseAdCreative).order_by(CourseAdCreative.created_at.desc(), CourseAdCreative.id.desc())
         )
-        return [self.payload(ad) for ad in result.scalars().all()]
+        ads = result.scalars().all()
+        for ad in ads:
+            await self.ensure_media_backup(ad)
+        return [self.payload(ad) for ad in ads]
 
     async def create_video(
         self,
@@ -108,6 +202,7 @@ class CourseAdService:
         duration_seconds: int = COURSE_AD_DEFAULT_SECONDS,
         link_url: str | None = None,
         language: str = COURSE_AD_ALL_LANGUAGES,
+        media_blob: bytes | None = None,
         created_by_telegram_id: int | None = None,
     ) -> CourseAdCreative:
         ad = CourseAdCreative(
@@ -120,6 +215,7 @@ class CourseAdService:
             is_active=True,
             created_by_telegram_id=created_by_telegram_id,
         )
+        self.attach_media_backup(ad, media_blob)
         self.session.add(ad)
         await self.session.flush()
         return ad
@@ -171,6 +267,7 @@ class CourseAdService:
         # Faqat media fayli haqiqatan diskda mavjud bo'lgan (eng yangi) reklamani qaytaramiz.
         for ad in result.scalars().all():
             if self.media_available(ad):
+                await self.ensure_media_backup(ad)
                 return ad
         return None
 
@@ -189,7 +286,12 @@ class CourseAdService:
         result = await self.session.execute(stmt)
         # Media fayli yo'q (ephemeral diskda o'chib ketgan) reklamalarni tashlab yuboramiz —
         # ular mini app'da qora ekran beradi. Fayli borlari ketma-ket ko'rsatiladi.
-        return [ad for ad in result.scalars().all() if self.media_available(ad)]
+        ads = []
+        for ad in result.scalars().all():
+            if self.media_available(ad):
+                await self.ensure_media_backup(ad)
+                ads.append(ad)
+        return ads
 
     async def list_active_payloads(self, language: str | None = None) -> list[dict]:
         return [self.payload(ad) for ad in await self.list_active(language=language)]

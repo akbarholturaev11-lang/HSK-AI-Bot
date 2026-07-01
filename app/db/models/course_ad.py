@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Index, Integer, String
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Index, Integer, LargeBinary, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -14,6 +14,9 @@ class CourseAdCreative(Base):
     title: Mapped[str] = mapped_column(String(120), nullable=False)
     media_path: Mapped[str] = mapped_column(String(512), nullable=False)
     media_type: Mapped[str] = mapped_column(String(16), default="video", nullable=False)
+    media_blob: Mapped[Optional[bytes]] = mapped_column(LargeBinary, nullable=True)
+    media_size: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    media_checksum: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     # Reklama tili: "all" (barcha tillar), "uz", "ru", "tj".
     language: Mapped[str] = mapped_column(String(8), default="all", index=True, nullable=False)
     link_url: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)

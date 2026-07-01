@@ -207,6 +207,22 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-02 — Course ad media DB backup + auto-restore
+
+Changed:
+- Course ad uploads now store the transcoded MP4 bytes in `course_ad_creatives.media_blob` with `media_size` and SHA-256 `media_checksum` metadata (`0063_course_ad_media_backup`).
+- `CourseAdService` backfills DB backup for existing ads whose media file still exists on disk, and restores a missing media file from the DB backup before serving/listing active ads.
+- `/uploads/course_ads/{filename}`, `/api/v3/ad`, and admin course-ad listing use this self-healing path, so deploy/restart no longer forces re-upload for ads that have a DB backup.
+
+Why:
+- Railway/runtime disk can be ephemeral. Keeping a DB backup prevents course ads from disappearing after deploy when the DB row survives but the uploaded video file does not.
+
+Files touched:
+- `app/db/models/course_ad.py`, `app/db/session.py`, `app/services/course_ad_service.py`, `app/main.py`, `alembic/versions/0063_course_ad_media_backup.py`, `tests/test_course_miniapp_foundation.py`
+
+Risk:
+- DB size grows by the uploaded ad MP4 bytes; current upload limit is 25MB per ad. Ads whose disk file was already missing before this change cannot be restored because their bytes are already gone.
+
 ### 2026-07-02 — Course ad black-screen fail-safe + persistent media visibility
 
 Changed:
