@@ -8,6 +8,8 @@
     "ru": "Научитесь здороваться и извиняться по-китайски",
     "tj": "Омӯзед, ки чӣ тавр ба забони чинӣ салом гӯед ва узр пурсед"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -283,6 +285,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "你 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 你:",
+            "tj": "Маънои калимаи 你-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yaxshi, ajoyib",
+              "ru": "хорошо, хороший",
+              "tj": "хуб, олӣ"
+            },
+            {
+              "uz": "sen (birlik)",
+              "ru": "ты (единственное число)",
+              "tj": "ту (яккашумора)"
+            },
+            {
+              "uz": "siz (rasmiy/hurmat)",
+              "ru": "вы (вежливая форма)",
+              "tj": "шумо (расмӣ/эҳтиромона)"
+            },
+            {
+              "uz": "sizlar (ko'plik)",
+              "ru": "вы (множественное число)",
+              "tj": "шумоён (ҷамъшумора)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你 = sen (birlik) (nǐ)",
+            "ru": "你 = ты (единственное число) (nǐ)",
+            "tj": "你 = ту (яккашумора) (nǐ)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -308,6 +351,31 @@
               "ru": "вы (множественное число)",
               "tj": "шумоён (ҷамъшумора)"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hǎo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hǎo?",
+            "tj": "hǎo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "你们",
+            "你",
+            "好",
+            "您"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "好 = yaxshi, ajoyib (hǎo)",
+            "ru": "好 = хорошо, хороший (hǎo)",
+            "tj": "好 = хуб, олӣ (hǎo)"
           }
         },
         {
@@ -337,6 +405,73 @@
               "tj": "майлаш, мушкиле нест"
             }
           }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "你 talaffuzini tanlang:",
+            "ru": "Выберите произношение 你:",
+            "tj": "Талаффузи 你-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nín",
+            "nǐ",
+            "nǐmen",
+            "hǎo"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你 — nǐ",
+            "ru": "你 — nǐ",
+            "tj": "你 — nǐ"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "你",
+              {
+                "uz": "sen (birlik)",
+                "ru": "ты (единственное число)",
+                "tj": "ту (яккашумора)"
+              }
+            ],
+            [
+              "好",
+              {
+                "uz": "yaxshi, ajoyib",
+                "ru": "хорошо, хороший",
+                "tj": "хуб, олӣ"
+              }
+            ],
+            [
+              "您",
+              {
+                "uz": "siz (rasmiy/hurmat)",
+                "ru": "вы (вежливая форма)",
+                "tj": "шумо (расмӣ/эҳтиромона)"
+              }
+            ],
+            [
+              "你们",
+              {
+                "uz": "sizlar (ko'plik)",
+                "ru": "вы (множественное число)",
+                "tj": "шумоён (ҷамъшумора)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
         }
       ]
     },
@@ -350,6 +485,89 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "To'rt ton",
+              "ru": "Четыре тона",
+              "tj": "Чор садо"
+            },
+            "title_zh": "四声",
+            "rule": {
+              "uz": "Xitoy tilida har bir bo'g'in 4 xil tonda aytiladi:\n1-ton (—): baland va tekis — mā (ona)\n2-ton (ˊ): ko'tariluvchi — má (kanop o'simligi)\n3-ton (ˇ): tushib ko'tariluvchi — mǎ (ot)\n4-ton (ˋ): tushuvchi — mà (so'kishmoq)\n\nTon ma'noni o'zgartiradi!",
+              "ru": "В китайском языке каждый слог произносится в одном из 4 тонов:\nТон 1 (—): ровный и высокий — mā (мама)\nТон 2 (ˊ): восходящий — má (конопля)\nТон 3 (ˇ): нисходяще-восходящий — mǎ (лошадь)\nТон 4 (ˋ): нисходящий — mà (ругать)\n\nТон меняет смысл слова!",
+              "tj": "Дар забони чинӣ ҳар як ҳиҷо бо яке аз 4 садо гуфта мешавад:\nСадои 1 (—): баланд ва ҳамвор — mā (модар)\nСадои 2 (ˊ): боравандаи — má (канабис)\nСадои 3 (ˇ): поинравандаю боравандаи — mǎ (асп)\nСадои 4 (ˋ): поинравандаи — mà (дашном додан)\n\nСадо маъноро тағйир медиҳад!"
+            },
+            "examples": [
+              {
+                "zh": "妈",
+                "pinyin": "mā",
+                "translation": {
+                  "uz": "ona (1-ton)",
+                  "ru": "мама (1-й тон)",
+                  "tj": "модар (садои 1)"
+                }
+              },
+              {
+                "zh": "马",
+                "pinyin": "mǎ",
+                "translation": {
+                  "uz": "ot (3-ton)",
+                  "ru": "лошадь (3-й тон)",
+                  "tj": "асп (садои 3)"
+                }
+              },
+              {
+                "zh": "骂",
+                "pinyin": "mà",
+                "translation": {
+                  "uz": "so'kmoq (4-ton)",
+                  "ru": "ругать (4-й тон)",
+                  "tj": "дашном додан (садои 4)"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Ton o'zgarishi (3+3)",
+              "ru": "Изменение тона (3+3)",
+              "tj": "Тағйири садо (3+3)"
+            },
+            "title_zh": "变调 (3+3)",
+            "rule": {
+              "uz": "Ketma-ket ikkita 3-ton kelganda, birinchisi 2-tonga o'zgaradi.\n3+3 → 2+3\nMisol: 你(nǐ) + 好(hǎo) → nī hǎo (lekin yoziladi: nǐ hǎo)",
+              "ru": "Когда два слога 3-го тона идут подряд, первый меняется на 2-й тон.\n3+3 → 2+3\nПример: 你(nǐ) + 好(hǎo) → nī hǎo (но пишется: nǐ hǎo)",
+              "tj": "Вақте ки ду ҳиҷои садои 3 паи ҳам меоянд, аввалӣ ба садои 2 табдил меёбад.\n3+3 → 2+3\nМисол: 你(nǐ) + 好(hǎo) → nī hǎo (аммо навишта мешавад: nǐ hǎo)"
+            },
+            "examples": [
+              {
+                "zh": "你好",
+                "pinyin": "nī hǎo → nǐ hǎo",
+                "translation": {
+                  "uz": "salom (nǐ hǎo deb yoziladi)",
+                  "ru": "привет (пишется nǐ hǎo)",
+                  "tj": "салом (навишта мешавад nǐ hǎo)"
+                }
+              },
+              {
+                "zh": "可以",
+                "pinyin": "ké yǐ → kě yǐ",
+                "translation": {
+                  "uz": "mumkin, bo'ladi",
+                  "ru": "можно, разрешено",
+                  "tj": "мумкин, иҷозат"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "salom (nǐ hǎo deb yoziladi)",
@@ -357,10 +575,10 @@
             "tj": "салом (навишта мешавад nǐ hǎo)"
           },
           "tokens": [
-            "好",
-            "你",
             "您",
-            "你们"
+            "你们",
+            "好",
+            "你"
           ],
           "answer_tokens": [
             "你",
@@ -370,6 +588,31 @@
             "uz": "你好 — nī hǎo → nǐ hǎo",
             "ru": "你好 — nī hǎo → nǐ hǎo",
             "tj": "你好 — nī hǎo → nǐ hǎo"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«so'kmoq (4-ton)» — xitoychada qaysi biri?",
+            "ru": "«ругать (4-й тон)» — какое предложение по-китайски?",
+            "tj": "«дашном додан (садои 4)» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "马",
+            "妈",
+            "你好",
+            "骂"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "骂 — mà",
+            "ru": "骂 — mà",
+            "tj": "骂 — mà"
           }
         }
       ]
@@ -383,6 +626,54 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Salom!",
+            "ru": "Привет!",
+            "tj": "Салом!"
+          },
+          "tokens": [
+            "你",
+            "您",
+            "好",
+            "你们"
+          ],
+          "answer_tokens": [
+            "你",
+            "好"
+          ],
+          "explanation": {
+            "uz": "你好！ — Nǐ hǎo!",
+            "ru": "你好！ — Nǐ hǎo!",
+            "tj": "你好！ — Nǐ hǎo!"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "好 talaffuzini tanlang:",
+            "ru": "Выберите произношение 好:",
+            "tj": "Талаффузи 好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nǐmen",
+            "nín",
+            "hǎo",
+            "nǐ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "好 — hǎo",
+            "ru": "好 — hǎo",
+            "tj": "好 — hǎo"
+          }
+        },
         {
           "type": "meaning_guess",
           "prompt": {
@@ -425,54 +716,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "好 talaffuzini tanlang:",
-            "ru": "Выберите произношение 好:",
-            "tj": "Талаффузи 好-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "nín",
-            "hǎo",
-            "nǐmen",
-            "nǐ"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "好 — hǎo",
-            "ru": "好 — hǎo",
-            "tj": "好 — hǎo"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Salom!",
-            "ru": "Привет!",
-            "tj": "Салом!"
-          },
-          "tokens": [
-            "您",
-            "你们",
-            "好",
-            "你"
-          ],
-          "answer_tokens": [
-            "你",
-            "好"
-          ],
-          "explanation": {
-            "uz": "你好！ — Nǐ hǎo!",
-            "ru": "你好！ — Nǐ hǎo!",
-            "tj": "你好！ — Nǐ hǎo!"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -482,9 +725,9 @@
           "audio_text": "你好！",
           "pinyin": "Nǐ hǎo!",
           "options": [
-            "你们好！",
-            "你好！",
             "对不起！",
+            "你好！",
+            "你们好！",
             "您好！"
           ],
           "correct_index": 1,
@@ -567,12 +810,12 @@
           "audio_text": "你好！",
           "pinyin": "Nǐ hǎo!",
           "options": [
-            "对不起！",
+            "你好！",
             "您好！",
             "你们好！",
-            "你好！"
+            "对不起！"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "你好！ — Salom!",
             "ru": "你好！ — Привет!",
@@ -590,10 +833,10 @@
           "options": [
             "系",
             "不",
-            "你",
-            "好"
+            "您",
+            "你"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 你 — 你好！ (Salom!)",
             "ru": "Верно: 你 — 你好！ (Привет!)",
@@ -620,12 +863,12 @@
             }
           ],
           "options": [
-            "对不起！",
             "你们好！",
             "你好！",
+            "对不起！",
             "您好！"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 你好！",
             "ru": "Правильный ответ: 你好！",
@@ -645,12 +888,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
+            "您好！",
             "你好！",
             "你们好！",
-            "您好！",
             "对不起！"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 你好！",
             "ru": "Правильный ответ: 你好！",

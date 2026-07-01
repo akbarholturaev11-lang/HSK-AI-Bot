@@ -8,6 +8,8 @@
     "ru": "говорить о счастье, семье, выборе работы и условиях жизни; использовать 不过, 确实, 在...看来, 由于 и 比如",
     "tj": "дар бораи хушбахтӣ, оила, интихоби кор ва шароити зиндагӣ гуфтугӯ кардан; истифодаи 不过, 确实, 在...看来, 由于 ва 比如"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -753,6 +755,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "空儿 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 空儿:",
+            "tj": "Маънои калимаи 空儿-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "lekin, biroq",
+              "ru": "однако, но",
+              "tj": "аммо, вале"
+            },
+            {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            },
+            {
+              "uz": "ona",
+              "ru": "мать",
+              "tj": "модар"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "空儿 = bo'sh vaqt (kòngr)",
+            "ru": "空儿 = свободное время (kòngr)",
+            "tj": "空儿 = вақти холӣ (kòngr)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -778,6 +821,31 @@
               "ru": "однако, но",
               "tj": "аммо, вале"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "lǐbàitiān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается lǐbàitiān?",
+            "tj": "lǐbàitiān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "母亲",
+            "空儿",
+            "礼拜天",
+            "不过"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "礼拜天 = yakshanba (lǐbàitiān)",
+            "ru": "礼拜天 = воскресенье (lǐbàitiān)",
+            "tj": "礼拜天 = якшанбе (lǐbàitiān)"
           }
         },
         {
@@ -809,6 +877,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "方向 talaffuzini tanlang:",
+            "ru": "Выберите произношение 方向:",
+            "tj": "Талаффузи 方向-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "mǔqīn",
+            "kòngr",
+            "fāngxiàng",
+            "lǐbàitiān"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "方向 — fāngxiàng",
+            "ru": "方向 — fāngxiàng",
+            "tj": "方向 — fāngxiàng"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -834,6 +927,47 @@
               "ru": "магистр",
               "tj": "магистр"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "硕士 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 硕士:",
+            "tj": "Маънои калимаи 硕士-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "magistr",
+              "ru": "магистр",
+              "tj": "магистр"
+            },
+            {
+              "uz": "bo'sh vaqt",
+              "ru": "свободное время",
+              "tj": "вақти холӣ"
+            },
+            {
+              "uz": "yakshanba",
+              "ru": "воскресенье",
+              "tj": "якшанбе"
+            },
+            {
+              "uz": "ona",
+              "ru": "мать",
+              "tj": "модар"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "硕士 = magistr (shuòshì)",
+            "ru": "硕士 = магистр (shuòshì)",
+            "tj": "硕士 = магистр (shuòshì)"
           }
         },
         {
@@ -865,462 +999,28 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "兴奋",
-            "pinyin": "xīngfèn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "hayajonli, xursand",
-              "ru": "возбуждённый, радостный",
-              "tj": "ҳаяҷонзада, хурсанд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "拉",
-            "pinyin": "lā",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tortmoq, olib bormoq",
-              "ru": "тянуть, вести",
-              "tj": "кашидан, бурдан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "建议",
-            "pinyin": "jiànyì",
-            "pos": "n./v.",
-            "meaning": {
-              "uz": "maslahat, taklif",
-              "ru": "совет, предложение",
-              "tj": "маслиҳат, пешниҳод"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "职业",
-            "pinyin": "zhíyè",
-            "pos": "n.",
-            "meaning": {
-              "uz": "kasb",
-              "ru": "профессия",
-              "tj": "касб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "关键",
-            "pinyin": "guānjiàn",
-            "pos": "n./adj.",
-            "meaning": {
-              "uz": "kalit, asosiy",
-              "ru": "ключевой",
-              "tj": "асосӣ, калидӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "将来",
-            "pinyin": "jiānglái",
-            "pos": "n.",
-            "meaning": {
-              "uz": "kelajak",
-              "ru": "будущее",
-              "tj": "оянда"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "发展",
-            "pinyin": "fāzhǎn",
-            "pos": "v./n.",
-            "meaning": {
-              "uz": "rivojlanmoq; rivojlanish",
-              "ru": "развиваться; развитие",
-              "tj": "рушд кардан; рушд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "躺",
-            "pinyin": "tǎng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yotmoq",
-              "ru": "лежать",
-              "tj": "дароз кашидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "困",
-            "pinyin": "kùn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "uyqusi kelgan",
-              "ru": "сонный",
-              "tj": "хоболуд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "经济",
-            "pinyin": "jīngjì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "iqtisod",
-              "ru": "экономика",
-              "tj": "иқтисод"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "条件",
-            "pinyin": "tiáojiàn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "sharoit",
-              "ru": "условие",
-              "tj": "шароит"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "富",
-            "pinyin": "fù",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "boy",
-              "ru": "богатый",
-              "tj": "бой"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "穷",
-            "pinyin": "qióng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "kambag'al",
-              "ru": "бедный",
-              "tj": "камбағал"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "等",
-            "pinyin": "děng",
-            "pos": "part.",
-            "meaning": {
-              "uz": "va boshqalar",
-              "ru": "и так далее",
-              "tj": "ва ғайра"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "由于",
-            "pinyin": "yóuyú",
-            "pos": "prep./conj.",
-            "meaning": {
-              "uz": "sababli, tufayli",
-              "ru": "из-за, вследствие",
-              "tj": "бинобар, аз сабаби"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "比如",
-            "pinyin": "bǐrú",
-            "pos": "v.",
-            "meaning": {
-              "uz": "masalan",
-              "ru": "например",
-              "tj": "масалан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "橡皮",
-            "pinyin": "xiàngpí",
-            "pos": "n.",
-            "meaning": {
-              "uz": "o'chirg'ich",
-              "ru": "ластик",
-              "tj": "хатпоккунак"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "糖",
-            "pinyin": "táng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "shakar, konfet",
-              "ru": "сахар, конфета",
-              "tj": "шакар, қанд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "低",
-            "pinyin": "dī",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "past",
-              "ru": "низкий",
-              "tj": "паст"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "答案",
-            "pinyin": "dá'àn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "javob",
-              "ru": "ответ",
-              "tj": "ҷавоб"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 2,
-      "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Lekin hozir men juda baxtliman.",
-            "ru": "Однако сейчас я очень счастлива.",
-            "tj": "Аммо ҳоло ман хеле хушбахтам."
-          },
-          "tokens": [
-            "礼拜天",
-            "现在",
-            "幸福",
-            "不过",
-            "我",
-            "很",
-            "空儿"
-          ],
-          "answer_tokens": [
-            "不过",
-            "现在",
-            "我",
-            "很",
-            "幸福"
-          ],
-          "explanation": {
-            "uz": "不过现在我很幸福。 — Búguò xiànzài wǒ hěn xìngfú.",
-            "ru": "不过现在我很幸福。 — Búguò xiànzài wǒ hěn xìngfú.",
-            "tj": "不过现在我很幸福。 — Búguò xiànzài wǒ hěn xìngfú."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____现在我很幸福。",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+            "uz": "quèshí qaysi ieroglif?",
+            "ru": "Какой иероглиф читается quèshí?",
+            "tj": "quèshí кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "礼拜天",
-            "不过",
             "空儿",
+            "礼拜天",
+            "确实",
             "母亲"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri: 不过 (búguò) — lekin, biroq",
-            "ru": "Верно: 不过 (búguò) — однако, но",
-            "tj": "Дуруст: 不过 (búguò) — аммо, вале"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
-        "uz": "Mashq",
-        "ru": "Упражнение",
-        "tj": "Машқ"
-      },
-      "section_purpose": "practice",
-      "cards": [
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "空儿 talaffuzini tanlang:",
-            "ru": "Выберите произношение 空儿:",
-            "tj": "Талаффузи 空儿-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "búguò",
-            "kòngr",
-            "mǔqīn",
-            "lǐbàitiān"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "空儿 — kòngr",
-            "ru": "空儿 — kòngr",
-            "tj": "空儿 — kòngr"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ona' xitoycha qaysi?",
-            "ru": "'мать' по-китайски?",
-            "tj": "'модар' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "母亲",
-            "空儿",
-            "不过",
-            "礼拜天"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "ona = 母亲 (mǔqīn)",
-            "ru": "мать = 母亲 (mǔqīn)",
-            "tj": "модар = 母亲 (mǔqīn)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bora olmasam kerak, oxirgi payt ishlarim ko'p.",
-            "ru": "Наверное, не смогу, в последнее время много дел.",
-            "tj": "Эҳтимол рафта наметавонам, вақтҳои охир корам зиёд."
-          },
-          "tokens": [
-            "空儿",
-            "不",
-            "可能",
-            "多",
-            "礼拜天",
-            "去",
-            "了",
-            "我",
-            "最近",
-            "事情"
-          ],
-          "answer_tokens": [
-            "我",
-            "可能",
-            "去",
-            "不",
-            "了",
-            "最近",
-            "事情",
-            "多"
-          ],
-          "explanation": {
-            "uz": "我可能去不了，最近事情多。 — Wǒ kěnéng qù bùliǎo, zuìjìn shìqing duō.",
-            "ru": "我可能去不了，最近事情多。 — Wǒ kěnéng qù bùliǎo, zuìjìn shìqing duō.",
-            "tj": "我可能去不了，最近事情多。 — Wǒ kěnéng qù bùliǎo, zuìjìn shìqing duō."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
-          "pinyin": "Lǐbàitiān yǒu kòngr ma? Péi wǒ qù guàngjiē zěnmeyàng? Wǒ xiǎng qù gěi zhàngfu mǎi ge shēngrì lǐwù.",
-          "options": [
-            "我现在上有老，下有小。除了工作以外，家里还有母亲和儿子需要照顾。",
-            "我可能去不了，最近事情多。",
-            "你最近是不是工作特别忙？",
-            "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 — Yakshanba bo'sh vaqting bormi? Men bilan ko'cha aylangani borsang-chi? Erimga tug'ilgan kun sovg'asi olmoqchiman.",
-            "ru": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 — В воскресенье есть время? Как насчёт сходить со мной по магазинам? Хочу купить мужу подарок на день рождения.",
-            "tj": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 — Якшанбе вақти холӣ дорӣ? Бо ман ба дӯконгардӣ равӣ чӣ? Ба шавҳарам туҳфаи зодрӯз харидан мехоҳам."
+            "uz": "确实 = haqiqatan (quèshí)",
+            "ru": "确实 = действительно (quèshí)",
+            "tj": "确实 = воқеан (quèshí)"
           }
         },
         {
@@ -1363,6 +1063,461 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "lekin, biroq",
+              "ru": "однако, но",
+              "tj": "аммо, вале"
+            },
+            "title_zh": "不过",
+            "rule": {
+              "uz": "Oldingi fikrdan keyin yumshoq burilish yoki qarama-qarshi fikr beradi.",
+              "ru": "После предыдущей мысли вводит мягкое противопоставление.",
+              "tj": "Баъди фикри пешина муқобили мулоим меорад."
+            },
+            "examples": [
+              {
+                "zh": "不过现在我很幸福。",
+                "pinyin": "Búguò xiànzài wǒ hěn xìngfú.",
+                "translation": {
+                  "uz": "Lekin hozir men juda baxtliman.",
+                  "ru": "Однако сейчас я очень счастлива.",
+                  "tj": "Аммо ҳоло ман хеле хушбахтам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Lekin hozir men juda baxtliman.",
+            "ru": "Однако сейчас я очень счастлива.",
+            "tj": "Аммо ҳоло ман хеле хушбахтам."
+          },
+          "tokens": [
+            "空儿",
+            "幸福",
+            "我",
+            "不过",
+            "礼拜天",
+            "很",
+            "现在"
+          ],
+          "answer_tokens": [
+            "不过",
+            "现在",
+            "我",
+            "很",
+            "幸福"
+          ],
+          "explanation": {
+            "uz": "不过现在我很幸福。 — Búguò xiànzài wǒ hěn xìngfú.",
+            "ru": "不过现在我很幸福。 — Búguò xiànzài wǒ hěn xìngfú.",
+            "tj": "不过现在我很幸福。 — Búguò xiànzài wǒ hěn xìngfú."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "haqiqatan",
+              "ru": "действительно",
+              "tj": "воқеан"
+            },
+            "title_zh": "确实",
+            "rule": {
+              "uz": "Fikrni tasdiqlab, gapiruvchi rostdan shunday deb bilishini bildiradi.",
+              "ru": "Подтверждает мысль и показывает, что говорящий действительно так считает.",
+              "tj": "Фикрро тасдиқ карда нишон медиҳад, ки гӯянда воқеан ҳамин тавр мешуморад."
+            },
+            "examples": [
+              {
+                "zh": "我女儿确实不错。",
+                "pinyin": "Wǒ nǚ'ér quèshí búcuò.",
+                "translation": {
+                  "uz": "Qizim haqiqatan ham yaxshi.",
+                  "ru": "Моя дочь действительно хорошая.",
+                  "tj": "Духтарам воқеан хуб аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Qizim haqiqatan ham yaxshi.",
+            "ru": "Моя дочь действительно хорошая.",
+            "tj": "Духтарам воқеан хуб аст."
+          },
+          "tokens": [
+            "我",
+            "空儿",
+            "礼拜天",
+            "确实",
+            "不错",
+            "女儿"
+          ],
+          "answer_tokens": [
+            "我",
+            "女儿",
+            "确实",
+            "不错"
+          ],
+          "explanation": {
+            "uz": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò.",
+            "ru": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò.",
+            "tj": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "... nazarida",
+              "ru": "с точки зрения...",
+              "tj": "аз назари..."
+            },
+            "title_zh": "在……看来",
+            "rule": {
+              "uz": "Kimningdir shaxsiy qarashi yoki bahosini kiritadi.",
+              "ru": "Вводит личную точку зрения или оценку.",
+              "tj": "Нуқтаи назар ё баҳодиҳии шахсиро меорад."
+            },
+            "examples": [
+              {
+                "zh": "在我看来，赚钱多少不是最重要的，兴趣才是关键。",
+                "pinyin": "Zài wǒ kànlai, zhuànqián duōshǎo bú shì zuì zhòngyào de, xìngqù cái shì guānjiàn.",
+                "translation": {
+                  "uz": "Mening nazarimda, qancha pul topish eng muhimi emas, qiziqish asosiy.",
+                  "ru": "На мой взгляд, сколько зарабатывать - не самое важное, ключевое - интерес.",
+                  "tj": "Аз назари ман, чӣ қадар пул ёфтан муҳимтарин нест, шавқ асосӣ аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "在我看来，赚钱多少不是最重要的，兴趣才是____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "礼拜天",
+            "空儿",
+            "母亲",
+            "关键"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 关键 (guānjiàn) — kalit, asosiy",
+            "ru": "Верно: 关键 (guānjiàn) — ключевой",
+            "tj": "Дуруст: 关键 (guānjiàn) — асосӣ, калидӣ"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "sababli",
+              "ru": "из-за, вследствие",
+              "tj": "аз сабаби"
+            },
+            "title_zh": "由于",
+            "rule": {
+              "uz": "Sababni rasmiyroq uslubda beradi; keyin natija keladi.",
+              "ru": "В более официальном стиле указывает причину, после которой идёт результат.",
+              "tj": "Сабабро бо услуби расмитар медиҳад; баъд натиҷа меояд."
+            },
+            "examples": [
+              {
+                "zh": "如果由于缺钱而不能及时去看医生，你的健康都很难得到保证。",
+                "pinyin": "Rúguǒ yóuyú quē qián ér bù néng jíshí qù kàn yīshēng, nǐ de jiànkāng dōu hěn nán dédào bǎozhèng.",
+                "translation": {
+                  "uz": "Agar pul yetishmasligi sababli vaqtida shifokorga borolmasang, sog'lig'ingni kafolatlash qiyin.",
+                  "ru": "Если из-за нехватки денег нельзя вовремя обратиться к врачу, здоровье трудно гарантировать.",
+                  "tj": "Агар аз сабаби камии пул сари вақт ба духтур рафта натавонӣ, кафолати саломатӣ душвор мешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "如果____缺钱而不能及时去看医生，你的健康都很难得到保证。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "礼拜天",
+            "由于",
+            "空儿",
+            "母亲"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 由于 (yóuyú) — sababli, tufayli",
+            "ru": "Верно: 由于 (yóuyú) — из-за, вследствие",
+            "tj": "Дуруст: 由于 (yóuyú) — бинобар, аз сабаби"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "masalan",
+              "ru": "например",
+              "tj": "масалан"
+            },
+            "title_zh": "比如",
+            "rule": {
+              "uz": "Oldingi umumiy fikrga aniq misol beradi.",
+              "ru": "Даёт конкретный пример к предыдущей общей мысли.",
+              "tj": "Ба фикри умумии пешина мисоли мушаххас медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "比如一块橡皮、一块糖，得到了就很幸福。",
+                "pinyin": "Bǐrú yí kuài xiàngpí, yí kuài táng, dédào le jiù hěn xìngfú.",
+                "translation": {
+                  "uz": "Masalan, bir dona o'chirg'ich yoki konfetni olsang, juda baxtli bo'lasan.",
+                  "ru": "Например, получишь ластик или конфету - и уже счастлив.",
+                  "tj": "Масалан, як хатпоккунак ё як қанд гирӣ, хеле хушбахт мешавӣ."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____一块橡皮、一块糖，得到了就很幸福。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "礼拜天",
+            "空儿",
+            "比如",
+            "母亲"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 比如 (bǐrú) — masalan",
+            "ru": "Верно: 比如 (bǐrú) — например",
+            "tj": "Дуруст: 比如 (bǐrú) — масалан"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Qizim haqiqatan ham yaxshi.» — xitoychada qaysi biri?",
+            "ru": "«Моя дочь действительно хорошая.» — какое предложение по-китайски?",
+            "tj": "«Духтарам воқеан хуб аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "不过现在我很幸福。",
+            "在我看来，赚钱多少不是最重要的，兴趣才是关键。",
+            "我女儿确实不错。",
+            "比如一块橡皮、一块糖，得到了就很幸福。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò.",
+            "ru": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò.",
+            "tj": "我女儿确实不错。 — Wǒ nǚ'ér quèshí búcuò."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "拉 talaffuzini tanlang:",
+            "ru": "Выберите произношение 拉:",
+            "tj": "Талаффузи 拉-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "lǐbàitiān",
+            "lā",
+            "kòngr",
+            "mǔqīn"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "拉 — lā",
+            "ru": "拉 — lā",
+            "tj": "拉 — lā"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "礼拜天",
+              {
+                "uz": "yakshanba",
+                "ru": "воскресенье",
+                "tj": "якшанбе"
+              }
+            ],
+            [
+              "空儿",
+              {
+                "uz": "bo'sh vaqt",
+                "ru": "свободное время",
+                "tj": "вақти холӣ"
+              }
+            ],
+            [
+              "母亲",
+              {
+                "uz": "ona",
+                "ru": "мать",
+                "tj": "модар"
+              }
+            ],
+            [
+              "不过",
+              {
+                "uz": "lekin, biroq",
+                "ru": "однако, но",
+                "tj": "аммо, вале"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bora olmasam kerak, oxirgi payt ishlarim ko'p.",
+            "ru": "Наверное, не смогу, в последнее время много дел.",
+            "tj": "Эҳтимол рафта наметавонам, вақтҳои охир корам зиёд."
+          },
+          "tokens": [
+            "了",
+            "可能",
+            "多",
+            "礼拜天",
+            "不",
+            "我",
+            "最近",
+            "去",
+            "事情",
+            "空儿"
+          ],
+          "answer_tokens": [
+            "我",
+            "可能",
+            "去",
+            "不",
+            "了",
+            "最近",
+            "事情",
+            "多"
+          ],
+          "explanation": {
+            "uz": "我可能去不了，最近事情多。 — Wǒ kěnéng qù bùliǎo, zuìjìn shìqing duō.",
+            "ru": "我可能去不了，最近事情多。 — Wǒ kěnéng qù bùliǎo, zuìjìn shìqing duō.",
+            "tj": "我可能去不了，最近事情多。 — Wǒ kěnéng qù bùliǎo, zuìjìn shìqing duō."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'maslahat, taklif' xitoycha qaysi?",
+            "ru": "'совет, предложение' по-китайски?",
+            "tj": "'маслиҳат, пешниҳод' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "建议",
+            "空儿",
+            "母亲",
+            "礼拜天"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "maslahat, taklif = 建议 (jiànyì)",
+            "ru": "совет, предложение = 建议 (jiànyì)",
+            "tj": "маслиҳат, пешниҳод = 建议 (jiànyì)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
+          "pinyin": "Lǐbàitiān yǒu kòngr ma? Péi wǒ qù guàngjiē zěnmeyàng? Wǒ xiǎng qù gěi zhàngfu mǎi ge shēngrì lǐwù.",
+          "options": [
+            "你最近是不是工作特别忙？",
+            "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
+            "我可能去不了，最近事情多。",
+            "我现在上有老，下有小。除了工作以外，家里还有母亲和儿子需要照顾。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 — Yakshanba bo'sh vaqting bormi? Men bilan ko'cha aylangani borsang-chi? Erimga tug'ilgan kun sovg'asi olmoqchiman.",
+            "ru": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 — В воскресенье есть время? Как насчёт сходить со мной по магазинам? Хочу купить мужу подарок на день рождения.",
+            "tj": "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 — Якшанбе вақти холӣ дорӣ? Бо ман ба дӯконгардӣ равӣ чӣ? Ба шавҳарам туҳфаи зодрӯз харидан мехоҳам."
           }
         },
         {
@@ -1417,16 +1572,41 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "斤",
-            "新",
+            "下",
+            "电",
             "拜",
-            "挺"
+            "旧"
           ],
           "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 拜 — 礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 (Yakshanba bo'sh vaqting bormi? Men bilan ko'cha aylangani borsang-chi? Erimga tug'ilgan kun sovg'asi olmoqchiman.)",
             "ru": "Верно: 拜 — 礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 (В воскресенье есть время? Как насчёт сходить со мной по магазинам? Хочу купить мужу подарок на день рождения.)",
             "tj": "Дуруст: 拜 — 礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。 (Якшанбе вақти холӣ дорӣ? Бо ман ба дӯконгардӣ равӣ чӣ? Ба шавҳарам туҳфаи зодрӯз харидан мехоҳам.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 王静 nima deydi?",
+            "ru": "Что 王静 говорит в конце диалога?",
+            "tj": "Дар охири муколама 王静 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
+            "没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。",
+            "你最近是不是工作特别忙？",
+            "我可能去不了，最近事情多。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。",
+            "ru": "Правильный ответ: 没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。",
+            "tj": "Ҷавоби дуруст: 没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。"
           }
         },
         {
@@ -1471,8 +1651,8 @@
           "options": [
             "没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。",
             "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
-            "我可能去不了，最近事情多。",
-            "你最近是不是工作特别忙？"
+            "你最近是不是工作特别忙？",
+            "我可能去不了，最近事情多。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1494,41 +1674,16 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你最近是不是工作特别忙？",
             "我现在上有老，下有小。除了工作以外，家里还有母亲和儿子需要照顾。",
-            "我可能去不了，最近事情多。",
-            "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。"
+            "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
+            "你最近是不是工作特别忙？",
+            "我可能去不了，最近事情多。"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
             "ru": "Правильный ответ: 礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
             "tj": "Ҷавоби дуруст: 礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 王静 nima deydi?",
-            "ru": "Что 王静 говорит в конце диалога?",
-            "tj": "Дар охири муколама 王静 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "礼拜天有空儿吗？陪我去逛街怎么样？我想去给丈夫买个生日礼物。",
-            "你最近是不是工作特别忙？",
-            "没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。",
-            "我可能去不了，最近事情多。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。",
-            "ru": "Правильный ответ: 没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。",
-            "tj": "Ҷавоби дуруст: 没事儿，谢谢！不过现在我很幸福，因为在母亲面前我可以做一个永远长不大的孩子；在孩子面前我又是个能照顾他的母亲，这让我有了努力的方向。"
           }
         }
       ]

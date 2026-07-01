@@ -8,6 +8,8 @@
     "ru": "Изучение частицы '着', обозначающей продолжающееся состояние, предлога направления 'wǎng' и риторической конструкции '不是……吗'.",
     "tj": "Омӯзиши зарраи '着' ифодакунандаи ҳолати давомдор, пешоянди самт 'wǎng' ва шакли пурсиши риторикии '不是……吗'."
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -472,6 +474,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "手 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 手:",
+            "tj": "Маънои калимаи 手-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
+            },
+            {
+              "uz": "qo'rg'oshin qalam",
+              "ru": "карандаш",
+              "tj": "қалами оддӣ"
+            },
+            {
+              "uz": "qo'l",
+              "ru": "рука",
+              "tj": "даст"
+            },
+            {
+              "uz": "davom etayotgan holatni bildiruvchi yuklama",
+              "ru": "частица продолжающегося состояния",
+              "tj": "зарраи ҳолати давомдор"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "手 = qo'l (shǒu)",
+            "ru": "手 = рука (shǒu)",
+            "tj": "手 = даст (shǒu)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -497,6 +540,31 @@
               "ru": "карандаш",
               "tj": "қалами оддӣ"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "qiānbǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается qiānbǐ?",
+            "tj": "qiānbǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "铅笔",
+            "着",
+            "拿",
+            "手"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "铅笔 = qo'rg'oshin qalam (qiānbǐ)",
+            "ru": "铅笔 = карандаш (qiānbǐ)",
+            "tj": "铅笔 = қалами оддӣ (qiānbǐ)"
           }
         },
         {
@@ -528,6 +596,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "长 talaffuzini tanlang:",
+            "ru": "Выберите произношение 长:",
+            "tj": "Талаффузи 长-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "ná",
+            "shǒu",
+            "zhe",
+            "zhǎng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "长 — zhǎng",
+            "ru": "长 — zhǎng",
+            "tj": "长 — zhǎng"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -553,6 +646,47 @@
               "ru": "гостиница",
               "tj": "меҳмонхона"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "笑 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 笑:",
+            "tj": "Маънои калимаи 笑-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kulmoq",
+              "ru": "смеяться, улыбаться",
+              "tj": "хандидан"
+            },
+            {
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
+            },
+            {
+              "uz": "davom etayotgan holatni bildiruvchi yuklama",
+              "ru": "частица продолжающегося состояния",
+              "tj": "зарраи ҳолати давомдор"
+            },
+            {
+              "uz": "qo'l",
+              "ru": "рука",
+              "tj": "даст"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "笑 = kulmoq (xiào)",
+            "ru": "笑 = смеяться, улыбаться (xiào)",
+            "tj": "笑 = хандидан (xiào)"
           }
         },
         {
@@ -584,17 +718,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "路口",
-            "pinyin": "lùkǒu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "yo'l chorrahasi, chorraha",
-              "ru": "перекрёсток",
-              "tj": "чорраҳа, буриши роҳ"
-            }
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bīnguǎn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bīnguǎn?",
+            "tj": "bīnguǎn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "着",
+            "宾馆",
+            "拿",
+            "手"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "宾馆 = mehmonxona (bīnguǎn)",
+            "ru": "宾馆 = гостиница (bīnguǎn)",
+            "tj": "宾馆 = меҳмонхона (bīnguǎn)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "着",
+              {
+                "uz": "davom etayotgan holatni bildiruvchi yuklama",
+                "ru": "частица продолжающегося состояния",
+                "tj": "зарраи ҳолати давомдор"
+              }
+            ],
+            [
+              "手",
+              {
+                "uz": "qo'l",
+                "ru": "рука",
+                "tj": "даст"
+              }
+            ],
+            [
+              "拿",
+              {
+                "uz": "ushlamoq, ko'tarmoq",
+                "ru": "держать, нести",
+                "tj": "нигоҳ доштан, бардоштан"
+              }
+            ],
+            [
+              "铅笔",
+              {
+                "uz": "qo'rg'oshin qalam",
+                "ru": "карандаш",
+                "tj": "қалами оддӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -609,6 +796,43 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "'Zhe' harakat yuklamasi",
+              "ru": "Динамическая частица '着'",
+              "tj": "Зарраи динамикии '着'"
+            },
+            "title_zh": "动态助词“着”",
+            "rule": {
+              "uz": "'Zhe' yuklamasi fe'ldan keyin kelib, holatning davom etayotganligini bildiradi (statik holat). Bu ingliz tilidagi '-ing' bilan hosil qilingan sifatdoshga o'xshaydi, lekin harakat emas, balki holat davomiyligini ifodalaydi. Masalan: 门开着 (eshik ochiq turibdi), 手里拿着铅笔 (qo'lida qalam ushlab turibdi). Inkor: 没 + fe'l + 着.",
+              "ru": "Частица '着' ставится после глагола и обозначает продолжение состояния (статическое состояние). Похоже на причастие с '-ing' в английском, но выражает не действие, а его длительность. Например: 门开着 (дверь открыта), 手里拿着铅笔 (держит в руке карандаш). Отрицание: 没 + глагол + 着.",
+              "tj": "Зарраи '着' баъд аз феъл меояд ва давомнокии ҳолатро нишон медиҳад (ҳолати статикӣ). Ба феъли иштиракии '-ing' дар забони англисӣ монанд аст, аммо на амал балки давомнокии ҳолатро ифода мекунад. Масалан: 门开着 (дар кушода истодааст), 手里拿着铅笔 (дар дасташ қалам дорад). Инкор: 没 + феъл + 着."
+            },
+            "examples": [
+              {
+                "zh": "门开着呢，请进。",
+                "pinyin": "Mén kāi zhe ne, qǐng jìn.",
+                "translation": {
+                  "uz": "Eshik ochiq turibdi, kiring.",
+                  "ru": "Дверь открыта, заходите.",
+                  "tj": "Дар кушода истодааст, дарояд."
+                }
+              },
+              {
+                "zh": "他手里拿着一本书。",
+                "pinyin": "Tā shǒu lǐ ná zhe yì běn shū.",
+                "translation": {
+                  "uz": "U qo'lida bir kitob ushlab turibdi.",
+                  "ru": "Он держит в руке одну книгу.",
+                  "tj": "Ӯ дар дасташ як китоб дорад."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Eshik ochiq turibdi, kiring.",
@@ -617,13 +841,13 @@
           },
           "tokens": [
             "门",
-            "拿",
-            "呢",
-            "开",
-            "着",
             "手",
+            "着",
+            "开",
+            "呢",
             "进",
-            "请"
+            "请",
+            "拿"
           ],
           "answer_tokens": [
             "门",
@@ -640,24 +864,164 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____往前走。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Ritorik savol '不是……吗'",
+              "ru": "Риторический вопрос '不是……吗'",
+              "tj": "Пурсиши риторикии '不是……吗'"
+            },
+            "title_zh": "反问句“不是……吗”",
+            "rule": {
+              "uz": "'Bú shì……ma' konstruktsiyasi ritorik savol hosil qiladi: siz allaqachon bilib turib, tasdiqlash uchun savol qo'yasiz. O'zbek tilidagi '…-ku?' yoki '…emasmi?' ma'nosini beradi. Bu ma'lumotni eslatish yoki hayrat bildirish uchun ishlatiladi.",
+              "ru": "Конструкция '不是……吗' образует риторический вопрос: вы уже знаете ответ и задаёте вопрос для подтверждения. Аналог русского '…же?' или '…разве нет?'. Используется для напоминания информации или выражения удивления.",
+              "tj": "Конструксияи '不是……吗' пурсиши риторикӣ месозад: шумо аллакай медонед ва барои тасдиқ мепурсед. Ба '…-ку?' ё '…нест?' дар забони тоҷикӣ монанд аст. Барои ёдоварии маълумот ё ифодаи ҳайрат истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "她不是有男朋友了吗？",
+                "pinyin": "Tā bú shì yǒu nánpéngyou le ma?",
+                "translation": {
+                  "uz": "Uning yigit do'sti bor-ku?",
+                  "ru": "У неё же был парень?",
+                  "tj": "Магар ӯ дӯстписар надошт?"
+                }
+              },
+              {
+                "zh": "你不是说今天来吗？",
+                "pinyin": "Nǐ bú shì shuō jīntiān lái ma?",
+                "translation": {
+                  "uz": "Siz bugun kelaman demagandingizmi?",
+                  "ru": "Ты же говорил(а), что придёшь сегодня?",
+                  "tj": "Магар ту нагуфтӣ ки имрӯз меоям?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Uning yigit do'sti bor-ku?",
+            "ru": "У неё же был парень?",
+            "tj": "Магар ӯ дӯстписар надошт?"
           },
-          "options": [
+          "tokens": [
+            "她",
+            "是",
+            "手",
+            "不",
+            "了",
+            "吗",
             "着",
+            "男",
+            "朋友",
+            "有"
+          ],
+          "answer_tokens": [
+            "她",
+            "不",
+            "是",
+            "有",
+            "男",
+            "朋友",
+            "了",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "她不是有男朋友了吗？ — Tā bú shì yǒu nánpéngyou le ma?",
+            "ru": "她不是有男朋友了吗？ — Tā bú shì yǒu nánpéngyou le ma?",
+            "tj": "她不是有男朋友了吗？ — Tā bú shì yǒu nánpéngyou le ma?"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "'Wǎng' old ko'makchisi",
+              "ru": "Предлог 'wǎng'",
+              "tj": "Пешоянди 'wǎng'"
+            },
+            "title_zh": "介词“往”",
+            "rule": {
+              "uz": "'Wǎng' old ko'makchisi harakat yo'nalishini bildiradi: 'tomon, tomonga'. Fe'l oldidan keladi. Asosiy yo'nalishlar: 往前 (oldinga), 往后 (orqaga), 往左 (chapga), 往右 (o'ngga).",
+              "ru": "Предлог 'wǎng' обозначает направление движения: 'в сторону, к'. Ставится перед глаголом. Основные направления: 往前 (вперёд), 往后 (назад), 往左 (налево), 往右 (направо).",
+              "tj": "Пешоянди 'wǎng' самти ҳаракатро нишон медиҳад: 'ба тараф, ба самти'. Пеш аз феъл меояд. Самтҳои асосӣ: 往前 (пеш), 往后 (ақиб), 往左 (чап), 往右 (рост)."
+            },
+            "examples": [
+              {
+                "zh": "一直往前走。",
+                "pinyin": "Yìzhí wǎng qián zǒu.",
+                "translation": {
+                  "uz": "To'g'ri oldinga yuring.",
+                  "ru": "Идите прямо вперёд.",
+                  "tj": "Рост пеш равед."
+                }
+              },
+              {
+                "zh": "到路口再往右走。",
+                "pinyin": "Dào lùkǒu zài wǎng yòu zǒu.",
+                "translation": {
+                  "uz": "Chorrahaga yetgach o'ngga buriling.",
+                  "ru": "На перекрёстке поверните направо.",
+                  "tj": "Ба чорраҳа расидед ба тарафи рост гардед."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "To'g'ri oldinga yuring.",
+            "ru": "Идите прямо вперёд.",
+            "tj": "Рост пеш равед."
+          },
+          "tokens": [
+            "前",
+            "走",
             "一直",
-            "拿",
+            "往",
+            "着",
             "手"
           ],
-          "correct_index": 1,
+          "answer_tokens": [
+            "一直",
+            "往",
+            "前",
+            "走"
+          ],
           "explanation": {
-            "uz": "To'g'ri: 一直 (yìzhí) — to'g'riga, to'xtovsiz",
-            "ru": "Верно: 一直 (yìzhí) — прямо, постоянно",
-            "tj": "Дуруст: 一直 (yìzhí) — рост, пайваста"
+            "uz": "一直往前走。 — Yìzhí wǎng qián zǒu.",
+            "ru": "一直往前走。 — Yìzhí wǎng qián zǒu.",
+            "tj": "一直往前走。 — Yìzhí wǎng qián zǒu."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Siz bugun kelaman demagandingizmi?» — xitoychada qaysi biri?",
+            "ru": "«Ты же говорил(а), что придёшь сегодня?» — какое предложение по-китайски?",
+            "tj": "«Магар ту нагуфтӣ ки имрӯз меоям?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "门开着呢，请进。",
+            "他手里拿着一本书。",
+            "你不是说今天来吗？",
+            "到路口再往右走。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你不是说今天来吗？ — Nǐ bú shì shuō jīntiān lái ma?",
+            "ru": "你不是说今天来吗？ — Nǐ bú shì shuō jīntiān lái ma?",
+            "tj": "你不是说今天来吗？ — Nǐ bú shì shuō jīntiān lái ma?"
           }
         }
       ]
@@ -672,11 +1036,36 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "路口 talaffuzini tanlang:",
+            "ru": "Выберите произношение 路口:",
+            "tj": "Талаффузи 路口-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "lùkǒu",
+            "shǒu",
+            "zhe",
+            "ná"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "路口 — lùkǒu",
+            "ru": "路口 — lùkǒu",
+            "tj": "路口 — lùkǒu"
+          }
+        },
+        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "着 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 着:",
-            "tj": "Маънои калимаи 着-ро интихоб кунед:"
+            "uz": "路口 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 路口:",
+            "tj": "Маънои калимаи 路口-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -690,11 +1079,6 @@
               "tj": "даст"
             },
             {
-              "uz": "qo'rg'oshin qalam",
-              "ru": "карандаш",
-              "tj": "қалами оддӣ"
-            },
-            {
               "uz": "ushlamoq, ko'tarmoq",
               "ru": "держать, нести",
               "tj": "нигоҳ доштан, бардоштан"
@@ -703,91 +1087,18 @@
               "uz": "davom etayotgan holatni bildiruvchi yuklama",
               "ru": "частица продолжающегося состояния",
               "tj": "зарраи ҳолати давомдор"
+            },
+            {
+              "uz": "yo'l chorrahasi, chorraha",
+              "ru": "перекрёсток",
+              "tj": "чорраҳа, буриши роҳ"
             }
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "着 = davom etayotgan holatni bildiruvchi yuklama (zhe)",
-            "ru": "着 = частица продолжающегося состояния (zhe)",
-            "tj": "着 = зарраи ҳолати давомдор (zhe)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "手 talaffuzini tanlang:",
-            "ru": "Выберите произношение 手:",
-            "tj": "Талаффузи 手-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "shǒu",
-            "qiānbǐ",
-            "zhe",
-            "ná"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "手 — shǒu",
-            "ru": "手 — shǒu",
-            "tj": "手 — shǒu"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Eshik ochiq turibdi, marhamat kiring.",
-            "ru": "Дверь открыта, пожалуйста, входите.",
-            "tj": "Дар кушода истодааст, марҳамат даред."
-          },
-          "tokens": [
-            "请",
-            "拿",
-            "进",
-            "门",
-            "呢",
-            "开",
-            "手",
-            "着"
-          ],
-          "answer_tokens": [
-            "门",
-            "开",
-            "着",
-            "呢",
-            "请",
-            "进"
-          ],
-          "explanation": {
-            "uz": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
-            "ru": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
-            "tj": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "门开着呢，请进。",
-          "pinyin": "Mén kāi zhe ne, qǐng jìn.",
-          "options": [
-            "请问，张先生在吗？",
-            "门开着呢，请进。",
-            "他出去了。你下午再来吧。",
-            "好的，谢谢！"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "门开着呢，请进。 — Eshik ochiq turibdi, marhamat kiring.",
-            "ru": "门开着呢，请进。 — Дверь открыта, пожалуйста, входите.",
-            "tj": "门开着呢，请进。 — Дар кушода истодааст, марҳамат даред."
+            "uz": "路口 = yo'l chorrahasi, chorraha (lùkǒu)",
+            "ru": "路口 = перекрёсток (lùkǒu)",
+            "tj": "路口 = чорраҳа, буриши роҳ (lùkǒu)"
           }
         },
         {
@@ -833,6 +1144,59 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Eshik ochiq turibdi, marhamat kiring.",
+            "ru": "Дверь открыта, пожалуйста, входите.",
+            "tj": "Дар кушода истодааст, марҳамат даред."
+          },
+          "tokens": [
+            "进",
+            "请",
+            "着",
+            "手",
+            "拿",
+            "门",
+            "开",
+            "呢"
+          ],
+          "answer_tokens": [
+            "门",
+            "开",
+            "着",
+            "呢",
+            "请",
+            "进"
+          ],
+          "explanation": {
+            "uz": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
+            "ru": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
+            "tj": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "门开着呢，请进。",
+          "pinyin": "Mén kāi zhe ne, qǐng jìn.",
+          "options": [
+            "好的，谢谢！",
+            "门开着呢，请进。",
+            "请问，张先生在吗？",
+            "他出去了。你下午再来吧。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "门开着呢，请进。 — Eshik ochiq turibdi, marhamat kiring.",
+            "ru": "门开着呢，请进。 — Дверь открыта, пожалуйста, входите.",
+            "tj": "门开着呢，请进。 — Дар кушода истодааст, марҳамат даред."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "着",
           "pinyin": "zhe",
@@ -863,10 +1227,10 @@
           "audio_text": "门开着呢，请进。",
           "pinyin": "Mén kāi zhe ne, qǐng jìn.",
           "options": [
+            "好的，谢谢！",
             "请问，张先生在吗？",
-            "他出去了。你下午再来吧。",
             "门开着呢，请进。",
-            "好的，谢谢！"
+            "他出去了。你下午再来吧。"
           ],
           "correct_index": 2,
           "explanation": {
@@ -876,24 +1240,53 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____开着呢，请进。",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "斤",
-            "门",
-            "国",
-            "新"
+            "请问，张先生在吗？",
+            "他出去了。你下午再来吧。",
+            "门开着呢，请进。",
+            "好的，谢谢！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 好的，谢谢！",
+            "ru": "Правильный ответ: 好的，谢谢！",
+            "tj": "Ҷавоби дуруст: 好的，谢谢！"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "他出去了。你下午再来吧。",
+            "门开着呢，请进。",
+            "请问，张先生在吗？",
+            "好的，谢谢！"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri: 门 — 门开着呢，请进。 (Eshik ochiq turibdi, marhamat kiring.)",
-            "ru": "Верно: 门 — 门开着呢，请进。 (Дверь открыта, пожалуйста, входите.)",
-            "tj": "Дуруст: 门 — 门开着呢，请进。 (Дар кушода истодааст, марҳамат даред.)"
+            "uz": "To'g'ri javob: 门开着呢，请进。",
+            "ru": "Правильный ответ: 门开着呢，请进。",
+            "tj": "Ҷавоби дуруст: 门开着呢，请进。"
           }
         },
         {
@@ -926,66 +1319,37 @@
             }
           ],
           "options": [
-            "门开着呢，请进。",
             "好的，谢谢！",
-            "他出去了。你下午再来吧。",
-            "请问，张先生在吗？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 好的，谢谢！",
-            "ru": "Правильный ответ: 好的，谢谢！",
-            "tj": "Ҷавоби дуруст: 好的，谢谢！"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар муколама A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "好的，谢谢！",
-            "门开着呢，请进。",
             "请问，张先生在吗？",
-            "他出去了。你下午再来吧。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 门开着呢，请进。",
-            "ru": "Правильный ответ: 门开着呢，请进。",
-            "tj": "Ҷавоби дуруст: 门开着呢，请进。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири муколама B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "好的，谢谢！",
             "他出去了。你下午再来吧。",
-            "门开着呢，请进。",
-            "请问，张先生在吗？"
+            "门开着呢，请进。"
           ],
           "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 好的，谢谢！",
             "ru": "Правильный ответ: 好的，谢谢！",
             "tj": "Ҷавоби дуруст: 好的，谢谢！"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____开着呢，请进。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "门",
+            "下",
+            "夫",
+            "电"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 门 — 门开着呢，请进。 (Eshik ochiq turibdi, marhamat kiring.)",
+            "ru": "Верно: 门 — 门开着呢，请进。 (Дверь открыта, пожалуйста, входите.)",
+            "tj": "Дуруст: 门 — 门开着呢，请进。 (Дар кушода истодааст, марҳамат даред.)"
           }
         }
       ]

@@ -8,6 +8,8 @@
     "ru": "говорить об усилиях, успехе и отношении к трудностям; использовать 难道, 通过, 可是, 结果 и 上",
     "tj": "дар бораи кӯшиш, муваффақият ва муносибат ба мушкилӣ гуфтугӯ кардан; истифодаи 难道, 通过, 可是, 结果 ва 上"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -764,6 +766,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "难道 talaffuzini tanlang:",
+            "ru": "Выберите произношение 难道:",
+            "tj": "Талаффузи 难道-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiānchí",
+            "bǐnggān",
+            "nándào",
+            "děi"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "难道 — nándào",
+            "ru": "难道 — nándào",
+            "tj": "难道 — nándào"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -789,6 +816,47 @@
               "ru": "настаивать, продолжать",
               "tj": "истодагарӣ кардан"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "坚持 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 坚持:",
+            "tj": "Маънои калимаи 坚持-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "qat'iy davom etmoq",
+              "ru": "настаивать, продолжать",
+              "tj": "истодагарӣ кардан"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "坚持 = qat'iy davom etmoq (jiānchí)",
+            "ru": "坚持 = настаивать, продолжать (jiānchí)",
+            "tj": "坚持 = истодагарӣ кардан (jiānchí)"
           }
         },
         {
@@ -820,6 +888,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhǔyi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhǔyi?",
+            "tj": "zhǔyi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "主意",
+            "得",
+            "饼干",
+            "难道"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "主意 = fikr, qaror (zhǔyi)",
+            "ru": "主意 = идея, решение (zhǔyi)",
+            "tj": "主意 = фикр, қарор (zhǔyi)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -845,6 +938,31 @@
               "ru": "международный",
               "tj": "байналмилалӣ"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "难道 talaffuzini tanlang:",
+            "ru": "Выберите произношение 难道:",
+            "tj": "Талаффузи 难道-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "děi",
+            "bǐnggān",
+            "nándào",
+            "jiānchí"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "难道 — nándào",
+            "ru": "难道 — nándào",
+            "tj": "难道 — nándào"
           }
         },
         {
@@ -876,297 +994,86 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "随便",
-            "pinyin": "suíbiàn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "xohlagancha, beparvo",
-              "ru": "как угодно, случайно",
-              "tj": "ихтиёрӣ, бепарво"
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "放弃 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 放弃:",
+            "tj": "Маънои калимаи 放弃-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "voz kechmoq",
+              "ru": "отказываться, бросать",
+              "tj": "даст кашидан"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
             }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "放弃 = voz kechmoq (fàngqì)",
+            "ru": "放弃 = отказываться, бросать (fàngqì)",
+            "tj": "放弃 = даст кашидан (fàngqì)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "汗",
-            "pinyin": "hàn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ter",
-              "ru": "пот",
-              "tj": "арақ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "通过",
-            "pinyin": "tōngguò",
-            "pos": "prep./v.",
-            "meaning": {
-              "uz": "orqali; o'tmoq",
-              "ru": "через; проходить",
-              "tj": "тавассути; гузаштан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "篇",
-            "pinyin": "piān",
-            "pos": "m.",
-            "meaning": {
-              "uz": "maqola/matn uchun hisob so'zi",
-              "ru": "счётное слово для статей",
-              "tj": "ҳисобвожа барои мақола"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "作家",
-            "pinyin": "zuòjiā",
-            "pos": "n.",
-            "meaning": {
-              "uz": "yozuvchi",
-              "ru": "писатель",
-              "tj": "нависанда"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "当时",
-            "pinyin": "dāngshí",
-            "pos": "n.",
-            "meaning": {
-              "uz": "o'sha payt",
-              "ru": "тогда, в то время",
-              "tj": "он вақт"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "可是",
-            "pinyin": "kěshì",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "lekin, ammo",
-              "ru": "но, однако",
-              "tj": "аммо, вале"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "正确",
-            "pinyin": "zhèngquè",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "to'g'ri",
-              "ru": "правильный",
-              "tj": "дуруст"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "理想",
-            "pinyin": "lǐxiǎng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "orzu, ideal",
-              "ru": "идеал, мечта",
-              "tj": "орзу, идеал"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "勇敢",
-            "pinyin": "yǒnggǎn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "jasur",
-              "ru": "смелый",
-              "tj": "ҷасур"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "结果",
-            "pinyin": "jiéguǒ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "natija",
-              "ru": "результат",
-              "tj": "натиҷа"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "失败",
-            "pinyin": "shībài",
-            "pos": "v./n.",
-            "meaning": {
-              "uz": "muvaffaqiyatsizlik, yutqazmoq",
-              "ru": "провал, потерпеть неудачу",
-              "tj": "нокомӣ, мағлуб шудан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "过程",
-            "pinyin": "guòchéng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "jarayon",
-              "ru": "процесс",
-              "tj": "раванд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "至少",
-            "pinyin": "zhìshǎo",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "kamida",
-              "ru": "по крайней мере",
-              "tj": "ҳадди ақал"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "总结",
-            "pinyin": "zǒngjié",
-            "pos": "v.",
-            "meaning": {
-              "uz": "xulosa qilmoq",
-              "ru": "подводить итог",
-              "tj": "хулоса кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "取",
-            "pinyin": "qǔ",
-            "pos": "v.",
-            "meaning": {
-              "uz": "olmoq, qo'lga kiritmoq",
-              "ru": "получать, брать",
-              "tj": "гирифтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "经历",
-            "pinyin": "jīnglì",
-            "pos": "v./n.",
-            "meaning": {
-              "uz": "boshdan kechirmoq; tajriba",
-              "ru": "переживать; опыт",
-              "tj": "аз сар гузаронидан; таҷриба"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "许多",
-            "pinyin": "xǔduō",
-            "pos": "num.",
-            "meaning": {
-              "uz": "ko'p",
-              "ru": "много",
-              "tj": "бисёр"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "区别",
-            "pinyin": "qūbié",
-            "pos": "n.",
-            "meaning": {
-              "uz": "farq",
-              "ru": "разница",
-              "tj": "фарқ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "暂时",
-            "pinyin": "zànshí",
-            "pos": "n.",
-            "meaning": {
-              "uz": "vaqtincha",
-              "ru": "временно",
-              "tj": "муваққатан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 31,
-            "zh": "面对",
-            "pinyin": "miànduì",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yuzma-yuz kelmoq",
-              "ru": "сталкиваться, смотреть в лицо",
-              "tj": "рӯ ба рӯ шудан"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "饼干",
+              {
+                "uz": "pechenye",
+                "ru": "печенье",
+                "tj": "печенье"
+              }
+            ],
+            [
+              "难道",
+              {
+                "uz": "nahotki",
+                "ru": "неужели",
+                "tj": "магар"
+              }
+            ],
+            [
+              "得",
+              {
+                "uz": "kerak, majbur bo'lmoq",
+                "ru": "нужно, придётся",
+                "tj": "лозим аст, бояд"
+              }
+            ],
+            [
+              "坚持",
+              {
+                "uz": "qat'iy davom etmoq",
+                "ru": "настаивать, продолжать",
+                "tj": "истодагарӣ кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1181,6 +1088,34 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            },
+            "title_zh": "难道",
+            "rule": {
+              "uz": "Ritorik savolda gapiruvchi hayrat yoki qarshi fikrni kuchli bildiradi.",
+              "ru": "В риторическом вопросе выражает удивление или несогласие.",
+              "tj": "Дар саволи риторикӣ ҳайрат ё норозигиро қавӣ нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
+                "pinyin": "Zěnme yòu mǎi le zhème duō bǐnggān hé qiǎokèlì? Nándào nǐ bù jiǎnféi le?",
+                "translation": {
+                  "uz": "Yana shuncha pechenye va shokolad oldingmi? Nahotki ozishni tashlading?",
+                  "ru": "Ты опять купила столько печенья и шоколада? Неужели больше не худеешь?",
+                  "tj": "Боз ин қадар печенье ва шоколад харидӣ? Магар дигар вазн кам намекунӣ?"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "怎么又买了这么多____和巧克力？难道你不减肥了？",
           "prompt": {
@@ -1189,16 +1124,216 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
+            "坚持",
             "饼干",
             "得",
-            "坚持",
             "难道"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 饼干 (bǐnggān) — pechenye",
             "ru": "Верно: 饼干 (bǐnggān) — печенье",
             "tj": "Дуруст: 饼干 (bǐnggān) — печенье"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "orqali",
+              "ru": "через, благодаря",
+              "tj": "тавассути"
+            },
+            "title_zh": "通过",
+            "rule": {
+              "uz": "Biror natijaga qaysi yo'l yoki vosita bilan erishilishini bildiradi.",
+              "ru": "Показывает способ или средство, с помощью которого достигается результат.",
+              "tj": "Роҳ ё воситаеро нишон медиҳад, ки тавассути он натиҷа ба даст меояд."
+            },
+            "examples": [
+              {
+                "zh": "任何成功都要通过努力才能得到。",
+                "pinyin": "Rènhé chénggōng dōu yào tōngguò nǔlì cái néng dédào.",
+                "translation": {
+                  "uz": "Har qanday muvaffaqiyatga faqat mehnat orqali erishiladi.",
+                  "ru": "Любой успех можно получить только через усилия.",
+                  "tj": "Ҳар гуна муваффақият танҳо тавассути кӯшиш ба даст меояд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "任何成功都要____努力才能得到。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "饼干",
+            "得",
+            "通过",
+            "难道"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 通过 (tōngguò) — orqali; o'tmoq",
+            "ru": "Верно: 通过 (tōngguò) — через; проходить",
+            "tj": "Дуруст: 通过 (tōngguò) — тавассути; гузаштан"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "lekin, ammo",
+              "ru": "но, однако",
+              "tj": "аммо, вале"
+            },
+            "title_zh": "可是",
+            "rule": {
+              "uz": "Oldingi fikrga qarama-qarshi yoki kutilmagan holatni bog'laydi.",
+              "ru": "Соединяет с предыдущей мыслью противоположную или неожиданную ситуацию.",
+              "tj": "Ҳолати муқобил ё ногаҳониро ба фикри пешина мепайвандад."
+            },
+            "examples": [
+              {
+                "zh": "当时她的父母和亲戚都不支持她，可是她坚持自己的选择。",
+                "pinyin": "Dāngshí tā de fùmǔ hé qīnqi dōu bù zhīchí tā, kěshì tā jiānchí zìjǐ de xuǎnzé.",
+                "translation": {
+                  "uz": "O'sha payt ota-onasi va qarindoshlari uni qo'llamagan, lekin u o'z tanlovida turib olgan.",
+                  "ru": "Тогда родители и родственники её не поддерживали, но она настояла на своём выборе.",
+                  "tj": "Он вақт падару модар ва хешовандонаш ӯро дастгирӣ накарданд, вале ӯ интихоби худро нигоҳ дошт."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "当时她的父母和亲戚都不支持她，可是她____自己的选择。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "得",
+            "坚持",
+            "难道",
+            "饼干"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 坚持 (jiānchí) — qat'iy davom etmoq",
+            "ru": "Верно: 坚持 (jiānchí) — настаивать, продолжать",
+            "tj": "Дуруст: 坚持 (jiānchí) — истодагарӣ кардан"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "natija",
+              "ru": "результат",
+              "tj": "натиҷа"
+            },
+            "title_zh": "结果",
+            "rule": {
+              "uz": "Ishning yakuniy natijasini bildiradi; darsda natijadan qo'rqmay jarayonga e'tibor berish aytiladi.",
+              "ru": "Обозначает итог; в уроке подчёркивается внимание к процессу, а не страх перед результатом.",
+              "tj": "Натиҷаи ниҳоиро нишон медиҳад; дар дарс таъкид мешавад, ки аз натиҷа натарсида ба раванд диққат диҳем."
+            },
+            "examples": [
+              {
+                "zh": "如果你想做什么事情，那就勇敢地去做，不要担心结果。",
+                "pinyin": "Rúguǒ nǐ xiǎng zuò shénme shìqing, nà jiù yǒnggǎn de qù zuò, búyào dānxīn jiéguǒ.",
+                "translation": {
+                  "uz": "Biror ish qilmoqchi bo'lsang, jasorat bilan qil, natijadan xavotir olma.",
+                  "ru": "Если хочешь что-то сделать, смело делай и не переживай о результате.",
+                  "tj": "Агар мехоҳӣ коре кунӣ, ҷасурона кун ва аз натиҷа хавотир нашав."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "如果你想做什么事情，那就____地去做，不要担心结果。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "得",
+            "饼干",
+            "难道",
+            "勇敢"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 勇敢 (yǒnggǎn) — jasur",
+            "ru": "Верно: 勇敢 (yǒnggǎn) — смелый",
+            "tj": "Дуруст: 勇敢 (yǒnggǎn) — ҷасур"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "sondan oldin: undan ortiq",
+              "ru": "перед числом: свыше",
+              "tj": "пеш аз шумора: беш аз"
+            },
+            "title_zh": "上",
+            "rule": {
+              "uz": "上 + son taxminan 'undan ortiq' ma'nosini beradi.",
+              "ru": "上 + число означает приблизительно 'свыше, больше чем'.",
+              "tj": "上 + шумора маънои тахминан 'беш аз'-ро медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "爱迪生就是在找了上千种材料后才找到了能点亮电灯的材料。",
+                "pinyin": "Àidíshēng jiùshì zài zhǎo le shàng qiān zhǒng cáiliào hòu cái zhǎodào le néng diǎnliàng diàndēng de cáiliào.",
+                "translation": {
+                  "uz": "Edison mingdan ortiq materialni qidirgandan keyingina elektr chiroqni yoqa oladigan materialni topgan.",
+                  "ru": "Эдисон нашёл материал для электрической лампы только после поиска более тысячи материалов.",
+                  "tj": "Эдисон танҳо баъди ҷустуҷӯи беш аз ҳазор навъ мавод маводи чароғро ёфт."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Yana shuncha pechenye va shokolad oldingmi? Nahotki ozishni tashlading?» — xitoychada qaysi biri?",
+            "ru": "«Ты опять купила столько печенья и шоколада? Неужели больше не худеешь?» — какое предложение по-китайски?",
+            "tj": "«Боз ин қадар печенье ва шоколад харидӣ? Магар дигар вазн кам намекунӣ?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "如果你想做什么事情，那就勇敢地去做，不要担心结果。",
+            "爱迪生就是在找了上千种材料后才找到了能点亮电灯的材料。",
+            "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
+            "任何成功都要通过努力才能得到。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Zěnme yòu mǎi le zhème duō bǐnggān hé qiǎokèlì? Nándào nǐ bù jiǎnféi le?",
+            "ru": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Zěnme yòu mǎi le zhème duō bǐnggān hé qiǎokèlì? Nándào nǐ bù jiǎnféi le?",
+            "tj": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Zěnme yòu mǎi le zhème duō bǐnggān hé qiǎokèlì? Nándào nǐ bù jiǎnféi le?"
           }
         }
       ]
@@ -1213,72 +1348,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "饼干 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 饼干:",
-            "tj": "Маънои калимаи 饼干-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "pechenye",
-              "ru": "печенье",
-              "tj": "печенье"
-            },
-            {
-              "uz": "qat'iy davom etmoq",
-              "ru": "настаивать, продолжать",
-              "tj": "истодагарӣ кардан"
-            },
-            {
-              "uz": "nahotki",
-              "ru": "неужели",
-              "tj": "магар"
-            },
-            {
-              "uz": "kerak, majbur bo'lmoq",
-              "ru": "нужно, придётся",
-              "tj": "лозим аст, бояд"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "饼干 = pechenye (bǐnggān)",
-            "ru": "饼干 = печенье (bǐnggān)",
-            "tj": "饼干 = печенье (bǐnggān)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "难道 talaffuzini tanlang:",
-            "ru": "Выберите произношение 难道:",
-            "tj": "Талаффузи 难道-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "bǐnggān",
-            "děi",
-            "jiānchí",
-            "nándào"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "难道 — nándào",
-            "ru": "难道 — nándào",
-            "tj": "难道 — nándào"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1288,16 +1357,57 @@
           "audio_text": "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
           "pinyin": "Zěnme yòu mǎi le zhème duō bǐnggān hé qiǎokèlì? Nándào nǐ bù jiǎnféi le?",
           "options": [
-            "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
-            "减了一个月都没瘦下来，我实在没有信心了。",
             "我就是这么做的，但这一个月下来，我只轻了一公斤。",
+            "减了一个月都没瘦下来，我实在没有信心了。",
+            "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
             "如果你想减肥，就得少吃东西，而且要多运动。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Yana nega shuncha pechenye va shokolad olding? Nahotki ozishni tashlading?",
             "ru": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Почему опять купила столько печенья и шоколада? Неужели больше не худеешь?",
             "tj": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Чаро боз ин қадар печенье ва шоколад харидӣ? Магар дигар вазн кам намекунӣ?"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "随便 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 随便:",
+            "tj": "Маънои калимаи 随便-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xohlagancha, beparvo",
+              "ru": "как угодно, случайно",
+              "tj": "ихтиёрӣ, бепарво"
+            },
+            {
+              "uz": "kerak, majbur bo'lmoq",
+              "ru": "нужно, придётся",
+              "tj": "лозим аст, бояд"
+            },
+            {
+              "uz": "pechenye",
+              "ru": "печенье",
+              "tj": "печенье"
+            },
+            {
+              "uz": "nahotki",
+              "ru": "неужели",
+              "tj": "магар"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "随便 = xohlagancha, beparvo (suíbiàn)",
+            "ru": "随便 = как угодно, случайно (suíbiàn)",
+            "tj": "随便 = ихтиёрӣ, бепарво (suíbiàn)"
           }
         },
         {
@@ -1343,6 +1453,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "汗 talaffuzini tanlang:",
+            "ru": "Выберите произношение 汗:",
+            "tj": "Талаффузи 汗-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "hàn",
+            "nándào",
+            "děi",
+            "bǐnggān"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "汗 — hàn",
+            "ru": "汗 — hàn",
+            "tj": "汗 — hàn"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "饼干",
           "pinyin": "bǐnggān",
@@ -1373,16 +1508,41 @@
           "audio_text": "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
           "pinyin": "Zěnme yòu mǎi le zhème duō bǐnggān hé qiǎokèlì? Nándào nǐ bù jiǎnféi le?",
           "options": [
-            "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
             "如果你想减肥，就得少吃东西，而且要多运动。",
-            "减了一个月都没瘦下来，我实在没有信心了。",
-            "我就是这么做的，但这一个月下来，我只轻了一公斤。"
+            "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
+            "我就是这么做的，但这一个月下来，我只轻了一公斤。",
+            "减了一个月都没瘦下来，我实在没有信心了。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Yana nega shuncha pechenye va shokolad olding? Nahotki ozishni tashlading?",
             "ru": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Почему опять купила столько печенья и шоколада? Неужели больше не худеешь?",
             "tj": "怎么又买了这么多饼干和巧克力？难道你不减肥了？ — Чаро боз ин қадар печенье ва шоколад харидӣ? Магар дигар вазн кам намекунӣ?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 王静 avval nima deydi?",
+            "ru": "Что 王静 говорит в начале диалога?",
+            "tj": "Дар муколама 王静 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "如果你想减肥，就得少吃东西，而且要多运动。",
+            "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
+            "减了一个月都没瘦下来，我实在没有信心了。",
+            "我就是这么做的，但这一个月下来，我只轻了一公斤。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 怎么又买了这么多饼干和巧克力？难道你不减肥了？",
+            "ru": "Правильный ответ: 怎么又买了这么多饼干和巧克力？难道你不减肥了？",
+            "tj": "Ҷавоби дуруст: 怎么又买了这么多饼干和巧克力？难道你不减肥了？"
           }
         },
         {
@@ -1395,15 +1555,40 @@
           },
           "options": [
             "怎",
-            "新",
-            "挺",
-            "斤"
+            "旧",
+            "电",
+            "下"
           ],
           "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 怎 — 怎么又买了这么多饼干和巧克力？难道你不减肥了？ (Yana nega shuncha pechenye va shokolad olding? Nahotki ozishni tashlading?)",
             "ru": "Верно: 怎 — 怎么又买了这么多饼干和巧克力？难道你不减肥了？ (Почему опять купила столько печенья и шоколада? Неужели больше не худеешь?)",
             "tj": "Дуруст: 怎 — 怎么又买了这么多饼干和巧克力？难道你不减肥了？ (Чаро боз ин қадар печенье ва шоколад харидӣ? Магар дигар вазн кам намекунӣ?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 孙月 nima deydi?",
+            "ru": "Что 孙月 говорит в конце диалога?",
+            "tj": "Дар охири муколама 孙月 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "减了一个月都没瘦下来，我实在没有信心了。",
+            "我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。",
+            "如果你想减肥，就得少吃东西，而且要多运动。",
+            "怎么又买了这么多饼干和巧克力？难道你不减肥了？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。",
+            "ru": "Правильный ответ: 我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。",
+            "tj": "Ҷавоби дуруст: 我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。"
           }
         },
         {
@@ -1446,59 +1631,9 @@
             }
           ],
           "options": [
-            "如果你想减肥，就得少吃东西，而且要多运动。",
-            "我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。",
-            "减了一个月都没瘦下来，我实在没有信心了。",
-            "怎么又买了这么多饼干和巧克力？难道你不减肥了？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。",
-            "ru": "Правильный ответ: 我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。",
-            "tj": "Ҷавоби дуруст: 我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 王静 avval nima deydi?",
-            "ru": "Что 王静 говорит в начале диалога?",
-            "tj": "Дар муколама 王静 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "如果你想减肥，就得少吃东西，而且要多运动。",
-            "我就是这么做的，但这一个月下来，我只轻了一公斤。",
             "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
-            "减了一个月都没瘦下来，我实在没有信心了。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 怎么又买了这么多饼干和巧克力？难道你不减肥了？",
-            "ru": "Правильный ответ: 怎么又买了这么多饼干和巧克力？难道你不减肥了？",
-            "tj": "Ҷавоби дуруст: 怎么又买了这么多饼干和巧克力？难道你不减肥了？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 孙月 nima deydi?",
-            "ru": "Что 孙月 говорит в конце диалога?",
-            "tj": "Дар охири муколама 孙月 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "怎么又买了这么多饼干和巧克力？难道你不减肥了？",
-            "如果你想减肥，就得少吃东西，而且要多运动。",
             "减了一个月都没瘦下来，我实在没有信心了。",
+            "如果你想减肥，就得少吃东西，而且要多运动。",
             "我本来已经打算放弃了，但是你刚才的话让我改变了主意。这些饼干和巧克力送给你了。"
           ],
           "correct_index": 3,

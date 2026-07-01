@@ -8,6 +8,8 @@
     "ru": "Переносное значение направленных дополнений (出来/起来/下去), каузативные глаголы '使/叫/让' и выражение '经过+место'",
     "tj": "Маъноҳои маҷозии пуркунандаҳои самтӣ (出来/起来/下去), феълҳои каузативии '使/叫/让' ва ибораи '经过+ҷой'"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -525,6 +527,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "脸 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 脸:",
+            "tj": "Маънои калимаи 脸-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "yuz",
+              "ru": "лицо",
+              "tj": "рӯй"
+            },
+            {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            },
+            {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "脸 = yuz (liǎn)",
+            "ru": "脸 = лицо (liǎn)",
+            "tj": "脸 = рӯй (liǎn)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -550,6 +593,31 @@
               "ru": "лошадь",
               "tj": "асп"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "ěrduo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ěrduo?",
+            "tj": "ěrduo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "短",
+            "耳朵",
+            "马",
+            "脸"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "耳朵 = quloq (ěrduo)",
+            "ru": "耳朵 = ухо (ěrduo)",
+            "tj": "耳朵 = гӯш (ěrduo)"
           }
         },
         {
@@ -581,6 +649,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "位 talaffuzini tanlang:",
+            "ru": "Выберите произношение 位:",
+            "tj": "Талаффузи 位-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "duǎn",
+            "ěrduo",
+            "liǎn",
+            "wèi"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "位 — wèi",
+            "ru": "位 — wèi",
+            "tj": "位 — wèi"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -606,6 +699,47 @@
               "ru": "осень",
               "tj": "тирамоҳ"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "耳朵 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 耳朵:",
+            "tj": "Маънои калимаи 耳朵-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kalta, qisqa",
+              "ru": "короткий",
+              "tj": "кӯтоҳ"
+            },
+            {
+              "uz": "yuz",
+              "ru": "лицо",
+              "tj": "рӯй"
+            },
+            {
+              "uz": "ot",
+              "ru": "лошадь",
+              "tj": "асп"
+            },
+            {
+              "uz": "quloq",
+              "ru": "ухо",
+              "tj": "гӯш"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "耳朵 = quloq (ěrduo)",
+            "ru": "耳朵 = ухо (ěrduo)",
+            "tj": "耳朵 = гӯш (ěrduo)"
           }
         },
         {
@@ -637,59 +771,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "哭",
-            "pinyin": "kū",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yig'lamoq",
-              "ru": "плакать",
-              "tj": "гиря кардан"
-            }
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liǎn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liǎn?",
+            "tj": "liǎn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "短",
+            "脸",
+            "耳朵",
+            "马"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "脸 = yuz (liǎn)",
+            "ru": "脸 = лицо (liǎn)",
+            "tj": "脸 = рӯй (liǎn)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "黄河",
-            "pinyin": "Huáng Hé",
-            "pos": "n.",
-            "meaning": {
-              "uz": "Huanghe, Sariq daryo",
-              "ru": "Хуанхэ, Желтая река",
-              "tj": "Ҳуанхэ, Дарёи Зард"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "船",
-            "pinyin": "chuán",
-            "pos": "n.",
-            "meaning": {
-              "uz": "qayiq, kema",
-              "ru": "лодка, корабль",
-              "tj": "қаиқ, киштӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "经过",
-            "pinyin": "jīngguò",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yonidan o'tmoq, boshdan kechirmoq",
-              "ru": "проходить мимо, переживать",
-              "tj": "аз назди чизе гузаштан, аз сар гузаронидан"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "耳朵",
+              {
+                "uz": "quloq",
+                "ru": "ухо",
+                "tj": "гӯш"
+              }
+            ],
+            [
+              "脸",
+              {
+                "uz": "yuz",
+                "ru": "лицо",
+                "tj": "рӯй"
+              }
+            ],
+            [
+              "短",
+              {
+                "uz": "kalta, qisqa",
+                "ru": "короткий",
+                "tj": "кӯтоҳ"
+              }
+            ],
+            [
+              "马",
+              {
+                "uz": "ot",
+                "ru": "лошадь",
+                "tj": "асп"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -704,6 +849,80 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Yo'nalish to'ldiruvchilarining ko'chma ma'nolari: 出来/起来/下去",
+              "ru": "Переносное значение направленных дополнений: 出来/起来/下去",
+              "tj": "Маъноҳои маҷозии пуркунандаҳои самтӣ: 出来/起来/下去"
+            },
+            "title_zh": "趋向补语引申义：出来/起来/下去",
+            "rule": {
+              "uz": "出来 = nimadir oshkor bo'lmoq/paydo bo'lmoq (看出来 = sezib olmoq); 起来 = harakat yoki holat boshlanmoq (笑起来 = kulib yubormoq); 下去 = harakat davom etmoq (坚持下去 = davom ettirmoq). Bular ko'chma/majoziy ma'nolar.",
+              "ru": "出来 = что-то обнаруживается/появляется (看出来 = заметить); 起来 = действие или состояние начинается (笑起来 = засмеяться); 下去 = действие продолжается (坚持下去 = продолжать держаться). Это переносные значения.",
+              "tj": "出来 = чизе ошкор мешавад/пайдо мешавад (看出来 = пай бурдан); 起来 = амал ё ҳолат оғоз меёбад (笑起来 = хандидан гирифтан); 下去 = амал идома меёбад (坚持下去 = идома додан). Инҳо маъноҳои маҷозӣ ҳастанд."
+            },
+            "examples": [
+              {
+                "zh": "你没看出来她变了吗？",
+                "pinyin": "Nǐ méi kàn chū lái tā biàn le ma?",
+                "translation": {
+                  "uz": "Siz uning o'zgarganini sezmadingizmi?",
+                  "ru": "Ты разве не заметил, что она изменилась?",
+                  "tj": "Шумо пай набурдед, ки вай тағйир ёфт?"
+                }
+              },
+              {
+                "zh": "只要坚持下去，就能成功！",
+                "pinyin": "Zhǐyào jiānchí xià qù, jiù néng chénggōng!",
+                "translation": {
+                  "uz": "Faqat davom etsangiz, muvaffaqiyat qozonasiz!",
+                  "ru": "Только продолжай — и добьёшься успеха!",
+                  "tj": "Танҳо идома диҳед, муваффақ мешавед!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "使/叫/让 kauzativ fe'llari taqqoslash",
+              "ru": "Сравнение каузативных глаголов 使/叫/让",
+              "tj": "Муқоисаи феълҳои каузативии 使/叫/让"
+            },
+            "title_zh": "使/叫/让（使役）的比较",
+            "rule": {
+              "uz": "Uchtasi ham 'biror kishini biror narsa qilishga majbur qilmoq' ma'nosida. Farq: '使' = rasmiy, yozma uslub (bu holat meni majbur qildi); '叫' = buyurish, ko'proq og'zaki, kichiklarga; '让' = ruxsat berish YOKI majbur qilish — eng ko'p ishlatiladigan.",
+              "ru": "Все три означают 'заставить/позволить кому-то сделать что-то'. Разница: '使' = официальный, письменный стиль (это обстоятельство меня заставило); '叫' = приказать, больше устный, к подчинённым; '让' = позволить ИЛИ заставить — наиболее употребительный.",
+              "tj": "Ҳарсе маъноеро доранд, ки 'ба касе иҷозат додан ё маҷбур кардан'. Фарқ: '使' = расмӣ, услуби хаттӣ (ин ҳолат маро маҷбур кард); '叫' = фармондан, бештар шифоҳӣ, ба зердастон; '让' = иҷозат додан ЁД маҷбур кардан — бештар истифодашаванда."
+            },
+            "examples": [
+              {
+                "zh": "这使我很受鼓励！",
+                "pinyin": "Zhè shǐ wǒ hěn shòu gǔlì!",
+                "translation": {
+                  "uz": "Bu meni juda ilhomlantirdi! (rasmiy)",
+                  "ru": "Это очень меня воодушевляет! (официальный)",
+                  "tj": "Ин маро хеле илҳом бахшид! (расмӣ)"
+                }
+              },
+              {
+                "zh": "他叫我不要告诉别人。",
+                "pinyin": "Tā jiào wǒ bú yào gàosù biérén.",
+                "translation": {
+                  "uz": "U menga boshqalarga aytmaslikni buyurdi.",
+                  "ru": "Он велел мне никому не говорить.",
+                  "tj": "Вай ба ман фармод, ки ба дигарон нагӯям."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U menga boshqalarga aytmaslikni buyurdi.",
@@ -711,15 +930,15 @@
             "tj": "Вай ба ман фармод, ки ба дигарон нагӯям."
           },
           "tokens": [
-            "告诉",
             "叫",
-            "要",
+            "告诉",
             "我",
-            "别人",
-            "耳朵",
             "他",
+            "要",
+            "不",
             "脸",
-            "不"
+            "别人",
+            "耳朵"
           ],
           "answer_tokens": [
             "他",
@@ -737,24 +956,98 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "我____那条街道来的。",
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "经过 + joy (orqali o'tmoq / tajribadan o'tmoq)",
+              "ru": "经过 + место (проходить через / через опыт)",
+              "tj": "经过 + ҷой (гузаштан аз / тавассути таҷриба)"
+            },
+            "title_zh": "经过 + 地点（路过/经历）",
+            "rule": {
+              "uz": "'经过' ikki ma'noda: (1) joy bo'ylab o'tmoq (经过公园 = parkdan o'tmoq); (2) biror jarayon/tajribadan o'tmoq (经过努力 = harakat orqali). Predlog sifatida joy yoki jarayondan oldin keladi.",
+              "ru": "'经过' имеет два значения: (1) проходить через место (经过公园 = проходить через парк); (2) проходить через процесс/опыт (经过努力 = через усилия). В качестве предлога стоит перед местом или процессом.",
+              "tj": "'经过' ду маъно дорад: (1) аз ҷое гузаштан (经过公园 = аз боғ гузаштан); (2) аз раванде/таҷрибае гузаштан (经过努力 = тавассути кӯшиш). Ҳамчун пешоянд пеш аз ҷой ё раванд меояд."
+            },
+            "examples": [
+              {
+                "zh": "我经过那条街道来的。",
+                "pinyin": "Wǒ jīngguò nà tiáo jiēdào lái de.",
+                "translation": {
+                  "uz": "Men u ko'cha orqali keldim.",
+                  "ru": "Я пришёл через ту улицу.",
+                  "tj": "Ман аз он кӯча гузашта омадам."
+                }
+              },
+              {
+                "zh": "经过努力，他终于成功了！",
+                "pinyin": "Jīngguò nǔlì, tā zhōngyú chénggōng le!",
+                "translation": {
+                  "uz": "Harakat orqali u nihoyat muvaffaqiyat qozondi!",
+                  "ru": "Через усилия он наконец добился успеха!",
+                  "tj": "Тавассути кӯшиш, вай дар охир муваффақ шуд!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men u ko'cha orqali keldim.",
+            "ru": "Я пришёл через ту улицу.",
+            "tj": "Ман аз он кӯча гузашта омадам."
+          },
+          "tokens": [
+            "街道",
+            "我",
+            "那",
+            "的",
+            "耳朵",
+            "经过",
+            "脸",
+            "来",
+            "条"
+          ],
+          "answer_tokens": [
+            "我",
+            "经过",
+            "那",
+            "条",
+            "街道",
+            "来",
+            "的"
+          ],
+          "explanation": {
+            "uz": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de.",
+            "ru": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de.",
+            "tj": "我经过那条街道来的。 — Wǒ jīngguò nà tiáo jiēdào lái de."
+          }
+        },
+        {
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+            "uz": "«Harakat orqali u nihoyat muvaffaqiyat qozondi!» — xitoychada qaysi biri?",
+            "ru": "«Через усилия он наконец добился успеха!» — какое предложение по-китайски?",
+            "tj": "«Тавассути кӯшиш, вай дар охир муваффақ шуд!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "短",
-            "经过",
-            "耳朵",
-            "脸"
+            "他叫我不要告诉别人。",
+            "只要坚持下去，就能成功！",
+            "经过努力，他终于成功了！",
+            "你没看出来她变了吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri: 经过 (jīngguò) — yonidan o'tmoq, boshdan kechirmoq",
-            "ru": "Верно: 经过 (jīngguò) — проходить мимо, переживать",
-            "tj": "Дуруст: 经过 (jīngguò) — аз назди чизе гузаштан, аз сар гузаронидан"
+            "uz": "经过努力，他终于成功了！ — Jīngguò nǔlì, tā zhōngyú chénggōng le!",
+            "ru": "经过努力，他终于成功了！ — Jīngguò nǔlì, tā zhōngyú chénggōng le!",
+            "tj": "经过努力，他终于成功了！ — Jīngguò nǔlì, tā zhōngyú chénggōng le!"
           }
         }
       ]
@@ -769,56 +1062,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'kalta, qisqa' xitoycha qaysi?",
-            "ru": "'короткий' по-китайски?",
-            "tj": "'кӯтоҳ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "脸",
-            "马",
-            "短",
-            "耳朵"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "kalta, qisqa = 短 (duǎn)",
-            "ru": "короткий = 短 (duǎn)",
-            "tj": "кӯтоҳ = 短 (duǎn)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "mǎ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается mǎ?",
-            "tj": "mǎ кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "马",
-            "短",
-            "脸",
-            "耳朵"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "马 = ot (mǎ)",
-            "ru": "马 = лошадь (mǎ)",
-            "tj": "马 = асп (mǎ)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U nimani yoqtiradi? Men unga sovg'a qilaman.",
@@ -826,15 +1069,15 @@
             "tj": "Ӯ чиро дӯст медорад? Ман ба ӯ медиҳам."
           },
           "tokens": [
-            "我",
-            "耳朵",
-            "她",
-            "什么",
-            "喜欢",
-            "送",
             "脸",
+            "给",
+            "我",
+            "喜欢",
             "她",
-            "给"
+            "耳朵",
+            "什么",
+            "送",
+            "她"
           ],
           "answer_tokens": [
             "她",
@@ -852,6 +1095,56 @@
           }
         },
         {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qayiq, kema' xitoycha qaysi?",
+            "ru": "'лодка, корабль' по-китайски?",
+            "tj": "'қаиқ, киштӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "脸",
+            "短",
+            "船",
+            "耳朵"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qayiq, kema = 船 (chuán)",
+            "ru": "лодка, корабль = 船 (chuán)",
+            "tj": "қаиқ, киштӣ = 船 (chuán)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīngguò qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīngguò?",
+            "tj": "jīngguò кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "脸",
+            "短",
+            "经过",
+            "耳朵"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "经过 = yonidan o'tmoq, boshdan kechirmoq (jīngguò)",
+            "ru": "经过 = проходить мимо, переживать (jīngguò)",
+            "tj": "经过 = аз назди чизе гузаштан, аз сар гузаронидан (jīngguò)"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -861,12 +1154,12 @@
           "audio_text": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
           "pinyin": "Nǚ'ér zuìjìn xǐhuan bǎ tóufa fàng zài ěrduo hòumiàn, nǐ zhīdào wèi shénme ma?",
           "options": [
+            "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
             "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
             "我最近觉得她和以前不太一样了。",
-            "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
             "这样可以使她的脸看上去漂亮一些。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Qizimiz yaqinda sochini qulog'ining orqasiga qo'yishni yoqtirib qoldi, nima uchunligini bilasanmi?",
             "ru": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Дочь в последнее время любит убирать волосы за уши, знаешь почему?",
@@ -946,16 +1239,41 @@
           "audio_text": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
           "pinyin": "Nǚ'ér zuìjìn xǐhuan bǎ tóufa fàng zài ěrduo hòumiàn, nǐ zhīdào wèi shénme ma?",
           "options": [
-            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "这样可以使她的脸看上去漂亮一些。",
             "我最近觉得她和以前不太一样了。",
             "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
-            "这样可以使她的脸看上去漂亮一些。"
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Qizimiz yaqinda sochini qulog'ining orqasiga qo'yishni yoqtirib qoldi, nima uchunligini bilasanmi?",
             "ru": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Дочь в последнее время любит убирать волосы за уши, знаешь почему?",
             "tj": "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ — Духтарамон вақтҳои охир мӯяшро пушти гӯш мегузорад, медонӣ чаро?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 爸爸 nima deydi?",
+            "ru": "Что 爸爸 говорит в конце диалога?",
+            "tj": "Дар охири муколама 爸爸 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这样可以使她的脸看上去漂亮一些。",
+            "我最近觉得她和以前不太一样了。",
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "我也想起来了。她现在慢慢地开始像个女孩子了。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 我也想起来了。她现在慢慢地开始像个女孩子了。",
+            "ru": "Правильный ответ: 我也想起来了。她现在慢慢地开始像个女孩子了。",
+            "tj": "Ҷавоби дуруст: 我也想起来了。她现在慢慢地开始像个女孩子了。"
           }
         },
         {
@@ -967,16 +1285,41 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "新",
             "女",
-            "斤",
-            "坏"
+            "下",
+            "旧",
+            "电"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 女 — 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ (Qizimiz yaqinda sochini qulog'ining orqasiga qo'yishni yoqtirib qoldi, nima uchunligini bilasanmi?)",
             "ru": "Верно: 女 — 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ (Дочь в последнее время любит убирать волосы за уши, знаешь почему?)",
             "tj": "Дуруст: 女 — 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？ (Духтарамон вақтҳои охир мӯяшро пушти гӯш мегузорад, медонӣ чаро?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 爸爸 avval nima deydi?",
+            "ru": "Что 爸爸 говорит в начале диалога?",
+            "tj": "Дар муколама 爸爸 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "这样可以使她的脸看上去漂亮一些。",
+            "我最近觉得她和以前不太一样了。",
+            "女儿变化不小，她小时候喜欢短头发，像男孩子一样。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "ru": "Правильный ответ: 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
+            "tj": "Ҷавоби дуруст: 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？"
           }
         },
         {
@@ -1013,56 +1356,6 @@
               "blank": true
             }
           ],
-          "options": [
-            "这样可以使她的脸看上去漂亮一些。",
-            "我最近觉得她和以前不太一样了。",
-            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
-            "我也想起来了。她现在慢慢地开始像个女孩子了。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 我也想起来了。她现在慢慢地开始像个女孩子了。",
-            "ru": "Правильный ответ: 我也想起来了。她现在慢慢地开始像个女孩子了。",
-            "tj": "Ҷавоби дуруст: 我也想起来了。她现在慢慢地开始像个女孩子了。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 爸爸 avval nima deydi?",
-            "ru": "Что 爸爸 говорит в начале диалога?",
-            "tj": "Дар муколама 爸爸 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "我最近觉得她和以前不太一样了。",
-            "女儿变化不小，她小时候喜欢短头发，像男孩子一样。",
-            "这样可以使她的脸看上去漂亮一些。",
-            "女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
-            "ru": "Правильный ответ: 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？",
-            "tj": "Ҷавоби дуруст: 女儿最近喜欢把头发放在耳朵后面，你知道为什么吗？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 爸爸 nima deydi?",
-            "ru": "Что 爸爸 говорит в конце диалога?",
-            "tj": "Дар охири муколама 爸爸 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
           "options": [
             "这样可以使她的脸看上去漂亮一些。",
             "我最近觉得她和以前不太一样了。",

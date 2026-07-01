@@ -8,6 +8,8 @@
     "ru": "говорить о настроении, красоте и отношении к жизни; использовать 使, 只要, 可不是, 因此 и 往往",
     "tj": "дар бораи кайфият, зебоӣ ва муносибат ба зиндагӣ гуфтугӯ кардан; истифодаи 使, 只要, 可不是, 因此 ва 往往"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -742,6 +744,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "qīnqi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается qīnqi?",
+            "tj": "qīnqi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "亲戚",
+            "巧克力",
+            "伤心",
+            "使"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "亲戚 = qarindosh (qīnqi)",
+            "ru": "亲戚 = родственник (qīnqi)",
+            "tj": "亲戚 = хешованд (qīnqi)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -767,6 +794,31 @@
               "ru": "заставлять, делать",
               "tj": "сабаб шудан, кардан"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "使 talaffuzini tanlang:",
+            "ru": "Выберите произношение 使:",
+            "tj": "Талаффузи 使-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shāngxīn",
+            "qiǎokèlì",
+            "shǐ",
+            "qīnqi"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "使 — shǐ",
+            "ru": "使 — shǐ",
+            "tj": "使 — shǐ"
           }
         },
         {
@@ -798,6 +850,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "愉快 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 愉快:",
+            "tj": "Маънои калимаи 愉快-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xursand, yoqimli",
+              "ru": "радостный, приятный",
+              "tj": "хурсанд, хуш"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
+            },
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            },
+            {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "愉快 = xursand, yoqimli (yúkuài)",
+            "ru": "愉快 = радостный, приятный (yúkuài)",
+            "tj": "愉快 = хурсанд, хуш (yúkuài)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -823,6 +916,31 @@
               "ru": "расслабляться",
               "tj": "ором шудан"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fàngsōng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fàngsōng?",
+            "tj": "fàngsōng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "放松",
+            "伤心",
+            "巧克力",
+            "亲戚"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "放松 = bo'shashmoq, dam olmoq (fàngsōng)",
+            "ru": "放松 = расслабляться (fàngsōng)",
+            "tj": "放松 = ором шудан (fàngsōng)"
           }
         },
         {
@@ -854,427 +972,28 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "发生",
-            "pinyin": "fāshēng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "sodir bo'lmoq",
-              "ru": "происходить",
-              "tj": "рӯй додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "成为",
-            "pinyin": "chéngwéi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "bo'lib qolmoq",
-              "ru": "становиться",
-              "tj": "шудан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "只要",
-            "pinyin": "zhǐyào",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "faqat ... bo'lsa",
-              "ru": "если только",
-              "tj": "то даме ки, агар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "师傅",
-            "pinyin": "shīfu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "usta; haydovchiga murojaat",
-              "ru": "мастер; обращение к водителю",
-              "tj": "усто; муроҷиат ба ронанда"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "大使馆",
-            "pinyin": "dàshǐguǎn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "elchixona",
-              "ru": "посольство",
-              "tj": "сафорат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "堵车",
-            "pinyin": "dǔ chē",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tirbandlik bo'lmoq",
-              "ru": "быть пробке",
-              "tj": "роҳбандӣ шудан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "距离",
-            "pinyin": "jùlí",
-            "pos": "n.",
-            "meaning": {
-              "uz": "masofa",
-              "ru": "расстояние",
-              "tj": "масофа"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "耐心",
-            "pinyin": "nàixīn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "sabr",
-              "ru": "терпение",
-              "tj": "сабр"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "生命",
-            "pinyin": "shēngmìng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "hayot",
-              "ru": "жизнь",
-              "tj": "ҳаёт"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "缺少",
-            "pinyin": "quēshǎo",
-            "pos": "v.",
-            "meaning": {
-              "uz": "kam bo'lmoq, yetishmaslik",
-              "ru": "недоставать",
-              "tj": "камӣ кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "到处",
-            "pinyin": "dàochù",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "hamma joyda",
-              "ru": "повсюду",
-              "tj": "ҳама ҷо"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "态度",
-            "pinyin": "tàidu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "munosabat",
-              "ru": "отношение",
-              "tj": "муносибат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "因此",
-            "pinyin": "yīncǐ",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "shuning uchun",
-              "ru": "поэтому",
-              "tj": "бинобар ин"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "科学",
-            "pinyin": "kēxué",
-            "pos": "n.",
-            "meaning": {
-              "uz": "fan, ilm",
-              "ru": "наука",
-              "tj": "илм"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "证明",
-            "pinyin": "zhèngmíng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "isbotlamoq",
-              "ru": "доказывать",
-              "tj": "исбот кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "往往",
-            "pinyin": "wǎngwǎng",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "ko'pincha",
-              "ru": "часто, как правило",
-              "tj": "аксар вақт"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "阳光",
-            "pinyin": "yángguāng",
-            "pos": "adj./n.",
-            "meaning": {
-              "uz": "quyoshli; ijobiy",
-              "ru": "солнечный; позитивный",
-              "tj": "офтобӣ; мусбат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "积极",
-            "pinyin": "jījí",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "faol, ijobiy",
-              "ru": "активный, позитивный",
-              "tj": "фаъол, мусбат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "特点",
-            "pinyin": "tèdiǎn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "xususiyat",
-              "ru": "особенность",
-              "tj": "хусусият"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 2,
-      "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "gap_fill",
-          "sentence": "听说伤心难过的时候吃块儿____，还能使人的心情变得愉快。",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+            "uz": "景色 talaffuzini tanlang:",
+            "ru": "Выберите произношение 景色:",
+            "tj": "Талаффузи 景色-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "亲戚",
-            "巧克力",
-            "伤心",
-            "使"
+            "qiǎokèlì",
+            "jǐngsè",
+            "shāngxīn",
+            "qīnqi"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri: 巧克力 (qiǎokèlì) — shokolad",
-            "ru": "Верно: 巧克力 (qiǎokèlì) — шоколад",
-            "tj": "Дуруст: 巧克力 (qiǎokèlì) — шоколад"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
-        "uz": "Mashq",
-        "ru": "Упражнение",
-        "tj": "Машқ"
-      },
-      "section_purpose": "practice",
-      "cards": [
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shǐ?",
-            "tj": "shǐ кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "亲戚",
-            "使",
-            "巧克力",
-            "伤心"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "使 = qilmoq, sabab bo'lmoq (shǐ)",
-            "ru": "使 = заставлять, делать (shǐ)",
-            "tj": "使 = сабаб шудан, кардан (shǐ)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "心情 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 心情:",
-            "tj": "Маънои калимаи 心情-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "kayfiyat",
-              "ru": "настроение",
-              "tj": "кайфият"
-            },
-            {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный",
-              "tj": "ғамгин"
-            },
-            {
-              "uz": "qarindosh",
-              "ru": "родственник",
-              "tj": "хешованд"
-            },
-            {
-              "uz": "shokolad",
-              "ru": "шоколад",
-              "tj": "шоколад"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "心情 = kayfiyat (xīnqíng)",
-            "ru": "心情 = настроение (xīnqíng)",
-            "tj": "心情 = кайфият (xīnqíng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Nega shunday?",
-            "ru": "Почему так?",
-            "tj": "Чаро чунин?"
-          },
-          "tokens": [
-            "巧克力",
-            "为什么",
-            "这",
-            "呢",
-            "亲戚",
-            "是"
-          ],
-          "answer_tokens": [
-            "这",
-            "是",
-            "为什么",
-            "呢"
-          ],
-          "explanation": {
-            "uz": "这是为什么呢？ — Zhè shì wèishénme ne?",
-            "ru": "这是为什么呢？ — Zhè shì wèishénme ne?",
-            "tj": "这是为什么呢？ — Zhè shì wèishénme ne?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "这种巧克力味道不错，你在哪儿买的？",
-          "pinyin": "Zhè zhǒng qiǎokèlì wèidao búcuò, nǐ zài nǎr mǎi de?",
-          "options": [
-            "这种巧克力味道不错，你在哪儿买的？",
-            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
-            "是啊，因为很多人都爱吃巧克力，尤其是女性。",
-            "不是我买的，是我女儿给我从国外带回来的礼物。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "这种巧克力味道不错，你在哪儿买的？ — Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?",
-            "ru": "这种巧克力味道不错，你在哪儿买的？ — У этого шоколада хороший вкус, где вы его купили?",
-            "tj": "这种巧克力味道不错，你在哪儿买的？ — Маззаи ин шоколад хуб аст, аз куҷо харидед?"
+            "uz": "景色 — jǐngsè",
+            "ru": "景色 — jǐngsè",
+            "tj": "景色 — jǐngsè"
           }
         },
         {
@@ -1318,6 +1037,455 @@
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "sabab bo'lmoq",
+              "ru": "делать, вызывать",
+              "tj": "сабаб шудан"
+            },
+            "title_zh": "使",
+            "rule": {
+              "uz": "A 使 B + sifat/fe'l shaklida A ning B holatini o'zgartirishini bildiradi.",
+              "ru": "В конструкции A 使 B + прилагательное/глагол A вызывает изменение состояния B.",
+              "tj": "Дар қолиби A 使 B + сифат/феъл A ҳолати B-ро тағйир медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
+                "pinyin": "Tīngshuō shāngxīn nánguò de shíhou chī kuàir qiǎokèlì, hái néng shǐ rén de xīnqíng biàn de yúkuài.",
+                "translation": {
+                  "uz": "Eshitishimcha, xafa paytda shokolad yeyish odam kayfiyatini yaxshilashi mumkin.",
+                  "ru": "Говорят, когда грустно, кусочек шоколада может сделать настроение лучше.",
+                  "tj": "Мегӯянд, вақте ғамгин ҳастӣ, як порча шоколад метавонад кайфиятро хуш кунад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "听说伤心难过的时候吃块儿____，还能使人的心情变得愉快。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "使",
+            "亲戚",
+            "巧克力",
+            "伤心"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 巧克力 (qiǎokèlì) — shokolad",
+            "ru": "Верно: 巧克力 (qiǎokèlì) — шоколад",
+            "tj": "Дуруст: 巧克力 (qiǎokèlì) — шоколад"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "faqat ... bo'lsa, ...",
+              "ru": "если только..., то...",
+              "tj": "то даме ки..., пас..."
+            },
+            "title_zh": "只要……就……",
+            "rule": {
+              "uz": "Yetarli shartni bildiradi: shart bajarilsa, natija paydo bo'ladi.",
+              "ru": "Выражает достаточное условие: если условие выполняется, появляется результат.",
+              "tj": "Шарти кофиро нишон медиҳад: агар шарт иҷро шавад, натиҷа пайдо мешавад."
+            },
+            "examples": [
+              {
+                "zh": "只要这次你好好儿准备，一定能把比赛踢好。",
+                "pinyin": "Zhǐyào zhè cì nǐ hǎohāor zhǔnbèi, yídìng néng bǎ bǐsài tī hǎo.",
+                "translation": {
+                  "uz": "Bu safar yaxshi tayyorlansang, albatta musobaqani yaxshi o'ynaysan.",
+                  "ru": "Если в этот раз хорошо подготовишься, обязательно хорошо сыграешь матч.",
+                  "tj": "Агар ин дафъа хуб тайёр шавӣ, ҳатман бозиро хуб мегузаронӣ."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____这次你好好儿准备，一定能把比赛踢好。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "只要",
+            "巧克力",
+            "伤心",
+            "亲戚"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 只要 (zhǐyào) — faqat ... bo'lsa",
+            "ru": "Верно: 只要 (zhǐyào) — если только",
+            "tj": "Дуруст: 只要 (zhǐyào) — то даме ки, агар"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "ha, aynan shunday",
+              "ru": "ещё бы, именно так",
+              "tj": "ҳа, айнан ҳамин"
+            },
+            "title_zh": "可不是",
+            "rule": {
+              "uz": "Suhbatdosh fikriga kuchli rozilik bildiradi.",
+              "ru": "Выражает сильное согласие с собеседником.",
+              "tj": "Розигии қавӣ ба фикри ҳамсуҳбатро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "可不是！上班堵车怕迟到，下班堵车怕回家晚。",
+                "pinyin": "Kěbúshì! Shàngbān dǔchē pà chídào, xiàbān dǔchē pà huí jiā wǎn.",
+                "translation": {
+                  "uz": "Ha, aynan shunday! Ishga ketishda tirbandlikdan kech qolishdan, qaytishda uyga kech borishdan qo'rqasan.",
+                  "ru": "Ещё бы! По дороге на работу боишься опоздать, после работы - поздно вернуться домой.",
+                  "tj": "Ҳа, айнан ҳамин! Ба кор рафтанда аз дер мондан, аз кор баргаштанда аз дер расидан метарсӣ."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "可不是！上班____怕迟到，下班堵车怕回家晚。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "堵车",
+            "伤心",
+            "巧克力",
+            "亲戚"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 堵车 (dǔ chē) — tirbandlik bo'lmoq",
+            "ru": "Верно: 堵车 (dǔ chē) — быть пробке",
+            "tj": "Дуруст: 堵车 (dǔ chē) — роҳбандӣ шудан"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "shuning uchun",
+              "ru": "поэтому",
+              "tj": "бинобар ин"
+            },
+            "title_zh": "因此",
+            "rule": {
+              "uz": "Oldingi sababdan kelib chiqqan natijani bog'laydi.",
+              "ru": "Связывает результат с предыдущей причиной.",
+              "tj": "Натиҷаро бо сабаби пешина мепайвандад."
+            },
+            "examples": [
+              {
+                "zh": "生活的态度要自己选择，因此，遇到烦恼时，你应该想一些办法让自己从不高兴的心情中走出来。",
+                "pinyin": "Shēnghuó de tàidu yào zìjǐ xuǎnzé, yīncǐ, yùdào fánnǎo shí, nǐ yīnggāi xiǎng yìxiē bànfǎ.",
+                "translation": {
+                  "uz": "Hayotga munosabatni o'zing tanlaysan, shuning uchun tashvishga duch kelsang, kayfiyatni chiqarish yo'lini topish kerak.",
+                  "ru": "Отношение к жизни выбираешь сам, поэтому при тревогах нужно найти способ выйти из плохого настроения.",
+                  "tj": "Муносибат ба зиндагиро худ интихоб мекунӣ, бинобар ин ҳангоми ташвиш бояд роҳи баромадан аз кайфияти бадро ёфт."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "生活的态度要自己选择，因此，遇到烦恼时，你应该想一些办法让自己从不高兴的____中走出来。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "心情",
+            "巧克力",
+            "伤心",
+            "亲戚"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 心情 (xīnqíng) — kayfiyat",
+            "ru": "Верно: 心情 (xīnqíng) — настроение",
+            "tj": "Дуруст: 心情 (xīnqíng) — кайфият"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "ko'pincha",
+              "ru": "часто, как правило",
+              "tj": "аксар вақт"
+            },
+            "title_zh": "往往",
+            "rule": {
+              "uz": "Odatda takrorlanadigan yoki umumiy kuzatiladigan holatni bildiradi.",
+              "ru": "Показывает обычно повторяющееся или типичное явление.",
+              "tj": "Ҳолати такроршаванда ё маъмулро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "女孩子对衣服颜色的选择往往与她们的性格有关。",
+                "pinyin": "Nǚháizi duì yīfu yánsè de xuǎnzé wǎngwǎng yǔ tāmen de xìnggé yǒuguān.",
+                "translation": {
+                  "uz": "Qizlarning kiyim rangi tanlovi ko'pincha ularning xarakteri bilan bog'liq.",
+                  "ru": "Выбор цвета одежды у девушек часто связан с их характером.",
+                  "tj": "Интихоби ранги либос дар духтарон аксаран бо характери онҳо вобаста аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "女孩子对衣服颜色的选择____与她们的性格有关。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "伤心",
+            "亲戚",
+            "巧克力",
+            "往往"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 往往 (wǎngwǎng) — ko'pincha",
+            "ru": "Верно: 往往 (wǎngwǎng) — часто, как правило",
+            "tj": "Дуруст: 往往 (wǎngwǎng) — аксар вақт"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Ha, aynan shunday! Ishga ketishda tirbandlikdan kech qolishdan, qaytishda uyga kech borishdan qo'rqasan.» — xitoychada qaysi biri?",
+            "ru": "«Ещё бы! По дороге на работу боишься опоздать, после работы - поздно вернуться домой.» — какое предложение по-китайски?",
+            "tj": "«Ҳа, айнан ҳамин! Ба кор рафтанда аз дер мондан, аз кор баргаштанда аз дер расидан метарсӣ.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
+            "生活的态度要自己选择，因此，遇到烦恼时，你应该想一些办法让自己从不高兴的心情中走出来。",
+            "只要这次你好好儿准备，一定能把比赛踢好。",
+            "可不是！上班堵车怕迟到，下班堵车怕回家晚。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "可不是！上班堵车怕迟到，下班堵车怕回家晚。 — Kěbúshì! Shàngbān dǔchē pà chídào, xiàbān dǔchē pà huí jiā wǎn.",
+            "ru": "可不是！上班堵车怕迟到，下班堵车怕回家晚。 — Kěbúshì! Shàngbān dǔchē pà chídào, xiàbān dǔchē pà huí jiā wǎn.",
+            "tj": "可不是！上班堵车怕迟到，下班堵车怕回家晚。 — Kěbúshì! Shàngbān dǔchē pà chídào, xiàbān dǔchē pà huí jiā wǎn."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "巧克力",
+              {
+                "uz": "shokolad",
+                "ru": "шоколад",
+                "tj": "шоколад"
+              }
+            ],
+            [
+              "亲戚",
+              {
+                "uz": "qarindosh",
+                "ru": "родственник",
+                "tj": "хешованд"
+              }
+            ],
+            [
+              "伤心",
+              {
+                "uz": "xafa, g'amgin",
+                "ru": "грустный",
+                "tj": "ғамгин"
+              }
+            ],
+            [
+              "使",
+              {
+                "uz": "qilmoq, sabab bo'lmoq",
+                "ru": "заставлять, делать",
+                "tj": "сабаб шудан, кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "这种巧克力味道不错，你在哪儿买的？",
+          "pinyin": "Zhè zhǒng qiǎokèlì wèidao búcuò, nǐ zài nǎr mǎi de?",
+          "options": [
+            "这种巧克力味道不错，你在哪儿买的？",
+            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
+            "不是我买的，是我女儿给我从国外带回来的礼物。",
+            "是啊，因为很多人都爱吃巧克力，尤其是女性。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "这种巧克力味道不错，你在哪儿买的？ — Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?",
+            "ru": "这种巧克力味道不错，你在哪儿买的？ — У этого шоколада хороший вкус, где вы его купили?",
+            "tj": "这种巧克力味道不错，你在哪儿买的？ — Маззаи ин шоколад хуб аст, аз куҷо харидед?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Nega shunday?",
+            "ru": "Почему так?",
+            "tj": "Чаро чунин?"
+          },
+          "tokens": [
+            "亲戚",
+            "巧克力",
+            "是",
+            "为什么",
+            "呢",
+            "这"
+          ],
+          "answer_tokens": [
+            "这",
+            "是",
+            "为什么",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "这是为什么呢？ — Zhè shì wèishénme ne?",
+            "ru": "这是为什么呢？ — Zhè shì wèishénme ne?",
+            "tj": "这是为什么呢？ — Zhè shì wèishénme ne?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shīfu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shīfu?",
+            "tj": "shīfu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "亲戚",
+            "伤心",
+            "巧克力",
+            "师傅"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "师傅 = usta; haydovchiga murojaat (shīfu)",
+            "ru": "师傅 = мастер; обращение к водителю (shīfu)",
+            "tj": "师傅 = усто; муроҷиат ба ронанда (shīfu)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "大使馆 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 大使馆:",
+            "tj": "Маънои калимаи 大使馆-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qarindosh",
+              "ru": "родственник",
+              "tj": "хешованд"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный",
+              "tj": "ғамгин"
+            },
+            {
+              "uz": "elchixona",
+              "ru": "посольство",
+              "tj": "сафорат"
+            },
+            {
+              "uz": "shokolad",
+              "ru": "шоколад",
+              "tj": "шоколад"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "大使馆 = elchixona (dàshǐguǎn)",
+            "ru": "大使馆 = посольство (dàshǐguǎn)",
+            "tj": "大使馆 = сафорат (dàshǐguǎn)"
+          }
         },
         {
           "type": "pronunciation",
@@ -1351,11 +1519,11 @@
           "pinyin": "Zhè zhǒng qiǎokèlì wèidao búcuò, nǐ zài nǎr mǎi de?",
           "options": [
             "是啊，因为很多人都爱吃巧克力，尤其是女性。",
-            "这种巧克力味道不错，你在哪儿买的？",
+            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
             "不是我买的，是我女儿给我从国外带回来的礼物。",
-            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。"
+            "这种巧克力味道不错，你在哪儿买的？"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "这种巧克力味道不错，你在哪儿买的？ — Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?",
             "ru": "这种巧克力味道不错，你在哪儿买的？ — У этого шоколада хороший вкус, где вы его купили?",
@@ -1371,16 +1539,41 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "挺",
+            "电",
             "这",
-            "斤",
-            "新"
+            "旧",
+            "下"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 这 — 这种巧克力味道不错，你在哪儿买的？ (Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?)",
             "ru": "Верно: 这 — 这种巧克力味道不错，你在哪儿买的？ (У этого шоколада хороший вкус, где вы его купили?)",
             "tj": "Дуруст: 这 — 这种巧克力味道不错，你在哪儿买的？ (Маззаи ин шоколад хуб аст, аз куҷо харидед?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 李老师 avval nima deydi?",
+            "ru": "Что 李老师 говорит в начале диалога?",
+            "tj": "Дар муколама 李老师 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这种巧克力味道不错，你在哪儿买的？",
+            "是啊，因为很多人都爱吃巧克力，尤其是女性。",
+            "不是我买的，是我女儿给我从国外带回来的礼物。",
+            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 这种巧克力味道不错，你在哪儿买的？",
+            "ru": "Правильный ответ: 这种巧克力味道不错，你在哪儿买的？",
+            "tj": "Ҷавоби дуруст: 这种巧克力味道不错，你在哪儿买的？"
           }
         },
         {
@@ -1424,40 +1617,15 @@
           ],
           "options": [
             "不是我买的，是我女儿给我从国外带回来的礼物。",
-            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
             "巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
-            "这种巧克力味道不错，你在哪儿买的？"
+            "这种巧克力味道不错，你在哪儿买的？",
+            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
             "ru": "Правильный ответ: 巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
             "tj": "Ҷавоби дуруст: 巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 李老师 avval nima deydi?",
-            "ru": "Что 李老师 говорит в начале диалога?",
-            "tj": "Дар муколама 李老师 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "是啊，因为很多人都爱吃巧克力，尤其是女性。",
-            "不是我买的，是我女儿给我从国外带回来的礼物。",
-            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
-            "这种巧克力味道不错，你在哪儿买的？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 这种巧克力味道不错，你在哪儿买的？",
-            "ru": "Правильный ответ: 这种巧克力味道不错，你在哪儿买的？",
-            "tj": "Ҷавоби дуруст: 这种巧克力味道不错，你在哪儿买的？"
           }
         },
         {
@@ -1473,12 +1641,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
+            "巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
             "这种巧克力味道不错，你在哪儿买的？",
-            "不是我买的，是我女儿给我从国外带回来的礼物。",
             "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。",
-            "巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。"
+            "不是我买的，是我女儿给我从国外带回来的礼物。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
             "ru": "Правильный ответ: 巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",

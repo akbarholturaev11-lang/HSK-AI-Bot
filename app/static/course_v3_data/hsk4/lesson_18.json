@@ -8,6 +8,8 @@
     "ru": "говорить о науке, технологиях, компьютере, интернете и телефоне; использовать 是否, 受不了, 接着, 除此以外 и 把...叫作...",
     "tj": "дар бораи илм, технология, компютер, интернет ва телефон гуфтугӯ кардан; истифодаи 是否, 受不了, 接着, 除此以外 ва 把...叫作..."
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -845,6 +847,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "火 talaffuzini tanlang:",
+            "ru": "Выберите произношение 火:",
+            "tj": "Талаффузи 火-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zuòzhě",
+            "huǒ",
+            "jiàngluò",
+            "jiāotōng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "火 — huǒ",
+            "ru": "火 — huǒ",
+            "tj": "火 — huǒ"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -870,6 +897,47 @@
               "ru": "транспорт, сообщение",
               "tj": "нақлиёт, иртибот"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "交通 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 交通:",
+            "tj": "Маънои калимаи 交通-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            },
+            {
+              "uz": "transport, aloqa",
+              "ru": "транспорт, сообщение",
+              "tj": "нақлиёт, иртибот"
+            },
+            {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "交通 = transport, aloqa (jiāotōng)",
+            "ru": "交通 = транспорт, сообщение (jiāotōng)",
+            "tj": "交通 = нақлиёт, иртибот (jiāotōng)"
           }
         },
         {
@@ -901,6 +969,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jìshù qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jìshù?",
+            "tj": "jìshù кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "降落",
+            "火",
+            "作者",
+            "技术"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "技术 = texnologiya, texnika (jìshù)",
+            "ru": "技术 = технология, техника (jìshù)",
+            "tj": "技术 = технология, техника (jìshù)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -926,6 +1019,31 @@
               "ru": "способ, форма",
               "tj": "усул, роҳ"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "火 talaffuzini tanlang:",
+            "ru": "Выберите произношение 火:",
+            "tj": "Талаффузи 火-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiāotōng",
+            "jiàngluò",
+            "zuòzhě",
+            "huǒ"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "火 — huǒ",
+            "ru": "火 — huǒ",
+            "tj": "火 — huǒ"
           }
         },
         {
@@ -957,311 +1075,86 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "安全",
-            "pinyin": "ānquán",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "xavfsiz",
-              "ru": "безопасный",
-              "tj": "бехатар"
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "使 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 使:",
+            "tj": "Маънои калимаи 使-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "muallif",
+              "ru": "автор",
+              "tj": "муаллиф"
+            },
+            {
+              "uz": "qildirmoq, sabab bo'lmoq",
+              "ru": "заставлять, приводить к",
+              "tj": "водор кардан, сабаб шудан"
+            },
+            {
+              "uz": "mashhur, urf bo'lgan",
+              "ru": "популярный, горячий",
+              "tj": "машҳур, серхаридор"
+            },
+            {
+              "uz": "qo'nmoq",
+              "ru": "приземляться",
+              "tj": "фуруд омадан"
             }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "使 = qildirmoq, sabab bo'lmoq (shǐ)",
+            "ru": "使 = заставлять, приводить к (shǐ)",
+            "tj": "使 = водор кардан, сабаб шудан (shǐ)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "密码",
-            "pinyin": "mìmǎ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "parol",
-              "ru": "пароль",
-              "tj": "рамз"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "允许",
-            "pinyin": "yǔnxǔ",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ruxsat bermoq",
-              "ru": "разрешать",
-              "tj": "иҷозат додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "座",
-            "pinyin": "zuò",
-            "pos": "m.",
-            "meaning": {
-              "uz": "ko'prik/bino sanog'i",
-              "ru": "счётное слово для мостов/зданий",
-              "tj": "шуморкалима барои пул/бино"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "桥",
-            "pinyin": "qiáo",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ko'prik",
-              "ru": "мост",
-              "tj": "пул"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "危险",
-            "pinyin": "wēixiǎn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "xavfli",
-              "ru": "опасный",
-              "tj": "хатарнок"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "接着",
-            "pinyin": "jiēzhe",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "ketidan, darhol keyin",
-              "ru": "затем, сразу после",
-              "tj": "пас аз он, дарҳол"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "警察",
-            "pinyin": "jǐngchá",
-            "pos": "n.",
-            "meaning": {
-              "uz": "politsiyachi",
-              "ru": "полицейский",
-              "tj": "полис"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "抓",
-            "pinyin": "zhuā",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ushlamoq, qo'lga olmoq",
-              "ru": "ловить, арестовывать",
-              "tj": "доштан, боздошт кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "咸",
-            "pinyin": "xián",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "sho'r",
-              "ru": "солёный",
-              "tj": "шӯр"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "矿泉水",
-            "pinyin": "kuàngquánshuǐ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "mineral suv",
-              "ru": "минеральная вода",
-              "tj": "оби минералӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "除此以外",
-            "pinyin": "chúcǐ yǐwài",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "bundan tashqari",
-              "ru": "кроме этого",
-              "tj": "ғайр аз ин"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "举",
-            "pinyin": "jǔ",
-            "pos": "v.",
-            "meaning": {
-              "uz": "misol keltirmoq",
-              "ru": "приводить пример",
-              "tj": "мисол овардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "迷路",
-            "pinyin": "mí lù",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yo'lni yo'qotmoq",
-              "ru": "заблудиться",
-              "tj": "роҳро гум кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "地图",
-            "pinyin": "dìtú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "xarita",
-              "ru": "карта",
-              "tj": "харита"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "地点",
-            "pinyin": "dìdiǎn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "joy, manzil",
-              "ru": "место, пункт",
-              "tj": "ҷой, макон"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "世纪",
-            "pinyin": "shìjì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "asr",
-              "ru": "век",
-              "tj": "аср"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "邮局",
-            "pinyin": "yóujú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "pochta",
-              "ru": "почта",
-              "tj": "почта"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "收",
-            "pinyin": "shōu",
-            "pos": "v.",
-            "meaning": {
-              "uz": "qabul qilmoq, olmoq",
-              "ru": "получать",
-              "tj": "гирифтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "信封",
-            "pinyin": "xìnfēng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "konvert",
-              "ru": "конверт",
-              "tj": "лифофа"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 31,
-            "zh": "网站",
-            "pinyin": "wǎngzhàn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "veb-sayt",
-              "ru": "сайт",
-              "tj": "сомона"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 32,
-            "zh": "信息",
-            "pinyin": "xìnxī",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ma'lumot, xabar",
-              "ru": "информация",
-              "tj": "маълумот, хабар"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "降落",
+              {
+                "uz": "qo'nmoq",
+                "ru": "приземляться",
+                "tj": "фуруд омадан"
+              }
+            ],
+            [
+              "火",
+              {
+                "uz": "mashhur, urf bo'lgan",
+                "ru": "популярный, горячий",
+                "tj": "машҳур, серхаридор"
+              }
+            ],
+            [
+              "作者",
+              {
+                "uz": "muallif",
+                "ru": "автор",
+                "tj": "муаллиф"
+              }
+            ],
+            [
+              "交通",
+              {
+                "uz": "transport, aloqa",
+                "ru": "транспорт, сообщение",
+                "tj": "нақлиёт, иртибот"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1276,6 +1169,34 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "yoki yo'qligi",
+              "ru": "ли, является ли",
+              "tj": "оё, ё не"
+            },
+            "title_zh": "是否",
+            "rule": {
+              "uz": "书面语da '是不是' ma'nosini beradi.",
+              "ru": "В письменной речи означает 'является ли / ли'.",
+              "tj": "Дар забони хаттӣ маънои 'оё ... ё не'-ро медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "不过她这么小，这本书我不知道她是否能读懂。",
+                "pinyin": "Búguò tā zhème xiǎo, zhè běn shū wǒ bù zhīdào tā shìfǒu néng dú dǒng.",
+                "translation": {
+                  "uz": "Lekin u hali juda kichkina, bu kitobni tushunib o'qiy oladimi-yo'qmi bilmayman.",
+                  "ru": "Но она ещё маленькая, я не знаю, сможет ли она понять эту книгу.",
+                  "tj": "Аммо ӯ ҳанӯз хурд аст, намедонам ин китобро фаҳмида мехонад ё не."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "不过她这么小，这本书我不知道她____能读懂。",
           "prompt": {
@@ -1284,16 +1205,216 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "降落",
-            "是否",
             "火",
-            "作者"
+            "作者",
+            "降落",
+            "是否"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 是否 (shìfǒu) — yoki yo'qligi",
             "ru": "Верно: 是否 (shìfǒu) — ли, является ли",
             "tj": "Дуруст: 是否 (shìfǒu) — оё, ё не"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "chiday olmaslik",
+              "ru": "не выдерживать",
+              "tj": "тоб оварда натавонистан"
+            },
+            "title_zh": "受不了",
+            "rule": {
+              "uz": "Og'riq, bosim, munosabat yoki holatga chiday olmaslikni bildiradi.",
+              "ru": "Означает неспособность выдержать боль, давление, отношение или ситуацию.",
+              "tj": "Натавонистани тоқат ба дард, фишор, муносибат ё вазъиятро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "不过天天对着电脑看，眼睛实在受不了。",
+                "pinyin": "Búguò tiāntiān duì zhe diànnǎo kàn, yǎnjing shízài shòubuliǎo.",
+                "translation": {
+                  "uz": "Lekin har kuni kompyuterga tikilib o'tirishga ko'zlar chiday olmaydi.",
+                  "ru": "Но если каждый день смотреть в компьютер, глаза действительно не выдерживают.",
+                  "tj": "Аммо ҳар рӯз ба компютер нигоҳ карданро чашмҳо тоқат карда наметавонанд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "不过天天对着电脑看，眼睛实在____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "火",
+            "作者",
+            "受不了",
+            "降落"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 受不了 (shòubuliǎo) — chiday olmaslik",
+            "ru": "Верно: 受不了 (shòubuliǎo) — не выдерживать",
+            "tj": "Дуруст: 受不了 (shòubuliǎo) — тоб оварда натавонистан"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "darhol keyin",
+              "ru": "сразу затем",
+              "tj": "дарҳол баъд"
+            },
+            "title_zh": "接着",
+            "rule": {
+              "uz": "Oldingi voqeadan keyin yana bir voqea darhol davom etishini bildiradi.",
+              "ru": "Показывает, что одно событие сразу следует за другим.",
+              "tj": "Нишон медиҳад, ки як воқеа дарҳол баъди воқеаи дигар меояд."
+            },
+            "examples": [
+              {
+                "zh": "接着又梦见我跳到车上，跟警察一起抓住了一个坏人。",
+                "pinyin": "Jiēzhe yòu mèngjiàn wǒ tiàodào chē shang, gēn jǐngchá yìqǐ zhuāzhù le yí ge huàirén.",
+                "translation": {
+                  "uz": "Keyin yana mashinaga sakrab, politsiya bilan birga yomon odamni ushlaganimni tush ko'rdim.",
+                  "ru": "Затем мне снова приснилось, что я запрыгнул в машину и вместе с полицейским поймал преступника.",
+                  "tj": "Баъд боз хоб дидам, ки ба мошин ҷаҳида, бо полис як одами бадро дастгир кардам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____又梦见我跳到车上，跟警察一起抓住了一个坏人。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "降落",
+            "作者",
+            "火",
+            "接着"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 接着 (jiēzhe) — ketidan, darhol keyin",
+            "ru": "Верно: 接着 (jiēzhe) — затем, сразу после",
+            "tj": "Дуруст: 接着 (jiēzhe) — пас аз он, дарҳол"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "bundan tashqari",
+              "ru": "кроме этого",
+              "tj": "ғайр аз ин"
+            },
+            "title_zh": "除此以外",
+            "rule": {
+              "uz": "Oldin aytilgan narsadan tashqari qo'shimcha fikr kiritadi.",
+              "ru": "Вводит дополнительную мысль помимо сказанного.",
+              "tj": "Ба ғайр аз фикри гуфташуда маълумоти иловагӣ меорад."
+            },
+            "examples": [
+              {
+                "zh": "除此以外，你还可以用它来听音乐、看电影、阅读、玩儿游戏、付款购物等。",
+                "pinyin": "Chúcǐ yǐwài, nǐ hái kěyǐ yòng tā lái tīng yīnyuè, kàn diànyǐng, yuèdú, wánr yóuxì, fù kuǎn gòuwù děng.",
+                "translation": {
+                  "uz": "Bundan tashqari, undan musiqa eshitish, kino ko'rish, o'qish, o'yin o'ynash va to'lov qilish uchun ham foydalansa bo'ladi.",
+                  "ru": "Кроме этого, его можно использовать для музыки, фильмов, чтения, игр и оплаты покупок.",
+                  "tj": "Ғайр аз ин, онро барои мусиқӣ, филм, хондан, бозӣ ва пардохти харид истифода бурдан мумкин аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____，你还可以用它来听音乐、看电影、阅读、玩儿游戏、付款购物等。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "除此以外",
+            "火",
+            "降落",
+            "作者"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 除此以外 (chúcǐ yǐwài) — bundan tashqari",
+            "ru": "Верно: 除此以外 (chúcǐ yǐwài) — кроме этого",
+            "tj": "Дуруст: 除此以外 (chúcǐ yǐwài) — ғайр аз ин"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "... deb atamoq",
+              "ru": "называть ...",
+              "tj": "... номидан"
+            },
+            "title_zh": "把……叫作……",
+            "rule": {
+              "uz": "把 dan keyingi narsa keyingi nom bilan atalishini bildiradi.",
+              "ru": "Показывает, что объект после 把 называется последующим именем.",
+              "tj": "Нишон медиҳад, ки объекти пас аз 把 бо номи баъдӣ номида мешавад."
+            },
+            "examples": [
+              {
+                "zh": "所以现在人们都把地球叫作“地球村”。",
+                "pinyin": "Suǒyǐ xiànzài rénmen dōu bǎ dìqiú jiàozuò “dìqiú cūn”.",
+                "translation": {
+                  "uz": "Shuning uchun hozir odamlar Yerni “global qishloq” deb ataydi.",
+                  "ru": "Поэтому сейчас люди называют Землю «глобальной деревней».",
+                  "tj": "Аз ин рӯ ҳоло одамон Заминро «деҳаи ҷаҳонӣ» меноманд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bundan tashqari, undan musiqa eshitish, kino ko'rish, o'qish, o'yin o'ynash va to'lov qilish uchun ham foydalansa bo'ladi.» — xitoychada qaysi biri?",
+            "ru": "«Кроме этого, его можно использовать для музыки, фильмов, чтения, игр и оплаты покупок.» — какое предложение по-китайски?",
+            "tj": "«Ғайр аз ин, онро барои мусиқӣ, филм, хондан, бозӣ ва пардохти харид истифода бурдан мумкин аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "除此以外，你还可以用它来听音乐、看电影、阅读、玩儿游戏、付款购物等。",
+            "所以现在人们都把地球叫作“地球村”。",
+            "接着又梦见我跳到车上，跟警察一起抓住了一个坏人。",
+            "不过天天对着电脑看，眼睛实在受不了。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "除此以外，你还可以用它来听音乐、看电影、阅读、玩儿游戏、付款购物等。 — Chúcǐ yǐwài, nǐ hái kěyǐ yòng tā lái tīng yīnyuè, kàn diànyǐng, yuèdú, wánr yóuxì, fù kuǎn gòuwù děng.",
+            "ru": "除此以外，你还可以用它来听音乐、看电影、阅读、玩儿游戏、付款购物等。 — Chúcǐ yǐwài, nǐ hái kěyǐ yòng tā lái tīng yīnyuè, kàn diànyǐng, yuèdú, wánr yóuxì, fù kuǎn gòuwù děng.",
+            "tj": "除此以外，你还可以用它来听音乐、看电影、阅读、玩儿游戏、付款购物等。 — Chúcǐ yǐwài, nǐ hái kěyǐ yòng tā lái tīng yīnyuè, kàn diànyǐng, yuèdú, wánr yóuxì, fù kuǎn gòuwù děng."
           }
         }
       ]
@@ -1310,9 +1431,9 @@
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "火 talaffuzini tanlang:",
-            "ru": "Выберите произношение 火:",
-            "tj": "Талаффузи 火-ро интихоб кунед:"
+            "uz": "密码 talaffuzini tanlang:",
+            "ru": "Выберите произношение 密码:",
+            "tj": "Талаффузи 密码-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -1320,63 +1441,16 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "mìmǎ",
+            "zuòzhě",
             "huǒ",
-            "jiàngluò",
-            "jiāotōng",
-            "zuòzhě"
+            "jiàngluò"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "火 — huǒ",
-            "ru": "火 — huǒ",
-            "tj": "火 — huǒ"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'muallif' xitoycha qaysi?",
-            "ru": "'автор' по-китайски?",
-            "tj": "'муаллиф' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "交通",
-            "作者",
-            "降落",
-            "火"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "muallif = 作者 (zuòzhě)",
-            "ru": "автор = 作者 (zuòzhě)",
-            "tj": "муаллиф = 作者 (zuòzhě)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。",
-          "pinyin": "Shàng cì nǚ'ér wèn wǒ fēijī shì zěnme qǐfēi hé jiàngluò de, zhēn bù zhīdào gāi zěnme huídá tā, tā xiànzài zǒngshì yǒu gè zhǒng gè yàng de “wèi shénme”.",
-          "options": [
-            "孩子眼中的世界是美丽和奇特的。有一本书叫《新十万个为什么》，现在卖得非常火。",
-            "书里的内容都是儿童想知道的科学知识，相信你女儿一定喜欢读。",
-            "难道它和我们小时候看的《十万个为什么》不一样吗？作者是谁啊？",
-            "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — O'tgan safar qizim samolyot qanday uchishi va qo'nishini so'radi, unga qanday javob berishni bilmadim. Hozir unda har xil “nega” savollar juda ko'p.",
-            "ru": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — В прошлый раз дочь спросила, как самолёт взлетает и садится, я совсем не знала, как ей ответить. Сейчас у неё постоянно разные «почему».",
-            "tj": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — Дафъаи гузашта духтарам пурсид, ки ҳавопаймо чӣ тавр парвоз ва фуруд меояд, намедонистам чӣ ҷавоб диҳам. Ҳоло ҳамеша ҳар гуна «чаро» дорад."
+            "uz": "密码 — mìmǎ",
+            "ru": "密码 — mìmǎ",
+            "tj": "密码 — mìmǎ"
           }
         },
         {
@@ -1422,6 +1496,53 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。",
+          "pinyin": "Shàng cì nǚ'ér wèn wǒ fēijī shì zěnme qǐfēi hé jiàngluò de, zhēn bù zhīdào gāi zěnme huídá tā, tā xiànzài zǒngshì yǒu gè zhǒng gè yàng de “wèi shénme”.",
+          "options": [
+            "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。",
+            "难道它和我们小时候看的《十万个为什么》不一样吗？作者是谁啊？",
+            "孩子眼中的世界是美丽和奇特的。有一本书叫《新十万个为什么》，现在卖得非常火。",
+            "书里的内容都是儿童想知道的科学知识，相信你女儿一定喜欢读。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — O'tgan safar qizim samolyot qanday uchishi va qo'nishini so'radi, unga qanday javob berishni bilmadim. Hozir unda har xil “nega” savollar juda ko'p.",
+            "ru": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — В прошлый раз дочь спросила, как самолёт взлетает и садится, я совсем не знала, как ей ответить. Сейчас у неё постоянно разные «почему».",
+            "tj": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — Дафъаи гузашта духтарам пурсид, ки ҳавопаймо чӣ тавр парвоз ва фуруд меояд, намедонистам чӣ ҷавоб диҳам. Ҳоло ҳамеша ҳар гуна «чаро» дорад."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ruxsat bermoq' xitoycha qaysi?",
+            "ru": "'разрешать' по-китайски?",
+            "tj": "'иҷозат додан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "火",
+            "允许",
+            "降落",
+            "作者"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ruxsat bermoq = 允许 (yǔnxǔ)",
+            "ru": "разрешать = 允许 (yǔnxǔ)",
+            "tj": "иҷозат додан = 允许 (yǔnxǔ)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "降落",
           "pinyin": "jiàngluò",
@@ -1452,37 +1573,16 @@
           "audio_text": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。",
           "pinyin": "Shàng cì nǚ'ér wèn wǒ fēijī shì zěnme qǐfēi hé jiàngluò de, zhēn bù zhīdào gāi zěnme huídá tā, tā xiànzài zǒngshì yǒu gè zhǒng gè yàng de “wèi shénme”.",
           "options": [
-            "书里的内容都是儿童想知道的科学知识，相信你女儿一定喜欢读。",
-            "难道它和我们小时候看的《十万个为什么》不一样吗？作者是谁啊？",
             "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。",
-            "孩子眼中的世界是美丽和奇特的。有一本书叫《新十万个为什么》，现在卖得非常火。"
+            "孩子眼中的世界是美丽和奇特的。有一本书叫《新十万个为什么》，现在卖得非常火。",
+            "难道它和我们小时候看的《十万个为什么》不一样吗？作者是谁啊？",
+            "书里的内容都是儿童想知道的科学知识，相信你女儿一定喜欢读。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — O'tgan safar qizim samolyot qanday uchishi va qo'nishini so'radi, unga qanday javob berishni bilmadim. Hozir unda har xil “nega” savollar juda ko'p.",
             "ru": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — В прошлый раз дочь спросила, как самолёт взлетает и садится, я совсем не знала, как ей ответить. Сейчас у неё постоянно разные «почему».",
             "tj": "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 — Дафъаи гузашта духтарам пурсид, ки ҳавопаймо чӣ тавр парвоз ва фуруд меояд, намедонистам чӣ ҷавоб диҳам. Ҳоло ҳамеша ҳар гуна «чаро» дорад."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "上",
-            "新",
-            "挺",
-            "斤"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 上 — 上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 (O'tgan safar qizim samolyot qanday uchishi va qo'nishini so'radi, unga qanday javob berishni bilmadim. Hozir unda har xil “nega” savollar juda ko'p.)",
-            "ru": "Верно: 上 — 上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 (В прошлый раз дочь спросила, как самолёт взлетает и садится, я совсем не знала, как ей ответить. Сейчас у неё постоянно разные «почему».)",
-            "tj": "Дуруст: 上 — 上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 (Дафъаи гузашта духтарам пурсид, ки ҳавопаймо чӣ тавр парвоз ва фуруд меояд, намедонистам чӣ ҷавоб диҳам. Ҳоло ҳамеша ҳар гуна «чаро» дорад.)"
           }
         },
         {
@@ -1530,16 +1630,37 @@
             }
           ],
           "options": [
-            "放心吧，这本书的语言简单易懂，一定能增长孩子的科学知识。",
             "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。",
             "孩子眼中的世界是美丽和奇特的。有一本书叫《新十万个为什么》，现在卖得非常火。",
-            "书里的内容都是儿童想知道的科学知识，相信你女儿一定喜欢读。"
+            "书里的内容都是儿童想知道的科学知识，相信你女儿一定喜欢读。",
+            "放心吧，这本书的语言简单易懂，一定能增长孩子的科学知识。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 放心吧，这本书的语言简单易懂，一定能增长孩子的科学知识。",
             "ru": "Правильный ответ: 放心吧，这本书的语言简单易懂，一定能增长孩子的科学知识。",
             "tj": "Ҷавоби дуруст: 放心吧，这本书的语言简单易懂，一定能增长孩子的科学知识。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "上",
+            "怀",
+            "旧",
+            "电"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 上 — 上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 (O'tgan safar qizim samolyot qanday uchishi va qo'nishini so'radi, unga qanday javob berishni bilmadim. Hozir unda har xil “nega” savollar juda ko'p.)",
+            "ru": "Верно: 上 — 上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 (В прошлый раз дочь спросила, как самолёт взлетает и садится, я совсем не знала, как ей ответить. Сейчас у неё постоянно разные «почему».)",
+            "tj": "Дуруст: 上 — 上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。 (Дафъаи гузашта духтарам пурсид, ки ҳавопаймо чӣ тавр парвоз ва фуруд меояд, намедонистам чӣ ҷавоб диҳам. Ҳоло ҳамеша ҳар гуна «чаро» дорад.)"
           }
         },
         {
@@ -1555,9 +1676,9 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "孩子眼中的世界是美丽和奇特的。有一本书叫《新十万个为什么》，现在卖得非常火。",
             "书里的内容都是儿童想知道的科学知识，相信你女儿一定喜欢读。",
             "难道它和我们小时候看的《十万个为什么》不一样吗？作者是谁啊？",
+            "孩子眼中的世界是美丽和奇特的。有一本书叫《新十万个为什么》，现在卖得非常火。",
             "上次女儿问我飞机是怎么起飞和降落的，真不知道该怎么回答她，她现在总是有各种各样的“为什么”。"
           ],
           "correct_index": 3,

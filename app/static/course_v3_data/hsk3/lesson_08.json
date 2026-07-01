@@ -8,6 +8,8 @@
     "ru": "Изучить условные предложения, повторное действие и обобщение",
     "tj": "Омӯхтани ҷумлаҳои шартӣ, такрори амал ва умумикунонӣ"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -628,6 +630,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "mǎnyì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается mǎnyì?",
+            "tj": "mǎnyì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "满意",
+            "电梯",
+            "层",
+            "又"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "满意 = mamnun bo'lmoq, qoniqmoq (mǎnyì)",
+            "ru": "满意 = быть довольным (mǎnyì)",
+            "tj": "满意 = қаноатманд будан (mǎnyì)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -653,6 +680,31 @@
               "ru": "счётное слово для этажей",
               "tj": "ҳисобвожа барои ошёна"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "层 talaffuzini tanlang:",
+            "ru": "Выберите произношение 层:",
+            "tj": "Талаффузи 层-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "céng",
+            "diàntī",
+            "mǎnyì",
+            "yòu"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "层 — céng",
+            "ru": "层 — céng",
+            "tj": "层 — céng"
           }
         },
         {
@@ -684,6 +736,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "熊猫 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 熊猫:",
+            "tj": "Маънои калимаи 熊猫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "panda",
+              "ru": "панда",
+              "tj": "панда"
+            },
+            {
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
+            },
+            {
+              "uz": "mamnun bo'lmoq, qoniqmoq",
+              "ru": "быть довольным",
+              "tj": "қаноатманд будан"
+            },
+            {
+              "uz": "lift",
+              "ru": "лифт",
+              "tj": "лифт"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "熊猫 = panda (xióngmāo)",
+            "ru": "熊猫 = панда (xióngmāo)",
+            "tj": "熊猫 = панда (xióngmāo)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -709,6 +802,31 @@
               "ru": "тихий, спокойный",
               "tj": "ором, сокит"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "ānjìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается ānjìng?",
+            "tj": "ānjìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "又",
+            "安静",
+            "电梯",
+            "满意"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "安静 = tinch, sokin (ānjìng)",
+            "ru": "安静 = тихий, спокойный (ānjìng)",
+            "tj": "安静 = ором, сокит (ānjìng)"
           }
         },
         {
@@ -740,101 +858,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "马上",
-            "pinyin": "mǎshàng",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "darhol",
-              "ru": "сразу, немедленно",
-              "tj": "фавран"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "满意 talaffuzini tanlang:",
+            "ru": "Выберите произношение 满意:",
+            "tj": "Талаффузи 满意-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "céng",
+            "diàntī",
+            "yòu",
+            "mǎnyì"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "满意 — mǎnyì",
+            "ru": "满意 — mǎnyì",
+            "tj": "满意 — mǎnyì"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "洗手间",
-            "pinyin": "xǐshǒujiān",
-            "pos": "n.",
-            "meaning": {
-              "uz": "hojatxona",
-              "ru": "туалет",
-              "tj": "ҳоҷатхона"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "老",
-            "pinyin": "lǎo",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "eski, keksa",
-              "ru": "старый",
-              "tj": "пир, кӯҳна"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "几乎",
-            "pinyin": "jīhū",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "deyarli",
-              "ru": "почти",
-              "tj": "қариб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "变化",
-            "pinyin": "biànhuà",
-            "pos": "v.",
-            "meaning": {
-              "uz": "o'zgarmoq; o'zgarish",
-              "ru": "изменяться; изменение",
-              "tj": "тағйир ёфтан; тағйирот"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "健康",
-            "pinyin": "jiànkāng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "sog'lom",
-              "ru": "здоровый",
-              "tj": "солим"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "重要",
-            "pinyin": "zhòngyào",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "muhim",
-              "ru": "важный",
-              "tj": "муҳим"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "又",
+              {
+                "uz": "yana (amal allaqachon takrorlangan)",
+                "ru": "снова (действие уже повторилось)",
+                "tj": "боз (амал аллакай такрор шуд)"
+              }
+            ],
+            [
+              "满意",
+              {
+                "uz": "mamnun bo'lmoq, qoniqmoq",
+                "ru": "быть довольным",
+                "tj": "қаноатманд будан"
+              }
+            ],
+            [
+              "电梯",
+              {
+                "uz": "lift",
+                "ru": "лифт",
+                "tj": "лифт"
+              }
+            ],
+            [
+              "层",
+              {
+                "uz": "qavatlar uchun hisob so'zi",
+                "ru": "счётное слово для этажей",
+                "tj": "ҳисобвожа барои ошёна"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -849,6 +936,43 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "\"又\" va \"再\" farqi",
+              "ru": "Разница между \"又\" и \"再\"",
+              "tj": "Фарқи \"又\" ва \"再\""
+            },
+            "title_zh": "\"又\"和\"再\"的区别",
+            "rule": {
+              "uz": "'又' o'tgan vaqtdagi takroran bajarilgan harakatni bildiradi (u yana kechikdi — o'tgan zamonda). '再' kelajakdagi takroran bajariladigan harakatni bildiradi (keyingi safar yana borayman).",
+              "ru": "'又' обозначает повторное действие в прошлом (он снова опоздал). '再' обозначает повторное действие в будущем (в следующий раз поеду ещё раз).",
+              "tj": "'又' амали такроршавандаи гузаштаро ифода мекунад (вай боз дер омад). '再' амали такроршавандаи оянда мебошад (дафъаи дигар боз меравам)."
+            },
+            "examples": [
+              {
+                "zh": "他又迟到了！",
+                "pinyin": "Tā yòu chídào le!",
+                "translation": {
+                  "uz": "U yana kechikdi! (o'tgan)",
+                  "ru": "Он снова опоздал! (прошлое)",
+                  "tj": "Вай боз дер омад! (гузашта)"
+                }
+              },
+              {
+                "zh": "下次再来吧。",
+                "pinyin": "Xià cì zài lái ba.",
+                "translation": {
+                  "uz": "Keyingi safar yana keling. (kelajak)",
+                  "ru": "В следующий раз приходи ещё раз. (будущее)",
+                  "tj": "Дафъаи дигар боз биё. (оянда)"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U yana kechikdi! (o'tgan)",
@@ -856,12 +980,12 @@
             "tj": "Вай боз дер омад! (гузашта)"
           },
           "tokens": [
-            "又",
+            "他",
             "了",
-            "迟到",
             "电梯",
-            "满意",
-            "他"
+            "迟到",
+            "又",
+            "满意"
           ],
           "answer_tokens": [
             "他",
@@ -873,6 +997,138 @@
             "uz": "他又迟到了！ — Tā yòu chídào le!",
             "ru": "他又迟到了！ — Tā yòu chídào le!",
             "tj": "他又迟到了！ — Tā yòu chídào le!"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "So'roq olmoshlarining maxsus qo'llanishi: kim/nima + ham + F",
+              "ru": "Особое употребление вопросительных местоимений: кто/что + тоже/все + Гл",
+              "tj": "Истифодаи хоси зомирҳои саволӣ: кӣ/чӣ + ҳам + Ф"
+            },
+            "title_zh": "疑问代词活用①：谁/什么+都/也+V",
+            "rule": {
+              "uz": "So'roq olmoshlari (谁、什么、哪儿) umumlashtiruvchi ma'noda ishlatilganda '都' yoki '也' bilan keladi va 'hamma / hech kim emas' ma'nosini bildiradi.",
+              "ru": "Вопросительные местоимения (谁、什么、哪儿) в обобщающем значении используются с '都' или '也' и означают 'все / никто'.",
+              "tj": "Зомирҳои саволӣ (谁、什么、哪儿) дар маънои умумикунанда бо '都' ё '也' меоянд ва маънои 'ҳама / ҳеҷ кас нест'-ро доранд."
+            },
+            "examples": [
+              {
+                "zh": "谁都知道这件事。",
+                "pinyin": "Shéi dōu zhīdào zhè jiàn shì.",
+                "translation": {
+                  "uz": "Bu hodisani hamma biladi.",
+                  "ru": "Все знают об этом.",
+                  "tj": "Ҳама ин корро медонад."
+                }
+              },
+              {
+                "zh": "什么都可以，随便吃吧。",
+                "pinyin": "Shénme dōu kěyǐ, suíbiàn chī ba.",
+                "translation": {
+                  "uz": "Hamma narsa bo'ladi, bemalol yeng.",
+                  "ru": "Можно всё, ешь как хочешь.",
+                  "tj": "Ҳама чиз мешавад, ба хоҳиш бихӯред."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Shartli gap: …… bo'lsa …… bo'ladi",
+              "ru": "Условное предложение: если …, то …",
+              "tj": "Ҷумлаи шартӣ: агар … пас …"
+            },
+            "title_zh": "条件句：……就……",
+            "rule": {
+              "uz": "'……就……' tuzilmasi shartni bildiradi: shartli qism + 就 + natija. Shartli qismda ko'pincha '如果'、'要是'、'只要' kabi so'zlar ishlatiladi, lekin ba'zan qo'yilmaydi.",
+              "ru": "Конструкция '……就……' выражает условие: условная часть + 就 + результат. В условной части часто используются '如果'、'要是'、'只要', но они могут опускаться.",
+              "tj": "Сохтори '……就……' шартро ифода мекунад: қисми шартӣ + 就 + натиҷа. Дар қисми шартӣ '如果'、'要是'、'只要' зиёд истифода мешаванд, аммо гоҳо ҳазф мешаванд."
+            },
+            "examples": [
+              {
+                "zh": "你去哪儿我就去哪儿。",
+                "pinyin": "Nǐ qù nǎr wǒ jiù qù nǎr.",
+                "translation": {
+                  "uz": "Siz qayerga borsangiz, men ham boraman.",
+                  "ru": "Куда ты, туда и я.",
+                  "tj": "Шумо ба куҷо равед, ман ҳам меравам."
+                }
+              },
+              {
+                "zh": "你买哪件我就买哪件。",
+                "pinyin": "Nǐ mǎi nǎ jiàn wǒ jiù mǎi nǎ jiàn.",
+                "translation": {
+                  "uz": "Siz qaysi birini olsangiz, men ham o'shani olaman.",
+                  "ru": "Какую ты купишь, такую же и я.",
+                  "tj": "Кадомро шумо харед, манҳам ҳамонро мехарам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz qayerga borsangiz, men ham boraman.",
+            "ru": "Куда ты, туда и я.",
+            "tj": "Шумо ба куҷо равед, ман ҳам меравам."
+          },
+          "tokens": [
+            "满意",
+            "去",
+            "哪儿",
+            "就",
+            "又",
+            "我",
+            "去",
+            "哪儿",
+            "你"
+          ],
+          "answer_tokens": [
+            "你",
+            "去",
+            "哪儿",
+            "我",
+            "就",
+            "去",
+            "哪儿"
+          ],
+          "explanation": {
+            "uz": "你去哪儿我就去哪儿。 — Nǐ qù nǎr wǒ jiù qù nǎr.",
+            "ru": "你去哪儿我就去哪儿。 — Nǐ qù nǎr wǒ jiù qù nǎr.",
+            "tj": "你去哪儿我就去哪儿。 — Nǐ qù nǎr wǒ jiù qù nǎr."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu hodisani hamma biladi.» — xitoychada qaysi biri?",
+            "ru": "«Все знают об этом.» — какое предложение по-китайски?",
+            "tj": "«Ҳама ин корро медонад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "什么都可以，随便吃吧。",
+            "下次再来吧。",
+            "你去哪儿我就去哪儿。",
+            "谁都知道这件事。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "谁都知道这件事。 — Shéi dōu zhīdào zhè jiàn shì.",
+            "ru": "谁都知道这件事。 — Shéi dōu zhīdào zhè jiàn shì.",
+            "tj": "谁都知道这件事。 — Shéi dōu zhīdào zhè jiàn shì."
           }
         }
       ]
@@ -887,36 +1143,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "céng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается céng?",
-            "tj": "céng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "层",
-            "电梯",
-            "又",
-            "满意"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "层 = qavatlar uchun hisob so'zi (céng)",
-            "ru": "层 = счётное слово для этажей (céng)",
-            "tj": "层 = ҳисобвожа барои ошёна (céng)"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "害怕 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 害怕:",
-            "tj": "Маънои калимаи 害怕-ро интихоб кунед:"
+            "uz": "变化 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 变化:",
+            "tj": "Маънои калимаи 变化-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -925,14 +1156,14 @@
           },
           "options": [
             {
-              "uz": "yana (amal allaqachon takrorlangan)",
-              "ru": "снова (действие уже повторилось)",
-              "tj": "боз (амал аллакай такрор шуд)"
-            },
-            {
               "uz": "mamnun bo'lmoq, qoniqmoq",
               "ru": "быть довольным",
               "tj": "қаноатманд будан"
+            },
+            {
+              "uz": "o'zgarmoq; o'zgarish",
+              "ru": "изменяться; изменение",
+              "tj": "тағйир ёфтан; тағйирот"
             },
             {
               "uz": "lift",
@@ -940,43 +1171,16 @@
               "tj": "лифт"
             },
             {
-              "uz": "qo'rqmoq",
-              "ru": "бояться",
-              "tj": "тарсидан"
+              "uz": "yana (amal allaqachon takrorlangan)",
+              "ru": "снова (действие уже повторилось)",
+              "tj": "боз (амал аллакай такрор шуд)"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "害怕 = qo'rqmoq (hàipà)",
-            "ru": "害怕 = бояться (hàipà)",
-            "tj": "害怕 = тарсидан (hàipà)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Hech biridan mamnun emasmisan?",
-            "ru": "Всеми недовольна?",
-            "tj": "Аз ҳеҷ кадом қаноатманд нестӣ?"
-          },
-          "tokens": [
-            "满意",
-            "电梯",
-            "吗",
-            "都",
-            "不",
-            "又"
-          ],
-          "answer_tokens": [
-            "都",
-            "不",
-            "满意",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "都不满意吗？ — Dōu bù mǎnyì ma?",
-            "ru": "都不满意吗？ — Dōu bù mǎnyì ma?",
-            "tj": "都不满意吗？ — Dōu bù mǎnyì ma?"
+            "uz": "变化 = o'zgarmoq; o'zgarish (biànhuà)",
+            "ru": "变化 = изменяться; изменение (biànhuà)",
+            "tj": "变化 = тағйир ёфтан; тағйирот (biànhuà)"
           }
         },
         {
@@ -991,8 +1195,8 @@
           "options": [
             "一个没有电梯，不方便。一个有电梯，但是在二十层。",
             "听说你最近打算买房子？",
-            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "都不满意吗？"
+            "都不满意吗？",
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1044,6 +1248,58 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hech biridan mamnun emasmisan?",
+            "ru": "Всеми недовольна?",
+            "tj": "Аз ҳеҷ кадом қаноатманд нестӣ?"
+          },
+          "tokens": [
+            "满意",
+            "电梯",
+            "都",
+            "不",
+            "又",
+            "吗"
+          ],
+          "answer_tokens": [
+            "都",
+            "不",
+            "满意",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "都不满意吗？ — Dōu bù mǎnyì ma?",
+            "ru": "都不满意吗？ — Dōu bù mǎnyì ma?",
+            "tj": "都不满意吗？ — Dōu bù mǎnyì ma?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jīhū qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jīhū?",
+            "tj": "jīhū кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "几乎",
+            "满意",
+            "又",
+            "电梯"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "几乎 = deyarli (jīhū)",
+            "ru": "几乎 = почти (jīhū)",
+            "tj": "几乎 = қариб (jīhū)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "又",
           "pinyin": "yòu",
@@ -1074,16 +1330,41 @@
           "audio_text": "听说你最近打算买房子？",
           "pinyin": "Tīngshuō nǐ zuìjìn dǎsuàn mǎi fángzi?",
           "options": [
-            "听说你最近打算买房子？",
             "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "都不满意吗？",
-            "一个没有电梯，不方便。一个有电梯，但是在二十层。"
+            "听说你最近打算买房子？",
+            "一个没有电梯，不方便。一个有电梯，但是在二十层。",
+            "都不满意吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "听说你最近打算买房子？ — Eshitishimcha, oxirgi paytda uy olmoqchisan?",
             "ru": "听说你最近打算买房子？ — Слышал, ты в последнее время собираешься купить квартиру?",
             "tj": "听说你最近打算买房子？ — Шунидам, ки вақтҳои охир хона хариданӣ ҳастӣ?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 同事 avval nima deydi?",
+            "ru": "Что 同事 говорит в начале диалога?",
+            "tj": "Дар муколама 同事 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "都不满意吗？",
+            "一个没有电梯，不方便。一个有电梯，但是在二十层。",
+            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
+            "听说你最近打算买房子？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 听说你最近打算买房子？",
+            "ru": "Правильный ответ: 听说你最近打算买房子？",
+            "tj": "Ҷавоби дуруст: 听说你最近打算买房子？"
           }
         },
         {
@@ -1095,10 +1376,10 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "国",
-            "斤",
+            "下",
+            "电",
             "听",
-            "新"
+            "夫"
           ],
           "correct_index": 2,
           "explanation": {
@@ -1148,40 +1429,15 @@
           ],
           "options": [
             "都不满意吗？",
-            "太高了，往下看多害怕啊！",
+            "听说你最近打算买房子？",
             "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "听说你最近打算买房子？"
+            "太高了，往下看多害怕啊！"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 太高了，往下看多害怕啊！",
             "ru": "Правильный ответ: 太高了，往下看多害怕啊！",
             "tj": "Ҷавоби дуруст: 太高了，往下看多害怕啊！"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 同事 avval nima deydi?",
-            "ru": "Что 同事 говорит в начале диалога?",
-            "tj": "Дар муколама 同事 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "都不满意吗？",
-            "一个没有电梯，不方便。一个有电梯，但是在二十层。",
-            "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "听说你最近打算买房子？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 听说你最近打算买房子？",
-            "ru": "Правильный ответ: 听说你最近打算买房子？",
-            "tj": "Ҷавоби дуруст: 听说你最近打算买房子？"
           }
         },
         {
@@ -1197,12 +1453,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "都不满意吗？",
             "听说你最近打算买房子？",
+            "太高了，往下看多害怕啊！",
             "是，昨天去看了看，今天又去看了看，明天还要再去看看。",
-            "太高了，往下看多害怕啊！"
+            "都不满意吗？"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 太高了，往下看多害怕啊！",
             "ru": "Правильный ответ: 太高了，往下看多害怕啊！",

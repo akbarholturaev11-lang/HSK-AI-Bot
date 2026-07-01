@@ -8,6 +8,8 @@
     "ru": "говорить о чтении, экзаменах и выборе книг; использовать 连, 否则, 无论, 然而 и 同时",
     "tj": "дар бораи мутолиа, имтиҳон ва интихоби китоб гуфтугӯ кардан; истифодаи 连, 否则, 无论, 然而 ва 同时"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -833,6 +835,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "lìhai qaysi ieroglif?",
+            "ru": "Какой иероглиф читается lìhai?",
+            "tj": "lìhai кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "流利",
+            "厉害",
+            "语法",
+            "准确"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "厉害 = zo'r, kuchli (lìhai)",
+            "ru": "厉害 = сильный, впечатляющий (lìhai)",
+            "tj": "厉害 = зӯр, қавӣ (lìhai)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -858,6 +885,31 @@
               "ru": "точный, правильный",
               "tj": "дақиқ, дуруст"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "厉害 talaffuzini tanlang:",
+            "ru": "Выберите произношение 厉害:",
+            "tj": "Талаффузи 厉害-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "lìhai",
+            "yǔfǎ",
+            "liúlì",
+            "zhǔnquè"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "厉害 — lìhai",
+            "ru": "厉害 — lìhai",
+            "tj": "厉害 — lìhai"
           }
         },
         {
@@ -889,6 +941,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "连 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 连:",
+            "tj": "Маънои калимаи 连-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "zo'r, kuchli",
+              "ru": "сильный, впечатляющий",
+              "tj": "зӯр, қавӣ"
+            },
+            {
+              "uz": "ravon",
+              "ru": "беглый, свободный",
+              "tj": "равон"
+            },
+            {
+              "uz": "hatto",
+              "ru": "даже",
+              "tj": "ҳатто"
+            },
+            {
+              "uz": "grammatika",
+              "ru": "грамматика",
+              "tj": "грамматика"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "连 = hatto (lián)",
+            "ru": "连 = даже (lián)",
+            "tj": "连 = ҳатто (lián)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -914,6 +1007,31 @@
               "ru": "успеть",
               "tj": "вақт расидан"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "láidejí qaysi ieroglif?",
+            "ru": "Какой иероглиф читается láidejí?",
+            "tj": "láidejí кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "语法",
+            "来得及",
+            "厉害",
+            "流利"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "来得及 = ulgurmoq (láidejí)",
+            "ru": "来得及 = успеть (láidejí)",
+            "tj": "来得及 = вақт расидан (láidejí)"
           }
         },
         {
@@ -945,283 +1063,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "填空",
-            "pinyin": "tián kòng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "bo'sh joyni to'ldirmoq",
-              "ru": "заполнять пропуски",
-              "tj": "ҷойи холиро пур кардан"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "连 talaffuzini tanlang:",
+            "ru": "Выберите произношение 连:",
+            "tj": "Талаффузи 连-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "liúlì",
+            "yǔfǎ",
+            "lián",
+            "lìhai"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "连 — lián",
+            "ru": "连 — lián",
+            "tj": "连 — lián"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "猜",
-            "pinyin": "cāi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "taxmin qilmoq",
-              "ru": "угадывать",
-              "tj": "тахмин кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "否则",
-            "pinyin": "fǒuzé",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "aks holda",
-              "ru": "иначе",
-              "tj": "акс ҳол"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "客厅",
-            "pinyin": "kètīng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "mehmonxona, zal",
-              "ru": "гостиная",
-              "tj": "меҳмонхона"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "无论",
-            "pinyin": "wúlùn",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "qanday bo'lmasin",
-              "ru": "независимо от",
-              "tj": "новобаста аз"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "杂志",
-            "pinyin": "zázhì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "jurnal",
-              "ru": "журнал",
-              "tj": "маҷалла"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "著名",
-            "pinyin": "zhùmíng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "mashhur",
-              "ru": "известный",
-              "tj": "машҳур"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "页",
-            "pinyin": "yè",
-            "pos": "m.",
-            "meaning": {
-              "uz": "sahifa",
-              "ru": "страница",
-              "tj": "саҳифа"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "增加",
-            "pinyin": "zēngjiā",
-            "pos": "v.",
-            "meaning": {
-              "uz": "oshirmoq, ko'paytirmoq",
-              "ru": "увеличивать",
-              "tj": "зиёд кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "文章",
-            "pinyin": "wénzhāng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "maqola, matn",
-              "ru": "статья, текст",
-              "tj": "мақола, матн"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "之",
-            "pinyin": "zhī",
-            "pos": "part.",
-            "meaning": {
-              "uz": "otlarni bog'lovchi zarracha",
-              "ru": "книжная частица связи",
-              "tj": "зарраи пайвандӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "内容",
-            "pinyin": "nèiróng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "mazmun",
-              "ru": "содержание",
-              "tj": "мазмун"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "然而",
-            "pinyin": "rán'ér",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "biroq, ammo",
-              "ru": "однако",
-              "tj": "аммо"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "看法",
-            "pinyin": "kànfǎ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "fikr, qarash",
-              "ru": "мнение, взгляд",
-              "tj": "фикр, назар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "相同",
-            "pinyin": "xiāngtóng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "bir xil",
-              "ru": "одинаковый",
-              "tj": "якхела"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "顺序",
-            "pinyin": "shùnxù",
-            "pos": "n.",
-            "meaning": {
-              "uz": "tartib",
-              "ru": "порядок",
-              "tj": "тартиб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "表示",
-            "pinyin": "biǎoshì",
-            "pos": "v.",
-            "meaning": {
-              "uz": "bildirmoq, ifodalamoq",
-              "ru": "выражать",
-              "tj": "ифода кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "养成",
-            "pinyin": "yǎngchéng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "shakllantirmoq",
-              "ru": "вырабатывать",
-              "tj": "ташаккул додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "同时",
-            "pinyin": "tóngshí",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "bir vaqtda, shu bilan birga",
-              "ru": "одновременно",
-              "tj": "ҳамзамон"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "精彩",
-            "pinyin": "jīngcǎi",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "ajoyib",
-              "ru": "замечательный",
-              "tj": "аҷоиб"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "流利",
+              {
+                "uz": "ravon",
+                "ru": "беглый, свободный",
+                "tj": "равон"
+              }
+            ],
+            [
+              "厉害",
+              {
+                "uz": "zo'r, kuchli",
+                "ru": "сильный, впечатляющий",
+                "tj": "зӯр, қавӣ"
+              }
+            ],
+            [
+              "语法",
+              {
+                "uz": "grammatika",
+                "ru": "грамматика",
+                "tj": "грамматика"
+              }
+            ],
+            [
+              "准确",
+              {
+                "uz": "aniq, to'g'ri",
+                "ru": "точный, правильный",
+                "tj": "дақиқ, дуруст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1236,6 +1141,34 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "hatto...ham",
+              "ru": "даже...тоже",
+              "tj": "ҳатто...ҳам"
+            },
+            "title_zh": "连……也/都……",
+            "rule": {
+              "uz": "Ekstremal misolni ajratib, ta'kidlaydi.",
+              "ru": "Выделяет крайний пример для усиления.",
+              "tj": "Ҳолати ифротиро барои таъкид ҷудо мекунад."
+            },
+            "examples": [
+              {
+                "zh": "你太厉害了！连中文报纸都看得懂。",
+                "pinyin": "Nǐ tài lìhai le! Lián Zhōngwén bàozhǐ dōu kàn de dǒng.",
+                "translation": {
+                  "uz": "Juda zo'rsan! Hatto xitoycha gazetani ham tushunib o'qiyapsan.",
+                  "ru": "Ты молодец! Даже китайские газеты понимаешь.",
+                  "tj": "Ту зӯрӣ! Ҳатто рӯзномаи чиниро мефаҳмӣ."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "你太____了！连中文报纸都看得懂。",
           "prompt": {
@@ -1244,16 +1177,237 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "流利",
             "准确",
-            "语法",
-            "厉害"
+            "厉害",
+            "流利",
+            "语法"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 厉害 (lìhai) — zo'r, kuchli",
             "ru": "Верно: 厉害 (lìhai) — сильный, впечатляющий",
             "tj": "Дуруст: 厉害 (lìhai) — зӯр, қавӣ"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "aks holda",
+              "ru": "иначе",
+              "tj": "акс ҳол"
+            },
+            "title_zh": "否则",
+            "rule": {
+              "uz": "Oldingi shart bajarilmasa bo'ladigan natijani bildiradi.",
+              "ru": "Показывает результат, если предыдущее условие не выполнено.",
+              "tj": "Натиҷаи иҷро нашудани шарти пешинаро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "看來要想考好，不但要认真复习，还得注意考试的方法，否则，会做的题也没时间做了。",
+                "pinyin": "Kànlái yào xiǎng kǎo hǎo, bùdàn yào rènzhēn fùxí, hái děi zhùyì kǎoshì de fāngfǎ, fǒuzé, huì zuò de tí yě méi shíjiān zuò le.",
+                "translation": {
+                  "uz": "Yaxshi topshirish uchun nafaqat takrorlash, balki imtihon usuliga ham e'tibor kerak, aks holda bilgan savolga ham vaqt qolmaydi.",
+                  "ru": "Чтобы сдать хорошо, нужно не только повторять, но и следить за методом экзамена, иначе не хватит времени даже на знакомые задания.",
+                  "tj": "Барои хуб супоридан на танҳо такрор, балки усули имтиҳон ҳам муҳим аст, вагарна ба саволҳои медониста ҳам вақт намерасад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "看來要想考好，不但要认真复习，还得注意考试的方法，____，会做的题也没时间做了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "否则",
+            "语法",
+            "流利",
+            "厉害"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 否则 (fǒuzé) — aks holda",
+            "ru": "Верно: 否则 (fǒuzé) — иначе",
+            "tj": "Дуруст: 否则 (fǒuzé) — акс ҳол"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "qanday bo'lmasin",
+              "ru": "независимо от",
+              "tj": "новобаста аз"
+            },
+            "title_zh": "无论……都/也……",
+            "rule": {
+              "uz": "Shart qanday bo'lishidan qat'i nazar, natija o'zgarmaydi.",
+              "ru": "Результат не меняется при любом условии.",
+              "tj": "Натиҷа новобаста аз шарт тағйир намеёбад."
+            },
+            "examples": [
+              {
+                "zh": "无论是普通杂志，还是著名小说，只要打开它们，就会发现，世界上有那么多有意思的事情。",
+                "pinyin": "Wúlùn shì pǔtōng zázhì, háishi zhùmíng xiǎoshuō, zhǐyào dǎkāi tāmen, jiù huì fāxiàn, shìjiè shang yǒu nàme duō yǒu yìsi de shìqing.",
+                "translation": {
+                  "uz": "Oddiy jurnalmi yoki mashhur romanmi, ochsangiz dunyoda juda ko'p qiziq narsalar borligini ko'rasiz.",
+                  "ru": "Будь то обычный журнал или известный роман, откроешь и увидишь, сколько в мире интересного.",
+                  "tj": "Маҷаллаи одӣ бошад ё романи машҳур, кушоӣ мефаҳмӣ, ки дар дунё чӣ қадар чизҳои ҷолиб ҳаст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____是普通杂志，还是著名小说，只要打开它们，就会发现，世界上有那么多有意思的事情。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "无论",
+            "语法",
+            "流利",
+            "厉害"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 无论 (wúlùn) — qanday bo'lmasin",
+            "ru": "Верно: 无论 (wúlùn) — независимо от",
+            "tj": "Дуруст: 无论 (wúlùn) — новобаста аз"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "biroq, ammo",
+              "ru": "однако",
+              "tj": "аммо"
+            },
+            "title_zh": "然而",
+            "rule": {
+              "uz": "Ikkinchi yarim gap boshida kelib, burilish bildiradi.",
+              "ru": "Вводит поворот мысли во второй части предложения.",
+              "tj": "Дар қисми дуюм гардиши фикрро меорад."
+            },
+            "examples": [
+              {
+                "zh": "然而，你不能完全相信书本上的内容，要有自己的看法和判断。",
+                "pinyin": "Rán'ér, nǐ bù néng wánquán xiāngxìn shūběn shang de nèiróng, yào yǒu zìjǐ de kànfǎ hé pànduàn.",
+                "translation": {
+                  "uz": "Biroq kitobdagi mazmunga butunlay ishonib qolmasdan, o'z fikr va hukmingiz bo'lishi kerak.",
+                  "ru": "Однако нельзя полностью верить содержанию книг, нужно иметь своё мнение и суждение.",
+                  "tj": "Аммо набояд ба мазмуни китоб пурра бовар кард, фикр ва баҳодиҳии худ лозим аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "然而，你不能完全相信书本上的____，要有自己的看法和判断。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "语法",
+            "厉害",
+            "流利",
+            "内容"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 内容 (nèiróng) — mazmun",
+            "ru": "Верно: 内容 (nèiróng) — содержание",
+            "tj": "Дуруст: 内容 (nèiróng) — мазмун"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "bir vaqtda; shu bilan birga",
+              "ru": "одновременно; при этом",
+              "tj": "ҳамзамон; дар айни вақт"
+            },
+            "title_zh": "同时",
+            "rule": {
+              "uz": "Qo'shimcha parallel natija yoki bir vaqtdagi holatni bog'laydi.",
+              "ru": "Соединяет параллельный результат или одновременное действие.",
+              "tj": "Натиҷаи параллел ё ҳолати ҳамзамонро мепайвандад."
+            },
+            "examples": [
+              {
+                "zh": "同时，它还会丰富你的情感，使你的生活更精彩。",
+                "pinyin": "Tóngshí, tā hái huì fēngfù nǐ de qínggǎn, shǐ nǐ de shēnghuó gèng jīngcǎi.",
+                "translation": {
+                  "uz": "Shu bilan birga, u hissiyotlaringizni boyitib, hayotingizni yanada mazmunli qiladi.",
+                  "ru": "При этом оно обогащает чувства и делает жизнь ярче.",
+                  "tj": "Ҳамзамон, он эҳсосотатро ғанӣ карда, зиндагиро ҷолибтар мекунад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____，它还会丰富你的情感，使你的生活更精彩。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "同时",
+            "语法",
+            "流利",
+            "厉害"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 同时 (tóngshí) — bir vaqtda, shu bilan birga",
+            "ru": "Верно: 同时 (tóngshí) — одновременно",
+            "tj": "Дуруст: 同时 (tóngshí) — ҳамзамон"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Biroq kitobdagi mazmunga butunlay ishonib qolmasdan, o'z fikr va hukmingiz bo'lishi kerak.» — xitoychada qaysi biri?",
+            "ru": "«Однако нельзя полностью верить содержанию книг, нужно иметь своё мнение и суждение.» — какое предложение по-китайски?",
+            "tj": "«Аммо набояд ба мазмуни китоб пурра бовар кард, фикр ва баҳодиҳии худ лозим аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你太厉害了！连中文报纸都看得懂。",
+            "无论是普通杂志，还是著名小说，只要打开它们，就会发现，世界上有那么多有意思的事情。",
+            "然而，你不能完全相信书本上的内容，要有自己的看法和判断。",
+            "同时，它还会丰富你的情感，使你的生活更精彩。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "然而，你不能完全相信书本上的内容，要有自己的看法和判断。 — Rán'ér, nǐ bù néng wánquán xiāngxìn shūběn shang de nèiróng, yào yǒu zìjǐ de kànfǎ hé pànduàn.",
+            "ru": "然而，你不能完全相信书本上的内容，要有自己的看法和判断。 — Rán'ér, nǐ bù néng wánquán xiāngxìn shūběn shang de nèiróng, yào yǒu zìjǐ de kànfǎ hé pànduàn.",
+            "tj": "然而，你不能完全相信书本上的内容，要有自己的看法和判断。 — Rán'ér, nǐ bù néng wánquán xiāngxìn shūběn shang de nèiróng, yào yǒu zìjǐ de kànfǎ hé pànduàn."
           }
         }
       ]
@@ -1268,53 +1422,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'grammatika' xitoycha qaysi?",
-            "ru": "'грамматика' по-китайски?",
-            "tj": "'грамматика' ба хитоӣ кадом аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "你来中国才一年，汉语就说得这么流利，真厉害！",
+          "pinyin": "Nǐ lái Zhōngguó cái yì nián, Hànyǔ jiù shuō de zhème liúlì, zhēn lìhai!",
           "options": [
-            "流利",
-            "准确",
-            "语法",
-            "厉害"
+            "你来中国才一年，汉语就说得这么流利，真厉害！",
+            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
+            "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
+            "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "grammatika = 语法 (yǔfǎ)",
-            "ru": "грамматика = 语法 (yǔfǎ)",
-            "tj": "грамматика = 语法 (yǔfǎ)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zhǔnquè qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zhǔnquè?",
-            "tj": "zhǔnquè кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "流利",
-            "厉害",
-            "准确",
-            "语法"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "准确 = aniq, to'g'ri (zhǔnquè)",
-            "ru": "准确 = точный, правильный (zhǔnquè)",
-            "tj": "准确 = дақиқ, дуруст (zhǔnquè)"
+            "uz": "你来中国才一年，汉语就说得这么流利，真厉害！ — Xitoyga kelganingga endi bir yil bo'ldi, xitoychang shunchalik ravon, juda zo'r!",
+            "ru": "你来中国才一年，汉语就说得这么流利，真厉害！ — Ты в Китае всего год, а говоришь по-китайски так бегло, здорово!",
+            "tj": "你来中国才一年，汉语就说得这么流利，真厉害！ — Ба Чин ҳамагӣ як сол шуд омадӣ, вале чинӣ ин қадар равон мегӯӣ, зӯр!"
           }
         },
         {
@@ -1325,16 +1451,16 @@
             "tj": "Ду соат вақт бояд мерасид-ку?"
           },
           "tokens": [
-            "时间",
-            "流利",
-            "两",
             "的",
-            "吧",
-            "厉害",
             "来得及",
+            "厉害",
+            "流利",
+            "应该",
+            "时间",
             "小时",
+            "两",
             "个",
-            "应该"
+            "吧"
           ],
           "answer_tokens": [
             "两",
@@ -1350,28 +1476,6 @@
             "uz": "两个小时的时间应该来得及吧？ — Liǎng ge xiǎoshí de shíjiān yīnggāi láidejí ba?",
             "ru": "两个小时的时间应该来得及吧？ — Liǎng ge xiǎoshí de shíjiān yīnggāi láidejí ba?",
             "tj": "两个小时的时间应该来得及吧？ — Liǎng ge xiǎoshí de shíjiān yīnggāi láidejí ba?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你来中国才一年，汉语就说得这么流利，真厉害！",
-          "pinyin": "Nǐ lái Zhōngguó cái yì nián, Hànyǔ jiù shuō de zhème liúlì, zhēn lìhai!",
-          "options": [
-            "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。",
-            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
-            "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
-            "你来中国才一年，汉语就说得这么流利，真厉害！"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "你来中国才一年，汉语就说得这么流利，真厉害！ — Xitoyga kelganingga endi bir yil bo'ldi, xitoychang shunchalik ravon, juda zo'r!",
-            "ru": "你来中国才一年，汉语就说得这么流利，真厉害！ — Ты в Китае всего год, а говоришь по-китайски так бегло, здорово!",
-            "tj": "你来中国才一年，汉语就说得这么流利，真厉害！ — Ба Чин ҳамагӣ як сол шуд омадӣ, вале чинӣ ин қадар равон мегӯӣ, зӯр!"
           }
         },
         {
@@ -1417,6 +1521,56 @@
           }
         },
         {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'aks holda' xitoycha qaysi?",
+            "ru": "'иначе' по-китайски?",
+            "tj": "'акс ҳол' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "否则",
+            "流利",
+            "厉害",
+            "语法"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "aks holda = 否则 (fǒuzé)",
+            "ru": "иначе = 否则 (fǒuzé)",
+            "tj": "акс ҳол = 否则 (fǒuzé)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kètīng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kètīng?",
+            "tj": "kètīng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "语法",
+            "流利",
+            "厉害",
+            "客厅"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "客厅 = mehmonxona, zal (kètīng)",
+            "ru": "客厅 = гостиная (kètīng)",
+            "tj": "客厅 = меҳмонхона (kètīng)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "流利",
           "pinyin": "liúlì",
@@ -1447,12 +1601,12 @@
           "audio_text": "你来中国才一年，汉语就说得这么流利，真厉害！",
           "pinyin": "Nǐ lái Zhōngguó cái yì nián, Hànyǔ jiù shuō de zhème liúlì, zhēn lìhai!",
           "options": [
-            "你来中国才一年，汉语就说得这么流利，真厉害！",
+            "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
             "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
             "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。",
-            "谢谢！其实我的语法不太好，很多句子说得都不太准确。"
+            "你来中国才一年，汉语就说得这么流利，真厉害！"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "你来中国才一年，汉语就说得这么流利，真厉害！ — Xitoyga kelganingga endi bir yil bo'ldi, xitoychang shunchalik ravon, juda zo'r!",
             "ru": "你来中国才一年，汉语就说得这么流利，真厉害！ — Ты в Китае всего год, а говоришь по-китайски так бегло, здорово!",
@@ -1468,12 +1622,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "挺",
-            "你",
-            "斤",
-            "新"
+            "电",
+            "旧",
+            "下",
+            "你"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 你 — 你来中国才一年，汉语就说得这么流利，真厉害！ (Xitoyga kelganingga endi bir yil bo'ldi, xitoychang shunchalik ravon, juda zo'r!)",
             "ru": "Верно: 你 — 你来中国才一年，汉语就说得这么流利，真厉害！ (Ты в Китае всего год, а говоришь по-китайски так бегло, здорово!)",
@@ -1521,11 +1675,11 @@
           ],
           "options": [
             "你来中国才一年，汉语就说得这么流利，真厉害！",
+            "刚开始肯定有困难，不过遇到不认识的词语，你可以查词典，然后写在本子上，有空儿就拿出来复习一下，慢慢地就会发现中文报纸也没那么难了。",
             "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
-            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
-            "刚开始肯定有困难，不过遇到不认识的词语，你可以查词典，然后写在本子上，有空儿就拿出来复习一下，慢慢地就会发现中文报纸也没那么难了。"
+            "但是我看你跟中国人交流没什么问题，你是怎么做到的？"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 刚开始肯定有困难，不过遇到不认识的词语，你可以查词典，然后写在本子上，有空儿就拿出来复习一下，慢慢地就会发现中文报纸也没那么难了。",
             "ru": "Правильный ответ: 刚开始肯定有困难，不过遇到不认识的词语，你可以查词典，然后写在本子上，有空儿就拿出来复习一下，慢慢地就会发现中文报纸也没那么难了。",
@@ -1547,8 +1701,8 @@
           "options": [
             "你来中国才一年，汉语就说得这么流利，真厉害！",
             "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
-            "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。",
-            "但是我看你跟中国人交流没什么问题，你是怎么做到的？"
+            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
+            "平时多交一些中国朋友，经常和他们聊天儿，听说能力自然就能得到很大的提高。另外，我建议你坚持看中文报纸，这样能学到很多新词语。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1571,9 +1725,9 @@
           },
           "options": [
             "你来中国才一年，汉语就说得这么流利，真厉害！",
-            "谢谢！其实我的语法不太好，很多句子说得都不太准确。",
+            "但是我看你跟中国人交流没什么问题，你是怎么做到的？",
             "刚开始肯定有困难，不过遇到不认识的词语，你可以查词典，然后写在本子上，有空儿就拿出来复习一下，慢慢地就会发现中文报纸也没那么难了。",
-            "但是我看你跟中国人交流没什么问题，你是怎么做到的？"
+            "谢谢！其实我的语法不太好，很多句子说得都不太准确。"
           ],
           "correct_index": 2,
           "explanation": {

@@ -8,6 +8,8 @@
     "ru": "говорить о дороге, поездке, аэропорте, различиях севера и юга и вкусах путешествий; использовать V+着+V+着, 一...就..., 究竟, 起来 и V+起",
     "tj": "дар бораи роҳ, сафар, фурудгоҳ, фарқи шимол ва ҷануб ва таъми сафар гуфтугӯ кардан; истифодаи V+着+V+着, 一...就..., 究竟, 起来 ва V+起"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -843,6 +845,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hángbān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hángbān?",
+            "tj": "hángbān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "推迟",
+            "航班",
+            "高速公路",
+            "加油站"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "航班 = reys, parvoz (hángbān)",
+            "ru": "航班 = рейс, авиарейс (hángbān)",
+            "tj": "航班 = парвоз, рейс (hángbān)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -868,6 +895,31 @@
               "ru": "скоростная трасса",
               "tj": "роҳи автомобилгарди тезгард"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "高速公路 talaffuzini tanlang:",
+            "ru": "Выберите произношение 高速公路:",
+            "tj": "Талаффузи 高速公路-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jiāyóuzhàn",
+            "gāosù gōnglù",
+            "tuīchí",
+            "hángbān"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "高速公路 — gāosù gōnglù",
+            "ru": "高速公路 — gāosù gōnglù",
+            "tj": "高速公路 — gāosù gōnglù"
           }
         },
         {
@@ -899,6 +951,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "推迟 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 推迟:",
+            "tj": "Маънои калимаи 推迟-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            },
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            },
+            {
+              "uz": "tezkor avtomagistral",
+              "ru": "скоростная трасса",
+              "tj": "роҳи автомобилгарди тезгард"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "推迟 = kechiktirmoq (tuīchí)",
+            "ru": "推迟 = откладывать, переносить (tuīchí)",
+            "tj": "推迟 = ба таъхир гузоштан (tuīchí)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -924,6 +1017,31 @@
               "ru": "довольно, весьма",
               "tj": "хеле, бисёр"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "guài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается guài?",
+            "tj": "guài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "推迟",
+            "航班",
+            "加油站",
+            "怪"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "怪 = ancha, juda (guài)",
+            "ru": "怪 = довольно, весьма (guài)",
+            "tj": "怪 = хеле, бисёр (guài)"
           }
         },
         {
@@ -955,283 +1073,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "烤鸭",
-            "pinyin": "kǎoyā",
-            "pos": "n.",
-            "meaning": {
-              "uz": "qovurilgan o'rdak",
-              "ru": "жареная утка",
-              "tj": "мурғобии бирён"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "航班 talaffuzini tanlang:",
+            "ru": "Выберите произношение 航班:",
+            "tj": "Талаффузи 航班-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "gāosù gōnglù",
+            "hángbān",
+            "jiāyóuzhàn",
+            "tuīchí"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "航班 — hángbān",
+            "ru": "航班 — hángbān",
+            "tj": "航班 — hángbān"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "祝贺",
-            "pinyin": "zhùhè",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tabriklamoq",
-              "ru": "поздравлять",
-              "tj": "табрик кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "合格",
-            "pinyin": "hégé",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "talabga javob beradigan, o'tgan",
-              "ru": "соответствующий норме, зачтённый",
-              "tj": "мувофиқ ба талаб, гузашта"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "干杯",
-            "pinyin": "gān bēi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "qadah ko'tarmoq",
-              "ru": "пить до дна, тост",
-              "tj": "қадаҳ бардоштан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "民族",
-            "pinyin": "mínzú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "millat, etnik guruh",
-              "ru": "национальность, народность",
-              "tj": "миллат, қавм"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "打扮",
-            "pinyin": "dǎban",
-            "pos": "v.",
-            "meaning": {
-              "uz": "bezantirmoq, kiyinmoq",
-              "ru": "наряжаться, одеваться",
-              "tj": "оро додан, либос пӯшидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "笑话",
-            "pinyin": "xiàohua",
-            "pos": "n.",
-            "meaning": {
-              "uz": "hazil, latifa",
-              "ru": "шутка, анекдот",
-              "tj": "шӯхӣ, латифа"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "存",
-            "pinyin": "cún",
-            "pos": "v.",
-            "meaning": {
-              "uz": "saqlamoq, topshirib qo'ymoq",
-              "ru": "хранить, сдавать на хранение",
-              "tj": "нигоҳ доштан, супоридан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "钥匙",
-            "pinyin": "yàoshi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "kalit",
-              "ru": "ключ",
-              "tj": "калид"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "究竟",
-            "pinyin": "jiūjìng",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "aslida, aynan, axir",
-              "ru": "всё-таки, в конце концов",
-              "tj": "дар асл, охир"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "棵",
-            "pinyin": "kē",
-            "pos": "m.",
-            "meaning": {
-              "uz": "daraxtlar uchun hisob so'zi",
-              "ru": "счётное слово для деревьев",
-              "tj": "ҳисобвожа барои дарахтон"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "南方",
-            "pinyin": "nánfāng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "janub",
-              "ru": "юг",
-              "tj": "ҷануб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "对话",
-            "pinyin": "duìhuà",
-            "pos": "v./n.",
-            "meaning": {
-              "uz": "suhbatlashmoq, dialog",
-              "ru": "вести диалог, диалог",
-              "tj": "суҳбат кардан, гуфтугӯ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "普通话",
-            "pinyin": "Pǔtōnghuà",
-            "pos": "n.",
-            "meaning": {
-              "uz": "putonghua, standart xitoy tili",
-              "ru": "путунхуа, стандартный китайский",
-              "tj": "путунхуа, забони стандартии чинӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "小吃",
-            "pinyin": "xiǎochī",
-            "pos": "n.",
-            "meaning": {
-              "uz": "yengil taom, snack",
-              "ru": "закуска, уличная еда",
-              "tj": "хӯроки сабук"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "收拾",
-            "pinyin": "shōushi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yig'ishtirmoq, joylamoq",
-              "ru": "убирать, собирать",
-              "tj": "ҷамъ кардан, тартиб додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "出发",
-            "pinyin": "chūfā",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yo'lga chiqmoq",
-              "ru": "отправляться",
-              "tj": "ба роҳ баромадан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "湖南",
-            "pinyin": "Húnán",
-            "pos": "place",
-            "meaning": {
-              "uz": "Hunan",
-              "ru": "Хунань",
-              "tj": "Ҳунан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "香",
-            "pinyin": "xiāng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "xushbo'y, mazali hidli",
-              "ru": "ароматный",
-              "tj": "хушбӯй"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "酸",
-            "pinyin": "suān",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "nordon",
-              "ru": "кислый",
-              "tj": "турш"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "加油站",
+              {
+                "uz": "yoqilg'i quyish shoxobchasi",
+                "ru": "заправка",
+                "tj": "нуқтаи сӯзишворӣ"
+              }
+            ],
+            [
+              "航班",
+              {
+                "uz": "reys, parvoz",
+                "ru": "рейс, авиарейс",
+                "tj": "парвоз, рейс"
+              }
+            ],
+            [
+              "推迟",
+              {
+                "uz": "kechiktirmoq",
+                "ru": "откладывать, переносить",
+                "tj": "ба таъхир гузоштан"
+              }
+            ],
+            [
+              "高速公路",
+              {
+                "uz": "tezkor avtomagistral",
+                "ru": "скоростная трасса",
+                "tj": "роҳи автомобилгарди тезгард"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1246,6 +1151,90 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "harakat davomida boshqa holat yuz berishi",
+              "ru": "действие продолжается, затем происходит другое событие",
+              "tj": "дар рафти амал ҳолати дигар рӯй медиҳад"
+            },
+            "title_zh": "V+着+V+着",
+            "rule": {
+              "uz": "Bir fe'l 着 bilan ikki marta takrorlanib, shu davomiy harakat orasida boshqa natija yoki holat chiqqanini bildiradi.",
+              "ru": "Один и тот же глагол повторяется с 着 и показывает, что во время продолжающегося действия произошло другое событие.",
+              "tj": "Як феъл бо 着 ду бор меояд ва нишон медиҳад, ки ҳангоми идомаи амал ҳолати дигар рӯй дод."
+            },
+            "examples": [
+              {
+                "zh": "别开着开着没油了。",
+                "pinyin": "Bié kāi zhe kāi zhe méi yóu le.",
+                "translation": {
+                  "uz": "Haydab ketayotganda benzin tugab qolmasin.",
+                  "ru": "Смотри, как бы по дороге не закончился бензин.",
+                  "tj": "Эҳтиёт кун, ҳангоми рондан сӯзишворӣ тамом нашавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "darhol ketma-ketlik",
+              "ru": "сразу после; как только",
+              "tj": "ҳамин ки... дарҳол"
+            },
+            "title_zh": "一……就……",
+            "rule": {
+              "uz": "Ikki ishning juda tez ketma-ket yuz berishini yoki shart-natija munosabatini bildiradi.",
+              "ru": "Показывает, что второе действие происходит сразу после первого, или условие и результат.",
+              "tj": "Нишон медиҳад, ки амали дуюм пас аз якум фавран мешавад ё шарту натиҷаро медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "等女儿一回来我就告诉她这个好消息。",
+                "pinyin": "Děng nǚ'ér yì huílai wǒ jiù gàosu tā zhège hǎo xiāoxi.",
+                "translation": {
+                  "uz": "Qizim qaytishi bilan unga bu yaxshi xabarni aytaman.",
+                  "ru": "Как только дочь вернётся, я скажу ей эту хорошую новость.",
+                  "tj": "Ҳамин ки духтарам баргардад, ин хабари хушро мегӯям."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "savolni kuchaytirish",
+              "ru": "усиление вопроса",
+              "tj": "таъкиди савол"
+            },
+            "title_zh": "究竟",
+            "rule": {
+              "uz": "Savolda 'aslida aynan nima/qaysi' degan ohangni kuchaytiradi, ko'proq yozma uslubda ishlatiladi.",
+              "ru": "Усиливает вопрос: 'всё-таки что/какой именно', чаще в письменной речи.",
+              "tj": "Саволро қавӣ мекунад: 'дар асл кадом/чӣ', бештар дар услуби хаттӣ меояд."
+            },
+            "examples": [
+              {
+                "zh": "究竟哪个季节去丽江旅游比较好呢？",
+                "pinyin": "Jiūjìng nǎ ge jìjié qù Lìjiāng lǚyóu bǐjiào hǎo ne?",
+                "translation": {
+                  "uz": "Lijiangga aynan qaysi faslda sayohat qilish yaxshiroq?",
+                  "ru": "Всё-таки в какой сезон лучше ехать в Лицзян?",
+                  "tj": "Дар асл дар кадом фасл ба Лиҷян сафар кардан беҳтар аст?"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "____哪个季节去丽江旅游比较好呢？",
           "prompt": {
@@ -1255,15 +1244,117 @@
           },
           "options": [
             "推迟",
-            "航班",
             "究竟",
+            "航班",
             "加油站"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 究竟 (jiūjìng) — aslida, aynan, axir",
             "ru": "Верно: 究竟 (jiūjìng) — всё-таки, в конце концов",
             "tj": "Дуруст: 究竟 (jiūjìng) — дар асл, охир"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "ko'rinish yoki baholash",
+              "ru": "начать; по ощущению",
+              "tj": "сар шудан; аз нигоҳ/ҳис"
+            },
+            "title_zh": "起来",
+            "rule": {
+              "uz": "Fe'ldan keyin kelib harakat boshlanishi, yuqoriga yo'nalish yoki biror narsa qanday eshitilishi/ko'rinishini bildiradi.",
+              "ru": "После глагола показывает начало действия, движение вверх или впечатление: как что-то звучит/выглядит.",
+              "tj": "Пас аз феъл омада оғоз, самти боло ё чӣ гуна шунида/дида шудани чизро медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "上海话听起来就像外语一样。",
+                "pinyin": "Shànghǎihuà tīng qǐlai jiù xiàng wàiyǔ yíyàng.",
+                "translation": {
+                  "uz": "Shanxaycha eshitilganda xuddi chet tiliga o'xshaydi.",
+                  "ru": "Шанхайский диалект на слух похож на иностранный язык.",
+                  "tj": "Лаҳҷаи Шанхай ҳангоми шунидан мисли забони хориҷӣ менамояд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "mavzuni ochib berish",
+              "ru": "переход к теме",
+              "tj": "гузаштан ба мавзуъ"
+            },
+            "title_zh": "V+起",
+            "rule": {
+              "uz": "说, 谈, 讲, 问 kabi fe'llar bilan kelib, gap qaysi mavzudan boshlanayotganini bildiradi.",
+              "ru": "С глаголами 说, 谈, 讲, 问 и подобными вводит тему разговора.",
+              "tj": "Бо феълҳои 说, 谈, 讲, 问 ва монанд мавзуи гуфторро мекушояд."
+            },
+            "examples": [
+              {
+                "zh": "说起吃的东西，给我印象最深的是湖南菜。",
+                "pinyin": "Shuōqǐ chī de dōngxi, gěi wǒ yìnxiàng zuì shēn de shì Húnán cài.",
+                "translation": {
+                  "uz": "Ovqat haqida gap ketganda, menda eng chuqur taassurot qoldirgani Hunan taomlari.",
+                  "ru": "Если говорить о еде, самое глубокое впечатление на меня произвела хунаньская кухня.",
+                  "tj": "Агар дар бораи хӯрок гап занем, таоми Ҳунан ба ман аз ҳама зиёд таъсир кардааст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "说起吃的东西，给我印象最深的是____菜。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "航班",
+            "湖南",
+            "推迟",
+            "加油站"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 湖南 (Húnán) — Hunan",
+            "ru": "Верно: 湖南 (Húnán) — Хунань",
+            "tj": "Дуруст: 湖南 (Húnán) — Ҳунан"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Ovqat haqida gap ketganda, menda eng chuqur taassurot qoldirgani Hunan taomlari.» — xitoychada qaysi biri?",
+            "ru": "«Если говорить о еде, самое глубокое впечатление на меня произвела хунаньская кухня.» — какое предложение по-китайски?",
+            "tj": "«Агар дар бораи хӯрок гап занем, таоми Ҳунан ба ман аз ҳама зиёд таъсир кардааст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "等女儿一回来我就告诉她这个好消息。",
+            "说起吃的东西，给我印象最深的是湖南菜。",
+            "别开着开着没油了。",
+            "上海话听起来就像外语一样。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "说起吃的东西，给我印象最深的是湖南菜。 — Shuōqǐ chī de dōngxi, gěi wǒ yìnxiàng zuì shēn de shì Húnán cài.",
+            "ru": "说起吃的东西，给我印象最深的是湖南菜。 — Shuōqǐ chī de dōngxi, gěi wǒ yìnxiàng zuì shēn de shì Húnán cài.",
+            "tj": "说起吃的东西，给我印象最深的是湖南菜。 — Shuōqǐ chī de dōngxi, gěi wǒ yìnxiàng zuì shēn de shì Húnán cài."
           }
         }
       ]
@@ -1278,72 +1369,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "gāosù gōnglù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается gāosù gōnglù?",
-            "tj": "gāosù gōnglù кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "推迟",
-            "高速公路",
-            "航班",
-            "加油站"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "高速公路 = tezkor avtomagistral (gāosù gōnglù)",
-            "ru": "高速公路 = скоростная трасса (gāosù gōnglù)",
-            "tj": "高速公路 = роҳи автомобилгарди тезгард (gāosù gōnglù)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "登机牌 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 登机牌:",
-            "tj": "Маънои калимаи 登机牌-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "boarding pass, samolyotga chiqish taloni",
-              "ru": "посадочный талон",
-              "tj": "талони нишаст ба ҳавопаймо"
-            },
-            {
-              "uz": "yoqilg'i quyish shoxobchasi",
-              "ru": "заправка",
-              "tj": "нуқтаи сӯзишворӣ"
-            },
-            {
-              "uz": "kechiktirmoq",
-              "ru": "откладывать, переносить",
-              "tj": "ба таъхир гузоштан"
-            },
-            {
-              "uz": "reys, parvoz",
-              "ru": "рейс, авиарейс",
-              "tj": "парвоз, рейс"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "登机牌 = boarding pass, samolyotga chiqish taloni (dēngjīpái)",
-            "ru": "登机牌 = посадочный талон (dēngjīpái)",
-            "tj": "登机牌 = талони нишаст ба ҳавопаймо (dēngjīpái)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1354,8 +1379,8 @@
           "pinyin": "Gāi jiā yóu le, qù jīchǎng de lùshang yǒu jiāyóuzhàn ma?",
           "options": [
             "该加油了，去机场的路上有加油站吗？",
-            "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
             "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？",
+            "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
             "航班本来是十点的，后来机场网站上通知推迟了一个小时，所以九点半以前到就应该没问题。"
           ],
           "correct_index": 0,
@@ -1363,6 +1388,31 @@
             "uz": "该加油了，去机场的路上有加油站吗？ — Yoqilg'i quyish vaqti bo'ldi, aeroport yo'lida zapravka bormi?",
             "ru": "该加油了，去机场的路上有加油站吗？ — Пора заправиться, по дороге в аэропорт есть заправка?",
             "tj": "该加油了，去机场的路上有加油站吗？ — Вақти сӯзишворӣ шуд, дар роҳи фурудгоҳ нуқтаи сӯзишворӣ ҳаст?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "gān bēi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается gān bēi?",
+            "tj": "gān bēi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "加油站",
+            "推迟",
+            "干杯",
+            "航班"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "干杯 = qadah ko'tarmoq (gān bēi)",
+            "ru": "干杯 = пить до дна, тост (gān bēi)",
+            "tj": "干杯 = қадаҳ бардоштан (gān bēi)"
           }
         },
         {
@@ -1408,6 +1458,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "民族 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 民族:",
+            "tj": "Маънои калимаи 民族-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "millat, etnik guruh",
+              "ru": "национальность, народность",
+              "tj": "миллат, қавм"
+            },
+            {
+              "uz": "reys, parvoz",
+              "ru": "рейс, авиарейс",
+              "tj": "парвоз, рейс"
+            },
+            {
+              "uz": "yoqilg'i quyish shoxobchasi",
+              "ru": "заправка",
+              "tj": "нуқтаи сӯзишворӣ"
+            },
+            {
+              "uz": "kechiktirmoq",
+              "ru": "откладывать, переносить",
+              "tj": "ба таъхир гузоштан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "民族 = millat, etnik guruh (mínzú)",
+            "ru": "民族 = национальность, народность (mínzú)",
+            "tj": "民族 = миллат, қавм (mínzú)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "加油站",
           "pinyin": "jiāyóuzhàn",
@@ -1438,37 +1529,16 @@
           "audio_text": "该加油了，去机场的路上有加油站吗？",
           "pinyin": "Gāi jiā yóu le, qù jīchǎng de lùshang yǒu jiāyóuzhàn ma?",
           "options": [
-            "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？",
             "该加油了，去机场的路上有加油站吗？",
+            "航班本来是十点的，后来机场网站上通知推迟了一个小时，所以九点半以前到就应该没问题。",
             "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
-            "航班本来是十点的，后来机场网站上通知推迟了一个小时，所以九点半以前到就应该没问题。"
+            "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "该加油了，去机场的路上有加油站吗？ — Yoqilg'i quyish vaqti bo'ldi, aeroport yo'lida zapravka bormi?",
             "ru": "该加油了，去机场的路上有加油站吗？ — Пора заправиться, по дороге в аэропорт есть заправка?",
             "tj": "该加油了，去机场的路上有加油站吗？ — Вақти сӯзишворӣ шуд, дар роҳи фурудгоҳ нуқтаи сӯзишворӣ ҳаст?"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____加油了，去机场的路上有加油站吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "新",
-            "挺",
-            "该",
-            "斤"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 该 — 该加油了，去机场的路上有加油站吗？ (Yoqilg'i quyish vaqti bo'ldi, aeroport yo'lida zapravka bormi?)",
-            "ru": "Верно: 该 — 该加油了，去机场的路上有加油站吗？ (Пора заправиться, по дороге в аэропорт есть заправка?)",
-            "tj": "Дуруст: 该 — 该加油了，去机场的路上有加油站吗？ (Вақти сӯзишворӣ шуд, дар роҳи фурудгоҳ нуқтаи сӯзишворӣ ҳаст?)"
           }
         },
         {
@@ -1511,16 +1581,37 @@
             }
           ],
           "options": [
+            "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",
             "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？",
             "该加油了，去机场的路上有加油站吗？",
-            "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",
             "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",
             "ru": "Правильный ответ: 一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",
             "tj": "Ҷавоби дуруст: 一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____加油了，去机场的路上有加油站吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "怀",
+            "电",
+            "旧",
+            "该"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 该 — 该加油了，去机场的路上有加油站吗？ (Yoqilg'i quyish vaqti bo'ldi, aeroport yo'lida zapravka bormi?)",
+            "ru": "Верно: 该 — 该加油了，去机场的路上有加油站吗？ (Пора заправиться, по дороге в аэропорт есть заправка?)",
+            "tj": "Дуруст: 该 — 该加油了，去机场的路上有加油站吗？ (Вақти сӯзишворӣ шуд, дар роҳи фурудгоҳ нуқтаи сӯзишворӣ ҳаст?)"
           }
         },
         {
@@ -1536,12 +1627,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "该加油了，去机场的路上有加油站吗？",
-            "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
             "航班本来是十点的，后来机场网站上通知推迟了一个小时，所以九点半以前到就应该没问题。",
-            "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？"
+            "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？",
+            "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
+            "该加油了，去机场的路上有加油站吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 该加油了，去机场的路上有加油站吗？",
             "ru": "Правильный ответ: 该加油了，去机场的路上有加油站吗？",
@@ -1561,12 +1652,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",
+            "该加油了，去机场的路上有加油站吗？",
             "我记得过了长江大桥往右一拐就有一个，大概有四五公里远。",
             "好，那我就放心了，别开着开着没油了。你去北京的航班是几点的？时间来得及吗？",
-            "该加油了，去机场的路上有加油站吗？"
+            "一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",
             "ru": "Правильный ответ: 一会儿我自己进去换登机牌，你就不用送我了，等我到了首都机场再给你发短信。",

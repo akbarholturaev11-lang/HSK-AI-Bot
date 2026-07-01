@@ -8,6 +8,8 @@
     "ru": "Разница '才' и '就', конструкция '把' часть 2, выражение '让+человек+Гл'",
     "tj": "Фарқи '才' ва '就', сохтори '把' қисми 2, ибораи '让+одам+Ф'"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -535,6 +537,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "西 talaffuzini tanlang:",
+            "ru": "Выберите произношение 西:",
+            "tj": "Талаффузи 西-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tàiyáng",
+            "shēng qì",
+            "xínglixiāng",
+            "xī"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "西 — xī",
+            "ru": "西 — xī",
+            "tj": "西 — xī"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -560,6 +587,47 @@
               "ru": "чемодан",
               "tj": "ҷомадон"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "西 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 西:",
+            "tj": "Маънои калимаи 西-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
+            },
+            {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "хашмгин шудан"
+            },
+            {
+              "uz": "jomadon, chamadon",
+              "ru": "чемодан",
+              "tj": "ҷомадон"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "西 = g'arb (xī)",
+            "ru": "西 = запад (xī)",
+            "tj": "西 = ғарб (xī)"
           }
         },
         {
@@ -591,6 +659,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shēng qì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shēng qì?",
+            "tj": "shēng qì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "行李箱",
+            "西",
+            "生气",
+            "太阳"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "生气 = jahli chiqmoq (shēng qì)",
+            "ru": "生气 = сердиться (shēng qì)",
+            "tj": "生气 = хашмгин шудан (shēng qì)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -616,6 +709,31 @@
               "ru": "паспорт",
               "tj": "шиноснома"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "护照 talaffuzini tanlang:",
+            "ru": "Выберите произношение 护照:",
+            "tj": "Талаффузи 护照-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tàiyáng",
+            "hùzhào",
+            "shēng qì",
+            "xī"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "护照 — hùzhào",
+            "ru": "护照 — hùzhào",
+            "tj": "护照 — hùzhào"
           }
         },
         {
@@ -647,140 +765,6 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "教",
-            "pinyin": "jiāo",
-            "pos": "v.",
-            "meaning": {
-              "uz": "o'qitmoq, o'rgatmoq",
-              "ru": "учить, преподавать",
-              "tj": "омӯзондан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "画",
-            "pinyin": "huà",
-            "pos": "v./n.",
-            "meaning": {
-              "uz": "chizmoq; rasm",
-              "ru": "рисовать; рисунок",
-              "tj": "расм кашидан; расм"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "需要",
-            "pinyin": "xūyào",
-            "pos": "v.",
-            "meaning": {
-              "uz": "kerak bo'lmoq, ehtiyoj sezmoq",
-              "ru": "нуждаться, требоваться",
-              "tj": "лозим шудан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "黑板",
-            "pinyin": "hēibǎn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "doska",
-              "ru": "классная доска",
-              "tj": "тахтаи синф"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 2,
-      "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Kitobni stolda qoldiring.",
-            "ru": "Положи книгу на стол.",
-            "tj": "Китобро ба болои миз монд."
-          },
-          "tokens": [
-            "在",
-            "放",
-            "桌子",
-            "太阳",
-            "书",
-            "西",
-            "把",
-            "上"
-          ],
-          "answer_tokens": [
-            "把",
-            "书",
-            "放",
-            "在",
-            "桌子",
-            "上"
-          ],
-          "explanation": {
-            "uz": "把书放在桌子上。 — Bǎ shū fàng zài zhuōzi shàng.",
-            "ru": "把书放在桌子上。 — Bǎ shū fàng zài zhuōzi shàng.",
-            "tj": "把书放在桌子上。 — Bǎ shū fàng zài zhuōzi shàng."
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
-        "uz": "Mashq",
-        "ru": "Упражнение",
-        "tj": "Машқ"
-      },
-      "section_purpose": "practice",
-      "cards": [
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "xínglixiāng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается xínglixiāng?",
-            "tj": "xínglixiāng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "生气",
-            "太阳",
-            "行李箱",
-            "西"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "行李箱 = jomadon, chamadon (xínglixiāng)",
-            "ru": "行李箱 = чемодан (xínglixiāng)",
-            "tj": "行李箱 = ҷомадон (xínglixiāng)"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "自己 so'zining ma'nosini tanlang:",
@@ -794,16 +778,6 @@
           },
           "options": [
             {
-              "uz": "g'arb",
-              "ru": "запад",
-              "tj": "ғарб"
-            },
-            {
-              "uz": "o'zi",
-              "ru": "сам",
-              "tj": "худ"
-            },
-            {
               "uz": "quyosh",
               "ru": "солнце",
               "tj": "офтоб"
@@ -812,58 +786,23 @@
               "uz": "jahli chiqmoq",
               "ru": "сердиться",
               "tj": "хашмгин шудан"
+            },
+            {
+              "uz": "o'zi",
+              "ru": "сам",
+              "tj": "худ"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "自己 = o'zi (zìjǐ)",
             "ru": "自己 = сам (zìjǐ)",
             "tj": "自己 = худ (zìjǐ)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Nima bo'ldi?",
-            "ru": "Что случилось?",
-            "tj": "Чӣ шуд?"
-          },
-          "tokens": [
-            "了",
-            "西",
-            "怎么",
-            "太阳"
-          ],
-          "answer_tokens": [
-            "怎么",
-            "了"
-          ],
-          "explanation": {
-            "uz": "怎么了？ — Zěnme le?",
-            "ru": "怎么了？ — Zěnme le?",
-            "tj": "怎么了？ — Zěnme le?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "今天太阳从西边出来了吗？",
-          "pinyin": "Jīntiān tàiyáng cóng xībian chūlai le ma?",
-          "options": [
-            "今天太阳从西边出来了吗？",
-            "我明天8点就要到公司。",
-            "怎么了？",
-            "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "今天太阳从西边出来了吗？ — Bugun quyosh g'arbdan chiqdimi?",
-            "ru": "今天太阳从西边出来了吗？ — Сегодня солнце взошло на западе?",
-            "tj": "今天太阳从西边出来了吗？ — Имрӯз офтоб аз ғарб баромад?"
           }
         },
         {
@@ -906,6 +845,379 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "\"才\" va \"就\" farqi",
+              "ru": "Разница между \"才\" и \"就\"",
+              "tj": "Фарқи \"才\" ва \"就\""
+            },
+            "title_zh": "\"才\"和\"就\"的区别",
+            "rule": {
+              "uz": "'就' kutilganidan erta yoki tez bo'lganini bildiradi (erta keldi = soat to'qqizda keldi). '才' kutilganidan kech yoki qiyin bo'lganini bildiradi (soat o'n birda keldi). Ikkalasi ham taqqoslash asosida baholanadi.",
+              "ru": "'就' выражает, что что-то произошло раньше или быстрее ожидаемого (рано пришёл = в девять). '才' выражает, что что-то произошло позже или сложнее ожидаемого (пришёл только в одиннадцать). Оба оцениваются на основе сравнения.",
+              "tj": "'就' ифода мекунад, ки чизе зудтар ё барвақттар аз интизорӣ рух дод (барвақт омад = соати нӯҳ). '才' ифода мекунад, ки чизе дертар ё мушкилтар аз интизорӣ рух дод (фақат соати ёздаҳ омад). Ҳарду дар асоси муқоиса арзёбӣ мешаванд."
+            },
+            "examples": [
+              {
+                "zh": "他八点就来了，真早！",
+                "pinyin": "Tā bā diǎn jiù lái le, zhēn zǎo!",
+                "translation": {
+                  "uz": "U soat sakkizda keldi, juda erta!",
+                  "ru": "Он пришёл уже в восемь, так рано!",
+                  "tj": "Вай соати ҳашт омад, хеле барвақт!"
+                }
+              },
+              {
+                "zh": "他十一点才来，太晚了！",
+                "pinyin": "Tā shíyī diǎn cái lái, tài wǎn le!",
+                "translation": {
+                  "uz": "U soat o'n birda keldi, juda kech!",
+                  "ru": "Он пришёл только в одиннадцать, так поздно!",
+                  "tj": "Вай соати ёздаҳ омад, хеле дер!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "把-konstruktsiyasi②: 把 + OB + F + 在/到/给",
+              "ru": "Конструкция 把②: 把 + объект + Гл + 在/到/给",
+              "tj": "Сохтори 把②: 把 + объект + Ф + 在/到/给"
+            },
+            "title_zh": "把字句②：把 + O + V + 在/到/给",
+            "rule": {
+              "uz": "'把'-konstruktsiyasida fe'ldan keyin '在' (joyda), '到' (joyga) yoki '给' (kimgadir) qo'shilishi mumkin. Bu ob'ektning qayerda, qayerga yoki kimga taalluqli ekanini bildiradi.",
+              "ru": "В конструкции '把' после глагола может следовать '在' (на/в месте), '到' (к месту) или '给' (кому-то). Это указывает на место, пункт назначения или получателя объекта.",
+              "tj": "Дар сохтори '把' баъди феъл '在' (дар ҷое), '到' (ба ҷое) ё '给' (ба касе) омада метавонад. Ин ҷойгоҳ, мақсади ҳаракат ё гирандаи объектро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "把钥匙交给你。",
+                "pinyin": "Bǎ yàoshi jiāo gěi nǐ.",
+                "translation": {
+                  "uz": "Kalitni sizga topshiraman.",
+                  "ru": "Отдаю ключ тебе.",
+                  "tj": "Калидро ба шумо медиҳам."
+                }
+              },
+              {
+                "zh": "把书放在桌子上。",
+                "pinyin": "Bǎ shū fàng zài zhuōzi shàng.",
+                "translation": {
+                  "uz": "Kitobni stolda qoldiring.",
+                  "ru": "Положи книгу на стол.",
+                  "tj": "Китобро ба болои миз монд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Kitobni stolda qoldiring.",
+            "ru": "Положи книгу на стол.",
+            "tj": "Китобро ба болои миз монд."
+          },
+          "tokens": [
+            "太阳",
+            "上",
+            "书",
+            "西",
+            "桌子",
+            "放",
+            "在",
+            "把"
+          ],
+          "answer_tokens": [
+            "把",
+            "书",
+            "放",
+            "在",
+            "桌子",
+            "上"
+          ],
+          "explanation": {
+            "uz": "把书放在桌子上。 — Bǎ shū fàng zài zhuōzi shàng.",
+            "ru": "把书放在桌子上。 — Bǎ shū fàng zài zhuōzi shàng.",
+            "tj": "把书放在桌子上。 — Bǎ shū fàng zài zhuōzi shàng."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "让 + odam + fe'l (majbur qilmoq)",
+              "ru": "让 + человек + глагол (каузатив)",
+              "tj": "让 + одам + феъл (маҷбур кардан)"
+            },
+            "title_zh": "让 + 人 + 动词（使役句）",
+            "rule": {
+              "uz": "'让' = biror kishini biror narsa qilishiga ruxsat bermoq yoki uni shunday qilishga majbur qilmoq. Tuzilma: subekt + 让 + odam + fe'l. Salbiy: 让……别……",
+              "ru": "'让' = позволять кому-то сделать что-то или заставлять кого-то это делать. Структура: подлежащее + 让 + человек + глагол. Отрицание: 让……别……",
+              "tj": "'让' = иҷозат додан ба касе барои кардани чизе ё маҷбур кардани вай ба ин амал. Сохтор: мубтадо + 让 + одам + феъл. Манфӣ: 让……别……"
+            },
+            "examples": [
+              {
+                "zh": "你让我放心多了。",
+                "pinyin": "Nǐ ràng wǒ fàngxīn duō le.",
+                "translation": {
+                  "uz": "Siz meni ancha xotirjam qildingiz.",
+                  "ru": "Ты меня очень успокоил.",
+                  "tj": "Шумо маро хеле хотирҷамъ кардед."
+                }
+              },
+              {
+                "zh": "别让我等太久！",
+                "pinyin": "Bié ràng wǒ děng tài jiǔ!",
+                "translation": {
+                  "uz": "Meni uzoq kutdirmang!",
+                  "ru": "Не заставляй меня долго ждать!",
+                  "tj": "Маро дер интизор нагузор!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz meni ancha xotirjam qildingiz.",
+            "ru": "Ты меня очень успокоил.",
+            "tj": "Шумо маро хеле хотирҷамъ кардед."
+          },
+          "tokens": [
+            "了",
+            "让",
+            "我",
+            "西",
+            "你",
+            "太阳",
+            "放心",
+            "多"
+          ],
+          "answer_tokens": [
+            "你",
+            "让",
+            "我",
+            "放心",
+            "多",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你让我放心多了。 — Nǐ ràng wǒ fàngxīn duō le.",
+            "ru": "你让我放心多了。 — Nǐ ràng wǒ fàngxīn duō le.",
+            "tj": "你让我放心多了。 — Nǐ ràng wǒ fàngxīn duō le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Siz meni ancha xotirjam qildingiz.» — xitoychada qaysi biri?",
+            "ru": "«Ты меня очень успокоил.» — какое предложение по-китайски?",
+            "tj": "«Шумо маро хеле хотирҷамъ кардед.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "他十一点才来，太晚了！",
+            "你让我放心多了。",
+            "他八点就来了，真早！",
+            "别让我等太久！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你让我放心多了。 — Nǐ ràng wǒ fàngxīn duō le.",
+            "ru": "你让我放心多了。 — Nǐ ràng wǒ fàngxīn duō le.",
+            "tj": "你让我放心多了。 — Nǐ ràng wǒ fàngxīn duō le."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "太阳",
+              {
+                "uz": "quyosh",
+                "ru": "солнце",
+                "tj": "офтоб"
+              }
+            ],
+            [
+              "西",
+              {
+                "uz": "g'arb",
+                "ru": "запад",
+                "tj": "ғарб"
+              }
+            ],
+            [
+              "生气",
+              {
+                "uz": "jahli chiqmoq",
+                "ru": "сердиться",
+                "tj": "хашмгин шудан"
+              }
+            ],
+            [
+              "行李箱",
+              {
+                "uz": "jomadon, chamadon",
+                "ru": "чемодан",
+                "tj": "ҷомадон"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "今天太阳从西边出来了吗？",
+          "pinyin": "Jīntiān tàiyáng cóng xībian chūlai le ma?",
+          "options": [
+            "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。",
+            "怎么了？",
+            "我明天8点就要到公司。",
+            "今天太阳从西边出来了吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "今天太阳从西边出来了吗？ — Bugun quyosh g'arbdan chiqdimi?",
+            "ru": "今天太阳从西边出来了吗？ — Сегодня солнце взошло на западе?",
+            "tj": "今天太阳从西边出来了吗？ — Имрӯз офтоб аз ғарб баромад?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Nima bo'ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ шуд?"
+          },
+          "tokens": [
+            "西",
+            "太阳",
+            "怎么",
+            "了"
+          ],
+          "answer_tokens": [
+            "怎么",
+            "了"
+          ],
+          "explanation": {
+            "uz": "怎么了？ — Zěnme le?",
+            "ru": "怎么了？ — Zěnme le?",
+            "tj": "怎么了？ — Zěnme le?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hēibǎn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hēibǎn?",
+            "tj": "hēibǎn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "西",
+            "太阳",
+            "生气",
+            "黑板"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "黑板 = doska (hēibǎn)",
+            "ru": "黑板 = классная доска (hēibǎn)",
+            "tj": "黑板 = тахтаи синф (hēibǎn)"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "教 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 教:",
+            "tj": "Маънои калимаи 教-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jahli chiqmoq",
+              "ru": "сердиться",
+              "tj": "хашмгин шудан"
+            },
+            {
+              "uz": "o'qitmoq, o'rgatmoq",
+              "ru": "учить, преподавать",
+              "tj": "омӯзондан"
+            },
+            {
+              "uz": "quyosh",
+              "ru": "солнце",
+              "tj": "офтоб"
+            },
+            {
+              "uz": "g'arb",
+              "ru": "запад",
+              "tj": "ғарб"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "教 = o'qitmoq, o'rgatmoq (jiāo)",
+            "ru": "教 = учить, преподавать (jiāo)",
+            "tj": "教 = омӯзондан (jiāo)"
           }
         },
         {
@@ -960,16 +1272,41 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "国",
             "今",
-            "新",
-            "斤"
+            "电",
+            "下",
+            "旧"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 今 — 今天太阳从西边出来了吗？ (Bugun quyosh g'arbdan chiqdimi?)",
             "ru": "Верно: 今 — 今天太阳从西边出来了吗？ (Сегодня солнце взошло на западе?)",
             "tj": "Дуруст: 今 — 今天太阳从西边出来了吗？ (Имрӯз офтоб аз ғарб баромад?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 小刚 nima deydi?",
+            "ru": "Что 小刚 говорит в конце диалога?",
+            "tj": "Дар охири муколама 小刚 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。",
+            "怎么了？",
+            "今天太阳从西边出来了吗？",
+            "经理生气了，他告诉我，明天8点不到，以后就别来了。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 经理生气了，他告诉我，明天8点不到，以后就别来了。",
+            "ru": "Правильный ответ: 经理生气了，他告诉我，明天8点不到，以后就别来了。",
+            "tj": "Ҷавоби дуруст: 经理生气了，他告诉我，明天8点不到，以后就别来了。"
           }
         },
         {
@@ -1012,12 +1349,12 @@
             }
           ],
           "options": [
-            "怎么了？",
             "经理生气了，他告诉我，明天8点不到，以后就别来了。",
-            "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。",
-            "今天太阳从西边出来了吗？"
+            "今天太阳从西边出来了吗？",
+            "怎么了？",
+            "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 经理生气了，他告诉我，明天8点不到，以后就别来了。",
             "ru": "Правильный ответ: 经理生气了，他告诉我，明天8点不到，以后就别来了。",
@@ -1037,41 +1374,16 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "今天太阳从西边出来了吗？",
             "我明天8点就要到公司。",
             "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。",
-            "怎么了？"
+            "怎么了？",
+            "今天太阳从西边出来了吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 今天太阳从西边出来了吗？",
             "ru": "Правильный ответ: 今天太阳从西边出来了吗？",
             "tj": "Ҷавоби дуруст: 今天太阳从西边出来了吗？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小刚 nima deydi?",
-            "ru": "Что 小刚 говорит в конце диалога?",
-            "tj": "Дар охири муколама 小刚 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "经理生气了，他告诉我，明天8点不到，以后就别来了。",
-            "怎么了？",
-            "你怎么这么早就要睡觉了？以前都要12点以后才睡觉。",
-            "今天太阳从西边出来了吗？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 经理生气了，他告诉我，明天8点不到，以后就别来了。",
-            "ru": "Правильный ответ: 经理生气了，他告诉我，明天8点不到，以后就别来了。",
-            "tj": "Ҷавоби дуруст: 经理生气了，他告诉我，明天8点不到，以后就别来了。"
           }
         }
       ]

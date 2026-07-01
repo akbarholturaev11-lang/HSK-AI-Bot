@@ -8,6 +8,8 @@
     "ru": "Пассивная конструкция '被', условное '只有…才…' и восклицание '多么…啊'",
     "tj": "Сохтори пассивии '被', шартии '只有…才…' ва ندای тааҷубии '多么…啊'"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -525,6 +527,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bèi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bèi?",
+            "tj": "bèi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "照相机",
+            "东",
+            "难过",
+            "被"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "被 = majhul nisbatni bildiruvchi predlog (bèi)",
+            "ru": "被 = предлог пассивного залога (bèi)",
+            "tj": "被 = пешоянди нишондиҳандаи шакли маҷҳул (bèi)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -550,6 +577,31 @@
               "ru": "восток",
               "tj": "шарқ"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "东 talaffuzini tanlang:",
+            "ru": "Выберите произношение 东:",
+            "tj": "Талаффузи 东-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dōng",
+            "nánguò",
+            "zhàoxiàngjī",
+            "bèi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "东 — dōng",
+            "ru": "东 — dōng",
+            "tj": "东 — dōng"
           }
         },
         {
@@ -581,6 +633,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "关心 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 关心:",
+            "tj": "Маънои калимаи 关心-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            },
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            },
+            {
+              "uz": "qiziqmoq, e'tibor bermoq",
+              "ru": "заботиться, интересоваться",
+              "tj": "ғамхорӣ кардан, таваҷҷӯҳ доштан"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "关心 = qiziqmoq, e'tibor bermoq (guānxīn)",
+            "ru": "关心 = заботиться, интересоваться (guānxīn)",
+            "tj": "关心 = ғамхорӣ кардан, таваҷҷӯҳ доштан (guānxīn)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -606,6 +699,31 @@
               "ru": "оценки, результат, успеваемость",
               "tj": "натиҷа, баҳо, пешрафт"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dōng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dōng?",
+            "tj": "dōng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "难过",
+            "照相机",
+            "被",
+            "东"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "东 = sharq (dōng)",
+            "ru": "东 = восток (dōng)",
+            "tj": "东 = шарқ (dōng)"
           }
         },
         {
@@ -637,59 +755,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "解决",
-            "pinyin": "jiějué",
-            "pos": "v.",
-            "meaning": {
-              "uz": "hal qilmoq",
-              "ru": "решать",
-              "tj": "ҳал кардан"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "被 talaffuzini tanlang:",
+            "ru": "Выберите произношение 被:",
+            "tj": "Талаффузи 被-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nánguò",
+            "bèi",
+            "zhàoxiàngjī",
+            "dōng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "被 — bèi",
+            "ru": "被 — bèi",
+            "tj": "被 — bèi"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "试",
-            "pinyin": "shì",
-            "pos": "v.",
-            "meaning": {
-              "uz": "sinab ko'rmoq",
-              "ru": "пробовать",
-              "tj": "санҷидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "真正",
-            "pinyin": "zhēnzhèng",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "haqiqatan, chinakam",
-              "ru": "действительно, по-настоящему",
-              "tj": "воқеан, ҳақиқатан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "多么",
-            "pinyin": "duōme",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "naqadar, qanchalik",
-              "ru": "как, насколько",
-              "tj": "чӣ қадар, то чӣ андоза"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "照相机",
+              {
+                "uz": "fotoapparat, kamera",
+                "ru": "фотоаппарат, камера",
+                "tj": "фотоаппарат, камера"
+              }
+            ],
+            [
+              "被",
+              {
+                "uz": "majhul nisbatni bildiruvchi predlog",
+                "ru": "предлог пассивного залога",
+                "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+              }
+            ],
+            [
+              "难过",
+              {
+                "uz": "xafa, g'amgin",
+                "ru": "грустный, печальный",
+                "tj": "ғамгин, хафа"
+              }
+            ],
+            [
+              "东",
+              {
+                "uz": "sharq",
+                "ru": "восток",
+                "tj": "шарқ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -704,6 +833,43 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "被-konstruktsiya: 被 + harakat bajaruvchi + fe'l (passiv gap)",
+              "ru": "Конструкция 被: 被 + деятель + глагол (пассивный залог)",
+              "tj": "Сохтори 被: 被 + иҷрогар + феъл (замони маҷҳул)"
+            },
+            "title_zh": "被字句：被 + 施事者 + 动词（被动句）",
+            "rule": {
+              "uz": "'被'-konstruktsiya passiv gaplarni ifodalaydi. Tuzilma: sub'ekt (ob'ekt) + 被 + harakat bajaruvchi + fe'l. Ko'pincha noxush hodisalarda ishlatiladi, lekin ijobiy hodisalar uchun ham mumkin. Harakat bajaruvchi tushirilishi mumkin.",
+              "ru": "Конструкция '被' выражает пассивный залог. Структура: субъект (объект) + 被 + деятель + глагол. Часто используется при неприятных событиях, но возможна и для позитивных. Деятель может быть опущен.",
+              "tj": "Сохтори '被' замони маҷҳулро ифода мекунад. Сохтор: мубтадо (объект) + 被 + иҷрогар + феъл. Зиёдтар дар ҳодисаҳои нохуш истифода мешавад, аммо барои мусбат ҳам мумкин. Иҷрогар партофта шавад мешавад."
+            },
+            "examples": [
+              {
+                "zh": "我被他影响了！",
+                "pinyin": "Wǒ bèi tā yǐngxiǎng le!",
+                "translation": {
+                  "uz": "U meni ta'sirlantirdi!",
+                  "ru": "Он повлиял на меня!",
+                  "tj": "Вай ба ман таъсир кард!"
+                }
+              },
+              {
+                "zh": "他被老师批评了。",
+                "pinyin": "Tā bèi lǎoshī pīpíng le.",
+                "translation": {
+                  "uz": "Uni o'qituvchi tanqid qildi.",
+                  "ru": "Его покритиковал учитель.",
+                  "tj": "Вайро муаллим танқид кард."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U meni ta'sirlantirdi!",
@@ -711,13 +877,13 @@
             "tj": "Вай ба ман таъсир кард!"
           },
           "tokens": [
-            "我",
             "照相机",
-            "了",
+            "影响",
             "难过",
+            "我",
             "被",
-            "他",
-            "影响"
+            "了",
+            "他"
           ],
           "answer_tokens": [
             "我",
@@ -733,6 +899,80 @@
           }
         },
         {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Faqat……bo'lgandagina……mumkin",
+              "ru": "Только……тогда только……",
+              "tj": "Танҳо……вақте ки……мумкин аст"
+            },
+            "title_zh": "只有……才……",
+            "rule": {
+              "uz": "'只有…才…' = biror shart faqat shu tarzda bajarilsa, natijaga erishish mumkin. '只要…就…' dan farqi: '只有' kuchliroq shart, bitta to'g'ri yo'l bor; '只要' = yetarli shart, boshqa yo'llar ham mumkin.",
+              "ru": "'只有…才…' = результат возможен только при выполнении именно этого условия. Отличие от '只要…就…': '只有' — более строгое условие, только один правильный путь; '只要' — достаточное условие, другие пути тоже возможны.",
+              "tj": "'只有…才…' = натиҷа танҳо ҳангоми иҷрои маҳз ин шарт имконпазир аст. Фарқ аз '只要…就…': '只有' — шарти қатъитар, танҳо як роҳи дуруст; '只要' — шарти кофӣ, роҳҳои дигар ҳам мумкин."
+            },
+            "examples": [
+              {
+                "zh": "只有经历失败，才能变得更强！",
+                "pinyin": "Zhǐyǒu jīnglì shībài, cái néng biàn de gèng qiáng!",
+                "translation": {
+                  "uz": "Faqat mag'lubiyatni boshdan kechirganingizda, kuchliroq bo'la olasiz!",
+                  "ru": "Только пережив поражение, можно стать сильнее!",
+                  "tj": "Танҳо вақте шикастро аз сар гузаронед, метавонед қавитар шавед!"
+                }
+              },
+              {
+                "zh": "只有努力学习，才能考上大学。",
+                "pinyin": "Zhǐyǒu nǔlì xuéxí, cái néng kǎo shàng dàxué.",
+                "translation": {
+                  "uz": "Faqat qattiq o'qisangizgina, universitetga kira olasiz.",
+                  "ru": "Только усердно учась, можно поступить в университет.",
+                  "tj": "Танҳо сахт омӯхтан имкон медиҳад ба донишгоҳ дохил шавед."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Qanchalik……! (hayrat undalmasi)",
+              "ru": "Как……! (восклицательное предложение)",
+              "tj": "Чӣ қадар……! (ҷумлаи тааҷубӣ)"
+            },
+            "title_zh": "多么……啊！（感叹句）",
+            "rule": {
+              "uz": "'多么…啊！' tuzilmasi kuchli his-tuyg'u, hayrat yoki quvonchni ifodalaydi. Tuzilma: 多么 + sifat/holat + 啊！ Ingilizcha 'How …!' ga o'xshaydi. Og'zaki nutqda '啊' o'rniga '呀' ishlatilishi mumkin.",
+              "ru": "Конструкция '多么…啊！' выражает сильные эмоции, восхищение или радость. Структура: 多么 + прилагательное/состояние + 啊！ Похоже на английское 'How …!'. В разговорной речи '啊' может заменяться на '呀'.",
+              "tj": "Сохтори '多么…啊！' эҳсосоти қавӣ, тааҷуб ё шодиро ифода мекунад. Сохтор: 多么 + сифат/ҳол + 啊！ Ба 'How …!'-и инглисӣ монанд. Дар забони гуфторӣ '啊' ба '呀' иваз шуда метавонад."
+            },
+            "examples": [
+              {
+                "zh": "多么美好的未来在等着你啊！",
+                "pinyin": "Duōme měihǎo de wèilái zài děngzhe nǐ a!",
+                "translation": {
+                  "uz": "Qanchalik ajoyib kelajak sizi kutmoqda!",
+                  "ru": "Как прекрасное будущее тебя ждёт!",
+                  "tj": "Чӣ қадар ояндаи зебо шуморо интизор аст!"
+                }
+              },
+              {
+                "zh": "多么宝贵的经历啊！",
+                "pinyin": "Duōme bǎoguì de jīnglì a!",
+                "translation": {
+                  "uz": "Qanchalik qimmatli tajriba!",
+                  "ru": "Как ценный опыт!",
+                  "tj": "Чӣ қадар таҷрибаи гаронбаҳо!"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "____美好的未来在等着你啊！",
           "prompt": {
@@ -743,14 +983,39 @@
           "options": [
             "多么",
             "被",
-            "照相机",
-            "难过"
+            "难过",
+            "照相机"
           ],
           "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 多么 (duōme) — naqadar, qanchalik",
             "ru": "Верно: 多么 (duōme) — как, насколько",
             "tj": "Дуруст: 多么 (duōme) — чӣ қадар, то чӣ андоза"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Qanchalik ajoyib kelajak sizi kutmoqda!» — xitoychada qaysi biri?",
+            "ru": "«Как прекрасное будущее тебя ждёт!» — какое предложение по-китайски?",
+            "tj": "«Чӣ қадар ояндаи зебо шуморо интизор аст!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "多么美好的未来在等着你啊！",
+            "只有经历失败，才能变得更强！",
+            "我被他影响了！",
+            "多么宝贵的经历啊！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "多么美好的未来在等着你啊！ — Duōme měihǎo de wèilái zài děngzhe nǐ a!",
+            "ru": "多么美好的未来在等着你啊！ — Duōme měihǎo de wèilái zài děngzhe nǐ a!",
+            "tj": "多么美好的未来在等着你啊！ — Duōme měihǎo de wèilái zài děngzhe nǐ a!"
           }
         }
       ]
@@ -765,72 +1030,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "dōng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается dōng?",
-            "tj": "dōng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "照相机",
-            "东",
-            "被",
-            "难过"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "东 = sharq (dōng)",
-            "ru": "东 = восток (dōng)",
-            "tj": "东 = шарқ (dōng)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "信用卡 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 信用卡:",
-            "tj": "Маънои калимаи 信用卡-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "fotoapparat, kamera",
-              "ru": "фотоаппарат, камера",
-              "tj": "фотоаппарат, камера"
-            },
-            {
-              "uz": "majhul nisbatni bildiruvchi predlog",
-              "ru": "предлог пассивного залога",
-              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
-            },
-            {
-              "uz": "kredit karta",
-              "ru": "кредитная карта",
-              "tj": "корти кредитӣ"
-            },
-            {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный, печальный",
-              "tj": "ғамгин, хафа"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "信用卡 = kredit karta (xìnyòngkǎ)",
-            "ru": "信用卡 = кредитная карта (xìnyòngkǎ)",
-            "tj": "信用卡 = корти кредитӣ (xìnyòngkǎ)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -840,12 +1039,12 @@
           "audio_text": "我的照相机被谁拿走了？怎么找不到了？",
           "pinyin": "Wǒ de zhàoxiàngjī bèi shéi ná zǒu le? Zěnme zhǎo bu dào le?",
           "options": [
+            "我找了，没找到啊。",
             "我的照相机被谁拿走了？怎么找不到了？",
             "别难过，再买一个吧，公司东门外不就有一个大商场吗？",
-            "我找了，没找到啊。",
             "你再找找。是不是没带来？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "我的照相机被谁拿走了？怎么找不到了？ — Fotoapparatimni kim olib ketdi? Nega topa olmayapman?",
             "ru": "我的照相机被谁拿走了？怎么找不到了？ — Кто забрал мой фотоаппарат? Почему я не могу его найти?",
@@ -895,6 +1094,72 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "解决 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 解决:",
+            "tj": "Маънои калимаи 解决-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            },
+            {
+              "uz": "hal qilmoq",
+              "ru": "решать",
+              "tj": "ҳал кардан"
+            },
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "解决 = hal qilmoq (jiějué)",
+            "ru": "解决 = решать (jiějué)",
+            "tj": "解决 = ҳал кардан (jiějué)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "duōme qaysi ieroglif?",
+            "ru": "Какой иероглиф читается duōme?",
+            "tj": "duōme кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "照相机",
+            "多么",
+            "难过",
+            "被"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "多么 = naqadar, qanchalik (duōme)",
+            "ru": "多么 = как, насколько (duōme)",
+            "tj": "多么 = чӣ қадар, то чӣ андоза (duōme)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "照相机",
           "pinyin": "zhàoxiàngjī",
@@ -925,37 +1190,16 @@
           "audio_text": "我的照相机被谁拿走了？怎么找不到了？",
           "pinyin": "Wǒ de zhàoxiàngjī bèi shéi ná zǒu le? Zěnme zhǎo bu dào le?",
           "options": [
-            "我找了，没找到啊。",
-            "你再找找。是不是没带来？",
             "我的照相机被谁拿走了？怎么找不到了？",
-            "别难过，再买一个吧，公司东门外不就有一个大商场吗？"
+            "别难过，再买一个吧，公司东门外不就有一个大商场吗？",
+            "我找了，没找到啊。",
+            "你再找找。是不是没带来？"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "我的照相机被谁拿走了？怎么找不到了？ — Fotoapparatimni kim olib ketdi? Nega topa olmayapman?",
             "ru": "我的照相机被谁拿走了？怎么找不到了？ — Кто забрал мой фотоаппарат? Почему я не могу его найти?",
             "tj": "我的照相机被谁拿走了？怎么找不到了？ — Фотоаппарати маро кӣ гирифта рафт? Чаро ёфта наметавонам?"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____的照相机被谁拿走了？怎么找不到了？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "新",
-            "坏",
-            "斤",
-            "我"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Fotoapparatimni kim olib ketdi? Nega topa olmayapman?)",
-            "ru": "Верно: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Кто забрал мой фотоаппарат? Почему я не могу его найти?)",
-            "tj": "Дуруст: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Фотоаппарати маро кӣ гирифта рафт? Чаро ёфта наметавонам?)"
           }
         },
         {
@@ -993,12 +1237,58 @@
             }
           ],
           "options": [
-            "但是我这个月信用卡里的钱已经花得差不多了。",
-            "你再找找。是不是没带来？",
             "我的照相机被谁拿走了？怎么找不到了？",
-            "我找了，没找到啊。"
+            "你再找找。是不是没带来？",
+            "我找了，没找到啊。",
+            "但是我这个月信用卡里的钱已经花得差不多了。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 但是我这个月信用卡里的钱已经花得差不多了。",
+            "ru": "Правильный ответ: 但是我这个月信用卡里的钱已经花得差不多了。",
+            "tj": "Ҷавоби дуруст: 但是我这个月信用卡里的钱已经花得差不多了。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____的照相机被谁拿走了？怎么找不到了？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "电",
+            "下",
+            "我",
+            "旧"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Fotoapparatimni kim olib ketdi? Nega topa olmayapman?)",
+            "ru": "Верно: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Кто забрал мой фотоаппарат? Почему я не могу его найти?)",
+            "tj": "Дуруст: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Фотоаппарати маро кӣ гирифта рафт? Чаро ёфта наметавонам?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 小丽 nima deydi?",
+            "ru": "Что 小丽 говорит в конце диалога?",
+            "tj": "Дар охири муколама 小丽 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "我的照相机被谁拿走了？怎么找不到了？",
+            "我找了，没找到啊。",
+            "但是我这个月信用卡里的钱已经花得差不多了。",
+            "你再找找。是不是没带来？"
+          ],
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 但是我这个月信用卡里的钱已经花得差不多了。",
             "ru": "Правильный ответ: 但是我这个月信用卡里的钱已经花得差不多了。",
@@ -1020,39 +1310,14 @@
           "options": [
             "别难过，再买一个吧，公司东门外不就有一个大商场吗？",
             "你再找找。是不是没带来？",
-            "我的照相机被谁拿走了？怎么找不到了？",
-            "我找了，没找到啊。"
+            "我找了，没找到啊。",
+            "我的照相机被谁拿走了？怎么找不到了？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 我的照相机被谁拿走了？怎么找不到了？",
             "ru": "Правильный ответ: 我的照相机被谁拿走了？怎么找不到了？",
             "tj": "Ҷавоби дуруст: 我的照相机被谁拿走了？怎么找不到了？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小丽 nima deydi?",
-            "ru": "Что 小丽 говорит в конце диалога?",
-            "tj": "Дар охири муколама 小丽 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "我的照相机被谁拿走了？怎么找不到了？",
-            "我找了，没找到啊。",
-            "你再找找。是不是没带来？",
-            "但是我这个月信用卡里的钱已经花得差不多了。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 但是我这个月信用卡里的钱已经花得差不多了。",
-            "ru": "Правильный ответ: 但是我这个月信用卡里的钱已经花得差不多了。",
-            "tj": "Ҷавоби дуруст: 但是我这个月信用卡里的钱已经花得差不多了。"
           }
         }
       ]

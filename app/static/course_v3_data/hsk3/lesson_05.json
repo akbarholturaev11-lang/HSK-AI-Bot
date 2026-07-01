@@ -8,6 +8,8 @@
     "ru": "Освоить 了 как изменение состояния, 越来越+Adj и конструкцию 为(了) для цели.",
     "tj": "Азхудкунии 了 ҳамчун ифодаи тағйирот, 越来越+Adj ва сохтори мақсади 为(了)."
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -575,6 +577,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wèi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wèi?",
+            "tj": "wèi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "照顾",
+            "发烧",
+            "为",
+            "用"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "为 = uchun (wèi)",
+            "ru": "为 = для, ради (wèi)",
+            "tj": "为 = барои (wèi)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -600,6 +627,31 @@
               "ru": "нужно; использовать",
               "tj": "лозим шудан; истифода бурдан"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "用 talaffuzini tanlang:",
+            "ru": "Выберите произношение 用:",
+            "tj": "Талаффузи 用-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhàogù",
+            "wèi",
+            "yòng",
+            "fāshāo"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "用 — yòng",
+            "ru": "用 — yòng",
+            "tj": "用 — yòng"
           }
         },
         {
@@ -631,6 +683,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "季节 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 季节:",
+            "tj": "Маънои калимаи 季节-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            },
+            {
+              "uz": "qaramoq, parvarish qilmoq",
+              "ru": "заботиться, ухаживать",
+              "tj": "нигоҳубин кардан"
+            },
+            {
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            },
+            {
+              "uz": "fasl",
+              "ru": "сезон",
+              "tj": "фасл"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "季节 = fasl (jìjié)",
+            "ru": "季节 = сезон (jìjié)",
+            "tj": "季节 = фасл (jìjié)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -656,6 +749,31 @@
               "ru": "весна",
               "tj": "баҳор"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chūn(tiān) qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chūn(tiān)?",
+            "tj": "chūn(tiān) кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "照顾",
+            "发烧",
+            "为",
+            "春(天)"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "春(天) = bahor (chūn(tiān))",
+            "ru": "春(天) = весна (chūn(tiān))",
+            "tj": "春(天) = баҳор (chūn(tiān))"
           }
         },
         {
@@ -687,186 +805,11 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "裙子",
-            "pinyin": "qúnzi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "yubka, ko'ylak",
-              "ru": "юбка, платье",
-              "tj": "юбка, курта"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "最近",
-            "pinyin": "zuìjìn",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "yaqinda, oxirgi paytlarda",
-              "ru": "недавно, в последнее время",
-              "tj": "ба наздикӣ, вақтҳои охир"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "越",
-            "pinyin": "yuè",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "borgan sari, tobora",
-              "ru": "чем дальше, тем; всё более",
-              "tj": "ҳар қадар, торафт"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "张",
-            "pinyin": "Zhāng",
-            "pos": "proper noun",
-            "meaning": {
-              "uz": "Zhang (familiya)",
-              "ru": "Чжан (фамилия)",
-              "tj": "Чжан (насаб)"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 2,
-      "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Isitma chiqdi, tanasim tobora yomonlashmoqda.",
-            "ru": "Поднялась температура, самочувствие всё хуже.",
-            "tj": "Таб баромад, ҳолатам рӯ ба рӯ бадтар мешавад."
-          },
-          "tokens": [
-            "身体",
-            "为",
-            "照顾",
-            "不",
-            "来",
-            "了",
-            "越",
-            "越",
-            "发烧",
-            "舒服"
-          ],
-          "answer_tokens": [
-            "发烧",
-            "了",
-            "身体",
-            "越",
-            "来",
-            "越",
-            "不",
-            "舒服"
-          ],
-          "explanation": {
-            "uz": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu.",
-            "ru": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu.",
-            "tj": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____了，身体越来越不舒服。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "发烧",
-            "用",
-            "为",
-            "照顾"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 发烧 (fāshāo) — isitmasi chiqmoq",
-            "ru": "Верно: 发烧 (fāshāo) — температурить",
-            "tj": "Дуруст: 发烧 (fāshāo) — таб кардан"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
-        "uz": "Mashq",
-        "ru": "Упражнение",
-        "tj": "Машқ"
-      },
-      "section_purpose": "practice",
-      "cards": [
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "发烧 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 发烧:",
-            "tj": "Маънои калимаи 发烧-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qaramoq, parvarish qilmoq",
-              "ru": "заботиться, ухаживать",
-              "tj": "нигоҳубин кардан"
-            },
-            {
-              "uz": "kerak bo'lmoq, ishlatmoq",
-              "ru": "нужно; использовать",
-              "tj": "лозим шудан; истифода бурдан"
-            },
-            {
-              "uz": "uchun",
-              "ru": "для, ради",
-              "tj": "барои"
-            },
-            {
-              "uz": "isitmasi chiqmoq",
-              "ru": "температурить",
-              "tj": "таб кардан"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "发烧 = isitmasi chiqmoq (fāshāo)",
-            "ru": "发烧 = температурить (fāshāo)",
-            "tj": "发烧 = таб кардан (fāshāo)"
-          }
-        },
-        {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "为 talaffuzini tanlang:",
-            "ru": "Выберите произношение 为:",
-            "tj": "Талаффузи 为-ро интихоб кунед:"
+            "uz": "草 talaffuzini tanlang:",
+            "ru": "Выберите произношение 草:",
+            "tj": "Талаффузи 草-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -877,58 +820,13 @@
             "fāshāo",
             "zhàogù",
             "wèi",
-            "yòng"
+            "cǎo"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "为 — wèi",
-            "ru": "为 — wèi",
-            "tj": "为 — wèi"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Xo'p.",
-            "ru": "Хорошо.",
-            "tj": "Хуб."
-          },
-          "tokens": [
-            "的",
-            "为",
-            "发烧",
-            "好"
-          ],
-          "answer_tokens": [
-            "好",
-            "的"
-          ],
-          "explanation": {
-            "uz": "好的。 — Hǎo de.",
-            "ru": "好的。 — Hǎo de.",
-            "tj": "好的。 — Hǎo de."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我听说你身体不舒服，怎么了？",
-          "pinyin": "Wǒ tīngshuō nǐ shēntǐ bù shūfu, zěnme le?",
-          "options": [
-            "我听说你身体不舒服，怎么了？",
-            "前几天有点儿发烧，现在好多了。",
-            "谢谢，我要吃药，不喝茶了。",
-            "喝杯茶吧，这是我为你买的绿茶，很不错。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "我听说你身体不舒服，怎么了？ — Eshitishimcha, mazang yo'q ekan, nima bo'ldi?",
-            "ru": "我听说你身体不舒服，怎么了？ — Я слышал, ты плохо себя чувствуешь, что случилось?",
-            "tj": "我听说你身体不舒服，怎么了？ — Шунидам, ки худро хуб ҳис намекунӣ, чӣ шуд?"
+            "uz": "草 — cǎo",
+            "ru": "草 — cǎo",
+            "tj": "草 — cǎo"
           }
         },
         {
@@ -972,6 +870,373 @@
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "'了' holat o'zgarishini bildiradi",
+              "ru": "«了» указывает на изменение состояния",
+              "tj": "«了» тағйироти ҳолро нишон медиҳад"
+            },
+            "title_zh": "\"了\"表示变化",
+            "rule": {
+              "uz": "Gap oxiridagi '了' holat yoki vaziyat o'zganiga ishora qiladi.\nMasalan: 天热了。(Havo isidi — avval sovuq edi.)\n         他来了。(U keldi — avval yo'q edi.)\n         我胖了。(Men semir bo'ldim — avval shunday emas edim.)\nBu '了' va harakatning yakunlanishini bildiruvchi '了' dan farq qiladi.\nO'zgarish 了 ko'pincha holat fe'llari (形容词) bilan keladi.",
+              "ru": "Частица '了' в конце предложения указывает на изменение состояния или ситуации.\nНапример: 天热了。(Стало жарко — раньше было не так.)\n          他来了。(Он пришёл — раньше его не было.)\n          我胖了。(Я поправился — раньше было иначе.)\nЭто 了 отличается от 了, обозначающего завершение действия.\nОбычно сочетается с прилагательными-состояниями.",
+              "tj": "Зарраи '了' дар охири ҷумла тағйироти ҳол ё вазъиятро нишон медиҳад.\nМасалан: 天热了。(Гарм шуд — пеш чунин набуд.)\n         他来了。(Вай омад — пеш набуд.)\n         我胖了。(Ман фарбеҳ шудам — пеш чунин набудам.)\nИн 了 аз 了-е, ки анҷоми амалро нишон медиҳад, фарқ дорад.\nОдатан бо феълҳои ҳолатӣ (сифатҳо) якҷоя меояд."
+            },
+            "examples": [
+              {
+                "zh": "我最近体重越来越重了，不知道怎么办。",
+                "pinyin": "Wǒ zuìjìn tǐzhòng yuèláiyuè zhòng le, bù zhīdào zěnme bàn.",
+                "translation": {
+                  "uz": "So'nggi paytlarda vaznm tobora og'irlashyapti, nima qilishni bilmayapman.",
+                  "ru": "В последнее время мой вес всё растёт — не знаю, что делать.",
+                  "tj": "Охирон вазнам рӯ ба рӯ вазнинтар мешавад, намедонам чӣ кунам."
+                }
+              },
+              {
+                "zh": "发烧了，身体越来越不舒服。",
+                "pinyin": "Fāshāo le, shēntǐ yuèláiyuè bù shūfu.",
+                "translation": {
+                  "uz": "Isitma chiqdi, tanasim tobora yomonlashmoqda.",
+                  "ru": "Поднялась температура, самочувствие всё хуже.",
+                  "tj": "Таб баромад, ҳолатам рӯ ба рӯ бадтар мешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Isitma chiqdi, tanasim tobora yomonlashmoqda.",
+            "ru": "Поднялась температура, самочувствие всё хуже.",
+            "tj": "Таб баромад, ҳолатам рӯ ба рӯ бадтар мешавад."
+          },
+          "tokens": [
+            "来",
+            "为",
+            "发烧",
+            "越",
+            "舒服",
+            "照顾",
+            "不",
+            "身体",
+            "了",
+            "越"
+          ],
+          "answer_tokens": [
+            "发烧",
+            "了",
+            "身体",
+            "越",
+            "来",
+            "越",
+            "不",
+            "舒服"
+          ],
+          "explanation": {
+            "uz": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu.",
+            "ru": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu.",
+            "tj": "发烧了，身体越来越不舒服。 — Fāshāo le, shēntǐ yuèláiyuè bù shūfu."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "'越来越'+Sifat/fe'l — tobora..., borgan sari...",
+              "ru": "«越来越»+Прил./Гл. — всё больше, чем дальше тем...",
+              "tj": "«越来越»+Сифат/Феъл — рӯ ба рӯ..., ҳар бор бештар..."
+            },
+            "title_zh": "\"越来越\"+Adj/V",
+            "rule": {
+              "uz": "'越来越' + sifat yoki fe'l: vaqt o'tishi bilan bir narsa tobora ortib yoki kamayib borishini bildiradi.\nQolip: 越来越 + Sifat/fe'l\nMasalan:\n  越来越胖 (tobora semirmoq)\n  越来越热 (tobora issiq bo'lmoq)\n  越来越喜欢 (tobora yaxshi ko'rmoq)\nInkor: 越来越不+Sifat (越来越不舒服 — tobora yomonlashmoq)",
+              "ru": "'越来越' + прилагательное или глагол: с течением времени что-то всё больше нарастает.\nСтруктура: 越来越 + Прил./Гл.\nНапример:\n  越来越胖 (всё толстеть)\n  越来越热 (всё жарче)\n  越来越喜欢 (нравиться всё больше)\nОтрицание: 越来越不+Прил. (越来越不舒服 — всё хуже самочувствие)",
+              "tj": "'越来越' + сифат ё феъл: бо гузашти вақт чизе рӯ ба рӯ зиёд ё кам мешавад.\nСохтор: 越来越 + Сифат/Феъл\nМасалан:\n  越来越胖 (рӯ ба рӯ фарбеҳ шудан)\n  越来越热 (рӯ ба рӯ гармтар шудан)\n  越来越喜欢 (рӯ ба рӯ дӯст доштан)\nИнкор: 越来越不+Сифат (越来越不舒服 — рӯ ба рӯ бадтар шудан)"
+            },
+            "examples": [
+              {
+                "zh": "我最近越来越胖了，不知道怎么办。",
+                "pinyin": "Wǒ zuìjìn yuèláiyuè pàng le, bù zhīdào zěnme bàn.",
+                "translation": {
+                  "uz": "So'nggi paytlarda tobora semirmoqdaman, nima qilishni bilmayapman.",
+                  "ru": "В последнее время я всё толстею — не знаю, что делать.",
+                  "tj": "Охирон ман рӯ ба рӯ фарбеҳ мешавам, намедонам чӣ кунам."
+                }
+              },
+              {
+                "zh": "天气越来越暖和了，夏天快来了！",
+                "pinyin": "Tiānqì yuèláiyuè nuǎnhuo le, xiàtiān kuài lái le!",
+                "translation": {
+                  "uz": "Havo tobora iliymoqda, yoz tez kelib qoladi!",
+                  "ru": "Погода всё теплее — лето не за горами!",
+                  "tj": "Ҳаво рӯ ба рӯ гармтар мешавад, тобистон зуд меояд!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "我____越来越胖了，不知道怎么办。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "照顾",
+            "为",
+            "发烧",
+            "最近"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 最近 (zuìjìn) — yaqinda, oxirgi paytlarda",
+            "ru": "Верно: 最近 (zuìjìn) — недавно, в последнее время",
+            "tj": "Дуруст: 最近 (zuìjìn) — ба наздикӣ, вақтҳои охир"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "'为(了)' + maqsad — ...uchun, ...maqsadida",
+              "ru": "«为(了)» + цель — ради..., для того чтобы...",
+              "tj": "«为(了)» + мақсад — барои..., бо мақсади..."
+            },
+            "title_zh": "\"为(了)\"+目的",
+            "rule": {
+              "uz": "'为' yoki '为了' + maqsad jumlasi: biror ishning nima uchun bajarilishini bildiradi.\nQolip: 为(了) + Maqsad + Asosiy gap\nMasalan:\n  为了健康，我每天锻炼。(Sog'liq uchun har kuni mashq qilaman.)\n  为了减肥，我来这里跑步。(Ozish uchun bu yerga yugurgani kelaman.)\n  为了快点儿好，我要多喝水。(Tezroq tuzalish uchun ko'proq suv ichaman.)",
+              "ru": "'为' или '为了' + целевое предложение: объясняет, ради чего совершается действие.\nСтруктура: 为(了) + Цель + Основное предложение\nНапример:\n  为了健康，我每天锻炼。(Ради здоровья тренируюсь каждый день.)\n  为了减肥，我来这里跑步。(Чтобы похудеть, прихожу сюда бегать.)\n  为了快点儿好，我要多喝水。(Чтобы быстрее выздороветь, буду пить воду.)",
+              "tj": "'为' ё '为了' + ҷумлаи мақсад: шарҳ медиҳад, ки амал барои чӣ иҷро мешавад.\nСохтор: 为(了) + Мақсад + Ҷумлаи асосӣ\nМасалан:\n  为了健康，我每天锻炼。(Барои саломатӣ ҳар рӯз машқ мекунам.)\n  为了减肥，我来这里跑步。(Барои лоғар шудан инҷо меоям медавам.)\n  为了快点儿好，我要多喝水。(Барои зудтар хуб шудан бештар об менӯшам.)"
+            },
+            "examples": [
+              {
+                "zh": "为了健康，你应该多锻炼！",
+                "pinyin": "Wèile jiànkāng, nǐ yīnggāi duō duànliàn!",
+                "translation": {
+                  "uz": "Sog'liq uchun ko'proq mashq qilish kerak!",
+                  "ru": "Ради здоровья нужно больше тренироваться!",
+                  "tj": "Барои саломатӣ бояд бештар машқ кард!"
+                }
+              },
+              {
+                "zh": "为了快点儿好，我要多喝水。",
+                "pinyin": "Wèile kuài diǎnr hǎo, wǒ yào duō hē shuǐ.",
+                "translation": {
+                  "uz": "Tezroq tuzalish uchun ko'proq suv ichishim kerak.",
+                  "ru": "Чтобы быстрее выздороветь, буду пить больше воды.",
+                  "tj": "Барои зудтар хуб шудан бояд бештар об нӯшам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«So'nggi paytlarda vaznm tobora og'irlashyapti, nima qilishni bilmayapman.» — xitoychada qaysi biri?",
+            "ru": "«В последнее время мой вес всё растёт — не знаю, что делать.» — какое предложение по-китайски?",
+            "tj": "«Охирон вазнам рӯ ба рӯ вазнинтар мешавад, намедонам чӣ кунам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我最近越来越胖了，不知道怎么办。",
+            "我最近体重越来越重了，不知道怎么办。",
+            "发烧了，身体越来越不舒服。",
+            "天气越来越暖和了，夏天快来了！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我最近体重越来越重了，不知道怎么办。 — Wǒ zuìjìn tǐzhòng yuèláiyuè zhòng le, bù zhīdào zěnme bàn.",
+            "ru": "我最近体重越来越重了，不知道怎么办。 — Wǒ zuìjìn tǐzhòng yuèláiyuè zhòng le, bù zhīdào zěnme bàn.",
+            "tj": "我最近体重越来越重了，不知道怎么办。 — Wǒ zuìjìn tǐzhòng yuèláiyuè zhòng le, bù zhīdào zěnme bàn."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "发烧",
+              {
+                "uz": "isitmasi chiqmoq",
+                "ru": "температурить",
+                "tj": "таб кардан"
+              }
+            ],
+            [
+              "为",
+              {
+                "uz": "uchun",
+                "ru": "для, ради",
+                "tj": "барои"
+              }
+            ],
+            [
+              "照顾",
+              {
+                "uz": "qaramoq, parvarish qilmoq",
+                "ru": "заботиться, ухаживать",
+                "tj": "нигоҳубин кардан"
+              }
+            ],
+            [
+              "用",
+              {
+                "uz": "kerak bo'lmoq, ishlatmoq",
+                "ru": "нужно; использовать",
+                "tj": "лозим шудан; истифода бурдан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "最近 talaffuzini tanlang:",
+            "ru": "Выберите произношение 最近:",
+            "tj": "Талаффузи 最近-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zuìjìn",
+            "fāshāo",
+            "zhàogù",
+            "wèi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "最近 — zuìjìn",
+            "ru": "最近 — zuìjìn",
+            "tj": "最近 — zuìjìn"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "裙子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 裙子:",
+            "tj": "Маънои калимаи 裙子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "isitmasi chiqmoq",
+              "ru": "температурить",
+              "tj": "таб кардан"
+            },
+            {
+              "uz": "uchun",
+              "ru": "для, ради",
+              "tj": "барои"
+            },
+            {
+              "uz": "qaramoq, parvarish qilmoq",
+              "ru": "заботиться, ухаживать",
+              "tj": "нигоҳубин кардан"
+            },
+            {
+              "uz": "yubka, ko'ylak",
+              "ru": "юбка, платье",
+              "tj": "юбка, курта"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "裙子 = yubka, ko'ylak (qúnzi)",
+            "ru": "裙子 = юбка, платье (qúnzi)",
+            "tj": "裙子 = юбка, курта (qúnzi)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我听说你身体不舒服，怎么了？",
+          "pinyin": "Wǒ tīngshuō nǐ shēntǐ bù shūfu, zěnme le?",
+          "options": [
+            "我听说你身体不舒服，怎么了？",
+            "前几天有点儿发烧，现在好多了。",
+            "谢谢，我要吃药，不喝茶了。",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我听说你身体不舒服，怎么了？ — Eshitishimcha, mazang yo'q ekan, nima bo'ldi?",
+            "ru": "我听说你身体不舒服，怎么了？ — Я слышал, ты плохо себя чувствуешь, что случилось?",
+            "tj": "我听说你身体不舒服，怎么了？ — Шунидам, ки худро хуб ҳис намекунӣ, чӣ шуд?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Xo'p.",
+            "ru": "Хорошо.",
+            "tj": "Хуб."
+          },
+          "tokens": [
+            "的",
+            "发烧",
+            "好",
+            "为"
+          ],
+          "answer_tokens": [
+            "好",
+            "的"
+          ],
+          "explanation": {
+            "uz": "好的。 — Hǎo de.",
+            "ru": "好的。 — Hǎo de.",
+            "tj": "好的。 — Hǎo de."
+          }
         },
         {
           "type": "pronunciation",
@@ -1004,16 +1269,41 @@
           "audio_text": "我听说你身体不舒服，怎么了？",
           "pinyin": "Wǒ tīngshuō nǐ shēntǐ bù shūfu, zěnme le?",
           "options": [
-            "我听说你身体不舒服，怎么了？",
             "喝杯茶吧，这是我为你买的绿茶，很不错。",
             "谢谢，我要吃药，不喝茶了。",
-            "前几天有点儿发烧，现在好多了。"
+            "前几天有点儿发烧，现在好多了。",
+            "我听说你身体不舒服，怎么了？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "我听说你身体不舒服，怎么了？ — Eshitishimcha, mazang yo'q ekan, nima bo'ldi?",
             "ru": "我听说你身体不舒服，怎么了？ — Я слышал, ты плохо себя чувствуешь, что случилось?",
             "tj": "我听说你身体不舒服，怎么了？ — Шунидам, ки худро хуб ҳис намекунӣ, чӣ шуд?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 小丽 nima deydi?",
+            "ru": "Что 小丽 говорит в конце диалога?",
+            "tj": "Дар охири муколама 小丽 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "喝杯茶吧，这是我为你买的绿茶，很不错。",
+            "我听说你身体不舒服，怎么了？",
+            "前几天有点儿发烧，现在好多了。",
+            "好的。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 好的。",
+            "ru": "Правильный ответ: 好的。",
+            "tj": "Ҷавоби дуруст: 好的。"
           }
         },
         {
@@ -1025,16 +1315,41 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "斤",
+            "下",
             "我",
-            "国",
-            "新"
+            "夫",
+            "电"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 我 — 我听说你身体不舒服，怎么了？ (Eshitishimcha, mazang yo'q ekan, nima bo'ldi?)",
             "ru": "Верно: 我 — 我听说你身体不舒服，怎么了？ (Я слышал, ты плохо себя чувствуешь, что случилось?)",
             "tj": "Дуруст: 我 — 我听说你身体不舒服，怎么了？ (Шунидам, ки худро хуб ҳис намекунӣ, чӣ шуд?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 朋友 avval nima deydi?",
+            "ru": "Что 朋友 говорит в начале диалога?",
+            "tj": "Дар муколама 朋友 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "我听说你身体不舒服，怎么了？",
+            "谢谢，我要吃药，不喝茶了。",
+            "前几天有点儿发烧，现在好多了。",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 我听说你身体不舒服，怎么了？",
+            "ru": "Правильный ответ: 我听说你身体不舒服，怎么了？",
+            "tj": "Ҷавоби дуруст: 我听说你身体不舒服，怎么了？"
           }
         },
         {
@@ -1078,61 +1393,11 @@
           ],
           "options": [
             "前几天有点儿发烧，现在好多了。",
-            "我听说你身体不舒服，怎么了？",
             "喝杯茶吧，这是我为你买的绿茶，很不错。",
+            "我听说你身体不舒服，怎么了？",
             "好的。"
           ],
           "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 好的。",
-            "ru": "Правильный ответ: 好的。",
-            "tj": "Ҷавоби дуруст: 好的。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 朋友 avval nima deydi?",
-            "ru": "Что 朋友 говорит в начале диалога?",
-            "tj": "Дар муколама 朋友 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "喝杯茶吧，这是我为你买的绿茶，很不错。",
-            "谢谢，我要吃药，不喝茶了。",
-            "前几天有点儿发烧，现在好多了。",
-            "我听说你身体不舒服，怎么了？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 我听说你身体不舒服，怎么了？",
-            "ru": "Правильный ответ: 我听说你身体不舒服，怎么了？",
-            "tj": "Ҷавоби дуруст: 我听说你身体不舒服，怎么了？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小丽 nima deydi?",
-            "ru": "Что 小丽 говорит в конце диалога?",
-            "tj": "Дар охири муколама 小丽 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "我听说你身体不舒服，怎么了？",
-            "喝杯茶吧，这是我为你买的绿茶，很不错。",
-            "好的。",
-            "前几天有点儿发烧，现在好多了。"
-          ],
-          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 好的。",
             "ru": "Правильный ответ: 好的。",

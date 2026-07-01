@@ -8,6 +8,8 @@
     "ru": "говорить о собеседовании, найме и первом впечатлении; использовать 挺, 本来, 另外, 首先, 不管",
     "tj": "дар бораи мусоҳиба, қабул ба кор ва таассуроти аввал гуфтугӯ кардан; истифодаи 挺, 本来, 另外, 首先, 不管"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -764,6 +766,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "挺 talaffuzini tanlang:",
+            "ru": "Выберите произношение 挺:",
+            "tj": "Талаффузи 挺-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "tǐng",
+            "xìnxīn",
+            "jǐnzhāng",
+            "nénglì"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "挺 — tǐng",
+            "ru": "挺 — tǐng",
+            "tj": "挺 — tǐng"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -789,6 +816,47 @@
               "ru": "способность, умение",
               "tj": "қобилият"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "紧张 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 紧张:",
+            "tj": "Маънои калимаи 紧张-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
+              "uz": "qobiliyat",
+              "ru": "способность, умение",
+              "tj": "қобилият"
+            },
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "紧张 = hayajonlangan, asabiy (jǐnzhāng)",
+            "ru": "紧张 = нервный, напряженный (jǐnzhāng)",
+            "tj": "紧张 = изтиробнок, асабӣ (jǐnzhāng)"
           }
         },
         {
@@ -820,6 +888,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tígōng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tígōng?",
+            "tj": "tígōng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "提供",
+            "信心",
+            "挺",
+            "紧张"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "提供 = taqdim qilmoq, bermoq (tígōng)",
+            "ru": "提供 = предоставлять (tígōng)",
+            "tj": "提供 = пешниҳод кардан, додан (tígōng)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -845,6 +938,31 @@
               "ru": "изначально, вообще-то",
               "tj": "аслан, дар аввал"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "本来 talaffuzini tanlang:",
+            "ru": "Выберите произношение 本来:",
+            "tj": "Талаффузи 本来-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "xìnxīn",
+            "jǐnzhāng",
+            "běnlái",
+            "tǐng"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "本来 — běnlái",
+            "ru": "本来 — běnlái",
+            "tj": "本来 — běnlái"
           }
         },
         {
@@ -876,439 +994,44 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "符合",
-            "pinyin": "fúhé",
-            "pos": "v.",
-            "meaning": {
-              "uz": "mos kelmoq",
-              "ru": "соответствовать",
-              "tj": "мувофиқ будан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "通知",
-            "pinyin": "tōngzhī",
-            "pos": "v.",
-            "meaning": {
-              "uz": "xabar bermoq",
-              "ru": "уведомлять, сообщать",
-              "tj": "хабар додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "律师",
-            "pinyin": "lǜshī",
-            "pos": "n.",
-            "meaning": {
-              "uz": "advokat, yurist",
-              "ru": "адвокат, юрист",
-              "tj": "адвокат, ҳуқуқшинос"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "专业",
-            "pinyin": "zhuānyè",
-            "pos": "n.",
-            "meaning": {
-              "uz": "mutaxassislik, yo'nalish",
-              "ru": "специальность, профессия",
-              "tj": "ихтисос, соҳа"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "另外",
-            "pinyin": "lìngwài",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "bundan tashqari",
-              "ru": "кроме того",
-              "tj": "ғайр аз ин"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "收入",
-            "pinyin": "shōurù",
-            "pos": "n.",
-            "meaning": {
-              "uz": "daromad",
-              "ru": "доход",
-              "tj": "даромад"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "咱们",
-            "pinyin": "zánmen",
-            "pos": "pron.",
-            "meaning": {
-              "uz": "biz",
-              "ru": "мы (включая собеседника)",
-              "tj": "мо"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "安排",
-            "pinyin": "ānpái",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tartibga solmoq, rejalashtirmoq",
-              "ru": "организовывать, планировать",
-              "tj": "ба нақша гирифтан, тартиб додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "首先",
-            "pinyin": "shǒuxiān",
-            "pos": "pron.",
-            "meaning": {
-              "uz": "avvalo, birinchi navbatda",
-              "ru": "прежде всего, во-первых",
-              "tj": "пеш аз ҳама, аввалан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "正式",
-            "pinyin": "zhèngshì",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "rasmiy",
-              "ru": "официальный",
-              "tj": "расмӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "留",
-            "pinyin": "liú",
-            "pos": "v.",
-            "meaning": {
-              "uz": "qoldirmoq",
-              "ru": "оставлять",
-              "tj": "мондан, гузоштан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "其次",
-            "pinyin": "qícì",
-            "pos": "pron.",
-            "meaning": {
-              "uz": "ikkinchidan, keyin",
-              "ru": "во-вторых, затем",
-              "tj": "дуюм, баъдан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "诚实",
-            "pinyin": "chéngshí",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "halol, rostgo'y",
-              "ru": "честный",
-              "tj": "ростқавл, ҳалол"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "改变",
-            "pinyin": "gǎibiàn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "o'zgartirmoq",
-              "ru": "изменять",
-              "tj": "тағйир додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "感觉",
-            "pinyin": "gǎnjué",
-            "pos": "n.",
-            "meaning": {
-              "uz": "his, taassurot",
-              "ru": "чувство, впечатление",
-              "tj": "ҳис, таассурот"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "判断",
-            "pinyin": "pànduàn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "hukm qilmoq, baholamoq",
-              "ru": "оценивать, судить",
-              "tj": "баҳо додан, хулоса кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "顾客",
-            "pinyin": "gùkè",
-            "pos": "n.",
-            "meaning": {
-              "uz": "mijoz",
-              "ru": "клиент, покупатель",
-              "tj": "муштарӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "准时",
-            "pinyin": "zhǔnshí",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "vaqtida, punktual",
-              "ru": "пунктуальный, вовремя",
-              "tj": "сари вақт, вақтшинос"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "不管",
-            "pinyin": "bùguǎn",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "nima bo'lishidan qat'i nazar",
-              "ru": "независимо от, что бы ни",
-              "tj": "новобаста аз он ки"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "与",
-            "pinyin": "yǔ",
-            "pos": "prep.",
-            "meaning": {
-              "uz": "bilan",
-              "ru": "с",
-              "tj": "бо"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 31,
-            "zh": "约会",
-            "pinyin": "yuēhuì",
-            "pos": "v.",
-            "meaning": {
-              "uz": "uchrashuvga chiqmoq, uchrashmoq",
-              "ru": "встречаться, свидание",
-              "tj": "вохӯрӣ кардан, мулоқот"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 2,
-      "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bundan tashqari, daromadi ham yaxshi.",
-            "ru": "Кроме того, доход тоже неплохой.",
-            "tj": "Ғайр аз ин, даромад ҳам хуб аст."
-          },
-          "tokens": [
-            "紧张",
-            "收入",
-            "也",
-            "不错",
-            "另外",
-            "挺"
-          ],
-          "answer_tokens": [
-            "另外",
-            "收入",
-            "也",
-            "不错"
-          ],
-          "explanation": {
-            "uz": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò.",
-            "ru": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò.",
-            "tj": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "本来是小李____的，但是他突然生病住院了。",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+            "uz": "应聘 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 应聘:",
+            "tj": "Маънои калимаи 应聘-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "信心",
-            "负责",
-            "挺",
-            "紧张"
+            {
+              "uz": "ishonch",
+              "ru": "уверенность",
+              "tj": "боварӣ"
+            },
+            {
+              "uz": "ishga ariza bermoq",
+              "ru": "устраиваться на работу, подавать заявку",
+              "tj": "барои кор муроҷиат кардан"
+            },
+            {
+              "uz": "hayajonlangan, asabiy",
+              "ru": "нервный, напряженный",
+              "tj": "изтиробнок, асабӣ"
+            },
+            {
+              "uz": "ancha, juda",
+              "ru": "довольно, весьма",
+              "tj": "хеле, анча"
+            }
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri: 负责 (fùzé) — mas'ul bo'lmoq",
-            "ru": "Верно: 负责 (fùzé) — отвечать за, быть ответственным",
-            "tj": "Дуруст: 负责 (fùzé) — масъул будан"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
-        "uz": "Mashq",
-        "ru": "Упражнение",
-        "tj": "Машқ"
-      },
-      "section_purpose": "practice",
-      "cards": [
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ishonch' xitoycha qaysi?",
-            "ru": "'уверенность' по-китайски?",
-            "tj": "'боварӣ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "能力",
-            "挺",
-            "信心",
-            "紧张"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "ishonch = 信心 (xìnxīn)",
-            "ru": "уверенность = 信心 (xìnxīn)",
-            "tj": "боварӣ = 信心 (xìnxīn)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "nénglì qaysi ieroglif?",
-            "ru": "Какой иероглиф читается nénglì?",
-            "tj": "nénglì кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "紧张",
-            "能力",
-            "信心",
-            "挺"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "能力 = qobiliyat (nénglì)",
-            "ru": "能力 = способность, умение (nénglì)",
-            "tj": "能力 = қобилият (nénglì)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你上午的面试怎么样？",
-          "pinyin": "Nǐ shàngwǔ de miànshì zěnmeyàng?",
-          "options": [
-            "你上午的面试怎么样？",
-            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
-            "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？",
-            "面试的时候，一定要对自己有信心，要相信自己的能力。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "你上午的面试怎么样？ — Ertalabki intervyuing qanday bo'ldi?",
-            "ru": "你上午的面试怎么样？ — Как прошло твое утреннее собеседование?",
-            "tj": "你上午的面试怎么样？ — Мусоҳибаи саҳарият чӣ хел гузашт?"
+            "uz": "应聘 = ishga ariza bermoq (yìngpìn)",
+            "ru": "应聘 = устраиваться на работу, подавать заявку (yìngpìn)",
+            "tj": "应聘 = барои кор муроҷиат кардан (yìngpìn)"
           }
         },
         {
@@ -1352,6 +1075,407 @@
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "ancha, juda",
+              "ru": "挺 — довольно, весьма",
+              "tj": "挺 — хеле, анча"
+            },
+            "title_zh": "挺",
+            "rule": {
+              "uz": "Og'zaki tilda sifat yoki holat darajasini yumshoq kuchaytiradi.",
+              "ru": "Разговорно усиливает степень качества или состояния.",
+              "tj": "Дар гуфтугӯ дараҷаи сифат ё ҳолатро мулоим қавитар мекунад."
+            },
+            "examples": [
+              {
+                "zh": "他们问的问题都挺容易的。",
+                "pinyin": "Tāmen wèn de wèntí dōu tǐng róngyì de.",
+                "translation": {
+                  "uz": "Ular so'ragan savollar ancha oson edi.",
+                  "ru": "Вопросы, которые они задавали, были довольно легкими.",
+                  "tj": "Саволҳое ки онҳо доданд, хеле осон буданд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "aslida, boshida",
+              "ru": "本来 — изначально, вообще-то",
+              "tj": "本来 — аслан, дар аввал"
+            },
+            "title_zh": "本来",
+            "rule": {
+              "uz": "Dastlabki reja yoki oldingi holatni bildiradi; keyin ko'pincha o'zgarish keladi.",
+              "ru": "Показывает первоначальный план или прежнее состояние; после него часто идет изменение.",
+              "tj": "Нақшаи аввал ё ҳолати пешинаро нишон медиҳад; баъд одатан тағйир меояд."
+            },
+            "examples": [
+              {
+                "zh": "本来是小李负责的，但是他突然生病住院了。",
+                "pinyin": "Běnlái shì Xiǎo Lǐ fùzé de, dànshì tā tūrán shēngbìng zhùyuàn le.",
+                "translation": {
+                  "uz": "Aslida Xiao Li mas'ul edi, lekin u to'satdan kasal bo'lib kasalxonaga yotdi.",
+                  "ru": "Изначально отвечал Сяо Ли, но он внезапно заболел и лег в больницу.",
+                  "tj": "Аслан Сяо Ли масъул буд, аммо ӯ ногаҳон бемор шуда ба беморхона хобид."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "本来是小李____的，但是他突然生病住院了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "负责",
+            "挺",
+            "紧张",
+            "信心"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 负责 (fùzé) — mas'ul bo'lmoq",
+            "ru": "Верно: 负责 (fùzé) — отвечать за, быть ответственным",
+            "tj": "Дуруст: 负责 (fùzé) — масъул будан"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "bundan tashqari",
+              "ru": "另外 — кроме того",
+              "tj": "另外 — ғайр аз ин"
+            },
+            "title_zh": "另外",
+            "rule": {
+              "uz": "Oldingi fikrga qo'shimcha sabab yoki ma'lumot qo'shadi.",
+              "ru": "Добавляет еще одну причину или информацию к предыдущей мысли.",
+              "tj": "Ба фикри пешин сабаб ё маълумоти иловагӣ илова мекунад."
+            },
+            "examples": [
+              {
+                "zh": "另外，收入也不错。",
+                "pinyin": "Lìngwài, shōurù yě búcuò.",
+                "translation": {
+                  "uz": "Bundan tashqari, daromadi ham yaxshi.",
+                  "ru": "Кроме того, доход тоже неплохой.",
+                  "tj": "Ғайр аз ин, даромад ҳам хуб аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bundan tashqari, daromadi ham yaxshi.",
+            "ru": "Кроме того, доход тоже неплохой.",
+            "tj": "Ғайр аз ин, даромад ҳам хуб аст."
+          },
+          "tokens": [
+            "不错",
+            "另外",
+            "紧张",
+            "挺",
+            "收入",
+            "也"
+          ],
+          "answer_tokens": [
+            "另外",
+            "收入",
+            "也",
+            "不错"
+          ],
+          "explanation": {
+            "uz": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò.",
+            "ru": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò.",
+            "tj": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "avvalo, birinchi navbatda",
+              "ru": "首先 — прежде всего, во-первых",
+              "tj": "首先 — пеш аз ҳама, аввалан"
+            },
+            "title_zh": "首先",
+            "rule": {
+              "uz": "Bir nechta maslahat yoki qadamning birinchisini ko'rsatadi.",
+              "ru": "Отмечает первый пункт среди нескольких советов или шагов.",
+              "tj": "Нуқтаи аввалро дар байни чанд маслиҳат ё қадам нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "首先，要穿正式的衣服。",
+                "pinyin": "Shǒuxiān, yào chuān zhèngshì de yīfu.",
+                "translation": {
+                  "uz": "Avvalo, rasmiy kiyim kiyish kerak.",
+                  "ru": "Прежде всего, нужно надеть официальную одежду.",
+                  "tj": "Аввалан, либоси расмӣ пӯшидан лозим."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Avvalo, rasmiy kiyim kiyish kerak.",
+            "ru": "Прежде всего, нужно надеть официальную одежду.",
+            "tj": "Аввалан, либоси расмӣ пӯшидан лозим."
+          },
+          "tokens": [
+            "的",
+            "挺",
+            "衣服",
+            "要",
+            "首先",
+            "穿",
+            "正式",
+            "紧张"
+          ],
+          "answer_tokens": [
+            "首先",
+            "要",
+            "穿",
+            "正式",
+            "的",
+            "衣服"
+          ],
+          "explanation": {
+            "uz": "首先，要穿正式的衣服。 — Shǒuxiān, yào chuān zhèngshì de yīfu.",
+            "ru": "首先，要穿正式的衣服。 — Shǒuxiān, yào chuān zhèngshì de yīfu.",
+            "tj": "首先，要穿正式的衣服。 — Shǒuxiān, yào chuān zhèngshì de yīfu."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "nima bo'lishidan qat'i nazar",
+              "ru": "不管...都... — что бы ни..., все равно...",
+              "tj": "不管...都... — новобаста аз он ки..., ҳамеша..."
+            },
+            "title_zh": "不管……都……",
+            "rule": {
+              "uz": "Shart qanday bo'lishidan qat'i nazar natija bir xil qolishini bildiradi.",
+              "ru": "Показывает, что при любом условии результат остается одинаковым.",
+              "tj": "Нишон медиҳад, ки дар ҳар гуна шарт натиҷа як хел мемонад."
+            },
+            "examples": [
+              {
+                "zh": "不管是上课、上班，还是与别人约会，准时都非常重要。",
+                "pinyin": "Bùguǎn shì shàngkè, shàngbān, háishì yǔ biéren yuēhuì, zhǔnshí dōu fēicháng zhòngyào.",
+                "translation": {
+                  "uz": "Dars bo'ladimi, ish bo'ladimi yoki boshqalar bilan uchrashuv bo'ladimi, vaqtida borish juda muhim.",
+                  "ru": "Будь то учеба, работа или встреча с другими людьми, пунктуальность очень важна.",
+                  "tj": "Хоҳ дарс бошад, хоҳ кор, хоҳ мулоқот бо дигарон, сари вақт будан хеле муҳим аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "不管是上课、上班，还是与别人约会，____都非常重要。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "紧张",
+            "挺",
+            "准时",
+            "信心"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 准时 (zhǔnshí) — vaqtida, punktual",
+            "ru": "Верно: 准时 (zhǔnshí) — пунктуальный, вовремя",
+            "tj": "Дуруст: 准时 (zhǔnshí) — сари вақт, вақтшинос"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bundan tashqari, daromadi ham yaxshi.» — xitoychada qaysi biri?",
+            "ru": "«Кроме того, доход тоже неплохой.» — какое предложение по-китайски?",
+            "tj": "«Ғайр аз ин, даромад ҳам хуб аст.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "另外，收入也不错。",
+            "本来是小李负责的，但是他突然生病住院了。",
+            "不管是上课、上班，还是与别人约会，准时都非常重要。",
+            "首先，要穿正式的衣服。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò.",
+            "ru": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò.",
+            "tj": "另外，收入也不错。 — Lìngwài, shōurù yě búcuò."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "挺",
+              {
+                "uz": "ancha, juda",
+                "ru": "довольно, весьма",
+                "tj": "хеле, анча"
+              }
+            ],
+            [
+              "紧张",
+              {
+                "uz": "hayajonlangan, asabiy",
+                "ru": "нервный, напряженный",
+                "tj": "изтиробнок, асабӣ"
+              }
+            ],
+            [
+              "信心",
+              {
+                "uz": "ishonch",
+                "ru": "уверенность",
+                "tj": "боварӣ"
+              }
+            ],
+            [
+              "能力",
+              {
+                "uz": "qobiliyat",
+                "ru": "способность, умение",
+                "tj": "қобилият"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'advokat, yurist' xitoycha qaysi?",
+            "ru": "'адвокат, юрист' по-китайски?",
+            "tj": "'адвокат, ҳуқуқшинос' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "信心",
+            "律师",
+            "挺",
+            "紧张"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "advokat, yurist = 律师 (lǜshī)",
+            "ru": "адвокат, юрист = 律师 (lǜshī)",
+            "tj": "адвокат, ҳуқуқшинос = 律师 (lǜshī)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhuānyè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhuānyè?",
+            "tj": "zhuānyè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "专业",
+            "挺",
+            "紧张",
+            "信心"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "专业 = mutaxassislik, yo'nalish (zhuānyè)",
+            "ru": "专业 = специальность, профессия (zhuānyè)",
+            "tj": "专业 = ихтисос, соҳа (zhuānyè)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你上午的面试怎么样？",
+          "pinyin": "Nǐ shàngwǔ de miànshì zěnmeyàng?",
+          "options": [
+            "面试的时候，一定要对自己有信心，要相信自己的能力。",
+            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
+            "你上午的面试怎么样？",
+            "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你上午的面试怎么样？ — Ertalabki intervyuing qanday bo'ldi?",
+            "ru": "你上午的面试怎么样？ — Как прошло твое утреннее собеседование?",
+            "tj": "你上午的面试怎么样？ — Мусоҳибаи саҳарият чӣ хел гузашт?"
+          }
         },
         {
           "type": "pronunciation",
@@ -1384,16 +1508,41 @@
           "audio_text": "你上午的面试怎么样？",
           "pinyin": "Nǐ shàngwǔ de miànshì zěnmeyàng?",
           "options": [
+            "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？",
             "你上午的面试怎么样？",
             "面试的时候，一定要对自己有信心，要相信自己的能力。",
-            "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？",
             "还可以，他们问的问题都挺容易的，就是我有点儿紧张。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "你上午的面试怎么样？ — Ertalabki intervyuing qanday bo'ldi?",
             "ru": "你上午的面试怎么样？ — Как прошло твое утреннее собеседование?",
             "tj": "你上午的面试怎么样？ — Мусоҳибаи саҳарият чӣ хел гузашт?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 小夏 avval nima deydi?",
+            "ru": "Что 小夏 говорит в начале диалога?",
+            "tj": "Дар муколама 小夏 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "你上午的面试怎么样？",
+            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
+            "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？",
+            "面试的时候，一定要对自己有信心，要相信自己的能力。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 你上午的面试怎么样？",
+            "ru": "Правильный ответ: 你上午的面试怎么样？",
+            "tj": "Ҷавоби дуруст: 你上午的面试怎么样？"
           }
         },
         {
@@ -1405,16 +1554,41 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "挺",
+            "下",
             "你",
-            "斤",
-            "新"
+            "旧",
+            "电"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 你 — 你上午的面试怎么样？ (Ertalabki intervyuing qanday bo'ldi?)",
             "ru": "Верно: 你 — 你上午的面试怎么样？ (Как прошло твое утреннее собеседование?)",
             "tj": "Дуруст: 你 — 你上午的面试怎么样？ (Мусоҳибаи саҳарият чӣ хел гузашт?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 小雨 nima deydi?",
+            "ru": "Что 小雨 говорит в конце диалога?",
+            "tj": "Дар охири муколама 小雨 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "面试的时候，一定要对自己有信心，要相信自己的能力。",
+            "你上午的面试怎么样？",
+            "听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
+            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
+            "ru": "Правильный ответ: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
+            "tj": "Ҷавоби дуруст: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。"
           }
         },
         {
@@ -1457,62 +1631,12 @@
             }
           ],
           "options": [
+            "你上午的面试怎么样？",
             "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
             "听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
-            "你上午的面试怎么样？",
             "面试的时候，一定要对自己有信心，要相信自己的能力。"
           ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
-            "ru": "Правильный ответ: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
-            "tj": "Ҷавоби дуруст: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 小夏 avval nima deydi?",
-            "ru": "Что 小夏 говорит в начале диалога?",
-            "tj": "Дар муколама 小夏 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
-            "面试的时候，一定要对自己有信心，要相信自己的能力。",
-            "你上午的面试怎么样？",
-            "你说的对！3月15号上午8点在学校体育馆还有一个招聘会，你去吗？"
-          ],
           "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 你上午的面试怎么样？",
-            "ru": "Правильный ответ: 你上午的面试怎么样？",
-            "tj": "Ҷавоби дуруст: 你上午的面试怎么样？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小雨 nima deydi?",
-            "ru": "Что 小雨 говорит в конце диалога?",
-            "tj": "Дар охири муколама 小雨 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "面试的时候，一定要对自己有信心，要相信自己的能力。",
-            "还可以，他们问的问题都挺容易的，就是我有点儿紧张。",
-            "你上午的面试怎么样？",
-            "听说这次招聘会提供的工作机会很多，我们一起去看看吧。"
-          ],
-          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",
             "ru": "Правильный ответ: 听说这次招聘会提供的工作机会很多，我们一起去看看吧。",

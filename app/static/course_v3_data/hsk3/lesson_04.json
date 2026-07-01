@@ -8,6 +8,8 @@
     "ru": "Освоить конструкцию 又……又……, сопутствующее действие V₁着+V₂ и привычные действия с наречием 总是.",
     "tj": "Азхудкунии сохтори 又……又……, амали ҳамроҳ V₁着+V₂ ва амалҳои одатии бо қайди 总是."
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -640,6 +642,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "照片 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 照片:",
+            "tj": "Маънои калимаи 照片-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            },
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
+              "uz": "ham, yana; 又...又... qolipida",
+              "ru": "и, также; в конструкции 又...又...",
+              "tj": "ҳам, боз; дар сохтори 又...又..."
+            },
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "照片 = surat, fotosurat (zhàopiàn)",
+            "ru": "照片 = фотография (zhàopiàn)",
+            "tj": "照片 = акс (zhàopiàn)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -665,6 +708,31 @@
               "ru": "и, также; в конструкции 又...又...",
               "tj": "ҳам, боз; дар сохтори 又...又..."
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "yòu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yòu?",
+            "tj": "yòu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "又",
+            "照片",
+            "年级",
+            "比赛"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "又 = ham, yana; 又...又... qolipida (yòu)",
+            "ru": "又 = и, также; в конструкции 又...又... (yòu)",
+            "tj": "又 = ҳам, боз; дар сохтори 又...又... (yòu)"
           }
         },
         {
@@ -696,6 +764,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "热情 talaffuzini tanlang:",
+            "ru": "Выберите произношение 热情:",
+            "tj": "Талаффузи 热情-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "rèqíng",
+            "niánjí",
+            "bǐsài",
+            "zhàopiàn"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "热情 — rèqíng",
+            "ru": "热情 — rèqíng",
+            "tj": "热情 — rèqíng"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -721,6 +814,47 @@
               "ru": "всегда",
               "tj": "ҳамеша"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "比赛 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 比赛:",
+            "tj": "Маънои калимаи 比赛-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "surat, fotosurat",
+              "ru": "фотография",
+              "tj": "акс"
+            },
+            {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
+              "uz": "ham, yana; 又...又... qolipida",
+              "ru": "и, также; в конструкции 又...又...",
+              "tj": "ҳам, боз; дар сохтори 又...又..."
+            },
+            {
+              "uz": "musobaqa",
+              "ru": "соревнование",
+              "tj": "мусобиқа"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "比赛 = musobaqa (bǐsài)",
+            "ru": "比赛 = соревнование (bǐsài)",
+            "tj": "比赛 = мусобиқа (bǐsài)"
           }
         },
         {
@@ -752,129 +886,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "饿",
-            "pinyin": "è",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "och, qorni och",
-              "ru": "голодный",
-              "tj": "гурусна"
-            }
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zhàopiàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zhàopiàn?",
+            "tj": "zhàopiàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "照片",
+            "比赛",
+            "又",
+            "年级"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "照片 = surat, fotosurat (zhàopiàn)",
+            "ru": "照片 = фотография (zhàopiàn)",
+            "tj": "照片 = акс (zhàopiàn)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "超市",
-            "pinyin": "chāoshì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "supermarket",
-              "ru": "супермаркет",
-              "tj": "супермаркет"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "蛋糕",
-            "pinyin": "dàngāo",
-            "pos": "n.",
-            "meaning": {
-              "uz": "tort, pirog",
-              "ru": "торт, пирожное",
-              "tj": "торт, кулча"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "年轻",
-            "pinyin": "niánqīng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "yosh",
-              "ru": "молодой",
-              "tj": "ҷавон"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "认真",
-            "pinyin": "rènzhēn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "jiddiy, mas'uliyatli",
-              "ru": "серьёзный, добросовестный",
-              "tj": "ҷиддӣ, масъулиятнок"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "客人",
-            "pinyin": "kèrén",
-            "pos": "n.",
-            "meaning": {
-              "uz": "mehmon, mijoz",
-              "ru": "гость, клиент",
-              "tj": "меҳмон, муштарӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "小明",
-            "pinyin": "Xiǎomíng",
-            "pos": "proper noun",
-            "meaning": {
-              "uz": "Xiaoming (ism)",
-              "ru": "Сяомин (имя)",
-              "tj": "Сяомин (ном)"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "马可",
-            "pinyin": "Mǎkě",
-            "pos": "proper noun",
-            "meaning": {
-              "uz": "Marco (ism)",
-              "ru": "Марко (имя)",
-              "tj": "Марко (ном)"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "李小美",
-            "pinyin": "Lǐ Xiǎoměi",
-            "pos": "proper noun",
-            "meaning": {
-              "uz": "Li Xiaomei (ism)",
-              "ru": "Ли Сяомэй (имя)",
-              "tj": "Ли Сяомэй (ном)"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "比赛",
+              {
+                "uz": "musobaqa",
+                "ru": "соревнование",
+                "tj": "мусобиқа"
+              }
+            ],
+            [
+              "照片",
+              {
+                "uz": "surat, fotosurat",
+                "ru": "фотография",
+                "tj": "акс"
+              }
+            ],
+            [
+              "年级",
+              {
+                "uz": "sinf, kurs, bosqich",
+                "ru": "класс, курс",
+                "tj": "синф, курс"
+              }
+            ],
+            [
+              "又",
+              {
+                "uz": "ham, yana; 又...又... qolipida",
+                "ru": "и, также; в конструкции 又...又...",
+                "tj": "ҳам, боз; дар сохтори 又...又..."
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -889,6 +964,101 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "'又……又……' — ham...ham... (ikki xususiyat)",
+              "ru": "Конструкция «又……又……» — и...и... (два качества)",
+              "tj": "Сохтори «又……又……» — ҳам...ҳам... (ду сифат)"
+            },
+            "title_zh": "\"又……又……\"",
+            "rule": {
+              "uz": "'又……又……' qolipi biror narsa yoki odamda bir vaqtda ikki sifat yoki holat borligini bildiradi.\nQolip: 又 + Sifat/fe'l + 又 + Sifat/fe'l\nMasalan:\n  又聪明又努力 (ham aqlli ham g'ayratli)\n  又新鲜又甜 (ham yangi ham shirin)\n  又便宜又好看 (ham arzon ham chiroyli)",
+              "ru": "Конструкция '又……又……' выражает наличие двух качеств или состояний одновременно.\nСтруктура: 又 + Прил./Гл. + 又 + Прил./Гл.\nНапример:\n  又聪明又努力 (и умный, и старательный)\n  又新鲜又甜 (и свежий, и сладкий)\n  又便宜又好看 (и дешёвый, и красивый)",
+              "tj": "Сохтори '又……又……' мавҷудияти ду сифат ё ҳолатро дар як вақт ифода мекунад.\nСохтор: 又 + Сифат/Феъл + 又 + Сифат/Феъл\nМасалан:\n  又聪明又努力 (ҳам зирак ҳам кӯшишкор)\n  又新鲜又甜 (ҳам тоза ҳам ширин)\n  又便宜又好看 (ҳам арзон ҳам зебо)"
+            },
+            "examples": [
+              {
+                "zh": "小丽又聪明又认真，总是第一个回答问题。",
+                "pinyin": "Xiǎo Lì yòu cōngmíng yòu rènzhēn, zǒngshì dì yī ge huídá wèntí.",
+                "translation": {
+                  "uz": "Kichik Li ham aqlli ham mas'uliyatli, doim birinchi bo'lib savollarga javob beradi.",
+                  "ru": "Маленькая Ли и умная, и ответственная — всегда первой отвечает на вопросы.",
+                  "tj": "Сяо Ли ҳам зирак ҳам масъулиятшинос аст, ҳамеша аввалин ҷавоб медиҳад."
+                }
+              },
+              {
+                "zh": "超市里有很多又好吃又新鲜的东西。",
+                "pinyin": "Chāoshì lǐ yǒu hěn duō yòu hǎochī yòu xīnxiān de dōngxi.",
+                "translation": {
+                  "uz": "Supermarketda juda ko'p ham mazali ham yangi narsalar bor.",
+                  "ru": "В супермаркете много вкусного и свежего.",
+                  "tj": "Дар супермаркет чизҳои ҳам хӯрданӣ ҳам тозаи зиёде ҳаст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "小丽又____又认真，总是第一个回答问题。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "聪明",
+            "照片",
+            "比赛",
+            "年级"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 聪明 (cōngming) — aqlli, zukko",
+            "ru": "Верно: 聪明 (cōngming) — умный, сообразительный",
+            "tj": "Дуруст: 聪明 (cōngming) — доно, зирак"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Hamroh harakat: V₁着 + V₂",
+              "ru": "Сопутствующее действие: V₁着 + V₂",
+              "tj": "Амали ҳамроҳ: V₁着 + V₂"
+            },
+            "title_zh": "动作的伴随：V₁着(O₁) + V₂(O₂)",
+            "rule": {
+              "uz": "Bu qolip V₂ ni V₁ bilan bir vaqtda bajarishni ifodalaydi — V₁ asosiy harakatning shaklini beradi.\nQolip: V₁ + 着 + (O₁) + V₂ + (O₂)\n着 — birinchi harakatning davomiy holatini bildiradi.\nMasalan:\n  笑着说话 (kulib gaplashmoq)\n  站着工作 (tik turib ishlash)\n  听着音乐学习 (musiqa tinglab o'rganish)",
+              "ru": "Конструкция выражает выполнение V₂ одновременно с V₁ — V₁ задаёт способ действия.\nСтруктура: V₁ + 着 + (O₁) + V₂ + (O₂)\n着 — обозначает длящееся состояние первого действия.\nНапример:\n  笑着说话 (разговаривать с улыбкой)\n  站着工作 (работать стоя)\n  听着音乐学习 (учиться под музыку)",
+              "tj": "Ин сохтор иҷрои V₂-ро дар як вақт бо V₁ ифода мекунад — V₁ тарзи амалро медиҳад.\nСохтор: V₁ + 着 + (O₁) + V₂ + (O₂)\n着 — ҳолати давомандаи амали аввалро нишон медиҳад.\nМасалан:\n  笑着说话 (бо табассум сӯҳбат кардан)\n  站着工作 (истода кор кардан)\n  听着音乐学习 (бо мусиқа омӯхтан)"
+            },
+            "examples": [
+              {
+                "zh": "她总是笑着跟客人说话。",
+                "pinyin": "Tā zǒngshì xiào zhe gēn kèrén shuōhuà.",
+                "translation": {
+                  "uz": "U doim kulib mehmonlar bilan gaplashadi.",
+                  "ru": "Она всегда разговаривает с покупателями с улыбкой.",
+                  "tj": "Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад."
+                }
+              },
+              {
+                "zh": "他站着工作了这么多小时，真不容易！",
+                "pinyin": "Tā zhàn zhe gōngzuò le zhème duō xiǎoshí, zhēn bù róngyì!",
+                "translation": {
+                  "uz": "U shu qadar ko'p soat tik turib ishladi, bu rostdan ham oson emas!",
+                  "ru": "Он столько часов проработал стоя — это действительно нелегко!",
+                  "tj": "Вай ин қадар соатҳо истода кор кард, ин воқеан осон нест!"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U doim kulib mehmonlar bilan gaplashadi.",
@@ -896,15 +1066,15 @@
             "tj": "Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад."
           },
           "tokens": [
-            "说话",
-            "客人",
-            "她",
-            "笑",
-            "总是",
             "照片",
+            "着",
+            "她",
             "跟",
+            "客人",
+            "总是",
+            "笑",
             "比赛",
-            "着"
+            "说话"
           ],
           "answer_tokens": [
             "她",
@@ -922,24 +1092,86 @@
           }
         },
         {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "'总是'+V — doim takrorlanadigan harakat",
+              "ru": "«总是»+V — привычное, повторяющееся действие",
+              "tj": "«总是»+V — амали одатии такроршаванда"
+            },
+            "title_zh": "\"总是\"+V 表示习惯性动作",
+            "rule": {
+              "uz": "'总是' ravishi fe'l oldidan keladi va harakatning doim yoki ko'p marta takrorlanishini bildiradi.\nMa'nosi: doim, hamisha, ko'pincha\nQolip: 主语 + 总是 + V + (O)\nMasalan:\n  她总是第一个回答问题。(U doim birinchi bo'lib javob beradi.)\n  他总是迟到。(U doim kechikadi.)\n  我总是喝热茶。(Men doim issiq choy ichaman.)",
+              "ru": "Наречие '总是' стоит перед глаголом и означает постоянное или повторяющееся действие.\nЗначение: всегда, постоянно\nСтруктура: Подлеж. + 总是 + Гл. + (Доп.)\nНапример:\n  她总是第一个回答问题。(Она всегда первой отвечает.)\n  他总是迟到。(Он всегда опаздывает.)\n  我总是喝热茶。(Я всегда пью горячий чай.)",
+              "tj": "Қайди '总是' пеш аз феъл меояд ва амали доимӣ ё такроршавандаро ифода мекунад.\nМаъно: ҳамеша, доимо\nСохтор: Мубтадо + 总是 + Феъл + (Иловаи феълӣ)\nМасалан:\n  她总是第一个回答问题。(Вай ҳамеша аввалин ҷавоб медиҳад.)\n  他总是迟到。(Вай ҳамеша дер меояд.)\n  我总是喝热茶。(Ман ҳамеша чои гарм менӯшам.)"
+            },
+            "examples": [
+              {
+                "zh": "她总是笑着跟客人说话，客人都很喜欢她。",
+                "pinyin": "Tā zǒngshì xiào zhe gēn kèrén shuōhuà, kèrén dōu hěn xǐhuan tā.",
+                "translation": {
+                  "uz": "U doim kulib mehmonlar bilan gaplashadi, barcha mehmonlar uni yaxshi ko'rishadi.",
+                  "ru": "Она всегда разговаривает с покупателями с улыбкой — все её любят.",
+                  "tj": "Вай ҳамеша бо табассум бо харидорон сӯҳбат мекунад, ҳама харидорон ӯро дӯст медоранд."
+                }
+              },
+              {
+                "zh": "我的老师总是鼓励我，非常感谢他。",
+                "pinyin": "Wǒ de lǎoshī zǒngshì gǔlì wǒ, fēicháng gǎnxiè tā.",
+                "translation": {
+                  "uz": "Mening o'qituvchim doim meni rag'batlantiradi, unga juda minnatdorman.",
+                  "ru": "Мой учитель всегда меня поддерживает — очень ему благодарен.",
+                  "tj": "Омӯзгорам ҳамеша маро ҳавасманд мекунад, хеле миннатдорам."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
-          "sentence": "小丽又____又认真，总是第一个回答问题。",
+          "sentence": "她____笑着跟客人说话，客人都很喜欢她。",
           "prompt": {
             "uz": "Bo'sh joyga mos so'zni tanlang:",
             "ru": "Выберите слово для пропуска:",
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "照片",
-            "聪明",
             "比赛",
-            "年级"
+            "年级",
+            "照片",
+            "总是"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 总是 (zǒngshì) — har doim, doim",
+            "ru": "Верно: 总是 (zǒngshì) — всегда",
+            "tj": "Дуруст: 总是 (zǒngshì) — ҳамеша"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Mening o'qituvchim doim meni rag'batlantiradi, unga juda minnatdorman.» — xitoychada qaysi biri?",
+            "ru": "«Мой учитель всегда меня поддерживает — очень ему благодарен.» — какое предложение по-китайски?",
+            "tj": "«Омӯзгорам ҳамеша маро ҳавасманд мекунад, хеле миннатдорам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "超市里有很多又好吃又新鲜的东西。",
+            "我的老师总是鼓励我，非常感谢他。",
+            "她总是笑着跟客人说话，客人都很喜欢她。",
+            "小丽又聪明又认真，总是第一个回答问题。"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri: 聪明 (cōngming) — aqlli, zukko",
-            "ru": "Верно: 聪明 (cōngming) — умный, сообразительный",
-            "tj": "Дуруст: 聪明 (cōngming) — доно, зирак"
+            "uz": "我的老师总是鼓励我，非常感谢他。 — Wǒ de lǎoshī zǒngshì gǔlì wǒ, fēicháng gǎnxiè tā.",
+            "ru": "我的老师总是鼓励我，非常感谢他。 — Wǒ de lǎoshī zǒngshì gǔlì wǒ, fēicháng gǎnxiè tā.",
+            "tj": "我的老师总是鼓励我，非常感谢他。 — Wǒ de lǎoshī zǒngshì gǔlì wǒ, fēicháng gǎnxiè tā."
           }
         }
       ]
@@ -954,36 +1186,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "yòu qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yòu?",
-            "tj": "yòu кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "照片",
-            "年级",
-            "比赛",
-            "又"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "又 = ham, yana; 又...又... qolipida (yòu)",
-            "ru": "又 = и, также; в конструкции 又...又... (yòu)",
-            "tj": "又 = ҳам, боз; дар сохтори 又...又... (yòu)"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "聪明 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 聪明:",
-            "tj": "Маънои калимаи 聪明-ро интихоб кунед:"
+            "uz": "认真 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 认真:",
+            "tj": "Маънои калимаи 认真-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -992,9 +1199,9 @@
           },
           "options": [
             {
-              "uz": "sinf, kurs, bosqich",
-              "ru": "класс, курс",
-              "tj": "синф, курс"
+              "uz": "jiddiy, mas'uliyatli",
+              "ru": "серьёзный, добросовестный",
+              "tj": "ҷиддӣ, масъулиятнок"
             },
             {
               "uz": "surat, fotosurat",
@@ -1002,54 +1209,21 @@
               "tj": "акс"
             },
             {
+              "uz": "sinf, kurs, bosqich",
+              "ru": "класс, курс",
+              "tj": "синф, курс"
+            },
+            {
               "uz": "musobaqa",
               "ru": "соревнование",
               "tj": "мусобиқа"
-            },
-            {
-              "uz": "aqlli, zukko",
-              "ru": "умный, сообразительный",
-              "tj": "доно, зирак"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "聪明 = aqlli, zukko (cōngming)",
-            "ru": "聪明 = умный, сообразительный (cōngming)",
-            "tj": "聪明 = доно, зирак (cōngming)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bu sizlarning musobaqadagi suratingizmi?",
-            "ru": "Это ваша фотография с соревнования?",
-            "tj": "Ин акси мусобиқаи шумост?"
-          },
-          "tokens": [
-            "又",
-            "照片",
-            "的",
-            "是",
-            "比赛",
-            "吗",
-            "年级",
-            "你们",
-            "这"
-          ],
-          "answer_tokens": [
-            "这",
-            "是",
-            "你们",
-            "比赛",
-            "的",
-            "照片",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "这是你们比赛的照片吗？ — Zhè shì nǐmen bǐsài de zhàopiàn ma?",
-            "ru": "这是你们比赛的照片吗？ — Zhè shì nǐmen bǐsài de zhàopiàn ma?",
-            "tj": "这是你们比赛的照片吗？ — Zhè shì nǐmen bǐsài de zhàopiàn ma?"
+            "uz": "认真 = jiddiy, mas'uliyatli (rènzhēn)",
+            "ru": "认真 = серьёзный, добросовестный (rènzhēn)",
+            "tj": "认真 = ҷиддӣ, масъулиятнок (rènzhēn)"
           }
         },
         {
@@ -1062,12 +1236,12 @@
           "audio_text": "这是你们比赛的照片吗？",
           "pinyin": "Zhè shì nǐmen bǐsài de zhàopiàn ma?",
           "options": [
-            "照得不错，你们都是一个年级的吗？",
             "是，这是我们比赛后照的。",
             "这是你们比赛的照片吗？",
-            "不是。那个又高又漂亮的女孩儿是二年级的。"
+            "不是。那个又高又漂亮的女孩儿是二年级的。",
+            "照得不错，你们都是一个年级的吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "这是你们比赛的照片吗？ — Bu sizlarning musobaqadagi suratingizmi?",
             "ru": "这是你们比赛的照片吗？ — Это ваша фотография с соревнования?",
@@ -1117,6 +1291,64 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu sizlarning musobaqadagi suratingizmi?",
+            "ru": "Это ваша фотография с соревнования?",
+            "tj": "Ин акси мусобиқаи шумост?"
+          },
+          "tokens": [
+            "比赛",
+            "是",
+            "你们",
+            "这",
+            "的",
+            "年级",
+            "又",
+            "照片",
+            "吗"
+          ],
+          "answer_tokens": [
+            "这",
+            "是",
+            "你们",
+            "比赛",
+            "的",
+            "照片",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "这是你们比赛的照片吗？ — Zhè shì nǐmen bǐsài de zhàopiàn ma?",
+            "ru": "这是你们比赛的照片吗？ — Zhè shì nǐmen bǐsài de zhàopiàn ma?",
+            "tj": "这是你们比赛的照片吗？ — Zhè shì nǐmen bǐsài de zhàopiàn ma?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "niánqīng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается niánqīng?",
+            "tj": "niánqīng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "年级",
+            "年轻",
+            "照片",
+            "比赛"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "年轻 = yosh (niánqīng)",
+            "ru": "年轻 = молодой (niánqīng)",
+            "tj": "年轻 = ҷавон (niánqīng)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "比赛",
           "pinyin": "bǐsài",
@@ -1148,15 +1380,40 @@
           "pinyin": "Zhè shì nǐmen bǐsài de zhàopiàn ma?",
           "options": [
             "是，这是我们比赛后照的。",
-            "不是。那个又高又漂亮的女孩儿是二年级的。",
+            "照得不错，你们都是一个年级的吗？",
             "这是你们比赛的照片吗？",
-            "照得不错，你们都是一个年级的吗？"
+            "不是。那个又高又漂亮的女孩儿是二年级的。"
           ],
           "correct_index": 2,
           "explanation": {
             "uz": "这是你们比赛的照片吗？ — Bu sizlarning musobaqadagi suratingizmi?",
             "ru": "这是你们比赛的照片吗？ — Это ваша фотография с соревнования?",
             "tj": "这是你们比赛的照片吗？ — Ин акси мусобиқаи шумост?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 小明 avval nima deydi?",
+            "ru": "Что 小明 говорит в начале диалога?",
+            "tj": "Дар муколама 小明 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "不是。那个又高又漂亮的女孩儿是二年级的。",
+            "是，这是我们比赛后照的。",
+            "照得不错，你们都是一个年级的吗？",
+            "这是你们比赛的照片吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 这是你们比赛的照片吗？",
+            "ru": "Правильный ответ: 这是你们比赛的照片吗？",
+            "tj": "Ҷавоби дуруст: 这是你们比赛的照片吗？"
           }
         },
         {
@@ -1168,12 +1425,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
+            "夫",
+            "电",
             "这",
-            "斤",
-            "新",
-            "国"
+            "下"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 这 — 这是你们比赛的照片吗？ (Bu sizlarning musobaqadagi suratingizmi?)",
             "ru": "Верно: 这 — 这是你们比赛的照片吗？ (Это ваша фотография с соревнования?)",
@@ -1220,41 +1477,16 @@
             }
           ],
           "options": [
-            "照得不错，你们都是一个年级的吗？",
             "这是你们比赛的照片吗？",
+            "是，这是我们比赛后照的。",
             "那是我！",
-            "是，这是我们比赛后照的。"
+            "照得不错，你们都是一个年级的吗？"
           ],
           "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 那是我！",
             "ru": "Правильный ответ: 那是我！",
             "tj": "Ҷавоби дуруст: 那是我！"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 小明 avval nima deydi?",
-            "ru": "Что 小明 говорит в начале диалога?",
-            "tj": "Дар муколама 小明 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "这是你们比赛的照片吗？",
-            "是，这是我们比赛后照的。",
-            "照得不错，你们都是一个年级的吗？",
-            "不是。那个又高又漂亮的女孩儿是二年级的。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 这是你们比赛的照片吗？",
-            "ru": "Правильный ответ: 这是你们比赛的照片吗？",
-            "tj": "Ҷавоби дуруст: 这是你们比赛的照片吗？"
           }
         },
         {
@@ -1271,11 +1503,11 @@
           },
           "options": [
             "这是你们比赛的照片吗？",
-            "是，这是我们比赛后照的。",
+            "那是我！",
             "照得不错，你们都是一个年级的吗？",
-            "那是我！"
+            "是，这是我们比赛后照的。"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 那是我！",
             "ru": "Правильный ответ: 那是我！",

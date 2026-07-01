@@ -8,6 +8,8 @@
     "ru": "Научиться описывать владельца, цвет и местоположение предметов; освоить именные словосочетания с 的, количественное слово 一下 и усилительное наречие 真.",
     "tj": "Тасвири соҳиб, ранг ва ҷойгиршавии ашё; азхудкунии ибораҳои исмӣ бо 的, воҳиди 一下 ва зарфи тақвиятии 真."
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -527,6 +529,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "千 talaffuzini tanlang:",
+            "ru": "Выберите произношение 千:",
+            "tj": "Талаффузи 千-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bàozhǐ",
+            "qiān",
+            "sòng",
+            "shǒubiǎo"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "千 — qiān",
+            "ru": "千 — qiān",
+            "tj": "千 — qiān"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -552,6 +579,47 @@
               "ru": "доставлять, дарить",
               "tj": "расондан, тӯҳфа кардан"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "千 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 千:",
+            "tj": "Маънои калимаи 千-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo'l soati",
+              "ru": "наручные часы",
+              "tj": "соати дасти"
+            },
+            {
+              "uz": "yetkazib bermoq, sovg'a qilmoq",
+              "ru": "доставлять, дарить",
+              "tj": "расондан, тӯҳфа кардан"
+            },
+            {
+              "uz": "ming (1000)",
+              "ru": "тысяча (1000)",
+              "tj": "ҳазор (1000)"
+            },
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "千 = ming (1000) (qiān)",
+            "ru": "千 = тысяча (1000) (qiān)",
+            "tj": "千 = ҳазор (1000) (qiān)"
           }
         },
         {
@@ -583,6 +651,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "niúnǎi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается niúnǎi?",
+            "tj": "niúnǎi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "千",
+            "牛奶",
+            "手表",
+            "报纸"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "牛奶 = sut (sigir suti) (niúnǎi)",
+            "ru": "牛奶 = молоко (коровье) (niúnǎi)",
+            "tj": "牛奶 = шир (шири гов) (niúnǎi)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -608,6 +701,31 @@
               "ru": "муж",
               "tj": "шавҳар"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "千 talaffuzini tanlang:",
+            "ru": "Выберите произношение 千:",
+            "tj": "Талаффузи 千-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "sòng",
+            "qiān",
+            "shǒubiǎo",
+            "bàozhǐ"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "千 — qiān",
+            "ru": "千 — qiān",
+            "tj": "千 — qiān"
           }
         },
         {
@@ -639,87 +757,86 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "粉色",
-            "pinyin": "fěnsè",
-            "pos": "n.",
-            "meaning": {
-              "uz": "pushti rang",
-              "ru": "розовый цвет",
-              "tj": "ранги гулобӣ"
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "牛奶 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 牛奶:",
+            "tj": "Маънои калимаи 牛奶-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "qo'l soati",
+              "ru": "наручные часы",
+              "tj": "соати дасти"
+            },
+            {
+              "uz": "ming (1000)",
+              "ru": "тысяча (1000)",
+              "tj": "ҳазор (1000)"
+            },
+            {
+              "uz": "gazeta",
+              "ru": "газета",
+              "tj": "рӯзнома"
+            },
+            {
+              "uz": "sut (sigir suti)",
+              "ru": "молоко (коровье)",
+              "tj": "шир (шири гов)"
             }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "牛奶 = sut (sigir suti) (niúnǎi)",
+            "ru": "牛奶 = молоко (коровье) (niúnǎi)",
+            "tj": "牛奶 = шир (шири гов) (niúnǎi)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "粉",
-            "pinyin": "fěn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "pushti",
-              "ru": "розовый",
-              "tj": "гулобӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "颜色",
-            "pinyin": "yánsè",
-            "pos": "n.",
-            "meaning": {
-              "uz": "rang",
-              "ru": "цвет",
-              "tj": "ранг"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "左边",
-            "pinyin": "zuǒbian",
-            "pos": "n.",
-            "meaning": {
-              "uz": "chap tomon",
-              "ru": "левая сторона",
-              "tj": "тарафи чап"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "红色",
-            "pinyin": "hóngsè",
-            "pos": "n.",
-            "meaning": {
-              "uz": "qizil rang",
-              "ru": "красный цвет",
-              "tj": "ранги сурх"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "红",
-            "pinyin": "hóng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "qizil",
-              "ru": "красный",
-              "tj": "сурх"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "手表",
+              {
+                "uz": "qo'l soati",
+                "ru": "наручные часы",
+                "tj": "соати дасти"
+              }
+            ],
+            [
+              "千",
+              {
+                "uz": "ming (1000)",
+                "ru": "тысяча (1000)",
+                "tj": "ҳазор (1000)"
+              }
+            ],
+            [
+              "报纸",
+              {
+                "uz": "gazeta",
+                "ru": "газета",
+                "tj": "рӯзнома"
+              }
+            ],
+            [
+              "送",
+              {
+                "uz": "yetkazib bermoq, sovg'a qilmoq",
+                "ru": "доставлять, дарить",
+                "tj": "расондан, тӯҳфа кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -734,6 +851,43 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "'的' qo'shimchasi bilan ibora",
+              "ru": "Именное словосочетание с 的",
+              "tj": "Ибора бо 的"
+            },
+            "title_zh": "“的”字短语",
+            "rule": {
+              "uz": "'的' qo'shimchasi ot o'rnida ishlatilganda '的' bilan tugagan birikma ot vazifasini bajaradi. Masalan, '红色的' = 'qizil rangli narsa', '送报纸的' = 'gazeta olib keladigan odam'. Bu usul takrorni oldini olish uchun ishlatiladi.",
+              "ru": "Когда частица 的 используется вместо существительного, словосочетание, заканчивающееся на 的, выполняет функцию существительного. Например, '红色的' = 'красная вещь', '送报纸的' = 'человек, доставляющий газеты'. Используется для избегания повторений.",
+              "tj": "Вақте ки 的 ба ҷои исм истифода мешавад, ибораи хотимаёфта бо 的 нақши исмро мебозад. Масалан, '红色的' = 'чизи сурх', '送报纸的' = 'одами рӯзнома оваранда'. Барои пешгирии такрор истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "左边那个红色的是我的。",
+                "pinyin": "Zuǒbian nàge hóngsè de shì wǒ de.",
+                "translation": {
+                  "uz": "Chap tomondagi qizili meniki.",
+                  "ru": "Вон та красная слева — моя.",
+                  "tj": "Он сурхе, ки тарафи чап аст, аз они ман аст."
+                }
+              },
+              {
+                "zh": "是送牛奶的来了。",
+                "pinyin": "Shì sòng niúnǎi de lái le.",
+                "translation": {
+                  "uz": "Sut olib keladigan odam keldi.",
+                  "ru": "Пришёл молочник.",
+                  "tj": "Шир оварандаи омад."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Chap tomondagi qizili meniki.",
@@ -742,15 +896,15 @@
           },
           "tokens": [
             "千",
-            "左边",
             "的",
-            "的",
-            "红色",
             "手表",
-            "是",
             "个",
+            "的",
+            "是",
             "那",
-            "我"
+            "我",
+            "左边",
+            "红色"
           ],
           "answer_tokens": [
             "左边",
@@ -769,24 +923,160 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "我看____。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Miqdor ko'makchisi '一下'",
+              "ru": "Счётное слово 一下",
+              "tj": "Воҳиди 一下"
+            },
+            "title_zh": "量词“一下”",
+            "rule": {
+              "uz": "'一下' fe'ldan keyin kelib harakatning qisqa yoki engil bajarilishini bildiradi. U fe'lni muloyim yoki noaniq qiladi. O'zbek tilidagi 'bir oz, bir qarayin' kabi.",
+              "ru": "一下 ставится после глагола и указывает на краткое или лёгкое выполнение действия. Смягчает глагол или делает его неопределённым. Аналог русского «разок, немного».",
+              "tj": "一下 баъд аз феъл меояд ва ифодаи кӯтоҳ ё сабуки амалро нишон медиҳад. Феълро нарм ё номуайян мекунад. Ба монанди 'як дафъа, каме' дар забони ӯзбекӣ."
+            },
+            "examples": [
+              {
+                "zh": "我看一下。",
+                "pinyin": "Wǒ kàn yíxià.",
+                "translation": {
+                  "uz": "Bir qarayayin.",
+                  "ru": "Посмотрю.",
+                  "tj": "Як нигоҳ мекунам."
+                }
+              },
+              {
+                "zh": "你等一下。",
+                "pinyin": "Nǐ děng yíxià.",
+                "translation": {
+                  "uz": "Bir oz kutib tur.",
+                  "ru": "Подожди немного.",
+                  "tj": "Каме интизор шав."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bir qarayayin.",
+            "ru": "Посмотрю.",
+            "tj": "Як нигоҳ мекунам."
           },
-          "options": [
+          "tokens": [
+            "看",
+            "我",
+            "一下",
             "手表",
-            "报纸",
-            "千",
+            "千"
+          ],
+          "answer_tokens": [
+            "我",
+            "看",
             "一下"
           ],
-          "correct_index": 3,
           "explanation": {
-            "uz": "To'g'ri: 一下 (yíxià) — bir oz, bir marta (harakat uchun)",
-            "ru": "Верно: 一下 (yíxià) — немного, разок (для смягчения глагола)",
-            "tj": "Дуруст: 一下 (yíxià) — якдафъа, каме (барои нармкунии феъл)"
+            "uz": "我看一下。 — Wǒ kàn yíxià.",
+            "ru": "我看一下。 — Wǒ kàn yíxià.",
+            "tj": "我看一下。 — Wǒ kàn yíxià."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Modal ravish '真'",
+              "ru": "Модальное наречие 真",
+              "tj": "Зарфи модалии 真"
+            },
+            "title_zh": "语气副词“真”",
+            "rule": {
+              "uz": "'真' ravishi sifat yoki fe'l oldidan kelib 'haqiqatan, juda' ma'nosida kuchaytirish bildiradi. Ko'pincha hayrat yoki ta'sir bildiruvchi gaplarda ishlatiladi.",
+              "ru": "Наречие 真 ставится перед прилагательным или глаголом и означает усиление «действительно, очень». Часто используется в восклицательных предложениях.",
+              "tj": "Зарфи 真 пеш аз сифат ё феъл меояд ва тақвиятро ба маънии 'воқеан, хеле' ифода мекунад. Аксар дар ҷумлаҳои ҳайратии ифодакунанда истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "你女儿的房间真漂亮啊！",
+                "pinyin": "Nǐ nǚ'ér de fángjiān zhēn piàoliang a!",
+                "translation": {
+                  "uz": "Qizingizning xonasi haqiqatan chiroyli!",
+                  "ru": "Комната вашей дочки действительно красивая!",
+                  "tj": "Хонаи духтаратон воқеан зебо аст!"
+                }
+              },
+              {
+                "zh": "这个菜真好吃！",
+                "pinyin": "Zhège cài zhēn hǎochī!",
+                "translation": {
+                  "uz": "Bu taom juda mazali!",
+                  "ru": "Это блюдо действительно вкусное!",
+                  "tj": "Ин хӯрок воқеан хуш мазза аст!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Qizingizning xonasi haqiqatan chiroyli!",
+            "ru": "Комната вашей дочки действительно красивая!",
+            "tj": "Хонаи духтаратон воқеан зебо аст!"
+          },
+          "tokens": [
+            "你",
+            "啊",
+            "漂亮",
+            "的",
+            "女儿",
+            "真",
+            "房间",
+            "千",
+            "手表"
+          ],
+          "answer_tokens": [
+            "你",
+            "女儿",
+            "的",
+            "房间",
+            "真",
+            "漂亮",
+            "啊"
+          ],
+          "explanation": {
+            "uz": "你女儿的房间真漂亮啊！ — Nǐ nǚ'ér de fángjiān zhēn piàoliang a!",
+            "ru": "你女儿的房间真漂亮啊！ — Nǐ nǚ'ér de fángjiān zhēn piàoliang a!",
+            "tj": "你女儿的房间真漂亮啊！ — Nǐ nǚ'ér de fángjiān zhēn piàoliang a!"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bir qarayayin.» — xitoychada qaysi biri?",
+            "ru": "«Посмотрю.» — какое предложение по-китайски?",
+            "tj": "«Як нигоҳ мекунам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你等一下。",
+            "我看一下。",
+            "是送牛奶的来了。",
+            "左边那个红色的是我的。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我看一下。 — Wǒ kàn yíxià.",
+            "ru": "我看一下。 — Wǒ kàn yíxià.",
+            "tj": "我看一下。 — Wǒ kàn yíxià."
           }
         }
       ]
@@ -801,89 +1091,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'gazeta' xitoycha qaysi?",
-            "ru": "'газета' по-китайски?",
-            "tj": "'рӯзнома' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "送",
-            "报纸",
-            "手表",
-            "千"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "gazeta = 报纸 (bàozhǐ)",
-            "ru": "газета = 报纸 (bàozhǐ)",
-            "tj": "рӯзнома = 报纸 (bàozhǐ)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "sòng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается sòng?",
-            "tj": "sòng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "手表",
-            "报纸",
-            "千",
-            "送"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "送 = yetkazib bermoq, sovg'a qilmoq (sòng)",
-            "ru": "送 = доставлять, дарить (sòng)",
-            "tj": "送 = расондан, тӯҳфа кардан (sòng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bu qo'l soati seniki ekanmi?",
-            "ru": "Эти часы твои?",
-            "tj": "Ин соати дасти аз они туст?"
-          },
-          "tokens": [
-            "手表",
-            "是",
-            "块",
-            "吗",
-            "千",
-            "报纸",
-            "这",
-            "你",
-            "的"
-          ],
-          "answer_tokens": [
-            "这",
-            "块",
-            "手表",
-            "是",
-            "你",
-            "的",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "这块手表是你的吗？ — Zhè kuài shǒubiǎo shì nǐ de ma?",
-            "ru": "这块手表是你的吗？ — Zhè kuài shǒubiǎo shì nǐ de ma?",
-            "tj": "这块手表是你的吗？ — Zhè kuài shǒubiǎo shì nǐ de ma?"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -893,12 +1100,12 @@
           "audio_text": "这块手表是你的吗？",
           "pinyin": "Zhè kuài shǒubiǎo shì nǐ de ma?",
           "options": [
-            "多少钱买的？",
             "这块手表是你的吗？",
+            "多少钱买的？",
             "三千多块。",
             "不是我的。是我爸爸的。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "这块手表是你的吗？ — Bu qo'l soati seniki ekanmi?",
             "ru": "这块手表是你的吗？ — Эти часы твои?",
@@ -948,6 +1155,89 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zuǒbian qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zuǒbian?",
+            "tj": "zuǒbian кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "左边",
+            "千",
+            "手表",
+            "报纸"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "左边 = chap tomon (zuǒbian)",
+            "ru": "左边 = левая сторона (zuǒbian)",
+            "tj": "左边 = тарафи чап (zuǒbian)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'rang' xitoycha qaysi?",
+            "ru": "'цвет' по-китайски?",
+            "tj": "'ранг' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "报纸",
+            "手表",
+            "颜色",
+            "千"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "rang = 颜色 (yánsè)",
+            "ru": "цвет = 颜色 (yánsè)",
+            "tj": "ранг = 颜色 (yánsè)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu qo'l soati seniki ekanmi?",
+            "ru": "Эти часы твои?",
+            "tj": "Ин соати дасти аз они туст?"
+          },
+          "tokens": [
+            "你",
+            "的",
+            "手表",
+            "块",
+            "千",
+            "吗",
+            "是",
+            "这",
+            "报纸"
+          ],
+          "answer_tokens": [
+            "这",
+            "块",
+            "手表",
+            "是",
+            "你",
+            "的",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "这块手表是你的吗？ — Zhè kuài shǒubiǎo shì nǐ de ma?",
+            "ru": "这块手表是你的吗？ — Zhè kuài shǒubiǎo shì nǐ de ma?",
+            "tj": "这块手表是你的吗？ — Zhè kuài shǒubiǎo shì nǐ de ma?"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "手表",
           "pinyin": "shǒubiǎo",
@@ -978,12 +1268,12 @@
           "audio_text": "这块手表是你的吗？",
           "pinyin": "Zhè kuài shǒubiǎo shì nǐ de ma?",
           "options": [
-            "多少钱买的？",
+            "不是我的。是我爸爸的。",
             "三千多块。",
-            "这块手表是你的吗？",
-            "不是我的。是我爸爸的。"
+            "多少钱买的？",
+            "这块手表是你的吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "这块手表是你的吗？ — Bu qo'l soati seniki ekanmi?",
             "ru": "这块手表是你的吗？ — Эти часы твои?",
@@ -999,9 +1289,9 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "儿",
-            "新",
-            "西",
+            "电",
+            "时",
+            "朋",
             "这"
           ],
           "correct_index": 3,
@@ -1009,6 +1299,56 @@
             "uz": "To'g'ri: 这 — 这块手表是你的吗？ (Bu qo'l soati seniki ekanmi?)",
             "ru": "Верно: 这 — 这块手表是你的吗？ (Эти часы твои?)",
             "tj": "Дуруст: 这 — 这块手表是你的吗？ (Ин соати дасти аз они туст?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "多少钱买的？",
+            "三千多块。",
+            "这块手表是你的吗？",
+            "不是我的。是我爸爸的。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 三千多块。",
+            "ru": "Правильный ответ: 三千多块。",
+            "tj": "Ҷавоби дуруст: 三千多块。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "不是我的。是我爸爸的。",
+            "三千多块。",
+            "多少钱买的？",
+            "这块手表是你的吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 这块手表是你的吗？",
+            "ru": "Правильный ответ: 这块手表是你的吗？",
+            "tj": "Ҷавоби дуруст: 这块手表是你的吗？"
           }
         },
         {
@@ -1042,61 +1382,11 @@
           ],
           "options": [
             "不是我的。是我爸爸的。",
-            "这块手表是你的吗？",
             "多少钱买的？",
+            "这块手表是你的吗？",
             "三千多块。"
           ],
           "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 三千多块。",
-            "ru": "Правильный ответ: 三千多块。",
-            "tj": "Ҷавоби дуруст: 三千多块。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар муколама A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "这块手表是你的吗？",
-            "三千多块。",
-            "不是我的。是我爸爸的。",
-            "多少钱买的？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 这块手表是你的吗？",
-            "ru": "Правильный ответ: 这块手表是你的吗？",
-            "tj": "Ҷавоби дуруст: 这块手表是你的吗？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири муколама B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "三千多块。",
-            "多少钱买的？",
-            "不是我的。是我爸爸的。",
-            "这块手表是你的吗？"
-          ],
-          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 三千多块。",
             "ru": "Правильный ответ: 三千多块。",

@@ -8,6 +8,8 @@
     "ru": "Изучение частицы '过', обозначающей прошлый опыт, союзного сочетания 'suīrán……dànshì' и счётного слова '次' для количества действий.",
     "tj": "Омӯзиши зарраи '过' ифодакунандаи таҷрибаи гузашта, ҷуфти пайвандии 'suīrán……dànshì' ва калимаи шуморавии '次' барои миқдори амал."
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -494,6 +496,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dànshì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dànshì?",
+            "tj": "dànshì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "虽然",
+            "次",
+            "有意思",
+            "但是"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "但是 = lekin, ammo (dànshì)",
+            "ru": "但是 = но, однако (dànshì)",
+            "tj": "但是 = аммо, вале (dànshì)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -519,6 +546,31 @@
               "ru": "раз (счётное слово для действий)",
               "tj": "маротиба, бор (воҳиди шуморавӣ)"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "次 talaffuzini tanlang:",
+            "ru": "Выберите произношение 次:",
+            "tj": "Талаффузи 次-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "dànshì",
+            "suīrán",
+            "cì",
+            "yǒu yìsi"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "次 — cì",
+            "ru": "次 — cì",
+            "tj": "次 — cì"
           }
         },
         {
@@ -550,6 +602,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "但是 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 但是:",
+            "tj": "Маънои калимаи 但是-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "garchi, garchanda",
+              "ru": "хотя, несмотря на то что",
+              "tj": "гарчи, ҳарчанд"
+            },
+            {
+              "uz": "lekin, ammo",
+              "ru": "но, однако",
+              "tj": "аммо, вале"
+            },
+            {
+              "uz": "qiziqarli, maroqli",
+              "ru": "интересный, занимательный",
+              "tj": "ҷолиб, хонанданӣ"
+            },
+            {
+              "uz": "marta, safar (harakat o'lchovi)",
+              "ru": "раз (счётное слово для действий)",
+              "tj": "маротиба, бор (воҳиди шуморавӣ)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "但是 = lekin, ammo (dànshì)",
+            "ru": "但是 = но, однако (dànshì)",
+            "tj": "但是 = аммо, вале (dànshì)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -575,6 +668,31 @@
               "ru": "сам, сама, себя",
               "tj": "худ, худаш"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zìjǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zìjǐ?",
+            "tj": "zìjǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "自己",
+            "但是",
+            "有意思",
+            "虽然"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "自己 = o'zi, o'zing (zìjǐ)",
+            "ru": "自己 = сам, сама, себя (zìjǐ)",
+            "tj": "自己 = худ, худаш (zìjǐ)"
           }
         },
         {
@@ -606,45 +724,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "参加",
-            "pinyin": "cānjia",
-            "pos": "v.",
-            "meaning": {
-              "uz": "qatnashmoq, ishtiroq etmoq",
-              "ru": "участвовать, принимать участие",
-              "tj": "иштирок кардан, ширкат кардан"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "有意思 talaffuzini tanlang:",
+            "ru": "Выберите произношение 有意思:",
+            "tj": "Талаффузи 有意思-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yǒu yìsi",
+            "suīrán",
+            "dànshì",
+            "cì"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "有意思 — yǒu yìsi",
+            "ru": "有意思 — yǒu yìsi",
+            "tj": "有意思 — yǒu yìsi"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "表演",
-            "pinyin": "biǎoyǎn",
-            "pos": "v./n.",
-            "meaning": {
-              "uz": "sahna ko'rsatmoq; tamosha, spektakl",
-              "ru": "выступать; выступление, спектакль",
-              "tj": "намоиш додан; намоиш, спектакл"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "商店",
-            "pinyin": "shāngdiàn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "do'kon, magazin",
-              "ru": "магазин",
-              "tj": "дӯкон, мағоза"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "有意思",
+              {
+                "uz": "qiziqarli, maroqli",
+                "ru": "интересный, занимательный",
+                "tj": "ҷолиб, хонанданӣ"
+              }
+            ],
+            [
+              "但是",
+              {
+                "uz": "lekin, ammo",
+                "ru": "но, однако",
+                "tj": "аммо, вале"
+              }
+            ],
+            [
+              "虽然",
+              {
+                "uz": "garchi, garchanda",
+                "ru": "хотя, несмотря на то что",
+                "tj": "гарчи, ҳарчанд"
+              }
+            ],
+            [
+              "次",
+              {
+                "uz": "marta, safar (harakat o'lchovi)",
+                "ru": "раз (счётное слово для действий)",
+                "tj": "маротиба, бор (воҳиди шуморавӣ)"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -659,6 +802,43 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "'Guo' harakat yuklamasi",
+              "ru": "Динамическая частица '过'",
+              "tj": "Зарраи динамикии '过'"
+            },
+            "title_zh": "动态助词“过”",
+            "rule": {
+              "uz": "'Guo' yuklamasi fe'ldan keyin kelib, hayotiy tajribani bildiradi: 'bir vaqtlar …qilganman'. Bu faqat shaxsiy o'tmish tajribasini ifodalaydi. Inkor: '没' + fe'l + '过' (hech qachon …qilmaganman). Savol: fe'l + '过' + '没有?'",
+              "ru": "Частица '过' ставится после глагола и обозначает жизненный опыт: 'когда-то делал(а)'. Выражает только личный прошлый опыт. Отрицание: '没' + глагол + '过' (никогда не делал(а)). Вопрос: глагол + '过' + '没有?'",
+              "tj": "Зарраи '过' баъд аз феъл меояд ва таҷрибаи зиндагиро ифода мекунад: 'вақте кардаам'. Танҳо таҷрибаи шахсии гузаштаро ифода мекунад. Инкор: '没' + феъл + '过' (ҳеҷгоҳ накардаам). Пурсиш: феъл + '过' + '没有?'"
+            },
+            "examples": [
+              {
+                "zh": "你看过那个电影吗？",
+                "pinyin": "Nǐ kànguo nàge diànyǐng ma?",
+                "translation": {
+                  "uz": "Siz o'sha filmni ko'rganmisiz?",
+                  "ru": "Ты смотрел(а) тот фильм?",
+                  "tj": "Оё шумо он филмро дидаед?"
+                }
+              },
+              {
+                "zh": "我去过北京两次。",
+                "pinyin": "Wǒ qùguo Běijīng liǎng cì.",
+                "translation": {
+                  "uz": "Men Pekinga ikki marta borgan.",
+                  "ru": "Я бывал(а) в Пекине два раза.",
+                  "tj": "Ман ба Пекин ду маротиба рафтаам."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Siz o'sha filmni ko'rganmisiz?",
@@ -666,15 +846,15 @@
             "tj": "Оё шумо он филмро дидаед?"
           },
           "tokens": [
-            "有意思",
-            "你",
             "个",
-            "电影",
+            "吗",
+            "过",
             "看",
+            "电影",
+            "你",
             "但是",
             "那",
-            "吗",
-            "过"
+            "有意思"
           ],
           "answer_tokens": [
             "你",
@@ -692,6 +872,43 @@
           }
         },
         {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "'Suīrán……dànshì……' bog'lovchi juftligi",
+              "ru": "Союзная пара 'suīrán……dànshì……'",
+              "tj": "Ҷуфти пайвандии 'suīrán……dànshì……'"
+            },
+            "title_zh": "关联词“虽然……，但是……”",
+            "rule": {
+              "uz": "'Suīrán……dànshì……' bog'lovchi juftligi 'garchi……bo'lsa ham, lekin……' ma'nosini beradi. Birinchi qismda tan olingan holat, ikkinchi qismda unga qarama-qarshi fikr ifodalanadi. 'Suīrán' ko'pincha gap boshida yoki ot/sifatdan oldin keladi.",
+              "ru": "Союзная пара 'suīrán……dànshì……' означает 'хотя……но……'. В первой части признаётся некоторый факт, во второй выражается противоположная мысль. 'Suīrán' обычно стоит в начале предложения или перед существительным/прилагательным.",
+              "tj": "Ҷуфти пайвандии 'suīrán……dànshì……' маъниаш 'гарчи……бошад ҳам, аммо……' аст. Дар қисми аввал ҳолате эътироф мешавад, дар қисми дуввум фикри муқобил ифода мешавад. 'Suīrán' одатан дар аввали ҷумла ё пеш аз исм/сифат меояд."
+            },
+            "examples": [
+              {
+                "zh": "虽然是晴天，但是很冷。",
+                "pinyin": "Suīrán shì qíngtiān, dànshì hěn lěng.",
+                "translation": {
+                  "uz": "Garchi quyoshli kun bo'lsa ham, lekin juda sovuq.",
+                  "ru": "Хотя солнечно, но очень холодно.",
+                  "tj": "Гарчи рӯзи офтобӣ бошад ҳам, аммо хеле сард аст."
+                }
+              },
+              {
+                "zh": "虽然去过好几次，但是还想再去。",
+                "pinyin": "Suīrán qùguo hǎo jǐ cì, dànshì hái xiǎng zài qù.",
+                "translation": {
+                  "uz": "Garchi bir necha marta borgan bo'lsam ham, lekin yana bormoqchiman.",
+                  "ru": "Хотя бывал(а) несколько раз, но всё равно хочу поехать снова.",
+                  "tj": "Гарчи чанд маротиба рафта бошам ҳам, аммо боз рафтанӣ ҳастам."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "虽然是晴天，____很冷。",
           "prompt": {
@@ -701,15 +918,110 @@
           },
           "options": [
             "虽然",
-            "次",
+            "有意思",
             "但是",
-            "有意思"
+            "次"
           ],
           "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 但是 (dànshì) — lekin, ammo",
             "ru": "Верно: 但是 (dànshì) — но, однако",
             "tj": "Дуруст: 但是 (dànshì) — аммо, вале"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "'Cì' harakat miqdori to'ldiruvchisi",
+              "ru": "Счётное дополнение '次'",
+              "tj": "Иловаи миқдории '次'"
+            },
+            "title_zh": "动量补语“次”",
+            "rule": {
+              "uz": "'Cì' (marta, safar) harakat miqdori to'ldiruvchisi bo'lib, fe'ldan keyin keladi va harakatning necha marta bajarilganligini bildiradi. Tuzilish: fe'l + '过' + sanoq + '次'. Masalan: 去过两次 (ikki marta borgan).",
+              "ru": "'Cì' (раз) является счётным дополнением, стоит после глагола и указывает, сколько раз выполнено действие. Структура: глагол + '过' + число + '次'. Например: 去过两次 (бывал(а) два раза).",
+              "tj": "'Cì' (маротиба, бор) иловаи миқдорӣ аст, баъд аз феъл меояд ва нишон медиҳад амал чанд маротиба иҷро шудааст. Сохтор: феъл + '过' + рақам + '次'. Масалан: 去过两次 (ду маротиба рафтаам)."
+            },
+            "examples": [
+              {
+                "zh": "我去过中国好几次。",
+                "pinyin": "Wǒ qùguo Zhōngguó hǎo jǐ cì.",
+                "translation": {
+                  "uz": "Men Xitoyga bir necha marta borgan.",
+                  "ru": "Я бывал(а) в Китае несколько раз.",
+                  "tj": "Ман ба Чин чанд маротиба рафтаам."
+                }
+              },
+              {
+                "zh": "我在这个商店买过一次东西。",
+                "pinyin": "Wǒ zài zhège shāngdiàn mǎiguo yí cì dōngxi.",
+                "translation": {
+                  "uz": "Men bu do'konda bir marta narsa sotib olganman.",
+                  "ru": "Я однажды покупал(а) что-то в этом магазине.",
+                  "tj": "Ман дар ин дӯкон як маротиба чиз харидаам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men Xitoyga bir necha marta borgan.",
+            "ru": "Я бывал(а) в Китае несколько раз.",
+            "tj": "Ман ба Чин чанд маротиба рафтаам."
+          },
+          "tokens": [
+            "我",
+            "几",
+            "次",
+            "好",
+            "中国",
+            "有意思",
+            "过",
+            "去",
+            "但是"
+          ],
+          "answer_tokens": [
+            "我",
+            "去",
+            "过",
+            "中国",
+            "好",
+            "几",
+            "次"
+          ],
+          "explanation": {
+            "uz": "我去过中国好几次。 — Wǒ qùguo Zhōngguó hǎo jǐ cì.",
+            "ru": "我去过中国好几次。 — Wǒ qùguo Zhōngguó hǎo jǐ cì.",
+            "tj": "我去过中国好几次。 — Wǒ qùguo Zhōngguó hǎo jǐ cì."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Men bu do'konda bir marta narsa sotib olganman.» — xitoychada qaysi biri?",
+            "ru": "«Я однажды покупал(а) что-то в этом магазине.» — какое предложение по-китайски?",
+            "tj": "«Ман дар ин дӯкон як маротиба чиз харидаам.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你看过那个电影吗？",
+            "我去过北京两次。",
+            "虽然去过好几次，但是还想再去。",
+            "我在这个商店买过一次东西。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "我在这个商店买过一次东西。 — Wǒ zài zhège shāngdiàn mǎiguo yí cì dōngxi.",
+            "ru": "我在这个商店买过一次东西。 — Wǒ zài zhège shāngdiàn mǎiguo yí cì dōngxi.",
+            "tj": "我在这个商店买过一次东西。 — Wǒ zài zhège shāngdiàn mǎiguo yí cì dōngxi."
           }
         }
       ]
@@ -724,56 +1036,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "但是 talaffuzini tanlang:",
-            "ru": "Выберите произношение 但是:",
-            "tj": "Талаффузи 但是-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "cì",
-            "yǒu yìsi",
-            "dànshì",
-            "suīrán"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "但是 — dànshì",
-            "ru": "但是 — dànshì",
-            "tj": "但是 — dànshì"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'garchi, garchanda' xitoycha qaysi?",
-            "ru": "'хотя, несмотря на то что' по-китайски?",
-            "tj": "'гарчи, ҳарчанд' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "虽然",
-            "有意思",
-            "次",
-            "但是"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "garchi, garchanda = 虽然 (suīrán)",
-            "ru": "хотя, несмотря на то что = 虽然 (suīrán)",
-            "tj": "гарчи, ҳарчанд = 虽然 (suīrán)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Siz u filmni ko'rganmisiz?",
@@ -781,15 +1043,15 @@
             "tj": "Оё шумо он филмро дидаед?"
           },
           "tokens": [
-            "有意思",
-            "但是",
-            "你",
-            "电影",
-            "没有",
-            "个",
             "看",
             "过",
-            "那"
+            "电影",
+            "个",
+            "那",
+            "你",
+            "没有",
+            "有意思",
+            "但是"
           ],
           "answer_tokens": [
             "你",
@@ -807,6 +1069,56 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "表演 talaffuzini tanlang:",
+            "ru": "Выберите произношение 表演:",
+            "tj": "Талаффузи 表演-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "biǎoyǎn",
+            "dànshì",
+            "suīrán",
+            "yǒu yìsi"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "表演 — biǎoyǎn",
+            "ru": "表演 — biǎoyǎn",
+            "tj": "表演 — biǎoyǎn"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'do'kon, magazin' xitoycha qaysi?",
+            "ru": "'магазин' по-китайски?",
+            "tj": "'дӯкон, мағоза' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "虽然",
+            "有意思",
+            "但是",
+            "商店"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "do'kon, magazin = 商店 (shāngdiàn)",
+            "ru": "магазин = 商店 (shāngdiàn)",
+            "tj": "дӯкон, мағоза = 商店 (shāngdiàn)"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -817,11 +1129,11 @@
           "pinyin": "Nǐ kànguo nàge diànyǐng méiyǒu?",
           "options": [
             "那我们下个星期一一起去看吧？",
-            "你看过那个电影没有？",
+            "可以，但是我女朋友也想去。",
             "没看过，听说很有意思。",
-            "可以，但是我女朋友也想去。"
+            "你看过那个电影没有？"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "你看过那个电影没有？ — Siz u filmni ko'rganmisiz?",
             "ru": "你看过那个电影没有？ — Ты смотрел(а) тот фильм?",
@@ -901,12 +1213,12 @@
           "audio_text": "你看过那个电影没有？",
           "pinyin": "Nǐ kànguo nàge diànyǐng méiyǒu?",
           "options": [
-            "你看过那个电影没有？",
-            "可以，但是我女朋友也想去。",
             "那我们下个星期一一起去看吧？",
-            "没看过，听说很有意思。"
+            "没看过，听说很有意思。",
+            "你看过那个电影没有？",
+            "可以，但是我女朋友也想去。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "你看过那个电影没有？ — Siz u filmni ko'rganmisiz?",
             "ru": "你看过那个电影没有？ — Ты смотрел(а) тот фильм?",
@@ -914,24 +1226,28 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____看过那个电影没有？",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "你",
-            "国",
-            "斤",
-            "新"
+            "那我们下个星期一一起去看吧？",
+            "没看过，听说很有意思。",
+            "你看过那个电影没有？",
+            "可以，但是我女朋友也想去。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri: 你 — 你看过那个电影没有？ (Siz u filmni ko'rganmisiz?)",
-            "ru": "Верно: 你 — 你看过那个电影没有？ (Ты смотрел(а) тот фильм?)",
-            "tj": "Дуруст: 你 — 你看过那个电影没有？ (Оё шумо он филмро дидаед?)"
+            "uz": "To'g'ri javob: 你看过那个电影没有？",
+            "ru": "Правильный ответ: 你看过那个电影没有？",
+            "tj": "Ҷавоби дуруст: 你看过那个电影没有？"
           }
         },
         {
@@ -964,12 +1280,12 @@
             }
           ],
           "options": [
-            "可以，但是我女朋友也想去。",
             "你看过那个电影没有？",
-            "没看过，听说很有意思。",
-            "那我们下个星期一一起去看吧？"
+            "可以，但是我女朋友也想去。",
+            "那我们下个星期一一起去看吧？",
+            "没看过，听说很有意思。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 可以，但是我女朋友也想去。",
             "ru": "Правильный ответ: 可以，但是我女朋友也想去。",
@@ -977,28 +1293,24 @@
           }
         },
         {
-          "type": "quick_quiz",
+          "type": "gap_fill",
+          "sentence": "____看过那个电影没有？",
           "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар муколама A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "没看过，听说很有意思。",
-            "你看过那个电影没有？",
-            "可以，但是我女朋友也想去。",
-            "那我们下个星期一一起去看吧？"
+            "下",
+            "夫",
+            "你",
+            "电"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri javob: 你看过那个电影没有？",
-            "ru": "Правильный ответ: 你看过那个电影没有？",
-            "tj": "Ҷавоби дуруст: 你看过那个电影没有？"
+            "uz": "To'g'ri: 你 — 你看过那个电影没有？ (Siz u filmni ko'rganmisiz?)",
+            "ru": "Верно: 你 — 你看过那个电影没有？ (Ты смотрел(а) тот фильм?)",
+            "tj": "Дуруст: 你 — 你看过那个电影没有？ (Оё шумо он филмро дидаед?)"
           }
         },
         {
@@ -1014,10 +1326,10 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "没看过，听说很有意思。",
+            "那我们下个星期一一起去看吧？",
             "可以，但是我女朋友也想去。",
             "你看过那个电影没有？",
-            "那我们下个星期一一起去看吧？"
+            "没看过，听说很有意思。"
           ],
           "correct_index": 1,
           "explanation": {

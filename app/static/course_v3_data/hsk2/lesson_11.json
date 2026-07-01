@@ -8,6 +8,8 @@
     "ru": "Изучение конструкции сравнения 'bǐ', использования глагольных конструкций в роли определения и модального глагола 'kěnéng'.",
     "tj": "Омӯзиши конструксияи муқоисавии 'bǐ', истифодаи сохторҳои феълӣ ҳамчун муайянкунанда ва феъли ёрирасони 'kěnéng'."
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -472,6 +474,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chànggē qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chànggē?",
+            "tj": "chànggē кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "女",
+            "唱歌",
+            "男",
+            "孩子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "唱歌 = qo'shiq aytmoq (chànggē)",
+            "ru": "唱歌 = петь песню (chànggē)",
+            "tj": "唱歌 = суруд хондан (chànggē)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -497,6 +524,31 @@
               "ru": "ребёнок",
               "tj": "кӯдак"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "男 talaffuzini tanlang:",
+            "ru": "Выберите произношение 男:",
+            "tj": "Талаффузи 男-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chànggē",
+            "nán",
+            "háizi",
+            "nǚ"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "男 — nán",
+            "ru": "男 — nán",
+            "tj": "男 — nán"
           }
         },
         {
@@ -528,6 +580,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "比 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 比:",
+            "tj": "Маънои калимаи 比-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "… dan (qiyoslash uchun)",
+              "ru": "чем… (для сравнения)",
+              "tj": "аз… (барои муқоиса)"
+            },
+            {
+              "uz": "ayol, qiz",
+              "ru": "женский, девочка",
+              "tj": "зан, духтар"
+            },
+            {
+              "uz": "qo'shiq aytmoq",
+              "ru": "петь песню",
+              "tj": "суруд хондан"
+            },
+            {
+              "uz": "erkak, o'g'il",
+              "ru": "мужской, мальчик",
+              "tj": "мард, писар"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "比 = … dan (qiyoslash uchun) (bǐ)",
+            "ru": "比 = чем… (для сравнения) (bǐ)",
+            "tj": "比 = аз… (барои муқоиса) (bǐ)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -553,6 +646,31 @@
               "ru": "говорить, разговаривать",
               "tj": "гап задан, сухан гуфтан"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shuōhuà qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shuōhuà?",
+            "tj": "shuōhuà кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "男",
+            "女",
+            "唱歌",
+            "说话"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "说话 = gapirmoq, so'zlamoq (shuōhuà)",
+            "ru": "说话 = говорить, разговаривать (shuōhuà)",
+            "tj": "说话 = гап задан, сухан гуфтан (shuōhuà)"
           }
         },
         {
@@ -584,17 +702,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "姓",
-            "pinyin": "xìng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "familiyasi … bo'lmoq",
-              "ru": "иметь фамилию…",
-              "tj": "насабаш … буданаш"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "去年 talaffuzini tanlang:",
+            "ru": "Выберите произношение 去年:",
+            "tj": "Талаффузи 去年-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "qùnián",
+            "nǚ",
+            "chànggē",
+            "nán"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "去年 — qùnián",
+            "ru": "去年 — qùnián",
+            "tj": "去年 — qùnián"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "唱歌",
+              {
+                "uz": "qo'shiq aytmoq",
+                "ru": "петь песню",
+                "tj": "суруд хондан"
+              }
+            ],
+            [
+              "男",
+              {
+                "uz": "erkak, o'g'il",
+                "ru": "мужской, мальчик",
+                "tj": "мард, писар"
+              }
+            ],
+            [
+              "女",
+              {
+                "uz": "ayol, qiz",
+                "ru": "женский, девочка",
+                "tj": "зан, духтар"
+              }
+            ],
+            [
+              "孩子",
+              {
+                "uz": "bola",
+                "ru": "ребёнок",
+                "tj": "кӯдак"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -609,6 +780,101 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Fe'l birikmasi aniqlovchi sifatida",
+              "ru": "Глагольная конструкция в роли определения",
+              "tj": "Сохтори феълӣ ҳамчун муайянкунанда"
+            },
+            "title_zh": "动词结构做定语",
+            "rule": {
+              "uz": "Xitoy tilida fe'l birikmasi yoki gap bo'lagi ot oldidan aniqlovchi bo'lib kelishi mumkin. Bu holda aniqlovchi bilan ot orasiga '的' yuklamasi qo'yiladi. Masalan: '看报纸的女孩子' (gazeta o'qiyotgan qiz).",
+              "ru": "В китайском языке глагольная конструкция или часть предложения может выступать определением перед существительным. В этом случае между определением и существительным ставится частица '的'. Например: '看报纸的女孩子' (девушка, читающая газету).",
+              "tj": "Дар забони чинӣ сохтори феълӣ ё бахши ҷумла метавонад пеш аз исм ҳамчун муайянкунанда бояд. Дар ин ҳол байни муайянкунанда ва исм зарраи '的' гузошта мешавад. Масалан: '看报纸的女孩子' (духтаре ки рӯзнома мехонад)."
+            },
+            "examples": [
+              {
+                "zh": "左边看报纸的女孩子是我姐姐。",
+                "pinyin": "Zuǒbian kàn bàozhǐ de nǚ háizi shì wǒ jiějie.",
+                "translation": {
+                  "uz": "Chap tomondagi gazeta o'qiyotgan qiz mening opam.",
+                  "ru": "Девушка слева, читающая газету, — моя старшая сестра.",
+                  "tj": "Духтаре ки тарафи чап рӯзнома мехонад хоҳари калонии ман аст."
+                }
+              },
+              {
+                "zh": "前边说话的那个人是老师。",
+                "pinyin": "Qiánbian shuōhuà de nà ge rén shì lǎoshī.",
+                "translation": {
+                  "uz": "Oldinda gapirgan odam o'qituvchi.",
+                  "ru": "Тот человек впереди, который говорит, — учитель.",
+                  "tj": "Он касе ки пеш гап мезанад муаллим аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "左边看报纸的女____是我姐姐。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "女",
+            "唱歌",
+            "男",
+            "孩子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 孩子 (háizi) — bola",
+            "ru": "Верно: 孩子 (háizi) — ребёнок",
+            "tj": "Дуруст: 孩子 (háizi) — кӯдак"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "'Bǐ' qiyoslash gapi (1)",
+              "ru": "Предложения сравнения с 'bǐ' (1)",
+              "tj": "Ҷумлаи муқоисавӣ бо 'bǐ' (1)"
+            },
+            "title_zh": "“比”字句（1）",
+            "rule": {
+              "uz": "'Bǐ' qiyoslash gapi quyidagi tuzilishga ega: A + 比 + B + sifat (+ miqdor farqi). Bu 'A, B dan ko'proq/katta/yaxshi' ma'nosini beradi. Inkor shaklida '没有' ishlatiladi: A + 没有 + B + sifat.",
+              "ru": "Конструкция сравнения с 'bǐ' имеет структуру: A + 比 + B + прилагательное (+ разница в количестве). Означает 'A больше/старше/лучше, чем B'. В отрицательной форме используется '没有': A + 没有 + B + прилагательное.",
+              "tj": "Ҷумлаи муқоисавӣ бо 'bǐ' сохтори зеринро дорад: A + 比 + B + сифат (+ фарқи миқдорӣ). Маъниаш 'A аз B бештар/калонтар/беҳтар аст'. Дар шакли инкорӣ '没有' истифода мешавад: A + 没有 + B + сифат."
+            },
+            "examples": [
+              {
+                "zh": "他比我大三岁。",
+                "pinyin": "Tā bǐ wǒ dà sān suì.",
+                "translation": {
+                  "uz": "U mendan uch yosh katta.",
+                  "ru": "Он старше меня на три года.",
+                  "tj": "Ӯ аз ман се сол калонтар аст."
+                }
+              },
+              {
+                "zh": "苹果没有西瓜大。",
+                "pinyin": "Píngguǒ méiyǒu xīguā dà.",
+                "translation": {
+                  "uz": "Olma tarvuz kadar katta emas.",
+                  "ru": "Яблоко не такое большое, как арбуз.",
+                  "tj": "Себ ба андозаи тарбуз калон нест."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Olma tarvuz kadar katta emas.",
@@ -616,12 +882,12 @@
             "tj": "Себ ба андозаи тарбуз калон нест."
           },
           "tokens": [
-            "男",
             "唱歌",
             "西瓜",
-            "苹果",
             "大",
-            "没有"
+            "没有",
+            "男",
+            "苹果"
           ],
           "answer_tokens": [
             "苹果",
@@ -636,24 +902,94 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "左边看报纸的女____是我姐姐。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "'Kěnéng' yordamchi fe'li",
+              "ru": "Модальный глагол 'kěnéng'",
+              "tj": "Феъли ёрирасони 'kěnéng'"
+            },
+            "title_zh": "助动词“可能”",
+            "rule": {
+              "uz": "'Kěnéng' yordamchi fe'li 'ehtimol, mumkin' ma'nosini beradi va fe'l oldidan qo'yiladi. U ma'lum bo'lmagan holatlar haqida taxmin bildiradi. Inkor shakli: '不可能' (mumkin emas, aslo).",
+              "ru": "Модальный глагол 'kěnéng' означает 'возможно, может быть' и ставится перед глаголом. Выражает предположение о неизвестных ситуациях. Отрицательная форма: '不可能' (невозможно).",
+              "tj": "Феъли ёрирасони 'kěnéng' маъниаш 'эҳтимол, мумкин аст' буда пеш аз феъл меояд. Вай тахминро дар бораи вазъиятҳои номаълум ифода мекунад. Шакли инкорӣ: '不可能' (ғайриимкон аст)."
+            },
+            "examples": [
+              {
+                "zh": "你可能不认识她。",
+                "pinyin": "Nǐ kěnéng bù rènshi tā.",
+                "translation": {
+                  "uz": "Siz uni tanimas ehtimol.",
+                  "ru": "Возможно, ты её не знаешь.",
+                  "tj": "Эҳтимол шумо ӯро намешиносед."
+                }
+              },
+              {
+                "zh": "他可能今天来。",
+                "pinyin": "Tā kěnéng jīntiān lái.",
+                "translation": {
+                  "uz": "U ehtimol bugun keladi.",
+                  "ru": "Возможно, он придёт сегодня.",
+                  "tj": "Эҳтимол ӯ имрӯз меояд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz uni tanimas ehtimol.",
+            "ru": "Возможно, ты её не знаешь.",
+            "tj": "Эҳтимол шумо ӯро намешиносед."
           },
-          "options": [
+          "tokens": [
+            "可能",
             "男",
-            "孩子",
-            "女",
+            "认识",
+            "她",
+            "你",
+            "不",
             "唱歌"
           ],
-          "correct_index": 1,
+          "answer_tokens": [
+            "你",
+            "可能",
+            "不",
+            "认识",
+            "她"
+          ],
           "explanation": {
-            "uz": "To'g'ri: 孩子 (háizi) — bola",
-            "ru": "Верно: 孩子 (háizi) — ребёнок",
-            "tj": "Дуруст: 孩子 (háizi) — кӯдак"
+            "uz": "你可能不认识她。 — Nǐ kěnéng bù rènshi tā.",
+            "ru": "你可能不认识她。 — Nǐ kěnéng bù rènshi tā.",
+            "tj": "你可能不认识她。 — Nǐ kěnéng bù rènshi tā."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U ehtimol bugun keladi.» — xitoychada qaysi biri?",
+            "ru": "«Возможно, он придёт сегодня.» — какое предложение по-китайски?",
+            "tj": "«Эҳтимол ӯ имрӯз меояд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "你可能不认识她。",
+            "苹果没有西瓜大。",
+            "他可能今天来。",
+            "他比我大三岁。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "他可能今天来。 — Tā kěnéng jīntiān lái.",
+            "ru": "他可能今天来。 — Tā kěnéng jīntiān lái.",
+            "tj": "他可能今天来。 — Tā kěnéng jīntiān lái."
           }
         }
       ]
@@ -668,89 +1004,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ayol, qiz' xitoycha qaysi?",
-            "ru": "'женский, девочка' по-китайски?",
-            "tj": "'зан, духтар' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "男",
-            "女",
-            "孩子",
-            "唱歌"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "ayol, qiz = 女 (nǚ)",
-            "ru": "женский, девочка = 女 (nǚ)",
-            "tj": "зан, духтар = 女 (nǚ)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "háizi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается háizi?",
-            "tj": "háizi кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "孩子",
-            "男",
-            "唱歌",
-            "女"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "孩子 = bola (háizi)",
-            "ru": "孩子 = ребёнок (háizi)",
-            "tj": "孩子 = кӯдак (háizi)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Qanday do'st? Yigit do'stingizmi?",
-            "ru": "Что за друг? Это случайно не парень?",
-            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
-          },
-          "tokens": [
-            "女",
-            "朋友",
-            "是",
-            "唱歌",
-            "是",
-            "什么",
-            "男",
-            "朋友",
-            "不"
-          ],
-          "answer_tokens": [
-            "什么",
-            "朋友",
-            "是",
-            "不",
-            "是",
-            "男",
-            "朋友"
-          ],
-          "explanation": {
-            "uz": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
-            "ru": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
-            "tj": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -760,9 +1013,9 @@
           "audio_text": "王方，昨天和你一起唱歌的人是谁？",
           "pinyin": "Wáng Fāng, zuótiān hé nǐ yìqǐ chànggē de rén shì shéi?",
           "options": [
+            "不是不是，我同学介绍的，昨天第一次见。",
             "什么朋友？是不是男朋友？",
             "一个朋友。",
-            "不是不是，我同学介绍的，昨天第一次见。",
             "王方，昨天和你一起唱歌的人是谁？"
           ],
           "correct_index": 3,
@@ -815,6 +1068,89 @@
           }
         },
         {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'familiyasi … bo'lmoq' xitoycha qaysi?",
+            "ru": "'иметь фамилию…' по-китайски?",
+            "tj": "'насабаш … буданаш' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "男",
+            "姓",
+            "唱歌",
+            "女"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "familiyasi … bo'lmoq = 姓 (xìng)",
+            "ru": "иметь фамилию… = 姓 (xìng)",
+            "tj": "насабаш … буданаш = 姓 (xìng)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xìng?",
+            "tj": "xìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "女",
+            "男",
+            "姓",
+            "唱歌"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "姓 = familiyasi … bo'lmoq (xìng)",
+            "ru": "姓 = иметь фамилию… (xìng)",
+            "tj": "姓 = насабаш … буданаш (xìng)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Qanday do'st? Yigit do'stingizmi?",
+            "ru": "Что за друг? Это случайно не парень?",
+            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
+          },
+          "tokens": [
+            "是",
+            "唱歌",
+            "朋友",
+            "朋友",
+            "男",
+            "什么",
+            "是",
+            "不",
+            "女"
+          ],
+          "answer_tokens": [
+            "什么",
+            "朋友",
+            "是",
+            "不",
+            "是",
+            "男",
+            "朋友"
+          ],
+          "explanation": {
+            "uz": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
+            "ru": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
+            "tj": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "唱歌",
           "pinyin": "chànggē",
@@ -845,9 +1181,9 @@
           "audio_text": "王方，昨天和你一起唱歌的人是谁？",
           "pinyin": "Wáng Fāng, zuótiān hé nǐ yìqǐ chànggē de rén shì shéi?",
           "options": [
+            "一个朋友。",
             "不是不是，我同学介绍的，昨天第一次见。",
             "什么朋友？是不是男朋友？",
-            "一个朋友。",
             "王方，昨天和你一起唱歌的人是谁？"
           ],
           "correct_index": 3,
@@ -858,24 +1194,28 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____方，昨天和你一起唱歌的人是谁？",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "国",
-            "新",
-            "王",
-            "斤"
+            "不是不是，我同学介绍的，昨天第一次见。",
+            "王方，昨天和你一起唱歌的人是谁？",
+            "一个朋友。",
+            "什么朋友？是不是男朋友？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri: 王 — 王方，昨天和你一起唱歌的人是谁？ (Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?)",
-            "ru": "Верно: 王 — 王方，昨天和你一起唱歌的人是谁？ (Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?)",
-            "tj": "Дуруст: 王 — 王方，昨天和你一起唱歌的人是谁？ (Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?)"
+            "uz": "To'g'ri javob: 王方，昨天和你一起唱歌的人是谁？",
+            "ru": "Правильный ответ: 王方，昨天和你一起唱歌的人是谁？",
+            "tj": "Ҷавоби дуруст: 王方，昨天和你一起唱歌的人是谁？"
           }
         },
         {
@@ -908,41 +1248,16 @@
             }
           ],
           "options": [
-            "一个朋友。",
+            "什么朋友？是不是男朋友？",
             "不是不是，我同学介绍的，昨天第一次见。",
-            "王方，昨天和你一起唱歌的人是谁？",
-            "什么朋友？是不是男朋友？"
+            "一个朋友。",
+            "王方，昨天和你一起唱歌的人是谁？"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 不是不是，我同学介绍的，昨天第一次见。",
             "ru": "Правильный ответ: 不是不是，我同学介绍的，昨天第一次见。",
             "tj": "Ҷавоби дуруст: 不是不是，我同学介绍的，昨天第一次见。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар муколама A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "不是不是，我同学介绍的，昨天第一次见。",
-            "一个朋友。",
-            "王方，昨天和你一起唱歌的人是谁？",
-            "什么朋友？是不是男朋友？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 王方，昨天和你一起唱歌的人是谁？",
-            "ru": "Правильный ответ: 王方，昨天和你一起唱歌的人是谁？",
-            "tj": "Ҷавоби дуруст: 王方，昨天和你一起唱歌的人是谁？"
           }
         },
         {
@@ -958,8 +1273,8 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "王方，昨天和你一起唱歌的人是谁？",
             "一个朋友。",
+            "王方，昨天和你一起唱歌的人是谁？",
             "什么朋友？是不是男朋友？",
             "不是不是，我同学介绍的，昨天第一次见。"
           ],
@@ -968,6 +1283,27 @@
             "uz": "To'g'ri javob: 不是不是，我同学介绍的，昨天第一次见。",
             "ru": "Правильный ответ: 不是不是，我同学介绍的，昨天第一次见。",
             "tj": "Ҷавоби дуруст: 不是不是，我同学介绍的，昨天第一次见。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____方，昨天和你一起唱歌的人是谁？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "下",
+            "电",
+            "夫",
+            "王"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 王 — 王方，昨天和你一起唱歌的人是谁？ (Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?)",
+            "ru": "Верно: 王 — 王方，昨天和你一起唱歌的人是谁？ (Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?)",
+            "tj": "Дуруст: 王 — 王方，昨天和你一起唱歌的人是谁？ (Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?)"
           }
         }
       ]
