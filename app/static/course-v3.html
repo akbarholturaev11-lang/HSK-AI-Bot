@@ -1085,6 +1085,13 @@ function showCourseAd(placement,idx){
           },1000);
           AD_STATE.timer=timer;
         }
+        function failAdFlow(){
+          if(AD_STATE.ad!==ad)return;
+          var rej=AD_STATE.reject||reject;
+          _closeAdOverlay();
+          _resetAdState();
+          if(rej)rej(new Error("course_ad_media_failed"));
+        }
         function mediaFailed(){
           if(started||failed||AD_STATE.ad!==ad)return;
           failed=true;
@@ -1095,8 +1102,9 @@ function showCourseAd(placement,idx){
           $("#ad-note").textContent=adUiText("failedNote");
           count.textContent="!";
           btn.style.display="";btn.disabled=false;
-          btn.innerHTML='<i class="ti ti-refresh"></i> '+adUiText("retry");
-          btn.onclick=function(ev){if(ev)ev.stopPropagation();playAd(i)};
+          btn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adReady;
+          btn.onclick=function(ev){if(ev)ev.stopPropagation();failAdFlow()};
+          setTimeout(failAdFlow,1600);
         }
         video.onloadedmetadata=tryPlay;
         video.onloadeddata=startCountdown;

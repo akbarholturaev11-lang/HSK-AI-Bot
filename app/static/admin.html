@@ -450,6 +450,8 @@
         invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas",
         broadcast_text_too_long:"Matn juda uzun (media bilan max 1024)", media_too_large:"Fayl 25MB dan katta",
         unsupported_media:"Fayl turi qo'llab-quvvatlanmaydi", media_upload_failed:"Media yuklab bo'lmadi",
+        ffmpeg_not_available:"Serverda ffmpeg yo'q. Deploy sozlamasini tekshiring.",
+        video_transcode_failed:"Video MP4 formatga o'tkazilmadi. Boshqa video bilan urinib ko'ring.",
         qr_upload_failed:"QR yuklab bo'lmadi", invalid_qr_target:"QR uchun usul/tarif noto'g'ri", price_not_set:"Avval narxni saqlang"
       };
       return m[k] || fallback || "Amal bajarilmadi";
@@ -1133,11 +1135,15 @@
     let caItems=[], caFilter="all";
     function caCard(i){
       const lang=i.language||"all";
+      const mediaOk=i.media_available!==false;
+      const mediaHtml=mediaOk&&i.media_url
+        ? `<video src="${esc(i.media_url)}" controls muted playsinline></video>`
+        : `<div class="danger-note">Video fayl serverda topilmadi. Railway Volume yoki MEDIA_ROOT sozlang va reklamani qayta yuklang.</div>`;
       return `<div class="ncard" data-ca="${i.id}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s majburiy ko'rish · ${esc(i.created_at||"—")}</div>
           ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}</div>
-          <div style="display:flex;gap:5px;align-items:center">${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}</div></div>
-        <div class="ncmedia">${i.media_url?`<video src="${i.media_url}" controls muted playsinline></video>`:"<span class='empty'>Video yo'q</span>"}</div>
+          <div style="display:flex;gap:5px;align-items:center">${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}${tag(mediaOk?"video bor":"video yo'q",mediaOk?"green":"red")}</div></div>
+        <div class="ncmedia">${mediaHtml}</div>
         <div class="row"><button class="btn sec" data-catoggle="${i.id}" data-active="${i.is_active?"0":"1"}">${i.is_active?"Faolsizlantirish":"Faollashtirish"}</button>
           <button class="btn danger" data-cadel="${i.id}">Butunlay o'chirish</button></div></div>`;
     }
@@ -1164,7 +1170,7 @@
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
       const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("media",f);
       try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
-      catch(e){ toast("Reklama yuklashda xato"); } finally{ input.value=""; }
+      catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
     }
 
     /* ---------- tabs ---------- */
