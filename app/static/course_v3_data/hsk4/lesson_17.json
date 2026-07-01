@@ -8,6 +8,8 @@
     "ru": "говорить о природе, животных, растениях и океане; использовать 倒, 干, 趟, 为了...而... и 仍然",
     "tj": "дар бораи табиат, ҳайвонот, растаниҳо ва уқёнус гуфтугӯ кардан; истифодаи 倒, 干, 趟, 为了...而... ва 仍然"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -791,6 +793,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "rènao qaysi ieroglif?",
+            "ru": "Какой иероглиф читается rènao?",
+            "tj": "rènao кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "热闹",
+            "广播",
+            "超",
+            "凉快"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "热闹 = gavjum, shovqinli (rènao)",
+            "ru": "热闹 = оживлённый, шумный (rènao)",
+            "tj": "热闹 = серодам, пурҷӯшу хурӯш (rènao)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -816,6 +843,31 @@
               "ru": "превышать",
               "tj": "зиёд шудан"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "超 talaffuzini tanlang:",
+            "ru": "Выберите произношение 超:",
+            "tj": "Талаффузи 超-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "rènao",
+            "guǎngbō",
+            "liángkuai",
+            "chāo"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "超 — chāo",
+            "ru": "超 — chāo",
+            "tj": "超 — chāo"
           }
         },
         {
@@ -847,6 +899,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "安娜 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 安娜:",
+            "tj": "Маънои калимаи 安娜-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "gavjum, shovqinli",
+              "ru": "оживлённый, шумный",
+              "tj": "серодам, пурҷӯшу хурӯш"
+            },
+            {
+              "uz": "salqin, yoqimli sovuq",
+              "ru": "прохладный, приятно свежий",
+              "tj": "салқин, форам"
+            },
+            {
+              "uz": "Anna",
+              "ru": "Анна",
+              "tj": "Анна"
+            },
+            {
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "安娜 = Anna (Ānnà)",
+            "ru": "安娜 = Анна (Ānnà)",
+            "tj": "安娜 = Анна (Ānnà)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -872,6 +965,31 @@
               "ru": "Великая китайская стена",
               "tj": "Девори бузурги Чин"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dào?",
+            "tj": "dào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "热闹",
+            "广播",
+            "倒",
+            "凉快"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "倒 = aksincha; quymoq (dào)",
+            "ru": "倒 = наоборот; наливать (dào)",
+            "tj": "倒 = баръакс; рехтан (dào)"
           }
         },
         {
@@ -903,255 +1021,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "难受",
-            "pinyin": "nánshòu",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "noqulay, qiynalgan",
-              "ru": "плохо, тяжело",
-              "tj": "нороҳат, душвор"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "严格 talaffuzini tanlang:",
+            "ru": "Выберите произношение 严格:",
+            "tj": "Талаффузи 严格-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "rènao",
+            "liángkuai",
+            "guǎngbō",
+            "yángé"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "严格 — yángé",
+            "ru": "严格 — yángé",
+            "tj": "严格 — yángé"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "趟",
-            "pinyin": "tàng",
-            "pos": "m.",
-            "meaning": {
-              "uz": "borib-kelish marta",
-              "ru": "раз поездки туда-обратно",
-              "tj": "маротибаи рафтуомад"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "放暑假",
-            "pinyin": "fàng shǔjià",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yozgi ta'tilga chiqmoq",
-              "ru": "уйти на летние каникулы",
-              "tj": "ба таътили тобистона баромадан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "老虎",
-            "pinyin": "lǎohǔ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "yo'lbars",
-              "ru": "тигр",
-              "tj": "паланг"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "入口",
-            "pinyin": "rùkǒu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "kirish joyi",
-              "ru": "вход",
-              "tj": "даромадгоҳ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "排队",
-            "pinyin": "pái duì",
-            "pos": "v.",
-            "meaning": {
-              "uz": "navbatda turmoq",
-              "ru": "стоять в очереди",
-              "tj": "дар навбат истодан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "活泼",
-            "pinyin": "huópo",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "chaqqon, serharakat",
-              "ru": "живой, активный",
-              "tj": "зиндадил, серҳаракат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "社会",
-            "pinyin": "shèhuì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "jamiyat",
-              "ru": "общество",
-              "tj": "ҷомеа"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "竞争",
-            "pinyin": "jìngzhēng",
-            "pos": "v./n.",
-            "meaning": {
-              "uz": "raqobatlashmoq, raqobat",
-              "ru": "конкурировать, конкуренция",
-              "tj": "рақобат кардан, рақобат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "森林",
-            "pinyin": "sēnlín",
-            "pos": "n.",
-            "meaning": {
-              "uz": "o'rmon",
-              "ru": "лес",
-              "tj": "ҷангал"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "剩",
-            "pinyin": "shèng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ortib qolmoq",
-              "ru": "оставаться",
-              "tj": "боқӣ мондан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "暖和",
-            "pinyin": "nuǎnhuo",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "iliq",
-              "ru": "тёплый",
-              "tj": "гарм"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "海洋",
-            "pinyin": "hǎiyáng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "okean, dengiz",
-              "ru": "океан, море",
-              "tj": "уқёнус, баҳр"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "底部",
-            "pinyin": "dǐbù",
-            "pos": "n.",
-            "meaning": {
-              "uz": "tub, pastki qism",
-              "ru": "дно, нижняя часть",
-              "tj": "қаър, қисми поён"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "美人鱼",
-            "pinyin": "měirényú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "suv parisi",
-              "ru": "русалка",
-              "tj": "пари баҳрӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "公里",
-            "pinyin": "gōnglǐ",
-            "pos": "m.",
-            "meaning": {
-              "uz": "kilometr",
-              "ru": "километр",
-              "tj": "километр"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "仍然",
-            "pinyin": "réngrán",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "hanuz, baribir",
-              "ru": "по-прежнему, всё ещё",
-              "tj": "ҳанӯз, ҳамоно"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "排列",
-            "pinyin": "páiliè",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tizilmoq, tartiblamoq",
-              "ru": "выстраивать, располагать",
-              "tj": "саф кашидан, ҷойгир кардан"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "凉快",
+              {
+                "uz": "salqin, yoqimli sovuq",
+                "ru": "прохладный, приятно свежий",
+                "tj": "салқин, форам"
+              }
+            ],
+            [
+              "热闹",
+              {
+                "uz": "gavjum, shovqinli",
+                "ru": "оживлённый, шумный",
+                "tj": "серодам, пурҷӯшу хурӯш"
+              }
+            ],
+            [
+              "广播",
+              {
+                "uz": "radio, eshittirish",
+                "ru": "радио, передача",
+                "tj": "радио, пахш"
+              }
+            ],
+            [
+              "超",
+              {
+                "uz": "oshib ketmoq",
+                "ru": "превышать",
+                "tj": "зиёд шудан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1166,6 +1099,34 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "kutilganiga qarshi ohang",
+              "ru": "наоборот; вопреки ожиданию",
+              "tj": "баръакс; хилофи интизор"
+            },
+            "title_zh": "倒",
+            "rule": {
+              "uz": "Fe'l bo'lsa 'quymoq', ravish bo'lsa kutilganiga qarama-qarshi, tanbeh yoki yon berish ohangini beradi.",
+              "ru": "Как глагол значит 'наливать', как наречие показывает противоположность ожиданию, упрёк или уступку.",
+              "tj": "Ҳамчун феъл 'рехтан', ҳамчун зарф хилофи интизор, танбеҳ ё гузаштро медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "去长城倒是一个好主意。",
+                "pinyin": "Qù Chángchéng dào shì yí ge hǎo zhǔyi.",
+                "translation": {
+                  "uz": "Buyuk devorga borish esa yaxshi fikr.",
+                  "ru": "Съездить на Великую стену - наоборот, хорошая идея.",
+                  "tj": "Ба Девори бузург рафтан бошад, фикри хуб аст."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "去____倒是一个好主意。",
           "prompt": {
@@ -1174,16 +1135,195 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
+            "凉快",
             "长城",
+            "热闹",
+            "广播"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 长城 (Chángchéng) — Buyuk Xitoy devori",
+            "ru": "Верно: 长城 (Chángchéng) — Великая китайская стена",
+            "tj": "Дуруст: 长城 (Chángchéng) — Девори бузурги Чин"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "ish qilmoq",
+              "ru": "заниматься делом",
+              "tj": "кор кардан"
+            },
+            "title_zh": "干",
+            "rule": {
+              "uz": "Biror ish, kasb yoki faoliyat bilan shug'ullanishni bildiradi.",
+              "ru": "Означает заниматься делом, работой или деятельностью.",
+              "tj": "Ба иҷрои кор, касб ё фаъолият ишора мекунад."
+            },
+            "examples": [
+              {
+                "zh": "每次你让它干什么，它就像能听懂你的话一样去做。",
+                "pinyin": "Měi cì nǐ ràng tā gàn shénme, tā jiù xiàng néng tīngdǒng nǐ de huà yíyàng qù zuò.",
+                "translation": {
+                  "uz": "Har safar undan nima qilishni so'rasang, gapni tushungandek bajaradi.",
+                  "ru": "Каждый раз, когда ты просишь его что-то сделать, он делает так, будто понимает тебя.",
+                  "tj": "Ҳар дафъа аз ӯ чизе хоста шавад, гӯё суханатро фаҳмида бошад, иҷро мекунад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "borib-kelish marta",
+              "ru": "поездка туда-обратно",
+              "tj": "рафтуомади якмаротиба"
+            },
+            "title_zh": "趟",
+            "rule": {
+              "uz": "Kelish-ketish bilan bog'liq harakatlarning marta sonini bildiradi.",
+              "ru": "Показывает количество поездок туда и обратно.",
+              "tj": "Шумораи ҳаракатҳои рафтуомадро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "上个月我去了趟北京动物园。",
+                "pinyin": "Shàng ge yuè wǒ qù le tàng Běijīng Dòngwùyuán.",
+                "translation": {
+                  "uz": "O'tgan oy Pekin hayvonot bog'iga bir borib keldim.",
+                  "ru": "В прошлом месяце я съездил в Пекинский зоопарк.",
+                  "tj": "Моҳи гузашта як бор ба боғи ҳайвоноти Пекин рафтам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "maqsad uchun",
+              "ru": "ради цели",
+              "tj": "барои мақсад"
+            },
+            "title_zh": "为了……而……",
+            "rule": {
+              "uz": "Oldingi qism keyingi harakatning maqsadini bildiradi.",
+              "ru": "Первая часть указывает цель действия во второй части.",
+              "tj": "Қисми аввал мақсади амали қисми дуюмро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "植物会为了阳光、空气和水而竞争。",
+                "pinyin": "Zhíwù huì wèile yángguāng, kōngqì hé shuǐ ér jìngzhēng.",
+                "translation": {
+                  "uz": "O'simliklar quyosh nuri, havo va suv uchun raqobatlashadi.",
+                  "ru": "Растения конкурируют за солнечный свет, воздух и воду.",
+                  "tj": "Растаниҳо барои нури офтоб, ҳаво ва об рақобат мекунанд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "植物会为了阳光、空气和水而____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "竞争",
+            "广播",
+            "凉快",
+            "热闹"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 竞争 (jìngzhēng) — raqobatlashmoq, raqobat",
+            "ru": "Верно: 竞争 (jìngzhēng) — конкурировать, конкуренция",
+            "tj": "Дуруст: 竞争 (jìngzhēng) — рақобат кардан, рақобат"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "hanuz, baribir",
+              "ru": "по-прежнему, всё ещё",
+              "tj": "ҳанӯз, ҳамоно"
+            },
+            "title_zh": "仍然",
+            "rule": {
+              "uz": "Vaziyat avvalgidek o'zgarmaganini bildiradi.",
+              "ru": "Показывает, что ситуация остаётся такой же, как раньше.",
+              "tj": "Нишон медиҳад, ки вазъият мисли пеш тағйир наёфтааст."
+            },
+            "examples": [
+              {
+                "zh": "就算在几公里深的海底也仍然能看到东西。",
+                "pinyin": "Jiùsuàn zài jǐ gōnglǐ shēn de hǎidǐ yě réngrán néng kàndào dōngxi.",
+                "translation": {
+                  "uz": "Hatto bir necha kilometr chuqur dengiz tubida ham baribir narsalarni ko'rish mumkin.",
+                  "ru": "Даже на глубине нескольких километров всё ещё можно что-то видеть.",
+                  "tj": "Ҳатто дар қаъри чанд километрии баҳр ҳам чизҳоро дидан мумкин аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "就算在几____深的海底也仍然能看到东西。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "公里",
             "热闹",
             "凉快",
             "广播"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri: 长城 (Chángchéng) — Buyuk Xitoy devori",
-            "ru": "Верно: 长城 (Chángchéng) — Великая китайская стена",
-            "tj": "Дуруст: 长城 (Chángchéng) — Девори бузурги Чин"
+            "uz": "To'g'ri: 公里 (gōnglǐ) — kilometr",
+            "ru": "Верно: 公里 (gōnglǐ) — километр",
+            "tj": "Дуруст: 公里 (gōnglǐ) — километр"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«O'simliklar quyosh nuri, havo va suv uchun raqobatlashadi.» — xitoychada qaysi biri?",
+            "ru": "«Растения конкурируют за солнечный свет, воздух и воду.» — какое предложение по-китайски?",
+            "tj": "«Растаниҳо барои нури офтоб, ҳаво ва об рақобат мекунанд.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "上个月我去了趟北京动物园。",
+            "每次你让它干什么，它就像能听懂你的话一样去做。",
+            "就算在几公里深的海底也仍然能看到东西。",
+            "植物会为了阳光、空气和水而竞争。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "植物会为了阳光、空气和水而竞争。 — Zhíwù huì wèile yángguāng, kōngqì hé shuǐ ér jìngzhēng.",
+            "ru": "植物会为了阳光、空气和水而竞争。 — Zhíwù huì wèile yángguāng, kōngqì hé shuǐ ér jìngzhēng.",
+            "tj": "植物会为了阳光、空气和水而竞争。 — Zhíwù huì wèile yángguāng, kōngqì hé shuǐ ér jìngzhēng."
           }
         }
       ]
@@ -1200,9 +1340,9 @@
         {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "凉快 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 凉快:",
-            "tj": "Маънои калимаи 凉快-ро интихоб кунед:"
+            "uz": "难受 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 难受:",
+            "tj": "Маънои калимаи 难受-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -1211,9 +1351,9 @@
           },
           "options": [
             {
-              "uz": "radio, eshittirish",
-              "ru": "радио, передача",
-              "tj": "радио, пахш"
+              "uz": "noqulay, qiynalgan",
+              "ru": "плохо, тяжело",
+              "tj": "нороҳат, душвор"
             },
             {
               "uz": "salqin, yoqimli sovuq",
@@ -1221,9 +1361,9 @@
               "tj": "салқин, форам"
             },
             {
-              "uz": "oshib ketmoq",
-              "ru": "превышать",
-              "tj": "зиёд шудан"
+              "uz": "radio, eshittirish",
+              "ru": "радио, передача",
+              "tj": "радио, пахш"
             },
             {
               "uz": "gavjum, shovqinli",
@@ -1231,58 +1371,11 @@
               "tj": "серодам, пурҷӯшу хурӯш"
             }
           ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "凉快 = salqin, yoqimli sovuq (liángkuai)",
-            "ru": "凉快 = прохладный, приятно свежий (liángkuai)",
-            "tj": "凉快 = салқин, форам (liángkuai)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "热闹 talaffuzini tanlang:",
-            "ru": "Выберите произношение 热闹:",
-            "tj": "Талаффузи 热闹-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "liángkuai",
-            "rènao",
-            "guǎngbō",
-            "chāo"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "热闹 — rènao",
-            "ru": "热闹 — rènao",
-            "tj": "热闹 — rènao"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
-          "pinyin": "Zuìjìn tiānqì yuè lái yuè liángkuai le, fēng yì guā, cǎodì shang jiù huì yǒu yì céng hòuhòu de huángyè, kànlái qiūtiān yǐjīng dào le.",
-          "options": [
-            "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
-            "真可惜，我还想多照点儿香山的照片呢。去长城倒是一个好主意，那我们明天去吧。",
-            "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。",
-            "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。"
-          ],
           "correct_index": 0,
           "explanation": {
-            "uz": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — Oxirgi payt havo tobora salqinlashdi, shamol essa, maysazor ustida qalin sariq barglar paydo bo'ladi. Kuz kelganga o'xshaydi.",
-            "ru": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — В последнее время становится всё прохладнее. Стоит подуть ветру, как на траве появляется толстый слой жёлтых листьев. Похоже, осень уже пришла.",
-            "tj": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — Охирҳо ҳаво торафт салқин мешавад. Бод вазад, болои сабза қабати ғафси баргҳои зард пайдо мешавад. Ба назар тирамоҳ расидааст."
+            "uz": "难受 = noqulay, qiynalgan (nánshòu)",
+            "ru": "难受 = плохо, тяжело (nánshòu)",
+            "tj": "难受 = нороҳат, душвор (nánshòu)"
           }
         },
         {
@@ -1328,6 +1421,53 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "趟 talaffuzini tanlang:",
+            "ru": "Выберите произношение 趟:",
+            "tj": "Талаффузи 趟-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "liángkuai",
+            "tàng",
+            "rènao",
+            "guǎngbō"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "趟 — tàng",
+            "ru": "趟 — tàng",
+            "tj": "趟 — tàng"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
+          "pinyin": "Zuìjìn tiānqì yuè lái yuè liángkuai le, fēng yì guā, cǎodì shang jiù huì yǒu yì céng hòuhòu de huángyè, kànlái qiūtiān yǐjīng dào le.",
+          "options": [
+            "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
+            "真可惜，我还想多照点儿香山的照片呢。去长城倒是一个好主意，那我们明天去吧。",
+            "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。",
+            "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — Oxirgi payt havo tobora salqinlashdi, shamol essa, maysazor ustida qalin sariq barglar paydo bo'ladi. Kuz kelganga o'xshaydi.",
+            "ru": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — В последнее время становится всё прохладнее. Стоит подуть ветру, как на траве появляется толстый слой жёлтых листьев. Похоже, осень уже пришла.",
+            "tj": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — Охирҳо ҳаво торафт салқин мешавад. Бод вазад, болои сабза қабати ғафси баргҳои зард пайдо мешавад. Ба назар тирамоҳ расидааст."
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "凉快",
           "pinyin": "liángkuai",
@@ -1358,37 +1498,16 @@
           "audio_text": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
           "pinyin": "Zuìjìn tiānqì yuè lái yuè liángkuai le, fēng yì guā, cǎodì shang jiù huì yǒu yì céng hòuhòu de huángyè, kànlái qiūtiān yǐjīng dào le.",
           "options": [
-            "真可惜，我还想多照点儿香山的照片呢。去长城倒是一个好主意，那我们明天去吧。",
             "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
             "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。",
-            "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。"
+            "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。",
+            "真可惜，我还想多照点儿香山的照片呢。去长城倒是一个好主意，那我们明天去吧。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — Oxirgi payt havo tobora salqinlashdi, shamol essa, maysazor ustida qalin sariq barglar paydo bo'ladi. Kuz kelganga o'xshaydi.",
             "ru": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — В последнее время становится всё прохладнее. Стоит подуть ветру, как на траве появляется толстый слой жёлтых листьев. Похоже, осень уже пришла.",
             "tj": "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 — Охирҳо ҳаво торафт салқин мешавад. Бод вазад, болои сабза қабати ғафси баргҳои зард пайдо мешавад. Ба назар тирамоҳ расидааст."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "挺",
-            "最",
-            "斤",
-            "新"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 最 — 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 (Oxirgi payt havo tobora salqinlashdi, shamol essa, maysazor ustida qalin sariq barglar paydo bo'ladi. Kuz kelganga o'xshaydi.)",
-            "ru": "Верно: 最 — 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 (В последнее время становится всё прохладнее. Стоит подуть ветру, как на траве появляется толстый слой жёлтых листьев. Похоже, осень уже пришла.)",
-            "tj": "Дуруст: 最 — 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 (Охирҳо ҳаво торафт салқин мешавад. Бод вазад, болои сабза қабати ғафси баргҳои зард пайдо мешавад. Ба назар тирамоҳ расидааст.)"
           }
         },
         {
@@ -1431,10 +1550,56 @@
             }
           ],
           "options": [
-            "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。",
+            "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。",
             "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
             "没关系，那我们再约时间。",
-            "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。"
+            "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 没关系，那我们再约时间。",
+            "ru": "Правильный ответ: 没关系，那我们再约时间。",
+            "tj": "Ҷавоби дуруст: 没关系，那我们再约时间。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "电",
+            "旧",
+            "最",
+            "怀"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 最 — 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 (Oxirgi payt havo tobora salqinlashdi, shamol essa, maysazor ustida qalin sariq barglar paydo bo'ladi. Kuz kelganga o'xshaydi.)",
+            "ru": "Верно: 最 — 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 (В последнее время становится всё прохладнее. Стоит подуть ветру, как на траве появляется толстый слой жёлтых листьев. Похоже, осень уже пришла.)",
+            "tj": "Дуруст: 最 — 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。 (Охирҳо ҳаво торафт салқин мешавад. Бод вазад, болои сабза қабати ғафси баргҳои зард пайдо мешавад. Ба назар тирамоҳ расидааст.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 安娜 nima deydi?",
+            "ru": "Что 安娜 говорит в конце диалога?",
+            "tj": "Дар охири муколама 安娜 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。",
+            "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。",
+            "没关系，那我们再约时间。",
+            "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。"
           ],
           "correct_index": 2,
           "explanation": {
@@ -1456,41 +1621,16 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "真可惜，我还想多照点儿香山的照片呢。去长城倒是一个好主意，那我们明天去吧。",
             "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。",
-            "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。",
-            "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。"
+            "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
+            "真可惜，我还想多照点儿香山的照片呢。去长城倒是一个好主意，那我们明天去吧。",
+            "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
             "ru": "Правильный ответ: 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
             "tj": "Ҷавоби дуруст: 最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 安娜 nima deydi?",
-            "ru": "Что 安娜 говорит в конце диалога?",
-            "tj": "Дар охири муколама 安娜 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "这几天香山特别热闹，随着气温的降低，那里许多植物的叶子都由绿变黄或者变红，吸引了很多游客参观，咱们今天也去看看吧。",
-            "你看天上的云，今天肯定雨大。再说，香山上看红叶的人太多了。咱们改天去长城吧，广播里说那里也有不少专门看红叶的好地方。",
-            "最近天气越来越凉快了，风一刮，草地上就会有一层厚厚的黄叶，看来秋天已经到了。",
-            "没关系，那我们再约时间。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 没关系，那我们再约时间。",
-            "ru": "Правильный ответ: 没关系，那我们再约时间。",
-            "tj": "Ҷавоби дуруст: 没关系，那我们再约时间。"
           }
         }
       ]

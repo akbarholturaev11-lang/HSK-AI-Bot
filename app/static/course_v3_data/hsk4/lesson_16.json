@@ -8,6 +8,8 @@
     "ru": "говорить о планах учёбы и работы, шансах, отказе, начале сейчас и скромности; использовать 可, 恐怕, 到底, 拿...来说 и 敢",
     "tj": "дар бораи нақшаи таҳсил/кор, имконият, рад кардан, аз ҳозир оғоз кардан ва фурӯтанӣ гуфтугӯ кардан; истифодаи 可, 恐怕, 到底, 拿...来说 ва 敢"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -844,6 +846,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "签证 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 签证:",
+            "tj": "Маънои калимаи 签证-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            },
+            {
+              "uz": "forma, jadval",
+              "ru": "форма, таблица",
+              "tj": "варақа, ҷадвал"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "签证 = viza (qiānzhèng)",
+            "ru": "签证 = виза (qiānzhèng)",
+            "tj": "签证 = раводид (qiānzhèng)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -869,6 +912,31 @@
               "ru": "форма, таблица",
               "tj": "варақа, ҷадвал"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "biǎogé qaysi ieroglif?",
+            "ru": "Какой иероглиф читается biǎogé?",
+            "tj": "biǎogé кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "签证",
+            "报名",
+            "博士",
+            "表格"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "表格 = forma, jadval (biǎogé)",
+            "ru": "表格 = форма, таблица (biǎogé)",
+            "tj": "表格 = варақа, ҷадвал (biǎogé)"
           }
         },
         {
@@ -900,6 +968,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "号码 talaffuzini tanlang:",
+            "ru": "Выберите произношение 号码:",
+            "tj": "Талаффузи 号码-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bóshì",
+            "qiānzhèng",
+            "bào míng",
+            "hàomǎ"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "号码 — hàomǎ",
+            "ru": "号码 — hàomǎ",
+            "tj": "号码 — hàomǎ"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -925,6 +1018,47 @@
               "ru": "взволнованный",
               "tj": "ҳаяҷонзада"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "参观 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 参观:",
+            "tj": "Маънои калимаи 参观-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "doktorantura darajasi",
+              "ru": "доктор наук, докторская степень",
+              "tj": "доктор, дараҷаи илмӣ"
+            },
+            {
+              "uz": "tomosha qilmoq, ko'rib chiqmoq",
+              "ru": "посещать, осматривать",
+              "tj": "тамошо кардан"
+            },
+            {
+              "uz": "viza",
+              "ru": "виза",
+              "tj": "раводид"
+            },
+            {
+              "uz": "ro'yxatdan o'tmoq",
+              "ru": "записываться, регистрироваться",
+              "tj": "номнавис шудан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "参观 = tomosha qilmoq, ko'rib chiqmoq (cānguān)",
+            "ru": "参观 = посещать, осматривать (cānguān)",
+            "tj": "参观 = тамошо кардан (cānguān)"
           }
         },
         {
@@ -956,297 +1090,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "代表",
-            "pinyin": "dàibiǎo",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ifodalamoq, vakillik qilmoq",
-              "ru": "представлять, обозначать",
-              "tj": "намояндагӣ кардан, ифода кардан"
-            }
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "qiānzhèng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается qiānzhèng?",
+            "tj": "qiānzhèng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "签证",
+            "博士",
+            "表格",
+            "报名"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "签证 = viza (qiānzhèng)",
+            "ru": "签证 = виза (qiānzhèng)",
+            "tj": "签证 = раводид (qiānzhèng)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "恐怕",
-            "pinyin": "kǒngpà",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "ehtimol, qo'rqaman-ki",
-              "ru": "боюсь, вероятно",
-              "tj": "метарсам ки, эҳтимол"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "失望",
-            "pinyin": "shīwàng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "hafsalasi pir bo'lmoq",
-              "ru": "разочаровываться",
-              "tj": "ноумед шудан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "郊区",
-            "pinyin": "jiāoqū",
-            "pos": "n.",
-            "meaning": {
-              "uz": "shahar cheti",
-              "ru": "пригород",
-              "tj": "атрофи шаҳр"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "到底",
-            "pinyin": "dàodǐ",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "aslida, oxiri",
-              "ru": "всё-таки, в конце концов",
-              "tj": "охир, аслан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "呀",
-            "pinyin": "ya",
-            "pos": "part.",
-            "meaning": {
-              "uz": "savol ohangini yumshatuvchi zarra",
-              "ru": "частица для смягчения вопроса",
-              "tj": "ҳиссача барои нарм кардани савол"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "导游",
-            "pinyin": "dǎoyóu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "gid",
-              "ru": "гид",
-              "tj": "роҳбалад"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "礼貌",
-            "pinyin": "lǐmào",
-            "pos": "n.",
-            "meaning": {
-              "uz": "odob, xushmuomalalik",
-              "ru": "вежливость",
-              "tj": "одоб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "原谅",
-            "pinyin": "yuánliàng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "kechirmoq",
-              "ru": "прощать",
-              "tj": "бахшидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "挂",
-            "pinyin": "guà",
-            "pos": "v.",
-            "meaning": {
-              "uz": "osmoq; og'izda aylantirmoq",
-              "ru": "вешать; держать на устах",
-              "tj": "овехтан; ба забон овардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "同情",
-            "pinyin": "tóngqíng",
-            "pos": "n./v.",
-            "meaning": {
-              "uz": "hamdardlik",
-              "ru": "сочувствие, сочувствовать",
-              "tj": "ҳамдардӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "推",
-            "pinyin": "tuī",
-            "pos": "v.",
-            "meaning": {
-              "uz": "surmoq, kechiktirmoq",
-              "ru": "откладывать, отодвигать",
-              "tj": "ба таъхир гузоштан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "预习",
-            "pinyin": "yùxí",
-            "pos": "v.",
-            "meaning": {
-              "uz": "oldindan tayyorlanmoq",
-              "ru": "готовиться заранее",
-              "tj": "пешакӣ тайёрӣ дидан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "重点",
-            "pinyin": "zhòngdiǎn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "asosiy nuqta",
-              "ru": "ключевой пункт",
-              "tj": "нуқтаи муҳим"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "马虎",
-            "pinyin": "mǎhu",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "beparvo, pala-partish",
-              "ru": "небрежный",
-              "tj": "бепарво"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "自信",
-            "pinyin": "zìxìn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "o'ziga ishongan",
-              "ru": "уверенный в себе",
-              "tj": "ба худ боварӣ дошта"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "冷静",
-            "pinyin": "lěngjìng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "xotirjam, sovuqqon",
-              "ru": "спокойный, хладнокровный",
-              "tj": "ором, хунсард"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "输",
-            "pinyin": "shū",
-            "pos": "v.",
-            "meaning": {
-              "uz": "yutqazmoq",
-              "ru": "проигрывать",
-              "tj": "бохтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "重视",
-            "pinyin": "zhòngshì",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ahamiyat bermoq",
-              "ru": "придавать значение",
-              "tj": "аҳамият додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "敢",
-            "pinyin": "gǎn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "jur'at qilmoq",
-              "ru": "сметь, решаться",
-              "tj": "ҷуръат кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 31,
-            "zh": "尊重",
-            "pinyin": "zūnzhòng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "hurmat qilmoq",
-              "ru": "уважать",
-              "tj": "эҳтиром кардан"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "博士",
+              {
+                "uz": "doktorantura darajasi",
+                "ru": "доктор наук, докторская степень",
+                "tj": "доктор, дараҷаи илмӣ"
+              }
+            ],
+            [
+              "签证",
+              {
+                "uz": "viza",
+                "ru": "виза",
+                "tj": "раводид"
+              }
+            ],
+            [
+              "报名",
+              {
+                "uz": "ro'yxatdan o'tmoq",
+                "ru": "записываться, регистрироваться",
+                "tj": "номнавис шудан"
+              }
+            ],
+            [
+              "表格",
+              {
+                "uz": "forma, jadval",
+                "ru": "форма, таблица",
+                "tj": "варақа, ҷадвал"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1261,6 +1168,111 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "ta'kidlovchi ravish",
+              "ru": "усилительная частица/наречие",
+              "tj": "равиши таъкидӣ"
+            },
+            "title_zh": "可",
+            "rule": {
+              "uz": "Gapning ohangini kuchaytiradi, ayniqsa muammo yoki hayratni ta'kidlaydi.",
+              "ru": "Усиливает тон предложения, особенно проблему или удивление.",
+              "tj": "Оҳанги ҷумларо пурқувват мекунад, хусусан мушкил ё ҳайратро."
+            },
+            "examples": [
+              {
+                "zh": "这可是个大问题，我也不太清楚。",
+                "pinyin": "Zhè kě shì ge dà wèntí, wǒ yě bú tài qīngchu.",
+                "translation": {
+                  "uz": "Bu juda katta muammo-ku, men ham aniq bilmayman.",
+                  "ru": "Это ведь большая проблема, я тоже не очень понимаю.",
+                  "tj": "Ин воқеан мушкили калон аст, ман ҳам хуб намедонам."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "ehtimol, qo'rqaman-ki",
+              "ru": "боюсь, вероятно",
+              "tj": "метарсам ки, эҳтимол"
+            },
+            "title_zh": "恐怕",
+            "rule": {
+              "uz": "Taxmin bilan birga biroz xavotir bildiradi.",
+              "ru": "Выражает предположение с оттенком беспокойства.",
+              "tj": "Тахминро бо каме нигаронӣ мефаҳмонад."
+            },
+            "examples": [
+              {
+                "zh": "听完我的回答，恐怕你已经知道我的答案了吧。",
+                "pinyin": "Tīngwán wǒ de huídá, kǒngpà nǐ yǐjīng zhīdào wǒ de dá'àn le ba.",
+                "translation": {
+                  "uz": "Javobimni eshitgach, ehtimol mening javobimni allaqachon bilgandirsiz.",
+                  "ru": "Услышав мой ответ, вы, наверное, уже знаете мой ответ.",
+                  "tj": "Ҷавобамро шунида, эҳтимол ҷавоби маро аллакай донистед."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "听完我的回答，____你已经知道我的答案了吧。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "恐怕",
+            "博士",
+            "报名",
+            "签证"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 恐怕 (kǒngpà) — ehtimol, qo'rqaman-ki",
+            "ru": "Верно: 恐怕 (kǒngpà) — боюсь, вероятно",
+            "tj": "Дуруст: 恐怕 (kǒngpà) — метарсам ки, эҳтимол"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "aslida, oxiri",
+              "ru": "всё-таки, в конце концов",
+              "tj": "охир, аслан"
+            },
+            "title_zh": "到底",
+            "rule": {
+              "uz": "Savolni chuqurlashtirib, aniq javob talab qiladi.",
+              "ru": "Углубляет вопрос и требует точного ответа.",
+              "tj": "Саволро амиқ карда, ҷавоби дақиқ мехоҳад."
+            },
+            "examples": [
+              {
+                "zh": "你到底怎么打算的呀？",
+                "pinyin": "Nǐ dàodǐ zěnme dǎsuàn de ya?",
+                "translation": {
+                  "uz": "Oxiri nima qilmoqchisan o'zi?",
+                  "ru": "Так что ты всё-таки собираешься делать?",
+                  "tj": "Охир ту чӣ нақша дорӣ?"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Oxiri nima qilmoqchisan o'zi?",
@@ -1268,14 +1280,14 @@
             "tj": "Охир ту чӣ нақша дорӣ?"
           },
           "tokens": [
-            "怎么",
-            "博士",
-            "的",
-            "签证",
             "你",
+            "呀",
+            "博士",
+            "怎么",
+            "的",
             "到底",
-            "打算",
-            "呀"
+            "签证",
+            "打算"
           ],
           "answer_tokens": [
             "你",
@@ -1292,24 +1304,105 @@
           }
         },
         {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "...ni misol qilib olsak",
+              "ru": "если взять ... как пример",
+              "tj": "агар ...-ро мисол гирем"
+            },
+            "title_zh": "拿……来说",
+            "rule": {
+              "uz": "Tushuntirilayotgan mavzu uchun misolni kiritadi.",
+              "ru": "Вводит пример для объясняемой темы.",
+              "tj": "Барои фаҳмондани мавзӯъ мисол меорад."
+            },
+            "examples": [
+              {
+                "zh": "就拿学汉语来说吧，首先要注意课前预习。",
+                "pinyin": "Jiù ná xué Hànyǔ lái shuō ba, shǒuxiān yào zhùyì kè qián yùxí.",
+                "translation": {
+                  "uz": "Xitoy tilini o'rganishni misol qilsak, avvalo darsdan oldin tayyorlanishga e'tibor berish kerak.",
+                  "ru": "Если взять изучение китайского как пример, сначала нужно готовиться перед уроком.",
+                  "tj": "Агар омӯзиши чиниро мисол гирем, аввал ба омодагии пеш аз дарс диққат додан лозим."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
-          "sentence": "听完我的回答，____你已经知道我的答案了吧。",
+          "sentence": "就拿学汉语来说吧，首先要注意课前____。",
           "prompt": {
             "uz": "Bo'sh joyga mos so'zni tanlang:",
             "ru": "Выберите слово для пропуска:",
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "报名",
             "博士",
-            "恐怕",
-            "签证"
+            "报名",
+            "签证",
+            "预习"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 预习 (yùxí) — oldindan tayyorlanmoq",
+            "ru": "Верно: 预习 (yùxí) — готовиться заранее",
+            "tj": "Дуруст: 预习 (yùxí) — пешакӣ тайёрӣ дидан"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "jur'at qilmoq",
+              "ru": "сметь, решаться",
+              "tj": "ҷуръат кардан"
+            },
+            "title_zh": "敢",
+            "rule": {
+              "uz": "Fe'l oldida kelib, bir ishni qilishga jur'at yoki ishonch borligini bildiradi.",
+              "ru": "Перед глаголом показывает смелость или уверенность сделать что-то.",
+              "tj": "Пеш аз феъл омада, ҷуръат ё боварӣ ба иҷрои амалро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "如果你敢诚实地说出自己对哪方面不了解，并不说明自己比别人差。",
+                "pinyin": "Rúguǒ nǐ gǎn chéngshí de shuōchū zìjǐ duì nǎ fāngmiàn bù liǎojiě, bìng bù shuōmíng zìjǐ bǐ biérén chà.",
+                "translation": {
+                  "uz": "Agar bilmagan tomoningni rost aytishga jur'at qilsang, bu boshqalardan yomonligingni anglatmaydi.",
+                  "ru": "Если ты осмелишься честно сказать, чего не понимаешь, это не значит, что ты хуже других.",
+                  "tj": "Агар ҷуръат карда рост гӯӣ, ки кадом чизро намефаҳмӣ, ин маънои аз дигарон бад буданатро надорад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Javobimni eshitgach, ehtimol mening javobimni allaqachon bilgandirsiz.» — xitoychada qaysi biri?",
+            "ru": "«Услышав мой ответ, вы, наверное, уже знаете мой ответ.» — какое предложение по-китайски?",
+            "tj": "«Ҷавобамро шунида, эҳтимол ҷавоби маро аллакай донистед.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "就拿学汉语来说吧，首先要注意课前预习。",
+            "这可是个大问题，我也不太清楚。",
+            "听完我的回答，恐怕你已经知道我的答案了吧。",
+            "你到底怎么打算的呀？"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri: 恐怕 (kǒngpà) — ehtimol, qo'rqaman-ki",
-            "ru": "Верно: 恐怕 (kǒngpà) — боюсь, вероятно",
-            "tj": "Дуруст: 恐怕 (kǒngpà) — метарсам ки, эҳтимол"
+            "uz": "听完我的回答，恐怕你已经知道我的答案了吧。 — Tīngwán wǒ de huídá, kǒngpà nǐ yǐjīng zhīdào wǒ de dá'àn le ba.",
+            "ru": "听完我的回答，恐怕你已经知道我的答案了吧。 — Tīngwán wǒ de huídá, kǒngpà nǐ yǐjīng zhīdào wǒ de dá'àn le ba.",
+            "tj": "听完我的回答，恐怕你已经知道我的答案了吧。 — Tīngwán wǒ de huídá, kǒngpà nǐ yǐjīng zhīdào wǒ de dá'àn le ba."
           }
         }
       ]
@@ -1324,36 +1417,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "biǎogé qaysi ieroglif?",
-            "ru": "Какой иероглиф читается biǎogé?",
-            "tj": "biǎogé кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "表格",
-            "博士",
-            "签证",
-            "报名"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "表格 = forma, jadval (biǎogé)",
-            "ru": "表格 = форма, таблица (biǎogé)",
-            "tj": "表格 = варақа, ҷадвал (biǎogé)"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "传真 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 传真:",
-            "tj": "Маънои калимаи 传真-ро интихоб кунед:"
+            "uz": "到底 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 到底:",
+            "tj": "Маънои калимаи 到底-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -1367,9 +1435,9 @@
               "tj": "доктор, дараҷаи илмӣ"
             },
             {
-              "uz": "faks orqali yubormoq",
-              "ru": "отправлять факсом",
-              "tj": "бо факс фиристодан"
+              "uz": "aslida, oxiri",
+              "ru": "всё-таки, в конце концов",
+              "tj": "охир, аслан"
             },
             {
               "uz": "ro'yxatdan o'tmoq",
@@ -1384,9 +1452,9 @@
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "传真 = faks orqali yubormoq (chuánzhēn)",
-            "ru": "传真 = отправлять факсом (chuánzhēn)",
-            "tj": "传真 = бо факс фиристодан (chuánzhēn)"
+            "uz": "到底 = aslida, oxiri (dàodǐ)",
+            "ru": "到底 = всё-таки, в конце концов (dàodǐ)",
+            "tj": "到底 = охир, аслан (dàodǐ)"
           }
         },
         {
@@ -1397,13 +1465,13 @@
             "tj": "Ҳоло омодагии ҳуҷҷатҳо чӣ хел аст?"
           },
           "tokens": [
-            "签证",
-            "了",
-            "博士",
             "材料",
-            "怎么样",
-            "得",
             "准备",
+            "得",
+            "签证",
+            "博士",
+            "了",
+            "怎么样",
             "现在"
           ],
           "answer_tokens": [
@@ -1418,28 +1486,6 @@
             "uz": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?",
             "ru": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?",
             "tj": "现在材料准备得怎么样了？ — Xiànzài cáiliào zhǔnbèi de zěnmeyàng le?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你马上就要硕士毕业了吧？将来有什么打算？",
-          "pinyin": "Nǐ mǎshàng jiù yào shuòshì bìyè le ba? Jiānglái yǒu shénme dǎsuàn?",
-          "options": [
-            "你马上就要硕士毕业了吧？将来有什么打算？",
-            "我想出国读博士，一直在准备办签证需要的材料。",
-            "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
-            "现在材料准备得怎么样了？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "你马上就要硕士毕业了吧？将来有什么打算？ — Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?",
-            "ru": "你马上就要硕士毕业了吧？将来有什么打算？ — Ты скоро заканчиваешь магистратуру? Какие планы на будущее?",
-            "tj": "你马上就要硕士毕业了吧？将来有什么打算？ — Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?"
           }
         },
         {
@@ -1485,6 +1531,53 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你马上就要硕士毕业了吧？将来有什么打算？",
+          "pinyin": "Nǐ mǎshàng jiù yào shuòshì bìyè le ba? Jiānglái yǒu shénme dǎsuàn?",
+          "options": [
+            "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
+            "我想出国读博士，一直在准备办签证需要的材料。",
+            "你马上就要硕士毕业了吧？将来有什么打算？",
+            "现在材料准备得怎么样了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你马上就要硕士毕业了吧？将来有什么打算？ — Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?",
+            "ru": "你马上就要硕士毕业了吧？将来有什么打算？ — Ты скоро заканчиваешь магистратуру? Какие планы на будущее?",
+            "tj": "你马上就要硕士毕业了吧？将来有什么打算？ — Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiāoqū qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiāoqū?",
+            "tj": "jiāoqū кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "签证",
+            "郊区",
+            "博士",
+            "报名"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "郊区 = shahar cheti (jiāoqū)",
+            "ru": "郊区 = пригород (jiāoqū)",
+            "tj": "郊区 = атрофи шаҳр (jiāoqū)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "博士",
           "pinyin": "bóshì",
@@ -1515,37 +1608,16 @@
           "audio_text": "你马上就要硕士毕业了吧？将来有什么打算？",
           "pinyin": "Nǐ mǎshàng jiù yào shuòshì bìyè le ba? Jiānglái yǒu shénme dǎsuàn?",
           "options": [
+            "你马上就要硕士毕业了吧？将来有什么打算？",
             "现在材料准备得怎么样了？",
             "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
-            "我想出国读博士，一直在准备办签证需要的材料。",
-            "你马上就要硕士毕业了吧？将来有什么打算？"
+            "我想出国读博士，一直在准备办签证需要的材料。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "你马上就要硕士毕业了吧？将来有什么打算？ — Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?",
             "ru": "你马上就要硕士毕业了吧？将来有什么打算？ — Ты скоро заканчиваешь магистратуру? Какие планы на будущее?",
             "tj": "你马上就要硕士毕业了吧？将来有什么打算？ — Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____马上就要硕士毕业了吧？将来有什么打算？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "挺",
-            "新",
-            "你",
-            "斤"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?)",
-            "ru": "Верно: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Ты скоро заканчиваешь магистратуру? Какие планы на будущее?)",
-            "tj": "Дуруст: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?)"
           }
         },
         {
@@ -1593,12 +1665,12 @@
             }
           ],
           "options": [
-            "你马上就要硕士毕业了吧？将来有什么打算？",
             "现在材料准备得怎么样了？",
-            "这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
-            "我想出国读博士，一直在准备办签证需要的材料。"
+            "你马上就要硕士毕业了吧？将来有什么打算？",
+            "我想出国读博士，一直在准备办签证需要的材料。",
+            "这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
             "ru": "Правильный ответ: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
@@ -1618,12 +1690,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "现在材料准备得怎么样了？",
             "成绩证明和护照已经准备好了，另外，还跟国外的大学取得了联系，填写了报名表格。",
+            "你马上就要硕士毕业了吧？将来有什么打算？",
             "我想出国读博士，一直在准备办签证需要的材料。",
-            "你马上就要硕士毕业了吧？将来有什么打算？"
+            "现在材料准备得怎么样了？"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 你马上就要硕士毕业了吧？将来有什么打算？",
             "ru": "Правильный ответ: 你马上就要硕士毕业了吧？将来有什么打算？",
@@ -1643,16 +1715,37 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你马上就要硕士毕业了吧？将来有什么打算？",
-            "我想出国读博士，一直在准备办签证需要的材料。",
             "现在材料准备得怎么样了？",
-            "这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。"
+            "我想出国读博士，一直在准备办签证需要的材料。",
+            "这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
+            "你马上就要硕士毕业了吧？将来有什么打算？"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
             "ru": "Правильный ответ: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。",
             "tj": "Ҷавоби дуруст: 这可是个大问题，我也不太清楚。我帮你查一下学校的电话号码，你打电话问一下吧。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____马上就要硕士毕业了吧？将来有什么打算？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "怀",
+            "你",
+            "电",
+            "旧"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Tez orada magistraturani bitirasan-a? Kelajakda qanday rejang bor?)",
+            "ru": "Верно: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Ты скоро заканчиваешь магистратуру? Какие планы на будущее?)",
+            "tj": "Дуруст: 你 — 你马上就要硕士毕业了吧？将来有什么打算？ (Ба наздикӣ магистратураро хатм мекунӣ, дуруст? Барои оянда чӣ нақша дорӣ?)"
           }
         }
       ]

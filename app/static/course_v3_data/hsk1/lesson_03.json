@@ -8,6 +8,8 @@
     "ru": "Научитесь называть своё имя, национальность и профессию по-китайски",
     "tj": "Омӯзед, ки чӣ тавр исм, миллат ва касби худро ба забони чинӣ гӯед"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -392,6 +394,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "什么 talaffuzini tanlang:",
+            "ru": "Выберите произношение 什么:",
+            "tj": "Талаффузи 什么-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "míngzi",
+            "jiào",
+            "shénme",
+            "wǒ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "什么 — shénme",
+            "ru": "什么 — shénme",
+            "tj": "什么 — shénme"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -417,6 +444,47 @@
               "ru": "я, меня",
               "tj": "ман"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "我 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 我:",
+            "tj": "Маънои калимаи 我-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "men",
+              "ru": "я, меня",
+              "tj": "ман"
+            },
+            {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            },
+            {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номида шудан, даъват кардан"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我 = men (wǒ)",
+            "ru": "我 = я, меня (wǒ)",
+            "tj": "我 = ман (wǒ)"
           }
         },
         {
@@ -448,6 +516,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wǒ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wǒ?",
+            "tj": "wǒ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "我",
+            "叫",
+            "什么",
+            "名字"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "我 = men (wǒ)",
+            "ru": "我 = я, меня (wǒ)",
+            "tj": "我 = ман (wǒ)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -473,6 +566,31 @@
               "ru": "ученик, студент",
               "tj": "хонанда, донишҷӯ"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "吗 talaffuzini tanlang:",
+            "ru": "Выберите произношение 吗:",
+            "tj": "Талаффузи 吗-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shénme",
+            "míngzi",
+            "ma",
+            "jiào"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "吗 — ma",
+            "ru": "吗 — ma",
+            "tj": "吗 — ma"
           }
         },
         {
@@ -504,31 +622,86 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "中国",
-            "pinyin": "Zhōngguó",
-            "pos": "pn.",
-            "meaning": {
-              "uz": "Xitoy",
-              "ru": "Китай",
-              "tj": "Чин"
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "李月 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 李月:",
+            "tj": "Маънои калимаи 李月-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "Li Yue (ism)",
+              "ru": "Ли Юэ (имя)",
+              "tj": "Ли Юэ (ном)"
+            },
+            {
+              "uz": "nima, qaysi",
+              "ru": "что, какой",
+              "tj": "чӣ, кадом"
+            },
+            {
+              "uz": "ism",
+              "ru": "имя",
+              "tj": "ном, исм"
+            },
+            {
+              "uz": "nomlanmoq, chaqirmoq",
+              "ru": "называться, звать",
+              "tj": "номида шудан, даъват кардан"
             }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "李月 = Li Yue (ism) (Lǐ Yuè)",
+            "ru": "李月 = Ли Юэ (имя) (Lǐ Yuè)",
+            "tj": "李月 = Ли Юэ (ном) (Lǐ Yuè)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "美国",
-            "pinyin": "Měiguó",
-            "pos": "pn.",
-            "meaning": {
-              "uz": "Amerika, AQSH",
-              "ru": "Америка, США",
-              "tj": "Амрико, ИМА"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "叫",
+              {
+                "uz": "nomlanmoq, chaqirmoq",
+                "ru": "называться, звать",
+                "tj": "номида шудан, даъват кардан"
+              }
+            ],
+            [
+              "什么",
+              {
+                "uz": "nima, qaysi",
+                "ru": "что, какой",
+                "tj": "чӣ, кадом"
+              }
+            ],
+            [
+              "名字",
+              {
+                "uz": "ism",
+                "ru": "имя",
+                "tj": "ном, исм"
+              }
+            ],
+            [
+              "我",
+              {
+                "uz": "men",
+                "ru": "я, меня",
+                "tj": "ман"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -543,6 +716,52 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "是 bilan tuzilgan gap",
+              "ru": "Предложения с 是",
+              "tj": "Ҷумлаҳо бо 是"
+            },
+            "title_zh": "是字句",
+            "rule": {
+              "uz": "是(shì) — tenglikni ifodalaydi (= bo'lmoq).\nTuzilma: Ega + 是 + Ot/Ot birikmasi\nInkor: Ega + 不是 + Ot/Ot birikmasi\n\nMisol:\n我是老师。— Men o'qituvchiman.\n我不是老师。— Men o'qituvchi emasman.\n李月是中国人。— Li Yue xitoylik.",
+              "ru": "是(shì) — выражает равенство (= являться).\nСтруктура: Подлежащее + 是 + Существительное/Именная группа\nОтрицание: Подлежащее + 不是 + Существительное/Именная группа\n\nПример:\n我是老师。— Я учитель.\n我不是老师。— Я не учитель.\n李月是中国人。— Ли Юэ китаянка.",
+              "tj": "是(shì) — баробариро ифода мекунад (= будан).\nСохтор: Мубтадо + 是 + Исм/Гурӯҳи исмӣ\nИнкор: Мубтадо + 不是 + Исм/Гурӯҳи исмӣ\n\nМисол:\n我是老师。— Ман муаллим ҳастам.\n我不是老师。— Ман муаллим нестам.\n李月是中国人。— Ли Юэ хитоӣ аст."
+            },
+            "examples": [
+              {
+                "zh": "我是学生。",
+                "pinyin": "Wǒ shì xuésheng.",
+                "translation": {
+                  "uz": "Men talabaman.",
+                  "ru": "Я студент.",
+                  "tj": "Ман донишҷӯ ҳастам."
+                }
+              },
+              {
+                "zh": "我不是老师。",
+                "pinyin": "Wǒ bú shì lǎoshī.",
+                "translation": {
+                  "uz": "Men o'qituvchi emasman.",
+                  "ru": "Я не учитель.",
+                  "tj": "Ман муаллим нестам."
+                }
+              },
+              {
+                "zh": "她是中国人。",
+                "pinyin": "Tā shì Zhōngguó rén.",
+                "translation": {
+                  "uz": "U xitoylik (ayol).",
+                  "ru": "Она китаянка.",
+                  "tj": "Вай хитоӣ аст (зан)."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Men talabaman.",
@@ -552,9 +771,9 @@
           "tokens": [
             "学生",
             "什么",
-            "我",
+            "是",
             "叫",
-            "是"
+            "我"
           ],
           "answer_tokens": [
             "我",
@@ -568,85 +787,113 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "你叫____名字？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "什么",
-            "名字",
-            "我",
-            "叫"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 什么 (shénme) — nima, qaysi",
-            "ru": "Верно: 什么 (shénme) — что, какой",
-            "tj": "Дуруст: 什么 (shénme) — чӣ, кадом"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
-        "uz": "Mashq",
-        "ru": "Упражнение",
-        "tj": "Машқ"
-      },
-      "section_purpose": "practice",
-      "cards": [
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ism' xitoycha qaysi?",
-            "ru": "'имя' по-китайски?",
-            "tj": "'ном, исм' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "什么",
-            "我",
-            "叫",
-            "名字"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "ism = 名字 (míngzi)",
-            "ru": "имя = 名字 (míngzi)",
-            "tj": "ном, исм = 名字 (míngzi)"
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "吗 — so'roq yuklamasi",
+              "ru": "吗 — вопросительная частица",
+              "tj": "吗 — ҳарфи саволӣ"
+            },
+            "title_zh": "吗 — so'roq gapi",
+            "rule": {
+              "uz": "吗(ma) — gap oxiriga qo'yilsa, uni ha/yo'q savoliga aylantiradi.\nTuzilma: Gap + 吗？\n\nMisol:\n你是老师。→ 你是老师吗？\nSiz o'qituvchisiz. → Siz o'qituvchimisiz?\n\nJavob: 是 (ha) yoki 不是 (yo'q)",
+              "ru": "吗(ma) — ставится в конце предложения, превращая его в вопрос «да/нет».\nСтруктура: Утверждение + 吗？\n\nПример:\n你是老师。→ 你是老师吗？\nТы учитель. → Ты учитель?\n\nОтвет: 是 (да) или 不是 (нет)",
+              "tj": "吗(ma) — дар охири ҷумла гузошта, онро ба савол «бале/не» табдил медиҳад.\nСохтор: Изҳор + 吗？\n\nМисол:\n你是老师。→ 你是老师吗？\nШумо муаллим ҳастед. → Оё шумо муаллим ҳастед?\n\nҶавоб: 是 (бале) ё 不是 (не)"
+            },
+            "examples": [
+              {
+                "zh": "你是学生吗？",
+                "pinyin": "Nǐ shì xuésheng ma?",
+                "translation": {
+                  "uz": "Siz talabamisisz?",
+                  "ru": "Вы студент?",
+                  "tj": "Оё шумо донишҷӯ ҳастед?"
+                }
+              },
+              {
+                "zh": "你是美国人吗？",
+                "pinyin": "Nǐ shì Měiguó rén ma?",
+                "translation": {
+                  "uz": "Siz amerikalikmisiniz?",
+                  "ru": "Вы американец?",
+                  "tj": "Оё шумо амрикоӣ ҳастед?"
+                }
+              },
+              {
+                "zh": "你叫李月吗？",
+                "pinyin": "Nǐ jiào Lǐ Yuè ma?",
+                "translation": {
+                  "uz": "Ismingiz Li Yuemi?",
+                  "ru": "Вас зовут Ли Юэ?",
+                  "tj": "Оё номи шумо Ли Юэ аст?"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "wǒ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается wǒ?",
-            "tj": "wǒ кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz talabamisisz?",
+            "ru": "Вы студент?",
+            "tj": "Оё шумо донишҷӯ ҳастед?"
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
+          "tokens": [
             "叫",
-            "我",
-            "名字",
-            "什么"
+            "学生",
+            "是",
+            "什么",
+            "吗",
+            "你"
           ],
-          "correct_index": 1,
+          "answer_tokens": [
+            "你",
+            "是",
+            "学生",
+            "吗"
+          ],
           "explanation": {
-            "uz": "我 = men (wǒ)",
-            "ru": "我 = я, меня (wǒ)",
-            "tj": "我 = ман (wǒ)"
+            "uz": "你是学生吗？ — Nǐ shì xuésheng ma?",
+            "ru": "你是学生吗？ — Nǐ shì xuésheng ma?",
+            "tj": "你是学生吗？ — Nǐ shì xuésheng ma?"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "什么 — so'roq olmoshi",
+              "ru": "什么 — вопросительное местоимение",
+              "tj": "什么 — ҷонишини саволӣ"
+            },
+            "title_zh": "什么 — so'roq olmoshi",
+            "rule": {
+              "uz": "什么(shénme) — 'nima', 'qaysi' ma'nosini bildiradi.\nOxiriga 吗 qo'shmang — 什么 o'zi savolni ifodalaydi.\n\nMisol:\n你叫什么名字？— Ismingiz nima?\n这是什么？— Bu nima?\n你是什么人？— Siz kimsiz?",
+              "ru": "什么(shénme) — означает «что», «какой».\nНе добавляйте 吗 в конце — 什么 само делает предложение вопросительным.\n\nПример:\n你叫什么名字？— Как вас зовут?\n这是什么？— Что это?\n你是什么人？— Кто вы?",
+              "tj": "什么(shénme) — маънои «чӣ», «кадом» дорад.\n吗 -ро дар охир илова накунед — 什么 худ ҷумларо саволӣ мекунад.\n\nМисол:\n你叫什么名字？— Номи шумо чист?\n这是什么？— Ин чист?\n你是什么人？— Шумо кӣ ҳастед?"
+            },
+            "examples": [
+              {
+                "zh": "你叫什么名字？",
+                "pinyin": "Nǐ jiào shénme míngzi?",
+                "translation": {
+                  "uz": "Ismingiz nima?",
+                  "ru": "Как вас зовут?",
+                  "tj": "Номи шумо чист?"
+                }
+              },
+              {
+                "zh": "这是什么？",
+                "pinyin": "Zhè shì shénme?",
+                "translation": {
+                  "uz": "Bu nima?",
+                  "ru": "Что это?",
+                  "tj": "Ин чист?"
+                }
+              }
+            ]
           }
         },
         {
@@ -657,12 +904,12 @@
             "tj": "Номи шумо чист?"
           },
           "tokens": [
-            "名字",
-            "叫",
-            "你",
             "什么",
-            "我",
-            "是"
+            "你",
+            "名字",
+            "是",
+            "叫",
+            "我"
           ],
           "answer_tokens": [
             "你",
@@ -677,6 +924,42 @@
           }
         },
         {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Ismingiz nima?» — xitoychada qaysi biri?",
+            "ru": "«Как вас зовут?» — какое предложение по-китайски?",
+            "tj": "«Номи шумо чист?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "她是中国人。",
+            "我不是老师。",
+            "你是美国人吗？",
+            "你叫什么名字？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
+            "ru": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
+            "tj": "你叫什么名字？ — Nǐ jiào shénme míngzi?"
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -687,11 +970,11 @@
           "pinyin": "Nǐ jiào shénme míngzi?",
           "options": [
             "我叫李月。",
-            "你叫什么名字？",
             "我不是老师，我是学生。",
+            "你叫什么名字？",
             "你是老师吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "你叫什么名字？ — Ismingiz nima?",
             "ru": "你叫什么名字？ — Как вас зовут?",
@@ -741,6 +1024,83 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "Měiguó qaysi ieroglif?",
+            "ru": "Какой иероглиф читается Měiguó?",
+            "tj": "Měiguó кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "什么",
+            "美国",
+            "名字",
+            "叫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "美国 = Amerika, AQSH (Měiguó)",
+            "ru": "美国 = Америка, США (Měiguó)",
+            "tj": "美国 = Амрико, ИМА (Měiguó)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Xitoy' xitoycha qaysi?",
+            "ru": "'Китай' по-китайски?",
+            "tj": "'Чин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "什么",
+            "中国",
+            "名字",
+            "叫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "Xitoy = 中国 (Zhōngguó)",
+            "ru": "Китай = 中国 (Zhōngguó)",
+            "tj": "Чин = 中国 (Zhōngguó)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ismingiz nima?",
+            "ru": "Как вас зовут?",
+            "tj": "Номи шумо чист?"
+          },
+          "tokens": [
+            "我",
+            "什么",
+            "叫",
+            "名字",
+            "你",
+            "是"
+          ],
+          "answer_tokens": [
+            "你",
+            "叫",
+            "什么",
+            "名字"
+          ],
+          "explanation": {
+            "uz": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
+            "ru": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
+            "tj": "你叫什么名字？ — Nǐ jiào shénme míngzi?"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "叫",
           "pinyin": "jiào",
@@ -771,12 +1131,12 @@
           "audio_text": "你叫什么名字？",
           "pinyin": "Nǐ jiào shénme míngzi?",
           "options": [
+            "你是老师吗？",
             "你叫什么名字？",
             "我不是老师，我是学生。",
-            "我叫李月。",
-            "你是老师吗？"
+            "我叫李月。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "你叫什么名字？ — Ismingiz nima?",
             "ru": "你叫什么名字？ — Как вас зовут?",
@@ -784,24 +1144,53 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____叫什么名字？",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "你",
-            "国",
-            "生",
-            "什"
+            "我叫李月。",
+            "你叫什么名字？",
+            "我不是老师，我是学生。",
+            "你是老师吗？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri: 你 — 你叫什么名字？ (Ismingiz nima?)",
-            "ru": "Верно: 你 — 你叫什么名字？ (Как вас зовут?)",
-            "tj": "Дуруст: 你 — 你叫什么名字？ (Номи шумо чист?)"
+            "uz": "To'g'ri javob: 我叫李月。",
+            "ru": "Правильный ответ: 我叫李月。",
+            "tj": "Ҷавоби дуруст: 我叫李月。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар муколама A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "你是老师吗？",
+            "你叫什么名字？",
+            "我不是老师，我是学生。",
+            "我叫李月。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 你叫什么名字？",
+            "ru": "Правильный ответ: 你叫什么名字？",
+            "tj": "Ҷавоби дуруст: 你叫什么名字？"
           }
         },
         {
@@ -824,12 +1213,12 @@
             }
           ],
           "options": [
-            "你是老师吗？",
             "你叫什么名字？",
-            "我叫李月。",
-            "我不是老师，我是学生。"
+            "我不是老师，我是学生。",
+            "你是老师吗？",
+            "我叫李月。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 我叫李月。",
             "ru": "Правильный ответ: 我叫李月。",
@@ -837,53 +1226,24 @@
           }
         },
         {
-          "type": "quick_quiz",
+          "type": "gap_fill",
+          "sentence": "____叫什么名字？",
           "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар муколама A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "你叫什么名字？",
-            "你是老师吗？",
-            "我叫李月。",
-            "我不是老师，我是学生。"
+            "对",
+            "你",
+            "没",
+            "国"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri javob: 你叫什么名字？",
-            "ru": "Правильный ответ: 你叫什么名字？",
-            "tj": "Ҷавоби дуруст: 你叫什么名字？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири муколама B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "我叫李月。",
-            "你叫什么名字？",
-            "你是老师吗？",
-            "我不是老师，我是学生。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 我叫李月。",
-            "ru": "Правильный ответ: 我叫李月。",
-            "tj": "Ҷавоби дуруст: 我叫李月。"
+            "uz": "To'g'ri: 你 — 你叫什么名字？ (Ismingiz nima?)",
+            "ru": "Верно: 你 — 你叫什么名字？ (Как вас зовут?)",
+            "tj": "Дуруст: 你 — 你叫什么名字？ (Номи шумо чист?)"
           }
         }
       ]

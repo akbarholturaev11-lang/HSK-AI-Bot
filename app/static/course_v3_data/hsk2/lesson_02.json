@@ -8,6 +8,8 @@
     "ru": "Научиться говорить о распорядке дня, здоровье и физической активности; освоить вопросный шаблон 是不是, местоимение 每 и вопросительное местоимение 多.",
     "tj": "Гуфтугӯ дар бораи тартиби рӯзона, саломатӣ ва фаъолияти ҷисмонӣ; азхудкунии шакли саволии 是不是, ҷонишини 每 ва ҷонишини саволии 多."
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -536,6 +538,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "měi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается měi?",
+            "tj": "měi кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "早上",
+            "跑步",
+            "每",
+            "生病"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "每 = har (bir), har qaysi (měi)",
+            "ru": "每 = каждый (měi)",
+            "tj": "每 = ҳар (як), ҳар кадом (měi)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -561,6 +588,31 @@
               "ru": "бегать, бежать",
               "tj": "давидан"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "生病 talaffuzini tanlang:",
+            "ru": "Выберите произношение 生病:",
+            "tj": "Талаффузи 生病-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "pǎobù",
+            "zǎoshang",
+            "měi",
+            "shēngbìng"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "生病 — shēngbìng",
+            "ru": "生病 — shēngbìng",
+            "tj": "生病 — shēngbìng"
           }
         },
         {
@@ -592,6 +644,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "早上 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 早上:",
+            "tj": "Маънои калимаи 早上-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kasal bo'lmoq",
+              "ru": "заболевать, болеть",
+              "tj": "бемор шудан, касал шудан"
+            },
+            {
+              "uz": "ertalab",
+              "ru": "утро, утром",
+              "tj": "субҳ, субҳгоҳ"
+            },
+            {
+              "uz": "har (bir), har qaysi",
+              "ru": "каждый",
+              "tj": "ҳар (як), ҳар кадом"
+            },
+            {
+              "uz": "yugurmoq, chopmoq",
+              "ru": "бегать, бежать",
+              "tj": "давидан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "早上 = ertalab (zǎoshang)",
+            "ru": "早上 = утро, утром (zǎoshang)",
+            "tj": "早上 = субҳ, субҳгоҳ (zǎoshang)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -617,6 +710,31 @@
               "ru": "выписаться из больницы",
               "tj": "аз беморхона баромадан"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shēngbìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shēngbìng?",
+            "tj": "shēngbìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "每",
+            "早上",
+            "生病",
+            "跑步"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "生病 = kasal bo'lmoq (shēngbìng)",
+            "ru": "生病 = заболевать, болеть (shēngbìng)",
+            "tj": "生病 = бемор шудан, касал шудан (shēngbìng)"
           }
         },
         {
@@ -648,73 +766,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "米",
-            "pinyin": "mǐ",
-            "pos": "m.",
-            "meaning": {
-              "uz": "metr (o'lchov birligi)",
-              "ru": "метр (единица измерения)",
-              "tj": "метр (воҳиди андоза)"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "高 talaffuzini tanlang:",
+            "ru": "Выберите произношение 高:",
+            "tj": "Талаффузи 高-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "shēngbìng",
+            "gāo",
+            "zǎoshang",
+            "měi"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "高 — gāo",
+            "ru": "高 — gāo",
+            "tj": "高 — gāo"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "知道",
-            "pinyin": "zhīdào",
-            "pos": "v.",
-            "meaning": {
-              "uz": "bilmoq",
-              "ru": "знать",
-              "tj": "донистан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "休息",
-            "pinyin": "xiūxi",
-            "pos": "v.",
-            "meaning": {
-              "uz": "dam olmoq",
-              "ru": "отдыхать",
-              "tj": "истироҳат кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "忙",
-            "pinyin": "máng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "band, ishi ko'p",
-              "ru": "занятый, загруженный",
-              "tj": "банд, серкор"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "时间",
-            "pinyin": "shíjiān",
-            "pos": "n.",
-            "meaning": {
-              "uz": "vaqt",
-              "ru": "время",
-              "tj": "вақт"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "生病",
+              {
+                "uz": "kasal bo'lmoq",
+                "ru": "заболевать, болеть",
+                "tj": "бемор шудан, касал шудан"
+              }
+            ],
+            [
+              "每",
+              {
+                "uz": "har (bir), har qaysi",
+                "ru": "каждый",
+                "tj": "ҳар (як), ҳар кадом"
+              }
+            ],
+            [
+              "早上",
+              {
+                "uz": "ertalab",
+                "ru": "утро, утром",
+                "tj": "субҳ, субҳгоҳ"
+              }
+            ],
+            [
+              "跑步",
+              {
+                "uz": "yugurmoq, chopmoq",
+                "ru": "бегать, бежать",
+                "tj": "давидан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -729,6 +844,43 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "'是不是' bilan savol gaplari",
+              "ru": "Вопросы с 是不是",
+              "tj": "Саволҳо бо 是不是"
+            },
+            "title_zh": "用“是不是”的问句",
+            "rule": {
+              "uz": "'是不是' bilan tuzilgan savol gaplari. Bu qolip orqali biror narsa haqida taxmin qilib so'raladi. '是不是' gap boshida yoki o'rtasida kelishi mumkin. Javob 'shunday' yoki 'yo'q' shaklida bo'ladi.",
+              "ru": "Вопросы, построенные с 是不是. С помощью этого шаблона задаётся вопрос-предположение. 是不是 может стоять в начале или середине предложения. Ответ — «да» или «нет».",
+              "tj": "Саволҳое, ки бо 是不是 сохта мешаванд. Тавассути ин қолиб гумонии чизе пурсида мешавад. 是不是 метавонад дар аввал ё миёнаи ҷумла биояд. Ҷавоб бо 'бале' ё 'не' дода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "你是不是喜欢运动？",
+                "pinyin": "Nǐ shì bú shì xǐhuan yùndòng?",
+                "translation": {
+                  "uz": "Sen sportni yaxshi ko'rasanmi?",
+                  "ru": "Ты любишь спорт?",
+                  "tj": "Оё ту варзишро дӯст медорӣ?"
+                }
+              },
+              {
+                "zh": "他是不是你的朋友？",
+                "pinyin": "Tā shì bú shì nǐ de péngyou?",
+                "translation": {
+                  "uz": "U sening do'stingmi?",
+                  "ru": "Он твой друг?",
+                  "tj": "Оё ӯ дӯсти туст?"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Sen sportni yaxshi ko'rasanmi?",
@@ -736,14 +888,14 @@
             "tj": "Оё ту варзишро дӯст медорӣ?"
           },
           "tokens": [
-            "运动",
-            "每",
-            "生病",
             "你",
             "是",
+            "不",
             "是",
+            "生病",
             "喜欢",
-            "不"
+            "每",
+            "运动"
           ],
           "answer_tokens": [
             "你",
@@ -760,24 +912,158 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "我每天____都要跑步。",
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "'每' olmoshi",
+              "ru": "Местоимение 每",
+              "tj": "Ҷонишини 每"
+            },
+            "title_zh": "代词“每”",
+            "rule": {
+              "uz": "'每' olmoshi 'har, har qaysi' ma'nosini beradi. U otdan oldin qo'llaniladi va ko'pincha 都 bilan birga ishlatiladi.",
+              "ru": "Местоимение 每 означает «каждый». Ставится перед существительным и часто используется в связке с 都.",
+              "tj": "Ҷонишини 每 маънои 'ҳар' дорад. Пеш аз исм меояд ва аксар бо 都 дар якҷоягӣ истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "我每天早上都要跑步。",
+                "pinyin": "Wǒ měitiān zǎoshang dōu yào pǎobù.",
+                "translation": {
+                  "uz": "Men har kuni ertalab yuguraman.",
+                  "ru": "Я каждое утро бегаю.",
+                  "tj": "Ман ҳар субҳ медавам."
+                }
+              },
+              {
+                "zh": "每个学生都有书。",
+                "pinyin": "Měi ge xuésheng dōu yǒu shū.",
+                "translation": {
+                  "uz": "Har bir talabaning kitobi bor.",
+                  "ru": "У каждого студента есть книга.",
+                  "tj": "Ҳар донишҷӯ китоб дорад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Har bir talabaning kitobi bor.",
+            "ru": "У каждого студента есть книга.",
+            "tj": "Ҳар донишҷӯ китоб дорад."
+          },
+          "tokens": [
+            "每",
+            "早上",
+            "书",
+            "都",
+            "学生",
+            "有",
+            "个",
+            "生病"
+          ],
+          "answer_tokens": [
+            "每",
+            "个",
+            "学生",
+            "都",
+            "有",
+            "书"
+          ],
+          "explanation": {
+            "uz": "每个学生都有书。 — Měi ge xuésheng dōu yǒu shū.",
+            "ru": "每个学生都有书。 — Měi ge xuésheng dōu yǒu shū.",
+            "tj": "每个学生都有书。 — Měi ge xuésheng dōu yǒu shū."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "'多' so'roq olmoshi",
+              "ru": "Вопросительное местоимение 多",
+              "tj": "Ҷонишини саволии 多"
+            },
+            "title_zh": "疑问代词“多”",
+            "rule": {
+              "uz": "'多' so'roq olmoshi sifat oldidan kelib 'qancha, nechog'liq' ma'nosini beradi. Odatda o'lchov yoki miqdor so'rashda ishlatiladi.",
+              "ru": "Вопросительное местоимение 多 ставится перед прилагательным и означает «насколько, какой». Используется для вопросов об измерениях или величинах.",
+              "tj": "Ҷонишини саволии 多 пеш аз сифат меояд ва маънои 'чӣ қадар, чанд' дорад. Барои пурсидан дар бораи андоза ё миқдор истифода мешавад."
+            },
+            "examples": [
+              {
+                "zh": "你多高？",
+                "pinyin": "Nǐ duō gāo?",
+                "translation": {
+                  "uz": "Sening bo'ying qancha?",
+                  "ru": "Какой у тебя рост?",
+                  "tj": "Қади ту чанд аст?"
+                }
+              },
+              {
+                "zh": "他今年多大？",
+                "pinyin": "Tā jīnnián duō dà?",
+                "translation": {
+                  "uz": "U bu yil necha yoshda?",
+                  "ru": "Сколько ему лет в этом году?",
+                  "tj": "Ӯ имсол чанд сола аст?"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sening bo'ying qancha?",
+            "ru": "Какой у тебя рост?",
+            "tj": "Қади ту чанд аст?"
+          },
+          "tokens": [
+            "你",
+            "高",
+            "每",
+            "生病",
+            "多"
+          ],
+          "answer_tokens": [
+            "你",
+            "多",
+            "高"
+          ],
+          "explanation": {
+            "uz": "你多高？ — Nǐ duō gāo?",
+            "ru": "你多高？ — Nǐ duō gāo?",
+            "tj": "你多高？ — Nǐ duō gāo?"
+          }
+        },
+        {
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+            "uz": "«U bu yil necha yoshda?» — xitoychada qaysi biri?",
+            "ru": "«Сколько ему лет в этом году?» — какое предложение по-китайски?",
+            "tj": "«Ӯ имсол чанд сола аст?» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "生病",
-            "早上",
-            "跑步",
-            "每"
+            "他今年多大？",
+            "你是不是喜欢运动？",
+            "每个学生都有书。",
+            "你多高？"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri: 早上 (zǎoshang) — ertalab",
-            "ru": "Верно: 早上 (zǎoshang) — утро, утром",
-            "tj": "Дуруст: 早上 (zǎoshang) — субҳ, субҳгоҳ"
+            "uz": "他今年多大？ — Tā jīnnián duō dà?",
+            "ru": "他今年多大？ — Tā jīnnián duō dà?",
+            "tj": "他今年多大？ — Tā jīnnián duō dà?"
           }
         }
       ]
@@ -792,36 +1078,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "每 talaffuzini tanlang:",
-            "ru": "Выберите произношение 每:",
-            "tj": "Талаффузи 每-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "měi",
-            "shēngbìng",
-            "pǎobù",
-            "zǎoshang"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "每 — měi",
-            "ru": "每 — měi",
-            "tj": "每 — měi"
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'ertalab' xitoycha qaysi?",
-            "ru": "'утро, утром' по-китайски?",
-            "tj": "'субҳ, субҳгоҳ' ба хитоӣ кадом аст?"
+            "uz": "'dam olmoq' xitoycha qaysi?",
+            "ru": "'отдыхать' по-китайски?",
+            "tj": "'истироҳат кардан' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -829,49 +1090,16 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "每",
-            "跑步",
+            "休息",
             "生病",
-            "早上"
+            "早上",
+            "每"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "ertalab = 早上 (zǎoshang)",
-            "ru": "утро, утром = 早上 (zǎoshang)",
-            "tj": "субҳ, субҳгоҳ = 早上 (zǎoshang)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Dori ichdingmi? Hozir sog'liqing qanday?",
-            "ru": "Ты принял лекарство? Как сейчас самочувствие?",
-            "tj": "Оё дору хӯрдӣ? Ҳоло саломатиат чӣ тавр аст?"
-          },
-          "tokens": [
-            "吃",
-            "药",
-            "身体",
-            "现在",
-            "每",
-            "吗",
-            "了",
-            "生病",
-            "怎么样"
-          ],
-          "answer_tokens": [
-            "吃",
-            "药",
-            "了",
-            "吗",
-            "现在",
-            "身体",
-            "怎么样"
-          ],
-          "explanation": {
-            "uz": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
-            "ru": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
-            "tj": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?"
+            "uz": "dam olmoq = 休息 (xiūxi)",
+            "ru": "отдыхать = 休息 (xiūxi)",
+            "tj": "истироҳат кардан = 休息 (xiūxi)"
           }
         },
         {
@@ -894,6 +1122,64 @@
             "uz": "你很少生病，是不是喜欢运动？ — Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?",
             "ru": "你很少生病，是不是喜欢运动？ — Ты редко болеешь, ты любишь спорт?",
             "tj": "你很少生病，是不是喜欢运动？ — Ту кам касал мешавӣ, оё варзишро дӯст медорӣ?"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "知道 talaffuzini tanlang:",
+            "ru": "Выберите произношение 知道:",
+            "tj": "Талаффузи 知道-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zǎoshang",
+            "shēngbìng",
+            "měi",
+            "zhīdào"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "知道 — zhīdào",
+            "ru": "知道 — zhīdào",
+            "tj": "知道 — zhīdào"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Dori ichdingmi? Hozir sog'liqing qanday?",
+            "ru": "Ты принял лекарство? Как сейчас самочувствие?",
+            "tj": "Оё дору хӯрдӣ? Ҳоло саломатиат чӣ тавр аст?"
+          },
+          "tokens": [
+            "生病",
+            "每",
+            "吃",
+            "身体",
+            "怎么样",
+            "现在",
+            "药",
+            "了",
+            "吗"
+          ],
+          "answer_tokens": [
+            "吃",
+            "药",
+            "了",
+            "吗",
+            "现在",
+            "身体",
+            "怎么样"
+          ],
+          "explanation": {
+            "uz": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
+            "ru": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?",
+            "tj": "吃药了吗？现在身体怎么样？ — Chī yào le ma? Xiànzài shēntǐ zěnmeyàng?"
           }
         },
         {
@@ -970,9 +1256,9 @@
           "pinyin": "Nǐ hěn shǎo shēngbìng, shì bú shì xǐhuan yùndòng?",
           "options": [
             "你很少生病，是不是喜欢运动？",
-            "是啊，我每天早上都要出去跑步。",
+            "我每天六点起床。",
             "你每天几点起床？",
-            "我每天六点起床。"
+            "是啊，我每天早上都要出去跑步。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -991,15 +1277,40 @@
           },
           "options": [
             "你",
-            "西",
-            "新",
-            "儿"
+            "时",
+            "朋",
+            "电"
           ],
           "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 你 — 你很少生病，是不是喜欢运动？ (Sen kamdan-kam kasal bo'lasan, sport qilishni yaxshi ko'rasanmi?)",
             "ru": "Верно: 你 — 你很少生病，是不是喜欢运动？ (Ты редко болеешь, ты любишь спорт?)",
             "tj": "Дуруст: 你 — 你很少生病，是不是喜欢运动？ (Ту кам касал мешавӣ, оё варзишро дӯст медорӣ?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири муколама B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "是啊，我每天早上都要出去跑步。",
+            "我每天六点起床。",
+            "你很少生病，是不是喜欢运动？",
+            "你每天几点起床？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我每天六点起床。",
+            "ru": "Правильный ответ: 我每天六点起床。",
+            "tj": "Ҷавоби дуруст: 我每天六点起床。"
           }
         },
         {
@@ -1032,12 +1343,12 @@
             }
           ],
           "options": [
-            "你每天几点起床？",
-            "是啊，我每天早上都要出去跑步。",
             "我每天六点起床。",
-            "你很少生病，是不是喜欢运动？"
+            "你很少生病，是不是喜欢运动？",
+            "是啊，我每天早上都要出去跑步。",
+            "你每天几点起床？"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 我每天六点起床。",
             "ru": "Правильный ответ: 我每天六点起床。",
@@ -1057,41 +1368,16 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你每天几点起床？",
-            "我每天六点起床。",
             "是啊，我每天早上都要出去跑步。",
-            "你很少生病，是不是喜欢运动？"
+            "你很少生病，是不是喜欢运动？",
+            "我每天六点起床。",
+            "你每天几点起床？"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 你很少生病，是不是喜欢运动？",
             "ru": "Правильный ответ: 你很少生病，是不是喜欢运动？",
             "tj": "Ҷавоби дуруст: 你很少生病，是不是喜欢运动？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири муколама B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "我每天六点起床。",
-            "你很少生病，是不是喜欢运动？",
-            "你每天几点起床？",
-            "是啊，我每天早上都要出去跑步。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 我每天六点起床。",
-            "ru": "Правильный ответ: 我每天六点起床。",
-            "tj": "Ҷавоби дуруст: 我每天六点起床。"
           }
         }
       ]

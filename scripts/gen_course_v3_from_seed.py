@@ -37,6 +37,13 @@ from pathlib import Path
 BASE = Path("app/static/course_v3_data")
 LEVELS = [("hsk1", 15), ("hsk2", 15), ("hsk3", 20), ("hsk4", 20)]
 
+# Max NEW words taught (flash + interleaved check) in the intro of one lesson.
+# Book lessons can carry ~30 words (HSK4); teaching them all makes a single
+# lesson 70+ cards long. We cap the intro so the lesson stays Duolingo-short;
+# the remaining vocabulary still lives in `active_words` (word reference) and
+# appears inside the practice / dialogue exercises.
+INTRO_WORD_CAP = 10
+
 # Deterministic shuffling so re-runs produce identical files.
 RNG = random.Random(20240629)
 
@@ -355,65 +362,277 @@ def make_char_gap_card(line, known_chars) -> dict | None:
     }
 
 
-def build_grammar_section(grammar_raw, vocab, known_prior) -> list[dict]:
-    """Interactive grammar practice: build a real example sentence from tiles,
-    plus one gap-fill of a current-lesson word inside a grammar example."""
+# --------------------------------------------------------------------------
+# Shared multiple-choice builders. Used by BOTH the intro section (teach a word
+# then immediately check it — Duolingo interleaving) and the practice section,
+# so the same gated logic produces every check. Distractors are padded only
+# from `pool` (current lesson + earlier lessons), never future / higher words.
+# --------------------------------------------------------------------------
+def mc_meaning(w, pool):
+    correct = word_meaning(w)
+    opts = [correct]
+    _distinct_pad(opts, [word_meaning(x) for x in pool], key=lambda m: m["uz"])
+    order = opts[:]
+    RNG.shuffle(order)
+    return {
+        "type": "meaning_guess",
+        "prompt": {
+            "uz": f"{w['zh']} so'zining ma'nosini tanlang:",
+            "ru": f"Выберите значение слова {w['zh']}:",
+            "tj": f"Маънои калимаи {w['zh']}-ро интихоб кунед:",
+        },
+        "title": {"uz": "Ma'nosi nima?", "ru": "Что означает?", "tj": "Маъно чист?"},
+        "options": order,
+        "correct_index": order.index(correct),
+        "explanation": {
+            "uz": f"{w['zh']} = {correct['uz']} ({w.get('pinyin','')})",
+            "ru": f"{w['zh']} = {correct['ru']} ({w.get('pinyin','')})",
+            "tj": f"{w['zh']} = {correct['tj']} ({w.get('pinyin','')})",
+        },
+    }
+
+
+def mc_pinyin(w, pool):
+    right = w.get("pinyin", "")
+    opts = [right]
+    _distinct_pad(opts, [x.get("pinyin", "") for x in pool], key=lambda s: s)
+    order = opts[:]
+    RNG.shuffle(order)
+    return {
+        "type": "pinyin_choice",
+        "prompt": {
+            "uz": f"{w['zh']} talaffuzini tanlang:",
+            "ru": f"Выберите произношение {w['zh']}:",
+            "tj": f"Талаффузи {w['zh']}-ро интихоб кунед:",
+        },
+        "title": {"uz": "Qanday o'qiladi?", "ru": "Как читается?", "tj": "Чӣ хел хонда мешавад?"},
+        "options": order,
+        "correct_index": order.index(right),
+        "explanation": {
+            "uz": f"{w['zh']} — {right}",
+            "ru": f"{w['zh']} — {right}",
+            "tj": f"{w['zh']} — {right}",
+        },
+    }
+
+
+def mc_translation(w, pool):
+    m = word_meaning(w)
+    opts = [w["zh"]]
+    _distinct_pad(opts, [x["zh"] for x in pool], key=lambda s: s)
+    order = opts[:]
+    RNG.shuffle(order)
+    return {
+        "type": "translation_choice",
+        "prompt": {
+            "uz": f"'{m['uz']}' xitoycha qaysi?",
+            "ru": f"'{m['ru']}' по-китайски?",
+            "tj": f"'{m['tj']}' ба хитоӣ кадом аст?",
+        },
+        "title": {"uz": "Xitoycha qanday?", "ru": "Как по-китайски?", "tj": "Ба хитоӣ чӣ тавр?"},
+        "options": order,
+        "correct_index": order.index(w["zh"]),
+        "explanation": {
+            "uz": f"{m['uz']} = {w['zh']} ({w.get('pinyin','')})",
+            "ru": f"{m['ru']} = {w['zh']} ({w.get('pinyin','')})",
+            "tj": f"{m['tj']} = {w['zh']} ({w.get('pinyin','')})",
+        },
+    }
+
+
+def mc_hanzi(w, pool):
+    opts = [w["zh"]]
+    _distinct_pad(opts, [x["zh"] for x in pool], key=lambda s: s)
+    order = opts[:]
+    RNG.shuffle(order)
+    return {
+        "type": "hanzi_choice",
+        "prompt": {
+            "uz": f"{w.get('pinyin','')} qaysi ieroglif?",
+            "ru": f"Какой иероглиф читается {w.get('pinyin','')}?",
+            "tj": f"{w.get('pinyin','')} кадом иероглиф аст?",
+        },
+        "title": {"uz": "Ieroglifni tanlang", "ru": "Выберите иероглиф", "tj": "Иероглифро интихоб кунед"},
+        "options": order,
+        "correct_index": order.index(w["zh"]),
+        "explanation": {
+            "uz": f"{w['zh']} = {word_meaning(w)['uz']} ({w.get('pinyin','')})",
+            "ru": f"{w['zh']} = {word_meaning(w)['ru']} ({w.get('pinyin','')})",
+            "tj": f"{w['zh']} = {word_meaning(w)['tj']} ({w.get('pinyin','')})",
+        },
+    }
+
+
+def mc_match(words):
+    return {
+        "type": "match_pairs",
+        "pairs": [[w["zh"], word_meaning(w)] for w in words],
+        "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд.",
+        },
+    }
+
+
+def pron_card(w):
+    return {
+        "type": "pronunciation",
+        "phrase": w["zh"],
+        "pinyin": w.get("pinyin", ""),
+        "translation": word_meaning(w),
+    }
+
+
+def make_grammar_meaning_card(grammar_raw, known_words) -> dict | None:
+    """A sentence-level comprehension check: show a translation, pick the real
+    Chinese sentence that matches it among OTHER real grammar example sentences.
+    Everything is authentic textbook content, so it stays level-gated."""
+    sents = []  # (zh, pinyin, {uz,ru,tj})
+    for g in grammar_raw:
+        for ex in g.get("examples", []):
+            zh = ex.get("zh", "")
+            if zh and all(z[0] != zh for z in sents):
+                sents.append((zh, ex.get("pinyin", ""), t3(ex)))
+    if len(sents) < 3:
+        return None
+    RNG.shuffle(sents)
+    target = sents[0]
+    opts = [target[0]] + [s[0] for s in sents[1:4]]
+    RNG.shuffle(opts)
+    tr = target[2]
+    return {
+        "type": "quick_quiz",
+        "prompt": {
+            "uz": f"«{tr['uz']}» — xitoychada qaysi biri?",
+            "ru": f"«{tr['ru']}» — какое предложение по-китайски?",
+            "tj": f"«{tr['tj']}» — кадом ҷумла ба хитоӣ аст?",
+        },
+        "title": {"uz": "To'g'ri gapni tanlang", "ru": "Выберите верное предложение", "tj": "Ҷумлаи дурустро интихоб кунед"},
+        "options": opts,
+        "correct_index": opts.index(target[0]),
+        "explanation": {
+            "uz": f"{target[0]} — {target[1]}",
+            "ru": f"{target[0]} — {target[1]}",
+            "tj": f"{target[0]} — {target[1]}",
+        },
+    }
+
+
+def build_intro_section(active_words, vocab, known_prior, order, lr) -> list[dict]:
+    """Duolingo interleaving: teach a word (flash card) then immediately check a
+    recently taught word with a rotating question type — instead of a flat wall
+    of flash cards. ALL vocabulary of the lesson is introduced (the old client
+    logic only ever drilled the first 4 words).
+
+    NOTE: the flash card uses the BUILT active_word shape (`meaning` sub-dict),
+    while the check builders (mc_*) need the RAW vocab shape (top-level uz/ru/tj),
+    so both lists are taken and kept index-aligned."""
+    cards: list[dict] = []
+    if not active_words:
+        return cards
+    # Cap how many NEW words are actively taught here (keeps the lesson short).
+    # The rest stay in `active_words` and surface inside the exercises.
+    teach_n = min(len(active_words), INTRO_WORD_CAP)
+    # Distractors may come from the whole lesson + earlier lessons (all gated).
+    # The check builders read the RAW vocab shape, so the pool is raw too.
+    pool = list(vocab) + list(known_prior)
+    check_cycle = [mc_meaning, mc_hanzi, mc_pinyin]
+    ci = (order - 1) % len(check_cycle)
+    taught: list[dict] = []  # raw vocab words already introduced
+    for i in range(teach_n):
+        cards.append({"type": "active_word", "word": active_words[i]})
+        taught.append(vocab[i])
+        # After every 2nd new word, immediately check one already taught.
+        if len(taught) >= 2 and i % 2 == 1:
+            builder = check_cycle[ci % len(check_cycle)]
+            ci += 1
+            target = taught[-1] if lr.random() < 0.5 else lr.choice(taught)
+            card = builder(target, pool)
+            if card:
+                cards.append(card)
+    # Recap: match new words to their meanings (only when there are enough).
+    if teach_n >= 3:
+        cards.append(mc_match(vocab[: min(4, teach_n)]))
+    return cards
+
+
+def build_grammar_section(grammar_raw, vocab, known_prior, order=1, lr=None) -> list[dict]:
+    """Interactive grammar, Duolingo-style: for each rule, TEACH it (the panda
+    "Li ustoz" card) then IMMEDIATELY drill it (build the example from tiles or a
+    gap-fill), instead of dumping every rule first and every drill after. A final
+    sentence-comprehension check adds variety. Everything stays level-gated."""
+    lr = lr or random.Random(order)
     cards: list[dict] = []
     if not grammar_raw or not vocab:
         return cards
     pool = vocab + known_prior
     known_words = {x.get("zh", "") for x in pool if x.get("zh")}
+    grammar_shaped = build_grammar(grammar_raw)  # {uz,ru,tj} teacher-card shape
 
-    # sentence_builder from the first usable grammar example (rule applied).
-    for g in grammar_raw:
-        made = False
+    for gi, g in enumerate(grammar_raw):
+        # 1) Teach this rule (rendered by cardGrammar via the "_grammar" type).
+        cards.append({"type": "_grammar", "g": grammar_shaped[gi]})
+        # 2) Immediately drill THIS rule: prefer rebuilding its example, else a
+        #    gap-fill of a current-lesson word inside one of its examples.
+        drill = None
         for ex in g.get("examples", []):
-            card = make_builder_card(ex.get("zh", ""), ex.get("pinyin", ""), t3(ex), known_words, pool)
-            if card:
-                cards.append(card)
-                made = True
+            drill = make_builder_card(ex.get("zh", ""), ex.get("pinyin", ""), t3(ex), known_words, pool)
+            if drill:
                 break
-        if made:
-            break
+        if not drill:
+            drill = _grammar_gap_fill(g, vocab, pool)
+        if drill:
+            cards.append(drill)
 
-    # one gap-fill: blank a current-lesson word inside a real grammar example.
-    for w in vocab:
-        if not (w.get("zh") and len(w["zh"]) >= 2):
-            continue
-        for g in grammar_raw:
-            for ex in g.get("examples", []):
-                zh = ex.get("zh", "")
-                if w["zh"] in zh:
-                    opts = [w["zh"]]
-                    _distinct_pad(opts, [x["zh"] for x in pool], key=lambda s: s)
-                    RNG.shuffle(opts)
-                    cards.append({
-                        "type": "gap_fill",
-                        "sentence": zh.replace(w["zh"], "____", 1),
-                        "prompt": {
-                            "uz": "Bo'sh joyga mos so'zni tanlang:",
-                            "ru": "Выберите слово для пропуска:",
-                            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:",
-                        },
-                        "options": opts,
-                        "correct_index": opts.index(w["zh"]),
-                        "explanation": {
-                            "uz": f"To'g'ri: {w['zh']} ({w.get('pinyin','')}) — {word_meaning(w)['uz']}",
-                            "ru": f"Верно: {w['zh']} ({w.get('pinyin','')}) — {word_meaning(w)['ru']}",
-                            "tj": f"Дуруст: {w['zh']} ({w.get('pinyin','')}) — {word_meaning(w)['tj']}",
-                        },
-                    })
-                    return cards  # one gap-fill is enough
+    # 3) One sentence-level comprehension check across the rules (variety).
+    gm = make_grammar_meaning_card(grammar_raw, known_words)
+    if gm:
+        cards.append(gm)
     return cards
 
 
+def _grammar_gap_fill(g, vocab, pool) -> dict | None:
+    """Blank a current-lesson word inside one real example of grammar rule g."""
+    for w in vocab:
+        if not (w.get("zh") and len(w["zh"]) >= 2):
+            continue
+        for ex in g.get("examples", []):
+            zh = ex.get("zh", "")
+            if w["zh"] in zh:
+                opts = [w["zh"]]
+                _distinct_pad(opts, [x["zh"] for x in pool], key=lambda s: s)
+                RNG.shuffle(opts)
+                return {
+                    "type": "gap_fill",
+                    "sentence": zh.replace(w["zh"], "____", 1),
+                    "prompt": {
+                        "uz": "Bo'sh joyga mos so'zni tanlang:",
+                        "ru": "Выберите слово для пропуска:",
+                        "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:",
+                    },
+                    "options": opts,
+                    "correct_index": opts.index(w["zh"]),
+                    "explanation": {
+                        "uz": f"To'g'ri: {w['zh']} ({w.get('pinyin','')}) — {word_meaning(w)['uz']}",
+                        "ru": f"Верно: {w['zh']} ({w.get('pinyin','')}) — {word_meaning(w)['ru']}",
+                        "tj": f"Дуруст: {w['zh']} ({w.get('pinyin','')}) — {word_meaning(w)['tj']}",
+                    },
+                }
+    return None
+
+
+
 def build_practice(vocab: list[dict], known_prior: list[dict], grammar: list[dict],
-                   dialogue_raw: list[dict] | None = None, order: int = 1) -> list[dict]:
+                   dialogue_raw: list[dict] | None = None, order: int = 1,
+                   lr=None) -> list[dict]:
     """Build practice cards. Distractors come from `vocab` (current lesson) and,
     if needed, `known_prior` (earlier lessons). Never from future / higher words.
 
-    Old multiple-choice drills are kept but REDUCED and mixed with the new
-    interactive cards (sentence_builder, listening_choice) for variety."""
+    The card TYPES stay authentic and gated, but their ORDER is shuffled per
+    lesson (deterministic `lr`) so no two lessons feel like the same template.
+    The pronunciation card is always kept last (it opens the microphone)."""
+    lr = lr or random.Random(order)
     cards: list[dict] = []
     if not vocab:
         return cards
@@ -423,147 +642,40 @@ def build_practice(vocab: list[dict], known_prior: list[dict], grammar: list[dic
     known_words = {x.get("zh", "") for x in pool if x.get("zh")}
     dialogue_raw = dialogue_raw or []
     all_lines = [ln for b in dialogue_raw for ln in b.get("dialogue", []) if ln.get("zh")]
-
-    def meaning_card(w):
-        correct = word_meaning(w)
-        opts = [correct]
-        _distinct_pad(opts, [word_meaning(x) for x in pool], key=lambda m: m["uz"])
-        order = opts[:]
-        RNG.shuffle(order)
-        ci = order.index(correct)
-        return {
-            "type": "meaning_guess",
-            "prompt": {
-                "uz": f"{w['zh']} so'zining ma'nosini tanlang:",
-                "ru": f"Выберите значение слова {w['zh']}:",
-                "tj": f"Маънои калимаи {w['zh']}-ро интихоб кунед:",
-            },
-            "title": {"uz": "Ma'nosi nima?", "ru": "Что означает?", "tj": "Маъно чист?"},
-            "options": order,
-            "correct_index": ci,
-            "explanation": {
-                "uz": f"{w['zh']} = {correct['uz']} ({w.get('pinyin','')})",
-                "ru": f"{w['zh']} = {correct['ru']} ({w.get('pinyin','')})",
-                "tj": f"{w['zh']} = {correct['tj']} ({w.get('pinyin','')})",
-            },
-        }
-
-    def pinyin_card(w):
-        opts = [w.get("pinyin", "")]
-        _distinct_pad(opts, [x.get("pinyin", "") for x in pool], key=lambda s: s)
-        order = opts[:]
-        RNG.shuffle(order)
-        ci = order.index(w.get("pinyin", ""))
-        return {
-            "type": "pinyin_choice",
-            "prompt": {
-                "uz": f"{w['zh']} talaffuzini tanlang:",
-                "ru": f"Выберите произношение {w['zh']}:",
-                "tj": f"Талаффузи {w['zh']}-ро интихоб кунед:",
-            },
-            "title": {"uz": "Qanday o'qiladi?", "ru": "Как читается?", "tj": "Чӣ хел хонда мешавад?"},
-            "options": order,
-            "correct_index": ci,
-            "explanation": {
-                "uz": f"{w['zh']} — {w.get('pinyin','')}",
-                "ru": f"{w['zh']} — {w.get('pinyin','')}",
-                "tj": f"{w['zh']} — {w.get('pinyin','')}",
-            },
-        }
-
-    def translation_card(w):
-        m = word_meaning(w)
-        opts = [w["zh"]]
-        _distinct_pad(opts, [x["zh"] for x in pool], key=lambda s: s)
-        order = opts[:]
-        RNG.shuffle(order)
-        ci = order.index(w["zh"])
-        return {
-            "type": "translation_choice",
-            "prompt": {
-                "uz": f"'{m['uz']}' xitoycha qaysi?",
-                "ru": f"'{m['ru']}' по-китайски?",
-                "tj": f"'{m['tj']}' ба хитоӣ кадом аст?",
-            },
-            "title": {"uz": "Xitoycha qanday?", "ru": "Как по-китайски?", "tj": "Ба хитоӣ чӣ тавр?"},
-            "options": order,
-            "correct_index": ci,
-            "explanation": {
-                "uz": f"{m['uz']} = {w['zh']} ({w.get('pinyin','')})",
-                "ru": f"{m['ru']} = {w['zh']} ({w.get('pinyin','')})",
-                "tj": f"{m['tj']} = {w['zh']} ({w.get('pinyin','')})",
-            },
-        }
-
-    def hanzi_card(w):
-        opts = [w["zh"]]
-        _distinct_pad(opts, [x["zh"] for x in pool], key=lambda s: s)
-        order = opts[:]
-        RNG.shuffle(order)
-        ci = order.index(w["zh"])
-        return {
-            "type": "hanzi_choice",
-            "prompt": {
-                "uz": f"{w.get('pinyin','')} qaysi ieroglif?",
-                "ru": f"Какой иероглиф читается {w.get('pinyin','')}?",
-                "tj": f"{w.get('pinyin','')} кадом иероглиф аст?",
-            },
-            "title": {"uz": "Ieroglifni tanlang", "ru": "Выберите иероглиф", "tj": "Иероглифро интихоб кунед"},
-            "options": order,
-            "correct_index": ci,
-            "explanation": {
-                "uz": f"{w['zh']} = {word_meaning(w)['uz']} ({w.get('pinyin','')})",
-                "ru": f"{w['zh']} = {word_meaning(w)['ru']} ({w.get('pinyin','')})",
-                "tj": f"{w['zh']} = {word_meaning(w)['tj']} ({w.get('pinyin','')})",
-            },
-        }
-
-    def match_card(words):
-        pairs = [[w["zh"], word_meaning(w)] for w in words]
-        return {
-            "type": "match_pairs",
-            "pairs": pairs,
-            "explanation": {
-                "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-                "ru": "Пары взяты из новых слов урока.",
-                "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд.",
-            },
-        }
-
-    def pron_card(w):
-        return {
-            "type": "pronunciation",
-            "phrase": w["zh"],
-            "pinyin": w.get("pinyin", ""),
-            "translation": word_meaning(w),
-        }
-
-    # Assemble a varied, gated practice set. Old MC drills are REDUCED to two
-    # per lesson and the starting type rotates by lesson order so consecutive
-    # lessons don't feel identical. They are mixed with the new interactive
-    # cards (sentence_builder, listening_choice), match, and pronunciation.
     v = vocab
-    mc_builders = [meaning_card, pinyin_card, translation_card, hanzi_card]
+
+    # Two multiple-choice drills; the starting type rotates by lesson order so
+    # consecutive lessons don't open with the same question type. For large
+    # lessons, draw these words from the part of the vocabulary that the (capped)
+    # intro did NOT actively teach, so those later words still get one real check.
+    mc_builders = [mc_meaning, mc_pinyin, mc_translation, mc_hanzi]
     start = (order - 1) % len(mc_builders)
-    for k in range(2):  # only 2 multiple-choice drills now (was 4)
+    tail = v[INTRO_WORD_CAP:] if len(v) > INTRO_WORD_CAP else v
+    varied: list[dict] = []
+    for k in range(2):
         b = mc_builders[(start + k) % len(mc_builders)]
-        w = v[(start + k) % len(v)]
-        cards.append(b(w))
+        w = tail[(start + k) % len(tail)]
+        varied.append(b(w, pool))
 
     # Interactive: rebuild a real dialogue line from word tiles (gated).
     for ln in all_lines:
         bc = make_builder_card(ln.get("zh", ""), ln.get("pinyin", ""), t3(ln), known_words, pool)
         if bc:
-            cards.append(bc)
+            varied.append(bc)
             break
 
     # Interactive: "tap what you heard" from the dialogue lines.
     if all_lines:
         lc = make_listen_card(all_lines[0], all_lines)
         if lc:
-            cards.append(lc)
+            varied.append(lc)
 
-    cards.append(match_card(v[: min(4, len(v))]))
+    varied.append(mc_match(v[: min(4, len(v))]))
+
+    # Shuffle the practice order so the sequence differs every lesson, then keep
+    # the pronunciation (microphone) card last.
+    lr.shuffle(varied)
+    cards = [c for c in varied if c]
     cards.append(pron_card(v[0]))
     return cards
 
@@ -635,10 +747,15 @@ def build_dialog_quizzes(blocks: list[dict]) -> list[dict]:
     return cards
 
 
-def build_dialog_section(blocks: list[dict], pool: list[dict]) -> list[dict]:
+def build_dialog_section(blocks: list[dict], pool: list[dict], lr=None) -> list[dict]:
     """Fully interactive dialogue section (no passive text dump): hear a line
     and pick what was said, fill a missing character, complete the dialogue,
-    then a comprehension question. Everything stays level-gated."""
+    then a comprehension question. Everything stays level-gated.
+
+    The audio "listen — what did they say?" card opens the section, but the
+    middle exercises (character gap, cloze, comprehension) are shuffled per
+    lesson (`lr`) so the dialogue stage isn't the same sequence every time."""
+    lr = lr or random.Random(1)
     cards: list[dict] = []
     if not blocks:
         return cards
@@ -659,21 +776,27 @@ def build_dialog_section(blocks: list[dict], pool: list[dict]) -> list[dict]:
             }
             cards.append(lc)
 
-    # 2) Fill the missing character in a real dialogue line.
+    # Middle + comprehension exercises, shuffled per lesson for variety.
+    rest: list[dict] = []
+
+    # Fill the missing character in a real dialogue line.
     known_chars = {ch for w in pool for ch in w.get("zh", "") if "一" <= ch <= "鿿"}
     for ln in line_objs:
         cg = make_char_gap_card(ln, known_chars)
         if cg:
-            cards.append(cg)
+            rest.append(cg)
             break
 
-    # 3) Complete the dialogue (pick the missing reply).
+    # Complete the dialogue (pick the missing reply).
     cloze = make_cloze_card(blocks[0], line_pool)
     if cloze:
-        cards.append(cloze)
+        rest.append(cloze)
 
-    # 4) Comprehension question(s).
-    cards.extend(build_dialog_quizzes(blocks))
+    # Comprehension question(s).
+    rest.extend(build_dialog_quizzes(blocks))
+
+    lr.shuffle(rest)
+    cards.extend(rest)
     return cards
 
 
@@ -692,10 +815,15 @@ def build_v3_lesson(level: str, order: int, seed: dict, known_prior: list[dict])
     grammar = build_grammar(grammar_raw)
     dialogues = build_dialogues(dialogue_raw)
 
-    intro_cards = [{"type": "active_word", "word": w} for w in active_words]
-    grammar_cards = build_grammar_section(grammar_raw, vocab, known_prior)
-    practice_cards = build_practice(vocab, known_prior, grammar_raw, dialogue_raw, order)
-    dialog_cards = build_dialog_section(dialogue_raw, vocab + known_prior)
+    # Per-lesson deterministic RNG: same lesson -> same order on every re-run,
+    # but different lessons get different exercise sequences (kills the "one
+    # format, one sequence, every lesson" monotony).
+    lr = random.Random(int(level.replace("hsk", "") or 0) * 1000 + order)
+
+    intro_cards = build_intro_section(active_words, vocab, known_prior, order, lr)
+    grammar_cards = build_grammar_section(grammar_raw, vocab, known_prior, order, lr)
+    practice_cards = build_practice(vocab, known_prior, grammar_raw, dialogue_raw, order, lr)
+    dialog_cards = build_dialog_section(dialogue_raw, vocab + known_prior, lr)
 
     sections = [
         {
@@ -742,6 +870,12 @@ def build_v3_lesson(level: str, order: int, seed: dict, known_prior: list[dict])
         "lesson_id": order,
         "title": zh_title,
         "subtitle": subtitle,
+        # Markers: the intro/grammar sections are already interleaved (teach +
+        # check) by the generator, so the client must NOT re-apply its old
+        # transform. Older, un-regenerated lessons lack these flags and keep the
+        # previous client behavior — fully backward compatible.
+        "intro_prebuilt": True,
+        "grammar_prebuilt": True,
         "active_words": active_words,
         "grammar": grammar,
         "dialogues": dialogues,

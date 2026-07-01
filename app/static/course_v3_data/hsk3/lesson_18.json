@@ -8,6 +8,8 @@
     "ru": "Условное 'только если…то…', предлог '关于' и союз 'не только…но и…'",
     "tj": "Шартии 'танҳо агар…пас…', пешоянди '关于' ва пайвандаки 'на танҳо…балки ҳам…'"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -558,6 +560,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "万 talaffuzini tanlang:",
+            "ru": "Выберите произношение 万:",
+            "tj": "Талаффузи 万-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "zhī",
+            "xiàng",
+            "wàn",
+            "zuǐ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "万 — wàn",
+            "ru": "万 — wàn",
+            "tj": "万 — wàn"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -583,6 +610,47 @@
               "ru": "рот",
               "tj": "даҳон"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "嘴 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 嘴:",
+            "tj": "Маънои калимаи 嘴-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "og'iz",
+              "ru": "рот",
+              "tj": "даҳон"
+            },
+            {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            },
+            {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            },
+            {
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "嘴 = og'iz (zuǐ)",
+            "ru": "嘴 = рот (zuǐ)",
+            "tj": "嘴 = даҳон (zuǐ)"
           }
         },
         {
@@ -614,6 +682,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wàn?",
+            "tj": "wàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "向",
+            "只",
+            "万",
+            "嘴"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "万 = o'n ming (wàn)",
+            "ru": "万 = десять тысяч (wàn)",
+            "tj": "万 = даҳ ҳазор (wàn)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -639,6 +732,31 @@
               "ru": "известный",
               "tj": "машҳур"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "万 talaffuzini tanlang:",
+            "ru": "Выберите произношение 万:",
+            "tj": "Талаффузи 万-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "wàn",
+            "zuǐ",
+            "xiàng",
+            "zhī"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "万 — wàn",
+            "ru": "万 — wàn",
+            "tj": "万 — wàn"
           }
         },
         {
@@ -670,101 +788,86 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "关于",
-            "pinyin": "guānyú",
-            "pos": "prep.",
-            "meaning": {
-              "uz": "haqida, to'g'risida",
-              "ru": "о, относительно",
-              "tj": "дар бораи"
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "相信 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 相信:",
+            "tj": "Маънои калимаи 相信-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ayrim hayvonlar uchun hisob so'zi",
+              "ru": "счетное слово для некоторых животных",
+              "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+            },
+            {
+              "uz": "ishonmoq",
+              "ru": "верить",
+              "tj": "бовар кардан"
+            },
+            {
+              "uz": "o'n ming",
+              "ru": "десять тысяч",
+              "tj": "даҳ ҳазор"
+            },
+            {
+              "uz": "tomon, ga",
+              "ru": "к, по направлению к",
+              "tj": "ба сӯи, ба"
             }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "相信 = ishonmoq (xiāngxìn)",
+            "ru": "相信 = верить (xiāngxìn)",
+            "tj": "相信 = бовар кардан (xiāngxìn)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "机会",
-            "pinyin": "jīhuì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "imkoniyat",
-              "ru": "возможность, шанс",
-              "tj": "имконият"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "国家",
-            "pinyin": "guójiā",
-            "pos": "n.",
-            "meaning": {
-              "uz": "davlat, mamlakat",
-              "ru": "страна, государство",
-              "tj": "давлат, кишвар"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "种",
-            "pinyin": "zhǒng",
-            "pos": "m.",
-            "meaning": {
-              "uz": "tur, xil",
-              "ru": "вид, тип",
-              "tj": "навъ, гуна"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "特点",
-            "pinyin": "tèdiǎn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "xususiyat",
-              "ru": "особенность",
-              "tj": "хусусият"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "奇怪",
-            "pinyin": "qíguài",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "g'alati",
-              "ru": "странный",
-              "tj": "аҷиб, ғалатӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "地",
-            "pinyin": "de",
-            "pos": "part.",
-            "meaning": {
-              "uz": "ravish yasovchi yuklama",
-              "ru": "частица между обстоятельством и глаголом",
-              "tj": "ҳиссача байни ҳол ва феъл"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "向",
+              {
+                "uz": "tomon, ga",
+                "ru": "к, по направлению к",
+                "tj": "ба сӯи, ба"
+              }
+            ],
+            [
+              "万",
+              {
+                "uz": "o'n ming",
+                "ru": "десять тысяч",
+                "tj": "даҳ ҳазор"
+              }
+            ],
+            [
+              "只",
+              {
+                "uz": "ayrim hayvonlar uchun hisob so'zi",
+                "ru": "счетное слово для некоторых животных",
+                "tj": "ҳисобвожа барои баъзе ҳайвонҳо"
+              }
+            ],
+            [
+              "嘴",
+              {
+                "uz": "og'iz",
+                "ru": "рот",
+                "tj": "даҳон"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -779,6 +882,80 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Faqat……bo'lsa/qilsa……",
+              "ru": "Только если……то……",
+              "tj": "Танҳо агар……пас……"
+            },
+            "title_zh": "只要……就……",
+            "rule": {
+              "uz": "'只要…就…' tuzilmasi shartni ifodalaydi, lekin '如果' dan farqli ravishda '只要' = 'faqat shu shart bajarilsa bo'ladi, boshqa narsa kerak emas' ma'nosini bildiradi. Yengilroq va optimistik shart.",
+              "ru": "Конструкция '只要…就…' выражает условие, но в отличие от '如果', '只要' = 'достаточно выполнить только это условие, ничего другого не нужно'. Более лёгкое и оптимистичное условие.",
+              "tj": "Сохтори '只要…就…' шартро ифода мекунад, аммо баръакси '如果', '只要' = 'танҳо ин шарт иҷро шавад, дигар ҳеҷ чиз лозим нест' маъно медиҳад. Шарти осонтар ва хушбинонатар."
+            },
+            "examples": [
+              {
+                "zh": "只要你努力，就能成功！",
+                "pinyin": "Zhǐyào nǐ nǔlì, jiù néng chénggōng!",
+                "translation": {
+                  "uz": "Faqat harakat qilsangiz, muvaffaqiyat qozonasiz!",
+                  "ru": "Только старайся, и добьёшься успеха!",
+                  "tj": "Танҳо кӯшиш кунед, муваффақ мешавед!"
+                }
+              },
+              {
+                "zh": "只要大家参加，活动就会成功！",
+                "pinyin": "Zhǐyào dàjiā cānjiā, huódòng jiù huì chénggōng!",
+                "translation": {
+                  "uz": "Faqat hamma qatnashsa, tadbir muvaffaqiyatli bo'ladi!",
+                  "ru": "Только бы все участвовали, мероприятие будет успешным!",
+                  "tj": "Танҳо ҳама иштирок кунанд, тадбир муваффақ мешавад!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "'关于' predlogi (关于 + ot + ...)",
+              "ru": "Предлог '关于' (关于 + сущ. + ...)",
+              "tj": "Пешоянди '关于' (关于 + исм + ...)"
+            },
+            "title_zh": "介词\"关于\"（关于 + N + ……）",
+            "rule": {
+              "uz": "'关于' = haqida, to'g'risida. Tuzilma: 关于 + mavzu + gapning qolgan qismi. Gap boshida yoki sub'ektdan keyin kelishi mumkin. Ingilizcha 'about / regarding' ga o'xshaydi.",
+              "ru": "'关于' = о, насчёт, относительно. Структура: 关于 + тема + остаток предложения. Может стоять в начале предложения или после подлежащего. Похоже на английское 'about / regarding'.",
+              "tj": "'关于' = дар бораи, оид ба. Сохтор: 关于 + мавзӯ + қисми боқии ҷумла. Дар аввали ҷумла ё баъди мубтадо омада метавонад. Ба 'about / regarding'-и инглисӣ монанд аст."
+            },
+            "examples": [
+              {
+                "zh": "关于这次活动，你有什么想法？",
+                "pinyin": "Guānyú zhè cì huódòng, nǐ yǒu shénme xiǎngfǎ?",
+                "translation": {
+                  "uz": "Bu tadbir haqida qanday fikrlaringiz bor?",
+                  "ru": "Насчёт этого мероприятия, какие у тебя мысли?",
+                  "tj": "Дар бораи ин тадбир, чӣ фикр доред?"
+                }
+              },
+              {
+                "zh": "我写了一篇关于健康的文章。",
+                "pinyin": "Wǒ xiě le yī piān guānyú jiànkāng de wénzhāng.",
+                "translation": {
+                  "uz": "Men sog'liq haqida bir maqola yozdim.",
+                  "ru": "Я написал статью о здоровье.",
+                  "tj": "Ман мақолае дар бораи саломатӣ навиштам."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "____这次活动，你有什么想法？",
           "prompt": {
@@ -789,14 +966,76 @@
           "options": [
             "万",
             "只",
-            "关于",
-            "向"
+            "向",
+            "关于"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 关于 (guānyú) — haqida, to'g'risida",
             "ru": "Верно: 关于 (guānyú) — о, относительно",
             "tj": "Дуруст: 关于 (guānyú) — дар бораи"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Nafaqat……balki ham……",
+              "ru": "Не только……но и……",
+              "tj": "На танҳо……балки ҳам……"
+            },
+            "title_zh": "不但……而且……",
+            "rule": {
+              "uz": "'不但…而且…' tuzilmasi ikkita ijobiy holatni kuchaytirib bog'laydi. '不但' = nafaqat, '而且' = balki ham. Birinchi jumladan ikkinchisi yanada kuchli yoki qo'shimcha ma'no qo'shadi.",
+              "ru": "Конструкция '不但…而且…' усиленно соединяет два положительных факта. '不但' = не только, '而且' = но и. Второе предложение добавляет ещё более сильный или дополнительный смысл.",
+              "tj": "Сохтори '不但…而且…' ду ҳолати мусбатро бо таъкид мепайвандад. '不但' = на танҳо, '而且' = балки ҳам. Ҷумлаи дуввум маъноеро ҳам қавитар ё иловагӣ илова мекунад."
+            },
+            "examples": [
+              {
+                "zh": "这门课不但有用，而且很有意思！",
+                "pinyin": "Zhè mén kè búdàn yǒuyòng, érqiě hěn yǒu yìsi!",
+                "translation": {
+                  "uz": "Bu kurs nafaqat foydali, balki juda qiziqarli ham!",
+                  "ru": "Этот курс не только полезный, но и очень интересный!",
+                  "tj": "Ин курс на танҳо муфид, балки хеле ҷолиб ҳам аст!"
+                }
+              },
+              {
+                "zh": "他不但会说汉语，而且还会说日语！",
+                "pinyin": "Tā búdàn huì shuō Hànyǔ, érqiě hái huì shuō Rìyǔ!",
+                "translation": {
+                  "uz": "U nafaqat xitoy tilini, balki yapon tilini ham biladi!",
+                  "ru": "Он умеет говорить не только по-китайски, но и по-японски!",
+                  "tj": "Вай на танҳо чинӣ, балки ба ҷопонӣ ҳам гап мезанад!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U nafaqat xitoy tilini, balki yapon tilini ham biladi!» — xitoychada qaysi biri?",
+            "ru": "«Он умеет говорить не только по-китайски, но и по-японски!» — какое предложение по-китайски?",
+            "tj": "«Вай на танҳо чинӣ, балки ба ҷопонӣ ҳам гап мезанад!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我写了一篇关于健康的文章。",
+            "只要你努力，就能成功！",
+            "他不但会说汉语，而且还会说日语！",
+            "关于这次活动，你有什么想法？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "他不但会说汉语，而且还会说日语！ — Tā búdàn huì shuō Hànyǔ, érqiě hái huì shuō Rìyǔ!",
+            "ru": "他不但会说汉语，而且还会说日语！ — Tā búdàn huì shuō Hànyǔ, érqiě hái huì shuō Rìyǔ!",
+            "tj": "他不但会说汉语，而且还会说日语！ — Tā búdàn huì shuō Hànyǔ, érqiě hái huì shuō Rìyǔ!"
           }
         }
       ]
@@ -811,85 +1050,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "万 talaffuzini tanlang:",
-            "ru": "Выберите произношение 万:",
-            "tj": "Талаффузи 万-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "wàn",
-            "xiàng",
-            "zuǐ",
-            "zhī"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "万 — wàn",
-            "ru": "万 — wàn",
-            "tj": "万 — wàn"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ayrim hayvonlar uchun hisob so'zi' xitoycha qaysi?",
-            "ru": "'счетное слово для некоторых животных' по-китайски?",
-            "tj": "'ҳисобвожа барои баъзе ҳайвонҳо' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "嘴",
-            "万",
-            "向",
-            "只"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "ayrim hayvonlar uchun hisob so'zi = 只 (zhī)",
-            "ru": "счетное слово для некоторых животных = 只 (zhī)",
-            "tj": "ҳисобвожа барои баъзе ҳайвонҳо = 只 (zhī)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Yana 50 ming yuan yetmayapti.",
-            "ru": "Не хватает еще 50 тысяч юаней.",
-            "tj": "Боз 50 ҳазор юан камӣ дорад."
-          },
-          "tokens": [
-            "钱",
-            "还",
-            "差",
-            "块",
-            "只",
-            "万",
-            "向"
-          ],
-          "answer_tokens": [
-            "还",
-            "差",
-            "万",
-            "块",
-            "钱"
-          ],
-          "explanation": {
-            "uz": "还差5万块钱。 — Hái chà wǔ wàn kuài qián.",
-            "ru": "还差5万块钱。 — Hái chà wǔ wàn kuài qián.",
-            "tj": "还差5万块钱。 — Hái chà wǔ wàn kuài qián."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -899,16 +1059,41 @@
           "audio_text": "老周，我打算买房子了，想向你借点儿钱。",
           "pinyin": "Lǎo Zhōu, wǒ dǎsuàn mǎi fángzi le, xiǎng xiàng nǐ jiè diǎnr qián.",
           "options": [
-            "老周，我打算买房子了，想向你借点儿钱。",
-            "没问题，只要我有，就一定会借给你的。还差多少？",
             "还差5万块钱。",
-            "好，钱下午打给你。你打算在哪儿买房？"
+            "好，钱下午打给你。你打算在哪儿买房？",
+            "没问题，只要我有，就一定会借给你的。还差多少？",
+            "老周，我打算买房子了，想向你借点儿钱。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "老周，我打算买房子了，想向你借点儿钱。 — Lao Zhou, uy sotib olmoqchiman, sendan ozgina pul qarz olmoqchiman.",
             "ru": "老周，我打算买房子了，想向你借点儿钱。 — Лао Чжоу, я собираюсь купить дом и хочу занять у тебя немного денег.",
             "tj": "老周，我打算买房子了，想向你借点儿钱。 — Лао Чжоу, хона хариданӣ ҳастам, мехоҳам аз ту каме пул қарз гирам."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'davlat, mamlakat' xitoycha qaysi?",
+            "ru": "'страна, государство' по-китайски?",
+            "tj": "'давлат, кишвар' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "万",
+            "向",
+            "只",
+            "国家"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "davlat, mamlakat = 国家 (guójiā)",
+            "ru": "страна, государство = 国家 (guójiā)",
+            "tj": "давлат, кишвар = 国家 (guójiā)"
           }
         },
         {
@@ -954,6 +1139,60 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yana 50 ming yuan yetmayapti.",
+            "ru": "Не хватает еще 50 тысяч юаней.",
+            "tj": "Боз 50 ҳазор юан камӣ дорад."
+          },
+          "tokens": [
+            "还",
+            "差",
+            "只",
+            "钱",
+            "万",
+            "块",
+            "向"
+          ],
+          "answer_tokens": [
+            "还",
+            "差",
+            "万",
+            "块",
+            "钱"
+          ],
+          "explanation": {
+            "uz": "还差5万块钱。 — Hái chà wǔ wàn kuài qián.",
+            "ru": "还差5万块钱。 — Hái chà wǔ wàn kuài qián.",
+            "tj": "还差5万块钱。 — Hái chà wǔ wàn kuài qián."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "机会 talaffuzini tanlang:",
+            "ru": "Выберите произношение 机会:",
+            "tj": "Талаффузи 机会-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "jīhuì",
+            "wàn",
+            "xiàng",
+            "zhī"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "机会 — jīhuì",
+            "ru": "机会 — jīhuì",
+            "tj": "机会 — jīhuì"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "向",
           "pinyin": "xiàng",
@@ -985,36 +1224,15 @@
           "pinyin": "Lǎo Zhōu, wǒ dǎsuàn mǎi fángzi le, xiǎng xiàng nǐ jiè diǎnr qián.",
           "options": [
             "老周，我打算买房子了，想向你借点儿钱。",
-            "好，钱下午打给你。你打算在哪儿买房？",
+            "没问题，只要我有，就一定会借给你的。还差多少？",
             "还差5万块钱。",
-            "没问题，只要我有，就一定会借给你的。还差多少？"
+            "好，钱下午打给你。你打算在哪儿买房？"
           ],
           "correct_index": 0,
           "explanation": {
             "uz": "老周，我打算买房子了，想向你借点儿钱。 — Lao Zhou, uy sotib olmoqchiman, sendan ozgina pul qarz olmoqchiman.",
             "ru": "老周，我打算买房子了，想向你借点儿钱。 — Лао Чжоу, я собираюсь купить дом и хочу занять у тебя немного денег.",
             "tj": "老周，我打算买房子了，想向你借点儿钱。 — Лао Чжоу, хона хариданӣ ҳастам, мехоҳам аз ту каме пул қарз гирам."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____周，我打算买房子了，想向你借点儿钱。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "老",
-            "新",
-            "坏",
-            "斤"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 老 — 老周，我打算买房子了，想向你借点儿钱。 (Lao Zhou, uy sotib olmoqchiman, sendan ozgina pul qarz olmoqchiman.)",
-            "ru": "Верно: 老 — 老周，我打算买房子了，想向你借点儿钱。 (Лао Чжоу, я собираюсь купить дом и хочу занять у тебя немного денег.)",
-            "tj": "Дуруст: 老 — 老周，我打算买房子了，想向你借点儿钱。 (Лао Чжоу, хона хариданӣ ҳастам, мехоҳам аз ту каме пул қарз гирам.)"
           }
         },
         {
@@ -1057,12 +1275,58 @@
             }
           ],
           "options": [
-            "那你以后去医院就方便了。",
-            "没问题，只要我有，就一定会借给你的。还差多少？",
+            "老周，我打算买房子了，想向你借点儿钱。",
             "还差5万块钱。",
-            "老周，我打算买房子了，想向你借点儿钱。"
+            "没问题，只要我有，就一定会借给你的。还差多少？",
+            "那你以后去医院就方便了。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 那你以后去医院就方便了。",
+            "ru": "Правильный ответ: 那你以后去医院就方便了。",
+            "tj": "Ҷавоби дуруст: 那你以后去医院就方便了。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____周，我打算买房子了，想向你借点儿钱。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "电",
+            "下",
+            "旧",
+            "老"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 老 — 老周，我打算买房子了，想向你借点儿钱。 (Lao Zhou, uy sotib olmoqchiman, sendan ozgina pul qarz olmoqchiman.)",
+            "ru": "Верно: 老 — 老周，我打算买房子了，想向你借点儿钱。 (Лао Чжоу, я собираюсь купить дом и хочу занять у тебя немного денег.)",
+            "tj": "Дуруст: 老 — 老周，我打算买房子了，想向你借点儿钱。 (Лао Чжоу, хона хариданӣ ҳастам, мехоҳам аз ту каме пул қарз гирам.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 周明 nima deydi?",
+            "ru": "Что 周明 говорит в конце диалога?",
+            "tj": "Дар охири муколама 周明 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "老周，我打算买房子了，想向你借点儿钱。",
+            "还差5万块钱。",
+            "没问题，只要我有，就一定会借给你的。还差多少？",
+            "那你以后去医院就方便了。"
+          ],
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 那你以后去医院就方便了。",
             "ru": "Правильный ответ: 那你以后去医院就方便了。",
@@ -1082,41 +1346,16 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
+            "没问题，只要我有，就一定会借给你的。还差多少？",
             "还差5万块钱。",
             "好，钱下午打给你。你打算在哪儿买房？",
-            "老周，我打算买房子了，想向你借点儿钱。",
-            "没问题，只要我有，就一定会借给你的。还差多少？"
+            "老周，我打算买房子了，想向你借点儿钱。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 老周，我打算买房子了，想向你借点儿钱。",
             "ru": "Правильный ответ: 老周，我打算买房子了，想向你借点儿钱。",
             "tj": "Ҷавоби дуруст: 老周，我打算买房子了，想向你借点儿钱。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 周明 nima deydi?",
-            "ru": "Что 周明 говорит в конце диалога?",
-            "tj": "Дар охири муколама 周明 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "老周，我打算买房子了，想向你借点儿钱。",
-            "还差5万块钱。",
-            "那你以后去医院就方便了。",
-            "没问题，只要我有，就一定会借给你的。还差多少？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 那你以后去医院就方便了。",
-            "ru": "Правильный ответ: 那你以后去医院就方便了。",
-            "tj": "Ҷавоби дуруст: 那你以后去医院就方便了。"
           }
         }
       ]

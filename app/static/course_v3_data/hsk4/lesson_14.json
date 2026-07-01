@@ -8,6 +8,8 @@
     "ru": "говорить о защите окружающей среды, экономии и экологичных привычках; использовать 够, 以, 既然, 于是/因此 и 只有...才",
     "tj": "дар бораи ҳифзи муҳити зист, сарфа ва одатҳои экологӣ гуфтугӯ кардан; истифодаи 够, 以, 既然, 于是/因此 ва 只有...才"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -835,6 +837,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "máojīn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается máojīn?",
+            "tj": "máojīn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "重",
+            "毛巾",
+            "出差",
+            "牙膏"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "毛巾 = sochiq (máojīn)",
+            "ru": "毛巾 = полотенце (máojīn)",
+            "tj": "毛巾 = дастмол (máojīn)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -860,6 +887,31 @@
               "ru": "тяжёлый",
               "tj": "вазнин"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "毛巾 talaffuzini tanlang:",
+            "ru": "Выберите произношение 毛巾:",
+            "tj": "Талаффузи 毛巾-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yágāo",
+            "chūchāi",
+            "zhòng",
+            "máojīn"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "毛巾 — máojīn",
+            "ru": "毛巾 — máojīn",
+            "tj": "毛巾 — máojīn"
           }
         },
         {
@@ -891,6 +943,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "毛巾 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 毛巾:",
+            "tj": "Маънои калимаи 毛巾-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xizmat safariga bormoq",
+              "ru": "ехать в командировку",
+              "tj": "ба сафари хизматӣ рафтан"
+            },
+            {
+              "uz": "tish pastasi",
+              "ru": "зубная паста",
+              "tj": "хамираи дандон"
+            },
+            {
+              "uz": "sochiq",
+              "ru": "полотенце",
+              "tj": "дастмол"
+            },
+            {
+              "uz": "og'ir",
+              "ru": "тяжёлый",
+              "tj": "вазнин"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "毛巾 = sochiq (máojīn)",
+            "ru": "毛巾 = полотенце (máojīn)",
+            "tj": "毛巾 = дастмол (máojīn)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -916,6 +1009,31 @@
               "ru": "туалет, уборная",
               "tj": "ҳоҷатхона"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wèishēngjiān qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wèishēngjiān?",
+            "tj": "wèishēngjiān кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "出差",
+            "卫生间",
+            "牙膏",
+            "毛巾"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "卫生间 = hojatxona (wèishēngjiān)",
+            "ru": "卫生间 = туалет, уборная (wèishēngjiān)",
+            "tj": "卫生间 = ҳоҷатхона (wèishēngjiān)"
           }
         },
         {
@@ -947,311 +1065,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "空",
-            "pinyin": "kōng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "bo'sh",
-              "ru": "пустой",
-              "tj": "холӣ"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "出差 talaffuzini tanlang:",
+            "ru": "Выберите произношение 出差:",
+            "tj": "Талаффузи 出差-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yágāo",
+            "zhòng",
+            "máojīn",
+            "chūchāi"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "出差 — chūchāi",
+            "ru": "出差 — chūchāi",
+            "tj": "出差 — chūchāi"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "盒子",
-            "pinyin": "hézi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "quti",
-              "ru": "коробка",
-              "tj": "қуттӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "扔",
-            "pinyin": "rēng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tashlamoq, uloqtirmoq",
-              "ru": "выбрасывать, бросать",
-              "tj": "партофтан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "以",
-            "pinyin": "yǐ",
-            "pos": "prep.",
-            "meaning": {
-              "uz": "orqali, vositasida",
-              "ru": "через, посредством",
-              "tj": "бо воситаи"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "速度",
-            "pinyin": "sùdù",
-            "pos": "n.",
-            "meaning": {
-              "uz": "tezlik",
-              "ru": "скорость",
-              "tj": "суръат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "地球",
-            "pinyin": "dìqiú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "Yer sayyorasi",
-              "ru": "Земля, земной шар",
-              "tj": "Замин"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "既然",
-            "pinyin": "jìrán",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "modomiki, shunday ekan",
-              "ru": "раз уж, поскольку",
-              "tj": "азбаски, модом ки"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "停",
-            "pinyin": "tíng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "to'xtamoq, to'xtatmoq",
-              "ru": "останавливаться",
-              "tj": "истодан, қатъ кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "得意",
-            "pinyin": "déyì",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "o'zidan mamnun",
-              "ru": "довольный собой",
-              "tj": "худписандона хурсанд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "目的",
-            "pinyin": "mùdì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "maqsad",
-              "ru": "цель",
-              "tj": "мақсад"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "暖",
-            "pinyin": "nuǎn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "iliq",
-              "ru": "тёплый",
-              "tj": "гарм"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "塑料袋",
-            "pinyin": "sùliàodài",
-            "pos": "n.",
-            "meaning": {
-              "uz": "plastik paket",
-              "ru": "пластиковый пакет",
-              "tj": "халтаи пластикӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "于是",
-            "pinyin": "yúshì",
-            "pos": "conj.",
-            "meaning": {
-              "uz": "shuning uchun, natijada",
-              "ru": "поэтому, вследствие этого",
-              "tj": "бинобар ин, пас"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "鼓励",
-            "pinyin": "gǔlì",
-            "pos": "v.",
-            "meaning": {
-              "uz": "rag'batlantirmoq",
-              "ru": "поощрять",
-              "tj": "ҳавасманд кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "拒绝",
-            "pinyin": "jùjué",
-            "pos": "v.",
-            "meaning": {
-              "uz": "rad etmoq",
-              "ru": "отказывать",
-              "tj": "рад кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "减少",
-            "pinyin": "jiǎnshǎo",
-            "pos": "v.",
-            "meaning": {
-              "uz": "kamaytirmoq",
-              "ru": "сокращать",
-              "tj": "кам кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "数量",
-            "pinyin": "shùliàng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "miqdor",
-              "ru": "количество",
-              "tj": "миқдор"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "温度",
-            "pinyin": "wēndù",
-            "pos": "n.",
-            "meaning": {
-              "uz": "harorat",
-              "ru": "температура",
-              "tj": "ҳарорат"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "乘坐",
-            "pinyin": "chéngzuò",
-            "pos": "v.",
-            "meaning": {
-              "uz": "transportga minmoq",
-              "ru": "ехать на транспорте",
-              "tj": "савор шудан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "丢",
-            "pinyin": "diū",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tashlamoq, yo'qotmoq",
-              "ru": "бросать, терять",
-              "tj": "партофтан, гум кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 31,
-            "zh": "垃圾桶",
-            "pinyin": "lājītǒng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "axlat qutisi",
-              "ru": "мусорное ведро",
-              "tj": "қуттии партов"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 32,
-            "zh": "美丽",
-            "pinyin": "měilì",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "go'zal",
-              "ru": "красивый",
-              "tj": "зебо"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "出差",
+              {
+                "uz": "xizmat safariga bormoq",
+                "ru": "ехать в командировку",
+                "tj": "ба сафари хизматӣ рафтан"
+              }
+            ],
+            [
+              "毛巾",
+              {
+                "uz": "sochiq",
+                "ru": "полотенце",
+                "tj": "дастмол"
+              }
+            ],
+            [
+              "牙膏",
+              {
+                "uz": "tish pastasi",
+                "ru": "зубная паста",
+                "tj": "хамираи дандон"
+              }
+            ],
+            [
+              "重",
+              {
+                "uz": "og'ir",
+                "ru": "тяжёлый",
+                "tj": "вазнин"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1266,6 +1143,62 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "yetarli darajada",
+              "ru": "достаточно",
+              "tj": "ба қадри кофӣ"
+            },
+            "title_zh": "够",
+            "rule": {
+              "uz": "Sifat yoki fe'l oldida daraja yetganini bildiradi.",
+              "ru": "Показывает, что степень уже достигнута.",
+              "tj": "Нишон медиҳад, ки дараҷа ба ҳадди кофӣ расидааст."
+            },
+            "examples": [
+              {
+                "zh": "箱子已经够重的了！",
+                "pinyin": "Xiāngzi yǐjīng gòu zhòng de le!",
+                "translation": {
+                  "uz": "Chamadon allaqachon yetarlicha og'ir bo'libdi!",
+                  "ru": "Чемодан уже достаточно тяжёлый!",
+                  "tj": "Ҷомадон аллакай кофӣ вазнин шудааст!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "orqali, vositasida",
+              "ru": "посредством, с помощью",
+              "tj": "бо воситаи"
+            },
+            "title_zh": "以",
+            "rule": {
+              "uz": "Usul, vosita yoki standartni oldinga chiqaradi.",
+              "ru": "Выносит вперёд способ, средство или стандарт.",
+              "tj": "Усул, восита ё меъёрро пеш меорад."
+            },
+            "examples": [
+              {
+                "zh": "我一定以最快的速度完成。",
+                "pinyin": "Wǒ yídìng yǐ zuì kuài de sùdù wánchéng.",
+                "translation": {
+                  "uz": "Men albatta eng tez sur'atda tugataman.",
+                  "ru": "Я обязательно выполню с максимальной скоростью.",
+                  "tj": "Ман ҳатман бо суръати баландтарин анҷом медиҳам."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Men albatta eng tez sur'atda tugataman.",
@@ -1273,16 +1206,16 @@
             "tj": "Ман ҳатман бо суръати баландтарин анҷом медиҳам."
           },
           "tokens": [
-            "出差",
-            "以",
-            "的",
-            "速度",
             "一定",
-            "最",
+            "出差",
             "快",
-            "我",
+            "完成",
+            "速度",
             "毛巾",
-            "完成"
+            "以",
+            "最",
+            "的",
+            "我"
           ],
           "answer_tokens": [
             "我",
@@ -1301,6 +1234,132 @@
           }
         },
         {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "modomiki..., unda...",
+              "ru": "раз уж..., то...",
+              "tj": "модом ки..., пас..."
+            },
+            "title_zh": "既然……那么/就……",
+            "rule": {
+              "uz": "Birinchi gapda mavjud fakt aytiladi, keyingisida tabiiy xulosa beriladi.",
+              "ru": "В первой части дан факт, во второй - логичный вывод.",
+              "tj": "Дар қисми аввал факт, дар қисми дуюм хулосаи табиӣ меояд."
+            },
+            "examples": [
+              {
+                "zh": "既然明天晚上公司会关灯停电，那么我们肯定不用加班了。",
+                "pinyin": "Jìrán míngtiān wǎnshang gōngsī huì guān dēng tíng diàn, nàme wǒmen kěndìng búyòng jiābān le.",
+                "translation": {
+                  "uz": "Modomiki ertaga kechqurun kompaniyada chiroq o'chsa, unda biz albatta qo'shimcha ishlamaymiz.",
+                  "ru": "Раз завтра вечером в компании выключат свет, значит нам точно не нужно работать сверхурочно.",
+                  "tj": "Модом ки пагоҳ шаб дар ширкат чароғ хомӯш мешавад, пас мо бешак изофакорӣ намекунем."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____明天晚上公司会关灯停电，那么我们肯定不用加班了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "既然",
+            "牙膏",
+            "出差",
+            "毛巾"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 既然 (jìrán) — modomiki, shunday ekan",
+            "ru": "Верно: 既然 (jìrán) — раз уж, поскольку",
+            "tj": "Дуруст: 既然 (jìrán) — азбаски, модом ки"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "shuning uchun, natijada",
+              "ru": "поэтому, вследствие этого",
+              "tj": "бинобар ин, дар натиҷа"
+            },
+            "title_zh": "于是/因此",
+            "rule": {
+              "uz": "Oldingi sabab yoki vaziyatdan keyingi natijani bog'laydi.",
+              "ru": "Связывает предыдущую причину или ситуацию с результатом.",
+              "tj": "Сабаб ё вазъияти пешинаро бо натиҷа мепайвандад."
+            },
+            "examples": [
+              {
+                "zh": "于是，一些国家规定，超市、商场不能为顾客提供免费塑料袋。",
+                "pinyin": "Yúshì, yìxiē guójiā guīdìng, chāoshì, shāngchǎng bù néng wèi gùkè tígōng miǎnfèi sùliàodài.",
+                "translation": {
+                  "uz": "Shuning uchun ayrim davlatlar supermarket va savdo markazlariga bepul plastik paket berishni taqiqladi.",
+                  "ru": "Поэтому некоторые страны постановили, что супермаркеты и торговые центры не могут бесплатно выдавать пластиковые пакеты.",
+                  "tj": "Бинобар ин баъзе давлатҳо муқаррар карданд, ки супермаркетҳо ва марказҳои савдо халтаи пластикии ройгон дода наметавонанд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "于是，一些国家规定，超市、商场不能为顾客提供免费____。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "塑料袋",
+            "牙膏",
+            "出差",
+            "毛巾"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 塑料袋 (sùliàodài) — plastik paket",
+            "ru": "Верно: 塑料袋 (sùliàodài) — пластиковый пакет",
+            "tj": "Дуруст: 塑料袋 (sùliàodài) — халтаи пластикӣ"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "faqat...gina...",
+              "ru": "только если..., тогда...",
+              "tj": "танҳо агар..., он гоҳ..."
+            },
+            "title_zh": "只有……才……",
+            "rule": {
+              "uz": "Zarur shartni bildiradi: shart bajarilsa, natija bo'ladi.",
+              "ru": "Выражает необходимое условие: результат возможен только при нём.",
+              "tj": "Шарти заруриро нишон медиҳад: натиҷа танҳо бо иҷрои он мешавад."
+            },
+            "examples": [
+              {
+                "zh": "只有大家共同努力，减少污染，保护环境，才能使我们的家变得更美丽。",
+                "pinyin": "Zhǐyǒu dàjiā gòngtóng nǔlì, jiǎnshǎo wūrǎn, bǎohù huánjìng, cái néng shǐ wǒmen de jiā biàn de gèng měilì.",
+                "translation": {
+                  "uz": "Faqat hamma birga harakat qilib, ifloslanishni kamaytirsa va muhitni himoya qilsagina uyimiz yanada go'zal bo'ladi.",
+                  "ru": "Только если все вместе будут стараться, уменьшать загрязнение и защищать среду, наш дом станет красивее.",
+                  "tj": "Танҳо агар ҳама якҷо кӯшиш карда, ифлосиро кам ва муҳитро ҳифз кунанд, хонаи мо зеботар мешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "只有大家共同努力，减少____，保护环境，才能使我们的家变得更美丽。",
           "prompt": {
@@ -1309,16 +1368,41 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "毛巾",
-            "污染",
             "出差",
-            "牙膏"
+            "污染",
+            "牙膏",
+            "毛巾"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 污染 (wūrǎn) — ifloslantirmoq",
             "ru": "Верно: 污染 (wūrǎn) — загрязнять",
             "tj": "Дуруст: 污染 (wūrǎn) — ифлос кардан"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Chamadon allaqachon yetarlicha og'ir bo'libdi!» — xitoychada qaysi biri?",
+            "ru": "«Чемодан уже достаточно тяжёлый!» — какое предложение по-китайски?",
+            "tj": "«Ҷомадон аллакай кофӣ вазнин шудааст!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我一定以最快的速度完成。",
+            "只有大家共同努力，减少污染，保护环境，才能使我们的家变得更美丽。",
+            "既然明天晚上公司会关灯停电，那么我们肯定不用加班了。",
+            "箱子已经够重的了！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "箱子已经够重的了！ — Xiāngzi yǐjīng gòu zhòng de le!",
+            "ru": "箱子已经够重的了！ — Xiāngzi yǐjīng gòu zhòng de le!",
+            "tj": "箱子已经够重的了！ — Xiāngzi yǐjīng gòu zhòng de le!"
           }
         }
       ]
@@ -1335,9 +1419,9 @@
         {
           "type": "pinyin_choice",
           "prompt": {
-            "uz": "毛巾 talaffuzini tanlang:",
-            "ru": "Выберите произношение 毛巾:",
-            "tj": "Талаффузи 毛巾-ро интихоб кунед:"
+            "uz": "盒子 talaffuzini tanlang:",
+            "ru": "Выберите произношение 盒子:",
+            "tj": "Талаффузи 盒子-ро интихоб кунед:"
           },
           "title": {
             "uz": "Qanday o'qiladi?",
@@ -1345,41 +1429,38 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zhòng",
-            "máojīn",
+            "chūchāi",
             "yágāo",
-            "chūchāi"
+            "máojīn",
+            "hézi"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "毛巾 — máojīn",
-            "ru": "毛巾 — máojīn",
-            "tj": "毛巾 — máojīn"
+            "uz": "盒子 — hézi",
+            "ru": "盒子 — hézi",
+            "tj": "盒子 — hézi"
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'tish pastasi' xitoycha qaysi?",
-            "ru": "'зубная паста' по-китайски?",
-            "tj": "'хамираи дандон' ба хитоӣ кадом аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
+          "pinyin": "Zhè shì míngtiān nǐ chūchāi yào dài de máojīn, yágāo hé yáshuā, bǎ tāmen fàngdào xiāngzi li ba.",
           "options": [
-            "出差",
-            "毛巾",
-            "牙膏",
-            "重"
+            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
+            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
+            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
+            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "tish pastasi = 牙膏 (yágāo)",
-            "ru": "зубная паста = 牙膏 (yágāo)",
-            "tj": "хамираи дандон = 牙膏 (yágāo)"
+            "uz": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.",
+            "ru": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.",
+            "tj": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор."
           }
         },
         {
@@ -1390,13 +1471,13 @@
             "tj": "Хуб, пас ба гапи ту мекунам."
           },
           "tokens": [
-            "听",
-            "你",
-            "好",
             "那",
+            "听",
+            "好",
             "毛巾",
-            "的",
             "就",
+            "你",
+            "的",
             "出差"
           ],
           "answer_tokens": [
@@ -1411,28 +1492,6 @@
             "uz": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de.",
             "ru": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de.",
             "tj": "好，那就听你的。 — Hǎo, nà jiù tīng nǐ de."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-          "pinyin": "Zhè shì míngtiān nǐ chūchāi yào dài de máojīn, yágāo hé yáshuā, bǎ tāmen fàngdào xiāngzi li ba.",
-          "options": [
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.",
-            "ru": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.",
-            "tj": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор."
           }
         },
         {
@@ -1478,6 +1537,31 @@
           }
         },
         {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'tashlamoq, uloqtirmoq' xitoycha qaysi?",
+            "ru": "'выбрасывать, бросать' по-китайски?",
+            "tj": "'партофтан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "毛巾",
+            "牙膏",
+            "出差",
+            "扔"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "tashlamoq, uloqtirmoq = 扔 (rēng)",
+            "ru": "выбрасывать, бросать = 扔 (rēng)",
+            "tj": "партофтан = 扔 (rēng)"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "出差",
           "pinyin": "chūchāi",
@@ -1508,37 +1592,16 @@
           "audio_text": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
           "pinyin": "Zhè shì míngtiān nǐ chūchāi yào dài de máojīn, yágāo hé yáshuā, bǎ tāmen fàngdào xiāngzi li ba.",
           "options": [
-            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
             "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
+            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
             "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。"
+            "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？"
           ],
           "correct_index": 2,
           "explanation": {
             "uz": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.",
             "ru": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.",
             "tj": "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 — Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "斤",
-            "这",
-            "挺",
-            "新"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.)",
-            "ru": "Верно: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.)",
-            "tj": "Дуруст: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор.)"
           }
         },
         {
@@ -1581,9 +1644,34 @@
             }
           ],
           "options": [
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
             "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
             "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
+            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
+            "好，那就听你的。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 好，那就听你的。",
+            "ru": "Правильный ответ: 好，那就听你的。",
+            "tj": "Ҷавоби дуруст: 好，那就听你的。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 李进 nima deydi?",
+            "ru": "Что 李进 говорит в конце диалога?",
+            "tj": "Дар охири муколама 李进 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
+            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
+            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
             "好，那就听你的。"
           ],
           "correct_index": 3,
@@ -1606,12 +1694,12 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
             "行，没问题。我明天上午10点的飞机，你能开车把我送到机场吗？",
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！"
+            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。",
+            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
+            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
             "ru": "Правильный ответ: 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
@@ -1619,28 +1707,24 @@
           }
         },
         {
-          "type": "quick_quiz",
+          "type": "gap_fill",
+          "sentence": "____是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
           "prompt": {
-            "uz": "Dialog oxirida 李进 nima deydi?",
-            "ru": "Что 李进 говорит в конце диалога?",
-            "tj": "Дар охири муколама 李进 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "好，那就听你的。",
-            "这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。",
-            "不用拿这些，宾馆都会免费提供的。再说，箱子已经够重的了！",
-            "我当然知道宾馆里有。你不是一直说要保护环境吗？现在就从身边的小事做起吧。"
+            "下",
+            "电",
+            "旧",
+            "这"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "To'g'ri javob: 好，那就听你的。",
-            "ru": "Правильный ответ: 好，那就听你的。",
-            "tj": "Ҷавоби дуруст: 好，那就听你的。"
+            "uz": "To'g'ri: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Bular ertaga xizmat safariga olib ketadigan sochiq, tish pastasi va tish cho'tkang, chamadonga solib qo'y.)",
+            "ru": "Верно: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Это полотенце, паста и щётка, которые ты завтра берёшь в командировку. Положи их в чемодан.)",
+            "tj": "Дуруст: 这 — 这是明天你出差要带的毛巾、牙膏和牙刷，把它们放到箱子里吧。 (Инҳо дастмол, хамираи дандон ва чуткаи дандонанд, ки пагоҳ ба сафар мебарӣ. Ба ҷомадон гузор.)"
           }
         }
       ]

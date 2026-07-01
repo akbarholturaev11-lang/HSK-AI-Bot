@@ -8,6 +8,8 @@
     "ru": "говорить о пекинской опере, традиционной культуре, палочках и чае; использовать 大概, 偶尔, 由, 进行 и 随着",
     "tj": "дар бораи операи Пекин, фарҳанги суннатӣ, чӯбчаҳои хӯрок ва чой гуфтугӯ кардан; истифодаи 大概, 偶尔, 由, 进行 ва 随着"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -857,6 +859,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "京剧 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 京剧:",
+            "tj": "Маънои калимаи 京剧-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "chuqur, qalin",
+              "ru": "глубокий, толстый",
+              "tj": "чуқур, ғафс"
+            },
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            },
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            },
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "京剧 = Pekin operasi (jīngjù)",
+            "ru": "京剧 = пекинская опера (jīngjù)",
+            "tj": "京剧 = операи Пекин (jīngjù)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -882,6 +925,31 @@
               "ru": "глубокий, толстый",
               "tj": "чуқур, ғафс"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hòu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hòu?",
+            "tj": "hòu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "京剧",
+            "厚",
+            "演员",
+            "观众"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "厚 = chuqur, qalin (hòu)",
+            "ru": "厚 = глубокий, толстый (hòu)",
+            "tj": "厚 = чуқур, ғафс (hòu)"
           }
         },
         {
@@ -913,6 +981,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "观众 talaffuzini tanlang:",
+            "ru": "Выберите произношение 观众:",
+            "tj": "Талаффузи 观众-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yǎnyuán",
+            "jīngjù",
+            "guānzhòng",
+            "hòu"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "观众 — guānzhòng",
+            "ru": "观众 — guānzhòng",
+            "tj": "观众 — guānzhòng"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -938,6 +1031,47 @@
               "ru": "раз, от начала до конца",
               "tj": "маротиба, аз аввал то охир"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "遍 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 遍:",
+            "tj": "Маънои калимаи 遍-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            },
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            },
+            {
+              "uz": "marta, boshidan oxirigacha",
+              "ru": "раз, от начала до конца",
+              "tj": "маротиба, аз аввал то охир"
+            },
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "遍 = marta, boshidan oxirigacha (biàn)",
+            "ru": "遍 = раз, от начала до конца (biàn)",
+            "tj": "遍 = маротиба, аз аввал то охир (biàn)"
           }
         },
         {
@@ -969,339 +1103,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "基础",
-            "pinyin": "jīchǔ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "asos, poydevor",
-              "ru": "основа, база",
-              "tj": "асос, поя"
-            }
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "dàgài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dàgài?",
+            "tj": "dàgài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "大概",
+            "演员",
+            "京剧",
+            "观众"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "大概 = taxminan (dàgài)",
+            "ru": "大概 = примерно, вероятно (dàgài)",
+            "tj": "大概 = тақрибан, эҳтимол (dàgài)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "表演",
-            "pinyin": "biǎoyǎn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ijro etmoq, ko'rsatmoq",
-              "ru": "исполнять, выступать",
-              "tj": "иҷро кардан, намоиш додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "正常",
-            "pinyin": "zhèngcháng",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "normal, odatiy",
-              "ru": "нормальный",
-              "tj": "муқаррарӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "申请",
-            "pinyin": "shēnqǐng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ariza bermoq",
-              "ru": "подавать заявку",
-              "tj": "ариза додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "有趣",
-            "pinyin": "yǒuqù",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "qiziqarli",
-              "ru": "интересный",
-              "tj": "ҷолиб"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "开心",
-            "pinyin": "kāixīn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "xursand",
-              "ru": "радостный, весёлый",
-              "tj": "хурсанд"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "继续",
-            "pinyin": "jìxù",
-            "pos": "v.",
-            "meaning": {
-              "uz": "davom etmoq",
-              "ru": "продолжать",
-              "tj": "давом додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "由",
-            "pinyin": "yóu",
-            "pos": "prep.",
-            "meaning": {
-              "uz": "tomonidan",
-              "ru": "кем-либо, от",
-              "tj": "аз тарафи"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "讨论",
-            "pinyin": "tǎolùn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "muhokama qilmoq",
-              "ru": "обсуждать",
-              "tj": "муҳокима кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "大约",
-            "pinyin": "dàyuē",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "taxminan",
-              "ru": "примерно",
-              "tj": "тақрибан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "餐厅",
-            "pinyin": "cāntīng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "restoran, oshxona",
-              "ru": "ресторан, столовая",
-              "tj": "ошхона, тарабхона"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "纸袋",
-            "pinyin": "zhǐdài",
-            "pos": "n.",
-            "meaning": {
-              "uz": "qog'oz paket",
-              "ru": "бумажный пакет",
-              "tj": "халтаи коғазӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "袋（子）",
-            "pinyin": "dài(zi)",
-            "pos": "n.",
-            "meaning": {
-              "uz": "paket, xalta",
-              "ru": "пакет, мешок",
-              "tj": "халта"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "互联网",
-            "pinyin": "hùliánwǎng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "internet",
-              "ru": "интернет",
-              "tj": "интернет"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "进行",
-            "pinyin": "jìnxíng",
-            "pos": "v.",
-            "meaning": {
-              "uz": "amalga oshirmoq, olib bormoq",
-              "ru": "проводить, осуществлять",
-              "tj": "гузаронидан, анҷом додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "错误",
-            "pinyin": "cuòwù",
-            "pos": "n.",
-            "meaning": {
-              "uz": "xato",
-              "ru": "ошибка",
-              "tj": "хато"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "随着",
-            "pinyin": "suízhe",
-            "pos": "prep.",
-            "meaning": {
-              "uz": "...bilan birga, ...sari",
-              "ru": "по мере, вместе с",
-              "tj": "бо гузашти, ҳамроҳ бо"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "十分",
-            "pinyin": "shífēn",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "juda, nihoyatda",
-              "ru": "очень, весьма",
-              "tj": "хеле, бисёр"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "普遍",
-            "pinyin": "pǔbiàn",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "keng tarqalgan",
-              "ru": "распространённый",
-              "tj": "маъмул, паҳншуда"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "部分",
-            "pinyin": "bùfen",
-            "pos": "n.",
-            "meaning": {
-              "uz": "qism",
-              "ru": "часть",
-              "tj": "қисм"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 31,
-            "zh": "稍微",
-            "pinyin": "shāowēi",
-            "pos": "adv.",
-            "meaning": {
-              "uz": "biroz",
-              "ru": "немного, слегка",
-              "tj": "каме"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 32,
-            "zh": "苦",
-            "pinyin": "kǔ",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "achchiq",
-              "ru": "горький",
-              "tj": "талх"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 33,
-            "zh": "省",
-            "pinyin": "shěng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "provinsiya",
-              "ru": "провинция",
-              "tj": "вилоят"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 34,
-            "zh": "广东省",
-            "pinyin": "Guǎngdōng Shěng",
-            "pos": "proper n.",
-            "meaning": {
-              "uz": "Guangdong provinsiyasi",
-              "ru": "провинция Гуандун",
-              "tj": "вилояти Гуандун"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "京剧",
+              {
+                "uz": "Pekin operasi",
+                "ru": "пекинская опера",
+                "tj": "операи Пекин"
+              }
+            ],
+            [
+              "演员",
+              {
+                "uz": "aktyor",
+                "ru": "актёр",
+                "tj": "актёр"
+              }
+            ],
+            [
+              "观众",
+              {
+                "uz": "tomoshabin",
+                "ru": "зрители, публика",
+                "tj": "тамошобинон"
+              }
+            ],
+            [
+              "厚",
+              {
+                "uz": "chuqur, qalin",
+                "ru": "глубокий, толстый",
+                "tj": "чуқур, ғафс"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1316,6 +1181,132 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "taxminan; ehtimol",
+              "ru": "примерно; вероятно",
+              "tj": "тақрибан; эҳтимол"
+            },
+            "title_zh": "大概",
+            "rule": {
+              "uz": "Aniq bo'lmagan son yoki ehtimoliy fikrni bildiradi.",
+              "ru": "Указывает приблизительное количество или вероятное мнение.",
+              "tj": "Миқдори тахминӣ ё фикри эҳтимолиро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "到现在大概唱了60多年了。",
+                "pinyin": "Dào xiànzài dàgài chàng le liùshí duō nián le.",
+                "translation": {
+                  "uz": "Hozirgacha taxminan oltmish yildan ko'proq kuylagan.",
+                  "ru": "К настоящему времени он поёт уже примерно больше шестидесяти лет.",
+                  "tj": "То имрӯз тақрибан зиёда аз шаст сол сурудааст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "到现在____唱了60多年了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "京剧",
+            "大概",
+            "观众",
+            "演员"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 大概 (dàgài) — taxminan",
+            "ru": "Верно: 大概 (dàgài) — примерно, вероятно",
+            "tj": "Дуруст: 大概 (dàgài) — тақрибан, эҳтимол"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "ba'zan, gohida",
+              "ru": "иногда, изредка",
+              "tj": "гоҳ-гоҳ"
+            },
+            "title_zh": "偶尔",
+            "rule": {
+              "uz": "Harakat doimiy emas, faqat ayrim payt bo'lishini bildiradi.",
+              "ru": "Показывает, что действие происходит не постоянно, а иногда.",
+              "tj": "Нишон медиҳад, ки амал доимӣ нест, гоҳ-гоҳ мешавад."
+            },
+            "examples": [
+              {
+                "zh": "偶尔跟中国人一起唱上几句。",
+                "pinyin": "Ǒu'ěr gēn Zhōngguó rén yìqǐ chàng shang jǐ jù.",
+                "translation": {
+                  "uz": "Ba'zan xitoyliklar bilan bir necha misra kuylab qo'yaman.",
+                  "ru": "Иногда пою несколько строк вместе с китайцами.",
+                  "tj": "Гоҳ-гоҳ бо чиниҳо чанд ҷумла месароям."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____跟中国人一起唱上几句。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "演员",
+            "偶尔",
+            "观众",
+            "京剧"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 偶尔 (ǒu'ěr) — ba'zan, gohida",
+            "ru": "Верно: 偶尔 (ǒu'ěr) — иногда, изредка",
+            "tj": "Дуруст: 偶尔 (ǒu'ěr) — гоҳ-гоҳ"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "tomonidan",
+              "ru": "кем-либо; от",
+              "tj": "аз тарафи"
+            },
+            "title_zh": "由",
+            "rule": {
+              "uz": "Ish kim tomonidan bajarilishini ko'rsatadi.",
+              "ru": "Показывает, кем выполняется действие.",
+              "tj": "Нишон медиҳад, ки амал аз тарафи кӣ иҷро мешавад."
+            },
+            "examples": [
+              {
+                "zh": "这次活动继续由你负责。",
+                "pinyin": "Zhè cì huódòng jìxù yóu nǐ fùzé.",
+                "translation": {
+                  "uz": "Bu tadbirga yana sen mas'ul bo'lasan.",
+                  "ru": "За это мероприятие снова отвечаешь ты.",
+                  "tj": "Ин чорабинӣ боз аз тарафи ту масъулона бурда мешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Bu tadbirga yana sen mas'ul bo'lasan.",
@@ -1323,15 +1314,15 @@
             "tj": "Ин чорабинӣ боз аз тарафи ту масъулона бурда мешавад."
           },
           "tokens": [
-            "这",
-            "由",
             "你",
-            "继续",
             "京剧",
             "次",
-            "演员",
+            "负责",
             "活动",
-            "负责"
+            "演员",
+            "由",
+            "这",
+            "继续"
           ],
           "answer_tokens": [
             "这",
@@ -1349,8 +1340,85 @@
           }
         },
         {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "amalga oshirmoq, olib bormoq",
+              "ru": "проводить, осуществлять",
+              "tj": "гузаронидан, анҷом додан"
+            },
+            "title_zh": "进行",
+            "rule": {
+              "uz": "Rasmiyroq uslubda tadqiqot, muhokama, tekshiruv kabi ishlarni bajarishni bildiradi.",
+              "ru": "В более официальном стиле обозначает проведение исследования, обсуждения, проверки и т.п.",
+              "tj": "Бо услуби расмитар гузаронидани таҳқиқ, муҳокима, санҷиш ва ғайраро мефаҳмонад."
+            },
+            "examples": [
+              {
+                "zh": "有人在互联网上专门进行过调查。",
+                "pinyin": "Yǒu rén zài hùliánwǎng shang zhuānmén jìnxíng guo diàochá.",
+                "translation": {
+                  "uz": "Kimdir internetda maxsus so'rov o'tkazgan.",
+                  "ru": "Кто-то специально проводил опрос в интернете.",
+                  "tj": "Касе дар интернет махсус таҳқиқ гузаронидааст."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
-          "sentence": "到现在____唱了60多年了。",
+          "sentence": "有人在____上专门进行过调查。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "演员",
+            "京剧",
+            "互联网",
+            "观众"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 互联网 (hùliánwǎng) — internet",
+            "ru": "Верно: 互联网 (hùliánwǎng) — интернет",
+            "tj": "Дуруст: 互联网 (hùliánwǎng) — интернет"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "...bilan birga; ...sari",
+              "ru": "по мере; вместе с",
+              "tj": "бо гузашти; ҳамроҳ бо"
+            },
+            "title_zh": "随着",
+            "rule": {
+              "uz": "Bir holat o'zgargani sari ikkinchi holat ham o'zgarishini bildiradi.",
+              "ru": "Показывает, что с изменением одного состояния меняется другое.",
+              "tj": "Нишон медиҳад, ки бо тағйири як ҳолат ҳолати дигар ҳам тағйир меёбад."
+            },
+            "examples": [
+              {
+                "zh": "随着人们对茶的认识的加深，慢慢开始把它当作解渴的饮料。",
+                "pinyin": "Suízhe rénmen duì chá de rènshi de jiāshēn, mànmàn kāishǐ bǎ tā dàngzuò jiěkě de yǐnliào.",
+                "translation": {
+                  "uz": "Odamlarning choy haqidagi tushunchasi chuqurlashgani sari, uni asta-sekin chanqoq bosadigan ichimlik deb qabul qila boshlashdi.",
+                  "ru": "По мере углубления знаний о чае люди постепенно стали воспринимать его как напиток для утоления жажды.",
+                  "tj": "Бо амиқ шудани фаҳмиши мардум дар бораи чой, онро оҳиста-оҳиста нӯшокии рафъи ташнагӣ донистанд."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____人们对茶的认识的加深，慢慢开始把它当作解渴的饮料。",
           "prompt": {
             "uz": "Bo'sh joyga mos so'zni tanlang:",
             "ru": "Выберите слово для пропуска:",
@@ -1360,13 +1428,38 @@
             "演员",
             "京剧",
             "观众",
-            "大概"
+            "随着"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "To'g'ri: 大概 (dàgài) — taxminan",
-            "ru": "Верно: 大概 (dàgài) — примерно, вероятно",
-            "tj": "Дуруст: 大概 (dàgài) — тақрибан, эҳтимол"
+            "uz": "To'g'ri: 随着 (suízhe) — ...bilan birga, ...sari",
+            "ru": "Верно: 随着 (suízhe) — по мере, вместе с",
+            "tj": "Дуруст: 随着 (suízhe) — бо гузашти, ҳамроҳ бо"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bu tadbirga yana sen mas'ul bo'lasan.» — xitoychada qaysi biri?",
+            "ru": "«За это мероприятие снова отвечаешь ты.» — какое предложение по-китайски?",
+            "tj": "«Ин чорабинӣ боз аз тарафи ту масъулона бурда мешавад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "这次活动继续由你负责。",
+            "偶尔跟中国人一起唱上几句。",
+            "随着人们对茶的认识的加深，慢慢开始把它当作解渴的饮料。",
+            "到现在大概唱了60多年了。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "这次活动继续由你负责。 — Zhè cì huódòng jìxù yóu nǐ fùzé.",
+            "ru": "这次活动继续由你负责。 — Zhè cì huódòng jìxù yóu nǐ fùzé.",
+            "tj": "这次活动继续由你负责。 — Zhè cì huódòng jìxù yóu nǐ fùzé."
           }
         }
       ]
@@ -1381,72 +1474,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "京剧 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 京剧:",
-            "tj": "Маънои калимаи 京剧-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "aktyor",
-              "ru": "актёр",
-              "tj": "актёр"
-            },
-            {
-              "uz": "tomoshabin",
-              "ru": "зрители, публика",
-              "tj": "тамошобинон"
-            },
-            {
-              "uz": "Pekin operasi",
-              "ru": "пекинская опера",
-              "tj": "операи Пекин"
-            },
-            {
-              "uz": "chuqur, qalin",
-              "ru": "глубокий, толстый",
-              "tj": "чуқур, ғафс"
-            }
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "京剧 = Pekin operasi (jīngjù)",
-            "ru": "京剧 = пекинская опера (jīngjù)",
-            "tj": "京剧 = операи Пекин (jīngjù)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "演员 talaffuzini tanlang:",
-            "ru": "Выберите произношение 演员:",
-            "tj": "Талаффузи 演员-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "guānzhòng",
-            "yǎnyuán",
-            "hòu",
-            "jīngjù"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "演员 — yǎnyuán",
-            "ru": "演员 — yǎnyuán",
-            "tj": "演员 — yǎnyuán"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Qo'llab-quvvatlaganingiz uchun rahmat!",
@@ -1454,12 +1481,12 @@
             "tj": "Барои дастгириятон раҳмат!"
           },
           "tokens": [
-            "京剧",
-            "演员",
             "您",
-            "谢谢",
             "的",
-            "支持"
+            "支持",
+            "谢谢",
+            "演员",
+            "京剧"
           ],
           "answer_tokens": [
             "谢谢",
@@ -1483,16 +1510,82 @@
           "audio_text": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
           "pinyin": "Xiǎo Xià, nǐ yéye jīngjù chàng de zhēn zhuānyè, wǒ hái yǐwéi tā shì jīngjù yǎnyuán ne.",
           "options": [
+            "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
             "你爷爷一定对京剧有着很深厚的感情。",
             "对啊，他本来就是京剧演员，年轻时在我们那儿很有名，深受观众们的喜爱。",
-            "是呀，他8岁就开始上台演出，到现在大概唱了60多年了，他对这门艺术的喜爱从来没有改变过。",
-            "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。"
+            "是呀，他8岁就开始上台演出，到现在大概唱了60多年了，他对这门艺术的喜爱从来没有改变过。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。 — Xiaxia, bobongiz Pekin operasini juda professional kuylarkan, uni aktyor deb o'ylabman.",
             "ru": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。 — Сяося, твой дедушка так профессионально поёт пекинскую оперу, я думал, он актёр.",
             "tj": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。 — Сяося, бобоят операи Пекинро бисёр касбӣ месарояд, ман фикр кардам ӯ актёр аст."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "基础 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 基础:",
+            "tj": "Маънои калимаи 基础-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "aktyor",
+              "ru": "актёр",
+              "tj": "актёр"
+            },
+            {
+              "uz": "asos, poydevor",
+              "ru": "основа, база",
+              "tj": "асос, поя"
+            },
+            {
+              "uz": "Pekin operasi",
+              "ru": "пекинская опера",
+              "tj": "операи Пекин"
+            },
+            {
+              "uz": "tomoshabin",
+              "ru": "зрители, публика",
+              "tj": "тамошобинон"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "基础 = asos, poydevor (jīchǔ)",
+            "ru": "基础 = основа, база (jīchǔ)",
+            "tj": "基础 = асос, поя (jīchǔ)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "表演 talaffuzini tanlang:",
+            "ru": "Выберите произношение 表演:",
+            "tj": "Талаффузи 表演-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "guānzhòng",
+            "jīngjù",
+            "yǎnyuán",
+            "biǎoyǎn"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "表演 — biǎoyǎn",
+            "ru": "表演 — biǎoyǎn",
+            "tj": "表演 — biǎoyǎn"
           }
         },
         {
@@ -1568,16 +1661,66 @@
           "audio_text": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
           "pinyin": "Xiǎo Xià, nǐ yéye jīngjù chàng de zhēn zhuānyè, wǒ hái yǐwéi tā shì jīngjù yǎnyuán ne.",
           "options": [
+            "是呀，他8岁就开始上台演出，到现在大概唱了60多年了，他对这门艺术的喜爱从来没有改变过。",
             "对啊，他本来就是京剧演员，年轻时在我们那儿很有名，深受观众们的喜爱。",
-            "你爷爷一定对京剧有着很深厚的感情。",
             "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
-            "是呀，他8岁就开始上台演出，到现在大概唱了60多年了，他对这门艺术的喜爱从来没有改变过。"
+            "你爷爷一定对京剧有着很深厚的感情。"
           ],
           "correct_index": 2,
           "explanation": {
             "uz": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。 — Xiaxia, bobongiz Pekin operasini juda professional kuylarkan, uni aktyor deb o'ylabman.",
             "ru": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。 — Сяося, твой дедушка так профессионально поёт пекинскую оперу, я думал, он актёр.",
             "tj": "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。 — Сяося, бобоят операи Пекинро бисёр касбӣ месарояд, ман фикр кардам ӯ актёр аст."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 小雨 avval nima deydi?",
+            "ru": "Что 小雨 говорит в начале диалога?",
+            "tj": "Дар муколама 小雨 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "你爷爷一定对京剧有着很深厚的感情。",
+            "是呀，他8岁就开始上台演出，到现在大概唱了60多年了，他对这门艺术的喜爱从来没有改变过。",
+            "对啊，他本来就是京剧演员，年轻时在我们那儿很有名，深受观众们的喜爱。",
+            "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
+            "ru": "Правильный ответ: 小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
+            "tj": "Ҷавоби дуруст: 小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 小夏 nima deydi?",
+            "ru": "Что 小夏 говорит в конце диалога?",
+            "tj": "Дар охири муколама 小夏 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "你爷爷一定对京剧有着很深厚的感情。",
+            "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
+            "对啊，他本来就是京剧演员，年轻时在我们那儿很有名，深受观众们的喜爱。",
+            "我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。",
+            "ru": "Правильный ответ: 我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。",
+            "tj": "Ҷавоби дуруст: 我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。"
           }
         },
         {
@@ -1589,12 +1732,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "新",
             "小",
-            "挺",
-            "斤"
+            "旧",
+            "电",
+            "下"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 小 — 小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。 (Xiaxia, bobongiz Pekin operasini juda professional kuylarkan, uni aktyor deb o'ylabman.)",
             "ru": "Верно: 小 — 小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。 (Сяося, твой дедушка так профессионально поёт пекинскую оперу, я думал, он актёр.)",
@@ -1641,62 +1784,12 @@
             }
           ],
           "options": [
-            "对啊，他本来就是京剧演员，年轻时在我们那儿很有名，深受观众们的喜爱。",
             "你爷爷一定对京剧有着很深厚的感情。",
             "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
-            "我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。",
-            "ru": "Правильный ответ: 我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。",
-            "tj": "Ҷавоби дуруст: 我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 小雨 avval nima deydi?",
-            "ru": "Что 小雨 говорит в начале диалога?",
-            "tj": "Дар муколама 小雨 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "是呀，他8岁就开始上台演出，到现在大概唱了60多年了，他对这门艺术的喜爱从来没有改变过。",
-            "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
-            "你爷爷一定对京剧有着很深厚的感情。",
+            "我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。",
             "对啊，他本来就是京剧演员，年轻时在我们那儿很有名，深受观众们的喜爱。"
           ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
-            "ru": "Правильный ответ: 小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
-            "tj": "Ҷавоби дуруст: 小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小夏 nima deydi?",
-            "ru": "Что 小夏 говорит в конце диалога?",
-            "tj": "Дар охири муколама 小夏 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "对啊，他本来就是京剧演员，年轻时在我们那儿很有名，深受观众们的喜爱。",
-            "小夏，你爷爷京剧唱得真专业，我还以为他是京剧演员呢。",
-            "你爷爷一定对京剧有着很深厚的感情。",
-            "我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。"
-          ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。",
             "ru": "Правильный ответ: 我小时候经常去看他的演出。平时他还给我讲很多京剧里的历史故事，让我学到了很多知识。",

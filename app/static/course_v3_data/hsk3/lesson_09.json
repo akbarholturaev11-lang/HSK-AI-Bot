@@ -8,6 +8,8 @@
     "ru": "Изучить сравнительные конструкции: A так же, как B; A не так, как B",
     "tj": "Омӯхтани ибораҳои муқоиса: A монанди B, A ба монанди B нест"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -596,6 +598,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "班 talaffuzini tanlang:",
+            "ru": "Выберите произношение 班:",
+            "tj": "Талаффузи 班-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bān",
+            "Zhōngwén",
+            "zuìhòu",
+            "yíyàng"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "班 — bān",
+            "ru": "班 — bān",
+            "tj": "班 — bān"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -621,6 +648,47 @@
               "ru": "последний",
               "tj": "охирин"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "最后 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 最后:",
+            "tj": "Маънои калимаи 最后-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
+            },
+            {
+              "uz": "oxirgi, so'nggi",
+              "ru": "последний",
+              "tj": "охирин"
+            },
+            {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            },
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "最后 = oxirgi, so'nggi (zuìhòu)",
+            "ru": "最后 = последний (zuìhòu)",
+            "tj": "最后 = охирин (zuìhòu)"
           }
         },
         {
@@ -652,6 +720,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "zuìhòu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zuìhòu?",
+            "tj": "zuìhòu кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "中文",
+            "班",
+            "一样",
+            "最后"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "最后 = oxirgi, so'nggi (zuìhòu)",
+            "ru": "最后 = последний (zuìhòu)",
+            "tj": "最后 = охирин (zuìhòu)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -677,6 +770,31 @@
               "ru": "сравнительно, довольно",
               "tj": "нисбатан"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "比较 talaffuzini tanlang:",
+            "ru": "Выберите произношение 比较:",
+            "tj": "Талаффузи 比较-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bān",
+            "yíyàng",
+            "bǐjiào",
+            "Zhōngwén"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "比较 — bǐjiào",
+            "ru": "比较 — bǐjiào",
+            "tj": "比较 — bǐjiào"
           }
         },
         {
@@ -708,150 +826,6 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "中间",
-            "pinyin": "zhōngjiān",
-            "pos": "n.",
-            "meaning": {
-              "uz": "o'rta, orasida",
-              "ru": "середина, посередине",
-              "tj": "миёна"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "参加",
-            "pinyin": "cānjiā",
-            "pos": "v.",
-            "meaning": {
-              "uz": "qatnashmoq, ishtirok etmoq",
-              "ru": "участвовать",
-              "tj": "иштирок кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "影响",
-            "pinyin": "yǐngxiǎng",
-            "pos": "n./v.",
-            "meaning": {
-              "uz": "ta'sir; ta'sir qilmoq",
-              "ru": "влияние; влиять",
-              "tj": "таъсир; таъсир кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "大山",
-            "pinyin": "Dàshān",
-            "pos": "proper noun",
-            "meaning": {
-              "uz": "Dashan (ism)",
-              "ru": "Дашань (имя)",
-              "tj": "Дашан (ном)"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "李静",
-            "pinyin": "Lǐ Jìng",
-            "pos": "proper noun",
-            "meaning": {
-              "uz": "Li Jing (ism)",
-              "ru": "Ли Цзин (имя)",
-              "tj": "Ли Ҷинг (ном)"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 2,
-      "section_title": {
-        "uz": "Grammatika",
-        "ru": "Грамматика",
-        "tj": "Грамматика"
-      },
-      "section_purpose": "grammar",
-      "cards": [
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Havo tobora sovuqlashmoqda.",
-            "ru": "Погода становится всё холоднее.",
-            "tj": "Ҳаво рӯз ба рӯз сардтар мешавад."
-          },
-          "tokens": [
-            "班",
-            "越",
-            "来",
-            "了",
-            "冷",
-            "中文",
-            "越",
-            "天气"
-          ],
-          "answer_tokens": [
-            "天气",
-            "越",
-            "来",
-            "越",
-            "冷",
-            "了"
-          ],
-          "explanation": {
-            "uz": "天气越来越冷了。 — Tiānqì yuè lái yuè lěng le.",
-            "ru": "天气越来越冷了。 — Tiānqì yuè lái yuè lěng le.",
-            "tj": "天气越来越冷了。 — Tiānqì yuè lái yuè lěng le."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "她的汉语说得跟中国人____好。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
-          },
-          "options": [
-            "最后",
-            "一样",
-            "中文",
-            "班"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 一样 (yíyàng) — bir xil, xuddi ... kabi",
-            "ru": "Верно: 一样 (yíyàng) — одинаковый, такой же",
-            "tj": "Дуруст: 一样 (yíyàng) — якхела, мисли"
-          }
-        }
-      ]
-    },
-    {
-      "section_no": 3,
-      "section_title": {
-        "uz": "Mashq",
-        "ru": "Упражнение",
-        "tj": "Машқ"
-      },
-      "section_purpose": "practice",
-      "cards": [
-        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "中文 so'zining ma'nosini tanlang:",
@@ -865,14 +839,14 @@
           },
           "options": [
             {
-              "uz": "oxirgi, so'nggi",
-              "ru": "последний",
-              "tj": "охирин"
-            },
-            {
               "uz": "xitoy tili",
               "ru": "китайский язык",
               "tj": "забони чинӣ"
+            },
+            {
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
             },
             {
               "uz": "sinf, guruh",
@@ -880,86 +854,16 @@
               "tj": "синф, гурӯҳ"
             },
             {
-              "uz": "bir xil, xuddi ... kabi",
-              "ru": "одинаковый, такой же",
-              "tj": "якхела, мисли"
+              "uz": "oxirgi, so'nggi",
+              "ru": "последний",
+              "tj": "охирин"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "中文 = xitoy tili (Zhōngwén)",
             "ru": "中文 = китайский язык (Zhōngwén)",
             "tj": "中文 = забони чинӣ (Zhōngwén)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "班 talaffuzini tanlang:",
-            "ru": "Выберите произношение 班:",
-            "tj": "Талаффузи 班-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zuìhòu",
-            "bān",
-            "yíyàng",
-            "Zhōngwén"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "班 — bān",
-            "ru": "班 — bān",
-            "tj": "班 — bān"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Qanchalik yaxshi?",
-            "ru": "Насколько хорошо?",
-            "tj": "Чӣ гуна хуб?"
-          },
-          "tokens": [
-            "怎么",
-            "班",
-            "好",
-            "中文"
-          ],
-          "answer_tokens": [
-            "怎么",
-            "好"
-          ],
-          "explanation": {
-            "uz": "怎么好？ — Zěnme hǎo?",
-            "ru": "怎么好？ — Zěnme hǎo?",
-            "tj": "怎么好？ — Zěnme hǎo?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "马可，你的中文越说越好了！",
-          "pinyin": "Mǎkě, nǐ de Zhōngwén yuè shuō yuè hǎo le!",
-          "options": [
-            "哪里哪里，我们班李静说得更好。",
-            "马可，你的中文越说越好了！",
-            "怎么好？",
-            "她的汉语说得跟中国人一样好。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "马可，你的中文越说越好了！ — Make, xitoychang tobora yaxshilanib boryapti!",
-            "ru": "马可，你的中文越说越好了！ — Марк, ты говоришь по-китайски всё лучше!",
-            "tj": "马可，你的中文越说越好了！ — Маке, забони чиниат торафт беҳтар мешавад!"
           }
         },
         {
@@ -1003,6 +907,381 @@
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
+        }
+      ]
+    },
+    {
+      "section_no": 2,
+      "section_title": {
+        "uz": "Grammatika",
+        "ru": "Грамматика",
+        "tj": "Грамматика"
+      },
+      "section_purpose": "grammar",
+      "cards": [
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Qanchalik A bo'lsa, shunchalik B bo'ladi",
+              "ru": "Чем больше A, тем больше B",
+              "tj": "Ҳар чӣ бештар A, ҳамон қадар B"
+            },
+            "title_zh": "越A越B",
+            "rule": {
+              "uz": "'越A越B' tuzilmasi ikki hodisaning bir vaqtda o'sishini bildiradi. A - shart, B - natija. Masalan: 越学越好 = o'rganган sari yaxshilashadi.",
+              "ru": "Конструкция '越A越B' выражает параллельное усиление двух явлений. A — условие, B — результат. Например: 越学越好 = чем больше учишь, тем лучше.",
+              "tj": "Сохтори '越A越B' афзоиши якҷояи ду ҳодисаро ифода мекунад. A — шарт, B — натиҷа. Масалан: 越学越好 = ҳар чӣ бештар омӯзӣ, беҳтар мешавад."
+            },
+            "examples": [
+              {
+                "zh": "她越学越觉得有意思。",
+                "pinyin": "Tā yuè xué yuè juéde yǒu yìsi.",
+                "translation": {
+                  "uz": "U o'rganган sari qiziqarliroq deb hisoblaydi.",
+                  "ru": "Чем больше она учит, тем интереснее ей кажется.",
+                  "tj": "Ҳар чӣ бештар омӯзад, ҳамон қадар ҷолибтар ба назараш мерасад."
+                }
+              },
+              {
+                "zh": "天气越来越冷了。",
+                "pinyin": "Tiānqì yuè lái yuè lěng le.",
+                "translation": {
+                  "uz": "Havo tobora sovuqlashmoqda.",
+                  "ru": "Погода становится всё холоднее.",
+                  "tj": "Ҳаво рӯз ба рӯз сардтар мешавад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Havo tobora sovuqlashmoqda.",
+            "ru": "Погода становится всё холоднее.",
+            "tj": "Ҳаво рӯз ба рӯз сардтар мешавад."
+          },
+          "tokens": [
+            "越",
+            "冷",
+            "越",
+            "天气",
+            "来",
+            "班",
+            "了",
+            "中文"
+          ],
+          "answer_tokens": [
+            "天气",
+            "越",
+            "来",
+            "越",
+            "冷",
+            "了"
+          ],
+          "explanation": {
+            "uz": "天气越来越冷了。 — Tiānqì yuè lái yuè lěng le.",
+            "ru": "天气越来越冷了。 — Tiānqì yuè lái yuè lěng le.",
+            "tj": "天气越来越冷了。 — Tiānqì yuè lái yuè lěng le."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "A xuddi B kabi + sifat",
+              "ru": "A такой же, как B + прилагательное",
+              "tj": "A монанди B + сифат"
+            },
+            "title_zh": "A跟B一样 + 形容词",
+            "rule": {
+              "uz": "'A跟B一样+Adj' tuzilmasi A va B ning bir xil xususiyatga ega ekanini bildiradi. Inkor shaklida: 'A跟B不一样'. Sifat oldida 'ba'zan' 那么 qo'yiladi.",
+              "ru": "Конструкция 'A跟B一样+Adj' означает, что A и B имеют одинаковое свойство. Отрицательная форма: 'A跟B不一样'. Перед прилагательным иногда ставится 那么.",
+              "tj": "Сохтори 'A跟B一样+Adj' маъно медиҳад, ки A ва B хусусияти якхела доранд. Шакли манфӣ: 'A跟B不一样'. Пеш аз сифат гоҳо 那么 мегузорад."
+            },
+            "examples": [
+              {
+                "zh": "她的汉语说得跟中国人一样好。",
+                "pinyin": "Tā de Hànyǔ shuō de gēn Zhōngguórén yīyàng hǎo.",
+                "translation": {
+                  "uz": "Uning xitoycha gapirishi xitoyliklarnikidek yaxshi.",
+                  "ru": "Она говорит по-китайски так же хорошо, как китайцы.",
+                  "tj": "Вай ба монанди чиниҳо хуб чинӣ ҳарф мезанад."
+                }
+              },
+              {
+                "zh": "这个跟那个一样贵。",
+                "pinyin": "Zhège gēn nàge yīyàng guì.",
+                "translation": {
+                  "uz": "Bu xuddi u kabi qimmat.",
+                  "ru": "Это такое же дорогое, как то.",
+                  "tj": "Ин монанди он қимат аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bu xuddi u kabi qimmat.",
+            "ru": "Это такое же дорогое, как то.",
+            "tj": "Ин монанди он қимат аст."
+          },
+          "tokens": [
+            "中文",
+            "一样",
+            "这",
+            "那",
+            "个",
+            "贵",
+            "跟",
+            "班",
+            "个"
+          ],
+          "answer_tokens": [
+            "这",
+            "个",
+            "跟",
+            "那",
+            "个",
+            "一样",
+            "贵"
+          ],
+          "explanation": {
+            "uz": "这个跟那个一样贵。 — Zhège gēn nàge yīyàng guì.",
+            "ru": "这个跟那个一样贵。 — Zhège gēn nàge yīyàng guì.",
+            "tj": "这个跟那个一样贵。 — Zhège gēn nàge yīyàng guì."
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "A, B kadar + sifat emas",
+              "ru": "A не такой, как B + прилагательное",
+              "tj": "A ба монанди B + сифат нест"
+            },
+            "title_zh": "A没有B那么 + 形容词",
+            "rule": {
+              "uz": "'A没有B那么+Adj' tuzilmasi A ning B darajasida emasligi yoki pastroq ekanini bildiradi. 'A不如B' bilan sinonim bo'lishi mumkin.",
+              "ru": "Конструкция 'A没有B那么+Adj' означает, что A не достигает степени B. Может быть синонимом 'A不如B'.",
+              "tj": "Сохтори 'A没有B那么+Adj' маъно медиҳад, ки A ба дараҷаи B нарасидааст. Бо 'A不如B' ҳаммаъно буда метавонад."
+            },
+            "examples": [
+              {
+                "zh": "他的进步没有她那么快。",
+                "pinyin": "Tā de jìnbù méiyǒu tā nàme kuài.",
+                "translation": {
+                  "uz": "Uning rivojlanishi u qiznikidek tez emas.",
+                  "ru": "Его прогресс не такой быстрый, как у неё.",
+                  "tj": "Пешрафти вай ба монанди ӯ тез нест."
+                }
+              },
+              {
+                "zh": "今天没有昨天那么冷。",
+                "pinyin": "Jīntiān méiyǒu zuótiān nàme lěng.",
+                "translation": {
+                  "uz": "Bugun kecha kabi sovuq emas.",
+                  "ru": "Сегодня не так холодно, как вчера.",
+                  "tj": "Имрӯз ба монанди дирӯз сард нест."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Uning xitoycha gapirishi xitoyliklarnikidek yaxshi.» — xitoychada qaysi biri?",
+            "ru": "«Она говорит по-китайски так же хорошо, как китайцы.» — какое предложение по-китайски?",
+            "tj": "«Вай ба монанди чиниҳо хуб чинӣ ҳарф мезанад.» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "今天没有昨天那么冷。",
+            "她的汉语说得跟中国人一样好。",
+            "天气越来越冷了。",
+            "他的进步没有她那么快。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "她的汉语说得跟中国人一样好。 — Tā de Hànyǔ shuō de gēn Zhōngguórén yīyàng hǎo.",
+            "ru": "她的汉语说得跟中国人一样好。 — Tā de Hànyǔ shuō de gēn Zhōngguórén yīyàng hǎo.",
+            "tj": "她的汉语说得跟中国人一样好。 — Tā de Hànyǔ shuō de gēn Zhōngguórén yīyàng hǎo."
+          }
+        }
+      ]
+    },
+    {
+      "section_no": 3,
+      "section_title": {
+        "uz": "Mashq",
+        "ru": "Упражнение",
+        "tj": "Машқ"
+      },
+      "section_purpose": "practice",
+      "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "中文",
+              {
+                "uz": "xitoy tili",
+                "ru": "китайский язык",
+                "tj": "забони чинӣ"
+              }
+            ],
+            [
+              "班",
+              {
+                "uz": "sinf, guruh",
+                "ru": "класс, группа",
+                "tj": "синф, гурӯҳ"
+              }
+            ],
+            [
+              "一样",
+              {
+                "uz": "bir xil, xuddi ... kabi",
+                "ru": "одинаковый, такой же",
+                "tj": "якхела, мисли"
+              }
+            ],
+            [
+              "最后",
+              {
+                "uz": "oxirgi, so'nggi",
+                "ru": "последний",
+                "tj": "охирин"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "中间 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 中间:",
+            "tj": "Маънои калимаи 中间-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            },
+            {
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
+            },
+            {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            },
+            {
+              "uz": "o'rta, orasida",
+              "ru": "середина, посередине",
+              "tj": "миёна"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "中间 = o'rta, orasida (zhōngjiān)",
+            "ru": "中间 = середина, посередине (zhōngjiān)",
+            "tj": "中间 = миёна (zhōngjiān)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "马可，你的中文越说越好了！",
+          "pinyin": "Mǎkě, nǐ de Zhōngwén yuè shuō yuè hǎo le!",
+          "options": [
+            "怎么好？",
+            "她的汉语说得跟中国人一样好。",
+            "哪里哪里，我们班李静说得更好。",
+            "马可，你的中文越说越好了！"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "马可，你的中文越说越好了！ — Make, xitoychang tobora yaxshilanib boryapti!",
+            "ru": "马可，你的中文越说越好了！ — Марк, ты говоришь по-китайски всё лучше!",
+            "tj": "马可，你的中文越说越好了！ — Маке, забони чиниат торафт беҳтар мешавад!"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "参加 talaffuzini tanlang:",
+            "ru": "Выберите произношение 参加:",
+            "tj": "Талаффузи 参加-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "Zhōngwén",
+            "cānjiā",
+            "bān",
+            "yíyàng"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "参加 — cānjiā",
+            "ru": "参加 — cānjiā",
+            "tj": "参加 — cānjiā"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Qanchalik yaxshi?",
+            "ru": "Насколько хорошо?",
+            "tj": "Чӣ гуна хуб?"
+          },
+          "tokens": [
+            "好",
+            "中文",
+            "怎么",
+            "班"
+          ],
+          "answer_tokens": [
+            "怎么",
+            "好"
+          ],
+          "explanation": {
+            "uz": "怎么好？ — Zěnme hǎo?",
+            "ru": "怎么好？ — Zěnme hǎo?",
+            "tj": "怎么好？ — Zěnme hǎo?"
+          }
         },
         {
           "type": "pronunciation",
@@ -1036,9 +1315,9 @@
           "pinyin": "Mǎkě, nǐ de Zhōngwén yuè shuō yuè hǎo le!",
           "options": [
             "她的汉语说得跟中国人一样好。",
-            "哪里哪里，我们班李静说得更好。",
+            "怎么好？",
             "马可，你的中文越说越好了！",
-            "怎么好？"
+            "哪里哪里，我们班李静说得更好。"
           ],
           "correct_index": 2,
           "explanation": {
@@ -1048,24 +1327,53 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____可，你的中文越说越好了！",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda 大山 avval nima deydi?",
+            "ru": "Что 大山 говорит в начале диалога?",
+            "tj": "Дар муколама 大山 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "国",
-            "斤",
-            "马",
-            "新"
+            "马可，你的中文越说越好了！",
+            "哪里哪里，我们班李静说得更好。",
+            "怎么好？",
+            "她的汉语说得跟中国人一样好。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri: 马 — 马可，你的中文越说越好了！ (Make, xitoychang tobora yaxshilanib boryapti!)",
-            "ru": "Верно: 马 — 马可，你的中文越说越好了！ (Марк, ты говоришь по-китайски всё лучше!)",
-            "tj": "Дуруст: 马 — 马可，你的中文越说越好了！ (Маке, забони чиниат торафт беҳтар мешавад!)"
+            "uz": "To'g'ri javob: 马可，你的中文越说越好了！",
+            "ru": "Правильный ответ: 马可，你的中文越说越好了！",
+            "tj": "Ҷавоби дуруст: 马可，你的中文越说越好了！"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 马可 nima deydi?",
+            "ru": "Что 马可 говорит в конце диалога?",
+            "tj": "Дар охири муколама 马可 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "哪里哪里，我们班李静说得更好。",
+            "她是我们的汉语老师。",
+            "马可，你的中文越说越好了！",
+            "怎么好？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 她是我们的汉语老师。",
+            "ru": "Правильный ответ: 她是我们的汉语老师。",
+            "tj": "Ҷавоби дуруст: 她是我们的汉语老师。"
           }
         },
         {
@@ -1108,59 +1416,9 @@
             }
           ],
           "options": [
-            "哪里哪里，我们班李静说得更好。",
-            "马可，你的中文越说越好了！",
             "她是我们的汉语老师。",
-            "怎么好？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 她是我们的汉语老师。",
-            "ru": "Правильный ответ: 她是我们的汉语老师。",
-            "tj": "Ҷавоби дуруст: 她是我们的汉语老师。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 大山 avval nima deydi?",
-            "ru": "Что 大山 говорит в начале диалога?",
-            "tj": "Дар муколама 大山 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "哪里哪里，我们班李静说得更好。",
             "马可，你的中文越说越好了！",
             "怎么好？",
-            "她的汉语说得跟中国人一样好。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 马可，你的中文越说越好了！",
-            "ru": "Правильный ответ: 马可，你的中文越说越好了！",
-            "tj": "Ҷавоби дуруст: 马可，你的中文越说越好了！"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 马可 nima deydi?",
-            "ru": "Что 马可 говорит в конце диалога?",
-            "tj": "Дар охири муколама 马可 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "她是我们的汉语老师。",
-            "怎么好？",
-            "马可，你的中文越说越好了！",
             "哪里哪里，我们班李静说得更好。"
           ],
           "correct_index": 0,
@@ -1168,6 +1426,27 @@
             "uz": "To'g'ri javob: 她是我们的汉语老师。",
             "ru": "Правильный ответ: 她是我们的汉语老师。",
             "tj": "Ҷавоби дуруст: 她是我们的汉语老师。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____可，你的中文越说越好了！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "夫",
+            "马",
+            "下",
+            "电"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 马 — 马可，你的中文越说越好了！ (Make, xitoychang tobora yaxshilanib boryapti!)",
+            "ru": "Верно: 马 — 马可，你的中文越说越好了！ (Марк, ты говоришь по-китайски всё лучше!)",
+            "tj": "Дуруст: 马 — 马可，你的中文越说越好了！ (Маке, забони чиниат торафт беҳтар мешавад!)"
           }
         }
       ]

@@ -1409,7 +1409,10 @@ function buildQueue(d){
   var q=[];
   (d.sections||[]).forEach(function(sec){
     var cards=(sec.cards||[]).slice();
-    if(sec.section_purpose==="intro"){
+    /* New lessons ship an already-interleaved intro (teach + immediate check)
+       and set intro_prebuilt — use their cards as-is. Older lessons lack the
+       flag and keep the legacy client-side drill (teach 4 words, 4 formats). */
+    if(sec.section_purpose==="intro" && !d.intro_prebuilt){
       var words=cards.filter(function(c){return c.type==="active_word"});
       var rest=cards.filter(function(c){return c.type!=="active_word"});
       var drill=[];
@@ -1422,7 +1425,9 @@ function buildQueue(d){
       });
       cards=drill.concat(rest);
     }
-    if(sec.section_purpose==="grammar" && d.grammar && d.grammar.length){
+    /* New lessons interleave the grammar teacher cards with drills inside the
+       section itself (grammar_prebuilt); only prepend for older lessons. */
+    if(sec.section_purpose==="grammar" && d.grammar && d.grammar.length && !d.grammar_prebuilt){
       var gc=d.grammar.map(function(g){return {type:"_grammar",g:g}});
       cards=gc.concat(cards);
     }

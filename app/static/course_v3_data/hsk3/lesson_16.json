@@ -8,6 +8,8 @@
     "ru": "Условные предложения 'если…то…', сложное дополнение состояния и удвоение односложных прилагательных",
     "tj": "Ҷумлаҳои шартии 'агар…пас…', пуркунандаи мураккаби ҳол ва такрори сифатҳои яктарафа"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -537,6 +539,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "如果 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 如果:",
+            "tj": "Маънои калимаи 如果-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "deb o'ylamoq, hisoblamoq",
+              "ru": "считать, полагать",
+              "tj": "фикр кардан, ҳисобидан"
+            },
+            {
+              "uz": "agar",
+              "ru": "если",
+              "tj": "агар"
+            },
+            {
+              "uz": "charm tufli",
+              "ru": "кожаная обувь",
+              "tj": "пойафзоли чармӣ"
+            },
+            {
+              "uz": "shahar",
+              "ru": "город",
+              "tj": "шаҳр"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "如果 = agar (rúguǒ)",
+            "ru": "如果 = если (rúguǒ)",
+            "tj": "如果 = агар (rúguǒ)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -562,6 +605,31 @@
               "ru": "кожаная обувь",
               "tj": "пойафзоли чармӣ"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "píxié qaysi ieroglif?",
+            "ru": "Какой иероглиф читается píxié?",
+            "tj": "píxié кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "认为",
+            "如果",
+            "皮鞋",
+            "城市"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "皮鞋 = charm tufli (píxié)",
+            "ru": "皮鞋 = кожаная обувь (píxié)",
+            "tj": "皮鞋 = пойафзоли чармӣ (píxié)"
           }
         },
         {
@@ -593,6 +661,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "长 talaffuzini tanlang:",
+            "ru": "Выберите произношение 长:",
+            "tj": "Талаффузи 长-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "rúguǒ",
+            "zhǎng",
+            "rènwéi",
+            "chéngshì"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "长 — zhǎng",
+            "ru": "长 — zhǎng",
+            "tj": "长 — zhǎng"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -618,6 +711,47 @@
               "ru": "метр",
               "tj": "метр"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "可爱 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 可爱:",
+            "tj": "Маънои калимаи 可爱-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "agar",
+              "ru": "если",
+              "tj": "агар"
+            },
+            {
+              "uz": "yoqimli, shirin",
+              "ru": "милый, очаровательный",
+              "tj": "дилрабо, ширин"
+            },
+            {
+              "uz": "deb o'ylamoq, hisoblamoq",
+              "ru": "считать, полагать",
+              "tj": "фикр кардан, ҳисобидан"
+            },
+            {
+              "uz": "shahar",
+              "ru": "город",
+              "tj": "шаҳр"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "可爱 = yoqimli, shirin (kě'ài)",
+            "ru": "可爱 = милый, очаровательный (kě'ài)",
+            "tj": "可爱 = дилрабо, ширин (kě'ài)"
           }
         },
         {
@@ -649,87 +783,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "头发",
-            "pinyin": "tóufa",
-            "pos": "n.",
-            "meaning": {
-              "uz": "soch",
-              "ru": "волосы",
-              "tj": "мӯй"
-            }
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "mǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается mǐ?",
+            "tj": "mǐ кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "如果",
+            "认为",
+            "城市",
+            "米"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "米 = metr (mǐ)",
+            "ru": "米 = метр (mǐ)",
+            "tj": "米 = метр (mǐ)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "检查",
-            "pinyin": "jiǎnchá",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tekshirmoq, ko'rikdan o'tkazmoq",
-              "ru": "проверять, осматривать",
-              "tj": "санҷидан, муоина кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "刷牙",
-            "pinyin": "shuā yá",
-            "pos": "v.",
-            "meaning": {
-              "uz": "tish yuvmoq",
-              "ru": "чистить зубы",
-              "tj": "дандон шустан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "关系",
-            "pinyin": "guānxì",
-            "pos": "n.",
-            "meaning": {
-              "uz": "munosabat, aloqa",
-              "ru": "отношение, связь",
-              "tj": "муносибат, робита"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "别人",
-            "pinyin": "biérén",
-            "pos": "n.",
-            "meaning": {
-              "uz": "boshqa odamlar",
-              "ru": "другие люди",
-              "tj": "дигарон"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "词语",
-            "pinyin": "cíyǔ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "so'z, ibora",
-              "ru": "слово, выражение",
-              "tj": "калима, ибора"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "城市",
+              {
+                "uz": "shahar",
+                "ru": "город",
+                "tj": "шаҳр"
+              }
+            ],
+            [
+              "如果",
+              {
+                "uz": "agar",
+                "ru": "если",
+                "tj": "агар"
+              }
+            ],
+            [
+              "认为",
+              {
+                "uz": "deb o'ylamoq, hisoblamoq",
+                "ru": "считать, полагать",
+                "tj": "фикр кардан, ҳисобидан"
+              }
+            ],
+            [
+              "皮鞋",
+              {
+                "uz": "charm tufli",
+                "ru": "кожаная обувь",
+                "tj": "пойафзоли чармӣ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -744,6 +861,43 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "Agar……u holda/bo'lsa……（shartli gap）",
+              "ru": "Если……то……（условное предложение）",
+              "tj": "Агар……пас……（ҷумлаи шартӣ）"
+            },
+            "title_zh": "如果……就……（条件句）",
+            "rule": {
+              "uz": "'如果…就…' tuzilmasi agar-u holda shartli gaplarni ifodalaydi. '如果' = agar, '就' = u holda/shunda. '如果' ko'pincha gapning avvalida, '就' esa natijaning avvalida keladi.",
+              "ru": "Конструкция '如果…就…' выражает условные предложения 'если-то'. '如果' = если, '就' = то. '如果' обычно стоит в начале предложения, '就' — перед следствием.",
+              "tj": "Сохтори '如果…就…' ҷумлаҳои шартии 'агар-пас'-ро ифода мекунад. '如果' = агар, '就' = пас. '如果' одатан аввали ҷумла, '就' — пеш аз натиҷа меояд."
+            },
+            "examples": [
+              {
+                "zh": "如果你每天锻炼，就会很健康！",
+                "pinyin": "Rúguǒ nǐ měitiān duànliàn, jiù huì hěn jiànkāng!",
+                "translation": {
+                  "uz": "Agar har kuni mashq qilsangiz, juda sog'lom bo'lasiz!",
+                  "ru": "Если будешь заниматься каждый день, будешь очень здоровым!",
+                  "tj": "Агар ҳар рӯз варзиш кунед, хеле солим мешавед!"
+                }
+              },
+              {
+                "zh": "如果天气好，我就去公园。",
+                "pinyin": "Rúguǒ tiānqì hǎo, wǒ jiù qù gōngyuán.",
+                "translation": {
+                  "uz": "Agar havo yaxshi bo'lsa, parkka boraman.",
+                  "ru": "Если погода будет хорошей, пойду в парк.",
+                  "tj": "Агар ҳаво хуб бошад, ба боғ меравам."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Agar havo yaxshi bo'lsa, parkka boraman.",
@@ -751,15 +905,15 @@
             "tj": "Агар ҳаво хуб бошад, ба боғ меравам."
           },
           "tokens": [
-            "天气",
-            "去",
-            "公园",
             "我",
-            "城市",
-            "好",
-            "如果",
+            "公园",
             "就",
-            "认为"
+            "城市",
+            "去",
+            "认为",
+            "天气",
+            "好",
+            "如果"
           ],
           "answer_tokens": [
             "如果",
@@ -777,24 +931,131 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____你每天锻炼，就会很健康！",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Murakkab holat to'ldiruvchisi: charchashdan……",
+              "ru": "Сложное дополнение состояния: устал настолько, что……",
+              "tj": "Пуркунандаи мураккаби ҳол: хаста аз……"
+            },
+            "title_zh": "复杂状态补语：累得……（极端状态）",
+            "rule": {
+              "uz": "'F+得+gap/murakkab ifoda' tuzilmasi harakatning natijasidagi holatni ifodalaydi. Oddiy holatdan farqli ravishda, bu yerda bir butun gap kelishi mumkin. Masalan: 累得睡不着 = charchashdan uxlolmayman.",
+              "ru": "Конструкция 'Гл+得+предложение/сложное выражение' описывает состояние в результате действия. В отличие от простого дополнения, здесь может быть целое предложение. Например: 累得睡不着 = так устал, что не могу спать.",
+              "tj": "Сохтори 'Ф+得+ҷумла/ибораи мураккаб' ҳолати натиҷаи амалро тасвир мекунад. Баръакси пуркунандаи оддӣ, ин ҷо ҷумлаи пурра омада метавонад. Масалан: 累得睡不着 = ончунон хастаам, ки хобам намебарад."
+            },
+            "examples": [
+              {
+                "zh": "我累得下了班就想睡觉。",
+                "pinyin": "Wǒ lèi de xià le bān jiù xiǎng shuìjiào.",
+                "translation": {
+                  "uz": "Shu qadar charchaganmanki, ishdan chiqqanimdan so'ng uxlashni xohlayman.",
+                  "ru": "Я так устал, что после работы сразу хочу спать.",
+                  "tj": "Ман ончунон хастаам, ки баъд аз кор фавран хоб кардан мехоҳам."
+                }
+              },
+              {
+                "zh": "他高兴得跳起来了！",
+                "pinyin": "Tā gāoxìng de tiào qǐlái le!",
+                "translation": {
+                  "uz": "U shu qadar xurshandki, sakrab ketdi!",
+                  "ru": "Он так обрадовался, что подпрыгнул!",
+                  "tj": "Вай ончунон хурсанд шуд, ки ҷаҳид!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Bir bo'g'inli sifat takrori: AA shakli (yaxshi-yaxshi, sekin-sekin...)",
+              "ru": "Удвоение односложных прилагательных: форма AA (хорошенько, медленно-медленно...)",
+              "tj": "Такрори сифатҳои яктаяко: шакли AA (хуб-хуб, оҳиста-оҳиста...)"
+            },
+            "title_zh": "单音节形容词重叠：AA式（好好、慢慢……）",
+            "rule": {
+              "uz": "Bir bo'g'inli sifat takrorlanib ravish sifatida ishlatilsa, kuchaytiruvchi ma'no beradi: 好好 = yaxshilab, 慢慢 = sekin-sekin, 早早 = ertaroq, 快快 = tezroq. Bu shakl ko'pincha fe'ldan oldin keladi.",
+              "ru": "Если односложное прилагательное удваивается и используется как наречие, оно приобретает усилительное значение: 好好 = хорошенько, 慢慢 = медленно-медленно, 早早 = пораньше, 快快 = побыстрее. Эта форма обычно стоит перед глаголом.",
+              "tj": "Агар сифати яктаяко такрор шуда ба сифати зарф истифода шавад, маънои тақвияткунанда пайдо мекунад: 好好 = хуб-хуб, 慢慢 = оҳиста-оҳиста, 早早 = барвақт-барвақт, 快快 = зуд-зуд. Ин шакл одатан пеш аз феъл меояд."
+            },
+            "examples": [
+              {
+                "zh": "你要好好休息！",
+                "pinyin": "Nǐ yào hǎohǎo xiūxi!",
+                "translation": {
+                  "uz": "Yaxshilab dam oling!",
+                  "ru": "Вам нужно хорошенько отдохнуть!",
+                  "tj": "Шумо бояд хуб-хуб истироҳат кунед!"
+                }
+              },
+              {
+                "zh": "慢慢走，别着急！",
+                "pinyin": "Mànmàn zǒu, bié zháojí!",
+                "translation": {
+                  "uz": "Sekin-sekin yuring, shoshilmang!",
+                  "ru": "Идите медленно, не торопитесь!",
+                  "tj": "Оҳиста-оҳиста равед, шитоб накунед!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Yaxshilab dam oling!",
+            "ru": "Вам нужно хорошенько отдохнуть!",
+            "tj": "Шумо бояд хуб-хуб истироҳат кунед!"
           },
-          "options": [
-            "认为",
+          "tokens": [
+            "要",
+            "好",
+            "好",
             "城市",
-            "皮鞋",
+            "你",
+            "休息",
             "如果"
           ],
-          "correct_index": 3,
+          "answer_tokens": [
+            "你",
+            "要",
+            "好",
+            "好",
+            "休息"
+          ],
           "explanation": {
-            "uz": "To'g'ri: 如果 (rúguǒ) — agar",
-            "ru": "Верно: 如果 (rúguǒ) — если",
-            "tj": "Дуруст: 如果 (rúguǒ) — агар"
+            "uz": "你要好好休息！ — Nǐ yào hǎohǎo xiūxi!",
+            "ru": "你要好好休息！ — Nǐ yào hǎohǎo xiūxi!",
+            "tj": "你要好好休息！ — Nǐ yào hǎohǎo xiūxi!"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«U shu qadar xurshandki, sakrab ketdi!» — xitoychada qaysi biri?",
+            "ru": "«Он так обрадовался, что подпрыгнул!» — какое предложение по-китайски?",
+            "tj": "«Вай ончунон хурсанд шуд, ки ҷаҳид!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "他高兴得跳起来了！",
+            "慢慢走，别着急！",
+            "你要好好休息！",
+            "如果你每天锻炼，就会很健康！"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "他高兴得跳起来了！ — Tā gāoxìng de tiào qǐlái le!",
+            "ru": "他高兴得跳起来了！ — Tā gāoxìng de tiào qǐlái le!",
+            "tj": "他高兴得跳起来了！ — Tā gāoxìng de tiào qǐlái le!"
           }
         }
       ]
@@ -809,36 +1070,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "píxié qaysi ieroglif?",
-            "ru": "Какой иероглиф читается píxié?",
-            "tj": "píxié кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "认为",
-            "皮鞋",
-            "如果",
-            "城市"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "皮鞋 = charm tufli (píxié)",
-            "ru": "皮鞋 = кожаная обувь (píxié)",
-            "tj": "皮鞋 = пойафзоли чармӣ (píxié)"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
-            "uz": "帽子 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 帽子:",
-            "tj": "Маънои калимаи 帽子-ро интихоб кунед:"
+            "uz": "别人 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 别人:",
+            "tj": "Маънои калимаи 别人-ро интихоб кунед:"
           },
           "title": {
             "uz": "Ma'nosi nima?",
@@ -847,19 +1083,19 @@
           },
           "options": [
             {
-              "uz": "deb o'ylamoq, hisoblamoq",
-              "ru": "считать, полагать",
-              "tj": "фикр кардан, ҳисобидан"
-            },
-            {
-              "uz": "shlyapa, bosh kiyim",
-              "ru": "шапка, шляпа",
-              "tj": "кулоҳ"
-            },
-            {
               "uz": "shahar",
               "ru": "город",
               "tj": "шаҳр"
+            },
+            {
+              "uz": "boshqa odamlar",
+              "ru": "другие люди",
+              "tj": "дигарон"
+            },
+            {
+              "uz": "deb o'ylamoq, hisoblamoq",
+              "ru": "считать, полагать",
+              "tj": "фикр кардан, ҳисобидан"
             },
             {
               "uz": "agar",
@@ -869,40 +1105,9 @@
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "帽子 = shlyapa, bosh kiyim (màozi)",
-            "ru": "帽子 = шапка, шляпа (màozi)",
-            "tj": "帽子 = кулоҳ (màozi)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Unda hozir nega bormaysiz?",
-            "ru": "Тогда почему вы сейчас не едете?",
-            "tj": "Пас ҳоло чаро намеравед?"
-          },
-          "tokens": [
-            "城市",
-            "现在",
-            "不",
-            "去",
-            "如果",
-            "为什么",
-            "那",
-            "您"
-          ],
-          "answer_tokens": [
-            "那",
-            "您",
-            "现在",
-            "为什么",
-            "不",
-            "去"
-          ],
-          "explanation": {
-            "uz": "那您现在为什么不去？ — Nà nín xiànzài wèi shénme bù qù?",
-            "ru": "那您现在为什么不去？ — Nà nín xiànzài wèi shénme bù qù?",
-            "tj": "那您现在为什么不去？ — Nà nín xiànzài wèi shénme bù qù?"
+            "uz": "别人 = boshqa odamlar (biérén)",
+            "ru": "别人 = другие люди (biérén)",
+            "tj": "别人 = дигарон (biérén)"
           }
         },
         {
@@ -917,14 +1122,70 @@
           "options": [
             "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。",
             "那您现在为什么不去？",
-            "现在钱不是问题了，主要是没有时间。",
-            "我不喜欢一直住在同一个城市，想去其他城市看一看。"
+            "我不喜欢一直住在同一个城市，想去其他城市看一看。",
+            "现在钱不是问题了，主要是没有时间。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "我不喜欢一直住在同一个城市，想去其他城市看一看。 — Men doim bir shaharda yashashni yoqtirmayman, boshqa shaharlarga borib ko'rmoqchiman.",
             "ru": "我不喜欢一直住在同一个城市，想去其他城市看一看。 — Мне не нравится всё время жить в одном городе, хочу съездить посмотреть другие города.",
             "tj": "我不喜欢一直住在同一个城市，想去其他城市看一看。 — Ман ҳамеша дар як шаҳр зиндагӣ карданро дӯст намедорам, мехоҳам ба шаҳрҳои дигар рафта бинам."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "guānxì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается guānxì?",
+            "tj": "guānxì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "城市",
+            "认为",
+            "如果",
+            "关系"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "关系 = munosabat, aloqa (guānxì)",
+            "ru": "关系 = отношение, связь (guānxì)",
+            "tj": "关系 = муносибат, робита (guānxì)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Unda hozir nega bormaysiz?",
+            "ru": "Тогда почему вы сейчас не едете?",
+            "tj": "Пас ҳоло чаро намеравед?"
+          },
+          "tokens": [
+            "您",
+            "不",
+            "去",
+            "城市",
+            "那",
+            "为什么",
+            "如果",
+            "现在"
+          ],
+          "answer_tokens": [
+            "那",
+            "您",
+            "现在",
+            "为什么",
+            "不",
+            "去"
+          ],
+          "explanation": {
+            "uz": "那您现在为什么不去？ — Nà nín xiànzài wèi shénme bù qù?",
+            "ru": "那您现在为什么不去？ — Nà nín xiànzài wèi shénme bù qù?",
+            "tj": "那您现在为什么不去？ — Nà nín xiànzài wèi shénme bù qù?"
           }
         },
         {
@@ -1000,37 +1261,16 @@
           "audio_text": "我不喜欢一直住在同一个城市，想去其他城市看一看。",
           "pinyin": "Wǒ bù xǐhuan yìzhí zhù zài tóng yí ge chéngshì, xiǎng qù qítā chéngshì kàn yi kàn.",
           "options": [
-            "我不喜欢一直住在同一个城市，想去其他城市看一看。",
-            "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。",
+            "现在钱不是问题了，主要是没有时间。",
             "那您现在为什么不去？",
-            "现在钱不是问题了，主要是没有时间。"
+            "我不喜欢一直住在同一个城市，想去其他城市看一看。",
+            "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "我不喜欢一直住在同一个城市，想去其他城市看一看。 — Men doim bir shaharda yashashni yoqtirmayman, boshqa shaharlarga borib ko'rmoqchiman.",
             "ru": "我不喜欢一直住在同一个城市，想去其他城市看一看。 — Мне не нравится всё время жить в одном городе, хочу съездить посмотреть другие города.",
             "tj": "我不喜欢一直住在同一个城市，想去其他城市看一看。 — Ман ҳамеша дар як шаҳр зиндагӣ карданро дӯст намедорам, мехоҳам ба шаҳрҳои дигар рафта бинам."
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____不喜欢一直住在同一个城市，想去其他城市看一看。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "坏",
-            "新",
-            "我",
-            "斤"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 我 — 我不喜欢一直住在同一个城市，想去其他城市看一看。 (Men doim bir shaharda yashashni yoqtirmayman, boshqa shaharlarga borib ko'rmoqchiman.)",
-            "ru": "Верно: 我 — 我不喜欢一直住在同一个城市，想去其他城市看一看。 (Мне не нравится всё время жить в одном городе, хочу съездить посмотреть другие города.)",
-            "tj": "Дуруст: 我 — 我不喜欢一直住在同一个城市，想去其他城市看一看。 (Ман ҳамеша дар як шаҳр зиндагӣ карданро дӯст намедорам, мехоҳам ба шаҳрҳои дигар рафта бинам.)"
           }
         },
         {
@@ -1073,12 +1313,12 @@
             }
           ],
           "options": [
+            "那您现在为什么不去？",
             "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。",
             "我不喜欢一直住在同一个城市，想去其他城市看一看。",
-            "你说得对，我现在累得下了班就想睡觉。",
-            "那您现在为什么不去？"
+            "你说得对，我现在累得下了班就想睡觉。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 你说得对，我现在累得下了班就想睡觉。",
             "ru": "Правильный ответ: 你说得对，我现在累得下了班就想睡觉。",
@@ -1098,16 +1338,37 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
+            "那您现在为什么不去？",
             "我不喜欢一直住在同一个城市，想去其他城市看一看。",
             "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。",
-            "那您现在为什么不去？",
             "现在钱不是问题了，主要是没有时间。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 我不喜欢一直住在同一个城市，想去其他城市看一看。",
             "ru": "Правильный ответ: 我不喜欢一直住在同一个城市，想去其他城市看一看。",
             "tj": "Ҷавоби дуруст: 我不喜欢一直住在同一个城市，想去其他城市看一看。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____不喜欢一直住在同一个城市，想去其他城市看一看。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "电",
+            "我",
+            "旧",
+            "下"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我不喜欢一直住在同一个城市，想去其他城市看一看。 (Men doim bir shaharda yashashni yoqtirmayman, boshqa shaharlarga borib ko'rmoqchiman.)",
+            "ru": "Верно: 我 — 我不喜欢一直住在同一个城市，想去其他城市看一看。 (Мне не нравится всё время жить в одном городе, хочу съездить посмотреть другие города.)",
+            "tj": "Дуруст: 我 — 我不喜欢一直住在同一个城市，想去其他城市看一看。 (Ман ҳамеша дар як шаҳр зиндагӣ карданро дӯст намедорам, мехоҳам ба шаҳрҳои дигар рафта бинам.)"
           }
         },
         {
@@ -1124,11 +1385,11 @@
           },
           "options": [
             "我年轻的时候也这么想，但是那时候没有钱，如果有钱，就去了。",
-            "我不喜欢一直住在同一个城市，想去其他城市看一看。",
             "你说得对，我现在累得下了班就想睡觉。",
-            "那您现在为什么不去？"
+            "那您现在为什么不去？",
+            "我不喜欢一直住在同一个城市，想去其他城市看一看。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 你说得对，我现在累得下了班就想睡觉。",
             "ru": "Правильный ответ: 你说得对，我现在累得下了班就想睡觉。",

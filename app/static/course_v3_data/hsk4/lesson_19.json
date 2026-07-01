@@ -8,6 +8,8 @@
     "ru": "говорить об анкетах, паспорте, еде, танцах, аренде и спорте; использовать вопросительные местоимения, 上, 出来, 总的来说 и 在于",
     "tj": "дар бораи варақа, шиноснома, хӯрок, рақс, иҷора ва варзиш гуфтугӯ кардан; истифодаи ҷонишинҳои саволӣ, 上, 出来, 总的来说 ва 在于"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -845,6 +847,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "出生 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 出生:",
+            "tj": "Маънои калимаи 出生-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jins",
+              "ru": "пол",
+              "tj": "ҷинс"
+            },
+            {
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
+            },
+            {
+              "uz": "pasport",
+              "ru": "паспорт",
+              "tj": "шиноснома"
+            },
+            {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "出生 = tug'ilmoq (chūshēng)",
+            "ru": "出生 = родиться (chūshēng)",
+            "tj": "出生 = таваллуд шудан (chūshēng)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -870,6 +913,31 @@
               "ru": "паспорт",
               "tj": "шиноснома"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "hùzhào qaysi ieroglif?",
+            "ru": "Какой иероглиф читается hùzhào?",
+            "tj": "hùzhào кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "护照",
+            "出生",
+            "性别",
+            "学期"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "护照 = pasport (hùzhào)",
+            "ru": "护照 = паспорт (hùzhào)",
+            "tj": "护照 = шиноснома (hùzhào)"
           }
         },
         {
@@ -901,6 +969,31 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "性别 talaffuzini tanlang:",
+            "ru": "Выберите произношение 性别:",
+            "tj": "Талаффузи 性别-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "chūshēng",
+            "xìngbié",
+            "xuéqī",
+            "hùzhào"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "性别 — xìngbié",
+            "ru": "性别 — xìngbié",
+            "tj": "性别 — xìngbié"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -926,6 +1019,47 @@
               "ru": "нож",
               "tj": "корд"
             }
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "刀 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 刀:",
+            "tj": "Маънои калимаи 刀-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "jins",
+              "ru": "пол",
+              "tj": "ҷинс"
+            },
+            {
+              "uz": "pichoq",
+              "ru": "нож",
+              "tj": "корд"
+            },
+            {
+              "uz": "semestr, o'quv muddati",
+              "ru": "семестр",
+              "tj": "нимсолаи таҳсил"
+            },
+            {
+              "uz": "tug'ilmoq",
+              "ru": "родиться",
+              "tj": "таваллуд шудан"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "刀 = pichoq (dāo)",
+            "ru": "刀 = нож (dāo)",
+            "tj": "刀 = корд (dāo)"
           }
         },
         {
@@ -957,311 +1091,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "理发",
-            "pinyin": "lǐ fà",
-            "pos": "v.",
-            "meaning": {
-              "uz": "soch oldirmoq",
-              "ru": "стричься",
-              "tj": "мӯй гирифтан"
-            }
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tuō qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tuō?",
+            "tj": "tuō кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "性别",
+            "脱",
+            "学期",
+            "出生"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "脱 = yechmoq (tuō)",
+            "ru": "脱 = снимать одежду (tuō)",
+            "tj": "脱 = кашидан, баровардан (tuō)"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "包子",
-            "pinyin": "bāozi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "bug'da pishgan somsa",
-              "ru": "паровая булочка баоцзы",
-              "tj": "самбӯсаи буғӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "零钱",
-            "pinyin": "língqián",
-            "pos": "n.",
-            "meaning": {
-              "uz": "mayda pul",
-              "ru": "мелочь",
-              "tj": "пули майда"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "打招呼",
-            "pinyin": "dǎ zhāohu",
-            "pos": "v.",
-            "meaning": {
-              "uz": "salomlashmoq",
-              "ru": "здороваться",
-              "tj": "салом додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "戴",
-            "pinyin": "dài",
-            "pos": "v.",
-            "meaning": {
-              "uz": "taqmoq, kiymoq",
-              "ru": "надевать аксессуары",
-              "tj": "пӯшидан, бастан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "眼镜",
-            "pinyin": "yǎnjìng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "ko'zoynak",
-              "ru": "очки",
-              "tj": "айнак"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "中国舞",
-            "pinyin": "Zhōngguó wǔ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "xitoycha raqs",
-              "ru": "китайский танец",
-              "tj": "рақси чинӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "国籍",
-            "pinyin": "guójí",
-            "pos": "n.",
-            "meaning": {
-              "uz": "fuqarolik, millat",
-              "ru": "гражданство",
-              "tj": "шаҳрвандӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "抬",
-            "pinyin": "tái",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ko'tarmoq",
-              "ru": "поднимать",
-              "tj": "бардоштан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 20,
-            "zh": "胳膊",
-            "pinyin": "gēbo",
-            "pos": "n.",
-            "meaning": {
-              "uz": "qo'l, bilak",
-              "ru": "рука",
-              "tj": "даст"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 21,
-            "zh": "转",
-            "pinyin": "zhuǎn",
-            "pos": "v.",
-            "meaning": {
-              "uz": "burilmoq",
-              "ru": "поворачивать",
-              "tj": "гардондан, тоб хӯрдан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 22,
-            "zh": "租",
-            "pinyin": "zū",
-            "pos": "v.",
-            "meaning": {
-              "uz": "ijaraga olmoq/bermoq",
-              "ru": "арендовать, сдавать",
-              "tj": "иҷора гирифтан/додан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 23,
-            "zh": "吵",
-            "pinyin": "chǎo",
-            "pos": "adj.",
-            "meaning": {
-              "uz": "shovqinli",
-              "ru": "шумный",
-              "tj": "серғавғо"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 24,
-            "zh": "厨房",
-            "pinyin": "chúfáng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "oshxona",
-              "ru": "кухня",
-              "tj": "ошхона"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 25,
-            "zh": "总的来说",
-            "pinyin": "zǒng de lái shuō",
-            "pos": "phrase",
-            "meaning": {
-              "uz": "umuman olganda",
-              "ru": "в целом",
-              "tj": "умуман"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 26,
-            "zh": "房东",
-            "pinyin": "fángdōng",
-            "pos": "n.",
-            "meaning": {
-              "uz": "uy egasi",
-              "ru": "арендодатель",
-              "tj": "соҳиби хона"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 27,
-            "zh": "功夫",
-            "pinyin": "gōngfu",
-            "pos": "n.",
-            "meaning": {
-              "uz": "kungfu",
-              "ru": "кунфу",
-              "tj": "кунгфу"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 28,
-            "zh": "乒乓球",
-            "pinyin": "pīngpāngqiú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "stol tennisi",
-              "ru": "настольный теннис",
-              "tj": "тенниси рӯимизӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 29,
-            "zh": "羽毛球",
-            "pinyin": "yǔmáoqiú",
-            "pos": "n.",
-            "meaning": {
-              "uz": "badminton",
-              "ru": "бадминтон",
-              "tj": "бадминтон"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 30,
-            "zh": "场",
-            "pinyin": "chǎng",
-            "pos": "m.",
-            "meaning": {
-              "uz": "o'yin/musobaqa sanog'i",
-              "ru": "счётное слово для игр",
-              "tj": "шуморкалима барои бозӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 31,
-            "zh": "禁止",
-            "pinyin": "jìnzhǐ",
-            "pos": "v.",
-            "meaning": {
-              "uz": "taqiqlamoq",
-              "ru": "запрещать",
-              "tj": "манъ кардан"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 32,
-            "zh": "座位",
-            "pinyin": "zuòwèi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "o'rindiq, joy",
-              "ru": "место, сиденье",
-              "tj": "ҷой, курсӣ"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "学期",
+              {
+                "uz": "semestr, o'quv muddati",
+                "ru": "семестр",
+                "tj": "нимсолаи таҳсил"
+              }
+            ],
+            [
+              "出生",
+              {
+                "uz": "tug'ilmoq",
+                "ru": "родиться",
+                "tj": "таваллуд шудан"
+              }
+            ],
+            [
+              "性别",
+              {
+                "uz": "jins",
+                "ru": "пол",
+                "tj": "ҷинс"
+              }
+            ],
+            [
+              "护照",
+              {
+                "uz": "pasport",
+                "ru": "паспорт",
+                "tj": "шиноснома"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -1276,6 +1169,62 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "so'roq olmoshining umumiy ma'nosi",
+              "ru": "вопросительные местоимения в обобщённом значении",
+              "tj": "ҷонишинҳои саволӣ бо маънои умумӣ"
+            },
+            "title_zh": "疑问代词活用",
+            "rule": {
+              "uz": "什么, 谁, 哪, 哪儿, 怎么 kabi so'roq olmoshlari 都/也 bilan 'har qanday/hamma' ma'nosini bera oladi.",
+              "ru": "什么, 谁, 哪, 哪儿, 怎么 с 都/也 могут значить 'любой/все'.",
+              "tj": "什么, 谁, 哪, 哪儿, 怎么 бо 都/也 маънои 'ҳар чиз/ҳама'-ро дода метавонанд."
+            },
+            "examples": [
+              {
+                "zh": "谁都有粗心填错的时候。",
+                "pinyin": "Shéi dōu yǒu cūxīn tián cuò de shíhou.",
+                "translation": {
+                  "uz": "Har kim beparvolik qilib noto'g'ri to'ldiradigan payti bo'ladi.",
+                  "ru": "У любого бывает момент, когда он по невнимательности заполняет неправильно.",
+                  "tj": "Ҳар кас гоҳе аз беэътиноӣ нодуруст пур мекунад."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "natijaga yetish",
+              "ru": "достигнуть результата",
+              "tj": "ба натиҷа расидан"
+            },
+            "title_zh": "上",
+            "rule": {
+              "uz": "Fe'ldan keyin kelib maqsadga yetgan yoki yetolmaganini bildiradi.",
+              "ru": "После глагола показывает, достигнута ли цель действия.",
+              "tj": "Пас аз феъл омада, расидан ё нарасидан ба мақсадро нишон медиҳад."
+            },
+            "examples": [
+              {
+                "zh": "看来今天吃不上羊肉饺子了。",
+                "pinyin": "Kànlái jīntiān chī bu shàng yángròu jiǎozi le.",
+                "translation": {
+                  "uz": "Ko'rinishidan, bugun qo'y go'shtli chuchvara yeyolmaymiz.",
+                  "ru": "Похоже, сегодня не удастся поесть пельмени с бараниной.",
+                  "tj": "Маълум мешавад, имрӯз самбӯсаи гӯсфандиро хӯрда наметавонем."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "看来今天吃不上羊肉____了。",
           "prompt": {
@@ -1285,8 +1234,8 @@
           },
           "options": [
             "饺子",
-            "学期",
             "性别",
+            "学期",
             "出生"
           ],
           "correct_index": 0,
@@ -1294,6 +1243,136 @@
             "uz": "To'g'ri: 饺子 (jiǎozi) — chuchvara",
             "ru": "Верно: 饺子 (jiǎozi) — пельмени, цзяоцзы",
             "tj": "Дуруст: 饺子 (jiǎozi) — самбӯсаи чинӣ"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "yashiringan narsani ko'rsatish",
+              "ru": "выявить, проявиться",
+              "tj": "ошкор шудан"
+            },
+            "title_zh": "出来",
+            "rule": {
+              "uz": "Fe'ldan keyin kelib, narsa yo'qdan bor bo'lishi yoki yashiringan holatdan ko'rinishi ma'nosini beradi.",
+              "ru": "После глагола показывает, что нечто появилось или стало видимым.",
+              "tj": "Пас аз феъл омаданаш пайдо ё ошкор шудани чизро мефаҳмонад."
+            },
+            "examples": [
+              {
+                "zh": "没看出来你跳得这么好！",
+                "pinyin": "Méi kàn chūlai nǐ tiào de zhème hǎo!",
+                "translation": {
+                  "uz": "Bunchalik yaxshi raqs tushishingni bilmagan ekanman!",
+                  "ru": "Не было видно, что ты так хорошо танцуешь!",
+                  "tj": "Маълум набуд, ки ту ин қадар хуб мерақсӣ!"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 4,
+            "title": {
+              "uz": "umuman olganda",
+              "ru": "в целом",
+              "tj": "умуман"
+            },
+            "title_zh": "总的来说",
+            "rule": {
+              "uz": "Umumiy baho yoki asosiy xulosani kiritadi.",
+              "ru": "Вводит общую оценку или главный вывод.",
+              "tj": "Баҳодиҳии умумӣ ё хулосаи асосиро меорад."
+            },
+            "examples": [
+              {
+                "zh": "总的来说，这套房子他很满意。",
+                "pinyin": "Zǒng de lái shuō, zhè tào fángzi tā hěn mǎnyì.",
+                "translation": {
+                  "uz": "Umuman olganda, u bu uydan juda mamnun.",
+                  "ru": "В целом он очень доволен этой квартирой.",
+                  "tj": "Умуман, ӯ аз ин хона хеле розӣ аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____，这套房子他很满意。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          },
+          "options": [
+            "出生",
+            "总的来说",
+            "学期",
+            "性别"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 总的来说 (zǒng de lái shuō) — umuman olganda",
+            "ru": "Верно: 总的来说 (zǒng de lái shuō) — в целом",
+            "tj": "Дуруст: 总的来说 (zǒng de lái shuō) — умуман"
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 5,
+            "title": {
+              "uz": "mohiyati ...da",
+              "ru": "суть заключается в",
+              "tj": "моҳият дар ... аст"
+            },
+            "title_zh": "在于",
+            "rule": {
+              "uz": "Narsaning asosiy sababi yoki mohiyatini ko'rsatadi, ko'proq yozma tilda ishlatiladi.",
+              "ru": "Показывает суть или основную причину, чаще в письменной речи.",
+              "tj": "Моҳият ё сабаби асосиро нишон медиҳад, бештар дар забони хаттӣ."
+            },
+            "examples": [
+              {
+                "zh": "生命在于运动。",
+                "pinyin": "Shēngmìng zài yú yùndòng.",
+                "translation": {
+                  "uz": "Hayotning mohiyati harakatdadir.",
+                  "ru": "Жизнь заключается в движении.",
+                  "tj": "Зиндагӣ дар ҳаракат аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Bunchalik yaxshi raqs tushishingni bilmagan ekanman!» — xitoychada qaysi biri?",
+            "ru": "«Не было видно, что ты так хорошо танцуешь!» — какое предложение по-китайски?",
+            "tj": "«Маълум набуд, ки ту ин қадар хуб мерақсӣ!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "谁都有粗心填错的时候。",
+            "没看出来你跳得这么好！",
+            "总的来说，这套房子他很满意。",
+            "看来今天吃不上羊肉饺子了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "没看出来你跳得这么好！ — Méi kàn chūlai nǐ tiào de zhème hǎo!",
+            "ru": "没看出来你跳得这么好！ — Méi kàn chūlai nǐ tiào de zhème hǎo!",
+            "tj": "没看出来你跳得这么好！ — Méi kàn chūlai nǐ tiào de zhème hǎo!"
           }
         }
       ]
@@ -1310,9 +1389,9 @@
         {
           "type": "translation_choice",
           "prompt": {
-            "uz": "'jins' xitoycha qaysi?",
-            "ru": "'пол' по-китайски?",
-            "tj": "'ҷинс' ба хитоӣ кадом аст?"
+            "uz": "'mayda pul' xitoycha qaysi?",
+            "ru": "'мелочь' по-китайски?",
+            "tj": "'пули майда' ба хитоӣ кадом аст?"
           },
           "title": {
             "uz": "Xitoycha qanday?",
@@ -1320,24 +1399,24 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "护照",
-            "性别",
             "出生",
-            "学期"
+            "性别",
+            "学期",
+            "零钱"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "jins = 性别 (xìngbié)",
-            "ru": "пол = 性别 (xìngbié)",
-            "tj": "ҷинс = 性别 (xìngbié)"
+            "uz": "mayda pul = 零钱 (língqián)",
+            "ru": "мелочь = 零钱 (língqián)",
+            "tj": "пули майда = 零钱 (língqián)"
           }
         },
         {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "hùzhào qaysi ieroglif?",
-            "ru": "Какой иероглиф читается hùzhào?",
-            "tj": "hùzhào кадом иероглиф аст?"
+            "uz": "dǎ zhāohu qaysi ieroglif?",
+            "ru": "Какой иероглиф читается dǎ zhāohu?",
+            "tj": "dǎ zhāohu кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -1345,16 +1424,16 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "性别",
             "学期",
-            "出生",
-            "护照",
-            "性别"
+            "打招呼",
+            "出生"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "护照 = pasport (hùzhào)",
-            "ru": "护照 = паспорт (hùzhào)",
-            "tj": "护照 = шиноснома (hùzhào)"
+            "uz": "打招呼 = salomlashmoq (dǎ zhāohu)",
+            "ru": "打招呼 = здороваться (dǎ zhāohu)",
+            "tj": "打招呼 = салом додан (dǎ zhāohu)"
           }
         },
         {
@@ -1367,12 +1446,12 @@
           "audio_text": "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
           "pinyin": "Lǎoshī, nín hǎo! Wǒ xīwàng xià ge xuéqī zài zhèli jìxù xuéxí, qǐngwèn hái xūyào chóngxīn shēnqǐng ma?",
           "options": [
-            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
-            "没关系，不用道歉，谁都有粗心填错的时候。申请表都被别人拿走了，我给你重新打印一份，你等一下。",
+            "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。",
             "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？",
-            "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。"
+            "没关系，不用道歉，谁都有粗心填错的时候。申请表都被别人拿走了，我给你重新打印一份，你等一下。",
+            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？ — Ustoz, salom! Keyingi semestrda ham shu yerda o'qishni davom ettirmoqchiman. Qayta ariza berishim kerakmi?",
             "ru": "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？ — Здравствуйте, учитель! Я хочу продолжить учёбу здесь в следующем семестре. Нужно снова подавать заявление?",
@@ -1454,8 +1533,8 @@
           "options": [
             "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。",
             "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
-            "没关系，不用道歉，谁都有粗心填错的时候。申请表都被别人拿走了，我给你重新打印一份，你等一下。",
-            "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？"
+            "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？",
+            "没关系，不用道歉，谁都有粗心填错的时候。申请表都被别人拿走了，我给你重新打印一份，你等一下。"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1465,24 +1544,53 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda 马克 avval nima deydi?",
+            "ru": "Что 马克 говорит в начале диалога?",
+            "tj": "Дар муколама 马克 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
           },
           "options": [
-            "新",
-            "斤",
-            "挺",
-            "老"
+            "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？",
+            "没关系，不用道歉，谁都有粗心填错的时候。申请表都被别人拿走了，我给你重新打印一份，你等一下。",
+            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
+            "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri: 老 — 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？ (Ustoz, salom! Keyingi semestrda ham shu yerda o'qishni davom ettirmoqchiman. Qayta ariza berishim kerakmi?)",
-            "ru": "Верно: 老 — 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？ (Здравствуйте, учитель! Я хочу продолжить учёбу здесь в следующем семестре. Нужно снова подавать заявление?)",
-            "tj": "Дуруст: 老 — 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？ (Устод, салом! Мехоҳам нимсолаи оянда ҳам дар ин ҷо таҳсилро давом диҳам. Оё боз ариза додан лозим?)"
+            "uz": "To'g'ri javob: 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
+            "ru": "Правильный ответ: 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
+            "tj": "Ҷавоби дуруст: 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 高老师 nima deydi?",
+            "ru": "Что 高老师 говорит в конце диалога?",
+            "tj": "Дар охири муколама 高老师 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。",
+            "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？",
+            "请把你的护照给我，我们要把护照复印一下。",
+            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 请把你的护照给我，我们要把护照复印一下。",
+            "ru": "Правильный ответ: 请把你的护照给我，我们要把护照复印一下。",
+            "tj": "Ҷавоби дуруст: 请把你的护照给我，我们要把护照复印一下。"
           }
         },
         {
@@ -1525,66 +1633,37 @@
             }
           ],
           "options": [
-            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
-            "请把你的护照给我，我们要把护照复印一下。",
-            "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。",
-            "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 请把你的护照给我，我们要把护照复印一下。",
-            "ru": "Правильный ответ: 请把你的护照给我，我们要把护照复印一下。",
-            "tj": "Ҷавоби дуруст: 请把你的护照给我，我们要把护照复印一下。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 马克 avval nima deydi?",
-            "ru": "Что 马克 говорит в начале диалога?",
-            "tj": "Дар муколама 马克 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
             "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。",
             "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？",
-            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
-            "没关系，不用道歉，谁都有粗心填错的时候。申请表都被别人拿走了，我给你重新打印一份，你等一下。"
+            "请把你的护照给我，我们要把护照复印一下。",
+            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri javob: 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
-            "ru": "Правильный ответ: 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
-            "tj": "Ҷавоби дуруст: 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 高老师 nima deydi?",
-            "ru": "Что 高老师 говорит в конце диалога?",
-            "tj": "Дар охири муколама 高老师 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "是的。给你表格，出生年月、性别、护照号码都要填，还有联系地址、联系电话。",
-            "真抱歉，我不小心把护照号码填错了，您能再给我一份新的申请表吗？",
-            "老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
-            "请把你的护照给我，我们要把护照复印一下。"
-          ],
-          "correct_index": 3,
-          "explanation": {
             "uz": "To'g'ri javob: 请把你的护照给我，我们要把护照复印一下。",
             "ru": "Правильный ответ: 请把你的护照给我，我们要把护照复印一下。",
             "tj": "Ҷавоби дуруст: 请把你的护照给我，我们要把护照复印一下。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "电",
+            "怀",
+            "老",
+            "旧"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 老 — 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？ (Ustoz, salom! Keyingi semestrda ham shu yerda o'qishni davom ettirmoqchiman. Qayta ariza berishim kerakmi?)",
+            "ru": "Верно: 老 — 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？ (Здравствуйте, учитель! Я хочу продолжить учёбу здесь в следующем семестре. Нужно снова подавать заявление?)",
+            "tj": "Дуруст: 老 — 老师，您好！我希望下个学期在这里继续学习，请问还需要重新申请吗？ (Устод, салом! Мехоҳам нимсолаи оянда ҳам дар ин ҷо таҳсилро давом диҳам. Оё боз ариза додан лозим?)"
           }
         }
       ]

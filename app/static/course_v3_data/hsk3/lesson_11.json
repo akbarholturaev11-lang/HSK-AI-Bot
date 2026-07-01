@@ -8,6 +8,8 @@
     "ru": "Изучить конструкцию 把 (часть 1), приблизительные числа '左右' и Гл+了+объект+了",
     "tj": "Омӯхтани сохтори 把 (қисми 1), рақамҳои тахминии '左右' ва Ф+了+объект+了"
   },
+  "intro_prebuilt": true,
+  "grammar_prebuilt": true,
   "active_words": [
     {
       "no": 1,
@@ -610,6 +612,31 @@
           }
         },
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "jiè qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiè?",
+            "tj": "jiè кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "借",
+            "还",
+            "图书馆",
+            "词典"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "借 = qarzga olmoq, qarzga bermoq (jiè)",
+            "ru": "借 = брать в долг, одалживать (jiè)",
+            "tj": "借 = қарз гирифтан, қарз додан (jiè)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 3,
@@ -635,6 +662,31 @@
               "ru": "возвращать",
               "tj": "баргардондан"
             }
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "借 talaffuzini tanlang:",
+            "ru": "Выберите произношение 借:",
+            "tj": "Талаффузи 借-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "túshūguǎn",
+            "huán",
+            "jiè",
+            "cídiǎn"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "借 — jiè",
+            "ru": "借 — jiè",
+            "tj": "借 — jiè"
           }
         },
         {
@@ -666,6 +718,47 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "灯 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 灯:",
+            "tj": "Маънои калимаи 灯-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "kutubxona",
+              "ru": "библиотека",
+              "tj": "китобхона"
+            },
+            {
+              "uz": "lug'at",
+              "ru": "словарь",
+              "tj": "луғат"
+            },
+            {
+              "uz": "chiroq",
+              "ru": "лампа, свет",
+              "tj": "чароғ"
+            },
+            {
+              "uz": "qarzga olmoq, qarzga bermoq",
+              "ru": "брать в долг, одалживать",
+              "tj": "қарз гирифтан, қарз додан"
+            }
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "灯 = chiroq (dēng)",
+            "ru": "灯 = лампа, свет (dēng)",
+            "tj": "灯 = чароғ (dēng)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 7,
@@ -691,6 +784,31 @@
               "ru": "забывать",
               "tj": "фаромӯш кардан"
             }
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "wàngjì qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wàngjì?",
+            "tj": "wàngjì кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "借",
+            "忘记",
+            "词典",
+            "图书馆"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "忘记 = unutmoq (wàngjì)",
+            "ru": "忘记 = забывать (wàngjì)",
+            "tj": "忘记 = фаромӯш кардан (wàngjì)"
           }
         },
         {
@@ -722,129 +840,70 @@
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 11,
-            "zh": "地铁",
-            "pinyin": "dìtiě",
-            "pos": "n.",
-            "meaning": {
-              "uz": "metro",
-              "ru": "метро",
-              "tj": "метро"
-            }
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "关 talaffuzini tanlang:",
+            "ru": "Выберите произношение 关:",
+            "tj": "Талаффузи 关-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "túshūguǎn",
+            "jiè",
+            "guān",
+            "cídiǎn"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "关 — guān",
+            "ru": "关 — guān",
+            "tj": "关 — guān"
           }
         },
         {
-          "type": "active_word",
-          "word": {
-            "no": 12,
-            "zh": "双",
-            "pinyin": "shuāng",
-            "pos": "m.",
-            "meaning": {
-              "uz": "juft narsalar uchun hisob so'zi",
-              "ru": "счётное слово для парных предметов",
-              "tj": "ҳисобвожа барои ҷуфт"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 13,
-            "zh": "筷子",
-            "pinyin": "kuàizi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "cho'pchalar",
-              "ru": "палочки для еды",
-              "tj": "чӯбчаҳои хӯрокхӯрӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 14,
-            "zh": "啤酒",
-            "pinyin": "píjiǔ",
-            "pos": "n.",
-            "meaning": {
-              "uz": "pivo",
-              "ru": "пиво",
-              "tj": "пиво"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 15,
-            "zh": "口",
-            "pinyin": "kǒu",
-            "pos": "m.",
-            "meaning": {
-              "uz": "qultum, luqma uchun hisob so'zi",
-              "ru": "счётное слово для глотков/кусков",
-              "tj": "ҳисобвожа барои ҷуръа/луқма"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 16,
-            "zh": "瓶子",
-            "pinyin": "píngzi",
-            "pos": "n.",
-            "meaning": {
-              "uz": "shisha, butilka",
-              "ru": "бутылка",
-              "tj": "шиша"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 17,
-            "zh": "笔记本(电脑)",
-            "pinyin": "bǐjìběn (diànnǎo)",
-            "pos": "n.",
-            "meaning": {
-              "uz": "noutbuk",
-              "ru": "ноутбук",
-              "tj": "ноутбук"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 18,
-            "zh": "电子邮件",
-            "pinyin": "diànzǐ yóujiàn",
-            "pos": "n.",
-            "meaning": {
-              "uz": "elektron pochta",
-              "ru": "электронная почта",
-              "tj": "почтаи электронӣ"
-            }
-          }
-        },
-        {
-          "type": "active_word",
-          "word": {
-            "no": 19,
-            "zh": "习惯",
-            "pinyin": "xíguàn",
-            "pos": "v./n.",
-            "meaning": {
-              "uz": "odatlanmoq; odat",
-              "ru": "привыкать; привычка",
-              "tj": "одат кардан; одат"
-            }
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "图书馆",
+              {
+                "uz": "kutubxona",
+                "ru": "библиотека",
+                "tj": "китобхона"
+              }
+            ],
+            [
+              "借",
+              {
+                "uz": "qarzga olmoq, qarzga bermoq",
+                "ru": "брать в долг, одалживать",
+                "tj": "қарз гирифтан, қарз додан"
+              }
+            ],
+            [
+              "词典",
+              {
+                "uz": "lug'at",
+                "ru": "словарь",
+                "tj": "луғат"
+              }
+            ],
+            [
+              "还",
+              {
+                "uz": "qaytarmoq",
+                "ru": "возвращать",
+                "tj": "баргардондан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         }
       ]
@@ -859,6 +918,43 @@
       "section_purpose": "grammar",
       "cards": [
         {
+          "type": "_grammar",
+          "g": {
+            "no": 1,
+            "title": {
+              "uz": "把-konstruktsiyasi①: 把 + OB + F + natija/yo'nalish to'ldiruvchisi",
+              "ru": "Конструкция 把①: 把 + объект + Гл + результатное/направленное дополнение",
+              "tj": "Сохтори 把①: 把 + объект + Ф + пуркунандаи натиҷа/самт"
+            },
+            "title_zh": "把字句①：把 + O + V + 结果/趋向补语",
+            "rule": {
+              "uz": "'把'-konstruktsiyasi ob'ektga nisbatan harakatning natijasini ta'kidlaydi. Tuzilma: Subekt + 把 + ob'ekt + fe'l + natija. Fe'l yolg'iz kelmaydi, oldida yoki keyin qo'shimcha element bo'lishi kerak.",
+              "ru": "Конструкция '把' подчёркивает результат действия над объектом. Структура: Подлежащее + 把 + объект + глагол + результат. Глагол не стоит один, нужен дополнительный элемент.",
+              "tj": "Сохтори '把' натиҷаи амал нисбат ба объектро таъкид мекунад. Сохтор: Мубтадо + 把 + объект + феъл + натиҷа. Феъл танҳо намеояд, унсури иловагӣ лозим аст."
+            },
+            "examples": [
+              {
+                "zh": "把空调关了！",
+                "pinyin": "Bǎ kōngtiáo guān le!",
+                "translation": {
+                  "uz": "Konditsionerni o'chir!",
+                  "ru": "Выключи кондиционер!",
+                  "tj": "Кондитсионерро хомӯш кун!"
+                }
+              },
+              {
+                "zh": "他把书放到桌子上了。",
+                "pinyin": "Tā bǎ shū fàng dào zhuōzi shàng le.",
+                "translation": {
+                  "uz": "U kitobni stolga qo'ydi.",
+                  "ru": "Он положил книгу на стол.",
+                  "tj": "Вай китобро ба болои миз монд."
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Konditsionerni o'chir!",
@@ -866,12 +962,12 @@
             "tj": "Кондитсионерро хомӯш кун!"
           },
           "tokens": [
-            "把",
+            "了",
             "空调",
+            "图书馆",
             "关",
             "借",
-            "了",
-            "图书馆"
+            "把"
           ],
           "answer_tokens": [
             "把",
@@ -886,24 +982,131 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "把____关了！",
-          "prompt": {
-            "uz": "Bo'sh joyga mos so'zni tanlang:",
-            "ru": "Выберите слово для пропуска:",
-            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
+          "type": "_grammar",
+          "g": {
+            "no": 2,
+            "title": {
+              "uz": "Taxminiy sonlar②: son + 左右",
+              "ru": "Приблизительные числа②: число + 左右",
+              "tj": "Рақамҳои тахминӣ②: рақам + 左右"
+            },
+            "title_zh": "概数②：数词 + 左右",
+            "rule": {
+              "uz": "'左右' so'z ma'nosi 'chap-o'ng' bo'lib, taxminiy miqdorni bildiradi. Son yoki vaqt so'zidan keyin qo'shiladi: 三十分钟左右 = taxminan 30 daqiqa. 'cha' so'ziga o'xshaydi.",
+              "ru": "'左右' буквально означает 'лево-право' и выражает приблизительное количество. Ставится после числа или слова времени: 三十分钟左右 = около 30 минут. Аналог русского 'примерно'.",
+              "tj": "'左右' аслан маънои 'чап-рост'-ро дорад ва миқдори тахминиро ифода мекунад. Баъди рақам ё вожаи вақт мегузорад: 三十分钟左右 = тахминан 30 дақиқа. Ба 'тахминан' монанд аст."
+            },
+            "examples": [
+              {
+                "zh": "我大概需要一个小时左右。",
+                "pinyin": "Wǒ dàgài xūyào yī gè xiǎoshí zuǒyòu.",
+                "translation": {
+                  "uz": "Menga taxminan bir soat kerak bo'ladi.",
+                  "ru": "Мне нужно примерно около часа.",
+                  "tj": "Ба ман тахминан як соат лозим мешавад."
+                }
+              },
+              {
+                "zh": "这个房间三十平米左右。",
+                "pinyin": "Zhège fángjiān sānshí píngmǐ zuǒyòu.",
+                "translation": {
+                  "uz": "Bu xona taxminan o'ttiz kvadrat metr.",
+                  "ru": "Эта комната около тридцати квадратных метров.",
+                  "tj": "Ин хона тахминан си метри мураббаъ аст."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "_grammar",
+          "g": {
+            "no": 3,
+            "title": {
+              "uz": "Fe'l + le + ob'ekt + le (harakat tugallangan)",
+              "ru": "Глагол + 了 + объект + 了 (действие завершено)",
+              "tj": "Феъл + 了 + объект + 了 (амал тамом шудааст)"
+            },
+            "title_zh": "动词 + 了 + 宾语 + 了",
+            "rule": {
+              "uz": "Bu tuzilma harakatning allaqachon tugallanganini yoki o'zgarish yuz berganini bildiradi. Birinchi 了 fe'ldan keyin, ikkinchisi gap oxirida keladi. Masalan: 关了门了 = eshikni allaqachon yopdim.",
+              "ru": "Эта конструкция указывает на то, что действие уже завершено или произошло изменение. Первое 了 ставится после глагола, второе — в конце предложения. Например: 关了门了 = уже закрыл дверь.",
+              "tj": "Ин сохтор нишон медиҳад, ки амал аллакай тамом шудааст ё тағйироте рух додааст. Аввалин 了 баъди феъл, дуввум — охири ҷумла меояд. Масалан: 关了门了 = аллакай дарро бастам."
+            },
+            "examples": [
+              {
+                "zh": "我把空调关了。",
+                "pinyin": "Wǒ bǎ kōngtiáo guān le.",
+                "translation": {
+                  "uz": "Men konditsionerni o'chirdim.",
+                  "ru": "Я выключил кондиционер.",
+                  "tj": "Ман кондитсионерро хомӯш кардам."
+                }
+              },
+              {
+                "zh": "他吃了饭了，不饿了。",
+                "pinyin": "Tā chī le fàn le, bú è le.",
+                "translation": {
+                  "uz": "U ovqat yedi, endi och emas.",
+                  "ru": "Он уже поел, больше не голоден.",
+                  "tj": "Вай хӯрок хӯрд, дигар гурусна нест."
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men konditsionerni o'chirdim.",
+            "ru": "Я выключил кондиционер.",
+            "tj": "Ман кондитсионерро хомӯш кардам."
           },
-          "options": [
+          "tokens": [
             "空调",
+            "关",
+            "把",
+            "我",
             "图书馆",
             "借",
-            "词典"
+            "了"
           ],
-          "correct_index": 0,
+          "answer_tokens": [
+            "我",
+            "把",
+            "空调",
+            "关",
+            "了"
+          ],
           "explanation": {
-            "uz": "To'g'ri: 空调 (kōngtiáo) — konditsioner",
-            "ru": "Верно: 空调 (kōngtiáo) — кондиционер",
-            "tj": "Дуруст: 空调 (kōngtiáo) — кондитсионер"
+            "uz": "我把空调关了。 — Wǒ bǎ kōngtiáo guān le.",
+            "ru": "我把空调关了。 — Wǒ bǎ kōngtiáo guān le.",
+            "tj": "我把空调关了。 — Wǒ bǎ kōngtiáo guān le."
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "«Konditsionerni o'chir!» — xitoychada qaysi biri?",
+            "ru": "«Выключи кондиционер!» — какое предложение по-китайски?",
+            "tj": "«Кондитсионерро хомӯш кун!» — кадом ҷумла ба хитоӣ аст?"
+          },
+          "title": {
+            "uz": "To'g'ri gapni tanlang",
+            "ru": "Выберите верное предложение",
+            "tj": "Ҷумлаи дурустро интихоб кунед"
+          },
+          "options": [
+            "我大概需要一个小时左右。",
+            "把空调关了！",
+            "这个房间三十平米左右。",
+            "我把空调关了。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "把空调关了！ — Bǎ kōngtiáo guān le!",
+            "ru": "把空调关了！ — Bǎ kōngtiáo guān le!",
+            "tj": "把空调关了！ — Bǎ kōngtiáo guān le!"
           }
         }
       ]
@@ -918,36 +1121,11 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'lug'at' xitoycha qaysi?",
-            "ru": "'словарь' по-китайски?",
-            "tj": "'луғат' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "词典",
-            "借",
-            "还",
-            "图书馆"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "lug'at = 词典 (cídiǎn)",
-            "ru": "словарь = 词典 (cídiǎn)",
-            "tj": "луғат = 词典 (cídiǎn)"
-          }
-        },
-        {
           "type": "hanzi_choice",
           "prompt": {
-            "uz": "huán qaysi ieroglif?",
-            "ru": "Какой иероглиф читается huán?",
-            "tj": "huán кадом иероглиф аст?"
+            "uz": "píjiǔ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается píjiǔ?",
+            "tj": "píjiǔ кадом иероглиф аст?"
           },
           "title": {
             "uz": "Ieroglifni tanlang",
@@ -955,43 +1133,16 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "还",
+            "啤酒",
             "图书馆",
-            "借",
-            "词典"
+            "词典",
+            "借"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "还 = qaytarmoq (huán)",
-            "ru": "还 = возвращать (huán)",
-            "tj": "还 = баргардондан (huán)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men avval ketdim.",
-            "ru": "Я сначала пойду.",
-            "tj": "Ман аввал меравам."
-          },
-          "tokens": [
-            "走",
-            "图书馆",
-            "了",
-            "先",
-            "我",
-            "借"
-          ],
-          "answer_tokens": [
-            "我",
-            "先",
-            "走",
-            "了"
-          ],
-          "explanation": {
-            "uz": "我先走了。 — Wǒ xiān zǒu le.",
-            "ru": "我先走了。 — Wǒ xiān zǒu le.",
-            "tj": "我先走了。 — Wǒ xiān zǒu le."
+            "uz": "啤酒 = pivo (píjiǔ)",
+            "ru": "啤酒 = пиво (píjiǔ)",
+            "tj": "啤酒 = пиво (píjiǔ)"
           }
         },
         {
@@ -1014,6 +1165,58 @@
             "uz": "我先走了。 — Men avval ketdim.",
             "ru": "我先走了。 — Я сначала пойду.",
             "tj": "我先走了。 — Ман аввал меравам."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'cho'pchalar' xitoycha qaysi?",
+            "ru": "'палочки для еды' по-китайски?",
+            "tj": "'чӯбчаҳои хӯрокхӯрӣ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "词典",
+            "借",
+            "图书馆",
+            "筷子"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "cho'pchalar = 筷子 (kuàizi)",
+            "ru": "палочки для еды = 筷子 (kuàizi)",
+            "tj": "чӯбчаҳои хӯрокхӯрӣ = 筷子 (kuàizi)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men avval ketdim.",
+            "ru": "Я сначала пойду.",
+            "tj": "Ман аввал меравам."
+          },
+          "tokens": [
+            "图书馆",
+            "先",
+            "了",
+            "借",
+            "我",
+            "走"
+          ],
+          "answer_tokens": [
+            "我",
+            "先",
+            "走",
+            "了"
+          ],
+          "explanation": {
+            "uz": "我先走了。 — Wǒ xiān zǒu le.",
+            "ru": "我先走了。 — Wǒ xiān zǒu le.",
+            "tj": "我先走了。 — Wǒ xiān zǒu le."
           }
         },
         {
@@ -1089,12 +1292,12 @@
           "audio_text": "我先走了。",
           "pinyin": "Wǒ xiān zǒu le.",
           "options": [
+            "我先走了。",
             "帮我把这本词典还了吧。",
             "我去图书馆借本书。",
-            "我先走了。",
             "你去哪儿？"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "我先走了。 — Men avval ketdim.",
             "ru": "我先走了。 — Я сначала пойду.",
@@ -1110,16 +1313,41 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "国",
-            "新",
-            "斤",
-            "我"
+            "下",
+            "旧",
+            "我",
+            "电"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 我 — 我先走了。 (Men avval ketdim.)",
             "ru": "Верно: 我 — 我先走了。 (Я сначала пойду.)",
             "tj": "Дуруст: 我 — 我先走了。 (Ман аввал меравам.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 同学 nima deydi?",
+            "ru": "Что 同学 говорит в конце диалога?",
+            "tj": "Дар охири муколама 同学 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз муколама:"
+          },
+          "options": [
+            "我去图书馆借本书。",
+            "我先走了。",
+            "你去哪儿？",
+            "好的，放心吧。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 好的，放心吧。",
+            "ru": "Правильный ответ: 好的，放心吧。",
+            "tj": "Ҷавоби дуруст: 好的，放心吧。"
           }
         },
         {
@@ -1162,10 +1390,10 @@
             }
           ],
           "options": [
-            "我去图书馆借本书。",
+            "我先走了。",
             "你去哪儿？",
             "好的，放心吧。",
-            "我先走了。"
+            "我去图书馆借本书。"
           ],
           "correct_index": 2,
           "explanation": {
@@ -1187,41 +1415,16 @@
             "tj": "Савол аз муколама:"
           },
           "options": [
-            "你去哪儿？",
-            "我先走了。",
             "帮我把这本词典还了吧。",
-            "我去图书馆借本书。"
+            "我去图书馆借本书。",
+            "你去哪儿？",
+            "我先走了。"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 我先走了。",
             "ru": "Правильный ответ: 我先走了。",
             "tj": "Ҷавоби дуруст: 我先走了。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 同学 nima deydi?",
-            "ru": "Что 同学 говорит в конце диалога?",
-            "tj": "Дар охири муколама 同学 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз муколама:"
-          },
-          "options": [
-            "你去哪儿？",
-            "好的，放心吧。",
-            "我先走了。",
-            "我去图书馆借本书。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 好的，放心吧。",
-            "ru": "Правильный ответ: 好的，放心吧。",
-            "tj": "Ҷавоби дуруст: 好的，放心吧。"
           }
         }
       ]
