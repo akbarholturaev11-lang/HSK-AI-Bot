@@ -26,6 +26,7 @@ class VoicePracticeSession(Base):
         nullable=True,
     )
     target_words: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
+    review_words: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
     started_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=lambda: datetime.now(timezone.utc),

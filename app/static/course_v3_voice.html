@@ -57,6 +57,31 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 .corr{text-align:left;margin-top:14px;max-height:148px;overflow-y:auto}
 .corr .ct{font-size:12px;font-weight:600;color:var(--cin2);margin-bottom:6px}
 .corr .ci{font-size:13px;color:var(--ink);background:var(--cinbg);border:1px solid rgba(194,64,58,.18);border-radius:10px;padding:8px 10px;margin-bottom:6px;line-height:1.4}
+.badge{display:inline-flex;align-items:center;gap:6px;margin:12px auto 0;padding:8px 14px;border-radius:999px;background:rgba(47,125,94,.12);border:1px solid rgba(47,125,94,.26);color:var(--jade);font-size:14px;font-weight:600}
+.stats{display:flex;gap:10px;margin-top:14px}
+.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 8px;text-align:center}
+.stat .n{font-size:22px;font-weight:600;line-height:1.1}
+.stat .l{font-size:11px;color:var(--ink2);margin-top:2px}
+.stat.g .n{color:var(--jade)}
+.stat.m .n{color:var(--cin2)}
+.dtoggle{width:100%;background:none;border:1px solid var(--line);border-radius:13px;color:var(--ink2);font-family:inherit;font-size:14px;font-weight:500;padding:12px;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px}
+.tx{display:none;text-align:left;margin-top:12px;max-height:230px;overflow-y:auto}
+.tx.on{display:block}
+.tx .grp{font-size:12px;font-weight:600;margin:10px 0 6px;display:flex;align-items:center;gap:5px}
+.tx .grp.g{color:var(--jade)}.tx .grp.m{color:var(--cin2)}
+.txr{border-radius:12px;padding:9px 11px;margin-bottom:7px;line-height:1.4}
+.txr.g{background:rgba(47,125,94,.08);border:1px solid rgba(47,125,94,.2)}
+.txr.m{background:var(--cinbg);border:1px solid rgba(194,64,58,.2)}
+.txr .u{font-size:13px;color:var(--ink)}
+.txr .u b{color:var(--ink3);font-weight:600}
+.txr .fx{font-size:12.5px;color:var(--cin2);margin-top:4px}
+.txr .fx b{font-weight:600}
+.txr .ai{margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.txr .ai .lbl{font-size:11px;color:var(--ink3);font-weight:600;margin-bottom:2px}
+.txr .ai .azh{font-size:15px;color:var(--ink);line-height:1.4}
+.txr .ai .apy{font-size:12.5px;color:var(--cin2);font-weight:500;margin-top:1px}
+.txr .ai .atr{font-size:12.5px;color:var(--ink2);margin-top:1px}
+.savednote{font-size:12px;color:var(--ink2);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
 </style>
 </head>
 <body>
@@ -87,7 +112,11 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
   <div class="done" id="done"><div class="dcard">
     <div class="dchar" id="dchar"></div>
     <h3 id="dh"></h3><p id="dp"></p>
-    <div class="corr" id="dcorr"></div>
+    <div class="badge" id="dbadge"><i class="ti ti-sparkles"></i> <span id="dbadget"></span></div>
+    <div class="stats" id="dstats"></div>
+    <button class="dtoggle" id="dtoggle" onclick="toggleDialog()"><i class="ti ti-messages" id="dtoggleic"></i> <span id="dtogglet"></span></button>
+    <div class="tx" id="dtx"></div>
+    <div class="savednote" id="dsaved"></div>
     <button class="b" onclick="reset()"><i class="ti ti-refresh"></i> <span id="db"></span></button>
     <button class="b2" onclick="goBack()" id="db2"></button>
   </div></div>
@@ -101,9 +130,9 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
-var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analyzing:"Анализирую…",connecting:"Соединение…",tapStart:"Нажмите микрофон и говорите",heard:"Вы:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",replWord:"реплик",corrTitle:"Что подправить",again:"Ещё разговор",exit:"Выйти",micDeny:"Разрешите доступ к микрофону в настройках Telegram.",sendErr:"Ошибка. Попробуйте ещё раз.",tooShort:"Слишком коротко. Скажите ещё раз.",noSupport:"Запись голоса недоступна на этом устройстве.",startBot:"Сначала откройте бота и нажмите /start.",limitTitle:"Лимит достигнут",limitSub:"Бесплатный разговор использован. Откройте Premium для безлимита.",premiumBtn:"Открыть Premium"},
-  uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",tapStart:"Mikrofonni bosing va gapiring",heard:"Siz:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Limit tugadi",limitSub:"Bepul suhbat ishlatildi. Cheksiz uchun Premium oching.",premiumBtn:"Premium ochish"},
-  tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",tapStart:"Микрофонро пахш карда гап занед",heard:"Шумо:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Лимит ба охир расид",limitSub:"Сӯҳбати ройгон истифода шуд. Барои бепоён Premium кушоед.",premiumBtn:"Кушодани Premium"}}[LANG];
+var L={ru:{speaking:"Говорит…",listening:"Слушаю вас…",analyzing:"Анализирую…",connecting:"Соединение…",tapStart:"Нажмите микрофон и говорите",heard:"Вы:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Хороший разговор!",replWord:"реплик",corrTitle:"Что подправить",again:"Ещё разговор",exit:"Выйти",micDeny:"Разрешите доступ к микрофону в настройках Telegram.",sendErr:"Ошибка. Попробуйте ещё раз.",tooShort:"Слишком коротко. Скажите ещё раз.",noSupport:"Запись голоса недоступна на этом устройстве.",startBot:"Сначала откройте бота и нажмите /start.",limitTitle:"Лимит достигнут",limitSub:"Бесплатный разговор использован. Откройте Premium для безлимита.",premiumBtn:"Открыть Premium",learnBadge:"Ух ты, я уже говорю по-китайски!",showDialog:"Посмотреть весь диалог",hideDialog:"Скрыть диалог",goodTitle:"Где вы говорили отлично",mistakeTitle:"Что подправить",statGood:"удачных реплик",statMistake:"на доработку",savedToMistakes:"Ошибки добавлены в раздел «Мои ошибки»",noMistakes:"Без ошибок — отличная работа!",fixLabel:"Правильно:"},
+  uz:{speaking:"Gapiryapti…",listening:"Sizni tinglayapman…",analyzing:"Tahlil qilyapman…",connecting:"Ulanyapti…",tapStart:"Mikrofonni bosing va gapiring",heard:"Siz:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Yaxshi suhbat!",replWord:"javob",corrTitle:"Nimani tuzatamiz",again:"Yana suhbat",exit:"Chiqish",micDeny:"Telegram sozlamalaridan mikrofonga ruxsat bering.",sendErr:"Xatolik. Qaytadan urinib ko'ring.",tooShort:"Juda qisqa. Yana bir bor gapiring.",noSupport:"Bu qurilmada ovoz yozish qo'llab-quvvatlanmaydi.",startBot:"Avval botni oching va /start bosing.",limitTitle:"Limit tugadi",limitSub:"Bepul suhbat ishlatildi. Cheksiz uchun Premium oching.",premiumBtn:"Premium ochish",learnBadge:"Voy, men xitoycha gapiryapman!",showDialog:"To'liq dialogni ko'rish",hideDialog:"Dialogni yashirish",goodTitle:"Qayerda zo'r gapirdingiz",mistakeTitle:"Nimani tuzatamiz",statGood:"zo'r javob",statMistake:"tuzatish",savedToMistakes:"Xatolar «Xatolarim» bo'limiga qo'shildi",noMistakes:"Xatosiz — ajoyib!",fixLabel:"To'g'ri:"},
+  tj:{speaking:"Сухан мегӯяд…",listening:"Шуморо гӯш мекунам…",analyzing:"Таҳлил мекунам…",connecting:"Пайвастшавӣ…",tapStart:"Микрофонро пахш карда гап занед",heard:"Шумо:",baoName:"阿宝 · Aobao",liName:"李老师 · Li Laoshi",doneTitle:"Сӯҳбати хуб!",replWord:"ҷавоб",corrTitle:"Чиро ислоҳ кунем",again:"Боз сӯҳбат",exit:"Баромадан",micDeny:"Аз танзимоти Telegram ба микрофон иҷозат диҳед.",sendErr:"Хатогӣ. Бори дигар кӯшиш кунед.",tooShort:"Хеле кӯтоҳ. Бори дигар гап занед.",noSupport:"Дар ин дастгоҳ сабти овоз дастрас нест.",startBot:"Аввал ботро кушоед ва /start пахш кунед.",limitTitle:"Лимит ба охир расид",limitSub:"Сӯҳбати ройгон истифода шуд. Барои бепоён Premium кушоед.",premiumBtn:"Кушодани Premium",learnBadge:"Оҳ, ман чинӣ гап зада истодаам!",showDialog:"Дидани муколамаи пурра",hideDialog:"Пинҳон кардани муколама",goodTitle:"Дар куҷо хуб гап задед",mistakeTitle:"Чиро ислоҳ кунем",statGood:"ҷавоби хуб",statMistake:"ислоҳ",savedToMistakes:"Хатоҳо ба бахши «Хатоҳои ман» илова шуданд",noMistakes:"Бе хато — офарин!",fixLabel:"Дуруст:"}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 /* ---- subtitle (hanzi/pinyin/translation) visibility toggle ---- */
 var SUB_KEY="hsk_voice_sub";
@@ -240,21 +269,56 @@ function renderReply(res){
   setTimeout(function(){if(started){setChar("happy");setStatus(L.tapStart);setDots("dots")}},1100);
 }
 function endCall(){
-  if(!started||!sess){showDone(turn,0,corrections);return;}
+  if(!started||!sess){showDoneResult({message_count:turn});return;}
   stopHard();var sid=sess;started=false;sess=null;
   fetch("/api/voice-practice/session/end",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({initData:initData(),session_id:sid})}).then(function(r){return r.json()})
-   .then(function(j){var rw=j&&j.reward||{};var xp=rw.xp_awarded||rw.xp||0;showDone((j&&j.message_count)||turn,xp,(j&&j.corrections)||corrections)})
-   .catch(function(){showDone(turn,0,corrections)});
+   .then(function(j){showDoneResult(j||{})})
+   .catch(function(){showDoneResult({message_count:turn})});
 }
-function showDone(count,xp,corrs){
+function txRow(t){
+  var good=!!t.good;
+  var h='<div class="txr '+(good?"g":"m")+'"><div class="u"><b>'+L.heard+'</b> '+esc(t.user||"")+'</div>';
+  if(!good&&t.correction)h+='<div class="fx"><b>'+L.fixLabel+'</b> '+esc(t.correction)+'</div>';
+  if(t.assistant){
+    h+='<div class="ai"><div class="lbl">'+esc(PERS[persona].name)+'</div>'
+      +'<div class="azh han">'+esc(t.assistant)+'</div>';
+    if(t.pinyin)h+='<div class="apy">'+esc(t.pinyin)+'</div>';
+    if(t.translation)h+='<div class="atr">'+esc(t.translation)+'</div>';
+    h+='</div>';
+  }
+  return h+'</div>';
+}
+function showDoneResult(j){
+  j=j||{};
+  var rw=j.reward||{};var xp=rw.xp_awarded||rw.xp||0;
+  var count=Number(j.message_count)||turn||0;
+  var tx=(j.transcript&&j.transcript.length)?j.transcript:[];
+  var good=(typeof j.good_count==="number")?j.good_count:tx.filter(function(t){return t.good}).length;
+  var bad=(typeof j.mistake_count==="number")?j.mistake_count:tx.filter(function(t){return !t.good}).length;
   $("dchar").innerHTML=chr("happy",persona);
   $("dh").textContent=L.doneTitle;
   $("dp").textContent=count+" "+L.replWord+(xp?(" · +"+xp+" XP"):"");
-  var html="";if(corrs&&corrs.length){html='<div class="ct">'+L.corrTitle+'</div>';corrs.forEach(function(c){if(String(c||"").trim())html+='<div class="ci">'+esc(c)+'</div>'})}
-  $("dcorr").innerHTML=html;
+  $("dbadget").textContent=L.learnBadge;
+  $("dstats").innerHTML='<div class="stat g"><div class="n">'+good+'</div><div class="l">'+L.statGood+'</div></div>'
+    +'<div class="stat m"><div class="n">'+bad+'</div><div class="l">'+L.statMistake+'</div></div>';
+  // To'liq dialog: xronologik, yashil = zo'r, qizil = xato (tuzatish bilan)
+  var body="";
+  if(tx.length){tx.forEach(function(t){body+=txRow(t)});}
+  $("dtx").innerHTML=body;$("dtx").classList.remove("on");
+  var hasTx=tx.length>0;
+  $("dtoggle").style.display=hasTx?"flex":"none";
+  $("dtogglet").textContent=L.showDialog;$("dtoggleic").className="ti ti-messages";
+  $("dsaved").innerHTML=bad>0
+    ?('<i class="ti ti-bookmark"></i> '+esc(L.savedToMistakes))
+    :(hasTx?('<i class="ti ti-circle-check"></i> '+esc(L.noMistakes)):"");
   $("db").textContent=L.again;$("db2").textContent=L.exit;
   $("done").classList.add("on");ring([659,784,988]);
+}
+function toggleDialog(){
+  var tx=$("dtx"),on=tx.classList.toggle("on");
+  $("dtogglet").textContent=on?L.hideDialog:L.showDialog;
+  $("dtoggleic").className=on?"ti ti-chevron-up":"ti ti-messages";
 }
 function showPaywall(){
   $("pwchar").innerHTML=chr("happy",persona);

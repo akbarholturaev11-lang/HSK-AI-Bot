@@ -66,6 +66,24 @@ ROLE_PROMPTS = {
     "social": "You are an engaging Chinese conversation partner. Adapt the topic to the learner's reply.",
 }
 
+# Qat'iy daraja nazorati (ENG muhim): AI hech qachon userning HSK darajasidan
+# yuqori so'z yoki grammatika ishlatmasligi kerak. Har bir daraja uchun aniq
+# so'z/gap uzunligi cheklovi beriladi.
+LEVEL_GUIDANCE = {
+    "beginner": "Learner is an absolute beginner (HSK1). Use ONLY the ~150 most basic HSK1 words. Sentences must be 3-6 characters, present tense, no idioms.",
+    "hsk1": "Learner is HSK1. Use ONLY HSK1 vocabulary and grammar. Short sentences (3-7 characters), no HSK2+ words, no idioms or slang.",
+    "hsk2": "Learner is HSK2. Use ONLY HSK1-HSK2 vocabulary and grammar. Simple sentences (up to ~9 characters). Avoid any HSK3+ words.",
+    "hsk3": "Learner is HSK3. Use ONLY HSK1-HSK3 vocabulary and grammar. Everyday sentences. Avoid HSK4+ words and complex written-style structures.",
+    "hsk4": "Learner is HSK4. Use ONLY HSK1-HSK4 vocabulary and grammar. Natural but not advanced; avoid HSK5+ words, literary idioms, and long clauses.",
+    "hsk1_2": "Learner knows HSK1-HSK2. Use ONLY HSK1-HSK2 vocabulary and grammar. Simple short sentences, no HSK3+ words.",
+    "hsk3_4": "Learner knows HSK3-HSK4. Use ONLY HSK1-HSK4 vocabulary and grammar. Avoid HSK5+ words and literary structures.",
+}
+
+
+def _level_guidance(level: str) -> str:
+    return LEVEL_GUIDANCE.get(level) or LEVEL_GUIDANCE["hsk1"]
+
+
 LANGUAGE_NAMES = {"ru": "Russian", "tj": "Tajik", "uz": "Uzbek"}
 
 OPENING_MESSAGES = {
@@ -105,18 +123,8 @@ class VoicePracticeService:
         self.progress_repo = CourseProgressRepository(session)
         self.lesson_repo = CourseLessonRepository(session)
 
-    async def _course_context(self, user, language: str) -> dict:
-        progress = await self.progress_repo.get_by_user_id(user.id)
-        if not progress or not progress.current_lesson_id:
-            return {"lesson_id": None, "lesson_order": None, "title": "", "words": []}
-        lesson = await self.lesson_repo.get_by_id(progress.current_lesson_id)
-        if not lesson:
-            return {"lesson_id": None, "lesson_order": None, "title": "", "words": []}
-        payload = await CourseMiniAppLessonService(self.session).get_payload(
-            lesson_order=int(lesson.lesson_order),
-            lang=language,
-            level=str(lesson.level),
-        )
+    @staticmethod
+    def _extract_words(payload: dict | None, limit: int) -> list[dict]:
         words = []
         for item in (payload or {}).get("vocabulary", []):
             if not isinstance(item, dict) or not item.get("zh"):
@@ -128,14 +136,53 @@ class VoicePracticeService:
                     "meaning": str(item.get("meaning") or "")[:160],
                 }
             )
-            if len(words) == 4:
+            if len(words) >= limit:
                 break
+        return words
+
+    async def _course_context(self, user, language: str) -> dict:
+        empty = {"lesson_id": None, "lesson_order": None, "title": "", "words": [], "review_words": []}
+        progress = await self.progress_repo.get_by_user_id(user.id)
+        if not progress or not progress.current_lesson_id:
+            return empty
+        lesson = await self.lesson_repo.get_by_id(progress.current_lesson_id)
+        if not lesson:
+            return empty
+        lesson_service = CourseMiniAppLessonService(self.session)
+        payload = await lesson_service.get_payload(
+            lesson_order=int(lesson.lesson_order),
+            lang=language,
+            level=str(lesson.level),
+        )
+        words = self._extract_words(payload, 4)
+
+        # Takror uchun: user allaqachon o'tgan oldingi darslardan (order kichikroq)
+        # bir nechta so'z yig'amiz. Li Laoshi shularni suhbatga qo'shib takrorlatadi.
+        review_words: list[dict] = []
+        seen = {w["zh"] for w in words}
+        current_order = int(lesson.lesson_order)
+        for prev_order in range(current_order - 1, 0, -1):
+            if len(review_words) >= 6:
+                break
+            prev_payload = await lesson_service.get_payload(
+                lesson_order=prev_order,
+                lang=language,
+                level=str(lesson.level),
+            )
+            for word in self._extract_words(prev_payload, 3):
+                if word["zh"] in seen:
+                    continue
+                seen.add(word["zh"])
+                review_words.append(word)
+                if len(review_words) >= 6:
+                    break
         return {
             "lesson_id": lesson.id,
-            "lesson_order": int(lesson.lesson_order),
+            "lesson_order": current_order,
             "title": str(lesson.title or "")[:160],
             "level": str(lesson.level or ""),
             "words": words,
+            "review_words": review_words,
         }
 
     @staticmethod
@@ -238,7 +285,7 @@ class VoicePracticeService:
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         course_context = await self._course_context(user, language) if user else {
-            "lesson_id": None, "lesson_order": None, "title": "", "words": []
+            "lesson_id": None, "lesson_order": None, "title": "", "words": [], "review_words": []
         }
         item = VoicePracticeSession(
             id=str(uuid.uuid4()),
@@ -251,6 +298,7 @@ class VoicePracticeService:
             corrections=[],
             lesson_id=course_context.get("lesson_id"),
             target_words=course_context.get("words") or [],
+            review_words=course_context.get("review_words") or [],
         )
         self.session.add(item)
         await self.session.commit()
@@ -310,18 +358,34 @@ class VoicePracticeService:
         target_language = LANGUAGE_NAMES.get(item.language, "Russian")
         recent = list(item.history or [])[-4:]
         target_words = json.dumps(list(item.target_words or [])[:3], ensure_ascii=False)
+        review_words = json.dumps(list(item.review_words or [])[:6], ensure_ascii=False)
         next_dialog_no = int(item.turn_count or 0) + 1
         is_closing_dialog = next_dialog_no >= MAX_DIALOGS_PER_SESSION
         closing_instruction = (
-            "Final exchange: make a sudden natural excuse, say goodbye in Chinese, no follow-up question."
+            "THIS IS THE FINAL EXCHANGE: no matter the topic, warmly wrap up now — give a short natural "
+            "reason to go, say a friendly goodbye in Chinese (e.g. 再见/下次聊), and DO NOT ask any follow-up question."
             if is_closing_dialog
             else "End with one short playful follow-up question when natural."
         )
+        # Li Laoshi (o'qituvchi) — takrorlash rejimi: user oldin o'tgan so'zlarni suhbatga
+        # qo'shib, tabiiy tarzda takrorlatadi.
+        if item.role == "teacher_li":
+            review_instruction = (
+                f"You are reviewing with the learner. Words they ALREADY studied: {review_words}. "
+                "Naturally weave 1 of these studied words into your reply so the learner hears and repeats it, "
+                "and gently prompt them to use it. "
+            )
+        else:
+            review_instruction = ""
         messages = [
             {
                 "role": "system",
                 "content": (
-                    f"{ROLE_PROMPTS[item.role]} Level: {item.level}. Target words: {target_words}. "
+                    f"{ROLE_PROMPTS[item.role]} "
+                    f"STRICT LEVEL RULE (most important): {_level_guidance(item.level)} "
+                    "Never use any word or grammar above the learner's level, even if it feels natural. "
+                    "If you must reference something harder, replace it with a simpler word the learner knows. "
+                    f"Current-lesson target words: {target_words}. {review_instruction}"
                     "Fast voice roleplay. Reply in 1 short Chinese sentence, rarely 2. "
                     "Use one target word only if natural. Be playful: joke, laugh, lightly tease weak answers; "
                     "never humiliate. Open dopamine topics: food cravings, travel, friends, funny mistakes, wins, "
@@ -418,7 +482,15 @@ class VoicePracticeService:
             raise VoicePracticeError("AI_FAILED", "Voice AI failed. Try again.", 502) from error
 
         history = list(item.history or [])
-        history.append({"user": transcription, "assistant": reply["chinese_reply"]})
+        history.append(
+            {
+                "user": transcription,
+                "assistant": reply["chinese_reply"],
+                "pinyin": reply.get("pinyin") or "",
+                "translation": reply.get("translation") or "",
+                "correction": reply.get("correction") or None,
+            }
+        )
         item.history = history[-20:]
         if reply["correction"]:
             item.corrections = [*list(item.corrections or []), reply["correction"]][-20:]
@@ -559,21 +631,62 @@ class VoicePracticeService:
             started_at = started_at.replace(tzinfo=timezone.utc)
         item.status = "completed"
         item.ended_at = ended_at
+
+        # To'liq dialog transkripti: har bir navbat uchun user jumlasi, AI javobi,
+        # pinyin/tarjima va xato bo'lgan-bo'lmagani. Frontend "zo'r gapirgan joylar"ni
+        # (xato=null) yashil, xatolarni qizil qilib ko'rsatadi.
+        transcript: list[dict] = []
+        good_count = 0
+        mistake_count = 0
+        for entry in list(item.history or []):
+            if not isinstance(entry, dict):
+                continue
+            user_text = str(entry.get("user") or "").strip()
+            if not user_text:
+                continue
+            correction = str(entry.get("correction") or "").strip() or None
+            if correction:
+                mistake_count += 1
+            else:
+                good_count += 1
+            transcript.append(
+                {
+                    "user": user_text,
+                    "assistant": str(entry.get("assistant") or "").strip(),
+                    "pinyin": str(entry.get("pinyin") or "").strip(),
+                    "translation": str(entry.get("translation") or "").strip(),
+                    "correction": correction,
+                    "good": correction is None,
+                }
+            )
+
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if user:
-            await CourseMistakeService(self.session).record_items(
-                user,
-                [
+            # Xatolarim bo'limi uchun: userning aynan noto'g'ri jumlasini savol,
+            # to'g'ri variantni javob qilib yozamiz (avvalgidek savol=tuzatish emas).
+            mistake_items = []
+            for entry in list(item.history or []):
+                if not isinstance(entry, dict):
+                    continue
+                correction = str(entry.get("correction") or "").strip()
+                if not correction:
+                    continue
+                user_text = str(entry.get("user") or "").strip()
+                mistake_items.append(
                     {
-                        "question": str(correction),
-                        "correction": str(correction),
+                        "question": user_text or correction,
+                        "selected_answer": user_text or None,
+                        "correct_answer": correction,
+                        "explanation": correction,
                         "category": "pronunciation",
                     }
-                    for correction in list(item.corrections or [])
-                    if str(correction or "").strip()
-                ],
+                )
+            await CourseMistakeService(self.session).record_items(
+                user,
+                mistake_items,
                 source="voice",
                 level=item.level,
+                lesson_id=item.lesson_id,
             )
             reward = await CourseGamificationService(self.session).award(
                 user,
@@ -590,5 +703,8 @@ class VoicePracticeService:
             "duration_seconds": max(0, int((ended_at - started_at).total_seconds())),
             "message_count": item.turn_count,
             "corrections": list(item.corrections or []),
+            "transcript": transcript,
+            "good_count": good_count,
+            "mistake_count": mistake_count,
             "reward": reward,
         }
