@@ -1258,6 +1258,8 @@ async def v3_course_ad(
 
         service = CourseAdService(session)
         ads = await service.list_active_payloads(language=ad_language)
+        if service.media_backup_changed:
+            await session.commit()
         if not ads:
             return JSONResponse(status_code=404, content={"ok": False, "error": "course_ad_not_found"})
         return JSONResponse(
@@ -2627,7 +2629,10 @@ async def admin_miniapp_course_ads(request: Request):
     if not _is_admin_id(telegram_id):
         return JSONResponse(status_code=403, content={"ok": False, "error": "admin_only"})
     async with async_session_maker() as session:
-        items = await CourseAdService(session).list_for_admin()
+        service = CourseAdService(session)
+        items = await service.list_for_admin()
+        if service.media_backup_changed:
+            await session.commit()
     return JSONResponse(content={"ok": True, "items": items})
 
 
@@ -2665,8 +2670,11 @@ async def admin_miniapp_course_ads_upload(request: Request):
             raw_ext=raw_ext,
             telegram_id=telegram_id,
         )
+        media_backup = await asyncio.to_thread(CourseAdService.read_media_file, filename)
     except CourseAdVideoError as exc:
         return JSONResponse(status_code=400, content={"ok": False, "error": str(exc)})
+    except OSError:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "media_upload_failed"})
 
     title = str(form.get("title") or "Course ad").strip()[:120] or "Course ad"
     duration_seconds = CourseAdService.normalize_duration(form.get("duration_seconds"))
@@ -2679,6 +2687,7 @@ async def admin_miniapp_course_ads_upload(request: Request):
             duration_seconds=duration_seconds,
             link_url=link_url,
             language=language,
+            media_blob=media_backup,
             created_by_telegram_id=telegram_id,
         )
         await session.commit()
@@ -2748,7 +2757,13 @@ async def serve_course_ad_media(filename: str):
     safe = os.path.basename(filename)
     path = os.path.join(COURSE_AD_MEDIA_ROOT, safe)
     if not os.path.exists(path):
-        return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
+        async with async_session_maker() as session:
+            result = await session.execute(
+                select(CourseAdCreative).where(CourseAdCreative.media_path == safe)
+            )
+            ad = result.scalar_one_or_none()
+            if not ad or not CourseAdService.media_available(ad):
+                return JSONResponse(status_code=404, content={"ok": False, "error": "not_found"})
     ext = os.path.splitext(safe.lower())[1]
     media_type = {
         ".mp4": "video/mp4",

@@ -5,7 +5,7 @@ from contextlib import AbstractAsyncContextManager
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 
 from app.db import models  # noqa: F401
 from app.db.base import Base
@@ -100,6 +100,13 @@ class CourseMiniAppModelTests(unittest.TestCase):
         self.assertIn("subscription_entry_events", table_names)
         self.assertIn("course_ad_creatives", table_names)
         self.assertIn("course_ad_views", table_names)
+        ad_columns = {
+            column["name"]
+            for column in inspect(engine).get_columns("course_ad_creatives")
+        }
+        self.assertIn("media_blob", ad_columns)
+        self.assertIn("media_size", ad_columns)
+        self.assertIn("media_checksum", ad_columns)
 
 
 class CourseMiniAppUrlTests(unittest.TestCase):
@@ -248,6 +255,7 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
         payload = CourseAdService.payload(ad)
         self.assertEqual(payload["language"], "uz")
         self.assertFalse(payload["media_available"])
+        self.assertFalse(payload["media_backed_up"])
 
     def test_media_available_reflects_file_on_disk(self):
         """Fayli diskda yo'q reklama (ephemeral disk restartda o'chgan) media_available=False
@@ -281,6 +289,59 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
                         CourseAdCreative(title="x", media_path=name, media_type="video")
                     )
                 )
+
+    def test_media_available_restores_missing_file_from_db_backup(self):
+        import os
+        import tempfile
+
+        from app.db.models.course_ad import CourseAdCreative
+        from app.services import course_ad_service as svc
+
+        data = b"safe-mp4"
+        name = "restore_ad.mp4"
+        ad = CourseAdCreative(
+            title="x",
+            media_path=name,
+            media_type="video",
+            media_blob=data,
+            media_size=len(data),
+            media_checksum=CourseAdService.media_checksum(data),
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(svc, "COURSE_AD_MEDIA_ROOT", tmp):
+                self.assertTrue(CourseAdService.media_available(ad))
+                with open(os.path.join(tmp, name), "rb") as fh:
+                    self.assertEqual(fh.read(), data)
+
+    async def test_list_active_backfills_existing_media_backup(self):
+        import os
+        import tempfile
+
+        from app.db.models.course_ad import CourseAdCreative
+        from app.services import course_ad_service as svc
+
+        name = "existing_ad.mp4"
+        data = b"existing-mp4"
+        ad = CourseAdCreative(
+            id=7,
+            title="x",
+            media_path=name,
+            media_type="video",
+            duration_seconds=7,
+            is_active=True,
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            with open(os.path.join(tmp, name), "wb") as fh:
+                fh.write(data)
+            with mock.patch.object(svc, "COURSE_AD_MEDIA_ROOT", tmp):
+                session = _QuerySession([_ScalarListResult([ad])])
+                service = CourseAdService(session)
+                ads = await service.list_active()
+                self.assertEqual(ads, [ad])
+                self.assertTrue(service.media_backup_changed)
+                self.assertEqual(ad.media_blob, data)
+                self.assertEqual(ad.media_size, len(data))
+                self.assertEqual(ad.media_checksum, CourseAdService.media_checksum(data))
 
     async def test_delete_removes_ad_and_returns_media_path(self):
         from app.db.models.course_ad import CourseAdCreative
