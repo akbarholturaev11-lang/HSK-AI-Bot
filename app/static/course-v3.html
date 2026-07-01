@@ -853,7 +853,11 @@ function resetAdVideo(video){
 }
 function _closeAdOverlay(){
   clearInterval(AD_STATE.timer);clearTimeout(AD_STATE.loadTimer);
-  try{var v=$("#ad-video");resetAdVideo(v);v.pause()}catch(e){}
+  /* Video elementni TO'LIQ bo'shatamiz: pause + src'ni olib tashlab load().
+     iOS/Telegram WebView'da dekoder cheklangan — src'ni bo'shatmasak, oldingi
+     dars roligi dekoderni ushlab qoladi va keyingi darsda video qora bo'lib
+     ochilmaydi ("boshda ochiladi, keyin ochilmaydi"). */
+  try{var v=$("#ad-video");resetAdVideo(v);v.pause();v.removeAttribute("src");v.load()}catch(e){}
   setAdStatus("");$("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true")
 }
 function _resetAdState(){AD_STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false}}

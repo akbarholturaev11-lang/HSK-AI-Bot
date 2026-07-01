@@ -1,3 +1,5 @@
+import os
+
 from sqlalchemy import distinct, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,7 +10,17 @@ COURSE_AD_PLACEMENTS = ("start", "middle", "end")
 COURSE_AD_MIN_SECONDS = 5
 COURSE_AD_MAX_SECONDS = 120
 COURSE_AD_DEFAULT_SECONDS = 7
-COURSE_AD_MEDIA_ROOT = "app/static/uploads/course_ads"
+# Media doimiy diskda saqlanishi kerak. Railway'da runtime disk EPHEMERAL —
+# har deploy/restartda `app/static/uploads` tozalanadi va yuklangan reklama
+# fayllari yo'qoladi (DB yozuvi qoladi, fayl esa 404 → mini app'da qora ekran).
+# `RAILWAY_VOLUME_MOUNT_PATH` (Railway Volume ulanganda avtomatik) yoki `MEDIA_ROOT`
+# berilsa — media o'sha doimiy diskka saqlanadi; bo'lmasa lokal/dev fallback.
+MEDIA_ROOT_BASE = (
+    os.environ.get("MEDIA_ROOT")
+    or os.environ.get("RAILWAY_VOLUME_MOUNT_PATH")
+    or "app/static/uploads"
+)
+COURSE_AD_MEDIA_ROOT = os.path.join(MEDIA_ROOT_BASE, "course_ads")
 # Reklama tillari. "all" — barcha tillardagi foydalanuvchilarga ko'rsatiladi.
 COURSE_AD_LANGUAGES = ("uz", "ru", "tj")
 COURSE_AD_ALL_LANGUAGES = "all"
@@ -49,6 +61,23 @@ class CourseAdService:
         if not (link.startswith("http://") or link.startswith("https://")):
             link = "https://" + link
         return link[:512]
+
+    @staticmethod
+    def media_available(ad: CourseAdCreative) -> bool:
+        """Reklama media fayli diskda haqiqatan mavjudmi.
+
+        Railway ephemeral disk restartda tozalanadi — DB'da yozuv qolib, fayl
+        yo'qolishi mumkin. Bunday reklamani foydalanuvchiga KO'RSATMAYMIZ, aks holda
+        <video> 404 oladi va mini app'da qora ekran ("video yuklanmadi") chiqadi.
+        """
+        media_path = getattr(ad, "media_path", None)
+        if not media_path:
+            return False
+        try:
+            full = os.path.join(COURSE_AD_MEDIA_ROOT, os.path.basename(str(media_path)))
+            return os.path.exists(full) and os.path.getsize(full) > 0
+        except OSError:
+            return False
 
     @classmethod
     def payload(cls, ad: CourseAdCreative) -> dict:
@@ -136,9 +165,13 @@ class CourseAdService:
             stmt = stmt.where(lang_filter)
         stmt = stmt.order_by(
             CourseAdCreative.created_at.desc(), CourseAdCreative.id.desc()
-        ).limit(1)
+        )
         result = await self.session.execute(stmt)
-        return result.scalar_one_or_none()
+        # Faqat media fayli haqiqatan diskda mavjud bo'lgan (eng yangi) reklamani qaytaramiz.
+        for ad in result.scalars().all():
+            if self.media_available(ad):
+                return ad
+        return None
 
     async def get_active_payload(self, language: str | None = None) -> dict | None:
         ad = await self.get_active_ad(language=language)
@@ -153,7 +186,9 @@ class CourseAdService:
             stmt = stmt.where(lang_filter)
         stmt = stmt.order_by(CourseAdCreative.created_at.asc(), CourseAdCreative.id.asc())
         result = await self.session.execute(stmt)
-        return list(result.scalars().all())
+        # Media fayli yo'q (ephemeral diskda o'chib ketgan) reklamalarni tashlab yuboramiz —
+        # ular mini app'da qora ekran beradi. Fayli borlari ketma-ket ko'rsatiladi.
+        return [ad for ad in result.scalars().all() if self.media_available(ad)]
 
     async def list_active_payloads(self, language: str | None = None) -> list[dict]:
         return [self.payload(ad) for ad in await self.list_active(language=language)]

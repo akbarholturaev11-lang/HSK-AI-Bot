@@ -1,5 +1,6 @@
 import json
 import unittest
+from unittest import mock
 from contextlib import AbstractAsyncContextManager
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
@@ -245,6 +246,39 @@ class CourseAdServiceTests(unittest.IsolatedAsyncioTestCase):
             language="uz", duration_seconds=7, is_active=True,
         )
         self.assertEqual(CourseAdService.payload(ad)["language"], "uz")
+
+    def test_media_available_reflects_file_on_disk(self):
+        """Fayli diskda yo'q reklama (ephemeral disk restartda o'chgan) media_available=False
+        qaytarishi kerak — u foydalanuvchiga ko'rsatilmasin va qora ekran bermasin."""
+        import os
+        import tempfile
+
+        from app.db.models.course_ad import CourseAdCreative
+        from app.services import course_ad_service as svc
+
+        # Bo'sh/yo'q media_path — mavjud emas.
+        self.assertFalse(
+            CourseAdService.media_available(
+                CourseAdCreative(title="x", media_path="", media_type="video")
+            )
+        )
+        # DB'da yozuv bor, lekin fayl diskda yo'q — mavjud emas.
+        self.assertFalse(
+            CourseAdService.media_available(
+                CourseAdCreative(title="x", media_path="missing_ad.mp4", media_type="video")
+            )
+        )
+        # Fayl haqiqatan mavjud bo'lsa — True.
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(svc, "COURSE_AD_MEDIA_ROOT", tmp):
+                name = "present_ad.mp4"
+                with open(os.path.join(tmp, name), "wb") as fh:
+                    fh.write(b"data")
+                self.assertTrue(
+                    CourseAdService.media_available(
+                        CourseAdCreative(title="x", media_path=name, media_type="video")
+                    )
+                )
 
     async def test_delete_removes_ad_and_returns_media_path(self):
         from app.db.models.course_ad import CourseAdCreative
