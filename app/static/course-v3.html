@@ -114,6 +114,34 @@ button{cursor:pointer}
 .adben i{color:#7BE0B3;font-size:20px;flex-shrink:0}
 .adsub-pay{background:linear-gradient(180deg,#ffffff,#f1eee9);color:#211D17;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.5) inset}
 .adcta.ghost{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.16);font-weight:600}
+/* reklamalar tugagach: toza promo ekran (reklama blok qoldiqlarisiz) */
+#adov.done .adtop{display:none}
+#adov.done .adbox{grid-template-rows:minmax(0,1fr) auto}
+#adov.done #ad-video-wrap{display:none!important}
+#adov.done .admeta>b,#adov.done .admeta>small,#adov.done #ad-cta{display:none}
+#adov.done .adsub-benefits{display:none}
+#adov.done .adsub{gap:8px;padding:14px}
+#adov.done .adsub-t{font-size:14px;margin:0 0 2px}
+#adov.done .adsub-pay,#adov.done .adcta.ghost{padding:12px;font-size:14px;border-radius:12px}
+.adpromo{position:relative;height:100%;min-height:0;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px 20px;background:radial-gradient(120% 90% at 50% 0,rgba(194,64,58,.22),transparent 62%),rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.10);border-radius:18px;overflow:hidden}
+#adov.done .adpromo{display:flex}
+.adpromo-slide{display:flex;flex-direction:column;align-items:center;animation:promoIn .5s ease}
+@keyframes promoIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
+.adpromo-ic{width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:35px;color:#fff;background:linear-gradient(160deg,#D6493C,#9A2F2B);box-shadow:0 14px 34px rgba(194,64,58,.42);margin-bottom:20px}
+.adpromo-t{font-size:20px;font-weight:800;letter-spacing:-.02em;color:#fff;margin:0 0 9px;max-width:300px;line-height:1.25}
+.adpromo-s{font-size:14px;line-height:1.5;color:rgba(255,255,255,.74);max-width:290px;margin:0}
+.adpromo-dots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:6px}
+.adpromo-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.22);transition:width .3s,background .3s}
+.adpromo-dots i.on{width:18px;border-radius:6px;background:#D6493C}
+/* sheet/paywall ichidagi promo (och fon) */
+.spromo{position:relative;text-align:center;background:var(--cinbg);border:1px solid var(--line);border-radius:16px;padding:20px 16px 30px;margin-bottom:10px;overflow:hidden}
+.spromo-slide{display:flex;flex-direction:column;align-items:center;animation:promoIn .5s ease}
+.spromo-ic{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:27px;color:#fff;background:linear-gradient(160deg,var(--cin),var(--cin2));box-shadow:0 10px 24px rgba(194,64,58,.30);margin-bottom:14px}
+.spromo-t{font-size:16px;font-weight:800;letter-spacing:-.01em;color:var(--ink);margin:0 0 6px;line-height:1.25;max-width:280px}
+.spromo-s{font-size:13px;line-height:1.45;color:var(--ink2);max-width:280px;margin:0}
+.spromo-dots{position:absolute;left:0;right:0;bottom:12px;display:flex;justify-content:center;gap:5px}
+.spromo-dots i{width:5px;height:5px;border-radius:50%;background:var(--line);transition:width .3s,background .3s}
+.spromo-dots i.on{width:16px;border-radius:6px;background:var(--cin)}
 .ftop{display:flex;align-items:center;gap:11px;padding:calc(14px + var(--safe-t)) 16px 8px}
 .fx{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:17px;line-height:1}
 .fpbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
@@ -435,6 +463,10 @@ button{cursor:pointer}
         <div class="adstatus" id="ad-status" hidden></div>
         <span class="advisit" id="ad-visit" hidden><i class="ti ti-external-link"></i> <span id="ad-visit-t"></span></span>
       </div>
+      <div class="adpromo" id="ad-promo">
+        <div class="adpromo-slide" id="ad-promo-slide"></div>
+        <div class="adpromo-dots" id="ad-promo-dots"></div>
+      </div>
       <div class="admeta">
         <b id="ad-title"></b><small id="ad-note"></small>
         <button class="adcta" id="ad-cta" disabled onclick="AdFlow.done()"></button>
@@ -515,15 +547,15 @@ var App={
   show:function(s){SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
     document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.s===s)});window.scrollTo(0,0);
     if(s==="voice")renderVoice();},
-  openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on")},
-  closeSheet:function(){$("#sheet").classList.remove("on")},
+  openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on");startSheetPromo("#sheet")},
+  closeSheet:function(){$("#sheet").classList.remove("on");stopSheetPromo()},
   openPaywall:function(ctx){
     PAY_SOURCE=ctx==="lockedLesson"?"v3_locked_lesson":(ctx==="profile"?"v3_profile":(ctx==="pronLimit"?"v3_pronunciation_limit":"v3_paywall"));
     trackCourseEvent("paywall_seen",{source:PAY_SOURCE,dedupe_key:lessonEventKey("paywall_seen",PAY_SOURCE,Date.now())});
     $("#paywall-body").innerHTML=paywallHtml(ctx);
-    $("#paywall").classList.add("on");
+    $("#paywall").classList.add("on");startSheetPromo("#paywall");
   },
-  closePaywall:function(){$("#paywall").classList.remove("on")},
+  closePaywall:function(){$("#paywall").classList.remove("on");stopSheetPromo()},
   goPay:function(src){
     var source=src||PAY_SOURCE||"v3_paywall";
     var url="/subscription.html?lang="+LANG+"&source="+source+"&mode=subscription";
@@ -808,7 +840,7 @@ function openLockedLessonSheet(idx){
     adBtn='<div class="tr" style="margin:8px 6px 12px;text-align:center;color:var(--ink2);line-height:1.5">'+esc(t.finishPrev)+'</div>';
   }
   App.openSheet('<div class="shead"><div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div></div>'
-    +'<div style="margin-bottom:8px">'+["b1","b2","b3"].map(function(k){return '<div class="sec done"><span class="si2"><i class="ti ti-check"></i></span><b>'+t[k]+'</b></div>'}).join("")+'</div>'
+    +promoBlockHtml()
     +'<button class="scta" onclick="App.goPay(\'v3_locked_lesson\')"><i class="ti ti-lock-open"></i> '+esc(t.subscribe)+'</button>'
     +adBtn
     +payHintHtml());
@@ -859,10 +891,75 @@ function _closeAdOverlay(){
      dars roligi dekoderni ushlab qoladi va keyingi darsda video qora bo'lib
      ochilmaydi ("boshda ochiladi, keyin ochilmaydi"). */
   try{var v=$("#ad-video");resetAdVideo(v);v.pause();v.removeAttribute("src");v.load()}catch(e){}
+  stopAdPromo();$("#adov").classList.remove("done");
   setAdStatus("");$("#adov").classList.remove("on");$("#adov").setAttribute("aria-hidden","true")
 }
 function _resetAdState(){AD_STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false}}
 var AD_STATE={timer:null,loadTimer:null,resolve:null,reject:null,ad:null,lesson:null,placement:"start",watched:0,ready:false,busy:false};
+/* Reklamalar tugagach chiqadigan toza promo ekran — botning barcha pullik
+   imkoniyatlarini har ~4.5 soniyada almashib turadigan qisqa rolikchalar. */
+function adPromoSlides(){
+  var m={
+    uz:[
+      {i:"microphone-2",t:"Birinchi kundan gapirasan",s:"Panda 阿宝 sabr bilan tinglaydi va xatoingni yumshoq tuzatadi"},
+      {i:"books",t:"Adashmaysan — yo'l tayyor",s:"HSK 1–4: har kuni aniq keyingi qadam ko'rsatiladi"},
+      {i:"clipboard-check",t:"Imtihonga ishonch bilan borasan",s:"Cheksiz test va aniq daraja — qayerda turganingni bilasan"},
+      {i:"target-arrow",t:"Xatoing yo'qolmaydi",s:"Har xato ustida ishlab, uni butunlay o'zlashtirasan"},
+      {i:"language-hiragana",t:"Har ieroglif qo'l ostingda",s:"Yozilishi, pinyin va ma'no — bir tegishda topasan"},
+      {i:"infinity",t:"Diqqating faqat o'rganishda",s:"Reklama va limitlarsiz — hech narsa chalg'itmaydi"}
+    ],
+    ru:[
+      {i:"microphone-2",t:"Заговоришь с первого дня",s:"Панда 阿宝 терпеливо слушает и мягко исправляет ошибки"},
+      {i:"books",t:"Не собьёшься с пути",s:"HSK 1–4: каждый день — понятный следующий шаг"},
+      {i:"clipboard-check",t:"Придёшь на экзамен уверенно",s:"Безлимит тестов и точный уровень — знаешь, где ты"},
+      {i:"target-arrow",t:"Ошибки не теряются",s:"Прорабатываешь каждую и осваиваешь до конца"},
+      {i:"language-hiragana",t:"Каждый иероглиф под рукой",s:"Написание, пиньинь и значение — в одно касание"},
+      {i:"infinity",t:"Внимание только на учёбе",s:"Без рекламы и лимитов — ничто не отвлекает"}
+    ],
+    tj:[
+      {i:"microphone-2",t:"Аз рӯзи аввал гап мезанӣ",s:"Панда 阿宝 бо сабр гӯш мекунад ва хатоятро нарм ислоҳ мекунад"},
+      {i:"books",t:"Аз роҳ намемонӣ",s:"HSK 1–4: ҳар рӯз қадами оянда равшан аст"},
+      {i:"clipboard-check",t:"Ба имтиҳон боварӣ меравӣ",s:"Тести бепоён ва сатҳи аниқ — медонӣ дар куҷоӣ"},
+      {i:"target-arrow",t:"Хатоҳо гум намешаванд",s:"Ҳар хаторо кор карда, пурра аз худ мекунӣ"},
+      {i:"language-hiragana",t:"Ҳар иероглиф дар дастат",s:"Навишт, пинйин ва маъно — бо як ламс меёбӣ"},
+      {i:"infinity",t:"Диққат танҳо ба омӯзиш",s:"Бе реклама ва маҳдудият — ҳеҷ чиз халал намерасонад"}
+    ]
+  };
+  return m[LANG]||m.uz;
+}
+/* Bitta karusel — turli joyda ishlaydi. pfx: "adpromo" (to'liq ekran, qora fon)
+   yoki "spromo" (sheet ichida, och fon). To'xtatish funksiyasini qaytaradi. */
+function _renderPromo(slideEl,dotsEl,slides,idx,pfx){
+  if(!slideEl)return;
+  var s=slides[idx];
+  slideEl.innerHTML='<div class="'+pfx+'-ic"><i class="ti ti-'+s.i+'"></i></div>'+
+    '<div class="'+pfx+'-t">'+esc(s.t)+'</div>'+
+    '<p class="'+pfx+'-s">'+esc(s.s)+'</p>';
+  slideEl.style.animation="none";void slideEl.offsetWidth;slideEl.style.animation="";
+  if(dotsEl)dotsEl.innerHTML=slides.map(function(_,k){return '<i class="'+(k===idx?"on":"")+'"></i>'}).join("");
+}
+function mountPromoCarousel(slideEl,dotsEl,pfx){
+  if(!slideEl)return function(){};
+  var slides=adPromoSlides(),i=0;
+  _renderPromo(slideEl,dotsEl,slides,i,pfx);
+  var timer=setInterval(function(){i=(i+1)%slides.length;_renderPromo(slideEl,dotsEl,slides,i,pfx)},4500);
+  return function(){clearInterval(timer)};
+}
+/* Sheet/paywall ichidagi promo bloki markupi. */
+function promoBlockHtml(){return '<div class="spromo"><div class="spromo-slide"></div><div class="spromo-dots"></div></div>'}
+/* Reklama tugagach — to'liq ekran promo */
+var AD_PROMO_STOP=null;
+function startAdPromo(){stopAdPromo();AD_PROMO_STOP=mountPromoCarousel($("#ad-promo-slide"),$("#ad-promo-dots"),"adpromo")}
+function stopAdPromo(){if(AD_PROMO_STOP){AD_PROMO_STOP();AD_PROMO_STOP=null}}
+/* Sheet/paywall ichidagi promo (bir vaqtda bittasi ochiq) */
+var SHEET_PROMO_STOP=null;
+function stopSheetPromo(){if(SHEET_PROMO_STOP){SHEET_PROMO_STOP();SHEET_PROMO_STOP=null}}
+function startSheetPromo(rootSel){
+  stopSheetPromo();
+  var root=$(rootSel);if(!root)return;
+  var slide=root.querySelector(".spromo-slide");if(!slide)return;
+  SHEET_PROMO_STOP=mountPromoCarousel(slide,root.querySelector(".spromo-dots"),"spromo");
+}
 var AdFlow={
   /* "Reklama bilan davom etish" — rolik tugagach darsni davom ettiradi.
      Yozuv saqlanmasa ham userni obunaga MAJBURLAMAYMIZ, shunchaki davom etadi. */
@@ -919,6 +1016,7 @@ function showCourseAd(placement,idx){
         $("#ad-note").textContent=t.adNote;
         var hasLink=!!ad.link_url;
         if(hasLink){$("#ad-visit-t").textContent=t.adVisit;visit.hidden=false}else{visit.hidden=true}
+        stopAdPromo();$("#adov").classList.remove("done");
         $("#ad-video-wrap").style.display="";
         $("#ad-video-wrap").style.cursor=hasLink?"pointer":"default";
         contBtn.disabled=false;contBtn.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
@@ -972,7 +1070,7 @@ function showCourseAd(placement,idx){
                obuna (aniq foydalar bilan) / reklama bilan davom etish bloki chiqadi */
             try{video.pause()}catch(e){}
             $("#ad-video-wrap").style.display="none";
-            $("#ad-label").textContent=t.adAllDone;count.textContent="";
+            $("#adov").classList.add("done");startAdPromo();
             AD_STATE.ready=true;btn.style.display="none";setAdSubscribeVisible(true);
           }
         }
@@ -2226,7 +2324,7 @@ function payHintHtml(){
 function paywallHtml(ctx){
   var t=T();var ctxTitle=ctx==="lockedLesson"?t.lockedLesson:t.payTitle;
   return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:15px;color:var(--ink)">'+esc(ctxTitle)+'</div><div class="tr">'+t.paySub+'</div></div>'
-    +'<div style="margin-bottom:8px">'+["b1","b2","b3"].map(function(k){return '<div class="sec done"><span class="si2"><i class="ti ti-check"></i></span><b>'+t[k]+'</b></div>'}).join("")+'</div>'
+    +promoBlockHtml()
     +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+t.subscribe+'</button>'
     +payHintHtml();
 }
