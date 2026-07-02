@@ -133,10 +133,46 @@ def test_course_v3_support_pages_render_real_static_data(page):
 
 
 def admin_payload():
+    advanced = {
+        "explain": "Product health metrikalari tanlangan davr bo'yicha.",
+        "cards": [
+            {"label": "D1 retention", "value": "50%", "note": "5/10 user", "tone": "good"},
+            {"label": "D7 retention", "value": "30%", "note": "3/10 user", "tone": "good"},
+            {"label": "Avg session", "value": "12 min", "note": "8 Mini App session", "tone": "info"},
+        ],
+        "payment": {
+            "funnel": {
+                "steps": [
+                    {"key": "paywall_seen", "label": "To'lov oynasi", "users": 10},
+                    {"key": "checkout_opened", "label": "Checkout ochdi", "users": 6},
+                    {"key": "payment_screenshot_submitted", "label": "Skrinshot yubordi", "users": 3},
+                    {"key": "payment_approved", "label": "Tasdiqlandi", "users": 2},
+                ],
+                "abandon_step": "To'lov oynasi → Checkout ochdi",
+                "abandon_count": 4,
+                "abandon_rate": 40.0,
+                "explain": "Payment abandon step izohi.",
+            }
+        },
+        "feature_adoption": {
+            "paid_denominator": 3,
+            "free_denominator": 9,
+            "rows": [
+                {"label": "Darslar", "paid": 2, "free": 5, "paid_rate": 66.7, "free_rate": 55.6},
+                {"label": "AI savol-javob", "paid": 1, "free": 4, "paid_rate": 33.3, "free_rate": 44.4},
+            ],
+            "explain": "Feature adoption izohi.",
+        },
+    }
     return {
         "ok": True,
         "generated_at": "28.06.2026 11:30",
         "report_text": "Real hisobot: 12 foydalanuvchi, 3 aktiv obuna.",
+        "statistics_reports": [
+            {"key": "weekly", "title": "Haftalik", "note": "Oxirgi 7 kun", "cards": [], "course": {}, "metrics": {}, "text": "Weekly hisobot", "advanced": advanced},
+            {"key": "monthly", "title": "Oylik", "note": "Oxirgi 30 kun", "cards": [], "course": {}, "metrics": {}, "text": "Monthly hisobot", "advanced": advanced},
+            {"key": "all_time", "title": "To'liq", "note": "Butun davr", "cards": [], "course": {}, "metrics": {}, "text": "Real hisobot: 12 foydalanuvchi, 3 aktiv obuna.", "advanced": advanced},
+        ],
         "summary": [
             {"label": "Foydalanuvchilar", "value": 12, "note": "5 bugun aktiv", "tone": "info"},
             {"label": "Aktiv obuna", "value": 3, "note": "hozir to'lovli", "tone": "good"},
@@ -301,6 +337,8 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     expect(page.locator("#userList")).to_contain_text("Ali")
     expect(page.locator("#paymentBoard")).to_contain_text("99 TJS")
     expect(page.locator("#financeCards")).to_contain_text("Sof foyda")
+    expect(page.locator("#advancedCards")).to_contain_text("D1 retention")
+    expect(page.locator("#featureAdoption")).to_contain_text("Darslar")
 
 
 def test_subscription_page_smoke(page):
