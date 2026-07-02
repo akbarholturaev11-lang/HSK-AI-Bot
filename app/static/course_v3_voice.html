@@ -24,6 +24,10 @@ html,body{height:100%;background:#CDB792;font-family:-apple-system,"SF Pro Text"
 .mouth{transform-box:fill-box;transform-origin:center}
 .speaking .mouth{animation:talk .34s ease-in-out infinite}
 @keyframes talk{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1.05)}}
+.pd-breathe{animation:pdBreathe 2.6s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes pdBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.02) translateY(-2px)}}
+.pd-blink{animation:pdBlink 4.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes pdBlink{0%,90%,100%{transform:scaleY(0)}94%{transform:scaleY(1)}}
 .nm{font-size:16px;font-weight:500;color:#3c2f1d;text-shadow:0 1px 0 rgba(255,250,240,.5)}
 .st{font-size:13px;color:#5b4a33;height:18px}
 .sub{position:relative;z-index:2;margin:8px 16px 0;background:rgba(251,247,239,.88);backdrop-filter:blur(8px);border:1px solid rgba(120,95,60,.22);border-radius:18px;padding:14px 16px;text-align:center;min-height:104px}
@@ -159,11 +163,17 @@ document.getElementById("bg").innerHTML=forest();
 /* ---- panda persona ---- */
 function chr(mood,p){
   var scarf=p==="li"?"#2C3A4A":"#C2403A",scarf2=p==="li"?"#1f2b38":"#9A2F2B",eyes,mouth,glass="";
-  if(mood==="happy"){eyes='<path d="M70 96 q9 -9 18 0" fill="none" stroke="#211D17" stroke-width="3.4" stroke-linecap="round"/><path d="M112 96 q9 -9 18 0" fill="none" stroke="#211D17" stroke-width="3.4" stroke-linecap="round"/>';mouth='<path d="M86 118 q14 14 28 0 z" fill="#9A2F2B"/>';}
-  else if(mood==="listen"){eyes='<circle cx="79" cy="95" r="9" fill="#fff"/><circle cx="121" cy="95" r="9" fill="#fff"/><circle cx="79" cy="91" r="5" fill="#211D17"/><circle cx="121" cy="91" r="5" fill="#211D17"/><path d="M68 80 q11 -6 22 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/><path d="M110 80 q11 -6 22 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/>';mouth='<circle class="mouth" cx="100" cy="120" r="4" fill="#9A2F2B"/>';}
-  else{eyes='<circle cx="79" cy="95" r="9" fill="#fff"/><circle cx="121" cy="95" r="9" fill="#fff"/><circle cx="79" cy="95" r="5" fill="#211D17"/><circle cx="121" cy="95" r="5" fill="#211D17"/>';mouth='<ellipse class="mouth" cx="100" cy="121" rx="9" ry="8" fill="#9A2F2B"/>';}
+  var armL="M70 128 q-22 16 -25 44",armR="M130 128 q22 16 25 44",pawL=[50,178],pawR=[150,178];
+  var blink='<rect class="pd-blink" x="70" y="85" width="18" height="20" rx="8" fill="#211D17"/><rect class="pd-blink" x="112" y="85" width="18" height="20" rx="8" fill="#211D17"/>';
+  if(mood==="happy"){eyes='<path d="M70 96 q9 -9 18 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/><path d="M112 96 q9 -9 18 0" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>';mouth='<path d="M86 118 q14 14 28 0 z" fill="#9A2F2B"/>';blink="";}
+  else if(mood==="listen"){eyes='<circle cx="79" cy="95" r="9" fill="#fff"/><circle cx="121" cy="95" r="9" fill="#fff"/><circle cx="79" cy="91" r="5" fill="#211D17"/><circle cx="121" cy="91" r="5" fill="#211D17"/><path d="M68 80 q11 -6 22 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/><path d="M110 80 q11 -6 22 0" fill="none" stroke="#211D17" stroke-width="2.6" stroke-linecap="round"/>';mouth='<circle class="mouth" cx="100" cy="120" r="4" fill="#9A2F2B"/>';armL="M70 124 q-28 -14 -34 -42";pawL=[36,80];}
+  else{eyes='<circle cx="79" cy="95" r="9" fill="#fff"/><circle cx="121" cy="95" r="9" fill="#fff"/><circle cx="79" cy="95" r="5" fill="#211D17"/><circle cx="121" cy="95" r="5" fill="#211D17"/>';mouth='<ellipse class="mouth" cx="100" cy="121" rx="9" ry="8" fill="#9A2F2B"/>';armR="M130 126 q28 4 34 22";pawR=[160,150];}
   if(p==="li"){glass='<circle cx="79" cy="95" r="15" fill="none" stroke="#2C3A4A" stroke-width="2.6"/><circle cx="121" cy="95" r="15" fill="none" stroke="#2C3A4A" stroke-width="2.6"/><path d="M94 95 h12" stroke="#2C3A4A" stroke-width="2.6"/>';}
-  return '<svg viewBox="0 0 200 210"><path d="M52 205 q-6 -60 18 -84 h60 q24 24 18 84 z" fill="#fff" stroke="#211D17" stroke-width="2.5"/><path d="M60 132 q40 20 80 0 l-6 20 q-34 16 -68 0 z" fill="'+scarf+'"/><path d="M128 150 l14 26 -16 -4 -4 -16 z" fill="'+scarf2+'"/><circle cx="64" cy="58" r="22" fill="#211D17"/><circle cx="136" cy="58" r="22" fill="#211D17"/><circle cx="64" cy="58" r="10" fill="#3a352f"/><circle cx="136" cy="58" r="10" fill="#3a352f"/><circle cx="100" cy="86" r="54" fill="#fff" stroke="#211D17" stroke-width="2.5"/><ellipse cx="79" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(-12 79 92)"/><ellipse cx="121" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(12 121 92)"/>'+eyes+glass+'<ellipse cx="100" cy="110" rx="8" ry="5.5" fill="#211D17"/>'+mouth+'</svg>';
+  return '<svg viewBox="0 0 200 210"><g class="pd-breathe">'
+    +'<path d="'+armL+'" fill="none" stroke="#211D17" stroke-width="2.5"/><path d="'+armR+'" fill="none" stroke="#211D17" stroke-width="2.5"/>'
+    +'<ellipse cx="'+pawL[0]+'" cy="'+pawL[1]+'" rx="10" ry="11" fill="#fff" stroke="#211D17" stroke-width="2"/><ellipse cx="'+pawR[0]+'" cy="'+pawR[1]+'" rx="10" ry="11" fill="#fff" stroke="#211D17" stroke-width="2"/>'
+    +'<path d="M52 205 q-6 -60 18 -84 h60 q24 24 18 84 z" fill="#fff" stroke="#211D17" stroke-width="2.5"/><circle cx="64" cy="58" r="22" fill="#211D17"/><circle cx="136" cy="58" r="22" fill="#211D17"/><circle cx="64" cy="58" r="10" fill="#3a352f"/><circle cx="136" cy="58" r="10" fill="#3a352f"/><circle cx="100" cy="86" r="54" fill="#fff" stroke="#211D17" stroke-width="2.5"/><path d="M60 132 q40 20 80 0 l-6 20 q-34 16 -68 0 z" fill="'+scarf+'"/><path d="M128 150 l14 26 -16 -4 -4 -16 z" fill="'+scarf2+'"/><ellipse cx="79" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(-12 79 92)"/><ellipse cx="121" cy="92" rx="15" ry="20" fill="#211D17" transform="rotate(12 121 92)"/>'+eyes+glass+blink+'<ellipse cx="100" cy="110" rx="8" ry="5.5" fill="#211D17"/>'+mouth
+    +'</g></svg>';
 }
 /* ---- real backend wiring (STT + AI reply via /api/voice-practice) ---- */
 var $=function(id){return document.getElementById(id)};
