@@ -289,6 +289,21 @@
         <div class="periods" id="periodTabs"></div>
         <div class="range-lab" id="rangeLabel"></div>
 
+        <!-- Advanced product metrics -->
+        <div class="block">
+          <div class="block-head"><span class="bi">📌</span><div><h3>Qo'shimcha product metrikalar</h3><p>Retention, vaqt, QA/Voice, payment abandon, LTV/CAC va paid/free adoption</p></div></div>
+          <div class="explain" id="advancedExplain"></div>
+          <div class="grid g2" id="advancedCards" style="margin-top:12px"></div>
+          <div style="margin-top:12px">
+            <div class="dtitle-sm">Payment abandon funnel</div>
+            <div id="advancedFunnel"></div>
+          </div>
+          <div style="margin-top:12px">
+            <div class="dtitle-sm">Feature adoption: paid / free</div>
+            <div id="featureAdoption"></div>
+          </div>
+        </div>
+
         <!-- Finance -->
         <div class="block">
           <div class="block-head"><span class="bi">💰</span><div><h3>Sof foyda va xarajat</h3><p>Daromad − AI xarajat − portfel rasxod</p></div></div>
@@ -531,11 +546,41 @@
     function overviewReport(){ const r=state.overview&&state.overview.statistics_reports; if(!Array.isArray(r)) return null; return r.find(x=>x.key===state.statsPeriod)||r[0]; }
     function cardHtml(i){ return `<article class="stat ${i.tone||""}"><div class="lab">${esc(i.label)}</div><div><div class="val">${esc(i.value)}</div><div class="sub">${esc(i.note)}</div></div></article>`; }
 
+    function renderAdvanced(fp){
+      const adv = fp&&fp.advanced;
+      if(!adv){
+        $("advancedExplain").textContent = "Bu davr uchun qo'shimcha metrikalar hali yo'q.";
+        $("advancedCards").innerHTML = "";
+        $("advancedFunnel").innerHTML = "<p class='empty'>Ma'lumot yo'q</p>";
+        $("featureAdoption").innerHTML = "<p class='empty'>Ma'lumot yo'q</p>";
+        return;
+      }
+      $("advancedExplain").textContent = adv.explain || "";
+      $("advancedCards").innerHTML = (adv.cards||[]).map(cardHtml).join("");
+      const funnel = (adv.payment&&adv.payment.funnel)||{};
+      const steps = funnel.steps||[];
+      const maxStep = Math.max.apply(null, steps.map(s=>Number(s.users||0)).concat([1]));
+      $("advancedFunnel").innerHTML = steps.length ? steps.map(s=>{
+        const pct = Math.round((Number(s.users||0)/maxStep)*100);
+        return `<div class="bar"><span>${esc(s.label)}</span><div class="track"><span style="width:${Math.min(pct,100)}%"></span></div><b>${esc(s.users)}</b></div>`;
+      }).join("") + `<div class="explain">Eng katta abandon: <b>${esc(funnel.abandon_step||"—")}</b> — ${esc(funnel.abandon_count||0)} user (${esc(funnel.abandon_rate||0)}%). ${esc(funnel.explain||"")}</div>`
+      : "<p class='empty'>Funnel ma'lumot yo'q</p>";
+      const adoption = adv.feature_adoption||{};
+      const rows = adoption.rows||[];
+      $("featureAdoption").innerHTML = rows.length ? `<table class="tbl"><thead><tr>
+          <th>Feature</th><th class="r">Paid</th><th class="r">Free</th><th class="r">Paid %</th><th class="r">Free %</th></tr></thead>
+        <tbody>${rows.map(r=>`<tr><td><b>${esc(r.label)}</b></td><td class="r">${esc(r.paid)}</td><td class="r">${esc(r.free)}</td><td class="r">${esc(r.paid_rate)}%</td><td class="r">${esc(r.free_rate)}%</td></tr>`).join("")}</tbody></table>
+        <div class="explain">${esc(adoption.explain||"")} Denominator: paid ${esc(adoption.paid_denominator||0)}, free ${esc(adoption.free_denominator||0)}.</div>`
+      : "<p class='empty'>Feature adoption ma'lumot yo'q</p>";
+    }
+
     function renderStatistics(){
       const fin = state.finance;
       const periods = (fin&&fin.periods)||[];
       $("periodTabs").innerHTML = periods.map(p=>`<button class="period ${p.key===state.statsPeriod?"active":""}" data-period="${esc(p.key)}">${esc(p.title)} · ${esc(p.note)}</button>`).join("");
       const fp = financePeriod();
+      const orep = overviewReport();
+      renderAdvanced(orep);
       if(!fp){ $("financeCards").innerHTML="<p class='empty'>Moliyaviy ma'lumot yo'q</p>"; }
       else{
         $("rangeLabel").textContent = "Davr: " + (fp.range_label||fp.note);
@@ -570,7 +615,6 @@
           : "<p class='empty'>Bu davrda manbadan kelgan to'lov yo'q.</p>";
       }
       // overview report cards + bars + text
-      const orep = overviewReport();
       $("overviewCards").innerHTML = ((orep&&orep.cards)||(state.overview.summary)||[]).map(cardHtml).join("");
       $("reportText").textContent = (orep&&orep.text) || state.overview.report_text || "";
       const course = (orep&&orep.course)||state.overview.course||{};
