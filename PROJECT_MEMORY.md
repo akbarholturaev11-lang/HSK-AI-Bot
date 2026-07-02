@@ -207,6 +207,24 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-02 — Admin Mini App advanced period statistics
+
+Changed:
+- Admin Mini App statistics now include period-aware advanced product metrics for weekly, monthly, and all-time views: D1/D7 retention, Mini App session time, lesson time, QA messages per user, voice minutes, payment abandon step, first payment time, LTV, CAC, paid/free feature adoption, and notification-open proxy.
+- The advanced metrics are returned inside `statistics_reports[].advanced` from `AdminMiniAppService.overview()` and rendered as one explanatory block in `app/static/admin.html`.
+
+Why:
+- Manual admin statistics were missing product-health, payment-funnel, and paid/free adoption metrics needed to understand what users do inside the selected date window.
+
+Files touched:
+- `app/services/admin_miniapp_service.py`, `app/static/admin.html`, `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- Read-only analytics queries only. Payment, subscription, access approval, course, quiz, and homework write flows are unchanged. CAC is shown only when portfolio expense notes/sources are marked as marketing/reklama/ads/target/CAC; notification open rate is a Mini App open proxy, not a Telegram direct open event.
+
+Follow-up:
+- For exact CAC, add a dedicated marketing spend category/source instead of relying on manual expense notes.
+
 ### 2026-07-02 — Course ad media DB backup + auto-restore
 
 Changed:
