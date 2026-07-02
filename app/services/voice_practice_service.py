@@ -2,6 +2,7 @@ import asyncio
 import difflib
 import json
 import logging
+import random
 import re
 import unicodedata
 import uuid
@@ -86,26 +87,93 @@ def _level_guidance(level: str) -> str:
 
 LANGUAGE_NAMES = {"ru": "Russian", "tj": "Tajik", "uz": "Uzbek"}
 
+# Har bir rol uchun bir nechta ochilish varianti — sessiya boshlanganda tasodifiy
+# biri tanlanadi, shunda AI har safar bir xil gap bilan boshlamaydi.
 OPENING_MESSAGES = {
-    "lily": {
-        "chinese_reply": "你好！我来了，别害羞，先跟我说一句中文吧。",
-        "pinyin": "Nǐ hǎo! Wǒ lái le, bié hàixiū, xiān gēn wǒ shuō yí jù Zhōngwén ba.",
-        "translations": {
-            "uz": "Ni hao! Keldim, uyalmang, avval menga xitoycha bitta gap ayting.",
-            "ru": "Нихао! Я здесь, не стесняйтесь, скажите мне сначала одну фразу по-китайски.",
-            "tj": "Ниҳао! Ман омадам, шарм накунед, аввал ба ман як ҷумлаи чинӣ гӯед.",
+    "friend": [
+        {
+            "chinese_reply": "你好！我来了，别害羞，先跟我说一句中文吧。",
+            "pinyin": "Nǐ hǎo! Wǒ lái le, bié hàixiū, xiān gēn wǒ shuō yí jù Zhōngwén ba.",
+            "translations": {
+                "uz": "Ni hao! Keldim, uyalmang, avval menga xitoycha bitta gap ayting.",
+                "ru": "Нихао! Я здесь, не стесняйтесь, скажите мне сначала одну фразу по-китайски.",
+                "tj": "Ниҳао! Ман омадам, шарм накунед, аввал ба ман як ҷумлаи чинӣ гӯед.",
+            },
         },
-    },
-    "teacher_li": {
-        "chinese_reply": "嗨，上课了。今天偷懒的话，我会听出来的。",
-        "pinyin": "Hāi, shàngkè le. Jīntiān tōulǎn de huà, wǒ huì tīng chūlái de.",
-        "translations": {
-            "uz": "Hai, dars boshlandi. Bugun dangasalik qilsangiz, eshitib qo'yaman.",
-            "ru": "Хай, урок начался. Если сегодня будете лениться, я это услышу.",
-            "tj": "Ҳай, дарс сар шуд. Агар имрӯз танбалӣ кунед, ман аз овоз мефаҳмам.",
+        {
+            "chinese_reply": "嘿，是我！今天过得怎么样？",
+            "pinyin": "Hēi, shì wǒ! Jīntiān guò de zěnme yàng?",
+            "translations": {
+                "uz": "Salom, bu men! Bugun kuningiz qanday o'tyapti?",
+                "ru": "Привет, это я! Как прошёл твой день?",
+                "tj": "Салом, ин манам! Имрӯз рӯзатон чӣ хел гузашт?",
+            },
         },
-    },
+        {
+            "chinese_reply": "哈喽！好久不见，想我了吗？",
+            "pinyin": "Hā lóu! Hǎojiǔ bú jiàn, xiǎng wǒ le ma?",
+            "translations": {
+                "uz": "Salom! Ancha bo'ldi ko'rishmaganimizga, sog'indingizmi?",
+                "ru": "Привет! Давно не виделись, скучали по мне?",
+                "tj": "Салом! Дер боз надида будем, дилам бароятон танг шуд?",
+            },
+        },
+    ],
+    "teacher_li": [
+        {
+            "chinese_reply": "哎，找到你啦！今天想聊点什么呢？",
+            "pinyin": "Āi, zhǎodào nǐ la! Jīntiān xiǎng liáo diǎn shénme ne?",
+            "translations": {
+                "uz": "Voy, sizni topdim! Bugun nima haqida gaplashamiz?",
+                "ru": "Ага, нашёл вас! О чём поговорим сегодня?",
+                "tj": "Ҳа, шуморо ёфтам! Имрӯз дар бораи чӣ гап занем?",
+            },
+        },
+        {
+            "chinese_reply": "嗨，是我。我们随便聊聊吧，别紧张。",
+            "pinyin": "Hāi, shì wǒ. Wǒmen suíbiàn liáo liao ba, bié jǐnzhāng.",
+            "translations": {
+                "uz": "Salom, bu men. Keling, erkin suhbatlashamiz, xavotir olmang.",
+                "ru": "Привет, это я. Давайте просто поболтаем, не волнуйтесь.",
+                "tj": "Салом, ин манам. Биёед озод сӯҳбат кунем, ташвиш накашед.",
+            },
+        },
+        {
+            "chinese_reply": "你好呀，今天心情怎么样？",
+            "pinyin": "Nǐ hǎo ya, jīntiān xīnqíng zěnme yàng?",
+            "translations": {
+                "uz": "Salom, bugun kayfiyatingiz qanday?",
+                "ru": "Привет, как настроение сегодня?",
+                "tj": "Салом, имрӯз кайфиятатон чӣ хел?",
+            },
+        },
+    ],
 }
+
+# Suhbat davomida AI aynan bitta mavzuga (masalan doim "sevgilingiz bormi") yopishib
+# qolmasligi uchun har bir sessiyaga (session id asosida, barqaror) 3 ta mavzu tanlanadi.
+TOPIC_POOL = [
+    "food they like or ate today",
+    "weekend or free-time plans",
+    "the weather",
+    "family or friends",
+    "a hobby",
+    "movies or music they enjoy",
+    "travel or a place they want to visit",
+    "shopping",
+    "school or work life",
+    "sports",
+    "their hometown",
+    "favorite season",
+    "morning routine",
+    "future goals or dreams",
+    "a funny memory",
+    "phone or technology habits",
+    "cooking",
+    "pets or animals",
+    "holidays or celebrations",
+    "favorite things or colors",
+]
 
 
 class VoicePracticeError(Exception):
@@ -156,14 +224,15 @@ class VoicePracticeService:
         )
         words = self._extract_words(payload, 4)
 
-        # Takror uchun: user allaqachon o'tgan oldingi darslardan (order kichikroq)
-        # bir nechta so'z yig'amiz. Li Laoshi shularni suhbatga qo'shib takrorlatadi.
-        review_words: list[dict] = []
+        # Takror uchun: user allaqachon o'tgan oldingi darslardan so'zlar yig'amiz va
+        # tasodifiy 6 tasini tanlaymiz — shunda har sessiyada bir xil so'zlar emas,
+        # turlicha so'zlar suhbatga qo'shiladi.
         seen = {w["zh"] for w in words}
         current_order = int(lesson.lesson_order)
-        for prev_order in range(current_order - 1, 0, -1):
-            if len(review_words) >= 6:
-                break
+        prev_orders = list(range(1, current_order))
+        random.shuffle(prev_orders)
+        candidate_words: list[dict] = []
+        for prev_order in prev_orders[:10]:
             prev_payload = await lesson_service.get_payload(
                 lesson_order=prev_order,
                 lang=language,
@@ -173,9 +242,12 @@ class VoicePracticeService:
                 if word["zh"] in seen:
                     continue
                 seen.add(word["zh"])
-                review_words.append(word)
-                if len(review_words) >= 6:
-                    break
+                candidate_words.append(word)
+            if len(candidate_words) >= 15:
+                break
+        review_words = (
+            random.sample(candidate_words, k=min(6, len(candidate_words))) if candidate_words else []
+        )
         return {
             "lesson_id": lesson.id,
             "lesson_order": current_order,
@@ -345,7 +417,8 @@ class VoicePracticeService:
 
     @staticmethod
     def _opening_message(role: str, language: str) -> dict:
-        message = OPENING_MESSAGES.get(role) or OPENING_MESSAGES["lily"]
+        variants = OPENING_MESSAGES.get(role) or OPENING_MESSAGES["friend"]
+        message = random.choice(variants)
         translations = message.get("translations") or {}
         return {
             "chinese_reply": str(message.get("chinese_reply") or ""),
@@ -367,16 +440,28 @@ class VoicePracticeService:
             if is_closing_dialog
             else "End with one short playful follow-up question when natural."
         )
-        # Li Laoshi (o'qituvchi) — takrorlash rejimi: user oldin o'tgan so'zlarni suhbatga
-        # qo'shib, tabiiy tarzda takrorlatadi.
-        if item.role == "teacher_li":
+        # O'tgan darslardan so'zlarni suhbatga qo'shib takrorlatish — endi barcha
+        # rollar uchun, faqat 2-3 tasi butun suhbat davomida tarqoq holda.
+        review_list = list(item.review_words or [])[:6]
+        if review_list:
             review_instruction = (
-                f"You are reviewing with the learner. Words they ALREADY studied: {review_words}. "
-                "Naturally weave 1 of these studied words into your reply so the learner hears and repeats it, "
-                "and gently prompt them to use it. "
+                f"The learner already studied these words before: {review_words}. "
+                "Across this whole conversation (not all in one reply), naturally weave in 2-3 of them into what "
+                "you say, spread over different turns, so the learner hears and can reuse them — it must not feel "
+                "like a vocabulary drill. "
             )
+            if item.role == "teacher_li":
+                review_instruction += "Occasionally give a light, encouraging nudge to try using one yourself. "
         else:
             review_instruction = ""
+        # Har bir sessiya (session id asosida barqaror) o'zining 3 ta mavzusini oladi,
+        # shunda AI har safar bir xil mavzularga (masalan doim "sevgilingiz bormi") qaytmaydi.
+        topic_rng = random.Random(item.id)
+        session_topics = topic_rng.sample(TOPIC_POOL, k=min(3, len(TOPIC_POOL)))
+        topic_instruction = (
+            "Naturally guide the conversation across these topics during the session (one at a time, shift when "
+            f"it feels natural, don't force all of them in one reply): {', '.join(session_topics)}. "
+        )
         messages = [
             {
                 "role": "system",
@@ -387,10 +472,13 @@ class VoicePracticeService:
                     "If you must reference something harder, replace it with a simpler word the learner knows. "
                     f"Current-lesson target words: {target_words}. {review_instruction}"
                     "Fast voice roleplay. Reply in 1 short Chinese sentence, rarely 2. "
-                    "Use one target word only if natural. Be playful: joke, laugh, lightly tease weak answers; "
-                    "never humiliate. Open dopamine topics: food cravings, travel, friends, funny mistakes, wins, "
-                    "shopping, money goals, and sometimes respectfully ask if the learner has a girlfriend/boyfriend; "
-                    "switch topic if uncomfortable. "
+                    "Use one target word only if natural. Be playful and warm: joke, laugh, lightly tease weak "
+                    "answers, never humiliate; switch topic if the learner seems uncomfortable. "
+                    f"{topic_instruction}"
+                    "Talk like a real person chatting with a friend, not a textbook: vary your sentence openers "
+                    "and reactions every turn, and never reuse the exact phrasing or interjection you used earlier "
+                    "in this same conversation (see the message history). This is a real casual chat, not a lesson "
+                    "or class — never say things like 'let's start' or explicitly frame it as studying. "
                     f"{closing_instruction} Translate into {target_language}. "
                     "Correct only important errors. JSON only: chinese_reply, pinyin, translation, correction. "
                     "Use null correction when OK."
@@ -415,7 +503,9 @@ class VoicePracticeService:
             messages=messages,
             response_format={"type": "json_object"},
             max_completion_tokens=VOICE_REPLY_MAX_TOKENS,
-            temperature=0.7,
+            temperature=0.85,
+            frequency_penalty=0.5,
+            presence_penalty=0.3,
         )
         usage_result = ai._result_from_response(
             response=response,

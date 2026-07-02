@@ -1,22 +1,33 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 from sqlalchemy import and_, func, or_, select
 
 from app.db.models.ad_campaign import AdCampaign, AdCampaignDelivery
+from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.bot_feedback import BotFeedback
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.message import Message
 from app.db.models.payment import Payment
+from app.db.models.portfolio import PortfolioTransaction
 from app.db.models.referral import Referral
 from app.db.models.required_channel import RequiredChannel
 from app.db.models.user import User
+from app.db.models.voice_practice_session import VoicePracticeSession
 from app.services.admin_stats_service import miniapp_course_stats
 from app.services.required_channel_service import RequiredChannelService
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.subscription_entry_analytics_service import SubscriptionEntryAnalyticsService
 from app.services.subscription_price_service import SubscriptionPriceService
-from app.services.subscription_currency_service import format_subscription_price
+from app.services.subscription_currency_service import (
+    DEFAULT_USD_CNY_RATE,
+    DEFAULT_VISA_LOCAL_RATES,
+    format_subscription_price,
+)
 
 
 ADMIN_MINIAPP_TZ = ZoneInfo("Asia/Shanghai")
@@ -27,6 +38,55 @@ HOT_LEAD_PAYMENT_STATUSES = ("none", "draft", "rejected")
 
 def _pct(part: int, total: int) -> float:
     return round(part / total * 100, 1) if total > 0 else 0.0
+
+
+def _usd(value: float) -> str:
+    try:
+        return f"${float(value or 0):,.2f}"
+    except (TypeError, ValueError):
+        return "$0.00"
+
+
+def _amount_to_usd(amount, currency: str | None, *, base_amount=None) -> float:
+    key = (currency or "").strip().lower()
+    try:
+        value = float(amount or 0)
+    except (TypeError, ValueError):
+        value = 0.0
+    if key in {"somoni", "tjs", "сомони"}:
+        return value / float(DEFAULT_VISA_LOCAL_RATES["tjs"])
+    if key in {"usd", "$"}:
+        return value
+    if key in {"¥", "cny", "yuan", "юань"}:
+        return value / float(DEFAULT_USD_CNY_RATE)
+    if base_amount:
+        return _amount_to_usd(base_amount, "TJS")
+    return 0.0
+
+
+def _duration_seconds(start: datetime | None, end: datetime | None, *, cap_seconds: int = 8 * 60 * 60) -> int:
+    start = _as_utc(start)
+    end = _as_utc(end)
+    if not start or not end or end < start:
+        return 0
+    seconds = int((end - start).total_seconds())
+    if seconds <= 0 or seconds > cap_seconds:
+        return 0
+    return seconds
+
+
+def _duration_text(seconds: int | float | None) -> str:
+    seconds = int(seconds or 0)
+    if seconds <= 0:
+        return "—"
+    minutes = seconds // 60
+    if minutes < 1:
+        return f"{seconds}s"
+    if minutes < 60:
+        return f"{minutes} min"
+    hours = minutes // 60
+    rest = minutes % 60
+    return f"{hours}h {rest}m" if rest else f"{hours}h"
 
 
 def _dt(value: datetime | None) -> str | None:
@@ -279,7 +339,7 @@ class AdminMiniAppService:
         )
         for report in period_reports:
             if report.get("key") == "all_time":
-                report["text"] = report_text
+                report["text"] = report_text + self._advanced_report_text(report.get("advanced") or {})
 
         return {
             "ok": True,
@@ -498,6 +558,7 @@ class AdminMiniAppService:
         approved_users = await self._approved_payment_user_count(since)
         plan_counts = await self._payment_plan_counts(since)
         course = course_stats or await miniapp_course_stats(self.session, since=since)
+        advanced = await self._advanced_stats(since=since, now=now)
 
         metrics = {
             "user_count": user_count,
@@ -539,9 +600,558 @@ class AdminMiniAppService:
                 "completed_book_lessons": course.completed_book_lessons,
                 "completion": metrics["course_completion"],
             },
+            "advanced": advanced,
         }
         report["text"] = self._period_report_text(report)
         return report
+
+    async def _advanced_stats(self, *, since: datetime | None, now: datetime) -> dict:
+        retention = await self._retention_stats(since=since, now=now)
+        session_time = await self._miniapp_session_time(since=since)
+        lesson_time = await self._lesson_time(since=since)
+        qa = await self._qa_message_stats(since=since)
+        voice = await self._voice_minutes(since=since)
+        payment = await self._payment_advanced_stats(since=since)
+        feature_adoption = await self._feature_adoption(since=since, now=now)
+        notifications = await self._notification_open_proxy(since=since)
+
+        return {
+            "explain": (
+                "Bu blok product health metrikalarini ko'rsatadi: retention, Mini App vaqt, dars vaqti, "
+                "QA/Voice ishlatilishi, payment funnel, LTV/CAC, paid/free feature adoption va notification open proxy. "
+                "Hamma raqamlar tanlangan davr ichida qayta hisoblanadi."
+            ),
+            "cards": [
+                {
+                    "label": "D1 retention",
+                    "value": f"{retention['d1']['rate']}%",
+                    "note": f"{retention['d1']['retained']}/{retention['d1']['eligible']} user",
+                    "tone": "good",
+                },
+                {
+                    "label": "D7 retention",
+                    "value": f"{retention['d7']['rate']}%",
+                    "note": f"{retention['d7']['retained']}/{retention['d7']['eligible']} user",
+                    "tone": "good",
+                },
+                {
+                    "label": "Avg session",
+                    "value": session_time["avg_text"],
+                    "note": f"{session_time['sessions']} Mini App session",
+                    "tone": "info",
+                },
+                {
+                    "label": "Lesson time",
+                    "value": lesson_time["avg_text"],
+                    "note": f"{lesson_time['completed_lessons']} tugagan dars",
+                    "tone": "info",
+                },
+                {
+                    "label": "QA/user",
+                    "value": qa["avg_per_user"],
+                    "note": f"{qa['messages']} xabar · {qa['users']} user",
+                    "tone": "info",
+                },
+                {
+                    "label": "Voice minutes",
+                    "value": voice["minutes_text"],
+                    "note": f"{voice['sessions']} yakunlangan session",
+                    "tone": "info",
+                },
+                {
+                    "label": "First payment",
+                    "value": payment["first_payment_time_text"],
+                    "note": f"{payment['first_payment_users']} birinchi to'lov",
+                    "tone": "good",
+                },
+                {
+                    "label": "LTV",
+                    "value": payment["ltv_text"],
+                    "note": f"{payment['paying_users']} pullik user",
+                    "tone": "good",
+                },
+                {
+                    "label": "CAC",
+                    "value": payment["cac_text"],
+                    "note": payment["cac_note"],
+                    "tone": "warn" if payment["marketing_expense_usd"] else "info",
+                },
+                {
+                    "label": "Notif open",
+                    "value": f"{notifications['open_rate']}%",
+                    "note": f"{notifications['opened_after']} / {notifications['sent']} proxy",
+                    "tone": "info",
+                },
+            ],
+            "retention": retention,
+            "session_time": session_time,
+            "lesson_time": lesson_time,
+            "qa": qa,
+            "voice": voice,
+            "payment": payment,
+            "feature_adoption": feature_adoption,
+            "notifications": notifications,
+        }
+
+    async def _retention_stats(self, *, since: datetime | None, now: datetime) -> dict:
+        stmt = select(User.created_at, User.last_active_at).select_from(User)
+        if since is not None:
+            stmt = stmt.where(User.created_at >= since)
+        rows = (await self.session.execute(stmt)).all()
+
+        def calc(days: int) -> dict:
+            eligible = 0
+            retained = 0
+            for created_at, last_active_at in rows:
+                created = _as_utc(created_at)
+                last_active = _as_utc(last_active_at)
+                if not created:
+                    continue
+                threshold = created + timedelta(days=days)
+                if threshold > now:
+                    continue
+                eligible += 1
+                if last_active and last_active >= threshold:
+                    retained += 1
+            return {"eligible": eligible, "retained": retained, "rate": _pct(retained, eligible)}
+
+        return {
+            "d1": calc(1),
+            "d7": calc(7),
+            "explain": (
+                "D1/D7 retention = shu davrda ro'yxatdan o'tgan va 1/7 kun o'tishga ulgurgan userlardan "
+                "keyin yana aktiv bo'lganlari. Aktivlik User.last_active_at orqali olinadi."
+            ),
+        }
+
+    async def _miniapp_session_time(self, *, since: datetime | None) -> dict:
+        conditions = [
+            CourseMiniAppEvent.session_id.is_not(None),
+            CourseMiniAppEvent.session_id != "",
+        ]
+        if since is not None:
+            conditions.append(CourseMiniAppEvent.created_at >= since)
+        rows = (
+            await self.session.execute(
+                select(
+                    CourseMiniAppEvent.telegram_id,
+                    CourseMiniAppEvent.session_id,
+                    CourseMiniAppEvent.created_at,
+                ).where(*conditions)
+            )
+        ).all()
+        bounds: dict[tuple[int, str], list[datetime | None]] = {}
+        for telegram_id, session_id, created_at in rows:
+            key = (int(telegram_id), str(session_id))
+            if key not in bounds:
+                bounds[key] = [created_at, created_at]
+                continue
+            if created_at < bounds[key][0]:
+                bounds[key][0] = created_at
+            if created_at > bounds[key][1]:
+                bounds[key][1] = created_at
+        durations = [_duration_seconds(start, end) for start, end in bounds.values()]
+        durations = [seconds for seconds in durations if seconds > 0]
+        avg_seconds = round(sum(durations) / len(durations)) if durations else 0
+        return {
+            "sessions": len(durations),
+            "avg_seconds": avg_seconds,
+            "avg_text": _duration_text(avg_seconds),
+            "total_text": _duration_text(sum(durations)),
+            "explain": "Mini App session vaqti session_id bo'yicha birinchi va oxirgi event oralig'idan olinadi.",
+        }
+
+    async def _lesson_time(self, *, since: datetime | None) -> dict:
+        event_names = (
+            "lesson_started",
+            "section_started",
+            "section_completed",
+            "book_lesson_completed",
+            "lesson_completed",
+        )
+        conditions = [CourseMiniAppEvent.event_name.in_(event_names)]
+        if since is not None:
+            conditions.append(CourseMiniAppEvent.created_at >= since)
+        rows = (
+            await self.session.execute(
+                select(
+                    CourseMiniAppEvent.telegram_id,
+                    CourseMiniAppEvent.level,
+                    CourseMiniAppEvent.lesson_id,
+                    CourseMiniAppEvent.lesson_order,
+                    CourseMiniAppEvent.event_name,
+                    CourseMiniAppEvent.created_at,
+                ).where(*conditions)
+            )
+        ).all()
+        started_names = {"lesson_started", "section_started"}
+        completed_names = {"section_completed", "book_lesson_completed", "lesson_completed"}
+        grouped: dict[tuple, dict[str, datetime | None]] = defaultdict(lambda: {"start": None, "end": None})
+        for telegram_id, level, lesson_id, lesson_order, event_name, created_at in rows:
+            lesson_ref = lesson_id if lesson_id is not None else f"{level or 'unknown'}:{lesson_order or 0}"
+            key = (int(telegram_id), lesson_ref)
+            bucket = grouped[key]
+            if event_name in started_names and (bucket["start"] is None or created_at < bucket["start"]):
+                bucket["start"] = created_at
+            if event_name in completed_names and (bucket["end"] is None or created_at > bucket["end"]):
+                bucket["end"] = created_at
+        durations = [_duration_seconds(item["start"], item["end"]) for item in grouped.values()]
+        durations = [seconds for seconds in durations if seconds > 0]
+        avg_seconds = round(sum(durations) / len(durations)) if durations else 0
+        return {
+            "completed_lessons": len(durations),
+            "avg_seconds": avg_seconds,
+            "avg_text": _duration_text(avg_seconds),
+            "total_text": _duration_text(sum(durations)),
+            "explain": "Lesson time = dars/qism boshlanganidan shu dars bo'yicha oxirgi completion eventgacha bo'lgan vaqt.",
+        }
+
+    async def _qa_message_stats(self, *, since: datetime | None) -> dict:
+        conditions = [Message.role == "user", Message.content_type == "text"]
+        if since is not None:
+            conditions.append(Message.created_at >= since)
+        row = (
+            await self.session.execute(
+                select(
+                    func.count(Message.id).label("messages"),
+                    func.count(func.distinct(Message.user_id)).label("users"),
+                ).where(*conditions)
+            )
+        ).one()
+        messages = int(row.messages or 0)
+        users = int(row.users or 0)
+        return {
+            "messages": messages,
+            "users": users,
+            "avg_per_user": round(messages / users, 2) if users else 0,
+            "explain": "QA message/user = oddiy savol-javob rejimida user yuborgan text xabarlar / shu davrdagi QA userlar.",
+        }
+
+    async def _voice_minutes(self, *, since: datetime | None) -> dict:
+        conditions = [VoicePracticeSession.ended_at.is_not(None)]
+        if since is not None:
+            conditions.append(VoicePracticeSession.started_at >= since)
+        rows = (
+            await self.session.execute(
+                select(VoicePracticeSession.started_at, VoicePracticeSession.ended_at).where(*conditions)
+            )
+        ).all()
+        durations = [_duration_seconds(start, end) for start, end in rows]
+        durations = [seconds for seconds in durations if seconds > 0]
+        total_seconds = sum(durations)
+        avg_seconds = round(total_seconds / len(durations)) if durations else 0
+        return {
+            "sessions": len(durations),
+            "seconds": total_seconds,
+            "minutes": round(total_seconds / 60, 1),
+            "minutes_text": f"{round(total_seconds / 60, 1)} min" if total_seconds else "0 min",
+            "avg_text": _duration_text(avg_seconds),
+            "explain": "Voice minutes faqat yakunlangan VoicePracticeSession started_at→ended_at oralig'i bo'yicha hisoblanadi.",
+        }
+
+    async def _payment_advanced_stats(self, *, since: datetime | None) -> dict:
+        rows = (
+            await self.session.execute(
+                select(
+                    Payment.user_telegram_id,
+                    Payment.amount,
+                    Payment.currency,
+                    Payment.base_amount,
+                    Payment.reviewed_at,
+                    Payment.submitted_at,
+                ).where(Payment.payment_status == "approved")
+            )
+        ).all()
+        approved = []
+        for user_id, amount, currency, base_amount, reviewed_at, submitted_at in rows:
+            at = _as_utc(reviewed_at or submitted_at)
+            if not at:
+                continue
+            approved.append(
+                {
+                    "user_id": int(user_id),
+                    "at": at,
+                    "usd": _amount_to_usd(amount, currency, base_amount=base_amount),
+                }
+            )
+        in_period = [item for item in approved if since is None or item["at"] >= since]
+        revenue_usd = sum(item["usd"] for item in in_period)
+        paying_users = len({item["user_id"] for item in in_period})
+        ltv = revenue_usd / paying_users if paying_users else 0.0
+
+        first_by_user: dict[int, dict] = {}
+        for item in sorted(approved, key=lambda value: value["at"]):
+            first_by_user.setdefault(item["user_id"], item)
+        first_in_period = [
+            item for item in first_by_user.values()
+            if since is None or item["at"] >= since
+        ]
+        created_map = await self._user_created_map([item["user_id"] for item in first_in_period])
+        first_payment_durations = []
+        for item in first_in_period:
+            created_at = created_map.get(item["user_id"])
+            seconds = _duration_seconds(created_at, item["at"], cap_seconds=3650 * 24 * 60 * 60)
+            if seconds > 0:
+                first_payment_durations.append(seconds)
+        avg_first_seconds = round(sum(first_payment_durations) / len(first_payment_durations)) if first_payment_durations else 0
+
+        marketing_expense_usd = await self._marketing_expense_usd(since=since)
+        new_paying_users = len(first_in_period)
+        cac = marketing_expense_usd / new_paying_users if new_paying_users else 0.0
+        funnel = await self._payment_funnel(since=since)
+
+        return {
+            "revenue_usd": round(revenue_usd, 2),
+            "revenue_text": _usd(revenue_usd),
+            "paying_users": paying_users,
+            "ltv_usd": round(ltv, 2),
+            "ltv_text": _usd(ltv),
+            "first_payment_users": new_paying_users,
+            "first_payment_time_seconds": avg_first_seconds,
+            "first_payment_time_text": _duration_text(avg_first_seconds),
+            "marketing_expense_usd": round(marketing_expense_usd, 2),
+            "marketing_expense_text": _usd(marketing_expense_usd),
+            "cac_usd": round(cac, 2),
+            "cac_text": _usd(cac) if marketing_expense_usd else "—",
+            "cac_note": (
+                f"{new_paying_users} yangi pullik user"
+                if marketing_expense_usd
+                else "marketing xarajat kiritilmagan"
+            ),
+            "funnel": funnel,
+        }
+
+    async def _user_created_map(self, telegram_ids: list[int]) -> dict[int, datetime]:
+        ids = list({int(value) for value in telegram_ids if value})
+        if not ids:
+            return {}
+        rows = (
+            await self.session.execute(
+                select(User.telegram_id, User.created_at).where(User.telegram_id.in_(ids))
+            )
+        ).all()
+        return {int(telegram_id): _as_utc(created_at) for telegram_id, created_at in rows}
+
+    async def _marketing_expense_usd(self, *, since: datetime | None) -> float:
+        text = func.lower(func.coalesce(PortfolioTransaction.note, ""))
+        source = func.lower(func.coalesce(PortfolioTransaction.source, ""))
+        patterns = ("%marketing%", "%reklama%", "%реклама%", "%ads%", "%target%", "%таргет%", "%cac%", "%smm%", "%traffic%")
+        conditions = [
+            PortfolioTransaction.transaction_type == "expense",
+            or_(
+                *[text.like(pattern) for pattern in patterns],
+                *[source.like(pattern) for pattern in patterns],
+            ),
+        ]
+        if since is not None:
+            conditions.append(PortfolioTransaction.created_at >= since)
+        value = (
+            await self.session.execute(
+                select(func.coalesce(func.sum(PortfolioTransaction.amount_usd), 0.0)).where(*conditions)
+            )
+        ).scalar()
+        return float(value or 0.0)
+
+    async def _payment_funnel(self, *, since: datetime | None) -> dict:
+        event_names = ("paywall_seen", "checkout_opened", "payment_screenshot_submitted", "payment_approved")
+        conditions = [ConversionFunnelEvent.event_name.in_(event_names)]
+        if since is not None:
+            conditions.append(ConversionFunnelEvent.created_at >= since)
+        rows = (
+            await self.session.execute(
+                select(
+                    ConversionFunnelEvent.event_name,
+                    func.count(func.distinct(ConversionFunnelEvent.telegram_id)).label("users"),
+                )
+                .where(*conditions)
+                .group_by(ConversionFunnelEvent.event_name)
+            )
+        ).all()
+        counts = {str(row.event_name): int(row.users or 0) for row in rows}
+        steps = [
+            {"key": "paywall_seen", "label": "To'lov oynasi", "users": counts.get("paywall_seen", 0)},
+            {"key": "checkout_opened", "label": "Checkout ochdi", "users": counts.get("checkout_opened", 0)},
+            {"key": "payment_screenshot_submitted", "label": "Skrinshot yubordi", "users": counts.get("payment_screenshot_submitted", 0)},
+            {"key": "payment_approved", "label": "Tasdiqlandi", "users": counts.get("payment_approved", 0)},
+        ]
+        drops = []
+        for current, nxt in zip(steps, steps[1:]):
+            lost = max(int(current["users"]) - int(nxt["users"]), 0)
+            drops.append(
+                {
+                    "label": f"{current['label']} → {nxt['label']}",
+                    "lost": lost,
+                    "rate": _pct(lost, int(current["users"])),
+                }
+            )
+        top_drop = max(drops, key=lambda item: item["lost"], default={"label": "Ma'lumot yetarli emas", "lost": 0, "rate": 0.0})
+        status_counts = await self._payment_status_counts(since)
+        return {
+            "steps": steps,
+            "drops": drops,
+            "abandon_step": top_drop["label"],
+            "abandon_count": top_drop["lost"],
+            "abandon_rate": top_drop["rate"],
+            "payment_status": status_counts,
+            "explain": "Payment abandon step = funnel'dagi ketma-ket bosqichlar orasida eng katta yo'qotish.",
+        }
+
+    async def _feature_adoption(self, *, since: datetime | None, now: datetime) -> dict:
+        paid_denominator = await self._feature_denominator(paid=True, since=since, now=now)
+        free_denominator = await self._feature_denominator(paid=False, since=since, now=now)
+        rows = [
+            await self._course_feature_row("Darslar", ("lesson_started", "section_started"), since, now, paid_denominator, free_denominator),
+            await self._course_feature_row("Testlar", ("test_started", "test_completed"), since, now, paid_denominator, free_denominator),
+            await self._course_feature_row("Mashqlar", ("training_started", "training_completed"), since, now, paid_denominator, free_denominator),
+            await self._course_feature_row("Xatolar takrori", ("mistake_review_started", "mistake_review_completed"), since, now, paid_denominator, free_denominator),
+            await self._ai_feature_row("AI savol-javob", since, now, paid_denominator, free_denominator),
+            await self._voice_feature_row("Voice roleplay", since, now, paid_denominator, free_denominator),
+        ]
+        rows.sort(key=lambda item: (item["paid"] + item["free"], item["paid"]), reverse=True)
+        return {
+            "paid_denominator": paid_denominator,
+            "free_denominator": free_denominator,
+            "rows": rows,
+            "explain": "Feature adoption paid/free = shu davrda feature'ni ishlatgan unik userlar, hozirgi obuna holati bo'yicha ajratilgan.",
+        }
+
+    def _paid_user_conditions(self, now: datetime) -> list:
+        return [
+            User.payment_status == "approved",
+            User.status == "active",
+            User.end_date.is_not(None),
+            User.end_date > now,
+        ]
+
+    def _free_user_condition(self, now: datetime):
+        return or_(
+            User.payment_status != "approved",
+            User.status != "active",
+            User.end_date.is_(None),
+            User.end_date <= now,
+        )
+
+    async def _feature_denominator(self, *, paid: bool, since: datetime | None, now: datetime) -> int:
+        conditions = self._paid_user_conditions(now) if paid else [self._free_user_condition(now)]
+        if since is not None:
+            conditions.append(User.last_active_at >= since)
+        return await self._count_users(*conditions)
+
+    async def _course_feature_row(
+        self,
+        label: str,
+        event_names: tuple[str, ...],
+        since: datetime | None,
+        now: datetime,
+        paid_denominator: int,
+        free_denominator: int,
+    ) -> dict:
+        paid = await self._count_course_feature_users(event_names, since, now, paid=True)
+        free = await self._count_course_feature_users(event_names, since, now, paid=False)
+        return self._feature_row(label, paid, free, paid_denominator, free_denominator)
+
+    async def _count_course_feature_users(self, event_names: tuple[str, ...], since: datetime | None, now: datetime, *, paid: bool) -> int:
+        conditions = [CourseMiniAppEvent.event_name.in_(event_names)]
+        if since is not None:
+            conditions.append(CourseMiniAppEvent.created_at >= since)
+        user_conditions = self._paid_user_conditions(now) if paid else [self._free_user_condition(now)]
+        value = (
+            await self.session.execute(
+                select(func.count(func.distinct(CourseMiniAppEvent.telegram_id)))
+                .select_from(CourseMiniAppEvent)
+                .join(User, User.telegram_id == CourseMiniAppEvent.telegram_id)
+                .where(*conditions, *user_conditions)
+            )
+        ).scalar()
+        return int(value or 0)
+
+    async def _ai_feature_row(self, label: str, since: datetime | None, now: datetime, paid_denominator: int, free_denominator: int) -> dict:
+        paid = await self._count_ai_feature_users(since, now, paid=True)
+        free = await self._count_ai_feature_users(since, now, paid=False)
+        return self._feature_row(label, paid, free, paid_denominator, free_denominator)
+
+    async def _count_ai_feature_users(self, since: datetime | None, now: datetime, *, paid: bool) -> int:
+        conditions = [AIUsageEvent.source == "qa"]
+        if since is not None:
+            conditions.append(AIUsageEvent.created_at >= since)
+        user_conditions = self._paid_user_conditions(now) if paid else [self._free_user_condition(now)]
+        value = (
+            await self.session.execute(
+                select(func.count(func.distinct(AIUsageEvent.user_telegram_id)))
+                .select_from(AIUsageEvent)
+                .join(User, User.telegram_id == AIUsageEvent.user_telegram_id)
+                .where(*conditions, *user_conditions)
+            )
+        ).scalar()
+        return int(value or 0)
+
+    async def _voice_feature_row(self, label: str, since: datetime | None, now: datetime, paid_denominator: int, free_denominator: int) -> dict:
+        paid = await self._count_voice_feature_users(since, now, paid=True)
+        free = await self._count_voice_feature_users(since, now, paid=False)
+        return self._feature_row(label, paid, free, paid_denominator, free_denominator)
+
+    async def _count_voice_feature_users(self, since: datetime | None, now: datetime, *, paid: bool) -> int:
+        conditions = []
+        if since is not None:
+            conditions.append(VoicePracticeSession.started_at >= since)
+        user_conditions = self._paid_user_conditions(now) if paid else [self._free_user_condition(now)]
+        value = (
+            await self.session.execute(
+                select(func.count(func.distinct(VoicePracticeSession.user_telegram_id)))
+                .select_from(VoicePracticeSession)
+                .join(User, User.telegram_id == VoicePracticeSession.user_telegram_id)
+                .where(*conditions, *user_conditions)
+            )
+        ).scalar()
+        return int(value or 0)
+
+    @staticmethod
+    def _feature_row(label: str, paid: int, free: int, paid_denominator: int, free_denominator: int) -> dict:
+        return {
+            "label": label,
+            "paid": paid,
+            "free": free,
+            "total": paid + free,
+            "paid_rate": _pct(paid, paid_denominator),
+            "free_rate": _pct(free, free_denominator),
+        }
+
+    async def _notification_open_proxy(self, *, since: datetime | None) -> dict:
+        sent_conditions = [CourseMiniAppEvent.event_name == "motivation_lesson_unfinished_sent"]
+        open_conditions = [CourseMiniAppEvent.event_name == "miniapp_opened"]
+        if since is not None:
+            sent_conditions.append(CourseMiniAppEvent.created_at >= since)
+            open_conditions.append(CourseMiniAppEvent.created_at >= since)
+        sent_rows = (
+            await self.session.execute(
+                select(CourseMiniAppEvent.telegram_id, CourseMiniAppEvent.created_at).where(*sent_conditions)
+            )
+        ).all()
+        open_rows = (
+            await self.session.execute(
+                select(CourseMiniAppEvent.telegram_id, CourseMiniAppEvent.created_at).where(*open_conditions)
+            )
+        ).all()
+        opens_by_user: dict[int, list[datetime]] = defaultdict(list)
+        for telegram_id, created_at in open_rows:
+            opens_by_user[int(telegram_id)].append(_as_utc(created_at))
+        for values in opens_by_user.values():
+            values.sort()
+        opened_after = 0
+        for telegram_id, sent_at in sent_rows:
+            sent = _as_utc(sent_at)
+            if not sent:
+                continue
+            deadline = sent + timedelta(hours=48)
+            if any(sent <= opened <= deadline for opened in opens_by_user.get(int(telegram_id), []) if opened):
+                opened_after += 1
+        sent_count = len(sent_rows)
+        return {
+            "sent": sent_count,
+            "opened_after": opened_after,
+            "open_rate": _pct(opened_after, sent_count),
+            "explain": "Telegram notification direct open event bermaydi; bu 48 soat ichida Mini App ochilganini proxy sifatida ko'rsatadi.",
+        }
 
     async def _required_channels(self) -> list[dict]:
         rows = (await self.session.execute(
@@ -831,6 +1441,36 @@ class AdminMiniAppService:
             f"Тугатилган қисм: {course.get('completed_sections', 0)}\n"
             f"Тугатилган дарс: {course.get('completed_book_lessons', 0)}\n"
             f"Курс тугатиш: {metrics.get('course_completion', 0)}%"
+        ) + AdminMiniAppService._advanced_report_text(report.get("advanced") or {})
+
+    @staticmethod
+    def _advanced_report_text(advanced: dict) -> str:
+        if not advanced:
+            return ""
+        retention = advanced.get("retention") or {}
+        d1 = retention.get("d1") or {}
+        d7 = retention.get("d7") or {}
+        session_time = advanced.get("session_time") or {}
+        lesson_time = advanced.get("lesson_time") or {}
+        qa = advanced.get("qa") or {}
+        voice = advanced.get("voice") or {}
+        payment = advanced.get("payment") or {}
+        funnel = payment.get("funnel") or {}
+        notifications = advanced.get("notifications") or {}
+        return (
+            "\n\n"
+            "📌 ҚЎШИМЧА PRODUCT МЕТРИКАЛАР\n"
+            "Бу блок retention, вақт, QA/Voice, payment abandon, LTV/CAC ва feature adoption'ни кўрсатади.\n"
+            f"D1 retention: {d1.get('rate', 0)}% ({d1.get('retained', 0)}/{d1.get('eligible', 0)})\n"
+            f"D7 retention: {d7.get('rate', 0)}% ({d7.get('retained', 0)}/{d7.get('eligible', 0)})\n"
+            f"Avg Mini App session: {session_time.get('avg_text', '—')} · session: {session_time.get('sessions', 0)}\n"
+            f"Lesson time: {lesson_time.get('avg_text', '—')} · tugagan dars: {lesson_time.get('completed_lessons', 0)}\n"
+            f"QA message/user: {qa.get('avg_per_user', 0)} · xabar: {qa.get('messages', 0)} · user: {qa.get('users', 0)}\n"
+            f"Voice minutes: {voice.get('minutes_text', '0 min')} · avg: {voice.get('avg_text', '—')}\n"
+            f"Payment abandon: {funnel.get('abandon_step', '—')} · yo'qotish: {funnel.get('abandon_count', 0)} ({funnel.get('abandon_rate', 0)}%)\n"
+            f"First payment time: {payment.get('first_payment_time_text', '—')} · first pay user: {payment.get('first_payment_users', 0)}\n"
+            f"LTV: {payment.get('ltv_text', '—')} · CAC: {payment.get('cac_text', '—')}\n"
+            f"Notification open proxy: {notifications.get('open_rate', 0)}% ({notifications.get('opened_after', 0)}/{notifications.get('sent', 0)})"
         )
 
     @staticmethod
