@@ -6,6 +6,7 @@ from app.services.ai_service import AIUsageResult
 from app.services.voice_practice_service import (
     FREE_PRONOUNCE_DAILY,
     MAX_DIALOGS_PER_SESSION,
+    OPENING_MESSAGES,
     ROLE_PROMPTS,
     VoicePracticeError,
     VoicePracticeService,
@@ -40,7 +41,8 @@ class VoicePracticeCourseContextTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("manager_wang", ROLE_PROMPTS)
         self.assertEqual(result["course_context"]["lesson_id"], 55)
         self.assertEqual(result["max_dialogs"], MAX_DIALOGS_PER_SESSION)
-        self.assertTrue(result["opening_message"]["chinese_reply"].startswith("你好"))
+        possible_openings = {v["chinese_reply"] for v in OPENING_MESSAGES["friend"]}
+        self.assertIn(result["opening_message"]["chinese_reply"], possible_openings)
         self.assertEqual(session.added[0].role, "lily")
         self.assertEqual(session.added[0].lesson_id, 55)
         self.assertEqual(session.added[0].target_words[0]["zh"], "你好")
