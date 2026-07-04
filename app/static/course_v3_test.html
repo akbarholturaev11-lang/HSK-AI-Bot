@@ -120,6 +120,7 @@ function runGate(feature,ref){
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
 function showLimit(adAvailable){
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:!!(adAvailable&&PENDING),onSubscribe:goPremium,onContinueAd:startAdSupported,onBack:showHub});return}
   $("hub").style.display="none";$("placement").classList.remove("on");$("exam").classList.remove("on");
   var e=$("empty");
   var adBtn=(adAvailable&&PENDING)?'<button onclick="startAdSupported()"><i class="ti ti-player-play"></i> '+L.adCont+'</button>':'';

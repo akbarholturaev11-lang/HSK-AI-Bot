@@ -80,6 +80,7 @@ function runGate(ref){
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
 function showLimit(adAvailable){
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:adAvailable,onSubscribe:goPremium,onContinueAd:startAdSupported,onBack:goBack});return}
   var adBtn=adAvailable?'<button onclick="startAdSupported()" style="width:100%;max-width:300px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:500"><i class="ti ti-player-play"></i> '+L.adCont+'</button>':'';
   var sub=adAvailable?L.adLimitSub:L.limitSub;
   document.getElementById("body").innerHTML='<div class="done"><div class="st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--cin2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:500;margin-top:8px"><i class="ti ti-crown"></i> '+L.premiumBtn+'</button><button onclick="goBack()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;margin-top:8px">'+L.back+'</button></div>';

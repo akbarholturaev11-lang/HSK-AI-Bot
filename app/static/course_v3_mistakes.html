@@ -214,6 +214,7 @@ function renderResult(d){
   haptic("success");
 }
 function showLimit(adAvailable){
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:adAvailable,onSubscribe:goPay,onContinueAd:startAdSupported,onBack:function(){}});return}
   var ab=document.getElementById("lim-ad");
   if(ab){
     if(adAvailable){document.getElementById("lim-ad-t").textContent=L.adCont;ab.hidden=false;$("lim-text").textContent=L.adLimitText;}

@@ -123,6 +123,7 @@ function runGate(ref){
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
 function showLimit(adAvailable){
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:adAvailable,onSubscribe:goPremium,onContinueAd:startAdSupported,onBack:goBack});return}
   var adBtn=adAvailable?'<button onclick="startAdSupported()"><i class="ti ti-player-play"></i> '+t(LIM.adCont)+'</button>':'';
   var sub=adAvailable?t(LIM.adSub):t(LIM.sub);
   B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+'<button class="ghost" onclick="goPremium()"><i class="ti ti-crown"></i> '+t(LIM.pay)+'</button><button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
