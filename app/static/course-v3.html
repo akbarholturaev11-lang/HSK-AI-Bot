@@ -47,6 +47,7 @@ button{cursor:pointer}
 .node.chest{background:var(--goldbg);color:var(--gold);box-shadow:0 4px 0 #d8c79a;border:2px solid var(--gold)}
 .node.boss{background:var(--cinbg);color:var(--cin);box-shadow:0 4px 0 #e8cfc9;border:2px solid var(--cin)}
 .nlabel{font-size:12px;font-weight:500;color:var(--ink2)}.nlabel.mut{color:var(--ink3)}
+.nnum{display:block;font-size:10px;font-weight:600;color:var(--ink3);letter-spacing:.02em;margin-top:1px}
 .bubble{position:absolute;top:-42px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--cin);color:var(--cin2);font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;white-space:nowrap}
 .bubble:after{content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#fff;border-right:1px solid var(--cin);border-bottom:1px solid var(--cin)}
 .pmasc{position:absolute;top:50%;width:50px;height:50px;margin-top:-25px;pointer-events:none;animation:pmascBob 3.4s ease-in-out infinite;z-index:1;opacity:.9}
@@ -821,38 +822,14 @@ function adPlacementTitle(placement){
   if(placement==="end")return t.adEnd;
   return t.adStart;
 }
-/* Bepul user reklama bilan KUNIGA nechta dars o'ta olishi — server bergan
-   holatdan (MAP.ad_lessons). Pullik userda cheksiz. */
-function adLessonsInfo(){
-  var a=MAP&&MAP.ad_lessons;
-  if(!a)return {paid:false,used:0,limit:2,left:0};
-  if(a.is_paid||a.remaining===null||a.remaining===undefined)return {paid:true,used:0,limit:Number(a.limit)||2,left:999};
-  var limit=Number(a.limit)||2,used=Number(a.used_today)||0;
-  return {paid:false,used:used,limit:limit,left:Math.max(0,Number(a.remaining)||(limit-used))};
-}
-function canAdContinueLesson(l){
-  var completed=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
-  return !!(l&&isPremiumLocked(l)&&l.n===completed+1&&adLessonsInfo().left>0);
-}
+/* Qulflangan (premium) dars — endi reklama YO'Q: faqat obuna oynasi.
+   Bepul trial: 1-dars to'liq + 2-dars yarmi; keyin obuna majburiy. */
 function openLockedLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
   var t=T();
-  var completed=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
-  var isNext=!!(l&&isPremiumLocked(l)&&l.n===completed+1);
-  var info=adLessonsInfo();
-  var adBtn;
-  if(canAdContinueLesson(l)){
-    var hint='<div class="tr" style="margin:8px 6px 2px;text-align:center;color:var(--ink3);font-size:12px">'+esc(t.adLeft.replace("{used}",info.used).replace("{limit}",info.limit))+'</div>';
-    adBtn='<button class="scta ghost" style="margin-top:8px" onclick="startAdSupportedLesson('+idx+')"><i class="ti ti-player-play"></i> '+esc(t.adContinue)+'</button>'+hint;
-  }else if(isNext&&info.left<=0){
-    adBtn='<div class="tr" style="margin:8px 6px 12px;text-align:center;color:var(--ink2);line-height:1.5">'+esc(t.adDailyLimit.replace("{limit}",info.limit))+'</div>';
-  }else{
-    adBtn='<div class="tr" style="margin:8px 6px 12px;text-align:center;color:var(--ink2);line-height:1.5">'+esc(t.finishPrev)+'</div>';
-  }
   App.openSheet('<div class="shead"><div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div></div>'
     +promoBlockHtml()
     +'<button class="scta" onclick="App.goPay(\'v3_locked_lesson\')"><i class="ti ti-lock-open"></i> '+esc(t.subscribe)+'</button>'
-    +adBtn
     +payHintHtml());
 }
 /* Admin bir nechta reklama joylagan bo'lsa — barchasini qaytaramiz (ketma-ket
@@ -1140,13 +1117,6 @@ function showCourseAd(placement,idx){
     }).catch(function(){reject(new Error("course_ad_not_found"))});
   });
 }
-function startAdSupportedLesson(idx){
-  var l=allLessons()[idx];
-  if(!canAdContinueLesson(l)){toast(T().finishPrev,2400);openLockedLessonSheet(idx);return}
-  App.closeSheet();App.closePaywall();
-  /* Boshlang'ich reklama xato bersa ham darsni ochamiz — obunaga majburlamaymiz. */
-  showCourseAd("start",idx).then(function(){startLesson(idx,{adSupported:true})}).catch(function(){startLesson(idx,{adSupported:true})});
-}
 function lessonStatusNode(l){return l.status}
 function renderCourse(){
   var done=allLessons().filter(function(l){return l.status==="done"}).length;
@@ -1185,7 +1155,8 @@ function renderCourse(){
       }
       h+='<div class="prow">'+mascot+'<div class="nodewrap" style="transform:translateX('+off+'px)">'+bub
         +'<button class="node '+cls+'" '+clk+'><span class="ring"></span>'+inner+'</button>'
-        +(lbl?'<span class="nlabel '+(cls==="locked"||cls==="boss"||cls==="chest"?"mut":"")+'">'+esc(lbl)+'</span>':'')+'</div></div>';
+        +(lbl?'<span class="nlabel '+(cls==="locked"||cls==="boss"||cls==="chest"?"mut":"")+'">'+esc(lbl)
+          +(n.kind==="lesson"?'<span class="nnum">'+n.l.n+'-'+esc(T().lessons)+'</span>':'')+'</span>':'')+'</div></div>';
     });
     h+='</div>';
   });
@@ -1406,14 +1377,17 @@ function startLesson(idx,opts){
   opts=opts||{};
   var l=allLessons()[idx];App.closeSheet();
   if(!l)return;
-  if(isPremiumLocked(l)&&!opts.adSupported){openLockedLessonSheet(idx);return}
-  if(l.status==="locked"&&!opts.adSupported){return}
+  if(isPremiumLocked(l)){openLockedLessonSheet(idx);return}
+  if(l.status==="locked")return;
   var lv=MAP.level||"hsk1";
   loadLessonData(lv,l.n).then(function(d){
-    Flow.queue=buildQueue(d);Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;
-    Flow.ad=opts.adSupported?{lessonIdx:idx,middle:false,end:false,middleAt:Math.max(1,Math.floor(Flow.queue.length/2))}:null;
+    Flow.queue=buildQueue(d);Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;
+    /* Yangi bepul user 2-darsni yarmigacha ko'radi (preview_half): o'rtaga
+       yetganda obuna oynasi chiqadi. Backend ham 2-darsni yakunlatmaydi. */
+    Flow.previewHalf=!!l.preview_half;
+    Flow.previewHalfAt=Flow.previewHalf?Math.max(1,Math.floor(Flow.queue.length/2)):0;
     trackCourseEvent("lesson_started",{
-      source:opts.adSupported?"course_v3_ad":"course_v3",
+      source:"course_v3",
       lesson_order:l.n,
       dedupe_key:lessonEventKey("lesson_started",l.n)
     });
@@ -1720,11 +1694,10 @@ Flow.next=function(){
   hideBar();
   var nextI=Flow.i+1;
   trackSectionCompleted(Flow.queue&&Flow.queue[Flow.i],nextI);
-  if(Flow.ad&&!Flow.ad.middle&&nextI>=Flow.ad.middleAt&&nextI<Flow.queue.length){
-    Flow.i=nextI;Flow.ad.middle=true;
-    /* O'rtadagi reklama xato bersa ham dars o'rtasida obunaga majburlamaymiz — davom etamiz. */
-    showCourseAd("middle",Flow.ad.lessonIdx).then(function(){renderFlowCard()}).catch(function(){renderFlowCard()});
-    return;
+  /* 2-dars (preview_half): yarmiga yetganda darsni to'xtatib, obuna oynasini
+     ochamiz. Bepul user faqat yarmini ko'radi. */
+  if(Flow.previewHalf&&nextI>=Flow.previewHalfAt&&nextI<Flow.queue.length){
+    Flow.previewHalf=false;App.exitFlow();App.openPaywall("lockedLesson");return;
   }
   Flow.i=nextI;if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}
 };
@@ -1799,6 +1772,9 @@ function applyLessonDone(cur,d){
   }
   pendingRankUp=(d&&d.gamification&&!d.duplicate)?{before:rankBefore}:null;
   var ni=al.indexOf(cur)+1,next=ni<al.length?al[ni]:null;
+  /* Bepul user 1-darsni tugatgach, 2-dars yarim-preview bo'ladi (server ham
+     keyingi map'da shunday belgilaydi) — mahalliy holatni darhol moslaymiz. */
+  if(next&&!isPaidUser()&&next.n===2&&next.locked_premium){next.locked_premium=false;next.preview_half=true;next.status="current";}
   if(next&&next.status==="locked"&&!isPremiumLocked(next))next.status="current";
   if(next&&isPremiumLocked(next))next.status="locked";
   renderAll();
@@ -1811,24 +1787,19 @@ function applyLessonDone(cur,d){
 function flowDone(){
   if(Flow.challenge){return finishChallengeRound()}
   if(Flow.test){return finishSkipTest()}
-  if(Flow.ad&&!Flow.ad.end){
-    Flow.ad.end=true;
-    /* Yakuniy reklama xato bersa ham darsni majburan to'xtatmaymiz — yakunlaymiz. */
-    return showCourseAd("end",Flow.ad.lessonIdx).then(function(){flowDone()}).catch(function(){flowDone()});
-  }
   flowProg();$("#f-cta").style.display="none";hideBar();setWriteBtn("");
   var cur=typeof Flow.lessonIdx==="number"?allLessons()[Flow.lessonIdx]:allLessons().find(function(l){return l.status==="current"});
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA){applyLessonDone(cur,null);return}
-  var doneIdx=Flow.lessonIdx,wasAd=!!Flow.ad;
+  var doneIdx=Flow.lessonIdx;
   _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){
         if(d.error==="free_feature_limit_reached"){
           App.exitFlow();
-          /* Reklama bilan o'tilgan darsda obunaga MAJBURLAMAYMIZ — faqat ogohlantiramiz. */
-          if(wasAd){toast(T().adNoAd,2600);}else{openLockedLessonSheet(doneIdx||0);}
+          /* Bepul trial tugadi (premium dars) — obuna oynasi. */
+          openLockedLessonSheet(doneIdx||0);
           return;
         }
         toast(serverSaveErrorText(d.error),2600);return;
@@ -2388,7 +2359,7 @@ function renderAll(){
 navInit();
 $("#sheet").onclick=function(){App.closeSheet()};
 $("#paywall").onclick=function(){App.closePaywall()};
-window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.startAdSupportedLesson=startAdSupportedLesson;window.App=App;window.Flow=Flow;window.AdFlow=AdFlow;window.speak=speak;
+window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App=App;window.Flow=Flow;window.speak=speak;
 (function(){
   var bootLevel=getSelectedLevel();
   if(!INIT_DATA){showAuthGate();return;}

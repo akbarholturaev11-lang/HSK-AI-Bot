@@ -11,19 +11,42 @@ from app.services.user_access_state_service import UserAccessStateService
 
 
 FREE_FEATURE_LIMITS = {feature_key: 1 for feature_key in COURSE_FEATURE_KEYS}
-FREE_COURSE_LESSONS_PER_LEVEL = 3
+# Yangi bepul user faqat 1-darsni to'liq bepul o'tadi. 2-dars — obuna oynasi
+# (frontend darsning ~yarmida paywall ko'rsatadi), 3-dars va keyingilar — qulf.
+# Reklama endi darslarda EMAS, mashq bo'limlarida ishlaydi (pastdagi *_ad limitlar).
+FREE_COURSE_LESSONS_PER_LEVEL = 1
 
-# Course Mini App "Mashq" bo'limlari bepul userlarga KUNIGA chegaralangan
-# (har kuni UTC yarim tunda qayta ochiladi). Hisob server tomonda yuritiladi —
-# user localStorage'ni tozalab yoki sahifani qayta yuklab aylanib o'tolmaydi.
+# Course Mini App "Mashq" bo'limlari — YANGI model:
+#   • Har bo'lim UMRDA 1 marta bepul (reklamasiz). Kunlik yangilanish YO'Q
+#     (`lifetime=True` bilan hisoblanadi). Bepulni ishlatgach — reklama yoki obuna.
+#   • Reklama bilan ochish odatda CHEKSIZ. Faqat AI token sarflaydigan bo'limlarda
+#     (`COURSE_AI_PRACTICE_FEATURES`) reklama ham KUNIGA 2 marta cheklanadi
+#     (token xarajatini tiyish uchun) — "<feature>_ad" kaliti.
+# Hisob server tomonda — user localStorage'ni tozalab aylanib o'tolmaydi.
 COURSE_DAILY_FREE_LIMITS = {
+    # Bepul: har bo'lim umrda 1 marta (lifetime=True bilan ishlatiladi).
     "recognition": 1,    # Ieroglif tanish
     "memorize": 1,       # Yodlash (ieroglif yozish mashqi)
-    "pronunciation": 1,  # Talaffuz mashqi — kuniga 1 to'liq sessiya
+    "pronunciation": 1,  # Talaffuz mashqi
     "placement": 1,      # Daraja aniqlash testi
     "training_test": 1,  # Test markazi mashqlari
-    "ad_lesson": 2,      # Reklama bilan ochiladigan darslar — kuniga 2 ta
+    # Reklama bilan ochish — faqat AI token sarflaydigan bo'limda kuniga 2 marta.
+    # Boshqa bo'limlarda reklama cheksiz (bu yerda "<feature>_ad" kaliti yo'q).
+    "pronunciation_ad": 2,  # Talaffuz — AI (OpenAI STT), reklama ham 2 marta/kun
 }
+
+# AI token sarflaydigan mashq bo'limlari. Faqat bularda reklama ham kunlik
+# cheklanadi; qolganlarida reklama cheksiz.
+COURSE_AI_PRACTICE_FEATURES = ("pronunciation",)
+
+# Bepul mashq bo'limlari (reklama-ruxsati kalitlaridan ajratilgan holda).
+COURSE_DAILY_BASE_FEATURES = (
+    "recognition",
+    "memorize",
+    "pronunciation",
+    "placement",
+    "training_test",
+)
 COURSE_DAILY_EVENT_NAME = "practice_daily_used"
 
 
@@ -205,26 +228,30 @@ class CourseMiniAppAccessService:
             raise ValueError(f"Unknown Course daily feature: {normalized or '<empty>'}")
         return normalized
 
-    async def _daily_used_today(self, telegram_id: int, feature_key: str) -> int:
+    async def _daily_used_today(self, telegram_id: int, feature_key: str, *, lifetime: bool = False) -> int:
+        conditions = [
+            CourseMiniAppEvent.telegram_id == int(telegram_id),
+            CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
+            CourseMiniAppEvent.session_id == feature_key,
+        ]
+        # lifetime=True — kunlik filtr yo'q: umrbod hisob (bir marta bepul uchun).
+        if not lifetime:
+            conditions.append(CourseMiniAppEvent.created_at >= self._day_start())
         result = await self.session.execute(
-            select(func.count(CourseMiniAppEvent.id)).where(
-                CourseMiniAppEvent.telegram_id == int(telegram_id),
-                CourseMiniAppEvent.event_name == COURSE_DAILY_EVENT_NAME,
-                CourseMiniAppEvent.session_id == feature_key,
-                CourseMiniAppEvent.created_at >= self._day_start(),
-            )
+            select(func.count(CourseMiniAppEvent.id)).where(*conditions)
         )
         return int(result.scalar_one() or 0)
 
-    async def daily_status(self, user, feature_key: str) -> dict:
-        """Bugungi kun uchun bepul holatni qaytaradi (yozmasdan, faqat o'qish)."""
+    async def daily_status(self, user, feature_key: str, *, lifetime: bool = False) -> dict:
+        """Bepul holatni qaytaradi (yozmasdan). ``lifetime=True`` bo'lsa — umrbod
+        hisob (kunlik yangilanmaydi)."""
         feature_key = self._normalize_daily_feature(feature_key)
         limit = COURSE_DAILY_FREE_LIMITS[feature_key]
         if self.is_paid_user(user):
             return {"allowed": True, "is_paid": True, "limit": limit, "used": 0, "remaining": None}
         if not self.is_free_user(user):
             return {"allowed": False, "is_paid": False, "limit": limit, "used": limit, "remaining": 0}
-        used = await self._daily_used_today(user.telegram_id, feature_key)
+        used = await self._daily_used_today(user.telegram_id, feature_key, lifetime=lifetime)
         return {
             "allowed": used < limit,
             "is_paid": False,
@@ -233,15 +260,17 @@ class CourseMiniAppAccessService:
             "remaining": max(0, limit - used),
         }
 
-    async def consume_daily_use(self, user, *, feature_key: str, ref: str | None = None) -> dict:
-        """Kunlik limitdan bitta foydalanishni band qiladi. Limit tugagan bo'lsa
+    async def consume_daily_use(
+        self, user, *, feature_key: str, ref: str | None = None, lifetime: bool = False
+    ) -> dict:
+        """Limitdan bitta foydalanishni band qiladi. Limit tugagan bo'lsa
         ``allowed=False`` qaytaradi (paywall ko'rsatish uchun).
 
+        ``lifetime=True`` — umrbod hisob (kunlik yangilanmaydi): "bir marta bepul".
+
         ``ref`` berilsa — o'sha foydalanish idempotent bo'ladi: bir xil ``ref``
-        bilan takroriy chaqiruv (sahifa qayta yuklanishi, tarmoq retry, yoki
-        bir xil darsni qayta yakunlash) qo'shimcha slot egallamaydi. Shu sabab
-        bo'limlar uchun ``ref`` = sessiya tokeni, reklama darslari uchun ``ref``
-        = dars tartibi sifatida uzatiladi."""
+        bilan takroriy chaqiruv (sahifa qayta yuklanishi, tarmoq retry) qo'shimcha
+        slot egallamaydi."""
         feature_key = self._normalize_daily_feature(feature_key)
         limit = COURSE_DAILY_FREE_LIMITS[feature_key]
         if self.is_paid_user(user):
@@ -256,7 +285,7 @@ class CourseMiniAppAccessService:
         if not locked_user:
             return {"allowed": False, "recorded": False, "error": "user_not_found"}
 
-        day_key = self._day_start().date().isoformat()
+        day_key = "lifetime" if lifetime else self._day_start().date().isoformat()
         clean_ref = str(ref).strip()[:48] if ref is not None else None
         dedupe_key = (
             f"daily:{feature_key}:{day_key}:ref:{clean_ref}"
@@ -264,7 +293,7 @@ class CourseMiniAppAccessService:
             else None
         )
 
-        used = await self._daily_used_today(locked_user.telegram_id, feature_key)
+        used = await self._daily_used_today(locked_user.telegram_id, feature_key, lifetime=lifetime)
 
         # Idempotent ref: shu foydalanish bugun allaqachon hisobga olingan bo'lsa,
         # qo'shimcha slot egallamasdan ruxsat beramiz.
@@ -325,7 +354,7 @@ class CourseMiniAppAccessService:
                         "idempotent": True,
                         "remaining": max(0, limit - used),
                     }
-            used_again = await self._daily_used_today(locked_user.telegram_id, feature_key)
+            used_again = await self._daily_used_today(locked_user.telegram_id, feature_key, lifetime=lifetime)
             if used_again >= limit:
                 return {
                     "allowed": False,

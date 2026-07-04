@@ -194,7 +194,7 @@ class CourseMistakeService:
             "explanation": item.explanation or item.correct_answer,
         }
 
-    async def start_review(self, telegram_id: int) -> dict:
+    async def start_review(self, telegram_id: int, *, ad_supported: bool = False) -> dict:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return {"ok": False, "error": "access_start_first"}
@@ -202,13 +202,22 @@ class CourseMistakeService:
         if not items:
             return {"ok": False, "error": "mistake_review_empty"}
         usage_ref = f"mistake-review:v{MISTAKE_REVIEW_VERSION}"
-        access = await self.access.consume_free_use(
-            user,
-            feature_key="training_test",
-            usage_ref=usage_ref,
-        )
-        if not access.get("allowed"):
-            return {"ok": False, "error": access.get("error") or "free_feature_limit_reached"}
+        # Xatolar bo'limi AI token sarflamaydi — reklama bilan davom CHEKSIZ.
+        # Bepul: umrbod 1 marta (consume_free_use, lifetime). Bepul tugagach ham
+        # ad_supported=True bo'lsa slot band qilinmasdan davom etadi.
+        if not ad_supported:
+            access = await self.access.consume_free_use(
+                user,
+                feature_key="training_test",
+                usage_ref=usage_ref,
+            )
+            if not access.get("allowed"):
+                return {
+                    "ok": False,
+                    "error": access.get("error") or "free_feature_limit_reached",
+                    # Reklama cheksiz (AI emas) — har doim mavjud.
+                    "ad": {"available": True, "limited": False},
+                }
         distractors = [item.correct_answer for item in items]
         session_id = f"mistake-review:{user.id}:v{MISTAKE_REVIEW_VERSION}:{uuid.uuid4().hex[:12]}"
         questions = [self._review_question(item, distractors) for item in items]

@@ -14,7 +14,11 @@ from app.bot.utils.course_miniapp import (
     course_stroke_order_url,
     course_study_miniapp_url,
 )
-from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.course_miniapp_access_service import (
+    COURSE_AI_PRACTICE_FEATURES,
+    COURSE_DAILY_FREE_LIMITS,
+    CourseMiniAppAccessService,
+)
 from app.services.course_ad_service import CourseAdService
 from app.services.course_miniapp_analytics_service import (
     MAX_EVENT_PAYLOAD_CHARS,
@@ -168,9 +172,22 @@ class CourseMiniAppAccessTests(unittest.TestCase):
     def test_blocked_user_is_not_free_eligible(self):
         self.assertFalse(CourseMiniAppAccessService.is_free_user(self._user(status="blocked")))
 
-    def test_unpaid_course_lesson_policy_keeps_three_free_previews_per_level(self):
-        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 3))
-        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 4))
+    def test_practice_ad_cap_only_on_ai_token_sections(self):
+        # Reklama bilan ochish faqat AI token sarflaydigan bo'limda cheklanadi
+        # (talaffuz). Boshqa bo'limlarda "<feature>_ad" kaliti YO'Q (cheksiz).
+        self.assertEqual(COURSE_AI_PRACTICE_FEATURES, ("pronunciation",))
+        self.assertEqual(COURSE_DAILY_FREE_LIMITS.get("pronunciation_ad"), 2)
+        for feature in ("recognition", "memorize", "placement", "training_test"):
+            self.assertNotIn(f"{feature}_ad", COURSE_DAILY_FREE_LIMITS)
+        # Bepul asosiy bo'limlar hali 1 (umrbod, lifetime=True bilan ishlatiladi).
+        self.assertEqual(COURSE_DAILY_FREE_LIMITS.get("recognition"), 1)
+
+    def test_unpaid_course_lesson_policy_keeps_only_first_lesson_free(self):
+        # Bepul trial: faqat 1-dars to'liq bepul; 2-dars (yarim preview) va
+        # keyingilari premium. Reklama darslardan mashq bo'limlariga ko'chdi.
+        self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 1))
+        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 2))
+        self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk1", 3))
         self.assertFalse(CourseMiniAppAccessService.lesson_requires_premium("hsk2", 1))
         self.assertTrue(CourseMiniAppAccessService.lesson_requires_premium("hsk4", 4))
 

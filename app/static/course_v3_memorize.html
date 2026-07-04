@@ -68,6 +68,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="body" id="body"><div class="loading">…</div></div>
 </div>
 <script src="course_v3_data/memo.js?v=20260628"></script>
+<script src="/course_v3_data/ads.js"></script>
 <script>
 var P=new URLSearchParams(location.search||"");
 var LANG=(P.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
@@ -96,17 +97,35 @@ var LIM={
   title:{uz:"Bugungi bepul mashq tugadi",ru:"Бесплатная практика на сегодня исчерпана",tj:"Машқи ройгони имрӯза тамом шуд"},
   sub:{uz:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",ru:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",tj:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед."},
   pay:{uz:"Premium ochish",ru:"Открыть Premium",tj:"Кушодани Premium"},
-  back:{uz:"Orqaga",ru:"Назад",tj:"Бозгашт"}
+  back:{uz:"Orqaga",ru:"Назад",tj:"Бозгашт"},
+  adCont:{uz:"Reklama bilan davom etish",ru:"Продолжить с рекламой",tj:"Идома бо реклама"},
+  adSub:{uz:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching.",ru:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium.",tj:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}
 };
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription"}
+/* Reklama moduli: kunlik bepul limit tugagach, reklama bilan yana 2 marta/kun. */
+if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"memorize",level:(P.get("level")||"hsk1"),onSubscribe:goPremium});
+var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
+function runAdGate(){
+  return fetch("/api/v3/practice/ad-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"memorize",ref:"ad:"+Date.now()})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
+}
+function startAdSupported(){
+  runAdGate().then(function(o){
+    if(o.status===403){showLimit(false);return}
+    AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
+    if(window.CourseAds){CourseAds.play("start").then(boot).catch(boot)}else{boot()}
+  }).catch(function(){showLimit(false)});
+}
 function gateRef(create){try{var k="hsk_gate_memorize";var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
 function runGate(ref){
   return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"memorize",ref:ref})})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
 }
-function showLimit(){
-  B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+t(LIM.sub)+'</p><button onclick="goPremium()"><i class="ti ti-crown"></i> '+t(LIM.pay)+'</button><button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
+function showLimit(adAvailable){
+  var adBtn=adAvailable?'<button onclick="startAdSupported()"><i class="ti ti-player-play"></i> '+t(LIM.adCont)+'</button>':'';
+  var sub=adAvailable?t(LIM.adSub):t(LIM.sub);
+  B.innerHTML='<div class="done"><div class="st"><i class="ti ti-lock"></i></div><h3>'+t(LIM.title)+'</h3><p>'+sub+'</p>'+adBtn+'<button class="ghost" onclick="goPremium()"><i class="ti ti-crown"></i> '+t(LIM.pay)+'</button><button class="ghost" onclick="goBack()">'+t(LIM.back)+'</button></div>';
 }
 
 /* ---- mastery (localStorage) ---- */
@@ -131,6 +150,8 @@ function buildDeck(){
 /* ---- per-char state ---- */
 var H,D,STEPS,SI,GATE;
 function startChar(){
+  /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
+  if(AD_SESSION&&!AD_MID_SHOWN&&deck.length>=4&&DI===Math.floor(deck.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(startChar).catch(startChar);return}}
   H=deck[DI];D=DATA[H];SI=0;GATE={meaning:false,reco:false,prod:false};
   document.getElementById("pos").textContent=(DI+1)+"/"+deck.length;
   STEPS=buildSteps(H);step();
@@ -293,6 +314,8 @@ function showCont(label){var e=document.getElementById("ct");if(e){e.innerHTML='
 
 /* complete */
 function finishChar(){
+  /* Reklama bilan kirilgan sessiya: oxirgi belgi tugagach yakuniy reklama. */
+  if(AD_SESSION&&!AD_END_SHOWN&&DI>=deck.length-1&&GATE.meaning&&GATE.reco&&GATE.prod){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finishChar).catch(finishChar);return}}
   setProg(1);
   if(!(GATE.meaning&&GATE.reco&&GATE.prod)){
     // gating bloklar to'g'ri javobsiz o'tmaydi, lekin himoya uchun
@@ -317,9 +340,9 @@ function boot(){
 }
 /* Sessiya boshlashdan oldin kunlik limitni tekshiramiz (server tomonda). */
 runGate(gateRef(true)).then(function(o){
-  if(o.status===403){showLimit();return}
-  boot();
-}).catch(function(){boot()});
+  if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
+  AD_SESSION=false;boot();
+}).catch(function(){AD_SESSION=false;boot()});
 </script>
 </body>
 </html>

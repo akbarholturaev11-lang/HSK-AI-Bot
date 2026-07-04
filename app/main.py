@@ -56,7 +56,10 @@ from app.services.course_miniapp_practice_service import CourseMiniAppPracticeSe
 from app.services.course_mistake_service import CourseMistakeService
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_challenge_service import CourseChallengeService
-from app.services.course_miniapp_access_service import CourseMiniAppAccessService
+from app.services.course_miniapp_access_service import (
+    COURSE_AI_PRACTICE_FEATURES,
+    CourseMiniAppAccessService,
+)
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.payment_notify_service import PaymentNotifyService
@@ -936,10 +939,19 @@ def _apply_course_v3_access_policy(data: dict, *, level: str, completed: int, is
 
             requires_premium = CourseMiniAppAccessService.lesson_requires_premium(level, n)
             if not is_paid and requires_premium and n > completed:
-                lesson["status"] = "locked"
-                lesson["locked_premium"] = True
+                if n == completed + 1 and n == 2:
+                    # 2-dars: yangi bepul user uni ochib, ~yarmigacha ko'radi;
+                    # frontend kartalar o'rtasida obuna oynasini chiqaradi.
+                    lesson["status"] = "current"
+                    lesson["preview_half"] = True
+                    lesson.pop("locked_premium", None)
+                else:
+                    lesson["status"] = "locked"
+                    lesson["locked_premium"] = True
+                    lesson.pop("preview_half", None)
             else:
                 lesson.pop("locked_premium", None)
+                lesson.pop("preview_half", None)
 
             if lesson.get("status") in {"done", "current"} and not lesson.get("locked_premium"):
                 unit_unlocked = True
@@ -966,6 +978,11 @@ async def course_v3_sub_page(page: str):
 @app.get("/course_v3_data/memo.js")
 async def course_v3_memo_script():
     return static_asset_response("app/static/course_v3_data/memo.js", "application/javascript")
+
+
+@app.get("/course_v3_data/ads.js")
+async def course_v3_ads_script():
+    return static_asset_response("app/static/course_v3_data/ads.js", "application/javascript")
 
 
 @app.get("/course_v3_data/{filename}")
@@ -1109,16 +1126,9 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
 
         _apply_course_v3_access_policy(data, level=resolved_level, completed=completed, is_paid=is_paid)
 
-        # Reklama bilan ochiladigan darslarning bugungi holati (UI tugmani
-        # ko'rsatish/yashirish va "N/2" matni uchun). Pullik userlar uchun
-        # limitsiz (remaining=None).
-        ad_lesson_status = await CourseMiniAppAccessService(session).daily_status(user, "ad_lesson")
-        data["ad_lessons"] = {
-            "used_today": int(ad_lesson_status.get("used") or 0),
-            "limit": int(ad_lesson_status.get("limit") or 0),
-            "remaining": ad_lesson_status.get("remaining"),
-            "is_paid": bool(ad_lesson_status.get("is_paid")),
-        }
+        # Darslarda endi reklama YO'Q — bepul trial (1-dars to'liq + 2-dars
+        # yarmi) va obuna paywall. Reklama oqimi mashq bo'limlariga ko'chirildi
+        # (har bo'limning o'z kunlik reklama-ruxsati bor, sub-sahifalar boshqaradi).
 
         await CourseMiniAppAnalyticsService(session).record_server_event(
             event_name="miniapp_opened",
@@ -1235,10 +1245,15 @@ async def v3_course_ad(
     level: str = "hsk1",
     lesson: int = 0,
     lang: str = "",
+    feature: str = "",
 ):
     resolved_level = _course_v3_level(level)
     lesson_order = _positive_int(lesson) or 0
-    if lesson_order <= 0:
+    section = str(feature or "").strip().lower()
+    # Mashq bo'limlarida reklama darsga bog'lanmagan (lesson=0) — `feature`
+    # (masalan "recognition") kontekst sifatida keladi. Faqat dars ham,
+    # bo'lim ham bo'lmasa xato.
+    if lesson_order <= 0 and section not in _COURSE_DAILY_GATE_FEATURES:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
 
     # Foydalanuvchining tiliga mos reklamalarni (shu til + "all") qaytaramiz.
@@ -1289,7 +1304,10 @@ async def v3_course_ad_view(request: Request):
         watched_seconds = int(payload.get("watched_seconds") or 0)
     except (TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
-    if ad_id <= 0 or lesson_order <= 0:
+    section = str(payload.get("feature") or "").strip().lower()
+    # Mashq bo'limi reklamasi darsga bog'lanmagan (lesson_order=0) — bunda
+    # `feature` bo'lishi shart.
+    if ad_id <= 0 or (lesson_order <= 0 and section not in _COURSE_DAILY_GATE_FEATURES):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_ad_view_payload"})
 
     placement = CourseAdService.normalize_placement(str(payload.get("placement") or "start"))
@@ -1338,9 +1356,9 @@ _COURSE_DAILY_GATE_FEATURES = {
 
 @app.post("/api/v3/practice/daily-gate")
 async def v3_practice_daily_gate(request: Request):
-    """Mashq bo'limlari uchun kunlik limit (bepul userga kuniga 1 ta to'liq
-    sessiya). Sessiya boshlanishida chaqiriladi; limit tugagan bo'lsa 403 +
-    paywall. Hisob server tomonda — user aylanib o'tolmaydi."""
+    """Mashq bo'limining BEPUL foydalanishi (bepul userga UMRDA 1 marta,
+    reklamasiz). Sessiya boshlanishida chaqiriladi; bepul tugagan bo'lsa 403 +
+    reklama/obuna holati. Hisob server tomonda — user aylanib o'tolmaydi."""
     init_data = request.headers.get("X-Telegram-Init-Data", "")
     try:
         payload = await request.json()
@@ -1363,9 +1381,81 @@ async def v3_practice_daily_gate(request: Request):
         if not user:
             return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
         access = CourseMiniAppAccessService(session)
-        result = await access.consume_daily_use(user, feature_key=feature, ref=ref)
+        # Bepul: UMRDA 1 marta (lifetime=True — kunlik yangilanmaydi).
+        result = await access.consume_daily_use(user, feature_key=feature, ref=ref, lifetime=True)
+        if not result.get("allowed"):
+            # Bepul tugadi. Endi reklama yoki obuna. AI token sarflaydigan
+            # bo'limda (masalan talaffuz) reklama ham kuniga 2 marta cheklangan;
+            # boshqa bo'limlarda reklama cheksiz.
+            is_ai = feature in COURSE_AI_PRACTICE_FEATURES
+            if is_ai:
+                ad_status = await access.daily_status(user, f"{feature}_ad")
+                ad_info = {
+                    "available": bool(ad_status.get("allowed")),
+                    "limited": True,
+                    "used": int(ad_status.get("used") or 0),
+                    "limit": int(ad_status.get("limit") or 0),
+                    "remaining": ad_status.get("remaining"),
+                }
+            else:
+                ad_info = {"available": True, "limited": False}
+            await session.commit()
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "ok": False,
+                    "error": result.get("error") or "free_feature_limit_reached",
+                    "is_paid": bool(result.get("is_paid", False)),
+                    "ad": ad_info,
+                },
+            )
+        await session.commit()
+        return JSONResponse(
+            content={
+                "ok": True,
+                "allowed": True,
+                "is_paid": bool(result.get("is_paid", False)),
+                "remaining": result.get("remaining"),
+            }
+        )
+
+
+@app.post("/api/v3/practice/ad-gate")
+async def v3_practice_ad_gate(request: Request):
+    """Bepul tugagach, user reklama ko'rib yana kirmoqchi bo'lsa chaqiriladi.
+    Odatda CHEKSIZ; faqat AI token sarflaydigan bo'limda (masalan talaffuz)
+    reklama ham KUNIGA 2 marta cheklanadi. Server tomonda hisoblanadi."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    if not init_data:
+        init_data = str(payload.get("initData") or "")
+    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
+    if not telegram_id:
+        return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+
+    feature = str(payload.get("feature") or "").strip().lower()
+    if feature not in _COURSE_DAILY_GATE_FEATURES:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_feature"})
+    ref_raw = payload.get("ref")
+    ref = str(ref_raw).strip()[:48] if ref_raw else None
+
+    async with async_session_maker() as session:
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        if not user:
+            return JSONResponse(status_code=403, content={"ok": False, "error": "access_start_first"})
+        access = CourseMiniAppAccessService(session)
+        # AI bo'lim emas — reklama cheksiz, slot band qilinmaydi.
+        if feature not in COURSE_AI_PRACTICE_FEATURES:
+            is_paid = access.is_paid_user(user)
+            return JSONResponse(content={"ok": True, "allowed": True, "is_paid": is_paid, "remaining": None})
+        # AI bo'lim — reklama ham kuniga 2 marta.
+        result = await access.consume_daily_use(user, feature_key=f"{feature}_ad", ref=ref)
         await session.commit()
         if not result.get("allowed"):
+            # Reklama-ruxsati ham tugadi — endi faqat obuna (ertaga yana ochiladi).
             return JSONResponse(
                 status_code=403,
                 content={
@@ -1494,31 +1584,14 @@ async def v3_course_lesson_complete(request: Request):
 
         access = CourseMiniAppAccessService(session)
         is_paid = access.is_paid_user(user)
-        ad_supported = False
-        premium_ad_lesson = not is_paid and CourseMiniAppAccessService.lesson_requires_premium(
+        # Darslarda reklama YO'Q. Bepul user faqat bepul trial doirasidagi
+        # darsni (1-dars) yakunlay oladi; premium dars (2+) — obuna majburiy.
+        # Bu serverdagi asosiy chegara: klient buzilgan bo'lsa ham aylanib
+        # o'tib bo'lmaydi (frontend 2-darsni yarmida paywall bilan to'xtatadi).
+        if not is_paid and CourseMiniAppAccessService.lesson_requires_premium(
             resolved_level, lesson_order
-        )
-        if premium_ad_lesson:
-            ad_service = CourseAdService(session)
-            # Gate foydalanuvchi tiliga mos reklama bilan bir xil bo'lishi kerak:
-            # boshqa tildagi reklama bo'lsa-yu, bu til uchun bo'lmasa, gate
-            # talab qilmasligi (frontend ham reklama olmagani) uchun til bo'yicha tekshiramiz.
-            has_active_ad = await ad_service.get_active_ad(
-                language=getattr(user, "language", None)
-            ) is not None
-            if has_active_ad:
-                ad_supported = await ad_service.has_completed_required_views(
-                    user_telegram_id=telegram_id,
-                    level=resolved_level,
-                    lesson_order=lesson_order,
-                )
-                if not ad_supported:
-                    return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
-            else:
-                # No admin ad uploaded yet: let the free user continue this next
-                # premium lesson without ads. When an ad is enabled later, the ad
-                # gate above applies again automatically.
-                ad_supported = True
+        ):
+            return JSONResponse(status_code=403, content={"ok": False, "error": "free_feature_limit_reached"})
 
         progress_repo = CourseProgressRepository(session)
         progress = await progress_repo.get_by_user_id(user.id, for_update=True)
@@ -1548,24 +1621,6 @@ async def v3_course_lesson_complete(request: Request):
             )
         if lesson_order != completed + 1:
             return JSONResponse(status_code=403, content={"ok": False, "error": "course_lesson_not_unlocked"})
-
-        # Reklama bilan ochiladigan premium darslar bepul userga KUNIGA 2 ta.
-        # Bu serverdagi asosiy chegara — klient buzilgan bo'lsa ham aylanib
-        # o'tib bo'lmaydi. ref=dars tartibi: bir darsni qayta yakunlash qo'shimcha
-        # slot egallamaydi (idempotent).
-        if premium_ad_lesson:
-            ad_lesson_gate = await access.consume_daily_use(
-                user, feature_key="ad_lesson", ref=str(lesson_order)
-            )
-            if not ad_lesson_gate.get("allowed"):
-                return JSONResponse(
-                    status_code=403,
-                    content={
-                        "ok": False,
-                        "error": ad_lesson_gate.get("error") or "ad_lesson_daily_limit_reached",
-                        "reason": "ad_lesson_daily_limit",
-                    },
-                )
 
         await progress_repo.set_current_lesson_and_step(
             progress=progress,
@@ -1622,7 +1677,6 @@ async def v3_course_lesson_complete(request: Request):
             payload={
                 "lesson_order": lesson_order,
                 "is_paid": is_paid,
-                "ad_supported": ad_supported,
                 "next_lesson": getattr(next_lesson, "lesson_order", None),
             },
         )
@@ -3237,8 +3291,13 @@ async def miniapp_mistake_review_start(request: Request):
     )
     if not telegram_id:
         return JSONResponse(status_code=401, content={"ok": False, "error": "invalid_telegram_init_data"})
+    try:
+        payload = await request.json()
+    except Exception:
+        payload = {}
+    ad_supported = bool(payload.get("ad_supported")) if isinstance(payload, dict) else False
     async with async_session_maker() as session:
-        result = await CourseMistakeService(session).start_review(telegram_id)
+        result = await CourseMistakeService(session).start_review(telegram_id, ad_supported=ad_supported)
     status_code = 200 if result.get("ok") else 403 if result.get("error") == "free_feature_limit_reached" else 400
     return JSONResponse(status_code=status_code, content=result)
 

@@ -92,8 +92,51 @@ def mock_price_preview(page):
     )
 
 
+def mock_telegram_ready(page, init_data="query_id=smoke"):
+    """Telegram WebApp stub'ni bo'sh bo'lmagan initData bilan qaytaradi, shunda
+    Mini App auth-gate ko'rsatmasdan map'ni yuklaydi (static rejim)."""
+    page.route(
+        "https://telegram.org/js/telegram-web-app.js",
+        lambda route: route.fulfill(
+            status=200,
+            content_type="application/javascript",
+            body=(
+                "window.Telegram={WebApp:{initData:'" + init_data + "',initDataUnsafe:{},"
+                "ready(){},expand(){},close(){},setHeaderColor(){},setBackgroundColor(){},"
+                "HapticFeedback:{impactOccurred(){},notificationOccurred(){},selectionChanged(){}},"
+                "openTelegramLink(){},openLink(){},showConfirm(){},"
+                "BackButton:{show(){},hide(){},onClick(){}}}};"
+            ),
+        ),
+    )
+
+
+def mock_course_map(page, *, level="hsk1"):
+    """Static rejimda ``/api/v3/map`` ni haqiqiy statik map fayli asosida
+    (auth qilingan, bepul user) mock qiladi — real backend'siz sahifa render'i
+    uchun."""
+    data = json.loads((STATIC_ROOT / f"course_v3_data/{level}.json").read_text(encoding="utf-8"))
+    data["authenticated"] = True
+    data["level"] = level
+    progress = data.setdefault("progress", {})
+    progress.setdefault("xp", 0)
+    progress.setdefault("streak", 0)
+    progress["completed"] = 0
+    data["user"] = {
+        "name": "Smoke Test",
+        "avatar": "阿",
+        "language": "uz",
+        "is_paid": False,
+        "referral_code": "",
+    }
+    data["notify"] = {"enabled": True}
+    page.route(re.compile(r".*/api/v3/map(\?.*)?$"), lambda route: json_response(route, data))
+
+
 def test_course_v3_opens_static_map_and_query_lesson_sheet(page):
     mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
     page.add_init_script(
         """
         localStorage.setItem("hsk_v3_onb", "1");
@@ -111,14 +154,25 @@ def test_course_v3_opens_static_map_and_query_lesson_sheet(page):
 
 
 def test_course_v3_support_pages_render_real_static_data(page):
+    # Yodlash bo'limi usul tanlanmagan bo'lsa avval "Qaysi usul?" so'raydi va
+    # o'sha qadamda belgi ko'rinmaydi. Tanlov saqlangan (qaytgan) user'ni taqlid
+    # qilib, deck to'g'ridan belgini o'rgatishdan boshlaydi.
+    page.add_init_script("localStorage.setItem('hsk_memo_pref', 'radical');")
     pages = [
         (
             "/hsk-lugat.html?lang=uz&char=%E4%BD%A0&theme=light&level=hsk1",
-            ["TARKIBI", "Tez eslab qolish", "你好"],
+            # Ba'zi sarlavhalar (masalan "Tarkibi") CSS text-transform:uppercase
+            # bilan KO'RINISHDA katta harfda, lekin DOM matni asl registrda —
+            # shuning uchun harf registriga bog'liq bo'lmagan moslik ishlatamiz.
+            ["Tarkibi", "Tez eslab qolish", "你好"],
         ),
         (
+            # "1/8" — deck 8 kartadan qurilgani (statik belgi ma'lumoti yuklangani)
+            # deterministik isbot. Belgining o'zi (你) birinchi qadamda ko'rinishi
+            # buildSteps() tasodifiy tartibiga bog'liq (ba'zan HanziWriter SVG yoki
+            # pinyin qadami) — shuning uchun unga tayanmaymiz (flaky bo'lardi).
             "/course_v3_memorize.html?lang=uz&char=%E4%BD%A0&from=lugat&theme=light&level=hsk1",
-            ["1/8", "你"],
+            ["1/8"],
         ),
         (
             "/course_v3_test.html?lang=uz&level=hsk1&theme=light",
@@ -129,7 +183,9 @@ def test_course_v3_support_pages_render_real_static_data(page):
     for path, expected_texts in pages:
         page.goto(app_url(path), wait_until="networkidle")
         for text in expected_texts:
-            expect(page.locator("body")).to_contain_text(text)
+            expect(page.locator("body")).to_contain_text(
+                re.compile(re.escape(text), re.IGNORECASE)
+            )
 
 
 def admin_payload():

@@ -93,27 +93,29 @@ h1{font-size:23px}
     <div class="ic"><i class="ti ti-lock"></i></div>
     <h3 id="lim-title"></h3>
     <p id="lim-text"></p>
+    <button class="go" onclick="startAdSupported()" id="lim-ad" hidden><i class="ti ti-player-play"></i> <span id="lim-ad-t"></span></button>
     <button class="go" onclick="goPay()"><i class="ti ti-crown"></i> <span id="lim-btn"></span></button>
     <button class="lt" onclick="closeLimit()" id="lim-later"></button>
   </div>
 </div>
+<script src="/course_v3_data/ads.js"></script>
 <script>
 var params=new URLSearchParams(location.search||"");
 var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
 var L={ru:{title:"Мои ошибки",sub:"Собираются автоматически из уроков, тестов и экзаменов",emptyTitle:"Пока ошибок нет",emptySub:"Проходите уроки и тесты — ошибки появятся здесь, и вы сможете их отработать.",toCourse:"К урокам",review:"Работа над ошибками",reviewSub:"Исправьте слабые места",start:"Начать",
     q:"Вопрос",of:"из",correct:"Верно!",wrong:"Неверно",exp:"Пояснение",next:"Дальше",finish:"Завершить",
     resTitle:"Отличная работа!",resScore:"верно",resRemaining:"Осталось ошибок",resAll:"Вы исправили все свои ошибки!",done:"Готово",
-    limitTitle:"Бесплатная практика на сегодня закончилась",limitText:"Оформите Premium для безлимитной работы над ошибками.",limitBtn:"Оформить Premium",later:"Позже",
+    limitTitle:"Бесплатная практика на сегодня закончилась",limitText:"Оформите Premium для безлимитной работы над ошибками.",limitBtn:"Оформить Premium",later:"Позже",adCont:"Продолжить с рекламой",adLimitText:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium.",
     loading:"Загрузка…",err:"Произошла ошибка. Попробуйте снова."},
   uz:{title:"Xatolarim",sub:"Darslar, testlar va imtihonlardan avtomatik yig'iladi",emptyTitle:"Hozircha xato yo'q",emptySub:"Darslar va testlardan o'ting — xatolar shu yerda paydo bo'ladi va ularni mashq qila olasiz.",toCourse:"Darslarga",review:"Xatolar ustida ishlash",reviewSub:"Zaif joylarni tuzating",start:"Boshlash",
     q:"Savol",of:"/",correct:"To'g'ri!",wrong:"Noto'g'ri",exp:"Izoh",next:"Keyingi",finish:"Yakunlash",
     resTitle:"Ajoyib ish!",resScore:"to'g'ri",resRemaining:"Qolgan xatolar",resAll:"Barcha xatolaringizni tuzatdingiz!",done:"Tayyor",
-    limitTitle:"Bugungi bepul mashq tugadi",limitText:"Xatolar ustida cheksiz ishlash uchun Premium oling.",limitBtn:"Premium olish",later:"Keyinroq",
+    limitTitle:"Bugungi bepul mashq tugadi",limitText:"Xatolar ustida cheksiz ishlash uchun Premium oling.",limitBtn:"Premium olish",later:"Keyinroq",adCont:"Reklama bilan davom etish",adLimitText:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching.",
     loading:"Yuklanmoqda…",err:"Xatolik yuz berdi. Qayta urinib ko'ring."},
   tj:{title:"Хатоҳои ман",sub:"Аз дарсҳо, тестҳо ва имтиҳонҳо худкор ҷамъ мешаванд",emptyTitle:"Ҳоло хато нест",emptySub:"Дарсҳо ва тестҳоро гузаред — хатоҳо ин ҷо пайдо мешаванд.",toCourse:"Ба дарсҳо",review:"Кор бар хатоҳо",reviewSub:"Ҷойҳои заифро ислоҳ кунед",start:"Оғоз",
     q:"Савол",of:"аз",correct:"Дуруст!",wrong:"Нодуруст",exp:"Шарҳ",next:"Минбаъд",finish:"Анҷом",
     resTitle:"Кори аъло!",resScore:"дуруст",resRemaining:"Хатоҳои боқимонда",resAll:"Шумо ҳамаи хатоҳоятонро ислоҳ кардед!",done:"Тайёр",
-    limitTitle:"Машқи ройгони имрӯза тамом шуд",limitText:"Барои кори бемаҳдуд бар хатоҳо Premium гиред.",limitBtn:"Premium гирифтан",later:"Дертар",
+    limitTitle:"Машқи ройгони имрӯза тамом шуд",limitText:"Барои кори бемаҳдуд бар хатоҳо Premium гиред.",limitBtn:"Premium гирифтан",later:"Дертар",adCont:"Идома бо реклама",adLimitText:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед.",
     loading:"Боргирӣ…",err:"Хатогӣ рух дод. Боз кӯшиш кунед."}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 var INIT_DATA=(tg&&tg.initData)||"";
@@ -137,13 +139,24 @@ $("lim-title").textContent=L.limitTitle;$("lim-text").textContent=L.limitText;$(
 var RV=null;function busy(){return RV&&RV.loading}
 function haptic(t){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(t)}catch(e){}}
 function LETTERS(i){return["A","B","C","D"][i]||(i+1)}
-function startReview(){
+/* Reklama moduli: bepul limit tugagach reklama bilan yana 2 marta/kun. Slot
+   server tomonda (training_test_ad) band qilinadi. */
+if(window.CourseAds)CourseAds.config({lang:LANG,initData:INIT_DATA,feature:"training_test",level:(params.get("level")||"hsk1"),onSubscribe:goPay});
+var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
+/* "Reklama bilan davom etish": start reklamani ko'rsatib, so'ng ad_supported
+   sessiya ochamiz (server slotni band qiladi). */
+function startAdSupported(){
+  closeLimit();
+  AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
+  if(window.CourseAds){CourseAds.play("start").then(function(){startReview(true)}).catch(function(){startReview(true)})}else{startReview(true)}
+}
+function startReview(adSupported){
   if(busy())return;RV={loading:true};
-  fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA}})
+  fetch("/api/miniapp/mistakes/review/start",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},body:JSON.stringify({ad_supported:!!adSupported})})
   .then(function(r){return r.json().then(function(d){return{status:r.status,d:d}})})
   .then(function(res){
     var d=res.d||{};
-    if(res.status===403||(d.error==="free_feature_limit_reached")){RV=null;showLimit();return}
+    if(res.status===403||(d.error==="free_feature_limit_reached")){RV=null;AD_SESSION=false;showLimit(d.ad&&d.ad.available);return}
     if(!d.ok||!d.session||!d.session.questions||!d.session.questions.length){RV=null;
       if(d.error==="mistake_review_empty"){location.reload()}else{alert(L.err)}return}
     RV={loading:false,session:d.session.id,questions:d.session.questions,idx:0,answers:[]};
@@ -153,6 +166,8 @@ function startReview(){
 function openReview(){$("review").hidden=false;document.body.style.overflow="hidden"}
 function closeReview(){$("review").hidden=true;document.body.style.overflow="";RV=null}
 function renderQuestion(){
+  /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
+  if(AD_SESSION&&!AD_MID_SHOWN&&RV.questions.length>=4&&RV.idx===Math.floor(RV.questions.length/2)){AD_MID_SHOWN=true;if(window.CourseAds){CourseAds.play("middle").then(renderQuestion).catch(renderQuestion);return}}
   var q=RV.questions[RV.idx],n=RV.questions.length;
   $("rv-fill").style.width=Math.round((RV.idx/n)*100)+"%";
   var opts=q.options.map(function(o,i){return '<button class="rv-opt" data-i="'+i+'" onclick="pickOption('+i+')"><span class="rk">'+LETTERS(i)+'</span><span>'+esc(o)+'</span></button>'}).join("");
@@ -178,7 +193,10 @@ function nextQuestion(){
   RV.idx++;renderQuestion();
 }
 function finishReview(){
-  if(RV.loading)return;RV.loading=true;
+  if(RV.loading)return;
+  /* Reklama bilan kirilgan sessiya: yakunlashdan oldin yakuniy reklama. */
+  if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finishReview).catch(finishReview);return}}
+  RV.loading=true;
   $("rv-fill").style.width="100%";
   $("rv-foot").innerHTML='<button disabled>'+L.loading+'</button>';
   fetch("/api/miniapp/mistakes/review/complete",{method:"POST",headers:{"X-Telegram-Init-Data":INIT_DATA,"Content-Type":"application/json"},
@@ -195,7 +213,14 @@ function renderResult(d){
   $("rv-foot").innerHTML='<button onclick="closeReview();location.reload()"><i class="ti ti-check"></i> '+L.done+'</button>';
   haptic("success");
 }
-function showLimit(){$("limit").hidden=false}
+function showLimit(adAvailable){
+  var ab=document.getElementById("lim-ad");
+  if(ab){
+    if(adAvailable){document.getElementById("lim-ad-t").textContent=L.adCont;ab.hidden=false;$("lim-text").textContent=L.adLimitText;}
+    else{ab.hidden=true;$("lim-text").textContent=L.limitText;}
+  }
+  $("limit").hidden=false;
+}
 function closeLimit(){$("limit").hidden=true}
 function goPay(){location.href="/subscription.html?lang="+LANG+"&mode=subscription&source=v3_mistake_review"}
 
