@@ -37,18 +37,40 @@ LESSON_UNFINISHED_SENT_EVENT = "motivation_lesson_unfinished_sent"
 DAILY_GOAL_ACTIVITY_TYPES = ("lesson", "book_lesson")
 
 
-def _button(lang: str):
-    labels = {
-        "uz": "📚 Mini Appda davom ettirish",
-        "ru": "📚 Продолжить в Mini App",
-        "tj": "📚 Дар Mini App идома додан",
-    }
+def _canonical_band(level: str | None) -> str:
+    n = (level or "").strip().lower()
+    if n in ("hsk1", "hsk2", "hsk3", "hsk4"):
+        return n
+    if n == "beginner":
+        return "hsk1"
+    return "hsk1"
+
+
+def _button(lang: str, *, level: str | None = None, lesson: int | None = None):
+    # Tugma to'g'ridan-to'g'ri foydalanuvchining joriy darsiga olib boradi
+    # (xarita emas). Dars aniqlanmasa, kurs xaritasi ochiladi.
+    if lesson and lesson > 1:
+        labels = {
+            "uz": f"▶️ Davom etish · {lesson}-dars",
+            "ru": f"▶️ Продолжить · урок {lesson}",
+            "tj": f"▶️ Идома · дарси {lesson}",
+        }
+    else:
+        labels = {
+            "uz": "▶️ Darsni davom ettirish",
+            "ru": "▶️ Продолжить урок",
+            "tj": "▶️ Идомаи дарс",
+        }
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
                     text=labels.get(lang, labels["ru"]),
-                    web_app=WebAppInfo(url=course_study_miniapp_url(lang=lang)),
+                    web_app=WebAppInfo(
+                        url=course_study_miniapp_url(
+                            lang=lang, level=level, lesson=lesson, tab="course"
+                        )
+                    ),
                 )
             ]
         ]
@@ -431,6 +453,18 @@ class MotivationReminderService:
             return True
         return False
 
+    async def _lesson_deeplink_target(self, user: User) -> tuple[str | None, int | None]:
+        """Foydalanuvchining joriy darsi = tugallangan darslar + 1 (Mini App bilan bir xil)."""
+        try:
+            from app.repositories.course_progress_repo import CourseProgressRepository
+
+            level = _canonical_band(getattr(user, "level", None))
+            progress = await CourseProgressRepository(self.session).get_by_user_id(user.id)
+            completed = int(getattr(progress, "completed_lessons_count", 0) or 0) if progress else 0
+            return level, completed + 1
+        except Exception:
+            return None, None
+
     async def _send(self, bot: Bot, user: User, resolved: dict, lang: str, fields: dict) -> bool:
         try:
             text = resolved["text"].format(**fields)
@@ -438,7 +472,8 @@ class MotivationReminderService:
             text = resolved["text"]
         media_type = resolved.get("media_type") or "none"
         media_path = resolved.get("media_path")
-        markup = _button(lang)
+        level, lesson = await self._lesson_deeplink_target(user)
+        markup = _button(lang, level=level, lesson=lesson)
         try:
             if media_type in ("photo", "video") and media_path:
                 import os

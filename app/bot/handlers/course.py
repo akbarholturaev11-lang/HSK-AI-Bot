@@ -158,6 +158,22 @@ def _entry_lesson_ordinal(lang: str, lesson: int) -> str:
     return labels.get(lang, labels["ru"])
 
 
+def course_miniapp_reentry_text(lang: str, lesson: int | None = None) -> str:
+    if lesson and lesson > 1:
+        texts = {
+            "uz": f"📚 <b>Davom etamiz</b>\n\n{lesson}-darsni ochish uchun bosing 👇",
+            "ru": f"📚 <b>Продолжаем</b>\n\nНажмите, чтобы открыть урок {lesson} 👇",
+            "tj": f"📚 <b>Идома медиҳем</b>\n\nБарои кушодани дарси {lesson} зер кунед 👇",
+        }
+    else:
+        texts = {
+            "uz": "📚 <b>Kursni ochamiz</b>\n\n1-darsni boshlash uchun bosing 👇",
+            "ru": "📚 <b>Открываем курс</b>\n\nНажмите, чтобы начать урок 1 👇",
+            "tj": "📚 <b>Курсро мекушоем</b>\n\nБарои оғози дарси 1 зер кунед 👇",
+        }
+    return texts.get(lang, texts["ru"])
+
+
 def _course_entry_button_label(lang: str, lesson: int | None) -> str:
     if not lesson or lesson <= 1:
         labels = {
@@ -205,20 +221,38 @@ async def send_course_miniapp_entry(
                 engine, getattr(user, "level", None)
             )
             if lessons:
-                progress = await engine.get_or_create_progress(telegram_id)
-                completed = getattr(progress, "completed_lessons_count", 0) or 0
-                next_order = completed + 1
+                # get_or_create_progress -> (user, progress, error_key)
+                _u, progress, _err = await engine.get_or_create_progress(telegram_id)
+                completed = int(getattr(progress, "completed_lessons_count", 0) or 0) if progress else 0
+                # Mini App bilan bir xil qoida: joriy dars = completed + 1,
+                # lekin mavjud darslar oralig'idan chiqib ketmasin.
+                orders = [int(getattr(l, "lesson_order", 0) or 0) for l in lessons]
+                next_order = min(completed + 1, max(orders))
                 target = next(
-                    (l for l in lessons if l.lesson_order == next_order), lessons[0]
+                    (l for l in lessons if int(getattr(l, "lesson_order", 0) or 0) == next_order),
+                    lessons[0],
                 )
                 entry_level = resolved_level
-                entry_lesson = target.lesson_order
+                entry_lesson = int(getattr(target, "lesson_order", 0) or 0) or None
         except Exception:
             entry_level = level
             entry_lesson = None
 
+    # Birinchi marta to'liq tanishtiruv, keyingi safar qisqa xabar.
+    first_time = True
+    try:
+        first_time = not await ConversionFunnelService(session).has_event(
+            telegram_id=telegram_id, event_name="course_cta_seen"
+        )
+    except Exception:
+        first_time = True
+
     if entry_lesson:
-        text = course_miniapp_entry_text(lang, lesson=entry_lesson)
+        text = (
+            course_miniapp_entry_text(lang, lesson=entry_lesson)
+            if first_time
+            else course_miniapp_reentry_text(lang, entry_lesson)
+        )
         keyboard = course_study_miniapp_keyboard(
             lang,
             level=entry_level,
