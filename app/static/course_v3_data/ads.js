@@ -208,6 +208,9 @@
         els.benefits.innerHTML=[t.b1,t.b2,t.b3].map(function(b){return '<div class="caa-ben"><i class="ti ti-circle-check"></i><span>'+esc(b)+'</span></div>'}).join("");
         els.pay.innerHTML='<i class="ti ti-lock-open"></i> '+esc(t.adSubPay);
         els.pay.onclick=subscribe;els.cont.onclick=done;
+        /* Limit-promodan qolgan holatni tozalaymiz (subDesc, foot, cont ko'rinishi). */
+        els.subDesc.hidden=true;els.limFoot.hidden=true;els.cont.style.display="";
+        els.ov.classList.remove("limit");
         els.ov.classList.add("on");els.ov.setAttribute("aria-hidden","false");
         clearInterval(STATE.timer);
         var video=els.video;
@@ -249,10 +252,16 @@
             els.count.textContent=left>0?left+"s":"OK";
             if(left>0){els.cta0.style.display="none";setSubVisible(false);return}
             if(!isLast){recordView(ad,placement,duration).catch(function(){});playAd(i+1);}
-            else{
-              /* Reklama tugadi. Obuna taklifi limit ekranida allaqachon
-                 ko'rsatilgan — bu yerda YANA obunaga majburlamaymiz. Ko'rilganini
-                 fonda yozib, to'g'ridan mashqqa davom etamiz. */
+            else if(placement==="end"){
+              /* YAKUNIY reklama tugadi — "Obuna ol / Reklama bilan davom etish"
+                 bloki chiqadi (davom bosilganda done() ko'rilganini yozib yakunlaydi). */
+              try{video.pause()}catch(e){}
+              els.vwrap.style.display="none";els.ov.classList.add("caa-done");startPromo();
+              STATE.ready=true;els.cta0.style.display="none";els.cont.style.display="";setSubVisible(true);
+            }else{
+              /* start / middle reklama — obuna taklifi limit ekranida allaqachon
+                 bo'lgan, shuning uchun bu yerda YANA obunaga majburlamaymiz:
+                 ko'rilganini fonda yozib, to'g'ridan davom etamiz. */
               try{video.pause()}catch(e){}
               recordView(ad,placement,duration).catch(function(){});
               var resolve=STATE.resolve;
