@@ -249,7 +249,16 @@
             els.count.textContent=left>0?left+"s":"OK";
             if(left>0){els.cta0.style.display="none";setSubVisible(false);return}
             if(!isLast){recordView(ad,placement,duration).catch(function(){});playAd(i+1);}
-            else{try{video.pause()}catch(e){}els.vwrap.style.display="none";els.ov.classList.add("caa-done");startPromo();STATE.ready=true;els.cta0.style.display="none";setSubVisible(true);}
+            else{
+              /* Reklama tugadi. Obuna taklifi limit ekranida allaqachon
+                 ko'rsatilgan — bu yerda YANA obunaga majburlamaymiz. Ko'rilganini
+                 fonda yozib, to'g'ridan mashqqa davom etamiz. */
+              try{video.pause()}catch(e){}
+              recordView(ad,placement,duration).catch(function(){});
+              var resolve=STATE.resolve;
+              closeOverlay();resetState();
+              if(typeof resolve==="function")resolve();
+            }
           }
           function startCountdown(){
             if(started||failed||STATE.ad!==ad)return;
