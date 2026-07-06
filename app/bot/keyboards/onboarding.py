@@ -18,9 +18,9 @@ def language_keyboard() -> InlineKeyboardMarkup:
 
 def course_mode_entry_keyboard(lang: str) -> InlineKeyboardMarkup:
     labels = {
-        "uz": ("📚 Kursni boshlash", "🤖 Oddiy rejimga o'tish"),
-        "ru": ("📚 Начать курс", "🤖 Перейти в обычный режим"),
-        "tj": ("📚 Оғози курс", "🤖 Гузаштан ба реҷаи оддӣ"),
+        "uz": ("🚀 Kursni boshlash", "🤖 Oddiy rejim (chatda savol-javob)"),
+        "ru": ("🚀 Начать курс", "🤖 Обычный режим (вопрос-ответ в чате)"),
+        "tj": ("🚀 Оғози курс", "🤖 Реҷаи оддӣ (савол-ҷавоб дар чат)"),
     }
     course_label, qa_label = labels.get(lang, labels["ru"])
     return InlineKeyboardMarkup(

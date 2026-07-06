@@ -461,6 +461,7 @@
         payment_already_reviewed:"Bu to'lov allaqachon ko'rilgan", payment_not_found:"To'lov topilmadi",
         user_not_found:"Foydalanuvchi topilmadi", invalid_price_payload:"Narx ma'lumoti noto'g'ri",
         invalid_channel_payload:"Kanal ma'lumoti noto'g'ri", delete_confirmation_required:"O'chirish uchun IDni tasdiq maydoniga yozing",
+        cannot_block_admin:"Adminni bloklab bo'lmaydi", invalid_block_payload:"Blok ma'lumoti noto'g'ri",
         invalid_help_url:"Yordam linki noto'g'ri", invalid_contact:"Admin kontakt noto'g'ri",
         invalid_broadcast_text:"Xabar matni juda qisqa yoki uzun", invalid_campaign_payload:"Kampaniya ma'lumoti to'liq emas",
         broadcast_text_too_long:"Matn juda uzun (media bilan max 1024)", media_too_large:"Fayl 25MB dan katta",
@@ -754,6 +755,9 @@
           <div class="frow"><label>Qo'lda obuna berish</label><div class="row">
             <select id="qaPlan" class="select" style="max-width:160px"><option value="10_days">10 kun</option><option value="1_month">1 oy</option></select>
             <button class="btn" data-uaccess="${f.id}">Obuna berish</button></div></div>
+          ${f.status==="blocked"
+            ? `<button class="btn sec" data-ublock="${f.id}" data-blocked="0">🔓 Blokdan chiqarish</button>`
+            : `<button class="btn sec" data-ublock="${f.id}" data-blocked="1">🚫 Bloklash</button>`}
           <button class="btn danger" data-module="delete_user" data-prefill="${f.id}">Foydalanuvchini o'chirish</button>
         </div></section>`;
     }
@@ -1109,7 +1113,7 @@
     }
     function renderDeleteUser(prefill){
       openDrawer("🗑 Foydalanuvchini o'chirish","Xavfli amal: ID bilan tasdiqlanadi",`<div class="panel">
-        <div class="danger-note">Bu foydalanuvchi va unga bog'liq kurs/xabar/fikr ma'lumotlarini o'chiradi. Qaytarib bo'lmaydi.</div>
+        <div class="danger-note">Bu foydalanuvchi va unga bog'liq BARCHA ma'lumotni (to'lov, kurs, xabar, fikr, referal, AI limit) o'chiradi. Qaytarib bo'lmaydi.</div>
         <div class="mcard"><div class="frow"><label>Telegram ID</label><input id="delId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
           <div class="frow"><label>Tasdiq uchun shu IDni qayta yozing</label><input id="delConfirm" class="input" inputmode="numeric"></div>
           <button class="btn danger" data-deluser>O'chirish</button></div></div>`);
@@ -1253,6 +1257,7 @@
       if((el=T("[data-partner]"))){ const act=el.dataset.partner; if((act==="reject"||act==="block")&&!confirm("Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/partners/action",{partner_id:Number(el.dataset.pid||0),action:act}).then(()=>afterModule("Hamkor holati yangilandi")).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
       if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaPlan").value).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>el.disabled=false); }
       if((el=T("[data-deluser]"))){ if(!confirm("Foydalanuvchi o'chiriladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/delete",{telegram_id:$("delId").value,confirm:$("delConfirm").value}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Foydalanuvchi o'chirildi")).catch(x=>{toast(apiErr(x,"O'chirilmadi"));el.disabled=false;}); }
+      if((el=T("[data-ublock]"))){ const blocked=el.dataset.blocked==="1"; if(!confirm(blocked?"Foydalanuvchi bloklanadi. Davom etasizmi?":"Foydalanuvchi blokdan chiqariladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/block",{telegram_id:Number(el.dataset.ublock),blocked}).then(()=>{return openUser(el.dataset.ublock);}).then(()=>{loadData();toast(blocked?"Foydalanuvchi bloklandi":"Blokdan chiqarildi");}).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
       if((el=T("[data-aulist]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/audio/list",{level:$("auLevel").value,lesson_order:$("auLesson").value}).then(d=>{$("auResult").innerHTML=(d.items||[]).length?d.items.map(i=>`<div class="mcard"><h3>${esc(i.audio_type)}</h3><p>${esc(i.file_id)}</p></div>`).join(""):"<p class='empty'>Bu dars uchun audio yo'q.</p>";}).catch(x=>toast(apiErr(x,"Audio olinmadi"))).finally(()=>el.disabled=false); }
       if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Reklama yoqildi":"Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("Holatni o'zgartirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Bu reklamani butunlay o'chirasizmi? Video fayl ham o'chadi.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("O'chirib bo'lmadi");el.disabled=false;}); }

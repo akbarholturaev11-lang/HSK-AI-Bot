@@ -55,19 +55,22 @@ def _menu_keyboard_for_user(user):
 def _mode_choice_text(lang: str) -> str:
     texts = {
         "uz": (
-            "<b>Qanday o‘rganishni xohlaysiz?</b>\n\n"
-            "📚 <b>Kurs rejimi</b> — tartibli HSK darslari Mini App ichida.\n"
-            "🤖 <b>Oddiy rejim</b> — Telegram chatda xitoy tili bo‘yicha savollar."
+            "🎉 <b>Tabriklaymiz! Kurs rejimi ochildi</b>\n\n"
+            "<blockquote>Siz uchun tartibli HSK darslari yo‘li ochildi — so‘zlar, "
+            "grammatika, quiz va AI Voice bitta ilovada, qadam-baqadam.</blockquote>\n\n"
+            "Hoziroq boshlaymizmi?"
         ),
         "ru": (
-            "<b>Как вы хотите учиться?</b>\n\n"
-            "📚 <b>Режим курса</b> — последовательные уроки HSK внутри Mini App.\n"
-            "🤖 <b>Обычный режим</b> — вопросы по китайскому языку прямо в Telegram."
+            "🎉 <b>Поздравляем! Режим курса открыт</b>\n\n"
+            "<blockquote>Для вас открыт путь последовательных уроков HSK — слова, "
+            "грамматика, квиз и AI Voice в одном приложении, шаг за шагом.</blockquote>\n\n"
+            "Начнём прямо сейчас?"
         ),
         "tj": (
-            "<b>Чӣ тавр мехоҳед омӯзед?</b>\n\n"
-            "📚 <b>Реҷаи курс</b> — дарсҳои пайдарпайи HSK дар Mini App.\n"
-            "🤖 <b>Реҷаи оддӣ</b> — саволҳои забони чинӣ дар Telegram."
+            "🎉 <b>Табрик! Реҷаи курс кушода шуд</b>\n\n"
+            "<blockquote>Барои шумо роҳи дарсҳои пайдарпайи HSK кушода шуд — калимаҳо, "
+            "грамматика, quiz ва AI Voice дар як барнома, қадам ба қадам.</blockquote>\n\n"
+            "Ҳозир оғоз мекунем?"
         ),
     }
     return texts.get(lang, texts["ru"])

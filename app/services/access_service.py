@@ -8,6 +8,7 @@ from app.db.models.release_feedback import ReleaseFeedbackDelivery
 from app.repositories.user_repo import UserRepository
 from app.repositories.message_repo import MessageRepository
 from app.repositories.payment_repo import PaymentRepository
+from app.services.admin_access import ensure_admin_active, is_admin_user
 from app.services.ai_usage_budget_service import AIUsageBudgetService, REFERRAL_TRIAL_PLAN_TYPE
 from app.services.user_access_state_service import UserAccessStateService
 
@@ -254,6 +255,10 @@ class AccessService:
         if not user:
             return False, "access_start_first"
 
+        if is_admin_user(telegram_id):
+            await ensure_admin_active(self.session, user)
+            return True, ""
+
         if user.status == "blocked":
             return False, "access_blocked"
 
@@ -291,6 +296,10 @@ class AccessService:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
             return False, "access_start_first"
+
+        if is_admin_user(telegram_id):
+            await ensure_admin_active(self.session, user)
+            return True, ""
 
         if user.status == "blocked":
             return False, "access_blocked"
