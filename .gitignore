@@ -14,3 +14,4 @@ memory/
 .DS_Store
 .claude/
 .DS_Store
+app/static/audio/tts_cache/

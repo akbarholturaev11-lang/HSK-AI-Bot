@@ -91,7 +91,10 @@ var EM={ru:{tfTrue:"Верно",tfFalse:"Неверно",listen:"Прослуш�
   uz:{tfTrue:"To'g'ri",tfFalse:"Noto'g'ri",listen:"Tinglash",q:"Savol",of:"/",result:"Natija",passed:"Test topshirildi!",failed:"Hozircha o'tilmadi",passSub:"Siz HSK darajasiga tayyorsiz: HSK ",failSub:"Tayyorgarlikni davom ettiring: HSK ",again:"Qayta topshirish",toList:"Imtihonlar ro'yxatiga",sec:{listening:"Tinglash",reading:"O'qish",writing:"Yozish"}},
   tj:{tfTrue:"Дуруст",tfFalse:"Нодуруст",listen:"Шунидан",q:"Савол",of:"аз",result:"Натиҷа",passed:"Тест супорида шуд!",failed:"Ҳоло гузаронида нашуд",passSub:"Шумо ба сатҳи HSK тайёред: HSK ",failSub:"Омодагиро давом диҳед: HSK ",again:"Аз нав супоридан",toList:"Ба рӯйхати имтиҳонҳо",sec:{listening:"Шунидан",reading:"Хондан",writing:"Навиштан"}}}[LANG];
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
-function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+var _ttsAudio=null;
+function _ttsFallback(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+function stopSpeak(){try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function speak(t){if(!t)return;stopSpeak();try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onerror=function(){_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){_ttsFallback(t)})}catch(e){_ttsFallback(t)}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 /* Kunlik limit gate: bepulga kuniga 1 test sessiya (server tomonda). */
 function initData(){return (tg&&tg.initData)?tg.initData:""}
@@ -238,10 +241,10 @@ function exRender(){
 function exPick(k,el){
   document.querySelectorAll("#exam .opt").forEach(function(o){o.style.pointerEvents="none"});el.classList.add("sel");
   eans[ei]=el.getAttribute("data-ok")==="1";
-  try{window.speechSynthesis.cancel()}catch(e){}
+  try{stopSpeak()}catch(e){}
   setTimeout(function(){ei++;if(ei>=EQ.length){exResult()}else{exRender()}},360);
 }
-function exitExam(){try{window.speechSynthesis.cancel()}catch(e){}showHub()}
+function exitExam(){try{stopSpeak()}catch(e){}showHub()}
 function exResult(){
   /* Reklama bilan kirilgan sessiya: natijadan oldin yakuniy reklama. */
   if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(exResult).catch(exResult);return}}

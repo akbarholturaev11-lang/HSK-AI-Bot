@@ -145,7 +145,10 @@ function applySub(){var on=subOn();document.body.classList.toggle("nosub",!on);v
 function toggleSub(){try{localStorage.setItem(SUB_KEY,subOn()?"0":"1")}catch(e){}applySub();}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=voice"}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
-function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.85;window.speechSynthesis.speak(u)}catch(e){}}
+var _ttsAudio=null;
+function _ttsFallback(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.85;window.speechSynthesis.speak(u)}catch(e){}}
+function stopSpeak(){try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function speak(t){if(!t)return;stopSpeak();try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onerror=function(){_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){_ttsFallback(t)})}catch(e){_ttsFallback(t)}}
 var ac;function ring(s){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;s.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);var st=t+k*0.08;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(0.1,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+0.15);o.start(st);o.stop(st+0.17)})}catch(e){}}
 
 /* ---- sepia bamboo forest background ---- */

@@ -110,7 +110,10 @@ function gateStart(){
 function replay(){
   runGate("replay:"+Date.now()).then(function(o){if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}AD_SESSION=false;start()}).catch(function(){AD_SESSION=false;start()});
 }
-function speak(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+var _ttsAudio=null;
+function _ttsFallback(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+function stopSpeak(){try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function speak(t){if(!t)return;stopSpeak();try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onerror=function(){_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){_ttsFallback(t)})}catch(e){_ttsFallback(t)}}
 function haptic(ok){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}

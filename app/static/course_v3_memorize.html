@@ -86,7 +86,10 @@ function goBack(){
   }
   location.href="/course-v3.html?lang="+LANG+"&tab=mashq";
 }
-function speak(s){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(s);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+var _ttsAudio=null;
+function _ttsFallback(s){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(s);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+function stopSpeak(){try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function speak(s){if(!s)return;stopSpeak();try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(s));_ttsAudio=a;a.onerror=function(){_ttsFallback(s)};var p=a.play();if(p&&p.catch)p.catch(function(){_ttsFallback(s)})}catch(e){_ttsFallback(s)}}
 function haptic(ok){try{if(tg&&tg.isVersionAtLeast&&tg.isVersionAtLeast("6.1")&&tg.HapticFeedback)tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var x=a[i];a[i]=a[j];a[j]=x}return a}
 function pin(h){return (BASE[h]&&BASE[h].p)||""}
