@@ -215,6 +215,8 @@ class AIService:
             ".mp4": "audio/mp4",
             ".ogg": "audio/ogg",
             ".webm": "audio/webm",
+            ".mp3": "audio/mpeg",
+            ".wav": "audio/wav",
         }.get(Path(filename).suffix.lower(), "application/octet-stream")
         response = await self.client.audio.transcriptions.create(
             model=model,

@@ -1669,9 +1669,10 @@ function cardPron(c){
       try{st.rec=mime?new MediaRecorder(stream,{mimeType:mime,audioBitsPerSecond:32000}):new MediaRecorder(stream)}catch(_){st.rec=new MediaRecorder(stream)}
       st.rec.ondataavailable=function(e){if(e.data&&e.data.size>0)st.chunks.push(e.data)};
       st.rec.onstop=function(){
-        var blob=new Blob(st.chunks,{type:(st.rec&&st.rec.mimeType)||"audio/webm"});release();
+        var _mt=(st.rec&&st.rec.mimeType)||"audio/webm";var blob=new Blob(st.chunks,{type:_mt});release();
         if(blob.size<1200){setBtn(T().say);hint(_prL().retry);return;}
-        var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("target_pinyin",c.pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice.webm");
+        var _e=(blob.type||_mt).toLowerCase(),_ext=/mp4|m4a|aac/.test(_e)?"mp4":(/ogg/.test(_e)?"ogg":(/mpeg|mp3/.test(_e)?"mp3":(/wav/.test(_e)?"wav":"webm")));
+        var fd=new FormData();fd.append("initData",initData());fd.append("target",c.phrase||"");fd.append("target_pinyin",c.pinyin||"");fd.append("language",LANG);fd.append("level",MAP&&MAP.level||"");fd.append("audio",blob,"voice."+_ext);
         fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
           .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
           .then(function(o){

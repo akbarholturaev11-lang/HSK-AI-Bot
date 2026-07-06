@@ -155,12 +155,14 @@ function startRec(){
   }).catch(function(){setHint(L.micDeny)});
 }
 function stopRec(){clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){setRec(false);setHint(L.analyzing);mediaRecorder.stop();}}
+function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm";}
 function onStopped(){
-  var blob=new Blob(chunks,{type:(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm"});
+  var mt=(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm";
+  var blob=new Blob(chunks,{type:mt});
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
   if(blob.size<MIN_BYTES){setHint(L.retry);return;}
   busy=true;var w=list[i],fd=new FormData();
-  fd.append("initData",initData());fd.append("target",w.h);fd.append("target_pinyin",w.p||"");fd.append("language",LANG);fd.append("level",(params.get("level")||""));fd.append("audio",blob,"voice.webm");
+  fd.append("initData",initData());fd.append("target",w.h);fd.append("target_pinyin",w.p||"");fd.append("language",LANG);fd.append("level",(params.get("level")||""));fd.append("audio",blob,"voice."+extFromMime(blob.type||mt));
   fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
     .then(function(o){busy=false;if(!o.ok||!o.j||o.j.ok!==true){onErr(o);return;}applyScore(Number(o.j.score)||0,o.j.heard||"")})

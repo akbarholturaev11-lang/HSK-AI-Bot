@@ -254,12 +254,14 @@ function startRecording(){
 }
 function stopRecording(){clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){setMicRec(false);setDots("dots");setChar("talk");setStatus(L.analyzing);mediaRecorder.stop();}}
 function stopHard(){clearTimeout(autoStop);try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;}
+function extFromMime(mt){mt=(mt||"").toLowerCase();if(/mp4|m4a|aac/.test(mt))return"mp4";if(/ogg/.test(mt))return"ogg";if(/mpeg|mp3/.test(mt))return"mp3";if(/wav/.test(mt))return"wav";return"webm";}
 function onStopped(){
-  var blob=new Blob(chunks,{type:(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm"});
+  var mt=(mediaRecorder&&mediaRecorder.mimeType)||"audio/webm";
+  var blob=new Blob(chunks,{type:mt});
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
   if(blob.size<MIN_BYTES){setChar("happy");setStatus(L.tooShort);setDots("dots");return;}
   busy=true;setChar("talk");setStatus(L.analyzing);setDots("dots");
-  var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice.webm");
+  var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice."+extFromMime(blob.type||mt));
   fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
     .then(function(o){busy=false;if(!o.ok){onMsgError(o);return;}renderReply(o.j)})
     .catch(function(){busy=false;setChar("happy");setStatus(L.sendErr)});
