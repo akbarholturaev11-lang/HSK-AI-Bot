@@ -119,6 +119,28 @@ async def show_free_qa_level_choice(
     )
 
 
+async def show_course_level_choice(
+    *,
+    respond,
+    state: FSMContext,
+    lang: str,
+) -> None:
+    # Kurs rejimi tanlangach HSK darajasini so'raymiz. QA flag = False bo'lgani
+    # uchun process_level "kurs" shoxobchasiga o'tadi (darajadan keyin 1-darsga).
+    await state.update_data(
+        **{
+            QA_MODE_LEVEL_CHOICE_KEY: False,
+            "pending_voice_transcript": None,
+            "pending_voice_message_id": None,
+        }
+    )
+    await state.set_state(OnboardingStates.choosing_level)
+    await respond(
+        t("choose_level", lang),
+        reply_markup=level_keyboard(lang),
+    )
+
+
 def course_miniapp_entry_text(lang: str, *, lesson: int | None = None) -> str:
     texts = {
         "uz": (
@@ -272,6 +294,69 @@ async def send_course_miniapp_entry(
             user=user,
             source=source,
             payload={"level": entry_level or getattr(user, "level", None), "lesson": entry_lesson, "tab": tab},
+        )
+
+
+def _first_lesson_prompt_text(lang: str, level: str | None) -> str:
+    label = _course_level_label(level)
+    texts = {
+        "uz": (
+            f"🎯 <b>{label} — birinchi darsingiz tayyor!</b>\n\n"
+            "<blockquote>Boshlaymiz — pastdagi tugmani bosing va 1-darsni oching 👇</blockquote>"
+        ),
+        "ru": (
+            f"🎯 <b>{label} — ваш первый урок готов!</b>\n\n"
+            "<blockquote>Начнём — нажмите кнопку ниже и откройте урок 1 👇</blockquote>"
+        ),
+        "tj": (
+            f"🎯 <b>{label} — дарси якуми шумо тайёр аст!</b>\n\n"
+            "<blockquote>Оғоз мекунем — тугмаи поёнро зер кунед ва дарси 1-ро кушоед 👇</blockquote>"
+        ),
+    }
+    return texts.get(lang, texts["ru"])
+
+
+async def send_first_lesson_prompt(
+    *,
+    session,
+    telegram_id: int,
+    respond,
+    state: FSMContext | None = None,
+    level: str | None = None,
+    lesson_order: int = 1,
+    source: str = "onboarding_first_lesson",
+) -> None:
+    """Darajadan keyin foydalanuvchini TO'G'RIDAN-TO'G'RI 1-darsga olib boradi
+    (mini app tanishtiruvisiz). Mini app tanishtiruvi dars tugagach ishlaydi."""
+    user = await UserRepository(session).get_by_telegram_id(telegram_id)
+    lang = user.language if user and user.language else "ru"
+
+    resolved_level = level or (getattr(user, "level", None) if user else None)
+    if user:
+        user.learning_mode = "qa"
+        user.voice_mode = "none"
+        user.expiry_reminder_sent_at = None
+        await session.commit()
+
+    if state:
+        await state.clear()
+
+    text = _first_lesson_prompt_text(lang, resolved_level)
+    keyboard = course_study_miniapp_keyboard(
+        lang,
+        level=resolved_level,
+        lesson=lesson_order,
+        tab="course",
+        text=_course_entry_button_label(lang, lesson_order),
+    )
+    await respond(text, reply_markup=keyboard, parse_mode="HTML")
+
+    if user:
+        await ConversionFunnelService().record(
+            event_name="course_started",
+            user=user,
+            source=source,
+            payload={"level": resolved_level, "lesson": lesson_order},
         )
 
 
@@ -969,12 +1054,11 @@ async def course_mode_open_handler(callback: CallbackQuery, state: FSMContext, s
         return
 
     await callback.answer()
-    await send_course_miniapp_entry(
-        session=session,
-        telegram_id=callback.from_user.id,
+    # Kurs rejimi: avval HSK darajasini so'raymiz, keyin process_level 1-darsga o'tkazadi.
+    await show_course_level_choice(
         respond=_MessageEditResponder(callback.message),
         state=state,
-        source="mode_course",
+        lang=lang,
     )
 
 

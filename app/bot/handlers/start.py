@@ -249,20 +249,26 @@ async def _start_first_available_course_lesson(
     user = await UserRepository(session).get_by_telegram_id(telegram_id)
     lang = user.language if user and user.language else "ru"
     engine = CourseEngineService(session)
-    lessons, _ = await _resolve_lessons_for_user_level(engine, user.level if user else None)
+    lessons, resolved_level = await _resolve_lessons_for_user_level(engine, user.level if user else None)
     if not lessons:
         await respond(t("course_no_lessons_available", lang))
         return False
 
-    return await _start_lesson_for_user(
+    # Darajadan keyin to'g'ridan-to'g'ri 1-darsga olib boramiz. Mini app
+    # tanishtiruvi dars tugagach (server /api/v3/lesson/complete) ishlaydi.
+    from app.bot.handlers.course import send_first_lesson_prompt
+
+    first_lesson = lessons[0]
+    await send_first_lesson_prompt(
+        session=session,
         telegram_id=telegram_id,
         respond=respond,
         state=state,
-        session=session,
-        lesson_id=lessons[0].id,
+        level=resolved_level,
+        lesson_order=int(getattr(first_lesson, "lesson_order", 1) or 1),
         source=source,
-        show_menu=show_menu,
     )
+    return True
 
 
 @router.message(CommandStart())

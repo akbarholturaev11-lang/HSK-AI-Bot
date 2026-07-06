@@ -66,17 +66,16 @@ class RequiredChannelResumeTests(unittest.IsolatedAsyncioTestCase):
         with (
             patch("app.bot.handlers.required_channel.UserRepository") as user_repo_class,
             patch("app.bot.handlers.required_channel.RequiredChannelService") as service_class,
-            patch("app.bot.handlers.course.send_course_miniapp_entry", new=AsyncMock()) as send_entry,
+            patch("app.bot.handlers.course.show_course_level_choice", new=AsyncMock()) as show_level,
         ):
             user_repo_class.return_value.get_by_telegram_id = AsyncMock(return_value=user)
             service_class.return_value.missing_channels = AsyncMock(return_value=[])
 
             await force_sub_check(callback, state, session)
 
-        send_entry.assert_awaited_once()
-        kwargs = send_entry.await_args.kwargs
-        self.assertEqual(kwargs["telegram_id"], 123)
-        self.assertEqual(kwargs["source"], "mode_course")
+        show_level.assert_awaited_once()
+        kwargs = show_level.await_args.kwargs
+        self.assertEqual(kwargs["lang"], "uz")
         self.assertIsNone(state.data[PENDING_FORCE_SUB_ACTION])
         self.assertIsNone(state.data[PENDING_FORCE_SUB_PAYLOAD])
 
