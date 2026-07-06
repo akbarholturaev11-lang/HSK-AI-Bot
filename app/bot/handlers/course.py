@@ -119,97 +119,22 @@ async def show_free_qa_level_choice(
     )
 
 
-async def show_course_level_choice(
-    *,
-    respond,
-    state: FSMContext,
-    lang: str,
-) -> None:
-    # Kurs rejimi tanlangach HSK darajasini so'raymiz. QA flag = False bo'lgani
-    # uchun process_level "kurs" shoxobchasiga o'tadi (darajadan keyin 1-darsga).
-    await state.update_data(
-        **{
-            QA_MODE_LEVEL_CHOICE_KEY: False,
-            "pending_voice_transcript": None,
-            "pending_voice_message_id": None,
-        }
-    )
-    await state.set_state(OnboardingStates.choosing_level)
-    await respond(
-        t("choose_level", lang),
-        reply_markup=level_keyboard(lang),
-    )
-
-
-def course_miniapp_entry_text(lang: str, *, lesson: int | None = None) -> str:
+def course_miniapp_entry_text(lang: str) -> str:
     texts = {
         "uz": (
-            "📚 <b>HSK AI kursi — Mini App</b>\n\n"
-            "<blockquote>Darslar, so‘zlar, grammatika, quiz va AI Voice — hammasi bitta "
-            "ilovada. Har dars sizni qadam-baqadam olib boradi.</blockquote>"
+            "📚 <b>HSK AI kursi Mini Appga ko‘chdi</b>\n\n"
+            "<blockquote>Darslar, so‘zlar, grammatika, quiz va AI Voice bitta joyda.</blockquote>"
         ),
         "ru": (
-            "📚 <b>Курс HSK AI — Mini App</b>\n\n"
-            "<blockquote>Уроки, слова, грамматика, квиз и AI Voice — всё в одном "
-            "приложении. Каждый урок ведёт вас шаг за шагом.</blockquote>"
+            "📚 <b>Курс HSK AI переехал в Mini App</b>\n\n"
+            "<blockquote>Уроки, слова, грамматика, квиз и AI Voice теперь в одном месте.</blockquote>"
         ),
         "tj": (
-            "📚 <b>Курси HSK AI — Mini App</b>\n\n"
-            "<blockquote>Дарсҳо, калимаҳо, грамматика, quiz ва AI Voice — ҳама дар як "
-            "барнома. Ҳар дарс шуморо қадам ба қадам мебарад.</blockquote>"
+            "📚 <b>Курси HSK AI ба Mini App гузашт</b>\n\n"
+            "<blockquote>Дарсҳо, калимаҳо, грамматика, quiz ва AI Voice дар як ҷо.</blockquote>"
         ),
     }
-    lead = {
-        "uz": "\n\n{label} darsni hoziroq boshlaymiz 👇",
-        "ru": "\n\nНачнём {label} урок прямо сейчас 👇",
-        "tj": "\n\nДарси {label}-ро ҳозир оғоз мекунем 👇",
-    }
-    base = texts.get(lang, texts["ru"])
-    if lesson:
-        label = _entry_lesson_ordinal(lang, lesson)
-        base += lead.get(lang, lead["ru"]).format(label=label)
-    return base
-
-
-def _entry_lesson_ordinal(lang: str, lesson: int) -> str:
-    labels = {
-        "uz": f"{lesson}-",
-        "ru": f"{lesson}-й",
-        "tj": f"{lesson}-",
-    }
-    return labels.get(lang, labels["ru"])
-
-
-def course_miniapp_reentry_text(lang: str, lesson: int | None = None) -> str:
-    if lesson and lesson > 1:
-        texts = {
-            "uz": f"📚 <b>Davom etamiz</b>\n\n{lesson}-darsni ochish uchun bosing 👇",
-            "ru": f"📚 <b>Продолжаем</b>\n\nНажмите, чтобы открыть урок {lesson} 👇",
-            "tj": f"📚 <b>Идома медиҳем</b>\n\nБарои кушодани дарси {lesson} зер кунед 👇",
-        }
-    else:
-        texts = {
-            "uz": "📚 <b>Kursni ochamiz</b>\n\n1-darsni boshlash uchun bosing 👇",
-            "ru": "📚 <b>Открываем курс</b>\n\nНажмите, чтобы начать урок 1 👇",
-            "tj": "📚 <b>Курсро мекушоем</b>\n\nБарои оғози дарси 1 зер кунед 👇",
-        }
     return texts.get(lang, texts["ru"])
-
-
-def _course_entry_button_label(lang: str, lesson: int | None) -> str:
-    if not lesson or lesson <= 1:
-        labels = {
-            "uz": "▶️ 1-darsni boshlash",
-            "ru": "▶️ Начать 1-й урок",
-            "tj": "▶️ Оғози дарси 1",
-        }
-    else:
-        labels = {
-            "uz": f"▶️ Davom etish · {lesson}-dars",
-            "ru": f"▶️ Продолжить · урок {lesson}",
-            "tj": f"▶️ Идома · дарси {lesson}",
-        }
-    return labels.get(lang, labels["ru"])
 
 
 async def send_course_miniapp_entry(
@@ -234,129 +159,18 @@ async def send_course_miniapp_entry(
     if state:
         await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
 
-    entry_level = level
-    entry_lesson = lesson
-    if entry_lesson is None:
-        try:
-            engine = CourseEngineService(session)
-            lessons, resolved_level = await _resolve_lessons_for_user_level(
-                engine, getattr(user, "level", None)
-            )
-            if lessons:
-                # get_or_create_progress -> (user, progress, error_key)
-                _u, progress, _err = await engine.get_or_create_progress(telegram_id)
-                completed = int(getattr(progress, "completed_lessons_count", 0) or 0) if progress else 0
-                # Mini App bilan bir xil qoida: joriy dars = completed + 1,
-                # lekin mavjud darslar oralig'idan chiqib ketmasin.
-                orders = [int(getattr(l, "lesson_order", 0) or 0) for l in lessons]
-                next_order = min(completed + 1, max(orders))
-                target = next(
-                    (l for l in lessons if int(getattr(l, "lesson_order", 0) or 0) == next_order),
-                    lessons[0],
-                )
-                entry_level = resolved_level
-                entry_lesson = int(getattr(target, "lesson_order", 0) or 0) or None
-        except Exception:
-            entry_level = level
-            entry_lesson = None
-
-    # Birinchi marta to'liq tanishtiruv, keyingi safar qisqa xabar.
-    first_time = True
-    try:
-        first_time = not await ConversionFunnelService(session).has_event(
-            telegram_id=telegram_id, event_name="course_cta_seen"
-        )
-    except Exception:
-        first_time = True
-
-    if entry_lesson:
-        text = (
-            course_miniapp_entry_text(lang, lesson=entry_lesson)
-            if first_time
-            else course_miniapp_reentry_text(lang, entry_lesson)
-        )
-        keyboard = course_study_miniapp_keyboard(
-            lang,
-            level=entry_level,
-            lesson=entry_lesson,
-            tab="course",
-            text=_course_entry_button_label(lang, entry_lesson),
-        )
-    else:
-        text = course_miniapp_entry_text(lang)
-        keyboard = course_v3_miniapp_keyboard(lang)
-
-    await respond(text, reply_markup=keyboard, parse_mode="HTML")
+    await respond(
+        course_miniapp_entry_text(lang),
+        reply_markup=course_v3_miniapp_keyboard(lang),
+        parse_mode="HTML",
+    )
 
     if user:
         await ConversionFunnelService().record(
             event_name="course_cta_seen",
             user=user,
             source=source,
-            payload={"level": entry_level or getattr(user, "level", None), "lesson": entry_lesson, "tab": tab},
-        )
-
-
-def _first_lesson_prompt_text(lang: str, level: str | None) -> str:
-    label = _course_level_label(level)
-    texts = {
-        "uz": (
-            f"🎯 <b>{label} — birinchi darsingiz tayyor!</b>\n\n"
-            "<blockquote>Boshlaymiz — pastdagi tugmani bosing va 1-darsni oching 👇</blockquote>"
-        ),
-        "ru": (
-            f"🎯 <b>{label} — ваш первый урок готов!</b>\n\n"
-            "<blockquote>Начнём — нажмите кнопку ниже и откройте урок 1 👇</blockquote>"
-        ),
-        "tj": (
-            f"🎯 <b>{label} — дарси якуми шумо тайёр аст!</b>\n\n"
-            "<blockquote>Оғоз мекунем — тугмаи поёнро зер кунед ва дарси 1-ро кушоед 👇</blockquote>"
-        ),
-    }
-    return texts.get(lang, texts["ru"])
-
-
-async def send_first_lesson_prompt(
-    *,
-    session,
-    telegram_id: int,
-    respond,
-    state: FSMContext | None = None,
-    level: str | None = None,
-    lesson_order: int = 1,
-    source: str = "onboarding_first_lesson",
-) -> None:
-    """Darajadan keyin foydalanuvchini TO'G'RIDAN-TO'G'RI 1-darsga olib boradi
-    (mini app tanishtiruvisiz). Mini app tanishtiruvi dars tugagach ishlaydi."""
-    user = await UserRepository(session).get_by_telegram_id(telegram_id)
-    lang = user.language if user and user.language else "ru"
-
-    resolved_level = level or (getattr(user, "level", None) if user else None)
-    if user:
-        user.learning_mode = "qa"
-        user.voice_mode = "none"
-        user.expiry_reminder_sent_at = None
-        await session.commit()
-
-    if state:
-        await state.clear()
-
-    text = _first_lesson_prompt_text(lang, resolved_level)
-    keyboard = course_study_miniapp_keyboard(
-        lang,
-        level=resolved_level,
-        lesson=lesson_order,
-        tab="course",
-        text=_course_entry_button_label(lang, lesson_order),
-    )
-    await respond(text, reply_markup=keyboard, parse_mode="HTML")
-
-    if user:
-        await ConversionFunnelService().record(
-            event_name="course_started",
-            user=user,
-            source=source,
-            payload={"level": resolved_level, "lesson": lesson_order},
+            payload={"level": level or getattr(user, "level", None), "lesson": lesson, "tab": tab},
         )
 
 
@@ -1054,11 +868,12 @@ async def course_mode_open_handler(callback: CallbackQuery, state: FSMContext, s
         return
 
     await callback.answer()
-    # Kurs rejimi: avval HSK darajasini so'raymiz, keyin process_level 1-darsga o'tkazadi.
-    await show_course_level_choice(
+    await send_course_miniapp_entry(
+        session=session,
+        telegram_id=callback.from_user.id,
         respond=_MessageEditResponder(callback.message),
         state=state,
-        lang=lang,
+        source="mode_course",
     )
 
 

@@ -1731,31 +1731,6 @@ async def v3_course_lesson_complete(request: Request):
             },
         )
         await session.commit()
-
-        # Onboarding: foydalanuvchi BIRINCHI darsni tugatgach, bot chatga mini app
-        # tanishtiruvini push qiladi (faqat bir marta). Dars mini app ichida tugaydi,
-        # shuning uchun tanishtiruv darsdan KEYIN, mini app yopilganda ko'rinadi.
-        if completed == 0 and lesson_order == 1:
-            try:
-                from app.bot.handlers.course import send_course_miniapp_entry
-                from app.services.conversion_funnel_service import ConversionFunnelService
-
-                already_seen = await ConversionFunnelService(session).has_event(
-                    telegram_id=telegram_id, event_name="course_cta_seen"
-                )
-                if not already_seen:
-                    async def _bot_respond(text, **kwargs):
-                        return await bot.send_message(telegram_id, text, **kwargs)
-
-                    await send_course_miniapp_entry(
-                        session=session,
-                        telegram_id=telegram_id,
-                        respond=_bot_respond,
-                        source="post_first_lesson_intro",
-                    )
-            except Exception:
-                logger.exception("Failed to push post-first-lesson mini app intro to %s", telegram_id)
-
         return JSONResponse(
             content={
                 "ok": True,
@@ -2104,32 +2079,6 @@ async def admin_miniapp_user_delete(request: Request):
     if not deleted:
         return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
     return JSONResponse(content={"ok": True})
-
-
-@app.post("/api/admin-miniapp/users/block")
-async def admin_miniapp_user_block(request: Request):
-    telegram_id = _admin_miniapp_user_id(request)
-    auth_error = _admin_auth_error(telegram_id)
-    if auth_error:
-        return auth_error
-    try:
-        payload = await request.json()
-        target_id = int(payload.get("telegram_id") or 0)
-        blocked = bool(payload.get("blocked"))
-    except (TypeError, ValueError):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_block_payload"})
-    if target_id <= 0:
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_block_payload"})
-    if _is_admin_id(target_id):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_block_admin"})
-    async with async_session_maker() as session:
-        user = await UserRepository(session).set_blocked(target_id, blocked)
-        if not user:
-            await session.rollback()
-            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
-        await session.commit()
-        status = user.status
-    return JSONResponse(content={"ok": True, "status": status, "blocked": status == "blocked"})
 
 
 @app.post("/api/admin-miniapp/prices/save")

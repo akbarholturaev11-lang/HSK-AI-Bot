@@ -55,22 +55,19 @@ def _menu_keyboard_for_user(user):
 def _mode_choice_text(lang: str) -> str:
     texts = {
         "uz": (
-            "🎉 <b>Tabriklaymiz! Kurs rejimi ochildi</b>\n\n"
-            "<blockquote>Siz uchun tartibli HSK darslari yo‘li ochildi — so‘zlar, "
-            "grammatika, quiz va AI Voice bitta ilovada, qadam-baqadam.</blockquote>\n\n"
-            "Hoziroq boshlaymizmi?"
+            "<b>Qanday o‘rganishni xohlaysiz?</b>\n\n"
+            "📚 <b>Kurs rejimi</b> — tartibli HSK darslari Mini App ichida.\n"
+            "🤖 <b>Oddiy rejim</b> — Telegram chatda xitoy tili bo‘yicha savollar."
         ),
         "ru": (
-            "🎉 <b>Поздравляем! Режим курса открыт</b>\n\n"
-            "<blockquote>Для вас открыт путь последовательных уроков HSK — слова, "
-            "грамматика, квиз и AI Voice в одном приложении, шаг за шагом.</blockquote>\n\n"
-            "Начнём прямо сейчас?"
+            "<b>Как вы хотите учиться?</b>\n\n"
+            "📚 <b>Режим курса</b> — последовательные уроки HSK внутри Mini App.\n"
+            "🤖 <b>Обычный режим</b> — вопросы по китайскому языку прямо в Telegram."
         ),
         "tj": (
-            "🎉 <b>Табрик! Реҷаи курс кушода шуд</b>\n\n"
-            "<blockquote>Барои шумо роҳи дарсҳои пайдарпайи HSK кушода шуд — калимаҳо, "
-            "грамматика, quiz ва AI Voice дар як барнома, қадам ба қадам.</blockquote>\n\n"
-            "Ҳозир оғоз мекунем?"
+            "<b>Чӣ тавр мехоҳед омӯзед?</b>\n\n"
+            "📚 <b>Реҷаи курс</b> — дарсҳои пайдарпайи HSK дар Mini App.\n"
+            "🤖 <b>Реҷаи оддӣ</b> — саволҳои забони чинӣ дар Telegram."
         ),
     }
     return texts.get(lang, texts["ru"])
@@ -249,26 +246,20 @@ async def _start_first_available_course_lesson(
     user = await UserRepository(session).get_by_telegram_id(telegram_id)
     lang = user.language if user and user.language else "ru"
     engine = CourseEngineService(session)
-    lessons, resolved_level = await _resolve_lessons_for_user_level(engine, user.level if user else None)
+    lessons, _ = await _resolve_lessons_for_user_level(engine, user.level if user else None)
     if not lessons:
         await respond(t("course_no_lessons_available", lang))
         return False
 
-    # Darajadan keyin to'g'ridan-to'g'ri 1-darsga olib boramiz. Mini app
-    # tanishtiruvi dars tugagach (server /api/v3/lesson/complete) ishlaydi.
-    from app.bot.handlers.course import send_first_lesson_prompt
-
-    first_lesson = lessons[0]
-    await send_first_lesson_prompt(
-        session=session,
+    return await _start_lesson_for_user(
         telegram_id=telegram_id,
         respond=respond,
         state=state,
-        level=resolved_level,
-        lesson_order=int(getattr(first_lesson, "lesson_order", 1) or 1),
+        session=session,
+        lesson_id=lessons[0].id,
         source=source,
+        show_menu=show_menu,
     )
-    return True
 
 
 @router.message(CommandStart())

@@ -102,14 +102,17 @@ async def force_sub_check(callback: CallbackQuery, state: FSMContext, session):
     if pending_action and callback.message:
         respond = _MessageEditResponder(callback.message)
         if pending_action == FORCE_SUB_ACTION_OPEN_COURSE:
-            from app.bot.handlers.course import show_course_level_choice
+            from app.bot.handlers.course import send_course_miniapp_entry
 
-            # Kanalga a'zo bo'lgach kurs rejimi davom etadi: avval HSK darajasi
-            # so'raladi, keyin process_level 1-darsga olib o'tadi (izchil oqim).
-            await show_course_level_choice(
+            await send_course_miniapp_entry(
+                session=session,
+                telegram_id=callback.from_user.id,
                 respond=respond,
                 state=state,
-                lang=lang,
+                source=str(pending_payload.get("source") or "required_channel_mode_course"),
+                level=pending_payload.get("level"),
+                lesson=pending_payload.get("lesson"),
+                tab=pending_payload.get("tab"),
             )
             return
 
