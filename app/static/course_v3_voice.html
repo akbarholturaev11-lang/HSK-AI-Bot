@@ -146,9 +146,10 @@ function toggleSub(){try{localStorage.setItem(SUB_KEY,subOn()?"0":"1")}catch(e){
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=voice"}
 function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
 var _ttsAudio=null;
-function _ttsFallback(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.85;window.speechSynthesis.speak(u)}catch(e){}}
-function stopSpeak(){try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
-function speak(t){if(!t)return;stopSpeak();try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onerror=function(){_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){_ttsFallback(t)})}catch(e){_ttsFallback(t)}}
+function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
+function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.85;window.speechSynthesis.speak(u)}catch(e){}}
+function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
 var ac;function ring(s){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;s.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=f;o.connect(g);g.connect(ac.destination);var st=t+k*0.08;g.gain.setValueAtTime(0.0001,st);g.gain.exponentialRampToValueAtTime(0.1,st+0.02);g.gain.exponentialRampToValueAtTime(0.0001,st+0.15);o.start(st);o.stop(st+0.17)})}catch(e){}}
 
 /* ---- sepia bamboo forest background ---- */
@@ -240,7 +241,7 @@ function pickMime(){var c=["audio/webm;codecs=opus","audio/webm","audio/mp4","au
   if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return"";
   for(var i=0;i<c.length;i++){if(MediaRecorder.isTypeSupported(c[i]))return c[i]}return""}
 function startRecording(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){setStatus(L.noSupport);return;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});setStatus(L.noSupport);return;}
   navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
     mediaStream=stream;var mime=pickMime();chunks=[];
     var opts={audioBitsPerSecond:32000};if(mime)opts.mimeType=mime;
@@ -250,7 +251,7 @@ function startRecording(){
     try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
     setChar("listen");setStatus(L.listening);setMicRec(true);setDots("dots rec");
     clearTimeout(autoStop);autoStop=setTimeout(stopRecording,MAX_REC_MS);
-  }).catch(function(){setStatus(L.micDeny)});
+  }).catch(function(err){clog("mic_deny",(err&&err.name)||"",{});setStatus(L.micDeny)});
 }
 function stopRecording(){clearTimeout(autoStop);if(mediaRecorder&&mediaRecorder.state!=="inactive"){setMicRec(false);setDots("dots");setChar("talk");setStatus(L.analyzing);mediaRecorder.stop();}}
 function stopHard(){clearTimeout(autoStop);try{if(mediaRecorder&&mediaRecorder.state!=="inactive")mediaRecorder.stop()}catch(e){}try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;}
@@ -261,10 +262,11 @@ function onStopped(){
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
   if(blob.size<MIN_BYTES){setChar("happy");setStatus(L.tooShort);setDots("dots");return;}
   busy=true;setChar("talk");setStatus(L.analyzing);setDots("dots");
-  var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice."+extFromMime(blob.type||mt));
+  var _ext=extFromMime(blob.type||mt);
+  var fd=new FormData();fd.append("initData",initData());fd.append("session_id",sess);fd.append("audio",blob,"voice."+_ext);
   fetch("/api/voice-practice/message",{method:"POST",body:fd}).then(jr)
-    .then(function(o){busy=false;if(!o.ok){onMsgError(o);return;}renderReply(o.j)})
-    .catch(function(){busy=false;setChar("happy");setStatus(L.sendErr)});
+    .then(function(o){busy=false;var heard=(o&&o.j&&o.j.heard)||"";clog("mic_result",(o&&o.ok)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:(""+heard).slice(0,24)});if(!o.ok){onMsgError(o);return;}renderReply(o.j)})
+    .catch(function(){busy=false;clog("mic_neterr","",{mime:blob.type||mt,ext:_ext,size:blob.size});setChar("happy");setStatus(L.sendErr)});
 }
 function onMsgError(o){
   setChar("happy");setDots("dots");

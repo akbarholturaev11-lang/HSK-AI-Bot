@@ -1073,6 +1073,28 @@ async def v3_tts(text: str, rate: str = "-10%"):
     return FileResponse(path, media_type="audio/mpeg", headers=STATIC_ASSET_HEADERS)
 
 
+# --- Yengil client-side diagnostika logi -----------------------------------
+# Qurilma/OS/Telegram versiyasi va audio/mikrofon xatolarini serverга yozib
+# boramiz, keyinchalik "kimда nima buzilyapti" ni taxmin emas, aniq ko'rish uchun.
+@app.post("/api/v3/clientlog")
+async def v3_clientlog(request: Request):
+    try:
+        data = await request.json()
+    except Exception:  # noqa: BLE001
+        return JSONResponse(status_code=400, content={"ok": False})
+    if not isinstance(data, dict):
+        return JSONResponse(status_code=400, content={"ok": False})
+    event = str(data.get("event") or "")[:64]
+    msg = str(data.get("msg") or "")[:300]
+    ctx = data.get("ctx")
+    safe_ctx = {}
+    if isinstance(ctx, dict):
+        for k, v in list(ctx.items())[:14]:
+            safe_ctx[str(k)[:32]] = str(v)[:220]
+    logging.warning("CLIENTLOG event=%s msg=%s ctx=%s", event, msg, safe_ctx)
+    return JSONResponse(content={"ok": True})
+
+
 @app.get("/api/v3/map")
 async def v3_course_map(request: Request, lang: str = "uz", level: str | None = None):
     import json as _json

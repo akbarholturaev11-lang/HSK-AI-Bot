@@ -633,7 +633,7 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     showNext(0);
   }
 
-  var _ttsAudio = null;
+  var _ttsAudio = null, _ttsTok = 0;
   function _ttsFallback(textValue){
     if(!('speechSynthesis' in window) || !textValue) return;
     try{
@@ -646,15 +646,18 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
   }
   function speak(textValue){
     if(!textValue) return;
-    try{ if(_ttsAudio){ _ttsAudio.pause(); _ttsAudio = null; } }catch(e){}
+    _ttsTok++;
+    try{ if(_ttsAudio){ _ttsAudio.onplaying=null; _ttsAudio.onerror=null; _ttsAudio.pause(); _ttsAudio = null; } }catch(e){}
     try{ window.speechSynthesis.cancel(); }catch(e){}
+    var tok = _ttsTok, st = 0;
     try{
       var a = new Audio('/api/v3/tts?text=' + encodeURIComponent(textValue));
       _ttsAudio = a;
-      a.onerror = function(){ _ttsFallback(textValue); };
+      a.onplaying = function(){ if(tok!==_ttsTok){ try{a.pause();}catch(e){} return; } st=1; };
+      a.onerror = function(){ if(tok!==_ttsTok || st!==0) return; st=2; _ttsFallback(textValue); };
       var p = a.play();
-      if(p && p.catch) p.catch(function(){ _ttsFallback(textValue); });
-    }catch(e){ _ttsFallback(textValue); }
+      if(p && p.catch) p.catch(function(){});
+    }catch(e){ if(tok===_ttsTok && st===0){ st=2; _ttsFallback(textValue); } }
   }
 
   function applyStaticText(){

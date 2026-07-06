@@ -546,9 +546,10 @@ function tr(v){return !v?"":(typeof v==="string"?v:(v[LANG]||v.ru||v.uz||""))}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function $(s){return document.querySelector(s)}
 var _ttsAudio=null;
-function _ttsFallback(t){try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
-function stopSpeak(){try{if(_ttsAudio){_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
-function speak(t){if(!t)return;stopSpeak();try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onerror=function(){_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){_ttsFallback(t)})}catch(e){_ttsFallback(t)}}
+function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
+function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
 function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notificationOccurred("success"):t==="no"?tg.HapticFeedback.notificationOccurred("error"):tg.HapticFeedback.impactOccurred("light"))}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
@@ -1661,7 +1662,7 @@ function cardPron(c){
   window._pron=function(){
     if(Flow.answered)return;
     if(st.rec&&st.rec.state!=="inactive"){stop();return;}
-    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){hint(_prL().noSupport);return;}
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.MediaRecorder){clog("mic_nosupport","",{md:!!navigator.mediaDevices,gum:!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia),mr:!!window.MediaRecorder});hint(_prL().noSupport);return;}
     navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
       st.stream=stream;st.chunks=[];
       var mimes=["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"],mime="";
@@ -1676,6 +1677,7 @@ function cardPron(c){
         fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
           .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
           .then(function(o){
+            clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||_mt,ext:_ext,size:blob.size,heard:((o&&o.j&&o.j.heard)||"").slice(0,24),code:(o&&o.j&&o.j.code)||""});
             if(!o.ok||!o.j||o.j.ok!==true){
               setBtn(T().say);
               if(o.j&&o.j.code==="PRONOUNCE_LIMIT_EXCEEDED"){App.openPaywall("pronLimit");return;}
@@ -1686,12 +1688,12 @@ function cardPron(c){
             beep(pass?[523,659,784]:[220,180]);haptic(pass?"ok":"no");
             showBar(pass,(pass?T().correct:T().wrong)+" "+sc+"%",heard||(pass?"":esc(c.phrase)));
           })
-          .catch(function(){setBtn(T().say);hint(_prL().netErr)});
+          .catch(function(){clog("mic_neterr","",{mime:blob.type||_mt,ext:_ext,size:blob.size});setBtn(T().say);hint(_prL().netErr)});
       };
       st.rec.start(250);try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
       setBtn(_prL().listening);hint(_prL().listening);haptic("light");
       clearTimeout(st.auto);st.auto=setTimeout(stop,4000);
-    }).catch(function(){hint(_prL().micDeny)});
+    }).catch(function(err){clog("mic_deny",(err&&err.name)||"",{});hint(_prL().micDeny)});
   };
 }
 Flow.next=function(){
