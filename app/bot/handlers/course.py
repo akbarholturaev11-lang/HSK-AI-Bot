@@ -119,22 +119,59 @@ async def show_free_qa_level_choice(
     )
 
 
-def course_miniapp_entry_text(lang: str) -> str:
+def course_miniapp_entry_text(lang: str, *, lesson: int | None = None) -> str:
     texts = {
         "uz": (
-            "📚 <b>HSK AI kursi Mini Appga ko‘chdi</b>\n\n"
-            "<blockquote>Darslar, so‘zlar, grammatika, quiz va AI Voice bitta joyda.</blockquote>"
+            "📚 <b>HSK AI kursi — Mini App</b>\n\n"
+            "<blockquote>Darslar, so‘zlar, grammatika, quiz va AI Voice — hammasi bitta "
+            "ilovada. Har dars sizni qadam-baqadam olib boradi.</blockquote>"
         ),
         "ru": (
-            "📚 <b>Курс HSK AI переехал в Mini App</b>\n\n"
-            "<blockquote>Уроки, слова, грамматика, квиз и AI Voice теперь в одном месте.</blockquote>"
+            "📚 <b>Курс HSK AI — Mini App</b>\n\n"
+            "<blockquote>Уроки, слова, грамматика, квиз и AI Voice — всё в одном "
+            "приложении. Каждый урок ведёт вас шаг за шагом.</blockquote>"
         ),
         "tj": (
-            "📚 <b>Курси HSK AI ба Mini App гузашт</b>\n\n"
-            "<blockquote>Дарсҳо, калимаҳо, грамматика, quiz ва AI Voice дар як ҷо.</blockquote>"
+            "📚 <b>Курси HSK AI — Mini App</b>\n\n"
+            "<blockquote>Дарсҳо, калимаҳо, грамматика, quiz ва AI Voice — ҳама дар як "
+            "барнома. Ҳар дарс шуморо қадам ба қадам мебарад.</blockquote>"
         ),
     }
-    return texts.get(lang, texts["ru"])
+    lead = {
+        "uz": "\n\n{label} darsni hoziroq boshlaymiz 👇",
+        "ru": "\n\nНачнём {label} урок прямо сейчас 👇",
+        "tj": "\n\nДарси {label}-ро ҳозир оғоз мекунем 👇",
+    }
+    base = texts.get(lang, texts["ru"])
+    if lesson:
+        label = _entry_lesson_ordinal(lang, lesson)
+        base += lead.get(lang, lead["ru"]).format(label=label)
+    return base
+
+
+def _entry_lesson_ordinal(lang: str, lesson: int) -> str:
+    labels = {
+        "uz": f"{lesson}-",
+        "ru": f"{lesson}-й",
+        "tj": f"{lesson}-",
+    }
+    return labels.get(lang, labels["ru"])
+
+
+def _course_entry_button_label(lang: str, lesson: int | None) -> str:
+    if not lesson or lesson <= 1:
+        labels = {
+            "uz": "▶️ 1-darsni boshlash",
+            "ru": "▶️ Начать 1-й урок",
+            "tj": "▶️ Оғози дарси 1",
+        }
+    else:
+        labels = {
+            "uz": f"▶️ Davom etish · {lesson}-dars",
+            "ru": f"▶️ Продолжить · урок {lesson}",
+            "tj": f"▶️ Идома · дарси {lesson}",
+        }
+    return labels.get(lang, labels["ru"])
 
 
 async def send_course_miniapp_entry(
@@ -159,18 +196,48 @@ async def send_course_miniapp_entry(
     if state:
         await state.update_data(pending_voice_transcript=None, pending_voice_message_id=None)
 
-    await respond(
-        course_miniapp_entry_text(lang),
-        reply_markup=course_v3_miniapp_keyboard(lang),
-        parse_mode="HTML",
-    )
+    entry_level = level
+    entry_lesson = lesson
+    if entry_lesson is None:
+        try:
+            engine = CourseEngineService(session)
+            lessons, resolved_level = await _resolve_lessons_for_user_level(
+                engine, getattr(user, "level", None)
+            )
+            if lessons:
+                progress = await engine.get_or_create_progress(telegram_id)
+                completed = getattr(progress, "completed_lessons_count", 0) or 0
+                next_order = completed + 1
+                target = next(
+                    (l for l in lessons if l.lesson_order == next_order), lessons[0]
+                )
+                entry_level = resolved_level
+                entry_lesson = target.lesson_order
+        except Exception:
+            entry_level = level
+            entry_lesson = None
+
+    if entry_lesson:
+        text = course_miniapp_entry_text(lang, lesson=entry_lesson)
+        keyboard = course_study_miniapp_keyboard(
+            lang,
+            level=entry_level,
+            lesson=entry_lesson,
+            tab="course",
+            text=_course_entry_button_label(lang, entry_lesson),
+        )
+    else:
+        text = course_miniapp_entry_text(lang)
+        keyboard = course_v3_miniapp_keyboard(lang)
+
+    await respond(text, reply_markup=keyboard, parse_mode="HTML")
 
     if user:
         await ConversionFunnelService().record(
             event_name="course_cta_seen",
             user=user,
             source=source,
-            payload={"level": level or getattr(user, "level", None), "lesson": lesson, "tab": tab},
+            payload={"level": entry_level or getattr(user, "level", None), "lesson": entry_lesson, "tab": tab},
         )
 
 

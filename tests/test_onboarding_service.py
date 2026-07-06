@@ -266,7 +266,7 @@ class StartHandlerOnboardingTests(unittest.IsolatedAsyncioTestCase):
 
         message.answer.assert_awaited_once()
         text = message.answer.await_args.args[0]
-        self.assertIn("Qanday o‘rganishni xohlaysiz?", text)
+        self.assertIn("Kurs rejimi ochildi", text)
         state.clear.assert_awaited_once()
         state.set_state.assert_not_awaited()
 
