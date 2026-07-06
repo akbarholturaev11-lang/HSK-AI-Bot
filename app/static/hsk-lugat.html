@@ -633,7 +633,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     showNext(0);
   }
 
-  function speak(textValue){
+  var _ttsAudio = null;
+  function _ttsFallback(textValue){
     if(!('speechSynthesis' in window) || !textValue) return;
     try{
       window.speechSynthesis.cancel();
@@ -642,6 +643,18 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
       u.rate = 0.82;
       window.speechSynthesis.speak(u);
     }catch(e){}
+  }
+  function speak(textValue){
+    if(!textValue) return;
+    try{ if(_ttsAudio){ _ttsAudio.pause(); _ttsAudio = null; } }catch(e){}
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+    try{
+      var a = new Audio('/api/v3/tts?text=' + encodeURIComponent(textValue));
+      _ttsAudio = a;
+      a.onerror = function(){ _ttsFallback(textValue); };
+      var p = a.play();
+      if(p && p.catch) p.catch(function(){ _ttsFallback(textValue); });
+    }catch(e){ _ttsFallback(textValue); }
   }
 
   function applyStaticText(){
