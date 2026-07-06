@@ -331,128 +331,36 @@ class UserRepository:
         ]
 
     async def delete_by_telegram_id(self, telegram_id: int) -> bool:
-        """Foydalanuvchini va unga bog'liq BARCHA ma'lumotni o'chiradi.
-
-        Portfel tranzaksiyalari (portfolio_transactions) ataylab saqlanadi —
-        ular kompaniyaning moliyaviy hisobi (foyda) bo'lib, foydalanuvchi
-        o'chirilsa ham daromad tarixini buzmaslik kerak.
-        """
         from sqlalchemy import delete as sql_delete
-        from app.db.models.ad_campaign import AdCampaignDelivery
-        from app.db.models.ai_usage import AIUsageBudget, AIUsageEvent
         from app.db.models.bot_feedback import BotFeedback
-        from app.db.models.conversion_funnel_event import ConversionFunnelEvent
-        from app.db.models.course_ad import CourseAdView
         from app.db.models.course_attempts import CourseAttempt
-        from app.db.models.course_challenge import CourseChallenge
-        from app.db.models.course_feature_usage import CourseFeatureUsage
-        from app.db.models.course_miniapp_event import CourseMiniAppEvent
-        from app.db.models.course_miniapp_profile import CourseMiniAppProfile
-        from app.db.models.course_mistake import CourseMistake
-        from app.db.models.course_pilot_event import CoursePilotEvent
         from app.db.models.course_progress import CourseProgress
-        from app.db.models.course_xp_event import CourseXpEvent
         from app.db.models.message import Message
         from app.db.models.onboarding_tip_event import OnboardingTipEvent
-        from app.db.models.payment import Payment
-        from app.db.models.referral import Referral
-        from app.db.models.release_feedback import (
-            ReleaseFeedbackDelivery,
-            ReleaseFeedbackResponse,
-        )
-        from app.db.models.subscription_entry_event import SubscriptionEntryEvent
-        from app.db.models.voice_practice_session import VoicePracticeSession
 
         user = await self.get_by_telegram_id(telegram_id)
         if not user:
             return False
-
-        uid = user.id
-
-        # users.id ga bog'langan jadvallar
-        by_user_id = [
-            (OnboardingTipEvent, OnboardingTipEvent.user_id),
-            (CourseAttempt, CourseAttempt.user_id),
-            (CourseProgress, CourseProgress.user_id),
-            (CourseFeatureUsage, CourseFeatureUsage.user_id),
-            (CourseMiniAppEvent, CourseMiniAppEvent.user_id),
-            (CourseMiniAppProfile, CourseMiniAppProfile.user_id),
-            (CourseMistake, CourseMistake.user_id),
-            (CoursePilotEvent, CoursePilotEvent.user_id),
-            (CourseXpEvent, CourseXpEvent.user_id),
-            (ConversionFunnelEvent, ConversionFunnelEvent.user_id),
-            (SubscriptionEntryEvent, SubscriptionEntryEvent.user_id),
-            (Message, Message.user_id),
-        ]
-        for model, column in by_user_id:
-            await self.session.execute(sql_delete(model).where(column == uid))
-
-        # telegram_id ga bog'langan jadvallar
-        by_telegram_id = [
-            (AIUsageBudget, AIUsageBudget.user_telegram_id),
-            (AIUsageEvent, AIUsageEvent.user_telegram_id),
-            (VoicePracticeSession, VoicePracticeSession.user_telegram_id),
-            (Payment, Payment.user_telegram_id),
-            (ReleaseFeedbackDelivery, ReleaseFeedbackDelivery.user_telegram_id),
-            (ReleaseFeedbackResponse, ReleaseFeedbackResponse.user_telegram_id),
-            (AdCampaignDelivery, AdCampaignDelivery.user_telegram_id),
-        ]
-        for model, column in by_telegram_id:
-            await self.session.execute(sql_delete(model).where(column == telegram_id))
-
-        # ikkala ustunga ega jadvallar
         await self.session.execute(
             sql_delete(BotFeedback).where(
-                (BotFeedback.user_id == uid) | (BotFeedback.telegram_id == telegram_id)
+                (BotFeedback.user_id == user.id) | (BotFeedback.telegram_id == telegram_id)
             )
         )
         await self.session.execute(
-            sql_delete(CourseAdView).where(
-                (CourseAdView.user_id == uid)
-                | (CourseAdView.user_telegram_id == telegram_id)
-            )
+            sql_delete(OnboardingTipEvent).where(OnboardingTipEvent.user_id == user.id)
         )
         await self.session.execute(
-            sql_delete(CourseChallenge).where(
-                (CourseChallenge.challenger_user_id == uid)
-                | (CourseChallenge.opponent_user_id == uid)
-            )
+            sql_delete(CourseAttempt).where(CourseAttempt.user_id == user.id)
         )
         await self.session.execute(
-            sql_delete(Referral).where(
-                (Referral.referrer_telegram_id == telegram_id)
-                | (Referral.invited_user_telegram_id == telegram_id)
-            )
+            sql_delete(CourseProgress).where(CourseProgress.user_id == user.id)
         )
-
+        await self.session.execute(
+            sql_delete(Message).where(Message.user_id == user.id)
+        )
         await self.session.delete(user)
         await self.session.flush()
         return True
-
-    async def set_blocked(self, telegram_id: int, blocked: bool) -> Optional[User]:
-        """Foydalanuvchini admin tomonidan bloklaydi yoki blokdan chiqaradi.
-
-        Blokdan chiqarilganda holat obuna muddatiga qarab tiklanadi:
-        muddati o'tmagan tasdiqlangan obuna bo'lsa "active", aks holda "free".
-        """
-        user = await self.get_by_telegram_id(telegram_id)
-        if not user:
-            return None
-        if blocked:
-            user.status = "blocked"
-        else:
-            now = datetime.now(timezone.utc)
-            end_date = user.end_date
-            if end_date is not None and end_date.tzinfo is None:
-                end_date = end_date.replace(tzinfo=timezone.utc)
-            is_active_sub = (
-                user.payment_status == "approved"
-                and end_date is not None
-                and end_date > now
-            )
-            user.status = "active" if is_active_sub else "free"
-        await self.session.flush()
-        return user
 
     def _generate_referral_code(self) -> str:
         return secrets.token_hex(4)

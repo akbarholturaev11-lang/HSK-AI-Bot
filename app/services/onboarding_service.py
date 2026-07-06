@@ -5,7 +5,6 @@ from sqlalchemy.exc import IntegrityError
 
 from app.repositories.user_repo import UserRepository
 from app.db.models.user import User
-from app.services.admin_access import ensure_admin_active
 from app.services.referral_service import ReferralService
 from app.services.partner_service import PARTNER_LINK_PREFIX, PartnerService
 
@@ -73,7 +72,7 @@ class OnboardingService:
     ) -> Tuple[User, bool]:
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if user:
-            changed = await ensure_admin_active(self.session, user)
+            changed = False
             if full_name and user.full_name != full_name:
                 user.full_name = full_name
                 changed = True
@@ -81,7 +80,7 @@ class OnboardingService:
                 user.username = username
                 changed = True
             if changed:
-                await self.session.commit()
+                await self.session.flush()
             if referral_code and can_attach_start_referral(user):
                 await self._attach_referral_if_needed(
                     telegram_id=telegram_id,
@@ -113,6 +112,4 @@ class OnboardingService:
         await self.session.commit()
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)
-        if await ensure_admin_active(self.session, user):
-            await self.session.commit()
         return user, True
