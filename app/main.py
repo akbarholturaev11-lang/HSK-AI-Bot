@@ -2081,6 +2081,32 @@ async def admin_miniapp_user_delete(request: Request):
     return JSONResponse(content={"ok": True})
 
 
+@app.post("/api/admin-miniapp/users/block")
+async def admin_miniapp_user_block(request: Request):
+    telegram_id = _admin_miniapp_user_id(request)
+    auth_error = _admin_auth_error(telegram_id)
+    if auth_error:
+        return auth_error
+    try:
+        payload = await request.json()
+        target_id = int(payload.get("telegram_id") or 0)
+        blocked = bool(payload.get("blocked"))
+    except (TypeError, ValueError):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_block_payload"})
+    if target_id <= 0:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_block_payload"})
+    if _is_admin_id(target_id):
+        return JSONResponse(status_code=400, content={"ok": False, "error": "cannot_block_admin"})
+    async with async_session_maker() as session:
+        user = await UserRepository(session).set_blocked(target_id, blocked)
+        if not user:
+            await session.rollback()
+            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+        await session.commit()
+        status = user.status
+    return JSONResponse(content={"ok": True, "status": status, "blocked": status == "blocked"})
+
+
 @app.post("/api/admin-miniapp/prices/save")
 async def admin_miniapp_prices_save(request: Request):
     telegram_id = _admin_miniapp_user_id(request)
