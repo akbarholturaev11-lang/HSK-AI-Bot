@@ -207,6 +207,35 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-07 — Reklama oqimidagi admin promo bo'limlar (hamkorlik + boshqa botlar)
+
+Changed:
+- Yangi `course_promo_sections` jadvali (`0064_course_promo_sections`): admin
+  boshqaradigan promo bo'limlar. `kind` = `cooperation` (hamkorlik/reklama qabul
+  qilish) yoki `bot_promo` (parallel botlarni reklama qilish). `title`/`body`
+  localized JSON (broadcast bilan bir xil format, 3 til), `link_url`,
+  `source_language`, `is_active`, `sort_order`. Maks 5 ta bo'lim (`PROMO_MAX_SECTIONS`).
+- Matn 1 tilda kiritilib, avtomatik 3 tilga (uz/ru/tj) tarjima qilinadi:
+  `BroadcastTranslationService.translate_generic(text, source_language)` — manba
+  til sozlanadigan yangi metod (`translate_from_tajik` faqat tojikcha edi).
+- `CoursePromoSectionService` (query + payload + tarjima). Public GET
+  `/api/v3/promo-sections?lang=` (foydalanuvchi tiliga mos, faol bo'limlar).
+  Admin CRUD: `/api/admin-miniapp/promo-sections` (list/save/toggle/delete).
+- Admin Mini App (`admin.html` → Boshqaruv): "📣 Reklama bo'limlari" kartasi —
+  tur/til/sarlavha/matn/havola forma, "+" bilan qo'shish, tahrir/o'chir/toggle.
+- Mini App reklama oqimi (`ads.js`): reklama video **ostida** aylanuvchi promo
+  blok. `cooperation` → Instagram lichkaga yozish tugmasi; `bot_promo` → Sinab
+  ko'rish / Nusxalash / Do'stga yuborish (Telegram share). Reklama tugagach
+  chiqadigan HSK promo karusel o'zgarmadi. `ads.js?v=20260707`.
+
+Why:
+- Admin reklama qabul qilish (hamkorlik) va o'zining boshqa botlarini reklama
+  qilishni bot yuklamasdan, mini app ichidan boshqarishi uchun.
+
+Risk / follow-up:
+- Deploydan keyin `alembic upgrade head` (0064) ishga tushirilsin.
+- Tarjima OpenAI API'ga bog'liq; kalit yo'q bo'lsa manba matn 3 tilga nusxalanadi.
+
 ### 2026-07-02 — Admin Mini App advanced period statistics
 
 Changed:

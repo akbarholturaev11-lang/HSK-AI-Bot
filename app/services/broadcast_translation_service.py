@@ -142,3 +142,75 @@ class BroadcastTranslationService:
                 translated = True
 
         return LocalizedBroadcastText(texts=texts, translated=translated)
+
+    async def translate_generic(
+        self,
+        text: str,
+        source_language: str,
+        *,
+        max_length: int = 1024,
+    ) -> LocalizedBroadcastText:
+        """Matnni ixtiyoriy manba tildan (uz/ru/tj) qolgan ikki tilga o'giradi.
+
+        `translate_from_tajik` faqat tojikchadan tarjima qiladi; bu metod esa
+        admin qaysi tilda yozgan bo'lsa, o'shani manba sifatida oladi (promo
+        bo'limlar uchun). Xatolik/kalit yo'q bo'lsa — barcha tillarga manba
+        matn nusxalanadi (fallback)."""
+        _NAMES = {"uz": "Uzbek (Latin script)", "ru": "Russian", "tj": "Tajik (Cyrillic script)"}
+        src = source_language if source_language in SUPPORTED_BROADCAST_LANGUAGES else "uz"
+        source = (text or "")[:max_length]
+        if not source:
+            return LocalizedBroadcastText(texts={}, translated=False)
+
+        targets = list(SUPPORTED_BROADCAST_LANGUAGES)
+        texts = {lang: source for lang in targets}
+        translation_targets = [lang for lang in targets if lang != src]
+        if not settings.OPENAI_API_KEY or not translation_targets:
+            return LocalizedBroadcastText(texts=texts, translated=False)
+
+        try:
+            response = await self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You translate short Telegram mini app promo copy. "
+                            f"The source text is written in {_NAMES.get(src, src)}. "
+                            "Return only valid JSON with exactly the requested language keys. "
+                            "Language keys: uz = Uzbek Latin, ru = Russian, tj = Tajik Cyrillic. "
+                            "Preserve emojis, line breaks, URLs, @usernames, promo codes, numbers, "
+                            "prices, hashtags, and product/brand names. Do not add explanations, "
+                            "labels, markdown wrappers, or quotation marks around the whole message. "
+                            f"Each translated value must be at most {max_length} characters."
+                        ),
+                    },
+                    {
+                        "role": "user",
+                        "content": json.dumps(
+                            {
+                                "source_language": src,
+                                "target_languages": translation_targets,
+                                "text": source,
+                            },
+                            ensure_ascii=False,
+                        ),
+                    },
+                ],
+                temperature=0,
+            )
+            raw = response.choices[0].message.content or ""
+            start = raw.find("{")
+            end = raw.rfind("}")
+            payload = json.loads(raw[start : end + 1] if start >= 0 and end >= 0 else raw)
+        except Exception:
+            return LocalizedBroadcastText(texts=texts, translated=False)
+
+        translated = False
+        for lang in translation_targets:
+            value = str(payload.get(lang) or "").strip()
+            if value:
+                texts[lang] = value[:max_length]
+                translated = True
+
+        return LocalizedBroadcastText(texts=texts, translated=translated)
