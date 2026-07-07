@@ -26,6 +26,10 @@ COURSE_AD_MEDIA_ROOT = os.path.join(MEDIA_ROOT_BASE, "course_ads")
 # Reklama tillari. "all" — barcha tillardagi foydalanuvchilarga ko'rsatiladi.
 COURSE_AD_LANGUAGES = ("uz", "ru", "tj")
 COURSE_AD_ALL_LANGUAGES = "all"
+# Reklama turlari: odiy (oddiy), hamkorlik (reklama qabul qilish/hamkorlik),
+# bot (o'z botlarini reklama qilish). Odiy — hozirgi xatti-harakat.
+COURSE_AD_TYPES = ("odiy", "hamkorlik", "bot")
+COURSE_AD_DEFAULT_TYPE = "odiy"
 
 
 class CourseAdService:
@@ -65,9 +69,22 @@ class CourseAdService:
         link = str(value or "").strip()
         if not link:
             return None
+        if link.startswith("@"):
+            # @username — Telegram foydalanuvchi/bot havolasiga aylantiramiz.
+            link = "https://t.me/" + link[1:]
         if not (link.startswith("http://") or link.startswith("https://")):
             link = "https://" + link
         return link[:512]
+
+    @staticmethod
+    def normalize_ad_type(value) -> str:
+        ad_type = str(value or "").strip().lower()
+        return ad_type if ad_type in COURSE_AD_TYPES else COURSE_AD_DEFAULT_TYPE
+
+    @staticmethod
+    def normalize_button_text(value) -> str | None:
+        text = str(value or "").strip()
+        return text[:64] or None
 
     @staticmethod
     def media_checksum(data: bytes) -> str:
@@ -176,6 +193,8 @@ class CourseAdService:
             "media_url": f"/uploads/course_ads/{ad.media_path}",
             "link_url": getattr(ad, "link_url", None) or None,
             "language": cls.normalize_language(getattr(ad, "language", None)),
+            "ad_type": cls.normalize_ad_type(getattr(ad, "ad_type", None)),
+            "button_text": getattr(ad, "button_text", None) or None,
             "duration_seconds": cls.normalize_duration(ad.duration_seconds),
             "is_active": bool(ad.is_active),
             "media_available": media_available,
@@ -202,6 +221,8 @@ class CourseAdService:
         duration_seconds: int = COURSE_AD_DEFAULT_SECONDS,
         link_url: str | None = None,
         language: str = COURSE_AD_ALL_LANGUAGES,
+        ad_type: str = COURSE_AD_DEFAULT_TYPE,
+        button_text: str | None = None,
         media_blob: bytes | None = None,
         created_by_telegram_id: int | None = None,
     ) -> CourseAdCreative:
@@ -211,6 +232,8 @@ class CourseAdService:
             media_type="video",
             link_url=self.normalize_link(link_url),
             language=self.normalize_language(language),
+            ad_type=self.normalize_ad_type(ad_type),
+            button_text=self.normalize_button_text(button_text),
             duration_seconds=self.normalize_duration(duration_seconds),
             is_active=True,
             created_by_telegram_id=created_by_telegram_id,

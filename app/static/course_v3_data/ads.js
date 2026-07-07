@@ -99,24 +99,15 @@
   /* Chiqish (X) — faqat limit-promoda, o\'ng yuqori burchakda */
   +'.caa-x{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:#fff;display:none;align-items:center;justify-content:center;font-size:18px;z-index:6;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}'
   +'.caa-ov.limit .caa-x{display:flex}'
-  /* Promo bo\'lim bloki — reklama video ostida (hamkorlik + boshqa bot) */
-  +'.caa-ps{display:none;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 13px;text-align:left}'
+  /* Reklama turiga qarab video ostidagi knopka bloki (hamkorlik / bot) */
+  +'.caa-ps{display:none;gap:8px;text-align:left}'
   +'.caa-ps.on{display:grid}'
   +'.caa-ov.caa-done .caa-ps{display:none!important}'
-  +'.caa-ps-head{display:flex;align-items:center;gap:8px}'
-  +'.caa-ps-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#F0C36D;background:rgba(240,195,109,.12);border:1px solid rgba(240,195,109,.28);border-radius:8px;padding:3px 7px;white-space:nowrap}'
-  +'.caa-ps-badge.bot{color:#8FD0FF;background:rgba(143,208,255,.12);border-color:rgba(143,208,255,.28)}'
-  +'.caa-ps-t{font-size:14px;font-weight:700;color:#fff;line-height:1.3}'
-  +'.caa-ps-b{font-size:12.5px;line-height:1.4;color:rgba(255,255,255,.72);margin:0}'
-  +'.caa-ps-btns{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}'
-  +'.caa-ps-btn{flex:1;min-width:92px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:11px;padding:10px 8px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer}'
+  +'.caa-ps-btns{display:flex;flex-wrap:wrap;gap:7px}'
+  +'.caa-ps-btn{flex:1;min-width:92px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:#fff;border-radius:11px;padding:11px 8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}'
   +'.caa-ps-btn.primary{background:#fff;color:#211D17;border-color:#fff}'
   +'.caa-ps-btn:active{transform:translateY(1px)}'
-  +'.caa-ps-btn i{font-size:15px}'
-  +'.caa-ps-dots{display:flex;justify-content:center;gap:5px;margin-top:1px}'
-  +'.caa-ps-dots[hidden]{display:none!important}'
-  +'.caa-ps-dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.24);transition:width .3s,background .3s}'
-  +'.caa-ps-dots i.on{width:14px;border-radius:5px;background:#D6493C}';
+  +'.caa-ps-btn i{font-size:15px}';
 
   var els = null;
   function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -172,16 +163,11 @@
   function startPromo(){stopPromo();var slides=promoSlides(),i=0;renderPromo(slides,i);promoStop=setInterval(function(){i=(i+1)%slides.length;renderPromo(slides,i)},4500)}
   function stopPromo(){if(promoStop){clearInterval(promoStop);promoStop=null}}
 
-  /* Promo bo'limlar (video ostidagi blok): admin boshqaradigan hamkorlik +
-     boshqa bot reklamasi. Bir marta yuklanadi, bir nechta bo'lsa aylanadi. */
-  var SECTIONS=null, secLoaded=false, psRotate=null, psIdx=0, psCurrent=null;
-  function fetchSections(){
-    var url="/api/v3/promo-sections?lang="+encodeURIComponent(CFG.lang||"uz");
-    return fetch(url,{headers:{"X-Telegram-Init-Data":CFG.initData||""}})
-      .then(function(r){return r.json()})
-      .then(function(d){return (d&&d.ok&&d.sections&&d.sections.length)?d.sections:[]})
-      .catch(function(){return []});
-  }
+  /* Reklama turiga qarab (video ostidagi) knopka(lar). Odiy reklama — knopka
+     yo'q (avvalgi "Havolaga o'tish" chipi ishlaydi). Hamkorlik — bitta CTA.
+     Bot — sinab ko'rish + linkni nusxalash + do'stga yuborish. Knopka nomi
+     admin bergan `button_text` yoki turga mos default. */
+  var psCurrent=null;
   function openUrl(url){
     if(!url)return;haptic(true);
     var tg=window.Telegram&&window.Telegram.WebApp;
@@ -213,39 +199,24 @@
     else if(act==="copy")copyUrl(sec.link_url,btn);
     else if(act==="share")shareUrl(sec.link_url,sec.title);
   }
-  function renderPsCard(sections,idx){
-    var t=T(),sec=sections[idx],coop=sec.kind==="cooperation";
-    psCurrent=sec;
-    var head='<div class="caa-ps-head"><span class="caa-ps-badge'+(coop?'':' bot')+'"><i class="ti ti-'+(coop?'heart-handshake':'robot')+'"></i></span><div class="caa-ps-t">'+esc(sec.title)+'</div></div>';
-    var body=sec.body?'<p class="caa-ps-b">'+esc(sec.body)+'</p>':'';
+  function hidePs(){if(els&&els.ps){els.ps.classList.remove("on");els.ps.innerHTML=""}psCurrent=null}
+  function renderAdButtons(ad){
+    hidePs();
+    if(!ad)return;
+    var type=ad.ad_type||"odiy";
+    if((type!=="hamkorlik"&&type!=="bot")||!ad.link_url)return;
+    var t=T(),bt=(ad.button_text&&String(ad.button_text).trim())?String(ad.button_text).trim():(type==="hamkorlik"?t.psWrite:t.psTry);
+    psCurrent={link_url:ad.link_url,title:ad.title||""};
     var btns;
-    if(coop){
-      btns='<button class="caa-ps-btn primary" data-psact="open"><i class="ti ti-brand-instagram"></i> '+esc(t.psWrite)+'</button>';
+    if(type==="hamkorlik"){
+      btns='<button class="caa-ps-btn primary" data-psact="open"><i class="ti ti-external-link"></i> '+esc(bt)+'</button>';
     }else{
-      btns='<button class="caa-ps-btn primary" data-psact="open"><i class="ti ti-player-play"></i> '+esc(t.psTry)+'</button>'
-          +(sec.link_url?'<button class="caa-ps-btn" data-psact="copy"><i class="ti ti-copy"></i> '+esc(t.psCopy)+'</button>'
-          +'<button class="caa-ps-btn" data-psact="share"><i class="ti ti-send"></i> '+esc(t.psShare)+'</button>':'');
+      btns='<button class="caa-ps-btn primary" data-psact="open"><i class="ti ti-player-play"></i> '+esc(bt)+'</button>'
+          +'<button class="caa-ps-btn" data-psact="copy"><i class="ti ti-copy"></i> '+esc(t.psCopy)+'</button>'
+          +'<button class="caa-ps-btn" data-psact="share"><i class="ti ti-send"></i> '+esc(t.psShare)+'</button>';
     }
-    var dots=sections.length>1?'<div class="caa-ps-dots">'+sections.map(function(_,k){return '<i class="'+(k===idx?"on":"")+'"></i>'}).join("")+'</div>':'';
-    els.ps.innerHTML=head+body+'<div class="caa-ps-btns">'+btns+'</div>'+dots;
-  }
-  function startPs(sections){
-    stopPs();
-    if(!sections||!sections.length)return;
-    psIdx=0;renderPsCard(sections,0);els.ps.classList.add("on");
-    if(sections.length>1){psRotate=setInterval(function(){psIdx=(psIdx+1)%sections.length;renderPsCard(sections,psIdx)},7000)}
-  }
-  function stopPs(){if(psRotate){clearInterval(psRotate);psRotate=null}if(els&&els.ps)els.ps.classList.remove("on")}
-  function maybeShowPs(){
-    if(!SECTIONS||!SECTIONS.length||!els)return;
-    if(!els.ov.classList.contains("on")||els.ov.classList.contains("caa-done"))return;
-    startPs(SECTIONS);
-  }
-  function loadAndShowPs(){
-    if(SECTIONS!==null){maybeShowPs();return}
-    if(secLoaded)return;
-    secLoaded=true;
-    fetchSections().then(function(s){SECTIONS=s;maybeShowPs()});
+    els.ps.innerHTML='<div class="caa-ps-btns">'+btns+'</div>';
+    els.ps.classList.add("on");
   }
 
   function fetchAds(placement){
@@ -280,7 +251,7 @@
   function closeOverlay(){
     clearInterval(STATE.timer);clearTimeout(STATE.loadTimer);
     try{var v=els.video;resetVideo(v);v.pause();v.removeAttribute("src");v.load()}catch(e){}
-    stopPromo();stopPs();els.ov.classList.remove("caa-done");setStatus("");
+    stopPromo();hidePs();els.ov.classList.remove("caa-done");setStatus("");
     els.ov.classList.remove("on");els.ov.setAttribute("aria-hidden","true");
   }
   function setSubVisible(vis){els.sub.hidden=!vis;els.sub.style.display=vis?"grid":"none"}
@@ -308,7 +279,6 @@
         els.subDesc.hidden=true;els.limFoot.hidden=true;els.cont.style.display="";
         els.ov.classList.remove("limit");
         els.ov.classList.add("on");els.ov.setAttribute("aria-hidden","false");
-        loadAndShowPs();
         clearInterval(STATE.timer);
         var video=els.video;
         function playAd(i){
@@ -319,7 +289,11 @@
           els.title.textContent=ad.title||placementTitle(placement);
           els.note.textContent=t.adNote;
           var hasLink=!!ad.link_url;
-          if(hasLink){els.visitT.textContent=t.adVisit;els.visit.hidden=false}else{els.visit.hidden=true}
+          var typed=(ad.ad_type==="hamkorlik"||ad.ad_type==="bot");
+          /* Odiy reklamada havola bo'lsa — video ustidagi "Havolaga o'tish" chipi.
+             Hamkorlik/bot turida esa video ostidagi knopka(lar) ishlaydi. */
+          if(hasLink&&!typed){els.visitT.textContent=t.adVisit;els.visit.hidden=false}else{els.visit.hidden=true}
+          renderAdButtons(ad);
           stopPromo();els.ov.classList.remove("caa-done");
           els.vwrap.style.display="";els.vwrap.style.cursor=hasLink?"pointer":"default";
           els.cont.disabled=false;els.cont.innerHTML='<i class="ti ti-arrow-right"></i> '+t.adSubCont;
@@ -353,7 +327,7 @@
               /* YAKUNIY reklama tugadi — "Obuna ol / Reklama bilan davom etish"
                  bloki chiqadi (davom bosilganda done() ko'rilganini yozib yakunlaydi). */
               try{video.pause()}catch(e){}
-              stopPs();
+              hidePs();
               els.vwrap.style.display="none";els.ov.classList.add("caa-done");startPromo();
               STATE.ready=true;els.cta0.style.display="none";els.cont.style.display="";setSubVisible(true);
             }else{
@@ -395,7 +369,7 @@
   }
 
   function _closeLimit(){
-    stopPromo();stopPs();
+    stopPromo();hidePs();
     els.ov.classList.remove("on","caa-done","limit");
     els.ov.setAttribute("aria-hidden","true");
     if(els.limFoot)els.limFoot.hidden=true;
@@ -407,7 +381,7 @@
   function showLimitPromo(opts){
     opts=opts||{};
     ensureDom();
-    stopPs();
+    hidePs();
     var t=T();
     els.subTitle.textContent=t.limitHead||t.adSubTitle;
     if(t.limitSub){els.subDesc.textContent=t.limitSub;els.subDesc.hidden=false}else{els.subDesc.hidden=true}

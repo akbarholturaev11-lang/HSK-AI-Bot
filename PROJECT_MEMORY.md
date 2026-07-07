@@ -207,34 +207,38 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
-### 2026-07-07 — Reklama oqimidagi admin promo bo'limlar (hamkorlik + boshqa botlar)
+### 2026-07-07 — Kurs reklamasiga reklama turi (odiy/hamkorlik/bot) + universal knopka
 
 Changed:
-- Yangi `course_promo_sections` jadvali (`0064_course_promo_sections`): admin
-  boshqaradigan promo bo'limlar. `kind` = `cooperation` (hamkorlik/reklama qabul
-  qilish) yoki `bot_promo` (parallel botlarni reklama qilish). `title`/`body`
-  localized JSON (broadcast bilan bir xil format, 3 til), `link_url`,
-  `source_language`, `is_active`, `sort_order`. Maks 5 ta bo'lim (`PROMO_MAX_SECTIONS`).
-- Matn 1 tilda kiritilib, avtomatik 3 tilga (uz/ru/tj) tarjima qilinadi:
-  `BroadcastTranslationService.translate_generic(text, source_language)` — manba
-  til sozlanadigan yangi metod (`translate_from_tajik` faqat tojikcha edi).
-- `CoursePromoSectionService` (query + payload + tarjima). Public GET
-  `/api/v3/promo-sections?lang=` (foydalanuvchi tiliga mos, faol bo'limlar).
-  Admin CRUD: `/api/admin-miniapp/promo-sections` (list/save/toggle/delete).
-- Admin Mini App (`admin.html` → Boshqaruv): "📣 Reklama bo'limlari" kartasi —
-  tur/til/sarlavha/matn/havola forma, "+" bilan qo'shish, tahrir/o'chir/toggle.
-- Mini App reklama oqimi (`ads.js`): reklama video **ostida** aylanuvchi promo
-  blok. `cooperation` → Instagram lichkaga yozish tugmasi; `bot_promo` → Sinab
-  ko'rish / Nusxalash / Do'stga yuborish (Telegram share). Reklama tugagach
-  chiqadigan HSK promo karusel o'zgarmadi. `ads.js?v=20260707`.
+- `course_ad_creatives` ga ikkita ustun (`0064_course_ad_type_button`):
+  - `ad_type` (String16, default `odiy`): `odiy` | `hamkorlik` | `bot`.
+  - `button_text` (String64, null): universal knopka nomi (hamkorlik/bot uchun).
+- Reklama qabul qilish (hamkorlik) va o'z botlarini reklama qilish **alohida
+  tizim EMAS** — hammasi mavjud "Kurs reklama videolari" (course-ads) yuklash
+  oqumidan o'tadi, faqat `ad_type` bilan farqlanadi. `CourseAdService`:
+  `normalize_ad_type` / `normalize_button_text`, `create_video` + `payload` ga
+  `ad_type`/`button_text` qo'shildi. `normalize_link` endi `@username` ni
+  `t.me/...` ga aylantiradi. Upload endpoint (`/api/admin-miniapp/course-ads/upload`)
+  form'dan `ad_type` + `button_text` oladi.
+- Admin Mini App (`admin.html` → Boshqaruv → Kurs reklama videolari): "Reklama
+  turi" select + "Knopka nomi" input (odiy'da o'chirilgan). Karta turi tegini ko'rsatadi.
+- Mini App (`ads.js`): reklama video **ostida** turiga qarab knopka —
+  `odiy` = knopka yo'q (avvalgi "Havolaga o'tish" chipi); `hamkorlik` = bitta CTA
+  (button_text yoki default "Hamkorlik uchun yozing") → havolani ochadi; `bot` =
+  Sinab ko'rish (button_text/"Sinab ko'rish") + Linkni nusxalash + Do'stga yuborish
+  (Telegram share). Odiy reklama xatti-harakati o'zgarmadi. `ads.js?v=20260708`.
 
 Why:
-- Admin reklama qabul qilish (hamkorlik) va o'zining boshqa botlarini reklama
-  qilishni bot yuklamasdan, mini app ichidan boshqarishi uchun.
+- Admin bitta reklama yuklash oqimidan foydalanib, oddiy reklama, hamkorlik
+  (reklama qabul qilish) va o'z botlarini reklama qilishni boshqarishi uchun.
+
+History / muhim:
+- Bu ish avval alohida `course_promo_sections` jadvali + alohida video-ostidagi
+  blok sifatida qilingan edi (birinchi urinish), keyin foydalanuvchi so'roviga
+  ko'ra to'liq olib tashlanib, course-ads oqumiga birlashtirildi.
 
 Risk / follow-up:
 - Deploydan keyin `alembic upgrade head` (0064) ishga tushirilsin.
-- Tarjima OpenAI API'ga bog'liq; kalit yo'q bo'lsa manba matn 3 tilga nusxalanadi.
 
 ### 2026-07-02 — Admin Mini App advanced period statistics
 

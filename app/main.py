@@ -23,7 +23,6 @@ from app.db.models.user import User
 from app.db.models.course_lessons import CourseLesson
 from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
 from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
-from app.db.models.course_promo_section import CoursePromoSection  # noqa: F401 (register tables)
 from app.services.course_seed_service import CourseSeedService
 from app.services.notification_template_service import (
     MOTIVATION_KEYS,
@@ -62,12 +61,6 @@ from app.services.course_miniapp_access_service import (
     CourseMiniAppAccessService,
 )
 from app.services.course_ad_service import COURSE_AD_MEDIA_ROOT, CourseAdService
-from app.services.course_promo_section_service import (
-    PROMO_BODY_MAX,
-    PROMO_MAX_SECTIONS,
-    PROMO_TITLE_MAX,
-    CoursePromoSectionService,
-)
 from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIRED_ACTIVE
 from app.services.payment_notify_service import PaymentNotifyService
 from app.services.portfolio_service import PortfolioService
@@ -1367,23 +1360,6 @@ async def v3_course_ad(
                 "lesson_order": lesson_order,
             }
         )
-
-
-@app.get("/api/v3/promo-sections")
-async def v3_promo_sections(request: Request, lang: str = ""):
-    """Reklama video ostida ko'rsatiladigan admin boshqaradigan promo bo'limlar
-    (hamkorlik + boshqa bot reklamasi). Foydalanuvchi tiliga mos matn."""
-    init_data = request.headers.get("X-Telegram-Init-Data", "")
-    telegram_id = extract_verified_webapp_user_id(init_data, settings.BOT_TOKEN) if init_data else None
-    async with async_session_maker() as session:
-        section_language = None
-        if telegram_id:
-            user = await UserRepository(session).get_by_telegram_id(telegram_id)
-            if user and getattr(user, "language", None):
-                section_language = user.language
-        section_language = CoursePromoSectionService.normalize_language(section_language or lang)
-        sections = await CoursePromoSectionService(session).list_active(section_language)
-    return JSONResponse(content={"ok": True, "sections": sections})
 
 
 @app.post("/api/v3/ad/view")
@@ -2856,6 +2832,8 @@ async def admin_miniapp_course_ads_upload(request: Request):
     duration_seconds = CourseAdService.normalize_duration(form.get("duration_seconds"))
     link_url = CourseAdService.normalize_link(form.get("link_url"))
     language = CourseAdService.normalize_language(form.get("language"))
+    ad_type = CourseAdService.normalize_ad_type(form.get("ad_type"))
+    button_text = CourseAdService.normalize_button_text(form.get("button_text"))
     async with async_session_maker() as session:
         ad = await CourseAdService(session).create_video(
             title=title,
@@ -2863,6 +2841,8 @@ async def admin_miniapp_course_ads_upload(request: Request):
             duration_seconds=duration_seconds,
             link_url=link_url,
             language=language,
+            ad_type=ad_type,
+            button_text=button_text,
             media_blob=media_backup,
             created_by_telegram_id=telegram_id,
         )
@@ -2926,112 +2906,6 @@ async def admin_miniapp_course_ads_delete(request: Request):
         pass
 
     return JSONResponse(content={"ok": True, "deleted_id": ad_id})
-
-
-# ---- Reklama oqimidagi promo bo'limlar (hamkorlik + bot reklamasi) ----
-
-@app.post("/api/admin-miniapp/promo-sections")
-async def admin_miniapp_promo_sections(request: Request):
-    telegram_id = _admin_miniapp_user_id(request)
-    auth_error = _admin_auth_error(telegram_id)
-    if auth_error:
-        return auth_error
-    async with async_session_maker() as session:
-        items = await CoursePromoSectionService(session).list_for_admin()
-    return JSONResponse(content={"ok": True, "items": items, "max_sections": PROMO_MAX_SECTIONS})
-
-
-@app.post("/api/admin-miniapp/promo-sections/save")
-async def admin_miniapp_promo_sections_save(request: Request):
-    telegram_id = _admin_miniapp_user_id(request)
-    auth_error = _admin_auth_error(telegram_id)
-    if auth_error:
-        return auth_error
-    try:
-        payload = await request.json()
-    except ValueError:
-        payload = {}
-    section_id = int(payload.get("id") or 0)
-    kind = CoursePromoSectionService.normalize_kind(payload.get("kind"))
-    source_language = CoursePromoSectionService.normalize_language(payload.get("source_language"))
-    title = str(payload.get("title") or "").strip()[:PROMO_TITLE_MAX]
-    body = str(payload.get("body") or "").strip()[:PROMO_BODY_MAX]
-    link_url = str(payload.get("link_url") or "").strip()
-    if len(title) < 2:
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_promo_title"})
-
-    async with async_session_maker() as session:
-        service = CoursePromoSectionService(session)
-        if section_id > 0:
-            section = await service.update(
-                section_id,
-                kind=kind,
-                title=title,
-                body=body,
-                link_url=link_url,
-                source_language=source_language,
-            )
-            if not section:
-                return JSONResponse(status_code=404, content={"ok": False, "error": "promo_section_not_found"})
-        else:
-            if await service.count() >= PROMO_MAX_SECTIONS:
-                return JSONResponse(status_code=400, content={"ok": False, "error": "promo_section_limit"})
-            section = await service.create(
-                kind=kind,
-                title=title,
-                body=body,
-                link_url=link_url,
-                source_language=source_language,
-                created_by_telegram_id=telegram_id,
-            )
-        await session.commit()
-        item = CoursePromoSectionService.admin_payload(section)
-    return JSONResponse(content={"ok": True, "item": item})
-
-
-@app.post("/api/admin-miniapp/promo-sections/toggle")
-async def admin_miniapp_promo_sections_toggle(request: Request):
-    telegram_id = _admin_miniapp_user_id(request)
-    auth_error = _admin_auth_error(telegram_id)
-    if auth_error:
-        return auth_error
-    try:
-        payload = await request.json()
-        section_id = int(payload.get("id") or 0)
-    except (TypeError, ValueError):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_promo_payload"})
-    if section_id <= 0:
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_promo_payload"})
-    async with async_session_maker() as session:
-        section = await CoursePromoSectionService(session).set_active(
-            section_id, bool(payload.get("is_active", True))
-        )
-        if not section:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "promo_section_not_found"})
-        await session.commit()
-        item = CoursePromoSectionService.admin_payload(section)
-    return JSONResponse(content={"ok": True, "item": item})
-
-
-@app.post("/api/admin-miniapp/promo-sections/delete")
-async def admin_miniapp_promo_sections_delete(request: Request):
-    telegram_id = _admin_miniapp_user_id(request)
-    auth_error = _admin_auth_error(telegram_id)
-    if auth_error:
-        return auth_error
-    try:
-        payload = await request.json()
-        section_id = int(payload.get("id") or 0)
-    except (TypeError, ValueError):
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_promo_payload"})
-    if section_id <= 0:
-        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_promo_payload"})
-    async with async_session_maker() as session:
-        deleted = await CoursePromoSectionService(session).delete(section_id)
-        if not deleted:
-            return JSONResponse(status_code=404, content={"ok": False, "error": "promo_section_not_found"})
-        await session.commit()
-    return JSONResponse(content={"ok": True, "deleted_id": section_id})
 
 
 @app.get("/uploads/course_ads/{filename}")

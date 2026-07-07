@@ -20,6 +20,11 @@ class CourseAdCreative(Base):
     # Reklama tili: "all" (barcha tillar), "uz", "ru", "tj".
     language: Mapped[str] = mapped_column(String(8), default="all", index=True, nullable=False)
     link_url: Mapped[Optional[str]] = mapped_column(String(512), nullable=True)
+    # Reklama turi: "odiy" (oddiy reklama), "hamkorlik" (hamkorlik uchun),
+    # "bot" (boshqa botni reklama qilish). Turga qarab mini app'da knopka farq qiladi.
+    ad_type: Mapped[str] = mapped_column(String(16), default="odiy", nullable=False)
+    # Universal knopka nomi (hamkorlik/bot uchun). Bo'sh bo'lsa — turga mos default nom.
+    button_text: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     duration_seconds: Mapped[int] = mapped_column(Integer, default=7, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, index=True, nullable=False)
     created_by_telegram_id: Mapped[Optional[int]] = mapped_column(BigInteger, nullable=True)

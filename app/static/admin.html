@@ -388,7 +388,11 @@
               <div><label>Davomiyligi (s)</label><input id="caDuration" class="input" type="number" min="5" max="120" value="7"></div>
             </div>
             <div class="frow two">
-              <div><label>Havola (ixtiyoriy)</label><input id="caLink" class="input" placeholder="https://..."></div>
+              <div><label>Reklama turi</label><select id="caType" class="select"><option value="odiy">📺 Oddiy reklama</option><option value="hamkorlik">🤝 Hamkorlik</option><option value="bot">🤖 Bot reklamasi</option></select></div>
+              <div><label id="caBtnLabel">Knopka nomi</label><input id="caBtnText" class="input" maxlength="64" placeholder="Oddiy reklamada shart emas" disabled></div>
+            </div>
+            <div class="frow two">
+              <div><label id="caLinkLabel">Havola (ixtiyoriy)</label><input id="caLink" class="input" placeholder="https://..."></div>
               <div><label>Til</label><select id="caLang" class="select"><option value="all">Barcha tillar</option><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
             </div>
             <button class="btn" data-act="upload-ca">📎 Video yuklash</button>
@@ -396,21 +400,6 @@
           </div>
           <div class="chips" id="caLangFilter" style="margin-bottom:10px"></div>
           <div class="grid" id="courseAds"><p class="empty">Yuklanmoqda…</p></div>
-        </div>
-        <div class="sec">
-          <div class="sec-head"><div><div class="sec-title">📣 Reklama bo'limlari</div><div class="sec-note">Reklama video ostida chiqadi: hamkorlik + boshqa botlar. 1 tilda yozing — 3 tilga avto-tarjima. Maks 5 ta.</div></div></div>
-          <div class="mcard" style="margin-bottom:11px">
-            <input id="psId" type="hidden" value="">
-            <div class="frow two">
-              <div><label>Bo'lim turi</label><select id="psKind" class="select"><option value="bot_promo">🤖 Boshqa bot reklamasi</option><option value="cooperation">🤝 Hamkorlik (reklama qabul qilish)</option></select></div>
-              <div><label>Yozuv tili</label><select id="psLang" class="select"><option value="uz">O'zbekcha</option><option value="ru">Ruscha</option><option value="tj">Tojikcha</option></select></div>
-            </div>
-            <div class="frow"><label>Sarlavha</label><input id="psTitle" class="input" maxlength="120" placeholder="Masalan: HSK Speaking bot"></div>
-            <div class="frow"><label>Matn / shartlar</label><textarea id="psBody" class="textarea" maxlength="600" placeholder="Bot-promo: bot nima qilishini qisqa yozing. Hamkorlik: shartlar + 'tugmani bosing va Instagram lichkaga yozing'."></textarea></div>
-            <div class="frow"><label id="psLinkLabel">Bot havolasi</label><input id="psLink" class="input" placeholder="@username yoki https://t.me/..."></div>
-            <div class="row"><button class="btn" data-act="save-ps">💾 Saqlash</button><button class="btn sec" data-act="reset-ps">Tozalash</button></div>
-          </div>
-          <div class="grid" id="promoSections"><p class="empty">Yuklanmoqda…</p></div>
         </div>
       </section>
     </main>
@@ -483,9 +472,7 @@
         unsupported_media:"Fayl turi qo'llab-quvvatlanmaydi", media_upload_failed:"Media yuklab bo'lmadi",
         ffmpeg_not_available:"Serverda ffmpeg yo'q. Deploy sozlamasini tekshiring.",
         video_transcode_failed:"Video MP4 formatga o'tkazilmadi. Boshqa video bilan urinib ko'ring.",
-        qr_upload_failed:"QR yuklab bo'lmadi", invalid_qr_target:"QR uchun usul/tarif noto'g'ri", price_not_set:"Avval narxni saqlang",
-        invalid_promo_title:"Sarlavha juda qisqa", promo_section_limit:"Maksimum 5 ta bo'lim. Avval birortasini o'chiring.",
-        promo_section_not_found:"Bo'lim topilmadi"
+        qr_upload_failed:"QR yuklab bo'lmadi", invalid_qr_target:"QR uchun usul/tarif noto'g'ri", price_not_set:"Avval narxni saqlang"
       };
       return m[k] || fallback || "Amal bajarilmadi";
     }
@@ -527,7 +514,7 @@
       renderUserFilters(); renderUsers();
       renderPayments();
       renderModules();
-      loadSubEntry(); loadNotifications(); loadCourseAds(); loadPromoSections();
+      loadSubEntry(); loadNotifications(); loadCourseAds();
       loadManagement(true).catch(()=>{});
     }
 
@@ -1196,7 +1183,9 @@
 
     /* ---------- course ads ---------- */
     const CA_LANGS={all:"Barcha tillar",uz:"O'zbekcha",ru:"Ruscha",tj:"Tojikcha"};
+    const CA_TYPES={odiy:["📺 Oddiy","blue"],hamkorlik:["🤝 Hamkorlik","amber"],bot:["🤖 Bot","green"]};
     function caLangLabel(l){ return CA_LANGS[l]||CA_LANGS.all; }
+    function caTypeMeta(t){ return CA_TYPES[t]||CA_TYPES.odiy; }
     let caItems=[], caFilter="all";
     function caCard(i){
       const lang=i.language||"all";
@@ -1204,10 +1193,12 @@
       const mediaHtml=mediaOk&&i.media_url
         ? `<video src="${esc(i.media_url)}" controls muted playsinline></video>`
         : `<div class="danger-note">Video fayl serverda topilmadi. Railway Volume yoki MEDIA_ROOT sozlang va reklamani qayta yuklang.</div>`;
+      const tmeta=caTypeMeta(i.ad_type||"odiy");
+      const btnLine=(i.ad_type&&i.ad_type!=="odiy"&&i.button_text)?`<div class="ncnote">🔘 ${esc(i.button_text)}</div>`:"";
       return `<div class="ncard" data-ca="${i.id}">
         <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div><div class="ncnote">${i.duration_seconds||7}s majburiy ko'rish · ${esc(i.created_at||"—")}</div>
-          ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}</div>
-          <div style="display:flex;gap:5px;align-items:center">${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}${tag(mediaOk?"video bor":"video yo'q",mediaOk?"green":"red")}</div></div>
+          ${i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>"}${btnLine}</div>
+          <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:flex-end">${tag(tmeta[0],tmeta[1])}${tag("🌐 "+caLangLabel(lang),"blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}${tag(mediaOk?"video bor":"video yo'q",mediaOk?"green":"red")}</div></div>
         <div class="ncmedia">${mediaHtml}</div>
         <div class="row"><button class="btn sec" data-catoggle="${i.id}" data-active="${i.is_active?"0":"1"}">${i.is_active?"Faolsizlantirish":"Faollashtirish"}</button>
           <button class="btn danger" data-cadel="${i.id}">Butunlay o'chirish</button></div></div>`;
@@ -1230,62 +1221,22 @@
         renderCaLangFilter(); renderCourseAds(); }
       catch(e){ host.innerHTML="<p class='empty'>Kurs reklamalarni yuklab bo'lmadi.</p>"; }
     }
+    function caTypeUI(){
+      const t=($("caType")&&$("caType").value)||"odiy", odiy=t==="odiy";
+      const bt=$("caBtnText"), lbl=$("caLinkLabel");
+      bt.disabled=odiy;
+      if(odiy){ bt.value=""; bt.placeholder="Oddiy reklamada shart emas"; }
+      else if(t==="hamkorlik"){ bt.placeholder="Masalan: Hamkorlik uchun yozing"; }
+      else { bt.placeholder="Masalan: Botni sinab ko'r"; }
+      if(lbl) lbl.textContent = t==="hamkorlik" ? "Havola / Instagram" : (t==="bot" ? "Bot havolasi" : "Havola (ixtiyoriy)");
+    }
     async function submitCourseAd(){
       const input=$("caFile"), f=input&&input.files&&input.files[0]; if(!f) return;
       if(f.size>25*1024*1024){ toast("Fayl 25MB dan katta"); input.value=""; return; }
-      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("media",f);
-      try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
+      const adType=($("caType")&&$("caType").value)||"odiy";
+      const fd=new FormData(); fd.append("title",$("caTitle").value||"Kurs reklama"); fd.append("duration_seconds",$("caDuration").value||"7"); fd.append("link_url",$("caLink").value||""); fd.append("language",($("caLang")&&$("caLang").value)||"all"); fd.append("ad_type",adType); fd.append("button_text",adType==="odiy"?"":($("caBtnText").value||"")); fd.append("media",f);
+      try{ await apiUpload("/api/admin-miniapp/course-ads/upload",fd); $("caTitle").value=""; $("caLink").value=""; $("caBtnText").value=""; toast("Kurs reklama yuklandi"); loadCourseAds(); }
       catch(e){ toast(apiErr(e,"Reklama yuklashda xato")); } finally{ input.value=""; }
-    }
-
-    /* ---------- promo sections (reklama oqimidagi bo'limlar) ---------- */
-    const PS_KIND={cooperation:["🤝 Hamkorlik","amber"],bot_promo:["🤖 Bot reklamasi","blue"]};
-    const PS_LANG={uz:"O'zbekcha",ru:"Ruscha",tj:"Tojikcha"};
-    let psItems=[];
-    function psKindLabel(k){ return (PS_KIND[k]||PS_KIND.bot_promo)[0]; }
-    function psCard(i){
-      const meta=PS_KIND[i.kind]||PS_KIND.bot_promo;
-      const body=i.body?`<div class="ncnote">${esc(i.body)}</div>`:"";
-      const link=i.link_url?`<div class="ncnote">🔗 <a href="${esc(i.link_url)}" target="_blank" rel="noopener">${esc(i.link_url)}</a></div>`:"<div class='ncnote'>Havola yo'q</div>";
-      return `<div class="ncard" data-ps="${i.id}">
-        <div class="nchead"><div><div class="nctitle">${esc(i.title)}</div>${body}${link}</div>
-          <div style="display:flex;gap:5px;align-items:center">${tag(meta[0],meta[1])}${tag(PS_LANG[i.source_language]||"UZ","blue")}${tag(i.is_active?"faol":"o'chirilgan",i.is_active?"green":"red")}</div></div>
-        <div class="row"><button class="btn sec" data-psedit="${i.id}">✏️ Tahrirlash</button>
-          <button class="btn sec" data-pstoggle="${i.id}" data-active="${i.is_active?"0":"1"}">${i.is_active?"Faolsizlantirish":"Faollashtirish"}</button>
-          <button class="btn danger" data-psdel="${i.id}">O'chirish</button></div></div>`;
-    }
-    function renderPromoSections(){
-      const host=$("promoSections"); if(!host) return;
-      host.innerHTML=psItems.length?psItems.map(psCard).join(""):"<p class='empty'>Hali bo'lim qo'shilmagan. Yuqoridan qo'shing.</p>";
-    }
-    async function loadPromoSections(){
-      const host=$("promoSections"); if(!host) return;
-      try{ const d=await apiPost("/api/admin-miniapp/promo-sections",{}); psItems=d.items||[]; renderPromoSections(); }
-      catch(e){ host.innerHTML="<p class='empty'>Bo'limlarni yuklab bo'lmadi.</p>"; }
-    }
-    function psKindUI(){
-      const coop=$("psKind").value==="cooperation";
-      $("psLinkLabel").textContent=coop?"Instagram havolasi":"Bot havolasi";
-      $("psLink").placeholder=coop?"@username yoki https://instagram.com/...":"@username yoki https://t.me/...";
-    }
-    function resetPromoForm(){
-      $("psId").value=""; $("psTitle").value=""; $("psBody").value=""; $("psLink").value="";
-      $("psKind").value="bot_promo"; $("psLang").value="uz"; psKindUI();
-    }
-    function editPromoSection(id){
-      const i=psItems.find(x=>String(x.id)===String(id)); if(!i) return;
-      $("psId").value=i.id; $("psKind").value=i.kind; $("psLang").value=i.source_language||"uz";
-      $("psTitle").value=i.title||""; $("psBody").value=i.body||""; $("psLink").value=i.link_url||""; psKindUI();
-      $("psTitle").scrollIntoView({behavior:"smooth",block:"center"});
-    }
-    async function submitPromoSection(btn){
-      const title=($("psTitle").value||"").trim();
-      if(title.length<2){ toast("Sarlavha juda qisqa"); return; }
-      const payload={id:Number($("psId").value||0),kind:$("psKind").value,source_language:$("psLang").value,title,body:($("psBody").value||"").trim(),link_url:($("psLink").value||"").trim()};
-      if(btn) btn.disabled=true;
-      try{ await apiPost("/api/admin-miniapp/promo-sections/save",payload); toast(payload.id?"Bo'lim yangilandi":"Bo'lim qo'shildi"); resetPromoForm(); loadPromoSections(); }
-      catch(e){ toast(apiErr(e,"Bo'lim saqlanmadi")); }
-      finally{ if(btn) btn.disabled=false; }
     }
 
     /* ---------- tabs ---------- */
@@ -1329,9 +1280,6 @@
       if((el=T("[data-catoggle]"))){ const id=Number(el.dataset.catoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/toggle",{ad_id:id,is_active:a}).then(()=>{toast(a?"Reklama yoqildi":"Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("Holatni o'zgartirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cadel]"))){ const id=Number(el.dataset.cadel); if(!confirm("Bu reklamani butunlay o'chirasizmi? Video fayl ham o'chadi.")) return; el.disabled=true; return apiPost("/api/admin-miniapp/course-ads/delete",{ad_id:id}).then(()=>{toast("Reklama o'chirildi");loadCourseAds();}).catch(()=>{toast("O'chirib bo'lmadi");el.disabled=false;}); }
       if((el=T("[data-cafilter]"))){ caFilter=el.dataset.cafilter; renderCaLangFilter(); renderCourseAds(); return; }
-      if((el=T("[data-psedit]"))) return editPromoSection(el.dataset.psedit);
-      if((el=T("[data-pstoggle]"))){ const id=Number(el.dataset.pstoggle), a=el.dataset.active==="1"; el.disabled=true; return apiPost("/api/admin-miniapp/promo-sections/toggle",{id,is_active:a}).then(()=>{toast(a?"Bo'lim yoqildi":"Bo'lim o'chirildi");loadPromoSections();}).catch(x=>{toast(apiErr(x,"Holatni o'zgartirib bo'lmadi"));el.disabled=false;}); }
-      if((el=T("[data-psdel]"))){ const id=Number(el.dataset.psdel); if(!confirm("Bu bo'lim butunlay o'chirilsinmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/promo-sections/delete",{id}).then(()=>{toast("Bo'lim o'chirildi");loadPromoSections();}).catch(x=>{toast(apiErr(x,"O'chirib bo'lmadi"));el.disabled=false;}); }
       if((el=T("[data-seg]"))){ state.filter=el.dataset.seg; renderDashboard(); renderUserFilters(); renderUsers(); switchTab("users"); return; }
       if((el=T("[data-period]"))){ state.statsPeriod=el.dataset.period||"all_time"; renderStatistics(); return; }
       if((el=T("[data-tab]"))) return switchTab(el.dataset.tab);
@@ -1342,15 +1290,13 @@
         if(n==="clear-search"){ $("search").value=""; state.search=""; state.remoteUsers=null; renderUsers(); return; }
         if(n==="copy-report") return copyReport();
         if(n==="upload-ca"){ $("caFile").click(); return; }
-        if(n==="save-ps") return submitPromoSection(el);
-        if(n==="reset-ps"){ resetPromoForm(); return; }
         if(n==="close-drawer") return closeDrawer();
       }
     });
 
     $("search").addEventListener("input",(e)=>{ state.search=e.target.value; clearTimeout(window.st); window.st=setTimeout(()=>remoteSearch(state.search),260); renderUsers(); });
     $("caFile").addEventListener("change",submitCourseAd);
-    $("psKind").addEventListener("change",psKindUI);
+    if($("caType")) $("caType").addEventListener("change",caTypeUI);
     document.addEventListener("keydown",(e)=>{ if(e.key==="Escape") closeDrawer(); });
 
     async function saveChannel(payload,btn){ if(btn) btn.disabled=true; try{ await apiPost("/api/admin-miniapp/channels/save",payload); await afterModule("Kanal sozlamasi saqlandi"); }catch(e){ toast(apiErr(e,"Kanal saqlanmadi")); if(btn) btn.disabled=false; } }
