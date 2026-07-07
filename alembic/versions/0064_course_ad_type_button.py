@@ -1,7 +1,7 @@
 """add ad_type + button_text to course ad creatives
 
 Revision ID: 0064_course_ad_type_button
-Revises: 0063_course_ad_media_backup
+Revises: 0064_course_promo_sections
 Create Date: 2026-07-07
 """
 
@@ -12,7 +12,7 @@ from alembic import op
 
 
 revision: str = "0064_course_ad_type_button"
-down_revision: Union[str, None] = "0063_course_ad_media_backup"
+down_revision: Union[str, None] = "0064_course_promo_sections"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
