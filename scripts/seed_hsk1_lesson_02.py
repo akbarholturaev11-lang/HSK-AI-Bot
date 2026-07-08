@@ -21,7 +21,7 @@ LESSON = {
     "intro_text": json.dumps({
         "uz": "Ikkinchi darsda siz xitoycha minnatdorchilik bildirish va xayrlashishni o'rganasiz. 4 ta yangi so'z, 3 ta dialog va neytral ton qoidalari.",
         "ru": "На втором уроке вы научитесь выражать благодарность и прощаться по-китайски. 4 новых слова, 3 диалога и правила нейтрального тона.",
-        "tj": "Дар дарси дуюм шумо сипосгузорӣ кардан ва хайр гуфтанро меомӯзед. 4 калимаи нав, 3 муколама ва қоидаҳои садои бетараф.",
+        "tj": "Дар дарси дуюм шумо сипосгузорӣ кардан ва хайр гуфтанро меомӯзед. 4 калимаи нав, 3 гуфтугӯ ва қоидаҳои садои бетараф.",
     }, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "谢谢",   "pinyin": "xièxie",  "pos": "v.",
@@ -208,7 +208,7 @@ LESSON = {
             "no": 1,
             "instruction_uz": "Quyidagi so'zlardan foydalanib 2 ta to'liq dialog yozing:",
             "instruction_ru": "Напишите 2 полных диалога, используя следующие слова:",
-            "instruction_tj": "Бо истифодаи калимаҳои зерин 2 муколамаи пурра нависед:",
+            "instruction_tj": "Бо истифодаи калимаҳои зерин 2 гуфтугӯи пурра нависед:",
             "words": ["谢谢", "不客气", "再见", "你好"],
             "example": "A: 你好！... A: 谢谢！B: 不客气！再见！B: 再见！",
         },

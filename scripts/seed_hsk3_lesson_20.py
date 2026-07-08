@@ -12,8 +12,8 @@ LESSON = {
     "lesson_order": 20,
     "lesson_code": "HSK3-L20",
     "title": json.dumps({"zh": "我被他影响了", "uz": "U meni ta'sirlantirdi", "ru": "Он повлиял на меня", "tj": "Вай ба ман таъсир кард"}, ensure_ascii=False),
-    "goal": json.dumps({"uz": "'被' passiv konstruktsiya, '只有…才…' shartli gap va '多么…啊' hayrat undalmasi", "ru": "Пассивная конструкция '被', условное '只有…才…' и восклицание '多么…啊'", "tj": "Сохтори пассивии '被', шартии '只有…才…' ва ندای тааҷубии '多么…啊'"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu oxirgi darsda '被'-konstruktsiyasi (passiv gap), '只有…才…' (faqatgina…bo'lganda) va '多么…啊' (qanchalik…!) hayrat iboralarini o'rganamiz.", "ru": "В этом последнем уроке мы изучим конструкцию '被' (пассивный залог), '只有…才…' (только когда…) и восклицательное выражение '多么…啊' (как …!).", "tj": "Дар ин дарси охирин мо сохтори '被' (замони маҷҳул), '只有…才…' (танҳо вақте ки…) ва ибораи тааҷубии '多么…啊' (чӣ қадар…!)-ро меомӯзем."}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "'被' passiv konstruktsiya, '只有…才…' shartli gap va '多么…啊' hayrat undalmasi", "ru": "Пассивная конструкция '被', условное '只有…才…' и восклицание '多么…啊'", "tj": "Сохти пассивии '被', шартии '只有…才…' ва ندای тааҷубии '多么…啊'"}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu oxirgi darsda '被'-konstruktsiyasi (passiv gap), '只有…才…' (faqatgina…bo'lganda) va '多么…啊' (qanchalik…!) hayrat iboralarini o'rganamiz.", "ru": "В этом последнем уроке мы изучим конструкцию '被' (пассивный залог), '只有…才…' (только когда…) и восклицательное выражение '多么…啊' (как …!).", "tj": "Дар ин дарси охирин мо сохти '被' (замони маҷҳул), '只有…才…' (танҳо вақте ки…) ва ибораи тааҷубии '多么…啊' (чӣ қадар…!)-ро меомӯзем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "影响", "pinyin": "yǐngxiǎng", "pos": "v/n", "uz": "ta'sir qilmoq; ta'sir", "ru": "влиять; влияние", "tj": "таъсир расондан; таъсир"},
         {"no": 2, "zh": "被", "pinyin": "bèi", "pos": "prep", "uz": "tomonidan (passiv belgisi)", "ru": "частица пассивного залога", "tj": "нишондиҳандаи замони маҷҳул"},
@@ -81,10 +81,10 @@ LESSON = {
             "title_zh": "被字句：被 + 施事者 + 动词（被动句）",
             "title_uz": "被-konstruktsiya: 被 + harakat bajaruvchi + fe'l (passiv gap)",
             "title_ru": "Конструкция 被: 被 + деятель + глагол (пассивный залог)",
-            "title_tj": "Сохтори 被: 被 + иҷрогар + феъл (замони маҷҳул)",
+            "title_tj": "Сохти 被: 被 + иҷрогар + феъл (замони маҷҳул)",
             "rule_uz": "'被'-konstruktsiya passiv gaplarni ifodalaydi. Tuzilma: sub'ekt (ob'ekt) + 被 + harakat bajaruvchi + fe'l. Ko'pincha noxush hodisalarda ishlatiladi, lekin ijobiy hodisalar uchun ham mumkin. Harakat bajaruvchi tushirilishi mumkin.",
             "rule_ru": "Конструкция '被' выражает пассивный залог. Структура: субъект (объект) + 被 + деятель + глагол. Часто используется при неприятных событиях, но возможна и для позитивных. Деятель может быть опущен.",
-            "rule_tj": "Сохтори '被' замони маҷҳулро ифода мекунад. Сохтор: мубтадо (объект) + 被 + иҷрогар + феъл. Зиёдтар дар ҳодисаҳои нохуш истифода мешавад, аммо барои мусбат ҳам мумкин. Иҷрогар партофта шавад мешавад.",
+            "rule_tj": "Сохти '被' замони маҷҳулро ифода мекунад. Сохт: мубтадо (объект) + 被 + иҷрогар + феъл. Зиёдтар дар ҳодисаҳои нохуш истифода мешавад, аммо барои мусбат ҳам мумкин. Иҷрогар партофта шавад мешавад.",
             "examples": [
                 {"zh": "我被他影响了！", "pinyin": "Wǒ bèi tā yǐngxiǎng le!", "uz": "U meni ta'sirlantirdi!", "ru": "Он повлиял на меня!", "tj": "Вай ба ман таъсир кард!"},
                 {"zh": "他被老师批评了。", "pinyin": "Tā bèi lǎoshī pīpíng le.", "uz": "Uni o'qituvchi tanqid qildi.", "ru": "Его покритиковал учитель.", "tj": "Вайро муаллим танқид кард."}
@@ -112,7 +112,7 @@ LESSON = {
             "title_tj": "Чӣ қадар……! (ҷумлаи тааҷубӣ)",
             "rule_uz": "'多么…啊！' tuzilmasi kuchli his-tuyg'u, hayrat yoki quvonchni ifodalaydi. Tuzilma: 多么 + sifat/holat + 啊！ Ingilizcha 'How …!' ga o'xshaydi. Og'zaki nutqda '啊' o'rniga '呀' ishlatilishi mumkin.",
             "rule_ru": "Конструкция '多么…啊！' выражает сильные эмоции, восхищение или радость. Структура: 多么 + прилагательное/состояние + 啊！ Похоже на английское 'How …!'. В разговорной речи '啊' может заменяться на '呀'.",
-            "rule_tj": "Сохтори '多么…啊！' эҳсосоти қавӣ, тааҷуб ё шодиро ифода мекунад. Сохтор: 多么 + сифат/ҳол + 啊！ Ба 'How …!'-и инглисӣ монанд. Дар забони гуфторӣ '啊' ба '呀' иваз шуда метавонад.",
+            "rule_tj": "Сохти '多么…啊！' эҳсосоти қавӣ, тааҷуб ё шодиро ифода мекунад. Сохт: 多么 + сифат/ҳол + 啊！ Ба 'How …!'-и инглисӣ монанд. Дар забони гуфторӣ '啊' ба '呀' иваз шуда метавонад.",
             "examples": [
                 {"zh": "多么美好的未来在等着你啊！", "pinyin": "Duōme měihǎo de wèilái zài děngzhe nǐ a!", "uz": "Qanchalik ajoyib kelajak sizi kutmoqda!", "ru": "Как прекрасное будущее тебя ждёт!", "tj": "Чӣ қадар ояндаи зебо шуморо интизор аст!"},
                 {"zh": "多么宝贵的经历啊！", "pinyin": "Duōme bǎoguì de jīnglì a!", "uz": "Qanchalik qimmatli tajriba!", "ru": "Как ценный опыт!", "tj": "Чӣ қадар таҷрибаи гаронбаҳо!"}
@@ -179,7 +179,7 @@ LESSON = {
         }
     ], ensure_ascii=False),
     "homework_json": json.dumps([
-        {"task_no": 1, "uz": "'被'-konstruktsiyasidan foydalanib, hayotingizda bo'lgan 3 ta hodisani passiv shaklda yozing (ijobiy va salbiy ikkalasini ham qo'shing).", "ru": "Используя конструкцию '被', напишите 3 события из вашей жизни в пассивном залоге (включите и положительные, и отрицательные).", "tj": "Бо сохтори '被' 3 ҳодисаи ҳаётиатонро ба шакли маҷҳул нависед (ҳам мусбат ва ҳам манфӣ илова кунед)."},
+        {"task_no": 1, "uz": "'被'-konstruktsiyasidan foydalanib, hayotingizda bo'lgan 3 ta hodisani passiv shaklda yozing (ijobiy va salbiy ikkalasini ham qo'shing).", "ru": "Используя конструкцию '被', напишите 3 события из вашей жизни в пассивном залоге (включите и положительные, и отрицательные).", "tj": "Бо сохти '被' 3 ҳодисаи ҳаётиатонро ба шакли маҷҳул нависед (ҳам мусбат ва ҳам манфӣ илова кунед)."},
         {"task_no": 2, "uz": "'只有…才…' va '多么…啊！' iboralarini ishlatib, o'z hayotiy tajribangiz haqida 3 ta jumla yozing va kurs davomida o'rgangan eng muhim narsani yozing.", "ru": "Напишите 3 предложения о вашем жизненном опыте с '只有…才…' и '多么…啊！', а также напишите самое важное, что узнали за этот курс.", "tj": "3 ҷумла дар бораи таҷрибаи ҳаётиатон бо '只有…才…' ва '多么…啊！' нависед ва муҳимтарин чизеро ки дар ин курс омӯхтед нависед."}
     ], ensure_ascii=False),
     "is_active": True

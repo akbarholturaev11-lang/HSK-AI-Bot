@@ -13,7 +13,7 @@ LESSON = {
     "lesson_code": "HSK3-L13",
     "title": json.dumps({"zh": "我是走回来的", "uz": "Men piyoda qaytib keldim", "ru": "Я вернулся пешком", "tj": "Ман пиёда баргаштам"}, ensure_ascii=False),
     "goal": json.dumps({"uz": "Murakkab yo'nalish to'ldiruvchisi, 'bir vaqtda ikki ish' va '是……的' ta'kidlovchi gaplar", "ru": "Сложные направленные дополнения, 'два действия одновременно' и выделительная конструкция '是……的'", "tj": "Пуркунандаи самти мураккаб, 'ду амал ҳамзамон' ва ҷумлаи таъкидии '是……的'"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda murakkab yo'nalish to'ldiruvchilarini (回来、过去、进来 kabilar), '一边…一边…' tuzilmasini va o'tmishdagi harakatni ta'kidlovchi '是……的' gaplarini o'rganamiz.", "ru": "В этом уроке мы изучим сложные направленные дополнения (回来、过去、进来 и другие), конструкцию '一边…一边…' и выделительную конструкцию '是……的' для акцентирования в прошлом.", "tj": "Дар ин дарс мо пуркунандаҳои мураккаби самтӣ (回来、过去、进来 ва ғайра), сохтори '一边…一边…' ва ҷумлаи таъкидии '是……的' барои таъкид дар гузаштаро меомӯзем."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda murakkab yo'nalish to'ldiruvchilarini (回来、过去、进来 kabilar), '一边…一边…' tuzilmasini va o'tmishdagi harakatni ta'kidlovchi '是……的' gaplarini o'rganamiz.", "ru": "В этом уроке мы изучим сложные направленные дополнения (回来、过去、进来 и другие), конструкцию '一边…一边…' и выделительную конструкцию '是……的' для акцентирования в прошлом.", "tj": "Дар ин дарс мо пуркунандаҳои мураккаби самтӣ (回来、过去、进来 ва ғайра), сохти '一边…一边…' ва ҷумлаи таъкидии '是……的' барои таъкид дар гузаштаро меомӯзем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "走", "pinyin": "zǒu", "pos": "v", "uz": "yurmoq, piyoda bormoq", "ru": "ходить, идти пешком", "tj": "рафтан, пиёда рафтан"},
         {"no": 2, "zh": "回来", "pinyin": "huí lái", "pos": "v", "uz": "qaytib kelmoq", "ru": "вернуться", "tj": "баргаштан"},
@@ -98,7 +98,7 @@ LESSON = {
             "title_tj": "Ҳамзамон A ва B кардан",
             "rule_uz": "'一边…一边…' tuzilmasi ikki harakatning bir vaqtda bajarilishini bildiradi. Ikki fe'l ham bir xil sub'ektga tegishli bo'lishi kerak. Masalan: 一边听音乐一边看书 = musiqa tinglab kitob o'qimoq.",
             "rule_ru": "Конструкция '一边…一边…' выражает два действия, выполняемых одновременно. Оба глагола относятся к одному подлежащему. Например: 一边听音乐一边看书 = слушать музыку и читать книгу одновременно.",
-            "rule_tj": "Сохтори '一边…一边…' ду амали ҳамзаманро ифода мекунад. Ҳарду феъл ба як мубтадо тааллуқ доранд. Масалан: 一边听音乐一边看书 = ҳамзамон мусиқӣ гӯш кардан ва китоб хондан.",
+            "rule_tj": "Сохти '一边…一边…' ду амали ҳамзаманро ифода мекунад. Ҳарду феъл ба як мубтадо тааллуқ доранд. Масалан: 一边听音乐一边看书 = ҳамзамон мусиқӣ гӯш кардан ва китоб хондан.",
             "examples": [
                 {"zh": "我喜欢一边听音乐一边做作业。", "pinyin": "Wǒ xǐhuān yībiān tīng yīnyuè yībiān zuò zuòyè.", "uz": "Men musiqa tinglab uy vazifasini yaxshi ko'raman.", "ru": "Мне нравится слушать музыку и одновременно делать домашнее задание.", "tj": "Ман дӯст медорам ҳамзамон мусиқӣ гӯш кунам ва вазифаи хонагиро анҷом диҳам."},
                 {"zh": "他一边唱歌一边跳舞。", "pinyin": "Tā yībiān chànggē yībiān tiàowǔ.", "uz": "U qo'shiq ayta turib raqsga tushmoqda.", "ru": "Он поёт и одновременно танцует.", "tj": "Вай ҳамзамон суруд мехонад ва рақс мекунад."}
@@ -112,7 +112,7 @@ LESSON = {
             "title_tj": "是……的 (таъкид бар усул/вақт/ҷойи амали гузашта)",
             "rule_uz": "'是……的' tuzilmasi o'tgan vaqtda yuz bergan harakatning QANday (usul), QACHON (vaqt) yoki QAERDA (joy) bo'lganini ta'kidlash uchun ishlatiladi. Ob'ekt ko'pincha 的 bilan 是 o'rtasida keladi.",
             "rule_ru": "Конструкция '是……的' используется для акцентирования КАК (способ), КОГДА (время) или ГДЕ (место) произошло прошлое действие. Объект часто стоит между 的 и 是.",
-            "rule_tj": "Сохтори '是……的' барои таъкид бар ЧӢ ТАВРа (усул), КАЙ (вақт) ё ДАР КУҶо (ҷой) рух додани амали гузашта истифода мешавад. Объект аксаран байни 的 ва 是 меояд.",
+            "rule_tj": "Сохти '是……的' барои таъкид бар ЧӢ ТАВРа (усул), КАЙ (вақт) ё ДАР КУҶо (ҷой) рух додани амали гузашта истифода мешавад. Объект аксаран байни 的 ва 是 меояд.",
             "examples": [
                 {"zh": "我是走回来的。", "pinyin": "Wǒ shì zǒu huílái de.", "uz": "Men piyoda qaytib keldim. (usul ta'kidlangan)", "ru": "Я вернулся пешком. (акцент на способ)", "tj": "Ман пиёда баргаштам. (таъкид бар усул)"},
                 {"zh": "你是什么时候到的？", "pinyin": "Nǐ shì shénme shíhou dào de?", "uz": "Siz qachon keldingiz? (vaqt ta'kidlangan)", "ru": "Когда ты прибыл? (акцент на время)", "tj": "Шумо кай расидед? (таъкид бар вақт)"}

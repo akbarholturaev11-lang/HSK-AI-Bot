@@ -1138,7 +1138,7 @@ VOCAB_TJ = _translation_map_from_lines(VOCAB_UZ, """
 холӣ
 қуттӣ
 партофтан
-ба воситаи, тавассути
+ба воситаи, бо ёрии
 суръат
 Замин, кураи замин
 модом ки, азбаски
@@ -1647,7 +1647,7 @@ GRAMMAR_DETAILS = {
         "title_tj": "再……也…… - ҳар қадар ... ҳам",
         "rule_uz": "'再……也……' yon berish ma'nosidagi shartli qolip. '再' dan keyin fe'l, sifat yoki gap keladi; ma'nosi 'qanchalik ... bo'lsa ham, natija o'zgarmaydi'.",
         "rule_ru": "Конструкция '再……也……' выражает уступку: после '再' ставится глагол, прилагательное или фраза; значение - 'как бы ни..., всё равно...'.",
-        "rule_tj": "Сохтори '再……也……' маънои гузашт/эътироф дорад: пас аз '再' феъл, сифат ё ҷумла меояд; маънояш 'ҳар қадар ... ҳам, натиҷа тағйир намеёбад'.",
+        "rule_tj": "Сохти '再……也……' маънои гузашт/эътироф дорад: пас аз '再' феъл, сифат ё ҷумла меояд; маънояш 'ҳар қадар ... ҳам, натиҷа тағйир намеёбад'.",
     },
     "对于": {
         "title_uz": "对于 - ...ga nisbatan, ...haqida",
@@ -1711,7 +1711,7 @@ GRAMMAR_DETAILS = {
         "title_tj": "随着 - бо гузашти/бо тағйири..., ҳамроҳ бо",
         "rule_uz": "'随着' bir o'zgarish ikkinchi o'zgarish bilan birga borishini bildiradi. Tuzilish: 随着 + holat/o'zgarish, keyingi natija.",
         "rule_ru": "'随着' показывает, что одно изменение происходит вместе с другим. Структура: 随着 + ситуация/изменение, затем результат.",
-        "rule_tj": "'随着' нишон медиҳад, ки як тағйирот ҳамроҳ бо тағйироти дигар рӯй медиҳад. Сохтор: 随着 + ҳолат/тағйирот, баъд натиҷа.",
+        "rule_tj": "'随着' нишон медиҳад, ки як тағйирот ҳамроҳ бо тағйироти дигар рӯй медиҳад. Сохт: 随着 + ҳолат/тағйирот, баъд натиҷа.",
     },
     "够": {
         "title_uz": "够 - yetarli, ancha",
@@ -2207,7 +2207,7 @@ def _exercise_json(order: int) -> str:
                 "type": "fill_blank",
                 "instruction_uz": "Kitob dialoglaridan olingan gaplarda bo'sh joyni to'ldiring:",
                 "instruction_ru": "Заполните пропуски в предложениях из диалогов учебника:",
-                "instruction_tj": "Ҷойҳои холиро дар ҷумлаҳои муколамаҳои китоб пур кунед:",
+                "instruction_tj": "Ҷойҳои холиро дар ҷумлаҳои гуфтугӯҳои китоб пур кунед:",
                 "items": blank_items,
             }
         )
@@ -2276,7 +2276,7 @@ def _grammar_json(order: int) -> str:
                 "title_tj": title,
                 "rule_uz": "Kitobdagi grammatika nuqtasi. Dars dialoglaridagi qo'llanishini qayta o'qing.",
                 "rule_ru": "Грамматический пункт из учебника. Перечитайте его употребление в диалогах урока.",
-                "rule_tj": "Нуқтаи грамматикии китоб. Истифодаи онро дар муколамаҳои дарс дубора хонед.",
+                "rule_tj": "Нуқтаи грамматикии китоб. Истифодаи онро дар гуфтугӯҳои дарс дубора хонед.",
                 "examples": examples,
             }
         )
@@ -2302,7 +2302,7 @@ def _homework_json(order: int) -> str:
                 "no": 2,
                 "instruction_uz": "Kitobdagi dialoglardan bittasini tanlab, mazmunini 4-5 gap bilan o'zbekcha yozing.",
                 "instruction_ru": "Выберите один диалог из учебника и кратко перескажите его по-русски в 4-5 предложениях.",
-                "instruction_tj": "Яке аз муколамаҳои китобро интихоб карда, мазмунашро бо 4-5 ҷумла ба тоҷикӣ нависед.",
+                "instruction_tj": "Яке аз гуфтугӯҳои китобро интихоб карда, мазмунашро бо 4-5 ҷумла ба тоҷикӣ нависед.",
                 "topic_uz": SCENE_UZ.get(scene, scene),
                 "topic_ru": SCENE_RU.get(scene, scene),
                 "topic_tj": SCENE_TJ.get(scene, scene),
@@ -2311,7 +2311,7 @@ def _homework_json(order: int) -> str:
                 "no": 3,
                 "instruction_uz": "Dars mavzusida qisqa dialog yozing. Kamida 6 ta yangi so'z ishlating.",
                 "instruction_ru": "Напишите короткий диалог по теме урока. Используйте минимум 6 новых слов.",
-                "instruction_tj": "Дар мавзӯи дарс муколамаи кӯтоҳ нависед. Камаш 6 калимаи навро истифода баред.",
+                "instruction_tj": "Дар мавзӯи дарс гуфтугӯи кӯтоҳ нависед. Камаш 6 калимаи навро истифода баред.",
                 "topic_uz": title,
                 "topic_ru": title,
                 "topic_tj": title,

@@ -14,7 +14,7 @@ LESSON = {
     "lesson_code": "HSK2-L10",
     "title": "别找了，手机在桌子上呢",
     "goal": json.dumps({"uz": "Buyruq gaplarini ('别……了'), 'duì' old ko'makchisini va 'zhèngzài' davom ko'rsatkichini ishlatishni o'rganish.", "ru": "Научиться использовать побудительные предложения ('别……了'), предлог 'duì' и показатель продолжения 'zhèngzài'.", "tj": "Омӯзиши истифодаи ҷумлаҳои фармоишӣ ('别……了'), пешоянди 'duì' ва нишондиҳандаи давомнокии 'zhèngzài'."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda biz birovga biror narsani to'xtatishni aytish, sog'liq va kundalik hayot mavzularida gaplashishni o'rganamiz. 'Bié……le' (…qilma) va 'búyào……le' (…qilma) konstruktsiyalari orqali buyruq gaplari, shuningdek 'duì' old ko'makchisi bilan foydali iboralar hosil qilamiz.", "ru": "В этом уроке мы учимся говорить кому-то прекратить что-либо, общаться на темы здоровья и повседневной жизни. Формируем побудительные предложения через конструкции 'bié……le' (не делай) и 'búyào……le' (не делай), а также полезные выражения с предлогом 'duì'.", "tj": "Дар ин дарс мо ёд мегирем, ки ба касе гӯем, ки чизеро қатъ кунад, дар бораи саломатӣ ва ҳаёти рӯзмарра гап занем. Тавассути сохторҳои 'bié……le' (накун) ва 'búyào……le' (накун) ҷумлаҳои фармоишӣ, инчунин ибораҳои фоиданок бо пешоянди 'duì' месозем."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda biz birovga biror narsani to'xtatishni aytish, sog'liq va kundalik hayot mavzularida gaplashishni o'rganamiz. 'Bié……le' (…qilma) va 'búyào……le' (…qilma) konstruktsiyalari orqali buyruq gaplari, shuningdek 'duì' old ko'makchisi bilan foydali iboralar hosil qilamiz.", "ru": "В этом уроке мы учимся говорить кому-то прекратить что-либо, общаться на темы здоровья и повседневной жизни. Формируем побудительные предложения через конструкции 'bié……le' (не делай) и 'búyào……le' (не делай), а также полезные выражения с предлогом 'duì'.", "tj": "Дар ин дарс мо ёд мегирем, ки ба касе гӯем, ки чизеро қатъ кунад, дар бораи саломатӣ ва ҳаёти рӯзмарра гап занем. Бо ёрии сохтҳои 'bié……le' (накун) ва 'búyào……le' (накун) ҷумлаҳои фармоишӣ, инчунин ибораҳои фоиданок бо пешоянди 'duì' месозем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "课",   "pinyin": "kè",       "pos": "n.",    "uz": "dars, mashg'ulot",                         "ru": "урок, занятие",                            "tj": "дарс, машғулот"},
         {"no": 2, "zh": "帮助", "pinyin": "bāngzhù",  "pos": "v.",    "uz": "yordam bermoq",                            "ru": "помогать",                                 "tj": "кӯмак кардан"},
@@ -134,7 +134,7 @@ LESSON = {
             ),
             "rule_tj": (
                 "Пешоянди '对' маъноии 'барои, нисбат ба'-ро медиҳад.\n"
-                "Дар сохтори 'A 对 B (有) C': A барои B (таъсир дорад/хуб аст/бад аст).\n"
+                "Дар сохти 'A 对 B (有) C': A барои B (таъсир дорад/хуб аст/бад аст).\n"
                 "Масалан: 看电视对眼睛不好 (тамошои телевизор барои чашм зиёновар аст)."
             ),
             "examples": [
@@ -164,7 +164,7 @@ LESSON = {
                 "Зарфи '正在' пеш аз феъл меояд ва нишон медиҳад амал айни ҳол ҷараён дорад.\n"
                 "Ба 'am/is/are …-ing' дар забони англисӣ монанд аст.\n"
                 "Агар дар охири ҷумла зарраи '呢' илова шавад, ҷараёни ҳолат бештар таъкид мешавад.\n"
-                "Сохтор: 正在 + феъл (+呢). Инчунин: 在 + феъл ё феъл + 着 + 呢 истифода мешавад."
+                "Сохт: 正在 + феъл (+呢). Инчунин: 在 + феъл ё феъл + 着 + 呢 истифода мешавад."
             ),
             "examples": [
                 {"zh": "妈妈正在准备午饭呢！", "pinyin": "Māma zhèngzài zhǔnbèi wǔfàn ne!", "uz": "Ona hozir tushlikni tayyorlayapti!", "ru": "Мама сейчас готовит обед!", "tj": "Модар ҳоло нисфирӯзиро тайёр мекунад!"},

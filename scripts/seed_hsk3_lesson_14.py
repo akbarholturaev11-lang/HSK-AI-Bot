@@ -12,7 +12,7 @@ LESSON = {
     "lesson_order": 14,
     "lesson_code": "HSK3-L14",
     "title": json.dumps({"zh": "你把水果拿过来", "uz": "Mevalarni olib keling", "ru": "Принеси фрукты сюда", "tj": "Меваҳоро ин ҷо биёр"}, ensure_ascii=False),
-    "goal": json.dumps({"uz": "'把'-konstruktsiyasi 3-qism (natija/yo'nalish to'ldiruvchisi bilan), 'avval...keyin...so'ng...' va 'xuddi...kabi' iboralari", "ru": "Конструкция '把' часть 3 (с результатным/направленным дополнением), 'сначала...потом...затем...' и 'как/словно'", "tj": "Сохтори '把' қисми 3 (бо пуркунандаи натиҷа/самт), 'аввал...баъд...пас...' ва 'монанди...' "}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "'把'-konstruktsiyasi 3-qism (natija/yo'nalish to'ldiruvchisi bilan), 'avval...keyin...so'ng...' va 'xuddi...kabi' iboralari", "ru": "Конструкция '把' часть 3 (с результатным/направленным дополнением), 'сначала...потом...затем...' и 'как/словно'", "tj": "Сохти '把' қисми 3 (бо пуркунандаи натиҷа/самт), 'аввал...баъд...пас...' ва 'монанди...' "}, ensure_ascii=False),
     "intro_text": json.dumps({"uz": "Bu darsda '把'-konstruktsiyasining natija yoki yo'nalish to'ldiruvchisi bilan qo'llanishini, 'Avval…Keyin/Yana…So'ng' ketma-ketlik ifodasini va 'xuddi…kabi' taqqoslash iborasini o'rganamiz.", "ru": "В этом уроке мы изучим '把' с результатным/направленным дополнением, последовательность 'сначала…потом/снова…затем' и сравнительное выражение 'как/словно…'.", "tj": "Дар ин дарс мо '把' бо пуркунандаи натиҷа/самт, пайдарпаии 'аввал…баъд/боз…пас' ва ибораи муқоисавии 'монанди…'-ро меомӯзем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "水果", "pinyin": "shuǐguǒ", "pos": "n", "uz": "meva", "ru": "фрукты", "tj": "мева"},
@@ -81,10 +81,10 @@ LESSON = {
             "title_zh": "把字句③：把 + O + V + 结果补语/趋向补语",
             "title_uz": "把-konstruktsiyasi③: 把 + OB + F + natija/yo'nalish to'ldiruvchisi",
             "title_ru": "Конструкция 把③: 把 + объект + Гл + результатное/направленное дополнение",
-            "title_tj": "Сохтори 把③: 把 + объект + Ф + пуркунандаи натиҷа/самт",
+            "title_tj": "Сохти 把③: 把 + объект + Ф + пуркунандаи натиҷа/самт",
             "rule_uz": "'把'-konstruktsiyasida fe'ldan keyin natija to'ldiruvchisi (好、完、干净、成 kabi) yoki yo'nalish to'ldiruvchisi (过来、过去、进来 kabi) keladi. Bu harakatning natijasini yoki yo'nalishini ta'kidlaydi.",
             "rule_ru": "В конструкции '把' после глагола следует результатное дополнение (好、完、干净、成 и т.д.) или направленное дополнение (过来、过去、进来 и т.д.). Это акцентирует результат или направление действия.",
-            "rule_tj": "Дар сохтори '把' баъди феъл пуркунандаи натиҷа (好、完、干净、成 ва ғайра) ё пуркунандаи самт (过来、过去、进来 ва ғайра) меояд. Ин натиҷа ё самти амалро таъкид мекунад.",
+            "rule_tj": "Дар сохти '把' баъди феъл пуркунандаи натиҷа (好、完、干净、成 ва ғайра) ё пуркунандаи самт (过来、过去、进来 ва ғайра) меояд. Ин натиҷа ё самти амалро таъкид мекунад.",
             "examples": [
                 {"zh": "把苹果洗干净了！", "pinyin": "Bǎ píngguǒ xǐ gānjìng le!", "uz": "Olmani yaxshilab yuvib!", "ru": "Тщательно помой яблоки!", "tj": "Себро хуб бишӯй!"},
                 {"zh": "你把水果拿过来。", "pinyin": "Nǐ bǎ shuǐguǒ ná guò lái.", "uz": "Mevalarni bu yerga olib keling.", "ru": "Принеси фрукты сюда.", "tj": "Меваҳоро ин ҷо биёр."}
@@ -98,7 +98,7 @@ LESSON = {
             "title_tj": "Аввал……баъд/боз……сипас……",
             "rule_uz": "'先…再…然后…' tuzilmasi bir nechta harakatning ketma-ketligini bildiradi. '先' = avval, '再' = keyin (shu sub'ekt bajaradi), '然后' = so'ng, keyingi qadam. '先…再…' = A dan keyin B.",
             "rule_ru": "Конструкция '先…再…然后…' выражает последовательность нескольких действий. '先' = сначала, '再' = потом (тот же субъект), '然后' = затем, следующий шаг. '先…再…' = A, потом B.",
-            "rule_tj": "Сохтори '先…再…然后…' пайдарпаии чанд амалро ифода мекунад. '先' = аввал, '再' = баъд (ҳамон мубтадо), '然后' = сипас, қадами навбатӣ. '先…再…' = A, баъд B.",
+            "rule_tj": "Сохти '先…再…然后…' пайдарпаии чанд амалро ифода мекунад. '先' = аввал, '再' = баъд (ҳамон мубтадо), '然后' = сипас, қадами навбатӣ. '先…再…' = A, баъд B.",
             "examples": [
                 {"zh": "先把肉切了，再放油，然后加蔬菜。", "pinyin": "Xiān bǎ ròu qiē le, zài fàng yóu, ránhòu jiā shūcài.", "uz": "Avval go'shtni kesing, keyin yog' soling, so'ng sabzavot qo'shing.", "ru": "Сначала нарежьте мясо, потом добавьте масло, затем положите овощи.", "tj": "Аввал гӯштро буред, баъд равған рехта, сипас сабзавот илова кунед."},
                 {"zh": "先洗手，再吃饭。", "pinyin": "Xiān xǐ shǒu, zài chī fàn.", "uz": "Avval qo'l yuvib, keyin ovqat ye.", "ru": "Сначала вымой руки, потом ешь.", "tj": "Аввал дастро бишӯй, баъд хӯрок бихӯр."}
@@ -112,7 +112,7 @@ LESSON = {
             "title_tj": "Ба монанди……（муқоиса/тавсиф）",
             "rule_uz": "'像…一样' tuzilmasi ikki narsani taqqoslash yoki o'xshatish uchun ishlatiladi. '像+narsA+一样+sifat/fe'l'. 'A跟B一样' bilan o'xshash, lekin ko'proq tasvir uchun ishlatiladi.",
             "rule_ru": "Конструкция '像…一样' используется для сравнения двух вещей или описания. '像+предметA+一样+прилагательное/глагол'. Похоже на 'A跟B一样', но чаще используется для описания.",
-            "rule_tj": "Сохтори '像…一样' барои муқоисаи ду чиз ё тавсиф истифода мешавад. '像+чизиА+一样+сифат/феъл'. Ба 'A跟B一样' монанд аст, аммо бештар барои тавсиф истифода мешавад.",
+            "rule_tj": "Сохти '像…一样' барои муқоисаи ду чиз ё тавсиф истифода мешавад. '像+чизиА+一样+сифат/феъл'. Ба 'A跟B一样' монанд аст, аммо бештар барои тавсиф истифода мешавад.",
             "examples": [
                 {"zh": "像你这样做，肯定很好吃！", "pinyin": "Xiàng nǐ zhèyàng zuò, kěndìng hěn hǎochī!", "uz": "Sizning usulda pishirsam, albatta juda mazali bo'ladi!", "ru": "Если готовить так, как ты, обязательно будет вкусно!", "tj": "Агар ба монанди шумо пазем, албатта хеле хушмаза мешавад!"},
                 {"zh": "她唱歌像专业歌手一样好。", "pinyin": "Tā chànggē xiàng zhuānyè gēshǒu yīyàng hǎo.", "uz": "U qo'shiq aytishi professional qo'shiqchi kabi yaxshi.", "ru": "Она поёт так же хорошо, как профессиональный певец.", "tj": "Вай суруд хондани профессионал хонандаро монанд хуб аст."}

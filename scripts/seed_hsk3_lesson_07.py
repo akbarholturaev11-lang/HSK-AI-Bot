@@ -84,7 +84,7 @@ LESSON = {
             "title_tj": "Ифодаи давомнокии вақт: Ф + 了 + муддат + 了",
             "rule_uz": "Biror harakat qancha davom etganini bildirishda 'V + 了 + vaqt davomiyligi + 了' tuzilmasi ishlatiladi. Birinchi 了 harakatning tugaganini, ikkinchisi hozirgi holatni bildiradi.",
             "rule_ru": "Для выражения продолжительности действия используется конструкция 'Гл + 了 + период времени + 了'. Первое 了 обозначает завершённость действия, второе — текущее состояние.",
-            "rule_tj": "Барои ифодаи давомнокии амал сохтори 'Ф + 了 + муддати вақт + 了' истифода мешавад. Аввалин 了 тамомшавии амалро, дуввумаш ҳолати кунуниро нишон медиҳад.",
+            "rule_tj": "Барои ифодаи давомнокии амал сохти 'Ф + 了 + муддати вақт + 了' истифода мешавад. Аввалин 了 тамомшавии амалро, дуввумаш ҳолати кунуниро нишон медиҳад.",
             "examples": [
                 {"zh": "我们认识五年了。", "pinyin": "Wǒmen rènshi wǔ nián le.", "uz": "Biz tanishganimizga besh yil bo'ldi.", "ru": "Мы знакомы уже пять лет.", "tj": "Мо панҷ сол боз ошно ҳастем."},
                 {"zh": "他在银行工作三年了。", "pinyin": "Tā zài yínháng gōngzuò sān nián le.", "uz": "U bankda uch yildan beri ishlaydi.", "ru": "Он работает в банке уже три года.", "tj": "Вай се сол боз дар бонк кор мекунад."}
@@ -98,7 +98,7 @@ LESSON = {
             "title_tj": "Ба … шавқ доштан",
             "rule_uz": "'对……感兴趣' - biror narsaga qiziqishni ifodalash uchun ishlatiladi. '对' + ob'ekt + '感兴趣' tuzilmasi mavjud. '特别感兴趣' esa 'ayniqsa qiziqish' ma'nosini beradi.",
             "rule_ru": "'对……感兴趣' используется для выражения интереса к чему-либо. Структура: '对' + объект + '感兴趣'. '特别感兴趣' означает 'особенно интересоваться'.",
-            "rule_tj": "'对……感兴趣' барои ифодаи шавқ ба чизе истифода мешавад. Сохтор: '对' + объект + '感兴趣'. '特别感兴趣' маънои 'хусусан шавқ доштан'-ро дорад.",
+            "rule_tj": "'对……感兴趣' барои ифодаи шавқ ба чизе истифода мешавад. Сохт: '对' + объект + '感兴趣'. '特别感兴趣' маънои 'хусусан шавқ доштан'-ро дорад.",
             "examples": [
                 {"zh": "我对音乐很感兴趣。", "pinyin": "Wǒ duì yīnyuè hěn gǎn xìngqù.", "uz": "Men musiqaga juda qiziqaman.", "ru": "Мне очень интересна музыка.", "tj": "Ман ба мусиқӣ хеле шавқ дорам."},
                 {"zh": "她对历史特别感兴趣。", "pinyin": "Tā duì lìshǐ tèbié gǎn xìngqù.", "uz": "U tarixga ayniqsa qiziqadi.", "ru": "Она особенно интересуется историей.", "tj": "Вай ба таърих хусусан шавқ дорад."}
@@ -179,7 +179,7 @@ LESSON = {
         }
     ], ensure_ascii=False),
     "homework_json": json.dumps([
-        {"task_no": 1, "uz": "Bugun tanishingiz bilan qancha vaqtdan beri tanishligingizni aytib, 5 ta gap tuzing (V+了+vaqt+了 tuzilmasini ishlating).", "ru": "Составьте 5 предложений о том, как долго вы знакомы с кем-то, используя конструкцию V+了+период+了.", "tj": "5 ҷумла тартиб диҳед, ки чанд муддат боз бо касе ошно ҳастед (сохтори V+了+муддат+了 истифода баред)."},
+        {"task_no": 1, "uz": "Bugun tanishingiz bilan qancha vaqtdan beri tanishligingizni aytib, 5 ta gap tuzing (V+了+vaqt+了 tuzilmasini ishlating).", "ru": "Составьте 5 предложений о том, как долго вы знакомы с кем-то, используя конструкцию V+了+период+了.", "tj": "5 ҷумла тартиб диҳед, ки чанд муддат боз бо касе ошно ҳастед (сохти V+了+муддат+了 истифода баред)."},
         {"task_no": 2, "uz": "'对……感兴趣' tuzilmasidan foydalanib, o'z qiziqishlaringiz haqida 3 ta gap yozing va soat vaqtlarini ham qo'shing.", "ru": "Напишите 3 предложения о своих интересах, используя '对……感兴趣', и добавьте обозначения времени (半/刻/差).", "tj": "3 ҷумла дар бораи шавқҳои худ бо '对……感兴趣' нависед ва нишондоди вақт (半/刻/差) ҳам илова кунед."}
     ], ensure_ascii=False),
     "is_active": True

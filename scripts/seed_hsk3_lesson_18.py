@@ -84,7 +84,7 @@ LESSON = {
             "title_tj": "Танҳо агар……пас……",
             "rule_uz": "'只要…就…' tuzilmasi shartni ifodalaydi, lekin '如果' dan farqli ravishda '只要' = 'faqat shu shart bajarilsa bo'ladi, boshqa narsa kerak emas' ma'nosini bildiradi. Yengilroq va optimistik shart.",
             "rule_ru": "Конструкция '只要…就…' выражает условие, но в отличие от '如果', '只要' = 'достаточно выполнить только это условие, ничего другого не нужно'. Более лёгкое и оптимистичное условие.",
-            "rule_tj": "Сохтори '只要…就…' шартро ифода мекунад, аммо баръакси '如果', '只要' = 'танҳо ин шарт иҷро шавад, дигар ҳеҷ чиз лозим нест' маъно медиҳад. Шарти осонтар ва хушбинонатар.",
+            "rule_tj": "Сохти '只要…就…' шартро ифода мекунад, аммо баръакси '如果', '只要' = 'танҳо ин шарт иҷро шавад, дигар ҳеҷ чиз лозим нест' маъно медиҳад. Шарти осонтар ва хушбинонатар.",
             "examples": [
                 {"zh": "只要你努力，就能成功！", "pinyin": "Zhǐyào nǐ nǔlì, jiù néng chénggōng!", "uz": "Faqat harakat qilsangiz, muvaffaqiyat qozonasiz!", "ru": "Только старайся, и добьёшься успеха!", "tj": "Танҳо кӯшиш кунед, муваффақ мешавед!"},
                 {"zh": "只要大家参加，活动就会成功！", "pinyin": "Zhǐyào dàjiā cānjiā, huódòng jiù huì chénggōng!", "uz": "Faqat hamma qatnashsa, tadbir muvaffaqiyatli bo'ladi!", "ru": "Только бы все участвовали, мероприятие будет успешным!", "tj": "Танҳо ҳама иштирок кунанд, тадбир муваффақ мешавад!"}
@@ -98,7 +98,7 @@ LESSON = {
             "title_tj": "Пешоянди '关于' (关于 + исм + ...)",
             "rule_uz": "'关于' = haqida, to'g'risida. Tuzilma: 关于 + mavzu + gapning qolgan qismi. Gap boshida yoki sub'ektdan keyin kelishi mumkin. Ingilizcha 'about / regarding' ga o'xshaydi.",
             "rule_ru": "'关于' = о, насчёт, относительно. Структура: 关于 + тема + остаток предложения. Может стоять в начале предложения или после подлежащего. Похоже на английское 'about / regarding'.",
-            "rule_tj": "'关于' = дар бораи, оид ба. Сохтор: 关于 + мавзӯ + қисми боқии ҷумла. Дар аввали ҷумла ё баъди мубтадо омада метавонад. Ба 'about / regarding'-и инглисӣ монанд аст.",
+            "rule_tj": "'关于' = дар бораи, оид ба. Сохт: 关于 + мавзӯ + қисми боқии ҷумла. Дар аввали ҷумла ё баъди мубтадо омада метавонад. Ба 'about / regarding'-и инглисӣ монанд аст.",
             "examples": [
                 {"zh": "关于这次活动，你有什么想法？", "pinyin": "Guānyú zhè cì huódòng, nǐ yǒu shénme xiǎngfǎ?", "uz": "Bu tadbir haqida qanday fikrlaringiz bor?", "ru": "Насчёт этого мероприятия, какие у тебя мысли?", "tj": "Дар бораи ин тадбир, чӣ фикр доред?"},
                 {"zh": "我写了一篇关于健康的文章。", "pinyin": "Wǒ xiě le yī piān guānyú jiànkāng de wénzhāng.", "uz": "Men sog'liq haqida bir maqola yozdim.", "ru": "Я написал статью о здоровье.", "tj": "Ман мақолае дар бораи саломатӣ навиштам."}
@@ -112,7 +112,7 @@ LESSON = {
             "title_tj": "На танҳо……балки ҳам……",
             "rule_uz": "'不但…而且…' tuzilmasi ikkita ijobiy holatni kuchaytirib bog'laydi. '不但' = nafaqat, '而且' = balki ham. Birinchi jumladan ikkinchisi yanada kuchli yoki qo'shimcha ma'no qo'shadi.",
             "rule_ru": "Конструкция '不但…而且…' усиленно соединяет два положительных факта. '不但' = не только, '而且' = но и. Второе предложение добавляет ещё более сильный или дополнительный смысл.",
-            "rule_tj": "Сохтори '不但…而且…' ду ҳолати мусбатро бо таъкид мепайвандад. '不但' = на танҳо, '而且' = балки ҳам. Ҷумлаи дуввум маъноеро ҳам қавитар ё иловагӣ илова мекунад.",
+            "rule_tj": "Сохти '不但…而且…' ду ҳолати мусбатро бо таъкид мепайвандад. '不但' = на танҳо, '而且' = балки ҳам. Ҷумлаи дуввум маъноеро ҳам қавитар ё иловагӣ илова мекунад.",
             "examples": [
                 {"zh": "这门课不但有用，而且很有意思！", "pinyin": "Zhè mén kè búdàn yǒuyòng, érqiě hěn yǒu yìsi!", "uz": "Bu kurs nafaqat foydali, balki juda qiziqarli ham!", "ru": "Этот курс не только полезный, но и очень интересный!", "tj": "Ин курс на танҳо муфид, балки хеле ҷолиб ҳам аст!"},
                 {"zh": "他不但会说汉语，而且还会说日语！", "pinyin": "Tā búdàn huì shuō Hànyǔ, érqiě hái huì shuō Rìyǔ!", "uz": "U nafaqat xitoy tilini, balki yapon tilini ham biladi!", "ru": "Он умеет говорить не только по-китайски, но и по-японски!", "tj": "Вай на танҳо чинӣ, балки ба ҷопонӣ ҳам гап мезанад!"}

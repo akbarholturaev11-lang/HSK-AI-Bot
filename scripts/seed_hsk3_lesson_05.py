@@ -13,8 +13,8 @@ LESSON = {
     "lesson_order": 5,
     "lesson_code": "HSK3-L05",
     "title": "我最近越来越胖了",
-    "goal": json.dumps({"uz": "'了' o'zgarishni bildirishi, '越来越+Adj' va 'для (了)' maqsad qolipini o'zlashtirish.", "ru": "Освоить 了 как изменение состояния, 越来越+Adj и конструкцию 为(了) для цели.", "tj": "Азхудкунии 了 ҳамчун ифодаи тағйирот, 越来越+Adj ва сохтори мақсади 为(了)."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda holat o'zgarishi, tobora kuchayish va maqsad ifodalash o'rganiladi. Sog'liq, mavsumlar, sport va kundalik hayot haqidagi suhbatlar orqali ko'nikmalar shakllanadi.", "ru": "В этом уроке изучается изменение состояния, нарастание качества и выражение цели. Навыки формируются через диалоги о здоровье, временах года, спорте и повседневной жизни.", "tj": "Дар ин дарс тағйироти ҳол, афзоиши сифат ва ифодаи мақсад омӯхта мешавад. Малакаҳо тавассути муколамаҳо дар бораи саломатӣ, фаслҳо, варзиш ва ҳаёти рӯзмарра ташаккул меёбанд."}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "'了' o'zgarishni bildirishi, '越来越+Adj' va 'для (了)' maqsad qolipini o'zlashtirish.", "ru": "Освоить 了 как изменение состояния, 越来越+Adj и конструкцию 为(了) для цели.", "tj": "Азхудкунии 了 ҳамчун ифодаи тағйирот, 越来越+Adj ва сохти мақсади 为(了)."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda holat o'zgarishi, tobora kuchayish va maqsad ifodalash o'rganiladi. Sog'liq, mavsumlar, sport va kundalik hayot haqidagi suhbatlar orqali ko'nikmalar shakllanadi.", "ru": "В этом уроке изучается изменение состояния, нарастание качества и выражение цели. Навыки формируются через диалоги о здоровье, временах года, спорте и повседневной жизни.", "tj": "Дар ин дарс тағйироти ҳол, афзоиши сифат ва ифодаи мақсад омӯхта мешавад. Малакаҳо бо ёрии гуфтугӯҳо дар бораи саломатӣ, фаслҳо, варзиш ва ҳаёти рӯзмарра ташаккул меёбанд."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "发烧",  "pinyin": "fāshāo",   "pos": "v.",   "uz": "isitma chiqmoq, harorat ko'tarilmoq", "ru": "температурить, иметь жар",       "tj": "таб кардан, иситма доштан"},
         {"no": 2,  "zh": "为",    "pinyin": "wèi",      "pos": "prep.","uz": "uchun (kimsa uchun), sababli",        "ru": "ради, для (кого-то)",            "tj": "барои (касе), ба хотири"},
@@ -138,7 +138,7 @@ LESSON = {
             ),
             "rule_tj": (
                 "'越来越' + сифат ё феъл: бо гузашти вақт чизе рӯ ба рӯ зиёд ё кам мешавад.\n"
-                "Сохтор: 越来越 + Сифат/Феъл\n"
+                "Сохт: 越来越 + Сифат/Феъл\n"
                 "Масалан:\n"
                 "  越来越胖 (рӯ ба рӯ фарбеҳ шудан)\n"
                 "  越来越热 (рӯ ба рӯ гармтар шудан)\n"
@@ -174,7 +174,7 @@ LESSON = {
             ),
             "rule_tj": (
                 "'为' ё '为了' + ҷумлаи мақсад: шарҳ медиҳад, ки амал барои чӣ иҷро мешавад.\n"
-                "Сохтор: 为(了) + Мақсад + Ҷумлаи асосӣ\n"
+                "Сохт: 为(了) + Мақсад + Ҷумлаи асосӣ\n"
                 "Масалан:\n"
                 "  为了健康，我每天锻炼。(Барои саломатӣ ҳар рӯз машқ мекунам.)\n"
                 "  为了减肥，我来这里跑步。(Барои лоғар шудан инҷо меоям медавам.)\n"
@@ -248,7 +248,7 @@ LESSON = {
             "no": 2,
             "instruction_uz": "'为了……' qolipini ishlatib, sog'liq va sport haqida 5-6 gapdan iborat matn yozing.",
             "instruction_ru": "Используя конструкцию '为了……', напишите 5–6 предложений о здоровье и спорте.",
-            "instruction_tj": "Бо истифода аз сохтори '为了……' 5-6 ҷумла дар бораи саломатӣ ва варзиш нависед.",
+            "instruction_tj": "Бо истифода аз сохти '为了……' 5-6 ҷумла дар бораи саломатӣ ва варзиш нависед.",
             "topic_uz": "Sog'lik uchun men nima qilaman",
             "topic_ru": "Что я делаю ради здоровья",
             "topic_tj": "Барои саломатӣ ман чӣ мекунам",

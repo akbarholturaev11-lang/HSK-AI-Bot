@@ -311,7 +311,7 @@ def make_cloze_card(block, distractor_lines) -> dict | None:
         "title": {
             "uz": "Dialogni to'ldiring",
             "ru": "Дополните диалог",
-            "tj": "Муколамаро пурра кунед",
+            "tj": "Гуфтугӯро пурра кунед",
         },
         "lines": disp,
         "options": opts,
@@ -711,7 +711,7 @@ def build_dialog_quizzes(blocks: list[dict]) -> list[dict]:
         return {
             "type": "quick_quiz",
             "prompt": prompt,
-            "title": {"uz": "Dialogdan savol:", "ru": "Вопрос по диалогу:", "tj": "Савол аз муколама:"},
+            "title": {"uz": "Dialogdan savol:", "ru": "Вопрос по диалогу:", "tj": "Савол аз гуфтугӯ:"},
             "options": order,
             "correct_index": ci,
             "explanation": {
@@ -728,7 +728,7 @@ def build_dialog_quizzes(blocks: list[dict]) -> list[dict]:
             {
                 "uz": f"Dialogda {first['speaker']} avval nima deydi?",
                 "ru": f"Что {first['speaker']} говорит в начале диалога?",
-                "tj": f"Дар муколама {first['speaker']} аввал чӣ мегӯяд?",
+                "tj": f"Дар гуфтугӯ {first['speaker']} аввал чӣ мегӯяд?",
             },
         )
     )
@@ -740,7 +740,7 @@ def build_dialog_quizzes(blocks: list[dict]) -> list[dict]:
                 {
                     "uz": f"Dialog oxirida {last['speaker']} nima deydi?",
                     "ru": f"Что {last['speaker']} говорит в конце диалога?",
-                    "tj": f"Дар охири муколама {last['speaker']} чӣ мегӯяд?",
+                    "tj": f"Дар охири гуфтугӯ {last['speaker']} чӣ мегӯяд?",
                 },
             )
         )
@@ -852,7 +852,7 @@ def build_v3_lesson(level: str, order: int, seed: dict, known_prior: list[dict])
     next_no += 1
     sections.append({
         "section_no": next_no,
-        "section_title": {"uz": "Dialog", "ru": "Диалог", "tj": "Муколама"},
+        "section_title": {"uz": "Dialog", "ru": "Диалог", "tj": "Гуфтугӯ"},
         "section_purpose": "dialog",
         "cards": dialog_cards,
     })

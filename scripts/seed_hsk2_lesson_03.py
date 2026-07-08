@@ -16,7 +16,7 @@ LESSON = {
     "goal": json.dumps({
         "uz": "Narsalarning egasini, rangini va joylashuvini tasvirlash; '的' qo'shimchasi bilan ot-so'z birikmalarini, 一下 miqdorini va 真 kuchaytiruvchi ravishini o'zlashtirish.",
         "ru": "Научиться описывать владельца, цвет и местоположение предметов; освоить именные словосочетания с 的, количественное слово 一下 и усилительное наречие 真.",
-        "tj": "Тасвири соҳиб, ранг ва ҷойгиршавии ашё; азхудкунии ибораҳои исмӣ бо 的, воҳиди 一下 ва зарфи тақвиятии 真.",
+        "tj": "Тасвири соҳиб, ранг ва ҷои ашё; азхудкунии ибораҳои исмӣ бо 的, воҳиди 一下 ва зарфи тақвиятии 真.",
     }, ensure_ascii=False),
     "intro_text": json.dumps({
         "uz": "Bu darsda narsalar haqida gapirish: ularning egasi kim, qanday rang, qayerda turishi o'rganiladi. Siz uy, xona va idora muhitida narsalarni tavsiflashni mashq qilasiz. Asosiy grammatik mavzular: '的' qo'shimchasi bilan ot-so'z birikmasi, 一下 miqdor yuklamasi va 真 kuchaytiruvchi ravishi.",
@@ -196,7 +196,7 @@ LESSON = {
             "no": 2,
             "instruction_uz": "O'z xonangizni tasvirlab, 5-6 gapdan iborat kichik matn yozing. Rang, joylashuv va egasi haqida gapirib bering.",
             "instruction_ru": "Опишите свою комнату в небольшом тексте из 5–6 предложений. Расскажите о цвете, расположении и владельце предметов.",
-            "instruction_tj": "Хонаи худро тавсиф кунед, матни хурде аз 5-6 ҷумла нависед. Дар бораи ранг, ҷойгиршавӣ ва соҳиби ашё нақл кунед.",
+            "instruction_tj": "Хонаи худро тавсиф кунед, матни хурде аз 5-6 ҷумла нависед. Дар бораи ранг, ҷой ва соҳиби ашё нақл кунед.",
         },
     ], ensure_ascii=False),
     "review_json": "[]",

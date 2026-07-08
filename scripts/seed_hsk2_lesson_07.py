@@ -13,8 +13,8 @@ LESSON = {
     "lesson_order": 7,
     "lesson_code": "HSK2-L07",
     "title": "你家离公司远吗",
-    "goal": json.dumps({"uz": "Masofa, yo'l vaqti va joylashuv haqida gapira olish; 还 ravishining ikkinchi ma'nosini, 就 vaqt ravishinini, 离 old ko'makchisini va 呢 yuklamasini o'zlashtirish.", "ru": "Научиться говорить о расстоянии, времени в пути и местонахождении; освоить второе значение 还, наречие времени 就, предлог 离 и частицу 呢.", "tj": "Омӯзиши гуфтан дар бораи масофа, вақти роҳ ва ҷойгиршавӣ; аз бар кардани маъноии дуввуми 还, зарфи вақтии 就, пешояндии 离 ва ҷузъаи 呢."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda uy, maktab, aeroport va yo'l masofasi haqida suhbat o'rganiladi. Transport vositasi, yo'l davomiyligi va joy topish mavzularida gapira olasiz. Asosiy grammatik mavzular: 还 (hali), 就 (yaqinda, tez), 离 (masofani ifodalash) va 呢 yuklama.", "ru": "В этом уроке изучаются разговоры о доме, школе, аэропорте и расстоянии в дороге. Вы сможете говорить о транспортных средствах, продолжительности пути и нахождении мест. Основные грамматические темы: 还 (ещё), 就 (скоро, быстро), 离 (выражение расстояния) и частица 呢.", "tj": "Дар ин дарс муколамаҳо дар бораи хона, мактаб, фурудгоҳ ва масофаи роҳ омӯхта мешаванд. Шумо метавонед дар бораи воситаи нақлиёт, давомнокии роҳ ва ёфтани ҷой гап занед. Мавзӯҳои асосии грамматикӣ: 还 (ҳанӯз), 就 (зуд, ба зудӣ), 离 (ифодаи масофа) ва ҷузъаи 呢."}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "Masofa, yo'l vaqti va joylashuv haqida gapira olish; 还 ravishining ikkinchi ma'nosini, 就 vaqt ravishinini, 离 old ko'makchisini va 呢 yuklamasini o'zlashtirish.", "ru": "Научиться говорить о расстоянии, времени в пути и местонахождении; освоить второе значение 还, наречие времени 就, предлог 离 и частицу 呢.", "tj": "Омӯзиши гуфтан дар бораи масофа, вақти роҳ ва ҷой; аз бар кардани маъноии дуввуми 还, зарфи вақтии 就, пешояндии 离 ва ҷузъаи 呢."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda uy, maktab, aeroport va yo'l masofasi haqida suhbat o'rganiladi. Transport vositasi, yo'l davomiyligi va joy topish mavzularida gapira olasiz. Asosiy grammatik mavzular: 还 (hali), 就 (yaqinda, tez), 离 (masofani ifodalash) va 呢 yuklama.", "ru": "В этом уроке изучаются разговоры о доме, школе, аэропорте и расстоянии в дороге. Вы сможете говорить о транспортных средствах, продолжительности пути и нахождении мест. Основные грамматические темы: 还 (ещё), 就 (скоро, быстро), 离 (выражение расстояния) и частица 呢.", "tj": "Дар ин дарс гуфтугӯҳо дар бораи хона, мактаб, фурудгоҳ ва масофаи роҳ омӯхта мешаванд. Шумо метавонед дар бораи воситаи нақлиёт, давомнокии роҳ ва ёфтани ҷой гап занед. Мавзӯҳои асосии грамматикӣ: 还 (ҳанӯз), 就 (зуд, ба зудӣ), 离 (ифодаи масофа) ва ҷузъаи 呢."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "教室",     "pinyin": "jiàoshì",       "pos": "n.",    "uz": "darsxona, sinf xonasi",                   "ru": "классная комната, аудитория",         "tj": "синфхона, толори дарс"},
         {"no": 2,  "zh": "机场",     "pinyin": "jīchǎng",       "pos": "n.",    "uz": "aeroport",                                "ru": "аэропорт",                            "tj": "фурудгоҳ"},
@@ -152,7 +152,7 @@ LESSON = {
             ),
             "rule_tj": (
                 "Пешоянди '离' масофаро байни ду ҷой ё фосилаи вақтиро нишон медиҳад.\n"
-                "Сохтори ҷумла: A + 离 + B + масофа/вақт.\n"
+                "Сохти ҷумла: A + 离 + B + масофа/вақт.\n"
                 "Ба тоҷикӣ 'аз ... (дар чанд масофа)' мувофиқат мекунад."
             ),
             "examples": [

@@ -13,7 +13,7 @@ LESSON = {
     "lesson_code": "HSK3-L15",
     "title": json.dumps({"zh": "其他都没什么问题", "uz": "Boshqa hamma narsa muammosiz", "ru": "Всё остальное без проблем", "tj": "Ҳама чизи дигар мушкиле нест"}, ensure_ascii=False),
     "goal": json.dumps({"uz": "'Bundan tashqari ham/yana' iboralari, so'roq olmoshlarining umumlashtiruvchi qo'llanishi va 'juda' ifodalovchi '极了' o'rganish", "ru": "Выражения 'помимо/кроме', обобщающее использование вопросительных местоимений и '极了' (очень)", "tj": "Ибораҳои 'ғайр аз/ба ҷуз', истифодаи умумикунандаи зомирҳои саволӣ ва '极了' (хеле)"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda '除了…以外，都/还/也' tuzilmasini, so'roq olmoshlarining umumlashtiruvchi ikkinchi qo'llanishini va '极了' so'zini o'rganamiz.", "ru": "В этом уроке мы изучим конструкцию '除了…以外，都/还/也', второе обобщающее использование вопросительных местоимений и '极了'.", "tj": "Дар ин дарс мо сохтори '除了…以外，都/还/也', истифодаи дуввуми умумикунандаи зомирҳои саволӣ ва '极了'-ро меомӯзем."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda '除了…以外，都/还/也' tuzilmasini, so'roq olmoshlarining umumlashtiruvchi ikkinchi qo'llanishini va '极了' so'zini o'rganamiz.", "ru": "В этом уроке мы изучим конструкцию '除了…以外，都/还/也', второе обобщающее использование вопросительных местоимений и '极了'.", "tj": "Дар ин дарс мо сохти '除了…以外，都/还/也', истифодаи дуввуми умумикунандаи зомирҳои саволӣ ва '极了'-ро меомӯзем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "其他", "pinyin": "qítā", "pos": "pron/adj", "uz": "boshqa, qolgan", "ru": "другой, остальной", "tj": "дигар, боқӣ"},
         {"no": 2, "zh": "除了", "pinyin": "chúle", "pos": "prep", "uz": "bundan tashqari, ...dan boshqa", "ru": "кроме, помимо", "tj": "ғайр аз, ба ҷуз"},
@@ -44,7 +44,7 @@ LESSON = {
         {
             "block_no": 2,
             "section_label": "课文 2",
-            "title": {"uz": "Sog'liq haqida muloqot", "ru": "Разговор о здоровье", "tj": "Муколама дар бораи саломатӣ"},
+            "title": {"uz": "Sog'liq haqida muloqot", "ru": "Разговор о здоровье", "tj": "Гуфтугӯ дар бораи саломатӣ"},
             "dialogue": [
                 {"speaker": "A", "zh": "你最近身体怎么样？", "pinyin": "Nǐ zuìjìn shēntǐ zěnme yàng?", "uz": "Yaqinda sog'ligingiz qanday?", "ru": "Как у тебя здоровье последнее время?", "tj": "Охирон саломатиатон чӣ тавр?"},
                 {"speaker": "B", "zh": "除了有点儿累以外，其他都正常，极满意了！", "pinyin": "Chúle yǒudiǎnr lèi yǐwài, qítā dōu zhèngcháng, jí mǎnyì le!", "uz": "Biroz charchashdan tashqari, boshqa hammasi normal, juda mamnunam!", "ru": "Кроме небольшой усталости, всё нормально, очень доволен!", "tj": "Ба ғайр аз каме хасташавӣ, ҳама муқаррарӣ, ниҳоят қаноатмандам!"},
@@ -84,7 +84,7 @@ LESSON = {
             "title_tj": "Ба ғайр аз……, ҳама/ҳам/боз……",
             "rule_uz": "'除了A以外，都/还/也+B' tuzilmasi ikki ma'noda ishlatiladi: (1) A dan tashqari hamma narsa B (都) — istisno; (2) A dan tashqari B ham (还/也) — qo'shimcha. Farqni '都' va '还/也' orqali tushunish kerak.",
             "rule_ru": "Конструкция '除了A以外，都/还/也+B' имеет два значения: (1) Кроме A всё является B (都) — исключение; (2) Кроме A, B тоже (还/也) — добавление. Разницу нужно понять через '都' и '还/也'.",
-            "rule_tj": "Сохтори '除了A以外，都/还/也+B' ду маъно дорад: (1) Ба ғайр аз A ҳама B аст (都) — истисно; (2) Ба ғайр аз A, B ҳам (还/也) — илова. Фарқро тавассути '都' ва '还/也' фаҳмидан лозим аст.",
+            "rule_tj": "Сохти '除了A以外，都/还/也+B' ду маъно дорад: (1) Ба ғайр аз A ҳама B аст (都) — истисно; (2) Ба ғайр аз A, B ҳам (还/也) — илова. Фарқро бо ёрии '都' ва '还/也' фаҳмидан лозим аст.",
             "examples": [
                 {"zh": "除了血压以外，其他都没问题。", "pinyin": "Chúle xuèyā yǐwài, qítā dōu méi wèntí.", "uz": "Qon bosimdan tashqari, boshqa hamma narsa muammosiz.", "ru": "Кроме давления, всё остальное без проблем.", "tj": "Ба ғайр аз фишори хун, ҳама чизи дигар мушкиле нест."},
                 {"zh": "除了汉语，她还会说日语。", "pinyin": "Chúle Hànyǔ, tā hái huì shuō Rìyǔ.", "uz": "Xitoy tilidan tashqari, u yapon tilini ham biladi.", "ru": "Кроме китайского, она ещё умеет говорить по-японски.", "tj": "Ба ғайр аз чинӣ, вай ҳам ба ҷопонӣ ҳарф мезанад."}

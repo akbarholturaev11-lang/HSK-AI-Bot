@@ -13,7 +13,7 @@ LESSON = {
     "lesson_code": "HSK3-L09",
     "title": json.dumps({"zh": "她的汉语说得跟中国人一样好", "uz": "Uning xitoycha gapirishi xitoyliklarnikidek yaxshi", "ru": "Она говорит по-китайски так же хорошо, как китайцы", "tj": "Вай ба монанди чиниҳо хуб чинӣ ҳарф мезанад"}, ensure_ascii=False),
     "goal": json.dumps({"uz": "Taqqoslash iboralarini o'rganish: A xuddi B kabi, A B kadar emas", "ru": "Изучить сравнительные конструкции: A так же, как B; A не так, как B", "tj": "Омӯхтани ибораҳои муқоиса: A монанди B, A ба монанди B нест"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda '越A越B', 'A跟B一样+Adj' va 'A没有B那么+Adj' taqqoslash tuzilmalarini o'rganamiz.", "ru": "В этом уроке мы изучим сравнительные конструкции '越A越B', 'A跟B一样+Adj' и 'A没有B那么+Adj'.", "tj": "Дар ин дарс мо сохтори муқоисаи '越A越B', 'A跟B一样+Adj' ва 'A没有B那么+Adj'-ро меомӯзем."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda '越A越B', 'A跟B一样+Adj' va 'A没有B那么+Adj' taqqoslash tuzilmalarini o'rganamiz.", "ru": "В этом уроке мы изучим сравнительные конструкции '越A越B', 'A跟B一样+Adj' и 'A没有B那么+Adj'.", "tj": "Дар ин дарс мо сохти муқоисаи '越A越B', 'A跟B一样+Adj' ва 'A没有B那么+Adj'-ро меомӯзем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "普通话", "pinyin": "pǔtōnghuà", "pos": "n", "uz": "standart xitoy tili (mandarin)", "ru": "мандаринский (путунхуа)", "tj": "забони стандартии чинӣ"},
         {"no": 2, "zh": "口音", "pinyin": "kǒuyīn", "pos": "n", "uz": "talaffuz, lahja", "ru": "произношение, акцент", "tj": "талаффуз, лаҳҷа"},
@@ -84,7 +84,7 @@ LESSON = {
             "title_tj": "Ҳар чӣ бештар A, ҳамон қадар B",
             "rule_uz": "'越A越B' tuzilmasi ikki hodisaning bir vaqtda o'sishini bildiradi. A - shart, B - natija. Masalan: 越学越好 = o'rganган sari yaxshilashadi.",
             "rule_ru": "Конструкция '越A越B' выражает параллельное усиление двух явлений. A — условие, B — результат. Например: 越学越好 = чем больше учишь, тем лучше.",
-            "rule_tj": "Сохтори '越A越B' афзоиши якҷояи ду ҳодисаро ифода мекунад. A — шарт, B — натиҷа. Масалан: 越学越好 = ҳар чӣ бештар омӯзӣ, беҳтар мешавад.",
+            "rule_tj": "Сохти '越A越B' афзоиши якҷояи ду ҳодисаро ифода мекунад. A — шарт, B — натиҷа. Масалан: 越学越好 = ҳар чӣ бештар омӯзӣ, беҳтар мешавад.",
             "examples": [
                 {"zh": "她越学越觉得有意思。", "pinyin": "Tā yuè xué yuè juéde yǒu yìsi.", "uz": "U o'rganган sari qiziqarliroq deb hisoblaydi.", "ru": "Чем больше она учит, тем интереснее ей кажется.", "tj": "Ҳар чӣ бештар омӯзад, ҳамон қадар ҷолибтар ба назараш мерасад."},
                 {"zh": "天气越来越冷了。", "pinyin": "Tiānqì yuè lái yuè lěng le.", "uz": "Havo tobora sovuqlashmoqda.", "ru": "Погода становится всё холоднее.", "tj": "Ҳаво рӯз ба рӯз сардтар мешавад."}
@@ -98,7 +98,7 @@ LESSON = {
             "title_tj": "A монанди B + сифат",
             "rule_uz": "'A跟B一样+Adj' tuzilmasi A va B ning bir xil xususiyatga ega ekanini bildiradi. Inkor shaklida: 'A跟B不一样'. Sifat oldida 'ba'zan' 那么 qo'yiladi.",
             "rule_ru": "Конструкция 'A跟B一样+Adj' означает, что A и B имеют одинаковое свойство. Отрицательная форма: 'A跟B不一样'. Перед прилагательным иногда ставится 那么.",
-            "rule_tj": "Сохтори 'A跟B一样+Adj' маъно медиҳад, ки A ва B хусусияти якхела доранд. Шакли манфӣ: 'A跟B不一样'. Пеш аз сифат гоҳо 那么 мегузорад.",
+            "rule_tj": "Сохти 'A跟B一样+Adj' маъно медиҳад, ки A ва B хусусияти якхела доранд. Шакли манфӣ: 'A跟B不一样'. Пеш аз сифат гоҳо 那么 мегузорад.",
             "examples": [
                 {"zh": "她的汉语说得跟中国人一样好。", "pinyin": "Tā de Hànyǔ shuō de gēn Zhōngguórén yīyàng hǎo.", "uz": "Uning xitoycha gapirishi xitoyliklarnikidek yaxshi.", "ru": "Она говорит по-китайски так же хорошо, как китайцы.", "tj": "Вай ба монанди чиниҳо хуб чинӣ ҳарф мезанад."},
                 {"zh": "这个跟那个一样贵。", "pinyin": "Zhège gēn nàge yīyàng guì.", "uz": "Bu xuddi u kabi qimmat.", "ru": "Это такое же дорогое, как то.", "tj": "Ин монанди он қимат аст."}
@@ -112,7 +112,7 @@ LESSON = {
             "title_tj": "A ба монанди B + сифат нест",
             "rule_uz": "'A没有B那么+Adj' tuzilmasi A ning B darajasida emasligi yoki pastroq ekanini bildiradi. 'A不如B' bilan sinonim bo'lishi mumkin.",
             "rule_ru": "Конструкция 'A没有B那么+Adj' означает, что A не достигает степени B. Может быть синонимом 'A不如B'.",
-            "rule_tj": "Сохтори 'A没有B那么+Adj' маъно медиҳад, ки A ба дараҷаи B нарасидааст. Бо 'A不如B' ҳаммаъно буда метавонад.",
+            "rule_tj": "Сохти 'A没有B那么+Adj' маъно медиҳад, ки A ба дараҷаи B нарасидааст. Бо 'A不如B' ҳаммаъно буда метавонад.",
             "examples": [
                 {"zh": "他的进步没有她那么快。", "pinyin": "Tā de jìnbù méiyǒu tā nàme kuài.", "uz": "Uning rivojlanishi u qiznikidek tez emas.", "ru": "Его прогресс не такой быстрый, как у неё.", "tj": "Пешрафти вай ба монанди ӯ тез нест."},
                 {"zh": "今天没有昨天那么冷。", "pinyin": "Jīntiān méiyǒu zuótiān nàme lěng.", "uz": "Bugun kecha kabi sovuq emas.", "ru": "Сегодня не так холодно, как вчера.", "tj": "Имрӯз ба монанди дирӯз сард нест."}

@@ -13,8 +13,8 @@ LESSON = {
     "lesson_order": 11,
     "lesson_code": "HSK2-L11",
     "title": "他比我大三岁",
-    "goal": json.dumps({"uz": "'Bǐ' qiyoslash konstruktsiyasini, fe'l sifatdoshini aniqlovchi sifatida ishlatishni va 'kěnéng' yordamchi fe'lini o'rganish.", "ru": "Изучение конструкции сравнения 'bǐ', использования глагольных конструкций в роли определения и модального глагола 'kěnéng'.", "tj": "Омӯзиши конструксияи муқоисавии 'bǐ', истифодаи сохторҳои феълӣ ҳамчун муайянкунанда ва феъли ёрирасони 'kěnéng'."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda biz odamlarni va narsalarni qiyoslashni o'rganamiz. Raqs, bozor va maktab muhitidagi suhbatlar orqali 'bǐ' (dan ko'proq/katta/yaxshi) konstruktsiyasini mashq qilamiz. Shuningdek, fe'l birikmalarini aniqlovchi sifatida ishlatishni va ehtimolni bildiruvchi 'kěnéng' so'zini o'zlashtiramiz.", "ru": "На этом уроке мы учимся сравнивать людей и предметы. Отрабатываем конструкцию 'bǐ' (больше/старше/лучше, чем) через диалоги в кафе, магазине и школе. Также усваиваем использование глагольных конструкций в роли определения и слово 'kěnéng', выражающее вероятность.", "tj": "Дар ин дарс мо ёд мегирем одамон ва чизҳоро муқоиса кунем. Конструксияи 'bǐ' (аз… бештар/калонтар/беҳтар)-ро тавассути муколамаҳо дар кафе, бозор ва мактаб машқ мекунем. Инчунин истифодаи сохторҳои феълиро ҳамчун муайянкунанда ва калимаи 'kěnéng'-и ифодакунандаи эҳтимолро аз бар мекунем."}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "'Bǐ' qiyoslash konstruktsiyasini, fe'l sifatdoshini aniqlovchi sifatida ishlatishni va 'kěnéng' yordamchi fe'lini o'rganish.", "ru": "Изучение конструкции сравнения 'bǐ', использования глагольных конструкций в роли определения и модального глагола 'kěnéng'.", "tj": "Омӯзиши конструксияи муқоисавии 'bǐ', истифодаи сохтҳои феълӣ ҳамчун муайянкунанда ва феъли ёрирасони 'kěnéng'."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda biz odamlarni va narsalarni qiyoslashni o'rganamiz. Raqs, bozor va maktab muhitidagi suhbatlar orqali 'bǐ' (dan ko'proq/katta/yaxshi) konstruktsiyasini mashq qilamiz. Shuningdek, fe'l birikmalarini aniqlovchi sifatida ishlatishni va ehtimolni bildiruvchi 'kěnéng' so'zini o'zlashtiramiz.", "ru": "На этом уроке мы учимся сравнивать людей и предметы. Отрабатываем конструкцию 'bǐ' (больше/старше/лучше, чем) через диалоги в кафе, магазине и школе. Также усваиваем использование глагольных конструкций в роли определения и слово 'kěnéng', выражающее вероятность.", "tj": "Дар ин дарс мо ёд мегирем одамон ва чизҳоро муқоиса кунем. Конструксияи 'bǐ' (аз… бештар/калонтар/беҳтар)-ро бо ёрии гуфтугӯҳо дар кафе, бозор ва мактаб машқ мекунем. Инчунин истифодаи сохтҳои феълиро ҳамчун муайянкунанда ва калимаи 'kěnéng'-и ифодакунандаи эҳтимолро аз бар мекунем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "唱歌", "pinyin": "chànggē", "pos": "v.", "uz": "qo'shiq aytmoq", "ru": "петь песню", "tj": "суруд хондан"},
         {"no": 2, "zh": "男", "pinyin": "nán", "pos": "adj.", "uz": "erkak, o'g'il", "ru": "мужской, мальчик", "tj": "мард, писар"},
@@ -88,10 +88,10 @@ LESSON = {
             "title_zh": "动词结构做定语",
             "title_uz": "Fe'l birikmasi aniqlovchi sifatida",
             "title_ru": "Глагольная конструкция в роли определения",
-            "title_tj": "Сохтори феълӣ ҳамчун муайянкунанда",
+            "title_tj": "Сохти феълӣ ҳамчун муайянкунанда",
             "rule_uz": "Xitoy tilida fe'l birikmasi yoki gap bo'lagi ot oldidan aniqlovchi bo'lib kelishi mumkin. Bu holda aniqlovchi bilan ot orasiga '的' yuklamasi qo'yiladi. Masalan: '看报纸的女孩子' (gazeta o'qiyotgan qiz).",
             "rule_ru": "В китайском языке глагольная конструкция или часть предложения может выступать определением перед существительным. В этом случае между определением и существительным ставится частица '的'. Например: '看报纸的女孩子' (девушка, читающая газету).",
-            "rule_tj": "Дар забони чинӣ сохтори феълӣ ё бахши ҷумла метавонад пеш аз исм ҳамчун муайянкунанда бояд. Дар ин ҳол байни муайянкунанда ва исм зарраи '的' гузошта мешавад. Масалан: '看报纸的女孩子' (духтаре ки рӯзнома мехонад).",
+            "rule_tj": "Дар забони чинӣ сохти феълӣ ё бахши ҷумла метавонад пеш аз исм ҳамчун муайянкунанда бояд. Дар ин ҳол байни муайянкунанда ва исм зарраи '的' гузошта мешавад. Масалан: '看报纸的女孩子' (духтаре ки рӯзнома мехонад).",
             "examples": [
                 {"zh": "左边看报纸的女孩子是我姐姐。", "pinyin": "Zuǒbian kàn bàozhǐ de nǚ háizi shì wǒ jiějie.", "uz": "Chap tomondagi gazeta o'qiyotgan qiz mening opam.", "ru": "Девушка слева, читающая газету, — моя старшая сестра.", "tj": "Духтаре ки тарафи чап рӯзнома мехонад хоҳари калонии ман аст."},
                 {"zh": "前边说话的那个人是老师。", "pinyin": "Qiánbian shuōhuà de nà ge rén shì lǎoshī.", "uz": "Oldinda gapirgan odam o'qituvchi.", "ru": "Тот человек впереди, который говорит, — учитель.", "tj": "Он касе ки пеш гап мезанад муаллим аст."}
@@ -105,7 +105,7 @@ LESSON = {
             "title_tj": "Ҷумлаи муқоисавӣ бо 'bǐ' (1)",
             "rule_uz": "'Bǐ' qiyoslash gapi quyidagi tuzilishga ega: A + 比 + B + sifat (+ miqdor farqi). Bu 'A, B dan ko'proq/katta/yaxshi' ma'nosini beradi. Inkor shaklida '没有' ishlatiladi: A + 没有 + B + sifat.",
             "rule_ru": "Конструкция сравнения с 'bǐ' имеет структуру: A + 比 + B + прилагательное (+ разница в количестве). Означает 'A больше/старше/лучше, чем B'. В отрицательной форме используется '没有': A + 没有 + B + прилагательное.",
-            "rule_tj": "Ҷумлаи муқоисавӣ бо 'bǐ' сохтори зеринро дорад: A + 比 + B + сифат (+ фарқи миқдорӣ). Маъниаш 'A аз B бештар/калонтар/беҳтар аст'. Дар шакли инкорӣ '没有' истифода мешавад: A + 没有 + B + сифат.",
+            "rule_tj": "Ҷумлаи муқоисавӣ бо 'bǐ' сохти зеринро дорад: A + 比 + B + сифат (+ фарқи миқдорӣ). Маъниаш 'A аз B бештар/калонтар/беҳтар аст'. Дар шакли инкорӣ '没有' истифода мешавад: A + 没有 + B + сифат.",
             "examples": [
                 {"zh": "他比我大三岁。", "pinyin": "Tā bǐ wǒ dà sān suì.", "uz": "U mendan uch yosh katta.", "ru": "Он старше меня на три года.", "tj": "Ӯ аз ман се сол калонтар аст."},
                 {"zh": "苹果没有西瓜大。", "pinyin": "Píngguǒ méiyǒu xīguā dà.", "uz": "Olma tarvuz kadar katta emas.", "ru": "Яблоко не такое большое, как арбуз.", "tj": "Себ ба андозаи тарбуз калон нест."}

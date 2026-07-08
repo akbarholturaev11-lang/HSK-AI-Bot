@@ -46,7 +46,7 @@ CONTEXT_GRAMMAR_RULES = [
         "all": ["被"],
         "explanation_uz": "Majhul nisbat: gap markazida ta'sir ko'rgan odam yoki narsa turadi.",
         "explanation_ru": "Пассивная конструкция: в центре объект или человек, на которого подействовали.",
-        "explanation_tj": "Сохтори маҷҳул: маркази ҷумла одам ё чизест, ки таъсир дидааст.",
+        "explanation_tj": "Сохти маҷҳул: маркази ҷумла одам ё чизест, ки таъсир дидааст.",
     },
     {
         "pattern": "把 + object + V",
@@ -236,12 +236,12 @@ _PATTERN_TITLES = {
     "被 + kim/nima + V": {
         "uz": "被-sentence - kimdir ta'sir qilgan holat",
         "ru": "被-конструкция - пассивное действие",
-        "tj": "Сохтори 被 - амали маҷҳул",
+        "tj": "Сохти 被 - амали маҷҳул",
     },
     "把 + object + V": {
         "uz": "把-sentence - obyektga nima qilinganini ko'rsatish",
         "ru": "把-конструкция - что сделали с объектом",
-        "tj": "Сохтори 把 - бо объект чӣ карданд",
+        "tj": "Сохти 把 - бо объект чӣ карданд",
     },
     "为了 + maqsad": {
         "uz": "为了 - maqsadni aytish",
@@ -407,7 +407,7 @@ def _context_grammar_note(block: dict, used_patterns: set[str]) -> dict | None:
         "pattern": "Dialogdagi tayyor gap qolipi",
         "pattern_uz": "Dialogdagi tayyor gap qolipi",
         "pattern_ru": "Готовая фразовая модель из диалога",
-        "pattern_tj": "Қолаби тайёри ҷумла аз муколама",
+        "pattern_tj": "Қолаби тайёри ҷумла аз гуфтугӯ",
         "explanation_uz": "Bu qismda eng foydali gapni tayyor qolip sifatida o'rganing va yangi so'zlarni shu qolipga almashtirib mashq qiling.",
         "explanation_ru": "В этой части выучите полезную фразу как готовую модель и тренируйте ее, заменяя новые слова.",
         "explanation_tj": "Дар ин қисм ҷумлаи фоиданокро ҳамчун қолаби тайёр омӯзед ва калимаҳои навро дар он иваз карда машқ кунед.",

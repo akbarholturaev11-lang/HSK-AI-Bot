@@ -14,7 +14,7 @@ LESSON = {
     "lesson_code": "HSK1-L07",
     "title": "今天几号",
     "goal": json.dumps({"uz": "Sanalar, haftaning kunlari va ketma-ket fe'l gaplarini o'rganish", "ru": "Изучение дат, дней недели и предложений с последовательными глаголами", "tj": "Омӯзиши санаҳо, рӯзҳои ҳафта ва ҷумлаҳо бо феъли пайдарпай"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Ettinchi darsda bugungi sanani, haftaning kunlarini va 去+joy+harakat konstruktsiyasini o'rganasiz. 12 ta yangi so'z, 3 ta suhbat.", "ru": "В седьмом уроке вы научитесь называть сегодняшнюю дату, дни недели и конструкцию 去+место+действие. 12 новых слов, 3 диалога.", "tj": "Дар дарси ҳафтум шумо санаи имрӯзро, рӯзҳои ҳафтаро ва сохтори 去+ҷой+амалро меомӯзед. 12 калимаи нав, 3 муколама."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Ettinchi darsda bugungi sanani, haftaning kunlarini va 去+joy+harakat konstruktsiyasini o'rganasiz. 12 ta yangi so'z, 3 ta suhbat.", "ru": "В седьмом уроке вы научитесь называть сегодняшнюю дату, дни недели и конструкцию 去+место+действие. 12 новых слов, 3 диалога.", "tj": "Дар дарси ҳафтум шумо санаи имрӯзро, рӯзҳои ҳафтаро ва сохти 去+ҷой+амалро меомӯзед. 12 калимаи нав, 3 гуфтугӯ."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "请",   "pinyin": "qǐng",    "pos": "v.",   "uz": "iltimos, marhamat",         "ru": "пожалуйста, разрешите спросить", "tj": "лутфан, иҷозат диҳед"},
         {"no": 2,  "zh": "问",   "pinyin": "wèn",     "pos": "v.",   "uz": "so'ramoq",                  "ru": "спрашивать",                     "tj": "пурсидан"},
@@ -190,7 +190,7 @@ LESSON = {
             ),
             "rule_tj": (
                 "Ҷумлаи пайдарпайи феълӣ: амали аввал мақсади дуввумро ифода мекунад.\n"
-                "Сохтор: Мубтадо + 去 + Ҷой + Феъл + Пуркунанда\n\n"
+                "Сохт: Мубтадо + 去 + Ҷой + Феъл + Пуркунанда\n\n"
                 "Мисол:\n"
                 "我去学校看书。— Ман ба мактаб рафта китоб мехонам.\n"
                 "我去中国学习汉语。— Ман ба Чин рафта забони чинӣ меомӯзам.\n\n"

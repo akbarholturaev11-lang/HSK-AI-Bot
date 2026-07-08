@@ -14,7 +14,7 @@ LESSON = {
     "lesson_code": "HSK1-L08",
     "title": "我想喝茶",
     "goal": json.dumps({"uz": "Istak bildirish, narx so'rash va o'lchov so'zlarini o'rganish", "ru": "Выражение желаний, спрашивание цены и изучение счётных слов", "tj": "Ифодаи орзуҳо, пурсидани нарх ва омӯзиши калимаҳои шуморавӣ"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Sakkizinchi darsda 想 modal fe'li yordamida istak bildirish, narx so'rash (多少钱?) va 个/口 o'lchov so'zlarini o'rganasiz. 15 ta yangi so'z, 3 ta suhbat.", "ru": "В восьмом уроке вы научитесь выражать желания с помощью модального глагола 想, спрашивать о цене (多少钱?) и использовать счётные слова 个/口. 15 новых слов, 3 диалога.", "tj": "Дар дарси ҳаштум шумо бо ёрии феъли модалии 想 орзуро ифода мекунед, нархро мепурсед (多少钱?) ва калимаҳои шуморавии 个/口-ро меомӯзед. 15 калимаи нав, 3 муколама."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Sakkizinchi darsda 想 modal fe'li yordamida istak bildirish, narx so'rash (多少钱?) va 个/口 o'lchov so'zlarini o'rganasiz. 15 ta yangi so'z, 3 ta suhbat.", "ru": "В восьмом уроке вы научитесь выражать желания с помощью модального глагола 想, спрашивать о цене (多少钱?) и использовать счётные слова 个/口. 15 новых слов, 3 диалога.", "tj": "Дар дарси ҳаштум шумо бо ёрии феъли модалии 想 орзуро ифода мекунед, нархро мепурсед (多少钱?) ва калимаҳои шуморавии 个/口-ро меомӯзед. 15 калимаи нав, 3 гуфтугӯ."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "想",   "pinyin": "xiǎng",    "pos": "mod.", "uz": "xohlamoq, istаmoq",              "ru": "хотеть, желать",                       "tj": "хостан, орзу доштан"},
         {"no": 2,  "zh": "喝",   "pinyin": "hē",       "pos": "v.",   "uz": "ichmoq",                         "ru": "пить",                                 "tj": "нӯшидан"},
@@ -102,7 +102,7 @@ LESSON = {
             ),
             "rule_tj": (
                 "想 (xiǎng) — орзу ё ниятро ифода мекунад.\n"
-                "Сохтор: Мубтадо + 想 + Феъл + Пуркунанда\n\n"
+                "Сохт: Мубтадо + 想 + Феъл + Пуркунанда\n\n"
                 "Тасдиқ: 我想喝茶。— Ман чой нӯшидан мехоҳам.\n"
                 "Савол: 你想做什么？— Шумо чӣ кардан мехоҳед?\n\n"
                 "想 ва 会:\n"
@@ -301,7 +301,7 @@ LESSON = {
             "no": 2,
             "instruction_uz": "Do'konda narx so'rash haqida suhbat yozing (4 satr):",
             "instruction_ru": "Напишите диалог о ценах в магазине (4 реплики):",
-            "instruction_tj": "Муколамаи пурсидани нарх дар мағозаро нависед (4 ҷумла):",
+            "instruction_tj": "Гуфтугӯи пурсидани нарх дар мағозаро нависед (4 ҷумла):",
             "example": "A: 你好！___多少钱？\nB: ___块。\nA: ___多少钱？\nB: ___块钱。",
         }
     ], ensure_ascii=False),

@@ -18,7 +18,7 @@ LESSON = {
         {"no": 1, "zh": "发现", "pinyin": "fāxiàn", "pos": "v", "uz": "kashf qilmoq, topmoq", "ru": "обнаруживать, находить", "tj": "кашф кардан, ёфтан"},
         {"no": 2, "zh": "认出", "pinyin": "rèn chū", "pos": "v", "uz": "tanib olmoq", "ru": "узнавать (опознать)", "tj": "шинохтан"},
         {"no": 3, "zh": "变化", "pinyin": "biànhuà", "pos": "n/v", "uz": "o'zgarish; o'zgarmoq", "ru": "изменение; изменяться", "tj": "тағйирот; тағйир ёфтан"},
-        {"no": 4, "zh": "经过", "pinyin": "jīngguò", "pos": "v/prep", "uz": "o'tmoq; ...orqali", "ru": "проходить; через (место)", "tj": "гузаштан; тавассути (ҷой)"},
+        {"no": 4, "zh": "经过", "pinyin": "jīngguò", "pos": "v/prep", "uz": "o'tmoq; ...orqali", "ru": "проходить; через (место)", "tj": "гузаштан; бо ёрии (ҷой)"},
         {"no": 5, "zh": "使", "pinyin": "shǐ", "pos": "v", "uz": "majbur qilmoq (rasmiy)", "ru": "заставлять (официальный стиль)", "tj": "маҷбур кардан (расмӣ)"},
         {"no": 6, "zh": "叫", "pinyin": "jiào", "pos": "v", "uz": "buyurmoq, chaqirmoq; ism", "ru": "велеть, звать; имя", "tj": "фармондан, даъват кардан; ном"},
         {"no": 7, "zh": "想起来", "pinyin": "xiǎng qǐ lái", "pos": "v", "uz": "eslab qolmoq, xotirlash", "ru": "вспомнить", "tj": "дар ёд овардан"},
@@ -71,7 +71,7 @@ LESSON = {
                 {"speaker": "A", "zh": "你能坚持下去吗？已经锻炼了一个小时了！", "pinyin": "Nǐ néng jiānchí xià qù ma? Yǐjīng duànliàn le yī gè xiǎoshí le!", "uz": "Davom ettira olasizmi? Allaqachon bir soat mashq qildingiz!", "ru": "Ты можешь продолжать? Уже час тренировался!", "tj": "Идома дода метавонед? Аллакай як соат варзиш кардед!"},
                 {"speaker": "B", "zh": "能！只要坚持下去，就能看出来效果！", "pinyin": "Néng! Zhǐyào jiānchí xià qù, jiù néng kàn chū lái xiàoguǒ!", "uz": "Ha! Faqat davom etsam, natijani ko'raman!", "ru": "Да! Только продолжая, можно заметить результат!", "tj": "Метавонам! Танҳо идома диҳам, натиҷаро мебинам!"},
                 {"speaker": "A", "zh": "这使我很受鼓励！", "pinyin": "Zhè shǐ wǒ hěn shòu gǔlì!", "uz": "Bu meni juda ilhomlantirdi!", "ru": "Это очень меня воодушевляет!", "tj": "Ин маро хеле илҳом бахшид!"},
-                {"speaker": "B", "zh": "一起坚持下去吧，经过努力就能成功！", "pinyin": "Yīqǐ jiānchí xià qù ba, jīngguò nǔlì jiù néng chénggōng!", "uz": "Birga davom etaylik, harakat orqali muvaffaqiyat qozonish mumkin!", "ru": "Давай продолжим вместе, через усилия — к успеху!", "tj": "Якҷо идома диҳем, тавассути кӯшиш муваффақ мешавем!"}
+                {"speaker": "B", "zh": "一起坚持下去吧，经过努力就能成功！", "pinyin": "Yīqǐ jiānchí xià qù ba, jīngguò nǔlì jiù néng chénggōng!", "uz": "Birga davom etaylik, harakat orqali muvaffaqiyat qozonish mumkin!", "ru": "Давай продолжим вместе, через усилия — к успеху!", "tj": "Якҷо идома диҳем, бо ёрии кӯшиш муваффақ мешавем!"}
             ]
         }
     ], ensure_ascii=False),
@@ -109,13 +109,13 @@ LESSON = {
             "title_zh": "经过 + 地点（路过/经历）",
             "title_uz": "经过 + joy (orqali o'tmoq / tajribadan o'tmoq)",
             "title_ru": "经过 + место (проходить через / через опыт)",
-            "title_tj": "经过 + ҷой (гузаштан аз / тавассути таҷриба)",
+            "title_tj": "经过 + ҷой (гузаштан аз / бо ёрии таҷриба)",
             "rule_uz": "'经过' ikki ma'noda: (1) joy bo'ylab o'tmoq (经过公园 = parkdan o'tmoq); (2) biror jarayon/tajribadan o'tmoq (经过努力 = harakat orqali). Predlog sifatida joy yoki jarayondan oldin keladi.",
             "rule_ru": "'经过' имеет два значения: (1) проходить через место (经过公园 = проходить через парк); (2) проходить через процесс/опыт (经过努力 = через усилия). В качестве предлога стоит перед местом или процессом.",
-            "rule_tj": "'经过' ду маъно дорад: (1) аз ҷое гузаштан (经过公园 = аз боғ гузаштан); (2) аз раванде/таҷрибае гузаштан (经过努力 = тавассути кӯшиш). Ҳамчун пешоянд пеш аз ҷой ё раванд меояд.",
+            "rule_tj": "'经过' ду маъно дорад: (1) аз ҷое гузаштан (经过公园 = аз боғ гузаштан); (2) аз раванде/таҷрибае гузаштан (经过努力 = бо ёрии кӯшиш). Ҳамчун пешоянд пеш аз ҷой ё раванд меояд.",
             "examples": [
                 {"zh": "我经过那条街道来的。", "pinyin": "Wǒ jīngguò nà tiáo jiēdào lái de.", "uz": "Men u ko'cha orqali keldim.", "ru": "Я пришёл через ту улицу.", "tj": "Ман аз он кӯча гузашта омадам."},
-                {"zh": "经过努力，他终于成功了！", "pinyin": "Jīngguò nǔlì, tā zhōngyú chénggōng le!", "uz": "Harakat orqali u nihoyat muvaffaqiyat qozondi!", "ru": "Через усилия он наконец добился успеха!", "tj": "Тавассути кӯшиш, вай дар охир муваффақ шуд!"}
+                {"zh": "经过努力，他终于成功了！", "pinyin": "Jīngguò nǔlì, tā zhōngyú chénggōng le!", "uz": "Harakat orqali u nihoyat muvaffaqiyat qozondi!", "ru": "Через усилия он наконец добился успеха!", "tj": "Бо ёрии кӯшиш, вай дар охир муваффақ шуд!"}
             ]
         }
     ], ensure_ascii=False),
@@ -128,7 +128,7 @@ LESSON = {
                 {"no": 2, "uz": "Faqat davom etsangiz, muvaffaqiyat qozonasiz!", "ru": "Только продолжай — и добьёшься успеха!", "tj": "Танҳо идома диҳед, муваффақ мешавед!"},
                 {"no": 3, "uz": "Men u ko'cha orqali keldim.", "ru": "Я пришёл через ту улицу.", "tj": "Ман аз он кӯча гузашта омадам."},
                 {"no": 4, "uz": "U menga boshqalarga aytmaslikni buyurdi.", "ru": "Он велел мне никому не говорить.", "tj": "Вай ба ман фармод, ки ба дигарон нагӯям."},
-                {"no": 5, "uz": "Harakat orqali u nihoyat muvaffaqiyat qozondi!", "ru": "Через усилия он наконец добился успеха!", "tj": "Тавассути кӯшиш, вай дар охир муваффақ шуд!"}
+                {"no": 5, "uz": "Harakat orqali u nihoyat muvaffaqiyat qozondi!", "ru": "Через усилия он наконец добился успеха!", "tj": "Бо ёрии кӯшиш, вай дар охир муваффақ шуд!"}
             ]
         },
         {

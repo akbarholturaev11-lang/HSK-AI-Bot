@@ -13,8 +13,8 @@ LESSON = {
     "lesson_order": 4,
     "lesson_code": "HSK3-L04",
     "title": "她总是笑着跟客人说话",
-    "goal": json.dumps({"uz": "'又……又……', V₁着+V₂ hamroh harakat qolipini va '总是' ravishi bilan doim takrorlanadigan harakatlarni o'zlashtirish.", "ru": "Освоить конструкцию 又……又……, сопутствующее действие V₁着+V₂ и привычные действия с наречием 总是.", "tj": "Азхудкунии сохтори 又……又……, амали ҳамроҳ V₁着+V₂ ва амалҳои одатии бо қайди 总是."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda bir vaqtning o'zida ikki sifatga ega bo'lish, bir harakat davomida ikkinchi harakat qilish va odatiy takrorlanuvchi harakatlar haqida gaplashish o'rganiladi. Sinfxona, supermarket, musobaqa va mehmonxona muhitidagi suhbatlar orqali ko'nikmalar shakllanadi.", "ru": "В этом уроке изучается выражение двух качеств одновременно, совершение одного действия во время другого и привычные повторяющиеся действия. Навыки формируются через диалоги в классе, супермаркете, на соревновании и в гостинице.", "tj": "Дар ин дарс ифодаи ду сифат дар як вақт, иҷрои як амал ҳангоми амали дигар ва амалҳои одатии такроршаванда омӯхта мешавад. Малакаҳо тавассути муколамаҳо дар синф, супермаркет, мусобақа ва меҳмонхона ташаккул меёбанд."}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "'又……又……', V₁着+V₂ hamroh harakat qolipini va '总是' ravishi bilan doim takrorlanadigan harakatlarni o'zlashtirish.", "ru": "Освоить конструкцию 又……又……, сопутствующее действие V₁着+V₂ и привычные действия с наречием 总是.", "tj": "Азхудкунии сохти 又……又……, амали ҳамроҳ V₁着+V₂ ва амалҳои одатии бо қайди 总是."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda bir vaqtning o'zida ikki sifatga ega bo'lish, bir harakat davomida ikkinchi harakat qilish va odatiy takrorlanuvchi harakatlar haqida gaplashish o'rganiladi. Sinfxona, supermarket, musobaqa va mehmonxona muhitidagi suhbatlar orqali ko'nikmalar shakllanadi.", "ru": "В этом уроке изучается выражение двух качеств одновременно, совершение одного действия во время другого и привычные повторяющиеся действия. Навыки формируются через диалоги в классе, супермаркете, на соревновании и в гостинице.", "tj": "Дар ин дарс ифодаи ду сифат дар як вақт, иҷрои як амал ҳангоми амали дигар ва амалҳои одатии такроршаванда омӯхта мешавад. Малакаҳо бо ёрии гуфтугӯҳо дар синф, супермаркет, мусобақа ва меҳмонхона ташаккул меёбанд."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "比赛",  "pinyin": "bǐsài",    "pos": "n./v.", "uz": "musobaqa; musobaqalashmoq",        "ru": "соревнование; соревноваться",      "tj": "мусобақа; мусобақа кардан"},
         {"no": 2,  "zh": "照片",  "pinyin": "zhàopiàn", "pos": "n.",   "uz": "rasm, foto",                       "ru": "фотография, снимок",               "tj": "акс, сурат"},
@@ -82,7 +82,7 @@ LESSON = {
             "title_zh": "\"又……又……\"",
             "title_uz": "'又……又……' — ham...ham... (ikki xususiyat)",
             "title_ru": "Конструкция «又……又……» — и...и... (два качества)",
-            "title_tj": "Сохтори «又……又……» — ҳам...ҳам... (ду сифат)",
+            "title_tj": "Сохти «又……又……» — ҳам...ҳам... (ду сифат)",
             "rule_uz": (
                 "'又……又……' qolipi biror narsa yoki odamda bir vaqtda ikki sifat yoki holat borligini bildiradi.\n"
                 "Qolip: 又 + Sifat/fe'l + 又 + Sifat/fe'l\n"
@@ -100,8 +100,8 @@ LESSON = {
                 "  又便宜又好看 (и дешёвый, и красивый)"
             ),
             "rule_tj": (
-                "Сохтори '又……又……' мавҷудияти ду сифат ё ҳолатро дар як вақт ифода мекунад.\n"
-                "Сохтор: 又 + Сифат/Феъл + 又 + Сифат/Феъл\n"
+                "Сохти '又……又……' мавҷудияти ду сифат ё ҳолатро дар як вақт ифода мекунад.\n"
+                "Сохт: 又 + Сифат/Феъл + 又 + Сифат/Феъл\n"
                 "Масалан:\n"
                 "  又聪明又努力 (ҳам зирак ҳам кӯшишкор)\n"
                 "  又新鲜又甜 (ҳам тоза ҳам ширин)\n"
@@ -137,8 +137,8 @@ LESSON = {
                 "  听着音乐学习 (учиться под музыку)"
             ),
             "rule_tj": (
-                "Ин сохтор иҷрои V₂-ро дар як вақт бо V₁ ифода мекунад — V₁ тарзи амалро медиҳад.\n"
-                "Сохтор: V₁ + 着 + (O₁) + V₂ + (O₂)\n"
+                "Ин сохт иҷрои V₂-ро дар як вақт бо V₁ ифода мекунад — V₁ тарзи амалро медиҳад.\n"
+                "Сохт: V₁ + 着 + (O₁) + V₂ + (O₂)\n"
                 "着 — ҳолати давомандаи амали аввалро нишон медиҳад.\n"
                 "Масалан:\n"
                 "  笑着说话 (бо табассум сӯҳбат кардан)\n"
@@ -177,7 +177,7 @@ LESSON = {
             "rule_tj": (
                 "Қайди '总是' пеш аз феъл меояд ва амали доимӣ ё такроршавандаро ифода мекунад.\n"
                 "Маъно: ҳамеша, доимо\n"
-                "Сохтор: Мубтадо + 总是 + Феъл + (Иловаи феълӣ)\n"
+                "Сохт: Мубтадо + 总是 + Феъл + (Иловаи феълӣ)\n"
                 "Масалан:\n"
                 "  她总是第一个回答问题。(Вай ҳамеша аввалин ҷавоб медиҳад.)\n"
                 "  他总是迟到。(Вай ҳамеша дер меояд.)\n"
@@ -241,7 +241,7 @@ LESSON = {
             "no": 1,
             "instruction_uz": "'又……又……' qolipidan foydalanib 4 ta gap tuzing. Odamlar va narsalar haqida ikki xususiyatni bildiring.",
             "instruction_ru": "Составьте 4 предложения с конструкцией '又……又……'. Опишите двойные качества людей и предметов.",
-            "instruction_tj": "Бо сохтори '又……又……' 4 ҷумла тартиб диҳед. Ду сифати одамон ва чизҳоро нишон диҳед.",
+            "instruction_tj": "Бо сохти '又……又……' 4 ҷумла тартиб диҳед. Ду сифати одамон ва чизҳоро нишон диҳед.",
             "words": ["又聪明又", "又热情又", "又新鲜又", "又便宜又", "又甜又"],
             "topic_uz": "Odamlar va narsalarning ikki xususiyati",
             "topic_ru": "Двойные качества людей и предметов",
@@ -251,7 +251,7 @@ LESSON = {
             "no": 2,
             "instruction_uz": "Tanigan yaxshi do'st yoki o'qituvchi haqida 5-6 gapdan iborat matn yozing. 总是、又……又……、着 qoliplarini ishlating.",
             "instruction_ru": "Напишите 5–6 предложений о хорошем друге или учителе. Используйте конструкции 总是, 又……又……, 着.",
-            "instruction_tj": "Дар бораи дӯсти хуб ё омӯзгор 5-6 ҷумла нависед. Сохторҳои 总是, 又……又……, 着-ро истифода баред.",
+            "instruction_tj": "Дар бораи дӯсти хуб ё омӯзгор 5-6 ҷумла нависед. Сохтҳои 总是, 又……又……, 着-ро истифода баред.",
             "topic_uz": "Mening sevimli o'qituvchim yoki do'stim",
             "topic_ru": "Мой любимый учитель или друг",
             "topic_tj": "Омӯзгор ё дӯсти дӯстдоштаи ман",

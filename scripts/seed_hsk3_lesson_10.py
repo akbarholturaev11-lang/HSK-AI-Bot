@@ -13,7 +13,7 @@ LESSON = {
     "lesson_code": "HSK3-L10",
     "title": json.dumps({"zh": "数学比历史难多了", "uz": "Matematika tarixdan ancha qiyin", "ru": "Математика намного сложнее истории", "tj": "Математика аз таърих хеле душвортар аст"}, ensure_ascii=False),
     "goal": json.dumps({"uz": "Aniq taqqoslash iboralarini o'rganish: B dan A qiyin/oson, taxminiy sonlar", "ru": "Изучить точные сравнения: A намного сложнее B, приблизительные числа", "tj": "Омӯхтани муқоисаҳои дақиқ: A аз B хеле душвортар, рақамҳои тахминӣ"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda 'A比B+Adj+多了' aniq taqqoslash tuzilmasi, 'A不如B' va taxminiy sonlarni (数词+多/几) o'rganamiz.", "ru": "В этом уроке мы изучим точное сравнение 'A比B+Adj+多了', конструкцию 'A不如B' и приблизительные числа (数词+多/几).", "tj": "Дар ин дарс мо сохтори муқоисаи дақиқи 'A比B+Adj+多了', сохтори 'A不如B' ва рақамҳои тахминӣ (数词+多/几)-ро меомӯзем."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda 'A比B+Adj+多了' aniq taqqoslash tuzilmasi, 'A不如B' va taxminiy sonlarni (数词+多/几) o'rganamiz.", "ru": "В этом уроке мы изучим точное сравнение 'A比B+Adj+多了', конструкцию 'A不如B' и приблизительные числа (数词+多/几).", "tj": "Дар ин дарс мо сохти муқоисаи дақиқи 'A比B+Adj+多了', сохти 'A不如B' ва рақамҳои тахминӣ (数词+多/几)-ро меомӯзем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "数学", "pinyin": "shùxué", "pos": "n", "uz": "matematika", "ru": "математика", "tj": "математика"},
         {"no": 2, "zh": "历史", "pinyin": "lìshǐ", "pos": "n", "uz": "tarix", "ru": "история", "tj": "таърих"},

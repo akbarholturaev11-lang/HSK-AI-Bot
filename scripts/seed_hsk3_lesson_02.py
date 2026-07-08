@@ -14,7 +14,7 @@ LESSON = {
     "lesson_code": "HSK3-L02",
     "title": "他什么时候回来",
     "goal": json.dumps({"uz": "Yo'nalish to'ldiruvchilari, ketma-ket harakatlar va ritorik so'roqlarni o'zlashtirish.", "ru": "Освоить направленные дополнения, последовательные действия и риторические вопросы.", "tj": "Азхудкунии иловаҳои самтнок, амалҳои пайдарпай ва саволҳои риторикӣ."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda kimningdir qaytib kelishini so'rash, ketma-ket harakatlarni ifodalash va qobiliyatga shubha bildirish o'rganiladi. Idora, ko'cha, bozor va uy muhitidagi suhbatlar orqali ko'nikmalar shakllanadi.", "ru": "В этом уроке изучается вопрос о возвращении кого-либо, выражение последовательных действий и сомнение в способности. Навыки формируются через диалоги в офисе, на улице, на рынке и дома.", "tj": "Дар ин дарс пурсидан дар бораи баргаштани касе, ифодаи амалҳои пайдарпай ва шубҳа дар қобилият омӯхта мешавад. Малакаҳо тавассути муколамаҳо дар идора, кӯча, бозор ва хона ташаккул меёбанд."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda kimningdir qaytib kelishini so'rash, ketma-ket harakatlarni ifodalash va qobiliyatga shubha bildirish o'rganiladi. Idora, ko'cha, bozor va uy muhitidagi suhbatlar orqali ko'nikmalar shakllanadi.", "ru": "В этом уроке изучается вопрос о возвращении кого-либо, выражение последовательных действий и сомнение в способности. Навыки формируются через диалоги в офисе, на улице, на рынке и дома.", "tj": "Дар ин дарс пурсидан дар бораи баргаштани касе, ифодаи амалҳои пайдарпай ва шубҳа дар қобилият омӯхта мешавад. Малакаҳо бо ёрии гуфтугӯҳо дар идора, кӯча, бозор ва хона ташаккул меёбанд."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "腿",    "pinyin": "tuǐ",        "pos": "n.",   "uz": "oyoq (son va boldirdan iborat)",  "ru": "нога (бедро и голень)",          "tj": "по (аз ронак то пои по)"},
         {"no": 2,  "zh": "疼",    "pinyin": "téng",       "pos": "v.",   "uz": "og'riqli bo'lmoq, og'rimoq",     "ru": "болеть, быть болезненным",       "tj": "дард кардан, дарднок будан"},
@@ -111,7 +111,7 @@ LESSON = {
                 "Иловаҳои самтнок аз 来 ё 去, ки ба феъл ҳамроҳ мешаванд, иборатанд.\n"
                 "来 — ҳаракат ба сӯи гӯянда ё нуқтаи муайян;\n"
                 "去 — ҳаракат аз гӯянда ё аз нуқта.\n"
-                "Сохтор: Феъл + 来/去\n"
+                "Сохт: Феъл + 来/去\n"
                 "Масалан: 回来 (баргаштан), 进去 (дохил шудан), 上来 (боло омадан),\n"
                 "         拿回来 (бо худ оварадан), 跑进去 (давида дохил шудан)."
             ),
@@ -250,7 +250,7 @@ LESSON = {
             "no": 2,
             "instruction_uz": "Kundalik hayotingizda ketma-ket bajariladigan ishlar haqida 5-6 gapdan iborat matn yozing. 先……然后…… qolipini ishlating.",
             "instruction_ru": "Напишите текст из 5–6 предложений о последовательных делах в вашей повседневной жизни. Используйте конструкцию 先……然后……",
-            "instruction_tj": "Дар бораи корҳои пайдарпае, ки дар ҳаёти рӯзмарраи худ анҷом медиҳед, матни 5-6 ҷумлагӣ нависед. Сохтори 先……然后……-ро истифода баред.",
+            "instruction_tj": "Дар бораи корҳои пайдарпае, ки дар ҳаёти рӯзмарраи худ анҷом медиҳед, матни 5-6 ҷумлагӣ нависед. Сохти 先……然后……-ро истифода баред.",
             "topic_uz": "Mening kundalik tartibim",
             "topic_ru": "Мой распорядок дня",
             "topic_tj": "Тартиби рӯзонаи ман",

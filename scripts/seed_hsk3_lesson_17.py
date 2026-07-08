@@ -112,7 +112,7 @@ LESSON = {
             "title_tj": "根据 + исм (дар асоси ҳолат/натиҷа/пешниҳод)",
             "rule_uz": "'根据' predlogi = asosida, ko'ra, muvofiq. Tuzilma: 根据 + ot/gap + predikativ. Ingilizcha 'based on / according to' ga o'xshaydi. Ko'pincha tavsiya, qaror yoki tahlilda ishlatiladi.",
             "rule_ru": "Предлог '根据' = на основании, согласно, исходя из. Структура: 根据 + существительное/предложение + предикат. Похоже на английское 'based on / according to'. Часто используется при советах, решениях или анализе.",
-            "rule_tj": "Пешоянди '根据' = дар асоси, мувофиқ, аз рӯи. Сохтор: 根据 + исм/ҷумла + хабар. Ба 'based on / according to'-и инглисӣ монанд аст. Зиёдтар дар тавсия, қарор ё таҳлил истифода мешавад.",
+            "rule_tj": "Пешоянди '根据' = дар асоси, мувофиқ, аз рӯи. Сохт: 根据 + исм/ҷумла + хабар. Ба 'based on / according to'-и инглисӣ монанд аст. Зиёдтар дар тавсия, қарор ё таҳлил истифода мешавад.",
             "examples": [
                 {"zh": "根据你的情况，建议你多休息。", "pinyin": "Gēnjù nǐ de qíngkuàng, jiànyì nǐ duō xiūxi.", "uz": "Holatingizga ko'ra, ko'proq dam olishingizni tavsiya qilaman.", "ru": "Исходя из вашей ситуации, рекомендую больше отдыхать.", "tj": "Мувофиқи ҳолататон, тавсия медиҳам бештар истироҳат кунед."},
                 {"zh": "根据检查结果，你的身体很健康。", "pinyin": "Gēnjù jiǎnchá jiéguǒ, nǐ de shēntǐ hěn jiànkāng.", "uz": "Tekshiruv natijalariga ko'ra, sog'ligingiz juda yaxshi.", "ru": "По результатам осмотра, ваше здоровье очень хорошее.", "tj": "Мувофиқи натиҷаи муоина, саломатиатон хеле хуб аст."}

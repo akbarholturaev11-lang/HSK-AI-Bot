@@ -72,7 +72,7 @@
             { "zh": "怀疑", "py": "huáiyí", "label": { "uz": "Shubhalanmoq", "ru": "Сомневаться", "tj": "Шубҳа кардан" } }
           ] },
         { "no": 10, "type": "text_choice", "stem_zh": "通过这次经历，他___了很多。",
-          "stem": { "uz": "“Bu tajriba orqali ko'p narsa ___” (o'rgandi/o'sdi).", "ru": "«Через этот опыт он многому ___» (научился).", "tj": "«Тавассути ин таҷриба ӯ бисёр чиз ___» (омӯхт)." },
+          "stem": { "uz": "“Bu tajriba orqali ko'p narsa ___” (o'rgandi/o'sdi).", "ru": "«Через этот опыт он многому ___» (научился).", "tj": "«Бо ёрии ин таҷриба ӯ бисёр чиз ___» (омӯхт)." },
           "options": [
             { "zh": "成长", "py": "chéngzhǎng", "label": { "uz": "ulg'aymoq/o'smoq", "ru": "вырасти", "tj": "камол ёфтан" }, "ok": 1 },
             { "zh": "出发", "py": "chūfā", "label": { "uz": "yo'lga chiqmoq", "ru": "отправляться", "tj": "ба роҳ баромадан" } },

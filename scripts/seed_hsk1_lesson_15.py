@@ -13,8 +13,8 @@ LESSON = {
     "lesson_order": 15,
     "lesson_code": "HSK1-L15",
     "title": "我是坐飞机来的",
-    "goal": json.dumps({"uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash", "ru": "Конструкция 是……的 — выделение времени, места и способа действия", "tj": "Сохтори 是……的 — таъкиди вақт, ҷой ва усули амал"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "O'n beshinchi — oxirgi darsda 是……的 konstruktsiyasini ishlatib, biror harakatning qachon, qayerda va qanday bajarilganini ta'kidlashni o'rganasiz. 9 ta yangi so'z, 3 ta suhbat.", "ru": "В пятнадцатом — финальном — уроке вы научитесь использовать конструкцию 是……的, чтобы подчеркнуть, когда, где и как было совершено действие. 9 новых слов, 3 диалога.", "tj": "Дар дарси понздаҳум — дарси охирӣ — шумо ёд мегиред, ки чӣ гуна сохтори 是……的-ро барои таъкид кардани вақт, ҷой ва усули амал истифода барем. 9 калимаи нав, 3 муколама."}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash", "ru": "Конструкция 是……的 — выделение времени, места и способа действия", "tj": "Сохти 是……的 — таъкиди вақт, ҷой ва усули амал"}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "O'n beshinchi — oxirgi darsda 是……的 konstruktsiyasini ishlatib, biror harakatning qachon, qayerda va qanday bajarilganini ta'kidlashni o'rganasiz. 9 ta yangi so'z, 3 ta suhbat.", "ru": "В пятнадцатом — финальном — уроке вы научитесь использовать конструкцию 是……的, чтобы подчеркнуть, когда, где и как было совершено действие. 9 новых слов, 3 диалога.", "tj": "Дар дарси понздаҳум — дарси охирӣ — шумо ёд мегиред, ки чӣ гуна сохти 是……的-ро барои таъкид кардани вақт, ҷой ва усули амал истифода барем. 9 калимаи нав, 3 гуфтугӯ."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "认识",  "pinyin": "rènshi",   "pos": "v.",   "uz": "tanish bo'lmoq, uchrashmoq",     "ru": "знать, познакомиться",          "tj": "шинохтан, шинос шудан"},
         {"no": 2, "zh": "年",    "pinyin": "nián",     "pos": "n.",   "uz": "yil",                            "ru": "год",                           "tj": "сол"},
@@ -75,7 +75,7 @@ LESSON = {
             "title_zh": "是……的 — Vaqt, joy va usulni ta'kidlash",
             "title_uz": "是……的 konstruktsiyasi — vaqt, joy va usulni ta'kidlash",
             "title_ru": "Конструкция 是……的 — выделение времени, места и способа",
-            "title_tj": "Сохтори 是……的 — таъкиди вақт, ҷой ва усул",
+            "title_tj": "Сохти 是……的 — таъкиди вақт, ҷой ва усул",
             "rule_uz": (
                 "是……的 konstruktsiyasi allaqachon sodir bo'lgan harakatning "
                 "vaqti, joyi yoki usulini ta'kidlash uchun ishlatiladi.\n\n"
@@ -105,9 +105,9 @@ LESSON = {
                 "我不是坐出租车来的。— Я не приехал на такси."
             ),
             "rule_tj": (
-                "Сохтори 是……的 барои таъкид кардани вақт, ҷой ё усули "
+                "Сохти 是……的 барои таъкид кардани вақт, ҷой ё усули "
                 "амали аллакай анҷомёфта истифода мешавад.\n\n"
-                "Сохтор:\n"
+                "Сохт:\n"
                 "Мубтадо + 是 + [Вақт/Ҷой/Усул] + Феъл + 的\n\n"
                 "Таъкиди вақт:\n"
                 "我们是2011年认识的。— Мо дар соли 2011 шинос шудем.\n\n"

@@ -13,8 +13,8 @@ LESSON = {
     "lesson_order": 8,
     "lesson_code": "HSK2-L08",
     "title": "让我想想再告诉你",
-    "goal": json.dumps({"uz": "Taklif so'rash, ruxsat berish va harakatni keyinga qoldirish haqida gapira olish; '……好吗' savol qolipini, 再 ravishin, 让 pivotal fe'lni va fe'llarning takrorlanishini o'zlashtirish.", "ru": "Научиться просить разрешения, откладывать действие; освоить вопросную конструкцию '……好吗', наречие 再, глагол-пивот 让 и удвоение глаголов.", "tj": "Омӯзиши хостани иҷозат, ба баъд гузоштани амал; аз бар кардани сохтори саволии '……好吗', зарфи 再, феъли пивотии 让 ва такрори феълҳо."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda biror narsani so'rash, kutish va qaror qilishni kechiktirish kabi kundalik vaziyatlar o'rganiladi. Kinoga borish, do'stni ko'rish va mehmonxona muammolari mavzularida gapira olasiz. Asosiy grammatik mavzular: '……好吗' savol qolipi, 再 (yana, keyin) ravishi, 让 pivotal fe'li va fe'llarning takrorlanishi.", "ru": "В этом уроке изучаются повседневные ситуации: просьба, ожидание, откладывание решения. Вы сможете говорить о походе в кино, посещении друга и проблемах в гостинице. Основные грамматические темы: вопросная конструкция '……好吗', наречие 再 (снова, потом), глагол-пивот 让 и удвоение глаголов.", "tj": "Дар ин дарс вазъиятҳои рӯзмарра омӯхта мешаванд: дархост кардан, интизор мондан ва ба баъд гузоштани қарор. Шумо метавонед дар бораи рафтан ба кино, дидани дӯст ва мушкилоти меҳмонхона гап занед. Мавзӯҳои асосии грамматикӣ: сохтори саволии '……好吗', зарфи 再 (боз, баъд), феъли пивотии 让 ва такрори феълҳо."}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "Taklif so'rash, ruxsat berish va harakatni keyinga qoldirish haqida gapira olish; '……好吗' savol qolipini, 再 ravishin, 让 pivotal fe'lni va fe'llarning takrorlanishini o'zlashtirish.", "ru": "Научиться просить разрешения, откладывать действие; освоить вопросную конструкцию '……好吗', наречие 再, глагол-пивот 让 и удвоение глаголов.", "tj": "Омӯзиши хостани иҷозат, ба баъд гузоштани амал; аз бар кардани сохти саволии '……好吗', зарфи 再, феъли пивотии 让 ва такрори феълҳо."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda biror narsani so'rash, kutish va qaror qilishni kechiktirish kabi kundalik vaziyatlar o'rganiladi. Kinoga borish, do'stni ko'rish va mehmonxona muammolari mavzularida gapira olasiz. Asosiy grammatik mavzular: '……好吗' savol qolipi, 再 (yana, keyin) ravishi, 让 pivotal fe'li va fe'llarning takrorlanishi.", "ru": "В этом уроке изучаются повседневные ситуации: просьба, ожидание, откладывание решения. Вы сможете говорить о походе в кино, посещении друга и проблемах в гостинице. Основные грамматические темы: вопросная конструкция '……好吗', наречие 再 (снова, потом), глагол-пивот 让 и удвоение глаголов.", "tj": "Дар ин дарс вазъиятҳои рӯзмарра омӯхта мешаванд: дархост кардан, интизор мондан ва ба баъд гузоштани қарор. Шумо метавонед дар бораи рафтан ба кино, дидани дӯст ва мушкилоти меҳмонхона гап занед. Мавзӯҳои асосии грамматикӣ: сохти саволии '……好吗', зарфи 再 (боз, баъд), феъли пивотии 让 ва такрори феълҳо."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "再",    "pinyin": "zài",      "pos": "adv.", "uz": "yana, keyin, qayta (kelajak uchun)",        "ru": "снова, потом, опять (о будущем)",         "tj": "боз, баъд, дубора (барои оянда)"},
         {"no": 2,  "zh": "让",    "pinyin": "ràng",     "pos": "v.",   "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",         "ru": "позволять, разрешать; приказывать",        "tj": "иҷозат додан; дастур додан"},
@@ -90,7 +90,7 @@ LESSON = {
             "title_zh": "疑问句“……，好吗”",
             "title_uz": "Savol qolipi '……，好吗' (bo'ladimi?, xopmi?)",
             "title_ru": "Вопросная конструкция '……，好吗' (хорошо?, ладно?)",
-            "title_tj": "Сохтори саволии '……，好吗' (хуб аст?, розӣ?)",
+            "title_tj": "Сохти саволии '……，好吗' (хуб аст?, розӣ?)",
             "rule_uz": (
                 "'……，好吗？' qolipida biror taklif yoki iltimos yumshoq tarzda bildiriladi.\n"
                 "Gap oxirida '好吗？' qo'shiladi va 'bo'ladimi?, xopmi?' ma'nosini beradi.\n"
@@ -102,7 +102,7 @@ LESSON = {
                 "Соответствует русскому 'сделаем?, ладно?'."
             ),
             "rule_tj": (
-                "Сохтори '……，好吗？' барои ба таври нарм пешниҳод ё илтимос кардан истифода мешавад.\n"
+                "Сохти '……，好吗？' барои ба таври нарм пешниҳод ё илтимос кардан истифода мешавад.\n"
                 "Дар охири ҷумла '好吗？' илова мешавад бо маъноии 'хуб аст?, розӣ?'.\n"
                 "Ба тоҷикӣ 'мекунем?, розӣ?' мувофиқат мекунад."
             ),
@@ -157,7 +157,7 @@ LESSON = {
             ),
             "rule_tj": (
                 "Дар ҷумлаи пивотӣ пуркунандаи феъли аввал мубтадои феъли дуввум мегардад.\n"
-                "Дар сохтори '让 + шахс + феъл': 让 — иҷозат додан/дастур додан,\n"
+                "Дар сохти '让 + шахс + феъл': 让 — иҷозат додан/дастур додан,\n"
                 "баъд шахси дигар ва амали ӯ меояд.\n"
                 "'叫 + шахс + феъл' ҳам ба ҳамин намуд дохил мешавад."
             ),
@@ -256,7 +256,7 @@ LESSON = {
             "no": 2,
             "instruction_uz": "Do'stingizga biror taklif qilib, '……好吗？' va '让……' qoliplaridan foydalanib kichik suhbat yozing (6-8 gap).",
             "instruction_ru": "Напишите небольшой диалог с другом, предлагая что-нибудь, используя '……好吗？' и '让……' (6–8 реплик).",
-            "instruction_tj": "Бо дӯстатон муколамаи хурде нависед, чизеро пешниҳод карда, аз '……好吗？' ва '让……' истифода баред (6-8 ҷумла).",
+            "instruction_tj": "Бо дӯстатон гуфтугӯи хурде нависед, чизеро пешниҳод карда, аз '……好吗？' ва '让……' истифода баред (6-8 ҷумла).",
             "topic_uz": "Do'st bilan suhbat",
             "topic_ru": "Разговор с другом",
             "topic_tj": "Суҳбат бо дӯст",

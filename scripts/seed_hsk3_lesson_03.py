@@ -14,7 +14,7 @@ LESSON = {
     "lesson_code": "HSK3-L03",
     "title": "桌子上放着很多饮料",
     "goal": json.dumps({"uz": "'还是' va '或者' farqini, mavjudlik gapini va '会' ehtimol ma'nosini o'zlashtirish.", "ru": "Освоить разницу 还是/或者, предложение существования и значение вероятности 会.", "tj": "Азхудкунии фарқи 还是/或者, ҷумлаи мавҷудият ва маънои эҳтимолии 会."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda tanlov ifodalash, narsa mavjudligini tasvirlash va ehtimol bildirish o'rganiladi. Uy ziyofati, do'kon, tog' sayohati va mehmonxona muhitidagi suhbatlar orqali ko'nikmalar shakllanadi.", "ru": "В этом уроке изучается выражение выбора, описание существования предмета и вероятности. Навыки формируются через диалоги на вечеринке, в магазине, в горах и в гостинице.", "tj": "Дар ин дарс ифодаи интихоб, тасвири мавҷудияти чиз ва эҳтимол омӯхта мешавад. Малакаҳо тавассути муколамаҳо дар зиёфат, дӯкон, кӯҳ ва меҳмонхона ташаккул меёбанд."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda tanlov ifodalash, narsa mavjudligini tasvirlash va ehtimol bildirish o'rganiladi. Uy ziyofati, do'kon, tog' sayohati va mehmonxona muhitidagi suhbatlar orqali ko'nikmalar shakllanadi.", "ru": "В этом уроке изучается выражение выбора, описание существования предмета и вероятности. Навыки формируются через диалоги на вечеринке, в магазине, в горах и в гостинице.", "tj": "Дар ин дарс ифодаи интихоб, тасвири мавҷудияти чиз ва эҳтимол омӯхта мешавад. Малакаҳо бо ёрии гуфтугӯҳо дар зиёфат, дӯкон, кӯҳ ва меҳмонхона ташаккул меёбанд."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1,  "zh": "还是",  "pinyin": "háishi",   "pos": "conj.", "uz": "yoki (so'roqda)",                  "ru": "или (в вопросе)",                 "tj": "ё (дар савол)"},
         {"no": 2,  "zh": "或者",  "pinyin": "huòzhě",   "pos": "conj.", "uz": "yoki (darak gapda)",               "ru": "или (в утверждении)",             "tj": "ё (дар изҳор)"},
@@ -137,8 +137,8 @@ LESSON = {
                 "  墙上挂着一幅画。(На стене висит картина.)"
             ),
             "rule_tj": (
-                "Ин сохтор мавҷудияти чизеро дар ҷое тасвир мекунад.\n"
-                "Сохтор: Ҷой + V + 着 + шумор + исм\n"
+                "Ин сохт мавҷудияти чизеро дар ҷое тасвир мекунад.\n"
+                "Сохт: Ҷой + V + 着 + шумор + исм\n"
                 "着 — ҳолати давомандаро нишон медиҳад (гузошта, хобида, овехта).\n"
                 "Масалан:\n"
                 "  桌子上放着很多饮料。(Рӯйи миз нӯшокиҳои зиёд гузошта шудааст.)\n"
@@ -248,7 +248,7 @@ LESSON = {
             "no": 2,
             "instruction_uz": "Xonangizni tasvirlab, 放着 qolipini ishlatib 5-6 gap yozing.",
             "instruction_ru": "Опишите свою комнату, используя конструкцию 放着, 挂着 — 5–6 предложений.",
-            "instruction_tj": "Утоқи худро тасвир кунед, сохторҳои 放着, 挂着-ро истифода баред — 5-6 ҷумла.",
+            "instruction_tj": "Утоқи худро тасвир кунед, сохтҳои 放着, 挂着-ро истифода баред — 5-6 ҷумла.",
             "topic_uz": "Mening xonam", "topic_ru": "Моя комната", "topic_tj": "Утоқи ман",
         },
     ], ensure_ascii=False),

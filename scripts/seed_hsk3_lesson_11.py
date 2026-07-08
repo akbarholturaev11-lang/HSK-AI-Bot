@@ -12,8 +12,8 @@ LESSON = {
     "lesson_order": 11,
     "lesson_code": "HSK3-L11",
     "title": json.dumps({"zh": "别忘了把空调关了", "uz": "Konditsionerni o'chirishni unutma", "ru": "Не забудь выключить кондиционер", "tj": "Фаромӯш накун ки кондитсионерро хомӯш кунӣ"}, ensure_ascii=False),
-    "goal": json.dumps({"uz": "把-konstruktsiyasi (1-qism), taxminiy sonlar '左右' va fe'l+了+ob'ekt+了 o'rganish", "ru": "Изучить конструкцию 把 (часть 1), приблизительные числа '左右' и Гл+了+объект+了", "tj": "Омӯхтани сохтори 把 (қисми 1), рақамҳои тахминии '左右' ва Ф+了+объект+了"}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda '把'-konstruktsiyasining asosiy qo'llanishini, '左右' taxminiy ko'rsatkichini va 'F+了+OB+了' iborasini o'rganamiz.", "ru": "В этом уроке мы изучим основное использование конструкции '把', показатель приблизительности '左右' и выражение 'Гл+了+объект+了'.", "tj": "Дар ин дарс мо истифодаи асосии сохтори '把', нишондиҳандаи тахминии '左右' ва ибораи 'Ф+了+объект+了'-ро меомӯзем."}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "把-konstruktsiyasi (1-qism), taxminiy sonlar '左右' va fe'l+了+ob'ekt+了 o'rganish", "ru": "Изучить конструкцию 把 (часть 1), приблизительные числа '左右' и Гл+了+объект+了", "tj": "Омӯхтани сохти 把 (қисми 1), рақамҳои тахминии '左右' ва Ф+了+объект+了"}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda '把'-konstruktsiyasining asosiy qo'llanishini, '左右' taxminiy ko'rsatkichini va 'F+了+OB+了' iborasini o'rganamiz.", "ru": "В этом уроке мы изучим основное использование конструкции '把', показатель приблизительности '左右' и выражение 'Гл+了+объект+了'.", "tj": "Дар ин дарс мо истифодаи асосии сохти '把', нишондиҳандаи тахминии '左右' ва ибораи 'Ф+了+объект+了'-ро меомӯзем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "空调", "pinyin": "kōngtiáo", "pos": "n", "uz": "konditsioner", "ru": "кондиционер", "tj": "кондитсионер"},
         {"no": 2, "zh": "关", "pinyin": "guān", "pos": "v", "uz": "o'chirmoq, yopmoq", "ru": "выключать, закрывать", "tj": "хомӯш кардан, бастан"},
@@ -81,10 +81,10 @@ LESSON = {
             "title_zh": "把字句①：把 + O + V + 结果/趋向补语",
             "title_uz": "把-konstruktsiyasi①: 把 + OB + F + natija/yo'nalish to'ldiruvchisi",
             "title_ru": "Конструкция 把①: 把 + объект + Гл + результатное/направленное дополнение",
-            "title_tj": "Сохтори 把①: 把 + объект + Ф + пуркунандаи натиҷа/самт",
+            "title_tj": "Сохти 把①: 把 + объект + Ф + пуркунандаи натиҷа/самт",
             "rule_uz": "'把'-konstruktsiyasi ob'ektga nisbatan harakatning natijasini ta'kidlaydi. Tuzilma: Subekt + 把 + ob'ekt + fe'l + natija. Fe'l yolg'iz kelmaydi, oldida yoki keyin qo'shimcha element bo'lishi kerak.",
             "rule_ru": "Конструкция '把' подчёркивает результат действия над объектом. Структура: Подлежащее + 把 + объект + глагол + результат. Глагол не стоит один, нужен дополнительный элемент.",
-            "rule_tj": "Сохтори '把' натиҷаи амал нисбат ба объектро таъкид мекунад. Сохтор: Мубтадо + 把 + объект + феъл + натиҷа. Феъл танҳо намеояд, унсури иловагӣ лозим аст.",
+            "rule_tj": "Сохти '把' натиҷаи амал нисбат ба объектро таъкид мекунад. Сохт: Мубтадо + 把 + объект + феъл + натиҷа. Феъл танҳо намеояд, унсури иловагӣ лозим аст.",
             "examples": [
                 {"zh": "把空调关了！", "pinyin": "Bǎ kōngtiáo guān le!", "uz": "Konditsionerni o'chir!", "ru": "Выключи кондиционер!", "tj": "Кондитсионерро хомӯш кун!"},
                 {"zh": "他把书放到桌子上了。", "pinyin": "Tā bǎ shū fàng dào zhuōzi shàng le.", "uz": "U kitobni stolga qo'ydi.", "ru": "Он положил книгу на стол.", "tj": "Вай китобро ба болои миз монд."}
@@ -112,7 +112,7 @@ LESSON = {
             "title_tj": "Феъл + 了 + объект + 了 (амал тамом шудааст)",
             "rule_uz": "Bu tuzilma harakatning allaqachon tugallanganini yoki o'zgarish yuz berganini bildiradi. Birinchi 了 fe'ldan keyin, ikkinchisi gap oxirida keladi. Masalan: 关了门了 = eshikni allaqachon yopdim.",
             "rule_ru": "Эта конструкция указывает на то, что действие уже завершено или произошло изменение. Первое 了 ставится после глагола, второе — в конце предложения. Например: 关了门了 = уже закрыл дверь.",
-            "rule_tj": "Ин сохтор нишон медиҳад, ки амал аллакай тамом шудааст ё тағйироте рух додааст. Аввалин 了 баъди феъл, дуввум — охири ҷумла меояд. Масалан: 关了门了 = аллакай дарро бастам.",
+            "rule_tj": "Ин сохт нишон медиҳад, ки амал аллакай тамом шудааст ё тағйироте рух додааст. Аввалин 了 баъди феъл, дуввум — охири ҷумла меояд. Масалан: 关了门了 = аллакай дарро бастам.",
             "examples": [
                 {"zh": "我把空调关了。", "pinyin": "Wǒ bǎ kōngtiáo guān le.", "uz": "Men konditsionerni o'chirdim.", "ru": "Я выключил кондиционер.", "tj": "Ман кондитсионерро хомӯш кардам."},
                 {"zh": "他吃了饭了，不饿了。", "pinyin": "Tā chī le fàn le, bú è le.", "uz": "U ovqat yedi, endi och emas.", "ru": "Он уже поел, больше не голоден.", "tj": "Вай хӯрок хӯрд, дигар гурусна нест."}
@@ -179,7 +179,7 @@ LESSON = {
         }
     ], ensure_ascii=False),
     "homework_json": json.dumps([
-        {"task_no": 1, "uz": "'把'-konstruktsiyasidan foydalanib, uyda bajariladigan 5 ta ish haqida jumla tuzing (masalan: eshikni yopish, chiroqni o'chirish).", "ru": "Составьте 5 предложений о домашних делах, используя конструкцию '把' (например: закрыть дверь, выключить свет).", "tj": "5 ҷумла дар бораи корҳои хонагӣ бо сохтори '把' тартиб диҳед (масалан: бастани дар, хомӯш кардани чароғ)."},
+        {"task_no": 1, "uz": "'把'-konstruktsiyasidan foydalanib, uyda bajariladigan 5 ta ish haqida jumla tuzing (masalan: eshikni yopish, chiroqni o'chirish).", "ru": "Составьте 5 предложений о домашних делах, используя конструкцию '把' (например: закрыть дверь, выключить свет).", "tj": "5 ҷумла дар бораи корҳои хонагӣ бо сохти '把' тартиб диҳед (масалан: бастани дар, хомӯш кардани чароғ)."},
         {"task_no": 2, "uz": "'左右' ishlatib, 3 ta jumla yozing: qancha vaqt, qancha masofa yoki qancha narsangiz borligini aytib bering.", "ru": "Напишите 3 предложения с '左右' о времени, расстоянии или количестве чего-либо.", "tj": "3 ҷумла бо '左右' нависед: дар бораи вақт, масофа ё миқдори чизе."}
     ], ensure_ascii=False),
     "is_active": True

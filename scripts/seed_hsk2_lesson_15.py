@@ -14,7 +14,7 @@ LESSON = {
     "lesson_code": "HSK2-L15",
     "title": "新年就要到了",
     "goal": json.dumps({"uz": "Yaqin kelajakda bo'ladigan voqeani bildiruvchi '要……了' / '快要……了' va '都……了' konstruktsiyalarini o'rganish.", "ru": "Изучение конструкций '要……了' / '快要……了' для выражения ближайшего будущего и конструкции '都……了'.", "tj": "Омӯзиши конструксияҳои '要……了' / '快要……了' барои ифодаи оянда ва '都……了'."}, ensure_ascii=False),
-    "intro_text": json.dumps({"uz": "Bu darsda yangi yil va tadbirga tayyorlanish mavzusida gaplashamiz. '就要……了' (yaqinda bo'ladi) va '快要……了' (tez orada bo'ladi) konstruktsiyalari orqali yaqin kelajakdagi hodisalarni ifodalashni o'rganamiz. Shuningdek, '都……了' iborasi yordamida vaqt yoki miqdorning ortiqligini ta'kidlashni mashq qilamiz.", "ru": "На этом уроке мы говорим о подготовке к новому году и мероприятиям. Учимся выражать предстоящие события с помощью конструкций '就要……了' (скоро будет) и '快要……了' (вот-вот будет). Также отрабатываем конструкцию '都……了' для выражения того, что времени или количества уже много.", "tj": "Дар ин дарс дар бораи тайёрӣ ба соли нав ва тадбирҳо сухан мезанем. Тавассути конструксияҳои '就要……了' (наздик мешавад) ва '快要……了' (зуд мешавад) рӯйдодҳои оянда ро ифода мекунем. Инчунин конструксияи '都……了' барои таъкиди зиёд будани вақт ё миқдорро машқ мекунем."}, ensure_ascii=False),
+    "intro_text": json.dumps({"uz": "Bu darsda yangi yil va tadbirga tayyorlanish mavzusida gaplashamiz. '就要……了' (yaqinda bo'ladi) va '快要……了' (tez orada bo'ladi) konstruktsiyalari orqali yaqin kelajakdagi hodisalarni ifodalashni o'rganamiz. Shuningdek, '都……了' iborasi yordamida vaqt yoki miqdorning ortiqligini ta'kidlashni mashq qilamiz.", "ru": "На этом уроке мы говорим о подготовке к новому году и мероприятиям. Учимся выражать предстоящие события с помощью конструкций '就要……了' (скоро будет) и '快要……了' (вот-вот будет). Также отрабатываем конструкцию '都……了' для выражения того, что времени или количества уже много.", "tj": "Дар ин дарс дар бораи тайёрӣ ба соли нав ва тадбирҳо сухан мезанем. Бо ёрии конструксияҳои '就要……了' (наздик мешавад) ва '快要……了' (зуд мешавад) рӯйдодҳои оянда ро ифода мекунем. Инчунин конструксияи '都……了' барои таъкиди зиёд будани вақт ё миқдорро машқ мекунем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "日", "pinyin": "rì", "pos": "n.", "uz": "kun, sana", "ru": "день, дата", "tj": "рӯз, сана"},
         {"no": 2, "zh": "新年", "pinyin": "xīnnián", "pos": "n.", "uz": "yangi yil", "ru": "новый год", "tj": "соли нав"},
@@ -133,7 +133,7 @@ LESSON = {
             ),
             "rule_tj": (
                 "Зарфи '更' пеш аз сифат ё зарф меояд ва муқоисаро тақвият медиҳад: 'ҳатто бештар, боз ҳам зиёдтар'.\n"
-                "Сохтор: A 比 B 更 + сифат (A аз B ҳатто … бештар).\n"
+                "Сохт: A 比 B 更 + сифат (A аз B ҳатто … бештар).\n"
                 "'更' мустақилона ҳам истифода мешавад: '我希望明年更好' (Умедворам соли оянда боз ҳам беҳтар шавад).\n"
                 "Дар баъзе контекстҳо бо '还' (hái) иваз шуда метавонад."
             ),

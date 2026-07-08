@@ -12,7 +12,7 @@ LESSON = {
     "lesson_order": 12,
     "lesson_code": "HSK3-L12",
     "title": json.dumps({"zh": "把重要的东西放在我这儿吧", "uz": "Muhim narsalarni men oldimda qoldir", "ru": "Оставь важные вещи у меня", "tj": "Чизҳои муҳимро пеши ман монд"}, ensure_ascii=False),
-    "goal": json.dumps({"uz": "'才' va '就' farqi, '把'-konstruktsiyasi 2-qism va '让+odam+F' iborasi", "ru": "Разница '才' и '就', конструкция '把' часть 2, выражение '让+человек+Гл'", "tj": "Фарқи '才' ва '就', сохтори '把' қисми 2, ибораи '让+одам+Ф'"}, ensure_ascii=False),
+    "goal": json.dumps({"uz": "'才' va '就' farqi, '把'-konstruktsiyasi 2-qism va '让+odam+F' iborasi", "ru": "Разница '才' и '就', конструкция '把' часть 2, выражение '让+человек+Гл'", "tj": "Фарқи '才' ва '就', сохти '把' қисми 2, ибораи '让+одам+Ф'"}, ensure_ascii=False),
     "intro_text": json.dumps({"uz": "Bu darsda '才' (nisbatan kech) va '就' (nisbatan erta) farqini, '把'-konstruktsiyasining V+在/到/给 shaklini va '让' causative iborasini o'rganamiz.", "ru": "В этом уроке мы изучим разницу '才' (относительно поздно) и '就' (относительно рано), форму '把+V+在/到/给' и каузативное выражение '让'.", "tj": "Дар ин дарс мо фарқи '才' (нисбатан дер) ва '就' (нисбатан зуд), шакли '把+V+в/ба/ба' ва ибораи каузативии '让'-ро меомӯзем."}, ensure_ascii=False),
     "vocabulary_json": json.dumps([
         {"no": 1, "zh": "重要", "pinyin": "zhòngyào", "pos": "adj", "uz": "muhim, ahamiyatli", "ru": "важный", "tj": "муҳим"},
@@ -95,10 +95,10 @@ LESSON = {
             "title_zh": "把字句②：把 + O + V + 在/到/给",
             "title_uz": "把-konstruktsiyasi②: 把 + OB + F + 在/到/给",
             "title_ru": "Конструкция 把②: 把 + объект + Гл + 在/到/给",
-            "title_tj": "Сохтори 把②: 把 + объект + Ф + 在/到/给",
+            "title_tj": "Сохти 把②: 把 + объект + Ф + 在/到/给",
             "rule_uz": "'把'-konstruktsiyasida fe'ldan keyin '在' (joyda), '到' (joyga) yoki '给' (kimgadir) qo'shilishi mumkin. Bu ob'ektning qayerda, qayerga yoki kimga taalluqli ekanini bildiradi.",
             "rule_ru": "В конструкции '把' после глагола может следовать '在' (на/в месте), '到' (к месту) или '给' (кому-то). Это указывает на место, пункт назначения или получателя объекта.",
-            "rule_tj": "Дар сохтори '把' баъди феъл '在' (дар ҷое), '到' (ба ҷое) ё '给' (ба касе) омада метавонад. Ин ҷойгоҳ, мақсади ҳаракат ё гирандаи объектро нишон медиҳад.",
+            "rule_tj": "Дар сохти '把' баъди феъл '在' (дар ҷое), '到' (ба ҷое) ё '给' (ба касе) омада метавонад. Ин ҷойгоҳ, мақсади ҳаракат ё гирандаи объектро нишон медиҳад.",
             "examples": [
                 {"zh": "把钥匙交给你。", "pinyin": "Bǎ yàoshi jiāo gěi nǐ.", "uz": "Kalitni sizga topshiraman.", "ru": "Отдаю ключ тебе.", "tj": "Калидро ба шумо медиҳам."},
                 {"zh": "把书放在桌子上。", "pinyin": "Bǎ shū fàng zài zhuōzi shàng.", "uz": "Kitobni stolda qoldiring.", "ru": "Положи книгу на стол.", "tj": "Китобро ба болои миз монд."}
@@ -112,7 +112,7 @@ LESSON = {
             "title_tj": "让 + одам + феъл (маҷбур кардан)",
             "rule_uz": "'让' = biror kishini biror narsa qilishiga ruxsat bermoq yoki uni shunday qilishga majbur qilmoq. Tuzilma: subekt + 让 + odam + fe'l. Salbiy: 让……别……",
             "rule_ru": "'让' = позволять кому-то сделать что-то или заставлять кого-то это делать. Структура: подлежащее + 让 + человек + глагол. Отрицание: 让……别……",
-            "rule_tj": "'让' = иҷозат додан ба касе барои кардани чизе ё маҷбур кардани вай ба ин амал. Сохтор: мубтадо + 让 + одам + феъл. Манфӣ: 让……别……",
+            "rule_tj": "'让' = иҷозат додан ба касе барои кардани чизе ё маҷбур кардани вай ба ин амал. Сохт: мубтадо + 让 + одам + феъл. Манфӣ: 让……别……",
             "examples": [
                 {"zh": "你让我放心多了。", "pinyin": "Nǐ ràng wǒ fàngxīn duō le.", "uz": "Siz meni ancha xotirjam qildingiz.", "ru": "Ты меня очень успокоил.", "tj": "Шумо маро хеле хотирҷамъ кардед."},
                 {"zh": "别让我等太久！", "pinyin": "Bié ràng wǒ děng tài jiǔ!", "uz": "Meni uzoq kutdirmang!", "ru": "Не заставляй меня долго ждать!", "tj": "Маро дер интизор нагузор!"}

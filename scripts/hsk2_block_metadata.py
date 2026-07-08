@@ -333,7 +333,7 @@ def _mini_homework(block_no: int, words: list[dict]) -> dict:
         "block_no": block_no,
         "instruction_uz": "Shu dialogdagi yangi so'zlardan 1-2 ta sodda gap yozing.",
         "instruction_ru": "Напишите 1-2 простых предложения с новыми словами этого диалога.",
-        "instruction_tj": "Бо калимаҳои нави ҳамин муколама 1-2 ҷумлаи содда нависед.",
+        "instruction_tj": "Бо калимаҳои нави ҳамин гуфтугӯ 1-2 ҷумлаи содда нависед.",
         "words": word_list,
     }
 
