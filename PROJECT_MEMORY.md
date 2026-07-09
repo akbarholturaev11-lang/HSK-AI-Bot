@@ -207,6 +207,24 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-09 — Subscription Mini App payment UI priority
+
+Changed:
+- Subscription Mini App UI now prioritizes Tajikistan cards first, shows foreign Visa/Mastercard as the second option, and groups Alipay/WeChat under one China payment block.
+- Plan display order in the Mini App starts with 1 month, then 10 days, then 3 months. Payment prices remain admin-managed and were not changed in code.
+
+Why:
+- Main paying users are in Tajikistan; showing VISA first caused confusion for users without Visa cards.
+
+Files touched:
+- `app/static/subscription.html`, `tests/e2e/test_miniapp_smoke.py`
+
+Risk:
+- UI-only change. Existing payment method codes (`visa`, `alipay`, `wechat`) and subscription/payment approval logic are unchanged.
+
+Follow-up:
+- Admin should set desired live prices in the admin Mini App.
+
 ### 2026-07-09 — Course v3 analytics funnel/onboarding/hot-user fixes
 
 Changed:

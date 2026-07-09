@@ -403,5 +403,8 @@ def test_subscription_page_smoke(page):
     page.goto(app_url("/subscription.html?lang=uz&mode=subscription"), wait_until="networkidle")
 
     expect(page.locator("#plans .plan").first).to_be_visible()
+    expect(page.locator("#plans .plan").first).to_contain_text("1 oy")
     expect(page.locator("#methods .choice").first).to_be_visible()
+    expect(page.locator("#methods .choice").first).to_contain_text("Tojikiston kartasi")
+    expect(page.locator("#nextBtn")).to_contain_text("Tojikiston kartasi")
     expect(page.locator("#paymentBox")).to_have_count(1)
