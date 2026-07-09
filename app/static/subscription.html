@@ -106,12 +106,13 @@ h1{font-size:27px;line-height:1.06;font-weight:900;letter-spacing:-.01em}
 .choice strong{display:block;font-size:14px;line-height:1.25;font-weight:850;color:var(--text)}
 .choice span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.35}
 .choice .choice-tx{flex:1;min-width:0;margin-top:0;color:inherit}
-.country-flag{flex:0 0 auto;width:50px;height:34px;border-radius:0;display:grid;place-items:center;background:transparent;font-size:44px;line-height:1;overflow:visible;box-shadow:none}
+.country-flag{flex:0 0 auto;width:46px;height:34px;border-radius:0;display:grid;place-items:center;background:transparent;font-size:38px;line-height:1;overflow:visible;box-shadow:none}
 .choice-ic{flex:0 0 auto;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:19px;font-weight:900;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.28)}
-.choice-ic.flag-ic{width:52px;border-radius:0;background:transparent;font-size:46px;line-height:1;overflow:visible;box-shadow:none}
+.choice-ic.flag-ic{width:46px;border-radius:0;background:transparent;font-size:40px;line-height:1;overflow:visible;box-shadow:none}
+.choice-ic.card-ic{font-size:28px;line-height:1}
 .choice-group{align-items:flex-start;padding-top:12px;padding-bottom:12px}
-.choice-subgrid{display:none;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.choice-subgrid.show{display:grid}
+.choice .choice-subgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.choice .choice-subgrid.show{display:grid}
 .mini-choice{min-height:42px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.05);padding:0 10px;color:var(--muted);font-size:12px;font-weight:900;text-align:center}
 .mini-choice.selected{border-color:var(--emerald);background:rgba(52,227,164,.14);color:var(--mint);box-shadow:0 0 0 1px rgba(52,227,164,.4)}
 .ic-visa{background:linear-gradient(135deg,#3a6ff7,#1f4fd6)}
@@ -1082,7 +1083,7 @@ function renderMethodChoices(text){
     parts.push(methodChoice({
       key:"foreign-card",
       icon:"💳",
-      iconClass:"ic-foreign",
+      iconClass:"ic-foreign card-ic",
       item:text.methods.foreign,
       selected:isForeignCard(),
       attr:"data-card-method=\"foreign\""
