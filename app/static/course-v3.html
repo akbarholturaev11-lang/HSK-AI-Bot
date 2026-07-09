@@ -523,6 +523,7 @@ function setSelectedLevel(lv){
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 var INIT_DATA=(tg&&tg.initData)||"";
 var PAY_SOURCE="v3_paywall";
+var CHECKOUT_NAVIGATING=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 function _apiGet(url){return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}})}
 function _apiPost(url,body){return fetch(url,{method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)})}
@@ -537,6 +538,35 @@ function trackCourseEvent(event,payload){
   body.level=body.level||((MAP&&MAP.level)||getSelectedLevel());
   body.session_id=body.session_id||COURSE_SESSION_ID;
   return _apiPost("/api/miniapp/event",body).then(function(r){return r.json()}).catch(function(){return{ok:false}});
+}
+function checkoutSourceContext(source){
+  var s=String(source||"").toLowerCase();
+  if(s.indexOf("locked")>=0)return"locked_lesson";
+  if(s.indexOf("profile")>=0)return"profile";
+  if(s.indexOf("pronunciation")>=0||s.indexOf("pron")>=0)return"pronunciation_limit";
+  if(s.indexOf("recognition")>=0||s.indexOf("photo")>=0)return"recognition_limit";
+  if(s.indexOf("test")>=0)return"test_limit";
+  if(s.indexOf("price_preview")>=0)return"v3_price_preview";
+  if(s.indexOf("menu")>=0||s.indexOf("command")>=0||s==="/subscription")return"menu_subscription";
+  return s.replace(/^v3_/,"")||"paywall";
+}
+function trackCheckoutOpenedForRedirect(source,clickId){
+  if(!INIT_DATA)return;
+  var body={
+    event:"checkout_opened",
+    source:source,
+    source_context:checkoutSourceContext(source),
+    level:(MAP&&MAP.level)||getSelectedLevel(),
+    session_id:COURSE_SESSION_ID,
+    event_id:clickId,
+    dedupe_key:clickId,
+    language:LANG
+  };
+  try{
+    var p=new URLSearchParams(location.search||"");
+    ["plan_id","plan_days","price"].forEach(function(k){if(p.get(k))body[k]=p.get(k)});
+    fetch("/api/miniapp/event",{method:"POST",headers:_apiHeaders(),body:JSON.stringify(body),keepalive:true}).catch(function(){});
+  }catch(e){}
 }
 function lessonEventKey(event,lessonOrder,suffix){
   return ["course-v3",event,(MAP&&MAP.level)||getSelectedLevel(),lessonOrder,suffix||""].join(":");
@@ -572,11 +602,15 @@ var App={
   },
   closePaywall:function(){$("#paywall").classList.remove("on");stopSheetPromo()},
   goPay:function(src){
+    if(CHECKOUT_NAVIGATING)return;
+    CHECKOUT_NAVIGATING=true;
     var source=src||PAY_SOURCE||"v3_paywall";
-    var url="/subscription.html?lang="+LANG+"&source="+source+"&mode=subscription";
+    var url="/subscription.html?lang="+LANG+"&source="+encodeURIComponent(source)+"&mode=subscription";
+    var clickId=["checkout",COURSE_SESSION_ID,Date.now(),Math.random().toString(36).slice(2,8)].join(":");
+    trackCheckoutOpenedForRedirect(source,clickId);
     /* Same-origin subscription page: navigate inside the Telegram Mini App webview,
        NOT tg.openLink (which kicks the user out to the external browser). */
-    location.href=url;
+    setTimeout(function(){location.href=url},40);
   },
   exitFlow:function(){$("#flow").classList.remove("on")},
   openWriter:function(ch){

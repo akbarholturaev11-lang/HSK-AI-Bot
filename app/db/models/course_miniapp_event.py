@@ -21,6 +21,8 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "chapter_started",
     "chapter_completed",
     "book_lesson_completed",
+    "level_completed",
+    "lesson_jump_selected",
     "card_seen",
     "interaction_completed",
     "lesson_completed",

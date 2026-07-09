@@ -66,12 +66,20 @@ class SubscriptionEntryAnalyticsServiceTests(unittest.IsolatedAsyncioTestCase):
         session = _StatsSession(
             [
                 [
-                    SimpleNamespace(source="menu_subscription", total=12, unique_users=8),
-                    SimpleNamespace(source="qa_limit", total=5, unique_users=4),
+                    SimpleNamespace(source="menu_subscription", telegram_id=1),
+                    SimpleNamespace(source="command_subscription", telegram_id=1),
+                    SimpleNamespace(source="menu_subscription", telegram_id=2),
+                    SimpleNamespace(source="qa_limit", telegram_id=3),
+                    SimpleNamespace(source="qa_limit", telegram_id=4),
+                    SimpleNamespace(source="qa_limit", telegram_id=5),
+                    SimpleNamespace(source="qa_limit", telegram_id=6),
                 ],
                 [
-                    SimpleNamespace(source="menu_subscription", total=2, unique_users=1),
-                    SimpleNamespace(source="qa_limit", total=4, unique_users=3),
+                    SimpleNamespace(source="menu_subscription", telegram_id=1),
+                    SimpleNamespace(source="command_subscription", telegram_id=1),
+                    SimpleNamespace(source="qa_limit", telegram_id=3),
+                    SimpleNamespace(source="qa_limit", telegram_id=4),
+                    SimpleNamespace(source="qa_limit", telegram_id=5),
                 ],
             ]
         )
@@ -81,8 +89,9 @@ class SubscriptionEntryAnalyticsServiceTests(unittest.IsolatedAsyncioTestCase):
         )
 
         self.assertIn("OBUNA MANBALARI", text)
-        self.assertLess(text.index("QA limit"), text.index("Menyu -&gt; Obuna"))
+        self.assertLess(text.index("QA limit"), text.index("Obuna sahifasi"))
         self.assertIn("user <b>4</b>/<b>+3</b>", text)
+        self.assertIn("user <b>2</b>/<b>+1</b>", text)
 
 
 if __name__ == "__main__":

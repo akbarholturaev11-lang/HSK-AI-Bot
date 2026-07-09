@@ -74,6 +74,10 @@ class CourseV3StaticMapTests(unittest.TestCase):
         self.assertNotIn("64 / 100", html)
         self.assertNotIn("2'+(LANG", html)
         self.assertIn("AdFlow", html)
+        self.assertIn('event:"checkout_opened"', html)
+        self.assertIn("CHECKOUT_NAVIGATING", html)
+        self.assertIn("/api/miniapp/onboarding", onboarding)
+        self.assertIn("onboarding_started", onboarding)
         self.assertIn('"&level="+sel+"&onboarded=1&tour=1"', onboarding)
 
     def test_interactive_cards_present_and_level_gated(self):

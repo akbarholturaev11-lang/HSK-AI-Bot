@@ -2985,6 +2985,7 @@ async def miniapp_onboarding(request: Request):
                 goal=str(payload.get("goal") or ""),
                 daily_minutes=int(payload.get("daily_minutes") or 0),
                 start_mode=str(payload.get("start_mode") or ""),
+                language=str(payload.get("language") or ""),
                 timezone_offset_minutes=timezone_offset,
             )
     except (TypeError, ValueError) as error:

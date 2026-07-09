@@ -375,7 +375,7 @@ class AdminFinanceStatsService:
     ) -> list[dict]:
         agg: dict[str, dict] = {}
         for p in in_period:
-            source = source_by_user.get(p.user_id, "unknown")
+            source = SubscriptionEntryAnalyticsService.source_group_key(source_by_user.get(p.user_id, "unknown"))
             bucket = agg.setdefault(source, {"revenue": 0.0, "users": set(), "payments": 0})
             bucket["revenue"] += p.usd
             bucket["users"].add(p.user_id)

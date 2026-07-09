@@ -1,5 +1,5 @@
 import unittest
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from types import SimpleNamespace
 
 from app.services.admin_stats_service import (
@@ -12,6 +12,7 @@ from app.services.admin_miniapp_service import (
     AdminMiniAppService,
     admin_miniapp_today_start,
     is_admin_active_today,
+    is_admin_course_hot_user,
     is_admin_hot_lead,
 )
 
@@ -59,7 +60,7 @@ class AdminStatsServiceTests(unittest.IsolatedAsyncioTestCase):
         # Haftalik aktiv user bo'yicha kamayish tartibida saralanishi kerak.
         self.assertEqual([f.week_users for f in features], [80, 50, 30, 20, 10, 5])
         top = features[0]
-        self.assertEqual(top.label, "🤖 AI savol-javob")
+        self.assertEqual(top.label, "🤖 AI chat aktiv user")
         self.assertEqual(top.today_users, 8)
         self.assertEqual(top.week_users, 80)
 
@@ -162,6 +163,14 @@ class AdminMiniAppServiceTests(unittest.TestCase):
 
         self.assertTrue(is_admin_active_today(active, today_start))
         self.assertFalse(is_admin_active_today(yesterday, today_start))
+
+    def test_course_hot_user_uses_course_profile_activity(self):
+        user = SimpleNamespace(bot_blocked_at=None, bot_unblocked_at=None)
+        hot_profile = SimpleNamespace(last_activity_date=date(2026, 7, 1), current_streak=4)
+        cold_profile = SimpleNamespace(last_activity_date=date(2026, 6, 28), current_streak=4)
+
+        self.assertTrue(is_admin_course_hot_user(user, hot_profile, date(2026, 6, 30)))
+        self.assertFalse(is_admin_course_hot_user(user, cold_profile, date(2026, 6, 30)))
 
     def test_monitor_chart_uses_real_payload_bars(self):
         course_stats = SimpleNamespace(

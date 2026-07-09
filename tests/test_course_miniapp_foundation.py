@@ -417,6 +417,12 @@ class CourseMiniAppProfileTests(unittest.TestCase):
 
 
 class CourseMiniAppAnalyticsTests(unittest.IsolatedAsyncioTestCase):
+    def test_server_lesson_jump_events_are_allowlisted(self):
+        from app.db.models.course_miniapp_event import COURSE_MINIAPP_EVENT_NAMES
+
+        self.assertIn("level_completed", COURSE_MINIAPP_EVENT_NAMES)
+        self.assertIn("lesson_jump_selected", COURSE_MINIAPP_EVENT_NAMES)
+
     async def test_client_cannot_write_server_completion_event(self):
         service = CourseMiniAppAnalyticsService(_FakeSession())
         result = await service.record_client_event(

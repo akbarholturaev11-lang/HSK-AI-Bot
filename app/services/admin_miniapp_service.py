@@ -11,6 +11,8 @@ from app.db.models.ai_usage import AIUsageEvent
 from app.db.models.bot_feedback import BotFeedback
 from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.db.models.course_miniapp_event import CourseMiniAppEvent
+from app.db.models.course_miniapp_profile import CourseMiniAppProfile
+from app.db.models.course_xp_event import CourseXpEvent
 from app.db.models.message import Message
 from app.db.models.payment import Payment
 from app.db.models.portfolio import PortfolioTransaction
@@ -208,6 +210,13 @@ def is_admin_hot_lead(user, hot_since: datetime) -> bool:
     )
 
 
+def is_admin_course_hot_user(user, profile, hot_start_date) -> bool:
+    if not profile or BotBlockStatusService.is_bot_blocked(user):
+        return False
+    last_day = getattr(profile, "last_activity_date", None)
+    return bool(last_day and last_day >= hot_start_date)
+
+
 def _hot_lead_filter(hot_since: datetime):
     return (
         User.status.in_(HOT_LEAD_STATUSES),
@@ -243,6 +252,8 @@ class AdminMiniAppService:
     async def overview(self) -> dict:
         now = datetime.now(timezone.utc)
         today_start = admin_miniapp_today_start(now)
+        today_date = now.astimezone(ADMIN_MINIAPP_TZ).date()
+        two_day_start_date = today_date - timedelta(days=1)
         last_24h = now - timedelta(hours=24)
         week_ago = now - timedelta(days=7)
         month_ago = now - timedelta(days=30)
@@ -284,7 +295,17 @@ class AdminMiniAppService:
         feedback_summary = await self._feedback_summary()
         source_rows = await self._subscription_sources(week_ago)
         price_rows = await self._price_rows()
-        latest_users = await self._latest_users(now, today_start=today_start, hot_since=hot_since)
+        course_hot = await self._course_activity_hot_leads(
+            today_start=today_start,
+            hot_since=hot_since,
+            today_date=today_date,
+            two_day_start_date=two_day_start_date,
+        )
+        latest_users = await self._latest_users(
+            now,
+            today_start=today_start,
+            two_day_start_date=two_day_start_date,
+        )
         latest_payments = await self._latest_payments()
 
         expired_hot = await self._count_users(
@@ -297,7 +318,7 @@ class AdminMiniAppService:
             User.end_date > now,
             User.end_date <= now + timedelta(days=3),
         )
-        hot_leads = await self._count_users(*_hot_lead_filter(hot_since))
+        hot_leads = int(course_hot.get("last_2_days_users", 0))
         qa_users = await self._count_users(User.questions_used > 0)
         conversion = _pct(paid_users, total)
         engagement = _pct(qa_users, total)
@@ -350,7 +371,12 @@ class AdminMiniAppService:
                 {"label": "Фойдаланувчилар", "value": total, "note": f"{active_today} бугун фаол", "tone": "info"},
                 {"label": "Фаол обуна", "value": paid_users, "note": "ҳозир тўловли", "tone": "good"},
                 {"label": "Тўлов текширувда", "value": pending_payments, "note": "админ кўриши керак", "tone": "warn"},
-                {"label": "Иссиқ мижозлар", "value": hot_leads, "note": "48 соат ичида фаол", "tone": "danger"},
+                {
+                    "label": "Course иссиқ user",
+                    "value": hot_leads,
+                    "note": f"бугун {course_hot.get('today_users', 0)} user · 3+ streak {course_hot.get('streak_3_users', 0)}",
+                    "tone": "danger",
+                },
             ],
             "counts": {
                 "users_total": total,
@@ -366,6 +392,10 @@ class AdminMiniAppService:
                 "active_week": active_week,
                 "expired_hot": expired_hot,
                 "hot_leads": hot_leads,
+                "course_active_today_users": course_hot.get("today_users", 0),
+                "course_active_2d_users": course_hot.get("last_2_days_users", 0),
+                "course_streak_3_users": course_hot.get("streak_3_users", 0),
+                "course_streak_7_users": course_hot.get("streak_7_users", 0),
                 "expiring_soon": expiring_soon,
                 "bot_blocked_users": bot_blocked_users,
                 "conversion": conversion,
@@ -407,6 +437,7 @@ class AdminMiniAppService:
             "ads": ad_summary,
             "feedback": feedback_summary,
             "subscription_sources": source_rows,
+            "course_hot_leads": course_hot,
             "prices": price_rows,
             "users": latest_users,
             "queue": self._queue(
@@ -647,7 +678,7 @@ class AdminMiniAppService:
                     "tone": "info",
                 },
                 {
-                    "label": "QA/user",
+                    "label": "AI chat xabar/user",
                     "value": qa["avg_per_user"],
                     "note": f"{qa['messages']} xabar · {qa['users']} user",
                     "tone": "info",
@@ -824,7 +855,7 @@ class AdminMiniAppService:
             "messages": messages,
             "users": users,
             "avg_per_user": round(messages / users, 2) if users else 0,
-            "explain": "QA message/user = oddiy savol-javob rejimida user yuborgan text xabarlar / shu davrdagi QA userlar.",
+            "explain": "AI chat message/user = user yuborgan text xabarlar / shu davrdagi AI chat aktiv userlar.",
         }
 
     async def _voice_minutes(self, *, since: datetime | None) -> dict:
@@ -1004,7 +1035,7 @@ class AdminMiniAppService:
             await self._course_feature_row("Testlar", ("test_started", "test_completed"), since, now, paid_denominator, free_denominator),
             await self._course_feature_row("Mashqlar", ("training_started", "training_completed"), since, now, paid_denominator, free_denominator),
             await self._course_feature_row("Xatolar takrori", ("mistake_review_started", "mistake_review_completed"), since, now, paid_denominator, free_denominator),
-            await self._ai_feature_row("AI savol-javob", since, now, paid_denominator, free_denominator),
+            await self._ai_feature_row("AI chat aktiv user", since, now, paid_denominator, free_denominator),
             await self._voice_feature_row("Voice roleplay", since, now, paid_denominator, free_denominator),
         ]
         rows.sort(key=lambda item: (item["paid"] + item["free"], item["paid"]), reverse=True)
@@ -1215,6 +1246,70 @@ class AdminMiniAppService:
             "values": values,
         }
 
+    async def _course_xp_user_ids_since(self, since: datetime) -> set[int]:
+        rows = (
+            await self.session.execute(
+                select(CourseXpEvent.user_id)
+                .join(User, User.id == CourseXpEvent.user_id)
+                .where(CourseXpEvent.created_at >= since, _bot_not_blocked_filter())
+                .group_by(CourseXpEvent.user_id)
+            )
+        ).all()
+        return {int(row.user_id) for row in rows if row.user_id}
+
+    async def _course_profile_activity_user_ids_since(self, start_date) -> set[int]:
+        rows = (
+            await self.session.execute(
+                select(CourseMiniAppProfile.user_id)
+                .join(User, User.id == CourseMiniAppProfile.user_id)
+                .where(CourseMiniAppProfile.last_activity_date >= start_date, _bot_not_blocked_filter())
+                .group_by(CourseMiniAppProfile.user_id)
+            )
+        ).all()
+        return {int(row.user_id) for row in rows if row.user_id}
+
+    async def _course_streak_user_count(self, min_streak: int) -> int:
+        value = (
+            await self.session.execute(
+                select(func.count(func.distinct(CourseMiniAppProfile.user_id)))
+                .select_from(CourseMiniAppProfile)
+                .join(User, User.id == CourseMiniAppProfile.user_id)
+                .where(CourseMiniAppProfile.current_streak >= int(min_streak), _bot_not_blocked_filter())
+            )
+        ).scalar()
+        return int(value or 0)
+
+    async def _course_activity_hot_leads(
+        self,
+        *,
+        today_start: datetime,
+        hot_since: datetime,
+        today_date,
+        two_day_start_date,
+    ) -> dict:
+        today_ids = (
+            await self._course_xp_user_ids_since(today_start)
+        ) | (
+            await self._course_profile_activity_user_ids_since(today_date)
+        )
+        two_day_ids = (
+            await self._course_xp_user_ids_since(hot_since)
+        ) | (
+            await self._course_profile_activity_user_ids_since(two_day_start_date)
+        )
+        streak_3 = await self._course_streak_user_count(3)
+        streak_7 = await self._course_streak_user_count(7)
+        return {
+            "today_users": len(today_ids),
+            "last_2_days_users": len(two_day_ids),
+            "streak_3_users": streak_3,
+            "streak_7_users": streak_7,
+            "explain": (
+                "Course issiq userlar CourseXpEvent.created_at va CourseMiniAppProfile.last_activity_date "
+                "unionidan olinadi; streak CourseMiniAppProfile.current_streak bo'yicha sanaladi."
+            ),
+        }
+
     async def _subscription_sources(self, week_ago: datetime) -> list[dict]:
         rows = await SubscriptionEntryAnalyticsService(self.session).source_stats(
             week_ago=week_ago,
@@ -1262,10 +1357,19 @@ class AdminMiniAppService:
             for item in prices
         ]
 
-    async def _latest_users(self, now: datetime, *, today_start: datetime, hot_since: datetime) -> list[dict]:
+    async def _latest_users(
+        self,
+        now: datetime,
+        *,
+        today_start: datetime,
+        two_day_start_date,
+    ) -> list[dict]:
         rows = (await self.session.execute(
-            select(User).order_by(User.last_active_at.desc()).limit(120)
-        )).scalars().all()
+            select(User, CourseMiniAppProfile)
+            .outerjoin(CourseMiniAppProfile, CourseMiniAppProfile.user_id == User.id)
+            .order_by(User.last_active_at.desc())
+            .limit(120)
+        )).all()
         return [
             {
                 "id": item.telegram_id,
@@ -1287,12 +1391,13 @@ class AdminMiniAppService:
                 "end_date": _dt(item.end_date),
                 "last_active": _ago(item.last_active_at, now=now),
                 "active_today": is_admin_active_today(item, today_start),
-                "hot_lead": is_admin_hot_lead(item, hot_since),
+                "hot_lead": is_admin_course_hot_user(item, profile, two_day_start_date),
                 "questions": f"{item.questions_used}/{item.question_limit}",
                 "bonus_left": max((item.bonus_questions or 0) - (item.bonus_questions_used or 0), 0),
-                "streak": item.daily_practice_streak or 0,
+                "streak": int(getattr(profile, "current_streak", 0) or 0),
+                "course_last_activity_date": str(getattr(profile, "last_activity_date", "") or ""),
             }
-            for item in rows
+            for item, profile in rows
         ]
 
     async def _latest_payments(self) -> list[dict]:
@@ -1465,7 +1570,7 @@ class AdminMiniAppService:
             f"D7 retention: {d7.get('rate', 0)}% ({d7.get('retained', 0)}/{d7.get('eligible', 0)})\n"
             f"Avg Mini App session: {session_time.get('avg_text', '—')} · session: {session_time.get('sessions', 0)}\n"
             f"Lesson time: {lesson_time.get('avg_text', '—')} · tugagan dars: {lesson_time.get('completed_lessons', 0)}\n"
-            f"QA message/user: {qa.get('avg_per_user', 0)} · xabar: {qa.get('messages', 0)} · user: {qa.get('users', 0)}\n"
+            f"AI chat message/user: {qa.get('avg_per_user', 0)} · xabar: {qa.get('messages', 0)} · user: {qa.get('users', 0)}\n"
             f"Voice minutes: {voice.get('minutes_text', '0 min')} · avg: {voice.get('avg_text', '—')}\n"
             f"Payment abandon: {funnel.get('abandon_step', '—')} · yo'qotish: {funnel.get('abandon_count', 0)} ({funnel.get('abandon_rate', 0)}%)\n"
             f"First payment time: {payment.get('first_payment_time_text', '—')} · first pay user: {payment.get('first_payment_users', 0)}\n"
@@ -1550,5 +1655,5 @@ class AdminMiniAppService:
             f"Мажбурий канал: {channel_status} · Фаол канал: {active_channels}\n\n"
             "📈 КОНВЕРСИЯ\n"
             f"Фойдаланувчи → тўловли: {conversion}%\n"
-            f"Савол берганлар: {qa_users} ({engagement}%)"
+            f"Лимит ҳисобида савол ишлатган user: {qa_users} ({engagement}%)"
         )

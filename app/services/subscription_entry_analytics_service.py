@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from html import escape
 
-from sqlalchemy import func, select
+from sqlalchemy import select
 
 from app.db.models.subscription_entry_event import SubscriptionEntryEvent
 
@@ -25,6 +25,31 @@ class SubscriptionSourceStats:
 
 
 class SubscriptionEntryAnalyticsService:
+    SOURCE_GROUP_LABELS = {
+        "subscription_page": "Obuna sahifasi",
+        "course_locked_lesson": "Qulflangan dars",
+        "pronunciation_limit": "Talaffuz limiti",
+        "recognition_limit": "Rasm/ieroglif limiti",
+        "test_limit": "Test limiti",
+        "profile": "Profil",
+        "broadcast": "Broadcast",
+    }
+    SOURCE_GROUP_ALIASES = {
+        "subscription_page": {
+            "subscription",
+            "subscription_miniapp",
+            "command_subscription",
+            "menu_subscription",
+            "subscription_open",
+            "direct_subscription",
+        },
+        "course_locked_lesson": {"course_locked", "locked_lesson", "v3_locked_lesson"},
+        "pronunciation_limit": {"pronunciation_limit", "pron_limit", "v3_pronunciation_limit"},
+        "recognition_limit": {"recognition_limit", "v3_recognition_limit", "photo_limit", "image_limit"},
+        "test_limit": {"test_limit", "v3_test_limit"},
+        "profile": {"profile", "profile_subscription", "v3_profile"},
+        "broadcast": {"broadcast", "admin_broadcast", "admin_miniapp_broadcast"},
+    }
     SOURCE_LABELS = {
         "command_subscription": "/subscription",
         "menu_subscription": "Menyu -> Obuna",
@@ -78,10 +103,20 @@ class SubscriptionEntryAnalyticsService:
 
     @classmethod
     def source_label(cls, source: str) -> str:
+        group_key = cls.source_group_key(source)
+        if group_key in cls.SOURCE_GROUP_LABELS:
+            return cls.SOURCE_GROUP_LABELS[group_key]
+        if group_key in cls.SOURCE_LABELS:
+            return cls.SOURCE_LABELS[group_key]
+        return group_key.replace("_", " ").replace("miniapp", "Mini App").title()
+
+    @classmethod
+    def source_group_key(cls, source: str | None) -> str:
         normalized = cls.normalize_source(source)
-        if normalized in cls.SOURCE_LABELS:
-            return cls.SOURCE_LABELS[normalized]
-        return normalized.replace("_", " ").replace("miniapp", "Mini App").title()
+        for group_key, aliases in cls.SOURCE_GROUP_ALIASES.items():
+            if normalized in aliases:
+                return group_key
+        return normalized
 
     async def record_entry(
         self,
@@ -122,25 +157,23 @@ class SubscriptionEntryAnalyticsService:
             return False
 
     async def _counts_by_source(self, *, since: datetime | None = None) -> dict[str, tuple[int, int]]:
-        stmt = (
-            select(
-                SubscriptionEntryEvent.source,
-                func.count().label("total"),
-                func.count(func.distinct(SubscriptionEntryEvent.telegram_id)).label("unique_users"),
-            )
-            .select_from(SubscriptionEntryEvent)
-            .group_by(SubscriptionEntryEvent.source)
-        )
+        stmt = select(
+            SubscriptionEntryEvent.source,
+            SubscriptionEntryEvent.telegram_id,
+        ).select_from(SubscriptionEntryEvent)
         if since is not None:
             stmt = stmt.where(SubscriptionEntryEvent.created_at >= since)
 
-        rows = (await self.session.execute(stmt)).fetchall()
+        grouped: dict[str, dict] = {}
+        for row in (await self.session.execute(stmt)).fetchall():
+            group_key = self.source_group_key(str(row.source or "unknown"))
+            bucket = grouped.setdefault(group_key, {"total": 0, "users": set()})
+            bucket["total"] += 1
+            if row.telegram_id:
+                bucket["users"].add(int(row.telegram_id))
         return {
-            str(row.source or "unknown"): (
-                int(row.total or 0),
-                int(row.unique_users or 0),
-            )
-            for row in rows
+            source: (int(data["total"]), len(data["users"]))
+            for source, data in grouped.items()
         }
 
     async def source_stats(self, *, week_ago: datetime, limit: int = 8) -> list[SubscriptionSourceStats]:

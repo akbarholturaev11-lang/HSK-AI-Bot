@@ -85,6 +85,38 @@ var LV=[{k:"hsk1",g:"你好",hd:"HSK 1",s:{ru:"С нуля · самый лёг�
   {k:"hsk3",g:"明白",hd:"HSK 3",s:{ru:"Повседневное общение",uz:"Kundalik muloqot",tj:"Муоширати ҳаррӯза"}},
   {k:"hsk4",g:"流利",hd:"HSK 4",s:{ru:"Свободное общение",uz:"Erkin muloqot",tj:"Муоширати озод"}}];
 var step=0,sel="hsk1";
+var INIT_DATA=(tg&&tg.initData)||"";
+var ONB_SESSION_ID=(function(){try{var k="hsk_v3_onb_session_id",v=sessionStorage.getItem(k);if(!v){v="onb-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v}catch(e){return"onb-"+Date.now()}})();
+function apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
+function postJson(url,body){return fetch(url,{method:"POST",headers:apiHeaders(),body:JSON.stringify(body),keepalive:true})}
+function trackOnboardingEvent(event,payload){
+  if(!INIT_DATA)return Promise.resolve({ok:false,skipped:true});
+  payload=payload||{};
+  payload.event=event;
+  payload.source=payload.source||"course_v3_onboarding";
+  payload.level=payload.level||sel;
+  payload.session_id=ONB_SESSION_ID;
+  payload.language=LANG;
+  return postJson("/api/miniapp/event",payload).then(function(r){return r.json()}).catch(function(){return{ok:false}});
+}
+function onboardingPayload(){
+  var dailyMinutes=10,startMode="lesson_1",goal="hsk_exam";
+  try{
+    dailyMinutes=Number(localStorage.getItem("hsk_v3_daily_minutes")||dailyMinutes)||dailyMinutes;
+    startMode=localStorage.getItem("hsk_v3_start_mode")||startMode;
+    goal=localStorage.getItem("hsk_v3_goal")||goal;
+  }catch(e){}
+  return {
+    level:sel,
+    goal:goal,
+    daily_minutes:dailyMinutes,
+    daily_time:dailyMinutes,
+    start_mode:startMode,
+    start_point:startMode,
+    language:LANG,
+    timezone_offset_minutes:-new Date().getTimezoneOffset()
+  };
+}
 function trv(o){return typeof o==="string"?o:(o[LANG]||o.ru)}
 function render(){
   var st=document.getElementById("stage"),cta=document.getElementById("cta");
@@ -103,8 +135,14 @@ function nextBtn(){if(step<2){step++;render()}else{finish()}}
 function back(){if(step>0){step--;render()}}
 function finish(){
   try{localStorage.setItem("hsk_v3_onb","1");localStorage.setItem("hsk_v3_level",sel)}catch(e){}
-  location.href="/course-v3.html?lang="+LANG+"&level="+sel+"&onboarded=1&tour=1";
+  var url="/course-v3.html?lang="+LANG+"&level="+sel+"&onboarded=1&tour=1";
+  var moved=false;
+  function go(){if(moved)return;moved=true;location.href=url}
+  if(!INIT_DATA){go();return}
+  postJson("/api/miniapp/onboarding",onboardingPayload()).then(function(){go()}).catch(go);
+  setTimeout(go,900);
 }
+trackOnboardingEvent("onboarding_started",{dedupe_key:"started:"+ONB_SESSION_ID,event_id:"started:"+ONB_SESSION_ID});
 render();
 </script>
 </body>

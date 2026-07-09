@@ -171,15 +171,21 @@ async def feature_usage_stats(
         )
     )
 
-    # 🤖 AI savol-javob — ai_usage_events jadvalidan
+    # 🤖 AI chat aktiv user — ai_usage_events jadvalidan
     features.append(
         FeatureUsage(
-            label="🤖 AI savol-javob",
+            label="🤖 AI chat aktiv user",
             today_users=await _count_distinct(
-                session, AIUsageEvent.user_telegram_id, AIUsageEvent.created_at >= today_start
+                session,
+                AIUsageEvent.user_telegram_id,
+                AIUsageEvent.created_at >= today_start,
+                AIUsageEvent.source == "qa",
             ),
             week_users=await _count_distinct(
-                session, AIUsageEvent.user_telegram_id, AIUsageEvent.created_at >= week_ago
+                session,
+                AIUsageEvent.user_telegram_id,
+                AIUsageEvent.created_at >= week_ago,
+                AIUsageEvent.source == "qa",
             ),
         )
     )

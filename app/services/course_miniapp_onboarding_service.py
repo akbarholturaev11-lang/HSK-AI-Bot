@@ -40,6 +40,7 @@ class CourseMiniAppOnboardingService:
         goal: str,
         daily_minutes: int,
         start_mode: str,
+        language: str | None = None,
         timezone_offset_minutes: int = 0,
     ) -> dict:
         level = self.normalize_level(level)
@@ -143,7 +144,15 @@ class CourseMiniAppOnboardingService:
             ),
             (
                 "onboarding_completed",
-                {"start_mode": start_mode},
+                {
+                    "level": level,
+                    "goal": goal,
+                    "daily_minutes": daily_minutes,
+                    "daily_time": daily_minutes,
+                    "start_mode": start_mode,
+                    "start_point": start_mode,
+                    "language": str(language or "").strip().lower()[:8] or None,
+                },
                 f"onboarding:{profile.id}:completed",
             ),
         )

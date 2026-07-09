@@ -207,6 +207,27 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-09 — Course v3 analytics funnel/onboarding/hot-user fixes
+
+Changed:
+- Course v3 pay CTA now records `CourseMiniAppEvent.checkout_opened` before redirecting to subscription, with a per-click dedupe key and non-blocking redirect fallback.
+- Course v3 onboarding HTML now records `onboarding_started` and calls `/api/miniapp/onboarding` on finish; the server `onboarding_completed` payload includes level, goal, daily time, start point, and language.
+- Admin hot-user counts now use Course v3 activity sources (`CourseXpEvent` + `CourseMiniAppProfile`) and profile streaks instead of old daily-practice fields.
+- Subscription source stats now group raw source aliases for admin display while preserving raw source values in DB.
+- `level_completed` and `lesson_jump_selected` were added to Course Mini App event allowlist.
+
+Why:
+- Admin analytics had mismatched payment funnel counts, missing onboarding completion, and stale hot-lead/streak inputs.
+
+Files touched:
+- `app/static/course-v3.html`, `app/static/course_v3_onboarding.html`, `app/main.py`, `app/services/course_miniapp_onboarding_service.py`, `app/services/admin_miniapp_service.py`, `app/services/subscription_entry_analytics_service.py`, `app/services/admin_finance_stats_service.py`, `app/db/models/course_miniapp_event.py`, tests.
+
+Risk:
+- Read/write analytics only. Payment approval, subscription entitlement, lesson order, VOCAB/GRAMMAR, quiz, and homework logic were not changed.
+
+Follow-up:
+- After deploy, verify real DB rows for `paywall_seen → checkout_opened → payment_screenshot_submitted → subscription_approved` and onboarding started/completed counts in Asia/Shanghai periods.
+
 ### 2026-07-07 — Kurs reklamasiga reklama turi (odiy/hamkorlik/bot) + universal knopka
 
 Changed:
