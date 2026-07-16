@@ -65,7 +65,11 @@ from app.services.referral_service import ReferralService, REFERRAL_TRIAL_REQUIR
 from app.services.payment_notify_service import PaymentNotifyService
 from app.services.portfolio_service import PortfolioService
 from app.services.required_channel_service import RequiredChannelService
-from app.services.subscription_service import SubscriptionService
+from app.services.subscription_service import (
+    PLAN_DURATIONS,
+    SubscriptionService,
+    normalize_manual_subscription_days,
+)
 from app.services.subscription_price_service import PAYMENT_METHODS, PLANS, SubscriptionPriceService
 from app.services.subscription_currency_service import format_subscription_price
 from app.services.subscription_miniapp_service import SubscriptionMiniAppService
@@ -417,6 +421,12 @@ def static_asset_response(path: str, media_type: str | None = None) -> FileRespo
 
 def static_json_response(path: str) -> FileResponse:
     return FileResponse(path, media_type="application/json")
+
+
+def bot_username_value() -> str:
+    """Kanonik bot username — yagona manba BOT_USERNAME env. Sozlanmagan bo'lsa
+    joriy bot (@darsi_chini_bot) ga tushadi, eski @hsk_ai_bot ga emas."""
+    return (settings.BOT_USERNAME or "darsi_chini_bot").strip().lstrip("@") or "darsi_chini_bot"
 
 
 def _admin_miniapp_user_id(request: Request) -> int | None:
@@ -1175,6 +1185,7 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
         initials = "".join(p[:1].upper() for p in display_name.split()[:2]) or "阿"
 
         data["authenticated"] = True
+        data["bot_username"] = bot_username_value()
         data["level"] = resolved_level
         data["progress"] = {
             "xp": gamification["xp"],
@@ -1240,7 +1251,7 @@ async def v3_invite_payload(request: Request, lang: str = "uz"):
         active_count = await service.get_trial_activation_progress(user)
         joined_count = await service.referral_repo.count_by_referrer(user.telegram_id)
         referrals = await service.list_miniapp_referrals(user, timezone_offset_minutes=tz_offset)
-        bot_username = (settings.BOT_USERNAME or "hsk_ai_bot").strip().lstrip("@") or "hsk_ai_bot"
+        bot_username = bot_username_value()
         link = f"https://t.me/{bot_username}?start={user.referral_code}"
         full_lang, full_text = await service.build_trial_progress_text(user)
 
@@ -2068,17 +2079,40 @@ async def admin_miniapp_user_give_access(request: Request):
         payload = await request.json()
         target_id = int(payload.get("telegram_id") or 0)
         plan = str(payload.get("plan") or "").strip()
-    except (TypeError, ValueError):
+    except (AttributeError, TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_access_payload"})
-    if target_id <= 0 or plan not in PLANS:
+
+    if "duration_days" in payload:
+        duration_days = normalize_manual_subscription_days(payload.get("duration_days"))
+    else:
+        duration_days = PLAN_DURATIONS.get(plan)
+    if target_id <= 0 or duration_days is None:
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_access_payload"})
+
     async with async_session_maker() as session:
-        activated = await SubscriptionService(session).activate_plan(target_id, plan)
-        if not activated:
+        grant = await SubscriptionService(session).grant_manual_paid_access(target_id, duration_days)
+        if not grant:
             await session.rollback()
-            return JSONResponse(status_code=404, content={"ok": False, "error": "user_or_plan_not_found"})
+            return JSONResponse(status_code=404, content={"ok": False, "error": "user_not_found"})
+        user, extended = grant
         await session.commit()
-    return JSONResponse(content={"ok": True})
+    logger.info(
+        "admin_manual_subscription_granted admin_id=%s target_id=%s duration_days=%s extended=%s end_date=%s",
+        telegram_id,
+        target_id,
+        duration_days,
+        extended,
+        user.end_date.isoformat() if user.end_date else None,
+    )
+    return JSONResponse(content={
+        "ok": True,
+        "duration_days": duration_days,
+        "extended": extended,
+        "status": user.status,
+        "payment_status": user.payment_status,
+        "start_date": _mini_dt(user.start_date),
+        "end_date": _mini_dt(user.end_date),
+    })
 
 
 @app.post("/api/admin-miniapp/users/delete")

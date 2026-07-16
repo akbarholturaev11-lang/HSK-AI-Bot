@@ -522,6 +522,11 @@ function setSelectedLevel(lv){
 }
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 var INIT_DATA=(tg&&tg.initData)||"";
+/* Bot username yagona manba: serverdan (BOT_USERNAME) keladi. Map javobida
+   bot_username bo'lsa yangilanadi; bo'lmasa xavfsiz default ishlaydi. */
+var BOT_USERNAME="darsi_chini_bot";
+function botLinkUrl(suffix){return "https://t.me/"+BOT_USERNAME+(suffix||"")}
+function adoptBotUsername(d){if(d&&d.bot_username){BOT_USERNAME=String(d.bot_username).replace(/^@/,"")}}
 var PAY_SOURCE="v3_paywall";
 var CHECKOUT_NAVIGATING=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
@@ -1210,7 +1215,7 @@ function authGateCopy(){
   }[LANG]||{};
 }
 function openBotStart(){
-  var url="https://t.me/hsk_ai_bot?start=start";
+  var url=botLinkUrl("?start=start");
   try{if(tg&&tg.openTelegramLink){tg.openTelegramLink(url);return}}catch(e){}
   try{if(tg&&tg.close){tg.close();return}}catch(e){}
   try{location.href=url}catch(e){}
@@ -1790,15 +1795,38 @@ function adoptServerLang(d){
   /* Til yagona manbadan (botdagi user.language) keladi — server tilini qabul qilamiz. */
   if(d&&d.user&&d.user.language&&I18N[d.user.language])LANG=d.user.language;
 }
+/* Map yuklash — cold-start / tranzient server xatolarida ("birinchi ochkanda
+   API yiqildi") darrov "ulanmagan" gate ko'rsatilmaydi, bir necha marta qayta
+   uriniladi. Faqat haqiqiy 401 (auth) yoki initData yo'qligida gate chiqadi. */
+function _fetchCourseMap(lv){
+  var url="/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset());
+  return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){
+    return r.json().then(function(d){d._status=r.status;return d}).catch(function(){return {_status:r.status,_parseFail:true}});
+  });
+}
+function loadCourseMap(lv,tries){
+  tries=tries||0;
+  return _fetchCourseMap(lv).then(function(d){
+    if(d&&(d.authenticated===false||d._status===401))return {auth:false};
+    if(!d||d._parseFail||(d._status&&d._status>=500)){
+      if(tries<3)return _retryCourseMap(lv,tries);
+      return {error:true};
+    }
+    return {data:d};
+  }).catch(function(){
+    if(tries<3)return _retryCourseMap(lv,tries);
+    return {error:true};
+  });
+}
+function _retryCourseMap(lv,tries){return new Promise(function(res){setTimeout(res,500*(tries+1))}).then(function(){return loadCourseMap(lv,tries+1)})}
 function loadLevel(lv){
   lv=setSelectedLevel(lv);
   if(!INIT_DATA){showAuthGate();return;}
-  fetch("/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset()),{headers:{"X-Telegram-Init-Data":INIT_DATA}})
-    .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
-    .then(function(d){
-      if(!d||d.authenticated===false||d._status===401){showAuthGate();return;}
-      hideAuthGate();MAP=d;adoptServerLang(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");prefetchNearbyLessons();
-    }).catch(function(){showAuthGate()});
+  loadCourseMap(lv).then(function(res){
+    if(!res.data){showAuthGate();return;}
+    var d=res.data;
+    hideAuthGate();MAP=d;adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||lv);if(d.user)PROF=d.user;syncNotify();ratingLoaded=false;renderAll();App.show("course");prefetchNearbyLessons();
+  });
 }
 function applyLessonDone(cur,d){
   var rankBefore=currentRatingRank();
@@ -2232,7 +2260,7 @@ function finishChallengeRound(){
 	function openWriteTemplates(uIdx,src){
 	  var u=socialUsers(src)[uIdx]||{n:"",xp:0};
 	  var myXp=Number((MAP&&MAP.progress&&MAP.progress.xp)||0);
-	  var botLink="https://t.me/hsk_ai_bot";
+	  var botLink=botLinkUrl();
 	  var rank=uIdx+1;
 	  var myRank=currentRatingRank()||rank||1;
   var t={
@@ -2278,7 +2306,7 @@ function openInviteSheet(){
 	    }).catch(function(){toast(LANG==="ru"?"Ссылка не загрузилась":LANG==="tj"?"Силка бор нашуд":"Link yuklanmadi",2200);App.closeSheet()});
     return;
   }
-  var link="https://t.me/hsk_ai_bot";
+  var link=botLinkUrl();
   var text={ru:"Привет! Учу китайский в HSK AI. Заходи:",uz:"Salom! Men HSK AI bilan xitoy tilini o'rganyapman. Kirib ko'r:",tj:"Салом! Ман бо HSK AI чинӣ меомӯзам. Дароед:"}[LANG];
   renderInviteSheet({ok:true,link:link,share_text:text});
 }
@@ -2403,10 +2431,10 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
 (function(){
   var bootLevel=getSelectedLevel();
   if(!INIT_DATA){showAuthGate();return;}
-  var url="/api/v3/map?lang="+LANG+"&level="+bootLevel+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset());
-  fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){return r.json().then(function(d){d._status=r.status;return d})}).then(function(d){
-    if(!d||d.authenticated===false||d._status===401){showAuthGate();return;}
-    hideAuthGate();MAP=d;adoptServerLang(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
+  loadCourseMap(bootLevel).then(function(res){
+    if(!res.data){showAuthGate();return;}
+    var d=res.data;
+    hideAuthGate();MAP=d;adoptServerLang(d);adoptBotUsername(d);setSelectedLevel(MAP.level||bootLevel);if(d.user)PROF=d.user;syncNotify();
     renderAll();
     prefetchNearbyLessons();
     var sp=new URLSearchParams(location.search);
@@ -2419,7 +2447,7 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     var challengeId=Number(sp.get("challenge_id")||0);
     if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);
     if(sp.get("tour")==="1"){var td=false;try{td=!!localStorage.getItem("hsk_v3_tour")}catch(e){}if(!td)setTimeout(function(){App.runTour()},500)}
-  }).catch(function(){showAuthGate()});
+  });
 })();
 </script>
 </body>

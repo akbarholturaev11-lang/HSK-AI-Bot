@@ -147,6 +147,8 @@
     .frow{display:grid;gap:7px;margin-bottom:11px}
     .frow.two{grid-template-columns:1fr 1fr}
     .frow label{font-size:11px;font-weight:850;color:var(--muted)}
+    .duration-presets{display:flex;gap:7px;flex-wrap:wrap}
+    .duration-presets .chip{height:32px;padding:0 12px}
     .qr-price{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
     .qr-price span{border:1px solid var(--line-soft);border-radius:10px;background:var(--surface-2);padding:8px 10px;color:var(--muted);font-size:11.5px;font-weight:800;line-height:1.35}
     .qr-price b{display:block;margin-top:2px;color:var(--ink);font-size:13px;font-weight:950}
@@ -462,6 +464,7 @@
       const k = e&&e.data&&e.data.error ? e.data.error : "";
       const m = {
         invalid_telegram_init_data:"Telegram sessiya noto'g'ri", admin_only:"Admin ruxsati yo'q",
+        invalid_access_payload:"Telegram ID yoki muddat noto'g'ri (1–36500 kun)", user_or_plan_not_found:"Foydalanuvchi topilmadi",
         payment_already_reviewed:"Bu to'lov allaqachon ko'rilgan", payment_not_found:"To'lov topilmadi",
         user_not_found:"Foydalanuvchi topilmadi", invalid_price_payload:"Narx ma'lumoti noto'g'ri",
         invalid_channel_payload:"Kanal ma'lumoti noto'g'ri", delete_confirmation_required:"O'chirish uchun IDni tasdiq maydoniga yozing",
@@ -731,6 +734,15 @@
     function openDrawer(title,sub,html){ $("drawerTitle").textContent=title; $("drawerSub").textContent=sub||""; $("drawerBody").innerHTML=html; $("drawer").classList.add("open"); $("scrim").classList.add("open"); $("drawer").setAttribute("aria-hidden","false"); }
     function closeDrawer(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("drawer").setAttribute("aria-hidden","true"); state.activeModule=null; }
 
+    function durationControlHtml(inputId){
+      return `<div class="frow"><label for="${inputId}">Muddat (kun)</label>
+        <input id="${inputId}" class="input" type="number" inputmode="numeric" min="1" max="36500" step="1" value="30">
+        <div class="duration-presets" aria-label="Tez muddat tanlash">
+          ${[10,30,90].map(days=>`<button class="chip" type="button" data-duration-target="${inputId}" data-duration-days="${days}">${days} kun</button>`).join("")}
+        </div>
+        <div class="ncnote">Faol paid obunada kunlar qolgan muddat ustiga qo'shiladi. Boshqa holatda bugundan boshlanadi.</div></div>`;
+    }
+
     async function openUser(id){
       const u = ((state.remoteUsers||[]).concat(state.overview.users||[])).find(x=>String(x.id)===String(id));
       if(!u) return;
@@ -756,9 +768,9 @@
           ${pays.length?pays.map(p=>`<div class="mcard"><h3>#${p.id} · ${esc(p.status)}</h3><p>${esc(p.plan)} · ${esc(p.method)} · ${esc(p.amount)}<br>${esc(p.submitted_at)} ${p.comment?"· "+esc(p.comment):""}</p></div>`).join(""):"<p class='empty'>To'lov tarixi yo'q.</p>"}
         </div></section>
         <section class="dsec"><div class="dtitle-sm">Admin amallari</div><div class="panel">
-          <div class="frow"><label>Qo'lda obuna berish</label><div class="row">
-            <select id="qaPlan" class="select" style="max-width:160px"><option value="10_days">10 kun</option><option value="1_month">1 oy</option></select>
-            <button class="btn" data-uaccess="${f.id}">Obuna berish</button></div></div>
+          <div class="mcard"><h3>Qo'lda paid obuna berish</h3>
+            ${durationControlHtml("qaDays")}
+            <button class="btn" data-uaccess="${f.id}" data-uname="${esc(f.name)}" data-current-end="${esc(f.end_date||"")}">Paid active qilish</button></div>
           ${f.status==="blocked"
             ? `<button class="btn sec" data-ublock="${f.id}" data-blocked="0">🔓 Blokdan chiqarish</button>`
             : `<button class="btn sec" data-ublock="${f.id}" data-blocked="1">🚫 Bloklash</button>`}
@@ -1110,10 +1122,10 @@
       </div>`);
     }
     function renderGiveAccess(prefill){
-      openDrawer("✅ Obuna berish","Foydalanuvchi ID va tarifni tanlang",`<div class="panel"><div class="mcard">
+      openDrawer("✅ Obuna berish","Foydalanuvchi ID va istalgan muddatni kiriting",`<div class="panel"><div class="mcard">
         <div class="frow"><label>Telegram ID</label><input id="gaId" class="input" inputmode="numeric" value="${esc(prefill||"")}"></div>
-        <div class="frow"><label>Tarif</label><select id="gaPlan" class="select"><option value="10_days">10 kun</option><option value="1_month">1 oy</option><option value="3_months">3 oy</option></select></div>
-        <button class="btn" data-gasave>Obuna berish</button></div></div>`);
+        ${durationControlHtml("gaDays")}
+        <button class="btn" data-gasave>Paid active qilish</button></div></div>`);
     }
     function renderDeleteUser(prefill){
       openDrawer("🗑 Foydalanuvchini o'chirish","Xavfli amal: ID bilan tasdiqlanadi",`<div class="panel">
@@ -1135,7 +1147,29 @@
     /* ---------- module actions ---------- */
     async function afterModule(msg){ const m=state.activeModule; state.management=null; await loadData(); if(m && $("drawer").classList.contains("open")) await openModule(m); toast(msg||"Saqlandi"); }
 
-    async function grantAccess(id,plan){ await apiPost("/api/admin-miniapp/users/give-access",{telegram_id:Number(id),plan}); await afterModule("Obuna berildi"); }
+    function validDurationDays(value){
+      const raw=String(value==null?"":value).trim();
+      if(!/^\d+$/.test(raw)) return 0;
+      const days=Number(raw);
+      return Number.isSafeInteger(days)&&days>=1&&days<=36500 ? days : 0;
+    }
+    async function grantAccess(id,value,options){
+      const rawId=String(id==null?"":id).trim();
+      const targetId=/^\d+$/.test(rawId)?Number(rawId):0;
+      const durationDays=validDurationDays(value);
+      if(!Number.isSafeInteger(targetId)||targetId<=0||!durationDays) throw {data:{error:"invalid_access_payload"}};
+      const o=options||{};
+      const target=o.name?`${o.name} (${targetId})`:String(targetId);
+      const current=o.currentEnd?`\nHozirgi tugash sanasi: ${o.currentEnd}`:"";
+      if(!confirm(`${target} userga ${durationDays} kunlik paid obuna berilsinmi?${current}\nFaol paid obuna bo'lsa, muddat uzaytiriladi.`)) return null;
+      const result=await apiPost("/api/admin-miniapp/users/give-access",{telegram_id:targetId,duration_days:durationDays});
+      state.management=null;
+      await loadData();
+      if(o.refreshUser) await openUser(targetId);
+      else if(state.activeModule&&$("drawer").classList.contains("open")) await openModule(state.activeModule);
+      toast(`${durationDays} kunlik paid obuna berildi · ${result.end_date} gacha`);
+      return result;
+    }
 
     /* ---------- notifications ---------- */
     function notifMedia(i){ if(!i.media_url) return "<span class='empty'>Media biriktirilmagan</span>"; return i.media_type==="video"?`<video src="${i.media_url}" controls></video>`:`<img src="${i.media_url}" alt="media">`; }
@@ -1259,8 +1293,9 @@
       const T=(s)=>e.target.closest(s);
       let el;
       if((el=T("[data-pay]"))) return reviewPayment(el);
+      if((el=T("[data-duration-target]"))){ const input=$(el.dataset.durationTarget); if(input) input.value=el.dataset.durationDays; return; }
       if((el=T("[data-module]"))) return openModule(el.dataset.module,el.dataset.prefill);
-      if((el=T("[data-uaccess]"))) return grantAccess(el.dataset.uaccess,$("qaPlan").value).catch(x=>toast(apiErr(x,"Obuna berilmadi")));
+      if((el=T("[data-uaccess]"))){ el.disabled=true; return grantAccess(el.dataset.uaccess,$("qaDays").value,{name:el.dataset.uname,currentEnd:el.dataset.currentEnd,refreshUser:true}).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
       if((el=T("[data-user]"))) return openUser(el.dataset.user);
       if((el=T("[data-psave]"))){ const r=el.closest("[data-prow]"); el.disabled=true; return apiPost("/api/admin-miniapp/prices/save",{method:r.dataset.method,plan:r.dataset.plan,amount:Number(r.querySelector("[data-pamount]").value||0)}).then(()=>afterModule("Narx saqlandi")).catch(x=>{toast(apiErr(x,"Narx saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-pdsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/payment-details/save",{payment_details:$("payDetails").value}).then(()=>afterModule("Rekvizit saqlandi")).catch(x=>{toast(apiErr(x,"Rekvizit saqlanmadi"));el.disabled=false;}); }
@@ -1273,7 +1308,7 @@
       if((el=T("[data-pfsave]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/portfolio/transaction",{type:$("pfType").value,amount:$("pfAmount").value,currency:$("pfCurrency").value,note:$("pfNote").value}).then(()=>afterModule("Portfel saqlandi")).catch(x=>{toast(apiErr(x,"Portfel saqlanmadi"));el.disabled=false;}); }
       if((el=T("[data-cmcreate]"))){ if(!confirm("Kampaniya rejalashtiriladi. Davom etasizmi?")) return; el.disabled=true; return cmCreate(el.dataset.cmcreate).then(()=>afterModule("Kampaniya yaratildi")).catch(x=>{toast(apiErr(x,"Yaratilmadi"));el.disabled=false;}); }
       if((el=T("[data-partner]"))){ const act=el.dataset.partner; if((act==="reject"||act==="block")&&!confirm("Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/partners/action",{partner_id:Number(el.dataset.pid||0),action:act}).then(()=>afterModule("Hamkor holati yangilandi")).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
-      if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaPlan").value).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>el.disabled=false); }
+      if((el=T("[data-gasave]"))){ el.disabled=true; return grantAccess($("gaId").value,$("gaDays").value).catch(x=>toast(apiErr(x,"Obuna berilmadi"))).finally(()=>{if(el.isConnected)el.disabled=false;}); }
       if((el=T("[data-deluser]"))){ if(!confirm("Foydalanuvchi o'chiriladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/delete",{telegram_id:$("delId").value,confirm:$("delConfirm").value}).then(()=>{closeDrawer();return loadData();}).then(()=>toast("Foydalanuvchi o'chirildi")).catch(x=>{toast(apiErr(x,"O'chirilmadi"));el.disabled=false;}); }
       if((el=T("[data-ublock]"))){ const blocked=el.dataset.blocked==="1"; if(!confirm(blocked?"Foydalanuvchi bloklanadi. Davom etasizmi?":"Foydalanuvchi blokdan chiqariladi. Davom etasizmi?")) return; el.disabled=true; return apiPost("/api/admin-miniapp/users/block",{telegram_id:Number(el.dataset.ublock),blocked}).then(()=>{return openUser(el.dataset.ublock);}).then(()=>{loadData();toast(blocked?"Foydalanuvchi bloklandi":"Blokdan chiqarildi");}).catch(x=>{toast(apiErr(x,"Bajarilmadi"));el.disabled=false;}); }
       if((el=T("[data-aulist]"))){ el.disabled=true; return apiPost("/api/admin-miniapp/audio/list",{level:$("auLevel").value,lesson_order:$("auLesson").value}).then(d=>{$("auResult").innerHTML=(d.items||[]).length?d.items.map(i=>`<div class="mcard"><h3>${esc(i.audio_type)}</h3><p>${esc(i.file_id)}</p></div>`).join(""):"<p class='empty'>Bu dars uchun audio yo'q.</p>";}).catch(x=>toast(apiErr(x,"Audio olinmadi"))).finally(()=>el.disabled=false); }

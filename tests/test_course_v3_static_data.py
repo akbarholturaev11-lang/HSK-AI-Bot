@@ -44,7 +44,7 @@ class CourseV3StaticMapTests(unittest.TestCase):
 
         self.assertIn("getSelectedLevel()", html)
         self.assertIn("localStorage.getItem(\"hsk_v3_level\")", html)
-        self.assertIn('"/api/v3/map?lang="+LANG+"&level="+bootLevel', html)
+        self.assertIn('"/api/v3/map?lang="+LANG+"&level="+lv', html)
         self.assertIn("if(!INIT_DATA){showAuthGate();return;}", html)
         self.assertIn("function lessonDataUrl(lv,n)", html)
         self.assertIn('"/course_v3_data/"+normalizeLevel(lv)+"/lesson_"+String(Number(n)||0).padStart(2,"0")+".json"', html)

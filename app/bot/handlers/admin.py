@@ -2512,9 +2512,10 @@ async def admin_giveaccess_info(callback: CallbackQuery, session):
     await _edit_callback_message(
         callback,
         "✅ <b>Obuna berish</b>\n\n"
-        "Buyruq: <code>/giveaccess TELEGRAM_ID PLAN</code>\n\n"
-        "Planlar: <code>10_days</code> | <code>1_month</code>\n\n"
-        "Misol: <code>/giveaccess 123456789 1_month</code>",
+        "Buyruq: <code>/giveaccess TELEGRAM_ID KUN</code>\n\n"
+        "Muddat: 1–36500 kun. Faol paid obuna bo'lsa, yangi kunlar qolgan muddatga qo'shiladi.\n\n"
+        "Misol: <code>/giveaccess 123456789 45</code>\n"
+        "Eski <code>10_days</code>, <code>1_month</code>, <code>3_months</code> aliaslari ham ishlaydi.",
         reply_markup=admin_back_keyboard(),
         parse_mode="HTML",
     )
@@ -2622,7 +2623,7 @@ async def admin_giveaccess_handler(message: Message, session):
 
     parts = message.text.strip().split()
     if len(parts) < 3:
-        await message.answer("Foydalanish: <code>/giveaccess TELEGRAM_ID PLAN</code>", parse_mode="HTML")
+        await message.answer("Foydalanish: <code>/giveaccess TELEGRAM_ID KUN</code>", parse_mode="HTML")
         return
 
     try:
@@ -2631,13 +2632,35 @@ async def admin_giveaccess_handler(message: Message, session):
         await message.answer("❌ Noto'g'ri ID")
         return
 
-    plan = parts[2]
-    if plan not in ("10_days", "1_month"):
-        await message.answer("❌ Plan: 10_days yoki 1_month")
+    from app.services.subscription_service import (
+        PLAN_DURATIONS,
+        SubscriptionService,
+        normalize_manual_subscription_days,
+    )
+
+    duration_days = normalize_manual_subscription_days(parts[2])
+    if duration_days is None:
+        duration_days = PLAN_DURATIONS.get(parts[2])
+    if duration_days is None:
+        await message.answer("❌ Muddat 1–36500 oralig'idagi butun kun bo'lishi kerak")
         return
 
-    from app.services.subscription_service import SubscriptionService
     sub_service = SubscriptionService(session)
-    await sub_service.activate_plan(telegram_id=target_id, plan_type=plan)
+    grant = await sub_service.grant_manual_paid_access(
+        telegram_id=target_id,
+        duration_days=duration_days,
+    )
+    if not grant:
+        await session.rollback()
+        await message.answer("❌ Foydalanuvchi topilmadi")
+        return
+
+    user, extended = grant
     await session.commit()
-    await message.answer(f"✅ {target_id} ga {plan} obuna berildi")
+    action = "qolgan muddatiga qo'shildi" if extended else "bugundan faollashtirildi"
+    await message.answer(
+        f"✅ <code>{target_id}</code> paid active qilindi\n"
+        f"Muddat: <b>{duration_days} kun</b> — {action}\n"
+        f"Tugaydi: <code>{_fmt_dt(user.end_date)}</code>",
+        parse_mode="HTML",
+    )

@@ -207,6 +207,33 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-16 — To'g'ri bot username + Course Mini App map cold-start retry
+
+Changed:
+- Bot username yagona manba `bot_username_value()` (`app/main.py`): env `BOT_USERNAME`,
+  sozlanmagan bo'lsa default endi `darsi_chini_bot` (eski xato `hsk_ai_bot` EMAS).
+  Referral link fallback shu helperga o'tdi; `/api/v3/map` javobiga `bot_username` qo'shildi.
+- `course-v3.html` da 3 joyda qattiq yozilgan `t.me/hsk_ai_bot` (auth-gate "Botga qaytish",
+  reyting share matni, do'st chaqirish fallback linki) global `BOT_USERNAME` + `botLinkUrl()`
+  bilan almashtirildi; map javobidagi `bot_username` orqali jonli yangilanadi.
+- Course Mini App map yuklash (boot + `loadLevel`) endi `loadCourseMap()` orqali: cold-start /
+  tranzient 5xx yoki tarmoq xatosida darrov "Telegramga ulanmagan" gate ko'rsatmasdan 3 martagacha
+  qayta uriniladi (0.5s/1s/1.5s). Faqat haqiqiy 401 (auth) yoki initData yo'qligida gate chiqadi.
+
+Why:
+- Loyiha `@hsk_ai_bot` dan `@darsi_chini_bot` ga o'tgan, lekin frontend/referral fallback hali eski
+  botga ishora qilardi ("botga qaytish" boshqa botni ochardi). Birinchi ochilishda Railway cold-start
+  birinchi so'rovni yiqitib, "ulanmagan" gate'ni noto'g'ri ko'rsatardi.
+
+Files touched:
+- `app/main.py`, `app/static/course-v3.html`, `tests/test_course_v3_static_data.py`
+
+Risk / follow-up:
+- Frontend + 1 backend helper. To'lov/obuna/ruxsat mantig'i tegilmadi. `bot_username_value()` default
+  `darsi_chini_bot` — deployda `BOT_USERNAME` env aniq shunga (yoki kerakli botga) o'rnatilgani tekshirilsin.
+- MUHIM: agar "ulanmagan" HAR ochilishda (faqat birinchi emas) chiqsa, ildiz sabab — server `BOT_TOKEN`
+  `@darsi_chini_bot` ники emas: initData shu token bilan tekshiriladi, mos kelmasa doim 401 bo'ladi.
+
 ### 2026-07-09 — Subscription Mini App payment UI priority
 
 Changed:

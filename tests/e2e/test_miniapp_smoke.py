@@ -310,7 +310,8 @@ def admin_payload():
             {"title": "To'lov tekshiruvi", "note": "2 ta to'lov admin tasdig'ini kutyapti", "priority": "hozir", "section": "payments"}
         ],
         "modules": [
-            {"key": "stats", "icon": "📊", "title": "Statistika", "note": "Umumiy hisobot", "section": "statistics", "callback": "adm:stats"}
+            {"key": "stats", "icon": "📊", "title": "Statistika", "note": "Umumiy hisobot", "section": "statistics", "callback": "adm:stats"},
+            {"key": "give_access", "icon": "✅", "title": "Obuna berish", "note": "Istalgan muddatga paid active", "section": "settings", "callback": "adm:giveaccess_info"},
         ],
         "monitor": {
             "ticker": [{"label": "24 soat aktiv", "value": 5, "tone": "up"}],
@@ -368,6 +369,23 @@ def admin_finance_payload():
 
 
 def test_admin_control_renders_real_api_payload_without_demo_data(page):
+    grant_requests = []
+
+    def grant_access(route):
+        grant_requests.append(json.loads(route.request.post_data or "{}"))
+        json_response(
+            route,
+            {
+                "ok": True,
+                "duration_days": 45,
+                "extended": False,
+                "status": "active",
+                "payment_status": "approved",
+                "start_date": "11.07.2026 12:00",
+                "end_date": "25.08.2026 12:00",
+            },
+        )
+
     page.add_init_script(
         """
         window.Telegram={WebApp:{initData:"admin-e2e",ready(){},expand(){},close(){},
@@ -383,6 +401,7 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
         lambda route: json_response(route, {"ok": True, "items": []}),
     )
     page.route("**/api/admin-miniapp/course-ads", lambda route: json_response(route, {"ok": True, "items": []}))
+    page.route("**/api/admin-miniapp/users/give-access", grant_access)
 
     page.goto(app_url("/admin.html"), wait_until="networkidle")
 
@@ -395,6 +414,25 @@ def test_admin_control_renders_real_api_payload_without_demo_data(page):
     expect(page.locator("#financeCards")).to_contain_text("Sof foyda")
     expect(page.locator("#advancedCards")).to_contain_text("D1 retention")
     expect(page.locator("#featureAdoption")).to_contain_text("Darslar")
+
+    page.locator('[data-tab="settings"]').click()
+    page.locator('[data-module="give_access"]').click()
+    expect(page.locator("#gaDays")).to_be_visible()
+    page.locator('[data-duration-target="gaDays"][data-duration-days="90"]').click()
+    expect(page.locator("#gaDays")).to_have_value("90")
+
+    page.locator("#gaId").fill("111")
+    page.locator("#gaDays").fill("0")
+    page.locator("[data-gasave]").click()
+    expect(page.locator("#toast")).to_contain_text("1–36500")
+    assert grant_requests == []
+
+    page.locator("#gaDays").fill("45")
+    page.once("dialog", lambda dialog: dialog.accept())
+    page.locator("[data-gasave]").click()
+    expect(page.locator("#toast")).to_contain_text("25.08.2026 12:00")
+    assert grant_requests == [{"telegram_id": 111, "duration_days": 45}]
+    assert page.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
 
 
 def test_subscription_page_smoke(page):

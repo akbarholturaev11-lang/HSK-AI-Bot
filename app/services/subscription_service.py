@@ -14,6 +14,28 @@ PLAN_DURATIONS = {
     "3_months": 90,
 }
 
+MANUAL_SUBSCRIPTION_MIN_DAYS = 1
+MANUAL_SUBSCRIPTION_MAX_DAYS = 36_500
+
+
+def normalize_manual_subscription_days(value: object) -> Optional[int]:
+    """Admin qo'lda beradigan obuna muddatini xavfsiz kun soniga aylantiradi."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        days = value
+    elif isinstance(value, str):
+        raw = value.strip()
+        if not raw.isascii() or not raw.isdigit() or len(raw) > 5:
+            return None
+        days = int(raw)
+    else:
+        return None
+
+    if not MANUAL_SUBSCRIPTION_MIN_DAYS <= days <= MANUAL_SUBSCRIPTION_MAX_DAYS:
+        return None
+    return days
+
 
 class SubscriptionService:
     def __init__(self, session):
@@ -63,3 +85,52 @@ class SubscriptionService:
 
         await self.session.flush()
         return True
+
+    async def grant_manual_paid_access(
+        self,
+        telegram_id: int,
+        duration_days: object,
+    ):
+        """Admin grant: userni paid-active qiladi va mavjud paid muddatni saqlaydi.
+
+        Foydalanuvchida hali tugamagan paid obuna bo'lsa, yangi kunlar uning
+        amaldagi ``end_date`` sanasiga qo'shiladi. Boshqa holatda muddat hozirdan
+        boshlanadi. Bu oqim payment/revenue yoki AI budget yaratmaydi.
+        """
+        days = normalize_manual_subscription_days(duration_days)
+        if days is None:
+            return None
+
+        user = await self.user_repo.get_by_telegram_id_for_update(telegram_id)
+        if not user:
+            return None
+
+        now = datetime.now(timezone.utc)
+        current_end = user.end_date
+        if current_end is not None:
+            if current_end.tzinfo is None:
+                current_end = current_end.replace(tzinfo=timezone.utc)
+            else:
+                current_end = current_end.astimezone(timezone.utc)
+
+        extends_existing_paid = bool(
+            user.payment_status == "approved"
+            and current_end is not None
+            and current_end > now
+        )
+        if extends_existing_paid:
+            base_end = current_end
+            if user.start_date is None:
+                user.start_date = now
+        else:
+            user.start_date = now
+            base_end = now
+
+        user.status = "active"
+        user.payment_status = "approved"
+        user.end_date = base_end + timedelta(days=days)
+        user.selected_plan_type = None
+        user.expiry_reminder_sent_at = None
+        await SubscriptionChurnService(self.session).reset_after_paid_activation(user)
+        await self.session.flush()
+        return user, extends_existing_paid
