@@ -117,7 +117,14 @@ class CourseMiniAppUrlTests(unittest.TestCase):
     def test_legacy_course_links_point_to_existing_course_v3_surfaces(self):
         lesson = SimpleNamespace(level="hsk1", lesson_order=4)
 
-        course_url = course_study_miniapp_url(lang="uz", level="hsk1", lesson=4, tab="training")
+        course_url = course_study_miniapp_url(
+            lang="uz",
+            level="hsk1",
+            lesson=4,
+            tab="training",
+            source="motivation_reminder",
+            autostart=True,
+        )
         challenge_url = course_study_miniapp_url(lang="uz", level="hsk1", tab="rating", challenge_id=77)
         quiz_url = course_miniapp_url(lesson, "quiz", "uz", block_no=1)
         vocab_url = course_stroke_order_url(lesson, lang="uz", block_no=1)
@@ -125,6 +132,8 @@ class CourseMiniAppUrlTests(unittest.TestCase):
         self.assertIn("course-v3.html", course_url)
         self.assertIn("tab=mashq", course_url)
         self.assertIn("lesson=4", course_url)
+        self.assertIn("source=motivation_reminder", course_url)
+        self.assertIn("autostart=1", course_url)
         self.assertIn("tab=rating", challenge_url)
         self.assertIn("challenge_id=77", challenge_url)
         self.assertIn("course-v3.html", quiz_url)

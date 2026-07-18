@@ -372,6 +372,7 @@ const API={
   overview:"/api/subscription-miniapp/overview",
   discountStart:"/api/subscription-miniapp/discount-start",
   quote:"/api/subscription-miniapp/quote",
+  event:"/api/subscription-miniapp/event",
   submit:"/api/subscription-miniapp/submit"
 };
 const PARAMS=new URLSearchParams(window.location.search);
@@ -382,6 +383,16 @@ const CHINA_METHODS=["alipay","wechat"];
 const COUNTRY_ORDER=["tj","uz","ru","other"];
 const CARD_BANK_NAME="Dushanbe City";
 const MODE_ORDER=["subscription","referral_discount","admin_discount","feedback_discount"];
+const CHECKOUT_ATTEMPT_ID=(function(){
+  const key="hsk_subscription_attempt_v1",now=Date.now();
+  try{
+    const saved=JSON.parse(sessionStorage.getItem(key)||"null");
+    if(saved&&saved.id&&now-Number(saved.at||0)<2*60*60*1000)return String(saved.id);
+    const id="sub-"+now+"-"+Math.random().toString(36).slice(2,10);
+    sessionStorage.setItem(key,JSON.stringify({id,at:now}));
+    return id;
+  }catch(e){return "sub-"+now+"-"+Math.random().toString(36).slice(2,10)}
+})();
 
 const I18N={
   uz:{
@@ -423,6 +434,7 @@ const I18N={
     supportButton:"Adminga yozish",
     plansTitle:"Tarif",
     valueText:"Barcha darslar, AI savollar, talaffuz, testlar va xatolar takrori ochiladi.",
+    lockedValueText:"Boshlagan darsingizni davom ettiring va keyingi HSK darslarini ketma-ket oching.",
     methodsTitle:"To'lov usuli",
     discountReady:"20% chegirma qo'llanadi",
     discountProgress:"20% chegirma: {count}/{required} referral",
@@ -445,6 +457,7 @@ const I18N={
     },
     payTitle:"To'lovni yakunlash",
     payText:"Summani to'lang va to'lov screenshotini yuklang.",
+    lockedPayText:"To'lov tasdiqlangach, yopilgan darsingiz shu kursda darhol ochiladi.",
     amountLabel:"To'lanadigan summa",
     rows:{plan:"Tarif",method:"Usul",bank:"TJK bank nomi",rate:"Kurs"},
     detailsTitle:"Karta rekvizitlari",
@@ -528,6 +541,7 @@ const I18N={
     supportButton:"Написать админу",
     plansTitle:"Тариф",
     valueText:"Открываются все уроки, AI-вопросы, произношение, тесты и повторение ошибок.",
+    lockedValueText:"Продолжите начатый урок и открывайте следующие уроки HSK по порядку.",
     methodsTitle:"Способ оплаты",
     discountReady:"Скидка 20% применится",
     discountProgress:"Скидка 20%: {count}/{required} реферала",
@@ -550,6 +564,7 @@ const I18N={
     },
     payTitle:"Завершение оплаты",
     payText:"Оплатите сумму и загрузите screenshot оплаты.",
+    lockedPayText:"После подтверждения оплаты закрытый урок сразу откроется в этом курсе.",
     amountLabel:"Сумма к оплате",
     rows:{plan:"Тариф",method:"Способ",bank:"Банк TJK",rate:"Курс"},
     detailsTitle:"Реквизиты карты",
@@ -633,6 +648,7 @@ const I18N={
     supportButton:"Ба admin навиштан",
     plansTitle:"Тариф",
     valueText:"Ҳамаи дарсҳо, AI-саволҳо, талаффуз, тестҳо ва такрори хатоҳо кушода мешаванд.",
+    lockedValueText:"Дарси оғозкардаатонро идома диҳед ва дарсҳои навбатии HSK-ро пайдарпай кушоед.",
     methodsTitle:"Усули пардохт",
     discountReady:"20% тахфиф ҳисоб мешавад",
     discountProgress:"20% тахфиф: {count}/{required} referral",
@@ -655,6 +671,7 @@ const I18N={
     },
     payTitle:"Пардохтро тамом кунед",
     payText:"Маблағро пардохт кунед ва screenshot-и пардохтро бор кунед.",
+    lockedPayText:"Пас аз тасдиқи пардохт дарси басташуда дар ҳамин курс фавран кушода мешавад.",
     amountLabel:"Маблағи пардохт",
     rows:{plan:"Тариф",method:"Усул",bank:"Номи банк",rate:"Курс"},
     detailsTitle:"Реквизити корт",
@@ -704,6 +721,7 @@ const I18N={
 const state={
   lang:normalizeLang(PARAMS.get("lang")||tg?.initDataUnsafe?.user?.language_code||"uz"),
   source:String(PARAMS.get("source")||"").trim(),
+  attemptId:CHECKOUT_ATTEMPT_ID,
   mode:normalizeMode(PARAMS.get("mode")),
   campaignId:positiveParam(PARAMS.get("campaign_id")),
   feedbackId:positiveParam(PARAMS.get("feedback_id")),
@@ -791,6 +809,7 @@ function contextPayload(){
   return {
     source:state.source,
     mode:state.mode,
+    attempt_id:state.attemptId,
     campaign_id:state.campaignId,
     feedback_id:state.feedbackId
   };
@@ -799,6 +818,23 @@ function hasCurrentPrice(){return Boolean(priceInfo(state.method,state.plan))}
 function isForeignCard(){return state.method==="visa"&&state.country!=="tj"}
 function flow(){return state.done||state.pending?["done"]:(isForeignCard()?["start","country","pay"]:["start","pay"])}
 function currentScreen(){return flow()[state.step]||"start"}
+function isLockedLessonSource(){
+  const source=state.source.toLowerCase();
+  return ["course_locked","locked_lesson","v3_locked_lesson"].some(alias=>source===alias||source.includes(alias));
+}
+function trackSubscriptionStage(stage){
+  if(state.preview||!INIT_DATA)return Promise.resolve();
+  return fetch(API.event,{
+    method:"POST",
+    headers:{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA},
+    body:JSON.stringify({
+      ...contextPayload(),stage,
+      plan_type:state.plan,
+      payment_method:state.method
+    }),
+    keepalive:true
+  }).catch(()=>null);
+}
 function api(path,body){
   return fetch(path,{
     method:"POST",
@@ -964,6 +1000,7 @@ async function loadQuote(){
         card_country:state.method==="visa"?state.country:null
       });
       state.quote=data.quote;
+      trackSubscriptionStage("payment_instructions_viewed");
     }
   }catch(error){
     state.quote=null;
@@ -1041,7 +1078,7 @@ function renderStart(text){
   const perks=text.perks||[];
   $("#tvTrack").innerHTML=perks.concat(perks).map(item=>`<span class="perk">${item}</span>`).join("");
   $("#plansTitle").textContent=modeText(text,"modePlans");
-  $("#valueText").textContent=text.valueText||"";
+  $("#valueText").textContent=(isLockedLessonSource()?text.lockedValueText:text.valueText)||text.valueText||"";
   renderDiscount(text);
   renderInviteSheet(text);
   const plans=availablePlans(state.method);
@@ -1186,7 +1223,7 @@ function renderCountry(text){
 function renderPay(text){
   const quote=state.quote||(state.preview?mockQuote():null);
   $("#payTitle").textContent=text.payTitle;
-  $("#payText").textContent=text.payText;
+  $("#payText").textContent=(isLockedLessonSource()?text.lockedPayText:text.payText)||text.payText;
   $("#amountLabel").textContent=text.amountLabel;
   if(!quote){
     $("#amountValue").textContent="...";
@@ -1431,6 +1468,7 @@ async function submitPayment(){
     state.pending=Boolean(data.already_pending);
     state.pendingPayment=data.already_pending?data:null;
     state.done=!state.pending;
+    try{sessionStorage.removeItem("hsk_subscription_attempt_v1")}catch(e){}
     state.step=0;
   }catch(error){
     toast(error.message||tr().error);
@@ -1590,6 +1628,7 @@ $("#receiptInput").addEventListener("change",async event=>{
     const raw=await readFileAsDataUrl(file);
     state.screenshotDataUrl=await compressDataUrl(raw);
     state.screenshotName=file.name;
+    trackSubscriptionStage("payment_receipt_selected");
     render();
   }catch(err){
     toast(tr().needScreenshot);

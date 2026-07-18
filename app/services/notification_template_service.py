@@ -11,10 +11,17 @@ from app.db.models.notification_template import NotificationTemplate
 # Reminder keys handled by MotivationReminderService.
 KEY_OVERTAKEN = "rating_overtaken"
 KEY_LESSON_UNFINISHED = "lesson_unfinished"
+KEY_D1_RECOVERY = "d1_lesson_recovery"
 KEY_DAILY_GOAL = "daily_goal"
 KEY_STREAK = "streak_risk"
 
-MOTIVATION_KEYS = (KEY_OVERTAKEN, KEY_LESSON_UNFINISHED, KEY_DAILY_GOAL, KEY_STREAK)
+MOTIVATION_KEYS = (
+    KEY_OVERTAKEN,
+    KEY_LESSON_UNFINISHED,
+    KEY_D1_RECOVERY,
+    KEY_DAILY_GOAL,
+    KEY_STREAK,
+)
 
 # Human-facing metadata for the admin Mini App editor: title, short note and the
 # placeholders available for each reminder. Placeholders are filled per-user when
@@ -29,6 +36,11 @@ TEMPLATE_META: dict[str, dict] = {
         "title": "📚 Dars yakunlanmagan",
         "note": "Kun oxirida bugun dars boshlab, uni tugatmagan foydalanuvchiga yuboriladi.",
         "placeholders": ["{lesson}", "{minutes}"],
+    },
+    KEY_D1_RECOVERY: {
+        "title": "📚 D1 · Birinchi darsga qaytarish",
+        "note": "Birinchi darsni boshlab tugatmagan yangi user uchun 50/50 treatment tajribasi.",
+        "placeholders": ["{lesson}"],
     },
     KEY_DAILY_GOAL: {
         "title": "⏳ Kunlik maqsad bajarilmadi",
@@ -77,6 +89,20 @@ DEFAULT_TEXTS: dict[str, dict[str, str]] = {
             "📚 <b>{lesson} ҳанӯз анҷом нашуд</b>\n"
             "Рӯз ба охир мерасад. Дарси оғозкардаатонро анҷом диҳед.\n"
             "Ҳамагӣ <b>{minutes} дақиқа</b> — дарс пӯшида мешавад ва XP мегиред 🎯"
+        ),
+    },
+    KEY_D1_RECOVERY: {
+        "uz": (
+            "📚 <b>{lesson}ni davom ettiramizmi?</b>\n"
+            "Oldingi safar shu darsda to'xtagandingiz. Qaytib, o'rganganlaringizni mustahkamlang."
+        ),
+        "ru": (
+            "📚 <b>{lesson} — продолжим?</b>\n"
+            "В прошлый раз вы остановились на этом уроке. Вернитесь, чтобы закрепить изученное."
+        ),
+        "tj": (
+            "📚 <b>{lesson} — идома медиҳем?</b>\n"
+            "Дафъаи гузашта дар ҳамин дарс таваққуф кардед. Баргардед, то дониши худро мустаҳкам кунед."
         ),
     },
     KEY_DAILY_GOAL: {

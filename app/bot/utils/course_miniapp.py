@@ -105,6 +105,8 @@ def course_study_miniapp_url(
     lesson: int | None = None,
     tab: str | None = None,
     challenge_id: int | None = None,
+    source: str | None = None,
+    autostart: bool = False,
 ) -> str:
     base_url = _miniapp_base_url_for_file("course-v3.html")
     separator = "&" if "?" in base_url else "?"
@@ -119,6 +121,10 @@ def course_study_miniapp_url(
         params["lesson"] = int(lesson)
     if challenge_id:
         params["challenge_id"] = int(challenge_id)
+    if source:
+        params["source"] = str(source).strip()[:40]
+    if autostart:
+        params["autostart"] = 1
     return f"{base_url}{separator}{urlencode(params)}"
 
 

@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import base64
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -151,6 +152,62 @@ def test_course_v3_opens_static_map_and_query_lesson_sheet(page):
     expect(page.locator("#sheet")).to_have_class(re.compile(r"\bon\b"))
     expect(page.locator("#sheet")).to_contain_text("你好")
     expect(page.locator("#sheet")).to_contain_text("Yangi so'zlar")
+
+
+def test_course_v3_onboarding_autostart_opens_first_lesson_flow(page):
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    page.add_init_script(
+        """
+        localStorage.setItem("hsk_v3_onb", "1");
+        localStorage.setItem("hsk_v3_level", "hsk1");
+        """
+    )
+
+    page.goto(
+        app_url("/course-v3.html?lang=uz&level=hsk1&lesson=1&autostart=1&onboarded=1"),
+        wait_until="networkidle",
+    )
+
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#flow")).to_contain_text("Yangi so'z")
+    expect(page.locator("#flow")).to_contain_text("你")
+
+
+def test_course_v3_d1_recovery_resumes_saved_lesson_card_once(page):
+    runtime_errors = []
+    page.on("pageerror", lambda error: runtime_errors.append(str(error)))
+    page.on(
+        "console",
+        lambda message: runtime_errors.append(message.text) if message.type == "error" else None,
+    )
+    mock_price_preview(page)
+    mock_telegram_ready(page)
+    mock_course_map(page)
+    page.add_init_script(
+        """
+        localStorage.setItem("hsk_v3_onb", "1");
+        localStorage.setItem("hsk_v3_level", "hsk1");
+        localStorage.setItem(
+          "hsk_v3_lesson_resume:hsk1:1",
+          JSON.stringify({i: 3, at: Date.now()})
+        );
+        """
+    )
+
+    page.goto(
+        app_url(
+            "/course-v3.html?lang=uz&level=hsk1&lesson=1&autostart=1&source=d1_recovery_v1&onboarded=1"
+        ),
+        wait_until="networkidle",
+    )
+
+    expect(page.locator("#flow")).to_have_class(re.compile(r"\bon\b"))
+    expect(page.locator("#f-stage")).to_contain_text("4 /")
+    assert page.evaluate("Flow.i") == 3
+    assert "autostart" not in page.url
+    assert runtime_errors == []
 
 
 def test_course_v3_support_pages_render_real_static_data(page):
@@ -454,3 +511,84 @@ def test_subscription_page_smoke(page):
     expect(page.locator("#countries")).to_contain_text("🇺🇿")
     expect(page.locator("#countries")).to_contain_text("🇷🇺")
     expect(page.locator("#paymentBox")).to_have_count(1)
+
+
+def test_subscription_checkout_tracks_one_attempt_through_real_stages(page):
+    mock_telegram_ready(page)
+    requests = []
+    overview = {
+        "ok": True,
+        "language": "uz",
+        "mode": "subscription",
+        "pending_payment": None,
+        "offer": None,
+        "discount": None,
+        "payment_details": "CARD: 0000 0000 0000 0000",
+        "prices": {
+            "visa": {
+                "1_month": {
+                    "base_amount": 89,
+                    "final_amount": 89,
+                    "currency": "TJS",
+                    "discount_applied": False,
+                    "discount_percent": 0,
+                }
+            }
+        },
+    }
+
+    def capture_overview(route):
+        requests.append(("overview", route.request.post_data_json))
+        json_response(route, overview)
+
+    def capture_quote(route):
+        requests.append(("quote", route.request.post_data_json))
+        json_response(
+            route,
+            {
+                "ok": True,
+                "quote": {
+                    "plan_type": "1_month",
+                    "payment_method": "visa",
+                    "pay_amount": 89,
+                    "pay_currency": "TJS",
+                    "base_amount": 89,
+                    "base_currency": "TJS",
+                    "discount_applied": False,
+                    "payment_details": overview["payment_details"],
+                },
+            },
+        )
+
+    def capture_event(route):
+        requests.append(("event", route.request.post_data_json))
+        json_response(route, {"ok": True})
+
+    page.route("**/api/subscription-miniapp/overview", capture_overview)
+    page.route("**/api/subscription-miniapp/quote", capture_quote)
+    page.route("**/api/subscription-miniapp/event", capture_event)
+    page.goto(
+        app_url("/subscription.html?lang=uz&mode=subscription&source=v3_locked_lesson"),
+        wait_until="networkidle",
+    )
+
+    expect(page.locator("#valueText")).to_contain_text("Boshlagan darsingizni davom ettiring")
+    page.locator("#nextBtn").click()
+    expect(page.locator("#paymentBox")).to_contain_text("0000 0000 0000 0000")
+    page.locator("#receiptInput").set_input_files(
+        {
+            "name": "receipt.png",
+            "mimeType": "image/png",
+            "buffer": base64.b64decode(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+            ),
+        }
+    )
+    expect(page.locator("#uploadBox")).to_have_class(re.compile(r"\bready\b"))
+    page.wait_for_timeout(100)
+
+    attempt_ids = [body.get("attempt_id") for _, body in requests if body.get("attempt_id")]
+    event_stages = [body.get("stage") for kind, body in requests if kind == "event"]
+    assert attempt_ids and len(set(attempt_ids)) == 1
+    assert "payment_instructions_viewed" in event_stages
+    assert "payment_receipt_selected" in event_stages

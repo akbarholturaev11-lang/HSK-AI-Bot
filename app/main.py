@@ -23,6 +23,7 @@ from app.db.models.user import User
 from app.db.models.course_lessons import CourseLesson
 from app.db.models.notification_template import NotificationTemplate  # noqa: F401 (register table)
 from app.db.models.course_ad import CourseAdCreative, CourseAdView  # noqa: F401 (register tables)
+from app.db.models.conversion_funnel_event import ConversionFunnelEvent
 from app.services.course_seed_service import CourseSeedService
 from app.services.notification_template_service import (
     MOTIVATION_KEYS,
@@ -144,6 +145,17 @@ def _positive_int(value) -> int | None:
     except (TypeError, ValueError):
         return None
     return parsed if parsed > 0 else None
+
+
+def _checkout_attempt_id(value) -> str | None:
+    attempt_id = str(value or "").strip()[:80]
+    if not attempt_id or any(ch not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-:." for ch in attempt_id):
+        return None
+    return attempt_id
+
+
+def _checkout_text(value, limit: int) -> str:
+    return str(value or "").strip()[:limit]
 
 
 def _prepare_course_ad_video_file(data: bytes, *, raw_ext: str, telegram_id: int) -> str:
@@ -318,11 +330,11 @@ async def _background_scheduler(bot: Bot) -> None:
             async with async_session_maker() as session:
                 await ExpiryReminderService(session).send_expiry_reminders(bot)
             async with async_session_maker() as session:
+                await MotivationReminderService(session).send_due_reminders(bot)
+            async with async_session_maker() as session:
                 await CourseReminderService(session).send_due_reminders(bot)
             async with async_session_maker() as session:
                 await CourseReminderService(session).send_weekly_progress_reports(bot)
-            async with async_session_maker() as session:
-                await MotivationReminderService(session).send_due_reminders(bot)
             async with async_session_maker() as session:
                 await BotFeedbackService(session).send_due_price_discount_offers(bot)
             async with async_session_maker() as session:
@@ -1217,9 +1229,14 @@ async def v3_course_map(request: Request, lang: str = "uz", level: str | None = 
             event_name="miniapp_opened",
             telegram_id=telegram_id,
             user_id=getattr(user, "id", None),
-            source="course_v3",
+            source=_checkout_text(request.query_params.get("source") or "course_v3", 40),
             level=resolved_level,
-            dedupe_key=f"course-v3:miniapp-opened:{resolved_level}:{datetime.now(timezone.utc).date().isoformat()}",
+            session_id=_checkout_text(request.query_params.get("sid"), 80) or None,
+            dedupe_key=(
+                f"course-v3:miniapp-opened:{_checkout_text(request.query_params.get('sid'), 80)}"
+                if _checkout_text(request.query_params.get("sid"), 80)
+                else f"course-v3:miniapp-opened:{resolved_level}:{datetime.now(timezone.utc).date().isoformat()}"
+            ),
         )
         await session.commit()
         return JSONResponse(content=data)
@@ -1645,6 +1662,7 @@ async def v3_course_lesson_complete(request: Request):
     try:
         payload = await request.json()
         lesson_order = int(payload.get("lesson_id") or payload.get("lesson_order") or 0)
+        lesson_session_id = _checkout_text(payload.get("session_id"), 80) or None
     except (TypeError, ValueError):
         return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_lesson_payload"})
     if lesson_order <= 0:
@@ -1756,6 +1774,7 @@ async def v3_course_lesson_complete(request: Request):
             level=resolved_level,
             lesson_id=getattr(lesson, "id", None),
             lesson_order=lesson_order,
+            session_id=lesson_session_id,
             dedupe_key=f"v3-lesson:{lesson.id}:completed",
             payload={
                 "lesson_order": lesson_order,
@@ -3021,6 +3040,7 @@ async def miniapp_onboarding(request: Request):
                 start_mode=str(payload.get("start_mode") or ""),
                 language=str(payload.get("language") or ""),
                 timezone_offset_minutes=timezone_offset,
+                activation_variant=_checkout_text(payload.get("activation_variant"), 32),
             )
     except (TypeError, ValueError) as error:
         return JSONResponse(
@@ -3480,7 +3500,8 @@ async def subscription_miniapp_overview(request: Request):
         )
         if result.get("ok"):
             user = await UserRepository(session).get_by_telegram_id(telegram_id)
-            source = str(payload.get("source") or payload.get("mode") or "subscription_miniapp")
+            source = _checkout_text(payload.get("source") or payload.get("mode") or "subscription_miniapp", 80)
+            attempt_id = _checkout_attempt_id(payload.get("attempt_id"))
             await SubscriptionEntryAnalyticsService(session).record_entry(
                 telegram_id=telegram_id,
                 user=user,
@@ -3492,17 +3513,19 @@ async def subscription_miniapp_overview(request: Request):
                 feedback_id=_positive_int(payload.get("feedback_id")),
             )
             await SubscriptionChurnService(session).mark_subscription_miniapp_opened(telegram_id, source)
-            await ConversionFunnelService().record(
-                event_name="checkout_opened",
-                user=user,
-                telegram_id=telegram_id,
-                source=source,
-                payload={
-                    "mode": str(payload.get("mode") or ""),
-                    "campaign_id": _positive_int(payload.get("campaign_id")),
-                    "feedback_id": _positive_int(payload.get("feedback_id")),
-                },
-            )
+            if not result.get("pending_payment"):
+                await ConversionFunnelService().record(
+                    event_name="checkout_opened",
+                    user=user,
+                    telegram_id=telegram_id,
+                    source=source,
+                    payload={
+                        "attempt_id": attempt_id,
+                        "mode": str(payload.get("mode") or ""),
+                        "campaign_id": _positive_int(payload.get("campaign_id")),
+                        "feedback_id": _positive_int(payload.get("feedback_id")),
+                    },
+                )
         return result
 
 
@@ -3542,6 +3565,54 @@ async def subscription_miniapp_quote(request: Request):
         )
 
 
+@app.post("/api/subscription-miniapp/event")
+async def subscription_miniapp_event(request: Request):
+    telegram_id = extract_verified_webapp_user_id(
+        request.headers.get("X-Telegram-Init-Data", ""),
+        settings.BOT_TOKEN,
+    )
+    if not telegram_id:
+        return {"ok": False, "error": "invalid_telegram_init_data"}
+
+    payload = await request.json()
+    stage = str(payload.get("stage") or "").strip().lower()
+    if stage not in {"payment_instructions_viewed", "payment_receipt_selected"}:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_subscription_stage"})
+
+    attempt_id = _checkout_attempt_id(payload.get("attempt_id"))
+    if not attempt_id:
+        return JSONResponse(status_code=400, content={"ok": False, "error": "invalid_checkout_attempt"})
+
+    async with async_session_maker() as session:
+        base_event = (
+            await session.execute(
+                select(ConversionFunnelEvent.id).where(
+                    ConversionFunnelEvent.telegram_id == int(telegram_id),
+                    ConversionFunnelEvent.event_name == "checkout_opened",
+                    ConversionFunnelEvent.payload_json.like(f'%"attempt_id": "{attempt_id}"%'),
+                    ConversionFunnelEvent.payload_json.not_like('%"stage":%'),
+                ).limit(1)
+            )
+        ).scalar_one_or_none()
+        if not base_event:
+            return JSONResponse(status_code=409, content={"ok": False, "error": "checkout_attempt_not_opened"})
+        user = await UserRepository(session).get_by_telegram_id(telegram_id)
+        recorded = await ConversionFunnelService().record(
+            event_name="checkout_opened",
+            user=user,
+            telegram_id=telegram_id,
+            source=_checkout_text(payload.get("source") or payload.get("mode") or "subscription_miniapp", 80),
+            payload={
+                "attempt_id": attempt_id,
+                "stage": stage,
+                "plan_type": _checkout_text(payload.get("plan_type"), 32),
+                "payment_method": _checkout_text(payload.get("payment_method"), 32),
+                "mode": _checkout_text(payload.get("mode"), 32),
+            },
+        )
+    return {"ok": bool(recorded)}
+
+
 @app.post("/api/subscription-miniapp/submit")
 async def subscription_miniapp_submit(request: Request):
     telegram_id = extract_verified_webapp_user_id(
@@ -3552,6 +3623,7 @@ async def subscription_miniapp_submit(request: Request):
         return {"ok": False, "error": "invalid_telegram_init_data"}
 
     payload = await request.json()
+    attempt_id = _checkout_attempt_id(payload.get("attempt_id"))
     async with async_session_maker() as session:
         result = await SubscriptionMiniAppService(session).submit(
             telegram_id=telegram_id,
@@ -3570,12 +3642,13 @@ async def subscription_miniapp_submit(request: Request):
                 event_name="payment_screenshot_submitted",
                 user=user,
                 telegram_id=telegram_id,
-                source=str(payload.get("source") or payload.get("mode") or "subscription_miniapp"),
+                source=_checkout_text(payload.get("source") or payload.get("mode") or "subscription_miniapp", 80),
                 payment_id=_positive_int(result.get("payment_id")),
                 payload={
-                    "plan_type": str(payload.get("plan_type") or ""),
-                    "payment_method": str(payload.get("payment_method") or ""),
-                    "mode": str(payload.get("mode") or ""),
+                    "attempt_id": attempt_id,
+                    "plan_type": _checkout_text(payload.get("plan_type"), 32),
+                    "payment_method": _checkout_text(payload.get("payment_method"), 32),
+                    "mode": _checkout_text(payload.get("mode"), 32),
                 },
             )
         return result

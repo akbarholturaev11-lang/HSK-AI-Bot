@@ -532,7 +532,9 @@ var CHECKOUT_NAVIGATING=false;
 function _apiHeaders(){return{"Content-Type":"application/json","X-Telegram-Init-Data":INIT_DATA}}
 function _apiGet(url){return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}})}
 function _apiPost(url,body){return fetch(url,{method:"POST",headers:_apiHeaders(),body:JSON.stringify(body)})}
-var COURSE_SESSION_ID=(function(){try{var k="hsk_v3_session_id",v=sessionStorage.getItem(k);if(!v){v="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);sessionStorage.setItem(k,v)}return v}catch(e){return"v3-"+Date.now()}})();
+/* Har bir Course sahifa ochilishi alohida analytics session. sessionStorage'da
+   saqlash qayta ochilgan Mini Appni eski sessionga qo'shib yuborardi. */
+var COURSE_SESSION_ID="v3-"+Date.now()+"-"+Math.random().toString(36).slice(2,9);
 function trackCourseEvent(event,payload){
   if(!INIT_DATA)return Promise.resolve({ok:false,skipped:true});
   payload=payload||{};
@@ -574,7 +576,14 @@ function trackCheckoutOpenedForRedirect(source,clickId){
   }catch(e){}
 }
 function lessonEventKey(event,lessonOrder,suffix){
-  return ["course-v3",event,(MAP&&MAP.level)||getSelectedLevel(),lessonOrder,suffix||""].join(":");
+  return ["course-v3",COURSE_SESSION_ID,event,(MAP&&MAP.level)||getSelectedLevel(),lessonOrder,suffix||""].join(":");
+}
+function activationVariant(){
+  try{
+    var p=new URLSearchParams(location.search||""),source=p.get("source")||"";
+    if(p.get("autostart")!=="1")return"standard";
+    return source.indexOf("d1_recovery_v1")===0?"d1_recovery_v1":"direct_start_v1";
+  }catch(e){return"standard"}
 }
 function T(){return I18N[LANG]}
 function tr(v){return !v?"":(typeof v==="string"?v:(v[LANG]||v.ru||v.uz||""))}
@@ -1361,6 +1370,21 @@ function showSkipResult(pct,idx){
 
 /* ---------- Lesson flow engine ---------- */
 var Flow={queue:[],i:0,answered:false,correct:0,graded:0,test:null,challenge:null,lessonIdx:null,ad:null};
+var LESSON_RESUME_TTL_MS=7*24*60*60*1000;
+function lessonResumeKey(level,lessonOrder){return"hsk_v3_lesson_resume:"+normalizeLevel(level||"hsk1")+":"+Number(lessonOrder||0)}
+function loadLessonResume(level,lessonOrder,queueLength){
+  try{
+    var saved=JSON.parse(localStorage.getItem(lessonResumeKey(level,lessonOrder))||"null");
+    if(!saved||Date.now()-Number(saved.at||0)>LESSON_RESUME_TTL_MS)return 0;
+    return Math.max(0,Math.min(Number(saved.i||0),Math.max(0,Number(queueLength||0)-1)));
+  }catch(e){return 0}
+}
+function saveLessonResume(){
+  if(Flow.test||Flow.challenge||Flow.lessonIdx===null)return;
+  var lesson=flowLesson();if(!lesson)return;
+  try{localStorage.setItem(lessonResumeKey((MAP&&MAP.level)||"hsk1",lesson.n),JSON.stringify({i:Flow.i,at:Date.now()}))}catch(e){}
+}
+function clearLessonResume(level,lessonOrder){try{localStorage.removeItem(lessonResumeKey(level,lessonOrder))}catch(e){}}
 function flowLesson(){
   if(Flow.lessonIdx===null||typeof Flow.lessonIdx==="undefined")return null;
   return allLessons()[Flow.lessonIdx]||null;
@@ -1424,14 +1448,16 @@ function startLesson(idx,opts){
   if(l.status==="locked")return;
   var lv=MAP.level||"hsk1";
   loadLessonData(lv,l.n).then(function(d){
-    Flow.queue=buildQueue(d);Flow.i=0;Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;
+    Flow.queue=buildQueue(d);Flow.i=loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;
     /* Yangi bepul user 2-darsni yarmigacha ko'radi (preview_half): o'rtaga
        yetganda obuna oynasi chiqadi. Backend ham 2-darsni yakunlatmaydi. */
     Flow.previewHalf=!!l.preview_half;
     Flow.previewHalfAt=Flow.previewHalf?Math.max(1,Math.floor(Flow.queue.length/2)):0;
+    if(Flow.previewHalf)Flow.i=Math.min(Flow.i,Math.max(0,Flow.previewHalfAt-1));
     trackCourseEvent("lesson_started",{
       source:"course_v3",
       lesson_order:l.n,
+      activation_variant:activationVariant(),
       dedupe_key:lessonEventKey("lesson_started",l.n)
     });
     HP=5;$("#f-hp").textContent=HP;$("#flow").classList.add("on");renderFlowCard();
@@ -1497,6 +1523,7 @@ function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writ
 function renderFlowCard(){
   Flow.answered=false;hideBar();flowProg();
   if(Flow.i>=Flow.queue.length){return flowDone()}
+  saveLessonResume();
   var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:T().check);
   var t=c.type;
   trackFlowCard(c);
@@ -1799,7 +1826,9 @@ function adoptServerLang(d){
    API yiqildi") darrov "ulanmagan" gate ko'rsatilmaydi, bir necha marta qayta
    uriniladi. Faqat haqiqiy 401 (auth) yoki initData yo'qligida gate chiqadi. */
 function _fetchCourseMap(lv){
-  var url="/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset());
+  var entrySource="";try{entrySource=new URLSearchParams(location.search||"").get("source")||""}catch(e){}
+  var url="/api/v3/map?lang="+LANG+"&level="+lv+"&tz="+encodeURIComponent(-new Date().getTimezoneOffset())
+    +"&sid="+encodeURIComponent(COURSE_SESSION_ID)+"&source="+encodeURIComponent(entrySource);
   return fetch(url,{headers:{"X-Telegram-Init-Data":INIT_DATA}}).then(function(r){
     return r.json().then(function(d){d._status=r.status;return d}).catch(function(){return {_status:r.status,_parseFail:true}});
   });
@@ -1830,6 +1859,7 @@ function loadLevel(lv){
 }
 function applyLessonDone(cur,d){
   var rankBefore=currentRatingRank();
+  clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   var al=allLessons();
   cur.status="done";cur.stars=3;cur.locked_premium=false;
   if(d&&d.gamification&&MAP.progress){
@@ -1860,7 +1890,7 @@ function flowDone(){
   if(!cur){App.showLevelUp("lesson");return}
   if(!INIT_DATA){applyLessonDone(cur,null);return}
   var doneIdx=Flow.lessonIdx;
-  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG})
+  _apiPost("/api/v3/lesson/complete",{lesson_id:cur.n,level:MAP.level||"hsk1",lang:LANG,session_id:COURSE_SESSION_ID})
     .then(function(r){return r.json().then(function(d){d._status=r.status;return d})})
     .then(function(d){
       if(!d.ok){
@@ -2442,7 +2472,13 @@ window.openLessonSheet=openLessonSheet;window.startLesson=startLesson;window.App
     var initialLesson=Number(sp.get("lesson")||0);
     if(initialLesson>0){
       var idx=-1;allLessons().forEach(function(l,i){if(Number(l.n)===initialLesson)idx=i});
-      if(idx>=0)setTimeout(function(){App.show("course");openLessonSheet(idx)},80);
+      if(idx>=0)setTimeout(function(){
+        App.show("course");
+        if(sp.get("autostart")==="1"){
+          startLesson(idx);
+          try{sp.delete("autostart");history.replaceState(null,"",location.pathname+"?"+sp.toString()+location.hash)}catch(e){}
+        }else openLessonSheet(idx);
+      },80);
     }
     var challengeId=Number(sp.get("challenge_id")||0);
     if(challengeId>0)setTimeout(function(){openChallengeById(challengeId)},180);

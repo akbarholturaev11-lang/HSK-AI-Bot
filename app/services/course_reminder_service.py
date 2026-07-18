@@ -6,10 +6,15 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models.course_progress import CourseProgress
+from app.db.models.course_miniapp_event import CourseMiniAppEvent
 from app.db.models.user import User
 from app.bot.utils.i18n import t
 from app.services.bot_block_status_service import BotBlockStatusService
 from app.services.course_progress_summary_service import CourseProgressSummaryService
+
+D1_RECOVERY_EXPERIMENT = "d1_recovery_v1"
+D1_RECOVERY_ASSIGNED_EVENT = "d1_recovery_assigned"
+D1_RECOVERY_HOLDOUT_HOURS = 48
 
 
 def _reminder_keyboard(lang: str):
@@ -26,6 +31,20 @@ def _reminder_keyboard(lang: str):
 class CourseReminderService:
     def __init__(self, session: AsyncSession):
         self.session = session
+
+    async def _active_d1_holdout_ids(self, now: datetime) -> set[int]:
+        rows = (
+            await self.session.execute(
+                select(CourseMiniAppEvent.telegram_id)
+                .where(
+                    CourseMiniAppEvent.event_name == D1_RECOVERY_ASSIGNED_EVENT,
+                    CourseMiniAppEvent.source == D1_RECOVERY_EXPERIMENT,
+                    CourseMiniAppEvent.created_at >= now - timedelta(hours=D1_RECOVERY_HOLDOUT_HOURS),
+                )
+                .group_by(CourseMiniAppEvent.telegram_id)
+            )
+        ).all()
+        return {int(row.telegram_id) for row in rows if row.telegram_id}
 
     async def _build_reminder_text(self, progress: CourseProgress, lang: str) -> str:
         summary = await CourseProgressSummaryService(self.session).summarize_last_completed_lesson(progress)
@@ -47,8 +66,11 @@ class CourseReminderService:
             .where(User.status == "active")
         )
         rows = result.all()
+        d1_holdout_ids = await self._active_d1_holdout_ids(now_utc)
 
         for progress, user in rows:
+            if int(user.telegram_id) in d1_holdout_ids:
+                continue
             if not progress.reminder_time:
                 continue
 

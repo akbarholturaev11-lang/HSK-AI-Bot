@@ -42,6 +42,7 @@ class CourseMiniAppOnboardingService:
         start_mode: str,
         language: str | None = None,
         timezone_offset_minutes: int = 0,
+        activation_variant: str | None = None,
     ) -> dict:
         level = self.normalize_level(level)
         goal, daily_minutes, start_mode = self.profile_service.validate_preferences(
@@ -49,6 +50,7 @@ class CourseMiniAppOnboardingService:
             daily_minutes=daily_minutes,
             start_mode=start_mode,
         )
+        activation_variant = str(activation_variant or "legacy_or_standard").strip()[:32]
 
         user = await self.user_repo.get_by_telegram_id(telegram_id)
         if not user:
@@ -152,6 +154,7 @@ class CourseMiniAppOnboardingService:
                     "start_mode": start_mode,
                     "start_point": start_mode,
                     "language": str(language or "").strip().lower()[:8] or None,
+                    "activation_variant": activation_variant or "legacy_or_standard",
                 },
                 f"onboarding:{profile.id}:completed",
             ),

@@ -231,6 +231,7 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
                 daily_minutes=10,
                 start_mode="lesson_1",
                 timezone_offset_minutes=300,
+                activation_variant="direct_start_v1",
             )
 
         self.assertTrue(result["ok"])
@@ -240,6 +241,15 @@ class CourseMiniAppOnboardingFlowTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(user.payment_status, "none")
         service.engine.progress_repo.set_current_lesson_and_step.assert_awaited_once()
         self.assertEqual(analytics.record_server_event.await_count, 5)
+        completed_call = next(
+            call
+            for call in analytics.record_server_event.await_args_list
+            if call.kwargs["event_name"] == "onboarding_completed"
+        )
+        self.assertEqual(
+            completed_call.kwargs["payload"]["activation_variant"],
+            "direct_start_v1",
+        )
 
     async def test_cross_level_lesson_one_does_not_reset_existing_progress(self):
         session = SimpleNamespace(commit=AsyncMock())

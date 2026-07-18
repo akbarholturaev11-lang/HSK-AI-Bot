@@ -207,6 +207,67 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-18 — Subscription checkout stage analytics
+
+Changed:
+- Subscription Mini App now records when a user reaches payment instructions and when a receipt image is selected, linked by a short-lived checkout attempt ID.
+- Admin payment funnel reconstructs only the same checkout attempt and links screenshot/approval through the payment ID instead of mixing independent users or periods.
+- Locked-lesson checkout preserves the user's intent with course-continuation copy in Uzbek, Russian, and Tajik.
+
+Why:
+- The old funnel mixed unrelated acquisition sources and could not identify where users dropped between opening checkout and submitting a receipt.
+
+Files touched:
+- `app/main.py`, `app/services/admin_miniapp_service.py`, `app/static/subscription.html`, `tests/test_course_v3_static_data.py`
+
+Risk:
+- Analytics and UI copy only. Payment creation, approval, subscription, and access logic are unchanged. The new funnel intentionally shows `Ma'lumot yig'ilmoqda` until attempt-aware traffic exists.
+
+Follow-up:
+- After enough post-deploy traffic, compare `Obuna sahifasi → Rekvizitni ko'rdi → Skrinshot tanladi → Skrinshot yubordi` and optimize the largest verified drop.
+
+### 2026-07-18 — Direct first-lesson activation and exact retention metrics
+
+Changed:
+- Successful Course v3 onboarding now opens the selected lesson immediately instead of sending a user who chose “first lesson” into the 11-step product tour.
+- Admin analytics measures onboarding → lesson start within 2 minutes, section completion within 15 minutes, and lesson completion within 24 hours using only cohorts whose measurement window has ended.
+- D1/D7 retention now uses exact Mini App open windows; Mini App opens are recorded per course session, not once per calendar day.
+- Session and lesson-time metrics report only measurable sessions and real completed lessons. Unfinished-lesson notification attribution is source-specific.
+- Motivation reminders exclude users inactive for more than 14 days and users currently marked as bot-blocked.
+
+Why:
+- The main CTA promised a first lesson but inserted a long tour before the learning value. Previous retention/session/payment proxy calculations could also hide where users actually dropped.
+
+Files touched:
+- `app/static/course_v3_onboarding.html`, `app/static/course-v3.html`, `app/main.py`, `app/services/admin_miniapp_service.py`, `app/services/motivation_reminder_service.py`, `app/bot/utils/course_miniapp.py`, tests.
+
+Risk:
+- Course content, lesson order, quiz/homework result flow, payment approval, and subscription access are unchanged. Exact D1/D7 values are not directly comparable to the previous broad proxy.
+
+Follow-up:
+- After deploy, monitor a fresh 7-day cohort: onboarding → lesson ≤2m, first section ≤15m, lesson complete ≤24h, exact D1/D7, and checkout attempt stages.
+
+### 2026-07-18 — D1 first-lesson recovery experiment
+
+Changed:
+- New users who started lesson 1 during onboarding, did not finish it, and did not return are assigned once to a stable 50/50 treatment/control experiment after 24–36 idle hours.
+- Treatment receives one localized text reminder whose CTA opens the exact level/lesson with `source=d1_recovery_v1&autostart=1`; control receives no D1 message.
+- Course v3 stores the current lesson-card index locally for seven days, resumes it on the same device, clears it on completion, and consumes `autostart` only once.
+- Assignment/sent/failure events are server-only and do not update `User.last_active_at`. Both arms suppress Motivation and CourseReminder messages for the 48-hour outcome window.
+- Admin analytics reports matured 48-hour ITT treatment/control return, same-lesson completion, send failure, bot-block guardrail, and percentage-point lift. Results below 30 matured users per arm are directional only.
+
+Why:
+- D1 retention is low, and the prior reminder could describe one lesson while opening another or restart a partly completed lesson from the first card.
+
+Files touched:
+- `app/services/motivation_reminder_service.py`, `app/services/course_reminder_service.py`, `app/services/notification_template_service.py`, `app/services/admin_miniapp_service.py`, `app/db/models/course_miniapp_event.py`, `app/static/course-v3.html`, `app/main.py`, tests.
+
+Risk:
+- No database migration and no course/payment/access logic change. Resume is device-local, so a different device starts from the first card. The experiment must not be judged before both arms have matured 48-hour outcomes.
+
+Follow-up:
+- Deploy, then wait for at least 30 matured users in each arm before using lift as more than a directional signal; also watch treatment send rate and bot-block lift.
+
 ### 2026-07-16 — To'g'ri bot username + Course Mini App map cold-start retry
 
 Changed:

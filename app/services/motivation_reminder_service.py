@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import hashlib
+import json
 from datetime import date, datetime, timedelta, timezone
 
 from aiogram import Bot
 from aiogram.types import FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
-from sqlalchemy import func, select
+from sqlalchemy import and_, func, or_, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.bot.utils.course_miniapp import course_study_miniapp_url
@@ -17,6 +20,7 @@ from app.services.course_gamification_service import CourseGamificationService
 from app.services.notification_template_service import (
     CAPTION_MAX,
     KEY_DAILY_GOAL,
+    KEY_D1_RECOVERY,
     KEY_LESSON_UNFINISHED,
     KEY_OVERTAKEN,
     KEY_STREAK,
@@ -34,6 +38,31 @@ DEFAULT_OFFSET_MIN = 5 * 60  # UTC+5
 GOAL_WINDOW_START_MIN = 20 * 60  # 20:00
 GOAL_WINDOW_END_MIN = 21 * 60 + 30  # 21:30
 LESSON_UNFINISHED_SENT_EVENT = "motivation_lesson_unfinished_sent"
+D1_RECOVERY_EXPERIMENT = "d1_recovery_v1"
+D1_RECOVERY_ASSIGNED_EVENT = "d1_recovery_assigned"
+D1_RECOVERY_SENT_EVENT = "d1_recovery_sent"
+D1_RECOVERY_FAILED_EVENT = "d1_recovery_send_failed"
+D1_RECOVERY_MIN_IDLE = timedelta(hours=24)
+D1_RECOVERY_MAX_IDLE = timedelta(hours=36)
+D1_RECOVERY_HOLDOUT = timedelta(hours=48)
+D1_RECOVERY_LOOKBACK = timedelta(days=5)
+D1_RECOVERY_ONBOARDING_MAX_AGE = timedelta(days=3)
+D1_RECOVERY_SAFE_START_MIN = 9 * 60
+D1_RECOVERY_SAFE_END_MIN = 21 * 60 + 30
+D1_RECOVERY_SYSTEM_EVENTS = {
+    LESSON_UNFINISHED_SENT_EVENT,
+    D1_RECOVERY_ASSIGNED_EVENT,
+    D1_RECOVERY_SENT_EVENT,
+    D1_RECOVERY_FAILED_EVENT,
+}
+D1_RECOVERY_STATE_EVENTS = {
+    "onboarding_completed",
+    "lesson_started",
+    "lesson_completed",
+    "book_lesson_completed",
+    "miniapp_opened",
+    *D1_RECOVERY_SYSTEM_EVENTS,
+}
 DAILY_GOAL_ACTIVITY_TYPES = ("lesson", "book_lesson")
 
 
@@ -46,10 +75,161 @@ def _canonical_band(level: str | None) -> str:
     return "hsk1"
 
 
-def _button(lang: str, *, level: str | None = None, lesson: int | None = None):
+def _as_utc(value: datetime | None) -> datetime | None:
+    if value is None:
+        return None
+    return value.replace(tzinfo=timezone.utc) if value.tzinfo is None else value.astimezone(timezone.utc)
+
+
+def _d1_recovery_arm(telegram_id: int) -> tuple[str, int]:
+    digest = hashlib.sha256(f"{D1_RECOVERY_EXPERIMENT}:{int(telegram_id)}".encode()).digest()
+    bucket = int.from_bytes(digest[:4], "big") % 100
+    return ("treatment" if bucket < 50 else "control", bucket)
+
+
+def _event_payload(raw: str | None) -> dict:
+    try:
+        value = json.loads(raw or "{}")
+    except (TypeError, json.JSONDecodeError):
+        return {}
+    return value if isinstance(value, dict) else {}
+
+
+def _d1_recovery_states(
+    events: list[CourseMiniAppEvent],
+    *,
+    now: datetime,
+    last_activity_by_user: dict[int, datetime] | None = None,
+) -> dict[int, dict]:
+    by_user: dict[int, list[CourseMiniAppEvent]] = {}
+    for event in events:
+        if event.telegram_id:
+            by_user.setdefault(int(event.telegram_id), []).append(event)
+
+    states: dict[int, dict] = {}
+    for telegram_id, user_events in by_user.items():
+        user_events.sort(key=lambda item: _as_utc(item.created_at) or datetime.min.replace(tzinfo=timezone.utc))
+        assignments = [
+            event
+            for event in user_events
+            if event.event_name == D1_RECOVERY_ASSIGNED_EVENT
+            and event.source == D1_RECOVERY_EXPERIMENT
+        ]
+        if assignments:
+            assigned = assignments[-1]
+            payload = _event_payload(assigned.payload_json)
+            states[telegram_id] = {
+                "assignment": assigned,
+                "assigned_at": _as_utc(assigned.created_at),
+                "arm": payload.get("arm") or _d1_recovery_arm(telegram_id)[0],
+                "started": assigned,
+                "last_activity_at": None,
+            }
+            continue
+
+        onboarding = next(
+            (event for event in reversed(user_events) if event.event_name == "onboarding_completed"),
+            None,
+        )
+        onboarding_at = _as_utc(getattr(onboarding, "created_at", None))
+        if not onboarding_at or now - onboarding_at > D1_RECOVERY_ONBOARDING_MAX_AGE:
+            continue
+
+        starts = [
+            event
+            for event in user_events
+            if event.event_name == "lesson_started"
+            and int(event.lesson_order or 0) == 1
+            and (_as_utc(event.created_at) or now) >= onboarding_at
+        ]
+        if not starts:
+            continue
+        started = starts[0]
+        started_at = _as_utc(started.created_at)
+        if not started_at or started_at > onboarding_at + timedelta(hours=24):
+            continue
+
+        if any(
+            event.event_name == LESSON_UNFINISHED_SENT_EVENT
+            and (_as_utc(event.created_at) or now) >= started_at
+            for event in user_events
+        ):
+            continue
+        def completed_started_lesson(event: CourseMiniAppEvent) -> bool:
+            if event.event_name not in {"lesson_completed", "book_lesson_completed"}:
+                return False
+            if (_as_utc(event.created_at) or now) < started_at:
+                return False
+            id_matches = (
+                started.lesson_id is not None
+                and event.lesson_id is not None
+                and int(event.lesson_id) == int(started.lesson_id)
+            )
+            order_matches = (
+                bool(started.level and event.level)
+                and str(event.level).lower() == str(started.level).lower()
+                and event.lesson_order is not None
+                and started.lesson_order is not None
+                and int(event.lesson_order) == int(started.lesson_order)
+            )
+            return id_matches or order_matches
+
+        if any(completed_started_lesson(event) for event in user_events):
+            continue
+
+        returned = any(
+            (_as_utc(event.created_at) or now) > started_at
+            and event.event_name in {"miniapp_opened", "lesson_started"}
+            and event.session_id
+            and started.session_id
+            and event.session_id != started.session_id
+            for event in user_events
+        )
+        if returned:
+            continue
+        aggregated_last_activity = _as_utc(
+            (last_activity_by_user or {}).get(telegram_id)
+        )
+        if aggregated_last_activity and aggregated_last_activity >= started_at:
+            last_activity_at = aggregated_last_activity
+        else:
+            activity_times = [
+                _as_utc(event.created_at)
+                for event in user_events
+                if (_as_utc(event.created_at) or now) >= started_at
+                and event.event_name not in D1_RECOVERY_SYSTEM_EVENTS
+            ]
+            last_activity_at = max(
+                (value for value in activity_times if value),
+                default=started_at,
+            )
+        states[telegram_id] = {
+            "assignment": None,
+            "assigned_at": None,
+            "arm": None,
+            "started": started,
+            "last_activity_at": last_activity_at,
+        }
+    return states
+
+
+def _button(
+    lang: str,
+    *,
+    level: str | None = None,
+    lesson: int | None = None,
+    source: str = "motivation_reminder",
+    autostart: bool = False,
+):
     # Tugma to'g'ridan-to'g'ri foydalanuvchining joriy darsiga olib boradi
     # (xarita emas). Dars aniqlanmasa, kurs xaritasi ochiladi.
-    if lesson and lesson > 1:
+    if source == D1_RECOVERY_EXPERIMENT:
+        labels = {
+            "uz": "▶️ Darsga qaytish",
+            "ru": "▶️ Вернуться к уроку",
+            "tj": "▶️ Ба дарс баргаштан",
+        }
+    elif lesson and lesson > 1:
         labels = {
             "uz": f"▶️ Davom etish · {lesson}-dars",
             "ru": f"▶️ Продолжить · урок {lesson}",
@@ -68,7 +248,12 @@ def _button(lang: str, *, level: str | None = None, lesson: int | None = None):
                     text=labels.get(lang, labels["ru"]),
                     web_app=WebAppInfo(
                         url=course_study_miniapp_url(
-                            lang=lang, level=level, lesson=lesson, tab="course"
+                            lang=lang,
+                            level=level,
+                            lesson=lesson,
+                            tab="course",
+                            source=source,
+                            autostart=autostart,
                         )
                     ),
                 )
@@ -135,10 +320,238 @@ class MotivationReminderService:
         }
         return fallbacks.get(lang, fallbacks["ru"])
 
+    async def _load_d1_recovery_states(
+        self,
+        telegram_ids: list[int],
+        now: datetime,
+    ) -> dict[int, dict]:
+        ids = tuple({int(value) for value in telegram_ids if value})
+        if not ids:
+            return {}
+
+        candidate_rows = (
+            await self.session.execute(
+                select(CourseMiniAppEvent.telegram_id)
+                .where(
+                    CourseMiniAppEvent.telegram_id.in_(ids),
+                    or_(
+                        and_(
+                            CourseMiniAppEvent.event_name == "onboarding_completed",
+                            CourseMiniAppEvent.created_at
+                            >= now - D1_RECOVERY_ONBOARDING_MAX_AGE,
+                        ),
+                        and_(
+                            CourseMiniAppEvent.event_name == D1_RECOVERY_ASSIGNED_EVENT,
+                            CourseMiniAppEvent.source == D1_RECOVERY_EXPERIMENT,
+                            CourseMiniAppEvent.created_at >= now - D1_RECOVERY_LOOKBACK,
+                        ),
+                    ),
+                )
+                .distinct()
+            )
+        ).all()
+        candidate_ids = tuple(
+            {int(row.telegram_id) for row in candidate_rows if row.telegram_id}
+        )
+        if not candidate_ids:
+            return {}
+
+        events = (
+            await self.session.execute(
+                select(CourseMiniAppEvent).where(
+                    CourseMiniAppEvent.telegram_id.in_(candidate_ids),
+                    CourseMiniAppEvent.created_at >= now - D1_RECOVERY_LOOKBACK,
+                    CourseMiniAppEvent.event_name.in_(D1_RECOVERY_STATE_EVENTS),
+                )
+            )
+        ).scalars().all()
+        activity_rows = (
+            await self.session.execute(
+                select(
+                    CourseMiniAppEvent.telegram_id,
+                    func.max(CourseMiniAppEvent.created_at).label("last_activity_at"),
+                )
+                .where(
+                    CourseMiniAppEvent.telegram_id.in_(candidate_ids),
+                    CourseMiniAppEvent.created_at >= now - D1_RECOVERY_LOOKBACK,
+                    CourseMiniAppEvent.event_name.notin_(D1_RECOVERY_SYSTEM_EVENTS),
+                )
+                .group_by(CourseMiniAppEvent.telegram_id)
+            )
+        ).all()
+        return _d1_recovery_states(
+            list(events),
+            now=now,
+            last_activity_by_user={
+                int(row.telegram_id): row.last_activity_at
+                for row in activity_rows
+                if row.telegram_id and row.last_activity_at
+            },
+        )
+
+    @staticmethod
+    def _d1_payload(*, arm: str, bucket: int) -> dict:
+        return {
+            "experiment_id": D1_RECOVERY_EXPERIMENT,
+            "arm": arm,
+            "bucket": bucket,
+            "eligibility_version": "first_lesson_no_return_v1",
+            "outcome_window_hours": 48,
+        }
+
+    def _d1_event(
+        self,
+        *,
+        user: User,
+        started: CourseMiniAppEvent,
+        event_name: str,
+        stage: str,
+        now: datetime,
+        payload: dict,
+    ) -> CourseMiniAppEvent:
+        event = CourseMiniAppEvent(
+            user_id=int(user.id),
+            telegram_id=int(user.telegram_id),
+            event_name=event_name,
+            source=D1_RECOVERY_EXPERIMENT,
+            level=started.level,
+            lesson_id=started.lesson_id,
+            lesson_order=started.lesson_order,
+            session_id=started.session_id,
+            dedupe_key=f"{D1_RECOVERY_EXPERIMENT}:{stage}",
+            payload_json=json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
+            created_at=now,
+        )
+        self.session.add(event)
+        return event
+
+    async def _reserve_d1_assignment(
+        self,
+        *,
+        user: User,
+        started: CourseMiniAppEvent,
+        now: datetime,
+        arm: str,
+        bucket: int,
+    ) -> bool:
+        payload = self._d1_payload(arm=arm, bucket=bucket)
+        payload.update(
+            {
+                "started_at": (_as_utc(started.created_at) or now).isoformat(),
+                "target_level": started.level,
+                "target_lesson": started.lesson_order,
+            }
+        )
+        try:
+            async with self.session.begin_nested():
+                self._d1_event(
+                    user=user,
+                    started=started,
+                    event_name=D1_RECOVERY_ASSIGNED_EVENT,
+                    stage="assigned",
+                    now=now,
+                    payload=payload,
+                )
+                await self.session.flush()
+            await self.session.commit()
+            return True
+        except IntegrityError:
+            return False
+
+    async def _handle_d1_recovery(
+        self,
+        *,
+        bot: Bot,
+        user: User,
+        lang: str,
+        local_now: datetime,
+        now: datetime,
+        state: dict | None,
+    ) -> str | None:
+        if not state:
+            return None
+        assigned_at = _as_utc(state.get("assigned_at"))
+        if assigned_at:
+            return "d1_holdout_active" if now < assigned_at + D1_RECOVERY_HOLDOUT else None
+
+        started = state.get("started")
+        last_activity_at = _as_utc(state.get("last_activity_at"))
+        if not started or not last_activity_at:
+            return None
+        idle = now - last_activity_at
+        if idle < D1_RECOVERY_MIN_IDLE:
+            return "d1_waiting"
+        if idle > D1_RECOVERY_MAX_IDLE:
+            return None
+        local_minute = local_now.hour * 60 + local_now.minute
+        if not D1_RECOVERY_SAFE_START_MIN <= local_minute <= D1_RECOVERY_SAFE_END_MIN:
+            return "d1_waiting_safe_hour"
+
+        # Admin template toggle is the experiment kill switch. Check it before
+        # assigning either arm so disabled treatment cannot pollute the ITT cohort
+        # or suppress normal reminders for 48 hours.
+        resolved = await self.templates.resolve(KEY_D1_RECOVERY, lang)
+        if not resolved:
+            return None
+
+        arm, bucket = _d1_recovery_arm(int(user.telegram_id))
+        if not await self._reserve_d1_assignment(
+            user=user,
+            started=started,
+            now=now,
+            arm=arm,
+            bucket=bucket,
+        ):
+            return "d1_already_assigned"
+        if arm == "control":
+            return "d1_control_assigned"
+
+        base_payload = self._d1_payload(arm=arm, bucket=bucket)
+        sent = await self._send(
+            bot,
+            user,
+            resolved,
+            lang,
+            {"lesson": self._lesson_label(started, lang)},
+            target_level=started.level,
+            target_lesson=started.lesson_order,
+            source=D1_RECOVERY_EXPERIMENT,
+            autostart=True,
+        )
+        if sent:
+            sent_payload = {
+                **base_payload,
+                "template_key": KEY_D1_RECOVERY,
+                "target_level": started.level,
+                "target_lesson": started.lesson_order,
+            }
+            self._d1_event(
+                user=user,
+                started=started,
+                event_name=D1_RECOVERY_SENT_EVENT,
+                stage="sent",
+                now=now,
+                payload=sent_payload,
+            )
+            status = "d1_treatment_sent"
+        else:
+            failed_payload = {**base_payload, "error_kind": "telegram_or_media", "retryable": False}
+            self._d1_event(
+                user=user,
+                started=started,
+                event_name=D1_RECOVERY_FAILED_EVENT,
+                stage="send_failed",
+                now=now,
+                payload=failed_payload,
+            )
+            status = "d1_treatment_failed"
+        await self.session.commit()
+        return status
+
     async def send_due_reminders(self, bot: Bot) -> None:
         now = datetime.now(timezone.utc)
 
-        # One query: all non-blocked users that have a Mini App profile.
+        # One query: recently active, reachable users that have a Mini App profile.
         # Course Mini App reminders are a learning loop, not a paid-only feature:
         # trial/free/expired users can still use the limited course surfaces.
         rows = (
@@ -146,10 +559,22 @@ class MotivationReminderService:
                 select(CourseMiniAppProfile, User)
                 .join(User, CourseMiniAppProfile.user_id == User.id)
                 .where(User.status != "blocked")
+                .where(User.last_active_at >= now - timedelta(days=14))
+                .where(
+                    or_(
+                        User.bot_blocked_at.is_(None),
+                        User.bot_unblocked_at >= User.bot_blocked_at,
+                    )
+                )
             )
         ).all()
         if not rows:
             return
+
+        d1_states = await self._load_d1_recovery_states(
+            [int(user.telegram_id) for _profile, user in rows],
+            now,
+        )
 
         offsets_by_user = {
             int(profile.user_id): self._profile_offset(profile)
@@ -214,6 +639,18 @@ class MotivationReminderService:
             local_now = self._local_now(offset, now)
             local_day = local_now.date()
 
+            d1_status = await self._handle_d1_recovery(
+                bot=bot,
+                user=user,
+                lang=lang,
+                local_now=local_now,
+                now=now,
+                state=d1_states.get(int(user.telegram_id)),
+            )
+            if d1_status:
+                bump(d1_status)
+                continue
+
             current_rank, members = ranks.get(int(profile.user_id), (0, []))
 
             # 1) Overtaken in the rating (rank got worse since last check).
@@ -257,6 +694,8 @@ class MotivationReminderService:
                         "lesson": self._lesson_label(unfinished_lesson, lang),
                         "minutes": minutes,
                     },
+                    target_level=unfinished_lesson.level,
+                    target_lesson=unfinished_lesson.lesson_order,
                 ):
                     bump("sent_lesson_unfinished")
                     self._mark_unfinished_lesson_sent(user, unfinished_lesson, local_day)
@@ -465,15 +904,35 @@ class MotivationReminderService:
         except Exception:
             return None, None
 
-    async def _send(self, bot: Bot, user: User, resolved: dict, lang: str, fields: dict) -> bool:
+    async def _send(
+        self,
+        bot: Bot,
+        user: User,
+        resolved: dict,
+        lang: str,
+        fields: dict,
+        *,
+        target_level: str | None = None,
+        target_lesson: int | None = None,
+        source: str = "motivation_reminder",
+        autostart: bool = False,
+    ) -> bool:
         try:
             text = resolved["text"].format(**fields)
         except (KeyError, IndexError, ValueError):
             text = resolved["text"]
         media_type = resolved.get("media_type") or "none"
         media_path = resolved.get("media_path")
-        level, lesson = await self._lesson_deeplink_target(user)
-        markup = _button(lang, level=level, lesson=lesson)
+        level, lesson = target_level, target_lesson
+        if not level or not lesson:
+            level, lesson = await self._lesson_deeplink_target(user)
+        markup = _button(
+            lang,
+            level=level,
+            lesson=lesson,
+            source=source,
+            autostart=autostart,
+        )
         try:
             if media_type in ("photo", "video") and media_path:
                 import os

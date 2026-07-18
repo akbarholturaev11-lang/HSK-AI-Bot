@@ -43,6 +43,9 @@ COURSE_MINIAPP_EVENT_NAMES = (
     "streak_updated",
     "league_points_earned",
     "motivation_lesson_unfinished_sent",
+    "d1_recovery_assigned",
+    "d1_recovery_sent",
+    "d1_recovery_send_failed",
 )
 
 CLIENT_COURSE_MINIAPP_EVENT_NAMES = (
