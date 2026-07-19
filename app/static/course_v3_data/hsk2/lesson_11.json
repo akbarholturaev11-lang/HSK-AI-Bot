@@ -1011,28 +1011,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "比昨天便宜。",
-          "pinyin": "Bǐ zuótiān piányi.",
-          "options": [
-            "一个朋友。",
-            "比昨天便宜。",
-            "什么朋友？是不是男朋友？",
-            "王方，昨天和你一起唱歌的人是谁？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "比昨天便宜。 — Kechaga qaraganda arzon.",
-            "ru": "比昨天便宜。 — Дешевле, чем вчера.",
-            "tj": "比昨天便宜。 — Аз дирӯз арзонтар аст."
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'familiyasi … bo'lmoq' xitoycha qaysi?",
@@ -1060,6 +1038,39 @@
         {
           "type": "sentence_builder",
           "sentence": {
+            "uz": "Qanday do'st? Yigit do'stingizmi?",
+            "ru": "Что за друг? Это случайно не парень?",
+            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
+          },
+          "tokens": [
+            "是",
+            "什么",
+            "女",
+            "不",
+            "朋友",
+            "唱歌",
+            "男",
+            "朋友",
+            "是"
+          ],
+          "answer_tokens": [
+            "什么",
+            "朋友",
+            "是",
+            "不",
+            "是",
+            "男",
+            "朋友"
+          ],
+          "explanation": {
+            "uz": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
+            "ru": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
+            "tj": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
             "uz": "U ehtimol bugun keladi.",
             "ru": "Возможно, он придёт сегодня.",
             "tj": "Эҳтимол ӯ имрӯз меояд."
@@ -1082,6 +1093,110 @@
             "uz": "他可能今天来。 — Tā kěnéng jīntiān lái.",
             "ru": "他可能今天来。 — Tā kěnéng jīntiān lái.",
             "tj": "他可能今天来。 — Tā kěnéng jīntiān lái."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "xìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xìng?",
+            "tj": "xìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "姓",
+            "男",
+            "唱歌",
+            "女"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "姓 = familiyasi … bo'lmoq (xìng)",
+            "ru": "姓 = иметь фамилию… (xìng)",
+            "tj": "姓 = насабаш … буданаш (xìng)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "比昨天便宜。",
+          "pinyin": "Bǐ zuótiān piányi.",
+          "translation": {
+            "uz": "Kechaga qaraganda arzon.",
+            "ru": "Дешевле, чем вчера.",
+            "tj": "Аз дирӯз арзонтар аст."
+          },
+          "tokens": {
+            "uz": [
+              "Van",
+              "Fan",
+              "Kechaga",
+              "qaraganda",
+              "arzon"
+            ],
+            "ru": [
+              "Фан",
+              "вчера",
+              "Ван",
+              "чем",
+              "Дешевле"
+            ],
+            "tj": [
+              "арзонтар",
+              "дирӯз",
+              "Фан",
+              "Аз",
+              "аст",
+              "Ван"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Kechaga",
+              "qaraganda",
+              "arzon"
+            ],
+            "ru": [
+              "Дешевле",
+              "чем",
+              "вчера"
+            ],
+            "tj": [
+              "Аз",
+              "дирӯз",
+              "арзонтар",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "比昨天便宜。 — Kechaga qaraganda arzon.",
+            "ru": "比昨天便宜。 — Дешевле, чем вчера.",
+            "tj": "比昨天便宜。 — Аз дирӯз арзонтар аст."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "比昨天便宜。",
+          "pinyin": "Bǐ zuótiān piányi.",
+          "options": [
+            "一个朋友。",
+            "比昨天便宜。",
+            "什么朋友？是不是男朋友？",
+            "王方，昨天和你一起唱歌的人是谁？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "比昨天便宜。 — Kechaga qaraganda arzon.",
+            "ru": "比昨天便宜。 — Дешевле, чем вчера.",
+            "tj": "比昨天便宜。 — Аз дирӯз арзонтар аст."
           }
         },
         {
@@ -1127,64 +1242,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "xìng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается xìng?",
-            "tj": "xìng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "姓",
-            "男",
-            "唱歌",
-            "女"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "姓 = familiyasi … bo'lmoq (xìng)",
-            "ru": "姓 = иметь фамилию… (xìng)",
-            "tj": "姓 = насабаш … буданаш (xìng)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Qanday do'st? Yigit do'stingizmi?",
-            "ru": "Что за друг? Это случайно не парень?",
-            "tj": "Чӣ гуна дӯст? Магар дӯсти писарат аст?"
-          },
-          "tokens": [
-            "是",
-            "什么",
-            "女",
-            "不",
-            "朋友",
-            "唱歌",
-            "男",
-            "朋友",
-            "是"
-          ],
-          "answer_tokens": [
-            "什么",
-            "朋友",
-            "是",
-            "不",
-            "是",
-            "男",
-            "朋友"
-          ],
-          "explanation": {
-            "uz": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
-            "ru": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?",
-            "tj": "什么朋友？是不是男朋友？ — Shénme péngyou? Shì bú shì nán péngyou?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "姓",
           "pinyin": "xìng",
@@ -1225,6 +1282,52 @@
             "uz": "王方，昨天和你一起唱歌的人是谁？ — Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?",
             "ru": "王方，昨天和你一起唱歌的人是谁？ — Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?",
             "tj": "王方，昨天和你一起唱歌的人是谁？ — Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "不是不是，我同学介绍的，昨天第一次见。",
+            "什么朋友？是不是男朋友？",
+            "一个朋友。",
+            "王方，昨天和你一起唱歌的人是谁？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 不是不是，我同学介绍的，昨天第一次见。",
+            "ru": "Правильный ответ: 不是不是，我同学介绍的，昨天第一次见。",
+            "tj": "Ҷавоби дуруст: 不是不是，我同学介绍的，昨天第一次见。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____方，昨天和你一起唱歌的人是谁？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "羊",
+            "王",
+            "司",
+            "商"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 王 — 王方，昨天和你一起唱歌的人是谁？ (Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?)",
+            "ru": "Верно: 王 — 王方，昨天和你一起唱歌的人是谁？ (Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?)",
+            "tj": "Дуруст: 王 — 王方，昨天和你一起唱歌的人是谁？ (Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?)"
           }
         },
         {
@@ -1295,59 +1398,13 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "不是不是，我同学介绍的，昨天第一次见。",
-            "什么朋友？是不是男朋友？",
-            "一个朋友。",
-            "王方，昨天和你一起唱歌的人是谁？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 不是不是，我同学介绍的，昨天第一次见。",
-            "ru": "Правильный ответ: 不是不是，我同学介绍的，昨天第一次见。",
-            "tj": "Ҷавоби дуруст: 不是不是，我同学介绍的，昨天第一次见。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____方，昨天和你一起唱歌的人是谁？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "诉",
-            "王",
-            "问",
-            "眼"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 王 — 王方，昨天和你一起唱歌的人是谁？ (Van Fan, kecha siz bilan birga qo'shiq aytgan odam kim edi?)",
-            "ru": "Верно: 王 — 王方，昨天和你一起唱歌的人是谁？ (Ван Фан, кто это был вчера, когда ты пел(а) вместе с тобой?)",
-            "tj": "Дуруст: 王 — 王方，昨天和你一起唱歌的人是谁？ (Ван Фан, дирӯз он касе ки бо ту якҷоя суруд мехонд кӣ буд?)"
-          }
-        },
-        {
           "type": "pronunciation",
-          "phrase": "比昨天便宜。",
-          "pinyin": "Bǐ zuótiān piányi.",
+          "phrase": "她比我们老师小两岁。",
+          "pinyin": "Tā bǐ wǒmen lǎoshī xiǎo liǎng suì.",
           "translation": {
-            "uz": "Kechaga qaraganda arzon.",
-            "ru": "Дешевле, чем вчера.",
-            "tj": "Аз дирӯз арзонтар аст."
+            "uz": "U bizning o'qituvchimizdan ikki yosh kichik.",
+            "ru": "Она на два года моложе нашего учителя.",
+            "tj": "Ӯ аз муаллими мо ду сол хурдтар аст."
           }
         }
       ]

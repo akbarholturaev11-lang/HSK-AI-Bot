@@ -1177,6 +1177,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "不是。那个又高又漂亮的女孩儿是二年级的。",
+          "pinyin": "Bú shì. Nà ge yòu gāo yòu piàoliang de nǚháir shì èr niánjí de.",
+          "options": [
+            "不是。那个又高又漂亮的女孩儿是二年级的。",
+            "照得不错，你们都是一个年级的吗？",
+            "这是你们比赛的照片吗？",
+            "是，这是我们比赛后照的。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "不是。那个又高又漂亮的女孩儿是二年级的。 — Yo'q. Ana u baland bo'yli va chiroyli qiz ikkinchi kursda.",
+            "ru": "不是。那个又高又漂亮的女孩儿是二年级的。 — Нет. Та высокая и красивая девушка со второго курса.",
+            "tj": "不是。那个又高又漂亮的女孩儿是二年级的。 — Не. Он духтари қадбаланду зебо аз курси дуюм аст."
+          }
+        },
+        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "认真 so'zining ma'nosini tanlang:",
@@ -1215,28 +1237,6 @@
             "uz": "认真 = jiddiy, mas'uliyatli (rènzhēn)",
             "ru": "认真 = серьёзный, добросовестный (rènzhēn)",
             "tj": "认真 = ҷиддӣ, масъулиятнок (rènzhēn)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "不是。那个又高又漂亮的女孩儿是二年级的。",
-          "pinyin": "Bú shì. Nà ge yòu gāo yòu piàoliang de nǚháir shì èr niánjí de.",
-          "options": [
-            "不是。那个又高又漂亮的女孩儿是二年级的。",
-            "照得不错，你们都是一个年级的吗？",
-            "这是你们比赛的照片吗？",
-            "是，这是我们比赛后照的。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "不是。那个又高又漂亮的女孩儿是二年级的。 — Yo'q. Ana u baland bo'yli va chiroyli qiz ikkinchi kursda.",
-            "ru": "不是。那个又高又漂亮的女孩儿是二年级的。 — Нет. Та высокая и красивая девушка со второго курса.",
-            "tj": "不是。那个又高又漂亮的女孩儿是二年级的。 — Не. Он духтари қадбаланду зебо аз курси дуюм аст."
           }
         },
         {
@@ -1279,6 +1279,80 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "niánqīng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается niánqīng?",
+            "tj": "niánqīng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "照片",
+            "比赛",
+            "年轻",
+            "年级"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "年轻 = yosh (niánqīng)",
+            "ru": "年轻 = молодой (niánqīng)",
+            "tj": "年轻 = ҷавон (niánqīng)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "那是我！",
+          "pinyin": "Nà shì wǒ!",
+          "translation": {
+            "uz": "U menman!",
+            "ru": "Это я!",
+            "tj": "Ин манам!"
+          },
+          "tokens": {
+            "uz": [
+              "sizlarning",
+              "menman",
+              "Bu",
+              "U"
+            ],
+            "ru": [
+              "я",
+              "фотография",
+              "ваша",
+              "Это"
+            ],
+            "tj": [
+              "акси",
+              "Ин",
+              "манам",
+              "мусобиқаи"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "menman"
+            ],
+            "ru": [
+              "Это",
+              "я"
+            ],
+            "tj": [
+              "Ин",
+              "манам"
+            ]
+          },
+          "explanation": {
+            "uz": "那是我！ — U menman!",
+            "ru": "那是我！ — Это я!",
+            "tj": "那是我！ — Ин манам!"
           }
         },
         {
@@ -1357,31 +1431,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "niánqīng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается niánqīng?",
-            "tj": "niánqīng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "照片",
-            "比赛",
-            "年轻",
-            "年级"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "年轻 = yosh (niánqīng)",
-            "ru": "年轻 = молодой (niánqīng)",
-            "tj": "年轻 = ҷавон (niánqīng)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "又",
           "pinyin": "yòu",
@@ -1427,9 +1476,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda 小明 avval nima deydi?",
-            "ru": "Что 小明 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 小明 аввал чӣ мегӯяд?"
+            "uz": "Dialog oxirida 马可 nima deydi?",
+            "ru": "Что 马可 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 马可 чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -1437,37 +1486,16 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "不是。那个又高又漂亮的女孩儿是二年级的。",
+            "这是你们比赛的照片吗？",
             "是，这是我们比赛后照的。",
-            "照得不错，你们都是一个年级的吗？",
-            "这是你们比赛的照片吗？"
+            "那是我！",
+            "照得不错，你们都是一个年级的吗？"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri javob: 这是你们比赛的照片吗？",
-            "ru": "Правильный ответ: 这是你们比赛的照片吗？",
-            "tj": "Ҷавоби дуруст: 这是你们比赛的照片吗？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____是你们比赛的照片吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "这",
-            "问",
-            "诉",
-            "眼"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 这 — 这是你们比赛的照片吗？ (Bu sizlarning musobaqadagi suratingizmi?)",
-            "ru": "Верно: 这 — 这是你们比赛的照片吗？ (Это ваша фотография с соревнования?)",
-            "tj": "Дуруст: 这 — 这是你们比赛的照片吗？ (Ин акси мусобиқаи шумост?)"
+            "uz": "To'g'ri javob: 那是我！",
+            "ru": "Правильный ответ: 那是我！",
+            "tj": "Ҷавоби дуруст: 那是我！"
           }
         },
         {
@@ -1525,9 +1553,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialog oxirida 马可 nima deydi?",
-            "ru": "Что 马可 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 马可 чӣ мегӯяд?"
+            "uz": "Dialogda 小明 avval nima deydi?",
+            "ru": "Что 小明 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 小明 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -1535,26 +1563,47 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "这是你们比赛的照片吗？",
+            "不是。那个又高又漂亮的女孩儿是二年级的。",
             "是，这是我们比赛后照的。",
-            "那是我！",
-            "照得不错，你们都是一个年级的吗？"
+            "照得不错，你们都是一个年级的吗？",
+            "这是你们比赛的照片吗？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "To'g'ri javob: 那是我！",
-            "ru": "Правильный ответ: 那是我！",
-            "tj": "Ҷавоби дуруст: 那是我！"
+            "uz": "To'g'ri javob: 这是你们比赛的照片吗？",
+            "ru": "Правильный ответ: 这是你们比赛的照片吗？",
+            "tj": "Ҷавоби дуруст: 这是你们比赛的照片吗？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____是你们比赛的照片吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "这",
+            "司",
+            "羊",
+            "商"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 这 — 这是你们比赛的照片吗？ (Bu sizlarning musobaqadagi suratingizmi?)",
+            "ru": "Верно: 这 — 这是你们比赛的照片吗？ (Это ваша фотография с соревнования?)",
+            "tj": "Дуруст: 这 — 这是你们比赛的照片吗？ (Ин акси мусобиқаи шумост?)"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "她总是笑着跟客人说话。",
-          "pinyin": "Tā zǒngshì xiàozhe gēn kèrén shuōhuà.",
+          "phrase": "好啊，我再去买一些喝的。",
+          "pinyin": "Hǎo a, wǒ zài qù mǎi yìxiē hē de.",
           "translation": {
-            "uz": "U doim mijozlar bilan kulib gaplashadi.",
-            "ru": "Она всегда разговаривает с гостями с улыбкой.",
-            "tj": "Вай ҳамеша бо муштариён бо табассум суҳбат мекунад."
+            "uz": "Yaxshi, men yana ichimlik olib kelaman.",
+            "ru": "Хорошо, я ещё куплю что-нибудь выпить.",
+            "tj": "Хуб, ман боз каме нӯшокӣ мехарам."
           }
         }
       ]

@@ -1027,69 +1027,34 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "路口 talaffuzini tanlang:",
-            "ru": "Выберите произношение 路口:",
-            "tj": "Талаффузи 路口-ро интихоб кунед:"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Eshik ochiq turibdi, marhamat kiring.",
+            "ru": "Дверь открыта, пожалуйста, входите.",
+            "tj": "Дар кушода истодааст, марҳамат даред."
           },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "lùkǒu",
-            "shǒu",
-            "ná",
-            "zhe"
+          "tokens": [
+            "着",
+            "拿",
+            "门",
+            "手",
+            "请",
+            "呢",
+            "进",
+            "开"
           ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "路口 — lùkǒu",
-            "ru": "路口 — lùkǒu",
-            "tj": "路口 — lùkǒu"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "路口 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 路口:",
-            "tj": "Маънои калимаи 路口-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ushlamoq, ko'tarmoq",
-              "ru": "держать, нести",
-              "tj": "нигоҳ доштан, бардоштан"
-            },
-            {
-              "uz": "qo'l",
-              "ru": "рука",
-              "tj": "даст"
-            },
-            {
-              "uz": "davom etayotgan holatni bildiruvchi yuklama",
-              "ru": "частица продолжающегося состояния",
-              "tj": "зарраи ҳолати давомдор"
-            },
-            {
-              "uz": "yo'l chorrahasi, chorraha",
-              "ru": "перекрёсток",
-              "tj": "чорраҳа, буриши роҳ"
-            }
+          "answer_tokens": [
+            "门",
+            "开",
+            "着",
+            "呢",
+            "请",
+            "进"
           ],
-          "correct_index": 3,
           "explanation": {
-            "uz": "路口 = yo'l chorrahasi, chorraha (lùkǒu)",
-            "ru": "路口 = перекрёсток (lùkǒu)",
-            "tj": "路口 = чорраҳа, буриши роҳ (lùkǒu)"
+            "uz": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
+            "ru": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
+            "tj": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn."
           }
         },
         {
@@ -1135,34 +1100,172 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Eshik ochiq turibdi, marhamat kiring.",
-            "ru": "Дверь открыта, пожалуйста, входите.",
-            "tj": "Дар кушода истодааст, марҳамат даред."
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
-          "tokens": [
-            "着",
-            "拿",
-            "门",
-            "手",
-            "请",
-            "呢",
-            "进",
-            "开"
+          "audio_text": "请问，这儿离新京宾馆远吗？",
+          "pinyin": "Qǐngwèn, zhèr lí Xīnjīng Bīnguǎn yuǎn ma?",
+          "options": [
+            "门开着呢，请进。",
+            "请问，张先生在吗？",
+            "请问，这儿离新京宾馆远吗？",
+            "他出去了。你下午再来吧。"
           ],
-          "answer_tokens": [
-            "门",
-            "开",
-            "着",
-            "呢",
-            "请",
-            "进"
-          ],
+          "correct_index": 2,
           "explanation": {
-            "uz": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
-            "ru": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
-            "tj": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn."
+            "uz": "请问，这儿离新京宾馆远吗？ — Iltimos, bu yerdan Syanjin mehmonxonasigacha uzoqmi?",
+            "ru": "请问，这儿离新京宾馆远吗？ — Скажите, пожалуйста, отсюда до гостиницы Синьцзин далеко?",
+            "tj": "请问，这儿离新京宾馆远吗？ — Бубахшед, аз ин ҷо то меҳмонхонаи Синьцзин дур аст?"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "路口 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 路口:",
+            "tj": "Маънои калимаи 路口-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
+            },
+            {
+              "uz": "qo'l",
+              "ru": "рука",
+              "tj": "даст"
+            },
+            {
+              "uz": "davom etayotgan holatni bildiruvchi yuklama",
+              "ru": "частица продолжающегося состояния",
+              "tj": "зарраи ҳолати давомдор"
+            },
+            {
+              "uz": "yo'l chorrahasi, chorraha",
+              "ru": "перекрёсток",
+              "tj": "чорраҳа, буриши роҳ"
+            }
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "路口 = yo'l chorrahasi, chorraha (lùkǒu)",
+            "ru": "路口 = перекрёсток (lùkǒu)",
+            "tj": "路口 = чорраҳа, буриши роҳ (lùkǒu)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "路口 talaffuzini tanlang:",
+            "ru": "Выберите произношение 路口:",
+            "tj": "Талаффузи 路口-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "lùkǒu",
+            "shǒu",
+            "ná",
+            "zhe"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "路口 — lùkǒu",
+            "ru": "路口 — lùkǒu",
+            "tj": "路口 — lùkǒu"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "请问，这儿离新京宾馆远吗？",
+          "pinyin": "Qǐngwèn, zhèr lí Xīnjīng Bīnguǎn yuǎn ma?",
+          "translation": {
+            "uz": "Iltimos, bu yerdan Syanjin mehmonxonasigacha uzoqmi?",
+            "ru": "Скажите, пожалуйста, отсюда до гостиницы Синьцзин далеко?",
+            "tj": "Бубахшед, аз ин ҷо то меҳмонхонаи Синьцзин дур аст?"
+          },
+          "tokens": {
+            "uz": [
+              "bu",
+              "Iltimos",
+              "Syanjin",
+              "yerdan",
+              "uzoqmi",
+              "mehmonxonasigacha",
+              "ochiq",
+              "Eshik"
+            ],
+            "ru": [
+              "гостиницы",
+              "Синьцзин",
+              "Дверь",
+              "до",
+              "открыта",
+              "Скажите",
+              "отсюда",
+              "далеко",
+              "пожалуйста"
+            ],
+            "tj": [
+              "ҷо",
+              "аст",
+              "Синьцзин",
+              "Бубахшед",
+              "аз",
+              "меҳмонхонаи",
+              "ин",
+              "кушода",
+              "Дар",
+              "дур",
+              "то"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Iltimos",
+              "bu",
+              "yerdan",
+              "Syanjin",
+              "mehmonxonasigacha",
+              "uzoqmi"
+            ],
+            "ru": [
+              "Скажите",
+              "пожалуйста",
+              "отсюда",
+              "до",
+              "гостиницы",
+              "Синьцзин",
+              "далеко"
+            ],
+            "tj": [
+              "Бубахшед",
+              "аз",
+              "ин",
+              "ҷо",
+              "то",
+              "меҳмонхонаи",
+              "Синьцзин",
+              "дур",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "请问，这儿离新京宾馆远吗？ — Iltimos, bu yerdan Syanjin mehmonxonasigacha uzoqmi?",
+            "ru": "请问，这儿离新京宾馆远吗？ — Скажите, пожалуйста, отсюда до гостиницы Синьцзин далеко?",
+            "tj": "请问，这儿离新京宾馆远吗？ — Бубахшед, аз ин ҷо то меҳмонхонаи Синьцзин дур аст?"
           }
         },
         {
@@ -1205,28 +1308,6 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "请问，这儿离新京宾馆远吗？",
-          "pinyin": "Qǐngwèn, zhèr lí Xīnjīng Bīnguǎn yuǎn ma?",
-          "options": [
-            "门开着呢，请进。",
-            "请问，张先生在吗？",
-            "请问，这儿离新京宾馆远吗？",
-            "他出去了。你下午再来吧。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "请问，这儿离新京宾馆远吗？ — Iltimos, bu yerdan Syanjin mehmonxonasigacha uzoqmi?",
-            "ru": "请问，这儿离新京宾馆远吗？ — Скажите, пожалуйста, отсюда до гостиницы Синьцзин далеко?",
-            "tj": "请问，这儿离新京宾馆远吗？ — Бубахшед, аз ин ҷо то меҳмонхонаи Синьцзин дур аст?"
           }
         },
         {
@@ -1273,28 +1354,24 @@
           }
         },
         {
-          "type": "quick_quiz",
+          "type": "gap_fill",
+          "sentence": "____开着呢，请进。",
           "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "请问，张先生在吗？",
-            "门开着呢，请进。",
-            "好的，谢谢！",
-            "他出去了。你下午再来吧。"
+            "司",
+            "商",
+            "门",
+            "羊"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri javob: 好的，谢谢！",
-            "ru": "Правильный ответ: 好的，谢谢！",
-            "tj": "Ҷавоби дуруст: 好的，谢谢！"
+            "uz": "To'g'ri: 门 — 门开着呢，请进。 (Eshik ochiq turibdi, marhamat kiring.)",
+            "ru": "Верно: 门 — 门开着呢，请进。 (Дверь открыта, пожалуйста, входите.)",
+            "tj": "Дуруст: 门 — 门开着呢，请进。 (Дар кушода истодааст, марҳамат даред.)"
           }
         },
         {
@@ -1365,34 +1442,38 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____开着呢，请进。",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "问",
-            "眼",
-            "门",
-            "诉"
+            "请问，张先生在吗？",
+            "门开着呢，请进。",
+            "好的，谢谢！",
+            "他出去了。你下午再来吧。"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri: 门 — 门开着呢，请进。 (Eshik ochiq turibdi, marhamat kiring.)",
-            "ru": "Верно: 门 — 门开着呢，请进。 (Дверь открыта, пожалуйста, входите.)",
-            "tj": "Дуруст: 门 — 门开着呢，请进。 (Дар кушода истодааст, марҳамат даред.)"
+            "uz": "To'g'ri javob: 好的，谢谢！",
+            "ru": "Правильный ответ: 好的，谢谢！",
+            "tj": "Ҷавоби дуруст: 好的，谢谢！"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "请问，张先生在吗？",
-          "pinyin": "Qǐngwèn, Zhāng xiānsheng zài ma?",
+          "phrase": "我不认识。",
+          "pinyin": "Wǒ bù rènshi.",
           "translation": {
-            "uz": "Iltimos, Chjan janob bormi?",
-            "ru": "Скажите, пожалуйста, господин Чжан здесь?",
-            "tj": "Бубахшед, ҷаноби Чжан ҳастанд?"
+            "uz": "Men uni tanimas.",
+            "ru": "Не знаю его.",
+            "tj": "Ман ӯро намешиносам."
           }
         }
       ]

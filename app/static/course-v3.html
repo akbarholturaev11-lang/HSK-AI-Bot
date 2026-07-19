@@ -204,6 +204,36 @@ button{cursor:pointer}
 .teach-bub{position:relative;background:#E7F0F8;border:1px solid #D2E2F0;border-radius:4px 16px 16px 16px;padding:11px 14px;flex:1}
 .teach-bub b{font-size:12px;color:#2F6F9E;display:block;margin-bottom:3px}
 .teach-bub .teach-say{font-size:15px;line-height:1.5;color:var(--ink)}
+/* Duolingo uslubi: YANGI SO'Z bayram-kartasi */
+.nw{position:relative;text-align:center;padding:22px 0 4px}
+.nw-card{display:inline-block;background:var(--card);border:3px solid var(--cin);border-radius:22px;padding:30px 42px;box-shadow:0 6px 0 var(--cin2);animation:nwPop .5s cubic-bezier(.34,1.56,.64,1) both}
+.nw-card .big{font-size:60px;line-height:1.15}
+.nw-label{margin-top:14px;font-weight:800;font-size:21px;letter-spacing:2px;color:var(--cin);animation:nwUp .45s .25s both}
+.nw-spark{position:absolute;color:var(--gold);font-size:18px;opacity:0;animation:nwSpark 1.1s .3s ease-out}
+.nw-spark.s1{left:16%;top:4%}.nw-spark.s2{right:13%;top:22%;font-size:24px;animation-delay:.45s}.nw-spark.s3{left:24%;bottom:10%;font-size:13px;animation-delay:.6s}
+.nw-info{opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s;text-align:center;margin-top:10px}
+.nw-info.on{opacity:1;transform:none}
+.nw-info .py{font-size:26px;color:var(--cin2);font-weight:500;display:inline-flex;align-items:center;gap:10px}
+.nw-info .py .audio{width:38px;height:38px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:18px;display:inline-flex;align-items:center;justify-content:center}
+.nw-info .mn{font-size:19px;margin-top:8px}
+.nw-info .pos{display:inline-block;font-size:12px;color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:3px 11px}
+@keyframes nwPop{0%{transform:scale(.3) rotate(-6deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+@keyframes nwUp{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:none}}
+@keyframes nwSpark{0%{opacity:0;transform:scale(.4)}40%{opacity:1;transform:scale(1.25)}100%{opacity:0;transform:scale(.7) translateY(-16px)}}
+/* Ustoz nutq pufagi (talaffuz / teskari builder) */
+.say-bub .z4{font-size:24px;line-height:1.35}
+.say-bub .p4{font-size:13px;color:var(--cin2);font-weight:500;margin-top:3px}
+.say-bub .t4{font-size:13px;color:var(--ink2);margin-top:2px}
+.say-bub .au{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:17px;align-items:center;justify-content:center;margin-bottom:6px}
+.pron-skip{display:block;margin:14px auto 0;background:none;border:none;color:var(--ink3);font-family:inherit;font-size:13px;font-weight:700;letter-spacing:1px}
+/* Xatodan keyin dalda ekrani (panda) */
+.cheer{display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 10px 10px}
+.cheer .cpd{width:110px;height:110px;animation:nwPop .5s both}
+.cheer .cbub{margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;font-size:16px;line-height:1.5;max-width:320px;animation:nwUp .4s .2s both}
+/* Pinyin ko'rsatish sozlamasi (Duolingo uslubi) */
+.fgear{width:30px;height:30px;border-radius:50%;border:none;background:none;color:var(--ink3);font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#flow.pyoff .qcard .qpy,#flow.pyoff .wc .py,#flow.pyoff .nw-info .py,#flow.pyoff .gc .exrow .p2,#flow.pyoff .gsteps .exrow .p2,#flow.pyoff .dia .bub .p3,#flow.pyoff .say-bub .p4{display:none}
+#flow.pynew .qcard .qpy,#flow.pynew .gc .exrow .p2,#flow.pynew .gsteps .exrow .p2,#flow.pynew .dia .bub .p3,#flow.pynew .say-bub .p4{display:none}
 .gsteps{display:flex;flex-direction:column}
 .gsteps-item{animation:gfade .28s ease}
 @keyframes gfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -516,7 +546,7 @@ button{cursor:pointer}
   <div class="sheet" id="paywall"><div class="si" onclick="event.stopPropagation()"><button class="sx" onclick="App.closePaywall()"><i class="ti ti-x"></i></button><div class="grip"></div><div id="paywall-body"></div></div></div>
 
   <div class="flow" id="flow">
-    <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
+    <div class="ftop"><button class="fx" onclick="App.exitFlow()"><i class="ti ti-x"></i></button><div class="fpbar"><i id="f-prog"></i></div><button class="fgear" onclick="App.pinyinSheet()" aria-label="Pinyin"><i class="ti ti-settings"></i></button><span class="fheart"><i class="ti ti-heart"></i><span id="f-hp">5</span></span></div>
     <div class="fstage" id="f-stage"></div>
     <div class="fbody" id="f-body"></div>
     <button class="fcta" id="f-cta" onclick="Flow.next()"></button>
@@ -672,6 +702,7 @@ function cardAudioTexts(c){
   if(w.zh)out.push(w.zh);
   if(c.phrase)out.push(c.phrase);
   if(c.audio_text)out.push(c.audio_text);
+  if(c.type==="reverse_builder"&&c.zh)out.push(c.zh);
   if(c.type==="_grammar"&&c.g&&c.g.examples)c.g.examples.slice(0,2).forEach(function(e){if(e.zh)out.push(e.zh)});
   if(c.type==="_dialogue"&&c.d&&c.d.dialogue)c.d.dialogue.slice(0,3).forEach(function(l){if(l.zh)out.push(l.zh)});
   return out;
@@ -939,6 +970,16 @@ var App={
   applyNotif:function(on){notifOn=on;if(MAP)MAP.notify={enabled:on};renderProfile();if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:on}).catch(function(){})},
   confirmNotifOff:function(){var w={uz:{title:"Bildirishnomalarni o'chirasizmi?",body:"Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o'qishni tashlab qo'ymaslikka yordam beradi.",keep:"Yoqilgan qoldirish",off:"O'chirish"},ru:{title:"Отключить уведомления?",body:"Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.",keep:"Оставить включёнными",off:"Отключить"},tj:{title:"Огоҳиҳоро хомӯш мекунед?",body:"Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.",keep:"Фаъол мондан",off:"Хомӯш кардан"}}[LANG]||{};App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-bell-off"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(w.title)+'</div><div class="tr">'+esc(w.body)+'</div></div><button class="scta" onclick="App.closeSheet()">'+esc(w.keep)+'</button><button class="scta ghost" style="margin-top:8px" onclick="App.closeSheet();App.applyNotif(false)">'+esc(w.off)+'</button>')},
   avatarEdit:function(){var t=T();var note=LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi";App.openSheet('<div class="shead"><div class="pav" style="margin:0 auto;cursor:default">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'</div><div class="tr" style="margin-top:10px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
+  /* Duolingo uslubi: pinyin ko'rsatish sozlamasi (dars oqimida) */
+  pinyinSheet:function(){
+    var t={uz:{h:"Pinyin (talaffuz yozuvi)",all:"Hammasida ko'rsatish",nw:"Faqat yangi so'zlarda",off:"Yashirish"},
+      ru:{h:"Пиньинь (произношение)",all:"Показывать везде",nw:"Только в новых словах",off:"Скрыть"},
+      tj:{h:"Пиньин (талаффуз)",all:"Дар ҳама ҷо нишон додан",nw:"Танҳо дар калимаҳои нав",off:"Пинҳон кардан"}}[LANG]||{};
+    var cur=pinyinMode();
+    var row=function(v,lb){return '<button class="opt-row'+(v===cur?" on":"")+'" onclick="App.setPinyin(\''+v+'\')"><i class="ti ti-abc"></i> '+esc(lb)+(v===cur?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'};
+    App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(t.h)+'</div></div>'+row("all",t.all)+row("new",t.nw)+row("off",t.off));
+  },
+  setPinyin:function(v){try{localStorage.setItem("hsk_v3_pinyin",v)}catch(e){}App.closeSheet();applyPinyinMode()},
   goalPicker:function(){var p=pl();var opts=[10,20,30,50];
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+p.goalSet+'</div></div>'
       +opts.map(function(v){return '<button class="opt-row'+(v===dailyGoal?" on":"")+'" onclick="App.pickGoal('+v+')"><i class="ti ti-target"></i> '+v+' XP'+(v===dailyGoal?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""))},
@@ -1638,7 +1679,7 @@ function startLesson(idx,opts){
   if(l.status==="locked")return;
   var lv=MAP.level||"hsk1";
   loadLessonData(lv,l.n).then(function(d){
-    Flow.queue=buildQueue(d);Flow.i=loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;
+    Flow.queue=buildQueue(d);Flow.i=loadLessonResume(lv,l.n,Flow.queue.length);Flow.correct=0;Flow.graded=0;Flow.streak=0;Flow.test=null;Flow.challenge=null;Flow.lessonIdx=idx;Flow.ad=null;Flow._cheered=false;Flow._wrongPending=false;
     /* Yangi bepul user 2-darsni yarmigacha ko'radi (preview_half): o'rtaga
        yetganda obuna oynasi chiqadi. Backend ham 2-darsni yakunlatmaydi. */
     Flow.previewHalf=!!l.preview_half;
@@ -1694,6 +1735,7 @@ function showBar(ok,msg,sub){var b=$("#f-bar");b.className="fbar show "+(ok?"ok"
   Flow.streak=ok?(Flow.streak||0)+1:0;
   edgeGlow(ok?Flow.streak:0);
   if(ok){if(Flow.streak>=5)haptic("heavy");else if(Flow.streak>=3)haptic("med")}
+  if(!ok)Flow._wrongPending=true; /* keyingi qadamda panda dalda ekrani (darsda 1 marta) */
   trackInteraction(ok);
   if(ok&&Flow.streak>=5&&Flow.streak%5===0)comboPop(Flow.streak);
 }
@@ -1781,11 +1823,15 @@ function flyXp(xp){
 }
 var writeChar="",writeMeta={};
 function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writebtn");if(b)b.style.display=writeChar?"flex":"none";}
+/* Pinyin ko'rsatish rejimi: all (default) / new (faqat yangi so'z kartasi) / off */
+function pinyinMode(){try{var v=localStorage.getItem("hsk_v3_pinyin");return v==="new"||v==="off"?v:"all"}catch(e){return "all"}}
+function applyPinyinMode(){var f=$("#flow");if(!f)return;var m=pinyinMode();f.classList.toggle("pyoff",m==="off");f.classList.toggle("pynew",m==="new")}
 function renderFlowCard(){
   Flow.answered=false;hideBar();flowProg();
   if(Flow.i>=Flow.queue.length){return flowDone()}
   saveLessonResume();
   prefetchUpcomingAudio();
+  applyPinyinMode();
   var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:T().check);
   var t=c.type;
   trackFlowCard(c);
@@ -1810,11 +1856,22 @@ function renderFlowCard(){
   if(t==="_grammar")return cardGrammar(c.g);
   if(t==="_dialogue")return cardDialogue(c.d);
   if(t==="sentence_builder")return cardBuilder(c);
+  if(t==="reverse_builder")return cardReverse(c);
   if(t==="match_pairs")return cardMatch(c);
   if(t==="pronunciation")return cardPron(c);
   return cardChoice(c); /* meaning_guess, pinyin_choice, hanzi_choice, translation_choice, quick_quiz, gap_fill, listening_choice, dialog_context */
 }
 function teachContinue(){var cta=$("#f-cta");cta.style.display="flex"}
+function renderCheer(){
+  var M={uz:["Xato — o'rganishning bir qismi! Aynan shu payt miya o'sadi 💪","Hechqisi yo'q! Har bir xato sizni kuchliroq qiladi 🐼"],
+    ru:["Не расстраивайтесь из-за ошибок: на них мы учимся! 💪","Ничего страшного! Каждая ошибка делает вас сильнее 🐼"],
+    tj:["Аз хатоҳо хафа нашавед: мо аз онҳо меомӯзем! 💪","Ҳеҷ гап не! Ҳар хато шуморо қавитар мекунад 🐼"]}[LANG]||[];
+  var msg=M[Math.floor(Math.random()*M.length)]||"";
+  setWriteBtn("");hideBar();
+  $("#f-body").innerHTML='<div class="cheer"><div class="cpd">'+pandaChar("happy")+'</div><div class="cbub">'+esc(msg)+'</div></div>';
+  var cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+T().cont;
+  haptic("light");
+}
 function _wrongWordOptions(words,field,correct){
   var vals=(words||[]).map(function(c){var w=c.word||{};return field==="meaning"?tr(w.meaning):w.zh}).filter(Boolean);
   vals=vals.filter(function(v,i,a){return v!==correct&&a.indexOf(v)===i}).slice(0,3);
@@ -1826,13 +1883,7 @@ function _choiceFromWord(c,opts,correctIndex,title,question,headHtml){
   $("#f-body").innerHTML='<div class="qq">'+esc(title)+'</div>'+headHtml+opts.map(function(o,k){return '<button class="opt" data-k="'+k+'" onclick="Flow.pick(this,'+k+')"><span class="k">'+"ABCD"[k]+'</span>'+esc(o)+'</button>'}).join("");
   c.options=opts;c.correct_index=correctIndex;c.title=title;c.prompt=question;c.explanation={uz:"To'g'ri javob: "+opts[correctIndex],ru:"Правильный ответ: "+opts[correctIndex],tj:"Ҷавоби дуруст: "+opts[correctIndex]};
 }
-function cardWordFlash(c){
-  var w=c.word||{};$("#f-cta").style.display="flex";
-  $("#f-body").innerHTML='<span class="kicker k-word"><i class="ti ti-sparkles"></i> '+T().newWord+'</span>'
-    +'<div class="wc"><div class="big han">'+esc(w.zh||"")+'</div><div class="py">'+esc(w.pinyin||"")+'<button class="audio" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>'
-    +'<div><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div></div>';
-  setTimeout(function(){speak(w.zh||"")},250);
-}
+function cardWordFlash(c){cardWord(c)}
 function cardWordListen(c){
   var w=c.word||{};var opts=[w.zh].concat(_wrongWordOptions(c.words,"hanzi",w.zh)).slice(0,4);
   opts=opts.map(function(v,i){return {v:v,sort:Math.random()+i/100}}).sort(function(a,b){return a.sort-b.sort}).map(function(x){return x.v});
@@ -1853,11 +1904,19 @@ function cardWordHanzi(c){
   _choiceFromWord(c,opts,opts.indexOf(w.zh),LANG==="ru"?"Выберите иероглиф":LANG==="tj"?"Иероглифро интихоб кунед":"Ieroglifni tanlang",{},head);
 }
 function cardWord(c){
-  var w=c.word;$("#f-cta").style.display="flex";
-  $("#f-body").innerHTML='<span class="kicker k-word"><i class="ti ti-sparkles"></i> '+T().newWord+'</span>'
-    +'<div class="wc"><div class="big han">'+esc(w.zh)+'</div><div class="py">'+esc(w.pinyin)+'<button class="audio" onclick="speak(\''+esc(w.zh)+'\')"><i class="ti ti-volume"></i></button></div>'
-    +'<div><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div></div>';
-  setTimeout(function(){speak(w.zh)},250);
+  /* Duolingo uslubi: avval "YANGI SO'Z" bayram-kartasi (sparkle + katta hanzi),
+     keyin pinyin/ma'no o'zi ochilib chiqadi — quruq flash-karta emas. */
+  var w=c.word||{};$("#f-cta").style.display="none";
+  var NW={uz:"YANGI SO'Z",ru:"НОВОЕ СЛОВО",tj:"КАЛИМАИ НАВ"}[LANG]||"YANGI SO'Z";
+  $("#f-body").innerHTML='<div class="nw">'
+    +'<span class="nw-spark s1"><i class="ti ti-sparkles"></i></span><span class="nw-spark s2"><i class="ti ti-north-star"></i></span><span class="nw-spark s3"><i class="ti ti-sparkles"></i></span>'
+    +'<div class="nw-card"><div class="big han">'+esc(w.zh||"")+'</div></div>'
+    +'<div class="nw-label">'+esc(NW)+'</div></div>'
+    +'<div class="nw-info" id="nwinfo"><div class="py">'+esc(w.pinyin||"")+'<button class="audio" onclick="speak(\''+esc(w.zh||"")+'\')"><i class="ti ti-volume"></i></button></div>'
+    +'<div style="margin-top:6px"><span class="pos">'+esc(w.pos||"")+'</span></div><div class="mn">'+esc(tr(w.meaning))+'</div></div>';
+  beep([784,1046]);haptic("light");
+  setTimeout(function(){speak(w.zh||"")},400);
+  setTimeout(function(){var el=$("#nwinfo");if(el)el.classList.add("on");$("#f-cta").style.display="flex"},900);
 }
 function GRT(){return ({
   uz:{teacher:"Li ustoz",structure:"Tuzilma",negation:"Inkor",next:"Davom etish",done:"Tushundim",intro:"Keling, birga o'rganamiz:"},
@@ -1959,6 +2018,27 @@ function cardBuilder(c){
   function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=JSON.stringify(built)===JSON.stringify(c.answer_tokens);Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP}showBar(ok,ok?T().correct:T().wrong,(c.answer_tokens||[]).join(" ")+" — "+tr(c.explanation))}
   draw();
 }
+function cardReverse(c){
+  /* Duolingo yadro mashqi: ustoz xitoy gapni aytadi — TARJIMASINI ona tili
+     plitkalaridan yig'asiz (teskari builder). */
+  $("#f-cta").style.display="none";
+  var RT={uz:"Gapni tarjima qiling",ru:"Переведите предложение",tj:"Ҷумларо тарҷума кунед"}[LANG]||"Gapni tarjima qiling";
+  var bank=(((c.tokens||{})[LANG])||[]).slice(),ans=(((c.answer_tokens||{})[LANG])||[]);
+  if(!bank.length||!ans.length)return cardChoice(c);
+  $("#f-body").innerHTML='<div class="qq">'+esc(RT)+'</div>'
+    +'<div class="teach"><div class="teach-pd">'+pandaChar("talk")+'</div><div class="teach-bub say-bub"><button class="au" onclick="speak(\''+esc(c.zh||"")+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(c.zh||"")+'</div><div class="p4">'+esc(c.pinyin||"")+'</div></div></div>'
+    +'<div class="tokens" id="bld-line"></div><div class="bank" id="bld-bank"></div>';
+  setTimeout(function(){speak(c.zh)},350);
+  var line=[]; /* tanlangan bank indekslari — takroriy plitkalar to'g'ri ishlashi uchun */
+  function draw(){
+    $("#bld-line").innerHTML=line.map(function(bi,pos){return '<button class="tok" onclick="window._bldUn('+pos+')">'+esc(bank[bi])+'</button>'}).join("");
+    $("#bld-bank").innerHTML=bank.map(function(x,i){return line.indexOf(i)>=0?'':'<button class="tok" onclick="window._bldAdd('+i+')">'+esc(x)+'</button>'}).join("");
+  }
+  window._bldAdd=function(i){if(Flow.answered)return;if(line.indexOf(i)>=0)return;line.push(i);draw();if(line.length===ans.length){check()}};
+  window._bldUn=function(pos){if(Flow.answered)return;line.splice(pos,1);draw()};
+  function check(){Flow.answered=true;var built=line.map(function(bi){return bank[bi]});var ok=built.join(" ")===ans.join(" ");Flow.graded=(Flow.graded||0)+1;if(ok)Flow.correct=(Flow.correct||0)+1;beep(ok?[660,880]:[200,150]);haptic(ok?"ok":"no");if(!ok){HP=Math.max(0,HP-1);$("#f-hp").textContent=HP}showBar(ok,ok?T().correct:T().wrong,ans.join(" ")+" — "+(c.zh||""))}
+  draw();
+}
 function cardMatch(c){
   $("#f-cta").style.display="none";
   var pairs=(c.pairs||[]).slice();
@@ -1982,10 +2062,24 @@ var PRON_L={
 };
 function _prL(){return PRON_L[LANG]||PRON_L.ru}
 function cardPron(c){
+  /* Duolingo uslubi: ustoz (panda) nutq pufagida gapiradi — "ustozdan keyin
+     takrorlang" + gapira olmaganlar uchun jarimasiz o'tkazish. */
   $("#f-cta").style.display="none";
-  $("#f-body").innerHTML='<span class="kicker k-check"><i class="ti ti-microphone"></i> '+T().say+'</span><div class="qcard"><div class="qh han">'+esc(c.phrase)+'</div><div class="qpy">'+esc(c.pinyin)+'</div><button class="audio" onclick="speak(\''+esc(c.phrase)+'\')"><i class="ti ti-volume"></i></button></div>'
-    +'<button class="scta" id="pron-btn" onclick="window._pron()"><i class="ti ti-microphone"></i> '+T().say+'</button><div id="pron-hint" style="text-align:center;color:var(--ink3);font-size:13px;margin-top:8px;min-height:18px"></div>';
+  var RT={uz:{t:"Li ustozdan keyin takrorlang",skip:"HOZIR GAPIRA OLMAYMAN"},
+    ru:{t:"Повторите за учителем Ли",skip:"Я СЕЙЧАС НЕ МОГУ ГОВОРИТЬ"},
+    tj:{t:"Аз паси устод Ли такрор кунед",skip:"ҲОЗИР ГАП ЗАДА НАМЕТАВОНАМ"}}[LANG]||{t:"Takrorlang",skip:"KEYINROQ"};
+  $("#f-body").innerHTML='<div class="qq">'+esc(RT.t)+'</div>'
+    +'<div class="teach"><div class="teach-pd">'+pandaChar("talk")+'</div><div class="teach-bub say-bub"><button class="au" onclick="speak(\''+esc(c.phrase)+'\')"><i class="ti ti-volume"></i></button><div class="z4 han">'+esc(c.phrase)+'</div><div class="p4">'+esc(c.pinyin||"")+'</div>'+(c.translation?'<div class="t4">'+esc(tr(c.translation))+'</div>':'')+'</div></div>'
+    +'<button class="scta" id="pron-btn" onclick="window._pron()"><i class="ti ti-microphone"></i> '+T().say+'</button><div id="pron-hint" style="text-align:center;color:var(--ink3);font-size:13px;margin-top:8px;min-height:18px"></div>'
+    +'<button class="pron-skip" onclick="window._pronSkip()">'+esc(RT.skip)+'</button>';
+  setTimeout(function(){speak(c.phrase)},350);
   var st={stream:null,rec:null,chunks:[],auto:null};
+  window._pronSkip=function(){
+    if(Flow.answered)return;
+    try{clearTimeout(st.auto);if(st.rec&&st.rec.state!=="inactive"){st.rec.onstop=null;st.rec.stop()}}catch(e){}
+    try{if(st.stream)st.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}
+    Flow.answered=true;Flow.next();
+  };
   function setBtn(label){var b=$("#pron-btn");if(b)b.innerHTML='<i class="ti ti-microphone"></i> '+label}
   function hint(t){var h=$("#pron-hint");if(h)h.textContent=t||""}
   function release(){try{if(st.stream)st.stream.getTracks().forEach(function(t){t.stop()})}catch(e){}st.stream=null}
@@ -2029,6 +2123,12 @@ function cardPron(c){
 }
 Flow.next=function(){
   hideBar();
+  /* Duolingo uslubi: darsdagi BIRINCHI xatodan keyin panda dalda ekrani —
+     user xatodan qo'rqmasligi kerak ("xatolardan o'rganamiz"). */
+  if(Flow._wrongPending&&!Flow._cheered&&Flow.lessonIdx!==null){
+    Flow._cheered=true;Flow._wrongPending=false;return renderCheer();
+  }
+  Flow._wrongPending=false;
   var nextI=Flow.i+1;
   trackSectionCompleted(Flow.queue&&Flow.queue[Flow.i],nextI);
   /* 2-dars (preview_half): yarmiga yetganda darsni to'xtatib, obuna oynasini

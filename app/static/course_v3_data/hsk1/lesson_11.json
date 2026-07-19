@@ -1031,6 +1031,97 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "reverse_builder",
+          "zh": "住三天。",
+          "pinyin": "Zhù sān tiān.",
+          "translation": {
+            "uz": "Uch kun.",
+            "ru": "Три дня.",
+            "tj": "Се рӯз."
+          },
+          "tokens": {
+            "uz": [
+              "kun",
+              "soat",
+              "Uch",
+              "Hozir"
+            ],
+            "ru": [
+              "Три",
+              "дня",
+              "Сколько",
+              "сейчас"
+            ],
+            "tj": [
+              "рӯз",
+              "Се",
+              "Ҳоло",
+              "соат"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Uch",
+              "kun"
+            ],
+            "ru": [
+              "Три",
+              "дня"
+            ],
+            "tj": [
+              "Се",
+              "рӯз"
+            ]
+          },
+          "explanation": {
+            "uz": "住三天。 — Uch kun.",
+            "ru": "住三天。 — Три дня.",
+            "tj": "住三天。 — Се рӯз."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "现在",
+              {
+                "uz": "hozir, shu vaqtda",
+                "ru": "сейчас, в данный момент",
+                "tj": "ҳоло, дар ин лаҳза"
+              }
+            ],
+            [
+              "点",
+              {
+                "uz": "soat (soat uchun o'lchov so'zi)",
+                "ru": "час (счётное слово для часов)",
+                "tj": "соат (вақт)"
+              }
+            ],
+            [
+              "分",
+              {
+                "uz": "daqiqa",
+                "ru": "минута",
+                "tj": "дақиқа"
+              }
+            ],
+            [
+              "中午",
+              {
+                "uz": "tush, yarim kun",
+                "ru": "полдень",
+                "tj": "нисфирӯзӣ, нимрӯз"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -1150,48 +1241,6 @@
           }
         },
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "现在",
-              {
-                "uz": "hozir, shu vaqtda",
-                "ru": "сейчас, в данный момент",
-                "tj": "ҳоло, дар ин лаҳза"
-              }
-            ],
-            [
-              "点",
-              {
-                "uz": "soat (soat uchun o'lchov so'zi)",
-                "ru": "час (счётное слово для часов)",
-                "tj": "соат (вақт)"
-              }
-            ],
-            [
-              "分",
-              {
-                "uz": "daqiqa",
-                "ru": "минута",
-                "tj": "дақиқа"
-              }
-            ],
-            [
-              "中午",
-              {
-                "uz": "tush, yarim kun",
-                "ru": "полдень",
-                "tj": "нисфирӯзӣ, нимрӯз"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "前",
           "pinyin": "qián",
@@ -1235,24 +1284,28 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____在几点？",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "里",
-            "您",
-            "后",
-            "现"
+            "现在几点？",
+            "十二点吃饭。",
+            "中午几点吃饭？",
+            "现在十点十分。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri: 现 — 现在几点？ (Hozir soat necha?)",
-            "ru": "Верно: 现 — 现在几点？ (Сколько сейчас времени?)",
-            "tj": "Дуруст: 现 — 现在几点？ (Ҳоло соат чанд аст?)"
+            "uz": "To'g'ri javob: 现在几点？",
+            "ru": "Правильный ответ: 现在几点？",
+            "tj": "Ҷавоби дуруст: 现在几点？"
           }
         },
         {
@@ -1298,6 +1351,27 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____在几点？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "商",
+            "请",
+            "后",
+            "现"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 现 — 现在几点？ (Hozir soat necha?)",
+            "ru": "Верно: 现 — 现在几点？ (Сколько сейчас времени?)",
+            "tj": "Дуруст: 现 — 现在几点？ (Ҳоло соат чанд аст?)"
+          }
+        },
+        {
           "type": "quick_quiz",
           "prompt": {
             "uz": "Dialog oxirida B nima deydi?",
@@ -1323,38 +1397,13 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "现在几点？",
-            "十二点吃饭。",
-            "中午几点吃饭？",
-            "现在十点十分。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 现在几点？",
-            "ru": "Правильный ответ: 现在几点？",
-            "tj": "Ҷавоби дуруст: 现在几点？"
-          }
-        },
-        {
           "type": "pronunciation",
-          "phrase": "你想在北京住几天？",
-          "pinyin": "Nǐ xiǎng zài Běijīng zhù jǐ tiān?",
+          "phrase": "中午几点吃饭？",
+          "pinyin": "Zhōngwǔ jǐ diǎn chī fàn?",
           "translation": {
-            "uz": "Pekinda necha kun qolmoqchisiz?",
-            "ru": "Сколько дней вы планируете пробыть в Пекине?",
-            "tj": "Шумо мехоҳед чанд рӯз дар Пекин бимонед?"
+            "uz": "Tushda soat nechada ovqatlanasiz?",
+            "ru": "В котором часу вы обедаете?",
+            "tj": "Нисфирӯзӣ соат чанд хӯрок мехӯред?"
           }
         }
       ]

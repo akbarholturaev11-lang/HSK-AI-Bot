@@ -1110,31 +1110,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'asosiy, muhim' xitoycha qaysi?",
-            "ru": "'главный, основной' по-китайски?",
-            "tj": "'асосӣ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "个子",
-            "主要",
-            "历史",
-            "矮"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "asosiy, muhim = 主要 (zhǔyào)",
-            "ru": "главный, основной = 主要 (zhǔyào)",
-            "tj": "асосӣ = 主要 (zhǔyào)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Dashan, sen bilan Make, kimning bo'yi balandroq?",
@@ -1168,6 +1143,77 @@
           }
         },
         {
+          "type": "reverse_builder",
+          "zh": "别担心，我可以帮你。",
+          "pinyin": "Bié dānxīn, wǒ kěyǐ bāng nǐ.",
+          "translation": {
+            "uz": "Xavotir olma, men yordam bera olaman.",
+            "ru": "Не волнуйся, я могу помочь.",
+            "tj": "Нигарон нашав, ман ёрӣ дода метавонам."
+          },
+          "tokens": {
+            "uz": [
+              "olma",
+              "men",
+              "Xavotir",
+              "bera",
+              "yordam",
+              "olaman",
+              "sen",
+              "Dashan"
+            ],
+            "ru": [
+              "Дашань",
+              "я",
+              "кто",
+              "помочь",
+              "могу",
+              "Не",
+              "волнуйся"
+            ],
+            "tj": [
+              "Дашан",
+              "метавонам",
+              "ту",
+              "дода",
+              "Нигарон",
+              "ёрӣ",
+              "нашав",
+              "ман"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Xavotir",
+              "olma",
+              "men",
+              "yordam",
+              "bera",
+              "olaman"
+            ],
+            "ru": [
+              "Не",
+              "волнуйся",
+              "я",
+              "могу",
+              "помочь"
+            ],
+            "tj": [
+              "Нигарон",
+              "нашав",
+              "ман",
+              "ёрӣ",
+              "дода",
+              "метавонам"
+            ]
+          },
+          "explanation": {
+            "uz": "别担心，我可以帮你。 — Xavotir olma, men yordam bera olaman.",
+            "ru": "别担心，我可以帮你。 — Не волнуйся, я могу помочь.",
+            "tj": "别担心，我可以帮你。 — Нигарон нашав, ман ёрӣ дода метавонам."
+          }
+        },
+        {
           "type": "pinyin_choice",
           "prompt": {
             "uz": "中介 talaffuzini tanlang:",
@@ -1190,6 +1236,59 @@
             "uz": "中介 — zhōngjiè",
             "ru": "中介 — zhōngjiè",
             "tj": "中介 — zhōngjiè"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "别担心，我可以帮你。",
+          "pinyin": "Bié dānxīn, wǒ kěyǐ bāng nǐ.",
+          "options": [
+            "别担心，我可以帮你。",
+            "马可比我高，我比马可矮一点儿。",
+            "大山，你和马可谁个子高？",
+            "那你们谁大？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "别担心，我可以帮你。 — Xavotir olma, men yordam bera olaman.",
+            "ru": "别担心，我可以帮你。 — Не волнуйся, я могу помочь.",
+            "tj": "别担心，我可以帮你。 — Нигарон нашав, ман ёрӣ дода метавонам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz mendan ancha yaxshisiz!",
+            "ru": "Ты намного лучше меня!",
+            "tj": "Шумо аз ман хеле беҳтаред!"
+          },
+          "tokens": [
+            "个子",
+            "比",
+            "我",
+            "多",
+            "你",
+            "了",
+            "好",
+            "矮"
+          ],
+          "answer_tokens": [
+            "你",
+            "比",
+            "我",
+            "好",
+            "多",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!",
+            "ru": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!",
+            "tj": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!"
           }
         },
         {
@@ -1235,56 +1334,28 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Siz mendan ancha yaxshisiz!",
-            "ru": "Ты намного лучше меня!",
-            "tj": "Шумо аз ман хеле беҳтаред!"
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'asosiy, muhim' xitoycha qaysi?",
+            "ru": "'главный, основной' по-китайски?",
+            "tj": "'асосӣ' ба хитоӣ кадом аст?"
           },
-          "tokens": [
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
             "个子",
-            "比",
-            "我",
-            "多",
-            "你",
-            "了",
-            "好",
+            "主要",
+            "历史",
             "矮"
           ],
-          "answer_tokens": [
-            "你",
-            "比",
-            "我",
-            "好",
-            "多",
-            "了"
-          ],
+          "correct_index": 1,
           "explanation": {
-            "uz": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!",
-            "ru": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!",
-            "tj": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "别担心，我可以帮你。",
-          "pinyin": "Bié dānxīn, wǒ kěyǐ bāng nǐ.",
-          "options": [
-            "别担心，我可以帮你。",
-            "马可比我高，我比马可矮一点儿。",
-            "大山，你和马可谁个子高？",
-            "那你们谁大？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "别担心，我可以帮你。 — Xavotir olma, men yordam bera olaman.",
-            "ru": "别担心，我可以帮你。 — Не волнуйся, я могу помочь.",
-            "tj": "别担心，我可以帮你。 — Нигарон нашав, ман ёрӣ дода метавонам."
+            "uz": "asosiy, muhim = 主要 (zhǔyào)",
+            "ru": "главный, основной = 主要 (zhǔyào)",
+            "tj": "асосӣ = 主要 (zhǔyào)"
           }
         },
         {
@@ -1333,31 +1404,6 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda 朋友 avval nima deydi?",
-            "ru": "Что 朋友 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 朋友 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "那你们谁大？",
-            "马可比我高，我比马可矮一点儿。",
-            "我比马可大两岁。",
-            "大山，你和马可谁个子高？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 大山，你和马可谁个子高？",
-            "ru": "Правильный ответ: 大山，你和马可谁个子高？",
-            "tj": "Ҷавоби дуруст: 大山，你和马可谁个子高？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
             "uz": "Dialog oxirida 大山 nima deydi?",
             "ru": "Что 大山 говорит в конце диалога?",
             "tj": "Дар охири гуфтугӯ 大山 чӣ мегӯяд?"
@@ -1381,24 +1427,28 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____山，你和马可谁个子高？",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda 朋友 avval nima deydi?",
+            "ru": "Что 朋友 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 朋友 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "眼",
-            "附",
-            "久",
-            "大"
+            "那你们谁大？",
+            "马可比我高，我比马可矮一点儿。",
+            "我比马可大两岁。",
+            "大山，你和马可谁个子高？"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "To'g'ri: 大 — 大山，你和马可谁个子高？ (Dashan, sen bilan Make, kimning bo'yi balandroq?)",
-            "ru": "Верно: 大 — 大山，你和马可谁个子高？ (Дашань, кто выше ростом, ты или Марк?)",
-            "tj": "Дуруст: 大 — 大山，你和马可谁个子高？ (Дашан, ту ё Маке, қади кӣ баландтар аст?)"
+            "uz": "To'g'ri javob: 大山，你和马可谁个子高？",
+            "ru": "Правильный ответ: 大山，你和马可谁个子高？",
+            "tj": "Ҷавоби дуруст: 大山，你和马可谁个子高？"
           }
         },
         {
@@ -1454,13 +1504,34 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____山，你和马可谁个子高？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "羊",
+            "商",
+            "司",
+            "大"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 大 — 大山，你和马可谁个子高？ (Dashan, sen bilan Make, kimning bo'yi balandroq?)",
+            "ru": "Верно: 大 — 大山，你和马可谁个子高？ (Дашань, кто выше ростом, ты или Марк?)",
+            "tj": "Дуруст: 大 — 大山，你和马可谁个子高？ (Дашан, ту ё Маке, қади кӣ баландтар аст?)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "那很方便啊。",
-          "pinyin": "Nà hěn fāngbiàn a.",
+          "phrase": "你们谁的汉语说得更好？",
+          "pinyin": "Nǐmen shéi de Hànyǔ shuō de gèng hǎo?",
           "translation": {
-            "uz": "Bu juda qulay ekan.",
-            "ru": "Это очень удобно.",
-            "tj": "Ин хеле қулай аст."
+            "uz": "Sizlardan kim xitoychani yaxshiroq gapiradi?",
+            "ru": "Кто из вас лучше говорит по-китайски?",
+            "tj": "Кадоматон забони чиниро беҳтар ҳарф мезанед?"
           }
         }
       ]

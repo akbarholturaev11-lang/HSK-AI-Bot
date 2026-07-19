@@ -1033,95 +1033,52 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "太谢谢你了！",
+          "type": "reverse_builder",
+          "zh": "太谢谢你了！",
           "pinyin": "Tài xièxie nǐ le!",
-          "options": [
-            "太谢谢你了！",
-            "生日快乐！这是送给你的！",
-            "对，这本书是我写给你的。",
-            "是什么？是一本书吗？"
-          ],
-          "correct_index": 0,
+          "translation": {
+            "uz": "Juda rahmat!",
+            "ru": "Огромное спасибо!",
+            "tj": "Хеле ташаккур!"
+          },
+          "tokens": {
+            "uz": [
+              "kuning",
+              "Juda",
+              "Tug'ilgan",
+              "rahmat"
+            ],
+            "ru": [
+              "Огромное",
+              "спасибо",
+              "С",
+              "днём"
+            ],
+            "tj": [
+              "Рӯзи",
+              "ташаккур",
+              "Хеле",
+              "таваллудат"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Juda",
+              "rahmat"
+            ],
+            "ru": [
+              "Огромное",
+              "спасибо"
+            ],
+            "tj": [
+              "Хеле",
+              "ташаккур"
+            ]
+          },
           "explanation": {
             "uz": "太谢谢你了！ — Juda rahmat!",
             "ru": "太谢谢你了！ — Огромное спасибо!",
             "tj": "太谢谢你了！ — Хеле ташаккур!"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Tug'ilgan kuning bilan! Bu senga sovg'a!",
-            "ru": "С днём рождения! Это тебе подарок!",
-            "tj": "Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
-          },
-          "tokens": [
-            "送",
-            "接",
-            "给",
-            "你",
-            "这",
-            "是",
-            "生日",
-            "晚上",
-            "的",
-            "快乐"
-          ],
-          "answer_tokens": [
-            "生日",
-            "快乐",
-            "这",
-            "是",
-            "送",
-            "给",
-            "你",
-            "的"
-          ],
-          "explanation": {
-            "uz": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
-            "ru": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
-            "tj": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "问",
-          "pinyin": "wèn",
-          "translation": {
-            "uz": "so'ramoq",
-            "ru": "спрашивать",
-            "tj": "пурсидан"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "liǎng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается liǎng?",
-            "tj": "liǎng кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "两",
-            "给",
-            "快乐",
-            "生日"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "两 = ikki (ko'makchi bilan birga ishlatiladi) (liǎng)",
-            "ru": "两 = два (используется со счётным словом) (liǎng)",
-            "tj": "两 = ду (бо воҳид истифода мешавад) (liǎng)"
           }
         },
         {
@@ -1209,6 +1166,98 @@
         },
         {
           "type": "pronunciation",
+          "phrase": "问",
+          "pinyin": "wèn",
+          "translation": {
+            "uz": "so'ramoq",
+            "ru": "спрашивать",
+            "tj": "пурсидан"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "太谢谢你了！",
+          "pinyin": "Tài xièxie nǐ le!",
+          "options": [
+            "太谢谢你了！",
+            "生日快乐！这是送给你的！",
+            "对，这本书是我写给你的。",
+            "是什么？是一本书吗？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "太谢谢你了！ — Juda rahmat!",
+            "ru": "太谢谢你了！ — Огромное спасибо!",
+            "tj": "太谢谢你了！ — Хеле ташаккур!"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Tug'ilgan kuning bilan! Bu senga sovg'a!",
+            "ru": "С днём рождения! Это тебе подарок!",
+            "tj": "Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
+          },
+          "tokens": [
+            "送",
+            "接",
+            "给",
+            "你",
+            "这",
+            "是",
+            "生日",
+            "晚上",
+            "的",
+            "快乐"
+          ],
+          "answer_tokens": [
+            "生日",
+            "快乐",
+            "这",
+            "是",
+            "送",
+            "给",
+            "你",
+            "的"
+          ],
+          "explanation": {
+            "uz": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+            "ru": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+            "tj": "生日快乐！这是送给你的！ — Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "liǎng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается liǎng?",
+            "tj": "liǎng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "两",
+            "给",
+            "快乐",
+            "生日"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "两 = ikki (ko'makchi bilan birga ishlatiladi) (liǎng)",
+            "ru": "两 = два (используется со счётным словом) (liǎng)",
+            "tj": "两 = ду (бо воҳид истифода мешавад) (liǎng)"
+          }
+        },
+        {
+          "type": "pronunciation",
           "phrase": "接",
           "pinyin": "jiē",
           "translation": {
@@ -1248,31 +1297,6 @@
             "uz": "生日快乐！这是送给你的！ — Tug'ilgan kuning bilan! Bu senga sovg'a!",
             "ru": "生日快乐！这是送给你的！ — С днём рождения! Это тебе подарок!",
             "tj": "生日快乐！这是送给你的！ — Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "生日快乐！这是送给你的！",
-            "对，这本书是我写给你的。",
-            "是什么？是一本书吗？",
-            "太谢谢你了！"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 生日快乐！这是送给你的！",
-            "ru": "Правильный ответ: 生日快乐！这是送给你的！",
-            "tj": "Ҷавоби дуруст: 生日快乐！这是送给你的！"
           }
         },
         {
@@ -1318,24 +1342,28 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____日快乐！这是送给你的！",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "视",
-            "里",
-            "生",
-            "您"
+            "生日快乐！这是送给你的！",
+            "对，这本书是我写给你的。",
+            "是什么？是一本书吗？",
+            "太谢谢你了！"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri: 生 — 生日快乐！这是送给你的！ (Tug'ilgan kuning bilan! Bu senga sovg'a!)",
-            "ru": "Верно: 生 — 生日快乐！这是送给你的！ (С днём рождения! Это тебе подарок!)",
-            "tj": "Дуруст: 生 — 生日快乐！这是送给你的！ (Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!)"
+            "uz": "To'g'ri javob: 生日快乐！这是送给你的！",
+            "ru": "Правильный ответ: 生日快乐！这是送给你的！",
+            "tj": "Ҷавоби дуруст: 生日快乐！这是送给你的！"
           }
         },
         {
@@ -1364,13 +1392,34 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____日快乐！这是送给你的！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "请",
+            "商",
+            "生",
+            "后"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 生 — 生日快乐！这是送给你的！ (Tug'ilgan kuning bilan! Bu senga sovg'a!)",
+            "ru": "Верно: 生 — 生日快乐！这是送给你的！ (С днём рождения! Это тебе подарок!)",
+            "tj": "Дуруст: 生 — 生日快乐！这是送给你的！ (Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "生日快乐！这是送给你的！",
-          "pinyin": "Shēngrì kuàilè! Zhè shì sòng gěi nǐ de!",
+          "phrase": "是什么？是一本书吗？",
+          "pinyin": "Shì shénme? Shì yì běn shū ma?",
           "translation": {
-            "uz": "Tug'ilgan kuning bilan! Bu senga sovg'a!",
-            "ru": "С днём рождения! Это тебе подарок!",
-            "tj": "Рӯзи таваллудат муборак! Ин барои ту тӯҳфа аст!"
+            "uz": "Bu nima? Kitobmi?",
+            "ru": "Что это? Книга?",
+            "tj": "Ин чист? Китоб аст?"
           }
         }
       ]

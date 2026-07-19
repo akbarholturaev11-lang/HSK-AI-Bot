@@ -1053,25 +1053,30 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Stol ustida nima bor?",
+            "ru": "Что на столе?",
+            "tj": "Болои мӣз чӣ аст?"
           },
-          "audio_text": "没有。",
-          "pinyin": "Méiyǒu.",
-          "options": [
-            "杯子在哪儿？",
-            "没有。",
-            "桌子上有什么？",
-            "桌子上有一个电脑和一本书。"
+          "tokens": [
+            "和",
+            "电脑",
+            "桌子",
+            "上",
+            "有",
+            "什么"
           ],
-          "correct_index": 1,
+          "answer_tokens": [
+            "桌子",
+            "上",
+            "有",
+            "什么"
+          ],
           "explanation": {
-            "uz": "没有。 — Yo'q.",
-            "ru": "没有。 — Нет.",
-            "tj": "没有。 — Не."
+            "uz": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?",
+            "ru": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?",
+            "tj": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?"
           }
         },
         {
@@ -1117,30 +1122,25 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Stol ustida nima bor?",
-            "ru": "Что на столе?",
-            "tj": "Болои мӣз чӣ аст?"
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
-          "tokens": [
-            "和",
-            "电脑",
-            "桌子",
-            "上",
-            "有",
-            "什么"
+          "audio_text": "没有。",
+          "pinyin": "Méiyǒu.",
+          "options": [
+            "杯子在哪儿？",
+            "没有。",
+            "桌子上有什么？",
+            "桌子上有一个电脑和一本书。"
           ],
-          "answer_tokens": [
-            "桌子",
-            "上",
-            "有",
-            "什么"
-          ],
+          "correct_index": 1,
           "explanation": {
-            "uz": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?",
-            "ru": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?",
-            "tj": "桌子上有什么？ — Zhuōzi shàng yǒu shénme?"
+            "uz": "没有。 — Yo'q.",
+            "ru": "没有。 — Нет.",
+            "tj": "没有。 — Не."
           }
         },
         {
@@ -1166,31 +1166,6 @@
             "uz": "坐 — zuò",
             "ru": "坐 — zuò",
             "tj": "坐 — zuò"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'Wang Fang (ism)' xitoycha qaysi?",
-            "ru": "'Ван Фан (имя)' по-китайски?",
-            "tj": "'Ван Фан (ном)' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "电脑",
-            "王方",
-            "上",
-            "桌子"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "Wang Fang (ism) = 王方 (Wáng Fāng)",
-            "ru": "Ван Фан (имя) = 王方 (Wáng Fāng)",
-            "tj": "Ван Фан (ном) = 王方 (Wáng Fāng)"
           }
         },
         {
@@ -1233,6 +1208,96 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我能坐这儿吗？",
+          "pinyin": "Wǒ néng zuò zhèr ma?",
+          "translation": {
+            "uz": "Men bu yerga o'tirsam bo'ladimi?",
+            "ru": "Можно мне здесь сесть?",
+            "tj": "Ман метавонам ин ҷо нишинам?"
+          },
+          "tokens": {
+            "uz": [
+              "o'tirsam",
+              "bo'ladimi",
+              "ustida",
+              "yerga",
+              "Men",
+              "bu",
+              "Stol"
+            ],
+            "ru": [
+              "мне",
+              "Можно",
+              "Что",
+              "здесь",
+              "на",
+              "сесть"
+            ],
+            "tj": [
+              "метавонам",
+              "мӣз",
+              "ҷо",
+              "ин",
+              "Болои",
+              "нишинам",
+              "Ман"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "bu",
+              "yerga",
+              "o'tirsam",
+              "bo'ladimi"
+            ],
+            "ru": [
+              "Можно",
+              "мне",
+              "здесь",
+              "сесть"
+            ],
+            "tj": [
+              "Ман",
+              "метавонам",
+              "ин",
+              "ҷо",
+              "нишинам"
+            ]
+          },
+          "explanation": {
+            "uz": "我能坐这儿吗？ — Men bu yerga o'tirsam bo'ladimi?",
+            "ru": "我能坐这儿吗？ — Можно мне здесь сесть?",
+            "tj": "我能坐这儿吗？ — Ман метавонам ин ҷо нишинам?"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Wang Fang (ism)' xitoycha qaysi?",
+            "ru": "'Ван Фан (имя)' по-китайски?",
+            "tj": "'Ван Фан (ном)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "电脑",
+            "王方",
+            "上",
+            "桌子"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "Wang Fang (ism) = 王方 (Wáng Fāng)",
+            "ru": "Ван Фан (имя) = 王方 (Wáng Fāng)",
+            "tj": "Ван Фан (ном) = 王方 (Wáng Fāng)"
           }
         },
         {
@@ -1321,27 +1386,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____子上有什么？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "后",
-            "桌",
-            "里",
-            "您"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 桌 — 桌子上有什么？ (Stol ustida nima bor?)",
-            "ru": "Верно: 桌 — 桌子上有什么？ (Что на столе?)",
-            "tj": "Дуруст: 桌 — 桌子上有什么？ (Болои мӣз чӣ аст?)"
-          }
-        },
-        {
           "type": "quick_quiz",
           "prompt": {
             "uz": "Dialog oxirida B nima deydi?",
@@ -1392,13 +1436,34 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____子上有什么？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "后",
+            "桌",
+            "商",
+            "请"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 桌 — 桌子上有什么？ (Stol ustida nima bor?)",
+            "ru": "Верно: 桌 — 桌子上有什么？ (Что на столе?)",
+            "tj": "Дуруст: 桌 — 桌子上有什么？ (Болои мӣз чӣ аст?)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "这儿有人吗？",
-          "pinyin": "Zhèr yǒu rén ma?",
+          "phrase": "桌子上有什么？",
+          "pinyin": "Zhuōzi shàng yǒu shénme?",
           "translation": {
-            "uz": "Bu yerda kimdir o'tiribdimi?",
-            "ru": "Здесь кто-то сидит?",
-            "tj": "Ин ҷо касе нишастаст?"
+            "uz": "Stol ustida nima bor?",
+            "ru": "Что на столе?",
+            "tj": "Болои мӣз чӣ аст?"
           }
         }
       ]

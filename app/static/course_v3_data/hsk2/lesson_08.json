@@ -1153,80 +1153,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "贵",
-          "pinyin": "guì",
-          "translation": {
-            "uz": "qimmat, narxi yuqori",
-            "ru": "дорогой, высокая цена",
-            "tj": "гарон, нарх баланд"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "再",
-              {
-                "uz": "yana, keyin, qayta (kelajak uchun)",
-                "ru": "снова, потом, опять (о будущем)",
-                "tj": "боз, баъд, дубора (барои оянда)"
-              }
-            ],
-            [
-              "让",
-              {
-                "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
-                "ru": "позволять, разрешать; приказывать",
-                "tj": "иҷозат додан; дастур додан"
-              }
-            ],
-            [
-              "告诉",
-              {
-                "uz": "aytib bermoq, xabar bermoq",
-                "ru": "сказать, сообщить",
-                "tj": "гуфтан, хабар додан"
-              }
-            ],
-            [
-              "等",
-              {
-                "uz": "kutmoq",
-                "ru": "ждать",
-                "tj": "интизор мондан"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "bìng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается bìng?",
-            "tj": "bìng кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "听说大卫病了，我想找时间去看看他。",
+          "pinyin": "Tīngshuō Dàwèi bìng le, wǒ xiǎng zhǎo shíjiān qù kànkan tā.",
           "options": [
-            "告诉",
-            "再",
-            "让",
-            "病"
+            "你想看什么电影？",
+            "听说大卫病了，我想找时间去看看他。",
+            "今天下午我没有时间，明天下午再去吧。",
+            "我们下午去看电影，好吗？"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "病 = kasal bo'lmoq; kasallik (bìng)",
-            "ru": "病 = болеть; болезнь (bìng)",
-            "tj": "病 = бемор шудан; беморӣ (bìng)"
+            "uz": "听说大卫病了，我想找时间去看看他。 — Eshitdim, Devid kasal, uни ko'rgani borishga vaqt topmoqchiman.",
+            "ru": "听说大卫病了，我想找时间去看看他。 — Говорят, Дэвид заболел, хочу найти время навестить его.",
+            "tj": "听说大卫病了，我想找时间去看看他。 — Шунидам, Дэвид бемор шуд, мехоҳам вақт ёбам ва ӯро бинам."
           }
         },
         {
@@ -1271,25 +1216,13 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "听说大卫病了，我想找时间去看看他。",
-          "pinyin": "Tīngshuō Dàwèi bìng le, wǒ xiǎng zhǎo shíjiān qù kànkan tā.",
-          "options": [
-            "你想看什么电影？",
-            "听说大卫病了，我想找时间去看看他。",
-            "今天下午我没有时间，明天下午再去吧。",
-            "我们下午去看电影，好吗？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "听说大卫病了，我想找时间去看看他。 — Eshitdim, Devid kasal, uни ko'rgani borishga vaqt topmoqchiman.",
-            "ru": "听说大卫病了，我想找时间去看看他。 — Говорят, Дэвид заболел, хочу найти время навестить его.",
-            "tj": "听说大卫病了，我想找时间去看看他。 — Шунидам, Дэвид бемор шуд, мехоҳам вақт ёбам ва ӯро бинам."
+          "type": "pronunciation",
+          "phrase": "贵",
+          "pinyin": "guì",
+          "translation": {
+            "uz": "qimmat, narxi yuqori",
+            "ru": "дорогой, высокая цена",
+            "tj": "гарон, нарх баланд"
           }
         },
         {
@@ -1323,6 +1256,140 @@
             "uz": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
             "ru": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?",
             "tj": "我们下午去看电影，好吗？ — Wǒmen xiàwǔ qù kàn diànyǐng, hǎo ma?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "服务员，我房间的门打不开了。",
+          "pinyin": "Fúwùyuán, wǒ fángjiān de mén dǎ bù kāi le.",
+          "translation": {
+            "uz": "Ofitsiant, xonamning eshigi ochmayapti.",
+            "ru": "Сотрудник, дверь моего номера не открывается.",
+            "tj": "Хизматрасон, дари хонаи ман намекушояд."
+          },
+          "tokens": {
+            "uz": [
+              "keyin",
+              "Tushdan",
+              "Ofitsiant",
+              "xonamning",
+              "ochmayapti",
+              "eshigi"
+            ],
+            "ru": [
+              "не",
+              "Сотрудник",
+              "Давай",
+              "открывается",
+              "номера",
+              "дверь",
+              "во",
+              "моего"
+            ],
+            "tj": [
+              "Хизматрасон",
+              "намекушояд",
+              "дари",
+              "хонаи",
+              "ман",
+              "Биёед",
+              "баъд"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ofitsiant",
+              "xonamning",
+              "eshigi",
+              "ochmayapti"
+            ],
+            "ru": [
+              "Сотрудник",
+              "дверь",
+              "моего",
+              "номера",
+              "не",
+              "открывается"
+            ],
+            "tj": [
+              "Хизматрасон",
+              "дари",
+              "хонаи",
+              "ман",
+              "намекушояд"
+            ]
+          },
+          "explanation": {
+            "uz": "服务员，我房间的门打不开了。 — Ofitsiant, xonamning eshigi ochmayapti.",
+            "ru": "服务员，我房间的门打不开了。 — Сотрудник, дверь моего номера не открывается.",
+            "tj": "服务员，我房间的门打不开了。 — Хизматрасон, дари хонаи ман намекушояд."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "bìng qaysi ieroglif?",
+            "ru": "Какой иероглиф читается bìng?",
+            "tj": "bìng кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "告诉",
+            "再",
+            "让",
+            "病"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "病 = kasal bo'lmoq; kasallik (bìng)",
+            "ru": "病 = болеть; болезнь (bìng)",
+            "tj": "病 = бемор шудан; беморӣ (bìng)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "再",
+              {
+                "uz": "yana, keyin, qayta (kelajak uchun)",
+                "ru": "снова, потом, опять (о будущем)",
+                "tj": "боз, баъд, дубора (барои оянда)"
+              }
+            ],
+            [
+              "让",
+              {
+                "uz": "ruxsat bermoq, qo'ymoq; buyurmoq",
+                "ru": "позволять, разрешать; приказывать",
+                "tj": "иҷозат додан; дастур додан"
+              }
+            ],
+            [
+              "告诉",
+              {
+                "uz": "aytib bermoq, xabar bermoq",
+                "ru": "сказать, сообщить",
+                "tj": "гуфтан, хабар додан"
+              }
+            ],
+            [
+              "等",
+              {
+                "uz": "kutmoq",
+                "ru": "ждать",
+                "tj": "интизор мондан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -1369,77 +1436,6 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "今天下午我没有时间，明天下午再去吧。",
-            "让我想想再告诉你。",
-            "我们下午去看电影，好吗？",
-            "你想看什么电影？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 我们下午去看电影，好吗？",
-            "ru": "Правильный ответ: 我们下午去看电影，好吗？",
-            "tj": "Ҷавоби дуруст: 我们下午去看电影，好吗？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____们下午去看电影，好吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "您",
-            "里",
-            "我",
-            "视"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 我 — 我们下午去看电影，好吗？ (Tushdan keyin kino ko'rgani boramizmi?)",
-            "ru": "Верно: 我 — 我们下午去看电影，好吗？ (Давай во второй половине дня сходим в кино, хорошо?)",
-            "tj": "Дуруст: 我 — 我们下午去看电影，好吗？ (Биёед баъд аз нисфирӯзӣ ба кино равем, хуб аст?)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "让我想想再告诉你。",
-            "你想看什么电影？",
-            "我们下午去看电影，好吗？",
-            "今天下午我没有时间，明天下午再去吧。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 让我想想再告诉你。",
-            "ru": "Правильный ответ: 让我想想再告诉你。",
-            "tj": "Ҷавоби дуруст: 让我想想再告诉你。"
-          }
-        },
-        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -1482,13 +1478,84 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____们下午去看电影，好吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "慢",
+            "件",
+            "我",
+            "商"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我们下午去看电影，好吗？ (Tushdan keyin kino ko'rgani boramizmi?)",
+            "ru": "Верно: 我 — 我们下午去看电影，好吗？ (Давай во второй половине дня сходим в кино, хорошо?)",
+            "tj": "Дуруст: 我 — 我们下午去看电影，好吗？ (Биёед баъд аз нисфирӯзӣ ба кино равем, хуб аст?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "今天下午我没有时间，明天下午再去吧。",
+            "让我想想再告诉你。",
+            "我们下午去看电影，好吗？",
+            "你想看什么电影？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 我们下午去看电影，好吗？",
+            "ru": "Правильный ответ: 我们下午去看电影，好吗？",
+            "tj": "Ҷавоби дуруст: 我们下午去看电影，好吗？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "让我想想再告诉你。",
+            "你想看什么电影？",
+            "我们下午去看电影，好吗？",
+            "今天下午我没有时间，明天下午再去吧。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 让我想想再告诉你。",
+            "ru": "Правильный ответ: 让我想想再告诉你。",
+            "tj": "Ҷавоби дуруст: 让我想想再告诉你。"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "您住哪个房间？",
-          "pinyin": "Nín zhù nǎ ge fángjiān?",
+          "phrase": "你想看什么电影？",
+          "pinyin": "Nǐ xiǎng kàn shénme diànyǐng?",
           "translation": {
-            "uz": "Siz qaysi xonada turasiz?",
-            "ru": "В каком номере вы проживаете?",
-            "tj": "Шумо дар кадом хона ҳастед?"
+            "uz": "Qanday film ko'rmoqchisan?",
+            "ru": "Какой фильм ты хочешь посмотреть?",
+            "tj": "Ту чӣ филм дидан мехоҳӣ?"
           }
         }
       ]

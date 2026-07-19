@@ -1128,60 +1128,30 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "píjiǔ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается píjiǔ?",
-            "tj": "píjiǔ кадом иероглиф аст?"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men avval ketdim.",
+            "ru": "Я сначала пойду.",
+            "tj": "Ман аввал меравам."
           },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "啤酒",
+          "tokens": [
             "图书馆",
+            "走",
+            "了",
+            "先",
             "借",
-            "词典"
+            "我"
           ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "啤酒 = pivo (píjiǔ)",
-            "ru": "啤酒 = пиво (píjiǔ)",
-            "tj": "啤酒 = пиво (píjiǔ)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "等他到了就告诉我。",
-          "pinyin": "Děng tā dào le jiù gàosu wǒ.",
-          "options": [
-            "我先走了。",
-            "等他到了就告诉我。",
-            "我去图书馆借本书。",
-            "你去哪儿？"
+          "answer_tokens": [
+            "我",
+            "先",
+            "走",
+            "了"
           ],
-          "correct_index": 1,
           "explanation": {
-            "uz": "等他到了就告诉我。 — U yetib kelgach, menga ayt.",
-            "ru": "等他到了就告诉我。 — Когда он приедет, скажи мне.",
-            "tj": "等他到了就告诉我。 — Вақте расид, ба ман гӯй."
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "筷子",
-          "pinyin": "kuàizi",
-          "translation": {
-            "uz": "cho'pchalar",
-            "ru": "палочки для еды",
-            "tj": "чӯбчаҳои хӯрокхӯрӣ"
+            "uz": "我先走了。 — Wǒ xiān zǒu le.",
+            "ru": "我先走了。 — Wǒ xiān zǒu le.",
+            "tj": "我先走了。 — Wǒ xiān zǒu le."
           }
         },
         {
@@ -1210,30 +1180,117 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men avval ketdim.",
-            "ru": "Я сначала пойду.",
-            "tj": "Ман аввал меравам."
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "píjiǔ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается píjiǔ?",
+            "tj": "píjiǔ кадом иероглиф аст?"
           },
-          "tokens": [
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "啤酒",
             "图书馆",
-            "走",
-            "了",
-            "先",
             "借",
-            "我"
+            "词典"
           ],
-          "answer_tokens": [
-            "我",
-            "先",
-            "走",
-            "了"
-          ],
+          "correct_index": 0,
           "explanation": {
-            "uz": "我先走了。 — Wǒ xiān zǒu le.",
-            "ru": "我先走了。 — Wǒ xiān zǒu le.",
-            "tj": "我先走了。 — Wǒ xiān zǒu le."
+            "uz": "啤酒 = pivo (píjiǔ)",
+            "ru": "啤酒 = пиво (píjiǔ)",
+            "tj": "啤酒 = пиво (píjiǔ)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "等他到了就告诉我。",
+          "pinyin": "Děng tā dào le jiù gàosu wǒ.",
+          "translation": {
+            "uz": "U yetib kelgach, menga ayt.",
+            "ru": "Когда он приедет, скажи мне.",
+            "tj": "Вақте расид, ба ман гӯй."
+          },
+          "tokens": {
+            "uz": [
+              "yetib",
+              "menga",
+              "Men",
+              "U",
+              "kelgach",
+              "ayt",
+              "avval"
+            ],
+            "ru": [
+              "мне",
+              "Я",
+              "Когда",
+              "он",
+              "скажи",
+              "сначала",
+              "приедет"
+            ],
+            "tj": [
+              "Вақте",
+              "ман",
+              "расид",
+              "ба",
+              "Ман",
+              "аввал",
+              "гӯй"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "yetib",
+              "kelgach",
+              "menga",
+              "ayt"
+            ],
+            "ru": [
+              "Когда",
+              "он",
+              "приедет",
+              "скажи",
+              "мне"
+            ],
+            "tj": [
+              "Вақте",
+              "расид",
+              "ба",
+              "ман",
+              "гӯй"
+            ]
+          },
+          "explanation": {
+            "uz": "等他到了就告诉我。 — U yetib kelgach, menga ayt.",
+            "ru": "等他到了就告诉我。 — Когда он приедет, скажи мне.",
+            "tj": "等他到了就告诉我。 — Вақте расид, ба ман гӯй."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "等他到了就告诉我。",
+          "pinyin": "Děng tā dào le jiù gàosu wǒ.",
+          "options": [
+            "我先走了。",
+            "等他到了就告诉我。",
+            "我去图书馆借本书。",
+            "你去哪儿？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "等他到了就告诉我。 — U yetib kelgach, menga ayt.",
+            "ru": "等他到了就告诉我。 — Когда он приедет, скажи мне.",
+            "tj": "等他到了就告诉我。 — Вақте расид, ба ман гӯй."
           }
         },
         {
@@ -1280,6 +1337,16 @@
         },
         {
           "type": "pronunciation",
+          "phrase": "筷子",
+          "pinyin": "kuàizi",
+          "translation": {
+            "uz": "cho'pchalar",
+            "ru": "палочки для еды",
+            "tj": "чӯбчаҳои хӯрокхӯрӣ"
+          }
+        },
+        {
+          "type": "pronunciation",
           "phrase": "地铁",
           "pinyin": "dìtiě",
           "translation": {
@@ -1322,27 +1389,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____先走了。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "眼",
-            "附",
-            "我",
-            "久"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 我 — 我先走了。 (Men avval ketdim.)",
-            "ru": "Верно: 我 — 我先走了。 (Я сначала пойду.)",
-            "tj": "Дуруст: 我 — 我先走了。 (Ман аввал меравам.)"
-          }
-        },
-        {
           "type": "quick_quiz",
           "prompt": {
             "uz": "Dialog oxirida 同学 nima deydi?",
@@ -1365,6 +1411,52 @@
             "uz": "To'g'ri javob: 好的，放心吧。",
             "ru": "Правильный ответ: 好的，放心吧。",
             "tj": "Ҷавоби дуруст: 好的，放心吧。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____先走了。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "羊",
+            "商",
+            "我",
+            "司"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我先走了。 (Men avval ketdim.)",
+            "ru": "Верно: 我 — 我先走了。 (Я сначала пойду.)",
+            "tj": "Дуруст: 我 — 我先走了。 (Ман аввал меравам.)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 小明 avval nima deydi?",
+            "ru": "Что 小明 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 小明 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "帮我把这本词典还了吧。",
+            "我先走了。",
+            "我去图书馆借本书。",
+            "你去哪儿？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我先走了。",
+            "ru": "Правильный ответ: 我先走了。",
+            "tj": "Ҷавоби дуруст: 我先走了。"
           }
         },
         {
@@ -1420,38 +1512,13 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 小明 avval nima deydi?",
-            "ru": "Что 小明 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 小明 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "帮我把这本词典还了吧。",
-            "我先走了。",
-            "我去图书馆借本书。",
-            "你去哪儿？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 我先走了。",
-            "ru": "Правильный ответ: 我先走了。",
-            "tj": "Ҷавоби дуруст: 我先走了。"
-          }
-        },
-        {
           "type": "pronunciation",
-          "phrase": "帮我把这本词典还了吧。",
-          "pinyin": "Bāng wǒ bǎ zhè běn cídiǎn huán le ba.",
+          "phrase": "我先走了。",
+          "pinyin": "Wǒ xiān zǒu le.",
           "translation": {
-            "uz": "Menga yordam berib, shu lug'atni qaytarib qo'y.",
-            "ru": "Помоги мне вернуть этот словарь.",
-            "tj": "Ба ман ёрӣ деҳ, ин луғатро баргардон."
+            "uz": "Men avval ketdim.",
+            "ru": "Я сначала пойду.",
+            "tj": "Ман аввал меравам."
           }
         }
       ]

@@ -1406,64 +1406,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'pushaymon bo'lmoq' xitoycha qaysi?",
-            "ru": "'сожалеть' по-китайски?",
-            "tj": "'пушаймон шудан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "后悔",
-            "气候",
-            "流血",
-            "擦"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "pushaymon bo'lmoq = 后悔 (hòuhuǐ)",
-            "ru": "сожалеть = 后悔 (hòuhuǐ)",
-            "tj": "пушаймон шудан = 后悔 (hòuhuǐ)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Chekishning tanaga biror foydasi ham yo'q.",
-            "ru": "Курение совсем не приносит пользы здоровью.",
-            "tj": "Тамокукашӣ ба бадан ҳеҷ фоида надорад."
-          },
-          "tokens": [
-            "好处",
-            "流血",
-            "身体",
-            "没有",
-            "对",
-            "一点儿",
-            "擦",
-            "抽烟",
-            "也"
-          ],
-          "answer_tokens": [
-            "抽烟",
-            "对",
-            "身体",
-            "一点儿",
-            "好处",
-            "也",
-            "没有"
-          ],
-          "explanation": {
-            "uz": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
-            "ru": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
-            "tj": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1553,6 +1495,64 @@
           }
         },
         {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'pushaymon bo'lmoq' xitoycha qaysi?",
+            "ru": "'сожалеть' по-китайски?",
+            "tj": "'пушаймон шудан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "后悔",
+            "气候",
+            "流血",
+            "擦"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "pushaymon bo'lmoq = 后悔 (hòuhuǐ)",
+            "ru": "сожалеть = 后悔 (hòuhuǐ)",
+            "tj": "пушаймон шудан = 后悔 (hòuhuǐ)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Chekishning tanaga biror foydasi ham yo'q.",
+            "ru": "Курение совсем не приносит пользы здоровью.",
+            "tj": "Тамокукашӣ ба бадан ҳеҷ фоида надорад."
+          },
+          "tokens": [
+            "好处",
+            "流血",
+            "身体",
+            "没有",
+            "对",
+            "一点儿",
+            "擦",
+            "抽烟",
+            "也"
+          ],
+          "answer_tokens": [
+            "抽烟",
+            "对",
+            "身体",
+            "一点儿",
+            "好处",
+            "也",
+            "没有"
+          ],
+          "explanation": {
+            "uz": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
+            "ru": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu.",
+            "tj": "抽烟对身体一点儿好处也没有。 — Chōuyān duì shēntǐ yìdiǎnr hǎochù yě méiyǒu."
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -1592,6 +1592,79 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你咳嗽好点儿了吗？医生怎么说的？",
+          "pinyin": "Nǐ késou hǎo diǎnr le ma? Yīshēng zěnme shuō de?",
+          "translation": {
+            "uz": "Yo'taling yaxshiroq bo'ldimi? Shifokor nima dedi?",
+            "ru": "Кашель стал лучше? Что сказал врач?",
+            "tj": "Сулфаат беҳтар шуд? Духтур чӣ гуфт?"
+          },
+          "tokens": {
+            "uz": [
+              "bo'ldimi",
+              "nima",
+              "Burningdan",
+              "Yo'taling",
+              "dedi",
+              "nega",
+              "yaxshiroq",
+              "Shifokor"
+            ],
+            "ru": [
+              "стал",
+              "у",
+              "Кашель",
+              "сказал",
+              "лучше",
+              "врач",
+              "Почему",
+              "Что"
+            ],
+            "tj": [
+              "аз",
+              "шуд",
+              "гуфт",
+              "Чаро",
+              "чӣ",
+              "Сулфаат",
+              "беҳтар",
+              "Духтур"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Yo'taling",
+              "yaxshiroq",
+              "bo'ldimi",
+              "Shifokor",
+              "nima",
+              "dedi"
+            ],
+            "ru": [
+              "Кашель",
+              "стал",
+              "лучше",
+              "Что",
+              "сказал",
+              "врач"
+            ],
+            "tj": [
+              "Сулфаат",
+              "беҳтар",
+              "шуд",
+              "Духтур",
+              "чӣ",
+              "гуфт"
+            ]
+          },
+          "explanation": {
+            "uz": "你咳嗽好点儿了吗？医生怎么说的？ — Yo'taling yaxshiroq bo'ldimi? Shifokor nima dedi?",
+            "ru": "你咳嗽好点儿了吗？医生怎么说的？ — Кашель стал лучше? Что сказал врач?",
+            "tj": "你咳嗽好点儿了吗？医生怎么说的？ — Сулфаат беҳтар шуд? Духтур чӣ гуфт?"
           }
         },
         {
@@ -1640,31 +1713,6 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda 小李 avval nima deydi?",
-            "ru": "Что 小李 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 小李 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "最近感冒的人特别多。你去看医生了吗？",
-            "你的鼻子怎么流血了？快用纸擦擦。",
-            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
-            "就是因为昨天穿得太少，我都感冒了。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 你的鼻子怎么流血了？快用纸擦擦。",
-            "ru": "Правильный ответ: 你的鼻子怎么流血了？快用纸擦擦。",
-            "tj": "Ҷавоби дуруст: 你的鼻子怎么流血了？快用纸擦擦。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
             "uz": "Dialog oxirida 小林 nima deydi?",
             "ru": "Что 小林 говорит в конце диалога?",
             "tj": "Дар охири гуфтугӯ 小林 чӣ мегӯяд?"
@@ -1685,6 +1733,27 @@
             "uz": "To'g'ri javob: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
             "ru": "Правильный ответ: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。",
             "tj": "Ҷавоби дуруст: 春天天气时冷时热，特别容易感冒。这时候一定要多注意保暖，另外，最好经常打开窗户换换空气。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____的鼻子怎么流血了？快用纸擦擦。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "袜",
+            "你",
+            "商",
+            "扰"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Burningdan nega qon ketyapti? Tez qog'oz bilan art.)",
+            "ru": "Верно: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Почему у тебя кровь из носа? Быстро вытри бумагой.)",
+            "tj": "Дуруст: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Чаро аз биният хун меравад? Зуд бо коғаз пок кун.)"
           }
         },
         {
@@ -1740,24 +1809,28 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____的鼻子怎么流血了？快用纸擦擦。",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda 小李 avval nima deydi?",
+            "ru": "Что 小李 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 小李 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "符",
-            "你",
-            "附",
-            "久"
+            "最近感冒的人特别多。你去看医生了吗？",
+            "你的鼻子怎么流血了？快用纸擦擦。",
+            "我还不习惯北方的气候，估计是天气太干。今天天气不是很冷，你怎么穿这么多？",
+            "就是因为昨天穿得太少，我都感冒了。"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Burningdan nega qon ketyapti? Tez qog'oz bilan art.)",
-            "ru": "Верно: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Почему у тебя кровь из носа? Быстро вытри бумагой.)",
-            "tj": "Дуруст: 你 — 你的鼻子怎么流血了？快用纸擦擦。 (Чаро аз биният хун меравад? Зуд бо коғаз пок кун.)"
+            "uz": "To'g'ri javob: 你的鼻子怎么流血了？快用纸擦擦。",
+            "ru": "Правильный ответ: 你的鼻子怎么流血了？快用纸擦擦。",
+            "tj": "Ҷавоби дуруст: 你的鼻子怎么流血了？快用纸擦擦。"
           }
         }
       ]

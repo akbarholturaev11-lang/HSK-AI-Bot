@@ -845,6 +845,59 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Biz 2011-yilning sentabrida tanishdik.",
+            "ru": "Мы познакомились в сентябре 2011 года.",
+            "tj": "Мо дар моҳи сентябри соли 2011 шинос шудем."
+          },
+          "tokens": [
+            "是",
+            "大学",
+            "饭店",
+            "月",
+            "认识",
+            "年",
+            "我们",
+            "的"
+          ],
+          "answer_tokens": [
+            "我们",
+            "是",
+            "年",
+            "月",
+            "认识",
+            "的"
+          ],
+          "explanation": {
+            "uz": "我们是2011年9月认识的。 — Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
+            "ru": "我们是2011年9月认识的。 — Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
+            "tj": "我们是2011年9月认识的。 — Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "高兴",
+          "pinyin": "gāoxìng",
+          "options": [
+            "大学",
+            "认识",
+            "高兴",
+            "年"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "高兴 — xursand, shod (gāoxìng)",
+            "ru": "高兴 — рад, доволен (gāoxìng)",
+            "tj": "高兴 — хурсанд, шод (gāoxìng)"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -912,53 +965,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "fàndiàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается fàndiàn?",
-            "tj": "fàndiàn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "认识",
-            "年",
-            "饭店",
-            "大学"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "饭店 = restoran, mehmonxona (fàndiàn)",
-            "ru": "饭店 = ресторан, гостиница (fàndiàn)",
-            "tj": "饭店 = тарабхона, меҳмонхона (fàndiàn)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "高兴",
-          "pinyin": "gāoxìng",
-          "options": [
-            "大学",
-            "认识",
-            "高兴",
-            "年"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "高兴 — xursand, shod (gāoxìng)",
-            "ru": "高兴 — рад, доволен (gāoxìng)",
-            "tj": "高兴 — хурсанд, шод (gāoxìng)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -981,34 +987,95 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Biz 2011-yilning sentabrida tanishdik.",
-            "ru": "Мы познакомились в сентябре 2011 года.",
-            "tj": "Мо дар моҳи сентябри соли 2011 шинос шудем."
+          "type": "reverse_builder",
+          "zh": "她是在北京买的。",
+          "pinyin": "Tā shì zài Běijīng mǎi de.",
+          "translation": {
+            "uz": "U uni Pekinda sotib oldi.",
+            "ru": "Она купила это в Пекине.",
+            "tj": "Вай онро дар Пекин харид."
           },
-          "tokens": [
-            "是",
-            "大学",
-            "饭店",
-            "月",
-            "认识",
-            "年",
-            "我们",
-            "的"
-          ],
-          "answer_tokens": [
-            "我们",
-            "是",
-            "年",
-            "月",
-            "认识",
-            "的"
-          ],
+          "tokens": {
+            "uz": [
+              "Siz",
+              "U",
+              "uni",
+              "Xonim",
+              "oldi",
+              "sotib",
+              "Pekinda"
+            ],
+            "ru": [
+              "вы",
+              "это",
+              "купила",
+              "в",
+              "Она",
+              "Когда",
+              "Пекине"
+            ],
+            "tj": [
+              "Шумо",
+              "Вай",
+              "Пекин",
+              "бо",
+              "онро",
+              "дар",
+              "харид"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "uni",
+              "Pekinda",
+              "sotib",
+              "oldi"
+            ],
+            "ru": [
+              "Она",
+              "купила",
+              "это",
+              "в",
+              "Пекине"
+            ],
+            "tj": [
+              "Вай",
+              "онро",
+              "дар",
+              "Пекин",
+              "харид"
+            ]
+          },
           "explanation": {
-            "uz": "我们是2011年9月认识的。 — Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
-            "ru": "我们是2011年9月认识的。 — Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de.",
-            "tj": "我们是2011年9月认识的。 — Wǒmen shì èr líng yī yī nián jiǔ yuè rènshi de."
+            "uz": "她是在北京买的。 — U uni Pekinda sotib oldi.",
+            "ru": "她是在北京买的。 — Она купила это в Пекине.",
+            "tj": "她是在北京买的。 — Вай онро дар Пекин харид."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fàndiàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fàndiàn?",
+            "tj": "fàndiàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "认识",
+            "年",
+            "饭店",
+            "大学"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "饭店 = restoran, mehmonxona (fàndiàn)",
+            "ru": "饭店 = ресторан, гостиница (fàndiàn)",
+            "tj": "饭店 = тарабхона, меҳмонхона (fàndiàn)"
           }
         },
         {
@@ -1055,28 +1122,24 @@
           }
         },
         {
-          "type": "quick_quiz",
+          "type": "gap_fill",
+          "sentence": "____和李小姐是什么时候认识的？",
           "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "你和李小姐是什么时候认识的？",
-            "我们是2011年9月认识的。",
-            "我们是在学校认识的，她是我大学同学。",
-            "你们在哪儿认识的？"
+            "后",
+            "你",
+            "请",
+            "商"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri javob: 我们是在学校认识的，她是我大学同学。",
-            "ru": "Правильный ответ: 我们是在学校认识的，她是我大学同学。",
-            "tj": "Ҷавоби дуруст: 我们是在学校认识的，她是我大学同学。"
+            "uz": "To'g'ri: 你 — 你和李小姐是什么时候认识的？ (Siz Xonim Li bilan qachon tanishdingiz?)",
+            "ru": "Верно: 你 — 你和李小姐是什么时候认识的？ (Когда вы познакомились с мисс Ли?)",
+            "tj": "Дуруст: 你 — 你和李小姐是什么时候认识的？ (Шумо бо хонум Ли кай шинос шудед?)"
           }
         },
         {
@@ -1147,34 +1210,38 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____和李小姐是什么时候认识的？",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "您",
-            "你",
-            "视",
-            "里"
+            "你和李小姐是什么时候认识的？",
+            "我们是2011年9月认识的。",
+            "我们是在学校认识的，她是我大学同学。",
+            "你们在哪儿认识的？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri: 你 — 你和李小姐是什么时候认识的？ (Siz Xonim Li bilan qachon tanishdingiz?)",
-            "ru": "Верно: 你 — 你和李小姐是什么时候认识的？ (Когда вы познакомились с мисс Ли?)",
-            "tj": "Дуруст: 你 — 你和李小姐是什么时候认识的？ (Шумо бо хонум Ли кай шинос шудед?)"
+            "uz": "To'g'ri javob: 我们是在学校认识的，她是我大学同学。",
+            "ru": "Правильный ответ: 我们是在学校认识的，她是我大学同学。",
+            "tj": "Ҷавоби дуруст: 我们是在学校认识的，她是我大学同学。"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "认识你我也很高兴！",
-          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
+          "phrase": "李先生呢？",
+          "pinyin": "Lǐ xiānsheng ne?",
           "translation": {
-            "uz": "Siz bilan tanishganimdan men ham juda xursandman!",
-            "ru": "Мне тоже очень приятно познакомиться с вами!",
-            "tj": "Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
+            "uz": "Janob Li-chi?",
+            "ru": "А господин Ли?",
+            "tj": "Ҷаноб Ли чӣ?"
           }
         }
       ]

@@ -951,6 +951,180 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Ismingiz nima?",
+            "ru": "Как вас зовут?",
+            "tj": "Номи шумо чист?"
+          },
+          "tokens": [
+            "我",
+            "什么",
+            "叫",
+            "名字",
+            "你",
+            "是"
+          ],
+          "answer_tokens": [
+            "你",
+            "叫",
+            "什么",
+            "名字"
+          ],
+          "explanation": {
+            "uz": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
+            "ru": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
+            "tj": "你叫什么名字？ — Nǐ jiào shénme míngzi?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你是老师吗？",
+          "pinyin": "Nǐ shì lǎoshī ma?",
+          "options": [
+            "你叫什么名字？",
+            "我不是老师，我是学生。",
+            "你是老师吗？",
+            "我叫李月。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你是老师吗？ — Siz o'qituvchimisiz?",
+            "ru": "你是老师吗？ — Вы учитель?",
+            "tj": "你是老师吗？ — Оё шумо муаллим ҳастед?"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "Měiguó qaysi ieroglif?",
+            "ru": "Какой иероглиф читается Měiguó?",
+            "tj": "Měiguó кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "什么",
+            "美国",
+            "名字",
+            "叫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "美国 = Amerika, AQSH (Měiguó)",
+            "ru": "美国 = Америка, США (Měiguó)",
+            "tj": "美国 = Амрико, ИМА (Měiguó)"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'Xitoy' xitoycha qaysi?",
+            "ru": "'Китай' по-китайски?",
+            "tj": "'Чин' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "什么",
+            "中国",
+            "名字",
+            "叫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "Xitoy = 中国 (Zhōngguó)",
+            "ru": "Китай = 中国 (Zhōngguó)",
+            "tj": "Чин = 中国 (Zhōngguó)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "我",
+          "pinyin": "wǒ",
+          "options": [
+            "什么",
+            "我",
+            "名字",
+            "叫"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "我 — men (wǒ)",
+            "ru": "我 — я, меня (wǒ)",
+            "tj": "我 — ман (wǒ)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你是老师吗？",
+          "pinyin": "Nǐ shì lǎoshī ma?",
+          "translation": {
+            "uz": "Siz o'qituvchimisiz?",
+            "ru": "Вы учитель?",
+            "tj": "Оё шумо муаллим ҳастед?"
+          },
+          "tokens": {
+            "uz": [
+              "nima",
+              "o'qituvchimisiz",
+              "Siz",
+              "Ismingiz"
+            ],
+            "ru": [
+              "учитель",
+              "Вы",
+              "Как",
+              "вас"
+            ],
+            "tj": [
+              "шумо",
+              "ҳастед",
+              "Номи",
+              "Оё",
+              "чист",
+              "муаллим"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Siz",
+              "o'qituvchimisiz"
+            ],
+            "ru": [
+              "Вы",
+              "учитель"
+            ],
+            "tj": [
+              "Оё",
+              "шумо",
+              "муаллим",
+              "ҳастед"
+            ]
+          },
+          "explanation": {
+            "uz": "你是老师吗？ — Siz o'qituvchimisiz?",
+            "ru": "你是老师吗？ — Вы учитель?",
+            "tj": "你是老师吗？ — Оё шумо муаллим ҳастед?"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -990,127 +1164,6 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "Měiguó qaysi ieroglif?",
-            "ru": "Какой иероглиф читается Měiguó?",
-            "tj": "Měiguó кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "什么",
-            "美国",
-            "名字",
-            "叫"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "美国 = Amerika, AQSH (Měiguó)",
-            "ru": "美国 = Америка, США (Měiguó)",
-            "tj": "美国 = Амрико, ИМА (Měiguó)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "我",
-          "pinyin": "wǒ",
-          "options": [
-            "什么",
-            "我",
-            "名字",
-            "叫"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "我 — men (wǒ)",
-            "ru": "我 — я, меня (wǒ)",
-            "tj": "我 — ман (wǒ)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你是老师吗？",
-          "pinyin": "Nǐ shì lǎoshī ma?",
-          "options": [
-            "你叫什么名字？",
-            "我不是老师，我是学生。",
-            "你是老师吗？",
-            "我叫李月。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "你是老师吗？ — Siz o'qituvchimisiz?",
-            "ru": "你是老师吗？ — Вы учитель?",
-            "tj": "你是老师吗？ — Оё шумо муаллим ҳастед?"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'Xitoy' xitoycha qaysi?",
-            "ru": "'Китай' по-китайски?",
-            "tj": "'Чин' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "什么",
-            "中国",
-            "名字",
-            "叫"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "Xitoy = 中国 (Zhōngguó)",
-            "ru": "Китай = 中国 (Zhōngguó)",
-            "tj": "Чин = 中国 (Zhōngguó)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Ismingiz nima?",
-            "ru": "Как вас зовут?",
-            "tj": "Номи шумо чист?"
-          },
-          "tokens": [
-            "我",
-            "什么",
-            "叫",
-            "名字",
-            "你",
-            "是"
-          ],
-          "answer_tokens": [
-            "你",
-            "叫",
-            "什么",
-            "名字"
-          ],
-          "explanation": {
-            "uz": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
-            "ru": "你叫什么名字？ — Nǐ jiào shénme míngzi?",
-            "tj": "你叫什么名字？ — Nǐ jiào shénme míngzi?"
           }
         },
         {
@@ -1154,31 +1207,6 @@
             "uz": "你叫什么名字？ — Ismingiz nima?",
             "ru": "你叫什么名字？ — Как вас зовут?",
             "tj": "你叫什么名字？ — Номи шумо чист?"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我不是老师，我是学生。",
-            "我叫李月。",
-            "你叫什么名字？",
-            "你是老师吗？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 我叫李月。",
-            "ru": "Правильный ответ: 我叫李月。",
-            "tj": "Ҷавоби дуруст: 我叫李月。"
           }
         },
         {
@@ -1239,6 +1267,31 @@
           }
         },
         {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我不是老师，我是学生。",
+            "我叫李月。",
+            "你叫什么名字？",
+            "你是老师吗？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 我叫李月。",
+            "ru": "Правильный ответ: 我叫李月。",
+            "tj": "Ҷавоби дуруст: 我叫李月。"
+          }
+        },
+        {
           "type": "gap_fill",
           "sentence": "____叫什么名字？",
           "prompt": {
@@ -1247,9 +1300,9 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "美",
             "叫",
-            "您",
+            "美",
+            "不",
             "你"
           ],
           "correct_index": 3,
@@ -1261,12 +1314,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "你是中国人吗？",
-          "pinyin": "Nǐ shì Zhōngguó rén ma?",
+          "phrase": "你是老师吗？",
+          "pinyin": "Nǐ shì lǎoshī ma?",
           "translation": {
-            "uz": "Siz xitoylikmisiz?",
-            "ru": "Вы китаец/китаянка?",
-            "tj": "Оё шумо хитоӣ ҳастед?"
+            "uz": "Siz o'qituvchimisiz?",
+            "ru": "Вы учитель?",
+            "tj": "Оё шумо муаллим ҳастед?"
           }
         }
       ]

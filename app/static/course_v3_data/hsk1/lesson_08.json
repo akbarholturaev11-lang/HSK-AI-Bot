@@ -1176,6 +1176,192 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          },
+          "tokens": [
+            "钱",
+            "想",
+            "块",
+            "喝"
+          ],
+          "answer_tokens": [
+            "块",
+            "钱"
+          ],
+          "explanation": {
+            "uz": "28块钱。 — Èrshíbā kuài qián.",
+            "ru": "28块钱。 — Èrshíbā kuài qián.",
+            "tj": "28块钱。 — Èrshíbā kuài qián."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我想买一个杯子。",
+          "pinyin": "Wǒ xiǎng mǎi yī gè bēizi.",
+          "translation": {
+            "uz": "Bir dona piyola sotib olmoqchiman.",
+            "ru": "Я хочу купить одну кружку.",
+            "tj": "Ман як дона пиёла харидан мехоҳам."
+          },
+          "tokens": {
+            "uz": [
+              "sotib",
+              "dona",
+              "piyola",
+              "Bir",
+              "olmoqchiman",
+              "Nima",
+              "ichmoqchisiz"
+            ],
+            "ru": [
+              "одну",
+              "вы",
+              "хочу",
+              "купить",
+              "кружку",
+              "Я",
+              "Что"
+            ],
+            "tj": [
+              "пиёла",
+              "дона",
+              "мехоҳам",
+              "Шумо",
+              "Ман",
+              "харидан",
+              "як",
+              "чӣ"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Bir",
+              "dona",
+              "piyola",
+              "sotib",
+              "olmoqchiman"
+            ],
+            "ru": [
+              "Я",
+              "хочу",
+              "купить",
+              "одну",
+              "кружку"
+            ],
+            "tj": [
+              "Ман",
+              "як",
+              "дона",
+              "пиёла",
+              "харидан",
+              "мехоҳам"
+            ]
+          },
+          "explanation": {
+            "uz": "我想买一个杯子。 — Bir dona piyola sotib olmoqchiman.",
+            "ru": "我想买一个杯子。 — Я хочу купить одну кружку.",
+            "tj": "我想买一个杯子。 — Ман як дона пиёла харидан мехоҳам."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "想",
+              {
+                "uz": "xohlamoq, istаmoq",
+                "ru": "хотеть, желать",
+                "tj": "хостан, орзу доштан"
+              }
+            ],
+            [
+              "喝",
+              {
+                "uz": "ichmoq",
+                "ru": "пить",
+                "tj": "нӯшидан"
+              }
+            ],
+            [
+              "茶",
+              {
+                "uz": "choy",
+                "ru": "чай",
+                "tj": "чой"
+              }
+            ],
+            [
+              "吃",
+              {
+                "uz": "yemoq",
+                "ru": "есть, кушать",
+                "tj": "хӯрдан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "kuài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается kuài?",
+            "tj": "kuài кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "茶",
+            "块",
+            "想",
+            "喝"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "块 = yuan (so'zlashuv) (kuài)",
+            "ru": "块 = юань (разговорный) (kuài)",
+            "tj": "块 = юан (забони гуфтугӯӣ) (kuài)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Nima ichmoqchisiz?",
+            "ru": "Что вы хотите выпить?",
+            "tj": "Шумо чӣ нӯшидан мехоҳед?"
+          },
+          "tokens": [
+            "吃",
+            "你",
+            "喝",
+            "什么",
+            "茶",
+            "想"
+          ],
+          "answer_tokens": [
+            "你",
+            "想",
+            "喝",
+            "什么"
+          ],
+          "explanation": {
+            "uz": "你想喝什么？ — Nǐ xiǎng hē shénme?",
+            "ru": "你想喝什么？ — Nǐ xiǎng hē shénme?",
+            "tj": "你想喝什么？ — Nǐ xiǎng hē shénme?"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1239,123 +1425,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Nima ichmoqchisiz?",
-            "ru": "Что вы хотите выпить?",
-            "tj": "Шумо чӣ нӯшидан мехоҳед?"
-          },
-          "tokens": [
-            "吃",
-            "你",
-            "喝",
-            "什么",
-            "茶",
-            "想"
-          ],
-          "answer_tokens": [
-            "你",
-            "想",
-            "喝",
-            "什么"
-          ],
-          "explanation": {
-            "uz": "你想喝什么？ — Nǐ xiǎng hē shénme?",
-            "ru": "你想喝什么？ — Nǐ xiǎng hē shénme?",
-            "tj": "你想喝什么？ — Nǐ xiǎng hē shénme?"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "kuài qaysi ieroglif?",
-            "ru": "Какой иероглиф читается kuài?",
-            "tj": "kuài кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "茶",
-            "块",
-            "想",
-            "喝"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "块 = yuan (so'zlashuv) (kuài)",
-            "ru": "块 = юань (разговорный) (kuài)",
-            "tj": "块 = юан (забони гуфтугӯӣ) (kuài)"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "想",
-              {
-                "uz": "xohlamoq, istаmoq",
-                "ru": "хотеть, желать",
-                "tj": "хостан, орзу доштан"
-              }
-            ],
-            [
-              "喝",
-              {
-                "uz": "ichmoq",
-                "ru": "пить",
-                "tj": "нӯшидан"
-              }
-            ],
-            [
-              "茶",
-              {
-                "uz": "choy",
-                "ru": "чай",
-                "tj": "чой"
-              }
-            ],
-            [
-              "吃",
-              {
-                "uz": "yemoq",
-                "ru": "есть, кушать",
-                "tj": "хӯрдан"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "28 yuan.",
-            "ru": "28 юаней.",
-            "tj": "28 юан."
-          },
-          "tokens": [
-            "钱",
-            "想",
-            "块",
-            "喝"
-          ],
-          "answer_tokens": [
-            "块",
-            "钱"
-          ],
-          "explanation": {
-            "uz": "28块钱。 — Èrshíbā kuài qián.",
-            "ru": "28块钱。 — Èrshíbā kuài qián.",
-            "tj": "28块钱。 — Èrshíbā kuài qián."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "买",
           "pinyin": "mǎi",
@@ -1396,6 +1465,52 @@
             "uz": "你想喝什么？ — Nima ichmoqchisiz?",
             "ru": "你想喝什么？ — Что вы хотите выпить?",
             "tj": "你想喝什么？ — Шумо чӣ нӯшидан мехоҳед?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我想吃米饭。",
+            "你想喝什么？",
+            "我想喝茶。",
+            "你想吃什么？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 你想喝什么？",
+            "ru": "Правильный ответ: 你想喝什么？",
+            "tj": "Ҷавоби дуруст: 你想喝什么？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____想喝什么？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "商",
+            "你",
+            "块",
+            "请"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你想喝什么？ (Nima ichmoqchisiz?)",
+            "ru": "Верно: 你 — 你想喝什么？ (Что вы хотите выпить?)",
+            "tj": "Дуруст: 你 — 你想喝什么？ (Шумо чӣ нӯшидан мехоҳед?)"
           }
         },
         {
@@ -1466,59 +1581,13 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我想吃米饭。",
-            "你想喝什么？",
-            "我想喝茶。",
-            "你想吃什么？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 你想喝什么？",
-            "ru": "Правильный ответ: 你想喝什么？",
-            "tj": "Ҷавоби дуруст: 你想喝什么？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____想喝什么？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "您",
-            "你",
-            "叫",
-            "问"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你想喝什么？ (Nima ichmoqchisiz?)",
-            "ru": "Верно: 你 — 你想喝什么？ (Что вы хотите выпить?)",
-            "tj": "Дуруст: 你 — 你想喝什么？ (Шумо чӣ нӯшидан мехоҳед?)"
-          }
-        },
-        {
           "type": "pronunciation",
-          "phrase": "下午你想做什么？",
-          "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+          "phrase": "我想吃米饭。",
+          "pinyin": "Wǒ xiǎng chī mǐfàn.",
           "translation": {
-            "uz": "Tushdan keyin nima qilmoqchisiz?",
-            "ru": "Что вы хотите делать во второй половине дня?",
-            "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
+            "uz": "Men guruch yemoqchiman.",
+            "ru": "Я хочу поесть риса.",
+            "tj": "Ман биринҷ хӯрдан мехоҳам."
           }
         }
       ]

@@ -1338,6 +1338,55 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "怎么样，心情好些了吗？",
+          "pinyin": "Zěnmeyàng, xīnqíng hǎo xiē le ma?",
+          "options": [
+            "这种巧克力味道不错，你在哪儿买的？",
+            "怎么样，心情好些了吗？",
+            "不是我买的，是我女儿给我从国外带回来的礼物。",
+            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "怎么样，心情好些了吗？ — Qalay, kayfiyating yaxshilandi-mi?",
+            "ru": "怎么样，心情好些了吗？ — Ну как, настроение стало лучше?",
+            "tj": "怎么样，心情好些了吗？ — Чӣ хел, кайфиятат беҳтар шуд?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Nega shunday?",
+            "ru": "Почему так?",
+            "tj": "Чаро чунин?"
+          },
+          "tokens": [
+            "亲戚",
+            "这",
+            "为什么",
+            "是",
+            "呢",
+            "巧克力"
+          ],
+          "answer_tokens": [
+            "这",
+            "是",
+            "为什么",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "这是为什么呢？ — Zhè shì wèishénme ne?",
+            "ru": "这是为什么呢？ — Zhè shì wèishénme ne?",
+            "tj": "这是为什么呢？ — Zhè shì wèishénme ne?"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -1380,48 +1429,62 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Nega shunday?",
-            "ru": "Почему так?",
-            "tj": "Чаро чунин?"
-          },
-          "tokens": [
-            "亲戚",
-            "这",
-            "为什么",
-            "是",
-            "呢",
-            "巧克力"
-          ],
-          "answer_tokens": [
-            "这",
-            "是",
-            "为什么",
-            "呢"
-          ],
-          "explanation": {
-            "uz": "这是为什么呢？ — Zhè shì wèishénme ne?",
-            "ru": "这是为什么呢？ — Zhè shì wèishénme ne?",
-            "tj": "这是为什么呢？ — Zhè shì wèishénme ne?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "怎么样，心情好些了吗？",
+          "type": "reverse_builder",
+          "zh": "怎么样，心情好些了吗？",
           "pinyin": "Zěnmeyàng, xīnqíng hǎo xiē le ma?",
-          "options": [
-            "这种巧克力味道不错，你在哪儿买的？",
-            "怎么样，心情好些了吗？",
-            "不是我买的，是我女儿给我从国外带回来的礼物。",
-            "很多人出国后常常会买外国的巧克力，回来送给亲戚朋友。"
-          ],
-          "correct_index": 1,
+          "translation": {
+            "uz": "Qalay, kayfiyating yaxshilandi-mi?",
+            "ru": "Ну как, настроение стало лучше?",
+            "tj": "Чӣ хел, кайфиятат беҳтар шуд?"
+          },
+          "tokens": {
+            "uz": [
+              "shokoladning",
+              "Bu",
+              "yaxshilandi-mi",
+              "Qalay",
+              "kayfiyating"
+            ],
+            "ru": [
+              "лучше",
+              "как",
+              "Ну",
+              "У",
+              "настроение",
+              "этого",
+              "стало"
+            ],
+            "tj": [
+              "кайфиятат",
+              "ин",
+              "Маззаи",
+              "шуд",
+              "беҳтар",
+              "Чӣ",
+              "хел"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Qalay",
+              "kayfiyating",
+              "yaxshilandi-mi"
+            ],
+            "ru": [
+              "Ну",
+              "как",
+              "настроение",
+              "стало",
+              "лучше"
+            ],
+            "tj": [
+              "Чӣ",
+              "хел",
+              "кайфиятат",
+              "беҳтар",
+              "шуд"
+            ]
+          },
           "explanation": {
             "uz": "怎么样，心情好些了吗？ — Qalay, kayfiyating yaxshilandi-mi?",
             "ru": "怎么样，心情好些了吗？ — Ну как, настроение стало лучше?",
@@ -1585,27 +1648,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____种巧克力味道不错，你在哪儿买的？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "附",
-            "这",
-            "久",
-            "符"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 这 — 这种巧克力味道不错，你在哪儿买的？ (Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?)",
-            "ru": "Верно: 这 — 这种巧克力味道不错，你在哪儿买的？ (У этого шоколада хороший вкус, где вы его купили?)",
-            "tj": "Дуруст: 这 — 这种巧克力味道不错，你在哪儿买的？ (Маззаи ин шоколад хуб аст, аз куҷо харидед?)"
-          }
-        },
-        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -1655,6 +1697,27 @@
             "uz": "To'g'ri javob: 巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
             "ru": "Правильный ответ: 巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。",
             "tj": "Ҷавоби дуруст: 巧克力大多是甜的，而很多女性都喜欢吃甜的。而且，听说伤心难过的时候吃块儿巧克力，还能使人的心情变得愉快。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____种巧克力味道不错，你在哪儿买的？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "商",
+            "这",
+            "扰",
+            "袜"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 这 — 这种巧克力味道不错，你在哪儿买的？ (Bu shokoladning ta'mi yaxshi ekan, qayerdan oldingiz?)",
+            "ru": "Верно: 这 — 这种巧克力味道不错，你在哪儿买的？ (У этого шоколада хороший вкус, где вы его купили?)",
+            "tj": "Дуруст: 这 — 这种巧克力味道不错，你在哪儿买的？ (Маззаи ин шоколад хуб аст, аз куҷо харидед?)"
           }
         },
         {

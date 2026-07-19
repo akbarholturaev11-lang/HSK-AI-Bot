@@ -1218,25 +1218,93 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Hozir qayerdasen?",
+            "ru": "Где ты сейчас?",
+            "tj": "Ту ҳоло куҷоӣ?"
           },
-          "audio_text": "我下飞机了。你还有多长时间能到这儿？",
-          "pinyin": "Wǒ xià fēijī le. Nǐ hái yǒu duō cháng shíjiān néng dào zhèr?",
-          "options": [
-            "没有，他还在教室学习呢。",
-            "大卫回来了吗？",
-            "我下飞机了。你还有多长时间能到这儿？",
-            "已经9点多了，他怎么还在学习？"
+          "tokens": [
+            "教室",
+            "在",
+            "现在",
+            "你",
+            "机场",
+            "哪儿",
+            "呢"
           ],
-          "correct_index": 2,
+          "answer_tokens": [
+            "你",
+            "现在",
+            "在",
+            "哪儿",
+            "呢"
+          ],
           "explanation": {
-            "uz": "我下飞机了。你还有多长时间能到这儿？ — Men samolyotdan tushdim. Sening yetib kelishingga qancha vaqt qoldi?",
-            "ru": "我下飞机了。你还有多长时间能到这儿？ — Я уже вышел из самолёта. Сколько тебе ещё ехать?",
-            "tj": "我下飞机了。你还有多长时间能到这儿？ — Ман аз ҳавопаймо фаромадам. То ба ин ҷо расидани ту чанд вақт мемонад?"
+            "uz": "你现在在哪儿呢？ — Nǐ xiànzài zài nǎr ne?",
+            "ru": "你现在在哪儿呢？ — Nǐ xiànzài zài nǎr ne?",
+            "tj": "你现在在哪儿呢？ — Nǐ xiànzài zài nǎr ne?"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "二十分钟就到。",
+          "pinyin": "Èrshí fēnzhōng jiù dào.",
+          "translation": {
+            "uz": "Yigirma daqiqada yetib boraman.",
+            "ru": "Через двадцать минут буду.",
+            "tj": "Дар бист дақиқа мерасам."
+          },
+          "tokens": {
+            "uz": [
+              "yetib",
+              "Devid",
+              "boraman",
+              "Yigirma",
+              "daqiqada",
+              "qaytib"
+            ],
+            "ru": [
+              "двадцать",
+              "вернулся",
+              "Через",
+              "Дэвид",
+              "минут",
+              "буду"
+            ],
+            "tj": [
+              "Дар",
+              "мерасам",
+              "бист",
+              "Дэвид",
+              "дақиқа",
+              "баргашт"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Yigirma",
+              "daqiqada",
+              "yetib",
+              "boraman"
+            ],
+            "ru": [
+              "Через",
+              "двадцать",
+              "минут",
+              "буду"
+            ],
+            "tj": [
+              "Дар",
+              "бист",
+              "дақиқа",
+              "мерасам"
+            ]
+          },
+          "explanation": {
+            "uz": "二十分钟就到。 — Yigirma daqiqada yetib boraman.",
+            "ru": "二十分钟就到。 — Через двадцать минут буду.",
+            "tj": "二十分钟就到。 — Дар бист дақиқа мерасам."
           }
         },
         {
@@ -1290,32 +1358,25 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Hozir qayerdasen?",
-            "ru": "Где ты сейчас?",
-            "tj": "Ту ҳоло куҷоӣ?"
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
-          "tokens": [
-            "教室",
-            "在",
-            "现在",
-            "你",
-            "机场",
-            "哪儿",
-            "呢"
+          "audio_text": "我下飞机了。你还有多长时间能到这儿？",
+          "pinyin": "Wǒ xià fēijī le. Nǐ hái yǒu duō cháng shíjiān néng dào zhèr?",
+          "options": [
+            "没有，他还在教室学习呢。",
+            "大卫回来了吗？",
+            "我下飞机了。你还有多长时间能到这儿？",
+            "已经9点多了，他怎么还在学习？"
           ],
-          "answer_tokens": [
-            "你",
-            "现在",
-            "在",
-            "哪儿",
-            "呢"
-          ],
+          "correct_index": 2,
           "explanation": {
-            "uz": "你现在在哪儿呢？ — Nǐ xiànzài zài nǎr ne?",
-            "ru": "你现在在哪儿呢？ — Nǐ xiànzài zài nǎr ne?",
-            "tj": "你现在在哪儿呢？ — Nǐ xiànzài zài nǎr ne?"
+            "uz": "我下飞机了。你还有多长时间能到这儿？ — Men samolyotdan tushdim. Sening yetib kelishingga qancha vaqt qoldi?",
+            "ru": "我下飞机了。你还有多长时间能到这儿？ — Я уже вышел из самолёта. Сколько тебе ещё ехать?",
+            "tj": "我下飞机了。你还有多长时间能到这儿？ — Ман аз ҳавопаймо фаромадам. То ба ин ҷо расидани ту чанд вақт мемонад?"
           }
         },
         {
@@ -1371,9 +1432,9 @@
           },
           "options": [
             "大",
-            "您",
-            "视",
-            "里"
+            "慢",
+            "商",
+            "件"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1405,6 +1466,31 @@
             "uz": "To'g'ri javob: 大卫回来了吗？",
             "ru": "Правильный ответ: 大卫回来了吗？",
             "tj": "Ҷавоби дуруст: 大卫回来了吗？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "明天有考试，他说今天要好好准备。",
+            "已经9点多了，他怎么还在学习？",
+            "没有，他还在教室学习呢。",
+            "大卫回来了吗？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 明天有考试，他说今天要好好准备。",
+            "ru": "Правильный ответ: 明天有考试，他说今天要好好准备。",
+            "tj": "Ҷавоби дуруст: 明天有考试，他说今天要好好准备。"
           }
         },
         {
@@ -1450,38 +1536,13 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "明天有考试，他说今天要好好准备。",
-            "已经9点多了，他怎么还在学习？",
-            "没有，他还在教室学习呢。",
-            "大卫回来了吗？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 明天有考试，他说今天要好好准备。",
-            "ru": "Правильный ответ: 明天有考试，他说今天要好好准备。",
-            "tj": "Ҷавоби дуруст: 明天有考试，他说今天要好好准备。"
-          }
-        },
-        {
           "type": "pronunciation",
-          "phrase": "大卫回来了吗？",
-          "pinyin": "Dàwèi huílái le ma?",
+          "phrase": "你家离公司远吗？",
+          "pinyin": "Nǐ jiā lí gōngsī yuǎn ma?",
           "translation": {
-            "uz": "Devid qaytib keldimi?",
-            "ru": "Дэвид вернулся?",
-            "tj": "Дэвид баргашт?"
+            "uz": "Uying kompaniyadan uzoqmi?",
+            "ru": "Ваш дом далеко от компании?",
+            "tj": "Хонаи ту аз ширкат дур аст?"
           }
         }
       ]

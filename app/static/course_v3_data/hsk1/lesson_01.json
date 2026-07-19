@@ -637,6 +637,28 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你好！",
+          "pinyin": "Nǐ hǎo!",
+          "options": [
+            "对不起！",
+            "你好！",
+            "你们好！",
+            "您好！"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "你好！ — Salom!",
+            "ru": "你好！ — Привет!",
+            "tj": "你好！ — Салом!"
+          }
+        },
+        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "你 so'zining ma'nosini tanlang:",
@@ -701,16 +723,6 @@
           }
         },
         {
-          "type": "pronunciation",
-          "phrase": "您",
-          "pinyin": "nín",
-          "translation": {
-            "uz": "siz (rasmiy/hurmat)",
-            "ru": "вы (вежливая форма)",
-            "tj": "шумо (расмӣ/ҳурматнок)"
-          }
-        },
-        {
           "type": "pinyin_choice",
           "prompt": {
             "uz": "好 talaffuzini tanlang:",
@@ -736,25 +748,66 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "reverse_builder",
+          "zh": "你们好！",
+          "pinyin": "Nǐmen hǎo!",
+          "translation": {
+            "uz": "Hammangizga salom!",
+            "ru": "Здравствуйте все!",
+            "tj": "Ба ҳамаи шумо салом!"
           },
-          "audio_text": "你好！",
-          "pinyin": "Nǐ hǎo!",
-          "options": [
-            "对不起！",
-            "你好！",
-            "你们好！",
-            "您好！"
-          ],
-          "correct_index": 1,
+          "tokens": {
+            "uz": [
+              "Salom",
+              "salom",
+              "Hammangizga",
+              "rasmiy"
+            ],
+            "ru": [
+              "Здравствуйте",
+              "все",
+              "Извините",
+              "Привет"
+            ],
+            "tj": [
+              "шумо",
+              "расмӣ",
+              "салом",
+              "Ба",
+              "ҳамаи",
+              "Салом"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Hammangizga",
+              "salom"
+            ],
+            "ru": [
+              "Здравствуйте",
+              "все"
+            ],
+            "tj": [
+              "Ба",
+              "ҳамаи",
+              "шумо",
+              "салом"
+            ]
+          },
           "explanation": {
-            "uz": "你好！ — Salom!",
-            "ru": "你好！ — Привет!",
-            "tj": "你好！ — Салом!"
+            "uz": "你们好！ — Hammangizga salom!",
+            "ru": "你们好！ — Здравствуйте все!",
+            "tj": "你们好！ — Ба ҳамаи шумо салом!"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "您",
+          "pinyin": "nín",
+          "translation": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/ҳурматнок)"
           }
         },
         {
@@ -843,27 +896,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____好！",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "好",
-            "起",
-            "您",
-            "你"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你好！ (Salom!)",
-            "ru": "Верно: 你 — 你好！ (Привет!)",
-            "tj": "Дуруст: 你 — 你好！ (Салом!)"
-          }
-        },
-        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -921,13 +953,34 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____好！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "不",
+            "好",
+            "关",
+            "你"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你好！ (Salom!)",
+            "ru": "Верно: 你 — 你好！ (Привет!)",
+            "tj": "Дуруст: 你 — 你好！ (Салом!)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "对不起！",
-          "pinyin": "Duìbuqǐ!",
+          "phrase": "没关系！",
+          "pinyin": "Méi guānxi!",
           "translation": {
-            "uz": "Kechirasiz!",
-            "ru": "Извините!",
-            "tj": "Бубахшед!"
+            "uz": "Hech gap emas!",
+            "ru": "Ничего страшного!",
+            "tj": "Майлаш!"
           }
         }
       ]

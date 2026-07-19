@@ -1037,86 +1037,28 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "照相机",
-              {
-                "uz": "fotoapparat, kamera",
-                "ru": "фотоаппарат, камера",
-                "tj": "фотоаппарат, камера"
-              }
-            ],
-            [
-              "被",
-              {
-                "uz": "majhul nisbatni bildiruvchi predlog",
-                "ru": "предлог пассивного залога",
-                "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
-              }
-            ],
-            [
-              "难过",
-              {
-                "uz": "xafa, g'amgin",
-                "ru": "грустный, печальный",
-                "tj": "ғамгин, хафа"
-              }
-            ],
-            [
-              "东",
-              {
-                "uz": "sharq",
-                "ru": "восток",
-                "tj": "шарқ"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "meaning_guess",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "解决 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 解决:",
-            "tj": "Маънои калимаи 解决-ро интихоб кунед:"
+            "uz": "duōme qaysi ieroglif?",
+            "ru": "Какой иероглиф читается duōme?",
+            "tj": "duōme кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            {
-              "uz": "majhul nisbatni bildiruvchi predlog",
-              "ru": "предлог пассивного залога",
-              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
-            },
-            {
-              "uz": "xafa, g'amgin",
-              "ru": "грустный, печальный",
-              "tj": "ғамгин, хафа"
-            },
-            {
-              "uz": "fotoapparat, kamera",
-              "ru": "фотоаппарат, камера",
-              "tj": "фотоаппарат, камера"
-            },
-            {
-              "uz": "hal qilmoq",
-              "ru": "решать",
-              "tj": "ҳал кардан"
-            }
+            "难过",
+            "多么",
+            "被",
+            "照相机"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "解决 = hal qilmoq (jiějué)",
-            "ru": "解决 = решать (jiějué)",
-            "tj": "解决 = ҳал кардан (jiějué)"
+            "uz": "多么 = naqadar, qanchalik (duōme)",
+            "ru": "多么 = как, насколько (duōme)",
+            "tj": "多么 = чӣ қадар, то чӣ андоза (duōme)"
           }
         },
         {
@@ -1162,6 +1104,48 @@
           }
         },
         {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "照相机",
+              {
+                "uz": "fotoapparat, kamera",
+                "ru": "фотоаппарат, камера",
+                "tj": "фотоаппарат, камера"
+              }
+            ],
+            [
+              "被",
+              {
+                "uz": "majhul nisbatni bildiruvchi predlog",
+                "ru": "предлог пассивного залога",
+                "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+              }
+            ],
+            [
+              "难过",
+              {
+                "uz": "xafa, g'amgin",
+                "ru": "грустный, печальный",
+                "tj": "ғамгин, хафа"
+              }
+            ],
+            [
+              "东",
+              {
+                "uz": "sharq",
+                "ru": "восток",
+                "tj": "шарқ"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1184,28 +1168,103 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "duōme qaysi ieroglif?",
-            "ru": "Какой иероглиф читается duōme?",
-            "tj": "duōme кадом иероглиф аст?"
+            "uz": "解决 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 解决:",
+            "tj": "Маънои калимаи 解决-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "难过",
-            "多么",
-            "被",
-            "照相机"
+            {
+              "uz": "majhul nisbatni bildiruvchi predlog",
+              "ru": "предлог пассивного залога",
+              "tj": "пешоянди нишондиҳандаи шакли маҷҳул"
+            },
+            {
+              "uz": "xafa, g'amgin",
+              "ru": "грустный, печальный",
+              "tj": "ғамгин, хафа"
+            },
+            {
+              "uz": "fotoapparat, kamera",
+              "ru": "фотоаппарат, камера",
+              "tj": "фотоаппарат, камера"
+            },
+            {
+              "uz": "hal qilmoq",
+              "ru": "решать",
+              "tj": "ҳал кардан"
+            }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "多么 = naqadar, qanchalik (duōme)",
-            "ru": "多么 = как, насколько (duōme)",
-            "tj": "多么 = чӣ қадар, то чӣ андоза (duōme)"
+            "uz": "解决 = hal qilmoq (jiějué)",
+            "ru": "解决 = решать (jiějué)",
+            "tj": "解决 = ҳал кардан (jiějué)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "他被老师批评了。",
+          "pinyin": "Tā bèi lǎoshī pīpíng le.",
+          "translation": {
+            "uz": "Uni o'qituvchi tanqid qildi.",
+            "ru": "Его покритиковал учитель.",
+            "tj": "Вайро муаллим танқид кард."
+          },
+          "tokens": {
+            "uz": [
+              "kim",
+              "qildi",
+              "Fotoapparatimni",
+              "o'qituvchi",
+              "tanqid",
+              "Uni"
+            ],
+            "ru": [
+              "Кто",
+              "учитель",
+              "Его",
+              "покритиковал",
+              "забрал"
+            ],
+            "tj": [
+              "танқид",
+              "Вайро",
+              "кард",
+              "маро",
+              "муаллим",
+              "Фотоаппарати"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Uni",
+              "o'qituvchi",
+              "tanqid",
+              "qildi"
+            ],
+            "ru": [
+              "Его",
+              "покритиковал",
+              "учитель"
+            ],
+            "tj": [
+              "Вайро",
+              "муаллим",
+              "танқид",
+              "кард"
+            ]
+          },
+          "explanation": {
+            "uz": "他被老师批评了。 — Uni o'qituvchi tanqid qildi.",
+            "ru": "他被老师批评了。 — Его покритиковал учитель.",
+            "tj": "他被老师批评了。 — Вайро муаллим танқид кард."
           }
         },
         {
@@ -1302,27 +1361,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____的照相机被谁拿走了？怎么找不到了？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "久",
-            "我",
-            "附",
-            "眼"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Fotoapparatimni kim olib ketdi? Nega topa olmayapman?)",
-            "ru": "Верно: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Кто забрал мой фотоаппарат? Почему я не могу его найти?)",
-            "tj": "Дуруст: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Фотоаппарати маро кӣ гирифта рафт? Чаро ёфта наметавонам?)"
-          }
-        },
-        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -1370,13 +1408,34 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____的照相机被谁拿走了？怎么找不到了？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "阿",
+            "我",
+            "商",
+            "司"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Fotoapparatimni kim olib ketdi? Nega topa olmayapman?)",
+            "ru": "Верно: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Кто забрал мой фотоаппарат? Почему я не могу его найти?)",
+            "tj": "Дуруст: 我 — 我的照相机被谁拿走了？怎么找不到了？ (Фотоаппарати маро кӣ гирифта рафт? Чаро ёфта наметавонам?)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "我们经常被别人认错。",
-          "pinyin": "Wǒmen jīngcháng bèi biérén rèncuò.",
+          "phrase": "你再找找。是不是没带来？",
+          "pinyin": "Nǐ zài zhǎozhao. Shì bu shì méi dài lái?",
           "translation": {
-            "uz": "Bizni boshqalar tez-tez adashtirib qo'yadi.",
-            "ru": "Нас часто путают другие люди.",
-            "tj": "Моро дигарон зуд-зуд иштибоҳ мекунанд."
+            "uz": "Yana bir qidirib ko'r. Balki olib kelmagandirsan?",
+            "ru": "Поищи еще. Может, ты его не принесла?",
+            "tj": "Боз ҷустуҷӯ кун. Шояд наовардаӣ?"
           }
         }
       ]

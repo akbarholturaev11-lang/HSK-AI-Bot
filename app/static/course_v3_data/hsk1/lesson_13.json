@@ -1024,28 +1024,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "喂，你在做什么呢？",
-          "pinyin": "Wèi, nǐ zài zuò shénme ne?",
-          "options": [
-            "大卫也在看书吗？",
-            "喂，你在做什么呢？",
-            "我在看书呢。",
-            "他没看书，他在学做中国菜呢。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "喂，你在做什么呢？ — Allo, hozir nima qilyapsiz?",
-            "ru": "喂，你在做什么呢？ — Алло, что вы сейчас делаете?",
-            "tj": "喂，你在做什么呢？ — Алло, ҳоло чӣ мекунед?"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "上午",
           "pinyin": "shàngwǔ",
@@ -1053,6 +1031,133 @@
             "uz": "ertalab (tushgacha)",
             "ru": "утро (до полудня)",
             "tj": "субҳ (то нисфирӯзӣ)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "我在看书呢。",
+          "pinyin": "Wǒ zài kàn shū ne.",
+          "translation": {
+            "uz": "Men hozir kitob o'qiyapman.",
+            "ru": "Я сейчас читаю книгу.",
+            "tj": "Ман ҳоло китоб мехонам."
+          },
+          "tokens": {
+            "uz": [
+              "o'qiyapman",
+              "nima",
+              "Allo",
+              "Men",
+              "kitob",
+              "hozir"
+            ],
+            "ru": [
+              "что",
+              "сейчас",
+              "читаю",
+              "книгу",
+              "Алло",
+              "Я"
+            ],
+            "tj": [
+              "мехонам",
+              "чӣ",
+              "Алло",
+              "китоб",
+              "ҳоло",
+              "Ман"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Men",
+              "hozir",
+              "kitob",
+              "o'qiyapman"
+            ],
+            "ru": [
+              "Я",
+              "сейчас",
+              "читаю",
+              "книгу"
+            ],
+            "tj": [
+              "Ман",
+              "ҳоло",
+              "китоб",
+              "мехонам"
+            ]
+          },
+          "explanation": {
+            "uz": "我在看书呢。 — Men hozir kitob o'qiyapman.",
+            "ru": "我在看书呢。 — Я сейчас читаю книгу.",
+            "tj": "我在看书呢。 — Ман ҳоло китоб мехонам."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "大卫 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 大卫:",
+            "tj": "Маънои калимаи 大卫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o'qimoq, o'rganmoq",
+              "ru": "учиться, изучать",
+              "tj": "хондан, омӯхтан"
+            },
+            {
+              "uz": "David (ism)",
+              "ru": "Дэвид (имя)",
+              "tj": "Дэвид (ном)"
+            },
+            {
+              "uz": "ham, shuningdek",
+              "ru": "тоже, также",
+              "tj": "ҳам, инчунин"
+            },
+            {
+              "uz": "allo (telefonda)",
+              "ru": "алло (по телефону)",
+              "tj": "алло (аз телефон)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "大卫 = David (ism) (Dàwèi)",
+            "ru": "大卫 = Дэвид (имя) (Dàwèi)",
+            "tj": "大卫 = Дэвид (ном) (Dàwèi)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "大卫 talaffuzini tanlang:",
+            "ru": "Выберите произношение 大卫:",
+            "tj": "Талаффузи 大卫-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "yě",
+            "wèi",
+            "xuéxí",
+            "Dàwèi"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "大卫 — Dàwèi",
+            "ru": "大卫 — Dàwèi",
+            "tj": "大卫 — Dàwèi"
           }
         },
         {
@@ -1098,47 +1203,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "大卫 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 大卫:",
-            "tj": "Маънои калимаи 大卫-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "o'qimoq, o'rganmoq",
-              "ru": "учиться, изучать",
-              "tj": "хондан, омӯхтан"
-            },
-            {
-              "uz": "David (ism)",
-              "ru": "Дэвид (имя)",
-              "tj": "Дэвид (ном)"
-            },
-            {
-              "uz": "ham, shuningdek",
-              "ru": "тоже, также",
-              "tj": "ҳам, инчунин"
-            },
-            {
-              "uz": "allo (telefonda)",
-              "ru": "алло (по телефону)",
-              "tj": "алло (аз телефон)"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "大卫 = David (ism) (Dàwèi)",
-            "ru": "大卫 = Дэвид (имя) (Dàwèi)",
-            "tj": "大卫 = Дэвид (ном) (Dàwèi)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Allo, hozir nima qilyapsiz?",
@@ -1170,28 +1234,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "大卫 talaffuzini tanlang:",
-            "ru": "Выберите произношение 大卫:",
-            "tj": "Талаффузи 大卫-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "喂，你在做什么呢？",
+          "pinyin": "Wèi, nǐ zài zuò shénme ne?",
           "options": [
-            "yě",
-            "wèi",
-            "xuéxí",
-            "Dàwèi"
+            "大卫也在看书吗？",
+            "喂，你在做什么呢？",
+            "我在看书呢。",
+            "他没看书，他在学做中国菜呢。"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "大卫 — Dàwèi",
-            "ru": "大卫 — Dàwèi",
-            "tj": "大卫 — Dàwèi"
+            "uz": "喂，你在做什么呢？ — Allo, hozir nima qilyapsiz?",
+            "ru": "喂，你在做什么呢？ — Алло, что вы сейчас делаете?",
+            "tj": "喂，你在做什么呢？ — Алло, ҳоло чӣ мекунед?"
           }
         },
         {
@@ -1240,9 +1301,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -1250,16 +1311,16 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
+            "大卫也在看书吗？",
             "喂，你在做什么呢？",
-            "他没看书，他在学做中国菜呢。",
             "我在看书呢。",
-            "大卫也在看书吗？"
+            "他没看书，他在学做中国菜呢。"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri javob: 他没看书，他在学做中国菜呢。",
-            "ru": "Правильный ответ: 他没看书，他在学做中国菜呢。",
-            "tj": "Ҷавоби дуруст: 他没看书，他在学做中国菜呢。"
+            "uz": "To'g'ri javob: 喂，你在做什么呢？",
+            "ru": "Правильный ответ: 喂，你在做什么呢？",
+            "tj": "Ҷавоби дуруст: 喂，你在做什么呢？"
           }
         },
         {
@@ -1305,31 +1366,6 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "大卫也在看书吗？",
-            "喂，你在做什么呢？",
-            "我在看书呢。",
-            "他没看书，他在学做中国菜呢。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 喂，你在做什么呢？",
-            "ru": "Правильный ответ: 喂，你在做什么呢？",
-            "tj": "Ҷавоби дуруст: 喂，你在做什么呢？"
-          }
-        },
-        {
           "type": "gap_fill",
           "sentence": "____，你在做什么呢？",
           "prompt": {
@@ -1338,10 +1374,10 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "您",
-            "里",
+            "后",
+            "商",
             "喂",
-            "视"
+            "请"
           ],
           "correct_index": 2,
           "explanation": {
@@ -1351,13 +1387,38 @@
           }
         },
         {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "喂，你在做什么呢？",
+            "他没看书，他在学做中国菜呢。",
+            "我在看书呢。",
+            "大卫也在看书吗？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 他没看书，他在学做中国菜呢。",
+            "ru": "Правильный ответ: 他没看书，他在学做中国菜呢。",
+            "tj": "Ҷавоби дуруст: 他没看书，他在学做中国菜呢。"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "82304155，这是李老师的电话吗？",
-          "pinyin": "Bā èr sān líng sì yāo wǔ wǔ, zhè shì Lǐ lǎoshī de diànhuà ma?",
+          "phrase": "我在看书呢。",
+          "pinyin": "Wǒ zài kàn shū ne.",
           "translation": {
-            "uz": "82304155, bu O'qituvchi Li ning telefon raqamimi?",
-            "ru": "82304155 — это телефон учителя Ли?",
-            "tj": "82304155, ин рақами телефони устод Лӣ аст?"
+            "uz": "Men hozir kitob o'qiyapman.",
+            "ru": "Я сейчас читаю книгу.",
+            "tj": "Ман ҳоло китоб мехонам."
           }
         }
       ]

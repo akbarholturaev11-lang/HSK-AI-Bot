@@ -1339,6 +1339,122 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "reverse_builder",
+          "zh": "什么事让你这么高兴啊？",
+          "pinyin": "Shénme shì ràng nǐ zhème gāoxìng a?",
+          "translation": {
+            "uz": "Nima seni bunchalik xursand qildi?",
+            "ru": "Что тебя так обрадовало?",
+            "tj": "Чӣ чиз туро ин қадар хурсанд кард?"
+          },
+          "tokens": {
+            "uz": [
+              "bunchalik",
+              "Eshitishimcha",
+              "yana",
+              "seni",
+              "qildi",
+              "xursand",
+              "Nima"
+            ],
+            "ru": [
+              "Слышал",
+              "обрадовало",
+              "Что",
+              "так",
+              "тебя",
+              "ты"
+            ],
+            "tj": [
+              "хурсанд",
+              "туро",
+              "Шунидам",
+              "кард",
+              "боз",
+              "Чӣ",
+              "қадар",
+              "ин",
+              "чиз"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Nima",
+              "seni",
+              "bunchalik",
+              "xursand",
+              "qildi"
+            ],
+            "ru": [
+              "Что",
+              "тебя",
+              "так",
+              "обрадовало"
+            ],
+            "tj": [
+              "Чӣ",
+              "чиз",
+              "туро",
+              "ин",
+              "қадар",
+              "хурсанд",
+              "кард"
+            ]
+          },
+          "explanation": {
+            "uz": "什么事让你这么高兴啊？ — Nima seni bunchalik xursand qildi?",
+            "ru": "什么事让你这么高兴啊？ — Что тебя так обрадовало?",
+            "tj": "什么事让你这么高兴啊？ — Чӣ чиз туро ин қадар хурсанд кард?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "赚",
+          "pinyin": "zhuàn",
+          "options": [
+            "赚",
+            "份",
+            "以为",
+            "提"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "赚 — pul topmoq (zhuàn)",
+            "ru": "赚 — зарабатывать (zhuàn)",
+            "tj": "赚 — пул даромад кардан (zhuàn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "tán qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tán?",
+            "tj": "tán кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "提",
+            "份",
+            "以为",
+            "谈"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "谈 = gaplashmoq, muhokama qilmoq (tán)",
+            "ru": "谈 = разговаривать, обсуждать (tán)",
+            "tj": "谈 = гуфтугӯ кардан, муҳокима кардан (tán)"
+          }
+        },
+        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "并 so'zining ma'nosini tanlang:",
@@ -1377,28 +1493,6 @@
             "uz": "并 = inkor oldida kuchaytiradi: umuman (bìng)",
             "ru": "并 = усиливает отрицание: вовсе (bìng)",
             "tj": "并 = инкорро таъкид мекунад: умуман (bìng)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "赚",
-          "pinyin": "zhuàn",
-          "options": [
-            "赚",
-            "份",
-            "以为",
-            "提"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "赚 — pul topmoq (zhuàn)",
-            "ru": "赚 — зарабатывать (zhuàn)",
-            "tj": "赚 — пул даромад кардан (zhuàn)"
           }
         },
         {
@@ -1466,31 +1560,6 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "tán qaysi ieroglif?",
-            "ru": "Какой иероглиф читается tán?",
-            "tj": "tán кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "提",
-            "份",
-            "以为",
-            "谈"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "谈 = gaplashmoq, muhokama qilmoq (tán)",
-            "ru": "谈 = разговаривать, обсуждать (tán)",
-            "tj": "谈 = гуфтугӯ кардан, муҳокима кардан (tán)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "完全",
           "pinyin": "wánquán",
@@ -1536,52 +1605,6 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda 小林 avval nima deydi?",
-            "ru": "Что 小林 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 小林 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我也明白。但是那份工作的收入太少了！",
-            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
-            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
-            "听说你又换工作了？今年已经换了三次工作了吧？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 听说你又换工作了？今年已经换了三次工作了吧？",
-            "ru": "Правильный ответ: 听说你又换工作了？今年已经换了三次工作了吧？",
-            "tj": "Ҷавоби дуруст: 听说你又换工作了？今年已经换了三次工作了吧？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____说你又换工作了？今年已经换了三次工作了吧？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "附",
-            "听",
-            "符",
-            "久"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 听 — 听说你又换工作了？今年已经换了三次工作了吧？ (Eshitishimcha yana ish almashtiribsan? Bu yil allaqachon uch marta ish almashtirding-a?)",
-            "ru": "Верно: 听 — 听说你又换工作了？今年已经换了三次工作了吧？ (Слышал, ты снова сменил работу? В этом году уже три раза сменил работу, да?)",
-            "tj": "Дуруст: 听 — 听说你又换工作了？今年已经换了三次工作了吧？ (Шунидам боз коратро иваз кардӣ? Имсол аллакай се бор кор иваз кардӣ, ҳа?)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
             "uz": "Dialog oxirida 小李 nima deydi?",
             "ru": "Что 小李 говорит в конце диалога?",
             "tj": "Дар охири гуфтугӯ 小李 чӣ мегӯяд?"
@@ -1602,6 +1625,52 @@
             "uz": "To'g'ri javob: 好。我一定会努力把现在这份工作做好。",
             "ru": "Правильный ответ: 好。我一定会努力把现在这份工作做好。",
             "tj": "Ҷавоби дуруст: 好。我一定会努力把现在这份工作做好。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____说你又换工作了？今年已经换了三次工作了吧？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "商",
+            "听",
+            "阿",
+            "司"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 听 — 听说你又换工作了？今年已经换了三次工作了吧？ (Eshitishimcha yana ish almashtiribsan? Bu yil allaqachon uch marta ish almashtirding-a?)",
+            "ru": "Верно: 听 — 听说你又换工作了？今年已经换了三次工作了吧？ (Слышал, ты снова сменил работу? В этом году уже три раза сменил работу, да?)",
+            "tj": "Дуруст: 听 — 听说你又换工作了？今年已经换了三次工作了吧？ (Шунидам боз коратро иваз кардӣ? Имсол аллакай се бор кор иваз кардӣ, ҳа?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 小林 avval nima deydi?",
+            "ru": "Что 小林 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 小林 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我也明白。但是那份工作的收入太少了！",
+            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
+            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
+            "听说你又换工作了？今年已经换了三次工作了吧？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 听说你又换工作了？今年已经换了三次工作了吧？",
+            "ru": "Правильный ответ: 听说你又换工作了？今年已经换了三次工作了吧？",
+            "tj": "Ҷавоби дуруст: 听说你又换工作了？今年已经换了三次工作了吧？"
           }
         },
         {

@@ -1114,6 +1114,105 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "reverse_builder",
+          "zh": "怎么了？",
+          "pinyin": "Zěnme le?",
+          "translation": {
+            "uz": "Nima bo'ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ шуд?"
+          },
+          "tokens": {
+            "uz": [
+              "Bir",
+              "Nima",
+              "oz",
+              "bo'ldi"
+            ],
+            "ru": [
+              "немного",
+              "Что",
+              "случилось",
+              "Давай"
+            ],
+            "tj": [
+              "Каме",
+              "Чӣ",
+              "шуд",
+              "истироҳат"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Nima",
+              "bo'ldi"
+            ],
+            "ru": [
+              "Что",
+              "случилось"
+            ],
+            "tj": [
+              "Чӣ",
+              "шуд"
+            ]
+          },
+          "explanation": {
+            "uz": "怎么了？ — Nima bo'ldi?",
+            "ru": "怎么了？ — Что случилось?",
+            "tj": "怎么了？ — Чӣ шуд?"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Bir oz dam olaylik.",
+            "ru": "Давай немного отдохнём.",
+            "tj": "Каме истироҳат кунем."
+          },
+          "tokens": [
+            "腿",
+            "疼",
+            "吧",
+            "休息",
+            "一下"
+          ],
+          "answer_tokens": [
+            "休息",
+            "一下",
+            "吧"
+          ],
+          "explanation": {
+            "uz": "休息一下吧。 — Xiūxi yíxià ba.",
+            "ru": "休息一下吧。 — Xiūxi yíxià ba.",
+            "tj": "休息一下吧。 — Xiūxi yíxià ba."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'olmoq, ushlamoq' xitoycha qaysi?",
+            "ru": "'взять, держать' по-китайски?",
+            "tj": "'гирифтан, доштан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "腿",
+            "拿",
+            "脚",
+            "疼"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "olmoq, ushlamoq = 拿 (ná)",
+            "ru": "взять, держать = 拿 (ná)",
+            "tj": "гирифтан, доштан = 拿 (ná)"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1203,56 +1302,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Bir oz dam olaylik.",
-            "ru": "Давай немного отдохнём.",
-            "tj": "Каме истироҳат кунем."
-          },
-          "tokens": [
-            "腿",
-            "疼",
-            "吧",
-            "休息",
-            "一下"
-          ],
-          "answer_tokens": [
-            "休息",
-            "一下",
-            "吧"
-          ],
-          "explanation": {
-            "uz": "休息一下吧。 — Xiūxi yíxià ba.",
-            "ru": "休息一下吧。 — Xiūxi yíxià ba.",
-            "tj": "休息一下吧。 — Xiūxi yíxià ba."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'olmoq, ushlamoq' xitoycha qaysi?",
-            "ru": "'взять, держать' по-китайски?",
-            "tj": "'гирифтан, доштан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "腿",
-            "拿",
-            "脚",
-            "疼"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "olmoq, ushlamoq = 拿 (ná)",
-            "ru": "взять, держать = 拿 (ná)",
-            "tj": "гирифтан, доштан = 拿 (ná)"
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "疼",
           "pinyin": "téng",
@@ -1298,9 +1347,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda 小丽 avval nima deydi?",
-            "ru": "Что 小丽 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 小丽 аввал чӣ мегӯяд?"
+            "uz": "Dialog oxirida 小刚 nima deydi?",
+            "ru": "Что 小刚 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 小刚 чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -1308,16 +1357,37 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "怎么了？",
+            "上山容易下山难，你不知道？",
+            "休息一下吧。",
             "我现在腿也疼，脚也疼。",
-            "好，那边树多，我们过去坐一下吧。",
-            "休息一下吧。"
+            "怎么了？"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri javob: 休息一下吧。",
-            "ru": "Правильный ответ: 休息一下吧。",
-            "tj": "Ҷавоби дуруст: 休息一下吧。"
+            "uz": "To'g'ri javob: 上山容易下山难，你不知道？",
+            "ru": "Правильный ответ: 上山容易下山难，你不知道？",
+            "tj": "Ҷавоби дуруст: 上山容易下山难，你不知道？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____息一下吧。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "休",
+            "司",
+            "羊",
+            "商"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 休 — 休息一下吧。 (Bir oz dam olaylik.)",
+            "ru": "Верно: 休 — 休息一下吧。 (Давай немного отдохнём.)",
+            "tj": "Дуруст: 休 — 休息一下吧。 (Каме истироҳат кунем.)"
           }
         },
         {
@@ -1373,32 +1443,11 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____息一下吧。",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "休",
-            "问",
-            "诉",
-            "眼"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 休 — 休息一下吧。 (Bir oz dam olaylik.)",
-            "ru": "Верно: 休 — 休息一下吧。 (Давай немного отдохнём.)",
-            "tj": "Дуруст: 休 — 休息一下吧。 (Каме истироҳат кунем.)"
-          }
-        },
-        {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialog oxirida 小刚 nima deydi?",
-            "ru": "Что 小刚 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 小刚 чӣ мегӯяд?"
+            "uz": "Dialogda 小丽 avval nima deydi?",
+            "ru": "Что 小丽 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 小丽 аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -1406,26 +1455,26 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "上山容易下山难，你不知道？",
-            "休息一下吧。",
+            "怎么了？",
             "我现在腿也疼，脚也疼。",
-            "怎么了？"
+            "好，那边树多，我们过去坐一下吧。",
+            "休息一下吧。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "To'g'ri javob: 上山容易下山难，你不知道？",
-            "ru": "Правильный ответ: 上山容易下山难，你不知道？",
-            "tj": "Ҷавоби дуруст: 上山容易下山难，你不知道？"
+            "uz": "To'g'ri javob: 休息一下吧。",
+            "ru": "Правильный ответ: 休息一下吧。",
+            "tj": "Ҷавоби дуруст: 休息一下吧。"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "其实我每天都运动。",
-          "pinyin": "Qíshí wǒ měitiān dōu yùndòng.",
+          "phrase": "怎么了？",
+          "pinyin": "Zěnme le?",
           "translation": {
-            "uz": "Aslida men har kuni mashq qilaman.",
-            "ru": "На самом деле я каждый день занимаюсь спортом.",
-            "tj": "Дар асл ман ҳар рӯз варзиш мекунам."
+            "uz": "Nima bo'ldi?",
+            "ru": "Что случилось?",
+            "tj": "Чӣ шуд?"
           }
         }
       ]

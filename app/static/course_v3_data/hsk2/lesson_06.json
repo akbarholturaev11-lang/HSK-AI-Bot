@@ -1029,6 +1029,53 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "公斤 talaffuzini tanlang:",
+            "ru": "Выберите произношение 公斤:",
+            "tj": "Талаффузи 公斤-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "mén",
+            "zìxíngchē",
+            "wài",
+            "gōngjīn"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "公斤 — gōngjīn",
+            "ru": "公斤 — gōngjīn",
+            "tj": "公斤 — gōngjīn"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "打篮球",
+          "pinyin": "dǎ lánqiú",
+          "options": [
+            "打篮球",
+            "外",
+            "自行车",
+            "门"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "打篮球 — basketbol o'ynamoq (dǎ lánqiú)",
+            "ru": "打篮球 — играть в баскетбол (dǎ lánqiú)",
+            "tj": "打篮球 — баскетбол бозӣ кардан (dǎ lánqiú)"
+          }
+        },
+        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -1071,50 +1118,66 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
+          "type": "reverse_builder",
+          "zh": "那你想吃什么？",
+          "pinyin": "Nà nǐ xiǎng chī shénme?",
+          "translation": {
+            "uz": "Unda nima yemoqchisan?",
+            "ru": "Тогда что ты хочешь поесть?",
+            "tj": "Пас ту чӣ хӯрдан мехоҳӣ?"
           },
-          "audio_text": "打篮球",
-          "pinyin": "dǎ lánqiú",
-          "options": [
-            "打篮球",
-            "外",
-            "自行车",
-            "门"
-          ],
-          "correct_index": 0,
+          "tokens": {
+            "uz": [
+              "nima",
+              "Vang",
+              "Unda",
+              "yemoqchisan",
+              "Kichik"
+            ],
+            "ru": [
+              "ты",
+              "знаешь",
+              "Ты",
+              "Тогда",
+              "что",
+              "хочешь",
+              "поесть"
+            ],
+            "tj": [
+              "хӯрдан",
+              "ту",
+              "Пас",
+              "Оё",
+              "медонӣ",
+              "мехоҳӣ",
+              "чӣ"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Unda",
+              "nima",
+              "yemoqchisan"
+            ],
+            "ru": [
+              "Тогда",
+              "что",
+              "ты",
+              "хочешь",
+              "поесть"
+            ],
+            "tj": [
+              "Пас",
+              "ту",
+              "чӣ",
+              "хӯрдан",
+              "мехоҳӣ"
+            ]
+          },
           "explanation": {
-            "uz": "打篮球 — basketbol o'ynamoq (dǎ lánqiú)",
-            "ru": "打篮球 — играть в баскетбол (dǎ lánqiú)",
-            "tj": "打篮球 — баскетбол бозӣ кардан (dǎ lánqiú)"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "公斤 talaffuzini tanlang:",
-            "ru": "Выберите произношение 公斤:",
-            "tj": "Талаффузи 公斤-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "mén",
-            "zìxíngchē",
-            "wài",
-            "gōngjīn"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "公斤 — gōngjīn",
-            "ru": "公斤 — gōngjīn",
-            "tj": "公斤 — gōngjīn"
+            "uz": "那你想吃什么？ — Unda nima yemoqchisan?",
+            "ru": "那你想吃什么？ — Тогда что ты хочешь поесть?",
+            "tj": "那你想吃什么？ — Пас ту чӣ хӯрдан мехоҳӣ?"
           }
         },
         {
@@ -1143,6 +1206,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "这个星期我天天都吃羊肉，不想吃了。",
+          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu, bù xiǎng chī le.",
+          "options": [
+            "你怎么知道他来了？",
+            "你知道小王今天什么时候来学校吗？",
+            "这个星期我天天都吃羊肉，不想吃了。",
+            "他已经来了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "这个星期我天天都吃羊肉，不想吃了。 — Bu hafta har kuni qo'y go'shti edim, endi yeygim kelmayapti.",
+            "ru": "这个星期我天天都吃羊肉，不想吃了。 — На этой неделе я ел баранину каждый день, больше не хочу.",
+            "tj": "这个星期我天天都吃羊肉，不想吃了。 — Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам, дигар намехоҳам."
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "U allaqachon keldi.",
@@ -1167,28 +1252,6 @@
             "uz": "他已经来了。 — Tā yǐjīng lái le.",
             "ru": "他已经来了。 — Tā yǐjīng lái le.",
             "tj": "他已经来了。 — Tā yǐjīng lái le."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "这个星期我天天都吃羊肉，不想吃了。",
-          "pinyin": "Zhège xīngqī wǒ tiāntiān dōu chī yángròu, bù xiǎng chī le.",
-          "options": [
-            "你怎么知道他来了？",
-            "你知道小王今天什么时候来学校吗？",
-            "这个星期我天天都吃羊肉，不想吃了。",
-            "他已经来了。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "这个星期我天天都吃羊肉，不想吃了。 — Bu hafta har kuni qo'y go'shti edim, endi yeygim kelmayapti.",
-            "ru": "这个星期我天天都吃羊肉，不想吃了。 — На этой неделе я ел баранину каждый день, больше не хочу.",
-            "tj": "这个星期我天天都吃羊肉，不想吃了。 — Ин ҳафта ман ҳар рӯз гӯшти гӯсфанд хӯрдам, дигар намехоҳам."
           }
         },
         {
@@ -1260,27 +1323,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____知道小王今天什么时候来学校吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "里",
-            "视",
-            "你",
-            "您"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你知道小王今天什么时候来学校吗？ (Kichik Vang bugun qachon maktabga kelishini bilasanmi?)",
-            "ru": "Верно: 你 — 你知道小王今天什么时候来学校吗？ (Ты знаешь, когда Маленький Ван придёт в школу сегодня?)",
-            "tj": "Дуруст: 你 — 你知道小王今天什么时候来学校吗？ (Оё медонӣ, ки Сяо Ван имрӯз кай ба мактаб меояд?)"
-          }
-        },
-        {
           "type": "quick_quiz",
           "prompt": {
             "uz": "Dialogda A avval nima deydi?",
@@ -1303,6 +1345,27 @@
             "uz": "To'g'ri javob: 你知道小王今天什么时候来学校吗？",
             "ru": "Правильный ответ: 你知道小王今天什么时候来学校吗？",
             "tj": "Ҷавоби дуруст: 你知道小王今天什么时候来学校吗？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____知道小王今天什么时候来学校吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "件",
+            "商",
+            "你",
+            "羊"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你知道小王今天什么时候来学校吗？ (Kichik Vang bugun qachon maktabga kelishini bilasanmi?)",
+            "ru": "Верно: 你 — 你知道小王今天什么时候来学校吗？ (Ты знаешь, когда Маленький Ван придёт в школу сегодня?)",
+            "tj": "Дуруст: 你 — 你知道小王今天什么时候来学校吗？ (Оё медонӣ, ки Сяо Ван имрӯз кай ба мактаб меояд?)"
           }
         },
         {
@@ -1349,12 +1412,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "来一点儿面条吧。",
-          "pinyin": "Lái yìdiǎnr miàntiáo ba.",
+          "phrase": "去北京了？是去旅游吗？",
+          "pinyin": "Qù Běijīng le? Shì qù lǚyóu ma?",
           "translation": {
-            "uz": "Bir oz lag'mon gapirtiraylik.",
-            "ru": "Давай закажем немного лапши.",
-            "tj": "Каме лоғмон оварем."
+            "uz": "Pekinga ketdimi? Sayohatgami?",
+            "ru": "Уехал в Пекин? На экскурсию?",
+            "tj": "Ба Пекин рафт? Сайёҳӣ?"
           }
         }
       ]

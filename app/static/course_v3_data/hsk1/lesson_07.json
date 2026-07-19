@@ -1031,53 +1031,6 @@
         {
           "type": "listening_choice",
           "title": {
-            "uz": "Tinglang — qaysi so'z?",
-            "ru": "Послушайте — какое слово?",
-            "tj": "Гӯш кунед — кадом калима?"
-          },
-          "audio_text": "明天",
-          "pinyin": "míngtiān",
-          "options": [
-            "问",
-            "明天",
-            "今天",
-            "请"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "明天 — ertaga (míngtiān)",
-            "ru": "明天 — завтра (míngtiān)",
-            "tj": "明天 — фардо (míngtiān)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shū qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shū?",
-            "tj": "shū кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "书",
-            "问",
-            "今天",
-            "请"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "书 = kitob (shū)",
-            "ru": "书 = книга (shū)",
-            "tj": "书 = китоб (shū)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
@@ -1095,60 +1048,6 @@
             "uz": "明天呢？ — Ertaga-chi?",
             "ru": "明天呢？ — А завтра?",
             "tj": "明天呢？ — Фардо чӣ?"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'qaramoq, ko'rmoq, o'qimoq' xitoycha qaysi?",
-            "ru": "'смотреть, читать' по-китайски?",
-            "tj": "'нигоҳ кардан, хондан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "问",
-            "今天",
-            "看",
-            "请"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "qaramoq, ko'rmoq, o'qimoq = 看 (kàn)",
-            "ru": "смотреть, читать = 看 (kàn)",
-            "tj": "нигоҳ кардан, хондан = 看 (kàn)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Kechirasiz, bugun nechanchi sana?",
-            "ru": "Извините, какое сегодня число?",
-            "tj": "Бубахшед, имрӯз чанди сана аст?"
-          },
-          "tokens": [
-            "月",
-            "几",
-            "请",
-            "今天",
-            "星期",
-            "问",
-            "号"
-          ],
-          "answer_tokens": [
-            "请",
-            "问",
-            "今天",
-            "几",
-            "号"
-          ],
-          "explanation": {
-            "uz": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?",
-            "ru": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?",
-            "tj": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?"
           }
         },
         {
@@ -1191,6 +1090,168 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "明天是9月2号，星期四。",
+          "pinyin": "Míngtiān shì jiǔ yuè èr hào, xīngqī sì.",
+          "translation": {
+            "uz": "Ertaga 2-sentabr, payshanba.",
+            "ru": "Завтра 2 сентября, четверг.",
+            "tj": "Фардо 2-юми сентябр, панҷшанбе аст."
+          },
+          "tokens": {
+            "uz": [
+              "2-sentabr",
+              "Ertaga",
+              "Kechirasiz",
+              "payshanba",
+              "bugun"
+            ],
+            "ru": [
+              "Извините",
+              "сентября",
+              "какое",
+              "2",
+              "четверг",
+              "Завтра"
+            ],
+            "tj": [
+              "аст",
+              "2-юми",
+              "панҷшанбе",
+              "сентябр",
+              "имрӯз",
+              "Бубахшед",
+              "Фардо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ertaga",
+              "2-sentabr",
+              "payshanba"
+            ],
+            "ru": [
+              "Завтра",
+              "2",
+              "сентября",
+              "четверг"
+            ],
+            "tj": [
+              "Фардо",
+              "2-юми",
+              "сентябр",
+              "панҷшанбе",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "明天是9月2号，星期四。 — Ertaga 2-sentabr, payshanba.",
+            "ru": "明天是9月2号，星期四。 — Завтра 2 сентября, четверг.",
+            "tj": "明天是9月2号，星期四。 — Фардо 2-юми сентябр, панҷшанбе аст."
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qaramoq, ko'rmoq, o'qimoq' xitoycha qaysi?",
+            "ru": "'смотреть, читать' по-китайски?",
+            "tj": "'нигоҳ кардан, хондан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "问",
+            "今天",
+            "看",
+            "请"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "qaramoq, ko'rmoq, o'qimoq = 看 (kàn)",
+            "ru": "смотреть, читать = 看 (kàn)",
+            "tj": "нигоҳ кардан, хондан = 看 (kàn)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shū qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shū?",
+            "tj": "shū кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "书",
+            "问",
+            "今天",
+            "请"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "书 = kitob (shū)",
+            "ru": "书 = книга (shū)",
+            "tj": "书 = китоб (shū)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "明天",
+          "pinyin": "míngtiān",
+          "options": [
+            "问",
+            "明天",
+            "今天",
+            "请"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "明天 — ertaga (míngtiān)",
+            "ru": "明天 — завтра (míngtiān)",
+            "tj": "明天 — фардо (míngtiān)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Kechirasiz, bugun nechanchi sana?",
+            "ru": "Извините, какое сегодня число?",
+            "tj": "Бубахшед, имрӯз чанди сана аст?"
+          },
+          "tokens": [
+            "月",
+            "几",
+            "请",
+            "今天",
+            "星期",
+            "问",
+            "号"
+          ],
+          "answer_tokens": [
+            "请",
+            "问",
+            "今天",
+            "几",
+            "号"
+          ],
+          "explanation": {
+            "uz": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?",
+            "ru": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?",
+            "tj": "请问，今天几号？ — Qǐngwèn, jīntiān jǐ hào?"
           }
         },
         {
@@ -1237,77 +1298,6 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "请问，今天几号？",
-            "星期三。",
-            "今天9月1号。",
-            "今天星期几？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 星期三。",
-            "ru": "Правильный ответ: 星期三。",
-            "tj": "Ҷавоби дуруст: 星期三。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "今天星期几？",
-            "今天9月1号。",
-            "星期三。",
-            "请问，今天几号？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 请问，今天几号？",
-            "ru": "Правильный ответ: 请问，今天几号？",
-            "tj": "Ҷавоби дуруст: 请问，今天几号？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____问，今天几号？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "您",
-            "问",
-            "叫",
-            "请"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 请 — 请问，今天几号？ (Kechirasiz, bugun nechanchi sana?)",
-            "ru": "Верно: 请 — 请问，今天几号？ (Извините, какое сегодня число?)",
-            "tj": "Дуруст: 请 — 请问，今天几号？ (Бубахшед, имрӯз чанди сана аст?)"
-          }
-        },
-        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -1350,13 +1340,84 @@
           }
         },
         {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "今天星期几？",
+            "今天9月1号。",
+            "星期三。",
+            "请问，今天几号？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 请问，今天几号？",
+            "ru": "Правильный ответ: 请问，今天几号？",
+            "tj": "Ҷавоби дуруст: 请问，今天几号？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "请问，今天几号？",
+            "星期三。",
+            "今天9月1号。",
+            "今天星期几？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 星期三。",
+            "ru": "Правильный ответ: 星期三。",
+            "tj": "Ҷавоби дуруст: 星期三。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____问，今天几号？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "国",
+            "友",
+            "么",
+            "请"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 请 — 请问，今天几号？ (Kechirasiz, bugun nechanchi sana?)",
+            "ru": "Верно: 请 — 请问，今天几号？ (Извините, какое сегодня число?)",
+            "tj": "Дуруст: 请 — 请问，今天几号？ (Бубахшед, имрӯз чанди сана аст?)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "今天9月1号。",
-          "pinyin": "Jīntiān jiǔ yuè yī hào.",
+          "phrase": "请问，今天几号？",
+          "pinyin": "Qǐngwèn, jīntiān jǐ hào?",
           "translation": {
-            "uz": "Bugun 1-sentabr.",
-            "ru": "Сегодня 1 сентября.",
-            "tj": "Имрӯз 1-уми сентябр аст."
+            "uz": "Kechirasiz, bugun nechanchi sana?",
+            "ru": "Извините, какое сегодня число?",
+            "tj": "Бубахшед, имрӯз чанди сана аст?"
           }
         }
       ]

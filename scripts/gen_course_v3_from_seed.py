@@ -245,6 +245,60 @@ def make_builder_card(zh, pinyin, translation, known_words, pool) -> dict | None
     }
 
 
+_STRIP_PUNCT = ",.!?…—–:;()«»\"„“”¡¿"
+
+
+def _split_words(s: str) -> list[str]:
+    out = []
+    for t in str(s or "").split():
+        t = t.strip(_STRIP_PUNCT)
+        if t:
+            out.append(t)
+    return out
+
+
+def make_reverse_builder_card(zh, pinyin, translation, other_translations, lr) -> dict | None:
+    """Duolingo yadro mashqi (teskari builder): ustoz xitoy gapni aytadi,
+    o'quvchi TARJIMASINI ona tili so'z-plitkalaridan yig'adi. Har uch til uchun
+    alohida plitka to'plami; chalg'ituvchi so'zlar shu darsning boshqa real
+    tarjimalaridan olinadi."""
+    if not zh:
+        return None
+    toks: dict[str, list[str]] = {}
+    for lang in ("uz", "ru", "tj"):
+        t = _split_words(translation.get(lang, ""))
+        if not (2 <= len(t) <= 9):
+            return None
+        toks[lang] = t
+    bank: dict[str, list[str]] = {}
+    for lang in ("uz", "ru", "tj"):
+        distract: list[str] = []
+        for otr in other_translations:
+            for w in _split_words(otr.get(lang, "")):
+                if w and w not in toks[lang] and w not in distract:
+                    distract.append(w)
+                if len(distract) >= 2:
+                    break
+            if len(distract) >= 2:
+                break
+        order = toks[lang] + distract
+        lr.shuffle(order)
+        bank[lang] = order
+    return {
+        "type": "reverse_builder",
+        "zh": zh,
+        "pinyin": pinyin,
+        "translation": translation,
+        "tokens": bank,
+        "answer_tokens": toks,
+        "explanation": {
+            "uz": f"{zh} — {translation['uz']}",
+            "ru": f"{zh} — {translation['ru']}",
+            "tj": f"{zh} — {translation['tj']}",
+        },
+    }
+
+
 def make_listen_card(target, line_pool) -> dict | None:
     """listening_choice: hear a sentence, pick which one you heard."""
     zh = target.get("zh", "")
@@ -739,6 +793,25 @@ def build_practice(vocab: list[dict], known_prior: list[dict], grammar: list[dic
         lc = make_listen_card(all_lines[(order - 1) % len(all_lines)], all_lines)
         if lc:
             varied.append(lc)
+
+    # Duolingo teskari builder: xitoy gap (dialog satri yoki grammatika misoli)
+    # eshitiladi — tarjimasi ona tili plitkalaridan yig'iladi. Tanlov darsga
+    # qarab aylanadi, shunda har darsda boshqa gap tushadi.
+    rb_cand = list(all_lines)
+    for g in grammar or []:
+        rb_cand.extend(ex for ex in g.get("examples", []) if ex.get("zh"))
+    if rb_cand:
+        rb_trs = [t3(x) for x in rb_cand]
+        st = (order - 1) % len(rb_cand)
+        for k in range(len(rb_cand)):
+            ri = (st + k) % len(rb_cand)
+            others = rb_trs[:ri] + rb_trs[ri + 1:]
+            rb = make_reverse_builder_card(
+                rb_cand[ri].get("zh", ""), rb_cand[ri].get("pinyin", ""), rb_trs[ri], others, lr
+            )
+            if rb:
+                varied.append(rb)
+                break
 
     varied.append(mc_match(v[: min(4, len(v))]))
 

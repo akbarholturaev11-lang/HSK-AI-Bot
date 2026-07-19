@@ -1029,6 +1029,123 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz xitoycha gapira olasizmi?",
+            "ru": "Вы умеете говорить по-китайски?",
+            "tj": "Оё шумо метавонед ба забони чинӣ гап бизанед?"
+          },
+          "tokens": [
+            "吗",
+            "说",
+            "妈妈",
+            "会",
+            "菜",
+            "你",
+            "汉语"
+          ],
+          "answer_tokens": [
+            "你",
+            "会",
+            "说",
+            "汉语",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "你会说汉语吗？ — Nǐ huì shuō Hànyǔ ma?",
+            "ru": "你会说汉语吗？ — Nǐ huì shuō Hànyǔ ma?",
+            "tj": "你会说汉语吗？ — Nǐ huì shuō Hànyǔ ma?"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'qanday, qay yo'l bilan' xitoycha qaysi?",
+            "ru": "'как, каким образом' по-китайски?",
+            "tj": "'чӣ тавр, ба кадом роҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "妈妈",
+            "说",
+            "会",
+            "怎么"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "qanday, qay yo'l bilan = 怎么 (zěnme)",
+            "ru": "как, каким образом = 怎么 (zěnme)",
+            "tj": "чӣ тавр, ба кадом роҳ = 怎么 (zěnme)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "中国菜很好吃。",
+          "pinyin": "Zhōngguó cài hěn hǎochī.",
+          "translation": {
+            "uz": "Xitoy taomlari juda mazali.",
+            "ru": "Китайская еда очень вкусная.",
+            "tj": "Хӯроки чинӣ хеле болаззат аст."
+          },
+          "tokens": {
+            "uz": [
+              "mazali",
+              "Xitoy",
+              "xitoycha",
+              "taomlari",
+              "juda",
+              "Siz"
+            ],
+            "ru": [
+              "умеете",
+              "еда",
+              "Вы",
+              "очень",
+              "Китайская",
+              "вкусная"
+            ],
+            "tj": [
+              "болаззат",
+              "Оё",
+              "чинӣ",
+              "аст",
+              "шумо",
+              "хеле",
+              "Хӯроки"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Xitoy",
+              "taomlari",
+              "juda",
+              "mazali"
+            ],
+            "ru": [
+              "Китайская",
+              "еда",
+              "очень",
+              "вкусная"
+            ],
+            "tj": [
+              "Хӯроки",
+              "чинӣ",
+              "хеле",
+              "болаззат",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "中国菜很好吃。 — Xitoy taomlari juda mazali.",
+            "ru": "中国菜很好吃。 — Китайская еда очень вкусная.",
+            "tj": "中国菜很好吃。 — Хӯроки чинӣ хеле болаззат аст."
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1048,6 +1165,48 @@
             "uz": "中国菜很好吃。 — Xitoy taomlari juda mazali.",
             "ru": "中国菜很好吃。 — Китайская еда очень вкусная.",
             "tj": "中国菜很好吃。 — Хӯроки чинӣ хеле болаззат аст."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "会",
+              {
+                "uz": "qila olmoq (o'rganish orqali)",
+                "ru": "мочь, уметь (через обучение)",
+                "tj": "тавонистан (бо ёрии омӯзиш)"
+              }
+            ],
+            [
+              "说",
+              {
+                "uz": "gapirmoq, aytmoq",
+                "ru": "говорить, сказать",
+                "tj": "гап задан, гуфтан"
+              }
+            ],
+            [
+              "妈妈",
+              {
+                "uz": "ona, onaxon",
+                "ru": "мама",
+                "tj": "модар, модарҷон"
+              }
+            ],
+            [
+              "菜",
+              {
+                "uz": "taom, sabzavot",
+                "ru": "блюдо, овощ",
+                "tj": "хӯрок, сабзавот"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -1118,102 +1277,6 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'qanday, qay yo'l bilan' xitoycha qaysi?",
-            "ru": "'как, каким образом' по-китайски?",
-            "tj": "'чӣ тавр, ба кадом роҳ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "妈妈",
-            "说",
-            "会",
-            "怎么"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "qanday, qay yo'l bilan = 怎么 (zěnme)",
-            "ru": "как, каким образом = 怎么 (zěnme)",
-            "tj": "чӣ тавр, ба кадом роҳ = 怎么 (zěnme)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Siz xitoycha gapira olasizmi?",
-            "ru": "Вы умеете говорить по-китайски?",
-            "tj": "Оё шумо метавонед ба забони чинӣ гап бизанед?"
-          },
-          "tokens": [
-            "吗",
-            "说",
-            "妈妈",
-            "会",
-            "菜",
-            "你",
-            "汉语"
-          ],
-          "answer_tokens": [
-            "你",
-            "会",
-            "说",
-            "汉语",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "你会说汉语吗？ — Nǐ huì shuō Hànyǔ ma?",
-            "ru": "你会说汉语吗？ — Nǐ huì shuō Hànyǔ ma?",
-            "tj": "你会说汉语吗？ — Nǐ huì shuō Hànyǔ ma?"
-          }
-        },
-        {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "会",
-              {
-                "uz": "qila olmoq (o'rganish orqali)",
-                "ru": "мочь, уметь (через обучение)",
-                "tj": "тавонистан (бо ёрии омӯзиш)"
-              }
-            ],
-            [
-              "说",
-              {
-                "uz": "gapirmoq, aytmoq",
-                "ru": "говорить, сказать",
-                "tj": "гап задан, гуфтан"
-              }
-            ],
-            [
-              "妈妈",
-              {
-                "uz": "ona, onaxon",
-                "ru": "мама",
-                "tj": "модар, модарҷон"
-              }
-            ],
-            [
-              "菜",
-              {
-                "uz": "taom, sabzavot",
-                "ru": "блюдо, овощ",
-                "tj": "хӯрок, сабзавот"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
           "type": "pronunciation",
           "phrase": "好吃",
           "pinyin": "hǎochī",
@@ -1254,6 +1317,27 @@
             "uz": "你会说汉语吗？ — Siz xitoycha gapira olasizmi?",
             "ru": "你会说汉语吗？ — Вы умеете говорить по-китайски?",
             "tj": "你会说汉语吗？ — Оё шумо метавонед ба забони чинӣ гап бизанед?"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____会说汉语吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "菜",
+            "叫",
+            "家",
+            "你"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你会说汉语吗？ (Siz xitoycha gapira olasizmi?)",
+            "ru": "Верно: 你 — 你会说汉语吗？ (Вы умеете говорить по-китайски?)",
+            "tj": "Дуруст: 你 — 你会说汉语吗？ (Оё шумо метавонед ба забони чинӣ гап бизанед?)"
           }
         },
         {
@@ -1324,27 +1408,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____会说汉语吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "会",
-            "汉",
-            "美",
-            "你"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你会说汉语吗？ (Siz xitoycha gapira olasizmi?)",
-            "ru": "Верно: 你 — 你会说汉语吗？ (Вы умеете говорить по-китайски?)",
-            "tj": "Дуруст: 你 — 你会说汉语吗？ (Оё шумо метавонед ба забони чинӣ гап бизанед?)"
-          }
-        },
-        {
           "type": "quick_quiz",
           "prompt": {
             "uz": "Dialog oxirida B nima deydi?",
@@ -1371,12 +1434,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "你会说汉语吗？",
-          "pinyin": "Nǐ huì shuō Hànyǔ ma?",
+          "phrase": "中国菜很好吃。",
+          "pinyin": "Zhōngguó cài hěn hǎochī.",
           "translation": {
-            "uz": "Siz xitoycha gapira olasizmi?",
-            "ru": "Вы умеете говорить по-китайски?",
-            "tj": "Оё шумо метавонед ба забони чинӣ гап бизанед?"
+            "uz": "Xitoy taomlari juda mazali.",
+            "ru": "Китайская еда очень вкусная.",
+            "tj": "Хӯроки чинӣ хеле болаззат аст."
           }
         }
       ]

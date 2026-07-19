@@ -1088,56 +1088,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "漂亮 talaffuzini tanlang:",
-            "ru": "Выберите произношение 漂亮:",
-            "tj": "Талаффузи 漂亮-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "piàoliang",
-            "yīdiǎnr",
-            "dōngxi",
-            "píngguǒ"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "漂亮 — piàoliang",
-            "ru": "漂亮 — piàoliang",
-            "tj": "漂亮 — piàoliang"
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ha, voy (undov yuklamasi)' xitoycha qaysi?",
-            "ru": "'ах, да (восклицательная частица)' по-китайски?",
-            "tj": "'оҳ, ҳа (зарраи ҳайҷонӣ)' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "苹果",
-            "啊",
-            "一点儿",
-            "东西"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "ha, voy (undov yuklamasi) = 啊 (a)",
-            "ru": "ах, да (восклицательная частица) = 啊 (a)",
-            "tj": "оҳ, ҳа (зарраи ҳайҷонӣ) = 啊 (a)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -1177,59 +1127,6 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Kecha ertalab qayerga bordingiz?",
-            "ru": "Куда вы ходили вчера утром?",
-            "tj": "Дирӯз субҳ шумо куҷо рафтед?"
-          },
-          "tokens": [
-            "你",
-            "上午",
-            "哪儿",
-            "东西",
-            "一点儿",
-            "去",
-            "了",
-            "昨天"
-          ],
-          "answer_tokens": [
-            "昨天",
-            "上午",
-            "你",
-            "去",
-            "哪儿",
-            "了"
-          ],
-          "explanation": {
-            "uz": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?",
-            "ru": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?",
-            "tj": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "我去商店买东西了。",
-          "pinyin": "Wǒ qù shāngdiàn mǎi dōngxi le.",
-          "options": [
-            "我买了一点儿苹果。",
-            "昨天上午你去哪儿了？",
-            "我去商店买东西了。",
-            "你买什么了？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "我去商店买东西了。 — Men do'konga narsa sotib olishga bordim.",
-            "ru": "我去商店买东西了。 — Я ходил в магазин за покупками.",
-            "tj": "我去商店买东西了。 — Ман ба дӯкон рафтам, чизҳо харидам."
           }
         },
         {
@@ -1275,6 +1172,176 @@
           }
         },
         {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ha, voy (undov yuklamasi)' xitoycha qaysi?",
+            "ru": "'ах, да (восклицательная частица)' по-китайски?",
+            "tj": "'оҳ, ҳа (зарраи ҳайҷонӣ)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "苹果",
+            "啊",
+            "一点儿",
+            "东西"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ha, voy (undov yuklamasi) = 啊 (a)",
+            "ru": "ах, да (восклицательная частица) = 啊 (a)",
+            "tj": "оҳ, ҳа (зарраи ҳайҷонӣ) = 啊 (a)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "她买了不少衣服。",
+          "pinyin": "Tā mǎile bùshǎo yīfu.",
+          "translation": {
+            "uz": "U juda ko'p kiyim sotib oldi.",
+            "ru": "Она купила немало одежды.",
+            "tj": "Ӯ хеле зиёд либос харид."
+          },
+          "tokens": {
+            "uz": [
+              "juda",
+              "Kecha",
+              "U",
+              "sotib",
+              "kiyim",
+              "oldi",
+              "ko'p",
+              "ertalab"
+            ],
+            "ru": [
+              "одежды",
+              "немало",
+              "Она",
+              "вы",
+              "Куда",
+              "купила"
+            ],
+            "tj": [
+              "либос",
+              "Дирӯз",
+              "Ӯ",
+              "хеле",
+              "субҳ",
+              "харид",
+              "зиёд"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "U",
+              "juda",
+              "ko'p",
+              "kiyim",
+              "sotib",
+              "oldi"
+            ],
+            "ru": [
+              "Она",
+              "купила",
+              "немало",
+              "одежды"
+            ],
+            "tj": [
+              "Ӯ",
+              "хеле",
+              "зиёд",
+              "либос",
+              "харид"
+            ]
+          },
+          "explanation": {
+            "uz": "她买了不少衣服。 — U juda ko'p kiyim sotib oldi.",
+            "ru": "她买了不少衣服。 — Она купила немало одежды.",
+            "tj": "她买了不少衣服。 — Ӯ хеле зиёд либос харид."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "我去商店买东西了。",
+          "pinyin": "Wǒ qù shāngdiàn mǎi dōngxi le.",
+          "options": [
+            "我买了一点儿苹果。",
+            "昨天上午你去哪儿了？",
+            "我去商店买东西了。",
+            "你买什么了？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "我去商店买东西了。 — Men do'konga narsa sotib olishga bordim.",
+            "ru": "我去商店买东西了。 — Я ходил в магазин за покупками.",
+            "tj": "我去商店买东西了。 — Ман ба дӯкон рафтам, чизҳо харидам."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Kecha ertalab qayerga bordingiz?",
+            "ru": "Куда вы ходили вчера утром?",
+            "tj": "Дирӯз субҳ шумо куҷо рафтед?"
+          },
+          "tokens": [
+            "你",
+            "上午",
+            "哪儿",
+            "东西",
+            "一点儿",
+            "去",
+            "了",
+            "昨天"
+          ],
+          "answer_tokens": [
+            "昨天",
+            "上午",
+            "你",
+            "去",
+            "哪儿",
+            "了"
+          ],
+          "explanation": {
+            "uz": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?",
+            "ru": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?",
+            "tj": "昨天上午你去哪儿了？ — Zuótiān shàngwǔ nǐ qù nǎr le?"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "漂亮 talaffuzini tanlang:",
+            "ru": "Выберите произношение 漂亮:",
+            "tj": "Талаффузи 漂亮-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "piàoliang",
+            "yīdiǎnr",
+            "dōngxi",
+            "píngguǒ"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "漂亮 — piàoliang",
+            "ru": "漂亮 — piàoliang",
+            "tj": "漂亮 — piàoliang"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "少",
           "pinyin": "shǎo",
@@ -1315,6 +1382,31 @@
             "uz": "昨天上午你去哪儿了？ — Kecha ertalab qayerga bordingiz?",
             "ru": "昨天上午你去哪儿了？ — Куда вы ходили вчера утром?",
             "tj": "昨天上午你去哪儿了？ — Дирӯз субҳ шумо куҷо рафтед?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我去商店买东西了。",
+            "你买什么了？",
+            "我买了一点儿苹果。",
+            "昨天上午你去哪儿了？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 昨天上午你去哪儿了？",
+            "ru": "Правильный ответ: 昨天上午你去哪儿了？",
+            "tj": "Ҷавоби дуруст: 昨天上午你去哪儿了？"
           }
         },
         {
@@ -1362,52 +1454,6 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我去商店买东西了。",
-            "你买什么了？",
-            "我买了一点儿苹果。",
-            "昨天上午你去哪儿了？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 昨天上午你去哪儿了？",
-            "ru": "Правильный ответ: 昨天上午你去哪儿了？",
-            "tj": "Ҷавоби дуруст: 昨天上午你去哪儿了？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____天上午你去哪儿了？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "视",
-            "昨",
-            "您",
-            "里"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri: 昨 — 昨天上午你去哪儿了？ (Kecha ertalab qayerga bordingiz?)",
-            "ru": "Верно: 昨 — 昨天上午你去哪儿了？ (Куда вы ходили вчера утром?)",
-            "tj": "Дуруст: 昨 — 昨天上午你去哪儿了？ (Дирӯз субҳ шумо куҷо рафтед?)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
             "uz": "Dialog oxirida B nima deydi?",
             "ru": "Что B говорит в конце диалога?",
             "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
@@ -1431,13 +1477,34 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____天上午你去哪儿了？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "请",
+            "昨",
+            "后",
+            "商"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 昨 — 昨天上午你去哪儿了？ (Kecha ertalab qayerga bordingiz?)",
+            "ru": "Верно: 昨 — 昨天上午你去哪儿了？ (Куда вы ходили вчера утром?)",
+            "tj": "Дуруст: 昨 — 昨天上午你去哪儿了？ (Дирӯз субҳ шумо куҷо рафтед?)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "我买了一点儿苹果。",
-          "pinyin": "Wǒ mǎile yīdiǎnr píngguǒ.",
+          "phrase": "王方的衣服太漂亮了！",
+          "pinyin": "Wáng Fāng de yīfu tài piàoliang le!",
           "translation": {
-            "uz": "Men bir oz olma sotib oldim.",
-            "ru": "Я купил немного яблок.",
-            "tj": "Ман каме себ харидам."
+            "uz": "Van Fanning kiyimlari juda chiroyli!",
+            "ru": "Одежда Ван Фан такая красивая!",
+            "tj": "Либоси Ван Фан хеле зебо аст!"
           }
         }
       ]

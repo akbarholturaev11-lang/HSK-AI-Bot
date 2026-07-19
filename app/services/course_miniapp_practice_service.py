@@ -115,8 +115,14 @@ class CourseMiniAppPracticeService:
             seen_subtypes.add(str(picked.get("subtype") or ""))
         return selected
 
-    async def _level_questions(self, level: str, lang: str, limit: int, skill: str = "") -> list[dict]:
+    async def _level_questions(
+        self, level: str, lang: str, limit: int, skill: str = "", max_lesson: int | None = None
+    ) -> list[dict]:
         lessons = await self.lesson_repo.list_by_level(level)
+        # Dars progressi gate: savollar faqat userning o'rganilgan darslaridan
+        # (max_lesson = tugatilgan + 1). None = butun level (eski xatti-harakat).
+        if max_lesson is not None:
+            lessons = [item for item in lessons if int(item.lesson_order) <= int(max_lesson)]
         pool = []
         for lesson in lessons:
             payload = await self.lesson_service.get_payload(
@@ -140,13 +146,17 @@ class CourseMiniAppPracticeService:
             return []
         return self._balanced_questions(filtered, limit)
 
-    async def _questions(self, mode: str, level: str, lang: str, skill: str) -> list[dict]:
+    async def _questions(
+        self, mode: str, level: str, lang: str, skill: str, max_lesson: int | None = None
+    ) -> list[dict]:
         if mode == "placement":
             questions = []
             for item_level, count in (("hsk1", 3), ("hsk2", 3), ("hsk3", 2), ("hsk4", 2)):
                 questions.extend(await self._level_questions(item_level, lang, count))
             return questions
-        return await self._level_questions(level, lang, 10, skill if mode == "training" else "")
+        return await self._level_questions(
+            level, lang, 10, skill if mode == "training" else "", max_lesson=max_lesson
+        )
 
     async def start(
         self,

@@ -1055,16 +1055,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pronunciation",
-          "phrase": "儿子",
-          "pinyin": "érzi",
-          "translation": {
-            "uz": "o'g'il",
-            "ru": "сын",
-            "tj": "писар"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -1107,66 +1097,13 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你爸爸在家吗？",
-          "pinyin": "Nǐ bàba zài jiā ma?",
-          "options": [
-            "小猫在哪儿？",
-            "小狗在哪儿？",
-            "小猫在那儿。",
-            "你爸爸在家吗？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "你爸爸在家吗？ — Otangiz uyda ekanmi?",
-            "ru": "你爸爸在家吗？ — Ваш папа дома?",
-            "tj": "你爸爸在家吗？ — Падари шумо дар хона аст?"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "儿子 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 儿子:",
-            "tj": "Маънои калимаи 儿子-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "o'g'il",
-              "ru": "сын",
-              "tj": "писар"
-            },
-            {
-              "uz": "kichik, mayda",
-              "ru": "маленький, небольшой",
-              "tj": "хурд, майда"
-            },
-            {
-              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
-              "ru": "находиться / в, на (показатель места)",
-              "tj": "будан / дар (нишондиҳандаи ҷой)"
-            },
-            {
-              "uz": "mushuk",
-              "ru": "кошка",
-              "tj": "гурба"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "儿子 = o'g'il (érzi)",
-            "ru": "儿子 = сын (érzi)",
-            "tj": "儿子 = писар (érzi)"
+          "type": "pronunciation",
+          "phrase": "儿子",
+          "pinyin": "érzi",
+          "translation": {
+            "uz": "o'g'il",
+            "ru": "сын",
+            "tj": "писар"
           }
         },
         {
@@ -1222,6 +1159,128 @@
           }
         },
         {
+          "type": "reverse_builder",
+          "zh": "你爸爸在家吗？",
+          "pinyin": "Nǐ bàba zài jiā ma?",
+          "translation": {
+            "uz": "Otangiz uyda ekanmi?",
+            "ru": "Ваш папа дома?",
+            "tj": "Падари шумо дар хона аст?"
+          },
+          "tokens": {
+            "uz": [
+              "qayerda",
+              "Mushuk",
+              "Otangiz",
+              "ekanmi",
+              "uyda"
+            ],
+            "ru": [
+              "Где",
+              "Ваш",
+              "дома",
+              "кошка",
+              "папа"
+            ],
+            "tj": [
+              "куҷост",
+              "аст",
+              "дар",
+              "Падари",
+              "шумо",
+              "хона",
+              "Гурба"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Otangiz",
+              "uyda",
+              "ekanmi"
+            ],
+            "ru": [
+              "Ваш",
+              "папа",
+              "дома"
+            ],
+            "tj": [
+              "Падари",
+              "шумо",
+              "дар",
+              "хона",
+              "аст"
+            ]
+          },
+          "explanation": {
+            "uz": "你爸爸在家吗？ — Otangiz uyda ekanmi?",
+            "ru": "你爸爸在家吗？ — Ваш папа дома?",
+            "tj": "你爸爸在家吗？ — Падари шумо дар хона аст?"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "儿子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 儿子:",
+            "tj": "Маънои калимаи 儿子-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "o'g'il",
+              "ru": "сын",
+              "tj": "писар"
+            },
+            {
+              "uz": "kichik, mayda",
+              "ru": "маленький, небольшой",
+              "tj": "хурд, майда"
+            },
+            {
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
+            },
+            {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "儿子 = o'g'il (érzi)",
+            "ru": "儿子 = сын (érzi)",
+            "tj": "儿子 = писар (érzi)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你爸爸在家吗？",
+          "pinyin": "Nǐ bàba zài jiā ma?",
+          "options": [
+            "小猫在哪儿？",
+            "小狗在哪儿？",
+            "小猫在那儿。",
+            "你爸爸在家吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "你爸爸在家吗？ — Otangiz uyda ekanmi?",
+            "ru": "你爸爸在家吗？ — Ваш папа дома?",
+            "tj": "你爸爸在家吗？ — Падари шумо дар хона аст?"
+          }
+        },
+        {
           "type": "pronunciation",
           "phrase": "哪儿",
           "pinyin": "nǎr",
@@ -1267,6 +1326,31 @@
         {
           "type": "quick_quiz",
           "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "小猫在哪儿？",
+            "小狗在椅子下面。",
+            "小狗在哪儿？",
+            "小猫在那儿。"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 小猫在哪儿？",
+            "ru": "Правильный ответ: 小猫在哪儿？",
+            "tj": "Ҷавоби дуруст: 小猫在哪儿？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
             "uz": "Dialog oxirida B nima deydi?",
             "ru": "Что B говорит в конце диалога?",
             "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
@@ -1298,9 +1382,9 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "问",
-            "您",
-            "叫",
+            "请",
+            "商",
+            "块",
             "小"
           ],
           "correct_index": 3,
@@ -1308,31 +1392,6 @@
             "uz": "To'g'ri: 小 — 小猫在哪儿？ (Mushuk qayerda?)",
             "ru": "Верно: 小 — 小猫在哪儿？ (Где кошка?)",
             "tj": "Дуруст: 小 — 小猫在哪儿？ (Гурба куҷост?)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "小猫在哪儿？",
-            "小狗在椅子下面。",
-            "小狗在哪儿？",
-            "小猫在那儿。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 小猫在哪儿？",
-            "ru": "Правильный ответ: 小猫在哪儿？",
-            "tj": "Ҷавоби дуруст: 小猫在哪儿？"
           }
         },
         {
@@ -1379,12 +1438,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "他在医院。",
-          "pinyin": "Tā zài yīyuàn.",
+          "phrase": "小狗在椅子下面。",
+          "pinyin": "Xiǎo gǒu zài yǐzi xiàmian.",
           "translation": {
-            "uz": "U kasalxonada.",
-            "ru": "Он в больнице.",
-            "tj": "Ӯ дар беморхона аст."
+            "uz": "It stulning ostida.",
+            "ru": "Собака под стулом.",
+            "tj": "Саг зери курсӣ аст."
           }
         }
       ]

@@ -1122,6 +1122,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "好吧。",
+          "pinyin": "Hǎo ba.",
+          "options": [
+            "六点多。",
+            "你每天早上几点起床？",
+            "好吧。",
+            "你比我早起一个小时。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "好吧。 — Xo'p bo'lmasa.",
+            "ru": "好吧。 — Ладно.",
+            "tj": "好吧。 — Хуб."
+          }
+        },
+        {
           "type": "hanzi_choice",
           "prompt": {
             "uz": "shǎo qaysi ieroglif?",
@@ -1144,28 +1166,6 @@
             "uz": "少 = oz, kam (shǎo)",
             "ru": "少 = мало, немного (shǎo)",
             "tj": "少 = кам, андак (shǎo)"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "好吧。",
-          "pinyin": "Hǎo ba.",
-          "options": [
-            "六点多。",
-            "你每天早上几点起床？",
-            "好吧。",
-            "你比我早起一个小时。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "好吧。 — Xo'p bo'lmasa.",
-            "ru": "好吧。 — Ладно.",
-            "tj": "好吧。 — Хуб."
           }
         },
         {
@@ -1199,6 +1199,69 @@
             "uz": "好吧。 — Hǎo ba.",
             "ru": "好吧。 — Hǎo ba.",
             "tj": "好吧。 — Hǎo ba."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "你在忙什么呢？",
+          "pinyin": "Nǐ zài máng shénme ne?",
+          "translation": {
+            "uz": "Siz nima bilan bandsiniz?",
+            "ru": "Чем ты сейчас занят(а)?",
+            "tj": "Шумо ба чӣ машғул ҳастед?"
+          },
+          "tokens": {
+            "uz": [
+              "har",
+              "nima",
+              "Siz",
+              "bandsiniz",
+              "kuni",
+              "bilan"
+            ],
+            "ru": [
+              "сейчас",
+              "Чем",
+              "В",
+              "котором",
+              "ты",
+              "занят(а"
+            ],
+            "tj": [
+              "Шумо",
+              "ба",
+              "рӯз",
+              "чӣ",
+              "ҳастед",
+              "Ҳар",
+              "машғул"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Siz",
+              "nima",
+              "bilan",
+              "bandsiniz"
+            ],
+            "ru": [
+              "Чем",
+              "ты",
+              "сейчас",
+              "занят(а"
+            ],
+            "tj": [
+              "Шумо",
+              "ба",
+              "чӣ",
+              "машғул",
+              "ҳастед"
+            ]
+          },
+          "explanation": {
+            "uz": "你在忙什么呢？ — Siz nima bilan bandsiniz?",
+            "ru": "你在忙什么呢？ — Чем ты сейчас занят(а)?",
+            "tj": "你在忙什么呢？ — Шумо ба чӣ машғул ҳастед?"
           }
         },
         {
@@ -1312,27 +1375,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____每天早上几点起床？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "诉",
-            "眼",
-            "你",
-            "问"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你每天早上几点起床？ (Siz har kuni ertalab soat nechada turasiz?)",
-            "ru": "Верно: 你 — 你每天早上几点起床？ (В котором часу ты встаёшь каждое утро?)",
-            "tj": "Дуруст: 你 — 你每天早上几点起床？ (Ҳар рӯз субҳ шумо соати чанд бармехезед?)"
-          }
-        },
-        {
           "type": "quick_quiz",
           "prompt": {
             "uz": "Dialog oxirida B nima deydi?",
@@ -1358,13 +1400,34 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____每天早上几点起床？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "羊",
+            "商",
+            "你",
+            "司"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你每天早上几点起床？ (Siz har kuni ertalab soat nechada turasiz?)",
+            "ru": "Верно: 你 — 你每天早上几点起床？ (В котором часу ты встаёшь каждое утро?)",
+            "tj": "Дуруст: 你 — 你每天早上几点起床？ (Ҳар рӯз субҳ шумо соати чанд бармехезед?)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "下雪了，今天真冷。",
-          "pinyin": "Xià xuě le, jīntiān zhēn lěng.",
+          "phrase": "你比我早起一个小时。",
+          "pinyin": "Nǐ bǐ wǒ zǎo qǐ yí ge xiǎoshí.",
           "translation": {
-            "uz": "Qor yog'yapti, bugun juda sovuq.",
-            "ru": "Пошёл снег, сегодня очень холодно.",
-            "tj": "Барф борид, имрӯз хеле сард аст."
+            "uz": "Siz mendan bir soat oldin turasiz.",
+            "ru": "Ты встаёшь на час раньше меня.",
+            "tj": "Шумо аз ман як соат зудтар бармехезед."
           }
         }
       ]

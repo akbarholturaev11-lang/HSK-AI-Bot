@@ -1075,6 +1075,31 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "chà qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chà?",
+            "tj": "chà кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "同事",
+            "以前",
+            "银行",
+            "差"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "差 = yetishmaslik, kam bo'lmoq (chà)",
+            "ru": "差 = не хватать, без (chà)",
+            "tj": "差 = кам будан (chà)"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1094,6 +1119,51 @@
             "uz": "周末你跟小丽去哪儿玩儿了？ — Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
             "ru": "周末你跟小丽去哪儿玩儿了？ — Куда ты ходил с Сяоли на выходных?",
             "tj": "周末你跟小丽去哪儿玩儿了？ — Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "半",
+          "pinyin": "bàn",
+          "translation": {
+            "uz": "yarim",
+            "ru": "половина",
+            "tj": "ним"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Anavi chiroyli yangi hamkasb kim?",
+            "ru": "Кто эта красивая новая коллега?",
+            "tj": "Он ҳамкори нави зебо кист?"
+          },
+          "tokens": [
+            "那",
+            "以前",
+            "新",
+            "是",
+            "谁",
+            "银行",
+            "的",
+            "同事",
+            "个",
+            "漂亮"
+          ],
+          "answer_tokens": [
+            "那",
+            "个",
+            "漂亮",
+            "的",
+            "新",
+            "同事",
+            "是",
+            "谁"
+          ],
+          "explanation": {
+            "uz": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?",
+            "ru": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?",
+            "tj": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?"
           }
         },
         {
@@ -1139,38 +1209,84 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "chà qaysi ieroglif?",
-            "ru": "Какой иероглиф читается chà?",
-            "tj": "chà кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "同事",
-            "以前",
-            "银行",
-            "差"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "差 = yetishmaslik, kam bo'lmoq (chà)",
-            "ru": "差 = не хватать, без (chà)",
-            "tj": "差 = кам будан (chà)"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "半",
-          "pinyin": "bàn",
+          "type": "reverse_builder",
+          "zh": "周末你跟小丽去哪儿玩儿了？",
+          "pinyin": "Zhōumò nǐ gēn Xiǎolì qù nǎr wánr le?",
           "translation": {
-            "uz": "yarim",
-            "ru": "половина",
-            "tj": "ним"
+            "uz": "Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
+            "ru": "Куда ты ходил с Сяоли на выходных?",
+            "tj": "Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
+          },
+          "tokens": {
+            "uz": [
+              "Anavi",
+              "aylangani",
+              "chiroyli",
+              "Hafta",
+              "bilan",
+              "Xiaoli",
+              "bording",
+              "oxiri",
+              "qayerga"
+            ],
+            "ru": [
+              "Сяоли",
+              "эта",
+              "Куда",
+              "ходил",
+              "выходных",
+              "с",
+              "ты",
+              "Кто",
+              "на"
+            ],
+            "tj": [
+              "Он",
+              "куҷо",
+              "бо",
+              "рафта",
+              "ба",
+              "Охири",
+              "Сяоли",
+              "ҳафта",
+              "будӣ",
+              "ҳамкори"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Hafta",
+              "oxiri",
+              "Xiaoli",
+              "bilan",
+              "qayerga",
+              "aylangani",
+              "bording"
+            ],
+            "ru": [
+              "Куда",
+              "ты",
+              "ходил",
+              "с",
+              "Сяоли",
+              "на",
+              "выходных"
+            ],
+            "tj": [
+              "Охири",
+              "ҳафта",
+              "бо",
+              "Сяоли",
+              "ба",
+              "куҷо",
+              "рафта",
+              "будӣ"
+            ]
+          },
+          "explanation": {
+            "uz": "周末你跟小丽去哪儿玩儿了？ — Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
+            "ru": "周末你跟小丽去哪儿玩儿了？ — Куда ты ходил с Сяоли на выходных?",
+            "tj": "周末你跟小丽去哪儿玩儿了？ — Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
           }
         },
         {
@@ -1196,41 +1312,6 @@
             "uz": "chorak soat = 刻 (kè)",
             "ru": "четверть часа = 刻 (kè)",
             "tj": "чоряки соат = 刻 (kè)"
-          }
-        },
-        {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Anavi chiroyli yangi hamkasb kim?",
-            "ru": "Кто эта красивая новая коллега?",
-            "tj": "Он ҳамкори нави зебо кист?"
-          },
-          "tokens": [
-            "那",
-            "以前",
-            "新",
-            "是",
-            "谁",
-            "银行",
-            "的",
-            "同事",
-            "个",
-            "漂亮"
-          ],
-          "answer_tokens": [
-            "那",
-            "个",
-            "漂亮",
-            "的",
-            "新",
-            "同事",
-            "是",
-            "谁"
-          ],
-          "explanation": {
-            "uz": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?",
-            "ru": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?",
-            "tj": "那个漂亮的新同事是谁？ — Nà ge piàoliang de xīn tóngshì shì shéi?"
           }
         },
         {
@@ -1274,77 +1355,6 @@
             "uz": "那个漂亮的新同事是谁？ — Anavi chiroyli yangi hamkasb kim?",
             "ru": "那个漂亮的新同事是谁？ — Кто эта красивая новая коллега?",
             "tj": "那个漂亮的新同事是谁？ — Он ҳамкори нави зебо кист?"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 同事 avval nima deydi?",
-            "ru": "Что 同事 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 同事 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "那是小丽。",
-            "她刚来北京吗？",
-            "那个漂亮的新同事是谁？",
-            "不，她在北京工作三年了。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 那个漂亮的新同事是谁？",
-            "ru": "Правильный ответ: 那个漂亮的新同事是谁？",
-            "tj": "Ҷавоби дуруст: 那个漂亮的新同事是谁？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小刚 nima deydi?",
-            "ru": "Что 小刚 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 小刚 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "她在银行工作了两年以后来的我们公司。",
-            "她刚来北京吗？",
-            "那是小丽。",
-            "那个漂亮的新同事是谁？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
-            "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
-            "tj": "Ҷавоби дуруст: 她在银行工作了两年以后来的我们公司。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____个漂亮的新同事是谁？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "那",
-            "久",
-            "问",
-            "眼"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 那 — 那个漂亮的新同事是谁？ (Anavi chiroyli yangi hamkasb kim?)",
-            "ru": "Верно: 那 — 那个漂亮的新同事是谁？ (Кто эта красивая новая коллега?)",
-            "tj": "Дуруст: 那 — 那个漂亮的新同事是谁？ (Он ҳамкори нави зебо кист?)"
           }
         },
         {
@@ -1400,13 +1410,84 @@
           }
         },
         {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 小刚 nima deydi?",
+            "ru": "Что 小刚 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 小刚 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "她在银行工作了两年以后来的我们公司。",
+            "她刚来北京吗？",
+            "那是小丽。",
+            "那个漂亮的新同事是谁？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
+            "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
+            "tj": "Ҷавоби дуруст: 她在银行工作了两年以后来的我们公司。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____个漂亮的新同事是谁？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "那",
+            "商",
+            "羊",
+            "司"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 那 — 那个漂亮的新同事是谁？ (Anavi chiroyli yangi hamkasb kim?)",
+            "ru": "Верно: 那 — 那个漂亮的新同事是谁？ (Кто эта красивая новая коллега?)",
+            "tj": "Дуруст: 那 — 那个漂亮的新同事是谁？ (Он ҳамкори нави зебо кист?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 同事 avval nima deydi?",
+            "ru": "Что 同事 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 同事 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "那是小丽。",
+            "她刚来北京吗？",
+            "那个漂亮的新同事是谁？",
+            "不，她在北京工作三年了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 那个漂亮的新同事是谁？",
+            "ru": "Правильный ответ: 那个漂亮的新同事是谁？",
+            "tj": "Ҷавоби дуруст: 那个漂亮的新同事是谁？"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "什么？结婚？",
-          "pinyin": "Shénme? Jié hūn?",
+          "phrase": "她刚来北京吗？",
+          "pinyin": "Tā gāng lái Běijīng ma?",
           "translation": {
-            "uz": "Nima? Turmush qurasizlar?",
-            "ru": "Что? Женитесь?",
-            "tj": "Чӣ? Оиладор мешавед?"
+            "uz": "U Pekinga hozirgina keldimi?",
+            "ru": "Она только что приехала в Пекин?",
+            "tj": "Ӯ нав ба Пекин омад?"
           }
         }
       ]

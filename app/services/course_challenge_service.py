@@ -7,6 +7,7 @@ from sqlalchemy import or_, select
 from app.bot.utils.course_miniapp import course_study_miniapp_url, normalize_miniapp_lang
 from app.db.models.course_challenge import CourseChallenge
 from app.db.models.user import User
+from app.repositories.course_progress_repo import CourseProgressRepository
 from app.repositories.user_repo import UserRepository
 from app.services.course_gamification_service import CourseGamificationService
 from app.services.course_miniapp_practice_service import CourseMiniAppPracticeService
@@ -83,15 +84,31 @@ class CourseChallengeService:
         return data.get(role) or data.get("challenger") or []
 
     async def _generate_questions_for(self, user: User) -> list[dict]:
-        """Generate a fresh practice set matched to this user's own HSK level."""
+        """Generate a fresh practice set matched to this user's own HSK level
+        AND lesson progress: savollar faqat o'rganilgan darslardan (tugatilgan+1).
+        Savol 10 taga yetmasa oynani oldinga minimal kengaytiramiz, oxirida
+        butun level fallback (eski xatti-harakat)."""
         level = self._level(getattr(user, "level", None))
         lang = normalize_miniapp_lang(getattr(user, "language", None))
-        questions = await CourseMiniAppPracticeService(self.session)._questions(
-            "mock",
-            self._practice_level(level),
-            lang,
-            "",
-        )
+        practice_level = self._practice_level(level)
+        svc = CourseMiniAppPracticeService(self.session)
+
+        max_lesson = None
+        try:
+            progress = await CourseProgressRepository(self.session).get_by_user_id(int(user.id))
+            if progress and self._practice_level(self._level(progress.level)) == practice_level:
+                max_lesson = max(1, int(getattr(progress, "completed_lessons_count", 0) or 0) + 1)
+        except Exception:  # noqa: BLE001
+            max_lesson = None
+
+        questions: list[dict] = []
+        if max_lesson is not None:
+            for window in range(max_lesson, max_lesson + 5):
+                questions = await svc._questions("mock", practice_level, lang, "", max_lesson=window)
+                if len(questions) >= 10:
+                    break
+        if len(questions) < 10:
+            questions = await svc._questions("mock", practice_level, lang, "")
         return questions[:10]
 
     async def _ensure_questions(self, challenge: CourseChallenge, user: User, role: str) -> list[dict]:

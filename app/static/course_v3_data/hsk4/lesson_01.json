@@ -1380,47 +1380,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "共同 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 共同:",
-            "tj": "Маънои калимаи 共同-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "umumiy, birgalikdagi",
-              "ru": "общий, совместный",
-              "tj": "умумӣ, муштарак"
-            },
-            {
-              "uz": "taassurot",
-              "ru": "впечатление",
-              "tj": "таассурот"
-            },
-            {
-              "uz": "ikkalasi, ikki kishi",
-              "ru": "двое, оба",
-              "tj": "ду нафар, ҳарду"
-            },
-            {
-              "uz": "qonun, huquq",
-              "ru": "закон, право",
-              "tj": "қонун, ҳуқуқ"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "共同 = umumiy, birgalikdagi (gòngtóng)",
-            "ru": "共同 = общий, совместный (gòngtóng)",
-            "tj": "共同 = умумӣ, муштарак (gòngtóng)"
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -1463,6 +1422,167 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+          "pinyin": "Tīngshuō nǐ nánpéngyou Lǐ Jìn gēn nǐ shì yí ge xuéxiào de, shì nǐ tóngxué ma?",
+          "options": [
+            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+            "那你们俩是怎么认识的？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?",
+            "ru": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?",
+            "tj": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "适合 talaffuzini tanlang:",
+            "ru": "Выберите произношение 适合:",
+            "tj": "Талаффузи 适合-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "liǎ",
+            "fǎlǜ",
+            "shìhé",
+            "yìnxiàng"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "适合 — shìhé",
+            "ru": "适合 — shìhé",
+            "tj": "适合 — shìhé"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "那你们俩是怎么认识的？",
+          "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
+          "translation": {
+            "uz": "Unda siz ikkalangiz qanday tanishgansiz?",
+            "ru": "Тогда как вы двое познакомились?",
+            "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
+          },
+          "tokens": {
+            "uz": [
+              "Unda",
+              "tanishgansiz",
+              "Eshitishimcha",
+              "qanday",
+              "ikkalangiz",
+              "siz",
+              "yigiting"
+            ],
+            "ru": [
+              "вы",
+              "двое",
+              "Слышала",
+              "познакомились",
+              "Тогда",
+              "как",
+              "твой"
+            ],
+            "tj": [
+              "шудед",
+              "Шунидам",
+              "нафар",
+              "шинос",
+              "Пас",
+              "чӣ",
+              "дӯстписарат",
+              "ду",
+              "тавр",
+              "шумо"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Unda",
+              "siz",
+              "ikkalangiz",
+              "qanday",
+              "tanishgansiz"
+            ],
+            "ru": [
+              "Тогда",
+              "как",
+              "вы",
+              "двое",
+              "познакомились"
+            ],
+            "tj": [
+              "Пас",
+              "шумо",
+              "ду",
+              "нафар",
+              "чӣ",
+              "тавр",
+              "шинос",
+              "шудед"
+            ]
+          },
+          "explanation": {
+            "uz": "那你们俩是怎么认识的？ — Unda siz ikkalangiz qanday tanishgansiz?",
+            "ru": "那你们俩是怎么认识的？ — Тогда как вы двое познакомились?",
+            "tj": "那你们俩是怎么认识的？ — Пас шумо ду нафар чӣ тавр шинос шудед?"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "共同 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 共同:",
+            "tj": "Маънои калимаи 共同-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "umumiy, birgalikdagi",
+              "ru": "общий, совместный",
+              "tj": "умумӣ, муштарак"
+            },
+            {
+              "uz": "taassurot",
+              "ru": "впечатление",
+              "tj": "таассурот"
+            },
+            {
+              "uz": "ikkalasi, ikki kishi",
+              "ru": "двое, оба",
+              "tj": "ду нафар, ҳарду"
+            },
+            {
+              "uz": "qonun, huquq",
+              "ru": "закон, право",
+              "tj": "қонун, ҳуқуқ"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "共同 = umumiy, birgalikdagi (gòngtóng)",
+            "ru": "共同 = общий, совместный (gòngtóng)",
+            "tj": "共同 = умумӣ, муштарак (gòngtóng)"
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Xarakter jihatidan bir-birini jalb qilish yanada kerak.",
@@ -1491,28 +1611,6 @@
             "uz": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
             "ru": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn.",
             "tj": "更需要性格上互相吸引。 — Gèng xūyào xìnggé shang hùxiāng xīyǐn."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-          "pinyin": "Tīngshuō nǐ nánpéngyou Lǐ Jìn gēn nǐ shì yí ge xuéxiào de, shì nǐ tóngxué ma?",
-          "options": [
-            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
-            "那你们俩是怎么认识的？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?",
-            "ru": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?",
-            "tj": "听说你男朋友李进跟你是一个学校的，是你同学吗？ — Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?"
           }
         },
         {
@@ -1546,31 +1644,6 @@
             "uz": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?",
             "ru": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?",
             "tj": "那你们俩是怎么认识的？ — Nà nǐmen liǎ shì zěnme rènshi de?"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "适合 talaffuzini tanlang:",
-            "ru": "Выберите произношение 适合:",
-            "tj": "Талаффузи 适合-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "liǎ",
-            "fǎlǜ",
-            "shìhé",
-            "yìnxiàng"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "适合 — shìhé",
-            "ru": "适合 — shìhé",
-            "tj": "适合 — shìhé"
           }
         },
         {
@@ -1642,52 +1715,6 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 孙月 avval nima deydi?",
-            "ru": "Что 孙月 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 孙月 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
-            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
-            "那你们俩是怎么认识的？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "ru": "Правильный ответ: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
-            "tj": "Ҷавоби дуруст: 听说你男朋友李进跟你是一个学校的，是你同学吗？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____说你男朋友李进跟你是一个学校的，是你同学吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "久",
-            "眼",
-            "附",
-            "听"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?)",
-            "ru": "Верно: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?)",
-            "tj": "Дуруст: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?)"
-          }
-        },
-        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -1740,13 +1767,59 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____说你男朋友李进跟你是一个学校的，是你同学吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "阿",
+            "司",
+            "商",
+            "听"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Eshitishimcha yigiting Li Jin sen bilan bir maktabda, u sening sinfdoshingmi?)",
+            "ru": "Верно: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Слышала, твой парень Ли Цзинь учится с тобой в одной школе. Он твой однокурсник?)",
+            "tj": "Дуруст: 听 — 听说你男朋友李进跟你是一个学校的，是你同学吗？ (Шунидам, дӯстписарат Ли Ҷин бо ту дар як мактаб мехонад. Ӯ ҳамсинфи туст?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 孙月 avval nima deydi?",
+            "ru": "Что 孙月 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 孙月 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我们是在一次足球比赛中认识的。我们班跟他们班比赛，他一个人踢进两个球，我对他印象很深，后来就慢慢熟悉了。",
+            "听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "是的，他学的是新闻，我学的是法律，我和他不是一个班。",
+            "那你们俩是怎么认识的？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "ru": "Правильный ответ: 听说你男朋友李进跟你是一个学校的，是你同学吗？",
+            "tj": "Ҷавоби дуруст: 听说你男朋友李进跟你是一个学校的，是你同学吗？"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "你为什么喜欢他？",
-          "pinyin": "Nǐ wèishénme xǐhuan tā?",
+          "phrase": "那你们俩是怎么认识的？",
+          "pinyin": "Nà nǐmen liǎ shì zěnme rènshi de?",
           "translation": {
-            "uz": "Nega uni yoqtirasan?",
-            "ru": "Почему он тебе нравится?",
-            "tj": "Чаро ӯро дӯст медорӣ?"
+            "uz": "Unda siz ikkalangiz qanday tanishgansiz?",
+            "ru": "Тогда как вы двое познакомились?",
+            "tj": "Пас шумо ду нафар чӣ тавр шинос шудед?"
           }
         }
       ]

@@ -1062,34 +1062,98 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Sizning oilangizda necha kishi bor?",
-            "ru": "Сколько человек в вашей семье?",
-            "tj": "Дар оилаи шумо чанд нафар аст?"
+          "type": "reverse_builder",
+          "zh": "李老师多大了？",
+          "pinyin": "Lǐ lǎoshī duō dà le?",
+          "translation": {
+            "uz": "Muallima Li necha yoshda?",
+            "ru": "Сколько лет преподавателю Ли?",
+            "tj": "Муаллима Ли чанд сол дорад?"
           },
-          "tokens": [
-            "岁",
-            "口",
-            "人",
-            "女儿",
-            "有",
-            "家",
-            "你",
-            "几"
-          ],
-          "answer_tokens": [
-            "你",
-            "家",
-            "有",
-            "几",
-            "口",
-            "人"
-          ],
+          "tokens": {
+            "uz": [
+              "necha",
+              "Sizning",
+              "Muallima",
+              "yoshda",
+              "Li",
+              "oilangizda"
+            ],
+            "ru": [
+              "человек",
+              "Ли",
+              "в",
+              "Сколько",
+              "лет",
+              "преподавателю"
+            ],
+            "tj": [
+              "дорад",
+              "Ли",
+              "Дар",
+              "сол",
+              "оилаи",
+              "Муаллима",
+              "чанд"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Muallima",
+              "Li",
+              "necha",
+              "yoshda"
+            ],
+            "ru": [
+              "Сколько",
+              "лет",
+              "преподавателю",
+              "Ли"
+            ],
+            "tj": [
+              "Муаллима",
+              "Ли",
+              "чанд",
+              "сол",
+              "дорад"
+            ]
+          },
           "explanation": {
-            "uz": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
-            "ru": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
-            "tj": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?"
+            "uz": "李老师多大了？ — Muallima Li necha yoshda?",
+            "ru": "李老师多大了？ — Сколько лет преподавателю Ли?",
+            "tj": "李老师多大了？ — Муаллима Ли чанд сол дорад?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "李老师多大了？",
+          "pinyin": "Lǐ lǎoshī duō dà le?",
+          "options": [
+            "李老师多大了？",
+            "你女儿几岁了？",
+            "我家有三口人。",
+            "你家有几口人？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "李老师多大了？ — Muallima Li necha yoshda?",
+            "ru": "李老师多大了？ — Сколько лет преподавателю Ли?",
+            "tj": "李老师多大了？ — Муаллима Ли чанд сол дорад?"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "了",
+          "pinyin": "le",
+          "translation": {
+            "uz": "holat o'zgarishi yuklamasi",
+            "ru": "частица изменения состояния",
+            "tj": "ҳарфи тағйири ҳолат"
           }
         },
         {
@@ -1135,6 +1199,37 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sizning oilangizda necha kishi bor?",
+            "ru": "Сколько человек в вашей семье?",
+            "tj": "Дар оилаи шумо чанд нафар аст?"
+          },
+          "tokens": [
+            "岁",
+            "口",
+            "人",
+            "女儿",
+            "有",
+            "家",
+            "你",
+            "几"
+          ],
+          "answer_tokens": [
+            "你",
+            "家",
+            "有",
+            "几",
+            "口",
+            "人"
+          ],
+          "explanation": {
+            "uz": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
+            "ru": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?",
+            "tj": "你家有几口人？ — Nǐ jiā yǒu jǐ kǒu rén?"
+          }
+        },
+        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "家 so'zining ma'nosini tanlang:",
@@ -1176,28 +1271,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "李老师多大了？",
-          "pinyin": "Lǐ lǎoshī duō dà le?",
-          "options": [
-            "李老师多大了？",
-            "你女儿几岁了？",
-            "我家有三口人。",
-            "你家有几口人？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "李老师多大了？ — Muallima Li necha yoshda?",
-            "ru": "李老师多大了？ — Сколько лет преподавателю Ли?",
-            "tj": "李老师多大了？ — Муаллима Ли чанд сол дорад?"
-          }
-        },
-        {
           "type": "pinyin_choice",
           "prompt": {
             "uz": "有 talaffuzini tanlang:",
@@ -1220,16 +1293,6 @@
             "uz": "有 — yǒu",
             "ru": "有 — yǒu",
             "tj": "有 — yǒu"
-          }
-        },
-        {
-          "type": "pronunciation",
-          "phrase": "了",
-          "pinyin": "le",
-          "translation": {
-            "uz": "holat o'zgarishi yuklamasi",
-            "ru": "частица изменения состояния",
-            "tj": "ҳарфи тағйири ҳолат"
           }
         },
         {
@@ -1273,6 +1336,52 @@
             "uz": "你家有几口人？ — Sizning oilangizda necha kishi bor?",
             "ru": "你家有几口人？ — Сколько человек в вашей семье?",
             "tj": "你家有几口人？ — Дар оилаи шумо чанд нафар аст?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "你女儿几岁了？",
+            "我家有三口人。",
+            "她今年四岁了。",
+            "你家有几口人？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 你家有几口人？",
+            "ru": "Правильный ответ: 你家有几口人？",
+            "tj": "Ҷавоби дуруст: 你家有几口人？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____家有几口人？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "叫",
+            "家",
+            "你",
+            "不"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你家有几口人？ (Sizning oilangizda necha kishi bor?)",
+            "ru": "Верно: 你 — 你家有几口人？ (Сколько человек в вашей семье?)",
+            "tj": "Дуруст: 你 — 你家有几口人？ (Дар оилаи шумо чанд нафар аст?)"
           }
         },
         {
@@ -1333,59 +1442,13 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____家有几口人？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "汉",
-            "美",
-            "你",
-            "您"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你家有几口人？ (Sizning oilangizda necha kishi bor?)",
-            "ru": "Верно: 你 — 你家有几口人？ (Сколько человек в вашей семье?)",
-            "tj": "Дуруст: 你 — 你家有几口人？ (Дар оилаи шумо чанд нафар аст?)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "你女儿几岁了？",
-            "我家有三口人。",
-            "她今年四岁了。",
-            "你家有几口人？"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 你家有几口人？",
-            "ru": "Правильный ответ: 你家有几口人？",
-            "tj": "Ҷавоби дуруст: 你家有几口人？"
-          }
-        },
-        {
           "type": "pronunciation",
-          "phrase": "你家有几口人？",
-          "pinyin": "Nǐ jiā yǒu jǐ kǒu rén?",
+          "phrase": "李老师多大了？",
+          "pinyin": "Lǐ lǎoshī duō dà le?",
           "translation": {
-            "uz": "Sizning oilangizda necha kishi bor?",
-            "ru": "Сколько человек в вашей семье?",
-            "tj": "Дар оилаи шумо чанд нафар аст?"
+            "uz": "Muallima Li necha yoshda?",
+            "ru": "Сколько лет преподавателю Ли?",
+            "tj": "Муаллима Ли чанд сол дорад?"
           }
         }
       ]

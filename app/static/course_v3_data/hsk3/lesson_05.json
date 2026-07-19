@@ -1093,70 +1093,25 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "发烧",
-              {
-                "uz": "isitmasi chiqmoq",
-                "ru": "температурить",
-                "tj": "таб кардан"
-              }
-            ],
-            [
-              "为",
-              {
-                "uz": "uchun",
-                "ru": "для, ради",
-                "tj": "барои"
-              }
-            ],
-            [
-              "照顾",
-              {
-                "uz": "qaramoq, parvarish qilmoq",
-                "ru": "заботиться, ухаживать",
-                "tj": "нигоҳубин кардан"
-              }
-            ],
-            [
-              "用",
-              {
-                "uz": "kerak bo'lmoq, ishlatmoq",
-                "ru": "нужно; использовать",
-                "tj": "лозим шудан; истифода бурдан"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "最近 talaffuzini tanlang:",
-            "ru": "Выберите произношение 最近:",
-            "tj": "Талаффузи 最近-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
           },
+          "audio_text": "那喝杯水吧。",
+          "pinyin": "Nà hē bēi shuǐ ba.",
           "options": [
-            "zuìjìn",
-            "wèi",
-            "fāshāo",
-            "zhàogù"
+            "前几天有点儿发烧，现在好多了。",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。",
+            "我听说你身体不舒服，怎么了？",
+            "那喝杯水吧。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "最近 — zuìjìn",
-            "ru": "最近 — zuìjìn",
-            "tj": "最近 — zuìjìn"
+            "uz": "那喝杯水吧。 — Unda bir piyola suv ich.",
+            "ru": "那喝杯水吧。 — Тогда выпей стакан воды.",
+            "tj": "那喝杯水吧。 — Пас як пиёла об нӯш."
           }
         },
         {
@@ -1179,6 +1134,71 @@
             "uz": "季节 — fasl (jìjié)",
             "ru": "季节 — сезон (jìjié)",
             "tj": "季节 — фасл (jìjié)"
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "那喝杯水吧。",
+          "pinyin": "Nà hē bēi shuǐ ba.",
+          "translation": {
+            "uz": "Unda bir piyola suv ich.",
+            "ru": "Тогда выпей стакан воды.",
+            "tj": "Пас як пиёла об нӯш."
+          },
+          "tokens": {
+            "uz": [
+              "bir",
+              "mazang",
+              "ich",
+              "Eshitishimcha",
+              "Unda",
+              "suv",
+              "piyola"
+            ],
+            "ru": [
+              "стакан",
+              "Тогда",
+              "выпей",
+              "Я",
+              "воды",
+              "слышал"
+            ],
+            "tj": [
+              "Пас",
+              "пиёла",
+              "нӯш",
+              "як",
+              "об",
+              "Шунидам",
+              "ки"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Unda",
+              "bir",
+              "piyola",
+              "suv",
+              "ich"
+            ],
+            "ru": [
+              "Тогда",
+              "выпей",
+              "стакан",
+              "воды"
+            ],
+            "tj": [
+              "Пас",
+              "як",
+              "пиёла",
+              "об",
+              "нӯш"
+            ]
+          },
+          "explanation": {
+            "uz": "那喝杯水吧。 — Unda bir piyola suv ich.",
+            "ru": "那喝杯水吧。 — Тогда выпей стакан воды.",
+            "tj": "那喝杯水吧。 — Пас як пиёла об нӯш."
           }
         },
         {
@@ -1223,25 +1243,70 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "最近 talaffuzini tanlang:",
+            "ru": "Выберите произношение 最近:",
+            "tj": "Талаффузи 最近-ро интихоб кунед:"
           },
-          "audio_text": "那喝杯水吧。",
-          "pinyin": "Nà hē bēi shuǐ ba.",
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
           "options": [
-            "前几天有点儿发烧，现在好多了。",
-            "喝杯茶吧，这是我为你买的绿茶，很不错。",
-            "我听说你身体不舒服，怎么了？",
-            "那喝杯水吧。"
+            "zuìjìn",
+            "wèi",
+            "fāshāo",
+            "zhàogù"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "那喝杯水吧。 — Unda bir piyola suv ich.",
-            "ru": "那喝杯水吧。 — Тогда выпей стакан воды.",
-            "tj": "那喝杯水吧。 — Пас як пиёла об нӯш."
+            "uz": "最近 — zuìjìn",
+            "ru": "最近 — zuìjìn",
+            "tj": "最近 — zuìjìn"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "发烧",
+              {
+                "uz": "isitmasi chiqmoq",
+                "ru": "температурить",
+                "tj": "таб кардан"
+              }
+            ],
+            [
+              "为",
+              {
+                "uz": "uchun",
+                "ru": "для, ради",
+                "tj": "барои"
+              }
+            ],
+            [
+              "照顾",
+              {
+                "uz": "qaramoq, parvarish qilmoq",
+                "ru": "заботиться, ухаживать",
+                "tj": "нигоҳубин кардан"
+              }
+            ],
+            [
+              "用",
+              {
+                "uz": "kerak bo'lmoq, ishlatmoq",
+                "ru": "нужно; использовать",
+                "tj": "лозим шудан; истифода бурдан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -1311,31 +1376,6 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小丽 nima deydi?",
-            "ru": "Что 小丽 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 小丽 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我听说你身体不舒服，怎么了？",
-            "前几天有点儿发烧，现在好多了。",
-            "喝杯茶吧，这是我为你买的绿茶，很不错。",
-            "好的。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 好的。",
-            "ru": "Правильный ответ: 好的。",
-            "tj": "Ҷавоби дуруст: 好的。"
-          }
-        },
-        {
           "type": "gap_fill",
           "sentence": "____听说你身体不舒服，怎么了？",
           "prompt": {
@@ -1344,9 +1384,9 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "问",
-            "诉",
-            "眼",
+            "司",
+            "羊",
+            "商",
             "我"
           ],
           "correct_index": 3,
@@ -1434,13 +1474,38 @@
           }
         },
         {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 小丽 nima deydi?",
+            "ru": "Что 小丽 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 小丽 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "我听说你身体不舒服，怎么了？",
+            "前几天有点儿发烧，现在好多了。",
+            "喝杯茶吧，这是我为你买的绿茶，很不错。",
+            "好的。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 好的。",
+            "ru": "Правильный ответ: 好的。",
+            "tj": "Ҷавоби дуруст: 好的。"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "怎么？你也有漂亮的裙子？",
-          "pinyin": "Zěnme? Nǐ yě yǒu piàoliang de qúnzi?",
+          "phrase": "那喝杯水吧。",
+          "pinyin": "Nà hē bēi shuǐ ba.",
           "translation": {
-            "uz": "Nima? Senda ham chiroyli ko'ylak bormi?",
-            "ru": "Что? У тебя тоже есть красивое платье?",
-            "tj": "Чӣ? Ту ҳам куртаи зебо дорӣ?"
+            "uz": "Unda bir piyola suv ich.",
+            "ru": "Тогда выпей стакан воды.",
+            "tj": "Пас як пиёла об нӯш."
           }
         }
       ]

@@ -1090,31 +1090,6 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "表演 talaffuzini tanlang:",
-            "ru": "Выберите произношение 表演:",
-            "tj": "Талаффузи 表演-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "suīrán",
-            "biǎoyǎn",
-            "yǒu yìsi",
-            "dànshì"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "表演 — biǎoyǎn",
-            "ru": "表演 — biǎoyǎn",
-            "tj": "表演 — biǎoyǎn"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Siz u filmni ko'rganmisiz?",
@@ -1148,6 +1123,83 @@
           }
         },
         {
+          "type": "reverse_builder",
+          "zh": "两百块还可以，喜欢就买吧。",
+          "pinyin": "Liǎng bǎi kuài hái kěyǐ, xǐhuan jiù mǎi ba.",
+          "translation": {
+            "uz": "Ikki yuz yuan yomonmas, yoqsa olaverıng.",
+            "ru": "Двести юаней — нормально, если нравится, покупай.",
+            "tj": "Дусад юан бад нест, агар дӯст дорӣ бихар."
+          },
+          "tokens": {
+            "uz": [
+              "u",
+              "olaverıng",
+              "Ikki",
+              "yomonmas",
+              "yoqsa",
+              "yuz",
+              "yuan",
+              "Siz"
+            ],
+            "ru": [
+              "смотрел(а",
+              "Ты",
+              "нравится",
+              "юаней",
+              "покупай",
+              "Двести",
+              "нормально",
+              "если"
+            ],
+            "tj": [
+              "шумо",
+              "юан",
+              "дӯст",
+              "Дусад",
+              "бад",
+              "нест",
+              "бихар",
+              "Оё",
+              "дорӣ",
+              "агар"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Ikki",
+              "yuz",
+              "yuan",
+              "yomonmas",
+              "yoqsa",
+              "olaverıng"
+            ],
+            "ru": [
+              "Двести",
+              "юаней",
+              "нормально",
+              "если",
+              "нравится",
+              "покупай"
+            ],
+            "tj": [
+              "Дусад",
+              "юан",
+              "бад",
+              "нест",
+              "агар",
+              "дӯст",
+              "дорӣ",
+              "бихар"
+            ]
+          },
+          "explanation": {
+            "uz": "两百块还可以，喜欢就买吧。 — Ikki yuz yuan yomonmas, yoqsa olaverıng.",
+            "ru": "两百块还可以，喜欢就买吧。 — Двести юаней — нормально, если нравится, покупай.",
+            "tj": "两百块还可以，喜欢就买吧。 — Дусад юан бад нест, агар дӯст дорӣ бихар."
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
@@ -1167,6 +1219,31 @@
             "uz": "买过一次，这儿的东西还可以，就是有点儿贵。 — Bir marta olganman, bu yerdagi narsalar yomonmas, faqat biroz qimmat.",
             "ru": "买过一次，这儿的东西还可以，就是有点儿贵。 — Покупал(а) один раз, товары здесь неплохие, только немного дорогие.",
             "tj": "买过一次，这儿的东西还可以，就是有点儿贵。 — Як маротиба харидаам, молҳои ин ҷо бад нест, фақат каме гарон."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "表演 talaffuzini tanlang:",
+            "ru": "Выберите произношение 表演:",
+            "tj": "Талаффузи 表演-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "suīrán",
+            "biǎoyǎn",
+            "yǒu yìsi",
+            "dànshì"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "表演 — biǎoyǎn",
+            "ru": "表演 — biǎoyǎn",
+            "tj": "表演 — biǎoyǎn"
           }
         },
         {
@@ -1255,77 +1332,6 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "那我们下个星期一一起去看吧？",
-            "可以，但是我女朋友也想去。",
-            "你看过那个电影没有？",
-            "没看过，听说很有意思。"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 你看过那个电影没有？",
-            "ru": "Правильный ответ: 你看过那个电影没有？",
-            "tj": "Ҷавоби дуруст: 你看过那个电影没有？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____看过那个电影没有？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "诉",
-            "问",
-            "你",
-            "眼"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你看过那个电影没有？ (Siz u filmni ko'rganmisiz?)",
-            "ru": "Верно: 你 — 你看过那个电影没有？ (Ты смотрел(а) тот фильм?)",
-            "tj": "Дуруст: 你 — 你看过那个电影没有？ (Оё шумо он филмро дидаед?)"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "你看过那个电影没有？",
-            "可以，但是我女朋友也想去。",
-            "没看过，听说很有意思。",
-            "那我们下个星期一一起去看吧？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 可以，但是我女朋友也想去。",
-            "ru": "Правильный ответ: 可以，但是我女朋友也想去。",
-            "tj": "Ҷавоби дуруст: 可以，但是我女朋友也想去。"
-          }
-        },
-        {
           "type": "dialog_cloze",
           "title": {
             "uz": "Dialogni to'ldiring",
@@ -1368,13 +1374,84 @@
           }
         },
         {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "你看过那个电影没有？",
+            "可以，但是我女朋友也想去。",
+            "没看过，听说很有意思。",
+            "那我们下个星期一一起去看吧？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 可以，但是我女朋友也想去。",
+            "ru": "Правильный ответ: 可以，但是我女朋友也想去。",
+            "tj": "Ҷавоби дуруст: 可以，但是我女朋友也想去。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "那我们下个星期一一起去看吧？",
+            "可以，但是我女朋友也想去。",
+            "你看过那个电影没有？",
+            "没看过，听说很有意思。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 你看过那个电影没有？",
+            "ru": "Правильный ответ: 你看过那个电影没有？",
+            "tj": "Ҷавоби дуруст: 你看过那个电影没有？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____看过那个电影没有？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "羊",
+            "司",
+            "你",
+            "商"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你看过那个电影没有？ (Siz u filmni ko'rganmisiz?)",
+            "ru": "Верно: 你 — 你看过那个电影没有？ (Ты смотрел(а) тот фильм?)",
+            "tj": "Дуруст: 你 — 你看过那个电影没有？ (Оё шумо он филмро дидаед?)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "那我们一起去吧。",
-          "pinyin": "Nà wǒmen yìqǐ qù ba.",
+          "phrase": "虽然是晴天，但是很冷。",
+          "pinyin": "Suīrán shì qíngtiān, dànshì hěn lěng.",
           "translation": {
-            "uz": "Unda birga boraylik.",
-            "ru": "Тогда давай поедем вместе.",
-            "tj": "Пас биёед якҷоя биравем."
+            "uz": "Garchi quyoshli kun bo'lsa ham, lekin juda sovuq.",
+            "ru": "Хотя будет солнечно, но очень холодно.",
+            "tj": "Гарчи рӯзи офтобӣ бошад ҳам, аммо хеле сард аст."
           }
         }
       ]

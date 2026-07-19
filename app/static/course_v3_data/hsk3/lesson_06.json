@@ -1135,88 +1135,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "U juda tez gapiradi, men tushunolmayman.",
-            "ru": "Он говорит слишком быстро — я не понимаю.",
-            "tj": "Вай хеле тез гап мезанад, ман фаҳмида наметавонам."
-          },
-          "tokens": [
-            "突然",
-            "快",
-            "眼镜",
-            "太",
-            "不",
-            "说话",
-            "我",
-            "懂",
-            "听",
-            "他"
-          ],
-          "answer_tokens": [
-            "他",
-            "说话",
-            "太",
-            "快",
-            "我",
-            "听",
-            "不",
-            "懂"
-          ],
-          "explanation": {
-            "uz": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng.",
-            "ru": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng.",
-            "tj": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng."
-          }
-        },
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'suhbatlashmoq, gaplashmoq' xitoycha qaysi?",
-            "ru": "'болтать, беседовать' по-китайски?",
-            "tj": "'суҳбат кардан' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "眼镜",
-            "离开",
-            "突然",
-            "聊天(儿)"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "suhbatlashmoq, gaplashmoq = 聊天(儿) (liáo tiān(r))",
-            "ru": "болтать, беседовать = 聊天(儿) (liáo tiān(r))",
-            "tj": "суҳбат кардан = 聊天(儿) (liáo tiān(r))"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "好吧，我帮你去找找。",
-          "pinyin": "Hǎo ba, wǒ bāng nǐ qù zhǎozhao.",
-          "options": [
-            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
-            "好吧，我帮你去找找。",
-            "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
-            "我没看见啊。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "好吧，我帮你去找找。 — Mayli, qidirishga yordam beraman.",
-            "ru": "好吧，我帮你去找找。 — Ладно, помогу тебе поискать.",
-            "tj": "好吧，我帮你去找找。 — Хуб, ба ту дар ҷустуҷӯ ёрӣ медиҳам."
-          }
-        },
-        {
           "type": "match_pairs",
           "pairs": [
             [
@@ -1261,6 +1179,41 @@
         {
           "type": "sentence_builder",
           "sentence": {
+            "uz": "U juda tez gapiradi, men tushunolmayman.",
+            "ru": "Он говорит слишком быстро — я не понимаю.",
+            "tj": "Вай хеле тез гап мезанад, ман фаҳмида наметавонам."
+          },
+          "tokens": [
+            "突然",
+            "快",
+            "眼镜",
+            "太",
+            "不",
+            "说话",
+            "我",
+            "懂",
+            "听",
+            "他"
+          ],
+          "answer_tokens": [
+            "他",
+            "说话",
+            "太",
+            "快",
+            "我",
+            "听",
+            "不",
+            "懂"
+          ],
+          "explanation": {
+            "uz": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng.",
+            "ru": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng.",
+            "tj": "他说话太快，我听不懂。 — Tā shuōhuà tài kuài, wǒ tīng bu dǒng."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
             "uz": "Mayli, qidirishga yordam beraman.",
             "ru": "Ладно, помогу тебе поискать.",
             "tj": "Хуб, ба ту дар ҷустуҷӯ ёрӣ медиҳам."
@@ -1294,6 +1247,31 @@
           }
         },
         {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'suhbatlashmoq, gaplashmoq' xitoycha qaysi?",
+            "ru": "'болтать, беседовать' по-китайски?",
+            "tj": "'суҳбат кардан' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "眼镜",
+            "离开",
+            "突然",
+            "聊天(儿)"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "suhbatlashmoq, gaplashmoq = 聊天(儿) (liáo tiān(r))",
+            "ru": "болтать, беседовать = 聊天(儿) (liáo tiān(r))",
+            "tj": "суҳбат кардан = 聊天(儿) (liáo tiān(r))"
+          }
+        },
+        {
           "type": "pinyin_choice",
           "prompt": {
             "uz": "公园 talaffuzini tanlang:",
@@ -1316,6 +1294,95 @@
             "uz": "公园 — gōngyuán",
             "ru": "公园 — gōngyuán",
             "tj": "公园 — gōngyuán"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "好吧，我帮你去找找。",
+          "pinyin": "Hǎo ba, wǒ bāng nǐ qù zhǎozhao.",
+          "options": [
+            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
+            "好吧，我帮你去找找。",
+            "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
+            "我没看见啊。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "好吧，我帮你去找找。 — Mayli, qidirishga yordam beraman.",
+            "ru": "好吧，我帮你去找找。 — Ладно, помогу тебе поискать.",
+            "tj": "好吧，我帮你去找找。 — Хуб, ба ту дар ҷустуҷӯ ёрӣ медиҳам."
+          }
+        },
+        {
+          "type": "reverse_builder",
+          "zh": "好吧，我帮你去找找。",
+          "pinyin": "Hǎo ba, wǒ bāng nǐ qù zhǎozhao.",
+          "translation": {
+            "uz": "Mayli, qidirishga yordam beraman.",
+            "ru": "Ладно, помогу тебе поискать.",
+            "tj": "Хуб, ба ту дар ҷустуҷӯ ёрӣ медиҳам."
+          },
+          "tokens": {
+            "uz": [
+              "qani",
+              "qidirishga",
+              "beraman",
+              "Ko'zoynagim",
+              "yordam",
+              "Mayli"
+            ],
+            "ru": [
+              "мои",
+              "тебе",
+              "помогу",
+              "Где",
+              "поискать",
+              "Ладно"
+            ],
+            "tj": [
+              "ҷустуҷӯ",
+              "медиҳам",
+              "куҷост",
+              "дар",
+              "Айнакам",
+              "Хуб",
+              "ба",
+              "ёрӣ",
+              "ту"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Mayli",
+              "qidirishga",
+              "yordam",
+              "beraman"
+            ],
+            "ru": [
+              "Ладно",
+              "помогу",
+              "тебе",
+              "поискать"
+            ],
+            "tj": [
+              "Хуб",
+              "ба",
+              "ту",
+              "дар",
+              "ҷустуҷӯ",
+              "ёрӣ",
+              "медиҳам"
+            ]
+          },
+          "explanation": {
+            "uz": "好吧，我帮你去找找。 — Mayli, qidirishga yordam beraman.",
+            "ru": "好吧，我帮你去找找。 — Ладно, помогу тебе поискать.",
+            "tj": "好吧，我帮你去找找。 — Хуб, ба ту дар ҷустуҷӯ ёрӣ медиҳам."
           }
         },
         {
@@ -1364,31 +1431,6 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialog oxirida 周太太 nima deydi?",
-            "ru": "Что 周太太 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 周太太 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
-            "我没看见啊。",
-            "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
-            "好吧，我帮你去找找。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 好吧，我帮你去找找。",
-            "ru": "Правильный ответ: 好吧，我帮你去找找。",
-            "tj": "Ҷавоби дуруст: 好吧，我帮你去找找。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
             "uz": "Dialogda 周明 avval nima deydi?",
             "ru": "Что 周明 говорит в начале диалога?",
             "tj": "Дар гуфтугӯ 周明 аввал чӣ мегӯяд?"
@@ -1409,6 +1451,27 @@
             "uz": "To'g'ri javob: 我的眼镜呢？怎么突然找不到了？你看见了吗？",
             "ru": "Правильный ответ: 我的眼镜呢？怎么突然找不到了？你看见了吗？",
             "tj": "Ҷавоби дуруст: 我的眼镜呢？怎么突然找不到了？你看见了吗？"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____的眼镜呢？怎么突然找不到了？你看见了吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "商",
+            "司",
+            "我",
+            "羊"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 我 — 我的眼镜呢？怎么突然找不到了？你看见了吗？ (Ko'zoynagim qani? Qanday qilib birdan topolmay qoldim? Ko'rdingmi?)",
+            "ru": "Верно: 我 — 我的眼镜呢？怎么突然找不到了？你看见了吗？ (Где мои очки? Почему вдруг не могу их найти? Ты видела?)",
+            "tj": "Дуруст: 我 — 我的眼镜呢？怎么突然找不到了？你看见了吗？ (Айнакам куҷост? Чаро ногаҳон ёфта наметавонам? Дидӣ?)"
           }
         },
         {
@@ -1464,34 +1527,38 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____的眼镜呢？怎么突然找不到了？你看见了吗？",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialog oxirida 周太太 nima deydi?",
+            "ru": "Что 周太太 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 周太太 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "眼",
-            "问",
-            "我",
-            "锻"
+            "我的眼镜呢？怎么突然找不到了？你看见了吗？",
+            "我没看见啊。",
+            "我离不开眼镜，没有眼镜，我一个字也看不清楚。",
+            "好吧，我帮你去找找。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "To'g'ri: 我 — 我的眼镜呢？怎么突然找不到了？你看见了吗？ (Ko'zoynagim qani? Qanday qilib birdan topolmay qoldim? Ko'rdingmi?)",
-            "ru": "Верно: 我 — 我的眼镜呢？怎么突然找不到了？你看见了吗？ (Где мои очки? Почему вдруг не могу их найти? Ты видела?)",
-            "tj": "Дуруст: 我 — 我的眼镜呢？怎么突然找不到了？你看见了吗？ (Айнакам куҷост? Чаро ногаҳон ёфта наметавонам? Дидӣ?)"
+            "uz": "To'g'ri javob: 好吧，我帮你去找找。",
+            "ru": "Правильный ответ: 好吧，我帮你去找找。",
+            "tj": "Ҷавоби дуруст: 好吧，我帮你去找找。"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "好啊，我锻炼完了就过去。",
-          "pinyin": "Hǎo a, wǒ duànliàn wán le jiù guòqu.",
+          "phrase": "音乐会人太多，买不到票。",
+          "pinyin": "Yīnyuèhuì rén tài duō, mǎi bu dào piào.",
           "translation": {
-            "uz": "Yaxshi, mashqni tugatib, darhol boraman.",
-            "ru": "Хорошо, закончу тренировку и сразу приду.",
-            "tj": "Хуб, машқро тамом карда, меоям."
+            "uz": "Konsertda odam juda ko'p, chipta olib bo'lmaydi.",
+            "ru": "На концерте слишком много людей, билетов не купить.",
+            "tj": "Дар консерт одам бисёр аст, билет харида намешавад."
           }
         }
       ]

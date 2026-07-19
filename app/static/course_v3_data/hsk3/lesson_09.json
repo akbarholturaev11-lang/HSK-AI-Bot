@@ -1122,111 +1122,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "match_pairs",
-          "pairs": [
-            [
-              "中文",
-              {
-                "uz": "xitoy tili",
-                "ru": "китайский язык",
-                "tj": "забони чинӣ"
-              }
-            ],
-            [
-              "班",
-              {
-                "uz": "sinf, guruh",
-                "ru": "класс, группа",
-                "tj": "синф, гурӯҳ"
-              }
-            ],
-            [
-              "一样",
-              {
-                "uz": "bir xil, xuddi ... kabi",
-                "ru": "одинаковый, такой же",
-                "tj": "якхела, мисли"
-              }
-            ],
-            [
-              "最后",
-              {
-                "uz": "oxirgi, so'nggi",
-                "ru": "последний",
-                "tj": "охирин"
-              }
-            ]
-          ],
-          "explanation": {
-            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
-            "ru": "Пары взяты из новых слов урока.",
-            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你总是吃甜的东西，会越吃越胖。",
-          "pinyin": "Nǐ zǒngshì chī tián de dōngxi, huì yuè chī yuè pàng.",
-          "options": [
-            "马可，你的中文越说越好了！",
-            "哪里哪里，我们班李静说得更好。",
-            "你总是吃甜的东西，会越吃越胖。",
-            "怎么好？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "你总是吃甜的东西，会越吃越胖。 — Sen doim shirin narsa yeysan, yegan sari semirasan.",
-            "ru": "你总是吃甜的东西，会越吃越胖。 — Ты всё время ешь сладкое, будешь толстеть всё больше.",
-            "tj": "你总是吃甜的东西，会越吃越胖。 — Ту ҳамеша ширинӣ мехӯрӣ, ҳар қадар хӯрӣ, ҳамон қадар фарбеҳ мешавӣ."
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "中间 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 中间:",
-            "tj": "Маънои калимаи 中间-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "bir xil, xuddi ... kabi",
-              "ru": "одинаковый, такой же",
-              "tj": "якхела, мисли"
-            },
-            {
-              "uz": "o'rta, orasida",
-              "ru": "середина, посередине",
-              "tj": "миёна"
-            },
-            {
-              "uz": "sinf, guruh",
-              "ru": "класс, группа",
-              "tj": "синф, гурӯҳ"
-            },
-            {
-              "uz": "xitoy tili",
-              "ru": "китайский язык",
-              "tj": "забони чинӣ"
-            }
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "中间 = o'rta, orasida (zhōngjiān)",
-            "ru": "中间 = середина, посередине (zhōngjiān)",
-            "tj": "中间 = миёна (zhōngjiān)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Tinglang — qaysi so'z?",
@@ -1274,6 +1169,77 @@
           }
         },
         {
+          "type": "reverse_builder",
+          "zh": "你放心，我一定不会变胖。",
+          "pinyin": "Nǐ fàngxīn, wǒ yídìng bú huì biàn pàng.",
+          "translation": {
+            "uz": "Xotirjam bo'l, men albatta semirmayman.",
+            "ru": "Не волнуйся, я точно не потолстею.",
+            "tj": "Хотирҷамъ бош, ман ҳатман фарбеҳ намешавам."
+          },
+          "tokens": {
+            "uz": [
+              "Make",
+              "albatta",
+              "semirmayman",
+              "Xotirjam",
+              "xitoychang",
+              "bo'l",
+              "men"
+            ],
+            "ru": [
+              "не",
+              "Не",
+              "я",
+              "точно",
+              "Марк",
+              "волнуйся",
+              "потолстею",
+              "ты"
+            ],
+            "tj": [
+              "ман",
+              "бош",
+              "Хотирҷамъ",
+              "забони",
+              "фарбеҳ",
+              "Маке",
+              "намешавам",
+              "ҳатман"
+            ]
+          },
+          "answer_tokens": {
+            "uz": [
+              "Xotirjam",
+              "bo'l",
+              "men",
+              "albatta",
+              "semirmayman"
+            ],
+            "ru": [
+              "Не",
+              "волнуйся",
+              "я",
+              "точно",
+              "не",
+              "потолстею"
+            ],
+            "tj": [
+              "Хотирҷамъ",
+              "бош",
+              "ман",
+              "ҳатман",
+              "фарбеҳ",
+              "намешавам"
+            ]
+          },
+          "explanation": {
+            "uz": "你放心，我一定不会变胖。 — Xotirjam bo'l, men albatta semirmayman.",
+            "ru": "你放心，我一定不会变胖。 — Не волнуйся, я точно не потолстею.",
+            "tj": "你放心，我一定不会变胖。 — Хотирҷамъ бош, ман ҳатман фарбеҳ намешавам."
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Qanchalik yaxshi?",
@@ -1294,6 +1260,111 @@
             "uz": "怎么好？ — Zěnme hǎo?",
             "ru": "怎么好？ — Zěnme hǎo?",
             "tj": "怎么好？ — Zěnme hǎo?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你总是吃甜的东西，会越吃越胖。",
+          "pinyin": "Nǐ zǒngshì chī tián de dōngxi, huì yuè chī yuè pàng.",
+          "options": [
+            "马可，你的中文越说越好了！",
+            "哪里哪里，我们班李静说得更好。",
+            "你总是吃甜的东西，会越吃越胖。",
+            "怎么好？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你总是吃甜的东西，会越吃越胖。 — Sen doim shirin narsa yeysan, yegan sari semirasan.",
+            "ru": "你总是吃甜的东西，会越吃越胖。 — Ты всё время ешь сладкое, будешь толстеть всё больше.",
+            "tj": "你总是吃甜的东西，会越吃越胖。 — Ту ҳамеша ширинӣ мехӯрӣ, ҳар қадар хӯрӣ, ҳамон қадар фарбеҳ мешавӣ."
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "中文",
+              {
+                "uz": "xitoy tili",
+                "ru": "китайский язык",
+                "tj": "забони чинӣ"
+              }
+            ],
+            [
+              "班",
+              {
+                "uz": "sinf, guruh",
+                "ru": "класс, группа",
+                "tj": "синф, гурӯҳ"
+              }
+            ],
+            [
+              "一样",
+              {
+                "uz": "bir xil, xuddi ... kabi",
+                "ru": "одинаковый, такой же",
+                "tj": "якхела, мисли"
+              }
+            ],
+            [
+              "最后",
+              {
+                "uz": "oxirgi, so'nggi",
+                "ru": "последний",
+                "tj": "охирин"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "中间 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 中间:",
+            "tj": "Маънои калимаи 中间-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "bir xil, xuddi ... kabi",
+              "ru": "одинаковый, такой же",
+              "tj": "якхела, мисли"
+            },
+            {
+              "uz": "o'rta, orasida",
+              "ru": "середина, посередине",
+              "tj": "миёна"
+            },
+            {
+              "uz": "sinf, guruh",
+              "ru": "класс, группа",
+              "tj": "синф, гурӯҳ"
+            },
+            {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "中间 = o'rta, orasida (zhōngjiān)",
+            "ru": "中间 = середина, посередине (zhōngjiān)",
+            "tj": "中间 = миёна (zhōngjiān)"
           }
         },
         {
@@ -1392,27 +1463,6 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____可，你的中文越说越好了！",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "眼",
-            "问",
-            "久",
-            "马"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri: 马 — 马可，你的中文越说越好了！ (Make, xitoychang tobora yaxshilanib boryapti!)",
-            "ru": "Верно: 马 — 马可，你的中文越说越好了！ (Марк, ты говоришь по-китайски всё лучше!)",
-            "tj": "Дуруст: 马 — 马可，你的中文越说越好了！ (Маке, забони чиниат торафт беҳтар мешавад!)"
-          }
-        },
-        {
           "type": "quick_quiz",
           "prompt": {
             "uz": "Dialogda 大山 avval nima deydi?",
@@ -1463,13 +1513,34 @@
           }
         },
         {
+          "type": "gap_fill",
+          "sentence": "____可，你的中文越说越好了！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "司",
+            "羊",
+            "商",
+            "马"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 马 — 马可，你的中文越说越好了！ (Make, xitoychang tobora yaxshilanib boryapti!)",
+            "ru": "Верно: 马 — 马可，你的中文越说越好了！ (Марк, ты говоришь по-китайски всё лучше!)",
+            "tj": "Дуруст: 马 — 马可，你的中文越说越好了！ (Маке, забони чиниат торафт беҳтар мешавад!)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "你放心，我一定不会变胖。",
-          "pinyin": "Nǐ fàngxīn, wǒ yídìng bú huì biàn pàng.",
+          "phrase": "我有点儿害怕。",
+          "pinyin": "Wǒ yǒudiǎnr hàipà.",
           "translation": {
-            "uz": "Xotirjam bo'l, men albatta semirmayman.",
-            "ru": "Не волнуйся, я точно не потолстею.",
-            "tj": "Хотирҷамъ бош, ман ҳатман фарбеҳ намешавам."
+            "uz": "Biroz qo'rqyapman.",
+            "ru": "Мне немного страшно.",
+            "tj": "Каме метарсам."
           }
         }
       ]
