@@ -155,6 +155,13 @@ class CourseGamificationService:
             )
         )
         weekly_xp = int(weekly_result.scalar_one() or 0)
+        daily_result = await self.session.execute(
+            select(func.coalesce(func.sum(CourseXpEvent.xp), 0)).where(
+                CourseXpEvent.user_id == user.id,
+                CourseXpEvent.activity_date == day,
+            )
+        )
+        daily_xp = int(daily_result.scalar_one() or 0)
         chest_progress = int(profile.xp_total or 0) % 100
         energy_current = max(0, min(5, 3 + weekly_xp // 120))
         weekly_reset_at, weekly_reset_seconds = self._weekly_reset(profile.timezone_offset_minutes)
@@ -166,6 +173,7 @@ class CourseGamificationService:
             "longest_streak": int(profile.longest_streak or 0),
             "league": self.league_for_xp(profile.xp_total),
             "weekly_xp": weekly_xp,
+            "daily_xp": daily_xp,
             "league_points": weekly_xp,
             "weekly_reset_day": "monday",
             "weekly_reset_at": weekly_reset_at,

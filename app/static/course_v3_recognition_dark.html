@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<title>Ieroglif tanish</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.30.0/tabler-icons.min.css" rel="stylesheet">
+<style>
+:root{--ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;--cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--jade:#2FA06A;--jadebg:#E3F4EA;--redbg:#FBEDEA;--safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF Pro Text","Segoe UI",Roboto,sans-serif}
+.han{font-family:"Songti SC","STSong","Noto Serif SC",serif;font-weight:600}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;padding-top:var(--safe-t);display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:11px;padding:16px 16px 8px}
+.ix{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
+.pbar{flex:1;height:9px;background:var(--line);border-radius:6px;overflow:hidden}
+.pbar>i{display:block;height:100%;width:0;background:var(--cin);border-radius:6px;transition:width .35s}
+.pill{font-size:12px;font-weight:500;color:var(--cin2);background:var(--cinbg);border-radius:14px;padding:5px 11px}
+.body{flex:1;padding:8px 18px 0}
+.lead{font-size:13px;color:var(--ink2);text-align:center;margin:12px 0 10px}
+.target{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;text-align:center;margin-bottom:6px}
+.target .py{font-size:27px;color:var(--cin2);font-weight:500}
+.target .mn{font-size:15px;color:var(--ink2);margin-top:4px}
+.target .au{margin-top:10px;width:42px;height:42px;border-radius:50%;background:var(--cinbg);color:var(--cin);border:none;font-size:20px;display:inline-flex;align-items:center;justify-content:center}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.tile{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:18px 0 12px;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit}
+.tile .h{font-size:52px;line-height:1;color:var(--ink)}
+.tile .p{font-size:13px;color:var(--ink3);opacity:0;transition:opacity .2s}
+.tile.reveal .p{opacity:1}
+.tile.ok{border-color:var(--jade);background:var(--jadebg)}.tile.ok .p{color:var(--jade);font-weight:500}
+.tile.bad{border-color:var(--cin);background:var(--redbg)}.tile.bad .p{color:var(--cin2)}
+.done{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px}
+.done .st{width:90px;height:90px;border-radius:24px;background:var(--cin);border:3px solid var(--gold);color:#fff;display:flex;align-items:center;justify-content:center;font-size:42px;margin-bottom:16px}
+.done h3{font-size:22px;font-weight:500;margin:0 0 4px}.done p{font-size:14px;color:var(--ink2);margin:0 0 20px}
+.done button{width:100%;max-width:280px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:16px;font-weight:500}
+.loading{padding:60px 20px;text-align:center;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><button class="ix" onclick="goBack()" aria-label="Orqaga"><i class="ti ti-arrow-left"></i></button><div class="pbar"><i id="prog"></i></div><span class="pill" id="score">0 ✓</span></div>
+  <div class="body" id="body"><div class="loading">…</div></div>
+</div>
+<script src="hsk-data.js?v=20260625"></script>
+<script src="/course_v3_data/ads.js?v=20260708"></script>
+<script>
+var params=new URLSearchParams(location.search||"");
+var LANG=(params.get("lang")||"ru");if(["uz","ru","tj"].indexOf(LANG)<0)LANG="ru";
+var L={ru:{lead:"Найдите нужный среди похожих",done:"правильно",doneSub:"Вы хорошо различаете похожие иероглифы!",again:"Ещё раз",limitTitle:"Бесплатная практика на сегодня исчерпана",limitSub:"В бесплатном режиме этот раздел доступен 1 раз в день. Откройте Premium для безлимита или возвращайтесь завтра.",premiumBtn:"Открыть Premium",back:"Назад",adCont:"Продолжить с рекламой",adLimitSub:"Бесплатная попытка использована. Посмотрите короткую рекламу, чтобы продолжить, или откройте Premium."},
+  uz:{lead:"O'xshashlardan to'g'risini toping",done:"to'g'ri",doneSub:"O'xshash ieroglyflarni yaxshi farqlaysiz!",again:"Yana mashq",limitTitle:"Bugungi bepul mashq tugadi",limitSub:"Bepul rejimda bu bo'lim kuniga 1 marta ochiladi. Cheksiz mashq uchun Premium oching yoki ertaga qaytib keling.",premiumBtn:"Premium ochish",back:"Orqaga",adCont:"Reklama bilan davom etish",adLimitSub:"Bepul sinov tugadi. Davom etish uchun qisqa reklama ko'ring yoki Premium oching."},
+  tj:{lead:"Аз байни монандҳо дурустро ёбед",done:"дуруст",doneSub:"Шумо иероглифҳои монандро хуб фарқ мекунед!",again:"Боз",limitTitle:"Машқи ройгони имрӯза тамом шуд",limitSub:"Дар ҳолати ройгон ин бахш рӯзе 1 маротиба дастрас аст. Барои бепоён Premium кушоед ё фардо баргардед.",premiumBtn:"Кушодани Premium",back:"Бозгашт",adCont:"Идома бо реклама",adLimitSub:"Кӯшиши ройгон истифода шуд. Барои идома рекламаи кӯтоҳро бинед ё Premium кушоед."}}[LANG];
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+function goBack(){location.href="/course-v3-dark.html?lang="+LANG+"&tab=mashq"}
+function initData(){return (tg&&tg.initData)?tg.initData:""}
+function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_recognition_limit&mode=subscription"}
+/* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
+   oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
+if(window.CourseAds)CourseAds.config({lang:LANG,initData:initData(),feature:"recognition",level:(params.get("level")||"hsk1"),onSubscribe:goPremium});
+var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
+/* Reklama-ruxsatidan bitta slot band qilish (server tomonda hisoblanadi). */
+function runAdGate(){
+  return fetch("/api/v3/practice/ad-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"recognition",ref:"ad:"+Date.now()})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
+}
+/* "Reklama bilan davom etish" bosilganda: slot band qilib, boshlang'ich
+   reklamani ko'rsatib, sessiyani ochamiz (reklama xato bersa ham davom). */
+function startAdSupported(){
+  runAdGate().then(function(o){
+    if(o.status===403){showLimit(false);return}
+    AD_SESSION=true;AD_MID_SHOWN=false;AD_END_SHOWN=false;
+    if(window.CourseAds){CourseAds.play("start").then(start).catch(start)}else{start()}
+  }).catch(function(){showLimit(false)});
+}
+/* Kunlik limit gate: bepul userga kuniga 1 to'liq sessiya. Server tomonda
+   hisoblanadi — sahifani qayta yuklab aylanib o'tib bo'lmaydi. */
+function gateRef(create){try{var k="hsk_gate_recognition";var v=sessionStorage.getItem(k);if(!v&&create){v=Date.now().toString(36)+Math.random().toString(36).slice(2,8);sessionStorage.setItem(k,v)}return v||""}catch(e){return ""}}
+function runGate(ref){
+  return fetch("/api/v3/practice/daily-gate",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({initData:initData(),feature:"recognition",ref:ref})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,j:j}}).catch(function(){return {ok:r.ok,status:r.status,j:{}}})});
+}
+function showLimit(adAvailable){
+  if(window.CourseAds&&CourseAds.showLimitPromo){CourseAds.showLimitPromo({adAvailable:adAvailable,onSubscribe:goPremium,onContinueAd:startAdSupported,onBack:goBack});return}
+  var adBtn=adAvailable?'<button onclick="startAdSupported()" style="width:100%;max-width:300px;background:var(--cin);color:#fff;border:none;border-radius:14px;padding:15px;font-family:inherit;font-size:15px;font-weight:500"><i class="ti ti-player-play"></i> '+L.adCont+'</button>':'';
+  var sub=adAvailable?L.adLimitSub:L.limitSub;
+  document.getElementById("body").innerHTML='<div class="done"><div class="st" style="background:var(--gold)"><i class="ti ti-lock"></i></div><h3>'+L.limitTitle+'</h3><p>'+sub+'</p>'+adBtn+'<button onclick="goPremium()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--cin2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;font-weight:500;margin-top:8px"><i class="ti ti-crown"></i> '+L.premiumBtn+'</button><button onclick="goBack()" style="width:100%;max-width:300px;background:transparent;border:1px solid var(--line);color:var(--ink2);border-radius:14px;padding:14px;font-family:inherit;font-size:15px;margin-top:8px">'+L.back+'</button></div>';
+}
+/* Sessiya ochish (sahifa yuklanganda) — reload xavfsiz token bilan. */
+function gateStart(){
+  runGate(gateRef(true)).then(function(o){
+    if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
+    AD_SESSION=false;start();
+  }).catch(function(){AD_SESSION=false;start()});
+}
+/* "Yana mashq" — bu yangi sessiya, yangi slot so'raydi (bepulga 1/kun). */
+function replay(){
+  runGate("replay:"+Date.now()).then(function(o){
+    if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
+    AD_SESSION=false;start();
+  }).catch(function(){AD_SESSION=false;start()});
+}
+var _ttsAudio=null;
+function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
+function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
+function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
+function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
+function haptic(ok){try{tg&&tg.HapticFeedback&&tg.HapticFeedback.notificationOccurred(ok?"success":"error")}catch(e){}}
+var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
+function tr(m){return !m?"":(typeof m==="string"?m:(m[LANG]||m.ru||m.uz||""))}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+
+var TOTAL=10,pool=[],quiz=[],qi=0,score=0,answered=false;
+function buildPool(){
+  // single-character words make the cleanest "similar character" tiles
+  pool=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length===1});
+  if(pool.length<8)pool=(typeof WORDS!=="undefined"?WORDS:[]);
+}
+function makeQuiz(){
+  quiz=[];var used={};var tries=0;
+  while(quiz.length<Math.min(TOTAL,pool.length)&&tries<400){
+    tries++;
+    var t=pool[Math.floor(Math.random()*pool.length)];
+    if(used[t.h])continue;used[t.h]=1;
+    var same=pool.filter(function(w){return w.h!==t.h});
+    var distr=shuffle(same.slice()).slice(0,3);
+    if(distr.length<3)continue;
+    var opts=shuffle([t].concat(distr)).map(function(w){return {h:w.h,p:w.p,ok:w.h===t.h}});
+    quiz.push({py:t.p,mn:tr(t.m),zh:t.h,opts:opts});
+  }
+}
+function render(){
+  answered=false;
+  if(qi>=quiz.length)return finish();
+  /* Reklama bilan kirilgan sessiya: o'rtasida majburiy reklama pauzasi. */
+  if(AD_SESSION&&!AD_MID_SHOWN&&quiz.length>=4&&qi===Math.floor(quiz.length/2)){
+    AD_MID_SHOWN=true;
+    if(window.CourseAds){CourseAds.play("middle").then(render).catch(render);return}
+  }
+  document.getElementById("prog").style.width=Math.round(qi/quiz.length*100)+"%";
+  var q=quiz[qi];
+  document.getElementById("body").innerHTML='<div class="lead">'+L.lead+'</div>'
+    +'<div class="target"><div class="py">'+q.py+'</div><div class="mn">'+q.mn+'</div><button class="au" onclick="speak(\''+q.zh+'\')" aria-label="audio"><i class="ti ti-volume"></i></button></div>'
+    +'<div class="grid">'+q.opts.map(function(o,k){return '<button class="tile" data-k="'+k+'" onclick="pick('+k+')"><span class="h han">'+o.h+'</span><span class="p">'+o.p+'</span></button>'}).join("")+'</div>';
+}
+function pick(k){
+  if(answered)return;answered=true;var q=quiz[qi];
+  var tiles=document.querySelectorAll(".tile");
+  tiles.forEach(function(t){t.classList.add("reveal");t.style.pointerEvents="none";if(q.opts[+t.dataset.k].ok)t.classList.add("ok")});
+  var ok=q.opts[k].ok;if(!ok)tiles[k].classList.add("bad");
+  if(ok){score++;document.getElementById("score").textContent=score+" ✓"}
+  beep(ok?[660,880]:[200,150]);haptic(ok);
+  setTimeout(function(){qi++;render()},1050);
+}
+function finish(){
+  /* Reklama bilan kirilgan sessiya: oxirida majburiy yakuniy reklama. */
+  if(AD_SESSION&&!AD_END_SHOWN){AD_END_SHOWN=true;if(window.CourseAds){CourseAds.play("end").then(finish).catch(finish);return}}
+  document.getElementById("prog").style.width="100%";
+  document.getElementById("body").innerHTML='<div class="done"><div class="st"><i class="ti ti-check"></i></div><h3>'+score+' / '+quiz.length+' '+L.done+'</h3><p>'+L.doneSub+'</p><button onclick="replay()"><i class="ti ti-refresh"></i> '+L.again+'</button></div>';
+  beep([523,659,784,1046]);haptic(true);
+}
+function start(){buildPool();if(!pool.length){document.getElementById("body").innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}makeQuiz();qi=0;score=0;document.getElementById("score").textContent="0 ✓";render()}
+gateStart();
+</script>
+</body>
+</html>
