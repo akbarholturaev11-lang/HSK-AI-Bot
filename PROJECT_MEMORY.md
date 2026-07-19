@@ -207,6 +207,38 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-20 — Duolingo O'RGATISH USLUBI darslarda + challenge dars-progress gating
+
+Changed (foydalanuvchi: "struktura emas, o'rgatish stili — Duolingo'dan shablon ol"):
+- `cardWord`/`cardWordFlash`: YANGI SO'Z bayram-kartasi — sparkle animatsiya, katta hanzi
+  karta (nwPop), "YANGI SO'Z / НОВОЕ СЛОВО / КАЛИМАИ НАВ" label, pinyin/ma'no keyin ochiladi
+  (nw-info.on), avto-audio. Kartani almashtirganda `.nw*` CSS klasslari.
+- `cardPron`: "Li ustozdan keyin takrorlang" — panda `pandaChar("talk")` nutq pufagi
+  (`.teach-bub.say-bub`) ichida gap+pinyin+tarjima+audio; pastda jarimasiz o'tkazish
+  tugmasi "HOZIR GAPIRA OLMAYMAN" (`_pronSkip`, graded'ga kirmaydi).
+- Yangi karta turi `reverse_builder` (generator `make_reverse_builder_card` + frontend
+  `cardReverse`): ustoz xitoy gapni aytadi, o'quvchi TARJIMANI ona tili plitkalaridan
+  yig'adi. `tokens`/`answer_tokens` HAR TIL uchun alohida ({uz:[],ru:[],tj:[]}),
+  chalg'ituvchilar shu darsning boshqa real tarjimalaridan. 69/70 darsda bor.
+- Darsdagi BIRINCHI xatodan keyin panda dalda ekrani (`renderCheer`, Flow._wrongPending/
+  _cheered, faqat darsda — test/challenge'da emas), Duolingo boyqush daldasi kabi.
+- Pinyin sozlamasi dars oqimida (ftop'dagi gear → `App.pinyinSheet`): hammasi / faqat
+  yangi so'zlarda / yashirish; `hsk_v3_pinyin` localStorage; `#flow.pyoff/.pynew` CSS.
+- Challenge savollari endi har o'yinchining dars progressidan:
+  `CourseMiniAppPracticeService._questions(..., max_lesson=)` + `_level_questions` filtri;
+  `CourseChallengeService._generate_questions_for` progress'dan max_lesson=tugatilgan+1,
+  10 savol yig'ilmasa oynani +4 gacha kengaytiradi, keyin butun-level fallback.
+
+Files touched:
+- `app/static/course-v3.html`, `scripts/gen_course_v3_from_seed.py`, 70 dars JSON,
+  `app/services/course_challenge_service.py`, `app/services/course_miniapp_practice_service.py`
+
+Risk:
+- To'lov/obuna/gate/XP logikasi tegilmadi. Lokal HTTP preview'da 5 mexanika vizual
+  tekshirildi; testlar (41) o'tdi. Real Telegram'da bitta to'liq dars smoke-test tavsiya.
+- Eslatma: legacy `/api/miniapp/practice/start` (test/training) max_lesson'siz — eski
+  xatti-harakat saqlangan; faqat challenge yangi gate'ni ishlatadi.
+
 ### 2026-07-19 — Mashqlar dars progressiga ham bog'landi (o'rganilmagan dars so'zlari chiqmaydi)
 
 Changed:
