@@ -207,6 +207,36 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-19 — Mashqlar dars progressiga ham bog'landi (o'rganilmagan dars so'zlari chiqmaydi)
+
+Changed:
+- `course_v3_data/lesson_gate.js` (GENERATED, `gen_course_v3_from_seed.py write_lesson_gate`,
+  `--maps-only` ham yozadi): so'z/belgi → [HSK daraja, dars] — birinchi o'rgatilgan joyi
+  (1247 so'z, 1055 belgi). Qo'lda tahrirlanmaydi. Avvalgi `memo_lv.js`/`gen_memo_lv.js` O'CHIRILDI.
+- `GET /api/voice-practice/me` endi `completed_lessons` ham qaytaradi (progress.level bandi
+  user bandiga mos bo'lsa; aks holda 0) — `VoicePracticeService.user_status`.
+- Ieroglif tanish / Talaffuz / Yodlash pool tartibi: 1) joriy levelning O'RGANILGAN darslari
+  (dars ≤ tugatilgan+1); 2) yetmasa quyi levellar (to'liq o'rganilgan, aralashma sifatida);
+  3) faqat HSK1 boshida (quyi level yo'q) yaqin keyingi darslarga minimal kengayish;
+  4) gate xarita bo'lmasa eski level-fallback. Ya'ni user 4-darsda bo'lsa o'z darajasining
+  7-dars so'zlari mashqqa CHIQMAYDI.
+- Test markazi imtihonlari butun-level formatida qoldi (dars bilan cheklanmaydi) — bu HSK
+  imtihon simulyatsiyasi. Challenge savollari ham hozircha butun level bo'ylab (follow-up).
+
+Why:
+- Foydalanuvchi: "4-darsda bo'lsam 7-dars so'zlari kelmasin" — avval faqat HSK daraja
+  filtrlanardi, level ichidagi dars progressi hisobga olinmasdi.
+
+Files touched:
+- `scripts/gen_course_v3_from_seed.py`, `app/static/course_v3_data/lesson_gate.js` (yangi),
+  `app/static/course_v3_{recognition,pronunciation,memorize}.html`,
+  `app/services/voice_practice_service.py`; o'chirildi: `memo_lv.js`, `gen_memo_lv.js`
+
+Risk:
+- To'lov/obuna/gate logikasi tegilmadi. Lokal HTTP preview'da tekshirildi: HSK2 4-dars →
+  faqat 2:1..2:4 so'zlari; HSK2 1-dars → 2:1 + HSK1 takror; HSK1 1-dars → 1:1..1:3 (minimal
+  kengayish); yodlash HSK3 5-dars → faqat 3:1..3:5 belgilari. Real Telegram smoke-test tavsiya.
+
 ### 2026-07-19 — Mashq bo'limlari user'ning haqiqiy HSK darajasiga bog'landi
 
 Changed:
