@@ -207,6 +207,42 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-19 — Dars arxetiplari (xilma-xillik) + challenge savol bagi + TTS klient cache
+
+Changed:
+- `scripts/gen_course_v3_from_seed.py`: har dars endi o'z "arxetipi"da (listen/build/speak/mix,
+  level+order bo'yicha deterministik) — mashq to'plami har darsda boshqacha (70/70 noyob
+  ketma-ketlik). Intro tekshiruvlari 5 formatda aylanadi (ma'no/ieroglif/pinyin/tarjima/
+  so'z-tinglash), yangi so'zdan keyin darhol talaffuz mashqi. Har darsda 3-4 talaffuz kartasi
+  (avval 1 ta edi): intro so'z + practice so'z (rotatsiya) + dialog oxirida qisqa gap-talaffuz.
+  Yangi karta: so'z-tinglash (`listening_choice` so'z varianti, faqat o'rganilgan so'zlar).
+  70 dars JSON regeneratsiya qilindi; test yangilandi (listening opsiyalari endi satr YOKI so'z).
+- `course-v3.html` `cardChoice`: server savollaridagi `sentence` maydoni endi kartada ko'rsatiladi
+  (challenge/mashqda "Gapdagi so'z ma'nosini tanlang" gapisiz chiqayotgan bag; ____ bo'shliq
+  `<u>?</u>` bo'lib chiqadi, listening'da audio ostida).
+- `course_challenge_service._payload_map`: legacy FLAT savol ro'yxati endi faqat challenger'ga
+  tegishli — opponent start bosganda o'z tilida/darajasida yangi to'plam generatsiya bo'ladi
+  (tj user'ga uz savollar chiqish bagi). Eski boshlangan raundlar fallback orqali to'g'ri baholanadi.
+- TTS: 7 sahifada (course-v3, memorize, recognition, pronunciation, test, voice, hsk-lugat)
+  klient blob-cache — bir marta o'ynagan ovoz qayta bosishda darhol chiqadi; kurs darsida
+  keyingi 4 kartaning audiosi oldindan yuklanadi (`prefetchUpcomingAudio`). Server disk cache
+  (`/api/v3/tts`) avvaldan bor edi.
+
+Why:
+- Foydalanuvchi: darslar hamma levelda bir xil shablon — zeriktiradi; talaffuz mashqlari kam;
+  challenge savollari gapisiz/aralash tilda; ovoz kech chiqadi.
+
+Files touched:
+- `scripts/gen_course_v3_from_seed.py`, `app/static/course_v3_data/**` (70 dars + 4 map),
+  `tests/test_course_v3_static_data.py`, `app/static/course-v3.html`,
+  `app/static/course_v3_{memorize,recognition,pronunciation,test,voice}.html`,
+  `app/static/hsk-lugat.html`, `app/services/course_challenge_service.py`
+
+Risk:
+- To'lov/obuna/ruxsat/XP backend tegilmadi. Dars kontenti seed'dan verbatim, distraktorlar gated.
+  Real Telegram WebView smoke-test tavsiya: bitta to'liq dars (intro ichidagi mikrofon kartasi),
+  challenge raund (tj user), ovoz tugmasi ikkinchi bosishda darhol chiqishi.
+
 ### 2026-07-19 — Course v3 UI yangilanishi: dofamin effektlar + yangi panda + yo'lakcha bezaklari
 
 Changed:
