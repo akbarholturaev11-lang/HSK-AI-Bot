@@ -75,6 +75,14 @@ var L={ru:{hint:"Нажмите на микрофон и произнесите 
 var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription"}
+/* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
+   asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi. */
+function normLv(v){v=String(v||"").toLowerCase();if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3"].indexOf(v)>=0?v:""}
+var LV=normLv(params.get("level"));
+var LV_READY=(function(){var idt=(tg&&tg.initData)||"";if(!idt)return Promise.resolve();
+  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s}).catch(function(){})})();
+function lvNum(){return parseInt((LV||"hsk1").slice(3),10)||1}
+function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").slice(0,1),10)||0}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
 if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"pronunciation",level:(params.get("level")||"hsk1"),onSubscribe:goPremium});
@@ -165,7 +173,7 @@ function onStopped(){
   try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop()})}catch(e){}mediaStream=null;
   if(blob.size<MIN_BYTES){setHint(L.retry);return;}
   busy=true;var w=list[i],fd=new FormData(),_ext=extFromMime(blob.type||mt);
-  fd.append("initData",initData());fd.append("target",w.h);fd.append("target_pinyin",w.p||"");fd.append("language",LANG);fd.append("level",(params.get("level")||""));fd.append("audio",blob,"voice."+_ext);
+  fd.append("initData",initData());fd.append("target",w.h);fd.append("target_pinyin",w.p||"");fd.append("language",LANG);fd.append("level",LV||params.get("level")||"");fd.append("audio",blob,"voice."+_ext);
   fetch("/api/voice-practice/pronounce",{method:"POST",body:fd})
     .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
     .then(function(o){busy=false;var heard=(o&&o.j&&o.j.heard)||"";clog("mic_result",(o&&o.j&&o.j.ok===true)?"ok":"fail",{mime:blob.type||mt,ext:_ext,size:blob.size,heard:heard.slice(0,24),code:(o&&o.j&&o.j.code)||""});if(!o.ok||!o.j||o.j.ok!==true){onErr(o);return;}applyScore(Number(o.j.score)||0,heard)})
@@ -195,14 +203,19 @@ function finish(){
   document.getElementById('ctrl').style.display='none';document.getElementById('prog').style.width='100%';
   document.getElementById('dh').textContent=okCount+' / '+list.length+' '+L.done;document.getElementById('dp').textContent=L.doneSub;document.getElementById('db').textContent=L.again;
   document.getElementById('done').classList.add('on');beep([523,659,784,1046]);haptic(true);}
-function start(){
-  var pool=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length<=3});
+function start(){LV_READY.then(function(){
+  // USER darajasidagi so'zlar (fallback: <= daraja, keyin hammasi)
+  var all=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length<=3});
+  var n=lvNum();
+  var pool=all.filter(function(w){return wordLvNum(w)===n});
+  if(pool.length<8)pool=all.filter(function(w){var l=wordLvNum(w);return l&&l<=n});
+  if(pool.length<8)pool=all;
   if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
   list=shuffle(pool.slice()).slice(0,TOTAL);i=0;okCount=0;busy=false;
   document.getElementById('done').classList.remove('on');document.getElementById('ctrl').style.display='flex';document.getElementById('prog').style.width='0';
   document.getElementById('skiptxt').textContent=L.skip;
   load();
-}
+})}
 gateStart();
 </script>
 </body>

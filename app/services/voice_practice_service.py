@@ -342,6 +342,9 @@ class VoicePracticeService:
     ) -> dict:
         if role not in ROLE_PROMPTS:
             raise VoicePracticeError("INVALID_ROLE", "Unknown conversation role.")
+        level = (level or "").strip().lower()
+        if level.startswith("hsk4"):
+            level = "hsk4"  # users.level "hsk4a"/"hsk4b" bands map to HSK4 speech level
         if level not in {"beginner", "hsk1_2", "hsk3_4", "hsk1", "hsk2", "hsk3", "hsk4"}:
             raise VoicePracticeError("INVALID_LEVEL", "Unknown HSK level.")
         if language not in LANGUAGE_NAMES:

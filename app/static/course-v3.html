@@ -921,9 +921,9 @@ var App={
   tourEnd:function(){stopTourAudio();try{localStorage.setItem("hsk_v3_tour","1")}catch(e){}$("#tour").classList.remove("on")},
   toggleTourVoice:function(){TOURV=!TOURV;if(!TOURV){stopTourAudio()}tourRender(!TOURV)},
   openDict:function(){location.href="/hsk-lugat.html?theme=light&lang="+LANG},
-  openRecog:function(){location.href="/course_v3_recognition.html?lang="+LANG},
-  openPron:function(){location.href="/course_v3_pronunciation.html?lang="+LANG},
-  openTest:function(){location.href="/course_v3_test.html?lang="+LANG},
+  openRecog:function(){location.href="/course_v3_recognition.html?lang="+LANG+"&level="+((MAP&&MAP.level)||"hsk1")},
+  openPron:function(){location.href="/course_v3_pronunciation.html?lang="+LANG+"&level="+((MAP&&MAP.level)||"hsk1")},
+  openTest:function(){location.href="/course_v3_test.html?lang="+LANG+"&level="+((MAP&&MAP.level)||"hsk1")},
   openMistakes:function(){location.href="/course_v3_mistakes.html?lang="+LANG},
   openHelp:function(){var t=T();var c=(MAP&&MAP.admin_contact)||"";
     var btn=c?'<button class="scta" onclick="App.contactAdmin()"><i class="ti ti-brand-telegram"></i> '+esc(t.helpBtn)+'</button>'

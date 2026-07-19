@@ -68,6 +68,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="body" id="body"><div class="loading">…</div></div>
 </div>
 <script src="course_v3_data/memo.js?v=20260628"></script>
+<script src="course_v3_data/memo_lv.js?v=20260719"></script>
 <script src="/course_v3_data/ads.js?v=20260708"></script>
 <script>
 var P=new URLSearchParams(location.search||"");
@@ -109,6 +110,14 @@ var LIM={
 };
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription"}
+/* Foydalanuvchi darajasi: server (users.level) asosiy manba — kartalar userning
+   haqiqiy HSK darajasidagi ierogliflardan tuziladi (MEMO_LV xaritasi orqali). */
+function normLv(v){v=String(v||"").toLowerCase();if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3"].indexOf(v)>=0?v:""}
+var LV=normLv(P.get("level"));
+var LV_READY=(function(){var idt=initData();if(!idt)return Promise.resolve();
+  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s}).catch(function(){})})();
+function lvNum(){return parseInt((LV||"hsk1").slice(3),10)||1}
+function charLv(h){return (window.MEMO_LV||{})[h]||0}
 /* Reklama moduli: kunlik bepul limit tugagach, reklama bilan yana 2 marta/kun. */
 if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"memorize",level:(P.get("level")||"hsk1"),onSubscribe:goPremium});
 var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
@@ -146,7 +155,12 @@ function setPref(v){try{localStorage.setItem("hsk_memo_pref",v)}catch(e){}}
 /* ---- deck ---- */
 var KEYS=Object.keys(DATA),deck=[],DI=0;
 function buildDeck(){
-  var ks=shuffle(KEYS.slice());
+  /* User darajasidagi ierogliflar (fallback: <= daraja, keyin hammasi). */
+  var n=lvNum();
+  var base=KEYS.filter(function(k){return charLv(k)===n});
+  if(base.length<8)base=KEYS.filter(function(k){var l=charLv(k);return l&&l<=n});
+  if(base.length<8)base=KEYS.slice();
+  var ks=shuffle(base);
   if(FOCUS){
     var comps=[];Array.prototype.forEach.call(FOCUS,function(c){if(DATA[c]&&comps.indexOf(c)<0)comps.push(c)});
     if(comps.length)ks=comps.concat(ks.filter(function(k){return comps.indexOf(k)<0}));
@@ -341,10 +355,10 @@ function finishChar(){
 function nextChar(){DI++;startChar()}
 
 /* boot */
-function boot(){
+function boot(){LV_READY.then(function(){
   if(!KEYS.length){B.innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
   buildDeck();DI=0;startChar();
-}
+})}
 /* Sessiya boshlashdan oldin kunlik limitni tekshiramiz (server tomonda). */
 runGate(gateRef(true)).then(function(o){
   if(o.status===403){showLimit(o.j&&o.j.ad&&o.j.ad.available);return}
