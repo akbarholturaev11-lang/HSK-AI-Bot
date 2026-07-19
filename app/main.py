@@ -1117,6 +1117,77 @@ async def v3_clientlog(request: Request):
     return JSONResponse(content={"ok": True})
 
 
+# --- Telegram profil avatarlari (reyting va profil bo'limlari uchun) --------
+# <img> tegi header yubora olmaydi, shuning uchun endpoint ochiq; lekin faqat
+# botda ro'yxatdan o'tgan userlar uchun ishlaydi. Rasm diskка cache bo'ladi,
+# foto yo'q userlar uchun negativ-cache saqlanadi (Telegram API'ни urmaslik uchun).
+AVATAR_CACHE_DIR = "app/static/avatar_cache"
+AVATAR_TTL_SECONDS = 24 * 3600
+AVATAR_NEG_TTL_SECONDS = 6 * 3600
+_avatar_locks: dict[int, asyncio.Lock] = {}
+_AVATAR_IMG_HEADERS = {"Cache-Control": "public, max-age=21600"}
+
+
+@app.get("/api/v3/avatar/{telegram_id}")
+async def v3_avatar(telegram_id: int):
+    if telegram_id <= 0:
+        return JSONResponse(status_code=404, content={"ok": False})
+    os.makedirs(AVATAR_CACHE_DIR, exist_ok=True)
+    img_path = os.path.join(AVATAR_CACHE_DIR, f"{telegram_id}.jpg")
+    neg_path = os.path.join(AVATAR_CACHE_DIR, f"{telegram_id}.none")
+
+    def _fresh_img() -> bool:
+        return (
+            os.path.isfile(img_path)
+            and os.path.getsize(img_path) > 0
+            and time.time() - os.path.getmtime(img_path) < AVATAR_TTL_SECONDS
+        )
+
+    if _fresh_img():
+        return FileResponse(img_path, media_type="image/jpeg", headers=_AVATAR_IMG_HEADERS)
+    if os.path.isfile(neg_path) and time.time() - os.path.getmtime(neg_path) < AVATAR_NEG_TTL_SECONDS:
+        return JSONResponse(
+            status_code=404, content={"ok": False}, headers={"Cache-Control": "public, max-age=3600"}
+        )
+
+    lock = _avatar_locks.setdefault(int(telegram_id), asyncio.Lock())
+    async with lock:
+        if _fresh_img():
+            return FileResponse(img_path, media_type="image/jpeg", headers=_AVATAR_IMG_HEADERS)
+        try:
+            async with async_session_maker() as session:
+                known = await UserRepository(session).get_by_telegram_id(int(telegram_id))
+            if not known:
+                raise RuntimeError("unknown_user")
+            photos = await bot.get_user_profile_photos(int(telegram_id), limit=1)
+            if not photos.total_count or not photos.photos:
+                raise RuntimeError("no_photo")
+            # ~320px atrofidagi o'lcham yetarli (34-80px kvadratlarda ko'rsatiladi)
+            pick = min(photos.photos[0], key=lambda s: abs(int(s.width or 0) - 320))
+            file = await bot.get_file(pick.file_id)
+            bio = await bot.download_file(file.file_path)
+            data = bio.read() if hasattr(bio, "read") else bytes(bio or b"")
+            if not data:
+                raise RuntimeError("empty_avatar")
+            tmp = img_path + ".tmp"
+            with open(tmp, "wb") as fh:
+                fh.write(data)
+            os.replace(tmp, img_path)
+            with contextlib.suppress(Exception):
+                os.remove(neg_path)
+        except Exception as exc:  # noqa: BLE001
+            # Yangilash muvaffaqiyatsiz bo'lsa, eskirgan rasm bo'lsa ham beramiz
+            if os.path.isfile(img_path) and os.path.getsize(img_path) > 0:
+                return FileResponse(img_path, media_type="image/jpeg", headers=_AVATAR_IMG_HEADERS)
+            logging.info("v3_avatar unavailable for %s: %s", telegram_id, exc)
+            with contextlib.suppress(Exception):
+                open(neg_path, "w").close()
+            return JSONResponse(
+                status_code=404, content={"ok": False}, headers={"Cache-Control": "public, max-age=3600"}
+            )
+    return FileResponse(img_path, media_type="image/jpeg", headers=_AVATAR_IMG_HEADERS)
+
+
 @app.get("/api/v3/map")
 async def v3_course_map(request: Request, lang: str = "uz", level: str | None = None):
     import json as _json

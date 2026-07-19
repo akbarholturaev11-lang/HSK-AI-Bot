@@ -15,3 +15,4 @@ memory/
 .claude/
 .DS_Store
 app/static/audio/tts_cache/
+app/static/avatar_cache/

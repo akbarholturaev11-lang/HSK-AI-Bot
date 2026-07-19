@@ -295,7 +295,8 @@ button{cursor:pointer}
 /* rating */
 .lr{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);margin:0 16px}
 	.lr .rk{width:26px;text-align:center;font-weight:600;font-size:14px;color:var(--ink2)}
-	.lr .av{width:34px;height:34px;border-radius:10px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--ink2)}
+	.lr .av{width:34px;height:34px;border-radius:10px;background:var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:var(--ink2);position:relative}
+	.avp{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;border-radius:inherit}
 	.lr .nm{flex:1;font-size:14px}.lr .xp{font-size:13px;color:var(--ink2);font-weight:500}
 	.lr .nm small{display:block;font-size:11px;color:var(--ink3);margin-top:2px}
 	.lr.me{background:var(--cinbg);border-radius:11px;border-bottom:none;padding:10px 12px}
@@ -341,6 +342,7 @@ button{cursor:pointer}
 .upx{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:18px;display:flex;align-items:center;justify-content:center}
 .uphero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 18px 0}
 .uphero .av{width:80px;height:80px;border-radius:22px;background:var(--cin);border:2px solid var(--cin2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;position:relative}
+.uphero .av .avp{border-radius:20px}
 .uphero .av .cr{position:absolute;right:-5px;bottom:-5px;width:26px;height:26px;border-radius:50%;background:var(--gold);color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;border:2px solid var(--paper)}
 .uphero .nm{font-size:21px;font-weight:500;margin:10px 0 2px}.uphero .un{font-size:13px;color:var(--ink3)}
 .uphero .badges{display:flex;gap:7px;justify-content:center;margin-top:9px;flex-wrap:wrap}
@@ -906,7 +908,7 @@ var App={
   notifToggle:function(){if(notifOn){App.confirmNotifOff()}else{App.applyNotif(true)}},
   applyNotif:function(on){notifOn=on;if(MAP)MAP.notify={enabled:on};renderProfile();if(INIT_DATA)_apiPost("/api/v3/notify",{enabled:on}).catch(function(){})},
   confirmNotifOff:function(){var w={uz:{title:"Bildirishnomalarni o'chirasizmi?",body:"Kunlik eslatma va haftalik hisobotlar kelmaydi. Bu eslatmalar o'qishni tashlab qo'ymaslikka yordam beradi.",keep:"Yoqilgan qoldirish",off:"O'chirish"},ru:{title:"Отключить уведомления?",body:"Вы перестанете получать ежедневные напоминания и еженедельный отчёт. Они помогают не бросать учёбу.",keep:"Оставить включёнными",off:"Отключить"},tj:{title:"Огоҳиҳоро хомӯш мекунед?",body:"Шумо ёдовариҳои ҳаррӯза ва ҳисоботи ҳафтаинаро намегиред. Онҳо барои тарк накардани омӯзиш кӯмак мекунанд.",keep:"Фаъол мондан",off:"Хомӯш кардан"}}[LANG]||{};App.openSheet('<div class="shead"><div style="width:52px;height:52px;border-radius:15px;background:var(--card);border:1px solid var(--line);color:var(--cin);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px"><i class="ti ti-bell-off"></i></div><div class="tr" style="font-size:16px;color:var(--ink)">'+esc(w.title)+'</div><div class="tr">'+esc(w.body)+'</div></div><button class="scta" onclick="App.closeSheet()">'+esc(w.keep)+'</button><button class="scta ghost" style="margin-top:8px" onclick="App.closeSheet();App.applyNotif(false)">'+esc(w.off)+'</button>')},
-  avatarEdit:function(){var t=T();var note=LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi";App.openSheet('<div class="shead"><div class="zh han" style="font-size:30px">'+(PROF.avatar||"阿")+'</div><div class="tr" style="margin-top:8px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
+  avatarEdit:function(){var t=T();var note=LANG==="ru"?"Аватар берётся из вашего профиля Telegram":LANG==="tj"?"Аватар аз профили Telegram шумо гирифта мешавад":"Avatar Telegram profilingizdan olinadi";App.openSheet('<div class="shead"><div class="pav" style="margin:0 auto;cursor:default">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'</div><div class="tr" style="margin-top:10px">'+esc(note)+'</div></div><button class="scta ghost" onclick="App.closeSheet()">OK</button>')},
   goalPicker:function(){var p=pl();var opts=[10,20,30,50];
     App.openSheet('<div class="shead"><div class="tr" style="font-size:16px;color:var(--ink)">'+p.goalSet+'</div></div>'
       +opts.map(function(v){return '<button class="opt-row'+(v===dailyGoal?" on":"")+'" onclick="App.pickGoal('+v+')"><i class="ti ti-target"></i> '+v+' XP'+(v===dailyGoal?'<span class="chk"><i class="ti ti-check"></i></span>':'')+'</button>'}).join(""))},
@@ -1887,11 +1889,14 @@ function optText(o){return typeof o==="string"?o:tr(o)}
 function cardChoice(c){
   $("#f-cta").style.display="none";
   var t=c.type,head="",audio="";
-  if(t==="listening_choice"){audio='<div class="qcard"><button class="audio" onclick="speak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button></div>';head='';setTimeout(function(){speak(c.audio_text)},250)}
+  /* Server (challenge/mashq) savollarida gap alohida `sentence` maydonida
+     keladi — uni ko'rsatmasak "Gapdagi so'zni tanlang" gapisiz chiqadi. */
+  var sent=c.sentence?'<div class="gap han" style="margin-top:10px">'+esc(c.sentence).replace("____","<u>?</u>")+'</div>':"";
+  if(t==="listening_choice"){audio='<div class="qcard"><button class="audio" onclick="speak(\''+esc(c.audio_text||"")+'\')"><i class="ti ti-volume"></i></button>'+sent+'</div>';head='';setTimeout(function(){speak(c.audio_text)},250)}
   else if(t==="gap_fill"){head='<div class="qcard"><div class="gap han">'+esc(c.sentence||"").replace("____","<u>?</u>")+'</div></div>'}
   else if(t==="dialog_context"){var dl=(c.dialog||[]).map(function(l){return '<div class="line '+l.speaker+'"><div class="ava">'+l.speaker+'</div><div class="bub"><div class="z3 han">'+esc(l.text)+'</div></div></div>'}).join("");head='<div class="dia">'+dl+'</div>'}
   else if(t==="dialog_cloze"){var dl2=(c.lines||[]).map(function(l){var body=l.blank?'<div class="z3 han cloze-gap">？</div>':'<div class="z3 han">'+esc(l.zh)+'</div>';return '<div class="line '+esc(l.speaker)+'"><div class="ava">'+esc(l.speaker)+'</div><div class="bub">'+body+'</div></div>'}).join("");head='<div class="dia">'+dl2+'</div>'}
-  else{var p=tr(c.prompt);head='<div class="qcard"><div class="qh qask han">'+esc(p)+'</div></div>'}
+  else{var p=tr(c.prompt);head='<div class="qcard"><div class="qh qask han">'+esc(p)+'</div>'+sent+'</div>'}
   var opts=(c.options||[]).map(function(o,k){return '<button class="opt" data-k="'+k+'" onclick="Flow.pick(this,'+k+')"><span class="k">'+"ABCD"[k]+'</span>'+esc(optText(o))+'</button>'}).join("");
   $("#f-body").innerHTML='<div class="qq">'+esc(tr(c.title)||"")+'</div>'+audio+head+opts;
 }
@@ -2234,6 +2239,15 @@ function ratingCountdownText(){
 	  lv=normalizeLevel(lv||((MAP&&MAP.level)||"hsk1"));
 	  return lv.toUpperCase().replace("HSK","HSK ");
 	}
+	/* Haqiqiy Telegram avatarlari: harf zaxira bo'lib qoladi, rasm ustidan yopadi.
+	   Rasm topilmasa (404) img o'chadi va harf ko'rinaveradi. */
+	function avatarImgHtml(tgId){return tgId?'<img class="avp" alt="" loading="lazy" src="/api/v3/avatar/'+Number(tgId)+'" onerror="this.remove()">':""}
+	function myTgUser(){try{return (tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user)||{}}catch(e){return{}}}
+	function myAvatarImgHtml(){
+	  var u=myTgUser();
+	  var src=u.photo_url?String(u.photo_url):(u.id?"/api/v3/avatar/"+Number(u.id):"");
+	  return src?'<img class="avp" alt="" src="'+esc(src)+'" onerror="this.remove()">':"";
+	}
 	function normalizeSocialUser(u){
 	  u=u||{};
 	  return {
@@ -2338,7 +2352,7 @@ function _renderRatingContent(){
 	      var st=u.refStatus==="active"?r.active:r.pending;
 	      var badge='<span class="ref-badge '+(u.refStatus==="active"?"":"wait")+'">'+esc(st)+'</span>';
 	      var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
-	      h+='<div class="lr" onclick="openRatingUser('+i+',\'referrals\')"><span class="rk">'+(i+1)+'</span><span class="av">'+u.a+'</span><span class="nm">'+esc(u.n)+pm+'<small>'+badge+' · '+esc(courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1")))+' · '+esc(r.totalXp)+': '+u.totalXp.toLocaleString("ru")+'</small></span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></div>';
+	      h+='<div class="lr" onclick="openRatingUser('+i+',\'referrals\')"><span class="rk">'+(i+1)+'</span><span class="av">'+u.a+avatarImgHtml(u.tgId)+'</span><span class="nm">'+esc(u.n)+pm+'<small>'+badge+' · '+esc(courseLevelLabel(u.level||((MAP&&MAP.level)||"hsk1")))+' · '+esc(r.totalXp)+': '+u.totalXp.toLocaleString("ru")+'</small></span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></div>';
 	    });
 	    $("#s-rating").innerHTML=h;return;
 	  }
@@ -2358,7 +2372,7 @@ function _renderRatingContent(){
     if(ratingUsers.length>=8&&i===ratingUsers.length-2)h+='<div class="rt-zone dn"><span class="ln"></span><i class="ti ti-arrow-down"></i> '+r.demote+' <span class="ln"></span></div>';
     var rk=i<3?'<span class="med '+med[i]+'">'+(i+1)+'</span>':'<span class="rk">'+(i+1)+'</span>';
     var pm=u.p?'<span class="pm"><i class="ti ti-crown"></i></span>':'';
-	    h+='<div class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></div>';
+	    h+='<div class="lr'+(u.me?' me':'')+'" onclick="openRatingUser('+i+',\'rating\')">'+rk+'<span class="av'+(u.me?' han':'')+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+'</span><span class="nm">'+esc(u.n)+pm+'</span><span class="xp">'+ratingScore(u).toLocaleString("ru")+'</span></div>';
 	  });
   $("#s-rating").innerHTML=h;
 }
@@ -2638,7 +2652,7 @@ function openInviteSheet(){
   $("#upov").innerHTML=
     '<div class="uptop"><button class="upx" onclick="closeUserProfile()"><i class="ti ti-arrow-left"></i></button>'
     +'<span style="font-size:14px;font-weight:500">'+esc(u.n)+'</span><div style="width:34px"></div></div>'
-    +'<div class="uphero"><div class="av'+(isHan?" han":"")+'">'+u.a+(u.p?'<span class="cr"><i class="ti ti-crown" style="font-size:11px"></i></span>':'')+'</div>'
+    +'<div class="uphero"><div class="av'+(isHan?" han":"")+'">'+u.a+(u.me?myAvatarImgHtml():avatarImgHtml(u.tgId))+(u.p?'<span class="cr"><i class="ti ti-crown" style="font-size:11px"></i></span>':'')+'</div>'
     +'<div class="nm">'+esc(u.n)+'</div><div class="un">'+esc(t.league)+'</div>'
 	    +'<div class="badges"><span class="bg bg-lv"><i class="ti ti-bolt" style="font-size:10px"></i> '+esc(uLevel)+'</span>'
 	    +'<span class="bg bg-lg han" style="font-size:12px">朱雀</span>'
@@ -2680,7 +2694,7 @@ function renderProfile(){
   var lessonAchPct=Math.min(100,Math.round(completedLessons/100*100));
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
   $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'
-    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span></div></div>'
+    +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+myAvatarImgHtml()+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span></div></div>'
     +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="'+(pct>=100?"var(--gold)":"var(--cin)")+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+(dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
     +'<div class="sech">'+p.ach+'</div><div class="ach"><div class="arow"><div class="aic c3"><i class="ti ti-check"></i></div><div class="at"><div class="ah"><span>'+p.a1+'</span><small>'+(firstDone?p.a1d:"0 / 1")+'</small></div><div class="abar"><i style="width:'+(firstDone?100:0)+'%;background:var(--jade)"></i></div></div></div>'
