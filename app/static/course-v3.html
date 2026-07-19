@@ -665,7 +665,11 @@ var App={
   openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on");startSheetPromo("#sheet")},
   closeSheet:function(){$("#sheet").classList.remove("on");stopSheetPromo()},
   openPaywall:function(ctx){
-    PAY_SOURCE=ctx==="lockedLesson"?"v3_locked_lesson":(ctx==="profile"?"v3_profile":(ctx==="pronLimit"?"v3_pronunciation_limit":"v3_paywall"));
+    if(typeof ctx==="object" && ctx.lesson){
+      PAY_SOURCE="v3_locked_lesson";
+    }else{
+      PAY_SOURCE=ctx==="lockedLesson"?"v3_locked_lesson":(ctx==="profile"?"v3_profile":(ctx==="pronLimit"?"v3_pronunciation_limit":"v3_paywall"));
+    }
     trackCourseEvent("paywall_seen",{source:PAY_SOURCE,dedupe_key:lessonEventKey("paywall_seen",PAY_SOURCE,Date.now())});
     $("#paywall-body").innerHTML=paywallHtml(ctx);
     $("#paywall").classList.add("on");startSheetPromo("#paywall");
@@ -994,11 +998,7 @@ function adPlacementTitle(placement){
    Bepul trial: 1-dars to'liq + 2-dars yarmi; keyin obuna majburiy. */
 function openLockedLessonSheet(idx){
   var l=allLessons()[idx];if(!l)return;
-  var t=T();
-  App.openSheet('<div class="shead"><div class="zh han">'+esc(l.zh)+'</div><div class="py">'+esc(l.py||"")+'</div><div class="tr">'+esc(tr(l.tr))+'</div></div>'
-    +promoBlockHtml()
-    +'<button class="scta" onclick="App.goPay(\'v3_locked_lesson\')"><i class="ti ti-lock-open"></i> '+esc(t.subscribe)+'</button>'
-    +payHintHtml());
+  App.openPaywall({lessonIdx:idx,lesson:l});
 }
 /* Admin bir nechta reklama joylagan bo'lsa — barchasini qaytaramiz (ketma-ket
    ko'rsatish uchun). Eski "ad" maydoni ham qoladi (zaxira). */
@@ -2660,9 +2660,27 @@ function payHintHtml(){
     tj:"«Обуна шудан» саҳифаи пардохтро мекушояд. Пас аз тасдиқ ҳамаи дарсҳо ҳамин ҷо кушода мешаванд."}[LANG];
   return '<div class="tr" style="margin:10px 6px 0;text-align:center;color:var(--ink2);line-height:1.5;font-size:12px">'+esc(s)+'</div>';
 }
+function getPaywallTitle(ctx){
+  var t=T();
+  if(typeof ctx==="object" && ctx.lesson){
+    var l=ctx.lesson;
+    var lessonNum=Number(l.n||0);
+    var levelTxt=LANG==="uz"?"HSK ":"":LANG==="tj"?"HSK ":"":"HSK ";
+    var m={
+      uz:["Ushbu darsni oching","Bu dars yangilangan","Keyingi bosqich bu yerda","Dars uchun tayyormi?","Yangi mavzu o'qish"],
+      ru:["Открыть этот урок","Этот урок пока закрыт","Следующий уровень здесь","Готовы к уроку?","Новая тема к изучению"],
+      tj:["Ин дарсро кушоед","Ин дарс ҳоло баста аст","Сатҳи оянда ин ҷоест","Барои дарс тайёр астед?","Мавзӯи нав барои омӯзиш"]
+    };
+    var msgs=m[LANG]||m.ru;
+    var idx=Math.min(lessonNum%5,msgs.length-1);
+    return msgs[Math.max(0,idx)];
+  }
+  return ctx==="lockedLesson"?t.lockedLesson:t.payTitle;
+}
 function paywallHtml(ctx){
-  var t=T();var ctxTitle=ctx==="lockedLesson"?t.lockedLesson:t.payTitle;
-  return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:15px;color:var(--ink)">'+esc(ctxTitle)+'</div><div class="tr">'+t.paySub+'</div></div>'
+  var t=T();var ctxTitle=getPaywallTitle(ctx);
+  var showSubtitle=typeof ctx!=="object" || !ctx.lesson;
+  return '<div class="shead"><div style="width:54px;height:54px;border-radius:15px;background:var(--cin);border:2px solid var(--gold);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px" class="han">会</div><div class="tr" style="font-size:14px;color:var(--ink)">'+esc(ctxTitle)+'</div>'+(showSubtitle?'<div class="tr">'+t.paySub+'</div>':'')+'</div>'
     +promoBlockHtml()
     +'<button class="scta" onclick="App.goPay()"><i class="ti ti-lock-open"></i> '+t.subscribe+'</button>'
     +payHintHtml();
