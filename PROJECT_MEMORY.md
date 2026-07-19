@@ -207,6 +207,35 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-19 — Mashq bo'limlari user'ning haqiqiy HSK darajasiga bog'landi
+
+Changed:
+- Ieroglif tanish / Talaffuz / Yodlash / Test markazi endi userning haqiqiy darajasida ishlaydi.
+  Har sahifada `LV` rezolveri: URL `level` param faqat boshlang'ich qiymat, `GET
+  /api/voice-practice/me` (initData) dan kelgan `users.level` USTUN turadi. hsk4a/b → hsk4.
+- Ieroglif tanish/talaffuz: WORDS puli userning aynan darajasidagi so'zlar (kam bo'lsa
+  <= daraja, keyin hammasi). Yodlash: yangi `course_v3_data/memo_lv.js` (belgi → min HSK
+  daraja, `scripts/gen_memo_lv.js` dan generatsiya, hsk-data.js o'zgarsa qayta ishga tushirilsin)
+  orqali deck user darajasidagi belgilardan tuziladi.
+- Test markazi: user darajasidagi imtihon ro'yxatda birinchi + "Sizning darajangiz" tegi (3 til).
+- AI Voice avvaldan /me dan daraja olardi; endi `VoicePracticeService.start_session` hsk4a/b ni
+  hsk4 ga normallashtiradi (avval INVALID_LEVEL berardi).
+- course-v3.html openRecog/openPron/openTest endi `&level=MAP.level` uzatadi.
+
+Why:
+- Foydalanuvchi: "barcha bo'limlar user darajasiga mos chiqsin" — avval sahifalar URL'siz
+  default hsk1 bo'lib, WORDS umuman filtrlanmasdi.
+
+Files touched:
+- `app/static/course_v3_{recognition,pronunciation,test,memorize}.html`, `app/static/course-v3.html`,
+  `app/static/course_v3_data/memo_lv.js` (yangi), `scripts/gen_memo_lv.js` (yangi),
+  `app/services/voice_practice_service.py`
+
+Risk:
+- To'lov/obuna/gate logikasi tegilmadi (daily-gate oqimi o'z joyida). initData yo'q preview'da
+  URL level fallback ishlaydi. Lokal HTTP preview'da 4 sahifa daraja filtri tekshirildi
+  (hsk1/2/3/4 pullari to'g'ri); real Telegram'da /me override smoke-test tavsiya.
+
 ### 2026-07-19 — Dars arxetiplari (xilma-xillik) + challenge savol bagi + TTS klient cache
 
 Changed:
