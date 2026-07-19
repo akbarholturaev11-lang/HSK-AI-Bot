@@ -207,6 +207,42 @@ Risk: Unknown / needs inspection
 
 ## 10. Recent Important Changes
 
+### 2026-07-19 — Course v3 UI yangilanishi: dofamin effektlar + yangi panda + yo'lakcha bezaklari
+
+Changed:
+- Course v3 (course-v3.html va barcha course_v3_* sahifalar) yangilangan ko'rinishga o'tdi:
+  asl parchment palitra biroz tiniqlashtirildi (--cin #E04A40, --gold #E9A916, --jade #2FA06A,
+  --paper #FDF9F0), bo'lim banneri qizil gradient. subscription.html va hsk-lugat.html tegilmagan.
+- Panda maskot (`pandaChar`) qayta chizildi: kattaroq, do'mboq, Duolingo maskot uslubi;
+  API o'zgarmagan (happy/celebrate/talk, pd-* klasslar). Konteynerlar kattalashtirildi
+  (.pmasc 72px, .lu-panda 92px).
+- 4 yangi dofamin effekt (hammasi o'z momentida): streak alanga ekrani (`App.showStreakScreen`,
+  FAQAT streak oshgan kuni — kuniga 1 marta); kunlik maqsad halqasi headerda (`goalRingHtml` +
+  `flyXp` XP uchishi); combo edge-glow (3/5/10 ketma-ket to'g'rida) + haptic eskalatsiya
+  (med/heavy); sandiq ochilish overlay (`App.openChest`, mavjud reward-chest backend'iga ulangan,
+  yo'ldagi chest nodelar endi bosiladi).
+- Yo'lakcha bezaklari: `_DECOR`/`scenerySvg` (daraxt, bambuk, tosh, gulli buta, pagoda, o't) —
+  pandasiz qatorlarda node qarshi tomonida, dekorativ (pointer-events:none).
+- Backend: `CourseGamificationService.snapshot()` endi `daily_xp` (bugungi XP sum) qaytaradi;
+  `/api/v3/map` progress payload'iga `daily_xp` + `reward_chest` qo'shildi. Profil/header
+  kunlik halqasi endi haqiqiy kunlik XP'dan (avvalgi soxta `xp % 50` o'rniga, fallback qolgan).
+
+Why:
+- Foydalanuvchi Duolingo/HelloChinese darajasidagi dofamin UX so'radi; dark tema variantini
+  rad etib, asl ranglarning tiniqroq versiyasini tanladi.
+
+Files touched:
+- `app/static/course-v3.html`, `app/static/course_v3_{onboarding,recognition,pronunciation,test,mistakes,voice,memorize}.html`
+- `app/main.py`, `app/services/course_gamification_service.py`
+
+Risk:
+- Dars/quiz/to'lov/obuna/ruxsat logikasi o'zgarmagan; faqat UI + 2 ta additiv snapshot/payload field.
+- Voice sahifasi o'z "xona sahnasi" dizaynida qoldi (faqat tokenlar tiniqlashtirildi).
+- HTML sahifalar no-store — foydalanuvchilar deploy'dan keyin darhol yangi ko'rinishni oladi.
+
+Follow-up:
+- Real Telegram WebView'da (iOS/Android) bitta to'liq dars + streak ekrani + sandiq smoke-test.
+
 ### 2026-07-18 — Subscription checkout stage analytics
 
 Changed:

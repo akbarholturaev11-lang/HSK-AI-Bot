@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FDF9F0">
 <title>HSK AI</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{
-  --ink:#211D17;--ink2:#6E665B;--ink3:#A89E8E;--paper:#FBF7EF;--card:#FFFFFF;--line:#EAE2D4;
-  --cin:#C2403A;--cin2:#9A2F2B;--cinbg:#FBEDEA;--gold:#C2962F;--goldbg:#F8F0DA;--jade:#2F7D5E;--jadebg:#E7F1EA;
+  --ink:#211D17;--ink2:#665D50;--ink3:#A89E8E;--paper:#FDF9F0;--card:#FFFFFF;--line:#EAE0CC;
+  --cin:#E04A40;--cin2:#B23530;--cinbg:#FDEBE7;--gold:#E9A916;--goldbg:#FAF0D3;--jade:#2FA06A;--jadebg:#E3F4EA;
+  --flame:#FF9600;--flamebg:#FFEFD6;--blue:#2E86C1;--bluebg:#E8F2FA;--overlay:#171310;--shadow:#E4D9C4;
   --safe-b:env(safe-area-inset-bottom,0px);--safe-t:env(safe-area-inset-top,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -50,7 +52,7 @@ button{cursor:pointer}
 .nnum{display:block;font-size:10px;font-weight:600;color:var(--ink3);letter-spacing:.02em;margin-top:1px}
 .bubble{position:absolute;top:-42px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--cin);color:var(--cin2);font-size:12px;font-weight:600;padding:7px 14px;border-radius:20px;white-space:nowrap}
 .bubble:after{content:"";position:absolute;bottom:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#fff;border-right:1px solid var(--cin);border-bottom:1px solid var(--cin)}
-.pmasc{position:absolute;top:50%;width:50px;height:50px;margin-top:-25px;pointer-events:none;animation:pmascBob 3.4s ease-in-out infinite;z-index:1;opacity:.9}
+.pmasc{position:absolute;top:50%;width:72px;height:72px;margin-top:-36px;pointer-events:none;animation:pmascBob 3.4s ease-in-out infinite;z-index:1;opacity:.95}
 .pmasc svg{width:100%;height:100%;display:block;opacity:.8;animation:pmascNod 4.6s ease-in-out infinite;transform-origin:50% 90%}
 .pmasc:after{content:"";position:absolute;left:50%;bottom:-7px;width:34px;height:8px;margin-left:-17px;background:radial-gradient(closest-side,rgba(33,29,23,.16),rgba(33,29,23,0));border-radius:50%;animation:pmascShadow 3.4s ease-in-out infinite}
 @keyframes pmascBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -398,7 +400,7 @@ button{cursor:pointer}
 .levelup.on{display:flex}
 .lu-rays{position:absolute;top:130px;left:50%;width:520px;height:520px;transform:translate(-50%,-50%);opacity:.5;animation:luspin 28s linear infinite}
 @keyframes luspin{to{transform:translate(-50%,-50%) rotate(360deg)}}
-.lu-panda{width:64px;height:64px;position:absolute;top:70px;right:50px;z-index:2}
+.lu-panda{width:92px;height:92px;position:absolute;top:56px;right:40px;z-index:2}
 .lu-stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;position:relative;z-index:2}
 .lu-emb{width:138px;height:138px;border-radius:34px;background:var(--cin);border:3px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:6px;transform:scale(0);transition:transform .5s cubic-bezier(.2,1.5,.4,1)}
 .lu-emb.in{transform:scale(1)}
@@ -435,6 +437,58 @@ button{cursor:pointer}
 .tour-coach .row{display:flex;align-items:center;gap:10px}
 .tour-coach .dots{display:flex;gap:5px;flex:1}.tour-coach .dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.tour-coach .dots i.on{background:var(--cin)}
 .tour-coach .nx{background:var(--cin);color:#fff;border:none;border-radius:12px;padding:11px 20px;font-family:inherit;font-size:14px;font-weight:500}
+/* ===== FRESH polish + dopamine features ===== */
+.uban{background:linear-gradient(135deg,var(--cin),var(--cin2));color:#fff}
+.uban.lock{background:var(--card);color:var(--ink2)}
+/* edge glow (combo) */
+#edgeglow{position:fixed;inset:0;pointer-events:none;z-index:46;opacity:0;transition:opacity .4s;max-width:480px;margin:0 auto}
+#edgeglow.g1{opacity:1;box-shadow:inset 0 0 40px 4px rgba(233,169,22,.22)}
+#edgeglow.g2{opacity:1;box-shadow:inset 0 0 60px 10px rgba(233,169,22,.32)}
+#edgeglow.g3{opacity:1;box-shadow:inset 0 0 90px 18px rgba(224,74,64,.42);animation:egPulse 1.1s ease-in-out infinite}
+@keyframes egPulse{0%,100%{opacity:.85}50%{opacity:1}}
+/* streak flame screen (dark levelup overlay ustida) */
+.sk-flame{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.sk-flame svg{width:100%;height:100%;display:block}
+.sk-flame.lit svg{animation:skIgnite .7s cubic-bezier(.2,1.5,.4,1)}
+.sk-flame.lit:after{content:"";position:absolute;inset:-26px;border-radius:50%;background:radial-gradient(closest-side,rgba(233,169,22,.4),rgba(233,169,22,0));animation:skGlow 1.6s ease-in-out infinite}
+.sk-flame.dim svg{opacity:.9}
+@keyframes skIgnite{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes skGlow{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+.sk-flick{animation:skFlick 1.3s ease-in-out infinite;transform-origin:50% 88%}
+@keyframes skFlick{0%,100%{transform:scaleY(1) scaleX(1)}30%{transform:scaleY(1.05) scaleX(.97)}60%{transform:scaleY(.96) scaleX(1.03)}}
+.sk-num{font-size:74px;font-weight:800;line-height:1;color:var(--gold);text-shadow:0 3px 0 rgba(0,0,0,.35)}
+.sk-days{display:flex;gap:9px;justify-content:center;margin:20px 0 4px}
+.sk-day{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,.55)}
+.sk-day .c{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.10);display:flex;align-items:center;justify-content:center;font-size:15px;color:rgba(255,255,255,.35)}
+.sk-day.on{color:var(--gold)}
+.sk-day.on .c{background:var(--gold);color:#fff}
+.sk-day.tod .c{outline:3px solid rgba(233,169,22,.45);outline-offset:2px}
+.sk-panda{position:absolute;right:-52px;bottom:-8px;width:86px;height:86px}
+/* daily goal ring (header) */
+.goalring{position:relative;width:40px;height:40px;flex-shrink:0;cursor:pointer}
+.goalring svg{width:100%;height:100%;display:block}
+.goalring .gr-ic{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--cin)}
+.goalring.full .gr-ic{animation:grBounce .6s cubic-bezier(.2,1.6,.4,1)}
+.goalring.full:after{content:"";position:absolute;inset:-5px;border-radius:50%;background:radial-gradient(closest-side,rgba(233,169,22,.4),rgba(233,169,22,0));animation:skGlow 1.4s ease-in-out infinite}
+@keyframes grBounce{0%{transform:scale(1)}45%{transform:scale(1.35)}100%{transform:scale(1)}}
+.xpfly{position:fixed;z-index:60;font-size:15px;font-weight:800;color:var(--gold);pointer-events:none;transition:transform .9s cubic-bezier(.3,.1,.3,1),opacity .9s;text-shadow:0 1px 6px rgba(233,169,22,.4)}
+/* chest opening */
+.chest-fig{position:relative;width:150px;height:130px;margin-bottom:10px}
+.chest-fig svg{width:100%;height:100%;display:block;overflow:visible}
+.chest-fig.shake{animation:chShake .8s ease-in-out}
+@keyframes chShake{0%,100%{transform:rotate(0)}15%{transform:rotate(-7deg)}30%{transform:rotate(6deg)}45%{transform:rotate(-5deg)}60%{transform:rotate(4deg)}75%{transform:rotate(-2deg)}}
+.chest-lid{transition:transform .5s cubic-bezier(.2,1.5,.4,1);transform-origin:14% 55%}
+.chest-fig.open .chest-lid{transform:rotate(-38deg) translateY(-6px)}
+.chest-burst{position:absolute;inset:-40px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,200,0,.5),rgba(255,200,0,0));opacity:0;transform:scale(.4)}
+.chest-fig.open .chest-burst{animation:chBurst .8s ease-out forwards}
+@keyframes chBurst{0%{opacity:0;transform:scale(.4)}30%{opacity:1}100%{opacity:0;transform:scale(1.5)}}
+.chest-xp{font-size:44px;font-weight:800;color:var(--gold);opacity:0;transform:scale(.4);transition:all .5s cubic-bezier(.2,1.6,.4,1)}
+.chest-xp.in{opacity:1;transform:scale(1)}
+.chestbar{height:10px;border-radius:6px;background:var(--line);overflow:hidden;margin:12px 0 8px}
+.chestbar>i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--gold),var(--cin));transition:width .5s}
+/* yo'lakcha bezaklari: daraxt, pagoda, buta, tosh, o't (dekorativ) */
+.decor{position:absolute;top:50%;margin-top:-26px;width:60px;height:60px;pointer-events:none;z-index:0;opacity:.95;filter:drop-shadow(0 3px 2px rgba(60,44,20,.14))}
+.decor.sm{width:44px;height:44px;margin-top:-16px}
 </style>
 </head>
 <body>
@@ -497,6 +551,7 @@ button{cursor:pointer}
 
   <div class="tour" id="tour"><div class="tour-spot" id="tour-spot"></div><button class="tour-skip" id="tour-skip" onclick="App.tourEnd()"></button><div class="tour-coach" id="tour-coach"></div></div>
   <div class="upov" id="upov"></div>
+  <div id="edgeglow"></div>
   <div class="combo" id="combo"></div>
   <div class="toast" id="toast"></div>
 </div>
@@ -520,7 +575,7 @@ function setSelectedLevel(lv){
   try{var u=new URL(location.href);u.searchParams.set("level",lv);history.replaceState(null,"",u.pathname+"?"+u.searchParams.toString())}catch(e){}
   return lv;
 }
-var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}}
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()}catch(e){}try{tg.setHeaderColor("#FDF9F0");tg.setBackgroundColor("#FDF9F0")}catch(e){}}
 var INIT_DATA=(tg&&tg.initData)||"";
 /* Bot username yagona manba: serverdan (BOT_USERNAME) keladi. Map javobida
    bot_username bo'lsa yangilanadi; bo'lmasa xavfsiz default ishlaydi. */
@@ -594,7 +649,7 @@ function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={u
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
 function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
 function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
-function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notificationOccurred("success"):t==="no"?tg.HapticFeedback.notificationOccurred("error"):tg.HapticFeedback.impactOccurred("light"))}catch(e){}}
+function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notificationOccurred("success"):t==="no"?tg.HapticFeedback.notificationOccurred("error"):t==="med"?tg.HapticFeedback.impactOccurred("medium"):t==="heavy"?tg.HapticFeedback.impactOccurred("heavy"):tg.HapticFeedback.impactOccurred("light"))}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
 /* ---------- App ---------- */
@@ -605,7 +660,8 @@ var App={
   setLang:function(l){if(!I18N[l])return;LANG=l;renderAll()},
   show:function(s){SCREEN=s;document.querySelectorAll(".scr").forEach(function(e){e.classList.toggle("on",e.id==="s-"+s)});
     document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("on",b.dataset.s===s)});window.scrollTo(0,0);
-    if(s==="voice")renderVoice();},
+    if(s==="voice")renderVoice();
+    if(s==="course"&&window._pendingXpFly){var fx=window._pendingXpFly;window._pendingXpFly=0;setTimeout(function(){flyXp(fx)},350)}},
   openSheet:function(html){$("#sheet-body").innerHTML=html;$("#sheet").classList.add("on");startSheetPromo("#sheet")},
   closeSheet:function(){$("#sheet").classList.remove("on");stopSheetPromo()},
   openPaywall:function(ctx){
@@ -626,7 +682,7 @@ var App={
        NOT tg.openLink (which kicks the user out to the external browser). */
     setTimeout(function(){location.href=url},40);
   },
-  exitFlow:function(){$("#flow").classList.remove("on")},
+  exitFlow:function(){$("#flow").classList.remove("on");edgeGlow(0)},
   openWriter:function(ch){
     if(!ch)return;
     var url="/hsk-lugat.html?theme=light&fast=1&char="+encodeURIComponent(ch)+"&lang="+LANG;
@@ -656,14 +712,33 @@ var App={
     var V={lesson:{emb:'<span class="h2 han">毕</span>',h:lu.lessonH,p:lu.lessonP,rw:xpRows},
       level:{emb:'<span class="h2 han">二</span>',h:levelCopy.h||lu.levelH,p:levelCopy.p||lu.levelP,rw:levelRows},
       xp:{emb:'<small>'+lu.lvl+'</small><b>5</b>',h:lu.xpH,p:lu.xpP,rw:xpRows}}[type||"lesson"];
-    if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#C2962F" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
+    if(!$("#lu-rays").innerHTML){var r="";for(var a=0;a<24;a++)r+='<rect x="99" y="0" width="2" height="100" fill="#FFC800" transform="rotate('+(a*15)+' 100 100)"/>';$("#lu-rays").innerHTML=r;}
     $("#lu-panda").innerHTML=pandaChar("celebrate");
     var rewards=V.rw&&V.rw.length?'<div class="lu-rewards">'+V.rw.map(function(x){return '<div class="lu-rw"><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'}).join("")+'</div>':"";
     $("#lu-stage").innerHTML='<div class="lu-emb">'+V.emb+'</div><h2>'+V.h+'</h2><p>'+V.p+'</p>'+rewards;
-    $("#lu-cta").setAttribute("onclick",(type||"lesson")==="lesson"?"App.showRankUp()":"App.closeLevelUp()");
+    $("#lu-cta").setAttribute("onclick",(type||"lesson")==="lesson"?"App.showStreakScreen()":"App.closeLevelUp()");
     $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+lu.cont;
     $("#levelup").classList.add("on");setTimeout(function(){var e=document.querySelector("#lu-stage .lu-emb");if(e)e.classList.add("in")},60);
     luRain();beep([523,659,784,1046]);haptic("ok");
+  },
+  /* Duolingo uslubidagi streak alanga ekrani — dars tugagach */
+  showStreakScreen:function(){
+    var ps=window._pendingStreak;window._pendingStreak=null;
+    var n=ps?ps.now:0;
+    if(!ps||!n||!ps.extended){App.showRankUp();return}
+    var W={ru:{one:"день в ударе!",few:"дня в ударе!",many:"дней в ударе!",lit:"Пламя зажжено! Занимайся каждый день.",keep:"Серия продолжается — так держать!",cont:"Продолжить"},
+      uz:{one:"kun ketma-ket!",few:"kun ketma-ket!",many:"kun ketma-ket!",lit:"Alanga yondi! Har kuni shug'ullan.",keep:"Seriya davom etmoqda — zo'r ketyapsan!",cont:"Davom etish"},
+      tj:{one:"рӯз пайдарпай!",few:"рӯз пайдарпай!",many:"рӯз пайдарпай!",lit:"Аланга даргирифт! Ҳар рӯз машқ кун.",keep:"Силсила идома дорад — офарин!",cont:"Идома"}}[LANG];
+    var lbl=LANG==="ru"?(n%10===1&&n%100!==11?W.one:(n%10>=2&&n%10<=4&&(n%100<10||n%100>=20)?W.few:W.many)):W.one;
+    $("#lu-panda").innerHTML="";
+    $("#lu-stage").innerHTML='<div class="sk-flame '+(ps.extended?"lit":"dim")+'">'+flameSvg()
+      +'<div class="sk-panda">'+pandaChar("celebrate")+'</div></div>'
+      +'<div class="sk-num">'+n+'</div><h2>'+lbl+'</h2><p>'+(ps.extended?W.lit:W.keep)+'</p>'
+      +'<div class="sk-days">'+skDaysHtml(n)+'</div>';
+    $("#lu-cta").setAttribute("onclick","App.showRankUp()");
+    $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+W.cont;
+    $("#levelup").classList.add("on");
+    if(ps.extended){setTimeout(function(){beep([392,523,659,784]);haptic("heavy")},350)}
   },
   showRankUp:function(){
     var beforeRank=pendingRankUp&&pendingRankUp.before;pendingRankUp=null;
@@ -704,6 +779,47 @@ var App={
     $("#lu-cta").setAttribute("onclick","App.closeLevelUp()");$("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+r.cont;
   },
   closeLevelUp:function(){$("#levelup").classList.remove("on");App.exitFlow();App.show("rating");renderRating()},
+  /* Sovg'a sandig'i: yo'ldagi chest bosilganda */
+  openChest:function(){
+    var ct=chestT();var rc=(MAP&&MAP.progress&&MAP.progress.reward_chest)||null;
+    if(!INIT_DATA){App.renderChestOverlay(15);return}
+    if(!rc||!rc.ready){
+      var prog=rc?Math.min(100,Math.round((rc.progress||0)/80*100)):0,leftXp=rc?(rc.next_xp||0):0;
+      App.openSheet('<div class="shead"><div class="chest-fig" style="margin:0 auto 6px">'+chestSvg()+'</div>'
+        +'<div class="tr" style="font-size:16px;color:var(--ink)">'+esc(ct.soon)+'</div><div class="tr">'+esc(ct.note)+'</div></div>'
+        +'<div class="chestbar"><i style="width:'+prog+'%"></i></div>'
+        +(leftXp?'<div class="tr" style="text-align:center;color:var(--ink2);font-size:13px">'+esc(ct.left.replace("{n}",leftXp))+'</div>':'')
+        +'<button class="scta" style="margin-top:12px" onclick="App.closeSheet()">OK</button>');
+      return;
+    }
+    _apiPost("/api/miniapp/reward-chest/open",{})
+      .then(function(r){return r.json()})
+      .then(function(d){
+        if(!d.ok){toast(serverSaveErrorText(d.error),2200);return}
+        if(MAP&&MAP.progress){
+          if(d.xp)MAP.progress.xp=d.xp;
+          if(typeof d.daily_xp!=="undefined")MAP.progress.daily_xp=d.daily_xp;
+          if(d.reward_chest)MAP.progress.reward_chest=d.reward_chest;
+        }
+        App.renderChestOverlay(Number(d.reward_value||0));
+      })
+      .catch(function(){toast(serverSaveErrorText(),2200)});
+  },
+  renderChestOverlay:function(val){
+    var ct=chestT();
+    $("#lu-panda").innerHTML=pandaChar("celebrate");
+    $("#lu-stage").innerHTML='<div class="chest-fig shake" id="chestfig"><div class="chest-burst"></div>'+chestSvg()+'</div>'
+      +'<div class="chest-xp" id="chestxp">+'+val+' XP</div><h2>'+esc(ct.got)+'</h2>';
+    $("#lu-cta").setAttribute("onclick","App.closeChest()");
+    $("#lu-cta").innerHTML='<i class="ti ti-arrow-right"></i> '+ct.cont;
+    $("#levelup").classList.add("on");
+    setTimeout(function(){
+      var f=$("#chestfig");if(f){f.classList.remove("shake");f.classList.add("open")}
+      var x=$("#chestxp");if(x)x.classList.add("in");
+      luRain();beep([659,784,1046,1318]);haptic("heavy");
+    },900);
+  },
+  closeChest:function(){$("#levelup").classList.remove("on");renderAll()},
   runTour:function(){var t={
     ru:{
       c:"Вот ваш курс! Каждый кружок — это урок. Нажми на узел и начни учиться.",
@@ -1178,7 +1294,8 @@ function renderCourse(){
      tanlash ko'rsatilmaydi, shuning uchun bu statik yorliq (tugma emas). */
   var h='<div class="htop"><span class="lvpill"><i class="ti ti-bolt"></i> '+esc(MAP.label)+'</span>'
     +'<span class="chip" style="margin-left:auto;color:var(--cin)"><i class="ti ti-flame"></i> '+(MAP.progress.streak||0)+'</span>'
-    +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span></div>'
+    +'<span class="chip" style="color:var(--gold)"><i class="ti ti-diamond"></i> '+(MAP.progress.xp||0).toLocaleString("ru")+'</span>'
+    +goalRingHtml()+'</div>'
     +'<div class="pwrap"><div class="pbar"><i style="width:'+pct+'%"></i></div><small>'+done+' / '+total+' '+T().lessons+'</small></div>';
   var mascP={ru:["Продолжаем!","Так держать!","Ещё урок!","У тебя получится!"],
     uz:["Davom etamiz!","Zo'r ketyapsan!","Yana bir dars!","Sen uddalaysan!"],
@@ -1193,10 +1310,12 @@ function renderCourse(){
     if(!locked && u.milestone){nodes.splice(Math.min(3,nodes.length),0,{kind:"chest"});nodes.push({kind:"boss",m:u.milestone})}
     nodes.forEach(function(n,k){
       var off=Math.round(Math.sin((ui*3+k)*0.9)*76);
-      var inner,cls,lbl="",clk="",bub="",mascot="";
+      var inner,cls,lbl="",clk="",bub="",mascot="",decor="";
       /* kamroq panda + har biri qisqa rag'bat matni ko'rsatsin (dofamin) */
       if(n.kind==="lesson"&&n.l.status!=="current"&&k%5===2){var ph=mascP[mcnt++%mascP.length];mascot='<div class="pmasc '+(off>=0?"l":"r")+'" style="'+(off>=0?"left:8px":"right:8px")+';animation-delay:'+((k%4)*0.4)+'s" aria-hidden="true"><div class="pmasc-bub">'+esc(ph)+'</div>'+pandaChar("happy",{anim:false})+'</div>'}
-      if(n.kind==="chest"){cls="chest";inner='<i class="ti ti-gift"></i>'}
+      /* yo'lakcha bezagi: pandasiz qatorlarda, node'ning qarshi tomonida */
+      if(!mascot&&k%2===1){decor='<div class="decor'+((ui*3+k)%3===0?" sm":"")+'" style="'+(off>=0?"left:16px":"right:16px")+'" aria-hidden="true">'+scenerySvg(ui*5+k)+'</div>'}
+      if(n.kind==="chest"){cls="chest";inner='<i class="ti ti-gift"></i>';clk='onclick="App.openChest()"'}
       else if(n.kind==="boss"){cls="boss";inner='<i class="ti ti-star"></i>';lbl=tr(n.m.title).split(" ")[0]||"Sinov"}
       else{
         var st=isPremiumLocked(n.l)?"locked":n.l.status;cls=st;
@@ -1205,7 +1324,7 @@ function renderCourse(){
         else inner='<i class="ti ti-lock"></i>';
         lbl=n.l.zh;clk='onclick="openLessonSheet('+JSON.stringify(allLessons().indexOf(n.l))+')"';
       }
-      h+='<div class="prow">'+mascot+'<div class="nodewrap" style="transform:translateX('+off+'px)">'+bub
+      h+='<div class="prow">'+mascot+decor+'<div class="nodewrap" style="transform:translateX('+off+'px)">'+bub
         +'<button class="node '+cls+'" '+clk+'><span class="ring"></span>'+inner+'</button>'
         +(lbl?'<span class="nlabel '+(cls==="locked"||cls==="boss"||cls==="chest"?"mut":"")+'">'+esc(lbl)
           +(n.kind==="lesson"?'<span class="nnum">'+n.l.n+'-'+esc(T().lessons)+'</span>':'')+'</span>':'')+'</div></div>';
@@ -1502,9 +1621,13 @@ function flowProg(){$("#f-prog").style.width=Math.round(Flow.i/Flow.queue.length
 function hideBar(){$("#f-bar").className="fbar"}
 function showBar(ok,msg,sub){var b=$("#f-bar");b.className="fbar show "+(ok?"ok":"no");$("#f-msg").innerHTML='<i class="ti ti-'+(ok?"check":"x")+'"></i><span>'+msg+(sub?'<small>'+sub+'</small>':'')+'</span>';$("#f-barbtn").textContent=T().next;
   Flow.streak=ok?(Flow.streak||0)+1:0;
+  edgeGlow(ok?Flow.streak:0);
+  if(ok){if(Flow.streak>=5)haptic("heavy");else if(Flow.streak>=3)haptic("med")}
   trackInteraction(ok);
   if(ok&&Flow.streak>=5&&Flow.streak%5===0)comboPop(Flow.streak);
 }
+/* Ketma-ket to'g'ri javoblarda ekran cheti porlashi (dofamin) */
+function edgeGlow(n){var e=$("#edgeglow");if(!e)return;e.className=n>=10?"g3":n>=5?"g2":n>=3?"g1":""}
 /* Duolingo uslubi: 5 ta ketma-ket to'g'ri javobda panda + maqtov + effekt (dofamin) */
 function comboPop(n){
   var P={ru:["Так держать!","Отлично!","Ты в ударе!","Невероятно!","Огонь!"],
@@ -1512,11 +1635,78 @@ function comboPop(n){
     tj:["Идома деҳ!","Олӣ!","Оташин!","Аҷоиб!","Нашав!"]}[LANG]||["Zo'r!"];
   var msg=P[Math.min(Math.floor(n/5)-1,P.length-1)]||P[0];
   var el=$("#combo");if(!el)return;
-  el.innerHTML='<div class="combo-card"><div class="combo-pd">'+pandaChar("celebrate")+'</div><div class="combo-n">'+n+'×</div><div class="combo-tx">'+esc(msg)+'</div></div>';
-  var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'];
-  for(var i=0;i<16;i++){(function(){var s=document.createElement('span');s.className='combo-spark';s.style.left='50%';s.style.top='42%';s.style.background=cols[i%5];el.appendChild(s);var a=Math.random()*6.28,d=70+Math.random()*90;requestAnimationFrame(function(){s.classList.add('go');s.style.opacity='1';s.style.transform='translate('+Math.cos(a)*d+'px,'+Math.sin(a)*d+'px) rotate('+(Math.random()*360)+'deg)';s.style.opacity='0'});setTimeout(function(){s.remove()},720)})()}
+  el.innerHTML='<div class="combo-card"><div class="combo-pd">'+pandaChar("celebrate")+'</div><div class="combo-n"'+(n>=10?' style="color:var(--cin);font-size:'+Math.min(46+n,72)+'px"':'')+'>'+n+'×</div><div class="combo-tx">'+esc(msg)+'</div></div>';
+  var cols=['#E04A40','#E9A916','#2FA06A','#2E86C1','#F2A9B5'];
+  var sparkN=16+Math.min(n||0,24);
+  for(var i=0;i<sparkN;i++){(function(){var s=document.createElement('span');s.className='combo-spark';s.style.left='50%';s.style.top='42%';s.style.background=cols[i%5];el.appendChild(s);var a=Math.random()*6.28,d=70+Math.random()*90;requestAnimationFrame(function(){s.classList.add('go');s.style.opacity='1';s.style.transform='translate('+Math.cos(a)*d+'px,'+Math.sin(a)*d+'px) rotate('+(Math.random()*360)+'deg)';s.style.opacity='0'});setTimeout(function(){s.remove()},720)})()}
   el.classList.add("on");beep([784,988,1318,1568]);haptic("ok");
   clearTimeout(comboPop._t);comboPop._t=setTimeout(function(){el.classList.remove("on")},1350);
+}
+/* ---------- Yo'lakcha bezaklari: daraxt, bambuk, tosh, buta, pagoda, o't ---------- */
+var _DECOR=[
+ '<svg viewBox="0 0 64 64"><path d="M32 6 L46 28 H38 L50 46 H14 L26 28 H18 Z" fill="#3E8E5A"/><path d="M32 6 L46 28 H38 L50 46 H32 Z" fill="#337A4C"/><rect x="29" y="46" width="6" height="10" rx="2" fill="#8A5A2B"/></svg>',
+ '<svg viewBox="0 0 64 64"><rect x="18" y="10" width="6" height="46" rx="3" fill="#57A773"/><rect x="30" y="4" width="6" height="52" rx="3" fill="#6BBF8A"/><rect x="42" y="14" width="6" height="42" rx="3" fill="#57A773"/><path d="M36 14 q10 -8 14 -4" stroke="#6BBF8A" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+ '<svg viewBox="0 0 64 64"><ellipse cx="24" cy="48" rx="14" ry="9" fill="#BFB4A2"/><ellipse cx="43" cy="51" rx="10" ry="6" fill="#D2C8B7"/><ellipse cx="23" cy="45" rx="10" ry="6" fill="#D2C8B7"/></svg>',
+ '<svg viewBox="0 0 64 64"><ellipse cx="32" cy="48" rx="18" ry="10" fill="#5FA97C"/><ellipse cx="20" cy="43" rx="9" ry="7" fill="#6FBF8D"/><ellipse cx="43" cy="43" rx="9" ry="7" fill="#6FBF8D"/><circle cx="26" cy="44" r="2.5" fill="#F2A9B5"/><circle cx="38" cy="47" r="2.5" fill="#F2A9B5"/><circle cx="32" cy="40" r="2.5" fill="#FFD66B"/></svg>',
+ '<svg viewBox="0 0 64 64"><path d="M10 24 Q32 4 54 24 Z" fill="#D95A50"/><path d="M16 24 Q32 12 48 24 Z" fill="#C0453C"/><rect x="24" y="24" width="16" height="9" fill="#F6E7CC"/><path d="M12 40 Q32 26 52 40 Z" fill="#D95A50"/><rect x="21" y="40" width="22" height="12" fill="#F6E7CC"/><rect x="29" y="44" width="6" height="8" fill="#8A5A2B"/></svg>',
+ '<svg viewBox="0 0 64 64"><path d="M20 54 q-2 -12 4 -18 q2 10 2 18 Z" fill="#69B586"/><path d="M30 54 q0 -16 6 -22 q2 12 0 22 Z" fill="#57A773"/><path d="M42 54 q4 -10 0 -16 q-4 8 -4 16 Z" fill="#69B586"/><ellipse cx="32" cy="55" rx="16" ry="4" fill="#7CC79A" opacity=".5"/></svg>'
+];
+function scenerySvg(i){return _DECOR[((i%_DECOR.length)+_DECOR.length)%_DECOR.length]}
+/* ---------- Dopamine helpers: flame / chest / goal ring ---------- */
+function flameSvg(){
+  return '<svg viewBox="0 0 100 100"><g class="sk-flick">'
+    +'<path d="M50 6 C57 22 76 32 76 56 A26 28 0 0 1 24 56 C24 42 34 33 39 20 C43 29 48 30 50 6 Z" fill="#E04A40"/>'
+    +'<path d="M50 36 C55 47 66 51 66 64 A16 17 0 0 1 34 64 C34 54 43 50 46 41 C48 46 49 44 50 36 Z" fill="#E9A916"/>'
+    +'<ellipse cx="50" cy="67" rx="9" ry="10" fill="#FFF3D6"/></g></svg>';
+}
+function skDaysHtml(streak){
+  var p=pl(),today=(new Date().getDay()+6)%7;
+  return p.calDays.map(function(d,i){
+    var on=i<=today&&(today-i)<streak;
+    return '<div class="sk-day'+(on?" on":"")+(i===today?" tod":"")+'"><span>'+d+'</span><span class="c">'+(on?'<i class="ti ti-check"></i>':"")+'</span></div>';
+  }).join("");
+}
+function chestT(){return {
+  ru:{soon:"Сундук ещё закрыт",left:"Осталось {n} XP",got:"Награда из сундука!",cont:"Продолжить",note:"Зарабатывай XP на уроках — и сундук откроется!"},
+  uz:{soon:"Sandiq hali yopiq",left:"Yana {n} XP kerak",got:"Sandiqdan sovg'a!",cont:"Davom etish",note:"Darslarda XP yig'ing — sandiq ochiladi!"},
+  tj:{soon:"Сандуқ ҳоло пӯшида аст",left:"Боз {n} XP лозим",got:"Тӯҳфа аз сандуқ!",cont:"Идома",note:"Дар дарсҳо XP ҷамъ кунед — сандуқ кушода мешавад!"}}[LANG]}
+function chestSvg(){
+  return '<svg viewBox="0 0 120 100"><g>'
+    +'<rect x="14" y="44" width="92" height="46" rx="8" fill="#8A5A2B" stroke="#5C3A18" stroke-width="3"/>'
+    +'<rect x="52" y="44" width="16" height="46" fill="#FFC800" stroke="#B8860B" stroke-width="2"/>'
+    +'<g class="chest-lid"><path d="M14 48 a46 27 0 0 1 92 0 z" fill="#A66B33" stroke="#5C3A18" stroke-width="3"/>'
+    +'<rect x="52" y="26" width="16" height="22" fill="#FFC800" stroke="#B8860B" stroke-width="2"/></g>'
+    +'<circle cx="60" cy="60" r="7" fill="#FFC800" stroke="#B8860B" stroke-width="2"/></g></svg>';
+}
+function dailyXpVal(){var p=(MAP&&MAP.progress)||{};return Number(typeof p.daily_xp!=="undefined"?p.daily_xp:(p.xp||0)%50)||0}
+function goalRingHtml(){
+  var dx=dailyXpVal(),r=Math.min(dx/dailyGoal,1),off=(100.5-100.5*r).toFixed(1);
+  return '<span class="goalring'+(r>=1?" full":"")+'" id="goalring" onclick="App.show(\'profile\');renderProfile()">'
+    +'<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="none" stroke="var(--line)" stroke-width="5"/>'
+    +'<circle cx="20" cy="20" r="16" fill="none" stroke="'+(r>=1?"var(--gold)":"var(--cin)")+'" stroke-width="5" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="'+off+'" transform="rotate(-90 20 20)"/></svg>'
+    +'<span class="gr-ic"><i class="ti ti-'+(r>=1?"check":"target-arrow")+'"></i></span></span>';
+}
+/* Dars tugagach kurs ekraniga qaytganda XP raqamlari halqaga "uchib" boradi */
+function flyXp(xp){
+  if(!xp)return;
+  var tgt=$("#goalring");if(!tgt)return;
+  var wasFull=dailyXpVal()-xp>=dailyGoal;
+  var cnt=Math.min(5,3+Math.floor(xp/20)),per=Math.max(1,Math.round(xp/cnt));
+  for(var i=0;i<cnt;i++){(function(i){
+    var s=document.createElement("span");s.className="xpfly";s.textContent="+"+per;
+    var x0=innerWidth/2-20+(Math.random()*70-35),y0=innerHeight/2+(Math.random()*50-25);
+    s.style.left=x0+"px";s.style.top=y0+"px";document.body.appendChild(s);
+    setTimeout(function(){
+      var r2=tgt.getBoundingClientRect();
+      s.style.transform="translate("+(r2.left+r2.width/2-x0)+"px,"+(r2.top+r2.height/2-y0)+"px) scale(.45)";
+      s.style.opacity="0";
+    },80+i*150);
+    setTimeout(function(){s.remove()},1250+i*150);
+  })(i)}
+  setTimeout(function(){
+    var g=$("#goalring");
+    if(g&&dailyXpVal()>=dailyGoal){if(!wasFull)haptic("heavy");if(!g.classList.contains("full")){renderCourse()}}
+  },1300);
 }
 var writeChar="",writeMeta={};
 function setWriteBtn(ch,meta){writeChar=ch||"";writeMeta=meta||{};var b=$("#writebtn");if(b)b.style.display=writeChar?"flex":"none";}
@@ -1773,7 +1963,7 @@ Flow.next=function(){
   }
   Flow.i=nextI;if(Flow.i>=Flow.queue.length){flowDone()}else{renderFlowCard()}
 };
-function luRain(){var cols=['#C2403A','#C2962F','#2F7D5E','#E8D08A','#fff'],el=$("#levelup");for(var n=0;n<24;n++){(function(){var c=document.createElement('span');c.className='lu-conf';c.style.left=(4+Math.random()*92)+'%';c.style.background=cols[n%5];el.appendChild(c);var dx=Math.random()*70-35,rot=Math.random()*720-360;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,760px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1750)})()}}
+function luRain(){var cols=['#FF5A4E','#FFC800','#58CC02','#49C0F8','#fff'],el=$("#levelup");for(var n=0;n<24;n++){(function(){var c=document.createElement('span');c.className='lu-conf';c.style.left=(4+Math.random()*92)+'%';c.style.background=cols[n%5];el.appendChild(c);var dx=Math.random()*70-35,rot=Math.random()*720-360;requestAnimationFrame(function(){c.classList.add('fall');c.style.transform='translate('+dx+'px,760px) rotate('+rot+'deg)';c.style.opacity='0'});setTimeout(function(){c.remove()},1750)})()}}
 var TOUR={i:0,steps:[],t:{}},TOURV=true,_tourAudio=null,TOUR_AUDIO_VER="20260628b";
 /* Asosiy ovoz oldindan tayyorlangan MP3. Fallback faqat mos native voice topilsa ishlaydi;
    UZ/TJ uchun turk/rusga majburiy fallback qilish talaffuzni buzadi. */
@@ -1862,9 +2052,15 @@ function applyLessonDone(cur,d){
   clearLessonResume((MAP&&MAP.level)||"hsk1",cur&&cur.n);
   var al=allLessons();
   cur.status="done";cur.stars=3;cur.locked_premium=false;
+  window._pendingStreak=null;window._pendingXpFly=0;
   if(d&&d.gamification&&MAP.progress){
+    var prevStreak=Number(MAP.progress.streak||0),newStreak=Number(d.gamification.streak||0);
+    if(newStreak>0)window._pendingStreak={prev:prevStreak,now:newStreak,extended:newStreak>prevStreak&&!d.gamification.duplicate};
+    window._pendingXpFly=Number(d.gamification.awarded_xp||0);
     MAP.progress.xp=d.gamification.xp||MAP.progress.xp;
     MAP.progress.streak=d.gamification.streak||MAP.progress.streak;
+    if(typeof d.gamification.daily_xp!=="undefined")MAP.progress.daily_xp=d.gamification.daily_xp;
+    if(d.gamification.reward_chest)MAP.progress.reward_chest=d.gamification.reward_chest;
     if(typeof d.completed_lessons_count!=="undefined")MAP.progress.completed=d.completed_lessons_count;
     ratingLoaded=false;
   }
@@ -1929,31 +2125,55 @@ function renderVoice(){
     +'<div class="voicebox"><div class="pd">'+pandaChar("talk")+'</div><h3>'+t.voiceTitle+'</h3><p>'+t.voiceSub+'</p><button onclick="App.openVoiceCall()"><i class="ti ti-phone"></i> '+t.voiceStart+'</button></div>';
 }
 function pandaChar(mood,opts){
+  /* Do'mboq, ifodali panda (Duolingo maskot uslubi). API o'zgarmagan:
+     mood = "happy" | "celebrate" | "talk"; opts.anim=false — animatsiyasiz. */
   opts=opts||{};var anim=opts.anim!==false;
-  var eyes='<circle cx="36" cy="37" r="3.3" fill="#fff"/><circle cx="54" cy="37" r="3.3" fill="#fff"/><circle cx="36" cy="37" r="1.8" fill="#211D17"/><circle cx="54" cy="37" r="1.8" fill="#211D17"/><rect class="pd-blink" x="32" y="31" width="8" height="9" rx="3" fill="#211D17"/><rect class="pd-blink" x="50" y="31" width="8" height="9" rx="3" fill="#211D17"/>';
-  var mouth,armL,armR,pawL,pawR,decor="",bodyCls;
+  var INK="#2B2620",MOUTH="#8E3A31",TONGUE="#E07B72",BLUSH="#F5B8C0",GOLD="#E8B84B";
+  var eyes,mouth,armL,armR,decor="",bodyCls;
+  var eyesOpen='<circle cx="38" cy="34" r="4.8" fill="#fff"/><circle cx="62" cy="34" r="4.8" fill="#fff"/>'
+    +'<circle cx="38.6" cy="34.8" r="2.7" fill="'+INK+'"/><circle cx="61.4" cy="34.8" r="2.7" fill="'+INK+'"/>'
+    +'<circle cx="39.8" cy="33.2" r="1.1" fill="#fff"/><circle cx="62.6" cy="33.2" r="1.1" fill="#fff"/>'
+    +'<rect class="pd-blink" x="32" y="28" width="12" height="12" rx="5" fill="'+INK+'"/><rect class="pd-blink" x="56" y="28" width="12" height="12" rx="5" fill="'+INK+'"/>';
   if(mood==="celebrate"){
-    eyes='<path d="M31 37 q5 -6 10 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M49 37 q5 -6 10 0" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>';
-    mouth='<path d="M38 48 q7 6 14 0" stroke="#211D17" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
-    armL="M30 50 q-10 -8 -14 -20";armR="M60 50 q10 -8 14 -20";pawL=[16,28];pawR=[74,28];bodyCls="pd-bounce";
-    decor='<path class="pd-twinkle" style="animation-delay:0s" transform="translate(14,14)" d="M0 -4 L1 -1 L4 0 L1 1 L0 4 L-1 1 L-4 0 L-1 -1 Z" fill="#E8B84B"/><path class="pd-twinkle" style="animation-delay:.3s" transform="translate(76,10)" d="M0 -3 L.8 -.8 L3 0 L.8 .8 L0 3 L-.8 .8 L-3 0 L-.8 -.8 Z" fill="#E8B84B"/><path class="pd-twinkle" style="animation-delay:.6s" transform="translate(45,4)" d="M0 -3 L.8 -.8 L3 0 L.8 .8 L0 3 L-.8 .8 L-3 0 L-.8 -.8 Z" fill="#E8B84B"/>';
+    eyes='<path d="M32 35 q6 -7 12 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>'
+      +'<path d="M56 35 q6 -7 12 0" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>';
+    mouth='<path d="M41 52 q9 11 18 0 q-9 5 -18 0 z" fill="'+MOUTH+'"/><path d="M45.5 56.5 q4.5 3.5 9 0 q-4.5 3 -9 0 z" fill="'+TONGUE+'"/>';
+    armL='<path d="M30 62 q-15 -7 -17 -23 q6 -6 12 -2 q3 11 11 18 z" fill="'+INK+'"/>';
+    armR='<path d="M70 62 q15 -7 17 -23 q-6 -6 -12 -2 q-3 11 -11 18 z" fill="'+INK+'"/>';
+    bodyCls="pd-bounce";
+    decor='<path class="pd-twinkle" style="animation-delay:0s" transform="translate(12,18)" d="M0 -5 L1.2 -1.2 L5 0 L1.2 1.2 L0 5 L-1.2 1.2 L-5 0 L-1.2 -1.2 Z" fill="'+GOLD+'"/>'
+      +'<path class="pd-twinkle" style="animation-delay:.3s" transform="translate(88,12)" d="M0 -4 L1 -1 L4 0 L1 1 L0 4 L-1 1 L-4 0 L-1 -1 Z" fill="'+GOLD+'"/>'
+      +'<path class="pd-twinkle" style="animation-delay:.6s" transform="translate(52,4)" d="M0 -3.4 L.9 -.9 L3.4 0 L.9 .9 L0 3.4 L-.9 .9 L-3.4 0 L-.9 -.9 Z" fill="'+GOLD+'"/>';
   }else if(mood==="talk"){
-    mouth='<g class="pd-mouth pd-talk"><ellipse cx="45" cy="49" rx="5.5" ry="5" fill="#9A2F2B"/></g>';
-    armL="M30 52 q-8 6 -9 16";armR="M60 52 q10 2 14 8";pawL=[21,67];pawR=[75,62];bodyCls="pd-breathe";
+    eyes=eyesOpen;
+    mouth='<g class="pd-mouth pd-talk"><ellipse cx="50" cy="54" rx="6" ry="5.5" fill="'+MOUTH+'"/><ellipse cx="50" cy="56.5" rx="3.4" ry="2.4" fill="'+TONGUE+'"/></g>';
+    armL='<path d="M30 64 q-12 4 -13 18 q7 5 13 1 q1 -10 4 -15 z" fill="'+INK+'"/>';
+    armR='<path d="M70 62 q15 -7 17 -23 q-6 -6 -12 -2 q-3 11 -11 18 z" fill="'+INK+'"/>';
+    bodyCls="pd-breathe";
   }else{
-    mouth='<path d="M39 49 q6 4 12 0" stroke="#211D17" stroke-width="2" fill="none" stroke-linecap="round"/>';
-    armL="M30 52 q-8 6 -9 16";armR="M60 52 q8 6 9 16";pawL=[21,67];pawR=[69,67];bodyCls="pd-breathe";
+    eyes=eyesOpen;
+    mouth='<path d="M43 53 q7 5 14 0" stroke="'+INK+'" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+    armL='<path d="M30 64 q-12 4 -13 18 q7 5 13 1 q1 -10 4 -15 z" fill="'+INK+'"/>';
+    armR='<path d="M70 64 q12 4 13 18 q-7 5 -13 1 q-1 -10 -4 -15 z" fill="'+INK+'"/>';
+    bodyCls="pd-breathe";
   }
   if(!anim)bodyCls="";
-  return '<svg viewBox="0 0 90 96" width="100%" height="100%"><g class="'+bodyCls+'">'
-    +'<path d="'+armL+'" fill="none" stroke="#211D17" stroke-width="2"/><path d="'+armR+'" fill="none" stroke="#211D17" stroke-width="2"/>'
-    +'<ellipse cx="'+pawL[0]+'" cy="'+pawL[1]+'" rx="4.5" ry="5" fill="#fff" stroke="#211D17" stroke-width="1.6"/><ellipse cx="'+pawR[0]+'" cy="'+pawR[1]+'" rx="4.5" ry="5" fill="#fff" stroke="#211D17" stroke-width="1.6"/>'
-    +'<circle cx="25" cy="21" r="10" fill="#211D17"/><circle cx="65" cy="21" r="10" fill="#211D17"/>'
-    +'<path d="M31 66 q-3 -22 6 -30 h16 q9 8 6 30 z" fill="#fff" stroke="#211D17" stroke-width="2"/>'
-    +'<circle cx="45" cy="36" r="22" fill="#fff" stroke="#211D17" stroke-width="2"/>'
-    +'<path d="M33 46 q12 7 24 0 l-2 7 q-10 5 -20 0 z" fill="#C2403A"/>'
-    +'<ellipse cx="36" cy="36" rx="6.5" ry="9" fill="#211D17"/><ellipse cx="54" cy="36" rx="6.5" ry="9" fill="#211D17"/>'
-    +eyes+'<ellipse cx="45" cy="44" rx="3.4" ry="2.4" fill="#211D17"/>'+mouth+decor
+  return '<svg viewBox="0 0 100 106" width="100%" height="100%"><g class="'+bodyCls+'">'
+    +'<ellipse cx="38" cy="97" rx="9.5" ry="6.5" fill="'+INK+'"/><ellipse cx="62" cy="97" rx="9.5" ry="6.5" fill="'+INK+'"/>'
+    +armL+armR
+    +'<path d="M28 94 q-5 -28 9 -36 h26 q14 8 9 36 q-22 7 -44 0 z" fill="#fff" stroke="'+INK+'" stroke-width="3"/>'
+    +'<ellipse cx="50" cy="80" rx="13" ry="10" fill="#F6F1E6"/>'
+    +'<circle cx="27" cy="15" r="12" fill="'+INK+'"/><circle cx="73" cy="15" r="12" fill="'+INK+'"/>'
+    +'<circle cx="27" cy="15" r="5" fill="#4A443C"/><circle cx="73" cy="15" r="5" fill="#4A443C"/>'
+    +'<circle cx="50" cy="38" r="30" fill="#fff" stroke="'+INK+'" stroke-width="3"/>'
+    +'<ellipse cx="38" cy="35" rx="9" ry="12" fill="'+INK+'" transform="rotate(-12 38 35)"/>'
+    +'<ellipse cx="62" cy="35" rx="9" ry="12" fill="'+INK+'" transform="rotate(12 62 35)"/>'
+    +eyes
+    +'<path d="M46 46.5 q4 -3 8 0 q-2 4 -4 4 q-2 0 -4 -4 z" fill="'+INK+'"/>'
+    +'<path d="M50 50 v2.6" stroke="'+INK+'" stroke-width="2" stroke-linecap="round"/>'
+    +mouth
+    +'<ellipse cx="29" cy="46" rx="4.8" ry="3.2" fill="'+BLUSH+'" opacity=".85"/><ellipse cx="71" cy="46" rx="4.8" ry="3.2" fill="'+BLUSH+'" opacity=".85"/>'
+    +decor
     +'</g></svg>';
 }
 
@@ -2407,7 +2627,7 @@ function streakCalHtml(){var p=pl();
   return head+row;}
 function renderProfile(){
   var t=T(),p=pl();
-  var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0),todayXp=Number(MAP&&MAP.progress&&MAP.progress.xp%50||0);
+  var streak=Number(MAP&&MAP.progress&&MAP.progress.streak||0),todayXp=dailyXpVal();
   var pct=Math.round(Math.min(todayXp/dailyGoal,1)*100),off=Math.round(157-157*Math.min(todayXp/dailyGoal,1));
   var completedLessons=Number(MAP&&MAP.progress&&MAP.progress.completed||0);
   var firstDone=completedLessons>=1;
@@ -2415,7 +2635,7 @@ function renderProfile(){
   var streakAchPct=Math.min(100,Math.round(streak/30*100));
   $("#s-profile").innerHTML='<div class="htop" style="padding-bottom:4px"><span class="lvpill"><i class="ti ti-user"></i> '+t.nav.profile+'</span></div>'
     +'<div class="phero"><div class="pav'+(PROF.avatar&&/[一-鿿]/.test(PROF.avatar)?"":" han")+'" onclick="App.avatarEdit()">'+(PROF.avatar||"阿")+'<span class="ed"><i class="ti ti-pencil"></i></span></div><div><div class="pname">'+(PROF.name||t.you)+'</div><div class="pun">'+(PROF.name?"@"+PROF.name.toLowerCase().replace(/\s+/g,"_"):"@hsk_ai")+'</div><span class="lvb"><i class="ti ti-bolt"></i> '+(MAP&&MAP.level?MAP.level.toUpperCase():"HSK 1")+' · '+t.league+'</span></div></div>'
-    +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="var(--cin)" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+(dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
+    +'<div class="pgoal" onclick="App.goCurrentLesson()" style="cursor:pointer"><svg class="ring" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="30" cy="30" r="25" fill="none" stroke="'+(pct>=100?"var(--gold)":"var(--cin)")+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="'+off+'" transform="rotate(-90 30 30)"/><text x="30" y="35" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">'+pct+'%</text></svg><div class="gt"><b>'+p.todayGoal+'</b><small>'+todayXp+' / '+dailyGoal+' XP · '+(dailyGoal-todayXp)+' '+p.goalLeft+'</small></div><div class="fl"><b>'+streak+'</b><small>'+t.streak+'</small></div></div>'
     +'<div class="sech" style="display:flex;justify-content:space-between"><span>'+p.calTitle+'</span><span style="color:var(--cin)"><i class="ti ti-flame" style="font-size:12px"></i> '+streak+' '+t.streak+'</span></div><div class="card2"><div class="cal">'+streakCalHtml()+'</div></div>'
     +'<div class="sech">'+p.ach+'</div><div class="ach"><div class="arow"><div class="aic c3"><i class="ti ti-check"></i></div><div class="at"><div class="ah"><span>'+p.a1+'</span><small>'+(firstDone?p.a1d:"0 / 1")+'</small></div><div class="abar"><i style="width:'+(firstDone?100:0)+'%;background:var(--jade)"></i></div></div></div>'
     +'<div class="arow"><div class="aic c1"><i class="ti ti-book"></i></div><div class="at"><div class="ah"><span>'+p.a2+'</span><small>'+completedLessons+' / 100</small></div><div class="abar"><i style="width:'+lessonAchPct+'%"></i></div></div></div>'

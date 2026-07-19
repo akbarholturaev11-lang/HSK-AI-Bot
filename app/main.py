@@ -924,8 +924,6 @@ async def course_data_file(level: str):
 # ── Course v3 Mini App ──────────────────────────────────────────────────────
 
 _COURSE_V3_PAGES = {"onboarding", "recognition", "pronunciation", "test", "mistakes", "voice", "memorize"}
-# Dark dizayn preview nusxalari ham xuddi shu wildcard route orqali beriladi.
-_COURSE_V3_PAGES |= {f"{p}_dark" for p in set(_COURSE_V3_PAGES)}
 _COURSE_V3_LEVELS = {"hsk1", "hsk2", "hsk3", "hsk4"}
 
 
@@ -990,12 +988,6 @@ def _apply_course_v3_access_policy(data: dict, *, level: str, completed: int, is
 @app.get("/course-v3")
 async def course_v3_miniapp():
     return miniapp_file_response("app/static/course-v3.html")
-
-
-# Yangi "Dark Dopamine" dizayn — parallel URL, tasdiqlangach asosiy bo'ladi.
-@app.get("/course-v3-dark.html")
-async def course_v3_dark_miniapp():
-    return miniapp_file_response("app/static/course-v3-dark.html")
 
 
 @app.get("/course_v3_{page}.html")
