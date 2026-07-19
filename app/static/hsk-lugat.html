@@ -633,7 +633,15 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     showNext(0);
   }
 
-  var _ttsAudio = null, _ttsTok = 0;
+  var _ttsAudio = null, _ttsTok = 0, _ttsCache = {}, _ttsPend = {};
+  function _ttsPrefetch(x){
+    x = (x||'').trim();
+    if(!x || x.length>240 || _ttsCache[x] || _ttsPend[x] || !/[一-鿿]/.test(x)) return;
+    _ttsPend[x] = fetch('/api/v3/tts?text=' + encodeURIComponent(x))
+      .then(function(r){ if(!r.ok) throw 0; return r.blob(); })
+      .then(function(b){ delete _ttsPend[x]; if(b && b.size) _ttsCache[x] = URL.createObjectURL(b); })
+      .catch(function(){ delete _ttsPend[x]; });
+  }
   function _ttsFallback(textValue){
     if(!('speechSynthesis' in window) || !textValue) return;
     try{
@@ -651,7 +659,8 @@ var HanziWriter=function(){"use strict";var t,e,r;const i="undefined"==typeof wi
     try{ window.speechSynthesis.cancel(); }catch(e){}
     var tok = _ttsTok, st = 0;
     try{
-      var a = new Audio('/api/v3/tts?text=' + encodeURIComponent(textValue));
+      var a = new Audio(_ttsCache[textValue] || ('/api/v3/tts?text=' + encodeURIComponent(textValue)));
+      if(!_ttsCache[textValue]) _ttsPrefetch(textValue);
       _ttsAudio = a;
       a.onplaying = function(){ if(tok!==_ttsTok){ try{a.pause();}catch(e){} return; } st=1; };
       a.onerror = function(){ if(tok!==_ttsTok || st!==0) return; st=2; _ttsFallback(textValue); };

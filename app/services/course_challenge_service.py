@@ -62,7 +62,12 @@ class CourseChallengeService:
         except json.JSONDecodeError:
             return {"challenger": [], "opponent": []}
         if isinstance(value, list):
-            return {"challenger": value, "opponent": value}
+            # Legacy flat list was generated in the CHALLENGER's language/level.
+            # Expose it only as the challenger's set so `_ensure_questions`
+            # regenerates a properly localized set for the opponent on start.
+            # (`_questions` still falls back to the challenger list, so an
+            # opponent round already started under the old format scores fine.)
+            return {"challenger": value, "opponent": []}
         if isinstance(value, dict):
             return {
                 "challenger": as_list(value.get("challenger")),

@@ -652,7 +652,37 @@ var _ttsAudio=null;
 function clog(ev,msg,ex){try{var tg=window.Telegram&&window.Telegram.WebApp,c={ua:navigator.userAgent,plat:(tg&&tg.platform)||"",tgver:(tg&&tg.version)||"",page:location.pathname};if(ex)for(var k in ex)c[k]=ex[k];var b=JSON.stringify({event:ev,msg:msg||"",ctx:c});if(navigator.sendBeacon){navigator.sendBeacon("/api/v3/clientlog",new Blob([b],{type:"application/json"}))}else{fetch("/api/v3/clientlog",{method:"POST",headers:{"Content-Type":"application/json"},body:b,keepalive:true})}}catch(e){}}
 function _ttsFallback(t){try{clog("tts_fallback","",{t:(""+t).slice(0,16)})}catch(e){}try{window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang="zh-CN";u.rate=.8;window.speechSynthesis.speak(u)}catch(e){}}
 function stopSpeak(){window._ttsTok=(window._ttsTok||0)+1;try{if(_ttsAudio){_ttsAudio.onplaying=null;_ttsAudio.onerror=null;_ttsAudio.pause();_ttsAudio=null}}catch(e){}try{window.speechSynthesis.cancel()}catch(e){}}
-function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio("/api/v3/tts?text="+encodeURIComponent(t));_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
+/* TTS blob-cache + prefetch: bir marta yuklangan ovoz shu sessiyada darhol
+   qayta o'ynaydi; keyingi kartalar audiosi oldindan yuklab qo'yiladi, shunda
+   ovoz tugmasi bosilganda kechikish bo'lmaydi. */
+var _ttsCache={},_ttsPending={};
+function ttsUrl(t){return "/api/v3/tts?text="+encodeURIComponent(t)}
+function prefetchTTS(t){
+  t=(t||"").trim();
+  if(!t||t.length>240||_ttsCache[t]||_ttsPending[t])return;
+  if(!/[一-鿿]/.test(t))return;
+  _ttsPending[t]=fetch(ttsUrl(t)).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){delete _ttsPending[t];if(b&&b.size)_ttsCache[t]=URL.createObjectURL(b)}).catch(function(){delete _ttsPending[t]});
+}
+function speak(t){if(!t)return;stopSpeak();var tok=window._ttsTok,st=0;try{var a=new Audio(_ttsCache[t]||ttsUrl(t));if(!_ttsCache[t])prefetchTTS(t);_ttsAudio=a;a.onplaying=function(){if(tok!==window._ttsTok){try{a.pause()}catch(e){}return}st=1};a.onerror=function(){if(tok!==window._ttsTok||st!==0)return;st=2;_ttsFallback(t)};var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){if(tok===window._ttsTok&&st===0){st=2;_ttsFallback(t)}}}
+/* Kartadan o'ynash mumkin bo'lgan xitoycha matnlarni yig'ish (prefetch uchun) */
+function cardAudioTexts(c){
+  if(!c)return [];
+  var out=[];
+  var w=c.word||{};
+  if(w.zh)out.push(w.zh);
+  if(c.phrase)out.push(c.phrase);
+  if(c.audio_text)out.push(c.audio_text);
+  if(c.type==="_grammar"&&c.g&&c.g.examples)c.g.examples.slice(0,2).forEach(function(e){if(e.zh)out.push(e.zh)});
+  if(c.type==="_dialogue"&&c.d&&c.d.dialogue)c.d.dialogue.slice(0,3).forEach(function(l){if(l.zh)out.push(l.zh)});
+  return out;
+}
+function prefetchUpcomingAudio(){
+  try{
+    for(var i=Flow.i;i<Math.min(Flow.i+4,Flow.queue.length);i++){
+      cardAudioTexts(Flow.queue[i]).forEach(prefetchTTS);
+    }
+  }catch(e){}
+}
 function haptic(t){try{tg&&tg.HapticFeedback&&(t==="ok"?tg.HapticFeedback.notificationOccurred("success"):t==="no"?tg.HapticFeedback.notificationOccurred("error"):t==="med"?tg.HapticFeedback.impactOccurred("medium"):t==="heavy"?tg.HapticFeedback.impactOccurred("heavy"):tg.HapticFeedback.impactOccurred("light"))}catch(e){}}
 var ac;function beep(seq){try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();var t=ac.currentTime;seq.forEach(function(f,k){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=f;o.connect(g);g.connect(ac.destination);var s=t+k*0.09;g.gain.setValueAtTime(0.0001,s);g.gain.exponentialRampToValueAtTime(0.12,s+0.02);g.gain.exponentialRampToValueAtTime(0.0001,s+0.16);o.start(s);o.stop(s+0.18)})}catch(e){}}
 
@@ -1755,6 +1785,7 @@ function renderFlowCard(){
   Flow.answered=false;hideBar();flowProg();
   if(Flow.i>=Flow.queue.length){return flowDone()}
   saveLessonResume();
+  prefetchUpcomingAudio();
   var c=Flow.queue[Flow.i],b=$("#f-body"),cta=$("#f-cta");cta.style.display="flex";cta.innerHTML='<i class="ti ti-arrow-right"></i> '+(Flow.i<Flow.queue.length-1?T().cont:T().check);
   var t=c.type;
   trackFlowCard(c);
