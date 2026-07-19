@@ -539,28 +539,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "hē qaysi ieroglif?",
-            "ru": "Какой иероглиф читается hē?",
-            "tj": "hē кадом иероглиф аст?"
+            "uz": "喝 talaffuzini tanlang:",
+            "ru": "Выберите произношение 喝:",
+            "tj": "Талаффузи 喝-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "想",
-            "吃",
-            "茶",
-            "喝"
+            "hē",
+            "chá",
+            "chī",
+            "xiǎng"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "喝 = ichmoq (hē)",
-            "ru": "喝 = пить (hē)",
-            "tj": "喝 = нӯшидан (hē)"
+            "uz": "喝 — hē",
+            "ru": "喝 — hē",
+            "tj": "喝 — hē"
           }
         },
         {
@@ -592,28 +592,38 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "pronunciation",
+          "phrase": "吃",
+          "pinyin": "chī",
+          "translation": {
+            "uz": "yemoq",
+            "ru": "есть, кушать",
+            "tj": "хӯрдан"
+          }
+        },
+        {
+          "type": "translation_choice",
           "prompt": {
-            "uz": "吃 talaffuzini tanlang:",
-            "ru": "Выберите произношение 吃:",
-            "tj": "Талаффузи 吃-ро интихоб кунед:"
+            "uz": "'yemoq' xitoycha qaysi?",
+            "ru": "'есть, кушать' по-китайски?",
+            "tj": "'хӯрдан' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "xiǎng",
-            "hē",
-            "chá",
-            "chī"
+            "想",
+            "吃",
+            "茶",
+            "喝"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "吃 — chī",
-            "ru": "吃 — chī",
-            "tj": "吃 — chī"
+            "uz": "yemoq = 吃 (chī)",
+            "ru": "есть, кушать = 吃 (chī)",
+            "tj": "хӯрдан = 吃 (chī)"
           }
         },
         {
@@ -645,44 +655,25 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "想 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 想:",
-            "tj": "Маънои калимаи 想-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "想",
+          "pinyin": "xiǎng",
           "options": [
-            {
-              "uz": "xohlamoq, istаmoq",
-              "ru": "хотеть, желать",
-              "tj": "хостан, орзу доштан"
-            },
-            {
-              "uz": "ichmoq",
-              "ru": "пить",
-              "tj": "нӯшидан"
-            },
-            {
-              "uz": "yemoq",
-              "ru": "есть, кушать",
-              "tj": "хӯрдан"
-            },
-            {
-              "uz": "choy",
-              "ru": "чай",
-              "tj": "чой"
-            }
+            "吃",
+            "茶",
+            "想",
+            "喝"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "想 = xohlamoq, istаmoq (xiǎng)",
-            "ru": "想 = хотеть, желать (xiǎng)",
-            "tj": "想 = хостан, орзу доштан (xiǎng)"
+            "uz": "想 — xohlamoq, istаmoq (xiǎng)",
+            "ru": "想 — хотеть, желать (xiǎng)",
+            "tj": "想 — хостан, орзу доштан (xiǎng)"
           }
         },
         {
@@ -714,24 +705,40 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "mǎi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается mǎi?",
-            "tj": "mǎi кадом иероглиф аст?"
+            "uz": "买 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 买:",
+            "tj": "Маънои калимаи 买-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "喝",
-            "想",
-            "茶",
-            "买"
+            {
+              "uz": "sotib olmoq",
+              "ru": "покупать",
+              "tj": "харидан"
+            },
+            {
+              "uz": "xohlamoq, istаmoq",
+              "ru": "хотеть, желать",
+              "tj": "хостан, орзу доштан"
+            },
+            {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
+              "uz": "ichmoq",
+              "ru": "пить",
+              "tj": "нӯшидан"
+            }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "买 = sotib olmoq (mǎi)",
             "ru": "买 = покупать (mǎi)",
@@ -767,28 +774,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "茶 talaffuzini tanlang:",
-            "ru": "Выберите произношение 茶:",
-            "tj": "Талаффузи 茶-ро интихоб кунед:"
+            "uz": "chá qaysi ieroglif?",
+            "ru": "Какой иероглиф читается chá?",
+            "tj": "chá кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "xiǎng",
-            "chá",
-            "hē",
-            "chī"
+            "喝",
+            "茶",
+            "想",
+            "吃"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "茶 — chá",
-            "ru": "茶 — chá",
-            "tj": "茶 — chá"
+            "uz": "茶 = choy (chá)",
+            "ru": "茶 = чай (chá)",
+            "tj": "茶 = чой (chá)"
           }
         },
         {
@@ -898,11 +905,11 @@
             "tj": "Ман чой нӯшидан мехоҳам."
           },
           "tokens": [
-            "我",
-            "米饭",
-            "喝",
             "茶",
+            "喝",
             "想",
+            "米饭",
+            "我",
             "吃"
           ],
           "answer_tokens": [
@@ -971,13 +978,13 @@
             "tj": "Ин пиёла чанд пул аст?"
           },
           "tokens": [
-            "个",
-            "喝",
-            "多少",
-            "这",
-            "想",
             "钱",
-            "杯子"
+            "杯子",
+            "喝",
+            "个",
+            "想",
+            "这",
+            "多少"
           ],
           "answer_tokens": [
             "这",
@@ -1047,12 +1054,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "杯子",
             "喝",
             "茶",
-            "想"
+            "想",
+            "杯子"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 杯子 (bēizi) — stakan, piyola",
             "ru": "Верно: 杯子 (bēizi) — стакан, кружка",
@@ -1113,12 +1120,12 @@
             "tj": "Ин чанд пул аст?"
           },
           "tokens": [
+            "想",
+            "钱",
             "喝",
             "这",
-            "想",
             "个",
-            "多少",
-            "钱"
+            "多少"
           ],
           "answer_tokens": [
             "这",
@@ -1135,9 +1142,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«28 yuan.» — xitoychada qaysi biri?",
-            "ru": "«28 юаней.» — какое предложение по-китайски?",
-            "tj": "«28 юан.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Sizning oilangizda nechta kishi bor?» — xitoychada qaysi biri?",
+            "ru": "«Сколько человек в вашей семье?» — какое предложение по-китайски?",
+            "tj": "«Дар оилаи шумо чанд нафар аст?» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1145,16 +1152,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "这个杯子多少钱？",
-            "一个杯子",
-            "28块钱。",
+            "三口人",
+            "五个学生",
+            "你家有多少口人？",
             "这个多少钱？"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "28块钱。 — Èrshíbā kuài qián.",
-            "ru": "28块钱。 — Èrshíbā kuài qián.",
-            "tj": "28块钱。 — Èrshíbā kuài qián."
+            "uz": "你家有多少口人？ — Nǐ jiā yǒu duōshao kǒu rén?",
+            "ru": "你家有多少口人？ — Nǐ jiā yǒu duōshao kǒu rén?",
+            "tj": "你家有多少口人？ — Nǐ jiā yǒu duōshao kǒu rén?"
           }
         }
       ]
@@ -1175,19 +1182,19 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "你想喝什么？",
-          "pinyin": "Nǐ xiǎng hē shénme?",
+          "audio_text": "我想买一个杯子。",
+          "pinyin": "Wǒ xiǎng mǎi yī gè bēizi.",
           "options": [
             "你想喝什么？",
             "你想吃什么？",
             "我想喝茶。",
-            "我想吃米饭。"
+            "我想买一个杯子。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "你想喝什么？ — Nima ichmoqchisiz?",
-            "ru": "你想喝什么？ — Что вы хотите выпить?",
-            "tj": "你想喝什么？ — Шумо чӣ нӯшидан мехоҳед?"
+            "uz": "我想买一个杯子。 — Bir dona piyola sotib olmoqchiman.",
+            "ru": "我想买一个杯子。 — Я хочу купить одну кружку.",
+            "tj": "我想买一个杯子。 — Ман як дона пиёла харидан мехоҳам."
           }
         },
         {
@@ -1204,6 +1211,11 @@
           },
           "options": [
             {
+              "uz": "choy",
+              "ru": "чай",
+              "tj": "чой"
+            },
+            {
               "uz": "u, o'sha (ko'rsatish olmoshi)",
               "ru": "тот, та (указательное местоимение)",
               "tj": "он, он (исми ишора)"
@@ -1214,17 +1226,12 @@
               "tj": "нӯшидан"
             },
             {
-              "uz": "choy",
-              "ru": "чай",
-              "tj": "чой"
-            },
-            {
               "uz": "xohlamoq, istаmoq",
               "ru": "хотеть, желать",
               "tj": "хостан, орзу доштан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "那 = u, o'sha (ko'rsatish olmoshi) (nà)",
             "ru": "那 = тот, та (указательное местоимение) (nà)",
@@ -1239,12 +1246,12 @@
             "tj": "Шумо чӣ нӯшидан мехоҳед?"
           },
           "tokens": [
+            "吃",
+            "你",
             "喝",
             "什么",
-            "吃",
-            "想",
             "茶",
-            "你"
+            "想"
           ],
           "answer_tokens": [
             "你",
@@ -1272,11 +1279,11 @@
           },
           "options": [
             "茶",
-            "喝",
             "块",
-            "想"
+            "想",
+            "喝"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "块 = yuan (so'zlashuv) (kuài)",
             "ru": "块 = юань (разговорный) (kuài)",
@@ -1326,13 +1333,36 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "28 yuan.",
+            "ru": "28 юаней.",
+            "tj": "28 юан."
+          },
+          "tokens": [
+            "钱",
+            "想",
+            "块",
+            "喝"
+          ],
+          "answer_tokens": [
+            "块",
+            "钱"
+          ],
+          "explanation": {
+            "uz": "28块钱。 — Èrshíbā kuài qián.",
+            "ru": "28块钱。 — Èrshíbā kuài qián.",
+            "tj": "28块钱。 — Èrshíbā kuài qián."
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "想",
-          "pinyin": "xiǎng",
+          "phrase": "买",
+          "pinyin": "mǎi",
           "translation": {
-            "uz": "xohlamoq, istаmoq",
-            "ru": "хотеть, желать",
-            "tj": "хостан, орзу доштан"
+            "uz": "sotib olmoq",
+            "ru": "покупать",
+            "tj": "харидан"
           }
         }
       ]
@@ -1357,9 +1387,9 @@
           "pinyin": "Nǐ xiǎng hē shénme?",
           "options": [
             "你想喝什么？",
+            "我想喝茶。",
             "我想吃米饭。",
-            "你想吃什么？",
-            "我想喝茶。"
+            "你想吃什么？"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1382,11 +1412,11 @@
           },
           "options": [
             "你想喝什么？",
-            "我想喝茶。",
+            "我想吃米饭。",
             "你想吃什么？",
-            "我想吃米饭。"
+            "我想喝茶。"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 我想吃米饭。",
             "ru": "Правильный ответ: 我想吃米饭。",
@@ -1423,12 +1453,12 @@
             }
           ],
           "options": [
-            "你想喝什么？",
             "我想喝茶。",
-            "我想吃米饭。",
-            "你想吃什么？"
+            "你想吃什么？",
+            "你想喝什么？",
+            "我想吃米饭。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 我想吃米饭。",
             "ru": "Правильный ответ: 我想吃米饭。",
@@ -1448,12 +1478,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "你想吃什么？",
-            "我想喝茶。",
             "我想吃米饭。",
-            "你想喝什么？"
+            "你想喝什么？",
+            "我想喝茶。",
+            "你想吃什么？"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 你想喝什么？",
             "ru": "Правильный ответ: 你想喝什么？",
@@ -1469,16 +1499,26 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "下",
-            "菜",
+            "您",
             "你",
-            "朋"
+            "叫",
+            "问"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 你 — 你想喝什么？ (Nima ichmoqchisiz?)",
             "ru": "Верно: 你 — 你想喝什么？ (Что вы хотите выпить?)",
             "tj": "Дуруст: 你 — 你想喝什么？ (Шумо чӣ нӯшидан мехоҳед?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "下午你想做什么？",
+          "pinyin": "Xiàwǔ nǐ xiǎng zuò shénme?",
+          "translation": {
+            "uz": "Tushdan keyin nima qilmoqchisiz?",
+            "ru": "Что вы хотите делать во второй половине дня?",
+            "tj": "Баъд аз нисфирӯзӣ чӣ кардан мехоҳед?"
           }
         }
       ]

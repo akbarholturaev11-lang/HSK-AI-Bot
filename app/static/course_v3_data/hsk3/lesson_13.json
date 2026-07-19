@@ -534,6 +534,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "终于",
+          "pinyin": "zhōngyú",
+          "translation": {
+            "uz": "nihoyat, oxiri",
+            "ru": "наконец",
+            "tj": "ниҳоят"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 2,
@@ -548,44 +558,28 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "爷爷 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 爷爷:",
-            "tj": "Маънои калимаи 爷爷-ро интихоб кунед:"
+            "uz": "爷爷 talaffuzini tanlang:",
+            "ru": "Выберите произношение 爷爷:",
+            "tj": "Талаффузи 爷爷-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            {
-              "uz": "nihoyat, oxiri",
-              "ru": "наконец",
-              "tj": "ниҳоят"
-            },
-            {
-              "uz": "bobo",
-              "ru": "дедушка",
-              "tj": "бобо"
-            },
-            {
-              "uz": "sovg'a",
-              "ru": "подарок",
-              "tj": "туҳфа"
-            },
-            {
-              "uz": "buvi",
-              "ru": "бабушка",
-              "tj": "биби"
-            }
+            "lǐwù",
+            "zhōngyú",
+            "yéye",
+            "nǎinai"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "爷爷 = bobo (yéye)",
-            "ru": "爷爷 = дедушка (yéye)",
-            "tj": "爷爷 = бобо (yéye)"
+            "uz": "爷爷 — yéye",
+            "ru": "爷爷 — yéye",
+            "tj": "爷爷 — yéye"
           }
         },
         {
@@ -617,28 +611,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "zhōngyú qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zhōngyú?",
-            "tj": "zhōngyú кадом иероглиф аст?"
+            "uz": "'nihoyat, oxiri' xitoycha qaysi?",
+            "ru": "'наконец' по-китайски?",
+            "tj": "'ниҳоят' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "终于",
             "礼物",
             "爷爷",
-            "奶奶",
-            "终于"
+            "奶奶"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "终于 = nihoyat, oxiri (zhōngyú)",
-            "ru": "终于 = наконец (zhōngyú)",
-            "tj": "终于 = ниҳоят (zhōngyú)"
+            "uz": "nihoyat, oxiri = 终于 (zhōngyú)",
+            "ru": "наконец = 终于 (zhōngyú)",
+            "tj": "ниҳоят = 终于 (zhōngyú)"
           }
         },
         {
@@ -670,28 +664,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "一边 talaffuzini tanlang:",
-            "ru": "Выберите произношение 一边:",
-            "tj": "Талаффузи 一边-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "一边",
+          "pinyin": "yìbiān",
           "options": [
-            "yéye",
-            "zhōngyú",
-            "yìbiān",
-            "lǐwù"
+            "爷爷",
+            "礼物",
+            "一边",
+            "终于"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "一边 — yìbiān",
-            "ru": "一边 — yìbiān",
-            "tj": "一边 — yìbiān"
+            "uz": "一边 — bir vaqtda, bir tarafdan (yìbiān)",
+            "ru": "一边 — одновременно (yìbiān)",
+            "tj": "一边 — ҳамзамон (yìbiān)"
           }
         },
         {
@@ -736,27 +727,27 @@
           },
           "options": [
             {
-              "uz": "nihoyat, oxiri",
-              "ru": "наконец",
-              "tj": "ниҳоят"
-            },
-            {
               "uz": "sovg'a",
               "ru": "подарок",
               "tj": "туҳфа"
             },
             {
-              "uz": "buvi",
-              "ru": "бабушка",
-              "tj": "биби"
-            },
-            {
               "uz": "bobo",
               "ru": "дедушка",
               "tj": "бобо"
+            },
+            {
+              "uz": "nihoyat, oxiri",
+              "ru": "наконец",
+              "tj": "ниҳоят"
+            },
+            {
+              "uz": "buvi",
+              "ru": "бабушка",
+              "tj": "биби"
             }
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "礼物 = sovg'a (lǐwù)",
             "ru": "礼物 = подарок (lǐwù)",
@@ -804,12 +795,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "礼物",
             "爷爷",
             "愿意",
-            "礼物",
             "终于"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "愿意 = xohlamoq, rozi bo'lmoq (yuànyì)",
             "ru": "愿意 = хотеть, быть готовым (yuànyì)",
@@ -914,13 +905,13 @@
             "tj": "Вай пиёда даромад."
           },
           "tokens": [
+            "进",
             "走",
             "了",
             "爷爷",
             "他",
-            "进",
-            "来",
-            "终于"
+            "终于",
+            "来"
           ],
           "answer_tokens": [
             "他",
@@ -980,16 +971,16 @@
             "tj": "Ман дӯст медорам ҳамзамон мусиқӣ гӯш кунам ва вазифаи хонагиро анҷом диҳам."
           },
           "tokens": [
-            "作业",
             "我",
-            "做",
-            "听",
-            "一边",
+            "终于",
             "喜欢",
             "一边",
-            "终于",
+            "音乐",
+            "做",
             "爷爷",
-            "音乐"
+            "一边",
+            "作业",
+            "听"
           ],
           "answer_tokens": [
             "我",
@@ -1052,13 +1043,13 @@
             "tj": "Ман пиёда баргаштам. (таъкид бар усул)"
           },
           "tokens": [
+            "的",
+            "走",
+            "终于",
             "是",
             "爷爷",
-            "走",
             "我",
-            "回来",
-            "终于",
-            "的"
+            "回来"
           ],
           "answer_tokens": [
             "我",
@@ -1076,9 +1067,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«U yurib kirib keldi.» — xitoychada qaysi biri?",
-            "ru": "«Он вошёл пешком.» — какое предложение по-китайски?",
-            "tj": "«Вай пиёда даромад.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Men musiqa tinglab uy vazifasini yaxshi ko'raman.» — xitoychada qaysi biri?",
+            "ru": "«Мне нравится слушать музыку и одновременно делать домашнее задание.» — какое предложение по-китайски?",
+            "tj": "«Ман дӯст медорам ҳамзамон мусиқӣ гӯш кунам ва вазифаи хонагиро анҷом диҳам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1086,16 +1077,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "我喜欢一边听音乐一边做作业。",
             "他一边唱歌一边跳舞。",
+            "你是什么时候到的？",
             "他走进来了。",
-            "我是走回来的。"
+            "我喜欢一边听音乐一边做作业。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "他走进来了。 — Tā zǒu jìn lái le.",
-            "ru": "他走进来了。 — Tā zǒu jìn lái le.",
-            "tj": "他走进来了。 — Tā zǒu jìn lái le."
+            "uz": "我喜欢一边听音乐一边做作业。 — Wǒ xǐhuān yībiān tīng yīnyuè yībiān zuò zuòyè.",
+            "ru": "我喜欢一边听音乐一边做作业。 — Wǒ xǐhuān yībiān tīng yīnyuè yībiān zuò zuòyè.",
+            "tj": "我喜欢一边听音乐一边做作业。 — Wǒ xǐhuān yībiān tīng yīnyuè yībiān zuò zuòyè."
           }
         }
       ]
@@ -1123,14 +1114,14 @@
           },
           "options": [
             {
-              "uz": "bobo",
-              "ru": "дедушка",
-              "tj": "бобо"
-            },
-            {
               "uz": "sovg'a",
               "ru": "подарок",
               "tj": "туҳфа"
+            },
+            {
+              "uz": "bobo",
+              "ru": "дедушка",
+              "tj": "бобо"
             },
             {
               "uz": "nihoyat, oxiri",
@@ -1148,6 +1139,83 @@
             "uz": "应该 = kerak, lozim (yīnggāi)",
             "ru": "应该 = следует, должен (yīnggāi)",
             "tj": "应该 = бояд (yīnggāi)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "坏",
+          "pinyin": "huài",
+          "options": [
+            "爷爷",
+            "坏",
+            "终于",
+            "礼物"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "坏 — buzuq, yomon (huài)",
+            "ru": "坏 — испорченный, плохой (huài)",
+            "tj": "坏 — вайрон, бад (huài)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Men allaqachon qaytib keldim-ku?",
+            "ru": "Разве я уже не вернулся?",
+            "tj": "Магар ман аллакай барнагаштам?"
+          },
+          "tokens": [
+            "了",
+            "不",
+            "回来",
+            "已经",
+            "是",
+            "吗",
+            "我",
+            "爷爷",
+            "终于"
+          ],
+          "answer_tokens": [
+            "我",
+            "不",
+            "是",
+            "已经",
+            "回来",
+            "了",
+            "吗"
+          ],
+          "explanation": {
+            "uz": "我不是已经回来了吗？ — Wǒ bú shì yǐjīng huílai le ma?",
+            "ru": "我不是已经回来了吗？ — Wǒ bú shì yǐjīng huílai le ma?",
+            "tj": "我不是已经回来了吗？ — Wǒ bú shì yǐjīng huílai le ma?"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "小丽，周末你一般跟小刚出去看电影吗？",
+          "pinyin": "Xiǎolì, zhōumò nǐ yìbān gēn Xiǎogāng chūqu kàn diànyǐng ma?",
+          "options": [
+            "都是从那边的商店买回来的。",
+            "你终于回来了！从哪儿买回来这么多东西啊？",
+            "怎么还买红酒回来了？谁喝啊？",
+            "小丽，周末你一般跟小刚出去看电影吗？"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "小丽，周末你一般跟小刚出去看电影吗？ — Xiaoli, dam olish kunlari odatda Xiaogang bilan kinoga chiqasanmi?",
+            "ru": "小丽，周末你一般跟小刚出去看电影吗？ — Сяоли, по выходным ты обычно ходишь с Сяоганом в кино?",
+            "tj": "小丽，周末你一般跟小刚出去看电影吗？ — Сяоли, охири ҳафта одатан бо Сяоганг кино дидан меравӣ?"
           }
         },
         {
@@ -1193,61 +1261,6 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Men allaqachon qaytib keldim-ku?",
-            "ru": "Разве я уже не вернулся?",
-            "tj": "Магар ман аллакай барнагаштам?"
-          },
-          "tokens": [
-            "是",
-            "终于",
-            "我",
-            "了",
-            "已经",
-            "回来",
-            "不",
-            "爷爷",
-            "吗"
-          ],
-          "answer_tokens": [
-            "我",
-            "不",
-            "是",
-            "已经",
-            "回来",
-            "了",
-            "吗"
-          ],
-          "explanation": {
-            "uz": "我不是已经回来了吗？ — Wǒ bú shì yǐjīng huílai le ma?",
-            "ru": "我不是已经回来了吗？ — Wǒ bú shì yǐjīng huílai le ma?",
-            "tj": "我不是已经回来了吗？ — Wǒ bú shì yǐjīng huílai le ma?"
-          }
-        },
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你终于回来了！从哪儿买回来这么多东西啊？",
-          "pinyin": "Nǐ zhōngyú huílai le! Cóng nǎr mǎi huílai zhème duō dōngxi a?",
-          "options": [
-            "都是从那边的商店买回来的。",
-            "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。",
-            "你终于回来了！从哪儿买回来这么多东西啊？",
-            "怎么还买红酒回来了？谁喝啊？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "你终于回来了！从哪儿买回来这么多东西啊？ — Nihoyat qaytding! Shuncha narsani qayerdan sotib olib kelding?",
-            "ru": "你终于回来了！从哪儿买回来这么多东西啊？ — Наконец-то ты вернулся! Откуда ты купил столько вещей?",
-            "tj": "你终于回来了！从哪儿买回来这么多东西啊？ — Ниҳоят баргаштӣ! Ин қадар чизро аз куҷо харида овардӣ?"
-          }
-        },
-        {
           "type": "pinyin_choice",
           "prompt": {
             "uz": "生活 talaffuzini tanlang:",
@@ -1260,12 +1273,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "shēnghuó",
             "zhōngyú",
             "lǐwù",
-            "yéye"
+            "yéye",
+            "shēnghuó"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "生活 — shēnghuó",
             "ru": "生活 — shēnghuó",
@@ -1274,12 +1287,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "终于",
-          "pinyin": "zhōngyú",
+          "phrase": "校长",
+          "pinyin": "xiàozhǎng",
           "translation": {
-            "uz": "nihoyat, oxiri",
-            "ru": "наконец",
-            "tj": "ниҳоят"
+            "uz": "maktab direktori",
+            "ru": "директор школы",
+            "tj": "директори мактаб"
           }
         }
       ]
@@ -1303,12 +1316,12 @@
           "audio_text": "你终于回来了！从哪儿买回来这么多东西啊？",
           "pinyin": "Nǐ zhōngyú huílai le! Cóng nǎr mǎi huílai zhème duō dōngxi a?",
           "options": [
-            "怎么还买红酒回来了？谁喝啊？",
-            "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。",
             "你终于回来了！从哪儿买回来这么多东西啊？",
+            "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。",
+            "怎么还买红酒回来了？谁喝啊？",
             "都是从那边的商店买回来的。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "你终于回来了！从哪儿买回来这么多东西啊？ — Nihoyat qaytding! Shuncha narsani qayerdan sotib olib kelding?",
             "ru": "你终于回来了！从哪儿买回来这么多东西啊？ — Наконец-то ты вернулся! Откуда ты купил столько вещей?",
@@ -1355,10 +1368,10 @@
             }
           ],
           "options": [
-            "怎么还买红酒回来了？谁喝啊？",
             "你终于回来了！从哪儿买回来这么多东西啊？",
+            "都是从那边的商店买回来的。",
             "我不是已经回来了吗？",
-            "都是从那边的商店买回来的。"
+            "怎么还买红酒回来了？谁喝啊？"
           ],
           "correct_index": 2,
           "explanation": {
@@ -1406,11 +1419,11 @@
           },
           "options": [
             "都是从那边的商店买回来的。",
-            "怎么还买红酒回来了？谁喝啊？",
             "你终于回来了！从哪儿买回来这么多东西啊？",
+            "怎么还买红酒回来了？谁喝啊？",
             "这是给爷爷的礼物，明天我们一起送过去，看看爷爷奶奶。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 你终于回来了！从哪儿买回来这么多东西啊？",
             "ru": "Правильный ответ: 你终于回来了！从哪儿买回来这么多东西啊？",
@@ -1426,16 +1439,26 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "旧",
-            "电",
-            "下",
-            "你"
+            "眼",
+            "久",
+            "你",
+            "附"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 你 — 你终于回来了！从哪儿买回来这么多东西啊？ (Nihoyat qaytding! Shuncha narsani qayerdan sotib olib kelding?)",
             "ru": "Верно: 你 — 你终于回来了！从哪儿买回来这么多东西啊？ (Наконец-то ты вернулся! Откуда ты купил столько вещей?)",
             "tj": "Дуруст: 你 — 你终于回来了！从哪儿买回来这么多东西啊？ (Ниҳоят баргаштӣ! Ин қадар чизро аз куҷо харида овардӣ?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你们就一起去喝咖啡了？",
+          "pinyin": "Nǐmen jiù yìqǐ qù hē kāfēi le?",
+          "translation": {
+            "uz": "Shunda birga qahva ichgani bordinglarmi?",
+            "ru": "И вы сразу пошли вместе пить кофе?",
+            "tj": "Пас якҷоя қаҳва нӯшидан рафтед?"
           }
         }
       ]

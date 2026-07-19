@@ -484,6 +484,69 @@ def pron_card(w):
     }
 
 
+def pron_sentence_card(line) -> dict | None:
+    """Pronunciation drill on a REAL dialogue line (sentence-level speaking).
+    Kept short (<=10 Han chars) because the mic recording auto-stops at ~4s."""
+    zh = line.get("zh", "")
+    han = [ch for ch in zh if "一" <= ch <= "鿿"]
+    if not (2 <= len(han) <= 10):
+        return None
+    return {
+        "type": "pronunciation",
+        "phrase": zh,
+        "pinyin": line.get("pinyin", ""),
+        "translation": t3(line),
+    }
+
+
+def make_word_listen_card(w, pool) -> dict | None:
+    """listening_choice on a single WORD: hear it, pick the right hanzi.
+    Distractors come only from the gated pool (this + earlier lessons)."""
+    zh = w.get("zh", "")
+    if not zh:
+        return None
+    opts = [zh]
+    for x in pool:
+        if len(opts) >= 4:
+            break
+        z = x.get("zh", "")
+        if z and z not in opts:
+            opts.append(z)
+    if len(opts) < 3:
+        return None
+    RNG.shuffle(opts)
+    m = word_meaning(w)
+    py = w.get("pinyin", "")
+    return {
+        "type": "listening_choice",
+        "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?",
+        },
+        "audio_text": zh,
+        "pinyin": py,
+        "options": opts,
+        "correct_index": opts.index(zh),
+        "explanation": {
+            "uz": f"{zh} — {m['uz']} ({py})",
+            "ru": f"{zh} — {m['ru']} ({py})",
+            "tj": f"{zh} — {m['tj']} ({py})",
+        },
+    }
+
+
+# Har dars o'z "arxetipi"da o'tadi — bir xil shablon zerikishini yo'qotish uchun.
+# listen: tinglash ko'proq; build: gap yig'ish ko'proq; speak: talaffuz ko'proq;
+# mix: gap_fill / juftlash ko'proq. Level+order bo'yicha deterministik aylanadi.
+ARCHETYPES = ("listen", "build", "speak", "mix")
+
+
+def lesson_archetype(level: str, order: int) -> str:
+    lvl = int(level.replace("hsk", "") or 1)
+    return ARCHETYPES[(lvl + order) % len(ARCHETYPES)]
+
+
 def make_grammar_meaning_card(grammar_raw, known_words) -> dict | None:
     """A sentence-level comprehension check: show a translation, pick the real
     Chinese sentence that matches it among OTHER real grammar example sentences.
@@ -537,12 +600,18 @@ def build_intro_section(active_words, vocab, known_prior, order, lr) -> list[dic
     # Distractors may come from the whole lesson + earlier lessons (all gated).
     # The check builders read the RAW vocab shape, so the pool is raw too.
     pool = list(vocab) + list(known_prior)
-    check_cycle = [mc_meaning, mc_hanzi, mc_pinyin]
+    # 5 rotating check formats (incl. audio) so consecutive lessons open with a
+    # different drill sequence — kills the "same template every lesson" feel.
+    check_cycle = [mc_meaning, mc_hanzi, mc_pinyin, mc_translation, make_word_listen_card]
     ci = (order - 1) % len(check_cycle)
+    # One quick speaking rep right after a freshly taught word (varies per lesson).
+    pron_at = (order - 1) % max(1, min(teach_n, 4))
     taught: list[dict] = []  # raw vocab words already introduced
     for i in range(teach_n):
         cards.append({"type": "active_word", "word": active_words[i]})
         taught.append(vocab[i])
+        if i == pron_at:
+            cards.append(pron_card(vocab[i]))
         # After every 2nd new word, immediately check one already taught.
         if len(taught) >= 2 and i % 2 == 1:
             builder = check_cycle[ci % len(check_cycle)]
@@ -625,13 +694,14 @@ def _grammar_gap_fill(g, vocab, pool) -> dict | None:
 
 def build_practice(vocab: list[dict], known_prior: list[dict], grammar: list[dict],
                    dialogue_raw: list[dict] | None = None, order: int = 1,
-                   lr=None) -> list[dict]:
+                   lr=None, archetype: str = "mix") -> list[dict]:
     """Build practice cards. Distractors come from `vocab` (current lesson) and,
     if needed, `known_prior` (earlier lessons). Never from future / higher words.
 
     The card TYPES stay authentic and gated, but their ORDER is shuffled per
-    lesson (deterministic `lr`) so no two lessons feel like the same template.
-    The pronunciation card is always kept last (it opens the microphone)."""
+    lesson (deterministic `lr`) AND each lesson's archetype adds its own extra
+    exercise flavor (listen / build / speak / mix), so no two lessons feel like
+    the same template. The pronunciation card is always kept last (microphone)."""
     lr = lr or random.Random(order)
     cards: list[dict] = []
     if not vocab:
@@ -664,19 +734,50 @@ def build_practice(vocab: list[dict], known_prior: list[dict], grammar: list[dic
             varied.append(bc)
             break
 
-    # Interactive: "tap what you heard" from the dialogue lines.
+    # Interactive: "tap what you heard" — the target line rotates per lesson.
     if all_lines:
-        lc = make_listen_card(all_lines[0], all_lines)
+        lc = make_listen_card(all_lines[(order - 1) % len(all_lines)], all_lines)
         if lc:
             varied.append(lc)
 
     varied.append(mc_match(v[: min(4, len(v))]))
 
+    # Archetype extra: each lesson leans into ONE flavor so lessons feel distinct.
+    if archetype == "listen":
+        wl = make_word_listen_card(v[order % len(v)], pool)
+        if wl:
+            varied.append(wl)
+    elif archetype == "build":
+        # Extra tile-builder from a grammar example (reverse order so it does not
+        # duplicate the grammar section drill, which takes the FIRST buildable).
+        for g in reversed(grammar or []):
+            done = None
+            for ex in reversed(g.get("examples", [])):
+                done = make_builder_card(ex.get("zh", ""), ex.get("pinyin", ""), t3(ex), known_words, pool)
+                if done:
+                    break
+            if done:
+                varied.append(done)
+                break
+    elif archetype == "speak":
+        varied.append(pron_card(v[(order + 1) % len(v)]))
+    else:  # "mix"
+        if len(v) >= 8:
+            varied.append(mc_match(v[4:8]))
+        else:
+            gf = None
+            for g in grammar or []:
+                gf = _grammar_gap_fill(g, v, pool)
+                if gf:
+                    break
+            if gf:
+                varied.append(gf)
+
     # Shuffle the practice order so the sequence differs every lesson, then keep
-    # the pronunciation (microphone) card last.
+    # the pronunciation (microphone) card last. The spoken word also rotates.
     lr.shuffle(varied)
     cards = [c for c in varied if c]
-    cards.append(pron_card(v[0]))
+    cards.append(pron_card(v[(order - 1) % len(v)]))
     return cards
 
 
@@ -797,6 +898,14 @@ def build_dialog_section(blocks: list[dict], pool: list[dict], lr=None) -> list[
 
     lr.shuffle(rest)
     cards.extend(rest)
+
+    # Speaking finale: repeat one short REAL dialogue line aloud ("endi o'zingiz
+    # ayting"). The chosen line rotates per lesson so it isn't always the first.
+    sayable = [ln for ln in line_objs if pron_sentence_card(ln)]
+    if sayable:
+        card = pron_sentence_card(lr.choice(sayable))
+        if card:
+            cards.append(card)
     return cards
 
 
@@ -819,10 +928,12 @@ def build_v3_lesson(level: str, order: int, seed: dict, known_prior: list[dict])
     # but different lessons get different exercise sequences (kills the "one
     # format, one sequence, every lesson" monotony).
     lr = random.Random(int(level.replace("hsk", "") or 0) * 1000 + order)
+    archetype = lesson_archetype(level, order)
 
     intro_cards = build_intro_section(active_words, vocab, known_prior, order, lr)
     grammar_cards = build_grammar_section(grammar_raw, vocab, known_prior, order, lr)
-    practice_cards = build_practice(vocab, known_prior, grammar_raw, dialogue_raw, order, lr)
+    practice_cards = build_practice(vocab, known_prior, grammar_raw, dialogue_raw, order, lr,
+                                    archetype=archetype)
     dialog_cards = build_dialog_section(dialogue_raw, vocab + known_prior, lr)
 
     sections = [

@@ -471,6 +471,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "小",
+          "pinyin": "xiǎo",
+          "translation": {
+            "uz": "kichik, mayda",
+            "ru": "маленький, небольшой",
+            "tj": "хурд, майда"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 2,
@@ -485,28 +495,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "猫 talaffuzini tanlang:",
-            "ru": "Выберите произношение 猫:",
-            "tj": "Талаффузи 猫-ро интихоб кунед:"
+            "uz": "'mushuk' xitoycha qaysi?",
+            "ru": "'кошка' по-китайски?",
+            "tj": "'гурба' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "xiǎo",
-            "zài",
-            "māo",
-            "nàr"
+            "那儿",
+            "小",
+            "在",
+            "猫"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "猫 — māo",
-            "ru": "猫 — māo",
-            "tj": "猫 — māo"
+            "uz": "mushuk = 猫 (māo)",
+            "ru": "кошка = 猫 (māo)",
+            "tj": "гурба = 猫 (māo)"
           }
         },
         {
@@ -538,44 +548,25 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "那儿 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 那儿:",
-            "tj": "Маънои калимаи 那儿-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "那儿",
+          "pinyin": "nàr",
           "options": [
-            {
-              "uz": "u yerda, ana o'sha yerda",
-              "ru": "там, вон там",
-              "tj": "он ҷо, дар он ҷо"
-            },
-            {
-              "uz": "kichik, mayda",
-              "ru": "маленький, небольшой",
-              "tj": "хурд, майда"
-            },
-            {
-              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
-              "ru": "находиться / в, на (показатель места)",
-              "tj": "будан / дар (нишондиҳандаи ҷой)"
-            },
-            {
-              "uz": "mushuk",
-              "ru": "кошка",
-              "tj": "гурба"
-            }
+            "小",
+            "猫",
+            "在",
+            "那儿"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "那儿 = u yerda, ana o'sha yerda (nàr)",
-            "ru": "那儿 = там, вон там (nàr)",
-            "tj": "那儿 = он ҷо, дар он ҷо (nàr)"
+            "uz": "那儿 — u yerda, ana o'sha yerda (nàr)",
+            "ru": "那儿 — там, вон там (nàr)",
+            "tj": "那儿 — он ҷо, дар он ҷо (nàr)"
           }
         },
         {
@@ -607,24 +598,40 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "yǐzi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается yǐzi?",
-            "tj": "yǐzi кадом иероглиф аст?"
+            "uz": "椅子 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 椅子:",
+            "tj": "Маънои калимаи 椅子-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "小",
-            "椅子",
-            "在",
-            "猫"
+            {
+              "uz": "kichik, mayda",
+              "ru": "маленький, небольшой",
+              "tj": "хурд, майда"
+            },
+            {
+              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
+              "ru": "находиться / в, на (показатель места)",
+              "tj": "будан / дар (нишондиҳандаи ҷой)"
+            },
+            {
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
+            },
+            {
+              "uz": "stul",
+              "ru": "стул",
+              "tj": "курсӣ"
+            }
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "椅子 = stul (yǐzi)",
             "ru": "椅子 = стул (yǐzi)",
@@ -660,28 +667,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "在 talaffuzini tanlang:",
-            "ru": "Выберите произношение 在:",
-            "tj": "Талаффузи 在-ро интихоб кунед:"
+            "uz": "zài qaysi ieroglif?",
+            "ru": "Какой иероглиф читается zài?",
+            "tj": "zài кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "māo",
-            "nàr",
-            "xiǎo",
-            "zài"
+            "那儿",
+            "猫",
+            "小",
+            "在"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "在 — zài",
-            "ru": "在 — zài",
-            "tj": "在 — zài"
+            "uz": "在 = joylashmoq / -da, -da (joy ko'rsatgich) (zài)",
+            "ru": "在 = находиться / в, на (показатель места) (zài)",
+            "tj": "在 = будан / дар (нишондиҳандаи ҷой) (zài)"
           }
         },
         {
@@ -713,44 +720,28 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "那儿 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 那儿:",
-            "tj": "Маънои калимаи 那儿-ро интихоб кунед:"
+            "uz": "那儿 talaffuzini tanlang:",
+            "ru": "Выберите произношение 那儿:",
+            "tj": "Талаффузи 那儿-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            {
-              "uz": "joylashmoq / -da, -da (joy ko'rsatgich)",
-              "ru": "находиться / в, на (показатель места)",
-              "tj": "будан / дар (нишондиҳандаи ҷой)"
-            },
-            {
-              "uz": "u yerda, ana o'sha yerda",
-              "ru": "там, вон там",
-              "tj": "он ҷо, дар он ҷо"
-            },
-            {
-              "uz": "kichik, mayda",
-              "ru": "маленький, небольшой",
-              "tj": "хурд, майда"
-            },
-            {
-              "uz": "mushuk",
-              "ru": "кошка",
-              "tj": "гурба"
-            }
+            "nàr",
+            "māo",
+            "xiǎo",
+            "zài"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "那儿 = u yerda, ana o'sha yerda (nàr)",
-            "ru": "那儿 = там, вон там (nàr)",
-            "tj": "那儿 = он ҷо, дар он ҷо (nàr)"
+            "uz": "那儿 — nàr",
+            "ru": "那儿 — nàr",
+            "tj": "那儿 — nàr"
           }
         },
         {
@@ -861,11 +852,11 @@
           },
           "tokens": [
             "椅子",
-            "猫",
             "那儿",
+            "在",
             "小",
-            "狗",
-            "在"
+            "猫",
+            "狗"
           ],
           "answer_tokens": [
             "小",
@@ -933,11 +924,11 @@
             "tj": "Шумо дар куҷо кор мекунед?"
           },
           "tokens": [
-            "在",
             "哪儿",
+            "在",
             "工作",
-            "小",
             "你",
+            "小",
             "猫"
           ],
           "answer_tokens": [
@@ -1006,13 +997,13 @@
             "tj": "Писарам дар беморхона кор мекунад."
           },
           "tokens": [
-            "医院",
-            "在",
             "儿子",
-            "小",
+            "在",
             "我",
+            "医院",
+            "工作",
             "猫",
-            "工作"
+            "小"
           ],
           "answer_tokens": [
             "我",
@@ -1030,9 +1021,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Do'stim maktabda.» — xitoychada qaysi biri?",
-            "ru": "«Мой друг в школе.» — какое предложение по-китайски?",
-            "tj": "«Дӯстам дар мактаб аст.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Men uyda choy ichaman.» — xitoychada qaysi biri?",
+            "ru": "«Я пью чай дома.» — какое предложение по-китайски?",
+            "tj": "«Ман дар хона чой менӯшам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1040,16 +1031,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
+            "我在家喝茶。",
+            "他爸爸在哪儿呢？",
             "小猫在那儿。",
-            "爸爸不在家。",
-            "你在哪儿工作？",
-            "我朋友在学校。"
+            "我儿子在医院工作。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "我朋友在学校。 — Wǒ péngyou zài xuéxiào.",
-            "ru": "我朋友在学校。 — Wǒ péngyou zài xuéxiào.",
-            "tj": "我朋友在学校。 — Wǒ péngyou zài xuéxiào."
+            "uz": "我在家喝茶。 — Wǒ zài jiā hē chá.",
+            "ru": "我在家喝茶。 — Wǒ zài jiā hē chá.",
+            "tj": "我在家喝茶。 — Wǒ zài jiā hē chá."
           }
         }
       ]
@@ -1063,6 +1054,16 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "pronunciation",
+          "phrase": "儿子",
+          "pinyin": "érzi",
+          "translation": {
+            "uz": "o'g'il",
+            "ru": "сын",
+            "tj": "писар"
+          }
+        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -1112,19 +1113,19 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "小猫在哪儿？",
-          "pinyin": "Xiǎo māo zài nǎr?",
+          "audio_text": "你爸爸在家吗？",
+          "pinyin": "Nǐ bàba zài jiā ma?",
           "options": [
-            "小狗在哪儿？",
             "小猫在哪儿？",
+            "小狗在哪儿？",
             "小猫在那儿。",
-            "小狗在椅子下面。"
+            "你爸爸在家吗？"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "小猫在哪儿？ — Mushuk qayerda?",
-            "ru": "小猫在哪儿？ — Где кошка?",
-            "tj": "小猫在哪儿？ — Гурба куҷост?"
+            "uz": "你爸爸在家吗？ — Otangiz uyda ekanmi?",
+            "ru": "你爸爸在家吗？ — Ваш папа дома?",
+            "tj": "你爸爸在家吗？ — Падари шумо дар хона аст?"
           }
         },
         {
@@ -1141,9 +1142,9 @@
           },
           "options": [
             {
-              "uz": "mushuk",
-              "ru": "кошка",
-              "tj": "гурба"
+              "uz": "o'g'il",
+              "ru": "сын",
+              "tj": "писар"
             },
             {
               "uz": "kichik, mayda",
@@ -1156,12 +1157,12 @@
               "tj": "будан / дар (нишондиҳандаи ҷой)"
             },
             {
-              "uz": "o'g'il",
-              "ru": "сын",
-              "tj": "писар"
+              "uz": "mushuk",
+              "ru": "кошка",
+              "tj": "гурба"
             }
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "儿子 = o'g'il (érzi)",
             "ru": "儿子 = сын (érzi)",
@@ -1176,12 +1177,12 @@
             "tj": "Гурба куҷост?"
           },
           "tokens": [
-            "哪儿",
+            "猫",
             "小",
             "在",
-            "那儿",
-            "猫",
-            "狗"
+            "哪儿",
+            "狗",
+            "那儿"
           ],
           "answer_tokens": [
             "小",
@@ -1209,11 +1210,11 @@
           },
           "options": [
             "xiǎo",
-            "māo",
             "yīyuàn",
-            "zài"
+            "zài",
+            "māo"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "医院 — yīyuàn",
             "ru": "医院 — yīyuàn",
@@ -1222,12 +1223,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "小",
-          "pinyin": "xiǎo",
+          "phrase": "哪儿",
+          "pinyin": "nǎr",
           "translation": {
-            "uz": "kichik, mayda",
-            "ru": "маленький, небольшой",
-            "tj": "хурд, майда"
+            "uz": "qayerda",
+            "ru": "где",
+            "tj": "куҷо"
           }
         }
       ]
@@ -1252,9 +1253,9 @@
           "pinyin": "Xiǎo māo zài nǎr?",
           "options": [
             "小猫在哪儿？",
+            "小狗在哪儿？",
             "小狗在椅子下面。",
-            "小猫在那儿。",
-            "小狗在哪儿？"
+            "小猫在那儿。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1276,16 +1277,37 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "小猫在哪儿？",
             "小狗在哪儿？",
+            "小狗在椅子下面。",
             "小猫在那儿。",
-            "小狗在椅子下面。"
+            "小猫在哪儿？"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 小狗在椅子下面。",
             "ru": "Правильный ответ: 小狗在椅子下面。",
             "tj": "Ҷавоби дуруст: 小狗在椅子下面。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____猫在哪儿？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "问",
+            "您",
+            "叫",
+            "小"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 小 — 小猫在哪儿？ (Mushuk qayerda?)",
+            "ru": "Верно: 小 — 小猫在哪儿？ (Где кошка?)",
+            "tj": "Дуруст: 小 — 小猫在哪儿？ (Гурба куҷост?)"
           }
         },
         {
@@ -1301,37 +1323,16 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "小猫在那儿。",
             "小猫在哪儿？",
+            "小狗在椅子下面。",
             "小狗在哪儿？",
-            "小狗在椅子下面。"
+            "小猫在那儿。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 小猫在哪儿？",
             "ru": "Правильный ответ: 小猫在哪儿？",
             "tj": "Ҷавоби дуруст: 小猫在哪儿？"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____猫在哪儿？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "小",
-            "朋",
-            "菜",
-            "下"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 小 — 小猫在哪儿？ (Mushuk qayerda?)",
-            "ru": "Верно: 小 — 小猫在哪儿？ (Где кошка?)",
-            "tj": "Дуруст: 小 — 小猫在哪儿？ (Гурба куҷост?)"
           }
         },
         {
@@ -1364,16 +1365,26 @@
             }
           ],
           "options": [
-            "小猫在哪儿？",
             "小狗在椅子下面。",
-            "小狗在哪儿？",
-            "小猫在那儿。"
+            "小猫在那儿。",
+            "小猫在哪儿？",
+            "小狗在哪儿？"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 小狗在椅子下面。",
             "ru": "Правильный ответ: 小狗在椅子下面。",
             "tj": "Ҷавоби дуруст: 小狗在椅子下面。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "他在医院。",
+          "pinyin": "Tā zài yīyuàn.",
+          "translation": {
+            "uz": "U kasalxonada.",
+            "ru": "Он в больнице.",
+            "tj": "Ӯ дар беморхона аст."
           }
         }
       ]

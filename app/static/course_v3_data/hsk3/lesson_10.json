@@ -598,44 +598,35 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "矮 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 矮:",
-            "tj": "Маънои калимаи 矮-ро интихоб кунед:"
-          },
+          "type": "pronunciation",
+          "phrase": "矮",
+          "pinyin": "ǎi",
+          "translation": {
+            "uz": "past bo'yli",
+            "ru": "низкий, невысокий",
+            "tj": "пастқад"
+          }
+        },
+        {
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "矮",
+          "pinyin": "ǎi",
           "options": [
-            {
-              "uz": "tarix",
-              "ru": "история",
-              "tj": "таърих"
-            },
-            {
-              "uz": "bo'y, gavda balandligi",
-              "ru": "рост",
-              "tj": "қад"
-            },
-            {
-              "uz": "past bo'yli",
-              "ru": "низкий, невысокий",
-              "tj": "пастқад"
-            },
-            {
-              "uz": "jismoniy tarbiya",
-              "ru": "физкультура, спорт",
-              "tj": "тарбияи ҷисмонӣ"
-            }
+            "矮",
+            "体育",
+            "个子",
+            "历史"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "矮 = past bo'yli (ǎi)",
-            "ru": "矮 = низкий, невысокий (ǎi)",
-            "tj": "矮 = пастқад (ǎi)"
+            "uz": "矮 — past bo'yli (ǎi)",
+            "ru": "矮 — низкий, невысокий (ǎi)",
+            "tj": "矮 — пастқад (ǎi)"
           }
         },
         {
@@ -667,24 +658,40 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "lìshǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается lìshǐ?",
-            "tj": "lìshǐ кадом иероглиф аст?"
+            "uz": "历史 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 历史:",
+            "tj": "Маънои калимаи 历史-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "体育",
-            "个子",
-            "历史",
-            "矮"
+            {
+              "uz": "past bo'yli",
+              "ru": "низкий, невысокий",
+              "tj": "пастқад"
+            },
+            {
+              "uz": "tarix",
+              "ru": "история",
+              "tj": "таърих"
+            },
+            {
+              "uz": "bo'y, gavda balandligi",
+              "ru": "рост",
+              "tj": "қад"
+            },
+            {
+              "uz": "jismoniy tarbiya",
+              "ru": "физкультура, спорт",
+              "tj": "тарбияи ҷисмонӣ"
+            }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "历史 = tarix (lìshǐ)",
             "ru": "历史 = история (lìshǐ)",
@@ -720,28 +727,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "数学 talaffuzini tanlang:",
-            "ru": "Выберите произношение 数学:",
-            "tj": "Талаффузи 数学-ро интихоб кунед:"
+            "uz": "shùxué qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shùxué?",
+            "tj": "shùxué кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "shùxué",
-            "gèzi",
-            "lìshǐ",
-            "ǎi"
+            "数学",
+            "个子",
+            "历史",
+            "矮"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "数学 — shùxué",
-            "ru": "数学 — shùxué",
-            "tj": "数学 — shùxué"
+            "uz": "数学 = matematika (shùxué)",
+            "ru": "数学 = математика (shùxué)",
+            "tj": "数学 = математика (shùxué)"
           }
         },
         {
@@ -773,44 +780,28 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "骑 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 骑:",
-            "tj": "Маънои калимаи 骑-ро интихоб кунед:"
+            "uz": "骑 talaffuzini tanlang:",
+            "ru": "Выберите произношение 骑:",
+            "tj": "Талаффузи 骑-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            {
-              "uz": "minmoq",
-              "ru": "ехать верхом, ездить",
-              "tj": "савор шудан"
-            },
-            {
-              "uz": "past bo'yli",
-              "ru": "низкий, невысокий",
-              "tj": "пастқад"
-            },
-            {
-              "uz": "tarix",
-              "ru": "история",
-              "tj": "таърих"
-            },
-            {
-              "uz": "bo'y, gavda balandligi",
-              "ru": "рост",
-              "tj": "қад"
-            }
+            "lìshǐ",
+            "qí",
+            "ǎi",
+            "gèzi"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "骑 = minmoq (qí)",
-            "ru": "骑 = ехать верхом, ездить (qí)",
-            "tj": "骑 = савор шудан (qí)"
+            "uz": "骑 — qí",
+            "ru": "骑 — qí",
+            "tj": "骑 — qí"
           }
         },
         {
@@ -842,28 +833,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "huàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается huàn?",
-            "tj": "huàn кадом иероглиф аст?"
+            "uz": "'almashtirmoq' xitoycha qaysi?",
+            "ru": "'менять, заменять' по-китайски?",
+            "tj": "'иваз кардан' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
             "换",
             "历史",
-            "个子",
-            "矮"
+            "矮",
+            "个子"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "换 = almashtirmoq (huàn)",
-            "ru": "换 = менять, заменять (huàn)",
-            "tj": "换 = иваз кардан (huàn)"
+            "uz": "almashtirmoq = 换 (huàn)",
+            "ru": "менять, заменять = 换 (huàn)",
+            "tj": "иваз кардан = 换 (huàn)"
           }
         },
         {
@@ -964,14 +955,14 @@
             "tj": "Математика аз таърих хеле душвортар аст!"
           },
           "tokens": [
-            "个子",
-            "数学",
-            "历史",
-            "矮",
-            "比",
-            "了",
             "多",
-            "难"
+            "历史",
+            "数学",
+            "个子",
+            "矮",
+            "难",
+            "比",
+            "了"
           ],
           "answer_tokens": [
             "数学",
@@ -1034,11 +1025,11 @@
           },
           "options": [
             "体育",
-            "矮",
             "历史",
-            "个子"
+            "个子",
+            "矮"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 历史 (lìshǐ) — tarix",
             "ru": "Верно: 历史 (lìshǐ) — история",
@@ -1085,9 +1076,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Fizika kimyo kadar qiyin emas.» — xitoychada qaysi biri?",
-            "ru": "«Физика не такая сложная, как химия.» — какое предложение по-китайски?",
-            "tj": "«Физика ба монанди химия душвор нест.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Siz mendan ancha yaxshisiz!» — xitoychada qaysi biri?",
+            "ru": "«Ты намного лучше меня!» — какое предложение по-китайски?",
+            "tj": "«Шумо аз ман хеле беҳтаред!» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1095,16 +1086,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "我考了九十多分。",
-            "你比我好多了！",
-            "今天的天气不如昨天好。",
-            "物理不如化学难。"
+            "物理不如化学难。",
+            "历史需要记几百个年代。",
+            "数学比历史难多了！",
+            "你比我好多了！"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "物理不如化学难。 — Wùlǐ bùrú huàxué nán.",
-            "ru": "物理不如化学难。 — Wùlǐ bùrú huàxué nán.",
-            "tj": "物理不如化学难。 — Wùlǐ bùrú huàxué nán."
+            "uz": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!",
+            "ru": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!",
+            "tj": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!"
           }
         }
       ]
@@ -1119,31 +1110,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "中介 talaffuzini tanlang:",
-            "ru": "Выберите произношение 中介:",
-            "tj": "Талаффузи 中介-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "zhōngjiè",
-            "gèzi",
-            "ǎi",
-            "lìshǐ"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "中介 — zhōngjiè",
-            "ru": "中介 — zhōngjiè",
-            "tj": "中介 — zhōngjiè"
-          }
-        },
-        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'asosiy, muhim' xitoycha qaysi?",
@@ -1156,9 +1122,9 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "历史",
-            "主要",
             "个子",
+            "主要",
+            "历史",
             "矮"
           ],
           "correct_index": 1,
@@ -1176,15 +1142,15 @@
             "tj": "Дашан, ту ё Маке, қади кӣ баландтар аст?"
           },
           "tokens": [
+            "你",
+            "个子",
             "历史",
             "和",
-            "谁",
-            "你",
-            "高",
-            "个子",
-            "大山",
             "马可",
-            "矮"
+            "高",
+            "矮",
+            "大山",
+            "谁"
           ],
           "answer_tokens": [
             "大山",
@@ -1199,6 +1165,31 @@
             "uz": "大山，你和马可谁个子高？ — Dàshān, nǐ hé Mǎkě shéi gèzi gāo?",
             "ru": "大山，你和马可谁个子高？ — Dàshān, nǐ hé Mǎkě shéi gèzi gāo?",
             "tj": "大山，你和马可谁个子高？ — Dàshān, nǐ hé Mǎkě shéi gèzi gāo?"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "中介 talaffuzini tanlang:",
+            "ru": "Выберите произношение 中介:",
+            "tj": "Талаффузи 中介-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "lìshǐ",
+            "ǎi",
+            "zhōngjiè",
+            "gèzi"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "中介 — zhōngjiè",
+            "ru": "中介 — zhōngjiè",
+            "tj": "中介 — zhōngjiè"
           }
         },
         {
@@ -1244,35 +1235,66 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Siz mendan ancha yaxshisiz!",
+            "ru": "Ты намного лучше меня!",
+            "tj": "Шумо аз ман хеле беҳтаред!"
+          },
+          "tokens": [
+            "个子",
+            "比",
+            "我",
+            "多",
+            "你",
+            "了",
+            "好",
+            "矮"
+          ],
+          "answer_tokens": [
+            "你",
+            "比",
+            "我",
+            "好",
+            "多",
+            "了"
+          ],
+          "explanation": {
+            "uz": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!",
+            "ru": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!",
+            "tj": "你比我好多了！ — Nǐ bǐ wǒ hǎo duō le!"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "大山，你和马可谁个子高？",
-          "pinyin": "Dàshān, nǐ hé Mǎkě shéi gèzi gāo?",
+          "audio_text": "别担心，我可以帮你。",
+          "pinyin": "Bié dānxīn, wǒ kěyǐ bāng nǐ.",
           "options": [
+            "别担心，我可以帮你。",
+            "马可比我高，我比马可矮一点儿。",
             "大山，你和马可谁个子高？",
-            "我比马可大两岁。",
-            "那你们谁大？",
-            "马可比我高，我比马可矮一点儿。"
+            "那你们谁大？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "大山，你和马可谁个子高？ — Dashan, sen bilan Make, kimning bo'yi balandroq?",
-            "ru": "大山，你和马可谁个子高？ — Дашань, кто выше ростом, ты или Марк?",
-            "tj": "大山，你和马可谁个子高？ — Дашан, ту ё Маке, қади кӣ баландтар аст?"
+            "uz": "别担心，我可以帮你。 — Xavotir olma, men yordam bera olaman.",
+            "ru": "别担心，我可以帮你。 — Не волнуйся, я могу помочь.",
+            "tj": "别担心，我可以帮你。 — Нигарон нашав, ман ёрӣ дода метавонам."
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "个子",
-          "pinyin": "gèzi",
+          "phrase": "换",
+          "pinyin": "huàn",
           "translation": {
-            "uz": "bo'y, gavda balandligi",
-            "ru": "рост",
-            "tj": "қад"
+            "uz": "almashtirmoq",
+            "ru": "менять, заменять",
+            "tj": "иваз кардан"
           }
         }
       ]
@@ -1298,39 +1320,14 @@
           "options": [
             "那你们谁大？",
             "大山，你和马可谁个子高？",
-            "我比马可大两岁。",
-            "马可比我高，我比马可矮一点儿。"
+            "马可比我高，我比马可矮一点儿。",
+            "我比马可大两岁。"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "大山，你和马可谁个子高？ — Dashan, sen bilan Make, kimning bo'yi balandroq?",
             "ru": "大山，你和马可谁个子高？ — Дашань, кто выше ростом, ты или Марк?",
             "tj": "大山，你和马可谁个子高？ — Дашан, ту ё Маке, қади кӣ баландтар аст?"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 大山 nima deydi?",
-            "ru": "Что 大山 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 大山 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "马可比我说得好一些，我的汉语没有他好。",
-            "马可比我高，我比马可矮一点儿。",
-            "那你们谁大？",
-            "大山，你和马可谁个子高？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 马可比我说得好一些，我的汉语没有他好。",
-            "ru": "Правильный ответ: 马可比我说得好一些，我的汉语没有他好。",
-            "tj": "Ҷавоби дуруст: 马可比我说得好一些，我的汉语没有他好。"
           }
         },
         {
@@ -1346,9 +1343,9 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
+            "那你们谁大？",
             "马可比我高，我比马可矮一点儿。",
             "我比马可大两岁。",
-            "那你们谁大？",
             "大山，你和马可谁个子高？"
           ],
           "correct_index": 3,
@@ -1356,6 +1353,31 @@
             "uz": "To'g'ri javob: 大山，你和马可谁个子高？",
             "ru": "Правильный ответ: 大山，你和马可谁个子高？",
             "tj": "Ҷавоби дуруст: 大山，你和马可谁个子高？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 大山 nima deydi?",
+            "ru": "Что 大山 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 大山 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "那你们谁大？",
+            "马可比我说得好一些，我的汉语没有他好。",
+            "大山，你和马可谁个子高？",
+            "马可比我高，我比马可矮一点儿。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 马可比我说得好一些，我的汉语没有他好。",
+            "ru": "Правильный ответ: 马可比我说得好一些，我的汉语没有他好。",
+            "tj": "Ҷавоби дуруст: 马可比我说得好一些，我的汉语没有他好。"
           }
         },
         {
@@ -1367,12 +1389,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "下",
-            "大",
-            "旧",
-            "电"
+            "眼",
+            "附",
+            "久",
+            "大"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 大 — 大山，你和马可谁个子高？ (Dashan, sen bilan Make, kimning bo'yi balandroq?)",
             "ru": "Верно: 大 — 大山，你和马可谁个子高？ (Дашань, кто выше ростом, ты или Марк?)",
@@ -1420,15 +1442,25 @@
           ],
           "options": [
             "大山，你和马可谁个子高？",
-            "马可比我高，我比马可矮一点儿。",
             "马可比我说得好一些，我的汉语没有他好。",
-            "那你们谁大？"
+            "那你们谁大？",
+            "马可比我高，我比马可矮一点儿。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 马可比我说得好一些，我的汉语没有他好。",
             "ru": "Правильный ответ: 马可比我说得好一些，我的汉语没有他好。",
             "tj": "Ҷавоби дуруст: 马可比我说得好一些，我的汉语没有他好。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "那很方便啊。",
+          "pinyin": "Nà hěn fāngbiàn a.",
+          "translation": {
+            "uz": "Bu juda qulay ekan.",
+            "ru": "Это очень удобно.",
+            "tj": "Ин хеле қулай аст."
           }
         }
       ]

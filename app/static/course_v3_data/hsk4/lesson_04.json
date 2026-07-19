@@ -766,44 +766,28 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "以为 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 以为:",
-            "tj": "Маънои калимаи 以为-ро интихоб кунед:"
+            "uz": "'deb o'ylamoq, yanglish hisoblamoq' xitoycha qaysi?",
+            "ru": "'думать, ошибочно полагать' по-китайски?",
+            "tj": "'фикр кардан, ғалат пиндоштан' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            {
-              "uz": "butunlay, to'liq",
-              "ru": "полностью, совершенно",
-              "tj": "пурра, комилан"
-            },
-            {
-              "uz": "tilga olmoq, aytmoq",
-              "ru": "упоминать, говорить",
-              "tj": "зикр кардан, гуфтан"
-            },
-            {
-              "uz": "deb o'ylamoq, yanglish hisoblamoq",
-              "ru": "думать, ошибочно полагать",
-              "tj": "фикр кардан, ғалат пиндоштан"
-            },
-            {
-              "uz": "ish kabi narsalar uchun hisob so'zi",
-              "ru": "счётное слово для работы и др.",
-              "tj": "ҳисобвожа барои кор ва ғайра"
-            }
+            "以为",
+            "份",
+            "提",
+            "完全"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "以为 = deb o'ylamoq, yanglish hisoblamoq (yǐwéi)",
-            "ru": "以为 = думать, ошибочно полагать (yǐwéi)",
-            "tj": "以为 = фикр кардан, ғалат пиндоштан (yǐwéi)"
+            "uz": "deb o'ylamoq, yanglish hisoblamoq = 以为 (yǐwéi)",
+            "ru": "думать, ошибочно полагать = 以为 (yǐwéi)",
+            "tj": "фикр кардан, ғалат пиндоштан = 以为 (yǐwéi)"
           }
         },
         {
@@ -835,28 +819,35 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "wánquán qaysi ieroglif?",
-            "ru": "Какой иероглиф читается wánquán?",
-            "tj": "wánquán кадом иероглиф аст?"
-          },
+          "type": "pronunciation",
+          "phrase": "完全",
+          "pinyin": "wánquán",
+          "translation": {
+            "uz": "butunlay, to'liq",
+            "ru": "полностью, совершенно",
+            "tj": "пурра, комилан"
+          }
+        },
+        {
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "完全",
+          "pinyin": "wánquán",
           "options": [
-            "份",
+            "完全",
             "提",
-            "以为",
-            "完全"
+            "份",
+            "以为"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "完全 = butunlay, to'liq (wánquán)",
-            "ru": "完全 = полностью, совершенно (wánquán)",
-            "tj": "完全 = пурра, комилан (wánquán)"
+            "uz": "完全 — butunlay, to'liq (wánquán)",
+            "ru": "完全 — полностью, совершенно (wánquán)",
+            "tj": "完全 — пурра, комилан (wánquán)"
           }
         },
         {
@@ -888,28 +879,44 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "提 talaffuzini tanlang:",
-            "ru": "Выберите произношение 提:",
-            "tj": "Талаффузи 提-ро интихоб кунед:"
+            "uz": "提 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 提:",
+            "tj": "Маънои калимаи 提-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "tí",
-            "yǐwéi",
-            "wánquán",
-            "fèn"
+            {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            },
+            {
+              "uz": "butunlay, to'liq",
+              "ru": "полностью, совершенно",
+              "tj": "пурра, комилан"
+            },
+            {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "提 — tí",
-            "ru": "提 — tí",
-            "tj": "提 — tí"
+            "uz": "提 = tilga olmoq, aytmoq (tí)",
+            "ru": "提 = упоминать, говорить (tí)",
+            "tj": "提 = зикр кардан, гуфтан (tí)"
           }
         },
         {
@@ -941,40 +948,24 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "计划 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 计划:",
-            "tj": "Маънои калимаи 计划-ро интихоб кунед:"
+            "uz": "jìhuà qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jìhuà?",
+            "tj": "jìhuà кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            {
-              "uz": "deb o'ylamoq, yanglish hisoblamoq",
-              "ru": "думать, ошибочно полагать",
-              "tj": "фикр кардан, ғалат пиндоштан"
-            },
-            {
-              "uz": "ish kabi narsalar uchun hisob so'zi",
-              "ru": "счётное слово для работы и др.",
-              "tj": "ҳисобвожа барои кор ва ғайра"
-            },
-            {
-              "uz": "tilga olmoq, aytmoq",
-              "ru": "упоминать, говорить",
-              "tj": "зикр кардан, гуфтан"
-            },
-            {
-              "uz": "reja; rejalamoq",
-              "ru": "план; планировать",
-              "tj": "нақша; нақша кардан"
-            }
+            "计划",
+            "份",
+            "提",
+            "以为"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "计划 = reja; rejalamoq (jìhuà)",
             "ru": "计划 = план; планировать (jìhuà)",
@@ -1010,28 +1001,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "bǎozhèng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается bǎozhèng?",
-            "tj": "bǎozhèng кадом иероглиф аст?"
+            "uz": "保证 talaffuzini tanlang:",
+            "ru": "Выберите произношение 保证:",
+            "tj": "Талаффузи 保证-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "保证",
-            "提",
-            "以为",
-            "份"
+            "bǎozhèng",
+            "fèn",
+            "yǐwéi",
+            "tí"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "保证 = kafolat bermoq (bǎozhèng)",
-            "ru": "保证 = гарантировать (bǎozhèng)",
-            "tj": "保证 = кафолат додан (bǎozhèng)"
+            "uz": "保证 — bǎozhèng",
+            "ru": "保证 — bǎozhèng",
+            "tj": "保证 — bǎozhèng"
           }
         },
         {
@@ -1124,12 +1115,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "提",
-            "完全",
             "以为",
-            "份"
+            "提",
+            "份",
+            "完全"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 以为 (yǐwéi) — deb o'ylamoq, yanglish hisoblamoq",
             "ru": "Верно: 以为 (yǐwéi) — думать, ошибочно полагать",
@@ -1173,12 +1164,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "原来",
             "提",
-            "份",
-            "以为"
+            "以为",
+            "原来",
+            "份"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 原来 (yuánlái) — asl, oldingi",
             "ru": "Верно: 原来 (yuánlái) — первоначальный, прежний",
@@ -1250,12 +1241,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "计划",
+            "提",
             "以为",
-            "份",
-            "提"
+            "计划",
+            "份"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 计划 (jìhuà) — reja; rejalamoq",
             "ru": "Верно: 计划 (jìhuà) — план; планировать",
@@ -1299,12 +1290,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "份",
             "提",
-            "不得不",
-            "以为"
+            "份",
+            "以为",
+            "不得不"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri: 不得不 (bùdébù) — majbur bo'lmoq",
             "ru": "Верно: 不得不 (bùdébù) — быть вынужденным",
@@ -1314,9 +1305,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Oldingi rejaga ko'ra ikki hafta bo'lishi kerak edi, lekin biz oldinroq tugata olamiz.» — xitoychada qaysi biri?",
-            "ru": "«По первоначальному плану должно быть две недели, но мы можем завершить раньше.» — какое предложение по-китайски?",
-            "tj": "«Мувофиқи нақшаи аввал бояд ду ҳафта мешуд, вале мо метавонем пеш аз муҳлат анҷом диҳем.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Bu yilgi ishlarimizning hammasi reja bo'yicha yakunlandi.» — xitoychada qaysi biri?",
+            "ru": "«Наша работа за этот год уже завершена согласно плану.» — какое предложение по-китайски?",
+            "tj": "«Корҳои имсолаи мо ҳама мувофиқи нақша анҷом ёфтанд.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1325,15 +1316,15 @@
           },
           "options": [
             "我以为新工作比以前的好，没想到还没有以前好呢。",
+            "按原来的计划应该是两周，但是我们可以提前完成。",
             "我们今年的工作都已经按照计划完成了。",
-            "后来才发现其实并不容易。",
-            "按原来的计划应该是两周，但是我们可以提前完成。"
+            "我们不得不去做一些自己不愿意做甚至是非常不喜欢的工作。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "按原来的计划应该是两周，但是我们可以提前完成。 — Àn yuánlái de jìhuà yīnggāi shì liǎng zhōu, dànshì wǒmen kěyǐ tíqián wánchéng.",
-            "ru": "按原来的计划应该是两周，但是我们可以提前完成。 — Àn yuánlái de jìhuà yīnggāi shì liǎng zhōu, dànshì wǒmen kěyǐ tíqián wánchéng.",
-            "tj": "按原来的计划应该是两周，但是我们可以提前完成。 — Àn yuánlái de jìhuà yīnggāi shì liǎng zhōu, dànshì wǒmen kěyǐ tíqián wánchéng."
+            "uz": "我们今年的工作都已经按照计划完成了。 — Wǒmen jīnnián de gōngzuò dōu yǐjīng ànzhào jìhuà wánchéng le.",
+            "ru": "我们今年的工作都已经按照计划完成了。 — Wǒmen jīnnián de gōngzuò dōu yǐjīng ànzhào jìhuà wánchéng le.",
+            "tj": "我们今年的工作都已经按照计划完成了。 — Wǒmen jīnnián de gōngzuò dōu yǐjīng ànzhào jìhuà wánchéng le."
           }
         }
       ]
@@ -1348,25 +1339,88 @@
       "section_purpose": "practice",
       "cards": [
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "并 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 并:",
+            "tj": "Маънои калимаи 并-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "inkor oldida kuchaytiradi: umuman",
+              "ru": "усиливает отрицание: вовсе",
+              "tj": "инкорро таъкид мекунад: умуман"
+            },
+            {
+              "uz": "ish kabi narsalar uchun hisob so'zi",
+              "ru": "счётное слово для работы и др.",
+              "tj": "ҳисобвожа барои кор ва ғайра"
+            },
+            {
+              "uz": "deb o'ylamoq, yanglish hisoblamoq",
+              "ru": "думать, ошибочно полагать",
+              "tj": "фикр кардан, ғалат пиндоштан"
+            },
+            {
+              "uz": "tilga olmoq, aytmoq",
+              "ru": "упоминать, говорить",
+              "tj": "зикр кардан, гуфтан"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "并 = inkor oldida kuchaytiradi: umuman (bìng)",
+            "ru": "并 = усиливает отрицание: вовсе (bìng)",
+            "tj": "并 = инкорро таъкид мекунад: умуман (bìng)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "赚",
+          "pinyin": "zhuàn",
+          "options": [
+            "赚",
+            "份",
+            "以为",
+            "提"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "赚 — pul topmoq (zhuàn)",
+            "ru": "赚 — зарабатывать (zhuàn)",
+            "tj": "赚 — пул даромад кардан (zhuàn)"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "听说你又换工作了？今年已经换了三次工作了吧？",
-          "pinyin": "Tīngshuō nǐ yòu huàn gōngzuò le? Jīnnián yǐjīng huànle sān cì gōngzuò le ba?",
+          "audio_text": "我也明白。但是那份工作的收入太少了！",
+          "pinyin": "Wǒ yě míngbai. Dànshì nà fèn gōngzuò de shōurù tài shǎo le!",
           "options": [
-            "听说你又换工作了？今年已经换了三次工作了吧？",
-            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
             "我也明白。但是那份工作的收入太少了！",
-            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。"
+            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
+            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
+            "听说你又换工作了？今年已经换了三次工作了吧？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "听说你又换工作了？今年已经换了三次工作了吧？ — Eshitishimcha yana ish almashtiribsan? Bu yil allaqachon uch marta ish almashtirding-a?",
-            "ru": "听说你又换工作了？今年已经换了三次工作了吧？ — Слышал, ты снова сменил работу? В этом году уже три раза сменил работу, да?",
-            "tj": "听说你又换工作了？今年已经换了三次工作了吧？ — Шунидам боз коратро иваз кардӣ? Имсол аллакай се бор кор иваз кардӣ, ҳа?"
+            "uz": "我也明白。但是那份工作的收入太少了！ — Men ham tushunaman. Lekin u ishning daromadi juda kam edi!",
+            "ru": "我也明白。但是那份工作的收入太少了！ — Я тоже понимаю. Но доход на той работе был слишком маленький!",
+            "tj": "我也明白。但是那份工作的收入太少了！ — Ман ҳам мефаҳмам. Аммо даромади он кор хеле кам буд!"
           }
         },
         {
@@ -1412,47 +1466,6 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "并 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 并:",
-            "tj": "Маънои калимаи 并-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "ish kabi narsalar uchun hisob so'zi",
-              "ru": "счётное слово для работы и др.",
-              "tj": "ҳисобвожа барои кор ва ғайра"
-            },
-            {
-              "uz": "tilga olmoq, aytmoq",
-              "ru": "упоминать, говорить",
-              "tj": "зикр кардан, гуфтан"
-            },
-            {
-              "uz": "deb o'ylamoq, yanglish hisoblamoq",
-              "ru": "думать, ошибочно полагать",
-              "tj": "фикр кардан, ғалат пиндоштан"
-            },
-            {
-              "uz": "inkor oldida kuchaytiradi: umuman",
-              "ru": "усиливает отрицание: вовсе",
-              "tj": "инкорро таъкид мекунад: умуман"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "并 = inkor oldida kuchaytiradi: umuman (bìng)",
-            "ru": "并 = усиливает отрицание: вовсе (bìng)",
-            "tj": "并 = инкорро таъкид мекунад: умуман (bìng)"
-          }
-        },
-        {
           "type": "hanzi_choice",
           "prompt": {
             "uz": "tán qaysi ieroglif?",
@@ -1465,12 +1478,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "提",
             "份",
             "以为",
-            "谈",
-            "提"
+            "谈"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "谈 = gaplashmoq, muhokama qilmoq (tán)",
             "ru": "谈 = разговаривать, обсуждать (tán)",
@@ -1479,12 +1492,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "提",
-          "pinyin": "tí",
+          "phrase": "完全",
+          "pinyin": "wánquán",
           "translation": {
-            "uz": "tilga olmoq, aytmoq",
-            "ru": "упоминать, говорить",
-            "tj": "зикр кардан, гуфтан"
+            "uz": "butunlay, to'liq",
+            "ru": "полностью, совершенно",
+            "tj": "пурра, комилан"
           }
         }
       ]
@@ -1508,12 +1521,12 @@
           "audio_text": "听说你又换工作了？今年已经换了三次工作了吧？",
           "pinyin": "Tīngshuō nǐ yòu huàn gōngzuò le? Jīnnián yǐjīng huànle sān cì gōngzuò le ba?",
           "options": [
-            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
+            "听说你又换工作了？今年已经换了三次工作了吧？",
             "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
-            "我也明白。但是那份工作的收入太少了！",
-            "听说你又换工作了？今年已经换了三次工作了吧？"
+            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
+            "我也明白。但是那份工作的收入太少了！"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "听说你又换工作了？今年已经换了三次工作了吧？ — Eshitishimcha yana ish almashtiribsan? Bu yil allaqachon uch marta ish almashtirding-a?",
             "ru": "听说你又换工作了？今年已经换了三次工作了吧？ — Слышал, ты снова сменил работу? В этом году уже три раза сменил работу, да?",
@@ -1533,12 +1546,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
             "我也明白。但是那份工作的收入太少了！",
-            "听说你又换工作了？今年已经换了三次工作了吧？",
-            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。"
+            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
+            "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
+            "听说你又换工作了？今年已经换了三次工作了吧？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 听说你又换工作了？今年已经换了三次工作了吧？",
             "ru": "Правильный ответ: 听说你又换工作了？今年已经换了三次工作了吧？",
@@ -1554,12 +1567,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "电",
-            "旧",
+            "附",
             "听",
-            "下"
+            "符",
+            "久"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 听 — 听说你又换工作了？今年已经换了三次工作了吧？ (Eshitishimcha yana ish almashtiribsan? Bu yil allaqachon uch marta ish almashtirding-a?)",
             "ru": "Верно: 听 — 听说你又换工作了？今年已经换了三次工作了吧？ (Слышал, ты снова сменил работу? В этом году уже три раза сменил работу, да?)",
@@ -1581,8 +1594,8 @@
           "options": [
             "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
             "好。我一定会努力把现在这份工作做好。",
-            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
-            "听说你又换工作了？今年已经换了三次工作了吧？"
+            "听说你又换工作了？今年已经换了三次工作了吧？",
+            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1631,16 +1644,26 @@
             }
           ],
           "options": [
+            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。",
             "听说你又换工作了？今年已经换了三次工作了吧？",
-            "好。我一定会努力把现在这份工作做好。",
             "上次那份工作你只做了两个月就离开了，其实，完全适应一个新的工作需要一年时间，所以，经常换工作不一定好。",
-            "别提了！我以为新工作比以前的好，没想到还没有以前好呢。"
+            "好。我一定会努力把现在这份工作做好。"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 好。我一定会努力把现在这份工作做好。",
             "ru": "Правильный ответ: 好。我一定会努力把现在这份工作做好。",
             "tj": "Ҷавоби дуруст: 好。我一定会努力把现在这份工作做好。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "什么事让你这么高兴啊？",
+          "pinyin": "Shénme shì ràng nǐ zhème gāoxìng a?",
+          "translation": {
+            "uz": "Nima seni bunchalik xursand qildi?",
+            "ru": "Что тебя так обрадовало?",
+            "tj": "Чӣ чиз туро ин қадар хурсанд кард?"
           }
         }
       ]

@@ -847,28 +847,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "死 talaffuzini tanlang:",
-            "ru": "Выберите произношение 死:",
-            "tj": "Талаффузи 死-ро интихоб кунед:"
+            "uz": "sǐ qaysi ieroglif?",
+            "ru": "Какой иероглиф читается sǐ?",
+            "tj": "sǐ кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "guīdìng",
-            "quánbù",
-            "sǐ",
-            "kěxī"
+            "可惜",
+            "死",
+            "规定",
+            "全部"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "死 — sǐ",
-            "ru": "死 — sǐ",
-            "tj": "死 — sǐ"
+            "uz": "死 = qattiq, o'zgarmas (sǐ)",
+            "ru": "死 = жёсткий, негибкий (sǐ)",
+            "tj": "死 = сахт, тағйирнопазир (sǐ)"
           }
         },
         {
@@ -900,44 +900,38 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "pronunciation",
+          "phrase": "全部",
+          "pinyin": "quánbù",
+          "translation": {
+            "uz": "hammasi, butuni",
+            "ru": "всё, полностью",
+            "tj": "ҳама, пурра"
+          }
+        },
+        {
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "全部 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 全部:",
-            "tj": "Маънои калимаи 全部-ро интихоб кунед:"
+            "uz": "全部 talaffuzini tanlang:",
+            "ru": "Выберите произношение 全部:",
+            "tj": "Талаффузи 全部-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            {
-              "uz": "qoida, belgilangan tartib",
-              "ru": "правило, положение",
-              "tj": "қоида, тартиб"
-            },
-            {
-              "uz": "hammasi, butuni",
-              "ru": "всё, полностью",
-              "tj": "ҳама, пурра"
-            },
-            {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
-            },
-            {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
-            }
+            "sǐ",
+            "quánbù",
+            "kěxī",
+            "guīdìng"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "全部 = hammasi, butuni (quánbù)",
-            "ru": "全部 = всё, полностью (quánbù)",
-            "tj": "全部 = ҳама, пурра (quánbù)"
+            "uz": "全部 — quánbù",
+            "ru": "全部 — quánbù",
+            "tj": "全部 — quánbù"
           }
         },
         {
@@ -969,28 +963,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "shāngliang qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shāngliang?",
-            "tj": "shāngliang кадом иероглиф аст?"
+            "uz": "'maslahatlashmoq' xitoycha qaysi?",
+            "ru": "'обсуждать, советоваться' по-китайски?",
+            "tj": "'маслиҳат кардан' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "可惜",
             "死",
-            "商量",
-            "规定"
+            "可惜",
+            "规定",
+            "商量"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "商量 = maslahatlashmoq (shāngliang)",
-            "ru": "商量 = обсуждать, советоваться (shāngliang)",
-            "tj": "商量 = маслиҳат кардан (shāngliang)"
+            "uz": "maslahatlashmoq = 商量 (shāngliang)",
+            "ru": "обсуждать, советоваться = 商量 (shāngliang)",
+            "tj": "маслиҳат кардан = 商量 (shāngliang)"
           }
         },
         {
@@ -1022,28 +1016,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "死 talaffuzini tanlang:",
-            "ru": "Выберите произношение 死:",
-            "tj": "Талаффузи 死-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "死",
+          "pinyin": "sǐ",
           "options": [
-            "quánbù",
-            "kěxī",
-            "guīdìng",
-            "sǐ"
+            "可惜",
+            "全部",
+            "规定",
+            "死"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "死 — sǐ",
-            "ru": "死 — sǐ",
-            "tj": "死 — sǐ"
+            "uz": "死 — qattiq, o'zgarmas (sǐ)",
+            "ru": "死 — жёсткий, негибкий (sǐ)",
+            "tj": "死 — сахт, тағйирнопазир (sǐ)"
           }
         },
         {
@@ -1088,9 +1079,9 @@
           },
           "options": [
             {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
+              "uz": "afsus, achinarli",
+              "ru": "жаль, досадно",
+              "tj": "афсӯс, ҳайф"
             },
             {
               "uz": "qoida, belgilangan tartib",
@@ -1103,9 +1094,9 @@
               "tj": "қошуқ"
             },
             {
-              "uz": "afsus, achinarli",
-              "ru": "жаль, досадно",
-              "tj": "афсӯс, ҳайф"
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
             }
           ],
           "correct_index": 2,
@@ -1205,12 +1196,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
+            "规定",
             "并且",
-            "可惜",
             "死",
-            "规定"
+            "可惜"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 并且 (bìngqiě) — va, shuningdek",
             "ru": "Верно: 并且 (bìngqiě) — и, а также",
@@ -1282,12 +1273,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "可惜",
             "对于",
+            "可惜",
             "规定",
             "死"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 对于 (duìyú) — ...ga nisbatan, ...borasida",
             "ru": "Верно: 对于 (duìyú) — по отношению к, что касается",
@@ -1331,12 +1322,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
+            "解释",
             "可惜",
             "规定",
-            "解释",
             "死"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 解释 (jiěshì) — tushuntirmoq",
             "ru": "Верно: 解释 (jiěshì) — объяснять",
@@ -1380,12 +1371,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "相反",
             "规定",
+            "相反",
             "可惜",
             "死"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 相反 (xiāngfǎn) — aksincha",
             "ru": "Верно: 相反 (xiāngfǎn) — наоборот, напротив",
@@ -1395,9 +1386,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Unda sizningcha, o'qituvchi uchun eng qiyin narsa nima?» — xitoychada qaysi biri?",
-            "ru": "«Что, по-вашему, труднее всего сделать для учителя?» — какое предложение по-китайски?",
-            "tj": "«Ба назари шумо, барои муаллим иҷрои чӣ чиз аз ҳама душвортар аст?» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Muammoni vaqtida topib, shuningdek uni aniq hal qilish yo'lini topishga umid qilaman.» — xitoychada qaysi biri?",
+            "ru": "«Надеюсь вовремя найти проблему и точно найти способ её решить.» — какое предложение по-китайски?",
+            "tj": "«Умедворам мушкилро сари вақт ёфта, ҳамчунин роҳи дурусти ҳалро пайдо кунам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1406,15 +1397,15 @@
           },
           "options": [
             "这样穿得再久、洗的次数再多，衣服也不容易掉颜色。",
-            "希望能及时发现问题，并且准确地找到解决问题的方法。",
-            "老师把复杂的问题一节一节地解释清楚。",
-            "那您认为对于老师来说，什么是最难做到的？"
+            "相反，如果方法不对，可能花五倍甚至十倍的时间都不能完成任务。",
+            "那您认为对于老师来说，什么是最难做到的？",
+            "希望能及时发现问题，并且准确地找到解决问题的方法。"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "那您认为对于老师来说，什么是最难做到的？ — Nà nín rènwéi duìyú lǎoshī lái shuō, shénme shì zuì nán zuò dào de?",
-            "ru": "那您认为对于老师来说，什么是最难做到的？ — Nà nín rènwéi duìyú lǎoshī lái shuō, shénme shì zuì nán zuò dào de?",
-            "tj": "那您认为对于老师来说，什么是最难做到的？ — Nà nín rènwéi duìyú lǎoshī lái shuō, shénme shì zuì nán zuò dào de?"
+            "uz": "希望能及时发现问题，并且准确地找到解决问题的方法。 — Xīwàng néng jíshí fāxiàn wèntí, bìngqiě zhǔnquè de zhǎodào jiějué wèntí de fāngfǎ.",
+            "ru": "希望能及时发现问题，并且准确地找到解决问题的方法。 — Xīwàng néng jíshí fāxiàn wèntí, bìngqiě zhǔnquè de zhǎodào jiějué wèntí de fāngfǎ.",
+            "tj": "希望能及时发现问题，并且准确地找到解决问题的方法。 — Xīwàng néng jíshí fāxiàn wèntí, bìngqiě zhǔnquè de zhǎodào jiějué wèntí de fāngfǎ."
           }
         }
       ]
@@ -1435,19 +1426,19 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "听说这次生意你到现在还没谈成。",
-          "pinyin": "Tīngshuō zhè cì shēngyì nǐ dào xiànzài hái méi tán chéng.",
+          "audio_text": "我第一次听说盐有保护衣服颜色的作用，生活中还真有不少课本上无法学到的知识。",
+          "pinyin": "Wǒ dì yī cì tīngshuō yán yǒu bǎohù yīfu yánsè de zuòyòng, shēnghuó zhōng hái zhēn yǒu bù shǎo kèběn shang wúfǎ xuédào de zhīshi.",
           "options": [
-            "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
+            "我第一次听说盐有保护衣服颜色的作用，生活中还真有不少课本上无法学到的知识。",
             "听说这次生意你到现在还没谈成。",
-            "很多时候，我都习惯根据过去的经验做事，可惜，经验不是全部都是对的。",
+            "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
             "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "听说这次生意你到现在还没谈成。 — Eshitishimcha, bu safargi biznes kelishuvini haligacha bitira olmabsan.",
-            "ru": "听说这次生意你到现在还没谈成。 — Слышал, ты до сих пор не договорился по этой сделке.",
-            "tj": "听说这次生意你到现在还没谈成。 — Шунидам, ин дафъа кори тиҷоратро то ҳол ба анҷом нарасонидаӣ."
+            "uz": "我第一次听说盐有保护衣服颜色的作用，生活中还真有不少课本上无法学到的知识。 — Tuz kiyim rangini himoya qilishini birinchi marta eshitdim. Hayotda darslikdan o'rganib bo'lmaydigan bilimlar haqiqatan ham ko'p ekan.",
+            "ru": "我第一次听说盐有保护衣服颜色的作用，生活中还真有不少课本上无法学到的知识。 — Я впервые слышу, что соль защищает цвет одежды. В жизни действительно много знаний, которых нет в учебнике.",
+            "tj": "我第一次听说盐有保护衣服颜色的作用，生活中还真有不少课本上无法学到的知识。 — Бори аввал мешунавам, ки намак ранги либосро муҳофизат мекунад. Дар зиндагӣ воқеан донишҳое зиёданд, ки аз китоб омӯхта намешаванд."
           }
         },
         {
@@ -1505,12 +1496,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "可惜",
             "规定",
-            "详细",
-            "死"
+            "可惜",
+            "死",
+            "详细"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "详细 = batafsil (xiángxì)",
             "ru": "详细 = подробный (xiángxì)",
@@ -1531,6 +1522,11 @@
           },
           "options": [
             {
+              "uz": "qattiq, o'zgarmas",
+              "ru": "жёсткий, негибкий",
+              "tj": "сахт, тағйирнопазир"
+            },
+            {
               "uz": "afsus, achinarli",
               "ru": "жаль, досадно",
               "tj": "афсӯс, ҳайф"
@@ -1544,14 +1540,9 @@
               "uz": "tushuntirmoq",
               "ru": "объяснять",
               "tj": "шарҳ додан"
-            },
-            {
-              "uz": "qattiq, o'zgarmas",
-              "ru": "жёсткий, негибкий",
-              "tj": "сахт, тағйирнопазир"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "解释 = tushuntirmoq (jiěshì)",
             "ru": "解释 = объяснять (jiěshì)",
@@ -1559,13 +1550,35 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "节",
+          "pinyin": "jié",
+          "options": [
+            "规定",
+            "可惜",
+            "节",
+            "死"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "节 — bo'lim, dars qismi (jié)",
+            "ru": "节 — раздел, часть (jié)",
+            "tj": "节 — қисм, бахш (jié)"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "规定",
-          "pinyin": "guīdìng",
+          "phrase": "无法",
+          "pinyin": "wúfǎ",
           "translation": {
-            "uz": "qoida, belgilangan tartib",
-            "ru": "правило, положение",
-            "tj": "қоида, тартиб"
+            "uz": "qila olmaslik",
+            "ru": "быть не в состоянии",
+            "tj": "натавонистан"
           }
         }
       ]
@@ -1589,12 +1602,12 @@
           "audio_text": "听说这次生意你到现在还没谈成。",
           "pinyin": "Tīngshuō zhè cì shēngyì nǐ dào xiànzài hái méi tán chéng.",
           "options": [
-            "听说这次生意你到现在还没谈成。",
             "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
+            "听说这次生意你到现在还没谈成。",
             "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。",
             "很多时候，我都习惯根据过去的经验做事，可惜，经验不是全部都是对的。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "听说这次生意你到现在还没谈成。 — Eshitishimcha, bu safargi biznes kelishuvini haligacha bitira olmabsan.",
             "ru": "听说这次生意你到现在还没谈成。 — Слышал, ты до сих пор не договорился по этой сделке.",
@@ -1614,12 +1627,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",
             "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。",
             "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
-            "听说这次生意你到现在还没谈成。"
+            "听说这次生意你到现在还没谈成。",
+            "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",
             "ru": "Правильный ответ: 好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",
@@ -1635,10 +1648,10 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "旧",
-            "电",
+            "附",
+            "符",
             "听",
-            "下"
+            "久"
           ],
           "correct_index": 2,
           "explanation": {
@@ -1661,8 +1674,8 @@
           },
           "options": [
             "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
-            "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。",
             "很多时候，我都习惯根据过去的经验做事，可惜，经验不是全部都是对的。",
+            "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。",
             "听说这次生意你到现在还没谈成。"
           ],
           "correct_index": 3,
@@ -1714,10 +1727,10 @@
           "options": [
             "有句话叫“规定和经验是死的，人是活的”。当“规定”和“经验”不能解决问题时，建议你改变一下自己的态度和想法。",
             "按我以前的经验，早应该谈成了，这次我也不知道哪儿出了问题。",
-            "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",
-            "听说这次生意你到现在还没谈成。"
+            "听说这次生意你到现在还没谈成。",
+            "好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",
             "ru": "Правильный ответ: 好，我再跟同事商量商量，希望能及时发现问题，并且准确地找到解决问题的方法。",

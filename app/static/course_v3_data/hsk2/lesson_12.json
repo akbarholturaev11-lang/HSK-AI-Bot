@@ -496,28 +496,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "妻子 talaffuzini tanlang:",
-            "ru": "Выберите произношение 妻子:",
-            "tj": "Талаффузи 妻子-ро интихоб кунед:"
+            "uz": "qīzi qaysi ieroglif?",
+            "ru": "Какой иероглиф читается qīzi?",
+            "tj": "qīzi кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "qīzi",
-            "líng",
-            "xuě",
-            "de"
+            "雪",
+            "零",
+            "妻子",
+            "得"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "妻子 — qīzi",
-            "ru": "妻子 — qīzi",
-            "tj": "妻子 — qīzi"
+            "uz": "妻子 = xotin, turmush o'rtoq (ayol) (qīzi)",
+            "ru": "妻子 = жена, супруга (qīzi)",
+            "tj": "妻子 = зан, ҳамсар (зан) (qīzi)"
           }
         },
         {
@@ -549,44 +549,38 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "pronunciation",
+          "phrase": "零",
+          "pinyin": "líng",
+          "translation": {
+            "uz": "nol",
+            "ru": "ноль",
+            "tj": "сифр"
+          }
+        },
+        {
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "零 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 零:",
-            "tj": "Маънои калимаи 零-ро интихоб кунед:"
+            "uz": "零 talaffuzini tanlang:",
+            "ru": "Выберите произношение 零:",
+            "tj": "Талаффузи 零-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            {
-              "uz": "nol",
-              "ru": "ноль",
-              "tj": "сифр"
-            },
-            {
-              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
-              "ru": "частица дополнения состояния (после глагола)",
-              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
-            },
-            {
-              "uz": "qor",
-              "ru": "снег",
-              "tj": "барф"
-            },
-            {
-              "uz": "xotin, turmush o'rtoq (ayol)",
-              "ru": "жена, супруга",
-              "tj": "зан, ҳамсар (зан)"
-            }
+            "qīzi",
+            "xuě",
+            "líng",
+            "de"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "零 = nol (líng)",
-            "ru": "零 = ноль (líng)",
-            "tj": "零 = сифр (líng)"
+            "uz": "零 — líng",
+            "ru": "零 — líng",
+            "tj": "零 — líng"
           }
         },
         {
@@ -618,28 +612,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "chuān qaysi ieroglif?",
-            "ru": "Какой иероглиф читается chuān?",
-            "tj": "chuān кадом иероглиф аст?"
+            "uz": "'kiymoq (kiyim-bosh)' xitoycha qaysi?",
+            "ru": "'надевать, носить (одежду)' по-китайски?",
+            "tj": "'пӯшидан (либос)' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "穿",
             "得",
-            "妻子",
             "雪",
-            "穿"
+            "妻子"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "穿 = kiymoq (kiyim-bosh) (chuān)",
-            "ru": "穿 = надевать, носить (одежду) (chuān)",
-            "tj": "穿 = пӯшидан (либос) (chuān)"
+            "uz": "kiymoq (kiyim-bosh) = 穿 (chuān)",
+            "ru": "надевать, носить (одежду) = 穿 (chuān)",
+            "tj": "пӯшидан (либос) = 穿 (chuān)"
           }
         },
         {
@@ -671,28 +665,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "弟弟 talaffuzini tanlang:",
-            "ru": "Выберите произношение 弟弟:",
-            "tj": "Талаффузи 弟弟-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "弟弟",
+          "pinyin": "dìdi",
           "options": [
-            "dìdi",
-            "de",
-            "qīzi",
-            "xuě"
+            "雪",
+            "妻子",
+            "得",
+            "弟弟"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "弟弟 — dìdi",
-            "ru": "弟弟 — dìdi",
-            "tj": "弟弟 — dìdi"
+            "uz": "弟弟 — uka (dìdi)",
+            "ru": "弟弟 — младший брат (dìdi)",
+            "tj": "弟弟 — бародари хурдӣ (dìdi)"
           }
         },
         {
@@ -737,27 +728,27 @@
           },
           "options": [
             {
-              "uz": "qor",
-              "ru": "снег",
-              "tj": "барф"
-            },
-            {
-              "uz": "xotin, turmush o'rtoq (ayol)",
-              "ru": "жена, супруга",
-              "tj": "зан, ҳамсар (зан)"
-            },
-            {
               "uz": "tana, sog'liq",
               "ru": "тело, здоровье",
               "tj": "тан, саломатӣ"
             },
             {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            },
+            {
               "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
               "ru": "частица дополнения состояния (после глагола)",
               "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+            },
+            {
+              "uz": "xotin, turmush o'rtoq (ayol)",
+              "ru": "жена, супруга",
+              "tj": "зан, ҳамсар (зан)"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "身体 = tana, sog'liq (shēntǐ)",
             "ru": "身体 = тело, здоровье (shēntǐ)",
@@ -862,14 +853,14 @@
             "tj": "Шумо хеле кам пӯшидед."
           },
           "tokens": [
-            "了",
-            "穿",
-            "少",
-            "太",
             "得",
-            "你",
+            "穿",
+            "了",
             "妻子",
-            "雪"
+            "太",
+            "你",
+            "雪",
+            "少"
           ],
           "answer_tokens": [
             "你",
@@ -931,12 +922,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "雪",
-            "得",
             "妻子",
-            "零"
+            "雪",
+            "零",
+            "得"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 妻子 (qīzi) — xotin, turmush o'rtoq (ayol)",
             "ru": "Верно: 妻子 (qīzi) — жена, супруга",
@@ -988,14 +979,14 @@
             "tj": "Бародари хурдиаш даромад."
           },
           "tokens": [
-            "进",
-            "她",
-            "了",
-            "弟弟",
-            "得",
-            "妻子",
             "走",
-            "来"
+            "来",
+            "她",
+            "弟弟",
+            "了",
+            "妻子",
+            "得",
+            "进"
           ],
           "answer_tokens": [
             "她",
@@ -1014,9 +1005,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«U juda erta yotadi.» — xitoychada qaysi biri?",
-            "ru": "«Она ложится спать очень рано.» — какое предложение по-китайски?",
-            "tj": "«Ӯ хеле барвақт мехобад.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Siz mendan bir soat oldin turasiz.» — xitoychada qaysi biri?",
+            "ru": "«Ты встаёшь на час раньше меня.» — какое предложение по-китайски?",
+            "tj": "«Шумо аз ман як соат зудтар бармехезед.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1025,15 +1016,15 @@
           },
           "options": [
             "你穿得太少了。",
-            "她弟弟走进来了。",
             "她睡得很早。",
-            "外边冷，我们进房间吧。"
+            "你比我早起一个小时。",
+            "她弟弟走进来了。"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "她睡得很早。 — Tā shuì de hěn zǎo.",
-            "ru": "她睡得很早。 — Tā shuì de hěn zǎo.",
-            "tj": "她睡得很早。 — Tā shuì de hěn zǎo."
+            "uz": "你比我早起一个小时。 — Nǐ bǐ wǒ zǎo qǐ yí ge xiǎoshí.",
+            "ru": "你比我早起一个小时。 — Nǐ bǐ wǒ zǎo qǐ yí ge xiǎoshí.",
+            "tj": "你比我早起一个小时。 — Nǐ bǐ wǒ zǎo qǐ yí ge xiǎoshí."
           }
         }
       ]
@@ -1047,94 +1038,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你每天早上几点起床？",
-          "pinyin": "Nǐ měitiān zǎoshang jǐ diǎn qǐchuáng?",
-          "options": [
-            "你比我早起一个小时。",
-            "你每天早上几点起床？",
-            "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
-            "六点多。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "你每天早上几点起床？ — Siz har kuni ertalab soat nechada turasiz?",
-            "ru": "你每天早上几点起床？ — В котором часу ты встаёшь каждое утро?",
-            "tj": "你每天早上几点起床？ — Ҳар рӯз субҳ шумо соати чанд бармехезед?"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shǎo qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shǎo?",
-            "tj": "shǎo кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "妻子",
-            "雪",
-            "少",
-            "得"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "少 = oz, kam (shǎo)",
-            "ru": "少 = мало, немного (shǎo)",
-            "tj": "少 = кам, андак (shǎo)"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "早 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 早:",
-            "tj": "Маънои калимаи 早-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "qor",
-              "ru": "снег",
-              "tj": "барф"
-            },
-            {
-              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
-              "ru": "частица дополнения состояния (после глагола)",
-              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
-            },
-            {
-              "uz": "xotin, turmush o'rtoq (ayol)",
-              "ru": "жена, супруга",
-              "tj": "зан, ҳамсар (зан)"
-            },
-            {
-              "uz": "erta; ertaroq",
-              "ru": "ранний; рано, пораньше",
-              "tj": "барвақт; зудтар"
-            }
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "早 = erta; ertaroq (zǎo)",
-            "ru": "早 = ранний; рано, пораньше (zǎo)",
-            "tj": "早 = барвақт; зудтар (zǎo)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -1178,6 +1081,104 @@
           }
         },
         {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "早 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 早:",
+            "tj": "Маънои калимаи 早-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "erta; ertaroq",
+              "ru": "ранний; рано, пораньше",
+              "tj": "барвақт; зудтар"
+            },
+            {
+              "uz": "xotin, turmush o'rtoq (ayol)",
+              "ru": "жена, супруга",
+              "tj": "зан, ҳамсар (зан)"
+            },
+            {
+              "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+              "ru": "частица дополнения состояния (после глагола)",
+              "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+            },
+            {
+              "uz": "qor",
+              "ru": "снег",
+              "tj": "барф"
+            }
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "早 = erta; ertaroq (zǎo)",
+            "ru": "早 = ранний; рано, пораньше (zǎo)",
+            "tj": "早 = барвақт; зудтар (zǎo)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "shǎo qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shǎo?",
+            "tj": "shǎo кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "妻子",
+            "雪",
+            "得",
+            "少"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "少 = oz, kam (shǎo)",
+            "ru": "少 = мало, немного (shǎo)",
+            "tj": "少 = кам, андак (shǎo)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "好吧。",
+          "pinyin": "Hǎo ba.",
+          "options": [
+            "六点多。",
+            "你每天早上几点起床？",
+            "好吧。",
+            "你比我早起一个小时。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "好吧。 — Xo'p bo'lmasa.",
+            "ru": "好吧。 — Ладно.",
+            "tj": "好吧。 — Хуб."
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "得",
+          "pinyin": "de",
+          "translation": {
+            "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
+            "ru": "частица дополнения состояния (после глагола)",
+            "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+          }
+        },
+        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Xo'p bo'lmasa.",
@@ -1186,9 +1187,9 @@
           },
           "tokens": [
             "妻子",
+            "得",
             "好",
-            "吧",
-            "得"
+            "吧"
           ],
           "answer_tokens": [
             "好",
@@ -1202,12 +1203,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "得",
-          "pinyin": "de",
+          "phrase": "早",
+          "pinyin": "zǎo",
           "translation": {
-            "uz": "holat to'ldiruvchisi yuklamasi (fe'ldan keyin)",
-            "ru": "частица дополнения состояния (после глагола)",
-            "tj": "зарраи иловаи ҳолат (баъд аз феъл)"
+            "uz": "erta; ertaroq",
+            "ru": "ранний; рано, пораньше",
+            "tj": "барвақт; зудтар"
           }
         }
       ]
@@ -1233,8 +1234,8 @@
           "options": [
             "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
             "你每天早上几点起床？",
-            "你比我早起一个小时。",
-            "六点多。"
+            "六点多。",
+            "你比我早起一个小时。"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1246,9 +1247,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -1256,37 +1257,16 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "六点多。",
+            "你每天早上几点起床？",
             "你比我早起一个小时。",
             "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
-            "你每天早上几点起床？"
+            "六点多。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri javob: 我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
-            "ru": "Правильный ответ: 我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
-            "tj": "Ҷавоби дуруст: 我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____每天早上几点起床？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "电",
-            "下",
-            "你",
-            "夫"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri: 你 — 你每天早上几点起床？ (Siz har kuni ertalab soat nechada turasiz?)",
-            "ru": "Верно: 你 — 你每天早上几点起床？ (В котором часу ты встаёшь каждое утро?)",
-            "tj": "Дуруст: 你 — 你每天早上几点起床？ (Ҳар рӯз субҳ шумо соати чанд бармехезед?)"
+            "uz": "To'g'ri javob: 你每天早上几点起床？",
+            "ru": "Правильный ответ: 你每天早上几点起床？",
+            "tj": "Ҷавоби дуруст: 你每天早上几点起床？"
           }
         },
         {
@@ -1319,6 +1299,52 @@
             }
           ],
           "options": [
+            "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
+            "六点多。",
+            "你比我早起一个小时。",
+            "你每天早上几点起床？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
+            "ru": "Правильный ответ: 我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
+            "tj": "Ҷавоби дуруст: 我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____每天早上几点起床？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "诉",
+            "眼",
+            "你",
+            "问"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri: 你 — 你每天早上几点起床？ (Siz har kuni ertalab soat nechada turasiz?)",
+            "ru": "Верно: 你 — 你每天早上几点起床？ (В котором часу ты встаёшь каждое утро?)",
+            "tj": "Дуруст: 你 — 你每天早上几点起床？ (Ҳар рӯз субҳ шумо соати чанд бармехезед?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
             "六点多。",
             "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
             "你每天早上几点起床？",
@@ -1332,28 +1358,13 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "你每天早上几点起床？",
-            "我睡得也早，我每天晚上十点就睡觉。早睡早起对身体好。",
-            "你比我早起一个小时。",
-            "六点多。"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 你每天早上几点起床？",
-            "ru": "Правильный ответ: 你每天早上几点起床？",
-            "tj": "Ҷавоби дуруст: 你每天早上几点起床？"
+          "type": "pronunciation",
+          "phrase": "下雪了，今天真冷。",
+          "pinyin": "Xià xuě le, jīntiān zhēn lěng.",
+          "translation": {
+            "uz": "Qor yog'yapti, bugun juda sovuq.",
+            "ru": "Пошёл снег, сегодня очень холодно.",
+            "tj": "Барф борид, имрӯз хеле сард аст."
           }
         }
       ]

@@ -135,8 +135,11 @@ class CourseV3StaticMapTests(unittest.TestCase):
                             self.assertEqual(
                                 c["options"][c["correct_index"]], c["audio_text"], where
                             )
+                            # Listening cards come in two gated flavors: dialogue
+                            # LINES or single WORDS (both only already-learned).
+                            gate_listen = gate_lines | gate_words
                             for op in c["options"]:
-                                self.assertIn(op, gate_lines, f"ungated listen option in {where}")
+                                self.assertIn(op, gate_listen, f"ungated listen option in {where}")
                         elif c["type"] == "dialog_cloze":
                             blanks = [ln for ln in c["lines"] if ln["blank"]]
                             self.assertEqual(len(blanks), 1, where)

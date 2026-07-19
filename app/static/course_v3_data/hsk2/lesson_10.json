@@ -516,44 +516,35 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "帮助 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 帮助:",
-            "tj": "Маънои калимаи 帮助-ро интихоб кунед:"
-          },
+          "type": "pronunciation",
+          "phrase": "帮助",
+          "pinyin": "bāngzhù",
+          "translation": {
+            "uz": "yordam bermoq",
+            "ru": "помогать",
+            "tj": "кӯмак кардан"
+          }
+        },
+        {
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "帮助",
+          "pinyin": "bāngzhù",
           "options": [
-            {
-              "uz": "…qilma (taqiq)",
-              "ru": "не (запрет)",
-              "tj": "накун (манъ)"
-            },
-            {
-              "uz": "yordam bermoq",
-              "ru": "помогать",
-              "tj": "кӯмак кардан"
-            },
-            {
-              "uz": "dars, mashg'ulot",
-              "ru": "урок, занятие",
-              "tj": "дарс, машғулот"
-            },
-            {
-              "uz": "aka",
-              "ru": "старший брат",
-              "tj": "бародари калонӣ"
-            }
+            "别",
+            "课",
+            "哥哥",
+            "帮助"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "帮助 = yordam bermoq (bāngzhù)",
-            "ru": "帮助 = помогать (bāngzhù)",
-            "tj": "帮助 = кӯмак кардан (bāngzhù)"
+            "uz": "帮助 — yordam bermoq (bāngzhù)",
+            "ru": "帮助 — помогать (bāngzhù)",
+            "tj": "帮助 — кӯмак кардан (bāngzhù)"
           }
         },
         {
@@ -585,22 +576,38 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "gēge qaysi ieroglif?",
-            "ru": "Какой иероглиф читается gēge?",
-            "tj": "gēge кадом иероглиф аст?"
+            "uz": "哥哥 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 哥哥:",
+            "tj": "Маънои калимаи 哥哥-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "帮助",
-            "课",
-            "哥哥",
-            "别"
+            {
+              "uz": "dars, mashg'ulot",
+              "ru": "урок, занятие",
+              "tj": "дарс, машғулот"
+            },
+            {
+              "uz": "…qilma (taqiq)",
+              "ru": "не (запрет)",
+              "tj": "накун (манъ)"
+            },
+            {
+              "uz": "aka",
+              "ru": "старший брат",
+              "tj": "бародари калонӣ"
+            },
+            {
+              "uz": "yordam bermoq",
+              "ru": "помогать",
+              "tj": "кӯмак кардан"
+            }
           ],
           "correct_index": 2,
           "explanation": {
@@ -638,28 +645,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "西瓜 talaffuzini tanlang:",
-            "ru": "Выберите произношение 西瓜:",
-            "tj": "Талаффузи 西瓜-ро интихоб кунед:"
+            "uz": "xīguā qaysi ieroglif?",
+            "ru": "Какой иероглиф читается xīguā?",
+            "tj": "xīguā кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "xīguā",
-            "kè",
-            "bié",
-            "bāngzhù"
+            "课",
+            "帮助",
+            "别",
+            "西瓜"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "西瓜 — xīguā",
-            "ru": "西瓜 — xīguā",
-            "tj": "西瓜 — xīguā"
+            "uz": "西瓜 = tarvuz (xīguā)",
+            "ru": "西瓜 = арбуз (xīguā)",
+            "tj": "西瓜 = тарбуз (xīguā)"
           }
         },
         {
@@ -691,44 +698,28 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "手机 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 手机:",
-            "tj": "Маънои калимаи 手机-ро интихоб кунед:"
+            "uz": "手机 talaffuzini tanlang:",
+            "ru": "Выберите произношение 手机:",
+            "tj": "Талаффузи 手机-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            {
-              "uz": "mobil telefon",
-              "ru": "мобильный телефон",
-              "tj": "телефони мобилӣ"
-            },
-            {
-              "uz": "…qilma (taqiq)",
-              "ru": "не (запрет)",
-              "tj": "накун (манъ)"
-            },
-            {
-              "uz": "dars, mashg'ulot",
-              "ru": "урок, занятие",
-              "tj": "дарс, машғулот"
-            },
-            {
-              "uz": "yordam bermoq",
-              "ru": "помогать",
-              "tj": "кӯмак кардан"
-            }
+            "bāngzhù",
+            "kè",
+            "bié",
+            "shǒujī"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "手机 = mobil telefon (shǒujī)",
-            "ru": "手机 = мобильный телефон (shǒujī)",
-            "tj": "手机 = телефони мобилӣ (shǒujī)"
+            "uz": "手机 — shǒujī",
+            "ru": "手机 — shǒujī",
+            "tj": "手机 — shǒujī"
           }
         },
         {
@@ -760,28 +751,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "jīdàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jīdàn?",
-            "tj": "jīdàn кадом иероглиф аст?"
+            "uz": "'tuxum' xitoycha qaysi?",
+            "ru": "'яйцо' по-китайски?",
+            "tj": "'тухм' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
+            "帮助",
             "鸡蛋",
-            "别",
             "课",
-            "帮助"
+            "别"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "鸡蛋 = tuxum (jīdàn)",
-            "ru": "鸡蛋 = яйцо (jīdàn)",
-            "tj": "鸡蛋 = тухм (jīdàn)"
+            "uz": "tuxum = 鸡蛋 (jīdàn)",
+            "ru": "яйцо = 鸡蛋 (jīdàn)",
+            "tj": "тухм = 鸡蛋 (jīdàn)"
           }
         },
         {
@@ -882,15 +873,15 @@
             "tj": "Дигар телевизор нагард, барав бихоб."
           },
           "tokens": [
-            "电视",
-            "睡觉",
             "帮助",
             "了",
-            "课",
-            "吧",
-            "去",
             "看",
-            "别"
+            "课",
+            "睡觉",
+            "吧",
+            "电视",
+            "别",
+            "去"
           ],
           "answer_tokens": [
             "别",
@@ -953,12 +944,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "课",
             "帮助",
             "哥哥",
+            "课",
             "别"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 帮助 (bāngzhù) — yordam bermoq",
             "ru": "Верно: 帮助 (bāngzhù) — помогать",
@@ -1010,12 +1001,12 @@
             "tj": "Ту чӣ мекобӣ?"
           },
           "tokens": [
-            "课",
-            "什么",
-            "找",
-            "你",
             "在",
-            "帮助"
+            "找",
+            "帮助",
+            "什么",
+            "课",
+            "你"
           ],
           "answer_tokens": [
             "你",
@@ -1032,9 +1023,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Ona hozir tushlikni tayyorlayapti!» — xitoychada qaysi biri?",
-            "ru": "«Мама сейчас готовит обед!» — какое предложение по-китайски?",
-            "tj": "«Модар ҳоло нисфирӯзиро тайёр мекунад!» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Endi televizor ko'rma, uxlash vaqti.» — xitoychada qaysi biri?",
+            "ru": "«Хватит смотреть телевизор, иди спать.» — какое предложение по-китайски?",
+            "tj": "«Дигар телевизор нагард, барав бихоб.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1042,16 +1033,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "看电视对学汉语有帮助。",
-            "妈妈正在准备午饭呢！",
             "你在找什么？",
-            "不要喝茶了，吃药吧。"
+            "妈妈正在准备午饭呢！",
+            "早睡早起对身体好。",
+            "别看电视了，去睡觉吧。"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "妈妈正在准备午饭呢！ — Māma zhèngzài zhǔnbèi wǔfàn ne!",
-            "ru": "妈妈正在准备午饭呢！ — Māma zhèngzài zhǔnbèi wǔfàn ne!",
-            "tj": "妈妈正在准备午饭呢！ — Māma zhèngzài zhǔnbèi wǔfàn ne!"
+            "uz": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba.",
+            "ru": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba.",
+            "tj": "别看电视了，去睡觉吧。 — Bié kàn diànshì le, qù shuìjiào ba."
           }
         }
       ]
@@ -1066,28 +1057,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "别看电视了，明天上午还有汉语课呢。",
-          "pinyin": "Bié kàn diànshì le，míngtiān shàngwǔ hái yǒu Hànyǔ kè ne.",
-          "options": [
-            "别看电视了，明天上午还有汉语课呢。",
-            "看电视对学汉语有帮助。",
-            "都准备好了。",
-            "明天的课你都准备好了吗？"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "别看电视了，明天上午还有汉语课呢。 — Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.",
-            "ru": "别看电视了，明天上午还有汉语课呢。 — Хватит смотреть телевизор, завтра утром ещё есть урок китайского.",
-            "tj": "别看电视了，明天上午还有汉语课呢。 — Дигар телевизор нагард, фардо субҳ боз дарси чинӣ аст."
-          }
-        },
-        {
           "type": "pinyin_choice",
           "prompt": {
             "uz": "准备 talaffuzini tanlang:",
@@ -1100,12 +1069,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "zhǔnbèi",
-            "bié",
             "kè",
-            "bāngzhù"
+            "bāngzhù",
+            "bié",
+            "zhǔnbèi"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "准备 — zhǔnbèi",
             "ru": "准备 — zhǔnbèi",
@@ -1120,12 +1089,12 @@
             "tj": "Ҳама омода."
           },
           "tokens": [
+            "都",
+            "课",
+            "了",
             "帮助",
             "准备",
-            "都",
-            "好",
-            "了",
-            "课"
+            "好"
           ],
           "answer_tokens": [
             "都",
@@ -1137,6 +1106,28 @@
             "uz": "都准备好了。 — Dōu zhǔnbèi hǎo le.",
             "ru": "都准备好了。 — Dōu zhǔnbèi hǎo le.",
             "tj": "都准备好了。 — Dōu zhǔnbèi hǎo le."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "你怎么买了这么多东西啊？",
+          "pinyin": "Nǐ zěnme mǎi le zhème duō dōngxi a?",
+          "options": [
+            "别看电视了，明天上午还有汉语课呢。",
+            "明天的课你都准备好了吗？",
+            "你怎么买了这么多东西啊？",
+            "看电视对学汉语有帮助。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "你怎么买了这么多东西啊？ — Nima uchun bu qadar ko'p narsa sotib oldingiz?",
+            "ru": "你怎么买了这么多东西啊？ — Почему ты купил так много всего?",
+            "tj": "你怎么买了这么多东西啊？ — Чаро ту ин қадар зиёд чиз харидӣ?"
           }
         },
         {
@@ -1182,6 +1173,28 @@
           }
         },
         {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "身体",
+          "pinyin": "shēntǐ",
+          "options": [
+            "课",
+            "帮助",
+            "别",
+            "身体"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "身体 — tana, sog'liq (shēntǐ)",
+            "ru": "身体 — тело, здоровье (shēntǐ)",
+            "tj": "身体 — тан, саломатӣ (shēntǐ)"
+          }
+        },
+        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'gazeta' xitoycha qaysi?",
@@ -1194,12 +1207,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "帮助",
-            "报纸",
+            "课",
             "别",
-            "课"
+            "帮助",
+            "报纸"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
             "uz": "gazeta = 报纸 (bàozhǐ)",
             "ru": "газета = 报纸 (bàozhǐ)",
@@ -1208,12 +1221,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "课",
-          "pinyin": "kè",
+          "phrase": "药",
+          "pinyin": "yào",
           "translation": {
-            "uz": "dars, mashg'ulot",
-            "ru": "урок, занятие",
-            "tj": "дарс, машғулот"
+            "uz": "dori-darmon",
+            "ru": "лекарство",
+            "tj": "дору"
           }
         }
       ]
@@ -1237,12 +1250,12 @@
           "audio_text": "别看电视了，明天上午还有汉语课呢。",
           "pinyin": "Bié kàn diànshì le，míngtiān shàngwǔ hái yǒu Hànyǔ kè ne.",
           "options": [
-            "别看电视了，明天上午还有汉语课呢。",
-            "都准备好了。",
             "看电视对学汉语有帮助。",
+            "都准备好了。",
+            "别看电视了，明天上午还有汉语课呢。",
             "明天的课你都准备好了吗？"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "别看电视了，明天上午还有汉语课呢。 — Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.",
             "ru": "别看电视了，明天上午还有汉语课呢。 — Хватит смотреть телевизор, завтра утром ещё есть урок китайского.",
@@ -1250,24 +1263,28 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____看电视了，明天上午还有汉语课呢。",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "下",
-            "电",
-            "夫",
-            "别"
+            "看电视对学汉语有帮助。",
+            "都准备好了。",
+            "明天的课你都准备好了吗？",
+            "别看电视了，明天上午还有汉语课呢。"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "To'g'ri: 别 — 别看电视了，明天上午还有汉语课呢。 (Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.)",
-            "ru": "Верно: 别 — 别看电视了，明天上午还有汉语课呢。 (Хватит смотреть телевизор, завтра утром ещё есть урок китайского.)",
-            "tj": "Дуруст: 别 — 别看电视了，明天上午还有汉语课呢。 (Дигар телевизор нагард, фардо субҳ боз дарси чинӣ аст.)"
+            "uz": "To'g'ri javob: 别看电视了，明天上午还有汉语课呢。",
+            "ru": "Правильный ответ: 别看电视了，明天上午还有汉语课呢。",
+            "tj": "Ҷавоби дуруст: 别看电视了，明天上午还有汉语课呢。"
           }
         },
         {
@@ -1300,16 +1317,37 @@
             }
           ],
           "options": [
-            "别看电视了，明天上午还有汉语课呢。",
             "明天的课你都准备好了吗？",
-            "都准备好了。",
-            "看电视对学汉语有帮助。"
+            "看电视对学汉语有帮助。",
+            "别看电视了，明天上午还有汉语课呢。",
+            "都准备好了。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 都准备好了。",
             "ru": "Правильный ответ: 都准备好了。",
             "tj": "Ҷавоби дуруст: 都准备好了。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____看电视了，明天上午还有汉语课呢。",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "别",
+            "诉",
+            "眼",
+            "问"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 别 — 别看电视了，明天上午还有汉语课呢。 (Televizor ko'rishni bas qil, ertaga ertalab yana xitoy tili darsi bor.)",
+            "ru": "Верно: 别 — 别看电视了，明天上午还有汉语课呢。 (Хватит смотреть телевизор, завтра утром ещё есть урок китайского.)",
+            "tj": "Дуруст: 别 — 别看电视了，明天上午还有汉语课呢。 (Дигар телевизор нагард, фардо субҳ боз дарси чинӣ аст.)"
           }
         },
         {
@@ -1338,28 +1376,13 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "看电视对学汉语有帮助。",
-            "明天的课你都准备好了吗？",
-            "都准备好了。",
-            "别看电视了，明天上午还有汉语课呢。"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "To'g'ri javob: 别看电视了，明天上午还有汉语课呢。",
-            "ru": "Правильный ответ: 别看电视了，明天上午还有汉语课呢。",
-            "tj": "Ҷавоби дуруст: 别看电视了，明天上午还有汉语课呢。"
+          "type": "pronunciation",
+          "phrase": "医生让你听我的。",
+          "pinyin": "Yīshēng ràng nǐ tīng wǒ de.",
+          "translation": {
+            "uz": "Shifokor menga quloq soling dedi.",
+            "ru": "Доктор сказал слушаться меня.",
+            "tj": "Духтур гуфт, ки ба ман гӯш кун."
           }
         }
       ]

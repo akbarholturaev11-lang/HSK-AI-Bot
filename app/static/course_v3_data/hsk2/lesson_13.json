@@ -460,6 +460,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "着",
+          "pinyin": "zhe",
+          "translation": {
+            "uz": "davom etayotgan holatni bildiruvchi yuklama",
+            "ru": "частица продолжающегося состояния",
+            "tj": "зарраи ҳолати давомдор"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 2,
@@ -474,44 +484,28 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "手 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 手:",
-            "tj": "Маънои калимаи 手-ро интихоб кунед:"
+            "uz": "手 talaffuzini tanlang:",
+            "ru": "Выберите произношение 手:",
+            "tj": "Талаффузи 手-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            {
-              "uz": "ushlamoq, ko'tarmoq",
-              "ru": "держать, нести",
-              "tj": "нигоҳ доштан, бардоштан"
-            },
-            {
-              "uz": "qo'rg'oshin qalam",
-              "ru": "карандаш",
-              "tj": "қалами оддӣ"
-            },
-            {
-              "uz": "qo'l",
-              "ru": "рука",
-              "tj": "даст"
-            },
-            {
-              "uz": "davom etayotgan holatni bildiruvchi yuklama",
-              "ru": "частица продолжающегося состояния",
-              "tj": "зарраи ҳолати давомдор"
-            }
+            "ná",
+            "qiānbǐ",
+            "zhe",
+            "shǒu"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "手 = qo'l (shǒu)",
-            "ru": "手 = рука (shǒu)",
-            "tj": "手 = даст (shǒu)"
+            "uz": "手 — shǒu",
+            "ru": "手 — shǒu",
+            "tj": "手 — shǒu"
           }
         },
         {
@@ -543,28 +537,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "qiānbǐ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается qiānbǐ?",
-            "tj": "qiānbǐ кадом иероглиф аст?"
+            "uz": "'qo'rg'oshin qalam' xitoycha qaysi?",
+            "ru": "'карандаш' по-китайски?",
+            "tj": "'қалами оддӣ' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "铅笔",
-            "着",
+            "手",
             "拿",
-            "手"
+            "着",
+            "铅笔"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "铅笔 = qo'rg'oshin qalam (qiānbǐ)",
-            "ru": "铅笔 = карандаш (qiānbǐ)",
-            "tj": "铅笔 = қалами оддӣ (qiānbǐ)"
+            "uz": "qo'rg'oshin qalam = 铅笔 (qiānbǐ)",
+            "ru": "карандаш = 铅笔 (qiānbǐ)",
+            "tj": "қалами оддӣ = 铅笔 (qiānbǐ)"
           }
         },
         {
@@ -596,28 +590,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "长 talaffuzini tanlang:",
-            "ru": "Выберите произношение 长:",
-            "tj": "Талаффузи 长-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "长",
+          "pinyin": "zhǎng",
           "options": [
-            "ná",
-            "shǒu",
-            "zhe",
-            "zhǎng"
+            "手",
+            "拿",
+            "长",
+            "着"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "长 — zhǎng",
-            "ru": "长 — zhǎng",
-            "tj": "长 — zhǎng"
+            "uz": "长 — o'smoq; uzun (zhǎng)",
+            "ru": "长 — расти; длинный (zhǎng)",
+            "tj": "长 — калон шудан; дароз (zhǎng)"
           }
         },
         {
@@ -662,14 +653,14 @@
           },
           "options": [
             {
+              "uz": "qo'l",
+              "ru": "рука",
+              "tj": "даст"
+            },
+            {
               "uz": "kulmoq",
               "ru": "смеяться, улыбаться",
               "tj": "хандидан"
-            },
-            {
-              "uz": "ushlamoq, ko'tarmoq",
-              "ru": "держать, нести",
-              "tj": "нигоҳ доштан, бардоштан"
             },
             {
               "uz": "davom etayotgan holatni bildiruvchi yuklama",
@@ -677,12 +668,12 @@
               "tj": "зарраи ҳолати давомдор"
             },
             {
-              "uz": "qo'l",
-              "ru": "рука",
-              "tj": "даст"
+              "uz": "ushlamoq, ko'tarmoq",
+              "ru": "держать, нести",
+              "tj": "нигоҳ доштан, бардоштан"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "笑 = kulmoq (xiào)",
             "ru": "笑 = смеяться, улыбаться (xiào)",
@@ -730,12 +721,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "着",
             "宾馆",
-            "拿",
-            "手"
+            "手",
+            "着",
+            "拿"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "宾馆 = mehmonxona (bīnguǎn)",
             "ru": "宾馆 = гостиница (bīnguǎn)",
@@ -840,13 +831,13 @@
             "tj": "Дар кушода истодааст, дарояд."
           },
           "tokens": [
-            "门",
-            "手",
-            "着",
             "开",
-            "呢",
-            "进",
+            "门",
+            "着",
             "请",
+            "进",
+            "呢",
+            "手",
             "拿"
           ],
           "answer_tokens": [
@@ -908,16 +899,16 @@
             "tj": "Магар ӯ дӯстписар надошт?"
           },
           "tokens": [
-            "她",
-            "是",
-            "手",
-            "不",
-            "了",
             "吗",
-            "着",
+            "手",
+            "是",
+            "有",
             "男",
+            "不",
             "朋友",
-            "有"
+            "着",
+            "她",
+            "了"
           ],
           "answer_tokens": [
             "她",
@@ -980,12 +971,12 @@
             "tj": "Рост пеш равед."
           },
           "tokens": [
-            "前",
-            "走",
-            "一直",
-            "往",
             "着",
-            "手"
+            "走",
+            "手",
+            "一直",
+            "前",
+            "往"
           ],
           "answer_tokens": [
             "一直",
@@ -1002,9 +993,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Siz bugun kelaman demagandingizmi?» — xitoychada qaysi biri?",
-            "ru": "«Ты же говорил(а), что придёшь сегодня?» — какое предложение по-китайски?",
-            "tj": "«Магар ту нагуфтӣ ки имрӯз меоям?» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Eshik ochiq turibdi, kiring.» — xitoychada qaysi biri?",
+            "ru": "«Дверь открыта, заходите.» — какое предложение по-китайски?",
+            "tj": "«Дар кушода истодааст, дарояд.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1012,16 +1003,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "门开着呢，请进。",
+            "一直往前走。",
+            "她不是有男朋友了吗？",
             "他手里拿着一本书。",
-            "你不是说今天来吗？",
-            "到路口再往右走。"
+            "门开着呢，请进。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "你不是说今天来吗？ — Nǐ bú shì shuō jīntiān lái ma?",
-            "ru": "你不是说今天来吗？ — Nǐ bú shì shuō jīntiān lái ma?",
-            "tj": "你不是说今天来吗？ — Nǐ bú shì shuō jīntiān lái ma?"
+            "uz": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
+            "ru": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
+            "tj": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn."
           }
         }
       ]
@@ -1050,8 +1041,8 @@
           "options": [
             "lùkǒu",
             "shǒu",
-            "zhe",
-            "ná"
+            "ná",
+            "zhe"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1074,14 +1065,14 @@
           },
           "options": [
             {
-              "uz": "qo'l",
-              "ru": "рука",
-              "tj": "даст"
-            },
-            {
               "uz": "ushlamoq, ko'tarmoq",
               "ru": "держать, нести",
               "tj": "нигоҳ доштан, бардоштан"
+            },
+            {
+              "uz": "qo'l",
+              "ru": "рука",
+              "tj": "даст"
             },
             {
               "uz": "davom etayotgan holatni bildiruvchi yuklama",
@@ -1099,6 +1090,79 @@
             "uz": "路口 = yo'l chorrahasi, chorraha (lùkǒu)",
             "ru": "路口 = перекрёсток (lùkǒu)",
             "tj": "路口 = чорраҳа, буриши роҳ (lùkǒu)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "班",
+              {
+                "uz": "sinf, guruh",
+                "ru": "класс, группа",
+                "tj": "синф, гурӯҳ"
+              }
+            ],
+            [
+              "长",
+              {
+                "uz": "o'smoq; uzun",
+                "ru": "расти; длинный",
+                "tj": "калон шудан; дароз"
+              }
+            ],
+            [
+              "笑",
+              {
+                "uz": "kulmoq",
+                "ru": "смеяться, улыбаться",
+                "tj": "хандидан"
+              }
+            ],
+            [
+              "宾馆",
+              {
+                "uz": "mehmonxona",
+                "ru": "гостиница",
+                "tj": "меҳмонхона"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Eshik ochiq turibdi, marhamat kiring.",
+            "ru": "Дверь открыта, пожалуйста, входите.",
+            "tj": "Дар кушода истодааст, марҳамат даред."
+          },
+          "tokens": [
+            "着",
+            "拿",
+            "门",
+            "手",
+            "请",
+            "呢",
+            "进",
+            "开"
+          ],
+          "answer_tokens": [
+            "门",
+            "开",
+            "着",
+            "呢",
+            "请",
+            "进"
+          ],
+          "explanation": {
+            "uz": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
+            "ru": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
+            "tj": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn."
           }
         },
         {
@@ -1144,66 +1208,35 @@
           }
         },
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Eshik ochiq turibdi, marhamat kiring.",
-            "ru": "Дверь открыта, пожалуйста, входите.",
-            "tj": "Дар кушода истодааст, марҳамат даред."
-          },
-          "tokens": [
-            "进",
-            "请",
-            "着",
-            "手",
-            "拿",
-            "门",
-            "开",
-            "呢"
-          ],
-          "answer_tokens": [
-            "门",
-            "开",
-            "着",
-            "呢",
-            "请",
-            "进"
-          ],
-          "explanation": {
-            "uz": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
-            "ru": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn.",
-            "tj": "门开着呢，请进。 — Mén kāi zhe ne, qǐng jìn."
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "门开着呢，请进。",
-          "pinyin": "Mén kāi zhe ne, qǐng jìn.",
+          "audio_text": "请问，这儿离新京宾馆远吗？",
+          "pinyin": "Qǐngwèn, zhèr lí Xīnjīng Bīnguǎn yuǎn ma?",
           "options": [
-            "好的，谢谢！",
             "门开着呢，请进。",
             "请问，张先生在吗？",
+            "请问，这儿离新京宾馆远吗？",
             "他出去了。你下午再来吧。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "门开着呢，请进。 — Eshik ochiq turibdi, marhamat kiring.",
-            "ru": "门开着呢，请进。 — Дверь открыта, пожалуйста, входите.",
-            "tj": "门开着呢，请进。 — Дар кушода истодааст, марҳамат даред."
+            "uz": "请问，这儿离新京宾馆远吗？ — Iltimos, bu yerdan Syanjin mehmonxonasigacha uzoqmi?",
+            "ru": "请问，这儿离新京宾馆远吗？ — Скажите, пожалуйста, отсюда до гостиницы Синьцзин далеко?",
+            "tj": "请问，这儿离新京宾馆远吗？ — Бубахшед, аз ин ҷо то меҳмонхонаи Синьцзин дур аст?"
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "着",
-          "pinyin": "zhe",
+          "phrase": "手",
+          "pinyin": "shǒu",
           "translation": {
-            "uz": "davom etayotgan holatni bildiruvchi yuklama",
-            "ru": "частица продолжающегося состояния",
-            "tj": "зарраи ҳолати давомдор"
+            "uz": "qo'l",
+            "ru": "рука",
+            "tj": "даст"
           }
         }
       ]
@@ -1227,12 +1260,12 @@
           "audio_text": "门开着呢，请进。",
           "pinyin": "Mén kāi zhe ne, qǐng jìn.",
           "options": [
+            "他出去了。你下午再来吧。",
             "好的，谢谢！",
             "请问，张先生在吗？",
-            "门开着呢，请进。",
-            "他出去了。你下午再来吧。"
+            "门开着呢，请进。"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "门开着呢，请进。 — Eshik ochiq turibdi, marhamat kiring.",
             "ru": "门开着呢，请进。 — Дверь открыта, пожалуйста, входите.",
@@ -1253,11 +1286,11 @@
           },
           "options": [
             "请问，张先生在吗？",
-            "他出去了。你下午再来吧。",
             "门开着呢，请进。",
-            "好的，谢谢！"
+            "好的，谢谢！",
+            "他出去了。你下午再来吧。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 好的，谢谢！",
             "ru": "Правильный ответ: 好的，谢谢！",
@@ -1277,10 +1310,10 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "他出去了。你下午再来吧。",
-            "门开着呢，请进。",
             "请问，张先生在吗？",
-            "好的，谢谢！"
+            "门开着呢，请进。",
+            "好的，谢谢！",
+            "他出去了。你下午再来吧。"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1319,12 +1352,12 @@
             }
           ],
           "options": [
-            "好的，谢谢！",
             "请问，张先生在吗？",
             "他出去了。你下午再来吧。",
+            "好的，谢谢！",
             "门开着呢，请进。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 好的，谢谢！",
             "ru": "Правильный ответ: 好的，谢谢！",
@@ -1340,16 +1373,26 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
+            "问",
+            "眼",
             "门",
-            "下",
-            "夫",
-            "电"
+            "诉"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri: 门 — 门开着呢，请进。 (Eshik ochiq turibdi, marhamat kiring.)",
             "ru": "Верно: 门 — 门开着呢，请进。 (Дверь открыта, пожалуйста, входите.)",
             "tj": "Дуруст: 门 — 门开着呢，请进。 (Дар кушода истодааст, марҳамат даред.)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "请问，张先生在吗？",
+          "pinyin": "Qǐngwèn, Zhāng xiānsheng zài ma?",
+          "translation": {
+            "uz": "Iltimos, Chjan janob bormi?",
+            "ru": "Скажите, пожалуйста, господин Чжан здесь?",
+            "tj": "Бубахшед, ҷаноби Чжан ҳастанд?"
           }
         }
       ]

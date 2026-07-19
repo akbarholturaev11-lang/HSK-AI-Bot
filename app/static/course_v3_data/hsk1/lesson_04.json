@@ -402,44 +402,28 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "谁 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 谁:",
-            "tj": "Маънои калимаи 谁-ро интихоб кунед:"
+            "uz": "'kim' xitoycha qaysi?",
+            "ru": "'кто' по-китайски?",
+            "tj": "'кӣ' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            {
-              "uz": "xitoy tili",
-              "ru": "китайский язык",
-              "tj": "забони чинӣ"
-            },
-            {
-              "uz": "kim",
-              "ru": "кто",
-              "tj": "кӣ"
-            },
-            {
-              "uz": "u (ayol)",
-              "ru": "она",
-              "tj": "вай (зан)"
-            },
-            {
-              "uz": "ning (egalik yuklamasi)",
-              "ru": "-'s (показатель принадлежности)",
-              "tj": "и, -и (ҳарфи соҳибӣ)"
-            }
+            "的",
+            "她",
+            "汉语",
+            "谁"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "谁 = kim (shéi)",
-            "ru": "谁 = кто (shéi)",
-            "tj": "谁 = кӣ (shéi)"
+            "uz": "kim = 谁 (shéi)",
+            "ru": "кто = 谁 (shéi)",
+            "tj": "кӣ = 谁 (shéi)"
           }
         },
         {
@@ -471,28 +455,35 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "shéi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shéi?",
-            "tj": "shéi кадом иероглиф аст?"
-          },
+          "type": "pronunciation",
+          "phrase": "汉语",
+          "pinyin": "Hànyǔ",
+          "translation": {
+            "uz": "xitoy tili",
+            "ru": "китайский язык",
+            "tj": "забони чинӣ"
+          }
+        },
+        {
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "谁",
+          "pinyin": "shéi",
           "options": [
             "的",
-            "她",
             "汉语",
+            "她",
             "谁"
           ],
           "correct_index": 3,
           "explanation": {
-            "uz": "谁 = kim (shéi)",
-            "ru": "谁 = кто (shéi)",
-            "tj": "谁 = кӣ (shéi)"
+            "uz": "谁 — kim (shéi)",
+            "ru": "谁 — кто (shéi)",
+            "tj": "谁 — кӣ (shéi)"
           }
         },
         {
@@ -524,28 +515,44 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "谁 talaffuzini tanlang:",
-            "ru": "Выберите произношение 谁:",
-            "tj": "Талаффузи 谁-ро интихоб кунед:"
+            "uz": "谁 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 谁:",
+            "tj": "Маънои калимаи 谁-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "de",
-            "Hànyǔ",
-            "tā",
-            "shéi"
+            {
+              "uz": "u (ayol)",
+              "ru": "она",
+              "tj": "вай (зан)"
+            },
+            {
+              "uz": "xitoy tili",
+              "ru": "китайский язык",
+              "tj": "забони чинӣ"
+            },
+            {
+              "uz": "kim",
+              "ru": "кто",
+              "tj": "кӣ"
+            },
+            {
+              "uz": "ning (egalik yuklamasi)",
+              "ru": "-'s (показатель принадлежности)",
+              "tj": "и, -и (ҳарфи соҳибӣ)"
+            }
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "谁 — shéi",
-            "ru": "谁 — shéi",
-            "tj": "谁 — shéi"
+            "uz": "谁 = kim (shéi)",
+            "ru": "谁 = кто (shéi)",
+            "tj": "谁 = кӣ (shéi)"
           }
         },
         {
@@ -577,40 +584,24 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "他 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 他:",
-            "tj": "Маънои калимаи 他-ро интихоб кунед:"
+            "uz": "tā qaysi ieroglif?",
+            "ru": "Какой иероглиф читается tā?",
+            "tj": "tā кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            {
-              "uz": "u (ayol)",
-              "ru": "она",
-              "tj": "вай (зан)"
-            },
-            {
-              "uz": "ning (egalik yuklamasi)",
-              "ru": "-'s (показатель принадлежности)",
-              "tj": "и, -и (ҳарфи соҳибӣ)"
-            },
-            {
-              "uz": "u (erkak)",
-              "ru": "он",
-              "tj": "вай (мард)"
-            },
-            {
-              "uz": "kim",
-              "ru": "кто",
-              "tj": "кӣ"
-            }
+            "的",
+            "他",
+            "谁",
+            "她"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "他 = u (erkak) (tā)",
             "ru": "他 = он (tā)",
@@ -646,28 +637,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "péngyou qaysi ieroglif?",
-            "ru": "Какой иероглиф читается péngyou?",
-            "tj": "péngyou кадом иероглиф аст?"
+            "uz": "朋友 talaffuzini tanlang:",
+            "ru": "Выберите произношение 朋友:",
+            "tj": "Талаффузи 朋友-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "的",
-            "朋友",
-            "谁",
-            "她"
+            "de",
+            "tā",
+            "péngyou",
+            "shéi"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "朋友 = do'st (péngyou)",
-            "ru": "朋友 = друг, подруга (péngyou)",
-            "tj": "朋友 = дӯст (péngyou)"
+            "uz": "朋友 — péngyou",
+            "ru": "朋友 — péngyou",
+            "tj": "朋友 — péngyou"
           }
         },
         {
@@ -777,12 +768,12 @@
             "tj": "муаллими забони чинии ман"
           },
           "tokens": [
-            "她",
             "老师",
             "我",
+            "她",
+            "汉语",
             "谁",
-            "的",
-            "汉语"
+            "的"
           ],
           "answer_tokens": [
             "我",
@@ -850,11 +841,11 @@
             "tj": "Вай кӣ аст?"
           },
           "tokens": [
-            "是",
-            "的",
             "她",
             "汉语",
-            "谁"
+            "谁",
+            "的",
+            "是"
           ],
           "answer_tokens": [
             "她",
@@ -912,13 +903,13 @@
             "tj": "Ман донишҷӯ ҳастам. Шумо чӣ?"
           },
           "tokens": [
-            "我",
-            "是",
-            "她",
-            "学生",
             "谁",
+            "是",
+            "我",
+            "你",
             "呢",
-            "你"
+            "学生",
+            "她"
           ],
           "answer_tokens": [
             "我",
@@ -936,9 +927,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«mening xitoy tili o'qituvchim» — xitoychada qaysi biri?",
-            "ru": "«мой преподаватель китайского» — какое предложение по-китайски?",
-            "tj": "«муаллими забони чинии ман» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«U kimning sinfdoshi?» — xitoychada qaysi biri?",
+            "ru": "«Чей он одноклассник?» — какое предложение по-китайски?",
+            "tj": "«Ҳамсинфи кӣ аст вай?» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -946,16 +937,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "她是中国人。他呢？",
-            "谁是你的老师？",
-            "我是学生。你呢？",
-            "我的汉语老师"
+            "我的汉语老师",
+            "你的朋友",
+            "他是谁的同学？",
+            "她是中国人。他呢？"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "我的汉语老师 — wǒ de Hànyǔ lǎoshī",
-            "ru": "我的汉语老师 — wǒ de Hànyǔ lǎoshī",
-            "tj": "我的汉语老师 — wǒ de Hànyǔ lǎoshī"
+            "uz": "他是谁的同学？ — Tā shì shéi de tóngxué?",
+            "ru": "他是谁的同学？ — Tā shì shéi de tóngxué?",
+            "tj": "他是谁的同学？ — Tā shì shéi de tóngxué?"
           }
         }
       ]
@@ -1018,19 +1009,19 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "她是谁？",
-          "pinyin": "Tā shì shéi?",
+          "audio_text": "我是美国人。你呢？",
+          "pinyin": "Wǒ shì Měiguó rén. Nǐ ne?",
           "options": [
             "她是谁？",
-            "你是哪国人？",
             "我是美国人。你呢？",
-            "她是我的汉语老师，她叫李月。"
+            "她是我的汉语老师，她叫李月。",
+            "你是哪国人？"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "她是谁？ — U kim?",
-            "ru": "她是谁？ — Кто она?",
-            "tj": "她是谁？ — Вай кӣ аст?"
+            "uz": "我是美国人。你呢？ — Men amerikalikman. Siz-chi?",
+            "ru": "我是美国人。你呢？ — Я американец. А вы?",
+            "tj": "我是美国人。你呢？ — Ман амрикоӣ ҳастам. Шумо чӣ?"
           }
         },
         {
@@ -1047,9 +1038,9 @@
           },
           "options": [
             "汉语",
-            "谁",
             "的",
-            "她"
+            "她",
+            "谁"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1066,11 +1057,11 @@
             "tj": "Вай кӣ аст?"
           },
           "tokens": [
-            "是",
-            "她",
-            "的",
+            "汉语",
             "谁",
-            "汉语"
+            "的",
+            "是",
+            "她"
           ],
           "answer_tokens": [
             "她",
@@ -1125,13 +1116,44 @@
           }
         },
         {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "U xitoylik. U-chi?",
+            "ru": "Она китаянка. А он?",
+            "tj": "Вай хитоӣ аст. Вай чӣ?"
+          },
+          "tokens": [
+            "她",
+            "他",
+            "人",
+            "呢",
+            "是",
+            "的",
+            "中国",
+            "谁"
+          ],
+          "answer_tokens": [
+            "她",
+            "是",
+            "中国",
+            "人",
+            "他",
+            "呢"
+          ],
+          "explanation": {
+            "uz": "她是中国人。他呢？ — Tā shì Zhōngguó rén. Tā ne?",
+            "ru": "她是中国人。他呢？ — Tā shì Zhōngguó rén. Tā ne?",
+            "tj": "她是中国人。他呢？ — Tā shì Zhōngguó rén. Tā ne?"
+          }
+        },
+        {
           "type": "pronunciation",
-          "phrase": "她",
-          "pinyin": "tā",
+          "phrase": "汉语",
+          "pinyin": "Hànyǔ",
           "translation": {
-            "uz": "u (ayol)",
-            "ru": "она",
-            "tj": "вай (зан)"
+            "uz": "xitoy tili",
+            "ru": "китайский язык",
+            "tj": "забони чинӣ"
           }
         }
       ]
@@ -1187,12 +1209,12 @@
             }
           ],
           "options": [
-            "她是我的汉语老师，她叫李月。",
-            "你是哪国人？",
             "我是美国人。你呢？",
-            "她是谁？"
+            "她是谁？",
+            "你是哪国人？",
+            "她是我的汉语老师，她叫李月。"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 她是我的汉语老师，她叫李月。",
             "ru": "Правильный ответ: 她是我的汉语老师，她叫李月。",
@@ -1213,11 +1235,11 @@
           },
           "options": [
             "她是我的汉语老师，她叫李月。",
+            "我是美国人。你呢？",
             "她是谁？",
-            "你是哪国人？",
-            "我是美国人。你呢？"
+            "你是哪国人？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 她是谁？",
             "ru": "Правильный ответ: 她是谁？",
@@ -1237,10 +1259,10 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "她是谁？",
+            "我是美国人。你呢？",
             "她是我的汉语老师，她叫李月。",
             "你是哪国人？",
-            "我是美国人。你呢？"
+            "她是谁？"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1258,16 +1280,26 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
+            "汉",
             "她",
-            "国",
-            "朋",
-            "谁"
+            "美",
+            "您"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 她 — 她是谁？ (U kim?)",
             "ru": "Верно: 她 — 她是谁？ (Кто она?)",
             "tj": "Дуруст: 她 — 她是谁？ (Вай кӣ аст?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你是哪国人？",
+          "pinyin": "Nǐ shì nǎ guó rén?",
+          "translation": {
+            "uz": "Siz qaysi mamlakatdansiz?",
+            "ru": "Вы из какой страны?",
+            "tj": "Шумо аз кадом кишвар ҳастед?"
           }
         }
       ]

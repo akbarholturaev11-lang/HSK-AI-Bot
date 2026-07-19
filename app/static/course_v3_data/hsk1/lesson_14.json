@@ -518,28 +518,38 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "pronunciation",
+          "phrase": "一点儿",
+          "pinyin": "yīdiǎnr",
+          "translation": {
+            "uz": "bir oz, biroz",
+            "ru": "немного, чуть-чуть",
+            "tj": "каме, андаке"
+          }
+        },
+        {
+          "type": "translation_choice",
           "prompt": {
-            "uz": "dōngxi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается dōngxi?",
-            "tj": "dōngxi кадом иероглиф аст?"
+            "uz": "'narsa, buyum' xitoycha qaysi?",
+            "ru": "'вещь, предмет' по-китайски?",
+            "tj": "'чиз, асбоб' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "一点儿",
-            "苹果",
             "东西",
-            "看见"
+            "苹果",
+            "看见",
+            "一点儿"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "东西 = narsa, buyum (dōngxi)",
-            "ru": "东西 = вещь, предмет (dōngxi)",
-            "tj": "东西 = чиз, асбоб (dōngxi)"
+            "uz": "narsa, buyum = 东西 (dōngxi)",
+            "ru": "вещь, предмет = 东西 (dōngxi)",
+            "tj": "чиз, асбоб = 东西 (dōngxi)"
           }
         },
         {
@@ -571,28 +581,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "看见 talaffuzini tanlang:",
-            "ru": "Выберите произношение 看见:",
-            "tj": "Талаффузи 看见-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "看见",
+          "pinyin": "kànjiàn",
           "options": [
-            "yīdiǎnr",
-            "dōngxi",
-            "píngguǒ",
-            "kànjiàn"
+            "东西",
+            "看见",
+            "苹果",
+            "一点儿"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "看见 — kànjiàn",
-            "ru": "看见 — kànjiàn",
-            "tj": "看见 — kànjiàn"
+            "uz": "看见 — ko'rmoq, ko'rib qolmoq (kànjiàn)",
+            "ru": "看见 — увидеть, заметить (kànjiàn)",
+            "tj": "看见 — дидан, мушоҳида кардан (kànjiàn)"
           }
         },
         {
@@ -637,16 +644,6 @@
           },
           "options": [
             {
-              "uz": "ochmoq, haydamoq (mashina)",
-              "ru": "открывать, водить (машину)",
-              "tj": "кушодан, рондан (мошин)"
-            },
-            {
-              "uz": "narsa, buyum",
-              "ru": "вещь, предмет",
-              "tj": "чиз, асбоб"
-            },
-            {
               "uz": "olma",
               "ru": "яблоко",
               "tj": "себ"
@@ -655,9 +652,19 @@
               "uz": "bir oz, biroz",
               "ru": "немного, чуть-чуть",
               "tj": "каме, андаке"
+            },
+            {
+              "uz": "ochmoq, haydamoq (mashina)",
+              "ru": "открывать, водить (машину)",
+              "tj": "кушодан, рондан (мошин)"
+            },
+            {
+              "uz": "narsa, buyum",
+              "ru": "вещь, предмет",
+              "tj": "чиз, асбоб"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "开 = ochmoq, haydamoq (mashina) (kāi)",
             "ru": "开 = открывать, водить (машину) (kāi)",
@@ -705,12 +712,12 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "苹果",
-            "一点儿",
+            "东西",
             "看见",
-            "东西"
+            "一点儿",
+            "苹果"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "苹果 = olma (píngguǒ)",
             "ru": "苹果 = яблоко (píngguǒ)",
@@ -758,12 +765,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "dōngxi",
             "hòu",
             "yīdiǎnr",
-            "dōngxi",
             "píngguǒ"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "后 — hòu",
             "ru": "后 — hòu",
@@ -877,10 +884,10 @@
             "tj": "Ман ба дӯкон рафтам."
           },
           "tokens": [
-            "商店",
-            "一点儿",
             "了",
+            "商店",
             "东西",
+            "一点儿",
             "去",
             "我"
           ],
@@ -950,11 +957,11 @@
             "tj": "Баъд аз 40 дақиқа бармегардад."
           },
           "tokens": [
-            "一点儿",
-            "分钟",
+            "东西",
             "后",
             "回来",
-            "东西"
+            "一点儿",
+            "分钟"
           ],
           "answer_tokens": [
             "分钟",
@@ -1021,14 +1028,14 @@
             "tj": "Инҳо ҳама чизҳои Ван Фан аст."
           },
           "tokens": [
-            "的",
-            "这些",
-            "苹果",
-            "王方",
-            "都",
             "东西",
+            "都",
+            "苹果",
             "是",
-            "一点儿"
+            "王方",
+            "一点儿",
+            "的",
+            "这些"
           ],
           "answer_tokens": [
             "这些",
@@ -1047,9 +1054,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Biz hammamiz xitoylarmiz.» — xitoychada qaysi biri?",
-            "ru": "«Мы все китайцы.» — какое предложение по-китайски?",
-            "tj": "«Мо ҳама чинӣ ҳастем.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«40 daqiqadan keyin qaytadi.» — xitoychada qaysi biri?",
+            "ru": "«Вернётся через 40 минут.» — какое предложение по-китайски?",
+            "tj": "«Баъд аз 40 дақиқа бармегардад.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1058,15 +1065,15 @@
           },
           "options": [
             "三天后见。",
-            "我去商店了。",
             "她买了不少衣服。",
-            "我们都是中国人。"
+            "40分钟后回来。",
+            "我没买。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "我们都是中国人。 — Wǒmen dōu shì Zhōngguó rén.",
-            "ru": "我们都是中国人。 — Wǒmen dōu shì Zhōngguó rén.",
-            "tj": "我们都是中国人。 — Wǒmen dōu shì Zhōngguó rén."
+            "uz": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
+            "ru": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai.",
+            "tj": "40分钟后回来。 — Sìshí fēnzhōng hòu huílai."
           }
         }
       ]
@@ -1093,16 +1100,83 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "dōngxi",
             "piàoliang",
             "yīdiǎnr",
+            "dōngxi",
             "píngguǒ"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "漂亮 — piàoliang",
             "ru": "漂亮 — piàoliang",
             "tj": "漂亮 — piàoliang"
+          }
+        },
+        {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'ha, voy (undov yuklamasi)' xitoycha qaysi?",
+            "ru": "'ах, да (восклицательная частица)' по-китайски?",
+            "tj": "'оҳ, ҳа (зарраи ҳайҷонӣ)' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "苹果",
+            "啊",
+            "一点儿",
+            "东西"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "ha, voy (undov yuklamasi) = 啊 (a)",
+            "ru": "ах, да (восклицательная частица) = 啊 (a)",
+            "tj": "оҳ, ҳа (зарраи ҳайҷонӣ) = 啊 (a)"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "先生",
+              {
+                "uz": "janob, ser",
+                "ru": "господин, мистер",
+                "tj": "ҷаноб, оғо"
+              }
+            ],
+            [
+              "开",
+              {
+                "uz": "ochmoq, haydamoq (mashina)",
+                "ru": "открывать, водить (машину)",
+                "tj": "кушодан, рондан (мошин)"
+              }
+            ],
+            [
+              "车",
+              {
+                "uz": "mashina, transport",
+                "ru": "машина, транспорт",
+                "tj": "мошин, нақлиёт"
+              }
+            ],
+            [
+              "回来",
+              {
+                "uz": "qaytib kelmoq",
+                "ru": "вернуться, прийти обратно",
+                "tj": "баргаштан, бозгашт кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
           }
         },
         {
@@ -1113,14 +1187,14 @@
             "tj": "Дирӯз субҳ шумо куҷо рафтед?"
           },
           "tokens": [
-            "一点儿",
+            "你",
             "上午",
             "哪儿",
-            "你",
-            "了",
-            "昨天",
+            "东西",
+            "一点儿",
             "去",
-            "东西"
+            "了",
+            "昨天"
           ],
           "answer_tokens": [
             "昨天",
@@ -1137,50 +1211,25 @@
           }
         },
         {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'ha, voy (undov yuklamasi)' xitoycha qaysi?",
-            "ru": "'ах, да (восклицательная частица)' по-китайски?",
-            "tj": "'оҳ, ҳа (зарраи ҳайҷонӣ)' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "东西",
-            "一点儿",
-            "苹果",
-            "啊"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "ha, voy (undov yuklamasi) = 啊 (a)",
-            "ru": "ах, да (восклицательная частица) = 啊 (a)",
-            "tj": "оҳ, ҳа (зарраи ҳайҷонӣ) = 啊 (a)"
-          }
-        },
-        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "昨天上午你去哪儿了？",
-          "pinyin": "Zuótiān shàngwǔ nǐ qù nǎr le?",
+          "audio_text": "我去商店买东西了。",
+          "pinyin": "Wǒ qù shāngdiàn mǎi dōngxi le.",
           "options": [
             "我买了一点儿苹果。",
-            "我去商店买东西了。",
             "昨天上午你去哪儿了？",
+            "我去商店买东西了。",
             "你买什么了？"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "昨天上午你去哪儿了？ — Kecha ertalab qayerga bordingiz?",
-            "ru": "昨天上午你去哪儿了？ — Куда вы ходили вчера утром?",
-            "tj": "昨天上午你去哪儿了？ — Дирӯз субҳ шумо куҷо рафтед?"
+            "uz": "我去商店买东西了。 — Men do'konga narsa sotib olishga bordim.",
+            "ru": "我去商店买东西了。 — Я ходил в магазин за покупками.",
+            "tj": "我去商店买东西了。 — Ман ба дӯкон рафтам, чизҳо харидам."
           }
         },
         {
@@ -1227,12 +1276,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "东西",
-          "pinyin": "dōngxi",
+          "phrase": "少",
+          "pinyin": "shǎo",
           "translation": {
-            "uz": "narsa, buyum",
-            "ru": "вещь, предмет",
-            "tj": "чиз, асбоб"
+            "uz": "kam, oz",
+            "ru": "мало, немного",
+            "tj": "кам, андак"
           }
         }
       ]
@@ -1257,11 +1306,11 @@
           "pinyin": "Zuótiān shàngwǔ nǐ qù nǎr le?",
           "options": [
             "你买什么了？",
-            "昨天上午你去哪儿了？",
             "我去商店买东西了。",
+            "昨天上午你去哪儿了？",
             "我买了一点儿苹果。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "昨天上午你去哪儿了？ — Kecha ertalab qayerga bordingiz?",
             "ru": "昨天上午你去哪儿了？ — Куда вы ходили вчера утром?",
@@ -1298,12 +1347,12 @@
             }
           ],
           "options": [
-            "你买什么了？",
             "我去商店买东西了。",
             "我买了一点儿苹果。",
-            "昨天上午你去哪儿了？"
+            "昨天上午你去哪儿了？",
+            "你买什么了？"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 我买了一点儿苹果。",
             "ru": "Правильный ответ: 我买了一点儿苹果。",
@@ -1323,12 +1372,12 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "昨天上午你去哪儿了？",
-            "你买什么了？",
             "我去商店买东西了。",
-            "我买了一点儿苹果。"
+            "你买什么了？",
+            "我买了一点儿苹果。",
+            "昨天上午你去哪儿了？"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "To'g'ri javob: 昨天上午你去哪儿了？",
             "ru": "Правильный ответ: 昨天上午你去哪儿了？",
@@ -1344,12 +1393,12 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "时",
-            "电",
-            "朋",
-            "昨"
+            "视",
+            "昨",
+            "您",
+            "里"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 昨 — 昨天上午你去哪儿了？ (Kecha ertalab qayerga bordingiz?)",
             "ru": "Верно: 昨 — 昨天上午你去哪儿了？ (Куда вы ходили вчера утром?)",
@@ -1369,16 +1418,26 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "你买什么了？",
+            "昨天上午你去哪儿了？",
             "我买了一点儿苹果。",
-            "我去商店买东西了。",
-            "昨天上午你去哪儿了？"
+            "你买什么了？",
+            "我去商店买东西了。"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 我买了一点儿苹果。",
             "ru": "Правильный ответ: 我买了一点儿苹果。",
             "tj": "Ҷавоби дуруст: 我买了一点儿苹果。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "我买了一点儿苹果。",
+          "pinyin": "Wǒ mǎile yīdiǎnr píngguǒ.",
+          "translation": {
+            "uz": "Men bir oz olma sotib oldim.",
+            "ru": "Я купил немного яблок.",
+            "tj": "Ман каме себ харидам."
           }
         }
       ]

@@ -387,28 +387,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "年 talaffuzini tanlang:",
-            "ru": "Выберите произношение 年:",
-            "tj": "Талаффузи 年-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "年",
+          "pinyin": "nián",
           "options": [
-            "fàndiàn",
-            "rènshi",
-            "dàxué",
-            "nián"
+            "年",
+            "饭店",
+            "大学",
+            "认识"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "年 — nián",
-            "ru": "年 — nián",
-            "tj": "年 — nián"
+            "uz": "年 — yil (nián)",
+            "ru": "年 — год (nián)",
+            "tj": "年 — сол (nián)"
           }
         },
         {
@@ -423,6 +420,16 @@
               "ru": "университет, вуз",
               "tj": "донишгоҳ"
             }
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "大学",
+          "pinyin": "dàxué",
+          "translation": {
+            "uz": "universitet, oliy ta'lim muassasasi",
+            "ru": "университет, вуз",
+            "tj": "донишгоҳ"
           }
         },
         {
@@ -458,14 +465,14 @@
               "tj": "сол"
             },
             {
-              "uz": "universitet, oliy ta'lim muassasasi",
-              "ru": "университет, вуз",
-              "tj": "донишгоҳ"
-            },
-            {
               "uz": "tanish bo'lmoq, uchrashmoq",
               "ru": "знать, познакомиться",
               "tj": "шинохтан, шинос шудан"
+            },
+            {
+              "uz": "universitet, oliy ta'lim muassasasi",
+              "ru": "университет, вуз",
+              "tj": "донишгоҳ"
             },
             {
               "uz": "restoran, mehmonxona",
@@ -523,8 +530,8 @@
           "options": [
             "年",
             "饭店",
-            "认识",
-            "大学"
+            "大学",
+            "认识"
           ],
           "correct_index": 1,
           "explanation": {
@@ -576,8 +583,8 @@
           "options": [
             "nián",
             "gāoxìng",
-            "rènshi",
-            "dàxué"
+            "dàxué",
+            "rènshi"
           ],
           "correct_index": 1,
           "explanation": {
@@ -716,12 +723,12 @@
             "tj": "Мо дар соли 2011 шинос шудем."
           },
           "tokens": [
-            "饭店",
-            "我们",
             "认识",
-            "大学",
-            "是",
+            "我们",
             "年",
+            "是",
+            "大学",
+            "饭店",
             "的"
           ],
           "answer_tokens": [
@@ -782,12 +789,12 @@
             "tj": "дар моҳи сентябри соли 2011 шинос шудем"
           },
           "tokens": [
-            "月",
-            "年",
-            "认识",
             "饭店",
+            "年",
             "的",
-            "大学"
+            "大学",
+            "月",
+            "认识"
           ],
           "answer_tokens": [
             "年",
@@ -804,9 +811,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«U uni Pekinda sotib oldi.» — xitoychada qaysi biri?",
-            "ru": "«Она купила это в Пекине.» — какое предложение по-китайски?",
-            "tj": "«Вай онро дар Пекин харид.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Men samolyot bilan keldim.» — xitoychada qaysi biri?",
+            "ru": "«Я прилетел на самолёте.» — какое предложение по-китайски?",
+            "tj": "«Ман бо ҳавопаймо омадам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -814,16 +821,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "她是在北京买的。",
-            "2011年9月认识的",
+            "我们是2011年认识的。",
             "我是坐飞机来的。",
-            "我们不是坐出租车来的。"
+            "2011年9月认识的",
+            "今天是2024年4月26号。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "她是在北京买的。 — Tā shì zài Běijīng mǎi de.",
-            "ru": "她是在北京买的。 — Tā shì zài Běijīng mǎi de.",
-            "tj": "她是在北京买的。 — Tā shì zài Běijīng mǎi de."
+            "uz": "我是坐飞机来的。 — Wǒ shì zuò fēijī lái de.",
+            "ru": "我是坐飞机来的。 — Wǒ shì zuò fēijī lái de.",
+            "tj": "我是坐飞机来的。 — Wǒ shì zuò fēijī lái de."
           }
         }
       ]
@@ -837,56 +844,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "translation_choice",
-          "prompt": {
-            "uz": "'universitet, oliy ta'lim muassasasi' xitoycha qaysi?",
-            "ru": "'университет, вуз' по-китайски?",
-            "tj": "'донишгоҳ' ба хитоӣ кадом аст?"
-          },
-          "title": {
-            "uz": "Xitoycha qanday?",
-            "ru": "Как по-китайски?",
-            "tj": "Ба хитоӣ чӣ тавр?"
-          },
-          "options": [
-            "年",
-            "认识",
-            "饭店",
-            "大学"
-          ],
-          "correct_index": 3,
-          "explanation": {
-            "uz": "universitet, oliy ta'lim muassasasi = 大学 (dàxué)",
-            "ru": "университет, вуз = 大学 (dàxué)",
-            "tj": "донишгоҳ = 大学 (dàxué)"
-          }
-        },
-        {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "fàndiàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается fàndiàn?",
-            "tj": "fàndiàn кадом иероглиф аст?"
-          },
-          "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
-          },
-          "options": [
-            "年",
-            "饭店",
-            "大学",
-            "认识"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "饭店 = restoran, mehmonxona (fàndiàn)",
-            "ru": "饭店 = ресторан, гостиница (fàndiàn)",
-            "tj": "饭店 = тарабхона, меҳмонхона (fàndiàn)"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -930,25 +887,97 @@
           }
         },
         {
+          "type": "translation_choice",
+          "prompt": {
+            "uz": "'universitet, oliy ta'lim muassasasi' xitoycha qaysi?",
+            "ru": "'университет, вуз' по-китайски?",
+            "tj": "'донишгоҳ' ба хитоӣ кадом аст?"
+          },
+          "title": {
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
+          },
+          "options": [
+            "认识",
+            "大学",
+            "饭店",
+            "年"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "universitet, oliy ta'lim muassasasi = 大学 (dàxué)",
+            "ru": "университет, вуз = 大学 (dàxué)",
+            "tj": "донишгоҳ = 大学 (dàxué)"
+          }
+        },
+        {
+          "type": "hanzi_choice",
+          "prompt": {
+            "uz": "fàndiàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается fàndiàn?",
+            "tj": "fàndiàn кадом иероглиф аст?"
+          },
+          "title": {
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
+          },
+          "options": [
+            "认识",
+            "年",
+            "饭店",
+            "大学"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "饭店 = restoran, mehmonxona (fàndiàn)",
+            "ru": "饭店 = ресторан, гостиница (fàndiàn)",
+            "tj": "饭店 = тарабхона, меҳмонхона (fàndiàn)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
+          },
+          "audio_text": "高兴",
+          "pinyin": "gāoxìng",
+          "options": [
+            "大学",
+            "认识",
+            "高兴",
+            "年"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "高兴 — xursand, shod (gāoxìng)",
+            "ru": "高兴 — рад, доволен (gāoxìng)",
+            "tj": "高兴 — хурсанд, шод (gāoxìng)"
+          }
+        },
+        {
           "type": "listening_choice",
           "title": {
             "uz": "Eshitganingizni tanlang",
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "你和李小姐是什么时候认识的？",
-          "pinyin": "Nǐ hé Lǐ xiǎojiě shì shénme shíhou rènshi de?",
+          "audio_text": "你们在哪儿认识的？",
+          "pinyin": "Nǐmen zài nǎr rènshi de?",
           "options": [
             "我们是2011年9月认识的。",
             "我们是在学校认识的，她是我大学同学。",
-            "你和李小姐是什么时候认识的？",
-            "你们在哪儿认识的？"
+            "你们在哪儿认识的？",
+            "你和李小姐是什么时候认识的？"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "你和李小姐是什么时候认识的？ — Siz Xonim Li bilan qachon tanishdingiz?",
-            "ru": "你和李小姐是什么时候认识的？ — Когда вы познакомились с мисс Ли?",
-            "tj": "你和李小姐是什么时候认识的？ — Шумо бо хонум Ли кай шинос шудед?"
+            "uz": "你们在哪儿认识的？ — Siz ikkovingiz qayerda tanishdingiz?",
+            "ru": "你们在哪儿认识的？ — Где вы двое познакомились?",
+            "tj": "你们在哪儿认识的？ — Шумо дуто дар куҷо шинос шудед?"
           }
         },
         {
@@ -959,14 +988,14 @@
             "tj": "Мо дар моҳи сентябри соли 2011 шинос шудем."
           },
           "tokens": [
-            "大学",
-            "的",
-            "年",
             "是",
-            "我们",
-            "认识",
+            "大学",
             "饭店",
-            "月"
+            "月",
+            "认识",
+            "年",
+            "我们",
+            "的"
           ],
           "answer_tokens": [
             "我们",
@@ -984,12 +1013,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "认识",
-          "pinyin": "rènshi",
+          "phrase": "一起",
+          "pinyin": "yīqǐ",
           "translation": {
-            "uz": "tanish bo'lmoq, uchrashmoq",
-            "ru": "знать, познакомиться",
-            "tj": "шинохтан, шинос шудан"
+            "uz": "birga",
+            "ru": "вместе",
+            "tj": "якҷоя"
           }
         }
       ]
@@ -1014,15 +1043,65 @@
           "pinyin": "Nǐ hé Lǐ xiǎojiě shì shénme shíhou rènshi de?",
           "options": [
             "你们在哪儿认识的？",
-            "我们是2011年9月认识的。",
             "你和李小姐是什么时候认识的？",
-            "我们是在学校认识的，她是我大学同学。"
+            "我们是在学校认识的，她是我大学同学。",
+            "我们是2011年9月认识的。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "你和李小姐是什么时候认识的？ — Siz Xonim Li bilan qachon tanishdingiz?",
             "ru": "你和李小姐是什么时候认识的？ — Когда вы познакомились с мисс Ли?",
             "tj": "你和李小姐是什么时候认识的？ — Шумо бо хонум Ли кай шинос шудед?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "你和李小姐是什么时候认识的？",
+            "我们是2011年9月认识的。",
+            "我们是在学校认识的，她是我大学同学。",
+            "你们在哪儿认识的？"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 我们是在学校认识的，她是我大学同学。",
+            "ru": "Правильный ответ: 我们是在学校认识的，她是我大学同学。",
+            "tj": "Ҷавоби дуруст: 我们是在学校认识的，她是我大学同学。"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "你们在哪儿认识的？",
+            "你和李小姐是什么时候认识的？",
+            "我们是在学校认识的，她是我大学同学。",
+            "我们是2011年9月认识的。"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri javob: 你和李小姐是什么时候认识的？",
+            "ru": "Правильный ответ: 你和李小姐是什么时候认识的？",
+            "tj": "Ҷавоби дуруст: 你和李小姐是什么时候认识的？"
           }
         },
         {
@@ -1056,11 +1135,11 @@
           ],
           "options": [
             "你和李小姐是什么时候认识的？",
+            "你们在哪儿认识的？",
             "我们是在学校认识的，她是我大学同学。",
-            "我们是2011年9月认识的。",
-            "你们在哪儿认识的？"
+            "我们是2011年9月认识的。"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 我们是在学校认识的，她是我大学同学。",
             "ru": "Правильный ответ: 我们是在学校认识的，她是我大学同学。",
@@ -1076,10 +1155,10 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "时",
+            "您",
             "你",
-            "朋",
-            "电"
+            "视",
+            "里"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1089,53 +1168,13 @@
           }
         },
         {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "我们是2011年9月认识的。",
-            "你和李小姐是什么时候认识的？",
-            "我们是在学校认识的，她是我大学同学。",
-            "你们在哪儿认识的？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 你和李小姐是什么时候认识的？",
-            "ru": "Правильный ответ: 你和李小姐是什么时候认识的？",
-            "tj": "Ҷавоби дуруст: 你和李小姐是什么时候认识的？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "你和李小姐是什么时候认识的？",
-            "我们是2011年9月认识的。",
-            "我们是在学校认识的，她是我大学同学。",
-            "你们在哪儿认识的？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 我们是在学校认识的，她是我大学同学。",
-            "ru": "Правильный ответ: 我们是在学校认识的，她是我大学同学。",
-            "tj": "Ҷавоби дуруст: 我们是在学校认识的，她是我大学同学。"
+          "type": "pronunciation",
+          "phrase": "认识你我也很高兴！",
+          "pinyin": "Rènshi nǐ wǒ yě hěn gāoxìng!",
+          "translation": {
+            "uz": "Siz bilan tanishganimdan men ham juda xursandman!",
+            "ru": "Мне тоже очень приятно познакомиться с вами!",
+            "tj": "Аз шиноси бо шумо ман ҳам бисёр хурсандам!"
           }
         }
       ]

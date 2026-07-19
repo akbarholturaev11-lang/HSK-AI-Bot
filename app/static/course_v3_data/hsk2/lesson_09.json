@@ -450,6 +450,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "错",
+          "pinyin": "cuò",
+          "translation": {
+            "uz": "xato, noto'g'ri",
+            "ru": "неправильный, ошибочный",
+            "tj": "хато, нодуруст"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 2,
@@ -464,28 +474,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "从 talaffuzini tanlang:",
-            "ru": "Выберите произношение 从:",
-            "tj": "Талаффузи 从-ро интихоб кунед:"
+            "uz": "'dan, boshlab (joy yoki vaqt)' xitoycha qaysi?",
+            "ru": "'от, с, начиная с (место или время)' по-китайски?",
+            "tj": "'аз, аз ибтидои (ҷой ё вақт)' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "cóng",
-            "tiàowǔ",
-            "cuò",
-            "dìyī"
+            "跳舞",
+            "从",
+            "第一",
+            "错"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "从 — cóng",
-            "ru": "从 — cóng",
-            "tj": "从 — cóng"
+            "uz": "dan, boshlab (joy yoki vaqt) = 从 (cóng)",
+            "ru": "от, с, начиная с (место или время) = 从 (cóng)",
+            "tj": "аз, аз ибтидои (ҷой ё вақт) = 从 (cóng)"
           }
         },
         {
@@ -517,44 +527,25 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "从 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 从:",
-            "tj": "Маънои калимаи 从-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "从",
+          "pinyin": "cóng",
           "options": [
-            {
-              "uz": "dan, boshlab (joy yoki vaqt)",
-              "ru": "от, с, начиная с (место или время)",
-              "tj": "аз, аз ибтидои (ҷой ё вақт)"
-            },
-            {
-              "uz": "xato, noto'g'ri",
-              "ru": "неправильный, ошибочный",
-              "tj": "хато, нодуруст"
-            },
-            {
-              "uz": "raqs tushmoq",
-              "ru": "танцевать",
-              "tj": "рақс кардан"
-            },
-            {
-              "uz": "birinchi",
-              "ru": "первый",
-              "tj": "аввалин, якум"
-            }
+            "第一",
+            "从",
+            "错",
+            "跳舞"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "从 = dan, boshlab (joy yoki vaqt) (cóng)",
-            "ru": "从 = от, с, начиная с (место или время) (cóng)",
-            "tj": "从 = аз, аз ибтидои (ҷой ё вақт) (cóng)"
+            "uz": "从 — dan, boshlab (joy yoki vaqt) (cóng)",
+            "ru": "从 — от, с, начиная с (место или время) (cóng)",
+            "tj": "从 — аз, аз ибтидои (ҷой ё вақт) (cóng)"
           }
         },
         {
@@ -586,24 +577,40 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "wèntí qaysi ieroglif?",
-            "ru": "Какой иероглиф читается wèntí?",
-            "tj": "wèntí кадом иероглиф аст?"
+            "uz": "问题 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 问题:",
+            "tj": "Маънои калимаи 问题-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "问题",
-            "从",
-            "跳舞",
-            "错"
+            {
+              "uz": "dan, boshlab (joy yoki vaqt)",
+              "ru": "от, с, начиная с (место или время)",
+              "tj": "аз, аз ибтидои (ҷой ё вақт)"
+            },
+            {
+              "uz": "savol, muammo",
+              "ru": "вопрос, проблема",
+              "tj": "савол, мушкил"
+            },
+            {
+              "uz": "raqs tushmoq",
+              "ru": "танцевать",
+              "tj": "рақс кардан"
+            },
+            {
+              "uz": "xato, noto'g'ri",
+              "ru": "неправильный, ошибочный",
+              "tj": "хато, нодуруст"
+            }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "问题 = savol, muammo (wèntí)",
             "ru": "问题 = вопрос, проблема (wèntí)",
@@ -639,28 +646,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "问题 talaffuzini tanlang:",
-            "ru": "Выберите произношение 问题:",
-            "tj": "Талаффузи 问题-ро интихоб кунед:"
+            "uz": "wèntí qaysi ieroglif?",
+            "ru": "Какой иероглиф читается wèntí?",
+            "tj": "wèntí кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            "wèntí",
-            "cuò",
-            "cóng",
-            "tiàowǔ"
+            "问题",
+            "跳舞",
+            "从",
+            "错"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "问题 — wèntí",
-            "ru": "问题 — wèntí",
-            "tj": "问题 — wèntí"
+            "uz": "问题 = savol, muammo (wèntí)",
+            "ru": "问题 = вопрос, проблема (wèntí)",
+            "tj": "问题 = савол, мушкил (wèntí)"
           }
         },
         {
@@ -692,44 +699,28 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "完 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 完:",
-            "tj": "Маънои калимаи 完-ро интихоб кунед:"
+            "uz": "完 talaffuzini tanlang:",
+            "ru": "Выберите произношение 完:",
+            "tj": "Талаффузи 完-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            {
-              "uz": "xato, noto'g'ri",
-              "ru": "неправильный, ошибочный",
-              "tj": "хато, нодуруст"
-            },
-            {
-              "uz": "raqs tushmoq",
-              "ru": "танцевать",
-              "tj": "рақс кардан"
-            },
-            {
-              "uz": "dan, boshlab (joy yoki vaqt)",
-              "ru": "от, с, начиная с (место или время)",
-              "tj": "аз, аз ибтидои (ҷой ё вақт)"
-            },
-            {
-              "uz": "tugamoq, tamomlamoq",
-              "ru": "заканчивать, завершать",
-              "tj": "тамом кардан, ба охир расидан"
-            }
+            "wán",
+            "cóng",
+            "tiàowǔ",
+            "cuò"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "完 = tugamoq, tamomlamoq (wán)",
-            "ru": "完 = заканчивать, завершать (wán)",
-            "tj": "完 = тамом кардан, ба охир расидан (wán)"
+            "uz": "完 — wán",
+            "ru": "完 — wán",
+            "tj": "完 — wán"
           }
         },
         {
@@ -830,11 +821,11 @@
             "tj": "Ман шунида фаҳмидам."
           },
           "tokens": [
+            "错",
+            "我",
+            "从",
             "听",
             "懂",
-            "从",
-            "我",
-            "错",
             "了"
           ],
           "answer_tokens": [
@@ -895,12 +886,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "第一",
-            "从",
             "跳舞",
-            "错"
+            "第一",
+            "错",
+            "从"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 跳舞 (tiàowǔ) — raqs tushmoq",
             "ru": "Верно: 跳舞 (tiàowǔ) — танцевать",
@@ -952,15 +943,15 @@
             "tj": "Ин кори аввалинаш аст."
           },
           "tokens": [
-            "错",
-            "这",
-            "的",
-            "他",
-            "个",
+            "是",
             "工作",
+            "这",
             "从",
-            "第一",
-            "是"
+            "个",
+            "他",
+            "的",
+            "错",
+            "第一"
           ],
           "answer_tokens": [
             "这",
@@ -980,9 +971,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«U kelasi dushanba kundan boshlab ishga chiqadi.» — xitoychada qaysi biri?",
-            "ru": "«Он начнёт работать с ближайшего понедельника.» — какое предложение по-китайски?",
-            "tj": "«Вай аз душанбаи оянда кор мекунад.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Men eshitib tushundim.» — xitoychada qaysi biri?",
+            "ru": "«Я понял на слух.» — какое предложение по-китайски?",
+            "tj": "«Ман шунида фаҳмидам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -991,15 +982,15 @@
           },
           "options": [
             "我听懂了。",
-            "他从下个星期一开始上班。",
             "题太多，我没做完。",
-            "这是他的第一个工作。"
+            "他从下个星期一开始上班。",
+            "您从几岁开始学跳舞？"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "他从下个星期一开始上班。 — Tā cóng xià ge xīngqīyī kāishǐ shàngbān.",
-            "ru": "他从下个星期一开始上班。 — Tā cóng xià ge xīngqīyī kāishǐ shàngbān.",
-            "tj": "他从下个星期一开始上班。 — Tā cóng xià ge xīngqīyī kāishǐ shàngbān."
+            "uz": "我听懂了。 — Wǒ tīngdǒng le.",
+            "ru": "我听懂了。 — Wǒ tīngdǒng le.",
+            "tj": "我听懂了。 — Wǒ tīngdǒng le."
           }
         }
       ]
@@ -1027,15 +1018,120 @@
           },
           "options": [
             "tiàowǔ",
-            "cuò",
             "tí",
-            "cóng"
+            "cóng",
+            "cuò"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "题 — tí",
             "ru": "题 — tí",
             "tj": "题 — tí"
+          }
+        },
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "希望",
+              {
+                "uz": "umid qilmoq, xohlamoq",
+                "ru": "надеяться, желать",
+                "tj": "умед доштан, орзу кардан"
+              }
+            ],
+            [
+              "问题",
+              {
+                "uz": "savol, muammo",
+                "ru": "вопрос, проблема",
+                "tj": "савол, мушкил"
+              }
+            ],
+            [
+              "欢迎",
+              {
+                "uz": "xush kelibsiz, kutib olmoq",
+                "ru": "добро пожаловать, приветствовать",
+                "tj": "хуш омадед, пешвоз гирифтан"
+              }
+            ],
+            [
+              "上班",
+              {
+                "uz": "ishga bormoq, ishlamoq",
+                "ru": "идти на работу, работать",
+                "tj": "ба кор рафтан, кор кардан"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "太好了！他从什么时候开始上班？",
+          "pinyin": "Tài hǎo le! Tā cóng shénme shíhou kāishǐ shàngbān?",
+          "options": [
+            "对不起。",
+            "太好了！他从什么时候开始上班？",
+            "你打错了，我们这儿没有叫张欢的。",
+            "你好！请问张欢在吗？"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "太好了！他从什么时候开始上班？ — Juda yaxshi! U qachondan boshlab ishga chiqadi?",
+            "ru": "太好了！他从什么时候开始上班？ — Отлично! С какого времени он начнёт работать?",
+            "tj": "太好了！他从什么时候开始上班？ — Аъло! Вай аз кай кор мекунад?"
+          }
+        },
+        {
+          "type": "meaning_guess",
+          "prompt": {
+            "uz": "题 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 题:",
+            "tj": "Маънои калимаи 题-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
+          },
+          "options": [
+            {
+              "uz": "xato, noto'g'ri",
+              "ru": "неправильный, ошибочный",
+              "tj": "хато, нодуруст"
+            },
+            {
+              "uz": "savol, topshiriq, masala",
+              "ru": "вопрос, задание, задача",
+              "tj": "савол, супориш, масъала"
+            },
+            {
+              "uz": "raqs tushmoq",
+              "ru": "танцевать",
+              "tj": "рақс кардан"
+            },
+            {
+              "uz": "dan, boshlab (joy yoki vaqt)",
+              "ru": "от, с, начиная с (место или время)",
+              "tj": "аз, аз ибтидои (ҷой ё вақт)"
+            }
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "题 = savol, topshiriq, masala (tí)",
+            "ru": "题 = вопрос, задание, задача (tí)",
+            "tj": "题 = савол, супориш, масъала (tí)"
           }
         },
         {
@@ -1081,69 +1177,6 @@
           }
         },
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "你好！请问张欢在吗？",
-          "pinyin": "Nǐ hǎo! Qǐngwèn Zhāng Huān zài ma?",
-          "options": [
-            "对不起。",
-            "你好！请问张欢在吗？",
-            "你打错了，我们这儿没有叫张欢的。",
-            "您从几岁开始学跳舞？"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "你好！请问张欢在吗？ — Salom! Iltimos, Chjan Xuan bormi?",
-            "ru": "你好！请问张欢在吗？ — Здравствуйте! Скажите, Чжан Хуань здесь?",
-            "tj": "你好！请问张欢在吗？ — Салом! Лутфан, Чжан Хуан ҳаст?"
-          }
-        },
-        {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "题 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 题:",
-            "tj": "Маънои калимаи 题-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
-          },
-          "options": [
-            {
-              "uz": "savol, topshiriq, masala",
-              "ru": "вопрос, задание, задача",
-              "tj": "савол, супориш, масъала"
-            },
-            {
-              "uz": "xato, noto'g'ri",
-              "ru": "неправильный, ошибочный",
-              "tj": "хато, нодуруст"
-            },
-            {
-              "uz": "raqs tushmoq",
-              "ru": "танцевать",
-              "tj": "рақс кардан"
-            },
-            {
-              "uz": "dan, boshlab (joy yoki vaqt)",
-              "ru": "от, с, начиная с (место или время)",
-              "tj": "аз, аз ибтидои (ҷой ё вақт)"
-            }
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "题 = savol, topshiriq, masala (tí)",
-            "ru": "题 = вопрос, задание, задача (tí)",
-            "tj": "题 = савол, супориш, масъала (tí)"
-          }
-        },
-        {
           "type": "sentence_builder",
           "sentence": {
             "uz": "Bilasizmi? Devid ish topdi.",
@@ -1153,14 +1186,14 @@
           "tokens": [
             "了",
             "到",
-            "从",
-            "你",
-            "错",
-            "知道",
-            "吗",
-            "大卫",
             "找",
-            "工作"
+            "知道",
+            "错",
+            "大卫",
+            "工作",
+            "你",
+            "吗",
+            "从"
           ],
           "answer_tokens": [
             "你",
@@ -1180,12 +1213,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "错",
-          "pinyin": "cuò",
+          "phrase": "懂",
+          "pinyin": "dǒng",
           "translation": {
-            "uz": "xato, noto'g'ri",
-            "ru": "неправильный, ошибочный",
-            "tj": "хато, нодуруст"
+            "uz": "tushunmoq",
+            "ru": "понимать",
+            "tj": "фаҳмидан"
           }
         }
       ]
@@ -1209,12 +1242,12 @@
           "audio_text": "你好！请问张欢在吗？",
           "pinyin": "Nǐ hǎo! Qǐngwèn Zhāng Huān zài ma?",
           "options": [
+            "你好！请问张欢在吗？",
             "您从几岁开始学跳舞？",
             "你打错了，我们这儿没有叫张欢的。",
-            "你好！请问张欢在吗？",
             "对不起。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
             "uz": "你好！请问张欢在吗？ — Salom! Iltimos, Chjan Xuan bormi?",
             "ru": "你好！请问张欢在吗？ — Здравствуйте! Скажите, Чжан Хуань здесь?",
@@ -1235,9 +1268,9 @@
           },
           "options": [
             "对不起。",
-            "你打错了，我们这儿没有叫张欢的。",
             "您从几岁开始学跳舞？",
-            "你好！请问张欢在吗？"
+            "你好！请问张欢在吗？",
+            "你打错了，我们这儿没有叫张欢的。"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1255,10 +1288,10 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "电",
+            "问",
             "你",
-            "下",
-            "夫"
+            "诉",
+            "眼"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1281,9 +1314,9 @@
           },
           "options": [
             "你好！请问张欢在吗？",
-            "您从几岁开始学跳舞？",
             "对不起。",
-            "你打错了，我们这儿没有叫张欢的。"
+            "你打错了，我们这儿没有叫张欢的。",
+            "您从几岁开始学跳舞？"
           ],
           "correct_index": 0,
           "explanation": {
@@ -1319,14 +1352,24 @@
           "options": [
             "你打错了，我们这儿没有叫张欢的。",
             "对不起。",
-            "您从几岁开始学跳舞？",
-            "你好！请问张欢在吗？"
+            "你好！请问张欢在吗？",
+            "您从几岁开始学跳舞？"
           ],
           "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 对不起。",
             "ru": "Правильный ответ: 对不起。",
             "tj": "Ҷавоби дуруст: 对不起。"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你好！请问张欢在吗？",
+          "pinyin": "Nǐ hǎo! Qǐngwèn Zhāng Huān zài ma?",
+          "translation": {
+            "uz": "Salom! Iltimos, Chjan Xuan bormi?",
+            "ru": "Здравствуйте! Скажите, Чжан Хуань здесь?",
+            "tj": "Салом! Лутфан, Чжан Хуан ҳаст?"
           }
         }
       ]

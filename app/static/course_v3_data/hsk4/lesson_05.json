@@ -752,6 +752,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "家具",
+          "pinyin": "jiājù",
+          "translation": {
+            "uz": "mebel",
+            "ru": "мебель",
+            "tj": "мебел"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 2,
@@ -766,28 +776,25 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "jiājù qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiājù?",
-            "tj": "jiājù кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "家具",
+          "pinyin": "jiājù",
           "options": [
-            "沙发",
-            "家具",
             "价格",
+            "家具",
+            "沙发",
             "打折"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "家具 = mebel (jiājù)",
-            "ru": "家具 = мебель (jiājù)",
-            "tj": "家具 = мебел (jiājù)"
+            "uz": "家具 — mebel (jiājù)",
+            "ru": "家具 — мебель (jiājù)",
+            "tj": "家具 — мебел (jiājù)"
           }
         },
         {
@@ -819,28 +826,44 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "家具 talaffuzini tanlang:",
-            "ru": "Выберите произношение 家具:",
-            "tj": "Талаффузи 家具-ро интихоб кунед:"
+            "uz": "家具 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 家具:",
+            "tj": "Маънои калимаи 家具-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "jiājù",
-            "jiàgé",
-            "shāfā",
-            "dǎzhé"
+            {
+              "uz": "chegirma qilmoq",
+              "ru": "делать скидку",
+              "tj": "тахфиф кардан"
+            },
+            {
+              "uz": "mebel",
+              "ru": "мебель",
+              "tj": "мебел"
+            },
+            {
+              "uz": "narx",
+              "ru": "цена",
+              "tj": "нарх"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
+            }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
-            "uz": "家具 — jiājù",
-            "ru": "家具 — jiājù",
-            "tj": "家具 — jiājù"
+            "uz": "家具 = mebel (jiājù)",
+            "ru": "家具 = мебель (jiājù)",
+            "tj": "家具 = мебел (jiājù)"
           }
         },
         {
@@ -872,40 +895,24 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "沙发 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 沙发:",
-            "tj": "Маънои калимаи 沙发-ро интихоб кунед:"
+            "uz": "shāfā qaysi ieroglif?",
+            "ru": "Какой иероглиф читается shāfā?",
+            "tj": "shāfā кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            {
-              "uz": "chegirma qilmoq",
-              "ru": "делать скидку",
-              "tj": "тахфиф кардан"
-            },
-            {
-              "uz": "narx",
-              "ru": "цена",
-              "tj": "нарх"
-            },
-            {
-              "uz": "mebel",
-              "ru": "мебель",
-              "tj": "мебел"
-            },
-            {
-              "uz": "divan",
-              "ru": "диван",
-              "tj": "диван"
-            }
+            "沙发",
+            "打折",
+            "家具",
+            "价格"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "沙发 = divan (shāfā)",
             "ru": "沙发 = диван (shāfā)",
@@ -941,28 +948,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "shùnbiàn qaysi ieroglif?",
-            "ru": "Какой иероглиф читается shùnbiàn?",
-            "tj": "shùnbiàn кадом иероглиф аст?"
+            "uz": "顺便 talaffuzini tanlang:",
+            "ru": "Выберите произношение 顺便:",
+            "tj": "Талаффузи 顺便-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "家具",
-            "顺便",
-            "沙发",
-            "打折"
+            "shāfā",
+            "shùnbiàn",
+            "jiājù",
+            "dǎzhé"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "顺便 = yo'l-yo'lakay, bir yo'la (shùnbiàn)",
-            "ru": "顺便 = заодно, попутно (shùnbiàn)",
-            "tj": "顺便 = дар ҳамин асно, якбора (shùnbiàn)"
+            "uz": "顺便 — shùnbiàn",
+            "ru": "顺便 — shùnbiàn",
+            "tj": "顺便 — shùnbiàn"
           }
         },
         {
@@ -994,28 +1001,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "沙发 talaffuzini tanlang:",
-            "ru": "Выберите произношение 沙发:",
-            "tj": "Талаффузи 沙发-ро интихоб кунед:"
+            "uz": "'divan' xitoycha qaysi?",
+            "ru": "'диван' по-китайски?",
+            "tj": "'диван' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "jiājù",
-            "shāfā",
-            "dǎzhé",
-            "jiàgé"
+            "家具",
+            "打折",
+            "价格",
+            "沙发"
           ],
-          "correct_index": 1,
+          "correct_index": 3,
           "explanation": {
-            "uz": "沙发 — shāfā",
-            "ru": "沙发 — shāfā",
-            "tj": "沙发 — shāfā"
+            "uz": "divan = 沙发 (shāfā)",
+            "ru": "диван = 沙发 (shāfā)",
+            "tj": "диван = 沙发 (shāfā)"
           }
         },
         {
@@ -1107,12 +1114,12 @@
             "tj": "Сифат ҳатман 'тахфиф' намешавад."
           },
           "tokens": [
+            "肯定",
             "不",
             "沙发",
-            "肯定",
-            "打折",
+            "家具",
             "质量",
-            "家具"
+            "打折"
           ],
           "answer_tokens": [
             "质量",
@@ -1191,12 +1198,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "沙发",
             "广告",
             "打折",
-            "家具"
+            "家具",
+            "沙发"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 广告 (guǎnggào) — reklama; reklama qilmoq",
             "ru": "Верно: 广告 (guǎnggào) — реклама; рекламировать",
@@ -1240,12 +1247,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
+            "流行",
             "家具",
-            "沙发",
             "打折",
-            "流行"
+            "沙发"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 流行 (liúxíng) — moda bo'lmoq, ommalashmoq",
             "ru": "Верно: 流行 (liúxíng) — быть популярным, модным",
@@ -1289,12 +1296,12 @@
             "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "沙发",
-            "家具",
             "打折",
-            "尤其"
+            "尤其",
+            "沙发",
+            "家具"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 尤其 (yóuqí) — ayniqsa",
             "ru": "Верно: 尤其 (yóuqí) — особенно",
@@ -1304,9 +1311,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Sifat albatta 'chegirmaga tushmaydi'.» — xitoychada qaysi biri?",
-            "ru": "«Качество точно не 'со скидкой'.» — какое предложение по-китайски?",
-            "tj": "«Сифат ҳатман 'тахфиф' намешавад.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Aslida ko'p narsalar reklamada aytilgandek yaxshi emas.» — xitoychada qaysi biri?",
+            "ru": "«На самом деле многие вещи вовсе не так хороши, как говорится в рекламе.» — какое предложение по-китайски?",
+            "tj": "«Дар асл бисёр чизҳо мисли реклама гуфтагиашон хуб нестанд.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1315,15 +1322,15 @@
           },
           "options": [
             "年轻人尤其喜欢在网上买东西。",
-            "对我来说，衣服的样子流行不流行并不是很重要。",
             "质量肯定不“打折”。",
+            "实际上，很多东西并不像广告上说的那么好。",
             "再说，这个月家里已经花了五千多了。"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "质量肯定不“打折”。 — Zhìliàng kěndìng bù “dǎ zhé”.",
-            "ru": "质量肯定不“打折”。 — Zhìliàng kěndìng bù “dǎ zhé”.",
-            "tj": "质量肯定不“打折”。 — Zhìliàng kěndìng bù “dǎ zhé”."
+            "uz": "实际上，很多东西并不像广告上说的那么好。 — Shíjì shang, hěn duō dōngxi bìng bú xiàng guǎnggào shang shuō de nàme hǎo.",
+            "ru": "实际上，很多东西并不像广告上说的那么好。 — Shíjì shang, hěn duō dōngxi bìng bú xiàng guǎnggào shang shuō de nàme hǎo.",
+            "tj": "实际上，很多东西并不像广告上说的那么好。 — Shíjì shang, hěn duō dōngxi bìng bú xiàng guǎnggào shang shuō de nàme hǎo."
           }
         }
       ]
@@ -1337,28 +1344,6 @@
       },
       "section_purpose": "practice",
       "cards": [
-        {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
-          "pinyin": "Xiǎojiě, nín hǎo! Nín xiǎng mǎi shénme jiājù? Xūyào wǒ wèi nín jièshào yíxià ma?",
-          "options": [
-            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
-            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
-            "价格还可以，就是不知道质量有没有保证。",
-            "谢谢，我想买沙发。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？ — Assalomu alaykum, xonim! Qanday mebel olmoqchisiz? Sizga tanishtirib berishim kerakmi?",
-            "ru": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？ — Здравствуйте, девушка! Какую мебель вы хотите купить? Нужно, чтобы я вам представил?",
-            "tj": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？ — Салом, хонум! Шумо чӣ гуна мебел харидан мехоҳед? Лозим аст ман бароятон шинос кунам?"
-          }
-        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -1415,11 +1400,6 @@
           },
           "options": [
             {
-              "uz": "divan",
-              "ru": "диван",
-              "tj": "диван"
-            },
-            {
               "uz": "chegirma qilmoq",
               "ru": "делать скидку",
               "tj": "тахфиф кардан"
@@ -1433,13 +1413,67 @@
               "uz": "mebel",
               "ru": "мебель",
               "tj": "мебел"
+            },
+            {
+              "uz": "divan",
+              "ru": "диван",
+              "tj": "диван"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "实在 = haqiqatan, juda (shízài)",
             "ru": "实在 = действительно, очень (shízài)",
             "tj": "实在 = воқеан, хеле (shízài)"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "您放心，质量肯定不“打折”，这种沙发是今年最流行的。有很多种颜色可以选择，您可以看一下。",
+          "pinyin": "Nín fàng xīn, zhìliàng kěndìng bù “dǎ zhé”, zhè zhǒng shāfā shì jīnnián zuì liúxíng de. Yǒu hěn duō zhǒng yánsè kěyǐ xuǎnzé, nín kěyǐ kàn yíxià.",
+          "options": [
+            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
+            "谢谢，我想买沙发。",
+            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
+            "您放心，质量肯定不“打折”，这种沙发是今年最流行的。有很多种颜色可以选择，您可以看一下。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "您放心，质量肯定不“打折”，这种沙发是今年最流行的。有很多种颜色可以选择，您可以看一下。 — Xotirjam bo'ling, sifat albatta 'chegirmaga tushmaydi', bu turdagi divan bu yil eng ommabop. Tanlash uchun ko'p ranglar bor, ko'rib chiqishingiz mumkin.",
+            "ru": "您放心，质量肯定不“打折”，这种沙发是今年最流行的。有很多种颜色可以选择，您可以看一下。 — Не беспокойтесь, качество точно не 'со скидкой'; такой диван самый модный в этом году. Есть много цветов на выбор, можете посмотреть.",
+            "tj": "您放心，质量肯定不“打折”，这种沙发是今年最流行的。有很多种颜色可以选择，您可以看一下。 — Хотирҷамъ бошед, сифат ҳатман 'тахфиф' намешавад, ин намуди диван имсол хеле мӯд аст. Рангҳои зиёд барои интихоб ҳаст, метавонед бинед."
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Sifat albatta 'chegirmaga tushmaydi'.",
+            "ru": "Качество точно не 'со скидкой'.",
+            "tj": "Сифат ҳатман 'тахфиф' намешавад."
+          },
+          "tokens": [
+            "质量",
+            "家具",
+            "沙发",
+            "不",
+            "肯定",
+            "打折"
+          ],
+          "answer_tokens": [
+            "质量",
+            "肯定",
+            "不",
+            "打折"
+          ],
+          "explanation": {
+            "uz": "质量肯定不“打折”。 — Zhìliàng kěndìng bù “dǎ zhé”.",
+            "ru": "质量肯定不“打折”。 — Zhìliàng kěndìng bù “dǎ zhé”.",
+            "tj": "质量肯定不“打折”。 — Zhìliàng kěndìng bù “dǎ zhé”."
           }
         },
         {
@@ -1450,13 +1484,13 @@
             "tj": "Ташаккур, ман диван харидан мехоҳам."
           },
           "tokens": [
-            "沙发",
-            "谢谢",
             "家具",
-            "打折",
+            "想",
             "我",
             "买",
-            "想"
+            "谢谢",
+            "打折",
+            "沙发"
           ],
           "answer_tokens": [
             "谢谢",
@@ -1484,10 +1518,10 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "jiājù",
+            "shāfā",
             "zhìlěng",
             "dǎzhé",
-            "shāfā"
+            "jiājù"
           ],
           "correct_index": 1,
           "explanation": {
@@ -1498,12 +1532,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "家具",
-          "pinyin": "jiājù",
+          "phrase": "质量",
+          "pinyin": "zhìliàng",
           "translation": {
-            "uz": "mebel",
-            "ru": "мебель",
-            "tj": "мебел"
+            "uz": "sifat",
+            "ru": "качество",
+            "tj": "сифат"
           }
         }
       ]
@@ -1527,41 +1561,16 @@
           "audio_text": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
           "pinyin": "Xiǎojiě, nín hǎo! Nín xiǎng mǎi shénme jiājù? Xūyào wǒ wèi nín jièshào yíxià ma?",
           "options": [
-            "谢谢，我想买沙发。",
             "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
             "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
-            "价格还可以，就是不知道质量有没有保证。"
+            "价格还可以，就是不知道质量有没有保证。",
+            "谢谢，我想买沙发。"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
             "uz": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？ — Assalomu alaykum, xonim! Qanday mebel olmoqchisiz? Sizga tanishtirib berishim kerakmi?",
             "ru": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？ — Здравствуйте, девушка! Какую мебель вы хотите купить? Нужно, чтобы я вам представил?",
             "tj": "小姐，您好！您想买什么家具？需要我为您介绍一下吗？ — Салом, хонум! Шумо чӣ гуна мебел харидан мехоҳед? Лозим аст ман бароятон шинос кунам?"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 王静 nima deydi?",
-            "ru": "Что 王静 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 王静 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
-            "这个蓝色的看上去不错，就要这个吧。",
-            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
-            "谢谢，我想买沙发。"
-          ],
-          "correct_index": 1,
-          "explanation": {
-            "uz": "To'g'ri javob: 这个蓝色的看上去不错，就要这个吧。",
-            "ru": "Правильный ответ: 这个蓝色的看上去不错，就要这个吧。",
-            "tj": "Ҷавоби дуруст: 这个蓝色的看上去不错，就要这个吧。"
           }
         },
         {
@@ -1604,12 +1613,58 @@
             }
           ],
           "options": [
-            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
-            "这个蓝色的看上去不错，就要这个吧。",
             "谢谢，我想买沙发。",
-            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。"
+            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
+            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
+            "这个蓝色的看上去不错，就要这个吧。"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri javob: 这个蓝色的看上去不错，就要这个吧。",
+            "ru": "Правильный ответ: 这个蓝色的看上去不错，就要这个吧。",
+            "tj": "Ҷавоби дуруст: 这个蓝色的看上去不错，就要这个吧。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____姐，您好！您想买什么家具？需要我为您介绍一下吗？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "久",
+            "小",
+            "符",
+            "附"
           ],
           "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 小 — 小姐，您好！您想买什么家具？需要我为您介绍一下吗？ (Assalomu alaykum, xonim! Qanday mebel olmoqchisiz? Sizga tanishtirib berishim kerakmi?)",
+            "ru": "Верно: 小 — 小姐，您好！您想买什么家具？需要我为您介绍一下吗？ (Здравствуйте, девушка! Какую мебель вы хотите купить? Нужно, чтобы я вам представил?)",
+            "tj": "Дуруст: 小 — 小姐，您好！您想买什么家具？需要我为您介绍一下吗？ (Салом, хонум! Шумо чӣ гуна мебел харидан мехоҳед? Лозим аст ман бароятон шинос кунам?)"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 王静 nima deydi?",
+            "ru": "Что 王静 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 王静 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "谢谢，我想买沙发。",
+            "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
+            "这个蓝色的看上去不错，就要这个吧。",
+            "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。"
+          ],
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 这个蓝色的看上去不错，就要这个吧。",
             "ru": "Правильный ответ: 这个蓝色的看上去不错，就要这个吧。",
@@ -1630,9 +1685,9 @@
           },
           "options": [
             "您看这个沙发怎么样？现在正在打折，比平时便宜了一千块。",
-            "价格还可以，就是不知道质量有没有保证。",
+            "谢谢，我想买沙发。",
             "小姐，您好！您想买什么家具？需要我为您介绍一下吗？",
-            "谢谢，我想买沙发。"
+            "价格还可以，就是不知道质量有没有保证。"
           ],
           "correct_index": 2,
           "explanation": {
@@ -1642,24 +1697,13 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____姐，您好！您想买什么家具？需要我为您介绍一下吗？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "小",
-            "下",
-            "旧",
-            "电"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 小 — 小姐，您好！您想买什么家具？需要我为您介绍一下吗？ (Assalomu alaykum, xonim! Qanday mebel olmoqchisiz? Sizga tanishtirib berishim kerakmi?)",
-            "ru": "Верно: 小 — 小姐，您好！您想买什么家具？需要我为您介绍一下吗？ (Здравствуйте, девушка! Какую мебель вы хотите купить? Нужно, чтобы я вам представил?)",
-            "tj": "Дуруст: 小 — 小姐，您好！您想买什么家具？需要我为您介绍一下吗？ (Салом, хонум! Шумо чӣ гуна мебел харидан мехоҳед? Лозим аст ман бароятон шинос кунам?)"
+          "type": "pronunciation",
+          "phrase": "你说的也对。",
+          "pinyin": "Nǐ shuō de yě duì.",
+          "translation": {
+            "uz": "Gaping ham to'g'ri.",
+            "ru": "Ты тоже прав.",
+            "tj": "Гапат ҳам дуруст."
           }
         }
       ]

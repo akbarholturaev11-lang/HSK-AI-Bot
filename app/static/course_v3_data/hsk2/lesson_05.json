@@ -493,6 +493,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "外面",
+          "pinyin": "wàimiàn",
+          "translation": {
+            "uz": "tashqarida, tashqi tomon",
+            "ru": "снаружи, на улице",
+            "tj": "берун, берунӣ"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 2,
@@ -507,28 +517,25 @@
           }
         },
         {
-          "type": "hanzi_choice",
-          "prompt": {
-            "uz": "zhǔnbèi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zhǔnbèi?",
-            "tj": "zhǔnbèi кадом иероглиф аст?"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "准备",
+          "pinyin": "zhǔnbèi",
           "options": [
-            "鱼",
             "准备",
+            "外面",
             "就",
-            "外面"
+            "鱼"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "准备 = tayyorlamoq, tayyorgarlik ko'rmoq (zhǔnbèi)",
-            "ru": "准备 = готовить, готовиться (zhǔnbèi)",
-            "tj": "准备 = омода кардан, тайёр шудан (zhǔnbèi)"
+            "uz": "准备 — tayyorlamoq, tayyorgarlik ko'rmoq (zhǔnbèi)",
+            "ru": "准备 — готовить, готовиться (zhǔnbèi)",
+            "tj": "准备 — омода кардан, тайёр шудан (zhǔnbèi)"
           }
         },
         {
@@ -560,28 +567,44 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "鱼 talaffuzini tanlang:",
-            "ru": "Выберите произношение 鱼:",
-            "tj": "Талаффузи 鱼-ро интихоб кунед:"
+            "uz": "鱼 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 鱼:",
+            "tj": "Маънои калимаи 鱼-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "yú",
-            "jiù",
-            "zhǔnbèi",
-            "wàimiàn"
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
+            },
+            {
+              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
+              "ru": "готовить, готовиться",
+              "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "aynan, shu, xuddi shunday; darhol",
+              "ru": "именно, вот; сразу, тут же",
+              "tj": "маҳз, ҳамин; фавран"
+            },
+            {
+              "uz": "baliq",
+              "ru": "рыба",
+              "tj": "моҳӣ"
+            }
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
-            "uz": "鱼 — yú",
-            "ru": "鱼 — yú",
-            "tj": "鱼 — yú"
+            "uz": "鱼 = baliq (yú)",
+            "ru": "鱼 = рыба (yú)",
+            "tj": "鱼 = моҳӣ (yú)"
           }
         },
         {
@@ -613,38 +636,22 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "件 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 件:",
-            "tj": "Маънои калимаи 件-ро интихоб кунед:"
+            "uz": "jiàn qaysi ieroglif?",
+            "ru": "Какой иероглиф читается jiàn?",
+            "tj": "jiàn кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            {
-              "uz": "tashqarida, tashqi tomon",
-              "ru": "снаружи, на улице",
-              "tj": "берун, берунӣ"
-            },
-            {
-              "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
-              "ru": "готовить, готовиться",
-              "tj": "омода кардан, тайёр шудан"
-            },
-            {
-              "uz": "dona (kiyim uchun ko'makchi)",
-              "ru": "штука (счётное слово для одежды)",
-              "tj": "дона (воҳиди шумориши либос)"
-            },
-            {
-              "uz": "aynan, shu, xuddi shunday; darhol",
-              "ru": "именно, вот; сразу, тут же",
-              "tj": "маҳз, ҳамин; фавран"
-            }
+            "外面",
+            "准备",
+            "件",
+            "就"
           ],
           "correct_index": 2,
           "explanation": {
@@ -682,28 +689,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "zhǔnbèi qaysi ieroglif?",
-            "ru": "Какой иероглиф читается zhǔnbèi?",
-            "tj": "zhǔnbèi кадом иероглиф аст?"
+            "uz": "准备 talaffuzini tanlang:",
+            "ru": "Выберите произношение 准备:",
+            "tj": "Талаффузи 准备-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "就",
-            "鱼",
-            "外面",
-            "准备"
+            "yú",
+            "zhǔnbèi",
+            "jiù",
+            "wàimiàn"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "准备 = tayyorlamoq, tayyorgarlik ko'rmoq (zhǔnbèi)",
-            "ru": "准备 = готовить, готовиться (zhǔnbèi)",
-            "tj": "准备 = омода кардан, тайёр шудан (zhǔnbèi)"
+            "uz": "准备 — zhǔnbèi",
+            "ru": "准备 — zhǔnbèi",
+            "tj": "准备 — zhǔnbèi"
           }
         },
         {
@@ -735,28 +742,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "考试 talaffuzini tanlang:",
-            "ru": "Выберите произношение 考试:",
-            "tj": "Талаффузи 考试-ро интихоб кунед:"
+            "uz": "'imtihon' xitoycha qaysi?",
+            "ru": "'экзамен' по-китайски?",
+            "tj": "'имтиҳон' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "kǎoshì",
-            "zhǔnbèi",
-            "jiù",
-            "wàimiàn"
+            "就",
+            "外面",
+            "考试",
+            "准备"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
-            "uz": "考试 — kǎoshì",
-            "ru": "考试 — kǎoshì",
-            "tj": "考试 — kǎoshì"
+            "uz": "imtihon = 考试 (kǎoshì)",
+            "ru": "экзамен = 考试 (kǎoshì)",
+            "tj": "имтиҳон = 考试 (kǎoshì)"
           }
         },
         {
@@ -857,13 +864,13 @@
             "tj": "Маҳз ҳамин харед."
           },
           "tokens": [
-            "就",
-            "件",
             "外面",
             "吧",
-            "准备",
+            "买",
+            "就",
+            "件",
             "这",
-            "买"
+            "准备"
           ],
           "answer_tokens": [
             "就",
@@ -923,12 +930,12 @@
             "tj": "Гӯш додан ва гапидан қабул аст."
           },
           "tokens": [
-            "说",
             "和",
             "准备",
-            "听",
-            "外面",
+            "说",
             "可以",
+            "外面",
+            "听",
             "还"
           ],
           "answer_tokens": [
@@ -984,9 +991,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«Bu kiyim biroz katta.» — xitoychada qaysi biri?",
-            "ru": "«Эта одежда немного велика.» — какое предложение по-китайски?",
-            "tj": "«Ин либос каме калон аст.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Bu ikki kunda biroz charchadim.» — xitoychada qaysi biri?",
+            "ru": "«Эти пару дней немного устал.» — какое предложение по-китайски?",
+            "tj": "«Ин ду рӯз каме хаста шудам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -994,16 +1001,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "颜色还可以，就是有点儿大。",
-            "我二十分钟就到。",
             "听和说还可以。",
-            "这件衣服有点儿大。"
+            "我二十分钟就到。",
+            "这两天有点儿累。",
+            "就买这件吧。"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "这件衣服有点儿大。 — Zhè jiàn yīfu yǒudiǎnr dà.",
-            "ru": "这件衣服有点儿大。 — Zhè jiàn yīfu yǒudiǎnr dà.",
-            "tj": "这件衣服有点儿大。 — Zhè jiàn yīfu yǒudiǎnr dà."
+            "uz": "这两天有点儿累。 — Zhè liǎng tiān yǒudiǎnr lèi.",
+            "ru": "这两天有点儿累。 — Zhè liǎng tiān yǒudiǎnr lèi.",
+            "tj": "这两天有点儿累。 — Zhè liǎng tiān yǒudiǎnr lèi."
           }
         }
       ]
@@ -1017,6 +1024,48 @@
       },
       "section_purpose": "practice",
       "cards": [
+        {
+          "type": "match_pairs",
+          "pairs": [
+            [
+              "吧",
+              {
+                "uz": "so'roq yoki taklif yuklamasi (shunday emasmi, keling)",
+                "ru": "частица вопроса или предложения (ведь, давай)",
+                "tj": "зарраи савол ё пешниҳод"
+              }
+            ],
+            [
+              "件",
+              {
+                "uz": "dona (kiyim uchun ko'makchi)",
+                "ru": "штука (счётное слово для одежды)",
+                "tj": "дона (воҳиди шумориши либос)"
+              }
+            ],
+            [
+              "还",
+              {
+                "uz": "hali, yana; qabul qilarli, yaxshi",
+                "ru": "ещё, пока; приемлемо, неплохо",
+                "tj": "ҳанӯз, боз; қобили қабул"
+              }
+            ],
+            [
+              "可以",
+              {
+                "uz": "mumkin, yaxshi, qabul qilarli",
+                "ru": "можно, хорошо, приемлемо",
+                "tj": "мумкин, қабул аст"
+              }
+            ]
+          ],
+          "explanation": {
+            "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
+            "ru": "Пары взяты из новых слов урока.",
+            "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
         {
           "type": "match_pairs",
           "pairs": [
@@ -1072,12 +1121,12 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
+            "wàimiàn",
             "kāfēi",
             "zhǔnbèi",
-            "jiù",
-            "wàimiàn"
+            "jiù"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "咖啡 — kāfēi",
             "ru": "咖啡 — kāfēi",
@@ -1098,16 +1147,6 @@
           },
           "options": [
             {
-              "uz": "ma'no, mazmun",
-              "ru": "смысл, значение",
-              "tj": "маъно, мазмун"
-            },
-            {
-              "uz": "tashqarida, tashqi tomon",
-              "ru": "снаружи, на улице",
-              "tj": "берун, берунӣ"
-            },
-            {
               "uz": "aynan, shu, xuddi shunday; darhol",
               "ru": "именно, вот; сразу, тут же",
               "tj": "маҳз, ҳамин; фавран"
@@ -1116,9 +1155,19 @@
               "uz": "tayyorlamoq, tayyorgarlik ko'rmoq",
               "ru": "готовить, готовиться",
               "tj": "омода кардан, тайёр шудан"
+            },
+            {
+              "uz": "ma'no, mazmun",
+              "ru": "смысл, значение",
+              "tj": "маъно, мазмун"
+            },
+            {
+              "uz": "tashqarida, tashqi tomon",
+              "ru": "снаружи, на улице",
+              "tj": "берун, берунӣ"
             }
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "意思 = ma'no, mazmun (yìsi)",
             "ru": "意思 = смысл, значение (yìsi)",
@@ -1132,19 +1181,19 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "晚上我们去饭馆吃饭，怎么样？",
-          "pinyin": "Wǎnshang wǒmen qù fànguǎn chīfàn, zěnmeyàng?",
+          "audio_text": "帮我看一下这件衣服怎么样。",
+          "pinyin": "Bāng wǒ kàn yíxià zhè jiàn yīfu zěnmeyàng.",
           "options": [
-            "晚上我们去饭馆吃饭，怎么样？",
-            "那你准备做什么呢？",
+            "帮我看一下这件衣服怎么样。",
             "我不想去外面吃，我想在家吃。",
-            "就做你爱吃的鱼吧。"
+            "那你准备做什么呢？",
+            "晚上我们去饭馆吃饭，怎么样？"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "晚上我们去饭馆吃饭，怎么样？ — Kechqurun restoranga borib ovqatlansak qanday?",
-            "ru": "晚上我们去饭馆吃饭，怎么样？ — Как насчёт того, чтобы вечером пойти поесть в ресторан?",
-            "tj": "晚上我们去饭馆吃饭，怎么样？ — Шом мо ба тарабхона рафта хӯрок хӯрем, чӣ тавр?"
+            "uz": "帮我看一下这件衣服怎么样。 — Bu kiyimga bir qarab ber, qandayligini ayt.",
+            "ru": "帮我看一下这件衣服怎么样。 — Посмотри, как тебе эта одежда.",
+            "tj": "帮我看一下这件衣服怎么样。 — Ба ин либос як нигоҳ кун, чӣ тавр аст."
           }
         },
         {
@@ -1155,14 +1204,14 @@
             "tj": "Пас ту чӣ пухтан мехоҳӣ?"
           },
           "tokens": [
-            "你",
+            "什么",
             "做",
             "就",
-            "什么",
+            "你",
+            "外面",
             "准备",
-            "呢",
             "那",
-            "外面"
+            "呢"
           ],
           "answer_tokens": [
             "那",
@@ -1180,12 +1229,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "外面",
-          "pinyin": "wàimiàn",
+          "phrase": "吧",
+          "pinyin": "ba",
           "translation": {
-            "uz": "tashqarida, tashqi tomon",
-            "ru": "снаружи, на улице",
-            "tj": "берун, берунӣ"
+            "uz": "so'roq yoki taklif yuklamasi (shunday emasmi, keling)",
+            "ru": "частица вопроса или предложения (ведь, давай)",
+            "tj": "зарраи савол ё пешниҳод"
           }
         }
       ]
@@ -1209,12 +1258,12 @@
           "audio_text": "晚上我们去饭馆吃饭，怎么样？",
           "pinyin": "Wǎnshang wǒmen qù fànguǎn chīfàn, zěnmeyàng?",
           "options": [
-            "就做你爱吃的鱼吧。",
             "我不想去外面吃，我想在家吃。",
             "晚上我们去饭馆吃饭，怎么样？",
-            "那你准备做什么呢？"
+            "那你准备做什么呢？",
+            "就做你爱吃的鱼吧。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "晚上我们去饭馆吃饭，怎么样？ — Kechqurun restoranga borib ovqatlansak qanday?",
             "ru": "晚上我们去饭馆吃饭，怎么样？ — Как насчёт того, чтобы вечером пойти поесть в ресторан?",
@@ -1224,9 +1273,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialogda A avval nima deydi?",
-            "ru": "Что A говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -1234,16 +1283,16 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "我不想去外面吃，我想在家吃。",
+            "就做你爱吃的鱼吧。",
             "那你准备做什么呢？",
             "晚上我们去饭馆吃饭，怎么样？",
-            "就做你爱吃的鱼吧。"
+            "我不想去外面吃，我想在家吃。"
           ],
-          "correct_index": 2,
+          "correct_index": 0,
           "explanation": {
-            "uz": "To'g'ri javob: 晚上我们去饭馆吃饭，怎么样？",
-            "ru": "Правильный ответ: 晚上我们去饭馆吃饭，怎么样？",
-            "tj": "Ҷавоби дуруст: 晚上我们去饭馆吃饭，怎么样？"
+            "uz": "To'g'ri javob: 就做你爱吃的鱼吧。",
+            "ru": "Правильный ответ: 就做你爱吃的鱼吧。",
+            "tj": "Ҷавоби дуруст: 就做你爱吃的鱼吧。"
           }
         },
         {
@@ -1276,9 +1325,9 @@
             }
           ],
           "options": [
-            "晚上我们去饭馆吃饭，怎么样？",
             "我不想去外面吃，我想在家吃。",
             "那你准备做什么呢？",
+            "晚上我们去饭馆吃饭，怎么样？",
             "就做你爱吃的鱼吧。"
           ],
           "correct_index": 3,
@@ -1291,9 +1340,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+            "uz": "Dialogda A avval nima deydi?",
+            "ru": "Что A говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ A аввал чӣ мегӯяд?"
           },
           "title": {
             "uz": "Dialogdan savol:",
@@ -1301,16 +1350,16 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "那你准备做什么呢？",
             "就做你爱吃的鱼吧。",
             "我不想去外面吃，我想在家吃。",
-            "晚上我们去饭馆吃饭，怎么样？"
+            "晚上我们去饭馆吃饭，怎么样？",
+            "那你准备做什么呢？"
           ],
-          "correct_index": 1,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri javob: 就做你爱吃的鱼吧。",
-            "ru": "Правильный ответ: 就做你爱吃的鱼吧。",
-            "tj": "Ҷавоби дуруст: 就做你爱吃的鱼吧。"
+            "uz": "To'g'ri javob: 晚上我们去饭馆吃饭，怎么样？",
+            "ru": "Правильный ответ: 晚上我们去饭馆吃饭，怎么样？",
+            "tj": "Ҷавоби дуруст: 晚上我们去饭馆吃饭，怎么样？"
           }
         },
         {
@@ -1323,15 +1372,25 @@
           },
           "options": [
             "晚",
-            "朋",
-            "电",
-            "时"
+            "您",
+            "视",
+            "里"
           ],
           "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri: 晚 — 晚上我们去饭馆吃饭，怎么样？ (Kechqurun restoranga borib ovqatlansak qanday?)",
             "ru": "Верно: 晚 — 晚上我们去饭馆吃饭，怎么样？ (Как насчёт того, чтобы вечером пойти поесть в ресторан?)",
             "tj": "Дуруст: 晚 — 晚上我们去饭馆吃饭，怎么样？ (Шом мо ба тарабхона рафта хӯрок хӯрем, чӣ тавр?)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "就做你爱吃的鱼吧。",
+          "pinyin": "Jiù zuò nǐ ài chī de yú ba.",
+          "translation": {
+            "uz": "Sen sevadigan baliqni pishiraylik, shu bo'ladi.",
+            "ru": "Вот приготовлю рыбу, которую ты любишь.",
+            "tj": "Маҳз моҳии дӯстдоштатро мепазам."
           }
         }
       ]

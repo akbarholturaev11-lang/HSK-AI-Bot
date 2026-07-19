@@ -271,6 +271,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "你",
+          "pinyin": "nǐ",
+          "translation": {
+            "uz": "sen (birlik)",
+            "ru": "ты (единственное число)",
+            "tj": "ту (якка)"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 2,
@@ -627,54 +637,6 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "sentence_builder",
-          "sentence": {
-            "uz": "Salom!",
-            "ru": "Привет!",
-            "tj": "Салом!"
-          },
-          "tokens": [
-            "你",
-            "您",
-            "好",
-            "你们"
-          ],
-          "answer_tokens": [
-            "你",
-            "好"
-          ],
-          "explanation": {
-            "uz": "你好！ — Nǐ hǎo!",
-            "ru": "你好！ — Nǐ hǎo!",
-            "tj": "你好！ — Nǐ hǎo!"
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "好 talaffuzini tanlang:",
-            "ru": "Выберите произношение 好:",
-            "tj": "Талаффузи 好-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "nǐmen",
-            "nín",
-            "hǎo",
-            "nǐ"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "好 — hǎo",
-            "ru": "好 — hǎo",
-            "tj": "好 — hǎo"
-          }
-        },
-        {
           "type": "meaning_guess",
           "prompt": {
             "uz": "你 so'zining ma'nosini tanlang:",
@@ -713,6 +675,64 @@
             "uz": "你 = sen (birlik) (nǐ)",
             "ru": "你 = ты (единственное число) (nǐ)",
             "tj": "你 = ту (якка) (nǐ)"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Salom!",
+            "ru": "Привет!",
+            "tj": "Салом!"
+          },
+          "tokens": [
+            "你",
+            "您",
+            "好",
+            "你们"
+          ],
+          "answer_tokens": [
+            "你",
+            "好"
+          ],
+          "explanation": {
+            "uz": "你好！ — Nǐ hǎo!",
+            "ru": "你好！ — Nǐ hǎo!",
+            "tj": "你好！ — Nǐ hǎo!"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "您",
+          "pinyin": "nín",
+          "translation": {
+            "uz": "siz (rasmiy/hurmat)",
+            "ru": "вы (вежливая форма)",
+            "tj": "шумо (расмӣ/ҳурматнок)"
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "好 talaffuzini tanlang:",
+            "ru": "Выберите произношение 好:",
+            "tj": "Талаффузи 好-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "nǐmen",
+            "nín",
+            "hǎo",
+            "nǐ"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "好 — hǎo",
+            "ru": "好 — hǎo",
+            "tj": "好 — hǎo"
           }
         },
         {
@@ -831,8 +851,8 @@
             "tj": "Иероглифи мувофиқро интихоб кунед:"
           },
           "options": [
-            "系",
-            "不",
+            "好",
+            "起",
             "您",
             "你"
           ],
@@ -898,6 +918,16 @@
             "uz": "To'g'ri javob: 你好！",
             "ru": "Правильный ответ: 你好！",
             "tj": "Ҷавоби дуруст: 你好！"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "对不起！",
+          "pinyin": "Duìbuqǐ!",
+          "translation": {
+            "uz": "Kechirasiz!",
+            "ru": "Извините!",
+            "tj": "Бубахшед!"
           }
         }
       ]

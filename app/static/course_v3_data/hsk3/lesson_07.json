@@ -565,40 +565,24 @@
           }
         },
         {
-          "type": "meaning_guess",
+          "type": "hanzi_choice",
           "prompt": {
-            "uz": "以前 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 以前:",
-            "tj": "Маънои калимаи 以前-ро интихоб кунед:"
+            "uz": "yǐqián qaysi ieroglif?",
+            "ru": "Какой иероглиф читается yǐqián?",
+            "tj": "yǐqián кадом иероглиф аст?"
           },
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Ieroglifni tanlang",
+            "ru": "Выберите иероглиф",
+            "tj": "Иероглифро интихоб кунед"
           },
           "options": [
-            {
-              "uz": "uzoq vaqt",
-              "ru": "долго, длительный",
-              "tj": "муддати дароз"
-            },
-            {
-              "uz": "bank",
-              "ru": "банк",
-              "tj": "бонк"
-            },
-            {
-              "uz": "hamkasb",
-              "ru": "коллега",
-              "tj": "ҳамкор"
-            },
-            {
-              "uz": "oldin, ilgari",
-              "ru": "раньше, прежде",
-              "tj": "пештар, қаблан"
-            }
+            "以前",
+            "银行",
+            "同事",
+            "久"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "以前 = oldin, ilgari (yǐqián)",
             "ru": "以前 = раньше, прежде (yǐqián)",
@@ -620,6 +604,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "银行",
+          "pinyin": "yínháng",
+          "translation": {
+            "uz": "bank",
+            "ru": "банк",
+            "tj": "бонк"
+          }
+        },
+        {
           "type": "active_word",
           "word": {
             "no": 4,
@@ -634,28 +628,28 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "pinyin_choice",
           "prompt": {
-            "uz": "jiǔ qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiǔ?",
-            "tj": "jiǔ кадом иероглиф аст?"
+            "uz": "久 talaffuzini tanlang:",
+            "ru": "Выберите произношение 久:",
+            "tj": "Талаффузи 久-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "同事",
-            "银行",
-            "久",
-            "以前"
+            "yǐqián",
+            "jiǔ",
+            "yínháng",
+            "tóngshì"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "久 = uzoq vaqt (jiǔ)",
-            "ru": "久 = долго, длительный (jiǔ)",
-            "tj": "久 = муддати дароз (jiǔ)"
+            "uz": "久 — jiǔ",
+            "ru": "久 — jiǔ",
+            "tj": "久 — jiǔ"
           }
         },
         {
@@ -687,28 +681,28 @@
           }
         },
         {
-          "type": "pinyin_choice",
+          "type": "translation_choice",
           "prompt": {
-            "uz": "结婚 talaffuzini tanlang:",
-            "ru": "Выберите произношение 结婚:",
-            "tj": "Талаффузи 结婚-ро интихоб кунед:"
+            "uz": "'turmush qurmoq, uylanmoq' xitoycha qaysi?",
+            "ru": "'жениться, выходить замуж' по-китайски?",
+            "tj": "'оиладор шудан' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "yǐqián",
-            "yínháng",
-            "tóngshì",
-            "jié hūn"
+            "同事",
+            "结婚",
+            "以前",
+            "银行"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
-            "uz": "结婚 — jié hūn",
-            "ru": "结婚 — jié hūn",
-            "tj": "结婚 — jié hūn"
+            "uz": "turmush qurmoq, uylanmoq = 结婚 (jié hūn)",
+            "ru": "жениться, выходить замуж = 结婚 (jié hūn)",
+            "tj": "оиладор шудан = 结婚 (jié hūn)"
           }
         },
         {
@@ -740,44 +734,25 @@
           }
         },
         {
-          "type": "meaning_guess",
-          "prompt": {
-            "uz": "结婚 so'zining ma'nosini tanlang:",
-            "ru": "Выберите значение слова 结婚:",
-            "tj": "Маънои калимаи 结婚-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Ma'nosi nima?",
-            "ru": "Что означает?",
-            "tj": "Маъно чист?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "结婚",
+          "pinyin": "jié hūn",
           "options": [
-            {
-              "uz": "oldin, ilgari",
-              "ru": "раньше, прежде",
-              "tj": "пештар, қаблан"
-            },
-            {
-              "uz": "turmush qurmoq, uylanmoq",
-              "ru": "жениться, выходить замуж",
-              "tj": "оиладор шудан"
-            },
-            {
-              "uz": "bank",
-              "ru": "банк",
-              "tj": "бонк"
-            },
-            {
-              "uz": "hamkasb",
-              "ru": "коллега",
-              "tj": "ҳамкор"
-            }
+            "结婚",
+            "银行",
+            "以前",
+            "同事"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "结婚 = turmush qurmoq, uylanmoq (jié hūn)",
-            "ru": "结婚 = жениться, выходить замуж (jié hūn)",
-            "tj": "结婚 = оиладор шудан (jié hūn)"
+            "uz": "结婚 — turmush qurmoq, uylanmoq (jié hūn)",
+            "ru": "结婚 — жениться, выходить замуж (jié hūn)",
+            "tj": "结婚 — оиладор шудан (jié hūn)"
           }
         },
         {
@@ -809,24 +784,40 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "meaning_guess",
           "prompt": {
-            "uz": "jiē qaysi ieroglif?",
-            "ru": "Какой иероглиф читается jiē?",
-            "tj": "jiē кадом иероглиф аст?"
+            "uz": "接 so'zining ma'nosini tanlang:",
+            "ru": "Выберите значение слова 接:",
+            "tj": "Маънои калимаи 接-ро интихоб кунед:"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Ma'nosi nima?",
+            "ru": "Что означает?",
+            "tj": "Маъно чист?"
           },
           "options": [
-            "接",
-            "银行",
-            "同事",
-            "以前"
+            {
+              "uz": "bank",
+              "ru": "банк",
+              "tj": "бонк"
+            },
+            {
+              "uz": "kutib olmoq, olib ketmoq",
+              "ru": "встречать, забирать",
+              "tj": "пешвоз гирифтан, бурдан"
+            },
+            {
+              "uz": "oldin, ilgari",
+              "ru": "раньше, прежде",
+              "tj": "пештар, қаблан"
+            },
+            {
+              "uz": "hamkasb",
+              "ru": "коллега",
+              "tj": "ҳамкор"
+            }
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "接 = kutib olmoq, olib ketmoq (jiē)",
             "ru": "接 = встречать, забирать (jiē)",
@@ -933,11 +924,11 @@
           },
           "options": [
             "同事",
-            "以前",
+            "银行",
             "久",
-            "银行"
+            "以前"
           ],
-          "correct_index": 3,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri: 银行 (yínháng) — bank",
             "ru": "Верно: 银行 (yínháng) — банк",
@@ -989,13 +980,13 @@
             "tj": "Ман ба мусиқӣ хеле шавқ дорам."
           },
           "tokens": [
-            "我",
-            "音乐",
-            "以前",
             "感兴趣",
             "对",
-            "很",
-            "同事"
+            "音乐",
+            "同事",
+            "以前",
+            "我",
+            "很"
           ],
           "answer_tokens": [
             "我",
@@ -1050,9 +1041,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«U bankda uch yildan beri ishlaydi.» — xitoychada qaysi biri?",
-            "ru": "«Он работает в банке уже три года.» — какое предложение по-китайски?",
-            "tj": "«Вай се сол боз дар бонк кор мекунад.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Men musiqaga juda qiziqaman.» — xitoychada qaysi biri?",
+            "ru": "«Мне очень интересна музыка.» — какое предложение по-китайски?",
+            "tj": "«Ман ба мусиқӣ хеле шавқ дорам.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1060,16 +1051,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "我们认识五年了。",
-            "她对历史特别感兴趣。",
-            "现在差一刻八点。",
-            "他在银行工作三年了。"
+            "我对音乐很感兴趣。",
+            "我们三点半见面吧。",
+            "他在银行工作三年了。",
+            "现在差一刻八点。"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
-            "uz": "他在银行工作三年了。 — Tā zài yínháng gōngzuò sān nián le.",
-            "ru": "他在银行工作三年了。 — Tā zài yínháng gōngzuò sān nián le.",
-            "tj": "他在银行工作三年了。 — Tā zài yínháng gōngzuò sān nián le."
+            "uz": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù.",
+            "ru": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù.",
+            "tj": "我对音乐很感兴趣。 — Wǒ duì yīnyuè hěn gǎn xìngqù."
           }
         }
       ]
@@ -1090,19 +1081,19 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "那个漂亮的新同事是谁？",
-          "pinyin": "Nà ge piàoliang de xīn tóngshì shì shéi?",
+          "audio_text": "周末你跟小丽去哪儿玩儿了？",
+          "pinyin": "Zhōumò nǐ gēn Xiǎolì qù nǎr wánr le?",
           "options": [
+            "那个漂亮的新同事是谁？",
             "那是小丽。",
             "她刚来北京吗？",
-            "那个漂亮的新同事是谁？",
-            "不，她在北京工作三年了。"
+            "周末你跟小丽去哪儿玩儿了？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
-            "uz": "那个漂亮的新同事是谁？ — Anavi chiroyli yangi hamkasb kim?",
-            "ru": "那个漂亮的新同事是谁？ — Кто эта красивая новая коллега?",
-            "tj": "那个漂亮的新同事是谁？ — Он ҳамкори нави зебо кист?"
+            "uz": "周末你跟小丽去哪儿玩儿了？ — Hafta oxiri Xiaoli bilan qayerga aylangani bording?",
+            "ru": "周末你跟小丽去哪儿玩儿了？ — Куда ты ходил с Сяоли на выходных?",
+            "tj": "周末你跟小丽去哪儿玩儿了？ — Охири ҳафта бо Сяоли ба куҷо рафта будӣ?"
           }
         },
         {
@@ -1161,8 +1152,8 @@
           },
           "options": [
             "同事",
-            "银行",
             "以前",
+            "银行",
             "差"
           ],
           "correct_index": 3,
@@ -1170,6 +1161,16 @@
             "uz": "差 = yetishmaslik, kam bo'lmoq (chà)",
             "ru": "差 = не хватать, без (chà)",
             "tj": "差 = кам будан (chà)"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "半",
+          "pinyin": "bàn",
+          "translation": {
+            "uz": "yarim",
+            "ru": "половина",
+            "tj": "ним"
           }
         },
         {
@@ -1185,12 +1186,12 @@
             "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "同事",
             "银行",
             "刻",
+            "同事",
             "以前"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "chorak soat = 刻 (kè)",
             "ru": "четверть часа = 刻 (kè)",
@@ -1205,16 +1206,16 @@
             "tj": "Он ҳамкори нави зебо кист?"
           },
           "tokens": [
-            "是",
-            "的",
-            "银行",
-            "以前",
-            "漂亮",
-            "个",
-            "新",
             "那",
+            "以前",
+            "新",
+            "是",
             "谁",
-            "同事"
+            "银行",
+            "的",
+            "同事",
+            "个",
+            "漂亮"
           ],
           "answer_tokens": [
             "那",
@@ -1234,12 +1235,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "同事",
-          "pinyin": "tóngshì",
+          "phrase": "欢迎",
+          "pinyin": "huānyíng",
           "translation": {
-            "uz": "hamkasb",
-            "ru": "коллега",
-            "tj": "ҳамкор"
+            "uz": "xush kelibsiz demoq, kutib olmoq",
+            "ru": "приветствовать",
+            "tj": "хуш омадед гуфтан, пешвоз гирифтан"
           }
         }
       ]
@@ -1263,16 +1264,87 @@
           "audio_text": "那个漂亮的新同事是谁？",
           "pinyin": "Nà ge piàoliang de xīn tóngshì shì shéi?",
           "options": [
+            "她刚来北京吗？",
             "那是小丽。",
             "不，她在北京工作三年了。",
-            "那个漂亮的新同事是谁？",
-            "她刚来北京吗？"
+            "那个漂亮的新同事是谁？"
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "那个漂亮的新同事是谁？ — Anavi chiroyli yangi hamkasb kim?",
             "ru": "那个漂亮的新同事是谁？ — Кто эта красивая новая коллега?",
             "tj": "那个漂亮的新同事是谁？ — Он ҳамкори нави зебо кист?"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialogda 同事 avval nima deydi?",
+            "ru": "Что 同事 говорит в начале диалога?",
+            "tj": "Дар гуфтугӯ 同事 аввал чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "那是小丽。",
+            "她刚来北京吗？",
+            "那个漂亮的新同事是谁？",
+            "不，她在北京工作三年了。"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "To'g'ri javob: 那个漂亮的新同事是谁？",
+            "ru": "Правильный ответ: 那个漂亮的新同事是谁？",
+            "tj": "Ҷавоби дуруст: 那个漂亮的新同事是谁？"
+          }
+        },
+        {
+          "type": "quick_quiz",
+          "prompt": {
+            "uz": "Dialog oxirida 小刚 nima deydi?",
+            "ru": "Что 小刚 говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ 小刚 чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
+          },
+          "options": [
+            "她在银行工作了两年以后来的我们公司。",
+            "她刚来北京吗？",
+            "那是小丽。",
+            "那个漂亮的新同事是谁？"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
+            "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
+            "tj": "Ҷавоби дуруст: 她在银行工作了两年以后来的我们公司。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____个漂亮的新同事是谁？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "那",
+            "久",
+            "问",
+            "眼"
+          ],
+          "correct_index": 0,
+          "explanation": {
+            "uz": "To'g'ri: 那 — 那个漂亮的新同事是谁？ (Anavi chiroyli yangi hamkasb kim?)",
+            "ru": "Верно: 那 — 那个漂亮的新同事是谁？ (Кто эта красивая новая коллега?)",
+            "tj": "Дуруст: 那 — 那个漂亮的新同事是谁？ (Он ҳамкори нави зебо кист?)"
           }
         },
         {
@@ -1315,87 +1387,26 @@
             }
           ],
           "options": [
-            "那个漂亮的新同事是谁？",
-            "那是小丽。",
+            "她刚来北京吗？",
             "她在银行工作了两年以后来的我们公司。",
-            "她刚来北京吗？"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
-            "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
-            "tj": "Ҷавоби дуруст: 她在银行工作了两年以后来的我们公司。"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialogda 同事 avval nima deydi?",
-            "ru": "Что 同事 говорит в начале диалога?",
-            "tj": "Дар гуфтугӯ 同事 аввал чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "不，她在北京工作三年了。",
-            "那个漂亮的新同事是谁？",
             "那是小丽。",
-            "她刚来北京吗？"
+            "那个漂亮的新同事是谁？"
           ],
           "correct_index": 1,
           "explanation": {
-            "uz": "To'g'ri javob: 那个漂亮的新同事是谁？",
-            "ru": "Правильный ответ: 那个漂亮的新同事是谁？",
-            "tj": "Ҷавоби дуруст: 那个漂亮的新同事是谁？"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida 小刚 nima deydi?",
-            "ru": "Что 小刚 говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ 小刚 чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "那个漂亮的新同事是谁？",
-            "她刚来北京吗？",
-            "那是小丽。",
-            "她在银行工作了两年以后来的我们公司。"
-          ],
-          "correct_index": 3,
-          "explanation": {
             "uz": "To'g'ri javob: 她在银行工作了两年以后来的我们公司。",
             "ru": "Правильный ответ: 她在银行工作了两年以后来的我们公司。",
             "tj": "Ҷавоби дуруст: 她在银行工作了两年以后来的我们公司。"
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____个漂亮的新同事是谁？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "那",
-            "夫",
-            "下",
-            "电"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 那 — 那个漂亮的新同事是谁？ (Anavi chiroyli yangi hamkasb kim?)",
-            "ru": "Верно: 那 — 那个漂亮的新同事是谁？ (Кто эта красивая новая коллега?)",
-            "tj": "Дуруст: 那 — 那个漂亮的新同事是谁？ (Он ҳамкори нави зебо кист?)"
+          "type": "pronunciation",
+          "phrase": "什么？结婚？",
+          "pinyin": "Shénme? Jié hūn?",
+          "translation": {
+            "uz": "Nima? Turmush qurasizlar?",
+            "ru": "Что? Женитесь?",
+            "tj": "Чӣ? Оиладор мешавед?"
           }
         }
       ]

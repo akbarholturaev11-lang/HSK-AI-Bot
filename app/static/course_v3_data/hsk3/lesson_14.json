@@ -550,28 +550,38 @@
           }
         },
         {
-          "type": "hanzi_choice",
+          "type": "pronunciation",
+          "phrase": "干净",
+          "pinyin": "gānjìng",
+          "translation": {
+            "uz": "toza",
+            "ru": "чистый",
+            "tj": "тоза"
+          }
+        },
+        {
+          "type": "translation_choice",
           "prompt": {
-            "uz": "gānjìng qaysi ieroglif?",
-            "ru": "Какой иероглиф читается gānjìng?",
-            "tj": "gānjìng кадом иероглиф аст?"
+            "uz": "'toza' xitoycha qaysi?",
+            "ru": "'чистый' по-китайски?",
+            "tj": "'тоза' ба хитоӣ кадом аст?"
           },
           "title": {
-            "uz": "Ieroglifni tanlang",
-            "ru": "Выберите иероглиф",
-            "tj": "Иероглифро интихоб кунед"
+            "uz": "Xitoycha qanday?",
+            "ru": "Как по-китайски?",
+            "tj": "Ба хитоӣ чӣ тавр?"
           },
           "options": [
-            "然后",
-            "打扫",
             "冰箱",
-            "干净"
+            "然后",
+            "干净",
+            "打扫"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "干净 = toza (gānjìng)",
-            "ru": "干净 = чистый (gānjìng)",
-            "tj": "干净 = тоза (gānjìng)"
+            "uz": "toza = 干净 (gānjìng)",
+            "ru": "чистый = 干净 (gānjìng)",
+            "tj": "тоза = 干净 (gānjìng)"
           }
         },
         {
@@ -603,28 +613,25 @@
           }
         },
         {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "打扫 talaffuzini tanlang:",
-            "ru": "Выберите произношение 打扫:",
-            "tj": "Талаффузи 打扫-ро интихоб кунед:"
-          },
+          "type": "listening_choice",
           "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Tinglang — qaysi so'z?",
+            "ru": "Послушайте — какое слово?",
+            "tj": "Гӯш кунед — кадом калима?"
           },
+          "audio_text": "打扫",
+          "pinyin": "dǎsǎo",
           "options": [
-            "dǎsǎo",
-            "gānjìng",
-            "bīngxiāng",
-            "ránhòu"
+            "打扫",
+            "然后",
+            "干净",
+            "冰箱"
           ],
           "correct_index": 0,
           "explanation": {
-            "uz": "打扫 — dǎsǎo",
-            "ru": "打扫 — dǎsǎo",
-            "tj": "打扫 — dǎsǎo"
+            "uz": "打扫 — tozalamoq, supurmoq (dǎsǎo)",
+            "ru": "打扫 — убирать, подметать (dǎsǎo)",
+            "tj": "打扫 — тоза кардан, рӯфтан (dǎsǎo)"
           }
         },
         {
@@ -669,6 +676,11 @@
           },
           "options": [
             {
+              "uz": "toza",
+              "ru": "чистый",
+              "tj": "тоза"
+            },
+            {
               "uz": "keyin, undan so'ng",
               "ru": "потом, затем",
               "tj": "баъд, сипас"
@@ -682,14 +694,9 @@
               "uz": "dastur, ko'rsatuv",
               "ru": "программа, передача",
               "tj": "барнома"
-            },
-            {
-              "uz": "toza",
-              "ru": "чистый",
-              "tj": "тоза"
             }
           ],
-          "correct_index": 2,
+          "correct_index": 3,
           "explanation": {
             "uz": "节目 = dastur, ko'rsatuv (jiémù)",
             "ru": "节目 = программа, передача (jiémù)",
@@ -737,9 +744,9 @@
             "tj": "Иероглифро интихоб кунед"
           },
           "options": [
+            "然后",
             "打扫",
             "干净",
-            "然后",
             "像"
           ],
           "correct_index": 3,
@@ -790,9 +797,9 @@
             "tj": "Чӣ хел хонда мешавад?"
           },
           "options": [
-            "gānjìng",
             "dǎsǎo",
             "ránhòu",
+            "gānjìng",
             "guā fēng"
           ],
           "correct_index": 3,
@@ -900,13 +907,13 @@
             "tj": "Себро хуб бишӯй!"
           },
           "tokens": [
-            "了",
-            "打扫",
-            "洗",
             "干净",
+            "打扫",
+            "了",
+            "然后",
             "把",
-            "苹果",
-            "然后"
+            "洗",
+            "苹果"
           ],
           "answer_tokens": [
             "把",
@@ -967,12 +974,12 @@
           },
           "tokens": [
             "手",
-            "干净",
-            "吃饭",
             "先",
             "打扫",
-            "洗",
-            "再"
+            "吃饭",
+            "干净",
+            "再",
+            "洗"
           ],
           "answer_tokens": [
             "先",
@@ -1027,9 +1034,9 @@
         {
           "type": "quick_quiz",
           "prompt": {
-            "uz": "«U qo'shiq aytishi professional qo'shiqchi kabi yaxshi.» — xitoychada qaysi biri?",
-            "ru": "«Она поёт так же хорошо, как профессиональный певец.» — какое предложение по-китайски?",
-            "tj": "«Вай суруд хондани профессионал хонандаро монанд хуб аст.» — кадом ҷумла ба хитоӣ аст?"
+            "uz": "«Mevalarni bu yerga olib keling.» — xitoychada qaysi biri?",
+            "ru": "«Принеси фрукты сюда.» — какое предложение по-китайски?",
+            "tj": "«Меваҳоро ин ҷо биёр.» — кадом ҷумла ба хитоӣ аст?"
           },
           "title": {
             "uz": "To'g'ri gapni tanlang",
@@ -1037,16 +1044,16 @@
             "tj": "Ҷумлаи дурустро интихоб кунед"
           },
           "options": [
-            "先洗手，再吃饭。",
-            "把苹果洗干净了！",
             "她唱歌像专业歌手一样好。",
-            "先把肉切了，再放油，然后加蔬菜。"
+            "先把肉切了，再放油，然后加蔬菜。",
+            "你把水果拿过来。",
+            "像你这样做，肯定很好吃！"
           ],
           "correct_index": 2,
           "explanation": {
-            "uz": "她唱歌像专业歌手一样好。 — Tā chànggē xiàng zhuānyè gēshǒu yīyàng hǎo.",
-            "ru": "她唱歌像专业歌手一样好。 — Tā chànggē xiàng zhuānyè gēshǒu yīyàng hǎo.",
-            "tj": "她唱歌像专业歌手一样好。 — Tā chànggē xiàng zhuānyè gēshǒu yīyàng hǎo."
+            "uz": "你把水果拿过来。 — Nǐ bǎ shuǐguǒ ná guò lái.",
+            "ru": "你把水果拿过来。 — Nǐ bǎ shuǐguǒ ná guò lái.",
+            "tj": "你把水果拿过来。 — Nǐ bǎ shuǐguǒ ná guò lái."
           }
         }
       ]
@@ -1063,61 +1070,30 @@
         {
           "type": "sentence_builder",
           "sentence": {
-            "uz": "Unda siz ham televizor ko'rib o'tirmasligingiz kerak.",
-            "ru": "Но и ты не должен смотреть телевизор.",
-            "tj": "Пас ту ҳам набояд телевизор бинӣ."
+            "uz": "Avval qo'l yuvib, keyin ovqat ye.",
+            "ru": "Сначала вымой руки, потом ешь.",
+            "tj": "Аввал дастро бишӯй, баъд хӯрок бихӯр."
           },
           "tokens": [
-            "啊",
-            "那",
-            "也",
-            "不",
-            "看",
-            "打扫",
-            "你",
-            "能",
+            "再",
+            "先",
             "干净",
-            "电视"
+            "打扫",
+            "手",
+            "洗",
+            "吃饭"
           ],
           "answer_tokens": [
-            "那",
-            "你",
-            "也",
-            "不",
-            "能",
-            "看",
-            "电视",
-            "啊"
+            "先",
+            "洗",
+            "手",
+            "再",
+            "吃饭"
           ],
           "explanation": {
-            "uz": "那你也不能看电视啊。 — Nà nǐ yě bù néng kàn diànshì a.",
-            "ru": "那你也不能看电视啊。 — Nà nǐ yě bù néng kàn diànshì a.",
-            "tj": "那你也不能看电视啊。 — Nà nǐ yě bù néng kàn diànshì a."
-          }
-        },
-        {
-          "type": "pinyin_choice",
-          "prompt": {
-            "uz": "阿姨 talaffuzini tanlang:",
-            "ru": "Выберите произношение 阿姨:",
-            "tj": "Талаффузи 阿姨-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
-          },
-          "options": [
-            "āyí",
-            "gānjìng",
-            "dǎsǎo",
-            "ránhòu"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "阿姨 — āyí",
-            "ru": "阿姨 — āyí",
-            "tj": "阿姨 — āyí"
+            "uz": "先洗手，再吃饭。 — Xiān xǐ shǒu, zài chī fàn.",
+            "ru": "先洗手，再吃饭。 — Xiān xǐ shǒu, zài chī fàn.",
+            "tj": "先洗手，再吃饭。 — Xiān xǐ shǒu, zài chī fàn."
           }
         },
         {
@@ -1163,6 +1139,66 @@
           }
         },
         {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "阿姨 talaffuzini tanlang:",
+            "ru": "Выберите произношение 阿姨:",
+            "tj": "Талаффузи 阿姨-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "ránhòu",
+            "dǎsǎo",
+            "gānjìng",
+            "āyí"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "阿姨 — āyí",
+            "ru": "阿姨 — āyí",
+            "tj": "阿姨 — āyí"
+          }
+        },
+        {
+          "type": "sentence_builder",
+          "sentence": {
+            "uz": "Unda siz ham televizor ko'rib o'tirmasligingiz kerak.",
+            "ru": "Но и ты не должен смотреть телевизор.",
+            "tj": "Пас ту ҳам набояд телевизор бинӣ."
+          },
+          "tokens": [
+            "啊",
+            "打扫",
+            "电视",
+            "看",
+            "干净",
+            "也",
+            "你",
+            "能",
+            "不",
+            "那"
+          ],
+          "answer_tokens": [
+            "那",
+            "你",
+            "也",
+            "不",
+            "能",
+            "看",
+            "电视",
+            "啊"
+          ],
+          "explanation": {
+            "uz": "那你也不能看电视啊。 — Nà nǐ yě bù néng kàn diànshì a.",
+            "ru": "那你也不能看电视啊。 — Nà nǐ yě bù néng kàn diànshì a.",
+            "tj": "那你也不能看电视啊。 — Nà nǐ yě bù néng kàn diànshì a."
+          }
+        },
+        {
           "type": "translation_choice",
           "prompt": {
             "uz": "'hikoya' xitoycha qaysi?",
@@ -1176,11 +1212,11 @@
           },
           "options": [
             "干净",
-            "然后",
             "故事",
+            "然后",
             "打扫"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "hikoya = 故事 (gùshi)",
             "ru": "история, рассказ = 故事 (gùshi)",
@@ -1194,29 +1230,29 @@
             "ru": "Выберите, что вы услышали",
             "tj": "Он чи шунидед, интихоб кунед"
           },
-          "audio_text": "客人就要来了，你怎么还不打扫房间啊？",
-          "pinyin": "Kèrén jiù yào lái le, nǐ zěnme hái bù dǎsǎo fángjiān a?",
+          "audio_text": "好啊，我先把桌椅搬出去，然后你把水果拿过来，我们听叔叔阿姨讲讲他们年轻时候的故事。",
+          "pinyin": "Hǎo a, wǒ xiān bǎ zhuōyǐ bān chūqu, ránhòu nǐ bǎ shuǐguǒ ná guòlai, wǒmen tīng shūshu āyí jiǎngjiang tāmen niánqīng shíhou de gùshi.",
           "options": [
-            "那你也不能看电视啊。",
-            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。",
             "客人就要来了，你怎么还不打扫房间啊？",
-            "你让我做什么？"
+            "好啊，我先把桌椅搬出去，然后你把水果拿过来，我们听叔叔阿姨讲讲他们年轻时候的故事。",
+            "那你也不能看电视啊。",
+            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
-            "uz": "客人就要来了，你怎么还不打扫房间啊？ — Mehmonlar hozir keladi, nega hali xonani tozalamayapsiz?",
-            "ru": "客人就要来了，你怎么还不打扫房间啊？ — Гости вот-вот придут, почему ты ещё не убираешь комнату?",
-            "tj": "客人就要来了，你怎么还不打扫房间啊？ — Меҳмонон ҳозир меоянд, чаро ҳоло ҳам хонаро тоза намекунӣ?"
+            "uz": "好啊，我先把桌椅搬出去，然后你把水果拿过来，我们听叔叔阿姨讲讲他们年轻时候的故事。 — Yaxshi, men avval stol-stullarni tashqariga olib chiqaman, keyin sen mevalarni olib kel, amaki va xoladan yoshlikdagi hikoyalarini eshitamiz.",
+            "ru": "好啊，我先把桌椅搬出去，然后你把水果拿过来，我们听叔叔阿姨讲讲他们年轻时候的故事。 — Хорошо, я сначала вынесу стол и стулья, потом ты принеси фрукты, послушаем истории дяди и тёти о молодости.",
+            "tj": "好啊，我先把桌椅搬出去，然后你把水果拿过来，我们听叔叔阿姨讲讲他们年轻时候的故事。 — Хуб, ман аввал мизу курсиҳоро берун мебарам, баъд ту меваҳоро биёр, ҳикояҳои амаку холаро аз ҷавониашон мешунавем."
           }
         },
         {
           "type": "pronunciation",
-          "phrase": "打扫",
-          "pinyin": "dǎsǎo",
+          "phrase": "声音",
+          "pinyin": "shēngyīn",
           "translation": {
-            "uz": "tozalamoq, supurmoq",
-            "ru": "убирать, подметать",
-            "tj": "тоза кардан, рӯфтан"
+            "uz": "ovoz, tovush",
+            "ru": "звук, голос",
+            "tj": "овоз, садо"
           }
         }
       ]
@@ -1240,12 +1276,12 @@
           "audio_text": "客人就要来了，你怎么还不打扫房间啊？",
           "pinyin": "Kèrén jiù yào lái le, nǐ zěnme hái bù dǎsǎo fángjiān a?",
           "options": [
-            "客人就要来了，你怎么还不打扫房间啊？",
             "你让我做什么？",
-            "那你也不能看电视啊。",
-            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。"
+            "客人就要来了，你怎么还不打扫房间啊？",
+            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。",
+            "那你也不能看电视啊。"
           ],
-          "correct_index": 0,
+          "correct_index": 1,
           "explanation": {
             "uz": "客人就要来了，你怎么还不打扫房间啊？ — Mehmonlar hozir keladi, nega hali xonani tozalamayapsiz?",
             "ru": "客人就要来了，你怎么还不打扫房间啊？ — Гости вот-вот придут, почему ты ещё не убираешь комнату?",
@@ -1265,37 +1301,16 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "那你也不能看电视啊。",
             "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。",
             "太热了，我还是先把空调打开吧。",
-            "客人就要来了，你怎么还不打扫房间啊？"
+            "客人就要来了，你怎么还不打扫房间啊？",
+            "那你也不能看电视啊。"
           ],
-          "correct_index": 2,
+          "correct_index": 1,
           "explanation": {
             "uz": "To'g'ri javob: 太热了，我还是先把空调打开吧。",
             "ru": "Правильный ответ: 太热了，我还是先把空调打开吧。",
             "tj": "Ҷавоби дуруст: 太热了，我还是先把空调打开吧。"
-          }
-        },
-        {
-          "type": "gap_fill",
-          "sentence": "____人就要来了，你怎么还不打扫房间啊？",
-          "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
-          },
-          "options": [
-            "客",
-            "下",
-            "旧",
-            "电"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri: 客 — 客人就要来了，你怎么还不打扫房间啊？ (Mehmonlar hozir keladi, nega hali xonani tozalamayapsiz?)",
-            "ru": "Верно: 客 — 客人就要来了，你怎么还不打扫房间啊？ (Гости вот-вот придут, почему ты ещё не убираешь комнату?)",
-            "tj": "Дуруст: 客 — 客人就要来了，你怎么还不打扫房间啊？ (Меҳмонон ҳозир меоянд, чаро ҳоло ҳам хонаро тоза намекунӣ?)"
           }
         },
         {
@@ -1338,16 +1353,37 @@
             }
           ],
           "options": [
-            "太热了，我还是先把空调打开吧。",
-            "那你也不能看电视啊。",
             "客人就要来了，你怎么还不打扫房间啊？",
-            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。"
+            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。",
+            "太热了，我还是先把空调打开吧。",
+            "那你也不能看电视啊。"
           ],
-          "correct_index": 0,
+          "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 太热了，我还是先把空调打开吧。",
             "ru": "Правильный ответ: 太热了，我还是先把空调打开吧。",
             "tj": "Ҷавоби дуруст: 太热了，我还是先把空调打开吧。"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____人就要来了，你怎么还不打扫房间啊？",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "附",
+            "客",
+            "眼",
+            "久"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "To'g'ri: 客 — 客人就要来了，你怎么还不打扫房间啊？ (Mehmonlar hozir keladi, nega hali xonani tozalamayapsiz?)",
+            "ru": "Верно: 客 — 客人就要来了，你怎么还不打扫房间啊？ (Гости вот-вот придут, почему ты ещё не убираешь комнату?)",
+            "tj": "Дуруст: 客 — 客人就要来了，你怎么还不打扫房间啊？ (Меҳмонон ҳозир меоянд, чаро ҳоло ҳам хонаро тоза намекунӣ?)"
           }
         },
         {
@@ -1363,16 +1399,26 @@
             "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
+            "你让我做什么？",
             "那你也不能看电视啊。",
-            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。",
             "客人就要来了，你怎么还不打扫房间啊？",
-            "你让我做什么？"
+            "别着急，我让孩子们打扫呢，客人来的时候，他们会把房间打扫干净。"
           ],
           "correct_index": 2,
           "explanation": {
             "uz": "To'g'ri javob: 客人就要来了，你怎么还不打扫房间啊？",
             "ru": "Правильный ответ: 客人就要来了，你怎么还不打扫房间啊？",
             "tj": "Ҷавоби дуруст: 客人就要来了，你怎么还不打扫房间啊？"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "你让我做什么？",
+          "pinyin": "Nǐ ràng wǒ zuò shénme?",
+          "translation": {
+            "uz": "Menga nima qilishni buyurasiz?",
+            "ru": "Что ты хочешь, чтобы я сделал?",
+            "tj": "Ба ман чӣ кор карданро мегӯӣ?"
           }
         }
       ]

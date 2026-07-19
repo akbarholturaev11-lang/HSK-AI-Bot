@@ -281,6 +281,16 @@
           }
         },
         {
+          "type": "pronunciation",
+          "phrase": "不",
+          "pinyin": "bù",
+          "translation": {
+            "uz": "yo'q, emas",
+            "ru": "нет, не",
+            "tj": "не, нест"
+          }
+        },
+        {
           "type": "hanzi_choice",
           "prompt": {
             "uz": "bù qaysi ieroglif?",
@@ -572,50 +582,24 @@
       "section_purpose": "practice",
       "cards": [
         {
-          "type": "listening_choice",
-          "title": {
-            "uz": "Eshitganingizni tanlang",
-            "ru": "Выберите, что вы услышали",
-            "tj": "Он чи шунидед, интихоб кунед"
-          },
-          "audio_text": "谢谢！",
-          "pinyin": "Xièxie!",
-          "options": [
-            "不客气！",
-            "不谢！",
-            "谢谢！",
-            "谢谢你！"
-          ],
-          "correct_index": 2,
-          "explanation": {
-            "uz": "谢谢！ — Rahmat!",
-            "ru": "谢谢！ — Спасибо!",
-            "tj": "谢谢！ — Раҳмат!"
-          }
-        },
-        {
-          "type": "pinyin_choice",
+          "type": "gap_fill",
+          "sentence": "____",
           "prompt": {
-            "uz": "不 talaffuzini tanlang:",
-            "ru": "Выберите произношение 不:",
-            "tj": "Талаффузи 不-ро интихоб кунед:"
-          },
-          "title": {
-            "uz": "Qanday o'qiladi?",
-            "ru": "Как читается?",
-            "tj": "Чӣ хел хонда мешавад?"
+            "uz": "Bo'sh joyga mos so'zni tanlang:",
+            "ru": "Выберите слово для пропуска:",
+            "tj": "Калимаи мувофиқро барои ҷойи холӣ интихоб кунед:"
           },
           "options": [
-            "bú kèqi",
-            "bù",
-            "zàijiàn",
-            "xièxie"
+            "不客气",
+            "再见",
+            "不",
+            "谢谢"
           ],
-          "correct_index": 1,
+          "correct_index": 0,
           "explanation": {
-            "uz": "不 — bù",
-            "ru": "不 — bù",
-            "tj": "不 — bù"
+            "uz": "To'g'ri: 不客气 (bú kèqi) — iltimos, muammo yo'q",
+            "ru": "Верно: 不客气 (bú kèqi) — пожалуйста, не за что",
+            "tj": "Дуруст: 不客气 (bú kèqi) — хоҳиш мекунам, мушкиле нест"
           }
         },
         {
@@ -658,6 +642,53 @@
             "uz": "Juftliklar darsdagi yangi so'zlardan olindi.",
             "ru": "Пары взяты из новых слов урока.",
             "tj": "Ҷуфтҳо аз калимаҳои нави дарс гирифта шудаанд."
+          }
+        },
+        {
+          "type": "pinyin_choice",
+          "prompt": {
+            "uz": "不 talaffuzini tanlang:",
+            "ru": "Выберите произношение 不:",
+            "tj": "Талаффузи 不-ро интихоб кунед:"
+          },
+          "title": {
+            "uz": "Qanday o'qiladi?",
+            "ru": "Как читается?",
+            "tj": "Чӣ хел хонда мешавад?"
+          },
+          "options": [
+            "bú kèqi",
+            "bù",
+            "zàijiàn",
+            "xièxie"
+          ],
+          "correct_index": 1,
+          "explanation": {
+            "uz": "不 — bù",
+            "ru": "不 — bù",
+            "tj": "不 — bù"
+          }
+        },
+        {
+          "type": "listening_choice",
+          "title": {
+            "uz": "Eshitganingizni tanlang",
+            "ru": "Выберите, что вы услышали",
+            "tj": "Он чи шунидед, интихоб кунед"
+          },
+          "audio_text": "不谢！",
+          "pinyin": "Bú xiè!",
+          "options": [
+            "不客气！",
+            "谢谢！",
+            "不谢！",
+            "谢谢你！"
+          ],
+          "correct_index": 2,
+          "explanation": {
+            "uz": "不谢！ — Iltimos!",
+            "ru": "不谢！ — Пожалуйста!",
+            "tj": "不谢！ — Хоҳиш мекунам!"
           }
         },
         {
@@ -710,12 +741,12 @@
         },
         {
           "type": "pronunciation",
-          "phrase": "谢谢",
-          "pinyin": "xièxie",
+          "phrase": "不",
+          "pinyin": "bù",
           "translation": {
-            "uz": "rahmat aytmoq, rahmat",
-            "ru": "благодарить, спасибо",
-            "tj": "ташаккур гуфтан, раҳмат"
+            "uz": "yo'q, emas",
+            "ru": "нет, не",
+            "tj": "не, нест"
           }
         }
       ]
@@ -739,41 +770,16 @@
           "audio_text": "谢谢！",
           "pinyin": "Xièxie!",
           "options": [
-            "谢谢！",
             "不客气！",
             "谢谢你！",
-            "不谢！"
+            "不谢！",
+            "谢谢！"
           ],
-          "correct_index": 0,
+          "correct_index": 3,
           "explanation": {
             "uz": "谢谢！ — Rahmat!",
             "ru": "谢谢！ — Спасибо!",
             "tj": "谢谢！ — Раҳмат!"
-          }
-        },
-        {
-          "type": "quick_quiz",
-          "prompt": {
-            "uz": "Dialog oxirida B nima deydi?",
-            "ru": "Что B говорит в конце диалога?",
-            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
-          },
-          "title": {
-            "uz": "Dialogdan savol:",
-            "ru": "Вопрос по диалогу:",
-            "tj": "Савол аз гуфтугӯ:"
-          },
-          "options": [
-            "不谢！",
-            "谢谢你！",
-            "谢谢！",
-            "不客气！"
-          ],
-          "correct_index": 0,
-          "explanation": {
-            "uz": "To'g'ri javob: 不谢！",
-            "ru": "Правильный ответ: 不谢！",
-            "tj": "Ҷавоби дуруст: 不谢！"
           }
         },
         {
@@ -796,16 +802,37 @@
             }
           ],
           "options": [
-            "不客气！",
+            "不谢！",
             "谢谢！",
             "谢谢你！",
-            "不谢！"
+            "不客气！"
           ],
-          "correct_index": 3,
+          "correct_index": 0,
           "explanation": {
             "uz": "To'g'ri javob: 不谢！",
             "ru": "Правильный ответ: 不谢！",
             "tj": "Ҷавоби дуруст: 不谢！"
+          }
+        },
+        {
+          "type": "gap_fill",
+          "sentence": "____谢！",
+          "prompt": {
+            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
+            "ru": "Выберите подходящий иероглиф:",
+            "tj": "Иероглифи мувофиқро интихоб кунед:"
+          },
+          "options": [
+            "好",
+            "您",
+            "起",
+            "谢"
+          ],
+          "correct_index": 3,
+          "explanation": {
+            "uz": "To'g'ri: 谢 — 谢谢！ (Rahmat!)",
+            "ru": "Верно: 谢 — 谢谢！ (Спасибо!)",
+            "tj": "Дуруст: 谢 — 谢谢！ (Раҳмат!)"
           }
         },
         {
@@ -822,8 +849,8 @@
           },
           "options": [
             "谢谢！",
-            "不谢！",
             "谢谢你！",
+            "不谢！",
             "不客气！"
           ],
           "correct_index": 0,
@@ -834,24 +861,38 @@
           }
         },
         {
-          "type": "gap_fill",
-          "sentence": "____谢！",
+          "type": "quick_quiz",
           "prompt": {
-            "uz": "Bo'sh joyga mos ieroglifni tanlang:",
-            "ru": "Выберите подходящий иероглиф:",
-            "tj": "Иероглифи мувофиқро интихоб кунед:"
+            "uz": "Dialog oxirida B nima deydi?",
+            "ru": "Что B говорит в конце диалога?",
+            "tj": "Дар охири гуфтугӯ B чӣ мегӯяд?"
+          },
+          "title": {
+            "uz": "Dialogdan savol:",
+            "ru": "Вопрос по диалогу:",
+            "tj": "Савол аз гуфтугӯ:"
           },
           "options": [
-            "系",
-            "不",
-            "您",
-            "谢"
+            "谢谢你！",
+            "谢谢！",
+            "不谢！",
+            "不客气！"
           ],
-          "correct_index": 3,
+          "correct_index": 2,
           "explanation": {
-            "uz": "To'g'ri: 谢 — 谢谢！ (Rahmat!)",
-            "ru": "Верно: 谢 — 谢谢！ (Спасибо!)",
-            "tj": "Дуруст: 谢 — 谢谢！ (Раҳмат!)"
+            "uz": "To'g'ri javob: 不谢！",
+            "ru": "Правильный ответ: 不谢！",
+            "tj": "Ҷавоби дуруст: 不谢！"
+          }
+        },
+        {
+          "type": "pronunciation",
+          "phrase": "不谢！",
+          "pinyin": "Bú xiè!",
+          "translation": {
+            "uz": "Iltimos!",
+            "ru": "Пожалуйста!",
+            "tj": "Хоҳиш мекунам!"
           }
         }
       ]
