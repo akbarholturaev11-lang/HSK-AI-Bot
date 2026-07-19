@@ -323,12 +323,31 @@ class VoicePracticeService:
         paid = self._is_paid(user)
         used = await self._session_count(telegram_id, today_only=paid)
         limit = None if paid else FREE_TOTAL_SESSIONS
+
+        # Kurs progressi: user o'z HSK bandida nechta darsni tugatgan. Mashq
+        # sahifalari (ieroglif tanish / talaffuz / yodlash) kontentni o'rganilgan
+        # darslar bilan cheklashi uchun ishlatiladi. Band mos kelmasa 0.
+        def _band(value) -> str:
+            v = str(value or "").strip().lower()
+            if v.startswith("hsk4"):
+                return "hsk4"
+            return v if v in {"hsk1", "hsk2", "hsk3"} else "hsk1"
+
+        completed_lessons = 0
+        try:
+            progress = await CourseProgressRepository(self.session).get_by_user_id(user.id)
+            if progress and _band(progress.level) == _band(getattr(user, "level", None)):
+                completed_lessons = int(getattr(progress, "completed_lessons_count", 0) or 0)
+        except Exception:  # noqa: BLE001
+            completed_lessons = 0
+
         return {
             "is_paid": paid,
             "plan": "premium" if paid else "free",
             "remaining_voice_limit": -1 if paid else max(0, limit - used),
             "level": getattr(user, "level", None) or "hsk1",
             "language": getattr(user, "language", None) or "ru",
+            "completed_lessons": completed_lessons,
         }
 
     async def start_session(

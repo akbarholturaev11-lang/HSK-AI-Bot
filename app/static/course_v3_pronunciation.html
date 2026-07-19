@@ -65,6 +65,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="done" id="done"><div class="st han">音</div><h3 id="dh"></h3><p id="dp"></p><button onclick="replay()"><i class="ti ti-refresh"></i> <span id="db"></span></button></div>
 </div>
 <script src="hsk-data.js?v=20260625"></script>
+<script src="/course_v3_data/lesson_gate.js?v=20260719"></script>
 <script src="/course_v3_data/ads.js?v=20260708"></script>
 <script>
 var params=new URLSearchParams(location.search||"");
@@ -76,13 +77,15 @@ var tg=window.Telegram&&window.Telegram.WebApp;if(tg){try{tg.ready();tg.expand()
 function goBack(){location.href="/course-v3.html?lang="+LANG+"&tab=mashq"}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_pronunciation_limit&mode=subscription"}
 /* Foydalanuvchi darajasi: URL param faqat boshlang'ich qiymat, server (users.level)
-   asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi. */
+   asosiy manba — mashq har doim userning haqiqiy HSK darajasiga mos chiqadi.
+   CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar so'zlari chiqadi. */
 function normLv(v){v=String(v||"").toLowerCase();if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3"].indexOf(v)>=0?v:""}
-var LV=normLv(params.get("level"));
+var LV=normLv(params.get("level")),CUR=999;
 var LV_READY=(function(){var idt=(tg&&tg.initData)||"";if(!idt)return Promise.resolve();
-  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s}).catch(function(){})})();
+  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s;if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1)}).catch(function(){})})();
 function lvNum(){return parseInt((LV||"hsk1").slice(3),10)||1}
 function wordLvNum(w){return parseInt(String(w.lv||"").replace(/[^0-9]/g,"").slice(0,1),10)||0}
+function wordGate(h){return (window.HSK_WORD_GATE||{})[h]}
 /* Reklama moduli: kunlik bepul limit tugagach, user reklama ko'rib yana kira
    oladi (bo'limga kuniga 2 marta). Reklama sessiya boshi/o'rtasi/oxirida. */
 if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"pronunciation",level:(params.get("level")||"hsk1"),onSubscribe:goPremium});
@@ -204,12 +207,26 @@ function finish(){
   document.getElementById('dh').textContent=okCount+' / '+list.length+' '+L.done;document.getElementById('dp').textContent=L.doneSub;document.getElementById('db').textContent=L.again;
   document.getElementById('done').classList.add('on');beep([523,659,784,1046]);haptic(true);}
 function start(){LV_READY.then(function(){
-  // USER darajasidagi so'zlar (fallback: <= daraja, keyin hammasi)
+  // Pool tartibi: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR);
+  // 2) yetmasa quyi levellar; 3) HSK1 boshida yaqin keyingi darslar; 4) fallback.
   var all=(typeof WORDS!=="undefined"?WORDS:[]).filter(function(w){return Array.from(String(w.h)).length<=3});
   var n=lvNum();
-  var pool=all.filter(function(w){return wordLvNum(w)===n});
-  if(pool.length<8)pool=all.filter(function(w){var l=wordLvNum(w);return l&&l<=n});
-  if(pool.length<8)pool=all;
+  var pool=null;
+  if(window.HSK_WORD_GATE){
+    var cur=all.filter(function(w){var g=wordGate(w.h);return g&&g[0]===n&&g[1]<=CUR});
+    if(cur.length<TOTAL){
+      var lower=all.filter(function(w){var g=wordGate(w.h);return g&&g[0]<n});
+      cur=cur.concat(shuffle(lower).slice(0,Math.max(0,TOTAL-cur.length)));
+    }
+    var ext=CUR;
+    while(cur.length<TOTAL&&ext<40){ext++;cur=all.filter(function(w){var g=wordGate(w.h);return g&&(g[0]<n||(g[0]===n&&g[1]<=ext))})}
+    if(cur.length)pool=cur;
+  }
+  if(!pool||!pool.length){
+    pool=all.filter(function(w){return wordLvNum(w)===n});
+    if(pool.length<8)pool=all.filter(function(w){var l=wordLvNum(w);return l&&l<=n});
+    if(pool.length<8)pool=all;
+  }
   if(!pool.length){document.getElementById('stage').innerHTML='<div class="loading">Ma\'lumot yuklanmadi</div>';return}
   list=shuffle(pool.slice()).slice(0,TOTAL);i=0;okCount=0;busy=false;
   document.getElementById('done').classList.remove('on');document.getElementById('ctrl').style.display='flex';document.getElementById('prog').style.width='0';

@@ -68,7 +68,7 @@ html,body{background:var(--paper);color:var(--ink);font-family:-apple-system,"SF
   <div class="body" id="body"><div class="loading">…</div></div>
 </div>
 <script src="course_v3_data/memo.js?v=20260628"></script>
-<script src="course_v3_data/memo_lv.js?v=20260719"></script>
+<script src="course_v3_data/lesson_gate.js?v=20260719"></script>
 <script src="/course_v3_data/ads.js?v=20260708"></script>
 <script>
 var P=new URLSearchParams(location.search||"");
@@ -111,13 +111,14 @@ var LIM={
 function initData(){return (tg&&tg.initData)?tg.initData:""}
 function goPremium(){location.href="/subscription.html?lang="+LANG+"&source=v3_memorize_limit&mode=subscription"}
 /* Foydalanuvchi darajasi: server (users.level) asosiy manba — kartalar userning
-   haqiqiy HSK darajasidagi ierogliflardan tuziladi (MEMO_LV xaritasi orqali). */
+   haqiqiy HSK darajasidagi ierogliflardan tuziladi (lesson_gate xaritasi orqali).
+   CUR — joriy dars (tugatilgan+1): faqat O'RGANILGAN darslar belgilari chiqadi. */
 function normLv(v){v=String(v||"").toLowerCase();if(v.indexOf("hsk4")===0)return "hsk4";return ["hsk1","hsk2","hsk3"].indexOf(v)>=0?v:""}
-var LV=normLv(P.get("level"));
+var LV=normLv(P.get("level")),CUR=999;
 var LV_READY=(function(){var idt=initData();if(!idt)return Promise.resolve();
-  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s}).catch(function(){})})();
+  return fetch("/api/voice-practice/me?initData="+encodeURIComponent(idt)).then(function(r){return r.json()}).then(function(j){var s=normLv(j&&j.level);if(s)LV=s;if(j&&typeof j.completed_lessons==="number")CUR=Math.max(1,j.completed_lessons+1)}).catch(function(){})})();
 function lvNum(){return parseInt((LV||"hsk1").slice(3),10)||1}
-function charLv(h){return (window.MEMO_LV||{})[h]||0}
+function charGate(h){return (window.HSK_CHAR_GATE||{})[h]}
 /* Reklama moduli: kunlik bepul limit tugagach, reklama bilan yana 2 marta/kun. */
 if(window.CourseAds)CourseAds.config({lang:LANG,initData:(tg&&tg.initData)||"",feature:"memorize",level:(P.get("level")||"hsk1"),onSubscribe:goPremium});
 var AD_SESSION=false,AD_MID_SHOWN=false,AD_END_SHOWN=false;
@@ -155,12 +156,20 @@ function setPref(v){try{localStorage.setItem("hsk_memo_pref",v)}catch(e){}}
 /* ---- deck ---- */
 var KEYS=Object.keys(DATA),deck=[],DI=0;
 function buildDeck(){
-  /* User darajasidagi ierogliflar (fallback: <= daraja, keyin hammasi). */
+  /* Tartib: 1) joriy levelning O'RGANILGAN darslari (dars<=CUR); 2) yetmasa
+     quyi levellar (to'liq o'rganilgan); 3) HSK1 boshida yaqin keyingi darslar;
+     4) hech narsa topilmasa hammasi. */
   var n=lvNum();
-  var base=KEYS.filter(function(k){return charLv(k)===n});
-  if(base.length<8)base=KEYS.filter(function(k){var l=charLv(k);return l&&l<=n});
-  if(base.length<8)base=KEYS.slice();
-  var ks=shuffle(base);
+  var ks=shuffle(KEYS.filter(function(k){var g=charGate(k);return g&&g[0]===n&&g[1]<=CUR}));
+  if(ks.length<8){
+    var lower=shuffle(KEYS.filter(function(k){var g=charGate(k);return g&&g[0]<n}));
+    ks=ks.concat(lower);
+  }
+  if(ks.length<8){
+    var ext=CUR;
+    while(ks.length<8&&ext<40){ext++;ks=shuffle(KEYS.filter(function(k){var g=charGate(k);return g&&(g[0]<n||(g[0]===n&&g[1]<=ext))}))}
+  }
+  if(ks.length<8)ks=shuffle(KEYS.slice());
   if(FOCUS){
     var comps=[];Array.prototype.forEach.call(FOCUS,function(c){if(DATA[c]&&comps.indexOf(c)<0)comps.push(c)});
     if(comps.length)ks=comps.concat(ks.filter(function(k){return comps.indexOf(k)<0}));
