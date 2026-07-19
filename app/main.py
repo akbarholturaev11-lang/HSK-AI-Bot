@@ -898,6 +898,20 @@ async def hsk_lugat_miniapp():
     return miniapp_file_response("app/static/hsk-lugat.html")
 
 
+# hsk-data.js ikkiga bo'lindi: mashq sahifalari (recognition/pronunciation) faqat
+# WORDS'ga muhtoj, lekin ilgari 2.8 MB'lik to'liq faylni parse qilib turardi — bu
+# har ochilishda sezilarli kechikish berardi. STROKES/EXAMPLES/HSK4_GRAMMAR endi
+# alohida faylda va faqat hsk-lugat.html uni yuklaydi.
+@app.get("/hsk-words.js")
+async def hsk_words_script():
+    return static_asset_response("app/static/hsk-words.js", "application/javascript")
+
+
+@app.get("/hsk-extra.js")
+async def hsk_extra_script():
+    return static_asset_response("app/static/hsk-extra.js", "application/javascript")
+
+
 @app.get("/hsk-data.js")
 async def hsk_data_script():
     return static_asset_response("app/static/hsk-data.js", "application/javascript")

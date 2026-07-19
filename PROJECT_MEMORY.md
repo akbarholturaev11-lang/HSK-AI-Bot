@@ -3694,6 +3694,32 @@ Follow-up:
 
 ---
 
+### hsk-data.js ikkiga bo'lindi — mashq sahifalari yuklanish tezligi
+
+Changed:
+- `app/static/hsk-data.js` (~2.8 MB) ikkiga ajratildi:
+  - `hsk-words.js` (~170 KB) — faqat `WORDS`
+  - `hsk-extra.js` (~2.7 MB) — `STROKES` + `EXAMPLES` + `HSK4_GRAMMAR`
+- `course_v3_recognition.html`, `course_v3_pronunciation.html` va `course-v3.html`'dagi prefetch endi faqat `hsk-words.js` yuklaydi.
+- `hsk-lugat.html` ikkalasini ham yuklaydi (unga `STROKES`/`EXAMPLES`/`HSK4_GRAMMAR` kerak).
+- `hsk-data.js` va uning route'i saqlanib qoldi, lekin endi hech bir sahifa uni yuklamaydi.
+
+Why:
+- Mashq bo'limlari `WORDS`'dan boshqasini ishlatmasa ham, har ochilishda to'liq 2.8 MB JS'ni parse qilardi. Fayl keshlangan bo'lsa ham parse qayta bajariladi — telefonda bu har o'tishda sezilarli kechikish berardi. O'lchov (Mac, desktop): 49.9 ms → 4.8 ms parse; mobil qurilmada farq ancha kattaroq.
+
+Files touched:
+- `app/static/hsk-words.js`, `app/static/hsk-extra.js` (yangi)
+- `app/static/course_v3_recognition.html`, `app/static/course_v3_pronunciation.html`, `app/static/course-v3.html`, `app/static/hsk-lugat.html`
+- `app/main.py` (`/hsk-words.js`, `/hsk-extra.js` route'lari)
+- `scripts/split_hsk_data.py` (yangi — qayta bo'lish uchun)
+
+Risk:
+- Past. Ma'lumot mazmuni bayt-bayt bir xilligi tekshirildi; UI/flow o'zgarmadi.
+- MUHIM: mashq sahifalariga `hsk-data.js` script tegini qaytarib qo'ymang — bu regressiya bo'ladi. `WORDS` kerak bo'lsa `hsk-words.js` ishlating.
+- `hsk-data.js` yangilansa, `python3 scripts/split_hsk_data.py` ni qayta yuriting va HTML'lardagi `?v=` raqamini yangilang (fayllar `immutable` keshlanadi).
+
+---
+
 ## 11. Known Problems
 
 ### Problem 1

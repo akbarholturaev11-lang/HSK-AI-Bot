@@ -1037,7 +1037,7 @@ function prefetchPracticeAssets(){
   if(PRACTICE_PREFETCHED)return;
   PRACTICE_PREFETCHED=true;
   idleRun(function(){
-    ["hsk-data.js?v=20260625","course_v3_data/memo.js?v=20260628"].forEach(function(href){
+    ["hsk-words.js?v=20260720","course_v3_data/memo.js?v=20260628"].forEach(function(href){
       try{var l=document.createElement("link");l.rel="prefetch";l.as="script";l.href=href;document.head.appendChild(l)}catch(e){}
     });
   });
